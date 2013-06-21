@@ -584,7 +584,7 @@ public class XRItems {
 
         GameRegistry.registerCraftingHandler(new WaterHandler());
         GameRegistry.registerCraftingHandler(new AlkahestHandler());
-        GameRegistry.registerCraftingHandler(new VoidUpgradableHandler());
+        GameRegistry.registerCraftingHandler(new VoidUpgradeHandler());
 
         // URGENT TODO DEBUG RECIPES NEED TO BE REMOVED EVERY RELEASE!
         // IF THERE'S NOTHING BELOW THIS POINT, GREAT.

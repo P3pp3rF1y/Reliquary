@@ -16,7 +16,7 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
+public class ItemVoidSatchel extends ItemXR {
 
     public ItemVoidSatchel(int par1) {
         super(par1);
@@ -50,7 +50,7 @@ public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
                     tag.getShort("itemMeta"));
             String itemName = contents.getDisplayName();
             details1 += tag.getShort("itemQuantity") + "x " + itemName;
-            capacity += this.getCapacity(ist);
+            capacity += VoidUpgradeHandler.getCapacity(ist);
         }
         par3List.add(details0);
         par3List.add(details1);
@@ -215,7 +215,7 @@ public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
     }
 
     private boolean isSatchelFull(ItemStack ist) {
-        return getShort("itemQuantity", ist) >= getCapacity(ist);
+        return getShort("itemQuantity", ist) >= VoidUpgradeHandler.getCapacity(ist);
     }
 
     public void decreaseSatchelQuantity(ItemStack ist) {
@@ -243,17 +243,5 @@ public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
     public ItemStack getTargetItem(ItemStack ist) {
         return new ItemStack(this.getShort("itemID", ist), 1, this.getShort(
                 "itemMeta", ist));
-    }
-
-    @Override
-    public int getCapacity(ItemStack ist) { 
-        NBTTagCompound tag = ist.getTagCompound();
-        if (tag == null) return 0;
-        else return tag.getShort("capacity");
-    }
-
-    @Override
-    public boolean upgradeCapacity(ItemStack ist) {
-        return getCapacity(ist) < 32000;
     }
 }

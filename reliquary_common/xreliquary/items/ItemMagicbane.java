@@ -85,35 +85,40 @@ public class ItemMagicbane extends ItemSword {
             EntityLiving par2EntityLiving, EntityLiving par3EntityLiving) {
         if (par2EntityLiving instanceof EntityLiving) {
             EntityLiving e = par2EntityLiving;
-            int random = e.worldObj.rand.nextInt(16);
+            int random = e.worldObj.rand.nextInt(32);
             switch (random) {
             case 0:
             case 1:
             case 2:
             case 3:
             case 4:
-                e.addPotionEffect(new PotionEffect(Potion.weakness.id, 100, 2));
             case 5:
+                e.addPotionEffect(new PotionEffect(Potion.weakness.id, 100, 2));
             case 6:
             case 7:
             case 8:
-                e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 100,
-                        2));
-                break;
             case 9:
             case 10:
-            case 11:
                 e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 100,
                         2));
                 break;
+            case 11:
             case 12:
             case 13:
+            case 14:
                 e.addPotionEffect(new PotionEffect(Potion.poison.id, 100, 2));
+                break;
+            case 15:
+            case 16:
+            case 17:
                 e.addPotionEffect(new PotionEffect(Potion.confusion.id, 100, 2));
                 break;
-            case 14:
+            case 18:
+            case 19:
                 e.addPotionEffect(new PotionEffect(Potion.wither.id, 100, 2));
-                e.addPotionEffect(new PotionEffect(Potion.blindness.id, 100, 2));
+                break;
+            case 20:
+                e.addPotionEffect(new PotionEffect(Potion.wither.id, 100, 2));
                 break;
             default:
                 break;
