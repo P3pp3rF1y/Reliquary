@@ -3,6 +3,7 @@ package xreliquary.items;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -71,19 +72,49 @@ public class ItemWraithEye extends ItemSalamanderEye {
     }
 
     @Override
+    public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
+        //make sure to call the Salamander's Eye update function or it loses its inheritance.
+        super.onUpdate(ist, world, e, i, f);
+        
+        //checks to see if cooldown variable > 0 and decrements if true, each tick.
+        decrementCooldown(ist);        
+    }
+    
+    @Override
     public ItemStack onItemRightClick(ItemStack ist, World world,
             EntityPlayer player) {
-        // teleport player to the wraith node, if it's possible to.
+        //check the cooldown to avoid rapid fire with right mouse held.
+        if (this.getShort("cooldown", ist) > 0)
+            return ist;
+        
+        // ensure that the target block is a wraith node.
         if (world.getBlockId(getShort("nodeX" + getWorld(player), ist), getShort("nodeY" + getWorld(player), ist),
                 getShort("nodeZ" + getWorld(player), ist)) == XRBlocks.wraithNode.blockID) {
-            if (findAndRemoveEnderPearl(player)) {
-                attemptTeleport(world, getShort("nodeX" + getWorld(player), ist),
-                        getShort("nodeY" + getWorld(player), ist), getShort("nodeZ" + getWorld(player), ist), player);
+            
+            //check first that teleportation is possible (ie. No obstructions)
+            if (canTeleport(world, getShort("nodeX" + getWorld(player), ist),
+                    getShort("nodeY" + getWorld(player), ist), getShort("nodeZ" + getWorld(player), ist))) {
+                
+                //allow and perform teleportation after depleting an Ender Pearl
+                if (findAndRemoveEnderPearl(player)) {
+                    teleportPlayer(world, getShort("nodeX" + getWorld(player), ist),
+                            getShort("nodeY" + getWorld(player), ist), getShort("nodeZ" + getWorld(player), ist), player );
+                    setCooldown(ist);
+                }
             }
         }
         return ist;
     }
 
+    private void setCooldown(ItemStack ist) {
+        this.setShort("cooldown", ist, 20);        
+    }
+
+    private void decrementCooldown(ItemStack ist) {
+        if (this.getShort("cooldown", ist) > 0)
+            this.setShort("cooldown", ist, this.getShort("cooldown", ist) - 1);
+    }
+    
     private boolean findAndRemoveEnderPearl(EntityPlayer player) {
         if (player.capabilities.isCreativeMode)
             return true;
@@ -99,26 +130,22 @@ public class ItemWraithEye extends ItemSalamanderEye {
         return false;
     }
 
-    private boolean attemptTeleport(World world, int x, int y, int z,
+    private boolean canTeleport(World world, int x, int y, int z) {
+        if (!world.isAirBlock(x, y + 1, z) || !world.isAirBlock(x, y + 2, z)  )
+            return false;
+        return true;
+    }
+    private void teleportPlayer(World world, int x, int y, int z,
             EntityPlayer player) {
-        for (int xD = -2; xD <= 2; xD++) {
-            for (int yD = -1; yD <= 1; yD++) {
-                for (int zD = -2; zD <= 2; zD++) {
-                    if (world.getBlockId(x + xD, y + yD, z + zD) == 0
-                            && world.getBlockId(x + xD, y + yD + 1, z + zD) == 0) {
-                        player.setPositionAndUpdate(x + xD, y + yD, z + zD);
-                        for (int particles = 0; particles < 2; particles++) {
-                            world.spawnParticle("portal", player.posX,
-                                    player.posY, player.posZ,
-                                    world.rand.nextGaussian(),
-                                    world.rand.nextGaussian(),
-                                    world.rand.nextGaussian());
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        player.setPositionAndUpdate(x, y, z);
+        for (int particles = 0; particles < 2; particles++) {
+            world.spawnParticle("portal", player.posX,
+                    player.posY, player.posZ,
+                    world.rand.nextGaussian(),
+                    world.rand.nextGaussian(),
+                    world.rand.nextGaussian());
+        } 
+        return;
     }
 
     @Override
@@ -155,7 +182,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
         setShort("nodeY" + getWorld(player), eye, y);
         setShort("nodeZ" + getWorld(player), eye, z);
     }
-    
+
     public String getWorld(EntityPlayer player) {
         return Integer.valueOf(player.worldObj.getWorldInfo().getDimension()).toString();
     }

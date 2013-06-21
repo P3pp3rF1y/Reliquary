@@ -99,33 +99,6 @@ public class ItemSalamanderEye extends ItemXR {
         }
     }
 
-    // @Override
-    // @SideOnly(Side.CLIENT)
-    // public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-    //
-    // if (renderPass == 0)
-    // return Integer.parseInt(Constants.WHITE, 16);
-    // else {
-    // return getColor(itemStack);
-    // }
-    // }
-    //
-    // public int getColor(ItemStack itemStack) {
-    //
-    // switch (itemStack.getItemDamage()) {
-    // case (1): return Integer.parseInt(Constants.GRAY);
-    // case (2): return Integer.parseInt(Constants.YELLOW);
-    // case (3): return Integer.parseInt(Constants.RED);
-    // case (4): return Integer.parseInt(Constants.PURPLE);
-    // case (5): return Integer.parseInt(Constants.GREEN);
-    // case (6): return Integer.parseInt(Constants.DARK_GRAY);
-    // case (7): return Integer.parseInt(Constants.TEAL);
-    // case (8): return Integer.parseInt(Constants.BEIGE);
-    // case (9): return Integer.parseInt(Constants.BLUE);
-    // }
-    // return Integer.parseInt(Constants.WHITE);
-    // }
-    //
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
         // handleEyeEffect(ist);
