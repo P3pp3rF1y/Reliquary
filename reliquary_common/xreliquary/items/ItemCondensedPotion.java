@@ -2,7 +2,6 @@ package xreliquary.items;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -18,9 +17,6 @@ import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.liquids.LiquidContainerData;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
 import xreliquary.Reliquary;
 import xreliquary.common.TimeKeeperHandler;
 import xreliquary.entities.EntityCondensedFertility;
@@ -35,6 +31,7 @@ import xreliquary.entities.EntityCondensedSplashWeakness;
 import xreliquary.entities.EntityCondensedSplashWither;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
+import xreliquary.lib.PotionData;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -52,27 +49,23 @@ public class ItemCondensedPotion extends ItemXR {
     }
 
     public int emptyVialMeta() {
-        return Reference.EMPTY_VIAL_META;
+        return PotionData.EMPTY_VIAL_META;
     }
 
-    public void registerLiquidContainer() {
-        LiquidContainerRegistry.registerLiquid(new LiquidContainerData(new LiquidStack(Block.waterStill, LiquidContainerRegistry.BUCKET_VOLUME / 8), new ItemStack(XRItems.condensedPotion, CondensedPotion ), new ItemStack(Item.bucketEmpty)));
-    }
-    
     public int waterVialMeta() {
-        return Reference.WATER_META;
+        return PotionData.WATER_META;
     }
 
     public int panaceaMeta() {
-        return Reference.PANACEA_META;
+        return PotionData.PANACEA_META;
     }
 
     public int basePotionMeta() {
-        return Reference.POTION_META;
+        return PotionData.POTION_META;
     }
 
     public int baseSplashMeta() {
-        return Reference.SPLASH_META;
+        return PotionData.SPLASH_META;
     }
 
     @Override
@@ -133,63 +126,63 @@ public class ItemCondensedPotion extends ItemXR {
     @Override
     public String getItemDisplayName(ItemStack ist) {
         int potion = ist.getItemDamage();
-        if (potion == Reference.SPLASH_META)
+        if (potion == PotionData.SPLASH_META)
             return Names.SPLASH_NAME;
-        if (potion == Reference.APHRODITE_META)
+        if (potion == PotionData.APHRODITE_META)
             return Names.APHRODITE_NAME;
-        if (potion == Reference.POISON_META)
+        if (potion == PotionData.POISON_META)
             return Names.POISON_NAME;
-        if (potion == Reference.ACID_META)
+        if (potion == PotionData.ACID_META)
             return Names.ACID_NAME;
-        if (potion == Reference.CONFUSION_META)
+        if (potion == PotionData.CONFUSION_META)
             return Names.CONFUSION_NAME;
-        if (potion == Reference.SLOWING_META)
+        if (potion == PotionData.SLOWING_META)
             return Names.SLOWING_NAME;
-        if (potion == Reference.WEAKNESS_META)
+        if (potion == PotionData.WEAKNESS_META)
             return Names.WEAKNESS_NAME;
-        if (potion == Reference.WITHER_META)
+        if (potion == PotionData.WITHER_META)
             return Names.WITHER_NAME;
-        if (potion == Reference.BLINDING_META)
+        if (potion == PotionData.BLINDING_META)
             return Names.BLINDING_NAME;
-        if (potion == Reference.RUINATION_META)
+        if (potion == PotionData.RUINATION_META)
             return Names.RUINATION_NAME;
-        if (potion == Reference.FERTILIZER_META)
+        if (potion == PotionData.FERTILIZER_META)
             return Names.FERTILIZER_NAME;
-        if (potion == Reference.EMPTY_VIAL_META)
+        if (potion == PotionData.EMPTY_VIAL_META)
             return Names.EMPTY_VIAL_NAME;
-        if (potion == Reference.POTION_META)
+        if (potion == PotionData.POTION_META)
             return Names.POTION_NAME;
-        if (potion == Reference.SPEED_META)
+        if (potion == PotionData.SPEED_META)
             return Names.SPEED_NAME;
-        if (potion == Reference.DIGGING_META)
+        if (potion == PotionData.DIGGING_META)
             return Names.DIGGING_NAME;
-        if (potion == Reference.STRENGTH_META)
+        if (potion == PotionData.STRENGTH_META)
             return Names.STRENGTH_NAME;
-        if (potion == Reference.HEALING_META)
+        if (potion == PotionData.HEALING_META)
             return Names.HEALING_NAME;
-        if (potion == Reference.BOUNDING_META)
+        if (potion == PotionData.BOUNDING_META)
             return Names.BOUNDING_NAME;
-        if (potion == Reference.REGENERATION_META)
+        if (potion == PotionData.REGENERATION_META)
             return Names.REGENERATION_NAME;
-        if (potion == Reference.RESISTANCE_META)
+        if (potion == PotionData.RESISTANCE_META)
             return Names.RESISTANCE_NAME;
-        if (potion == Reference.FIRE_WARDING_META)
+        if (potion == PotionData.FIRE_WARDING_META)
             return Names.FIRE_WARDING_NAME;
-        if (potion == Reference.BREATHING_META)
+        if (potion == PotionData.BREATHING_META)
             return Names.BREATHING_NAME;
-        if (potion == Reference.INVISIBILITY_META)
+        if (potion == PotionData.INVISIBILITY_META)
             return Names.INVISIBILITY_NAME;
-        if (potion == Reference.INFRAVISION_META)
+        if (potion == PotionData.INFRAVISION_META)
             return Names.INFRAVISION_NAME;
-        if (potion == Reference.PROTECTION_META)
+        if (potion == PotionData.PROTECTION_META)
             return Names.PROTECTION_NAME;
-        if (potion == Reference.POTENCE_META)
+        if (potion == PotionData.POTENCE_META)
             return Names.POTENCE_NAME;
-        if (potion == Reference.CELERITY_META)
+        if (potion == PotionData.CELERITY_META)
             return Names.CELERITY_NAME;
-        if (potion == Reference.PANACEA_META)
+        if (potion == PotionData.PANACEA_META)
             return Names.PANACEA_NAME;
-        if (potion == Reference.WATER_META)
+        if (potion == PotionData.WATER_META)
             return Names.WATER_NAME;
         return "CondensedPotion";
     }
@@ -232,119 +225,119 @@ public class ItemCondensedPotion extends ItemXR {
         int potion = ist.getItemDamage();
         String description[] = new String[2];
         switch (potion) {
-        case Reference.EMPTY_VIAL_META:
+        case PotionData.EMPTY_VIAL_META:
             description[0] = "An empty vial for";
             description[1] = "condensed potions.";
             break;
-        case Reference.POTION_META:
+        case PotionData.POTION_META:
             description[0] = "A base potion for";
             description[1] = "condensed potions.";
             break;
-        case Reference.SPEED_META:
+        case PotionData.SPEED_META:
             description[0] = "Movement increased";
             description[1] = "for 5 minutes.";
             break;
-        case Reference.DIGGING_META:
+        case PotionData.DIGGING_META:
             description[0] = "Dig and break faster";
             description[1] = "for 5 minutes.";
             break;
-        case Reference.STRENGTH_META:
+        case PotionData.STRENGTH_META:
             description[0] = "Damage increased by 3";
             description[1] = "for 5 minutes.";
             break;
-        case Reference.HEALING_META:
+        case PotionData.HEALING_META:
             description[0] = "Heals 6 hearts.";
             description[1] = "(12 damage)";
             break;
-        case Reference.BOUNDING_META:
+        case PotionData.BOUNDING_META:
             description[0] = "Higher jumping";
             description[1] = "for 5 minutes.";
             break;
-        case Reference.REGENERATION_META:
+        case PotionData.REGENERATION_META:
             description[0] = "Health regeneration";
             description[1] = "for 1 minute.";
             break;
-        case Reference.RESISTANCE_META:
+        case PotionData.RESISTANCE_META:
             description[0] = "Damage resistance";
             description[1] = "for 5 minutes.";
             break;
-        case Reference.FIRE_WARDING_META:
+        case PotionData.FIRE_WARDING_META:
             description[0] = "Fire resistance";
             description[1] = "for 5 minutes.";
             break;
-        case Reference.BREATHING_META:
+        case PotionData.BREATHING_META:
             description[0] = "Water breathing";
             description[1] = "for 5 minutes.";
             break;
-        case Reference.INVISIBILITY_META:
+        case PotionData.INVISIBILITY_META:
             description[0] = "Invisibility";
             description[1] = "for 5 minutes.";
             break;
-        case Reference.INFRAVISION_META:
+        case PotionData.INFRAVISION_META:
             description[0] = "See in the dark";
             description[1] = "for 5 minutes.";
             break;
-        case Reference.PROTECTION_META:
+        case PotionData.PROTECTION_META:
             description[0] = "Resist fire and";
             description[1] = "damage for 3 minutes.";
             break;
-        case Reference.POTENCE_META:
+        case PotionData.POTENCE_META:
             description[0] = "Strength and dig boost";
             description[1] = "for 3 minutes.";
             break;
-        case Reference.CELERITY_META:
+        case PotionData.CELERITY_META:
             description[0] = "Speed and jump boost";
             description[1] = "for 3 minutes.";
             break;
-        case Reference.PANACEA_META:
+        case PotionData.PANACEA_META:
             description[0] = "30 second regen, heals 6 hearts.";
             description[1] = "Cures any ailment.";
             break;
-        case Reference.SPLASH_META:
+        case PotionData.SPLASH_META:
             description[0] = "A base potion for creating";
             description[1] = "condensed splash vials.";
             break;
-        case Reference.APHRODITE_META:
+        case PotionData.APHRODITE_META:
             description[0] = "Makes animals";
             description[1] = "want to mate.";
             break;
-        case Reference.POISON_META:
+        case PotionData.POISON_META:
             description[0] = "Poisons mobs";
             description[1] = "for 60 seconds.";
             break;
-        case Reference.ACID_META:
+        case PotionData.ACID_META:
             description[0] = "Deals 12 damage,";
             description[1] = "even vs. Undead.";
             break;
-        case Reference.CONFUSION_META:
+        case PotionData.CONFUSION_META:
             description[0] = "Causes confusion";
             description[1] = "for 60 seconds.";
             break;
-        case Reference.SLOWING_META:
+        case PotionData.SLOWING_META:
             description[0] = "Causes slowness";
             description[1] = "for 60 seconds.";
             break;
-        case Reference.WEAKNESS_META:
+        case PotionData.WEAKNESS_META:
             description[0] = "Causes weakness";
             description[1] = "for 60 seconds.";
             break;
-        case Reference.WITHER_META:
+        case PotionData.WITHER_META:
             description[0] = "Causes wither effect";
             description[1] = "for 60 seconds.";
             break;
-        case Reference.BLINDING_META:
+        case PotionData.BLINDING_META:
             description[0] = "Causes blindness";
             description[1] = "for 60 seconds.";
             break;
-        case Reference.RUINATION_META:
+        case PotionData.RUINATION_META:
             description[0] = "Slows, weakens and";
             description[1] = "poisons for 60 seconds.";
             break;
-        case Reference.FERTILIZER_META:
+        case PotionData.FERTILIZER_META:
             description[0] = "Grows crops in a";
             description[1] = "wide square pattern.";
             break;
-        case Reference.WATER_META:
+        case PotionData.WATER_META:
             description[0] = "It's a vial of ";
             description[1] = "plain ol' water.";
             break;
@@ -393,25 +386,25 @@ public class ItemCondensedPotion extends ItemXR {
         int potion = ist.getItemDamage();
         switch (potion) {
 
-        case Reference.APHRODITE_META:
+        case PotionData.APHRODITE_META:
             return new EntityCondensedSplashAphrodite(world, player);
-        case Reference.POISON_META:
+        case PotionData.POISON_META:
             return new EntityCondensedSplashPoison(world, player);
-        case Reference.ACID_META:
+        case PotionData.ACID_META:
             return new EntityCondensedSplashHarm(world, player);
-        case Reference.CONFUSION_META:
+        case PotionData.CONFUSION_META:
             return new EntityCondensedSplashConfusion(world, player);
-        case Reference.SLOWING_META:
+        case PotionData.SLOWING_META:
             return new EntityCondensedSplashSlowness(world, player);
-        case Reference.WEAKNESS_META:
+        case PotionData.WEAKNESS_META:
             return new EntityCondensedSplashWeakness(world, player);
-        case Reference.WITHER_META:
+        case PotionData.WITHER_META:
             return new EntityCondensedSplashWither(world, player);
-        case Reference.BLINDING_META:
+        case PotionData.BLINDING_META:
             return new EntityCondensedSplashBlindness(world, player);
-        case Reference.RUINATION_META:
+        case PotionData.RUINATION_META:
             return new EntityCondensedSplashRuin(world, player);
-        case Reference.FERTILIZER_META:
+        case PotionData.FERTILIZER_META:
             return new EntityCondensedFertility(world, player);
         }
 
@@ -422,52 +415,52 @@ public class ItemCondensedPotion extends ItemXR {
         PotionEffect effects[] = new PotionEffect[2];
         int potion = ist.getItemDamage();
         switch (potion) {
-        case Reference.SPEED_META:
+        case PotionData.SPEED_META:
             effects[0] = new PotionEffect(Potion.moveSpeed.id, 6000, 1);
             break;
-        case Reference.DIGGING_META:
+        case PotionData.DIGGING_META:
             effects[0] = new PotionEffect(Potion.digSpeed.id, 6000, 1);
             break;
-        case Reference.STRENGTH_META:
+        case PotionData.STRENGTH_META:
             effects[0] = new PotionEffect(Potion.damageBoost.id, 6000, 1);
             break;
-        case Reference.HEALING_META:
+        case PotionData.HEALING_META:
             effects[0] = new PotionEffect(Potion.heal.id, 12, 0);
             break;
-        case Reference.BOUNDING_META:
+        case PotionData.BOUNDING_META:
             effects[0] = new PotionEffect(Potion.jump.id, 6000, 1);
             break;
-        case Reference.REGENERATION_META:
+        case PotionData.REGENERATION_META:
             effects[0] = new PotionEffect(Potion.regeneration.id, 1200, 1);
             break;
-        case Reference.RESISTANCE_META:
+        case PotionData.RESISTANCE_META:
             effects[0] = new PotionEffect(Potion.resistance.id, 6000, 0);
             break;
-        case Reference.FIRE_WARDING_META:
+        case PotionData.FIRE_WARDING_META:
             effects[0] = new PotionEffect(Potion.fireResistance.id, 6000, 0);
             break;
-        case Reference.BREATHING_META:
+        case PotionData.BREATHING_META:
             effects[0] = new PotionEffect(Potion.waterBreathing.id, 6000, 0);
             break;
-        case Reference.INVISIBILITY_META:
+        case PotionData.INVISIBILITY_META:
             effects[0] = new PotionEffect(Potion.invisibility.id, 6000, 0);
             break;
-        case Reference.INFRAVISION_META:
+        case PotionData.INFRAVISION_META:
             effects[0] = new PotionEffect(Potion.nightVision.id, 6000, 0);
             break;
-        case Reference.PROTECTION_META:
+        case PotionData.PROTECTION_META:
             effects[0] = new PotionEffect(Potion.resistance.id, 3600, 1);
             effects[1] = new PotionEffect(Potion.fireResistance.id, 3600, 1);
             break;
-        case Reference.POTENCE_META:
+        case PotionData.POTENCE_META:
             effects[0] = new PotionEffect(Potion.damageBoost.id, 3600, 1);
             effects[1] = new PotionEffect(Potion.digSpeed.id, 3600, 1);
             break;
-        case Reference.CELERITY_META:
+        case PotionData.CELERITY_META:
             effects[0] = new PotionEffect(Potion.jump.id, 3600, 1);
             effects[1] = new PotionEffect(Potion.moveSpeed.id, 3600, 1);
             break;
-        case Reference.PANACEA_META:
+        case PotionData.PANACEA_META:
             effects[0] = new PotionEffect(Potion.heal.id, 6, 0);
             effects[1] = new PotionEffect(Potion.regeneration.id, 600, 1);
             break;
@@ -546,83 +539,83 @@ public class ItemCondensedPotion extends ItemXR {
         }
         int potion = itemStack.getItemDamage();
         switch (potion) {
-        case Reference.SPEED_META:
+        case PotionData.SPEED_META:
             return Integer.parseInt(Colors.SPEED_COLOR, 16);
-        case Reference.DIGGING_META:
+        case PotionData.DIGGING_META:
             return Integer.parseInt(Colors.DIGGING_COLOR, 16);
-        case Reference.STRENGTH_META:
+        case PotionData.STRENGTH_META:
             return Integer.parseInt(Colors.STRENGTH_COLOR, 16);
-        case Reference.HEALING_META:
+        case PotionData.HEALING_META:
             return Integer.parseInt(Colors.HEALING_COLOR, 16);
-        case Reference.BOUNDING_META:
+        case PotionData.BOUNDING_META:
             return Integer.parseInt(Colors.BOUNDING_COLOR, 16);
-        case Reference.REGENERATION_META:
+        case PotionData.REGENERATION_META:
             return Integer.parseInt(Colors.REGENERATION_COLOR, 16);
-        case Reference.RESISTANCE_META:
+        case PotionData.RESISTANCE_META:
             return Integer.parseInt(Colors.RESISTANCE_COLOR, 16);
-        case Reference.FIRE_WARDING_META:
+        case PotionData.FIRE_WARDING_META:
             return Integer.parseInt(Colors.FIRE_WARDING_COLOR, 16);
-        case Reference.BREATHING_META:
+        case PotionData.BREATHING_META:
             return Integer.parseInt(Colors.BREATHING_COLOR, 16);
-        case Reference.INVISIBILITY_META:
+        case PotionData.INVISIBILITY_META:
             red = Integer.toHexString(timeFactor * 3 + 22);
             green = Integer.toHexString(timeFactor * 3 + 22);
             blue = Integer.toHexString(timeFactor * 3 + 22);
             return Integer.parseInt(String.format("%s%s%s", red, green, blue),
                     16);
-        case Reference.INFRAVISION_META:
+        case PotionData.INFRAVISION_META:
             return Integer.parseInt(Colors.INFRAVISION_COLOR, 16);
-        case Reference.PROTECTION_META:
+        case PotionData.PROTECTION_META:
             red = Integer.toHexString(timeFactor * 3 + 88);
             green = Integer.toHexString(timeFactor * 3 + 88);
             blue = Integer.toHexString(timeFactor * 3 + 88);
             return Integer.parseInt(String.format("%s%s%s", red, green, blue),
                     16);
-        case Reference.POTENCE_META:
+        case PotionData.POTENCE_META:
             red = Integer.toHexString(timeFactor * 4 + 22);
             green = Integer.toHexString(timeFactor * 2 + 22);
             blue = "00";
             return Integer.parseInt(String.format("%s%s%s", red, green, blue),
                     16);
-        case Reference.CELERITY_META:
+        case PotionData.CELERITY_META:
             red = "00";
             green = Integer.toHexString(timeFactor * 4 + 22);
             blue = "FF";
             return Integer.parseInt(String.format("%s%s%s", red, green, blue),
                     16);
-        case Reference.PANACEA_META:
+        case PotionData.PANACEA_META:
             red = Integer.toHexString(timeFactor * 4 + 22);
             green = "00";
             blue = "FF";
             return Integer.parseInt(String.format("%s%s%s", red, green, blue),
                     16);
-        case Reference.APHRODITE_META:
+        case PotionData.APHRODITE_META:
             return Integer.parseInt(Colors.APHRODITE_COLOR, 16);
-        case Reference.POISON_META:
+        case PotionData.POISON_META:
             return Integer.parseInt(Colors.POISON_COLOR, 16);
-        case Reference.ACID_META:
+        case PotionData.ACID_META:
             return Integer.parseInt(Colors.ACID_COLOR, 16);
-        case Reference.CONFUSION_META:
+        case PotionData.CONFUSION_META:
             return Integer.parseInt(Colors.CONFUSION_COLOR, 16);
-        case Reference.SLOWING_META:
+        case PotionData.SLOWING_META:
             return Integer.parseInt(Colors.SLOWING_COLOR, 16);
-        case Reference.WEAKNESS_META:
+        case PotionData.WEAKNESS_META:
             return Integer.parseInt(Colors.WEAKNESS_COLOR, 16);
-        case Reference.WITHER_META:
+        case PotionData.WITHER_META:
             return Integer.parseInt(Colors.WITHER_COLOR, 16);
-        case Reference.BLINDING_META:
+        case PotionData.BLINDING_META:
             return Integer.parseInt(Colors.BLINDING_COLOR, 16);
-        case Reference.RUINATION_META:
+        case PotionData.RUINATION_META:
             red = Integer.toHexString(timeFactor * 5 + 22);
             green = "FF";
             blue = "00";
             return Integer.parseInt(String.format("%s%s%s", red, green, blue),
                     16);
-        case Reference.FERTILIZER_META:
+        case PotionData.FERTILIZER_META:
             return Integer.parseInt(Colors.FERTILIZER_COLOR, 16);
-        case Reference.WATER_META:
-        case Reference.SPLASH_META:
-        case Reference.POTION_META:
+        case PotionData.WATER_META:
+        case PotionData.SPLASH_META:
+        case PotionData.POTION_META:
             return Integer.parseInt(Colors.WATER_COLOR, 16);
         }
         return Integer.parseInt(Colors.PURE, 16);

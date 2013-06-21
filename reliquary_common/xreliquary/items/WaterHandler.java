@@ -3,7 +3,7 @@ package xreliquary.items;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import xreliquary.lib.Reference;
+import xreliquary.lib.PotionData;
 import cpw.mods.fml.common.ICraftingHandler;
 
 public class WaterHandler implements ICraftingHandler {
@@ -17,10 +17,10 @@ public class WaterHandler implements ICraftingHandler {
             }
             if (craftMatrix.getStackInSlot(slot).getItem() == XRItems.glowingWater)
                 if (!player.inventory.addItemStackToInventory(new ItemStack(
-                        XRItems.condensedPotion, 1, Reference.EMPTY_VIAL_META))) {
+                        XRItems.condensedPotion, 1, PotionData.EMPTY_VIAL_META))) {
                     player.dropPlayerItem(new ItemStack(
                             XRItems.condensedPotion, 1,
-                            Reference.EMPTY_VIAL_META));
+                            PotionData.EMPTY_VIAL_META));
                 }
         }
     }

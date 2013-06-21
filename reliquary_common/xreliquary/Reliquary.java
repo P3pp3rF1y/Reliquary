@@ -6,7 +6,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import xreliquary.blocks.XRBlocks;
 import xreliquary.common.CommonProxy;
 import xreliquary.items.AlkahestMap;
-import xreliquary.items.ItemCondensedPotion;
 import xreliquary.items.XRAlkahestry;
 import xreliquary.items.XRItems;
 import xreliquary.lib.Reference;
@@ -60,7 +59,7 @@ public class Reliquary {
 
         AlkahestMap.init();
 
-        ItemCondensedPotion.registerLiquidContainer();
+        XRItems.registerLiquidContainer();
         
         XRBlocks.init();
     }

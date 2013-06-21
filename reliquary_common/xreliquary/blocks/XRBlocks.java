@@ -7,7 +7,7 @@ import xreliquary.Config;
 import xreliquary.items.ItemFertileLilypad;
 import xreliquary.items.XRItems;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.lib.PotionData;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -45,7 +45,7 @@ public class XRBlocks {
 
         // lily
         GameRegistry.addRecipe(new ItemStack(lilypad, 1), new Object[] { "www",
-                "wlw", "www", 'w', XRItems.potion(Reference.FERTILIZER_META),
+                "wlw", "www", 'w', XRItems.potion(PotionData.FERTILIZER_META),
                 'l', Block.waterlily });
 
         // wraithnode

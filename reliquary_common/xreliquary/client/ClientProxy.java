@@ -27,6 +27,7 @@ import xreliquary.entities.EntitySandShot;
 import xreliquary.entities.EntitySeekerShot;
 import xreliquary.entities.EntitySpecialSnowball;
 import xreliquary.entities.EntityStormShot;
+import xreliquary.lib.PotionData;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
@@ -63,44 +64,44 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityCondensedSplashAphrodite.class, new RenderThrown(
                         Reference.SPLASH_POTION_SPRITE
-                                + Reference.APHRODITE_META));
+                                + PotionData.APHRODITE_META));
         RenderingRegistry
                 .registerEntityRenderingHandler(
                         EntityCondensedSplashPoison.class, new RenderThrown(
                                 Reference.SPLASH_POTION_SPRITE
-                                        + Reference.POISON_META));
+                                        + PotionData.POISON_META));
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityCondensedSplashHarm.class, new RenderThrown(
-                        Reference.SPLASH_POTION_SPRITE + Reference.ACID_META));
+                        Reference.SPLASH_POTION_SPRITE + PotionData.ACID_META));
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityCondensedSplashConfusion.class, new RenderThrown(
                         Reference.SPLASH_POTION_SPRITE
-                                + Reference.CONFUSION_META));
+                                + PotionData.CONFUSION_META));
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityCondensedSplashSlowness.class,
                 new RenderThrown(Reference.SPLASH_POTION_SPRITE
-                        + Reference.SLOWING_META));
+                        + PotionData.SLOWING_META));
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityCondensedSplashWeakness.class, new RenderThrown(
                         Reference.SPLASH_POTION_SPRITE
-                                + Reference.WEAKNESS_META));
+                                + PotionData.WEAKNESS_META));
         RenderingRegistry
                 .registerEntityRenderingHandler(
                         EntityCondensedSplashWither.class, new RenderThrown(
                                 Reference.SPLASH_POTION_SPRITE
-                                        + Reference.WITHER_META));
+                                        + PotionData.WITHER_META));
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityCondensedSplashBlindness.class, new RenderThrown(
                         Reference.SPLASH_POTION_SPRITE
-                                + Reference.BLINDING_META));
+                                + PotionData.BLINDING_META));
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityCondensedSplashRuin.class, new RenderThrown(
                         Reference.SPLASH_POTION_SPRITE
-                                + Reference.RUINATION_META));
+                                + PotionData.RUINATION_META));
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityCondensedFertility.class, new RenderThrown(
                         Reference.SPLASH_POTION_SPRITE
-                                + Reference.FERTILIZER_META));
+                                + PotionData.FERTILIZER_META));
 
         // MinecraftForgeClient.registerItemRenderer(XRItems.handgun.itemID,
         // new ItemRendererHandgun());
