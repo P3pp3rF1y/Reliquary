@@ -138,8 +138,8 @@ public class ItemEmperorChalice extends ItemXR {
                         .canPlayerEdit(var13, var14, var15, mop.sideHit, ist))
                     return ist;
 
-                if ((world.getBlockId(var13, var14, var15) == Block.waterMoving.blockID ||
-                        world.getBlockId(var13, var14, var15) == Block.waterStill.blockID)
+                if ((world.getBlockId(var13, var14, var15) == Block.waterMoving.blockID || world
+                        .getBlockId(var13, var14, var15) == Block.waterStill.blockID)
                         && world.getBlockMetadata(var13, var14, var15) == 0) {
                     world.setBlock(var13, var14, var15, 0);
 

@@ -126,8 +126,8 @@ public class XRItems {
                 Names.EMPTY_VIAL_NAME);
         LanguageRegistry.addName(potion(PotionData.POTION_META),
                 Names.POTION_NAME);
-        LanguageRegistry
-                .addName(potion(PotionData.SPEED_META), Names.SPEED_NAME);
+        LanguageRegistry.addName(potion(PotionData.SPEED_META),
+                Names.SPEED_NAME);
         LanguageRegistry.addName(potion(PotionData.DIGGING_META),
                 Names.DIGGING_NAME);
         LanguageRegistry.addName(potion(PotionData.STRENGTH_META),
@@ -156,8 +156,8 @@ public class XRItems {
                 Names.CELERITY_NAME);
         LanguageRegistry.addName(potion(PotionData.PANACEA_META),
                 Names.PANACEA_NAME);
-        LanguageRegistry
-                .addName(potion(PotionData.WATER_META), Names.WATER_NAME);
+        LanguageRegistry.addName(potion(PotionData.WATER_META),
+                Names.WATER_NAME);
 
         LanguageRegistry.addName(mercyCross, Names.CROSS_LOCAL);
         LanguageRegistry.addName(holyHandGrenade, Names.GRENADE_LOCAL);
@@ -433,8 +433,8 @@ public class XRItems {
 
         // strength potion
         GameRegistry.addShapelessRecipe(potion(PotionData.STRENGTH_META),
-                new Object[] { potion(PotionData.POTION_META), Item.blazePowder,
-                        Item.redstone, Item.lightStoneDust });
+                new Object[] { potion(PotionData.POTION_META),
+                        Item.blazePowder, Item.redstone, Item.lightStoneDust });
 
         // heal potion
         GameRegistry.addShapelessRecipe(potion(PotionData.HEALING_META),
@@ -486,7 +486,8 @@ public class XRItems {
                         potion(PotionData.FIRE_WARDING_META),
                         potion(PotionData.FIRE_WARDING_META),
                         potion(PotionData.FIRE_WARDING_META),
-                        Item.lightStoneDust, potion(PotionData.RESISTANCE_META),
+                        Item.lightStoneDust,
+                        potion(PotionData.RESISTANCE_META),
                         potion(PotionData.RESISTANCE_META),
                         potion(PotionData.RESISTANCE_META),
                         potion(PotionData.RESISTANCE_META) });
@@ -554,8 +555,9 @@ public class XRItems {
 
         // weakness
         GameRegistry.addShapelessRecipe(potion(PotionData.WEAKNESS_META),
-                new Object[] { potion(PotionData.SPLASH_META), Item.blazePowder,
-                        Item.fermentedSpiderEye, Item.lightStoneDust });
+                new Object[] { potion(PotionData.SPLASH_META),
+                        Item.blazePowder, Item.fermentedSpiderEye,
+                        Item.lightStoneDust });
 
         // wither
         GameRegistry.addShapelessRecipe(potion(PotionData.WITHER_META),
@@ -585,6 +587,7 @@ public class XRItems {
         GameRegistry.registerCraftingHandler(new WaterHandler());
         GameRegistry.registerCraftingHandler(new AlkahestHandler());
         GameRegistry.registerCraftingHandler(new VoidUpgradeHandler());
+        GameRegistry.registerCraftingHandler(new VoidSatchelHandler());
 
         // URGENT TODO DEBUG RECIPES NEED TO BE REMOVED EVERY RELEASE!
         // IF THERE'S NOTHING BELOW THIS POINT, GREAT.
@@ -592,6 +595,10 @@ public class XRItems {
     }
 
     public static void registerLiquidContainer() {
-        LiquidContainerRegistry.registerLiquid(new LiquidContainerData(new LiquidStack(Block.waterStill, LiquidContainerRegistry.BUCKET_VOLUME / 8), new ItemStack(condensedPotion, PotionData.WATER_META), new ItemStack(condensedPotion, PotionData.EMPTY_VIAL_META)));
+        LiquidContainerRegistry.registerLiquid(new LiquidContainerData(
+                new LiquidStack(Block.waterStill,
+                        LiquidContainerRegistry.BUCKET_VOLUME / 8),
+                new ItemStack(condensedPotion, PotionData.WATER_META),
+                new ItemStack(condensedPotion, PotionData.EMPTY_VIAL_META)));
     }
 }

@@ -65,11 +65,10 @@ public class ClientProxy extends CommonProxy {
                 EntityCondensedSplashAphrodite.class, new RenderThrown(
                         Reference.SPLASH_POTION_SPRITE
                                 + PotionData.APHRODITE_META));
-        RenderingRegistry
-                .registerEntityRenderingHandler(
-                        EntityCondensedSplashPoison.class, new RenderThrown(
-                                Reference.SPLASH_POTION_SPRITE
-                                        + PotionData.POISON_META));
+        RenderingRegistry.registerEntityRenderingHandler(
+                EntityCondensedSplashPoison.class,
+                new RenderThrown(Reference.SPLASH_POTION_SPRITE
+                        + PotionData.POISON_META));
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityCondensedSplashHarm.class, new RenderThrown(
                         Reference.SPLASH_POTION_SPRITE + PotionData.ACID_META));
@@ -78,18 +77,17 @@ public class ClientProxy extends CommonProxy {
                         Reference.SPLASH_POTION_SPRITE
                                 + PotionData.CONFUSION_META));
         RenderingRegistry.registerEntityRenderingHandler(
-                EntityCondensedSplashSlowness.class,
-                new RenderThrown(Reference.SPLASH_POTION_SPRITE
-                        + PotionData.SLOWING_META));
+                EntityCondensedSplashSlowness.class, new RenderThrown(
+                        Reference.SPLASH_POTION_SPRITE
+                                + PotionData.SLOWING_META));
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityCondensedSplashWeakness.class, new RenderThrown(
                         Reference.SPLASH_POTION_SPRITE
                                 + PotionData.WEAKNESS_META));
-        RenderingRegistry
-                .registerEntityRenderingHandler(
-                        EntityCondensedSplashWither.class, new RenderThrown(
-                                Reference.SPLASH_POTION_SPRITE
-                                        + PotionData.WITHER_META));
+        RenderingRegistry.registerEntityRenderingHandler(
+                EntityCondensedSplashWither.class,
+                new RenderThrown(Reference.SPLASH_POTION_SPRITE
+                        + PotionData.WITHER_META));
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityCondensedSplashBlindness.class, new RenderThrown(
                         Reference.SPLASH_POTION_SPRITE

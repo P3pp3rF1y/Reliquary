@@ -60,7 +60,7 @@ public class Reliquary {
         AlkahestMap.init();
 
         XRItems.registerLiquidContainer();
-        
+
         XRBlocks.init();
     }
 

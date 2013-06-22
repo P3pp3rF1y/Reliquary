@@ -50,7 +50,7 @@ public class ItemVoidSatchel extends ItemXR {
                     tag.getShort("itemMeta"));
             String itemName = contents.getDisplayName();
             details1 += tag.getShort("itemQuantity") + "x " + itemName;
-            capacity += VoidUpgradeHandler.getCapacity(ist);
+            capacity += VoidUpgradeHandler.getCapacity(ist.getTagCompound());
         }
         par3List.add(details0);
         par3List.add(details1);
@@ -215,7 +215,8 @@ public class ItemVoidSatchel extends ItemXR {
     }
 
     private boolean isSatchelFull(ItemStack ist) {
-        return getShort("itemQuantity", ist) >= VoidUpgradeHandler.getCapacity(ist);
+        return getShort("itemQuantity", ist) >= VoidUpgradeHandler
+                .getCapacity(ist.getTagCompound());
     }
 
     public void decreaseSatchelQuantity(ItemStack ist) {

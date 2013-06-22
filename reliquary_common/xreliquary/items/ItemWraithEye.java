@@ -39,7 +39,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
     public void registerIcons(IconRegister iconRegister) {
         iconOverlay = new Icon[4];
         iconBase = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.WRAITH_EYE_NAME);        
+                + ":" + Names.WRAITH_EYE_NAME);
         for (int i = 0; i < 4; i++) {
             iconOverlay[i] = iconRegister.registerIcon(Reference.MOD_ID
                     .toLowerCase() + ":" + Names.WRAITH_EYE_OVERLAY_NAME + i);
@@ -73,32 +73,39 @@ public class ItemWraithEye extends ItemSalamanderEye {
 
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
-        //make sure to call the Salamander's Eye update function or it loses its inheritance.
+        // make sure to call the Salamander's Eye update function or it loses
+        // its inheritance.
         super.onUpdate(ist, world, e, i, f);
-        
-        //checks to see if cooldown variable > 0 and decrements if true, each tick.
-        decrementCooldown(ist);        
+
+        // checks to see if cooldown variable > 0 and decrements if true, each
+        // tick.
+        decrementCooldown(ist);
     }
-    
+
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world,
             EntityPlayer player) {
-        //check the cooldown to avoid rapid fire with right mouse held.
+        // check the cooldown to avoid rapid fire with right mouse held.
         if (this.getShort("cooldown", ist) > 0)
             return ist;
-        
+
         // ensure that the target block is a wraith node.
-        if (world.getBlockId(getShort("nodeX" + getWorld(player), ist), getShort("nodeY" + getWorld(player), ist),
+        if (world.getBlockId(getShort("nodeX" + getWorld(player), ist),
+                getShort("nodeY" + getWorld(player), ist),
                 getShort("nodeZ" + getWorld(player), ist)) == XRBlocks.wraithNode.blockID) {
-            
-            //check first that teleportation is possible (ie. No obstructions)
+
+            // check first that teleportation is possible (ie. No obstructions)
             if (canTeleport(world, getShort("nodeX" + getWorld(player), ist),
-                    getShort("nodeY" + getWorld(player), ist), getShort("nodeZ" + getWorld(player), ist))) {
-                
-                //allow and perform teleportation after depleting an Ender Pearl
+                    getShort("nodeY" + getWorld(player), ist),
+                    getShort("nodeZ" + getWorld(player), ist))) {
+
+                // allow and perform teleportation after depleting an Ender
+                // Pearl
                 if (findAndRemoveEnderPearl(player)) {
-                    teleportPlayer(world, getShort("nodeX" + getWorld(player), ist),
-                            getShort("nodeY" + getWorld(player), ist), getShort("nodeZ" + getWorld(player), ist), player );
+                    teleportPlayer(world,
+                            getShort("nodeX" + getWorld(player), ist),
+                            getShort("nodeY" + getWorld(player), ist),
+                            getShort("nodeZ" + getWorld(player), ist), player);
                     setCooldown(ist);
                 }
             }
@@ -107,14 +114,15 @@ public class ItemWraithEye extends ItemSalamanderEye {
     }
 
     private void setCooldown(ItemStack ist) {
-        this.setShort("cooldown", ist, 20);        
+        this.setShort("cooldown", ist, 20);
     }
 
     private void decrementCooldown(ItemStack ist) {
-        if (this.getShort("cooldown", ist) > 0)
+        if (this.getShort("cooldown", ist) > 0) {
             this.setShort("cooldown", ist, this.getShort("cooldown", ist) - 1);
+        }
     }
-    
+
     private boolean findAndRemoveEnderPearl(EntityPlayer player) {
         if (player.capabilities.isCreativeMode)
             return true;
@@ -131,20 +139,19 @@ public class ItemWraithEye extends ItemSalamanderEye {
     }
 
     private boolean canTeleport(World world, int x, int y, int z) {
-        if (!world.isAirBlock(x, y + 1, z) || !world.isAirBlock(x, y + 2, z)  )
+        if (!world.isAirBlock(x, y + 1, z) || !world.isAirBlock(x, y + 2, z))
             return false;
         return true;
     }
+
     private void teleportPlayer(World world, int x, int y, int z,
             EntityPlayer player) {
         player.setPositionAndUpdate(x, y, z);
         for (int particles = 0; particles < 2; particles++) {
-            world.spawnParticle("portal", player.posX,
-                    player.posY, player.posZ,
-                    world.rand.nextGaussian(),
-                    world.rand.nextGaussian(),
-                    world.rand.nextGaussian());
-        } 
+            world.spawnParticle("portal", player.posX, player.posY,
+                    player.posZ, world.rand.nextGaussian(),
+                    world.rand.nextGaussian(), world.rand.nextGaussian());
+        }
         return;
     }
 
@@ -154,12 +161,18 @@ public class ItemWraithEye extends ItemSalamanderEye {
         par3List.add("Right clicking a Wraith Node binds to it");
         par3List.add("allowing you to return to it at will.");
         String details = "Currently bound to ";
-        if (par2EntityPlayer.worldObj.getBlockId(getShort("nodeX" + getWorld(par2EntityPlayer), eye),
-                getShort("nodeY" + getWorld(par2EntityPlayer), eye), getShort("nodeZ" + getWorld(par2EntityPlayer), eye)) != XRBlocks.wraithNode.blockID) {
+        if (par2EntityPlayer.worldObj.getBlockId(
+                getShort("nodeX" + getWorld(par2EntityPlayer), eye),
+                getShort("nodeY" + getWorld(par2EntityPlayer), eye),
+                getShort("nodeZ" + getWorld(par2EntityPlayer), eye)) != XRBlocks.wraithNode.blockID) {
             details += "nowhere.";
         } else {
-            details += "X: " + getShort("nodeX" + getWorld(par2EntityPlayer), eye) + " Y: "
-                    + getShort("nodeY" + getWorld(par2EntityPlayer), eye) + " Z: " + getShort("nodeZ" + getWorld(par2EntityPlayer), eye);
+            details += "X: "
+                    + getShort("nodeX" + getWorld(par2EntityPlayer), eye)
+                    + " Y: "
+                    + getShort("nodeY" + getWorld(par2EntityPlayer), eye)
+                    + " Z: "
+                    + getShort("nodeZ" + getWorld(par2EntityPlayer), eye);
         }
         par3List.add(details);
     }
@@ -177,13 +190,15 @@ public class ItemWraithEye extends ItemSalamanderEye {
         }
     }
 
-    public void setWraithNode(ItemStack eye, int x, int y, int z, EntityPlayer player) {
+    public void setWraithNode(ItemStack eye, int x, int y, int z,
+            EntityPlayer player) {
         setShort("nodeX" + getWorld(player), eye, x);
         setShort("nodeY" + getWorld(player), eye, y);
         setShort("nodeZ" + getWorld(player), eye, z);
     }
 
     public String getWorld(EntityPlayer player) {
-        return Integer.valueOf(player.worldObj.getWorldInfo().getDimension()).toString();
+        return Integer.valueOf(player.worldObj.getWorldInfo().getDimension())
+                .toString();
     }
 }

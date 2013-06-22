@@ -16,8 +16,10 @@ public class WaterHandler implements ICraftingHandler {
                 continue;
             }
             if (craftMatrix.getStackInSlot(slot).getItem() == XRItems.glowingWater)
-                if (!player.inventory.addItemStackToInventory(new ItemStack(
-                        XRItems.condensedPotion, 1, PotionData.EMPTY_VIAL_META))) {
+                if (!player.inventory
+                        .addItemStackToInventory(new ItemStack(
+                                XRItems.condensedPotion, 1,
+                                PotionData.EMPTY_VIAL_META))) {
                     player.dropPlayerItem(new ItemStack(
                             XRItems.condensedPotion, 1,
                             PotionData.EMPTY_VIAL_META));
