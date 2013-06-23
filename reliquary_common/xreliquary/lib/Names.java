@@ -67,6 +67,8 @@ public class Names {
 	public static final String GUNSMITH_CRUCIBLE_LOCAL = "Gunsmith's Crucible";
 	public static final String POTION_ESSENCE_NAME = "potionEssence";
 	public static final String POTION_ESSENCE_LOCAL = "Potion Essence";
+	public static final String STACKED_ESSENCE_NAME = "stackedEssence";
+	public static final String STACKED_ESSENCE_LOCAL = "Stacked Essence";
 	// potion info
 	public static final String CONDENSED_POTION_NAME = "reliquaryPotion";
 	public static final String CONDENSED_POTION_SPLASH_NAME = "reliquaryPotionSplash";

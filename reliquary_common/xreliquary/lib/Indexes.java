@@ -1,6 +1,7 @@
 package xreliquary.lib;
 
 public class Indexes {
+	// items
 	public static final int HANDGUN_DEFAULT_ID = 27270;
 	public static final int SHELL_DEFAULT_ID = 27271;
 	public static final int SLUG_DEFAULT_ID = 27272;
@@ -26,12 +27,15 @@ public class Indexes {
 	public static final int WRAITH_EYE_DEFAULT_ID = 27292;
 	public static final int EMPTY_VOID_TEAR_DEFAULT_ID = 27293;
 	public static final int SATCHEL_DEFAULT_ID = 27294;
+	public static final int ALEMBIC_DEFAULT_ID = 27295;
+	public static final int ALCHEMICAL_GUNMETAL_DEFAULT_ID = 27296;
+	public static final int APOTHECARY_MORTAR_DEFAULT_ID = 27297;
+	public static final int GUNSMITH_CRUCIBLE_DEFAULT_ID = 27298;
+	public static final int POTION_ESSENCE_DEFAULT_ID = 27299;
+	public static final int STACKED_ESSENCE_DEFAULT_ID = 27300;
+	// blocks
 	public static final int ALTAR_ACTIVE_DEFAULT_ID = 2727;
 	public static final int ALTAR_IDLE_DEFAULT_ID = 2728;
 	public static final int LILYPAD_DEFAULT_ID = 2729;
 	public static final int WRAITH_NODE_DEFAULT_ID = 2730;
-	public static final int ALEMBIC_DEFAULT_ID = 0;
-	public static final int APOTHECARY_MORTAR_DEFAULT_ID = 0;
-	public static final int GUNSMITH_CRUCIBLE_DEFAULT_ID = 0;
-	public static final int POTION_ESSENCE_DEFAULT_ID = 0;
 }

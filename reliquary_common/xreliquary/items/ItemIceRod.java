@@ -58,7 +58,7 @@ public class ItemIceRod extends ItemWithCapacity {
 		if (ist.getItemDamage() < ist.getMaxDamage() - 1) {
 			world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 			world.spawnEntityInWorld(new EntitySpecialSnowball(world, player));
-			ist.setItemDamage(ist.getItemDamage() == ist.getMaxDamage() - 2 ? 0 : ist.getItemDamage() + 1);
+			decreaseQuantity(ist);
 		}
 		return ist;
 	}
@@ -73,9 +73,9 @@ public class ItemIceRod extends ItemWithCapacity {
 				e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 100, 2));
 			}
 			if (strikingEntity instanceof EntityPlayer) {
-				struckEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)strikingEntity), struckEntity.isImmuneToFire() ? 8 : 4);
+				struckEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)strikingEntity), struckEntity.isImmuneToFire() ? 10 : 4);
 			}
-			ist.damageItem(1, strikingEntity);
+			decreaseQuantity(ist);
 		}
 		return true;
 	}

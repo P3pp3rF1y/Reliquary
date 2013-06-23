@@ -5,6 +5,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.projectile.EntitySnowball;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumMovingObjectType;
@@ -43,13 +45,17 @@ public class EntitySpecialSnowball extends EntitySnowball {
 	 * Called when this EntityThrowable hits a block or entity.
 	 */
 	@Override
-	protected void onImpact(MovingObjectPosition par1MovingObjectPosition) {
-		if (par1MovingObjectPosition.entityHit != null) {
+	protected void onImpact(MovingObjectPosition objectHit) {
+		if (objectHit.entityHit != null) {
 			byte var2 = 2;
-			if (par1MovingObjectPosition.entityHit.isImmuneToFire()) {
-				var2 = 10;
+			if (objectHit.entityHit.isImmuneToFire()) {
+				var2 = 5;
 			}
-			par1MovingObjectPosition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), var2);
+			if (objectHit.entityHit instanceof EntityLiving) {
+				EntityLiving e = (EntityLiving)objectHit.entityHit;
+				e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 100, 2));
+			}
+			objectHit.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), var2);
 		}
 		for (int var3 = 0; var3 < 8; ++var3) {
 			worldObj.spawnParticle("snowballpoof", posX, posY, posZ, 0.0D, 0.0D, 0.0D);

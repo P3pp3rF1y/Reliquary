@@ -32,8 +32,11 @@ public class ItemVoidSatchel extends ItemWithCapacity {
 		String details0 = "This Void Satchel ";
 		String details1 = "holds ";
 		ItemStack contents = new ItemStack(tag.getShort("itemID"), 1, tag.getShort("itemMeta"));
-		String itemName = contents.getDisplayName();
-		details1 += tag.getShort("itemQuantity") + " " + itemName;
+		String itemName = "nothing.";
+		if (contents != null && contents.getItem() != null) {
+			itemName = contents.getDisplayName();
+		}
+		details1 += itemName;
 		par3List.add(details0);
 		par3List.add(details1);
 		super.addInformation(ist, par2EntityPlayer, par3List, par4);

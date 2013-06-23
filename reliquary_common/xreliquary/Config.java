@@ -44,8 +44,11 @@ public class Config {
 	public static int gunsmithCrucibleID;
 	public static int alembicID;
 	public static int potionEssenceID;
+	public static int stackedEssenceID;
 	// options
 	public static boolean disableCoinAudio;
+	public static boolean disableGunItems;
+	public static boolean disablePotionItems;
 
 	public static void init(File configFile) {
 		Configuration config = new Configuration(configFile);
@@ -78,16 +81,21 @@ public class Config {
 			voidTearID = config.getItem("VoidTear", Indexes.VOID_TEAR_DEFAULT_ID).getInt(Indexes.VOID_TEAR_DEFAULT_ID);
 			emptyVoidTearID = config.getItem("EmptyVoidTear", Indexes.EMPTY_VOID_TEAR_DEFAULT_ID).getInt(Indexes.EMPTY_VOID_TEAR_DEFAULT_ID);
 			satchelID = config.getItem("Satchel", Indexes.SATCHEL_DEFAULT_ID).getInt(Indexes.SATCHEL_DEFAULT_ID);
-			alembicID = config.getItem("Alembic", Indexes.ALEMBIC_DEFAULT_ID).getInt(Indexes.SATCHEL_DEFAULT_ID);
-			apothecaryMortarID = config.getItem("ApothecaryMortar", Indexes.APOTHECARY_MORTAR_DEFAULT_ID).getInt(Indexes.SATCHEL_DEFAULT_ID);
-			gunsmithCrucibleID = config.getItem("GunsmithCrucible", Indexes.GUNSMITH_CRUCIBLE_DEFAULT_ID).getInt(Indexes.SATCHEL_DEFAULT_ID);
-			potionEssenceID = config.getItem("PotionEssence", Indexes.POTION_ESSENCE_DEFAULT_ID).getInt(Indexes.SATCHEL_DEFAULT_ID);
+			alembicID = config.getItem("Alembic", Indexes.ALEMBIC_DEFAULT_ID).getInt(Indexes.ALEMBIC_DEFAULT_ID);
+			apothecaryMortarID = config.getItem("Mortar", Indexes.APOTHECARY_MORTAR_DEFAULT_ID).getInt(Indexes.APOTHECARY_MORTAR_DEFAULT_ID);
+			gunsmithCrucibleID = config.getItem("Crucible", Indexes.GUNSMITH_CRUCIBLE_DEFAULT_ID).getInt(Indexes.GUNSMITH_CRUCIBLE_DEFAULT_ID);
+			potionEssenceID = config.getItem("Essence", Indexes.POTION_ESSENCE_DEFAULT_ID).getInt(Indexes.POTION_ESSENCE_DEFAULT_ID);
+			stackedEssenceID = config.getItem("StackedEssence", Indexes.STACKED_ESSENCE_DEFAULT_ID).getInt(Indexes.STACKED_ESSENCE_DEFAULT_ID);
+			// blocks
 			altarActiveID = config.getBlock("AltarActive", Indexes.ALTAR_ACTIVE_DEFAULT_ID).getInt(Indexes.ALTAR_ACTIVE_DEFAULT_ID);
 			altarIdleID = config.getBlock("AltarIdle", Indexes.ALTAR_IDLE_DEFAULT_ID).getInt(Indexes.ALTAR_IDLE_DEFAULT_ID);
 			wraithNodeID = config.getBlock("WraithNode", Indexes.WRAITH_NODE_DEFAULT_ID).getInt(Indexes.WRAITH_NODE_DEFAULT_ID);
 			lilypadID = config.getBlock("Lilypad", Indexes.LILYPAD_DEFAULT_ID).getInt(Indexes.LILYPAD_DEFAULT_ID);
 			// miscellaneous options
 			disableCoinAudio = config.get("Misc_Options", "disableCoinAudio", false).getBoolean(Reference.DISABLE_COIN_AUDIO_DEFAULT);
+			// item disabling features
+			disableGunItems = config.get("Item_Disabling", "disableGunItems", false).getBoolean(Reference.DISABLE_GUN_ITEMS_DEFAULT);
+			disablePotionItems = config.get("Item_Disabling", "disablePotionItems", false).getBoolean(Reference.DISABLE_POTION_ITEMS_DEFAULT);
 		} catch (Exception e) {
 			FMLLog.log(Level.SEVERE, e, Reference.MOD_NAME + " had a problem while loading its configuration.");
 		} finally {

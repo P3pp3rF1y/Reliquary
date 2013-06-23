@@ -37,7 +37,7 @@ public class ItemWithCapacity extends ItemXR {
 	protected void updateItemDamage(ItemStack ist) {
 		float capacity = getCapacity(ist);
 		float itemCount = getQuantity(ist);
-		float damageValue = itemCount * 1000F / capacity + 1;
+		float damageValue = 1000F - itemCount * 1000F / capacity + 1;
 		ist.setItemDamage((int)damageValue);
 	}
 
@@ -52,6 +52,11 @@ public class ItemWithCapacity extends ItemXR {
 
 	protected boolean hasItem(ItemStack ist) {
 		return getQuantity(ist) > 0;
+	}
+
+	protected void setCapacity(ItemStack ist, int i) {
+		setShort("capacity", ist, (short)i);
+		updateItemDamage(ist);
 	}
 
 	protected int getCapacity(ItemStack ist) {
@@ -106,8 +111,11 @@ public class ItemWithCapacity extends ItemXR {
 		NBTTagCompound tag = ist.getTagCompound();
 		if (tag == null) return;
 		String capacity = "Capacity: ";
-		capacity += VoidUpgradeHandler.getCapacity(ist.getTagCompound());
+		capacity += getCapacity(ist);
+		String holding = "Holding: ";
+		holding += getQuantity(ist);
 		infoList.add(capacity);
+		infoList.add(holding);
 	}
 
 	@Override
@@ -141,6 +149,8 @@ public class ItemWithCapacity extends ItemXR {
 
 	protected void initialize(ItemStack ist, ItemStack target) {
 		setTargetItem(ist, target);
+		setCapacity(ist, 64);
+		setBoolean("initialized", ist, true);
 	}
 
 	protected boolean isInitialized(ItemStack ist) {

@@ -14,8 +14,10 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class XRItems {
 	public static Item handgun;
-	public static Item slug;
-	public static Item shell;
+	public static Item stoneSlug;
+	public static Item alchemicalShell;
+	public static Item potionEssence;
+	public static Item stackedEssence;
 	public static Item emperorChalice;
 	public static Item glowingBread;
 	public static Item glowingWater;
@@ -61,8 +63,8 @@ public class XRItems {
 
 	public static void init() {
 		handgun = new ItemHandgun(Config.handgunID);
-		shell = new ItemShell(Config.shellID);
-		slug = new ItemSlug(Config.slugID);
+		alchemicalShell = new ItemShell(Config.shellID);
+		stoneSlug = new ItemSlug(Config.slugID);
 		mercyCross = new ItemMercyCross(Config.mercyCrossID);
 		holyHandGrenade = new ItemHolyHandGrenade(Config.holyHandGrenadeID);
 		fortuneCoin = new ItemFortuneCoin(Config.fortuneCoinID);
@@ -89,6 +91,8 @@ public class XRItems {
 		gunsmithCrucible = new ItemGunsmithCrucible(Config.gunsmithCrucibleID);
 		alembic = new ItemAlembic(Config.alembicID);
 		apothecaryMortar = new ItemApothecaryMortar(Config.apothecaryMortarID);
+		potionEssence = new ItemPotionEssence(Config.potionEssenceID);
+		stackedEssence = new ItemStackedEssence(Config.stackedEssenceID);
 		LanguageRegistry.addName(handgun, Names.HANDGUN_LOCAL);
 		LanguageRegistry.addName(potion(PotionData.SPLASH_META), Names.SPLASH_NAME);
 		LanguageRegistry.addName(potion(PotionData.POISON_META), Names.POISON_NAME);
@@ -142,6 +146,14 @@ public class XRItems {
 		LanguageRegistry.addName(wraithEye, Names.WRAITH_EYE_LOCAL);
 		LanguageRegistry.addName(voidSatchel, Names.VOID_SATCHEL_LOCAL);
 		LanguageRegistry.addName(destructionCatalyst, Names.DESTRUCTION_CATALYST_LOCAL);
+		LanguageRegistry.addName(apothecaryMortar, Names.APOTHECARY_MORTAR_LOCAL);
+		LanguageRegistry.addName(gunsmithCrucible, Names.GUNSMITH_CRUCIBLE_LOCAL);
+		LanguageRegistry.addName(potionEssence, Names.POTION_ESSENCE_LOCAL);
+		LanguageRegistry.addName(stackedEssence, Names.STACKED_ESSENCE_LOCAL);
+		LanguageRegistry.addName(alchemicalGunmetal, Names.ALCHEMICAL_GUNMETAL_LOCAL);
+		LanguageRegistry.addName(alembic, Names.ALEMBIC_LOCAL);
+		LanguageRegistry.addName(stoneSlug, Names.SLUG_LOCAL);
+		LanguageRegistry.addName(alchemicalShell, Names.SHELL_LOCAL);
 		addRecipes();
 	}
 
@@ -159,7 +171,6 @@ public class XRItems {
 		// torch
 		GameRegistry.addRecipe(new ItemStack(sojournerStaff, 1), new Object[] { "cgc", "gbg", "wgw", 'w', glowingWater, 'g', Item.ingotGold, 'b', Item.blazeRod, 'c', Item.magmaCream });
 		// gunparts TODO
-		// the recipes have changed (increased cost) and magazines are gone
 		// so these need to be redone.
 		// handgun
 		GameRegistry.addRecipe(new ItemStack(handgun, 1, 0), new Object[] { "bim", "isi", "igi", 'i', XRItems.alchemicalGunmetal, 'b', gunPart(1, 1), 'm', gunPart(1, 2), 'g', gunPart(1, 0), 's', Item.slimeBall });
@@ -173,23 +184,20 @@ public class XRItems {
 		GameRegistry.addShapelessRecipe(new ItemStack(alkahest, 1, 0), new Object[] { XRItems.alkahestryTome, Item.netherStar, Item.netherStar, Block.dragonEgg });
 		// salamander's eye
 		GameRegistry.addRecipe(new ItemStack(salamanderEye, 1, 0), new Object[] { "bcb", "tet", "bcb", 'b', Item.blazeRod, 'c', Item.magmaCream, 't', Item.ghastTear, 'e', Item.eyeOfEnder }); // wraith's
-																																																// eye
-																																																// upgrade
+		// and the wraith's eye // upgrade
 		GameRegistry.addRecipe(new ItemStack(wraithEye, 1, 0), new Object[] { "eee", "bsb", "eee", 'e', emptyVoidTear, 's', salamanderEye, 'b', Block.blockEmerald });
 		// ice rod
 		GameRegistry.addRecipe(new ItemStack(iceRod, 1, 0), new Object[] { "dtd", "tit", "tit", 'd', Item.diamond, 't', Item.ghastTear, 'i', Item.ingotIron });
 		// magicbane
 		GameRegistry.addRecipe(new ItemStack(magicbane, 1, 0), new Object[] { "eee", "ege", "iee", 'e', Item.eyeOfEnder, 'g', Item.ingotGold, 'i', Item.ingotIron });
-		// rose
+		// witherless rose
 		GameRegistry.addRecipe(new ItemStack(witherlessRose, 1, 0), new Object[] { "hnh", "nrn", "hnh", 'h', glowingWater, 'n', Item.netherStar, 'r', Block.plantRed });
-		// cloak
+		// ender staff
 		GameRegistry.addRecipe(new ItemStack(enderStaff, 1, 0), new Object[] { "eee", "ewe", "eee", 'e', Item.eyeOfEnder, 'w', new ItemStack(Block.cloth, 1, 11) });
-		// void tear
+		// empty void tear
 		GameRegistry.addRecipe(new ItemStack(emptyVoidTear, 1, 0), new Object[] { "et", "te", 'e', Item.eyeOfEnder, 't', Item.ghastTear });
-		// TODO possibly give satchels a damage bar, so these recipes will have
-		// to change.
 		// void satchel
-		GameRegistry.addRecipe(new ItemStack(voidSatchel, 1, 0), new Object[] { "lsl", "ltl", "lll", 'l', Item.leather, 's', Item.silk, 't', voidTear }); // upgrade
+		GameRegistry.addRecipe(new ItemStack(voidSatchel, 1, -1), new Object[] { "lsl", "ltl", "lll", 'l', Item.leather, 's', Item.silk, 't', voidTear }); // upgrade
 																																							// it!
 		GameRegistry.addShapelessRecipe(new ItemStack(voidSatchel, 1, 0), new Object[] { emptyVoidTear, emptyVoidTear, emptyVoidTear, voidSatchel });
 		// destruction catalyst

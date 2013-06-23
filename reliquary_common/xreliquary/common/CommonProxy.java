@@ -22,6 +22,7 @@ import xreliquary.entities.EntityHolyHandGrenade;
 import xreliquary.entities.EntityNeutralShot;
 import xreliquary.entities.EntitySandShot;
 import xreliquary.entities.EntitySeekerShot;
+import xreliquary.entities.EntitySpecialEnderPearl;
 import xreliquary.entities.EntitySpecialSnowball;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -71,6 +72,7 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityCondensedSplashWeakness.class, "entitySplashWeakness", 19, Reliquary.instance, 128, 5, true);
 		EntityRegistry.registerModEntity(EntityCondensedSplashWither.class, "entitySplashWither", 20, Reliquary.instance, 128, 5, true);
 		EntityRegistry.registerModEntity(EntityCondensedFertility.class, "entitySplashFertility", 21, Reliquary.instance, 128, 5, true);
+		EntityRegistry.registerModEntity(EntitySpecialEnderPearl.class, "entitySpecialEnderPearl", 22, Reliquary.instance, 128, 5, true);
 	}
 
 	public void registerTickHandlers() {

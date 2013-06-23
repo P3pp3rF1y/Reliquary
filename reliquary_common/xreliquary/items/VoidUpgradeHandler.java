@@ -19,8 +19,7 @@ public class VoidUpgradeHandler implements ICraftingHandler {
 	}
 
 	// handles the upgrading of void items capacities. may be extended later to
-	// work with other
-	// upgradable items.
+	// work with other upgradable items.
 	public static void upgradeCapacity(NBTTagCompound nbt, int upgrades) {
 		for (; upgrades > 0; upgrades--) {
 			if (!canUpgrade(nbt)) return;

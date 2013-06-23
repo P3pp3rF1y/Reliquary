@@ -1,12 +1,9 @@
 package xreliquary.items;
 
 import java.util.List;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xreliquary.entities.EntityBlazeShot;
 import xreliquary.entities.EntityBusterShot;
@@ -16,69 +13,10 @@ import xreliquary.entities.EntityExorcismShot;
 import xreliquary.entities.EntityNeutralShot;
 import xreliquary.entities.EntitySandShot;
 import xreliquary.entities.EntitySeekerShot;
-import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemHandgun extends ItemXR {
-	@SideOnly(Side.CLIENT)
-	private Icon iconOverlay;
-	@SideOnly(Side.CLIENT)
-	private Icon iconBase;
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean requiresMultipleRenderPasses() {
-		return true;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister) {
-		iconBase = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.HANDGUN_NAME);
-		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.HANDGUN_OVERLAY_NAME);
-	}
-
-	@Override
-	public Icon getIcon(ItemStack itemStack, int renderPass) {
-		if (itemStack.getItemDamage() == 0) return iconBase;
-		if (renderPass != 1) return iconBase;
-		else return iconOverlay;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-		if (renderPass == 1) return getColor(itemStack);
-		else return Integer.parseInt(Colors.PURE, 16);
-	}
-
-	public int getColor(ItemStack itemStack) {
-		switch (itemStack.getItemDamage()) {
-			case 1:
-				return Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16);
-			case 2:
-				return Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16);
-			case 3:
-				return Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16);
-			case 4:
-				return Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16);
-			case 5:
-				return Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16);
-			case 6:
-				return Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16);
-			case 7:
-				return Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16);
-			case 8:
-				return Integer.parseInt(Colors.SAND_SHOT_COLOR, 16);
-			case 9:
-				return Integer.parseInt(Colors.STORM_SHOT_COLOR, 16);
-		}
-		return Integer.parseInt(Colors.PURE, 16);
-	}
-
 	protected ItemHandgun(int par1) {
 		super(par1);
 		this.setMaxDamage((8 << 5) + 11);
@@ -90,19 +28,13 @@ public class ItemHandgun extends ItemXR {
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
 		par3List.add("For great justice.");
-		par3List.add("Right click fires, hold to reload.");
-	}
-
-	@Override
-	public void onUpdate(ItemStack ist, World worldObj, Entity e, int i, boolean flag) {
-		if (this.getShort("cooldownTime", ist) > 0) {
-			this.setShort("cooldownTime", ist, this.getShort("cooldownTime", ist) - 1);
-		}
+		par3List.add("Right click to");
+		par3List.add("fire or reload.");
 	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack ist, World worldObj, EntityPlayer player) {
-		if (this.getShort("cooldownTime", ist) <= 0) {
+		if (!isOnCooldown(ist)) {
 			if (!(this.getShort("bulletCount", ist) > 0) && !(this.getShort("bulletType", ist) > 0)) {
 				player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
 			} else {
@@ -207,8 +139,8 @@ public class ItemHandgun extends ItemXR {
 	}
 
 	private void spawnCasing(EntityPlayer player) {
-		if (!player.inventory.addItemStackToInventory(new ItemStack(XRItems.shell, 1, 0))) {
-			player.dropPlayerItem(new ItemStack(XRItems.shell, 1, 0));
+		if (!player.inventory.addItemStackToInventory(new ItemStack(XRItems.alchemicalShell, 1, 0))) {
+			player.dropPlayerItem(new ItemStack(XRItems.alchemicalShell, 1, 0));
 		}
 	}
 

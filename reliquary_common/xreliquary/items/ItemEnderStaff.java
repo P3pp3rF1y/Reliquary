@@ -19,10 +19,16 @@ public class ItemEnderStaff extends ItemWithCapacity {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-		par3List.add("Right click to cast");
-		par3List.add("an Ender Pearl.");
-		par3List.add("Sneak to arc it.");
+	public void addInformation(ItemStack ist, EntityPlayer player, List infoList, boolean par4) {
+		infoList.add("Right click to cast");
+		infoList.add("an Ender Pearl.");
+		infoList.add("Sneak to arc it.");
+		super.addInformation(ist, player, infoList, par4);
+	}
+
+	@Override
+	protected boolean isActive(ItemStack ist) {
+		return true;
 	}
 
 	@Override
@@ -50,18 +56,19 @@ public class ItemEnderStaff extends ItemWithCapacity {
 		} else {
 			castStraightEnderPearl(ist, world, player);
 		}
-		setCooldown(ist, 10);
 		return ist;
 	}
 
 	private void castStraightEnderPearl(ItemStack ist, World world, EntityPlayer player) {
 		if (consumeEnderPearl(ist)) {
+			setCooldown(ist, 10);
 			world.spawnEntityInWorld(new EntitySpecialEnderPearl(world, player, false));
 		}
 	}
 
 	private void castArcEnderPearl(ItemStack ist, World world, EntityPlayer player) {
 		if (consumeEnderPearl(ist)) {
+			setCooldown(ist, 10);
 			world.spawnEntityInWorld(new EntitySpecialEnderPearl(world, player, true));
 		}
 	}
