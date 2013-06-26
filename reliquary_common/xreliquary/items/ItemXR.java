@@ -66,12 +66,12 @@ public class ItemXR extends Item {
 	}
 
 	protected void decrementCooldown(ItemStack ist) {
-		if (isOnCooldown(ist)) return;
+		if (!isOnCooldown(ist)) return;
 		setCooldown(ist, getCooldown(ist) - 1);
 	}
 
 	protected void setCooldown(ItemStack ist, int i) {
-		setShort("cooldown", ist, i);
+		setShort("cooldown", ist, (short)i);
 	}
 
 	protected int getCooldown(ItemStack ist) {

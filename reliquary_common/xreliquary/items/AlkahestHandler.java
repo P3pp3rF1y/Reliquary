@@ -23,7 +23,6 @@ public class AlkahestHandler implements ICraftingHandler {
 			}
 			int id = craftMatrix.getStackInSlot(slot).itemID;
 			int value = AlkahestMap.getMappingValue(id);
-			System.out.println("Slot " + slot + " contains an item worth " + value);
 			totalPoints += value;
 			while (craftMatrix.getStackInSlot(slot).stackSize > 1) {
 				totalPoints += value;
