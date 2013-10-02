@@ -2,7 +2,6 @@ package xreliquary.lib;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.resources.ResourceLocation;
 
 public class Reference {
     // class for all the mod related constants

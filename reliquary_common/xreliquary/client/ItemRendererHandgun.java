@@ -42,7 +42,7 @@ public class ItemRendererHandgun implements IItemRenderer {
         case EQUIPPED: {
             GL11.glPushMatrix();
 
-            Minecraft.getMinecraft().renderEngine.func_110577_a(ClientReference.HANDGUN_TEXTURE);
+            Minecraft.getMinecraft().renderEngine.bindTexture(ClientReference.HANDGUN_TEXTURE);
 
             GL11.glRotatef(0F, 1.0F, 0.0F, 0.0F);
             GL11.glRotatef(176F, 0.0F, 1.0F, 0.0F);
