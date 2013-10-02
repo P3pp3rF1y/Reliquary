@@ -4,12 +4,12 @@
   "name": "Xeno's Reliquary",
   "description": "Two words: magical swag. Oh, and a gun.",
   "version": "1.0.6b",
-  "url": "http://www.minecraftforum.net/topic/1596973-",
   "updateUrl": "",
   "logoFile": "/mods/xreliquary/textures/logo/xrlogo.png",
-  "mcversion": "1.5.x",
+  "mcversion": "1.6.4",
   "authorList": [
   "x3n0ph0b3"
+  "TheMike"
   ],
   "credits": "",
   "screenshots": [

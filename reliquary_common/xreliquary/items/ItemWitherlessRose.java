@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import java.util.List;
 import java.util.Random;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -14,49 +15,54 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemWitherlessRose extends ItemXR {
-	protected ItemWitherlessRose(int par1) {
-		super(par1);
-		this.setMaxDamage(0);
-		this.setMaxStackSize(1);
-		canRepair = false;
-		this.setCreativeTab(Reliquary.tabsXR);
-		this.setUnlocalizedName(Names.WITHERLESS_ROSE_NAME);
-	}
 
-	@Override
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-		par3List.add("With the Nether Stars enchanting this rose");
-		par3List.add("the holder is protected from Withering.");
-	}
+    protected ItemWitherlessRose(int par1) {
+        super(par1);
+        this.setMaxDamage(0);
+        this.setMaxStackSize(1);
+        canRepair = false;
+        this.setCreativeTab(Reliquary.tabsXR);
+        this.setUnlocalizedName(Names.WITHERLESS_ROSE_NAME);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public EnumRarity getRarity(ItemStack stack) {
-		return EnumRarity.epic;
-	}
+    @Override
+    public void addInformation(ItemStack par1ItemStack,
+            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+        par3List.add("With the Nether Stars enchanting this rose");
+        par3List.add("the holder is protected from Withering.");
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
-		return true;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public EnumRarity getRarity(ItemStack stack) {
+        return EnumRarity.epic;
+    }
 
-	@Override
-	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
-		EntityPlayer player = null;
-		if (!(e instanceof EntityPlayer)) return;
-		player = (EntityPlayer)e;
-		if (player.isPotionActive(Potion.wither.id)) {
-			player.removePotionEffect(Potion.wither.id);
-			for (int particles = 0; particles < 10; particles++) {
-				double gauss1 = gaussian(world.rand);
-				double gauss2 = gaussian(world.rand);
-				world.spawnParticle("mobSpell", player.posX + gauss1, player.posY + player.height / 2, player.posZ + gauss2, 0.0, 0.0, 1.0);
-			}
-		}
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean hasEffect(ItemStack stack) {
+        return true;
+    }
 
-	public double gaussian(Random rand) {
-		return rand.nextGaussian() / 6;
-	}
+    @Override
+    public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
+        EntityPlayer player = null;
+        if (!(e instanceof EntityPlayer))
+            return;
+        player = (EntityPlayer) e;
+        if (player.isPotionActive(Potion.wither.id)) {
+            player.removePotionEffect(Potion.wither.id);
+            for (int particles = 0; particles < 10; particles++) {
+                double gauss1 = gaussian(world.rand);
+                double gauss2 = gaussian(world.rand);
+                world.spawnParticle("mobSpell", player.posX + gauss1,
+                        player.posY + player.height / 2, player.posZ + gauss2,
+                        0.0, 0.0, 1.0);
+            }
+        }
+    }
+
+    public double gaussian(Random rand) {
+        return rand.nextGaussian() / 6;
+    }
 }

@@ -2,6 +2,7 @@ package xreliquary.client;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -20,7 +21,6 @@ public class RenderThrown extends Render {
 		GL11.glTranslatef((float)par2, (float)par4, (float)par6);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		GL11.glScalef(0.5F, 0.5F, 0.5F);
-		this.loadTexture(Reference.ART_PATH_ENTITIES + Reference.THROWN_ITEM_SPRITES);
 		Tessellator var10 = Tessellator.instance;
 		float var3 = (itemIconIndex % 16 * 16 + 0) / 256.0F;
 		float var4 = (itemIconIndex % 16 * 16 + 16) / 256.0F;
@@ -40,5 +40,10 @@ public class RenderThrown extends Render {
 		var10.draw();
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		GL11.glPopMatrix();
+	}
+
+	@Override
+	protected ResourceLocation func_110775_a(Entity entity) {
+		return new ResourceLocation(Reference.MOD_ID, Reference.ART_PATH_ENTITIES + Reference.THROWN_ITEM_SPRITES);
 	}
 }

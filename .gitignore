@@ -1,0 +1,13 @@
+*.class
+*.DS_Store
+.DS_STORE
+# Package Files #
+*.war
+*.ear
+/build
+/.gradle
+/minecraft
+*.iml
+*.ipr
+.idea
+out/
