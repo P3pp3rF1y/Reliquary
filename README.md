@@ -1,4 +1,4 @@
-Reliquary (1.6.2)
+Reliquary (1.6.4)
 =========
 
 XReliquary (Minecraft Mod) source code.
