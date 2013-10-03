@@ -10,6 +10,8 @@ Versioning
 
 The mod currently is at v1.6.4-1.0. This is a direct port of Xeno's original commit to 1.6.4. I'll be adding stuff from later commits where I see fit, and will also being adding new features under a eventual v2.0 milestone. Version numbers are independent of MC versions, and MC versions are included solely as a convenience. 
 
+Also, check issues for my version-to-version progress and roadmap leading to 2.0.
+
 Licence
 =========
 
