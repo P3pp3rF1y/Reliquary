@@ -1,13 +1,18 @@
-Reliquary (1.6.4)
+Reliquary
 =========
 
-XReliquary (Minecraft Mod) source code.
+The source code of Reliquary! That mod, with the magical swag, and a weapon, and stuff.
 
-My packages are structured in virtually the exact same way as Pahimar outlines in his glorious Let's Mod series (which you should watch if you are new to modding, as they are awesome.)
+This mod has no affiliation with x3n0's original mod (pending response). So, I've decided to maintain the mod as a seprate entity from Xeno's Reliquary until I get permission to continue the offical mod, or I'll stop when Xeno comes back from hiatus and picks up developement again. But until then, I'll update the mod and add new features and such.
 
-To get started working on the source, you will need to set up an eclipse workspace and point to these directories manually, using linked resource folders. (That's how we did it anyway.)
-You can pretty much follow his directions to the letter, as I've used his structure as my preferred model of development for the mod.
+Versioning
+=========
 
-Note from TheMike: Hello everyone! This is forked from a slightly older commit of XReliquary (where everything was still implemented in it's current state), and I've updated it to 1.6.4 for my own use, but I'll let everyone enjoy it. I'll have a build up soon!
+The mod currently is at v1.6.4-1.0. This is a direct port of Xeno's original commit to 1.6.4. I'll be adding stuff from later commits where I see fit, and will also being adding new features under a eventual v2.0 milestone. Version numbers are independent of MC versions, and MC versions are included solely as a convenience. 
 
-( Ohh, I also made the Holy Hand Grenade give off particle effects. :) )
+Licence
+=========
+
+The licence is located at COPYING.txt, but to save you the trouble, it's GPLv3. 
+
+Basically, do whatever you want, as long as it's free, open source, and stays under GPL. (Yes, that allows you to use it in your modpack.)
