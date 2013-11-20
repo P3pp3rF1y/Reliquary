@@ -3,21 +3,20 @@ package xreliquary;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import xreliquary.blocks.XRBlocks;
 import xreliquary.common.CommonProxy;
 import xreliquary.items.AlkahestMap;
-import xreliquary.items.ItemCondensedPotion;
 import xreliquary.items.XRAlkahestry;
 import xreliquary.items.XRItems;
 import xreliquary.lib.Reference;
 import xreliquary.util.LogHelper;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
-import cpw.mods.fml.common.Mod.ServerStarting;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -61,7 +60,7 @@ public class Reliquary {
 
         AlkahestMap.init();
 
-        ItemCondensedPotion.registerLiquidContainer();
+        FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), new ItemStack(XRItems.condensedPotion), XRItems.potion(Reference.WATER_META));
         
         XRBlocks.init();
     }
