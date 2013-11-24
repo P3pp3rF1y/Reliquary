@@ -11,3 +11,5 @@
 *.ipr
 .idea
 out/
+/bin
+/Releases

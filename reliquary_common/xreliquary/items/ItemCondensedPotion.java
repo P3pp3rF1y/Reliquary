@@ -22,6 +22,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import xreliquary.Reliquary;
+import xreliquary.items.XRItems;
 import xreliquary.common.TimeKeeperHandler;
 import xreliquary.entities.EntityCondensedFertility;
 import xreliquary.entities.EntityCondensedSplashAphrodite;
@@ -55,10 +56,6 @@ public class ItemCondensedPotion extends ItemXR {
         return Reference.EMPTY_VIAL_META;
     }
 
-    public static void registerLiquidContainer() {
-        FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), new ItemStack(XRItems.condensedPotion), new ItemStack(Item.bucketEmpty));
-    }
-    
     public int waterVialMeta() {
         return Reference.WATER_META;
     }
