@@ -40,10 +40,6 @@ public class CommonProxy {
 
     }
 
-    public void registerEvents() {
-
-    }
-
     public void registerSoundHandler() {
         // Nothing here as this is a server side proxy
     }

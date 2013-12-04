@@ -1,15 +1,20 @@
 package xreliquary;
 
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import xreliquary.blocks.XRBlocks;
 import xreliquary.common.CommonProxy;
 import xreliquary.items.AlkahestMap;
+import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.XRAlkahestry;
 import xreliquary.items.XRItems;
 import xreliquary.lib.Reference;
@@ -19,6 +24,9 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
@@ -69,7 +77,7 @@ public class Reliquary {
     public void load(FMLInitializationEvent event) {
         proxy.registerEntityTrackers();
         proxy.registerRenderers();
-        proxy.registerEvents();
+        MinecraftForge.EVENT_BUS.register(this);
         proxy.registerTileEntities();
         LanguageRegistry.instance().addStringLocalization(
                 "itemGroup." + Reference.MOD_ID, "Xeno's Reliquary");
@@ -78,6 +86,16 @@ public class Reliquary {
     @EventHandler
     public void modsLoaded(FMLPostInitializationEvent event) {
         System.out.println("Xeno's Reliquary loaded.");
+    }
+    
+    @EventHandler
+    public void onMessage(IMCEvent event) {
+    	for(IMCMessage message: event.getMessages()) {
+    		if(message.key.equals("DestructionCatalyst")) {
+    			System.out.println("[Reliquary] Added block " + message.getStringValue() + " from " + message.getSender() + " was added to the Destruction Catalyst's registry.");
+    			ItemDestructionCatalyst.ids.add(Integer.valueOf(message.getStringValue()));
+    		}
+    	}
     }
 
     public static void customBusterExplosion(Entity par1Entity,

@@ -1,0 +1,31 @@
+import com.github.abrarsyed.gmcp.GMCP
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.github.abrarsyed.gmcp:GMCP:latest.integration'
+    }
+}
+
+apply plugin: "gmcp"
+
+minecraft { minecraftVersion = "1.6.4" }
+group = 'xreliquary'
+version = "1.1"
+archivesBaseName = 'Reliquary'
+
+processResources
+{
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*.lang'
+        include '**/*.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.minecraftVersion
+    }
+        
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.lang'
+        exclude '**/*.info'
+    }
+}

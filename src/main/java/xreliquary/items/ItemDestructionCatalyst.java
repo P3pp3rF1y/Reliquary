@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -13,6 +14,8 @@ import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 public class ItemDestructionCatalyst extends ItemXR {
+	
+	public static List<Integer> ids = new ArrayList<Integer>();
 
     protected ItemDestructionCatalyst(int par1) {
         super(par1);
@@ -85,8 +88,8 @@ public class ItemDestructionCatalyst extends ItemXR {
                 || id == Block.cobblestone.blockID || id == Block.stone.blockID
                 || id == Block.sand.blockID || id == Block.sandStone.blockID
                 || id == Block.snow.blockID || id == Block.slowSand.blockID
-                || id == Block.netherrack.blockID
-                || id == Block.whiteStone.blockID;
+                || id == Block.netherrack.blockID || id == Block.whiteStone.blockID
+                || ids.contains(id);
     }
 
     public boolean consumeGunpowder(EntityPlayer player) {

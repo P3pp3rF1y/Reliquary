@@ -9,7 +9,7 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.common.FMLLog;
 
 public class Config {
-
+	
     // items
     public static int handgunID;
     public static int magazineID;
@@ -43,6 +43,7 @@ public class Config {
     public static int lilypadID;
 
     // options
+	public static int chaliceMultiplier;
     public static boolean disableCoinAudio;
 
     public static void init(File configFile) {
@@ -132,8 +133,8 @@ public class Config {
                     .getInt(Indexes.LILYPAD_DEFAULT_ID);
 
             // miscellaneous options
-            disableCoinAudio = config.get("Misc_Options", "disableCoinAudio",
-                    false).getBoolean(Reference.DISABLE_COIN_AUDIO_DEFAULT);
+            disableCoinAudio = config.get("Misc_Options", "disableCoinAudio", false).getBoolean(Reference.DISABLE_COIN_AUDIO_DEFAULT);
+            chaliceMultiplier = config.get("Chalice_Amount_Multiplier", "chaliceMultiplier", 1).getInt(1);
         } catch (Exception e) {
             FMLLog.log(Level.SEVERE, e, Reference.MOD_NAME
                     + " had a problem while loading its configuration.");

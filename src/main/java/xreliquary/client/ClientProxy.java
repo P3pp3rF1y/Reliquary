@@ -2,6 +2,7 @@ package xreliquary.client;
 
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.item.Item;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import xreliquary.Config;
 import xreliquary.client.audio.SoundHandler;
@@ -28,6 +29,7 @@ import xreliquary.entities.EntitySandShot;
 import xreliquary.entities.EntitySeekerShot;
 import xreliquary.entities.EntitySpecialSnowball;
 import xreliquary.entities.EntityStormShot;
+import xreliquary.items.XRItems;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
@@ -102,8 +104,7 @@ public class ClientProxy extends CommonProxy {
                         Reference.SPLASH_POTION_SPRITE
                                 + Reference.FERTILIZER_META));
 
-        // MinecraftForgeClient.registerItemRenderer(XRItems.handgun.itemID,
-        // new ItemRendererHandgun());
+        MinecraftForgeClient.registerItemRenderer(XRItems.handgun.itemID, new ItemRendererHandgun());
     }
 
     @Override

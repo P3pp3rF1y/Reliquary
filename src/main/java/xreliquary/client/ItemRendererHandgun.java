@@ -22,12 +22,9 @@ public class ItemRendererHandgun implements IItemRenderer {
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        switch (type) {
-        case EQUIPPED:
-            return true;
-        default:
-            return false;
-        }
+        if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON) 
+        	return true;
+        return false;
     }
 
     @Override
@@ -38,8 +35,7 @@ public class ItemRendererHandgun implements IItemRenderer {
 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-        switch (type) {
-        case EQUIPPED: {
+        if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON) {
             GL11.glPushMatrix();
 
             Minecraft.getMinecraft().renderEngine.bindTexture(ClientReference.HANDGUN_TEXTURE);
@@ -53,13 +49,9 @@ public class ItemRendererHandgun implements IItemRenderer {
             float scale = 0.5F;
             GL11.glScalef(scale, scale, scale);
 
-            handgunModel.render((Entity) data[1], 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-                    0.0625F);
+            handgunModel.render((Entity) data[1], 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
 
             GL11.glPopMatrix();
-        }
-        default:
-            break;
         }
 
     }

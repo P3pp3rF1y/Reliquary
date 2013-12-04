@@ -13,6 +13,7 @@ import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import xreliquary.Config;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -98,12 +99,13 @@ public class ItemEmperorChalice extends ItemXR {
         return true;
     }
 
-    public ItemStack onFoodEaten(ItemStack ist, World world, EntityPlayer player) {
+    @Override
+    public ItemStack onEaten(ItemStack ist, World world, EntityPlayer player) {
         if (world.isRemote)
             return ist;
 
-        player.getFoodStats().addStats(1, 0.5F);
-        player.attackEntityFrom(DamageSource.drown, 1);
+        player.getFoodStats().addStats(1, (float) (Config.chaliceMultiplier / 2));
+        player.attackEntityFrom(DamageSource.drown, Config.chaliceMultiplier);
         return new ItemStack(this, 1, 0);
     }
 
