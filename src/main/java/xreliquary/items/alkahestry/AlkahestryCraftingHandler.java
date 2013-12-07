@@ -1,6 +1,7 @@
 package xreliquary.items.alkahestry;
 
 import xreliquary.items.XRItems;
+import xreliquary.util.AlkahestDictionaryRecipe;
 import xreliquary.util.AlkahestRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
@@ -8,15 +9,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.ICraftingHandler;
 
 public class AlkahestryCraftingHandler implements ICraftingHandler {
 
 	@Override
 	public void onCrafting(EntityPlayer player, ItemStack item, IInventory inv) {
+		boolean isCharging = false;
 		int tomb = 9;
 		AlkahestRecipe recipe = null;
-		boolean isCharging = false;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(stack != null) {
@@ -27,6 +29,8 @@ public class AlkahestryCraftingHandler implements ICraftingHandler {
 				} else {
 					if(AlkahestryRegistry.getRegistry().containsKey(stack.itemID)) {
 						recipe = AlkahestryRegistry.getRegistry().get(stack.itemID);
+					} else if(AlkahestryRegistry.getDictionaryKey(stack) != null) {
+						recipe = AlkahestryRegistry.getDictionaryKey(stack);
 					}
 				}
 			}
@@ -37,7 +41,6 @@ public class AlkahestryCraftingHandler implements ICraftingHandler {
 			ItemStack temp = inv.getStackInSlot(tomb);
 			temp.setItemDamage(temp.getItemDamage() + recipe.cost);
 			inv.setInventorySlotContents(tomb, temp);
-			System.out.println("NOOOOOO" + String.valueOf(inv.getStackInSlot(tomb).getItemDamage()));
 		}
 	}
 

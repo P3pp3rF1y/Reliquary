@@ -15,7 +15,7 @@ public class AlkahestryRecipe implements IRecipe {
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) {
 		ItemStack tomb = null;
-		int itemID = 0;
+		ItemStack itemStack = null;
 		boolean isCharging = false;
 		int valid = 0;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
@@ -26,7 +26,7 @@ public class AlkahestryRecipe implements IRecipe {
 				} else if (stack.itemID != XRItems.alkahestryTome.itemID && stack.itemID != Block.blockRedstone.blockID) {
 					if(valid == 0) {
 						valid = 1;
-						itemID = stack.itemID;
+						itemStack = stack;
 					} else {
 						valid = 2;
 					}
@@ -35,13 +35,18 @@ public class AlkahestryRecipe implements IRecipe {
 				}
 			}
 		}
-		if(tomb != null && valid == 1 && !isCharging && AlkahestryRegistry.getRegistry().containsKey(itemID)) {
-			AlkahestRecipe recipe = AlkahestryRegistry.getRegistry().get(itemID);
+		if(tomb != null && valid == 1 && !isCharging && itemStack != null) {
+			AlkahestRecipe recipe = null;
+			if(AlkahestryRegistry.getRegistry().containsKey(itemStack.itemID)) 
+				recipe = AlkahestryRegistry.getRegistry().get(itemStack.itemID);
+			else if(AlkahestryRegistry.getDictionaryKey(itemStack) != null)
+				recipe = AlkahestryRegistry.getDictionaryKey(itemStack);
 			if(tomb.getItemDamage() + recipe.cost <= Config.tombRedstoneLimit) {
 				return true;
 			} else {
 				return false;
 			}
+			
 		} else {
 			return false;
 		}
@@ -49,16 +54,26 @@ public class AlkahestryRecipe implements IRecipe {
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv) {
-		AlkahestRecipe returned = null;
+		AlkahestRecipe returned = null; 
+		ItemStack dictStack = null;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(stack != null) {
-				if(stack.itemID != XRItems.alkahestryTome.itemID && AlkahestryRegistry.getRegistry().containsKey(stack.itemID)) {
-					returned = AlkahestryRegistry.getRegistry().get(stack.itemID);
+				if(stack.itemID != XRItems.alkahestryTome.itemID) {
+					if(AlkahestryRegistry.getRegistry().containsKey(stack.itemID))
+						returned = AlkahestryRegistry.getRegistry().get(stack.itemID);
+					else if(AlkahestryRegistry.getDictionaryKey(stack) != null) {
+						returned = AlkahestryRegistry.getDictionaryKey(stack);
+						dictStack = stack;
+					}
 				}
 			}
 		}
-		return new ItemStack(returned.item.getItem(), returned.yield + 1, returned.item.getItemDamage());
+		
+		if(dictStack == null)
+			return new ItemStack(returned.item.getItem(), returned.yield + 1, returned.item.getItemDamage());
+		else
+			return new ItemStack(dictStack.getItem(), returned.yield + 1, dictStack.getItemDamage());
 	}
 
 	@Override

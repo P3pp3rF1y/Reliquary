@@ -6,6 +6,7 @@ import java.util.Map;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import xreliquary.items.XRItems;
@@ -15,9 +16,24 @@ import xreliquary.util.AlkahestRecipe;
 public class AlkahestryRegistry {
 	
 	private static Map<Integer, AlkahestRecipe> registry = new HashMap<Integer, AlkahestRecipe>();
+	private static Map<String, AlkahestDictionaryRecipe> dictRegistry = new HashMap<String, AlkahestDictionaryRecipe>();
 	
 	public static void addKey(AlkahestRecipe recipe) {
 		registry.put(recipe.item.itemID, recipe);
+	}
+	
+	public static void addDictionaryKey(AlkahestDictionaryRecipe recipe) {
+		dictRegistry.put(recipe.dictionaryName, recipe);
+	}
+	
+	public static AlkahestDictionaryRecipe getDictionaryKey(ItemStack stack) {
+		for(AlkahestDictionaryRecipe recipe : dictRegistry.values()) {
+			for(ItemStack dict : OreDictionary.getOres(recipe.dictionaryName)) {
+				if(OreDictionary.itemMatches(dict, stack, false))
+					return recipe;
+			}
+		}
+		return null;
 	}
 	
 	public static void init() {
@@ -44,7 +60,10 @@ public class AlkahestryRegistry {
         addKey(new AlkahestRecipe(new ItemStack(Item.ingotGold), 1, AlkahestRecipe.HIGH_TIER));
         addKey(new AlkahestRecipe(new ItemStack(Item.ingotIron), 1, AlkahestRecipe.HIGH_TIER));
         addKey(new AlkahestRecipe(new ItemStack(Item.emerald), 1, AlkahestRecipe.HIGH_TIER));
-
+        addDictionaryKey(new AlkahestDictionaryRecipe("ingotTin", 1, AlkahestRecipe.HIGH_TIER));
+        addDictionaryKey(new AlkahestDictionaryRecipe("ingotSilver", 1, AlkahestRecipe.HIGH_TIER));
+        addDictionaryKey(new AlkahestDictionaryRecipe("ingotCopper", 1, AlkahestRecipe.HIGH_TIER));
+        addDictionaryKey(new AlkahestDictionaryRecipe("ingotSteel", 1, AlkahestRecipe.HIGH_TIER));
         
         addKey(new AlkahestRecipe(new ItemStack(Item.diamond), 1, AlkahestRecipe.UBER_TIER));
 
