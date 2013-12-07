@@ -23,6 +23,7 @@ import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.XRItems;
 import xreliquary.items.alkahestry.AlkahestryRegistry;
 import xreliquary.lib.Reference;
+import xreliquary.util.AlkahestDictionaryRecipe;
 import xreliquary.util.AlkahestRecipe;
 import xreliquary.util.LogHelper;
 import cpw.mods.fml.common.Mod;
@@ -104,6 +105,14 @@ public class Reliquary {
     				LogHelper.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + String.valueOf(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).itemID) + " from " + message.getSender() + " to registry.");
     			} else {
     				LogHelper.log(Level.WARNING, "[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occuring.");
+    			}
+    		} else if(message.key.equals("AlkahestDictionary")) {
+    			NBTTagCompound tag = message.getNBTValue();
+    			if(tag != null && tag.hasKey("dictionaryName") && tag.hasKey("yield") && tag.hasKey("cost")) {
+    				AlkahestryRegistry.addDictionaryKey(new AlkahestDictionaryRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
+    				LogHelper.log(Level.INFO, "[IMC] Added AlkahestDictionaryRecipe ID: " + String.valueOf(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).itemID) + " from " + message.getSender() + " to registry.");
+    			} else {
+    				LogHelper.log(Level.WARNING, "[IMC] Invalid AlkahestDictionaryRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occuring.");
     			}
     		}
     	}
