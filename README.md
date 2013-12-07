@@ -1,9 +1,9 @@
-Reliquary
+Reliquary II
 =========
 
-The source code of Reliquary! That mod, with the magical swag, and a weapon, and stuff.
+The offical repository of Reliquary II! That mod, with the magical swag, and a weapon, and stuff.
 
-This mod has no affiliation with x3n0's original mod (pending response). So, I've decided to maintain the mod as a seprate entity from Xeno's Reliquary until I get permission to continue the offical mod, or I'll stop when Xeno comes back from hiatus and picks up developement again. But until then, I'll update the mod and add new features and such.
+Originally made by x3n0ph0b3, now maintained by TheMike.
 
 Building
 =========
@@ -15,9 +15,7 @@ https://github.com/AbrarSyed/GMCP/wiki/Building-with-GMCP
 Versioning
 =========
 
-The mod started at v1.6.4-1.0. This is a direct port of Xeno's original commit to 1.6.4. I'll be adding stuff from later commits where I see fit, and will also being adding new features under a eventual v2.0 milestone. Version numbers are independent of MC versions, and MC versions are included solely as a convenience. 
-
-Also, check issues for my version-to-version progress and roadmap leading to 2.0.
+I'm eventually heading to a 1.7.x-2.0 release, using 1.6.4-1.0 as a base and building up from there. Versioning and downloads is provided by Github and used client-side by ModStats.
 
 Licence
 =========
