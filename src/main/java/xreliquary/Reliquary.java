@@ -11,6 +11,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -20,8 +21,10 @@ import xreliquary.blocks.XRBlocks;
 import xreliquary.common.CommonProxy;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.XRItems;
+import xreliquary.items.alkahestry.AlkahestryRegistry;
 import xreliquary.items.alkahestry.XRAlkahestry;
 import xreliquary.lib.Reference;
+import xreliquary.util.AlkahestRecipe;
 import xreliquary.util.LogHelper;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -93,8 +96,16 @@ public class Reliquary {
     public void onMessage(IMCEvent event) {
     	for(IMCMessage message: event.getMessages()) {
     		if(message.key.equals("DestructionCatalyst")) {
-    			LogHelper.log(Level.INFO, "Added block " + message.getStringValue() + " from " + message.getSender() + " was added to the Destruction Catalyst's registry.");
+    			LogHelper.log(Level.INFO, "[IMC] Added block " + message.getStringValue() + " from " + message.getSender() + " was added to the Destruction Catalyst's registry.");
     			ItemDestructionCatalyst.ids.add(Integer.valueOf(message.getStringValue()));
+    		} else if(message.key.equals("Alkahest")) {
+    			NBTTagCompound tag = message.getNBTValue();
+    			if(tag != null && ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")) != null && tag.hasKey("yield") && tag.hasKey("cost")) {
+    				AlkahestryRegistry.addKey(new AlkahestRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
+    				LogHelper.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + String.valueOf(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).itemID) + " from " + message.getSender() + " to registry.");
+    			} else {
+    				LogHelper.log(Level.WARNING, "[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occuring.");
+    			}
     		}
     	}
     }

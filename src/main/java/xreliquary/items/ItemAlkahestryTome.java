@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Config;
 import xreliquary.Reliquary;
+import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -35,7 +36,7 @@ public class ItemAlkahestryTome extends ItemXR {
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-    	par3List.add("Redstone: " + String.valueOf((Config.tombRedstoneLimit - stack.getItemDamage())) + "/" + String.valueOf(Config.tombRedstoneLimit));
+    	par3List.add(Colors.applyColor(4) + "Redstone: " + String.valueOf((Config.tombRedstoneLimit - stack.getItemDamage())) + "/" + String.valueOf(Config.tombRedstoneLimit));
         par3List.add("It says: perform basic, intermediate or");
         par3List.add("advanced Alkahestry, whatever that is.");
     }
