@@ -8,7 +8,7 @@ import cpw.mods.fml.common.FMLLog;
 
 public class LogHelper {
 
-    private static Logger xrLogger = Logger.getLogger(Reference.MOD_ID);
+    private static Logger xrLogger = Logger.getLogger(Reference.MOD_NAME);
 
     public static void init() {
 

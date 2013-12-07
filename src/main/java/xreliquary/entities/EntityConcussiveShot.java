@@ -15,7 +15,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import xreliquary.Reliquary;
+import xreliquary.ConcussiveExplosion;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -381,7 +381,7 @@ public class EntityConcussiveShot extends Entity implements IProjectile {
         } else {
             doDamage(4 + d6(), mop);
         }
-        Reliquary.customConcussiveExplosion(this, shootingEntity, posX, posY,
+        ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, posX, posY,
                 posZ, 1.5F, true, true);
         this.setDead();
     }
@@ -403,7 +403,7 @@ public class EntityConcussiveShot extends Entity implements IProjectile {
     }
 
     private void doBurstEffect(int sideHit) {
-        Reliquary.customConcussiveExplosion(this, shootingEntity, posX, posY,
+    	ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, posX, posY,
                 posZ, 1.5F, true, true);
         this.setDead();
     }

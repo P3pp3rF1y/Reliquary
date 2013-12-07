@@ -172,4 +172,27 @@ public class ConcussiveExplosion extends Explosion {
     public Map func_77277_b() {
         return field_77288_k;
     }
+    
+    public static void customBusterExplosion(Entity par1Entity,
+            EntityPlayer player, double par2, double par4, double par6,
+            float par8, boolean par9, boolean par10) {
+        if (par1Entity.worldObj.isRemote)
+            return;
+        par1Entity.worldObj.newExplosion(par1Entity, par2, par4, par6, par8,
+                par9, par10);
+    }
+
+    public static ConcussiveExplosion customConcussiveExplosion(
+            Entity par1Entity, EntityPlayer player, double par2, double par4,
+            double par6, float par8, boolean par9, boolean par10) {
+        ConcussiveExplosion var11 = new ConcussiveExplosion(
+                par1Entity.worldObj, par1Entity, player, par2, par4, par6, par8);
+        var11.isFlaming = par9;
+        var11.isSmoking = par10;
+        var11.doExplosionA();
+        var11.doExplosionB(false);
+
+        return var11;
+    }
+ 
 }

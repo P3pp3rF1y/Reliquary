@@ -2,6 +2,9 @@ package xreliquary;
 
 import java.util.logging.Level;
 
+import org.modstats.ModstatInfo;
+import org.modstats.Modstats;
+
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -35,6 +38,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
+@ModstatInfo(prefix="reliquary")
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class Reliquary {
@@ -72,48 +76,29 @@ public class Reliquary {
 
     @EventHandler
     public void load(FMLInitializationEvent event) {
+    	Modstats.instance().getReporter().registerMod(this);
+    	
         proxy.registerEntityTrackers();
         proxy.registerRenderers();
         MinecraftForge.EVENT_BUS.register(this);
+        
         proxy.registerTileEntities();
-        LanguageRegistry.instance().addStringLocalization(
-                "itemGroup." + Reference.MOD_ID, "Xeno's Reliquary");
+        LanguageRegistry.instance().addStringLocalization("itemGroup." + Reference.MOD_ID, Reference.MOD_NAME);
     }
 
     @EventHandler
     public void modsLoaded(FMLPostInitializationEvent event) {
-        System.out.println("Xeno's Reliquary loaded.");
+        System.out.println(Reference.MOD_NAME + " loaded.");
     }
     
     @EventHandler
     public void onMessage(IMCEvent event) {
     	for(IMCMessage message: event.getMessages()) {
     		if(message.key.equals("DestructionCatalyst")) {
-    			LogHelper.log(Level.INFO, "[Reliquary] Added block " + message.getStringValue() + " from " + message.getSender() + " was added to the Destruction Catalyst's registry.");
+    			LogHelper.log(Level.INFO, "Added block " + message.getStringValue() + " from " + message.getSender() + " was added to the Destruction Catalyst's registry.");
     			ItemDestructionCatalyst.ids.add(Integer.valueOf(message.getStringValue()));
     		}
     	}
     }
 
-    public static void customBusterExplosion(Entity par1Entity,
-            EntityPlayer player, double par2, double par4, double par6,
-            float par8, boolean par9, boolean par10) {
-        if (par1Entity.worldObj.isRemote)
-            return;
-        par1Entity.worldObj.newExplosion(par1Entity, par2, par4, par6, par8,
-                par9, par10);
-    }
-
-    public static ConcussiveExplosion customConcussiveExplosion(
-            Entity par1Entity, EntityPlayer player, double par2, double par4,
-            double par6, float par8, boolean par9, boolean par10) {
-        ConcussiveExplosion var11 = new ConcussiveExplosion(
-                par1Entity.worldObj, par1Entity, player, par2, par4, par6, par8);
-        var11.isFlaming = par9;
-        var11.isSmoking = par10;
-        var11.doExplosionA();
-        var11.doExplosionB(false);
-
-        return var11;
-    }
 }

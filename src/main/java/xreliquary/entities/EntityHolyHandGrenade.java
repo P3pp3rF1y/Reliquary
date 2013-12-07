@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import xreliquary.Reliquary;
+import xreliquary.ConcussiveExplosion;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -72,7 +72,7 @@ public class EntityHolyHandGrenade extends EntityThrowable {
         if (playerThrower == null) {
             this.setDead();
         }
-        Reliquary.customConcussiveExplosion(this, playerThrower, posX, posY,
+        ConcussiveExplosion.customConcussiveExplosion(this, playerThrower, posX, posY,
                 posZ, 4.0F, false, true);
         this.setDead();
 

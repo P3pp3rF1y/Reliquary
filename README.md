@@ -1,7 +1,7 @@
-Reliquary II
+Reliquary
 =========
 
-The offical repository of Reliquary II! That mod, with the magical swag, and a weapon, and stuff.
+The offical repository of Reliquary! That mod, with the magical swag, and a weapon, and stuff.
 
 Originally made by x3n0ph0b3, now maintained by TheMike.
 
