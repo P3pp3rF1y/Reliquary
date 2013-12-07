@@ -46,6 +46,13 @@ public class ItemAlkahestryTome extends ItemXR {
     public EnumRarity getRarity(ItemStack stack) {
         return EnumRarity.epic;
     }
+    
+    @Override
+    public ItemStack getContainerItemStack(ItemStack stack) {
+    	ItemStack copy = stack.copy();
+    	copy.stackSize = 1;
+    	return copy;
+    }
 
     @Override
     @SideOnly(Side.CLIENT)

@@ -1,6 +1,8 @@
 package xreliquary.items.alkahestry;
 
+import xreliquary.Config;
 import xreliquary.items.XRItems;
+import xreliquary.util.AlkahestRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -8,38 +10,34 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
-public class AlkahestryRedstoneRecipe implements IRecipe {
+public class AlkahestryRecipe implements IRecipe {
 
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) {
 		ItemStack tomb = null;
-		boolean isRedstoneBlock = false;
-		int isCharging = 0;
+		int itemID = 0;
+		boolean isCharging = false;
+		int valid = 0;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(stack != null) {
 				if(stack.itemID == XRItems.alkahestryTome.itemID) {
 					tomb = stack.copy();
-				} else if(stack.itemID == Item.redstone.itemID) {
-					if(isCharging == 0) {
-						isCharging = 1;
+				} else if (stack.itemID != XRItems.alkahestryTome.itemID && stack.itemID != Block.blockRedstone.blockID) {
+					if(valid == 0) {
+						valid = 1;
+						itemID = stack.itemID;
 					} else {
-						isCharging = 2;
+						valid = 2;
 					}
-				} else if(stack.itemID == Block.blockRedstone.blockID) {
-					if(isCharging == 0) {
-						isCharging = 1;
-						isRedstoneBlock = true; 
-					} else {
-						isCharging = 2;
-					}
+				} else {
+					isCharging = true;
 				}
 			}
 		}
-		if(tomb != null && isCharging == 1 && tomb.getItemDamage() != 0) {
-			if(!isRedstoneBlock) {
-				return true;
-			} else if(isRedstoneBlock && tomb.getItemDamage() >= 8) {
+		if(tomb != null && valid == 1 && !isCharging && AlkahestryRegistry.getRegistry().containsKey(itemID)) {
+			AlkahestRecipe recipe = AlkahestryRegistry.getRegistry().get(itemID);
+			if(tomb.getItemDamage() + recipe.cost <= Config.tombRedstoneLimit) {
 				return true;
 			} else {
 				return false;
@@ -51,24 +49,16 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv) {
-		ItemStack tomb = null;
-		boolean isRedstoneBlock = false;
+		AlkahestRecipe returned = null;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(stack != null) {
-				if(stack.itemID == XRItems.alkahestryTome.itemID) {
-					tomb = stack.copy();
-				} else if(stack.itemID == Block.blockRedstone.blockID) {
-					isRedstoneBlock = true;
+				if(stack.itemID != XRItems.alkahestryTome.itemID && AlkahestryRegistry.getRegistry().containsKey(stack.itemID)) {
+					returned = AlkahestryRegistry.getRegistry().get(stack.itemID);
 				}
 			}
 		}
-		
-		if(isRedstoneBlock)
-			tomb.setItemDamage(tomb.getItemDamage() - 9);
-		else 
-			tomb.setItemDamage(tomb.getItemDamage() - 1);
-		return tomb;
+		return new ItemStack(returned.item.getItem(), returned.yield + 1, returned.item.getItemDamage());
 	}
 
 	@Override

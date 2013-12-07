@@ -22,7 +22,6 @@ import xreliquary.common.CommonProxy;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.XRItems;
 import xreliquary.items.alkahestry.AlkahestryRegistry;
-import xreliquary.items.alkahestry.XRAlkahestry;
 import xreliquary.lib.Reference;
 import xreliquary.util.AlkahestRecipe;
 import xreliquary.util.LogHelper;
@@ -68,7 +67,7 @@ public class Reliquary {
         proxy.registerTickHandlers();
 
         XRItems.init();
-        XRAlkahestry.init();
+        AlkahestryRegistry.init();
 
         FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), new ItemStack(XRItems.condensedPotion), XRItems.potion(Reference.WATER_META));
         
