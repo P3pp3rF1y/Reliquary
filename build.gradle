@@ -13,7 +13,7 @@ apply plugin: "gmcp"
 
 minecraft { minecraftVersion = "1.6.4" }
 group = 'xreliquary'
-version = “1.6.4-1.1”
+version = "1.6.4-1.1"
 archivesBaseName = 'Reliquary'
 
 processResources

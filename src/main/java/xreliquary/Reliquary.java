@@ -1,5 +1,7 @@
 package xreliquary;
 
+import java.util.logging.Level;
+
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -36,36 +38,31 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class Reliquary {
+	
     @Instance(Reference.MOD_ID)
     public static Reliquary instance;
 
     @SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
     public static CommonProxy proxy;
 
-    public static CreativeTabs tabsXR = new CreativeTabXR(
-            CreativeTabs.getNextID(), Reference.MOD_ID);
+    public static CreativeTabs tabsXR = new CreativeTabXR(CreativeTabs.getNextID(), Reference.MOD_ID);
 
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-
         // Initialize the custom commands
     }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        // Initialize the log helper
+    	
         LogHelper.init();
-
         Config.init(event.getSuggestedConfigurationFile());
 
         proxy.registerSoundHandler();
-
         proxy.registerTickHandlers();
 
         XRItems.init();
-
         XRAlkahestry.init();
-
         AlkahestMap.init();
 
         FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), new ItemStack(XRItems.condensedPotion), XRItems.potion(Reference.WATER_META));
@@ -92,7 +89,7 @@ public class Reliquary {
     public void onMessage(IMCEvent event) {
     	for(IMCMessage message: event.getMessages()) {
     		if(message.key.equals("DestructionCatalyst")) {
-    			System.out.println("[Reliquary] Added block " + message.getStringValue() + " from " + message.getSender() + " was added to the Destruction Catalyst's registry.");
+    			LogHelper.log(Level.INFO, "[Reliquary] Added block " + message.getStringValue() + " from " + message.getSender() + " was added to the Destruction Catalyst's registry.");
     			ItemDestructionCatalyst.ids.add(Integer.valueOf(message.getStringValue()));
     		}
     	}

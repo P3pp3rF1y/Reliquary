@@ -49,50 +49,29 @@ public class CommonProxy {
     }
 
     public void registerEntityTrackers() {
-        EntityRegistry.registerModEntity(EntityHolyHandGrenade.class,
-                "entityHGrenade", 0, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityGlowingWater.class,
-                "enityHolyWater", 1, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntitySpecialSnowball.class,
-                "entitySpecialSnowball", 2, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityNeutralShot.class,
-                "entityNeutralShot", 3, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityExorcismShot.class,
-                "entityExorcismShot", 4, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityBlazeShot.class,
-                "entityBlazeShot", 5, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityEnderShot.class,
-                "entityEnderShot", 6, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityConcussiveShot.class,
-                "entityConcussiveShot", 7, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityBusterShot.class,
-                "entityBusterShot", 8, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntitySeekerShot.class,
-                "entitySeekerShot", 9, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntitySandShot.class,
-                "entitySandShot", 10, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityStormShot.class,
-                "entityStormShot", 11, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityCondensedSplashAphrodite.class,
-                "entitySplashAphrodite", 12, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityCondensedSplashBlindness.class,
-                "entitySplashBlindness", 13, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityCondensedSplashConfusion.class,
-                "entitySplashConfusion", 14, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityCondensedSplashHarm.class,
-                "entitySplashHarm", 15, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityCondensedSplashPoison.class,
-                "entitySplashPoison", 16, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityCondensedSplashRuin.class,
-                "entitySplashRuin", 17, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityCondensedSplashSlowness.class,
-                "entitySplashSlowness", 18, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityCondensedSplashWeakness.class,
-                "entitySplashWeakness", 19, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityCondensedSplashWither.class,
-                "entitySplashWither", 20, Reliquary.instance, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityCondensedFertility.class,
-                "entitySplashFertility", 21, Reliquary.instance, 128, 5, true);
+    	
+        EntityRegistry.registerModEntity(EntityHolyHandGrenade.class, "entityHGrenade", 0, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityGlowingWater.class, "enityHolyWater", 1, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntitySpecialSnowball.class, "entitySpecialSnowball", 2, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityNeutralShot.class, "entityNeutralShot", 3, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityExorcismShot.class, "entityExorcismShot", 4, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityBlazeShot.class, "entityBlazeShot", 5, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityEnderShot.class, "entityEnderShot", 6, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityConcussiveShot.class, "entityConcussiveShot", 7, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityBusterShot.class, "entityBusterShot", 8, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntitySeekerShot.class, "entitySeekerShot", 9, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntitySandShot.class, "entitySandShot", 10, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityStormShot.class, "entityStormShot", 11, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityCondensedSplashAphrodite.class, "entitySplashAphrodite", 12, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityCondensedSplashBlindness.class, "entitySplashBlindness", 13, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityCondensedSplashConfusion.class, "entitySplashConfusion", 14, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityCondensedSplashHarm.class, "entitySplashHarm", 15, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityCondensedSplashPoison.class, "entitySplashPoison", 16, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityCondensedSplashRuin.class, "entitySplashRuin", 17, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityCondensedSplashSlowness.class, "entitySplashSlowness", 18, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityCondensedSplashWeakness.class, "entitySplashWeakness", 19, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityCondensedSplashWither.class, "entitySplashWither", 20, Reliquary.instance, 128, 5, true);
+        EntityRegistry.registerModEntity(EntityCondensedFertility.class, "entitySplashFertility", 21, Reliquary.instance, 128, 5, true);
     }
 
     public void registerTickHandlers() {

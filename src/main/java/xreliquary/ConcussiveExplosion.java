@@ -16,6 +16,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 public class ConcussiveExplosion extends Explosion {
+	
     /** whether or not the explosion sets fire to blocks around it */
     public boolean isFlaming = false;
     public boolean field_82755_b = true;
