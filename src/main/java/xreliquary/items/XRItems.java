@@ -4,6 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.Config;
+import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
+import xreliquary.items.alkahestry.XRAlkahestryCraftingHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -28,7 +30,6 @@ public class XRItems {
     public static Item witherlessRose;
     public static Item holyHandGrenade;
     public static Item destructionCatalyst;
-    public static Item alkahest;
     public static Item alkahestryTome;
     public static Item salamanderEye;
     public static Item wraithEye;
@@ -81,7 +82,6 @@ public class XRItems {
         sojournerStaff = new ItemSojournerStaff(Config.sojournerStaffID);
         alkahestryTome = new ItemAlkahestryTome(Config.alkahestryTomeID);
         midasTouchstone = new ItemMidasTouchstone(Config.midasTouchstoneID);
-        alkahest = new ItemAlkahest(Config.alkahestID);
         emperorChalice = new ItemEmperorChalice(Config.chaliceID);
         salamanderEye = new ItemSalamanderEye(Config.salamanderEyeID);
         iceRod = new ItemIceRod(Config.iceRodID);
@@ -167,7 +167,6 @@ public class XRItems {
         LanguageRegistry.addName(sojournerStaff, Names.TORCH_LOCAL);
         LanguageRegistry.addName(alkahestryTome, Names.TOME_LOCAL);
         LanguageRegistry.addName(midasTouchstone, Names.TOUCHSTONE_LOCAL);
-        LanguageRegistry.addName(alkahest, Names.ALKAHEST_LOCAL);
         LanguageRegistry.addName(emperorChalice, Names.CHALICE_LOCAL);
         LanguageRegistry.addName(salamanderEye, Names.SALAMANDER_EYE_LOCAL);
         LanguageRegistry.addName(iceRod, Names.ICE_ROD_LOCAL);
@@ -323,12 +322,17 @@ public class XRItems {
                 'm', gunPart(1, 2), 'g', gunPart(1, 0), 's', Item.slimeBall });
 
         // tome
-        GameRegistry.addShapelessRecipe(new ItemStack(alkahestryTome, 1, 0),
+        ItemStack tombStack = new ItemStack(alkahestryTome, 1, 0);
+        tombStack.setItemDamage(Config.tombRedstoneLimit);
+        GameRegistry.addShapelessRecipe(tombStack,
                 new Object[] { Item.book, Item.blazeRod, Item.magmaCream,
                         Item.ingotGold, Block.glowStone, Item.netherStalkSeeds,
                         new ItemStack(Item.skull, 1, 1), Item.ghastTear,
                         Item.bucketLava });
-
+        
+        GameRegistry.registerCraftingHandler(new XRAlkahestryCraftingHandler());
+        GameRegistry.addRecipe(new AlkahestryRedstoneRecipe());
+        
         // touchstone
         GameRegistry
                 .addRecipe(new ItemStack(midasTouchstone, 1, 0),
@@ -340,11 +344,6 @@ public class XRItems {
         GameRegistry.addRecipe(new ItemStack(emperorChalice, 1, 0),
                 new Object[] { "gtg", "ege", "tgt", 't', Item.ghastTear, 'e',
                         Item.emerald, 'g', Item.ingotGold });
-
-        // alkahest
-        GameRegistry.addShapelessRecipe(new ItemStack(alkahest, 1, 0),
-                new Object[] { XRItems.alkahestryTome, Item.netherStar,
-                        Item.netherStar, Block.dragonEgg });
 
         // salamander's eye
         GameRegistry.addRecipe(new ItemStack(salamanderEye, 1, 0),
@@ -580,7 +579,6 @@ public class XRItems {
                         new ItemStack(Item.dyePowder, 1, 15) });
 
         GameRegistry.registerCraftingHandler(new WaterHandler());
-        GameRegistry.registerCraftingHandler(new AlkahestHandler());
         GameRegistry.registerCraftingHandler(new VoidUpgradableHandler());
 
         // URGENT TODO DEBUG RECIPES NEED TO BE REMOVED EVERY RELEASE!

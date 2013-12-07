@@ -50,8 +50,6 @@ public class Names {
     public static final String BREAD_LOCAL = "Glowing Bread";
     public static final String TOUCHSTONE_NAME = "midasTouchstone";
     public static final String TOUCHSTONE_LOCAL = "Touchstone of Midas";
-    public static final String ALKAHEST_NAME = "alkahest";
-    public static final String ALKAHEST_LOCAL = "Alkahest";
     public static final String CHALICE_NAME = "emperorChalice";
     public static final String CHALICE_OVERLAY_NAME = "emperorChaliceOverlay";
     public static final String CHALICE_LOCAL = "Emperor's Chalice";

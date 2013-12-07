@@ -18,10 +18,9 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import xreliquary.blocks.XRBlocks;
 import xreliquary.common.CommonProxy;
-import xreliquary.items.AlkahestMap;
 import xreliquary.items.ItemDestructionCatalyst;
-import xreliquary.items.XRAlkahestry;
 import xreliquary.items.XRItems;
+import xreliquary.items.alkahestry.XRAlkahestry;
 import xreliquary.lib.Reference;
 import xreliquary.util.LogHelper;
 import cpw.mods.fml.common.Mod;
@@ -67,7 +66,6 @@ public class Reliquary {
 
         XRItems.init();
         XRAlkahestry.init();
-        AlkahestMap.init();
 
         FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), new ItemStack(XRItems.condensedPotion), XRItems.potion(Reference.WATER_META));
         

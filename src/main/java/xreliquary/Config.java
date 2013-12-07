@@ -44,6 +44,7 @@ public class Config {
 
     // options
 	public static int chaliceMultiplier;
+	public static int tombRedstoneLimit;
     public static boolean disableCoinAudio;
 
     public static void init(File configFile) {
@@ -86,7 +87,8 @@ public class Config {
 
             // miscellaneous options
             disableCoinAudio = config.get("Misc_Options", "disableCoinAudio", false).getBoolean(Reference.DISABLE_COIN_AUDIO_DEFAULT);
-            chaliceMultiplier = config.get("Chalice_Amount_Multiplier", "chaliceMultiplier", 1).getInt(1);
+            chaliceMultiplier = config.get("Misc_Options", "chaliceMultiplier", 1).getInt(1);
+            tombRedstoneLimit = config.get("Misc_Options", "tombRedstoneLimit", 256).getInt(256);
         } catch (Exception e) {
             FMLLog.log(Level.SEVERE, e, Reference.MOD_NAME
                     + " had a problem while loading its configuration.");
