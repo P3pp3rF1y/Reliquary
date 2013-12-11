@@ -16,6 +16,13 @@ group = 'xreliquary'
 version = "1.6.4-1.1"
 archivesBaseName = 'Reliquary'
 
+/*
+compileJava { 
+    options.fork = true 
+    options.forkOptions.executable = "/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/bin/javac" 
+}
+*/
+
 processResources
 {
     from(sourceSets.main.resources.srcDirs) {

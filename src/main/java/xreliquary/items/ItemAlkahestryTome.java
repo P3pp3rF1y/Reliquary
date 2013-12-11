@@ -8,6 +8,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import xreliquary.Config;
 import xreliquary.Reliquary;
@@ -36,7 +37,7 @@ public class ItemAlkahestryTome extends ItemXR {
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-    	par3List.add(Colors.applyColor(4) + "Redstone: " + String.valueOf((Config.tombRedstoneLimit - stack.getItemDamage())) + "/" + String.valueOf(Config.tombRedstoneLimit));
+    	par3List.add(EnumChatFormatting.RED + "Redstone: " + String.valueOf((Config.tombRedstoneLimit - stack.getItemDamage())) + "/" + String.valueOf(Config.tombRedstoneLimit));
         par3List.add("It says: perform basic, intermediate or");
         par3List.add("advanced Alkahestry, whatever that is.");
     }

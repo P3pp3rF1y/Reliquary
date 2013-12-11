@@ -46,14 +46,5 @@ public class Colors {
     public static final String BLINDING_COLOR = "333333";
     public static final String RUINATION_COLOR = "676720";
     public static final String FERTILIZER_COLOR = "DDDDDD";
-    
-    /**
- 	* Takes the color ID and returns a Minecraft-compatible color code for use with the rendering engine.
- 	* @reference: http://minecraft.gamepedia.com/Formatting_codes#Color_codes
- 	* @author Vswe
- 	*/
-    public static String applyColor(int ID) {
-    	return "\u00a7" + Integer.toHexString(ID);
-    }
-
+   
 }

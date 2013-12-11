@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
@@ -125,8 +126,9 @@ public class ItemWraithEye extends ItemSalamanderEye {
     public void addInformation(ItemStack eye, EntityPlayer par2EntityPlayer,
             List par3List, boolean par4) {
         par3List.add("Right clicking a Wraith Node binds to it");
-        par3List.add("allowing you to return to it at will.");
-        String details = "Currently bound to ";
+        par3List.add("allowing you to return to it at will,");
+        par3List.add("for the cost of an Ender Pearl.");
+        String details = EnumChatFormatting.DARK_PURPLE + "Currently bound to ";
         if (par2EntityPlayer.worldObj.getBlockId(getShort("nodeX" + getWorld(par2EntityPlayer), eye),
                 getShort("nodeY" + getWorld(par2EntityPlayer), eye), getShort("nodeZ" + getWorld(par2EntityPlayer), eye)) != XRBlocks.wraithNode.blockID) {
             details += "nowhere.";
