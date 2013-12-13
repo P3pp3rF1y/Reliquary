@@ -66,7 +66,7 @@ public class Reliquary {
         XRItems.init();
         XRAlkahestry.init();
 
-        FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), new ItemStack(XRItems.condensedPotion), XRItems.potion(Reference.WATER_META));
+        FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), XRItems.potion(Reference.WATER_META), XRItems.potion(Reference.WATER_META));
         
         XRBlocks.init();
     }

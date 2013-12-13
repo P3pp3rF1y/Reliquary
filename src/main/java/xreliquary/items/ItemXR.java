@@ -33,6 +33,14 @@ public class ItemXR extends Item {
         NBTTagCompound tagCompound = ist.getTagCompound();
         tagCompound.setShort(s, (short) i);
     }
+    
+    public void setInteger(String s, ItemStack ist, int i) {
+        if (ist.getTagCompound() == null) {
+            ist.setTagCompound(new NBTTagCompound());
+        }
+        NBTTagCompound tagCompound = ist.getTagCompound();
+        tagCompound.setInteger(s, (int) i);
+    }
 
     public boolean getBoolean(String s, ItemStack ist) {
         if (ist.getTagCompound() == null) {
