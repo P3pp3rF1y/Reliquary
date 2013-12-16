@@ -212,7 +212,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
             	if(base.getName().contains("nodeX")) {
             		dummy.setTag("nodeX", base.copy());
             		eye.getTagCompound().setInteger(base.getName(), (int) dummy.getShort("nodeX"));
-            		eye.getTagCompound().setInteger("dimensionID", Integer.valueOf(base.getName().charAt(base.getName().length() - 1)));
+            		eye.getTagCompound().setInteger("dimensionID", Integer.valueOf(base.getName().charAt(base.getName().indexOf("X"))));
             	} else if(base.getName().contains("nodeY")) {
             		dummy.setTag("nodeY", base.copy());
             		eye.getTagCompound().setInteger(base.getName(), (int) dummy.getShort("nodeY"));
