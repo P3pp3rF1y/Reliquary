@@ -1,21 +1,44 @@
-import com.github.abrarsyed.gmcp.GMCP
+/* 
 
+ForgeGradle building for Reliquary! This script is meant to be a easy way to build the mod, as well as example for implementing ForgeGradle in your own mods.
+
+How to use:
+
+1. Make sure you have Gradle installed (http://www.gradle.org/).
+2. Open up Terminal (Unix) or cmd (Windows).
+3. Navigate to the mod's main folder.
+4. 'gradle setupCIWorkspace'
+5. 'gradle build'
+6. Enjoy!
+
+*/
+
+// This simple grabs the latest 'forge' plugin, or ForgeGradle, from Forge's servers.
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
     }
     dependencies {
-        classpath 'com.github.abrarsyed.gmcp:GMCP:latest.integration'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
     }
 }
 
-apply plugin: "gmcp"
+// We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
+apply plugin: 'forge'
 
-minecraft { minecraftVersion = "1.6.4" }
-group = 'xreliquary'
-version = "1.6.4-1.1"
+group = 'xreliquary' // Your main package.
+version = "1.6.4-1.1" 
 archivesBaseName = 'Reliquary'
 
+minecraft {
+	version = "1.6.4-9.11.1.964"
+}
+
+// This is just for me. I have my Mac set up to switch between JDK 6 and 7, so I need this to compile with JDK 6.
 /*
 compileJava { 
     options.fork = true 
@@ -25,14 +48,18 @@ compileJava {
 
 processResources
 {
+    // Replace stuff in mcmod.info and in .lang files, nothing else.
     from(sourceSets.main.resources.srcDirs) {
         include '**/*.lang'
-        include '**/*.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.minecraftVersion
+        include 'mcmod/info'
+                
+        // Replace version and mcversion.
+        expand 'version':project.version, 'mcversion':project.minecraft.version
     }
         
+    // Copy everything else that wasn't replaced.
     from(sourceSets.main.resources.srcDirs) {
         exclude '**/*.lang'
-        exclude '**/*.info'
+        exclude 'mcmod.info'
     }
 }

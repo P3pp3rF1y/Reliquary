@@ -22,7 +22,10 @@ public class Alkahestry {
 	private static Map<Integer, AlkahestRecipe> REGISTRY = new HashMap<Integer, AlkahestRecipe>();
 	
 	public static void addKey(AlkahestRecipe recipe) {
-		REGISTRY.put(recipe.item.itemID, recipe);
+		if(recipe.dictionaryName == null)
+			REGISTRY.put(recipe.item.itemID, recipe);
+		else
+			REGISTRY.put(-OreDictionary.getOreID(recipe.dictionaryName), recipe);
 	}
 	
 	public static AlkahestRecipe getDictionaryKey(ItemStack stack) {
