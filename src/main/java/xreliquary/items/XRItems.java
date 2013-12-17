@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.Config;
-import xreliquary.items.alkahestry.AlkahestryRecipe;
+import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
 import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
 import xreliquary.items.alkahestry.AlkahestryCraftingHandler;
 import xreliquary.lib.Names;
@@ -333,7 +333,7 @@ public class XRItems {
         
         GameRegistry.registerCraftingHandler(new AlkahestryCraftingHandler());
         GameRegistry.addRecipe(new AlkahestryRedstoneRecipe());
-        GameRegistry.addRecipe(new AlkahestryRecipe());
+        GameRegistry.addRecipe(new AlkahestryCraftingRecipe());
         
         // touchstone
         GameRegistry

@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
-public class AlkahestryRecipe implements IRecipe {
+public class AlkahestryCraftingRecipe implements IRecipe {
 
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) {
@@ -37,10 +37,10 @@ public class AlkahestryRecipe implements IRecipe {
 		}
 		if(tomb != null && valid == 1 && !isCharging && itemStack != null) {
 			AlkahestRecipe recipe = null;
-			if(AlkahestryRegistry.getRegistry().containsKey(itemStack.itemID)) 
-				recipe = AlkahestryRegistry.getRegistry().get(itemStack.itemID);
-			else if(AlkahestryRegistry.getDictionaryKey(itemStack) != null)
-				recipe = AlkahestryRegistry.getDictionaryKey(itemStack);
+			if(Alkahestry.getDictionaryKey(itemStack) == null) 
+				recipe = Alkahestry.getRegistry().get(itemStack.itemID);
+			else
+				recipe = Alkahestry.getDictionaryKey(itemStack);
 			if(tomb.getItemDamage() + recipe.cost <= Config.tombRedstoneLimit) {
 				return true;
 			} else {
@@ -60,10 +60,10 @@ public class AlkahestryRecipe implements IRecipe {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(stack != null) {
 				if(stack.itemID != XRItems.alkahestryTome.itemID) {
-					if(AlkahestryRegistry.getRegistry().containsKey(stack.itemID))
-						returned = AlkahestryRegistry.getRegistry().get(stack.itemID);
-					else if(AlkahestryRegistry.getDictionaryKey(stack) != null) {
-						returned = AlkahestryRegistry.getDictionaryKey(stack);
+					if(Alkahestry.getDictionaryKey(stack) == null)
+						returned = Alkahestry.getRegistry().get(stack.itemID);
+					else {
+						returned = Alkahestry.getDictionaryKey(stack);
 						dictStack = stack;
 					}
 				}

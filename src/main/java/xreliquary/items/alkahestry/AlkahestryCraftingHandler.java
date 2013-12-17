@@ -1,7 +1,6 @@
 package xreliquary.items.alkahestry;
 
 import xreliquary.items.XRItems;
-import xreliquary.util.AlkahestDictionaryRecipe;
 import xreliquary.util.AlkahestRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,10 +26,10 @@ public class AlkahestryCraftingHandler implements ICraftingHandler {
 				} else if(stack.itemID == Item.redstone.itemID || stack.itemID == Block.blockRedstone.blockID) {
 					isCharging = true;
 				} else {
-					if(AlkahestryRegistry.getRegistry().containsKey(stack.itemID)) {
-						recipe = AlkahestryRegistry.getRegistry().get(stack.itemID);
-					} else if(AlkahestryRegistry.getDictionaryKey(stack) != null) {
-						recipe = AlkahestryRegistry.getDictionaryKey(stack);
+					if(Alkahestry.getDictionaryKey(stack) == null) {
+						recipe = Alkahestry.getRegistry().get(stack.itemID);
+					} else {
+						recipe = Alkahestry.getDictionaryKey(stack);
 					}
 				}
 			}

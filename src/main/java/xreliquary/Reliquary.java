@@ -21,9 +21,8 @@ import xreliquary.blocks.XRBlocks;
 import xreliquary.common.CommonProxy;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.XRItems;
-import xreliquary.items.alkahestry.AlkahestryRegistry;
+import xreliquary.items.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
-import xreliquary.util.AlkahestDictionaryRecipe;
 import xreliquary.util.AlkahestRecipe;
 import xreliquary.util.LogHelper;
 import cpw.mods.fml.common.Mod;
@@ -68,7 +67,7 @@ public class Reliquary {
         proxy.registerTickHandlers();
 
         XRItems.init();
-        AlkahestryRegistry.init();
+        Alkahestry.init();
 
         FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), new ItemStack(XRItems.condensedPotion), XRItems.potion(Reference.WATER_META));
         
@@ -101,18 +100,13 @@ public class Reliquary {
     		} else if(message.key.equals("Alkahest")) {
     			NBTTagCompound tag = message.getNBTValue();
     			if(tag != null && ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")) != null && tag.hasKey("yield") && tag.hasKey("cost")) {
-    				AlkahestryRegistry.addKey(new AlkahestRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
+    				if(tag.hasKey("dictionaryName"))
+        				Alkahestry.addKey(new AlkahestRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
+    				else
+    					Alkahestry.addKey(new AlkahestRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
     				LogHelper.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + String.valueOf(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).itemID) + " from " + message.getSender() + " to registry.");
     			} else {
     				LogHelper.log(Level.WARNING, "[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occuring.");
-    			}
-    		} else if(message.key.equals("AlkahestDictionary")) {
-    			NBTTagCompound tag = message.getNBTValue();
-    			if(tag != null && tag.hasKey("dictionaryName") && tag.hasKey("yield") && tag.hasKey("cost")) {
-    				AlkahestryRegistry.addDictionaryKey(new AlkahestDictionaryRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
-    				LogHelper.log(Level.INFO, "[IMC] Added AlkahestDictionaryRecipe ID: " + String.valueOf(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).itemID) + " from " + message.getSender() + " to registry.");
-    			} else {
-    				LogHelper.log(Level.WARNING, "[IMC] Invalid AlkahestDictionaryRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occuring.");
     			}
     		}
     	}
