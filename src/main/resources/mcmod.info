@@ -4,14 +4,14 @@
   "name": "Xeno's Reliquary",
   "description": "Two words: magical swag. Oh, and a gun.",
   "version": "${version}",
-  "updateUrl": "",
-  "logoFile": "/mods/xreliquary/textures/logo/xrlogo.png",
   "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
   "authorList": [
-  "x3n0ph0b3"
-  "TheMike"
-  ],
-  "credits": "",
+    "x3n0ph0b3", 
+    "TheMike"],
+  "credits": "Originally made by x3n0ph0b3, now maintained by TheMike.",
+  "logoFile": "/mods/xreliquary/textures/logo/xrlogo.png",
   "screenshots": [
   ],
   "parent": "",

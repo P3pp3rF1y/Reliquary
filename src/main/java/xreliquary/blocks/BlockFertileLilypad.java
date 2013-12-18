@@ -28,7 +28,7 @@ public class BlockFertileLilypad extends BlockFlower {
         this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, var4,
                 0.5F + var3);
         this.setUnlocalizedName(Names.LILYPAD_NAME);
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
     }
 
     @Override

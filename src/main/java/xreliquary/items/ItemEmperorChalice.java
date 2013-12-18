@@ -13,7 +13,6 @@ import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import xreliquary.Config;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -27,7 +26,7 @@ public class ItemEmperorChalice extends ItemXR {
         this.setMaxDamage(0);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setUnlocalizedName(Names.CHALICE_NAME);
     }
 
@@ -104,8 +103,8 @@ public class ItemEmperorChalice extends ItemXR {
         if (world.isRemote)
             return ist;
 
-        player.getFoodStats().addStats(1, (float) (Config.chaliceMultiplier / 2));
-        player.attackEntityFrom(DamageSource.drown, Config.chaliceMultiplier);
+        player.getFoodStats().addStats(1, (float) (Reliquary.PROXY.chaliceMultiplier / 2));
+        player.attackEntityFrom(DamageSource.drown, Reliquary.PROXY.chaliceMultiplier);
         return new ItemStack(this, 1, 0);
     }
 

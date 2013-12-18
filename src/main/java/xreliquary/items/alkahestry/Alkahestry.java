@@ -7,9 +7,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import cpw.mods.fml.common.registry.GameRegistry;
-
-import xreliquary.items.XRItems;
 import xreliquary.util.AlkahestRecipe;
 
 public class Alkahestry {

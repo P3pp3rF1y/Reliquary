@@ -29,7 +29,7 @@ public class ItemSalamanderEye extends ItemXR {
         this.setMaxDamage(0);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setUnlocalizedName(Names.SALAMANDER_EYE_NAME);
     }
 

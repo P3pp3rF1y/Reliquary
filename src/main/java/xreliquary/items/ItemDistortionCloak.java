@@ -31,7 +31,7 @@ public class ItemDistortionCloak extends ItemXR {
         this.setMaxDamage(2401);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setUnlocalizedName(Names.DISTORTION_CLOAK_NAME);
     }
 

@@ -92,7 +92,7 @@ public class ItemBullet extends ItemXR {
         this.setMaxStackSize(64);
         this.setHasSubtypes(true);
         canRepair = false;
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
 
     }
 

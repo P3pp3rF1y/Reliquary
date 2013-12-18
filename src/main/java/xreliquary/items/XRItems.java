@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.Config;
+import xreliquary.Reliquary;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
 import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
 import xreliquary.items.alkahestry.AlkahestryCraftingHandler;
@@ -324,7 +325,7 @@ public class XRItems {
 
         // tome
         ItemStack tombStack = new ItemStack(alkahestryTome, 1, 0);
-        tombStack.setItemDamage(Config.tombRedstoneLimit);
+        tombStack.setItemDamage(Reliquary.PROXY.tombRedstoneLimit);
         GameRegistry.addShapelessRecipe(tombStack,
                 new Object[] { Item.book, Item.blazeRod, Item.magmaCream,
                         Item.ingotGold, Block.glowStone, Item.netherStalkSeeds,

@@ -42,7 +42,7 @@ public class ItemGunPart extends ItemXR {
         this.setHasSubtypes(true);
         canRepair = false;
         this.setHasSubtypes(true);
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setUnlocalizedName(Names.GUNPART_NAME);
     }
 

@@ -16,7 +16,7 @@ public class ItemGlowingWater extends ItemXR {
         this.setMaxDamage(0);
         this.setMaxStackSize(64);
         canRepair = false;
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setUnlocalizedName(Names.GLOWING_WATER_NAME);
     }
 

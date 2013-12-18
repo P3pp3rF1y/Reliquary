@@ -25,7 +25,7 @@ public class ItemSojournerStaff extends ItemXR {
         this.setMaxDamage(513);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setUnlocalizedName(Names.TORCH_NAME);
     }
 

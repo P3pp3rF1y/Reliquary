@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
-import xreliquary.Config;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -28,7 +27,7 @@ public class ItemFortuneCoin extends ItemXR {
         this.setMaxDamage(0);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setUnlocalizedName(Names.FORTUNE_COIN_NAME);
 
     }
@@ -85,7 +84,7 @@ public class ItemFortuneCoin extends ItemXR {
 
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
-        if (!Config.disableCoinAudio)
+        if (!Reliquary.PROXY.disableCoinAudio)
             if (this.getShort("soundTimer", ist) > 0) {
                 if (this.getShort("soundTimer", ist) % 2 == 0) {
                     world.playSoundAtEntity(e, "random.orb", 0.1F,
@@ -155,7 +154,7 @@ public class ItemFortuneCoin extends ItemXR {
         item.setPosition(x, y, z);
         player.worldObj.spawnParticle("portal", item.posX, item.posY,
                 item.posZ, 0.0D, 0.1D, 0.0D);
-        if (!Config.disableCoinAudio) {
+        if (!Reliquary.PROXY.disableCoinAudio) {
             player.worldObj
                     .playSoundAtEntity(
                             player,
@@ -219,7 +218,7 @@ public class ItemFortuneCoin extends ItemXR {
         if (player.isSneaking()) {
             player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
         } else {
-            if (!Config.disableCoinAudio) {
+            if (!Reliquary.PROXY.disableCoinAudio) {
                 this.setShort("soundTimer", ist, 6);
             }
             ist.setItemDamage(ist.getItemDamage() == 0 ? 1 : 0);

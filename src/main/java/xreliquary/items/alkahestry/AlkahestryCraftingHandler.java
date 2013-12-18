@@ -3,12 +3,10 @@ package xreliquary.items.alkahestry;
 import xreliquary.items.XRItems;
 import xreliquary.util.AlkahestRecipe;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.ICraftingHandler;
 
 public class AlkahestryCraftingHandler implements ICraftingHandler {

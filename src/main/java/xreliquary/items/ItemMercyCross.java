@@ -30,7 +30,7 @@ public class ItemMercyCross extends ItemSword {
         this.setMaxDamage(64);
         this.setMaxStackSize(1);
         canRepair = true;
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setUnlocalizedName(Names.CROSS_NAME);
     }
 

@@ -23,7 +23,7 @@ public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
         this.setMaxDamage(0);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setUnlocalizedName(Names.VOID_SATCHEL_NAME);
     }
 

@@ -48,7 +48,7 @@ public class ItemCondensedPotion extends ItemXR {
         this.setMaxStackSize(16);
         this.setHasSubtypes(true);
         canRepair = false;
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setUnlocalizedName(Names.CONDENSED_POTION_NAME);
     }
 

@@ -18,7 +18,7 @@ public class BlockWraithNode extends Block {
         blockHardness = 1.5F;
         blockResistance = 5.0F;
         this.setUnlocalizedName(Names.WRAITHNODE_NAME);
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
     }
 
     @Override

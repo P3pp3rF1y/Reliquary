@@ -9,8 +9,6 @@ import org.lwjgl.opengl.GL11;
 
 import xreliquary.client.model.ModelHandgun;
 import xreliquary.lib.ClientReference;
-import xreliquary.lib.Reference;
-import cpw.mods.fml.client.FMLClientHandler;
 
 public class ItemRendererHandgun implements IItemRenderer {
 

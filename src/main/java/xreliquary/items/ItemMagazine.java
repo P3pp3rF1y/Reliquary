@@ -81,7 +81,7 @@ public class ItemMagazine extends ItemXR {
         this.setMaxStackSize(64);
         canRepair = false;
         this.setHasSubtypes(true);
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setUnlocalizedName(Names.MAGAZINE_NAME);
     }
 

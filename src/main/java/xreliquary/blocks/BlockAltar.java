@@ -27,7 +27,7 @@ public class BlockAltar extends BlockContainer {
         blockResistance = 5.0F;
         this.setUnlocalizedName(f ? Names.ALTAR_ACTIVE_NAME
                 : Names.ALTAR_IDLE_NAME);
-        this.setCreativeTab(Reliquary.tabsXR);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setLightValue(f ? 1.0F : 0.0F);
     }
 

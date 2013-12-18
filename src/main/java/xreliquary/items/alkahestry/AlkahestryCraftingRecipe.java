@@ -1,11 +1,10 @@
 package xreliquary.items.alkahestry;
 
-import xreliquary.Config;
+import xreliquary.Reliquary;
 import xreliquary.items.XRItems;
 import xreliquary.util.AlkahestRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
@@ -41,7 +40,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 				recipe = Alkahestry.getRegistry().get(itemStack.itemID);
 			else
 				recipe = Alkahestry.getDictionaryKey(itemStack);
-			if(tomb.getItemDamage() + recipe.cost <= Config.tombRedstoneLimit) {
+			if(tomb.getItemDamage() + recipe.cost <= Reliquary.PROXY.tombRedstoneLimit) {
 				return true;
 			} else {
 				return false;
