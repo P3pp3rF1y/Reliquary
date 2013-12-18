@@ -48,7 +48,6 @@ public class Reliquary {
         CONFIG = new Configuration(event.getSuggestedConfigurationFile());
         CONFIG.load();
         
-        Config.init();
         PROXY.preInit();
         
         CONFIG.save();

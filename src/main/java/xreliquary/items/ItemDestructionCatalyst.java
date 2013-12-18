@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
@@ -31,7 +32,7 @@ public class ItemDestructionCatalyst extends ItemXR {
             List par3List, boolean par4) {
         par3List.add("Consumes 3 Gunpowder on right click, no less.");
         par3List.add("Blows up a 3x3x3 Cube behind target cube.");
-        par3List.add("Destroys mundane vanilla blocks only.");
+        par3List.add(EnumChatFormatting.WHITE+ "Destroys mundane blocks only.");
     }
 
     @Override

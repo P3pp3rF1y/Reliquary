@@ -3,11 +3,11 @@ package xreliquary.items;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import xreliquary.Config;
 import xreliquary.Reliquary;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
 import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
 import xreliquary.items.alkahestry.AlkahestryCraftingHandler;
+import xreliquary.lib.Indexes;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -72,31 +72,30 @@ public class XRItems {
     }
 
     public static void init() {
-        handgun = new ItemHandgun(Config.handgunID);
-        bullet = new ItemBullet(Config.bulletID);
-        mercyCross = new ItemMercyCross(Config.mercyCrossID);
-        magazine = new ItemMagazine(Config.magazineID);
-        holyHandGrenade = new ItemHolyHandGrenade(Config.holyHandGrenadeID);
-        fortuneCoin = new ItemFortuneCoin(Config.fortuneCoinID);
-        glowingWater = new ItemGlowingWater(Config.glowWaterID);
-        gunPart = new ItemGunPart(Config.gunPartID);
-        glowingBread = new ItemGlowingBread(Config.glowBreadID, 20, 1.0F, false);
-        sojournerStaff = new ItemSojournerStaff(Config.sojournerStaffID);
-        alkahestryTome = new ItemAlkahestryTome(Config.alkahestryTomeID);
-        midasTouchstone = new ItemMidasTouchstone(Config.midasTouchstoneID);
-        emperorChalice = new ItemEmperorChalice(Config.chaliceID);
-        salamanderEye = new ItemSalamanderEye(Config.salamanderEyeID);
-        iceRod = new ItemIceRod(Config.iceRodID);
-        condensedPotion = new ItemCondensedPotion(Config.condensedPotionID);
-        magicbane = new ItemMagicbane(Config.magicbaneID);
-        witherlessRose = new ItemWitherlessRose(Config.witherlessRoseID);
-        distortionCloak = new ItemDistortionCloak(Config.distortionCloakID);
-        emptyVoidTear = new ItemEmptyVoidTear(Config.emptyVoidTearID);
-        voidTear = new ItemVoidTear(Config.voidTearID);
-        wraithEye = new ItemWraithEye(Config.wraithEyeID);
-        voidSatchel = new ItemVoidSatchel(Config.satchelID);
-        destructionCatalyst = new ItemDestructionCatalyst(
-                Config.destructionCatalystID);
+        handgun = new ItemHandgun(Reliquary.CONFIG.getItem("Handgun", Indexes.HANDGUN_DEFAULT_ID).getInt(Indexes.HANDGUN_DEFAULT_ID));
+        bullet = new ItemBullet(Reliquary.CONFIG.getItem("Bullet", Indexes.BULLET_DEFAULT_ID).getInt(Indexes.BULLET_DEFAULT_ID));
+        mercyCross = new ItemMercyCross(Reliquary.CONFIG.getItem("Cross", Indexes.CROSS_DEFAULT_ID).getInt(Indexes.CROSS_DEFAULT_ID));
+        magazine = new ItemMagazine(Reliquary.CONFIG.getItem("Magazine", Indexes.MAGAZINE_DEFAULT_ID).getInt(Indexes.MAGAZINE_DEFAULT_ID));
+        holyHandGrenade = new ItemHolyHandGrenade(Reliquary.CONFIG.getItem("Grenade", Indexes.GRENADE_DEFAULT_ID).getInt(Indexes.GRENADE_DEFAULT_ID));
+        fortuneCoin = new ItemFortuneCoin(Reliquary.CONFIG.getItem("Coin", Indexes.COIN_DEFAULT_ID).getInt(Indexes.COIN_DEFAULT_ID));
+        glowingWater = new ItemGlowingWater(Reliquary.CONFIG.getItem("Water", Indexes.WATER_DEFAULT_ID).getInt(Indexes.WATER_DEFAULT_ID));
+        gunPart = new ItemGunPart(Reliquary.CONFIG.getItem("GunPart", Indexes.GUNPART_DEFAULT_ID).getInt(Indexes.GUNPART_DEFAULT_ID));
+        glowingBread = new ItemGlowingBread(Reliquary.CONFIG.getItem("Bread", Indexes.BREAD_DEFAULT_ID).getInt(Indexes.BREAD_DEFAULT_ID), 20, 1.0F, false);
+        sojournerStaff = new ItemSojournerStaff(Reliquary.CONFIG.getItem("Torch", Indexes.TORCH_DEFAULT_ID).getInt(Indexes.TORCH_DEFAULT_ID));
+        alkahestryTome = new ItemAlkahestryTome(Reliquary.CONFIG.getItem("Tome", Indexes.TOME_DEFAULT_ID).getInt(Indexes.TOME_DEFAULT_ID));
+        midasTouchstone = new ItemMidasTouchstone(Reliquary.CONFIG.getItem("Touchstone", Indexes.TOUCHSTONE_DEFAULT_ID).getInt(Indexes.TOUCHSTONE_DEFAULT_ID));
+        emperorChalice = new ItemEmperorChalice(Reliquary.CONFIG.getItem("Chalice", Indexes.CHALICE_DEFAULT_ID).getInt(Indexes.CHALICE_DEFAULT_ID));
+        salamanderEye = new ItemSalamanderEye(Reliquary.CONFIG.getItem("SalamanderEye", Indexes.SALAMANDER_EYE_DEFAULT_ID).getInt(Indexes.SALAMANDER_EYE_DEFAULT_ID));
+        iceRod = new ItemIceRod(Reliquary.CONFIG.getItem("IceRod", Indexes.ICE_ROD_DEFAULT_ID).getInt(Indexes.ICE_ROD_DEFAULT_ID));
+        condensedPotion = new ItemCondensedPotion(Reliquary.CONFIG.getItem("CondensedPotion", Indexes.CONDENSED_POTION_DEFAULT_ID).getInt(Indexes.CONDENSED_POTION_DEFAULT_ID));
+        magicbane = new ItemMagicbane(Reliquary.CONFIG.getItem("Magicbane", Indexes.MAGICBANE_DEFAULT_ID).getInt(Indexes.MAGICBANE_DEFAULT_ID));
+        witherlessRose = new ItemWitherlessRose(Reliquary.CONFIG.getItem("Rose", Indexes.WITHERLESS_ROSE_DEFAULT_ID).getInt(Indexes.WITHERLESS_ROSE_DEFAULT_ID));
+        distortionCloak = new ItemDistortionCloak(Reliquary.CONFIG.getItem("Cloak", Indexes.DISTORTION_CLOAK_DEFAULT_ID).getInt(Indexes.DISTORTION_CLOAK_DEFAULT_ID));
+        emptyVoidTear = new ItemEmptyVoidTear(Reliquary.CONFIG.getItem("EmptyVoidTear", Indexes.EMPTY_VOID_TEAR_DEFAULT_ID).getInt(Indexes.EMPTY_VOID_TEAR_DEFAULT_ID));
+        voidTear = new ItemVoidTear(Reliquary.CONFIG.getItem("VoidTear", Indexes.VOID_TEAR_DEFAULT_ID).getInt(Indexes.VOID_TEAR_DEFAULT_ID));
+        wraithEye = new ItemWraithEye(Reliquary.CONFIG.getItem("WraithEye", Indexes.WRAITH_EYE_DEFAULT_ID).getInt(Indexes.WRAITH_EYE_DEFAULT_ID));
+        voidSatchel = new ItemVoidSatchel(Reliquary.CONFIG.getItem("Satchel", Indexes.SATCHEL_DEFAULT_ID).getInt(Indexes.SATCHEL_DEFAULT_ID));
+        destructionCatalyst = new ItemDestructionCatalyst(Reliquary.CONFIG.getItem("Catalyst", Indexes.DESTRUCTION_CATALYST_DEFAULT_ID).getInt(Indexes.DESTRUCTION_CATALYST_DEFAULT_ID));
 
         LanguageRegistry.addName(handgun, Names.HANDGUN_LOCAL);
 
