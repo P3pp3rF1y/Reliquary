@@ -8,9 +8,14 @@ Originally made by x3n0ph0b3, now maintained by TheMike.
 Building
 =========
 
-As of 1.6.4-1.1, we use GMCP's code system. Follow this guide for building using GMCP.
+As of December 17th, 2013, Reliquary uses ForgeGradle for the build process. A small outline of the build process is outlined here.
 
-https://github.com/AbrarSyed/GMCP/wiki/Building-with-GMCP
+1. Make sure you have Gradle installed (http://www.gradle.org/).
+2. Open up Terminal (Unix) or cmd (Windows).
+3. Navigate to the mod's main folder.
+4. 'gradle setupCIWorkspace'
+5. 'gradle build'
+6. Enjoy!
 
 Versioning
 =========
