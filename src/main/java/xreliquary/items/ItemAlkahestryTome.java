@@ -30,6 +30,7 @@ public class ItemAlkahestryTome extends ItemBase {
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+		player.playSound(Reference.BOOK_SOUND, 1.0f, 1.0f);
 		player.openGui(Reliquary.INSTANCE, 0, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 		return stack;
 	}

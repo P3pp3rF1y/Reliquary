@@ -1,3 +1,10 @@
+The book opening sound, book.ogg, was created by ‘SmartWentCody’ on 
+freesound.org. Per his licencing, his sound was modified and converted
+to a Ogg format via Audacity. The full license for his work can be 
+found here: http://creativecommons.org/licenses/by/3.0/.
+
+=======================================================================
+
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 

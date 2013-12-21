@@ -25,6 +25,6 @@ I'm eventually heading to a 1.7.x-2.0 release, using 1.6.4-1.0 as a base and bui
 Licence
 =========
 
-The licence is located at COPYING.txt, but to save you the trouble, it's GPLv3. 
+The licence is located at COPYING.txt, but to save you the trouble, it's GPLv3 (with one of the sounds under CC Attribution License). 
 
 Basically, do whatever you want, as long as it's free, open source, and stays under GPL. (Yes, that allows you to use it in your modpack.)
