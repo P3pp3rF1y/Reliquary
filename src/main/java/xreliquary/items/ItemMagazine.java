@@ -12,6 +12,7 @@ import xreliquary.Reliquary;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.util.LanguageHelper;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -86,10 +87,10 @@ public class ItemMagazine extends ItemBase {
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		if (stack.getItemDamage() == 0) {
-			list.add(LanguageRegistry.instance().getStringLocalization("item." + Names.MAGAZINE_NAME + ".tooltip"));
+		if (stack.getItemDamage() < 2) {
+			list.add(LanguageHelper.getLocalization("item." + Names.MAGAZINE_NAME + stack.getItemDamage() + ".tooltip"));
 		} else {
-			list.add(LanguageRegistry.instance().getStringLocalization("item." + Names.BULLET_NAME + stack.getItemDamage() + ".tooltip"));
+			list.add(LanguageHelper.getLocalization("item." + Names.BULLET_NAME + stack.getItemDamage() + ".tooltip"));
 		}
 	}
 

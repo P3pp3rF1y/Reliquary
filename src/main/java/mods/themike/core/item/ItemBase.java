@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import xreliquary.util.LanguageHelper;
+
 import com.google.common.collect.ImmutableMap;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -59,7 +61,7 @@ public class ItemBase extends Item {
 	 *            List of description lines passed from addInformation.
 	 */
 	public void formatTooltip(ImmutableMap<String, String> toFormat, ItemStack stack, List list) {
-		String langTooltip = LanguageRegistry.instance().getStringLocalization(this.getUnlocalizedName(stack) + ".tooltip");
+		String langTooltip = LanguageHelper.getLocalization(this.getUnlocalizedName(stack) + ".tooltip");
 		if (langTooltip == null)
 			return;
 		if (toFormat != null) {

@@ -59,8 +59,6 @@ public class Reliquary {
 
 		PROXY.init();
 		MinecraftForge.EVENT_BUS.register(this);
-
-		LanguageRegistry.instance().loadLocalization("/assets/xreliquary/lang/en_US.lang", "en_US", false);
 	}
 
 	@EventHandler

@@ -12,6 +12,8 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.util.LanguageHelper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,6 +26,7 @@ public class ItemGlowingBread extends ItemFood {
 		this.setMaxStackSize(64);
 		canRepair = false;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+		GameRegistry.registerItem(this, Reference.MOD_ID + ":" + Names.BREAD_NAME);
 		this.setUnlocalizedName(Names.BREAD_NAME);
 	}
 
@@ -48,7 +51,7 @@ public class ItemGlowingBread extends ItemFood {
 
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-		par3List.add(LanguageRegistry.instance().getStringLocalization("item." + Names.BREAD_NAME + ".tooltip"));
+		par3List.add(LanguageHelper.getLocalization("item." + Names.BREAD_NAME + ".tooltip"));
 	}
 
 	@Override

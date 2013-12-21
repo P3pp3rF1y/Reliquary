@@ -20,6 +20,8 @@ import net.minecraft.item.ItemSword;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.util.LanguageHelper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -32,6 +34,7 @@ public class ItemMercyCross extends ItemSword {
 		this.setMaxStackSize(1);
 		canRepair = true;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+		GameRegistry.registerItem(this, Reference.MOD_ID + ":" + Names.CROSS_NAME);
 		this.setUnlocalizedName(Names.CROSS_NAME);
 	}
 
@@ -56,7 +59,7 @@ public class ItemMercyCross extends ItemSword {
 
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		String value = LanguageRegistry.instance().getStringLocalization("item." + Names.CROSS_NAME + ".tooltip");
+		String value = LanguageHelper.getLocalization("item." + Names.CROSS_NAME + ".tooltip");
 		for (String descriptionLine : value.split("\n")) {
 			if (descriptionLine != null && descriptionLine.length() > 0)
 				list.add(descriptionLine);

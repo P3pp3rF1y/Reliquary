@@ -9,6 +9,7 @@ import xreliquary.client.audio.SoundHandler;
 import xreliquary.entities.*;
 import xreliquary.items.XRItems;
 import xreliquary.lib.Reference;
+import xreliquary.util.LanguageHelper;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -25,6 +26,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void init() {
 		super.init();
+		LanguageHelper.loadLanguages(new String[]{"en_US"});
 		this.registerRenderers();
 	}
 

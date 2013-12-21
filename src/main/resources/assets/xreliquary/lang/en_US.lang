@@ -42,6 +42,9 @@ item.reliquaryMagazine7.name=Seeker Magazine
 item.reliquaryMagazine8.name=Sand Magazine
 item.reliquaryMagazine9.name=Storm Magazine
 
+item.reliquaryMagazine0.tooltip=Just an empty magazine.
+item.reliquaryMagazine1.tooltip=Ordinary bullets.
+
 item.mercyCross.name=Cross of Mercy
 item.mercyCross.tooltip="Damn, that thing's heavy!"\nThat, my friend, is because\nit's so full of mercy.
 item.sojournerStaff.name=Sojourner's Staff
