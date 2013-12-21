@@ -3,6 +3,7 @@ package xreliquary.items;
 import java.util.Iterator;
 import java.util.List;
 
+import mods.themike.core.item.ItemBase;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
@@ -22,22 +23,22 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemSalamanderEye extends ItemXR {
+public class ItemSalamanderEye extends ItemBase {
 
     protected ItemSalamanderEye(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.SALAMANDER_EYE_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(0);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.SALAMANDER_EYE_NAME);
     }
+    
+    protected ItemSalamanderEye(int itemID, String modName, String textureName) {
+		super(itemID, modName, textureName);
+	}
 
     @SideOnly(Side.CLIENT)
     private Icon iconOverlay[];
-
-    @SideOnly(Side.CLIENT)
-    private Icon iconBase;
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -58,32 +59,19 @@ public class ItemSalamanderEye extends ItemXR {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("Dispels blaze fireballs and reflects");
-        par3List.add("ghast fireballs while held.");
-        par3List.add("Puts out fires on and around you.");
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
+    	super.registerIcons(iconRegister);
         iconOverlay = new Icon[4];
-        iconBase = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.SALAMANDER_EYE_NAME);
         for (int i = 0; i < 4; i++) {
-            iconOverlay[i] = iconRegister.registerIcon(Reference.MOD_ID
-                    .toLowerCase()
-                    + ":"
-                    + Names.SALAMANDER_EYE_OVERLAY_NAME
-                    + i);
+            iconOverlay[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.SALAMANDER_EYE_OVERLAY_NAME + i);
         }
     }
 
     @Override
     public Icon getIcon(ItemStack itemStack, int renderPass) {
         if (renderPass != 1)
-            return iconBase;
+            return this.itemIcon;
         else {
             int i = TimeKeeperHandler.getTime();
             i %= 80;
@@ -94,38 +82,39 @@ public class ItemSalamanderEye extends ItemXR {
                 }
                 return iconOverlay[i];
             } else
-                // base - completely open
-                return iconBase;
+                return this.itemIcon;
         }
     }
 
-    // @Override
-    // @SideOnly(Side.CLIENT)
-    // public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-    //
-    // if (renderPass == 0)
-    // return Integer.parseInt(Constants.WHITE, 16);
-    // else {
-    // return getColor(itemStack);
-    // }
-    // }
-    //
-    // public int getColor(ItemStack itemStack) {
-    //
-    // switch (itemStack.getItemDamage()) {
-    // case (1): return Integer.parseInt(Constants.GRAY);
-    // case (2): return Integer.parseInt(Constants.YELLOW);
-    // case (3): return Integer.parseInt(Constants.RED);
-    // case (4): return Integer.parseInt(Constants.PURPLE);
-    // case (5): return Integer.parseInt(Constants.GREEN);
-    // case (6): return Integer.parseInt(Constants.DARK_GRAY);
-    // case (7): return Integer.parseInt(Constants.TEAL);
-    // case (8): return Integer.parseInt(Constants.BEIGE);
-    // case (9): return Integer.parseInt(Constants.BLUE);
-    // }
-    // return Integer.parseInt(Constants.WHITE);
-    // }
-    //
+    /*
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
+    	if (renderPass == 0)
+    		return Integer.parseInt(Constants.WHITE, 16);
+    	else {
+    		return getColor(itemStack);
+    	}
+    }
+    
+    public int getColor(ItemStack itemStack) {
+    
+    	switch (itemStack.getItemDamage()) {
+    		case (1): return Integer.parseInt(Constants.GRAY);
+    		case (2): return Integer.parseInt(Constants.YELLOW);
+    		case (3): return Integer.parseInt(Constants.RED);
+    		case (4): return Integer.parseInt(Constants.PURPLE);
+    		case (5): return Integer.parseInt(Constants.GREEN);
+    		case (6): return Integer.parseInt(Constants.DARK_GRAY);
+    		case (7): return Integer.parseInt(Constants.TEAL);
+    		case (8): return Integer.parseInt(Constants.BEIGE);
+    		case (9): return Integer.parseInt(Constants.BLUE);
+    	}
+    	return Integer.parseInt(Constants.WHITE);
+    }
+    */
+    
+    
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
         // handleEyeEffect(ist);

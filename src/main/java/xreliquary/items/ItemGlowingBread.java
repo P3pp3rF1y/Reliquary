@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -30,10 +31,7 @@ public class ItemGlowingBread extends ItemFood {
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
 
-        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":"
-                + this.getUnlocalizedName().substring(
-                        this.getUnlocalizedName().indexOf(".") + 1));
+        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1));
     }
 
     @Override
@@ -49,9 +47,8 @@ public class ItemGlowingBread extends ItemFood {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("Glowy and delicious.");
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+        par3List.add(LanguageRegistry.instance().getStringLocalization("item." + Names.BREAD_NAME + ".tooltip"));
     }
 
     @Override
@@ -87,8 +84,7 @@ public class ItemGlowingBread extends ItemFood {
      * pressed. Args: itemStack, world, entityPlayer
      */
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
+    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         if (par3EntityPlayer.canEat(false)) {
             par3EntityPlayer.setItemInUse(par1ItemStack,
                     this.getMaxItemUseDuration(par1ItemStack));

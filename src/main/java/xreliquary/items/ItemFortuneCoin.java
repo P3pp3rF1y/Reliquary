@@ -3,6 +3,7 @@ package xreliquary.items;
 import java.util.Iterator;
 import java.util.List;
 
+import mods.themike.core.item.ItemBase;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -17,19 +18,18 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemFortuneCoin extends ItemXR {
+public class ItemFortuneCoin extends ItemBase {
 
     protected ItemFortuneCoin(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.FORTUNE_COIN_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(0);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.FORTUNE_COIN_NAME);
-
     }
 
     @Override
@@ -44,18 +44,8 @@ public class ItemFortuneCoin extends ItemXR {
         return true;
     }
 
-    @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("Draws in nearby items and XP.");
-        par3List.add("Right click to toggle.");
-    }
-
     @SideOnly(Side.CLIENT)
     private Icon iconOverlay;
-
-    @SideOnly(Side.CLIENT)
-    private Icon iconBase;
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -66,18 +56,14 @@ public class ItemFortuneCoin extends ItemXR {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
-        iconBase = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.FORTUNE_COIN_NAME);
-        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.FORTUNE_COIN_OVERLAY_NAME);
+    	super.registerIcons(iconRegister);
+        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.FORTUNE_COIN_OVERLAY_NAME);
     }
 
     @Override
     public Icon getIcon(ItemStack itemStack, int renderPass) {
-        if (itemStack.getItemDamage() == 0)
-            return iconBase;
-        if (renderPass != 1)
-            return iconBase;
+        if (itemStack.getItemDamage() == 0 || renderPass != 1)
+            return this.itemIcon;
         else
             return iconOverlay;
     }
@@ -85,14 +71,14 @@ public class ItemFortuneCoin extends ItemXR {
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
         if (!Reliquary.PROXY.disableCoinAudio)
-            if (this.getShort("soundTimer", ist) > 0) {
-                if (this.getShort("soundTimer", ist) % 2 == 0) {
+            if (NBTHelper.getShort("soundTimer", ist) > 0) {
+                if (NBTHelper.getShort("soundTimer", ist) % 2 == 0) {
                     world.playSoundAtEntity(e, "random.orb", 0.1F,
                             0.5F * ((world.rand.nextFloat() - world.rand
                                     .nextFloat()) * 0.7F + 1.8F));
                 }
-                this.setShort("soundTimer", ist,
-                        this.getShort("soundTimer", ist) - 1);
+                NBTHelper.setShort("soundTimer", ist,
+                        NBTHelper.getShort("soundTimer", ist) - 1);
             }
         if (ist.getItemDamage() == 0)
             return;
@@ -219,7 +205,7 @@ public class ItemFortuneCoin extends ItemXR {
             player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
         } else {
             if (!Reliquary.PROXY.disableCoinAudio) {
-                this.setShort("soundTimer", ist, 6);
+                NBTHelper.setShort("soundTimer", ist, 6);
             }
             ist.setItemDamage(ist.getItemDamage() == 0 ? 1 : 0);
         }

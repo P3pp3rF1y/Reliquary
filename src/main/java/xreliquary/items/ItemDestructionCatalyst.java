@@ -3,6 +3,7 @@ package xreliquary.items;
 import java.util.ArrayList;
 import java.util.List;
 
+import mods.themike.core.item.ItemBase;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -14,40 +15,27 @@ import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
-public class ItemDestructionCatalyst extends ItemXR {
+public class ItemDestructionCatalyst extends ItemBase {
 	
 	public static List<Integer> ids = new ArrayList<Integer>();
 
     protected ItemDestructionCatalyst(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.DESTRUCTION_CATALYST_NAME);
         this.setMaxDamage(0);
         this.setMaxStackSize(1);
         canRepair = false;
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.DESTRUCTION_CATALYST_NAME);
     }
 
     @Override
-    public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer,
-            List par3List, boolean par4) {
-        par3List.add("Consumes 3 Gunpowder on right click, no less.");
-        par3List.add("Blows up a 3x3x3 Cube behind target cube.");
-        par3List.add(EnumChatFormatting.WHITE+ "Destroys mundane blocks only.");
-    }
-
-    @Override
-    public boolean onItemUse(ItemStack ist, EntityPlayer player, World world,
-            int x, int y, int z, int side, float xOff, float yOff, float zOff) {
-        // if you can reduce gunpowder count by
-        // Constants.DESTRUCTION_CATALYST_COST...
+    public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
         if (hasGunpowder(player)) {
             doExplosion(world, x, y, z, side, player);
         }
         return true;
     }
 
-    public void doExplosion(World world, int x, int y, int z, int side,
-            EntityPlayer player) {
+    public void doExplosion(World world, int x, int y, int z, int side, EntityPlayer player) {
         boolean destroyedSomething = false;
         boolean playOnce = true;
         y = y + (side == 0 ? 1 : side == 1 ? -1 : 0);
@@ -64,14 +52,7 @@ public class ItemDestructionCatalyst extends ItemXR {
                         }
                         destroyedSomething = true;
                         if (playOnce) {
-                            world.playSoundEffect(
-                                    x,
-                                    y,
-                                    z,
-                                    "random.explode",
-                                    4.0F,
-                                    (1.0F + (world.rand.nextFloat() - world.rand
-                                            .nextFloat()) * 0.2F) * 0.7F);
+                            world.playSoundEffect(x, y, z, "random.explode", 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
                             playOnce = false;
                         }
                     }

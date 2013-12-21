@@ -2,6 +2,9 @@ package xreliquary.items;
 
 import java.util.List;
 
+import com.google.common.collect.ImmutableMap;
+
+import mods.themike.core.item.ItemBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -11,18 +14,18 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
+import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemVoidTear extends ItemXR {
+public class ItemVoidTear extends ItemBase {
 
     public ItemVoidTear(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.VOID_TEAR_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(0);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.VOID_TEAR_NAME);
     }
 
     @Override
@@ -32,23 +35,17 @@ public class ItemVoidTear extends ItemXR {
     }
 
     @Override
-    public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer,
-            List par3List, boolean par4) {
+    public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List list, boolean par4) {
         NBTTagCompound tag = ist.getTagCompound();
-        String details0 = "This Void Tear currently ";
-        String details1 = "holds ";
-        if (tag == null
-                || new ItemStack(tag.getShort("itemID"), 1,
-                        tag.getShort("itemMeta")).getItem() == null) {
-            details1 += "nothing.";
+        String holds = null;
+        if (tag == null || new ItemStack(tag.getShort("itemID"), 1, tag.getShort("itemMeta")).getItem() == null) {
+            holds = "nothing";
         } else {
-            ItemStack contents = new ItemStack(tag.getShort("itemID"), 1,
-                    tag.getShort("itemMeta"));
+            ItemStack contents = new ItemStack(tag.getShort("itemID"), 1, tag.getShort("itemMeta"));
             String itemName = contents.getDisplayName();
-            details1 += tag.getShort("itemQuantity") + "x " + itemName;
+            holds = tag.getShort("itemQuantity") + "x " + itemName;
         }
-        par3List.add(details0);
-        par3List.add(details1);
+        this.formatTooltip(ImmutableMap.of("holds", holds), ist, list);
     }
 
     @Override
@@ -65,9 +62,7 @@ public class ItemVoidTear extends ItemXR {
     }
 
     @Override
-    public boolean onItemUseFirst(ItemStack ist, EntityPlayer player,
-            World world, int x, int y, int z, int side, float hitX, float hitY,
-            float hitZ) {
+    public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
         if (world.getBlockTileEntity(x, y, z) instanceof IInventory) {
             IInventory inventory = (IInventory) world.getBlockTileEntity(x, y,
                     z);

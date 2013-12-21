@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import java.util.List;
 
+import mods.themike.core.item.ItemBase;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,30 +20,18 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemEmperorChalice extends ItemXR {
+public class ItemEmperorChalice extends ItemBase {
 
     protected ItemEmperorChalice(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.CHALICE_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(0);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.CHALICE_NAME);
-    }
-
-    @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("An infinite water bucket");
-        par3List.add("unless you drink from it.");
-        par3List.add("Trades life for hunger...");
     }
 
     @SideOnly(Side.CLIENT)
     private Icon iconOverlay;
-
-    @SideOnly(Side.CLIENT)
-    private Icon iconBase;
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -53,34 +42,23 @@ public class ItemEmperorChalice extends ItemXR {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
-        iconBase = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.CHALICE_NAME);
-        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.CHALICE_OVERLAY_NAME);
+        super.registerIcons(iconRegister);
+        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.CHALICE_OVERLAY_NAME);
     }
 
     @Override
     public Icon getIcon(ItemStack itemStack, int renderPass) {
-        if (itemStack.getItemDamage() == 0)
-            return iconBase;
-        if (renderPass != 1)
-            return iconBase;
+        if (itemStack.getItemDamage() == 0 || renderPass != 1)
+            return this.itemIcon;
         else
             return iconOverlay;
     }
 
-    /**
-     * How long it takes to use or consume an item
-     */
     @Override
     public int getMaxItemUseDuration(ItemStack par1ItemStack) {
         return 16;
     }
 
-    /**
-     * returns the action that specifies what animation to play when the items
-     * is being used
-     */
     @Override
     public EnumAction getItemUseAction(ItemStack par1ItemStack) {
         return EnumAction.drink;
@@ -189,9 +167,6 @@ public class ItemEmperorChalice extends ItemXR {
         }
     }
 
-    /**
-     * Attempts to place the liquid contained inside the bucket.
-     */
     public boolean tryPlaceContainedLiquid(World par1World, ItemStack ist,
             double par2, double par4, double par6, int par8, int par9, int par10) {
         if (ist.getItemDamage() != 1)

@@ -17,6 +17,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemFertileLilypad extends ItemBlock {
+	
     public ItemFertileLilypad(int par1) {
         super(par1);
     }
@@ -36,8 +37,7 @@ public class ItemFertileLilypad extends ItemBlock {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
-        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.LILYPAD_NAME);
+        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.LILYPAD_NAME);
     }
 
     @Override
@@ -51,8 +51,7 @@ public class ItemFertileLilypad extends ItemBlock {
      * pressed. Args: itemStack, world, entityPlayer
      */
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
+    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         MovingObjectPosition var4 = this.getMovingObjectPositionFromPlayer(
                 par2World, par3EntityPlayer, true);
 

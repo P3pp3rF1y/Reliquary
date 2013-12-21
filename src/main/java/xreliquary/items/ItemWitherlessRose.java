@@ -3,6 +3,7 @@ package xreliquary.items;
 import java.util.List;
 import java.util.Random;
 
+import mods.themike.core.item.ItemBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -11,25 +12,18 @@ import net.minecraft.potion.Potion;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
+import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemWitherlessRose extends ItemXR {
+public class ItemWitherlessRose extends ItemBase {
 
     protected ItemWitherlessRose(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.WITHERLESS_ROSE_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(0);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.WITHERLESS_ROSE_NAME);
-    }
-
-    @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("With the Nether Stars enchanting this rose");
-        par3List.add("the holder is protected from Withering.");
     }
 
     @Override

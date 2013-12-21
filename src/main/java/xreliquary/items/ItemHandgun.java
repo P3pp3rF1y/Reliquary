@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import java.util.List;
 
+import mods.themike.core.item.ItemBase;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,16 +23,22 @@ import xreliquary.entities.EntityStormShot;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemHandgun extends ItemXR {
+public class ItemHandgun extends ItemBase {
 
     @SideOnly(Side.CLIENT)
     private Icon iconOverlay;
-
-    @SideOnly(Side.CLIENT)
-    private Icon iconBase;
+    
+    protected ItemHandgun(int par1) {
+        super(par1, Reference.MOD_ID, Names.HANDGUN_NAME);
+        this.setMaxDamage((8 << 5) + 11);
+        this.setMaxStackSize(1);
+        canRepair = false;
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
+    }
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -42,18 +49,14 @@ public class ItemHandgun extends ItemXR {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
-        iconBase = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.HANDGUN_NAME);
-        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.HANDGUN_OVERLAY_NAME);
+    	super.registerIcons(iconRegister);
+        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.HANDGUN_OVERLAY_NAME);
     }
 
     @Override
     public Icon getIcon(ItemStack itemStack, int renderPass) {
-        if (itemStack.getItemDamage() == 0)
-            return iconBase;
-        if (renderPass != 1)
-            return iconBase;
+        if (itemStack.getItemDamage() == 0 || renderPass != 1)
+            return this.itemIcon;
         else
             return iconOverlay;
     }
@@ -93,37 +96,21 @@ public class ItemHandgun extends ItemXR {
         return Integer.parseInt(Colors.PURE, 16);
     }
 
-    protected ItemHandgun(int par1) {
-        super(par1);
-        this.setMaxDamage((8 << 5) + 11);
-        this.setMaxStackSize(1);
-        canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.HANDGUN_NAME);
-    }
-
-    @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("For great justice.");
-        par3List.add("Right click fires, hold to reload.");
-    }
-
     @Override
     public void onUpdate(ItemStack ist, World worldObj, Entity e, int i,
             boolean flag) {
-        if (this.getShort("cooldownTime", ist) > 0) {
-            this.setShort("cooldownTime", ist,
-                    this.getShort("cooldownTime", ist) - 1);
+        if (NBTHelper.getShort("cooldownTime", ist) > 0) {
+            NBTHelper.setShort("cooldownTime", ist,
+                    NBTHelper.getShort("cooldownTime", ist) - 1);
         }
     }
 
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World worldObj,
             EntityPlayer player) {
-        if (this.getShort("cooldownTime", ist) <= 0) {
-            if (!(this.getShort("bulletCount", ist) > 0)
-                    && !(this.getShort("bulletType", ist) > 0)) {
+        if (NBTHelper.getShort("cooldownTime", ist) <= 0) {
+            if (!(NBTHelper.getShort("bulletCount", ist) > 0)
+                    && !(NBTHelper.getShort("bulletType", ist) > 0)) {
                 player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
 
             } else {
@@ -137,24 +124,24 @@ public class ItemHandgun extends ItemXR {
     public void onUsingItemTick(ItemStack ist, EntityPlayer player, int count) {
         System.out.println("Tick count: " + count);
         if (!hasASpareClip(player)) {
-            this.setShort("cooldownTime", ist, 12);
+            NBTHelper.setShort("cooldownTime", ist, 12);
             // play click!
             resetReloadDuration(ist);
             player.stopUsingItem();
             return;
         }
         if (reloadTicks(count) >= calculatePlayerSkillTimer(player) - 1) {
-            this.setShort("cooldownTime", ist, 24);
-            this.setShort("bulletType", ist, getClipTypeAndSubtractOne(player));
-            if (this.getShort("bulletType", ist) != 0) {
+            NBTHelper.setShort("cooldownTime", ist, 24);
+            NBTHelper.setShort("bulletType", ist, getClipTypeAndSubtractOne(player));
+            if (NBTHelper.getShort("bulletType", ist) != 0) {
                 player.swingItem();
                 this.spawnClip(player);
-                this.setShort("bulletCount", ist, 8);
+                NBTHelper.setShort("bulletCount", ist, 8);
                 player.worldObj.playSoundAtEntity(player, Reference.LOAD_SOUND,
                         0.25F, 1.0F);
             }
-            if (this.getShort("bulletCount", ist) == 0) {
-                this.setShort("bulletType", ist, 0);
+            if (NBTHelper.getShort("bulletCount", ist) == 0) {
+                NBTHelper.setShort("bulletType", ist, 0);
             }
             setGunDamageByContents(ist);
             player.stopUsingItem();
@@ -181,8 +168,8 @@ public class ItemHandgun extends ItemXR {
 
     private void fireBullet(ItemStack ist, World worldObj, EntityPlayer player) {
         if (!worldObj.isRemote) {
-            this.setShort("cooldownTime", ist, 12);
-            switch (this.getShort("bulletType", ist)) {
+            NBTHelper.setShort("cooldownTime", ist, 12);
+            switch (NBTHelper.getShort("bulletType", ist)) {
             case 0:
                 return;
             case 1:
@@ -226,10 +213,10 @@ public class ItemHandgun extends ItemXR {
             }
             resetReloadDuration(ist);
             worldObj.playSoundAtEntity(player, Reference.SHOT_SOUND, 0.2F, 1.2F);
-            this.setShort("bulletCount", ist,
-                    this.getShort("bulletCount", ist) - 1);
-            if (this.getShort("bulletCount", ist) == 0) {
-                this.setShort("bulletType", ist, 0);
+            NBTHelper.setShort("bulletCount", ist,
+                    NBTHelper.getShort("bulletCount", ist) - 1);
+            if (NBTHelper.getShort("bulletCount", ist) == 0) {
+                NBTHelper.setShort("bulletType", ist, 0);
             }
             spawnCasing(player);
         }
@@ -237,12 +224,12 @@ public class ItemHandgun extends ItemXR {
     }
 
     private void resetReloadDuration(ItemStack ist) {
-        this.setShort("reloadDuration", ist, 0);
+        NBTHelper.setShort("reloadDuration", ist, 0);
     }
 
     private void setGunDamageByContents(ItemStack ist) {
-        ist.setItemDamage((8 - this.getShort("bulletCount", ist) << 5)
-                + this.getShort("bulletType", ist));
+        ist.setItemDamage((8 - NBTHelper.getShort("bulletCount", ist) << 5)
+                + NBTHelper.getShort("bulletType", ist));
     }
 
     private void spawnClip(EntityPlayer player) {

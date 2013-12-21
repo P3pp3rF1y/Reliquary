@@ -20,6 +20,7 @@ import net.minecraft.item.ItemSword;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -38,10 +39,7 @@ public class ItemMercyCross extends ItemSword {
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
 
-        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":"
-                + this.getUnlocalizedName().substring(
-                        this.getUnlocalizedName().indexOf(".") + 1));
+        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1));
     }
 
     @Override
@@ -57,11 +55,12 @@ public class ItemMercyCross extends ItemSword {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("'Damn, that thing's heavy!'");
-        par3List.add("That, my friend, is because");
-        par3List.add("it's so full of mercy.");
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+    	String value = LanguageRegistry.instance().getStringLocalization("item." + Names.CROSS_NAME + ".tooltip");
+    	for(String descriptionLine : value.split("\n")) {
+    		if(descriptionLine != null && descriptionLine.length() > 0)
+    			list.add(descriptionLine);
+    	}  
     }
 
     @Override

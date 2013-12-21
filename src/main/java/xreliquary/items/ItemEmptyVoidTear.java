@@ -1,7 +1,6 @@
 package xreliquary.items;
 
-import java.util.List;
-
+import mods.themike.core.item.ItemBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -10,16 +9,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
+import xreliquary.lib.Reference;
 
-public class ItemEmptyVoidTear extends ItemXR {
+public class ItemEmptyVoidTear extends ItemBase {
 
     public ItemEmptyVoidTear(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.EMPTY_VOID_TEAR_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(0);
         this.setMaxStackSize(64);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.EMPTY_VOID_TEAR_NAME);
     }
 
     @Override
@@ -32,13 +31,7 @@ public class ItemEmptyVoidTear extends ItemXR {
         if (tear == null)
             return ist;
         else {
-            player.worldObj
-                    .playSoundAtEntity(
-                            player,
-                            "random.orb",
-                            0.1F,
-                            0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand
-                                    .nextFloat()) * 0.7F + 1.8F));
+            player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F,  0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
             addTearToInventory(player, tear);
             --ist.stackSize;
         }
@@ -46,33 +39,15 @@ public class ItemEmptyVoidTear extends ItemXR {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("An empty void tear; right clicking");
-        par3List.add("absorbs the dominant inventory item.");
-    }
-
-    @Override
-    public boolean onItemUseFirst(ItemStack ist, EntityPlayer player,
-            World world, int x, int y, int z, int side, float hitX, float hitY,
-            float hitZ) {
+    public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
         if (world.getBlockTileEntity(x, y, z) instanceof IInventory) {
-            IInventory inventory = (IInventory) world.getBlockTileEntity(x, y,
-                    z);
-            ItemStack tear = compressInventoryIntoTearForPlayer(inventory,
-                    player);
+            IInventory inventory = (IInventory) world.getBlockTileEntity(x, y, z);
+            ItemStack tear = compressInventoryIntoTearForPlayer(inventory, player);
             if (tear != null) {
-                player.worldObj
-                        .playSoundAtEntity(
-                                player,
-                                "random.orb",
-                                0.1F,
-                                0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand
-                                        .nextFloat()) * 0.7F + 1.8F));
+                player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand .nextFloat()) * 0.7F + 1.8F));
                 if (player.inventory.decrStackSize(
                         player.inventory.currentItem, 1).stackSize < 1) {
-                    player.inventory.setInventorySlotContents(
-                            player.inventory.currentItem, tear);
+                    player.inventory.setInventorySlotContents( player.inventory.currentItem, tear);
                 } else {
                     addTearToInventory(player, tear);
                 }
@@ -82,8 +57,7 @@ public class ItemEmptyVoidTear extends ItemXR {
         return false;
     }
 
-    public ItemStack compressInventoryIntoTearForPlayer(IInventory inventory,
-            EntityPlayer player) {
+    public ItemStack compressInventoryIntoTearForPlayer(IInventory inventory, EntityPlayer player) {
         ItemStack target = getTargetItem(inventory);
         if (target == null)
             return null;
@@ -91,23 +65,19 @@ public class ItemEmptyVoidTear extends ItemXR {
         int itemID = target.itemID;
         int itemQuantity = getQuantityInInventory(target, inventory);
         ItemStack tear = new ItemStack(XRItems.voidTear, 1);
-        tear.setTagCompound(createStackTagCompoundForTear(itemMeta, itemID,
-                itemQuantity));
-        findAndRemoveQuantity(inventory, new ItemStack(itemID, 1, itemMeta),
-                itemQuantity);
+        tear.setTagCompound(createStackTagCompoundForTear(itemMeta, itemID, itemQuantity));
+        findAndRemoveQuantity(inventory, new ItemStack(itemID, 1, itemMeta), itemQuantity);
         return tear;
     }
 
     public void addTearToInventory(EntityPlayer player, ItemStack tear) {
         if (!player.inventory.addItemStackToInventory(tear)) {
-            EntityItem entityTear = new EntityItem(player.worldObj,
-                    player.posX, player.posY, player.posZ, tear);
+            EntityItem entityTear = new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, tear);
             player.worldObj.spawnEntityInWorld(entityTear);
         }
     }
 
-    public void findAndRemoveQuantity(IInventory inventory, ItemStack ist,
-            int quantity) {
+    public void findAndRemoveQuantity(IInventory inventory, ItemStack ist, int quantity) {
         for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
             ItemStack stack = inventory.getStackInSlot(slot);
             if (stack == null) {
@@ -122,8 +92,7 @@ public class ItemEmptyVoidTear extends ItemXR {
         }
     }
 
-    public NBTTagCompound createStackTagCompoundForTear(int meta, int ID,
-            int quantity) {
+    public NBTTagCompound createStackTagCompoundForTear(int meta, int ID, int quantity) {
         NBTTagCompound tear = new NBTTagCompound();
         tear.setShort("itemID", (short) ID);
         tear.setShort("itemMeta", (short) meta);

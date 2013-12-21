@@ -3,6 +3,9 @@ package xreliquary.items;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.collect.ImmutableMap;
+
+import mods.themike.core.item.ItemBase;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,35 +22,30 @@ import xreliquary.blocks.XRBlocks;
 import xreliquary.common.TimeKeeperHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemWraithEye extends ItemSalamanderEye {
 
     protected ItemWraithEye(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.WRAITH_EYE_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(0);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.WRAITH_EYE_NAME);
     }
 
     @SideOnly(Side.CLIENT)
     private Icon iconOverlay[];
 
-    @SideOnly(Side.CLIENT)
-    private Icon iconBase;
-
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
+    	this.itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.WRAITH_EYE_NAME);
         iconOverlay = new Icon[4];
-        iconBase = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.WRAITH_EYE_NAME);        
         for (int i = 0; i < 4; i++) {
-            iconOverlay[i] = iconRegister.registerIcon(Reference.MOD_ID
-                    .toLowerCase() + ":" + Names.WRAITH_EYE_OVERLAY_NAME + i);
+            iconOverlay[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.WRAITH_EYE_OVERLAY_NAME + i);
         }
     }
 
@@ -60,7 +58,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
     @Override
     public Icon getIcon(ItemStack itemStack, int renderPass) {
         if (renderPass != 1)
-            return iconBase;
+            return this.itemIcon;
         else {
             int i = TimeKeeperHandler.getTime();
             i %= 80;
@@ -71,8 +69,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
                 }
                 return iconOverlay[i];
             } else
-                // base - completely open
-                return iconBase;
+                return this.itemIcon;
         }
     }
 
@@ -89,7 +86,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
     public ItemStack onItemRightClick(ItemStack eye, World world, EntityPlayer par2EntityPlayer) {
     	checkForOldVersions(eye);
     	
-        if (this.getShort("cooldown", eye) > 0)
+        if (NBTHelper.getShort("cooldown", eye) > 0)
             return eye;
         
         if (eye.getTagCompound() != null && eye.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(par2EntityPlayer))) {
@@ -116,12 +113,12 @@ public class ItemWraithEye extends ItemSalamanderEye {
     }
 
     private void setCooldown(ItemStack ist) {
-        this.setShort("cooldown", ist, (short) 20);        
+    	NBTHelper.setShort("cooldown", ist, (short) 20);        
     }
 
     private void decrementCooldown(ItemStack ist) {
-        if (this.getShort("cooldown", ist) > 0)
-            this.setShort("cooldown", ist, this.getShort("cooldown", ist) - 1);
+        if (NBTHelper.getShort("cooldown", ist) > 0)
+        	NBTHelper.setShort("cooldown", ist, NBTHelper.getShort("cooldown", ist) - 1);
     }
     
     private boolean findAndRemoveEnderPearl(EntityPlayer player) {
@@ -154,21 +151,18 @@ public class ItemWraithEye extends ItemSalamanderEye {
     }
 
     @Override
-    public void addInformation(ItemStack eye, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("Right clicking a Wraith Node binds to it");
-        par3List.add("allowing you to return to it at will,");
-        par3List.add("for the cost of an Ender Pearl.");
-        String details = EnumChatFormatting.DARK_PURPLE + "Currently bound to ";
+    public void addInformation(ItemStack eye, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+        String phrase = "Currently bound to";
+        String position = null;
     	checkForOldVersions(eye);
         if (eye.getTagCompound() != null && eye.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(par2EntityPlayer))) {
-        	details = EnumChatFormatting.DARK_PURPLE + "Out of range!";
+        	phrase = "Out of range!";
         } else if(eye.getTagCompound() != null && eye.getTagCompound().hasKey("nodeX" + getWorld(par2EntityPlayer)) && eye.getTagCompound().hasKey("nodeY" + getWorld(par2EntityPlayer)) && eye.getTagCompound().hasKey("nodeZ" + getWorld(par2EntityPlayer))) {
-            details += "X: " + eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)) + " Y: "
-                    + eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)) + " Z: " + eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer));
+            position = "X: " + eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)) + " Y: " + eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)) + " Z: " + eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer));
         } else {
-        	details += "nowhere.";
+        	position = "nowhere.";
         }
-        par3List.add(details);
+        this.formatTooltip(ImmutableMap.of("phrase", phrase, "position", position), eye, list);
     }
 
     @Override
@@ -191,10 +185,10 @@ public class ItemWraithEye extends ItemSalamanderEye {
     }
 
     public void setWraithNode(ItemStack eye, int x, int y, int z, int dimensionID, EntityPlayer player) {
-        setInteger("nodeX" + getWorld(player), eye, x);
-        setInteger("nodeY" + getWorld(player), eye, y);
-        setInteger("nodeZ" + getWorld(player), eye, z);
-        setInteger("dimensionID", eye, dimensionID);
+    	NBTHelper.setInteger("nodeX" + getWorld(player), eye, x);
+    	NBTHelper.setInteger("nodeY" + getWorld(player), eye, y);
+    	NBTHelper.setInteger("nodeZ" + getWorld(player), eye, z);
+    	NBTHelper.setInteger("dimensionID", eye, dimensionID);
     }
 
     public String getWorld(EntityPlayer player) {

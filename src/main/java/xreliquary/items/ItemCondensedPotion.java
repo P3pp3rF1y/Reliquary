@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import java.util.List;
 
+import mods.themike.core.item.ItemBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -40,16 +41,15 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemCondensedPotion extends ItemXR {
+public class ItemCondensedPotion extends ItemBase {
 
     protected ItemCondensedPotion(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.CONDENSED_POTION_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(0);
         this.setMaxStackSize(16);
         this.setHasSubtypes(true);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.CONDENSED_POTION_NAME);
     }
 
     public int emptyVialMeta() {
@@ -109,17 +109,6 @@ public class ItemCondensedPotion extends ItemXR {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        for (String description : getDescriptionFrom(par1ItemStack))
-            if (description == null) {
-                continue;
-            } else {
-                par3List.add(description);
-            }
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
         if (hasEffect(stack))
@@ -128,72 +117,12 @@ public class ItemCondensedPotion extends ItemXR {
     }
 
     @Override
-    public String getItemDisplayName(ItemStack ist) {
-        int potion = ist.getItemDamage();
-        if (potion == Reference.SPLASH_META)
-            return Names.SPLASH_NAME;
-        if (potion == Reference.APHRODITE_META)
-            return Names.APHRODITE_NAME;
-        if (potion == Reference.POISON_META)
-            return Names.POISON_NAME;
-        if (potion == Reference.ACID_META)
-            return Names.ACID_NAME;
-        if (potion == Reference.CONFUSION_META)
-            return Names.CONFUSION_NAME;
-        if (potion == Reference.SLOWING_META)
-            return Names.SLOWING_NAME;
-        if (potion == Reference.WEAKNESS_META)
-            return Names.WEAKNESS_NAME;
-        if (potion == Reference.WITHER_META)
-            return Names.WITHER_NAME;
-        if (potion == Reference.BLINDING_META)
-            return Names.BLINDING_NAME;
-        if (potion == Reference.RUINATION_META)
-            return Names.RUINATION_NAME;
-        if (potion == Reference.FERTILIZER_META)
-            return Names.FERTILIZER_NAME;
-        if (potion == Reference.EMPTY_VIAL_META)
-            return Names.EMPTY_VIAL_NAME;
-        if (potion == Reference.POTION_META)
-            return Names.POTION_NAME;
-        if (potion == Reference.SPEED_META)
-            return Names.SPEED_NAME;
-        if (potion == Reference.DIGGING_META)
-            return Names.DIGGING_NAME;
-        if (potion == Reference.STRENGTH_META)
-            return Names.STRENGTH_NAME;
-        if (potion == Reference.HEALING_META)
-            return Names.HEALING_NAME;
-        if (potion == Reference.BOUNDING_META)
-            return Names.BOUNDING_NAME;
-        if (potion == Reference.REGENERATION_META)
-            return Names.REGENERATION_NAME;
-        if (potion == Reference.RESISTANCE_META)
-            return Names.RESISTANCE_NAME;
-        if (potion == Reference.FIRE_WARDING_META)
-            return Names.FIRE_WARDING_NAME;
-        if (potion == Reference.BREATHING_META)
-            return Names.BREATHING_NAME;
-        if (potion == Reference.INVISIBILITY_META)
-            return Names.INVISIBILITY_NAME;
-        if (potion == Reference.INFRAVISION_META)
-            return Names.INFRAVISION_NAME;
-        if (potion == Reference.PROTECTION_META)
-            return Names.PROTECTION_NAME;
-        if (potion == Reference.POTENCE_META)
-            return Names.POTENCE_NAME;
-        if (potion == Reference.CELERITY_META)
-            return Names.CELERITY_NAME;
-        if (potion == Reference.PANACEA_META)
-            return Names.PANACEA_NAME;
-        if (potion == Reference.WATER_META)
-            return Names.WATER_NAME;
-        return "CondensedPotion";
+    public String getUnlocalizedName(ItemStack ist) {
+    	return "item.reliquaryPotion" + ist.getItemDamage();
     }
 
     @Override
-    public void getSubItems(int par1, CreativeTabs par2CreativeTabs,
-            List par3List) {
+    public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List) {
         par3List.add(new ItemStack(par1, 1, 0));
         par3List.add(new ItemStack(par1, 1, 1));
         par3List.add(new ItemStack(par1, 1, 2));
@@ -223,130 +152,6 @@ public class ItemCondensedPotion extends ItemXR {
         par3List.add(new ItemStack(par1, 1, 26));
         par3List.add(new ItemStack(par1, 1, 27));
         par3List.add(new ItemStack(par1, 1, 28));
-    }
-
-    private String[] getDescriptionFrom(ItemStack ist) {
-        int potion = ist.getItemDamage();
-        String description[] = new String[2];
-        switch (potion) {
-        case Reference.EMPTY_VIAL_META:
-            description[0] = "An empty vial for";
-            description[1] = "condensed potions.";
-            break;
-        case Reference.POTION_META:
-            description[0] = "A base potion for";
-            description[1] = "condensed potions.";
-            break;
-        case Reference.SPEED_META:
-            description[0] = "Movement increased";
-            description[1] = "for 5 minutes.";
-            break;
-        case Reference.DIGGING_META:
-            description[0] = "Dig and break faster";
-            description[1] = "for 5 minutes.";
-            break;
-        case Reference.STRENGTH_META:
-            description[0] = "Damage increased by 3";
-            description[1] = "for 5 minutes.";
-            break;
-        case Reference.HEALING_META:
-            description[0] = "Heals 6 hearts.";
-            description[1] = "(12 damage)";
-            break;
-        case Reference.BOUNDING_META:
-            description[0] = "Higher jumping";
-            description[1] = "for 5 minutes.";
-            break;
-        case Reference.REGENERATION_META:
-            description[0] = "Health regeneration";
-            description[1] = "for 1 minute.";
-            break;
-        case Reference.RESISTANCE_META:
-            description[0] = "Damage resistance";
-            description[1] = "for 5 minutes.";
-            break;
-        case Reference.FIRE_WARDING_META:
-            description[0] = "Fire resistance";
-            description[1] = "for 5 minutes.";
-            break;
-        case Reference.BREATHING_META:
-            description[0] = "Water breathing";
-            description[1] = "for 5 minutes.";
-            break;
-        case Reference.INVISIBILITY_META:
-            description[0] = "Invisibility";
-            description[1] = "for 5 minutes.";
-            break;
-        case Reference.INFRAVISION_META:
-            description[0] = "See in the dark";
-            description[1] = "for 5 minutes.";
-            break;
-        case Reference.PROTECTION_META:
-            description[0] = "Resist fire and";
-            description[1] = "damage for 3 minutes.";
-            break;
-        case Reference.POTENCE_META:
-            description[0] = "Strength and dig boost";
-            description[1] = "for 3 minutes.";
-            break;
-        case Reference.CELERITY_META:
-            description[0] = "Speed and jump boost";
-            description[1] = "for 3 minutes.";
-            break;
-        case Reference.PANACEA_META:
-            description[0] = "30 second regen, heals 6 hearts.";
-            description[1] = "Cures any ailment.";
-            break;
-        case Reference.SPLASH_META:
-            description[0] = "A base potion for creating";
-            description[1] = "condensed splash vials.";
-            break;
-        case Reference.APHRODITE_META:
-            description[0] = "Makes animals";
-            description[1] = "want to mate.";
-            break;
-        case Reference.POISON_META:
-            description[0] = "Poisons mobs";
-            description[1] = "for 60 seconds.";
-            break;
-        case Reference.ACID_META:
-            description[0] = "Deals 12 damage,";
-            description[1] = "even vs. Undead.";
-            break;
-        case Reference.CONFUSION_META:
-            description[0] = "Causes confusion";
-            description[1] = "for 60 seconds.";
-            break;
-        case Reference.SLOWING_META:
-            description[0] = "Causes slowness";
-            description[1] = "for 60 seconds.";
-            break;
-        case Reference.WEAKNESS_META:
-            description[0] = "Causes weakness";
-            description[1] = "for 60 seconds.";
-            break;
-        case Reference.WITHER_META:
-            description[0] = "Causes wither effect";
-            description[1] = "for 60 seconds.";
-            break;
-        case Reference.BLINDING_META:
-            description[0] = "Causes blindness";
-            description[1] = "for 60 seconds.";
-            break;
-        case Reference.RUINATION_META:
-            description[0] = "Slows, weakens and";
-            description[1] = "poisons for 60 seconds.";
-            break;
-        case Reference.FERTILIZER_META:
-            description[0] = "Grows crops in a";
-            description[1] = "wide square pattern.";
-            break;
-        case Reference.WATER_META:
-            description[0] = "It's a vial of ";
-            description[1] = "plain ol' water.";
-            break;
-        }
-        return description;
     }
 
     @Override
@@ -473,9 +278,6 @@ public class ItemCondensedPotion extends ItemXR {
     }
 
     @SideOnly(Side.CLIENT)
-    private Icon iconBase;
-
-    @SideOnly(Side.CLIENT)
     private Icon iconBaseOverlay;
 
     @SideOnly(Side.CLIENT)
@@ -493,8 +295,7 @@ public class ItemCondensedPotion extends ItemXR {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
-        iconBase = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.CONDENSED_POTION_NAME);
+    	super.registerIcons(iconRegister);
         iconBaseOverlay = iconRegister.registerIcon(Reference.MOD_ID
                 .toLowerCase() + ":" + Names.CONDENSED_POTION_OVERLAY_NAME);
 
@@ -509,13 +310,13 @@ public class ItemCondensedPotion extends ItemXR {
     @Override
     public Icon getIcon(ItemStack itemStack, int renderPass) {
         if (isEmptyVial(itemStack))
-            return iconBase;
+            return this.itemIcon;
         if (isPanacea(itemStack) || isPotion(itemStack)
                 || isBasePotion(itemStack) || isJustWater(itemStack)) {
             if (renderPass == 1)
                 return iconBaseOverlay;
             else
-                return iconBase;
+                return this.itemIcon;
         } else {
             if (renderPass == 1)
                 return iconSplashOverlay;

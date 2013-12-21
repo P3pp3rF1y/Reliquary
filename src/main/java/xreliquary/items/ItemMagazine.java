@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import java.util.List;
 
+import mods.themike.core.item.ItemBase;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,10 +12,19 @@ import xreliquary.Reliquary;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemMagazine extends ItemXR {
+public class ItemMagazine extends ItemBase {
+	
+    protected ItemMagazine(int par1) {
+        super(par1, Reference.MOD_ID, Names.MAGAZINE_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
+        this.setMaxStackSize(64);
+        canRepair = false;
+        this.setHasSubtypes(true);
+    }
 
     @SideOnly(Side.CLIENT)
     private Icon iconOverlay;
@@ -28,16 +38,14 @@ public class ItemMagazine extends ItemXR {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
-        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.MAGAZINE_NAME);
-        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.MAGAZINE_OVERLAY_NAME);
+    	super.registerIcons(iconRegister);
+        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.MAGAZINE_OVERLAY_NAME);
     }
 
     @Override
     public Icon getIcon(ItemStack itemStack, int renderPass) {
         if (itemStack.getItemDamage() == 0 || renderPass != 1)
-            return itemIcon;
+            return this.itemIcon;
         else
             return iconOverlay;
     }
@@ -76,84 +84,22 @@ public class ItemMagazine extends ItemXR {
         return Integer.parseInt(Colors.DARKEST, 16);
     }
 
-    protected ItemMagazine(int par1) {
-        super(par1);
-        this.setMaxStackSize(64);
-        canRepair = false;
-        this.setHasSubtypes(true);
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.MAGAZINE_NAME);
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+    	if(stack.getItemDamage() == 0) {
+    		list.add(LanguageRegistry.instance().getStringLocalization("item." + Names.MAGAZINE_NAME + ".tooltip"));
+    	} else {
+    		list.add(LanguageRegistry.instance().getStringLocalization("item." + Names.BULLET_NAME + stack.getItemDamage() + ".tooltip"));
+    	}
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        int i = par1ItemStack.getItemDamage();
-        switch (i) {
-        case 0:
-            par3List.add("An empty magazine.");
-            break;
-        case 1:
-            par3List.add("Ordinary bullets.");
-            break;
-        case 2:
-            par3List.add("Effective vs. undead.");
-            break;
-        case 3:
-            par3List.add("Deal bonus fire damage.");
-            break;
-        case 4:
-            par3List.add("Pierce enemies.");
-            break;
-        case 5:
-            par3List.add("Deal damage to a small area.");
-            break;
-        case 6:
-            par3List.add("Create a sizable explosion.");
-            break;
-        case 7:
-            par3List.add("Seek targets.");
-            break;
-        case 8:
-            par3List.add("Blind targets. Wreck creepers.");
-            break;
-        case 9:
-            par3List.add("Causes atmospheric weirdness.");
-            break;
-        }
+    public String getUnlocalizedName(ItemStack ist) {
+    	return "item.reliquaryMagazine" + ist.getItemDamage();
     }
 
     @Override
-    public String getItemDisplayName(ItemStack ist) {
-        switch (ist.getItemDamage()) {
-        case 0:
-            return Names.MAGAZINE_0_LOCAL;
-        case 1:
-            return Names.MAGAZINE_1_LOCAL;
-        case 2:
-            return Names.MAGAZINE_2_LOCAL;
-        case 3:
-            return Names.MAGAZINE_3_LOCAL;
-        case 4:
-            return Names.MAGAZINE_4_LOCAL;
-        case 5:
-            return Names.MAGAZINE_5_LOCAL;
-        case 6:
-            return Names.MAGAZINE_6_LOCAL;
-        case 7:
-            return Names.MAGAZINE_7_LOCAL;
-        case 8:
-            return Names.MAGAZINE_8_LOCAL;
-        case 9:
-            return Names.MAGAZINE_9_LOCAL;
-        default:
-            return Names.MAGAZINE_0_LOCAL;
-        }
-    }
-
-    @Override
-    public void getSubItems(int par1, CreativeTabs par2CreativeTabs,
-            List par3List) {
+    public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List) {
         par3List.add(new ItemStack(par1, 1, 0));
         par3List.add(new ItemStack(par1, 1, 1));
         par3List.add(new ItemStack(par1, 1, 2));

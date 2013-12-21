@@ -25,10 +25,12 @@ public class XRBlocks {
         lilypad = new BlockFertileLilypad(Reliquary.CONFIG.getBlock("Lilypad", Indexes.LILYPAD_DEFAULT_ID).getInt(Indexes.LILYPAD_DEFAULT_ID));
         wraithNode = new BlockWraithNode(Reliquary.CONFIG.getBlock("WraithNode", Indexes.WRAITH_NODE_DEFAULT_ID).getInt(Indexes.WRAITH_NODE_DEFAULT_ID));
 
+        /*
         LanguageRegistry.addName(altarActive, Names.ALTAR_LOCAL);
         LanguageRegistry.addName(altarIdle, Names.ALTAR_LOCAL);
         LanguageRegistry.addName(lilypad, Names.LILYPAD_LOCAL);
         LanguageRegistry.addName(wraithNode, Names.WRAITHNODE_LOCAL);
+        */
 
         GameRegistry.registerBlock(altarActive, Names.ALTAR_ACTIVE_NAME);
         GameRegistry.registerBlock(altarIdle, Names.ALTAR_IDLE_NAME);

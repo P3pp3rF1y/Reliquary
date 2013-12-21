@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import java.util.List;
 
+import mods.themike.core.item.ItemBase;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,18 +16,19 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
+import xreliquary.lib.Reference;
+import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemSojournerStaff extends ItemXR {
+public class ItemSojournerStaff extends ItemBase {
 
     protected ItemSojournerStaff(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.TORCH_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(513);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.TORCH_NAME);
     }
 
     @Override
@@ -39,13 +41,6 @@ public class ItemSojournerStaff extends ItemXR {
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack) {
         return true;
-    }
-
-    @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("Consumes torches, can place them");
-        par3List.add("long distance, but costs extra.");
     }
 
     @Override
@@ -161,15 +156,15 @@ public class ItemSojournerStaff extends ItemXR {
     }
 
     private void decrementCooldown(ItemStack ist) {
-        this.setShort("cooldown", ist, this.getShort("cooldown", ist) - 1);
+    	NBTHelper.setShort("cooldown", ist, NBTHelper.getShort("cooldown", ist) - 1);
     }
 
     private boolean isOnCooldown(ItemStack ist) {
-        return this.getShort("cooldown", ist) > 0;
+        return NBTHelper.getShort("cooldown", ist) > 0;
     }
 
     private void setCooldown(ItemStack ist) {
-        this.setShort("cooldown", ist, 10);
+    	NBTHelper.setShort("cooldown", ist, 10);
     }
 
     @Override

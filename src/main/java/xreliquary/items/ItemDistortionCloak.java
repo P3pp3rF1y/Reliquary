@@ -2,6 +2,9 @@ package xreliquary.items;
 
 import java.util.List;
 
+import com.google.common.collect.ImmutableMap;
+
+import mods.themike.core.item.ItemBase;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,27 +24,23 @@ import xreliquary.common.TimeKeeperHandler;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemDistortionCloak extends ItemXR {
+public class ItemDistortionCloak extends ItemBase {
 
     protected ItemDistortionCloak(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.DISTORTION_CLOAK_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(2401);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.DISTORTION_CLOAK_NAME);
     }
 
     @Override
-    public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer,
-            List par3List, boolean par4) {
-        par3List.add("Right click: invisibility, sneak to teleport.");
-        par3List.add("Consumes ender pearls for its charge.");
-        par3List.add("Currently " + getChargeTime(ist) / 1200 + "m"
-                + getChargeTime(ist) / 20 % 60 + "s remaining.");
+    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+        this.formatTooltip(ImmutableMap.of("minutes", String.valueOf(getChargeTime(stack) / 1200), "seconds", String.valueOf(getChargeTime(stack) / 20 % 60)), stack, list);
     }
 
     @Override
@@ -57,7 +56,7 @@ public class ItemDistortionCloak extends ItemXR {
     }
 
     public boolean isActive(ItemStack ist) {
-        return getBoolean("isActive", ist);
+        return NBTHelper.getBoolean("isActive", ist);
     }
 
     public void toggleActive(ItemStack ist) {
@@ -65,14 +64,11 @@ public class ItemDistortionCloak extends ItemXR {
     }
 
     public void setActive(ItemStack ist, boolean b) {
-        setBoolean("isActive", ist, b);
+        NBTHelper.setBoolean("isActive", ist, b);
     }
 
     @SideOnly(Side.CLIENT)
     private Icon iconOverlay;
-
-    @SideOnly(Side.CLIENT)
-    private Icon iconBase;
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -83,16 +79,14 @@ public class ItemDistortionCloak extends ItemXR {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
-        iconBase = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.DISTORTION_CLOAK_NAME);
-        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":" + Names.DISTORTION_CLOAK_OVERLAY_NAME);
+        super.registerIcons(iconRegister);
+        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.DISTORTION_CLOAK_OVERLAY_NAME);
     }
 
     @Override
     public Icon getIcon(ItemStack itemStack, int renderPass) {
         if (renderPass != 1)
-            return iconBase;
+            return this.itemIcon;
         else
             return iconOverlay;
     }
@@ -161,27 +155,27 @@ public class ItemDistortionCloak extends ItemXR {
     }
 
     private void decreaseChargeTime(ItemStack ist) {
-        this.setShort("chargeTime", ist, getChargeTime(ist) - 1);
+        NBTHelper.setShort("chargeTime", ist, getChargeTime(ist) - 1);
     }
 
     private void resetChargeTime(ItemStack ist) {
-        this.setShort("chargeTime", ist, 2400);
+        NBTHelper.setShort("chargeTime", ist, 2400);
     }
 
     private int getChargeTime(ItemStack ist) {
-        return this.getShort("chargeTime", ist);
+        return NBTHelper.getShort("chargeTime", ist);
     }
 
     private void decrementCooldown(ItemStack ist) {
-        this.setShort("cooldown", ist, this.getShort("cooldown", ist) - 1);
+        NBTHelper.setShort("cooldown", ist, NBTHelper.getShort("cooldown", ist) - 1);
     }
 
     private boolean isOnCooldown(ItemStack ist) {
-        return this.getShort("cooldown", ist) > 0;
+        return NBTHelper.getShort("cooldown", ist) > 0;
     }
 
     private void setCooldown(ItemStack ist) {
-        this.setShort("cooldown", ist, 10);
+        NBTHelper.setShort("cooldown", ist, 10);
     }
 
     @Override

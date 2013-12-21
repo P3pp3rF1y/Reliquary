@@ -19,6 +19,7 @@ import net.minecraft.util.DamageSource;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -36,11 +37,7 @@ public class ItemMagicbane extends ItemSword {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
-        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()
-                + ":"
-                + this.getUnlocalizedName().substring(
-                        this.getUnlocalizedName().indexOf(".") + 1));
-
+        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1));
     }
 
     @Override
@@ -50,10 +47,10 @@ public class ItemMagicbane extends ItemSword {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("A rustproof, ensorcelled artifact.");
-        par3List.add("Unfortunately not unbreakable.");
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+    	String formatter = LanguageRegistry.instance().getStringLocalization("item." + Names.MAGICBANE_NAME + ".tooltip");
+    	for(String result : formatter.split("\n"))
+    		par3List.add(result);
     }
 
     @Override

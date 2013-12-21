@@ -2,6 +2,9 @@ package xreliquary.items;
 
 import java.util.List;
 
+import com.google.common.collect.ImmutableMap;
+
+import mods.themike.core.item.ItemBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,18 +16,18 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
+public class ItemVoidSatchel extends ItemBase implements IVoidUpgradable {
 
     public ItemVoidSatchel(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.VOID_SATCHEL_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(0);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.VOID_SATCHEL_NAME);
     }
 
     @Override
@@ -34,29 +37,22 @@ public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
     }
 
     @Override
-    public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer,
-            List par3List, boolean par4) {
+    public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List list, boolean par4) {
         NBTTagCompound tag = ist.getTagCompound();
-        String details0 = "This Void Satchel currently ";
-        String details1 = "holds ";
-        String capacity = "It has a capacity of ";
-        if (tag == null
-                || new ItemStack(tag.getShort("itemID"), 1,
-                        tag.getShort("itemMeta")).getItem() == null) {
-            details1 += "nothing.";
-            capacity += Reference.CAPACITY_UPGRADE_INCREMENT;
+        String holds = null;
+        String capacity = null;
+        if (tag == null || new ItemStack(tag.getShort("itemID"), 1, tag.getShort("itemMeta")).getItem() == null) {
+           	holds = "nothing";
+            capacity = String.valueOf(Reference.CAPACITY_UPGRADE_INCREMENT);
         } else {
-            ItemStack contents = new ItemStack(tag.getShort("itemID"), 1,
-                    tag.getShort("itemMeta"));
+            ItemStack contents = new ItemStack(tag.getShort("itemID"), 1, tag.getShort("itemMeta"));
             String itemName = contents.getDisplayName();
-            details1 += tag.getShort("itemQuantity") + "x " + itemName;
-            capacity += this.getCapacity(ist);
+            holds = tag.getShort("itemQuantity") + "x " + itemName;
+            capacity = String.valueOf(this.getCapacity(ist));
         }
-        par3List.add(details0);
-        par3List.add(details1);
-        par3List.add(capacity);
+        this.formatTooltip(ImmutableMap.of("holds", holds, "capacity", capacity), ist, list);
     }
-
+    
     @Override
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack) {
@@ -64,7 +60,7 @@ public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
     }
 
     private boolean getIsTurnedOn(ItemStack stack) {
-        return getBoolean("isTurnedOn", stack);
+        return NBTHelper.getBoolean("isTurnedOn", stack);
     }
 
     @Override
@@ -86,7 +82,7 @@ public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world,
             EntityPlayer player) {
-        setBoolean("isTurnedOn", ist, !getIsTurnedOn(ist));
+    	NBTHelper.setBoolean("isTurnedOn", ist, !getIsTurnedOn(ist));
         return ist;
     }
 
@@ -96,14 +92,14 @@ public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
         // spew contents onto ground only if aiming at top of a block. Else,
         // toggle satchel.
         if (side == 1) {
-            setBoolean("isTurnedOn", ist, false);
-            int quantity = getShort("itemQuantity", ist) >= 64 ? player
-                    .isSneaking() ? getShort("itemQuantity", ist) : 64
-                    : getShort("itemQuantity", ist);
+        	NBTHelper.setBoolean("isTurnedOn", ist, false);
+            int quantity = NBTHelper.getShort("itemQuantity", ist) >= 64 ? player
+                    .isSneaking() ? NBTHelper.getShort("itemQuantity", ist) : 64
+                    : NBTHelper.getShort("itemQuantity", ist);
             int depletedBy = 0;
             while (quantity > 0) {
-                ItemStack contents = new ItemStack(getShort("itemID", ist), 1,
-                        getShort("itemMeta", ist));
+                ItemStack contents = new ItemStack(NBTHelper.getShort("itemID", ist), 1,
+                		NBTHelper.getShort("itemMeta", ist));
                 if (quantity > contents.getMaxStackSize()) {
                     contents.stackSize = contents.getMaxStackSize();
                     quantity -= contents.getMaxStackSize();
@@ -120,8 +116,7 @@ public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
                         z + 0.5F, contents);
                 world.spawnEntityInWorld(item);
             }
-            setShort("itemQuantity", ist, getShort("itemQuantity", ist)
-                    - depletedBy);
+            NBTHelper.setShort("itemQuantity", ist, NBTHelper.getShort("itemQuantity", ist) - depletedBy);
         }
         return true;
     }
@@ -215,15 +210,15 @@ public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
     }
 
     private boolean isSatchelFull(ItemStack ist) {
-        return getShort("itemQuantity", ist) >= getCapacity(ist);
+        return NBTHelper.getShort("itemQuantity", ist) >= getCapacity(ist);
     }
 
     public void decreaseSatchelQuantity(ItemStack ist) {
-        setShort("itemQuantity", ist, getShort("itemQuantity", ist) - 1);
+    	NBTHelper.setShort("itemQuantity", ist, NBTHelper.getShort("itemQuantity", ist) - 1);
     }
 
     public void increaseSatchelQuantity(ItemStack ist) {
-        setShort("itemQuantity", ist, getShort("itemQuantity", ist) + 1);
+    	NBTHelper.setShort("itemQuantity", ist, NBTHelper.getShort("itemQuantity", ist) + 1);
     }
 
     public boolean findAndRemove(IInventory inventory, ItemStack ist) {
@@ -241,7 +236,7 @@ public class ItemVoidSatchel extends ItemXR implements IVoidUpgradable {
     }
 
     public ItemStack getTargetItem(ItemStack ist) {
-        return new ItemStack(this.getShort("itemID", ist), 1, this.getShort(
+        return new ItemStack(NBTHelper.getShort("itemID", ist), 1, NBTHelper.getShort(
                 "itemMeta", ist));
     }
 

@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import java.util.List;
 
+import mods.themike.core.item.ItemBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -11,18 +12,18 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntitySpecialSnowball;
 import xreliquary.lib.Names;
+import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemIceRod extends ItemXR {
+public class ItemIceRod extends ItemBase {
 
     protected ItemIceRod(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.ICE_ROD_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(257);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.ICE_ROD_NAME);
     }
 
     @Override
@@ -35,13 +36,6 @@ public class ItemIceRod extends ItemXR {
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack) {
         return true;
-    }
-
-    @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("Consumes snowballs in inventory.");
-        par3List.add("Makes snowballs a bit colder...");
     }
 
     @Override

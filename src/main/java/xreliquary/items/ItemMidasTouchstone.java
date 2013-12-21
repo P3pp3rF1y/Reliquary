@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import java.util.List;
 
+import mods.themike.core.item.ItemBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumArmorMaterial;
@@ -14,18 +15,19 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
+import xreliquary.lib.Reference;
+import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemMidasTouchstone extends ItemXR {
+public class ItemMidasTouchstone extends ItemBase {
 
     public ItemMidasTouchstone(int par1) {
-        super(par1);
+        super(par1, Reference.MOD_ID, Names.TOUCHSTONE_NAME);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(257);
         this.setMaxStackSize(1);
         canRepair = false;
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setUnlocalizedName(Names.TOUCHSTONE_NAME);
     }
 
     @Override
@@ -38,13 +40,6 @@ public class ItemMidasTouchstone extends ItemXR {
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack) {
         return true;
-    }
-
-    @Override
-    public void addInformation(ItemStack par1ItemStack,
-            EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("Repairs items made of gold;");
-        par3List.add("consumes glowstone dust.");
     }
 
     @Override
@@ -70,11 +65,11 @@ public class ItemMidasTouchstone extends ItemXR {
     }
 
     private void decrementCooldown(ItemStack ist) {
-        this.setShort("cooldown", ist, this.getShort("cooldown", ist) - 1);
+    	NBTHelper.setShort("cooldown", ist, NBTHelper.getShort("cooldown", ist) - 1);
     }
 
     private int getCooldown(ItemStack ist) {
-        return this.getShort("cooldown", ist);
+        return NBTHelper.getShort("cooldown", ist);
     }
 
     private boolean findAndConsumeGlowstoneDust(ItemStack ist,
@@ -151,7 +146,7 @@ public class ItemMidasTouchstone extends ItemXR {
     }
 
     private void setCooldown(ItemStack ist) {
-        this.setShort("cooldown", ist, 4);
+    	NBTHelper.setShort("cooldown", ist, 4);
     }
 
     private boolean decrementTouchStoneCharge(ItemStack ist) {

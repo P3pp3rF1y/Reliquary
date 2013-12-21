@@ -1,20 +1,11 @@
-package xreliquary.items;
+package xreliquary.util;
 
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import xreliquary.lib.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemXR extends Item {
-
-    protected ItemXR(int par1) {
-        super(par1);
-    }
-
-    public int getShort(String s, ItemStack ist) {
+public class NBTHelper {
+	
+    public static int getShort(String s, ItemStack ist) {
         if (ist.getTagCompound() == null) {
             ist.setTagCompound(new NBTTagCompound());
         }
@@ -26,7 +17,7 @@ public class ItemXR extends Item {
 
     }
 
-    public void setShort(String s, ItemStack ist, int i) {
+    public static void setShort(String s, ItemStack ist, int i) {
         if (ist.getTagCompound() == null) {
             ist.setTagCompound(new NBTTagCompound());
         }
@@ -34,7 +25,7 @@ public class ItemXR extends Item {
         tagCompound.setShort(s, (short) i);
     }
     
-    public void setInteger(String s, ItemStack ist, int i) {
+    public static void setInteger(String s, ItemStack ist, int i) {
         if (ist.getTagCompound() == null) {
             ist.setTagCompound(new NBTTagCompound());
         }
@@ -42,7 +33,7 @@ public class ItemXR extends Item {
         tagCompound.setInteger(s, (int) i);
     }
 
-    public boolean getBoolean(String s, ItemStack ist) {
+    public static boolean getBoolean(String s, ItemStack ist) {
         if (ist.getTagCompound() == null) {
             ist.setTagCompound(new NBTTagCompound());
         }
@@ -54,7 +45,7 @@ public class ItemXR extends Item {
 
     }
 
-    public void setBoolean(String s, ItemStack ist, boolean b) {
+    public static void setBoolean(String s, ItemStack ist, boolean b) {
         if (ist.getTagCompound() == null) {
             ist.setTagCompound(new NBTTagCompound());
         }
@@ -62,9 +53,4 @@ public class ItemXR extends Item {
         tagCompound.setBoolean(s, b);
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IconRegister iconRegister) {
-        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1));
-    }
 }
