@@ -8,6 +8,7 @@ import xreliquary.Reliquary;
 import xreliquary.blocks.TEAltar;
 import xreliquary.blocks.XRBlocks;
 import xreliquary.common.TimeKeeperHandler;
+import xreliquary.common.gui.GUIHandler;
 import xreliquary.entities.EntityBlazeShot;
 import xreliquary.entities.EntityBusterShot;
 import xreliquary.entities.EntityConcussiveShot;
@@ -34,6 +35,7 @@ import xreliquary.items.XRItems;
 import xreliquary.items.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.common.ITickHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -57,6 +59,7 @@ public class CommonProxy {
 	}
 
 	public void init() {
+		NetworkRegistry.instance().registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
 		this.registerEntities();
 		this.registerTileEntities();
 	}

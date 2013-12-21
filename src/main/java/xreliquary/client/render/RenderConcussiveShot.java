@@ -1,4 +1,4 @@
-package xreliquary.client;
+package xreliquary.client.render;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
@@ -7,14 +7,14 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import xreliquary.entities.EntitySeekerShot;
+import xreliquary.entities.EntityConcussiveShot;
 import xreliquary.lib.ClientReference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderSeekerShot extends Render {
-	public void doRenderSeekerShot(EntitySeekerShot entityShot, double par2, double par4, double par6, float par8, float par9) {
+public class RenderConcussiveShot extends Render {
+	public void doRenderConcussiveShot(EntityConcussiveShot entityShot, double par2, double par4, double par6, float par8, float par9) {
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) par2, (float) par4, (float) par6);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -43,11 +43,11 @@ public class RenderSeekerShot extends Render {
 	 */
 	@Override
 	public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-		this.doRenderSeekerShot((EntitySeekerShot) par1Entity, par2, par4, par6, par8, par9);
+		this.doRenderConcussiveShot((EntityConcussiveShot) par1Entity, par2, par4, par6, par8, par9);
 	}
 
 	@Override
 	protected ResourceLocation getEntityTexture(Entity entity) {
-		return ClientReference.SEEKER;
+		return ClientReference.CONCUSSIVE;
 	}
 }

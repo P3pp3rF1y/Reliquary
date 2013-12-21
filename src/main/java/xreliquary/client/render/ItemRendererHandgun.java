@@ -1,4 +1,4 @@
-package xreliquary.client;
+package xreliquary.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;

@@ -1,4 +1,4 @@
-package xreliquary.client;
+package xreliquary.client.render;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
