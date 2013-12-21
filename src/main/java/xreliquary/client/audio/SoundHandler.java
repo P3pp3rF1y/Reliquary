@@ -9,21 +9,19 @@ import xreliquary.util.LogHelper;
 
 public class SoundHandler {
 
-    @ForgeSubscribe
-    public void onSound(SoundLoadEvent event) {
-        for (String soundFile : Reference.soundFiles) {
+	@ForgeSubscribe
+	public void onSound(SoundLoadEvent event) {
+		for (String soundFile : Reference.soundFiles) {
 
-            try {
-                event.manager.soundPoolSounds.addSound(soundFile);
-                System.out.println(this.getClass().getResource("/" + soundFile)
-                        .toString());
-            }
-            // If we cannot add the custom sound file to the pool, log the
-            // exception
-            catch (Exception e) {
-                LogHelper.log(Level.WARNING, "Failed loading sound file: "
-                        + soundFile);
-            }
-        }
-    }
+			try {
+				event.manager.soundPoolSounds.addSound(soundFile);
+				System.out.println(this.getClass().getResource("/" + soundFile).toString());
+			}
+			// If we cannot add the custom sound file to the pool, log the
+			// exception
+			catch (Exception e) {
+				LogHelper.log(Level.WARNING, "Failed loading sound file: " + soundFile);
+			}
+		}
+	}
 }

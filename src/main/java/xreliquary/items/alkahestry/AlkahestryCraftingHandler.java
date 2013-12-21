@@ -16,15 +16,15 @@ public class AlkahestryCraftingHandler implements ICraftingHandler {
 		boolean isCharging = false;
 		int tomb = 9;
 		AlkahestRecipe recipe = null;
-		for(int count = 0; count < inv.getSizeInventory(); count++) {
+		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
-			if(stack != null) {
-				if(stack.itemID == XRItems.alkahestryTome.itemID) {
+			if (stack != null) {
+				if (stack.itemID == XRItems.alkahestryTome.itemID) {
 					tomb = count;
-				} else if(stack.itemID == Item.redstone.itemID || stack.itemID == Block.blockRedstone.blockID) {
+				} else if (stack.itemID == Item.redstone.itemID || stack.itemID == Block.blockRedstone.blockID) {
 					isCharging = true;
 				} else {
-					if(Alkahestry.getDictionaryKey(stack) == null) {
+					if (Alkahestry.getDictionaryKey(stack) == null) {
 						recipe = Alkahestry.getRegistry().get(stack.itemID);
 					} else {
 						recipe = Alkahestry.getDictionaryKey(stack);
@@ -32,9 +32,9 @@ public class AlkahestryCraftingHandler implements ICraftingHandler {
 				}
 			}
 		}
-		if(tomb != 9 && isCharging) {
+		if (tomb != 9 && isCharging) {
 			inv.setInventorySlotContents(tomb, null);
-		} else if(tomb != 9 && !isCharging && recipe != null) {
+		} else if (tomb != 9 && !isCharging && recipe != null) {
 			ItemStack temp = inv.getStackInSlot(tomb);
 			temp.setItemDamage(temp.getItemDamage() + recipe.cost);
 			inv.setInventorySlotContents(tomb, temp);
@@ -43,7 +43,7 @@ public class AlkahestryCraftingHandler implements ICraftingHandler {
 
 	@Override
 	public void onSmelting(EntityPlayer player, ItemStack item) {
-		
+
 	}
 
 }

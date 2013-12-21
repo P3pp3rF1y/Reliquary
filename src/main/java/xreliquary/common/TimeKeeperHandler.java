@@ -7,48 +7,48 @@ import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
 public class TimeKeeperHandler implements ITickHandler {
-	
-    // this handler is specifically used to keep time for the Salamander's Eye
-    // blinking effect
-    private static int time;
 
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData) {
-    }
+	// this handler is specifically used to keep time for the Salamander's Eye
+	// blinking effect
+	private static int time;
 
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-        for (TickType tickType : type) {
-            if (tickType != TickType.CLIENT) {
-                continue;
-            }
-            if (getTime() > 88) {
-                resetTime();
-            } else {
-                incrementTime();
-            }
-        }
-    }
+	@Override
+	public void tickStart(EnumSet<TickType> type, Object... tickData) {
+	}
 
-    private static void incrementTime() {
-        time++;
-    }
+	@Override
+	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
+		for (TickType tickType : type) {
+			if (tickType != TickType.CLIENT) {
+				continue;
+			}
+			if (getTime() > 88) {
+				resetTime();
+			} else {
+				incrementTime();
+			}
+		}
+	}
 
-    private static void resetTime() {
-        time = 10;
-    }
+	private static void incrementTime() {
+		time++;
+	}
 
-    @Override
-    public EnumSet<TickType> ticks() {
-        return EnumSet.of(TickType.CLIENT);
-    }
+	private static void resetTime() {
+		time = 10;
+	}
 
-    @Override
-    public String getLabel() {
-        return Reference.MOD_NAME + ": " + this.getClass().getSimpleName();
-    }
+	@Override
+	public EnumSet<TickType> ticks() {
+		return EnumSet.of(TickType.CLIENT);
+	}
 
-    public static int getTime() {
-        return time;
-    }
+	@Override
+	public String getLabel() {
+		return Reference.MOD_NAME + ": " + this.getClass().getSimpleName();
+	}
+
+	public static int getTime() {
+		return time;
+	}
 }

@@ -18,45 +18,43 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemWitherlessRose extends ItemBase {
 
-    protected ItemWitherlessRose(int par1) {
-        super(par1, Reference.MOD_ID, Names.WITHERLESS_ROSE_NAME);
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setMaxDamage(0);
-        this.setMaxStackSize(1);
-        canRepair = false;
-    }
+	protected ItemWitherlessRose(int par1) {
+		super(par1, Reference.MOD_ID, Names.WITHERLESS_ROSE_NAME);
+		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+		this.setMaxDamage(0);
+		this.setMaxStackSize(1);
+		canRepair = false;
+	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public EnumRarity getRarity(ItemStack stack) {
+		return EnumRarity.epic;
+	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack) {
-        return true;
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean hasEffect(ItemStack stack) {
+		return true;
+	}
 
-    @Override
-    public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
-        EntityPlayer player = null;
-        if (!(e instanceof EntityPlayer))
-            return;
-        player = (EntityPlayer) e;
-        if (player.isPotionActive(Potion.wither.id)) {
-            player.removePotionEffect(Potion.wither.id);
-            for (int particles = 0; particles < 10; particles++) {
-                double gauss1 = gaussian(world.rand);
-                double gauss2 = gaussian(world.rand);
-                world.spawnParticle("mobSpell", player.posX + gauss1,
-                        player.posY + player.height / 2, player.posZ + gauss2,
-                        0.0, 0.0, 1.0);
-            }
-        }
-    }
+	@Override
+	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
+		EntityPlayer player = null;
+		if (!(e instanceof EntityPlayer))
+			return;
+		player = (EntityPlayer) e;
+		if (player.isPotionActive(Potion.wither.id)) {
+			player.removePotionEffect(Potion.wither.id);
+			for (int particles = 0; particles < 10; particles++) {
+				double gauss1 = gaussian(world.rand);
+				double gauss2 = gaussian(world.rand);
+				world.spawnParticle("mobSpell", player.posX + gauss1, player.posY + player.height / 2, player.posZ + gauss2, 0.0, 0.0, 1.0);
+			}
+		}
+	}
 
-    public double gaussian(Random rand) {
-        return rand.nextGaussian() / 6;
-    }
+	public double gaussian(Random rand) {
+		return rand.nextGaussian() / 6;
+	}
 }

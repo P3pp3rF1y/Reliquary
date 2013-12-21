@@ -15,31 +15,31 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 		ItemStack tomb = null;
 		boolean isRedstoneBlock = false;
 		int isCharging = 0;
-		for(int count = 0; count < inv.getSizeInventory(); count++) {
+		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
-			if(stack != null) {
-				if(stack.itemID == XRItems.alkahestryTome.itemID) {
+			if (stack != null) {
+				if (stack.itemID == XRItems.alkahestryTome.itemID) {
 					tomb = stack.copy();
-				} else if(stack.itemID == Item.redstone.itemID) {
-					if(isCharging == 0) {
+				} else if (stack.itemID == Item.redstone.itemID) {
+					if (isCharging == 0) {
 						isCharging = 1;
 					} else {
 						isCharging = 2;
 					}
-				} else if(stack.itemID == Block.blockRedstone.blockID) {
-					if(isCharging == 0) {
+				} else if (stack.itemID == Block.blockRedstone.blockID) {
+					if (isCharging == 0) {
 						isCharging = 1;
-						isRedstoneBlock = true; 
+						isRedstoneBlock = true;
 					} else {
 						isCharging = 2;
 					}
 				}
 			}
 		}
-		if(tomb != null && isCharging == 1 && tomb.getItemDamage() != 0) {
-			if(!isRedstoneBlock) {
+		if (tomb != null && isCharging == 1 && tomb.getItemDamage() != 0) {
+			if (!isRedstoneBlock) {
 				return true;
-			} else if(isRedstoneBlock && tomb.getItemDamage() >= 8) {
+			} else if (isRedstoneBlock && tomb.getItemDamage() >= 8) {
 				return true;
 			} else {
 				return false;
@@ -53,20 +53,20 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 	public ItemStack getCraftingResult(InventoryCrafting inv) {
 		ItemStack tomb = null;
 		boolean isRedstoneBlock = false;
-		for(int count = 0; count < inv.getSizeInventory(); count++) {
+		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
-			if(stack != null) {
-				if(stack.itemID == XRItems.alkahestryTome.itemID) {
+			if (stack != null) {
+				if (stack.itemID == XRItems.alkahestryTome.itemID) {
 					tomb = stack.copy();
-				} else if(stack.itemID == Block.blockRedstone.blockID) {
+				} else if (stack.itemID == Block.blockRedstone.blockID) {
 					isRedstoneBlock = true;
 				}
 			}
 		}
-		
-		if(isRedstoneBlock)
+
+		if (isRedstoneBlock)
 			tomb.setItemDamage(tomb.getItemDamage() - 9);
-		else 
+		else
 			tomb.setItemDamage(tomb.getItemDamage() - 1);
 		return tomb;
 	}

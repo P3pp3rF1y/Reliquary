@@ -14,10 +14,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderBlazeShot extends Render {
-	
+
 	public void doRenderBlazeShot(EntityBlazeShot entityShot, double par2, double par4, double par6, float par8, float par9) {
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float)par2, (float)par4, (float)par6);
+		GL11.glTranslatef((float) par2, (float) par4, (float) par6);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		GL11.glScalef(0.1F, 0.1F, 0.1F);
 		Tessellator var12 = Tessellator.instance;
@@ -33,7 +33,7 @@ public class RenderBlazeShot extends Render {
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		GL11.glPopMatrix();
 	}
-	
+
 	/**
 	 * Actually renders the given argument. This is a synthetic bridge method,
 	 * always casting down its argument and then handing it off to a worker
@@ -44,7 +44,7 @@ public class RenderBlazeShot extends Render {
 	 */
 	@Override
 	public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-		this.doRenderBlazeShot((EntityBlazeShot)par1Entity, par2, par4, par6, par8, par9);
+		this.doRenderBlazeShot((EntityBlazeShot) par1Entity, par2, par4, par6, par8, par9);
 	}
 
 	@Override

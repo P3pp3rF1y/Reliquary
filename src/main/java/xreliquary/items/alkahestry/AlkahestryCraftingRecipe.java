@@ -17,13 +17,13 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		ItemStack itemStack = null;
 		boolean isCharging = false;
 		int valid = 0;
-		for(int count = 0; count < inv.getSizeInventory(); count++) {
+		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
-			if(stack != null) {
-				if(stack.itemID == XRItems.alkahestryTome.itemID) {
+			if (stack != null) {
+				if (stack.itemID == XRItems.alkahestryTome.itemID) {
 					tomb = stack.copy();
 				} else if (stack.itemID != XRItems.alkahestryTome.itemID && stack.itemID != Block.blockRedstone.blockID) {
-					if(valid == 0) {
+					if (valid == 0) {
 						valid = 1;
 						itemStack = stack;
 					} else {
@@ -34,18 +34,18 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 				}
 			}
 		}
-		if(tomb != null && valid == 1 && !isCharging && itemStack != null) {
+		if (tomb != null && valid == 1 && !isCharging && itemStack != null) {
 			AlkahestRecipe recipe = null;
-			if(Alkahestry.getDictionaryKey(itemStack) == null) 
+			if (Alkahestry.getDictionaryKey(itemStack) == null)
 				recipe = Alkahestry.getRegistry().get(itemStack.itemID);
 			else
 				recipe = Alkahestry.getDictionaryKey(itemStack);
-			if(tomb.getItemDamage() + recipe.cost <= Reliquary.PROXY.tombRedstoneLimit) {
+			if (tomb.getItemDamage() + recipe.cost <= Reliquary.PROXY.tombRedstoneLimit) {
 				return true;
 			} else {
 				return false;
 			}
-			
+
 		} else {
 			return false;
 		}
@@ -53,13 +53,13 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv) {
-		AlkahestRecipe returned = null; 
+		AlkahestRecipe returned = null;
 		ItemStack dictStack = null;
-		for(int count = 0; count < inv.getSizeInventory(); count++) {
+		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
-			if(stack != null) {
-				if(stack.itemID != XRItems.alkahestryTome.itemID) {
-					if(Alkahestry.getDictionaryKey(stack) == null)
+			if (stack != null) {
+				if (stack.itemID != XRItems.alkahestryTome.itemID) {
+					if (Alkahestry.getDictionaryKey(stack) == null)
 						returned = Alkahestry.getRegistry().get(stack.itemID);
 					else {
 						returned = Alkahestry.getDictionaryKey(stack);
@@ -68,8 +68,8 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 				}
 			}
 		}
-		
-		if(dictStack == null)
+
+		if (dictStack == null)
 			return new ItemStack(returned.item.getItem(), returned.yield + 1, returned.item.getItemDamage());
 		else
 			return new ItemStack(dictStack.getItem(), returned.yield + 1, dictStack.getItemDamage());

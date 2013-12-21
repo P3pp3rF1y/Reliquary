@@ -8,16 +8,16 @@ import cpw.mods.fml.common.FMLLog;
 
 public class LogHelper {
 
-    private static Logger xrLogger = Logger.getLogger(Reference.MOD_NAME);
+	private static Logger xrLogger = Logger.getLogger(Reference.MOD_NAME);
 
-    public static void init() {
+	public static void init() {
 
-        xrLogger.setParent(FMLLog.getLogger());
-    }
+		xrLogger.setParent(FMLLog.getLogger());
+	}
 
-    public static void log(Level logLevel, String message) {
+	public static void log(Level logLevel, String message) {
 
-        xrLogger.log(logLevel, message);
-    }
+		xrLogger.log(logLevel, message);
+	}
 
 }
