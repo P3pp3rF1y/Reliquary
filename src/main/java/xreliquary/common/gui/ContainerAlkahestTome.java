@@ -3,9 +3,9 @@ package xreliquary.common.gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 
-public class ContainerAlkahestTomb extends Container {
+public class ContainerAlkahestTome extends Container {
 	
-	public ContainerAlkahestTomb() {
+	public ContainerAlkahestTome() {
 	}
 
 	@Override

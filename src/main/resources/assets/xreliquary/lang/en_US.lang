@@ -1,5 +1,7 @@
 itemGroup.xreliquary=Reliquary
 
+gui.tome.text=The Tomb of Alkahest\nis somewhat opposite\nof the theory of the\nAlkahest, as it allows\nfor the chemical \nmakeup of Redstone to\nmatch any other\nresource.
+
 item.reliquaryHandgun.name=Hunter's Handgun
 item.reliquaryHandgun.tooltip=For great justice.\nRight click fires, hold to reload.
 
