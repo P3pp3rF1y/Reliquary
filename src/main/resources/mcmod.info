@@ -1,7 +1,7 @@
 [
 {
   "modid": "xreliquary",
-  "name": "Xeno's Reliquary",
+  "name": "Reliquary",
   "description": "Two words: magical swag. Oh, and a gun.",
   "version": "${version}",
   "mcversion": "${mcversion}",

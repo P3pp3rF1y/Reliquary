@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiAlkahestTome extends GuiBase {
 	
-	private static final ResourceLocation BOOK_TEX = new ResourceLocation(Reference.MOD_ID, "/textures/gui/book.png");
+	private final ResourceLocation BOOK_TEX = new ResourceLocation(Reference.MOD_ID, "textures/gui/book.png");
 
 	public GuiAlkahestTome(Container container) {
 		super(container);
