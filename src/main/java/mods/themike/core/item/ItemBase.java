@@ -64,7 +64,6 @@ public class ItemBase extends Item {
 		String langTooltip = LanguageHelper.getLocalization(this.getUnlocalizedName(stack) + ".tooltip");
 		if (langTooltip == null)
 			return;
-		System.out.println(langTooltip);
 		if (toFormat != null) {
 			Iterator<Entry<String, String>> entrySet = toFormat.entrySet().iterator();
 			while (entrySet.hasNext()) {
