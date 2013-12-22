@@ -17,16 +17,16 @@ public abstract class GuiBase extends GuiContainer {
 	}
 	
 	/**
-	 * Draws a positioned set of strings, with a new line indicated by '\n'. 
+	 * Draws a positioned set of strings, with a new line indicated by ';'. 
 	 * @param renderer The font renderer. Should be 'mc.fontRenderer' unless your using the Galactic fontRenderer.
-	 * @param values The String to parse. New line indicated by '\n'.
+	 * @param values The String to parse. New line indicated by ';'.
 	 * @param x The x position of all of the lines.
 	 * @param baseY The base Y position. This will be modified by 9 each new line.
 	 * @param color The color value.
 	 */
     public void drawPositionedString(FontRenderer renderer, String values, int x, int baseY, int color) {
     	int count = 1;
-    	for(String value : values.split("\n")) {
+    	for(String value : values.split(";")) {
     		int y = baseY + (count * renderer.FONT_HEIGHT);
     		renderer.drawString(value, x + 15, y, color);
     		count++;
@@ -36,14 +36,14 @@ public abstract class GuiBase extends GuiContainer {
 	/**
 	 * Not much different from drawPositionedString(), but this centers the String on the x axis.
 	 * @param renderer The font renderer. Should be 'mc.fontRenderer' unless your using the Galactic fontRenderer.
-	 * @param values The String to parse. New line indicated by '\n'.
+	 * @param values The String to parse. New line indicated by ';'.
 	 * @param xLimit The maximum x value allowed for centering.
 	 * @param baseY The base Y position. This will be modified by 9 each new line.
 	 * @param color The color value.
 	 */
     public void drawCenteredPositionedString(FontRenderer renderer, String values, int xLimit, int baseY, int color) {
     	int count = 1;
-    	for(String value : values.split("\n")) {
+    	for(String value : values.split(";")) {
     		int x = (xLimit - renderer.getStringWidth(value)) / 2;
     		int y = baseY + (count * renderer.FONT_HEIGHT);
     		renderer.drawString(value, x + 15, y, color);

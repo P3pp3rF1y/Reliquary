@@ -50,10 +50,12 @@ public class ItemMagicbane extends ItemSword {
 	}
 
 	@Override
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-		String formatter = LanguageHelper.getLocalization("item." + Names.MAGICBANE_NAME + ".tooltip");
-		for (String result : formatter.split("\n"))
-			par3List.add(result);
+	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+		String value = LanguageHelper.getLocalization("item." + Names.MAGICBANE_NAME + ".tooltip");
+		for (String descriptionLine : value.split(";")) {
+			if (descriptionLine != null && descriptionLine.length() > 0)
+				list.add(descriptionLine);
+		}
 	}
 
 	@Override
