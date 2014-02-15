@@ -1,11 +1,10 @@
 package xreliquary.proxy;
 
-import net.minecraft.client.renderer.entity.RenderSnowball;
-import net.minecraft.item.Item;
+// TODO: Make Forge-only wrapper around this.
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
-import xreliquary.client.*;
-import xreliquary.client.audio.SoundHandler;
+
+import net.minecraft.init.Items;
+import net.minecraft.client.renderer.entity.RenderSnowball;
 import xreliquary.client.render.ItemRendererHandgun;
 import xreliquary.client.render.RenderBlazeShot;
 import xreliquary.client.render.RenderBusterShot;
@@ -31,7 +30,6 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void preInit() {
 		super.preInit();
-		MinecraftForge.EVENT_BUS.register(new SoundHandler());
 	}
 
 	@Override
@@ -53,7 +51,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntitySandShot.class, new RenderSandShot());
 		RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, new RenderStormShot());
 		RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, new RenderThrown(12));
-		RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, new RenderSnowball(Item.snowball));
+		RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, new RenderSnowball(Items.snowball));
 		RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, new RenderThrown(Reference.WATER_SPRITE));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedSplashAphrodite.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.APHRODITE_META));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedSplashPoison.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.POISON_META));
@@ -66,7 +64,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedSplashRuin.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.RUINATION_META));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedFertility.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.FERTILIZER_META));
 
-		MinecraftForgeClient.registerItemRenderer(XRItems.handgun.itemID, new ItemRendererHandgun());
+		MinecraftForgeClient.registerItemRenderer(XRItems.handgun, new ItemRendererHandgun());
 	}
 
 }

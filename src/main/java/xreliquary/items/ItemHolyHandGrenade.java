@@ -1,7 +1,5 @@
 package xreliquary.items;
 
-import java.util.List;
-
 import mods.themike.core.item.ItemBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;

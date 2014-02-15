@@ -19,7 +19,6 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.blocks.XRBlocks;
-import xreliquary.common.TimeKeeperHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.NBTHelper;
@@ -60,7 +59,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 		if (renderPass != 1)
 			return this.itemIcon;
 		else {
-			int i = TimeKeeperHandler.getTime();
+			// int i = TimeKeeperHandler.getTime();
 			i %= 80;
 			if (i < 7) {
 				// i == 0, open, i == 3, closed.

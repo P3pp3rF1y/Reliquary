@@ -1,45 +1,24 @@
 package xreliquary.proxy;
 
-import net.minecraft.item.ItemStack;
+// TODO: Remove these. We want to be FML-only, so I can use this on Minetweak too. (or find a way to support both)
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+
+import net.minecraft.item.ItemStack;
 import xreliquary.Reliquary;
 import xreliquary.blocks.TEAltar;
 import xreliquary.blocks.XRBlocks;
-import xreliquary.common.TimeKeeperHandler;
 import xreliquary.common.gui.GUIHandler;
-import xreliquary.entities.EntityBlazeShot;
-import xreliquary.entities.EntityBusterShot;
-import xreliquary.entities.EntityConcussiveShot;
-import xreliquary.entities.EntityCondensedFertility;
-import xreliquary.entities.EntityCondensedSplashAphrodite;
-import xreliquary.entities.EntityCondensedSplashBlindness;
-import xreliquary.entities.EntityCondensedSplashConfusion;
-import xreliquary.entities.EntityCondensedSplashHarm;
-import xreliquary.entities.EntityCondensedSplashPoison;
-import xreliquary.entities.EntityCondensedSplashRuin;
-import xreliquary.entities.EntityCondensedSplashSlowness;
-import xreliquary.entities.EntityCondensedSplashWeakness;
-import xreliquary.entities.EntityCondensedSplashWither;
-import xreliquary.entities.EntityEnderShot;
-import xreliquary.entities.EntityExorcismShot;
-import xreliquary.entities.EntityGlowingWater;
-import xreliquary.entities.EntityHolyHandGrenade;
-import xreliquary.entities.EntityNeutralShot;
-import xreliquary.entities.EntitySandShot;
-import xreliquary.entities.EntitySeekerShot;
-import xreliquary.entities.EntitySpecialSnowball;
+import xreliquary.entities.*;
 import xreliquary.entities.EntityStormShot;
 import xreliquary.items.XRItems;
 import xreliquary.items.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
-import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 public class CommonProxy {
 
@@ -48,7 +27,6 @@ public class CommonProxy {
 	public boolean disableCoinAudio;
 
 	public void preInit() {
-		this.registerTickHandlers();
 		this.initOptions();
 
 		XRItems.init();
@@ -59,7 +37,11 @@ public class CommonProxy {
 	}
 
 	public void init() {
-		NetworkRegistry.instance().registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
+		NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
+
+        // For later. This is where all the events will be called.
+        FMLCommonHandler.instance().bus().register(this);
+
 		this.registerEntities();
 		this.registerTileEntities();
 	}
@@ -100,9 +82,4 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityCondensedFertility.class, "entitySplashFertility", 21, Reliquary.INSTANCE, 128, 5, true);
 	}
 
-	public void registerTickHandlers() {
-
-		ITickHandler tickHandler = new TimeKeeperHandler();
-		TickRegistry.registerTickHandler(tickHandler, Side.CLIENT);
-	}
 }

@@ -37,6 +37,7 @@ public class ItemAlkahestryTome extends ItemBase {
 
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack ist) {
+		ist = null;
 		return false;
 	}
 
@@ -54,7 +55,9 @@ public class ItemAlkahestryTome extends ItemBase {
 	@Override
 	public ItemStack getContainerItemStack(ItemStack stack) {
 		ItemStack copy = stack.copy();
+		
 		copy.stackSize = 1;
+		
 		return copy;
 	}
 

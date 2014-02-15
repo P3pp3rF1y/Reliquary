@@ -1,6 +1,8 @@
 package xreliquary.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.Reliquary;
@@ -20,10 +22,10 @@ public class XRBlocks {
 	public static Block wraithNode;
 
 	public static void init() {
-		altarActive = new BlockAltar(Reliquary.CONFIG.getBlock("AltarActive", Indexes.ALTAR_ACTIVE_DEFAULT_ID).getInt(Indexes.ALTAR_ACTIVE_DEFAULT_ID), true);
-		altarIdle = new BlockAltar(Reliquary.CONFIG.getBlock("AltarIdle", Indexes.ALTAR_IDLE_DEFAULT_ID).getInt(Indexes.ALTAR_IDLE_DEFAULT_ID), false);
-		lilypad = new BlockFertileLilypad(Reliquary.CONFIG.getBlock("Lilypad", Indexes.LILYPAD_DEFAULT_ID).getInt(Indexes.LILYPAD_DEFAULT_ID));
-		wraithNode = new BlockWraithNode(Reliquary.CONFIG.getBlock("WraithNode", Indexes.WRAITH_NODE_DEFAULT_ID).getInt(Indexes.WRAITH_NODE_DEFAULT_ID));
+		altarActive = new BlockAltar(true);
+		altarIdle = new BlockAltar(false);
+		lilypad = new BlockFertileLilypad();
+		wraithNode = new BlockWraithNode();
 
 		/*
 		 * LanguageRegistry.addName(altarActive, Names.ALTAR_LOCAL);
@@ -42,13 +44,10 @@ public class XRBlocks {
 
 	public static void addRecipes() {
 
-		// altar
-		GameRegistry.addRecipe(new ItemStack(altarIdle, 1), new Object[] { "olo", "lel", "olo", 'o', Block.obsidian, 'l', Block.redstoneLampIdle, 'e', Item.emerald });
+		GameRegistry.addRecipe(new ItemStack(altarIdle, 1), "olo", "lel", "olo", 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'e', Items.emerald);
 
-		// lily
-		GameRegistry.addRecipe(new ItemStack(lilypad, 1), new Object[] { "www", "wlw", "www", 'w', XRItems.potion(Reference.FERTILIZER_META), 'l', Block.waterlily });
+		GameRegistry.addRecipe(new ItemStack(lilypad, 1), "www", "wlw", "www", 'w', XRItems.potion(Reference.FERTILIZER_META), 'l', Blocks.waterlily);
 
-		// wraithnode
-		GameRegistry.addRecipe(new ItemStack(wraithNode, 1), new Object[] { "vv", "vv", 'v', XRItems.emptyVoidTear });
+		GameRegistry.addRecipe(new ItemStack(wraithNode, 1), "vv", "vv", 'v', XRItems.emptyVoidTear);
 	}
 }

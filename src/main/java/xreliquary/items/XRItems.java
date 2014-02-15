@@ -38,6 +38,7 @@ public class XRItems {
 	public static Item emptyVoidTear;
 	public static Item voidTear;
 	public static Item voidSatchel;
+	public static Item heroMedallion;
 
 	public static ItemStack gunPart(int m) {
 		return gunPart(1, m);
@@ -96,7 +97,8 @@ public class XRItems {
 		wraithEye = new ItemWraithEye(Reliquary.CONFIG.getItem("WraithEye", Indexes.WRAITH_EYE_DEFAULT_ID).getInt(Indexes.WRAITH_EYE_DEFAULT_ID));
 		voidSatchel = new ItemVoidSatchel(Reliquary.CONFIG.getItem("Satchel", Indexes.SATCHEL_DEFAULT_ID).getInt(Indexes.SATCHEL_DEFAULT_ID));
 		destructionCatalyst = new ItemDestructionCatalyst(Reliquary.CONFIG.getItem("Catalyst", Indexes.DESTRUCTION_CATALYST_DEFAULT_ID).getInt(Indexes.DESTRUCTION_CATALYST_DEFAULT_ID));
-
+		heroMedallion = new ItemHeroMedallion(Reliquary.CONFIG.getItem("Hero's Medallion", Indexes.HEROS_MEDALLION_DEFAULT_ID).getInt(Indexes.HEROS_MEDALLION_DEFAULT_ID));
+		
 		addRecipes();
 	}
 

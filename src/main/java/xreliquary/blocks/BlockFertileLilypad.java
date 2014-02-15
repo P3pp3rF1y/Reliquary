@@ -3,14 +3,16 @@ package xreliquary.blocks;
 import java.util.List;
 import java.util.Random;
 
+import mods.themike.core.util.BlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityBoat;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import xreliquary.Reliquary;
@@ -21,25 +23,25 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockFertileLilypad extends BlockFlower {
 
-	protected BlockFertileLilypad(int par1) {
-		super(par1, Material.plants);
+	protected BlockFertileLilypad() {
+		super(0);
 		float var3 = 0.5F;
 		float var4 = 0.015625F;
 		this.setTickRandomly(true);
 		this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, var4, 0.5F + var3);
-		this.setUnlocalizedName(Names.LILYPAD_NAME);
+		this.setBlockName(Names.LILYPAD_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister) {
+	public void registerBlockIcons(IIconRegister iconRegister) {
 		blockIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.LILYPAD_NAME);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int side, int meta) {
+	public IIcon getIcon(int side, int meta) {
 		return blockIcon;
 	}
 
@@ -62,10 +64,9 @@ public class BlockFertileLilypad extends BlockFlower {
 					int x = xO + xD;
 					int y = yO + yD;
 					int z = zO + zD;
-					int id = world.getBlockId(x, y, z);
-					Block block = Block.blocksList[id];
+					Block block = world.getBlock(x, y, z);
 
-					if (id == blockID) {
+					if (block != null && Block.blockRegistry.getNameForObject(block).equals(BlockUtils.getBlockIdentifier(block))) {
 						continue;
 					}
 
@@ -96,12 +97,12 @@ public class BlockFertileLilypad extends BlockFlower {
 	}
 
 	@Override
-	protected boolean canThisPlantGrowOnThisBlockID(int par1) {
-		return par1 == Block.waterStill.blockID;
+	protected boolean canPlaceBlockOn(Block block) {
+		return block == null ? false : BlockUtils.getBlockIdentifier(block).equals(BlockUtils.getBlockIdentifier(Blocks.water));
 	}
 
 	@Override
-	public boolean canBlockStay(World par1World, int par2, int par3, int par4) {
-		return par3 >= 0 && par3 < 256 ? par1World.getBlockMaterial(par2, par3 - 1, par4) == Material.water && par1World.getBlockMetadata(par2, par3 - 1, par4) == 0 : false;
+	public boolean canBlockStay(World world, int par2, int par3, int par4) {
+		return par3 >= 0 && par3 < 256 ? world.getBlock(par2, par3 - 1, par4).getMaterial() == Material.water && world.getBlockMetadata(par2, par3 - 1, par4) == 0 : false;
 	}
 }

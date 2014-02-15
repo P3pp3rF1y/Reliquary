@@ -2,20 +2,25 @@ package xreliquary;
 
 import java.util.logging.Level;
 
+import net.minecraft.item.Item;
 import org.modstats.ModstatInfo;
 import org.modstats.Modstats;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.Configuration;
+
+// TODO: Use jTOML (https://github.com/asafh/jtoml) over Forge's configuration system. This will allow for a better/cleaner syntax, and Minetweak support.
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
 import xreliquary.proxy.CommonProxy;
 import xreliquary.util.AlkahestRecipe;
 import xreliquary.util.LogHelper;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -25,12 +30,10 @@ import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 @ModstatInfo(prefix = "reliquary")
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class Reliquary {
 
 	@Instance(Reference.MOD_ID)
@@ -46,10 +49,9 @@ public class Reliquary {
 	public void preInit(FMLPreInitializationEvent event) {
 		LogHelper.init();
 		CONFIG = new Configuration(event.getSuggestedConfigurationFile());
+
 		CONFIG.load();
-
 		PROXY.preInit();
-
 		CONFIG.save();
 	}
 
@@ -64,6 +66,9 @@ public class Reliquary {
 	@EventHandler
 	public void modsLoaded(FMLPostInitializationEvent event) {
 		LogHelper.log(Level.INFO, "Loaded successfully!");
+        if (event.getSide() == Side.CLIENT && !Loader.isModLoaded("NotEnoughItems")) {
+        	LogHelper.log(Level.INFO, "Hey NEI! I got a plugin for you!");
+        }
 	}
 
 	@EventHandler
@@ -79,9 +84,9 @@ public class Reliquary {
 						Alkahestry.addKey(new AlkahestRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
 					else
 						Alkahestry.addKey(new AlkahestRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
-					LogHelper.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + String.valueOf(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).itemID) + " from " + message.getSender() + " to registry.");
+					LogHelper.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + Item.itemRegistry.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item"))) + " from " + message.getSender() + " to registry.");
 				} else {
-					LogHelper.log(Level.WARNING, "[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occuring.");
+					LogHelper.log(Level.WARNING, "[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");
 				}
 			}
 		}

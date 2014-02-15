@@ -20,7 +20,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.common.TimeKeeperHandler;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -95,7 +94,7 @@ public class ItemDistortionCloak extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
 		if (renderPass == 1) {
-			int i = TimeKeeperHandler.getTime();
+			// int i = TimeKeeperHandler.getTime();
 			i %= 87;
 			if (i > 43) {
 				i = 87 - i;

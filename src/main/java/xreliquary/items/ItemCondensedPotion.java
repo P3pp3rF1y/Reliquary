@@ -24,7 +24,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import xreliquary.Reliquary;
 import xreliquary.items.XRItems;
-import xreliquary.common.TimeKeeperHandler;
 import xreliquary.entities.EntityCondensedFertility;
 import xreliquary.entities.EntityCondensedSplashAphrodite;
 import xreliquary.entities.EntityCondensedSplashBlindness;
@@ -327,7 +326,7 @@ public class ItemCondensedPotion extends ItemBase {
 		String red = "";
 		String green = "";
 		String blue = "";
-		int timeFactor = TimeKeeperHandler.getTime();
+		// int timeFactor = TimeKeeperHandler.getTime();
 		if (timeFactor > 43) {
 			timeFactor = 87 - timeFactor;
 		}

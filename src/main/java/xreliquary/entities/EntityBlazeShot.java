@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -22,7 +21,6 @@ public class EntityBlazeShot extends Entity implements IProjectile {
 	private int xTile = -1;
 	private int yTile = -1;
 	private int zTile = -1;
-	private int inTile = 0;
 	private int inData = 0;
 	private boolean inGround = false;
 
@@ -66,7 +64,7 @@ public class EntityBlazeShot extends Entity implements IProjectile {
 
 	@Override
 	protected void entityInit() {
-		dataWatcher.addObject(16, Byte.valueOf((byte) 0));
+		dataWatcher.addObject(16, (byte) 0);
 	}
 
 	/**
@@ -155,26 +153,18 @@ public class EntityBlazeShot extends Entity implements IProjectile {
 			prevRotationPitch = rotationPitch = (float) (Math.atan2(motionY, var1) * 180.0D / Math.PI);
 		}
 
-		int var16 = worldObj.getBlockId(xTile, yTile, zTile);
+		Block var16 = worldObj.getBlock(xTile, yTile, zTile);
 
-		if (var16 > 0) {
-			Block.blocksList[var16].setBlockBoundsBasedOnState(worldObj, xTile, yTile, zTile);
-			AxisAlignedBB var2 = Block.blocksList[var16].getCollisionBoundingBoxFromPool(worldObj, xTile, yTile, zTile);
+		if (var16 != null) {
+			var16.setBlockBoundsBasedOnState(worldObj, xTile, yTile, zTile);
+			AxisAlignedBB var2 = var16.getCollisionBoundingBoxFromPool(worldObj, xTile, yTile, zTile);
 
 			if (var2 != null && var2.isVecInside(worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ))) {
 				inGround = true;
 			}
 		}
 
-		if (inGround) {
-			int var18 = worldObj.getBlockId(xTile, yTile, zTile);
-			int var19 = worldObj.getBlockMetadata(xTile, yTile, zTile);
-
-			if (var18 == inTile && var19 == inData) {
-				// this.groundImpact();
-				// this.setDead();
-			}
-		} else {
+		if (!inGround) {
 			++ticksInAir;
 			if (ticksInAir > 1 && ticksInAir < 3) {
 				worldObj.spawnParticle("flame", posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0D, 0D, 0D);
@@ -258,7 +248,6 @@ public class EntityBlazeShot extends Entity implements IProjectile {
 		par1NBTTagCompound.setShort("xTile", (short) xTile);
 		par1NBTTagCompound.setShort("yTile", (short) yTile);
 		par1NBTTagCompound.setShort("zTile", (short) zTile);
-		par1NBTTagCompound.setByte("inTile", (byte) inTile);
 		par1NBTTagCompound.setByte("inData", (byte) inData);
 		par1NBTTagCompound.setByte("inGround", (byte) (inGround ? 1 : 0));
 	}
@@ -271,7 +260,6 @@ public class EntityBlazeShot extends Entity implements IProjectile {
 		xTile = par1NBTTagCompound.getShort("xTile");
 		yTile = par1NBTTagCompound.getShort("yTile");
 		zTile = par1NBTTagCompound.getShort("zTile");
-		inTile = par1NBTTagCompound.getByte("inTile") & 255;
 		inData = par1NBTTagCompound.getByte("inData") & 255;
 		inGround = par1NBTTagCompound.getByte("inGround") == 1;
 	}
@@ -333,7 +321,7 @@ public class EntityBlazeShot extends Entity implements IProjectile {
 			if (mop.entityHit == shootingEntity)
 				return;
 			this.onImpact(mop.entityHit);
-		} else if (mop.typeOfHit == EnumMovingObjectType.TILE) {
+		} else if (mop.typeOfHit == EnumObjectMovingType.) {
 			this.groundImpact(mop.sideHit);
 		}
 	}

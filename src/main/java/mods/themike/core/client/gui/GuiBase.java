@@ -58,12 +58,14 @@ public abstract class GuiBase extends GuiContainer {
      * @param y Where the stack will be placed on the y axis.
      */
     public void drawItemStack(ItemStack stack, int x, int y) {
+        /*
         this.zLevel = 200.0F;
         itemRenderer.zLevel = 200.0F;
         this.itemRenderer.renderItemAndEffectIntoGUI(stack.getItem().getFontRenderer(stack), this.mc.getTextureManager(), stack, x, y);
         this.itemRenderer.renderItemOverlayIntoGUI(stack.getItem().getFontRenderer(stack), this.mc.getTextureManager(), stack, x, y);
         this.zLevel = 0.0F;
         itemRenderer.zLevel = 0.0F;
+        */
     }
 
 	@Override

@@ -27,6 +27,7 @@ public class Indexes {
 	public static final int WRAITH_EYE_DEFAULT_ID = 27292;
 	public static final int EMPTY_VOID_TEAR_DEFAULT_ID = 27293;
 	public static final int SATCHEL_DEFAULT_ID = 27294;
+	public static final int HEROS_MEDALLION_DEFAULT_ID = 27295;
 	public static final int ALTAR_ACTIVE_DEFAULT_ID = 2727;
 	public static final int ALTAR_IDLE_DEFAULT_ID = 2728;
 	public static final int LILYPAD_DEFAULT_ID = 2729;
