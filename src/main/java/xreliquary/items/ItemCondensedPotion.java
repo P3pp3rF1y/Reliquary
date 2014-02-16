@@ -3,9 +3,8 @@ package xreliquary.items;
 import java.util.List;
 
 import mods.themike.core.item.ItemBase;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,15 +14,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumMovingObjectType;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import xreliquary.Reliquary;
-import xreliquary.items.XRItems;
 import xreliquary.entities.EntityCondensedFertility;
 import xreliquary.entities.EntityCondensedSplashAphrodite;
 import xreliquary.entities.EntityCondensedSplashBlindness;
@@ -42,8 +36,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCondensedPotion extends ItemBase {
 
-	protected ItemCondensedPotion(int par1) {
-		super(par1, Reference.MOD_ID, Names.CONDENSED_POTION_NAME);
+	protected ItemCondensedPotion() {
+		super(Reference.MOD_ID, Names.CONDENSED_POTION_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(16);
@@ -118,7 +112,7 @@ public class ItemCondensedPotion extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List) {
+	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
 		par3List.add(new ItemStack(par1, 1, 0));
 		par3List.add(new ItemStack(par1, 1, 1));
 		par3List.add(new ItemStack(par1, 1, 2));
@@ -272,13 +266,13 @@ public class ItemCondensedPotion extends ItemBase {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private Icon iconBaseOverlay;
+	private IIcon iconBaseOverlay;
 
 	@SideOnly(Side.CLIENT)
-	private Icon iconSplash;
+	private IIcon iconSplash;
 
 	@SideOnly(Side.CLIENT)
-	private Icon iconSplashOverlay;
+	private IIcon iconSplashOverlay;
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -288,7 +282,7 @@ public class ItemCondensedPotion extends ItemBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister) {
+	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
 		iconBaseOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.CONDENSED_POTION_OVERLAY_NAME);
 
@@ -297,7 +291,7 @@ public class ItemCondensedPotion extends ItemBase {
 	}
 
 	@Override
-	public Icon getIcon(ItemStack itemStack, int renderPass) {
+	public IIcon getIcon(ItemStack itemStack, int renderPass) {
 		if (isEmptyVial(itemStack))
 			return this.itemIcon;
 		if (isPanacea(itemStack) || isPotion(itemStack) || isBasePotion(itemStack) || isJustWater(itemStack)) {
@@ -327,9 +321,9 @@ public class ItemCondensedPotion extends ItemBase {
 		String green = "";
 		String blue = "";
 		// int timeFactor = TimeKeeperHandler.getTime();
-		if (timeFactor > 43) {
-			timeFactor = 87 - timeFactor;
-		}
+		//if (timeFactor > 43) {
+		//	timeFactor = 87 - timeFactor;
+		//}
 		int potion = itemStack.getItemDamage();
 		switch (potion) {
 		case Reference.SPEED_META:
@@ -445,12 +439,12 @@ public class ItemCondensedPotion extends ItemBase {
 					int var13 = mop.blockX;
 					int var14 = mop.blockY;
 					int var15 = mop.blockZ;
-					if (world.getBlockMaterial(var13, var14, var15) == Material.water) {
+					if (world.getBlock(var13, var14, var15).getMaterial() == Material.water) {
 						if (--ist.stackSize <= 0)
 							return new ItemStack(this, 1, waterVialMeta());
 
 						if (!player.inventory.addItemStackToInventory(new ItemStack(this, 1, waterVialMeta()))) {
-							player.dropPlayerItem(new ItemStack(this, 1, waterVialMeta()));
+							player.entityDropItem(new ItemStack(this, 1, waterVialMeta()), 0.1F);
 						}
 					}
 				}

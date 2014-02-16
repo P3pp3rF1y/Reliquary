@@ -1,17 +1,15 @@
 package xreliquary.items;
 
-import java.util.List;
-
 import mods.themike.core.item.ItemBase;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IconRegister;
+import mods.themike.core.util.ObjectUtils;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumMovingObjectType;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
@@ -22,8 +20,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemEmperorChalice extends ItemBase {
 
-	protected ItemEmperorChalice(int par1) {
-		super(par1, Reference.MOD_ID, Names.CHALICE_NAME);
+	protected ItemEmperorChalice() {
+		super(Reference.MOD_ID, Names.CHALICE_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -31,7 +29,7 @@ public class ItemEmperorChalice extends ItemBase {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private Icon iconOverlay;
+	private IIcon iconOverlay;
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -41,13 +39,13 @@ public class ItemEmperorChalice extends ItemBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister) {
+	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
 		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.CHALICE_OVERLAY_NAME);
 	}
 
 	@Override
-	public Icon getIcon(ItemStack itemStack, int renderPass) {
+	public IIcon getIcon(ItemStack itemStack, int renderPass) {
 		if (itemStack.getItemDamage() == 0 || renderPass != 1)
 			return this.itemIcon;
 		else
@@ -113,8 +111,9 @@ public class ItemEmperorChalice extends ItemBase {
 				if (!player.canPlayerEdit(var13, var14, var15, mop.sideHit, ist))
 					return ist;
 
-				if ((world.getBlockId(var13, var14, var15) == Block.waterMoving.blockID || world.getBlockId(var13, var14, var15) == Block.waterStill.blockID) && world.getBlockMetadata(var13, var14, var15) == 0) {
-					world.setBlock(var13, var14, var15, 0);
+                String ident = ObjectUtils.getBlockIdentifier(world.getBlock(var13, var14, var15));
+				if ((ident.equals(ObjectUtils.getBlockIdentifier(Blocks.flowing_water)) || ident.equals(ObjectUtils.getBlockIdentifier(Blocks.water))) && world.getBlockMetadata(var13, var14, var15) == 0) {
+					world.setBlock(var13, var14, var15, Blocks.air);
 
 					return new ItemStack(ist.getItem(), 1, 1);
 				}
@@ -160,7 +159,7 @@ public class ItemEmperorChalice extends ItemBase {
 	public boolean tryPlaceContainedLiquid(World par1World, ItemStack ist, double par2, double par4, double par6, int par8, int par9, int par10) {
 		if (ist.getItemDamage() != 1)
 			return false;
-		else if (!par1World.isAirBlock(par8, par9, par10) && par1World.getBlockMaterial(par8, par9, par10).isSolid())
+		else if (!par1World.isAirBlock(par8, par9, par10) && par1World.getBlock(par8, par9, par10).getMaterial().isSolid())
 			return false;
 		else {
 			if (par1World.provider.isHellWorld) {
@@ -170,7 +169,7 @@ public class ItemEmperorChalice extends ItemBase {
 					par1World.spawnParticle("largesmoke", par8 + Math.random(), par9 + Math.random(), par10 + Math.random(), 0.0D, 0.0D, 0.0D);
 				}
 			} else {
-				par1World.setBlock(par8, par9, par10, Block.waterMoving.blockID, 0, 3);
+				par1World.setBlock(par8, par9, par10, Blocks.flowing_water, 0, 3);
 			}
 
 			return true;

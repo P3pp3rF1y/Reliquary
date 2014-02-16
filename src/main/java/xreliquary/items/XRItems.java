@@ -4,14 +4,12 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.Reliquary;
+import xreliquary.event.WaterHandler;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
 import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
-import xreliquary.items.alkahestry.AlkahestryCraftingHandler;
 import xreliquary.lib.Indexes;
-import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class XRItems {
 	public static Item handgun;

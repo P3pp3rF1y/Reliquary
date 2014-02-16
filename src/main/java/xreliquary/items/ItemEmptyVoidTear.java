@@ -1,9 +1,11 @@
 package xreliquary.items;
 
 import mods.themike.core.item.ItemBase;
+import mods.themike.core.util.ObjectUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -13,8 +15,8 @@ import xreliquary.lib.Reference;
 
 public class ItemEmptyVoidTear extends ItemBase {
 
-	public ItemEmptyVoidTear(int par1) {
-		super(par1, Reference.MOD_ID, Names.EMPTY_VOID_TEAR_NAME);
+	public ItemEmptyVoidTear() {
+		super(Reference.MOD_ID, Names.EMPTY_VOID_TEAR_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);
@@ -38,8 +40,8 @@ public class ItemEmptyVoidTear extends ItemBase {
 
 	@Override
 	public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		if (world.getBlockTileEntity(x, y, z) instanceof IInventory) {
-			IInventory inventory = (IInventory) world.getBlockTileEntity(x, y, z);
+		if (world.getTileEntity(x, y, z) instanceof IInventory) {
+			IInventory inventory = (IInventory) world.getTileEntity(x, y, z);
 			ItemStack tear = compressInventoryIntoTearForPlayer(inventory, player);
 			if (tear != null) {
 				player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
@@ -59,11 +61,11 @@ public class ItemEmptyVoidTear extends ItemBase {
 		if (target == null)
 			return null;
 		int itemMeta = target.getItemDamage();
-		int itemID = target.itemID;
+		Item item = target.getItem();
 		int itemQuantity = getQuantityInInventory(target, inventory);
 		ItemStack tear = new ItemStack(XRItems.voidTear, 1);
-		tear.setTagCompound(createStackTagCompoundForTear(itemMeta, itemID, itemQuantity));
-		findAndRemoveQuantity(inventory, new ItemStack(itemID, 1, itemMeta), itemQuantity);
+		tear.setTagCompound(createStackTagCompoundForTear(itemMeta, ObjectUtils.getItemIdentifier(item), itemQuantity));
+		findAndRemoveQuantity(inventory, new ItemStack(item, 1, itemMeta), itemQuantity);
 		return tear;
 	}
 
@@ -89,9 +91,9 @@ public class ItemEmptyVoidTear extends ItemBase {
 		}
 	}
 
-	public NBTTagCompound createStackTagCompoundForTear(int meta, int ID, int quantity) {
+	public NBTTagCompound createStackTagCompoundForTear(int meta, String ID, int quantity) {
 		NBTTagCompound tear = new NBTTagCompound();
-		tear.setShort("itemID", (short) ID);
+		tear.setString("itemID", ID);
 		tear.setShort("itemMeta", (short) meta);
 		tear.setShort("itemQuantity", (short) quantity);
 		return tear;
@@ -105,7 +107,7 @@ public class ItemEmptyVoidTear extends ItemBase {
 			if (ist == null) {
 				continue;
 			}
-			if (ist.itemID == itemID) {
+			if (ObjectUtils.getItemIdentifier(ist.getItem()).equals(ObjectUtils.getItemIdentifier(this))) {
 				continue;
 			}
 			if (ist.getMaxStackSize() == 1) {

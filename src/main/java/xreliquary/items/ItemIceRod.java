@@ -1,12 +1,10 @@
 package xreliquary.items;
 
-import java.util.List;
-
 import mods.themike.core.item.ItemBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
@@ -18,8 +16,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemIceRod extends ItemBase {
 
-	protected ItemIceRod(int par1) {
-		super(par1, Reference.MOD_ID, Names.ICE_ROD_NAME);
+	protected ItemIceRod() {
+		super(Reference.MOD_ID, Names.ICE_ROD_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(257);
 		this.setMaxStackSize(1);
@@ -60,7 +58,7 @@ public class ItemIceRod extends ItemBase {
 			if (player.inventory.mainInventory[slot] == null) {
 				continue;
 			}
-			if (player.inventory.mainInventory[slot].getItem() == Item.snowball) {
+			if (player.inventory.mainInventory[slot].getItem() == Items.snowball) {
 				player.inventory.decrStackSize(slot, 1);
 				return true;
 			}

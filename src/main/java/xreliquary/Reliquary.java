@@ -76,7 +76,7 @@ public class Reliquary {
 		for (IMCMessage message : event.getMessages()) {
 			if (message.key.equals("DestructionCatalyst")) {
 				LogHelper.log(Level.INFO, "[IMC] Added block " + message.getStringValue() + " from " + message.getSender() + " was added to the Destruction Catalyst's registry.");
-				ItemDestructionCatalyst.ids.add(Integer.valueOf(message.getStringValue()));
+				ItemDestructionCatalyst.ids.add(message.getStringValue());
 			} else if (message.key.equals("Alkahest")) {
 				NBTTagCompound tag = message.getNBTValue();
 				if (tag != null && ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")) != null && tag.hasKey("yield") && tag.hasKey("cost")) {

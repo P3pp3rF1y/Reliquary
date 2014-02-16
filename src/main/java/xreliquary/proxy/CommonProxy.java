@@ -13,6 +13,7 @@ import xreliquary.blocks.XRBlocks;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.entities.*;
 import xreliquary.entities.EntityStormShot;
+import xreliquary.event.CommonEventHandler;
 import xreliquary.items.XRItems;
 import xreliquary.items.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
@@ -40,7 +41,7 @@ public class CommonProxy {
 		NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
 
         // For later. This is where all the events will be called.
-        FMLCommonHandler.instance().bus().register(this);
+        FMLCommonHandler.instance().bus().register(new CommonEventHandler());
 
 		this.registerEntities();
 		this.registerTileEntities();

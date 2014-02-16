@@ -8,6 +8,7 @@ import mods.themike.core.item.ItemBase;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
@@ -18,8 +19,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemAlkahestryTome extends ItemBase {
 
-	protected ItemAlkahestryTome(int par1) {
-		super(par1, Reference.MOD_ID, Names.TOME_NAME);
+	protected ItemAlkahestryTome() {
+		super(Reference.MOD_ID, Names.TOME_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(Reliquary.PROXY.tombRedstoneLimit + 1);
 		this.setMaxStackSize(1);
@@ -53,11 +54,10 @@ public class ItemAlkahestryTome extends ItemBase {
 	}
 
 	@Override
-	public ItemStack getContainerItemStack(ItemStack stack) {
+	public ItemStack getContainerItem(ItemStack stack) {
 		ItemStack copy = stack.copy();
 		
 		copy.stackSize = 1;
-		
 		return copy;
 	}
 
@@ -68,8 +68,8 @@ public class ItemAlkahestryTome extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(int ID, CreativeTabs tabs, List list) {
-		ItemStack tombStack = new ItemStack(ID, 1, 0);
+	public void getSubItems(Item item, CreativeTabs tabs, List list) {
+		ItemStack tombStack = new ItemStack(item, 1, 0);
 		tombStack.setItemDamage(Reliquary.PROXY.tombRedstoneLimit);
 		list.add(tombStack);
 	}

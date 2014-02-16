@@ -1,5 +1,7 @@
 package xreliquary.items.alkahestry;
 
+import mods.themike.core.util.ObjectUtils;
+import net.minecraft.init.Blocks;
 import xreliquary.Reliquary;
 import xreliquary.items.XRItems;
 import xreliquary.util.AlkahestRecipe;
@@ -20,9 +22,9 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (stack.itemID == XRItems.alkahestryTome.itemID) {
+				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(XRItems.alkahestryTome))) {
 					tomb = stack.copy();
-				} else if (stack.itemID != XRItems.alkahestryTome.itemID && stack.itemID != Block.blockRedstone.blockID) {
+				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
 					if (valid == 0) {
 						valid = 1;
 						itemStack = stack;
@@ -37,15 +39,10 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		if (tomb != null && valid == 1 && !isCharging && itemStack != null) {
 			AlkahestRecipe recipe = null;
 			if (Alkahestry.getDictionaryKey(itemStack) == null)
-				recipe = Alkahestry.getRegistry().get(itemStack.itemID);
+				recipe = Alkahestry.getRegistry().get(ObjectUtils.getItemIdentifier(itemStack.getItem()));
 			else
 				recipe = Alkahestry.getDictionaryKey(itemStack);
-			if (tomb.getItemDamage() + recipe.cost <= Reliquary.PROXY.tombRedstoneLimit) {
-				return true;
-			} else {
-				return false;
-			}
-
+			return (tomb.getItemDamage() + recipe.cost <= Reliquary.PROXY.tombRedstoneLimit);
 		} else {
 			return false;
 		}
@@ -58,9 +55,9 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (stack.itemID != XRItems.alkahestryTome.itemID) {
+				if (!(ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(XRItems.alkahestryTome)))) {
 					if (Alkahestry.getDictionaryKey(stack) == null)
-						returned = Alkahestry.getRegistry().get(stack.itemID);
+						returned = Alkahestry.getRegistry().get(ObjectUtils.getItemIdentifier(stack.getItem()));
 					else {
 						returned = Alkahestry.getDictionaryKey(stack);
 						dictStack = stack;

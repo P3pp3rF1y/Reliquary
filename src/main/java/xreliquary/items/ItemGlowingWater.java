@@ -1,7 +1,5 @@
 package xreliquary.items;
 
-import java.util.List;
-
 import mods.themike.core.item.ItemBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,8 +11,8 @@ import xreliquary.lib.Reference;
 
 public class ItemGlowingWater extends ItemBase {
 
-	protected ItemGlowingWater(int par1) {
-		super(par1, Reference.MOD_ID, Names.GLOWING_WATER_NAME);
+	protected ItemGlowingWater() {
+		super(Reference.MOD_ID, Names.GLOWING_WATER_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);

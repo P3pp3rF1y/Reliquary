@@ -3,24 +3,24 @@ package xreliquary.items;
 import java.util.List;
 
 import mods.themike.core.item.ItemBase;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import xreliquary.Reliquary;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.LanguageHelper;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMagazine extends ItemBase {
 
-	protected ItemMagazine(int par1) {
-		super(par1, Reference.MOD_ID, Names.MAGAZINE_NAME);
+	protected ItemMagazine() {
+		super(Reference.MOD_ID, Names.MAGAZINE_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(64);
 		canRepair = false;
@@ -28,7 +28,7 @@ public class ItemMagazine extends ItemBase {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private Icon iconOverlay;
+	private IIcon iconOverlay;
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -38,13 +38,13 @@ public class ItemMagazine extends ItemBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister) {
+	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
 		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.MAGAZINE_OVERLAY_NAME);
 	}
 
 	@Override
-	public Icon getIcon(ItemStack itemStack, int renderPass) {
+	public IIcon getIcon(ItemStack itemStack, int renderPass) {
 		if (itemStack.getItemDamage() == 0 || renderPass != 1)
 			return this.itemIcon;
 		else
@@ -100,7 +100,7 @@ public class ItemMagazine extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List) {
+	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
 		par3List.add(new ItemStack(par1, 1, 0));
 		par3List.add(new ItemStack(par1, 1, 1));
 		par3List.add(new ItemStack(par1, 1, 2));

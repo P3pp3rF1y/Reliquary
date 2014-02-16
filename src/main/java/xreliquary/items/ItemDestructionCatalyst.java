@@ -3,9 +3,13 @@ package xreliquary.items;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import mods.themike.core.item.ItemBase;
+import mods.themike.core.util.ObjectUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,10 +21,10 @@ import xreliquary.lib.Reference;
 
 public class ItemDestructionCatalyst extends ItemBase {
 
-	public static List<Integer> ids = new ArrayList<Integer>();
+	public static List<String> ids = ImmutableList.of("minecraft:dirt", "minecraft:grass", "minecraft:gravel", "minecraft:cobblestone", "minecraft:stone", "minecraft:sand", "minecraft:sandstone", "minecraft:snow", "minecraft:soul_sand", "minecraft:netherrack", "minecraft:end_stone");
 
-	protected ItemDestructionCatalyst(int par1) {
-		super(par1, Reference.MOD_ID, Names.DESTRUCTION_CATALYST_NAME);
+	protected ItemDestructionCatalyst() {
+		super(Reference.MOD_ID, Names.DESTRUCTION_CATALYST_NAME);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		canRepair = false;
@@ -44,8 +48,8 @@ public class ItemDestructionCatalyst extends ItemBase {
 		for (int xD = -1; xD <= 1; xD++) {
 			for (int yD = -1; yD <= 1; yD++) {
 				for (int zD = -1; zD <= 1; zD++) {
-					if (isBreakable(world.getBlockId(x + xD, y + yD, z + zD))) {
-						world.setBlock(x + xD, y + yD, z + zD, 0);
+					if (isBreakable(ObjectUtils.getBlockIdentifier(world.getBlock(x + xD, y + yD, z + zD)))) {
+						world.setBlock(x + xD, y + yD, z + zD, Blocks.air);
 						if (world.rand.nextInt(2) == 0) {
 							world.spawnParticle("largeexplode", x + xD, y + yD, z + zD, 1.0D, 0.0D, 0.0D);
 						}
@@ -63,8 +67,8 @@ public class ItemDestructionCatalyst extends ItemBase {
 		}
 	}
 
-	public boolean isBreakable(int id) {
-		return id == Block.dirt.blockID || id == Block.grass.blockID || id == Block.gravel.blockID || id == Block.cobblestone.blockID || id == Block.stone.blockID || id == Block.sand.blockID || id == Block.sandStone.blockID || id == Block.snow.blockID || id == Block.slowSand.blockID || id == Block.netherrack.blockID || id == Block.whiteStone.blockID || ids.contains(id);
+	public boolean isBreakable(String id) {
+		return ids.contains(id);
 	}
 
 	public boolean consumeGunpowder(EntityPlayer player) {
@@ -74,7 +78,7 @@ public class ItemDestructionCatalyst extends ItemBase {
 			if (inventory.getStackInSlot(slot) == null) {
 				continue;
 			}
-			if (inventory.getStackInSlot(slot).getItem() == Item.gunpowder) {
+			if (inventory.getStackInSlot(slot).getItem() == Items.gunpowder) {
 				while (gunPowderCost > 0 && player.inventory.getStackInSlot(slot) != null) {
 					player.inventory.decrStackSize(slot, 1);
 					gunPowderCost--;
@@ -93,7 +97,7 @@ public class ItemDestructionCatalyst extends ItemBase {
 			if (inventory.getStackInSlot(slot) == null) {
 				continue;
 			}
-			if (inventory.getStackInSlot(slot).getItem() == Item.gunpowder) {
+			if (inventory.getStackInSlot(slot).getItem() == Items.gunpowder) {
 				gunPowderCount += inventory.getStackInSlot(slot).stackSize;
 				if (gunPowderCount >= Reference.DESTRUCTION_CATALYST_COST)
 					return true;

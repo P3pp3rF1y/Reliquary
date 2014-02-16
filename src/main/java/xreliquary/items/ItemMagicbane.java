@@ -3,15 +3,12 @@ package xreliquary.items;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -21,7 +18,6 @@ import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.LanguageHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -39,7 +35,7 @@ public class ItemMagicbane extends ItemSword {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister) {
+	public void registerIcons(IIconRegister iconRegister) {
 		itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1));
 	}
 
@@ -62,11 +58,6 @@ public class ItemMagicbane extends ItemSword {
 	@SideOnly(Side.CLIENT)
 	public boolean hasEffect(ItemStack stack) {
 		return true;
-	}
-
-	@Override
-	public float getDamageVsEntity(Entity par1Entity, ItemStack stack) {
-		return super.getDamageVsEntity(par1Entity, stack);
 	}
 
 	/**
@@ -123,8 +114,8 @@ public class ItemMagicbane extends ItemSword {
 			int bonus = 0;
 			if (enchants != null) {
 				for (int enchant = 0; enchant < enchants.tagCount(); enchant++) {
-					bonus += ((NBTTagCompound) enchants.tagAt(enchant)).getShort("lvl");
-				}
+                    bonus += enchants.getCompoundTagAt(enchant).getShort("lvl");
+                }
 			}
 			par2EntityLivingBase.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) par3EntityLivingBase), bonus + 4);
 		}

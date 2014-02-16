@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import mods.themike.core.item.ItemBase;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -13,7 +13,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
@@ -24,8 +24,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemFortuneCoin extends ItemBase {
 
-	protected ItemFortuneCoin(int par1) {
-		super(par1, Reference.MOD_ID, Names.FORTUNE_COIN_NAME);
+	protected ItemFortuneCoin() {
+		super(Reference.MOD_ID, Names.FORTUNE_COIN_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -45,7 +45,7 @@ public class ItemFortuneCoin extends ItemBase {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private Icon iconOverlay;
+	private IIcon iconOverlay;
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -55,13 +55,13 @@ public class ItemFortuneCoin extends ItemBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister) {
+	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
 		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.FORTUNE_COIN_OVERLAY_NAME);
 	}
 
 	@Override
-	public Icon getIcon(ItemStack itemStack, int renderPass) {
+	public IIcon getIcon(ItemStack itemStack, int renderPass) {
 		if (itemStack.getItemDamage() == 0 || renderPass != 1)
 			return this.itemIcon;
 		else
@@ -161,7 +161,7 @@ public class ItemFortuneCoin extends ItemBase {
 	}
 
 	@Override
-	public void onUsingItemTick(ItemStack ist, EntityPlayer player, int count) {
+	public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
 		if (ist.getItemDamage() == 0)
 			return;
 		scanForEntitiesInRange(player.worldObj, player, 15.0D);

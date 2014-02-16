@@ -1,14 +1,12 @@
 package xreliquary.items;
 
-import java.util.List;
-
 import mods.themike.core.item.ItemBase;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityBlazeShot;
@@ -30,10 +28,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemHandgun extends ItemBase {
 
 	@SideOnly(Side.CLIENT)
-	private Icon iconOverlay;
+	private IIcon iconOverlay;
 
-	protected ItemHandgun(int par1) {
-		super(par1, Reference.MOD_ID, Names.HANDGUN_NAME);
+	protected ItemHandgun() {
+		super(Reference.MOD_ID, Names.HANDGUN_NAME);
 		this.setMaxDamage((8 << 5) + 11);
 		this.setMaxStackSize(1);
 		canRepair = false;
@@ -48,13 +46,13 @@ public class ItemHandgun extends ItemBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister) {
+	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
 		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.HANDGUN_OVERLAY_NAME);
 	}
 
 	@Override
-	public Icon getIcon(ItemStack itemStack, int renderPass) {
+	public IIcon getIcon(ItemStack itemStack, int renderPass) {
 		if (itemStack.getItemDamage() == 0 || renderPass != 1)
 			return this.itemIcon;
 		else
@@ -117,7 +115,7 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	@Override
-	public void onUsingItemTick(ItemStack ist, EntityPlayer player, int count) {
+	public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
 		System.out.println("Tick count: " + count);
 		if (!hasASpareClip(player)) {
 			NBTHelper.setShort("cooldownTime", ist, 12);
@@ -225,13 +223,13 @@ public class ItemHandgun extends ItemBase {
 
 	private void spawnClip(EntityPlayer player) {
 		if (!player.inventory.addItemStackToInventory(new ItemStack(XRItems.magazine, 1, 0))) {
-			player.dropPlayerItem(new ItemStack(XRItems.magazine, 1, 0));
+			player.entityDropItem(new ItemStack(XRItems.magazine, 1, 0), 0.1F);
 		}
 	}
 
 	private void spawnCasing(EntityPlayer player) {
 		if (!player.inventory.addItemStackToInventory(new ItemStack(XRItems.bullet, 1, 0))) {
-			player.dropPlayerItem(new ItemStack(XRItems.bullet, 1, 0));
+			player.entityDropItem(new ItemStack(XRItems.bullet, 1, 0), 0.1F);
 		}
 	}
 

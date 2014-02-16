@@ -2,7 +2,7 @@ package xreliquary.items;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
@@ -14,14 +14,13 @@ import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.LanguageHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemGlowingBread extends ItemFood {
 
-	protected ItemGlowingBread(int par1, int par2, float par3, boolean par4) {
-		super(par1, par2, par3, par4);
+	protected ItemGlowingBread() {
+		super(20, 1.0F, false);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);
 		canRepair = false;
@@ -32,7 +31,7 @@ public class ItemGlowingBread extends ItemFood {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister) {
+	public void registerIcons(IIconRegister iconRegister) {
 
 		itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1));
 	}
@@ -57,7 +56,7 @@ public class ItemGlowingBread extends ItemFood {
 	@Override
 	public ItemStack onEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
 		--par1ItemStack.stackSize;
-		par3EntityPlayer.getFoodStats().addStats(this);
+		par3EntityPlayer.getFoodStats().addStats(20, 1.0F);
 		par2World.playSoundAtEntity(par3EntityPlayer, "random.burp", 0.5F, par2World.rand.nextFloat() * 0.1F + 0.9F);
 		this.onFoodEaten(par1ItemStack, par2World, par3EntityPlayer);
 		return par1ItemStack;

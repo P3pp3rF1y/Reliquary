@@ -15,8 +15,8 @@ import mods.themike.core.item.ItemBase;
 
 public class ItemHeroMedallion extends ItemBase {
 
-	public ItemHeroMedallion(int itemID) {
-		super(itemID, Reference.MOD_ID, "heroMedallion");
+	public ItemHeroMedallion() {
+		super(Reference.MOD_ID, "heroMedallion");
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);
@@ -27,7 +27,8 @@ public class ItemHeroMedallion extends ItemBase {
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
 		this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getShort("experience", stack))), stack, list);
 	}
-	
+
+    // TODO: Make this actually work.
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		if(!stack.hasTagCompound())

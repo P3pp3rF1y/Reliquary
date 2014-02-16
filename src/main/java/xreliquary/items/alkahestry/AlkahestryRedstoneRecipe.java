@@ -1,5 +1,8 @@
 package xreliquary.items.alkahestry;
 
+import mods.themike.core.util.ObjectUtils;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import xreliquary.items.XRItems;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
@@ -18,15 +21,15 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (stack.itemID == XRItems.alkahestryTome.itemID) {
+				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(XRItems.alkahestryTome))) {
 					tomb = stack.copy();
-				} else if (stack.itemID == Item.redstone.itemID) {
+				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(Items.redstone))) {
 					if (isCharging == 0) {
 						isCharging = 1;
 					} else {
 						isCharging = 2;
 					}
-				} else if (stack.itemID == Block.blockRedstone.blockID) {
+				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
 					if (isCharging == 0) {
 						isCharging = 1;
 						isRedstoneBlock = true;
@@ -36,17 +39,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 				}
 			}
 		}
-		if (tomb != null && isCharging == 1 && tomb.getItemDamage() != 0) {
-			if (!isRedstoneBlock) {
-				return true;
-			} else if (isRedstoneBlock && tomb.getItemDamage() >= 8) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
+        return tomb != null && isCharging == 1 && tomb.getItemDamage() != 0 && (!isRedstoneBlock || (isRedstoneBlock && tomb.getItemDamage() >= 8));
 	}
 
 	@Override
@@ -56,9 +49,9 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (stack.itemID == XRItems.alkahestryTome.itemID) {
+				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(XRItems.alkahestryTome))) {
 					tomb = stack.copy();
-				} else if (stack.itemID == Block.blockRedstone.blockID) {
+				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
 					isRedstoneBlock = true;
 				}
 			}
