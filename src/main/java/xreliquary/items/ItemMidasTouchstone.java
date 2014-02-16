@@ -1,13 +1,10 @@
 package xreliquary.items;
 
-import java.util.List;
-
 import mods.themike.core.item.ItemBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumArmorMaterial;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -22,8 +19,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMidasTouchstone extends ItemBase {
 
-	public ItemMidasTouchstone(int par1) {
-		super(par1, Reference.MOD_ID, Names.TOUCHSTONE_NAME);
+	public ItemMidasTouchstone() {
+		super(Reference.MOD_ID, Names.TOUCHSTONE_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(257);
 		this.setMaxStackSize(1);
@@ -76,7 +73,7 @@ public class ItemMidasTouchstone extends ItemBase {
 			if (player.inventory.mainInventory[slot] == null) {
 				continue;
 			}
-			if (player.inventory.mainInventory[slot].getItem() == Item.glowstone) {
+			if (player.inventory.mainInventory[slot].getItem() == Items.glowstone_dust) {
 				player.inventory.decrStackSize(slot, 1);
 				return true;
 			}
@@ -93,7 +90,7 @@ public class ItemMidasTouchstone extends ItemBase {
 				continue;
 			}
 			ItemArmor armor = (ItemArmor) player.inventory.armorInventory[slot].getItem();
-			if (armor.getArmorMaterial() != EnumArmorMaterial.GOLD) {
+			if (armor.getArmorMaterial() != ItemArmor.ArmorMaterial.GOLD) {
 				continue;
 			}
 			if (player.inventory.armorInventory[slot].getItemDamage() <= 0) {

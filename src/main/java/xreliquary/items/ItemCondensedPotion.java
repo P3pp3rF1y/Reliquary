@@ -28,6 +28,8 @@ import xreliquary.entities.EntityCondensedSplashRuin;
 import xreliquary.entities.EntityCondensedSplashSlowness;
 import xreliquary.entities.EntityCondensedSplashWeakness;
 import xreliquary.entities.EntityCondensedSplashWither;
+import xreliquary.event.ClientEventHandler;
+import xreliquary.event.CommonEventHandler;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -36,7 +38,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCondensedPotion extends ItemBase {
 
-	protected ItemCondensedPotion() {
+	public ItemCondensedPotion() {
 		super(Reference.MOD_ID, Names.CONDENSED_POTION_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
@@ -320,10 +322,10 @@ public class ItemCondensedPotion extends ItemBase {
 		String red = "";
 		String green = "";
 		String blue = "";
-		// int timeFactor = TimeKeeperHandler.getTime();
-		//if (timeFactor > 43) {
-		//	timeFactor = 87 - timeFactor;
-		//}
+		int timeFactor = ClientEventHandler.getTime();
+		if (timeFactor > 43) {
+			timeFactor = 87 - timeFactor;
+		}
 		int potion = itemStack.getItemDamage();
 		switch (potion) {
 		case Reference.SPEED_META:
@@ -435,7 +437,7 @@ public class ItemCondensedPotion extends ItemBase {
 			if (mop == null)
 				return ist;
 			else {
-				if (mop.typeOfHit == EnumMovingObjectType.TILE) {
+				if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
 					int var13 = mop.blockX;
 					int var14 = mop.blockY;
 					int var15 = mop.blockZ;

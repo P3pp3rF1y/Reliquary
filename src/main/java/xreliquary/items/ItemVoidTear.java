@@ -9,10 +9,12 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.init.XRItems;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
@@ -20,8 +22,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemVoidTear extends ItemBase {
 
-	public ItemVoidTear(int par1) {
-		super(par1, Reference.MOD_ID, Names.VOID_TEAR_NAME);
+	public ItemVoidTear() {
+		super(Reference.MOD_ID, Names.VOID_TEAR_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -38,10 +40,10 @@ public class ItemVoidTear extends ItemBase {
 	public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List list, boolean par4) {
 		NBTTagCompound tag = ist.getTagCompound();
 		String holds = null;
-		if (tag == null || new ItemStack(tag.getShort("itemID"), 1, tag.getShort("itemMeta")).getItem() == null) {
+		if (tag == null || new ItemStack((Item) Item.itemRegistry.getObject(tag.getString("itemID")), 1, tag.getShort("itemMeta")).getItem() == null) {
 			holds = "nothing";
 		} else {
-			ItemStack contents = new ItemStack(tag.getShort("itemID"), 1, tag.getShort("itemMeta"));
+			ItemStack contents = new ItemStack((Item) Item.itemRegistry.getObject(tag.getString("itemID")), 1, tag.getShort("itemMeta"));
 			String itemName = contents.getDisplayName();
 			holds = tag.getShort("itemQuantity") + "x " + itemName;
 		}
@@ -62,8 +64,8 @@ public class ItemVoidTear extends ItemBase {
 
 	@Override
 	public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		if (world.getBlockTileEntity(x, y, z) instanceof IInventory) {
-			IInventory inventory = (IInventory) world.getBlockTileEntity(x, y, z);
+		if (world.getTileEntity(x, y, z) instanceof IInventory) {
+			IInventory inventory = (IInventory) world.getTileEntity(x, y, z);
 			unloadContentsIntoInventory(ist, inventory, player);
 			return false;
 		}
@@ -74,7 +76,7 @@ public class ItemVoidTear extends ItemBase {
 		NBTTagCompound tearTag = ist.getTagCompound();
 		if (tearTag == null)
 			return;
-		ItemStack contents = new ItemStack(tearTag.getShort("itemID"), 1, tearTag.getShort("itemMeta"));
+		ItemStack contents = new ItemStack((Item) Item.itemRegistry.getObject(tearTag.getString("itemID")), 1, tearTag.getShort("itemMeta"));
 		int quantity = tearTag.getShort("itemQuantity");
 		while (quantity > 0) {
 			if (!tryToAddToInventory(contents, inventory)) {
@@ -100,7 +102,7 @@ public class ItemVoidTear extends ItemBase {
 		NBTTagCompound tearTag = ist.getTagCompound();
 		if (tearTag == null)
 			return;
-		ItemStack contents = new ItemStack(tearTag.getShort("itemID"), 1, tearTag.getShort("itemMeta"));
+		ItemStack contents = new ItemStack((Item) Item.itemRegistry.getObject(tearTag.getString("itemID")), 1, tearTag.getShort("itemMeta"));
 		int quantity = tearTag.getShort("itemQuantity");
 		while (quantity > 0) {
 			if (!tryToAddToPlayerInventory(contents, inventory, player)) {
@@ -142,7 +144,7 @@ public class ItemVoidTear extends ItemBase {
 		}
 		for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
 			if (inventory.getStackInSlot(slot) == null) {
-				inventory.setInventorySlotContents(slot, new ItemStack(contents.itemID, contents.stackSize, contents.getItemDamage()));
+				inventory.setInventorySlotContents(slot, new ItemStack(contents.getItem(), contents.stackSize, contents.getItemDamage()));
 				return true;
 			}
 		}
@@ -167,7 +169,7 @@ public class ItemVoidTear extends ItemBase {
 		}
 		for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
 			if (inventory.getStackInSlot(slot) == null) {
-				inventory.setInventorySlotContents(slot, new ItemStack(contents.itemID, contents.stackSize, contents.getItemDamage()));
+				inventory.setInventorySlotContents(slot, new ItemStack(contents.getItem(), contents.stackSize, contents.getItemDamage()));
 				return true;
 			}
 		}

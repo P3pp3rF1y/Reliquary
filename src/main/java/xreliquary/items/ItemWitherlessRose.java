@@ -1,6 +1,5 @@
 package xreliquary.items;
 
-import java.util.List;
 import java.util.Random;
 
 import mods.themike.core.item.ItemBase;
@@ -18,8 +17,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemWitherlessRose extends ItemBase {
 
-	protected ItemWitherlessRose(int par1) {
-		super(par1, Reference.MOD_ID, Names.WITHERLESS_ROSE_NAME);
+	public ItemWitherlessRose() {
+		super(Reference.MOD_ID, Names.WITHERLESS_ROSE_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);

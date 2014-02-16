@@ -33,4 +33,18 @@ public class ObjectUtils {
         return item == null ? null : Item.itemRegistry.getNameForObject(item);
     }
 
+    /**
+     * Returns true if the item idenifier of item1 matches that of item2. Returns false otherwise.
+     */
+    public static boolean areItemsEqual(Item item1, Item item2) {
+        return getItemIdentifier(item1).equals(getItemIdentifier(item2));
+    }
+
+    /**
+     * Returns true if the block idenifier of block1 matches that of block2. Returns false otherwise.
+     */
+    public static boolean areBlocksEqual(Block block1, Block block2) {
+        return getBlockIdentifier(block1).equals(getBlockIdentifier(block2));
+    }
+
 }

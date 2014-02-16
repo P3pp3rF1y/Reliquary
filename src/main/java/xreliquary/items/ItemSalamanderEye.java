@@ -4,19 +4,21 @@ import java.util.Iterator;
 import java.util.List;
 
 import mods.themike.core.item.ItemBase;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IconRegister;
+import mods.themike.core.util.ObjectUtils;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityLargeFireball;
 import net.minecraft.entity.projectile.EntitySmallFireball;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.event.ClientEventHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
@@ -24,20 +26,20 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemSalamanderEye extends ItemBase {
 
-	protected ItemSalamanderEye(int par1) {
-		super(par1, Reference.MOD_ID, Names.SALAMANDER_EYE_NAME);
+	public ItemSalamanderEye() {
+		super(Reference.MOD_ID, Names.SALAMANDER_EYE_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		canRepair = false;
 	}
 
-	protected ItemSalamanderEye(int itemID, String modName, String textureName) {
-		super(itemID, modName, textureName);
-	}
+    protected ItemSalamanderEye(String modid, String name) {
+        super(modid, name);
+    }
 
-	@SideOnly(Side.CLIENT)
-	private Icon iconOverlay[];
+        @SideOnly(Side.CLIENT)
+	private IIcon iconOverlay[];
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -59,20 +61,20 @@ public class ItemSalamanderEye extends ItemBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister) {
+	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
-		iconOverlay = new Icon[4];
+		iconOverlay = new IIcon[4];
 		for (int i = 0; i < 4; i++) {
 			iconOverlay[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.SALAMANDER_EYE_OVERLAY_NAME + i);
 		}
 	}
 
 	@Override
-	public Icon getIcon(ItemStack itemStack, int renderPass) {
+	public IIcon getIcon(ItemStack itemStack, int renderPass) {
 		if (renderPass != 1)
 			return this.itemIcon;
 		else {
-			// int i = TimeKeeperHandler.getTime();
+			int i = ClientEventHandler.getTime();
 			i %= 80;
 			if (i < 7) {
 				// i == 0, open, i == 3, closed.
@@ -132,8 +134,8 @@ public class ItemSalamanderEye extends ItemBase {
 		for (int xOff = -3; xOff <= 3; xOff++) {
 			for (int yOff = -3; yOff <= 3; yOff++) {
 				for (int zOff = -3; zOff <= 3; zOff++)
-					if (player.worldObj.getBlockId(x + xOff, y + yOff, z + zOff) == Block.fire.blockID) {
-						player.worldObj.setBlock(x + xOff, y + yOff, z + zOff, 0);
+					if (ObjectUtils.getBlockIdentifier(player.worldObj.getBlock(x + xOff, y + yOff, z + zOff)).equals(ObjectUtils.getBlockIdentifier(Blocks.fire))) {
+						player.worldObj.setBlock(x + xOff, y + yOff, z + zOff, Blocks.air);
 						player.worldObj.playSoundEffect(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, "random.fizz", 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F);
 					}
 			}

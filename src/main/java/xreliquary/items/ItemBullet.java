@@ -21,7 +21,7 @@ public class ItemBullet extends ItemBase {
 	// 4 = Ender, 5 = Concussive, 6 = Buster, 7 = Seeker
 	// 8 = Sand, 9 = Storm
 
-	protected ItemBullet() {
+	public ItemBullet() {
 		super(Reference.MOD_ID, Names.BULLET_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(64);

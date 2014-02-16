@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.init.XRBlocks;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
@@ -22,7 +23,7 @@ public class BlockAltar extends BlockContainer {
 
 	private final boolean isActive;
 
-	protected BlockAltar(boolean par1) {
+	public BlockAltar(boolean par1) {
 		super(Material.rock);
 		isActive = par1;
 

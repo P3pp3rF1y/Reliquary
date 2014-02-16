@@ -1,6 +1,6 @@
 package xreliquary.client.gui;
 
-import xreliquary.items.XRItems;
+import xreliquary.init.XRItems;
 import xreliquary.lib.Reference;
 import xreliquary.util.LanguageHelper;
 import mods.themike.core.client.gui.GuiBase;

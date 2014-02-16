@@ -11,7 +11,7 @@ import xreliquary.lib.Reference;
 
 public class ItemGlowingWater extends ItemBase {
 
-	protected ItemGlowingWater() {
+	public ItemGlowingWater() {
 		super(Reference.MOD_ID, Names.GLOWING_WATER_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);

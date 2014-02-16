@@ -24,7 +24,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemFortuneCoin extends ItemBase {
 
-	protected ItemFortuneCoin() {
+	public ItemFortuneCoin() {
 		super(Reference.MOD_ID, Names.FORTUNE_COIN_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);

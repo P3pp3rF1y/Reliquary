@@ -3,13 +3,14 @@ package xreliquary.items;
 import java.util.List;
 
 import mods.themike.core.item.ItemBase;
+import mods.themike.core.util.ObjectUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -23,8 +24,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemSojournerStaff extends ItemBase {
 
-	protected ItemSojournerStaff(int par1) {
-		super(par1, Reference.MOD_ID, Names.TORCH_NAME);
+	public ItemSojournerStaff() {
+		super(Reference.MOD_ID, Names.TORCH_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(513);
 		this.setMaxStackSize(1);
@@ -68,7 +69,7 @@ public class ItemSojournerStaff extends ItemBase {
 			if (player.inventory.mainInventory[slot] == null) {
 				continue;
 			}
-			if (player.inventory.mainInventory[slot].getItem() == Item.itemsList[Block.torchWood.blockID]) {
+			if (player.inventory.mainInventory[slot].getItem() == Item.getItemFromBlock(Blocks.torch)) {
 				player.inventory.decrStackSize(slot, 1);
 				return true;
 			}
@@ -82,18 +83,18 @@ public class ItemSojournerStaff extends ItemBase {
 			return false;
 		if (!player.canPlayerEdit(x, y, z, side, ist))
 			return false;
-		int blockTargetted = world.getBlockId(x, y, z);
+		Block blockTargetted = world.getBlock(x, y, z);
 
-		if (blockTargetted == Block.snow.blockID) {
+		if (ObjectUtils.areBlocksEqual(blockTargetted, Blocks.snow)) {
 			side = 1;
-		} else if (blockTargetted != Block.vine.blockID && blockTargetted != Block.tallGrass.blockID && blockTargetted != Block.deadBush.blockID && (Block.blocksList[blockTargetted] == null || !Block.blocksList[blockTargetted].isBlockReplaceable(world, x, y, z))) {
+		} else if (!ObjectUtils.areBlocksEqual(blockTargetted, Blocks.vine) && !ObjectUtils.areBlocksEqual(blockTargetted, Blocks.tallgrass) && !ObjectUtils.areBlocksEqual(blockTargetted, Blocks.deadbush) && (blockTargetted == null || !blockTargetted.isReplaceable(world, x, y, z))) {
 			x += side == 4 ? -1 : side == 5 ? 1 : 0;
 			y += side == 0 ? -1 : side == 1 ? 1 : 0;
 			z += side == 2 ? -1 : side == 3 ? 1 : 0;
 		}
-		if (Block.blocksList[Block.torchWood.blockID].canPlaceBlockAt(world, x, y, z)) {
-			if (world.canPlaceEntityOnSide(Block.torchWood.blockID, x, y, z, false, side, player, ist)) {
-				Block var12 = Block.blocksList[Block.torchWood.blockID];
+		if (Blocks.torch.canPlaceBlockAt(world, x, y, z)) {
+			if (world.canPlaceEntityOnSide(Blocks.torch, x, y, z, false, side, player, ist)) {
+				Block var12 = Blocks.torch;
 
 				if (!player.capabilities.isCreativeMode) {
 					if (ist.getItemDamage() == 0)
@@ -107,20 +108,20 @@ public class ItemSojournerStaff extends ItemBase {
 						return false;
 					ist.setItemDamage(ist.getItemDamage() == 1535 ? 0 : ist.getItemDamage() + cost);
 					if (placeBlockAt(ist, player, world, x, y, z, side, xOff, yOff, zOff, attemptSide(world, x, y, z, side))) {
-						Block.blocksList[Block.torchWood.blockID].onBlockAdded(world, x, y, z);
+						Blocks.torch.onBlockAdded(world, x, y, z);
 						double gauss = 0.5D + world.rand.nextFloat() / 2;
 						player.swingItem();
 						world.spawnParticle("mobSpell", x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);
-						world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, var12.stepSound.getPlaceSound(), (var12.stepSound.getVolume() + 1.0F) / 2.0F, var12.stepSound.getPitch() * 0.8F);
+						world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, var12.stepSound.getStepResourcePath(), (var12.stepSound.getVolume() + 1.0F) / 2.0F, var12.stepSound.getPitch() * 0.8F);
 						this.setCooldown(ist);
 					}
 				} else {
 					if (placeBlockAt(ist, player, world, x, y, z, side, xOff, yOff, zOff, attemptSide(world, x, y, z, side))) {
-						Block.blocksList[Block.torchWood.blockID].onBlockAdded(world, x, y, z);
+                        Blocks.torch.onBlockAdded(world, x, y, z);
 						double gauss = 0.5D + world.rand.nextFloat() / 2;
 						player.swingItem();
 						world.spawnParticle("mobSpell", x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);
-						world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, var12.stepSound.getPlaceSound(), (var12.stepSound.getVolume() + 1.0F) / 2.0F, var12.stepSound.getPitch() * 0.8F);
+						world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, var12.stepSound.getStepResourcePath(), (var12.stepSound.getVolume() + 1.0F) / 2.0F, var12.stepSound.getPitch() * 0.8F);
 						this.setCooldown(ist);
 					}
 				}
@@ -130,7 +131,7 @@ public class ItemSojournerStaff extends ItemBase {
 	}
 
 	private int attemptSide(World world, int x, int y, int z, int side) {
-		return Block.blocksList[Block.torchWood.blockID].onBlockPlaced(world, x, y, z, side, x, y, z, 0);
+		return Blocks.torch.onBlockPlaced(world, x, y, z, side, x, y, z, 0);
 	}
 
 	private void decrementCooldown(ItemStack ist) {
@@ -150,7 +151,7 @@ public class ItemSojournerStaff extends ItemBase {
 		if (this.isOnCooldown(ist))
 			return ist;
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
-		if (mop != null && mop.typeOfHit == EnumMovingObjectType.TILE) {
+		if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
 			float xOff = (float) (mop.blockX - player.posX);
 			float yOff = (float) (mop.blockY - player.posY);
 			float zOff = (float) (mop.blockZ - player.posZ);
@@ -185,12 +186,12 @@ public class ItemSojournerStaff extends ItemBase {
 	}
 
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
-		if (!world.setBlock(x, y, z, Block.torchWood.blockID, metadata, 3))
+		if (!world.setBlock(x, y, z, Blocks.torch, metadata, 3))
 			return false;
 
-		if (world.getBlockId(x, y, z) == Block.torchWood.blockID) {
-			Block.blocksList[Block.torchWood.blockID].onNeighborBlockChange(world, x, y, z, metadata);
-			Block.blocksList[Block.torchWood.blockID].onBlockPlacedBy(world, x, y, z, player, stack);
+		if (ObjectUtils.areBlocksEqual(world.getBlock(x, y, z), Blocks.torch)) {
+			Blocks.torch.onNeighborBlockChange(world, x, y, z, world.getBlock(x, y, z));
+			Blocks.torch.onBlockPlacedBy(world, x, y, z, player, stack);
 		}
 
 		return true;

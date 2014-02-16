@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import xreliquary.blocks.XRBlocks;
+import xreliquary.init.XRBlocks;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
@@ -56,7 +56,7 @@ public class ItemFertileLilypad extends ItemBlock {
 		if (var4 == null)
 			return par1ItemStack;
 		else {
-			if (var4.typeOfHit == EnumMovingObjectType.TILE) {
+			if (var4.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
 				int var5 = var4.blockX;
 				int var6 = var4.blockY;
 				int var7 = var4.blockZ;

@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMagazine extends ItemBase {
 
-	protected ItemMagazine() {
+	public ItemMagazine() {
 		super(Reference.MOD_ID, Names.MAGAZINE_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(64);

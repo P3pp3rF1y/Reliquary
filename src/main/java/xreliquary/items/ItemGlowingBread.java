@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemGlowingBread extends ItemFood {
 
-	protected ItemGlowingBread() {
+	public ItemGlowingBread() {
 		super(20, 1.0F, false);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);

@@ -19,7 +19,7 @@ public class ItemGunPart extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	private IIcon[] icons;
 
-	protected ItemGunPart() {
+	public ItemGunPart() {
 		super(Reference.MOD_ID, Names.GUNPART_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);

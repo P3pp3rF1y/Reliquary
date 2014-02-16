@@ -5,21 +5,22 @@ import java.util.List;
 import com.google.common.collect.ImmutableMap;
 
 import mods.themike.core.item.ItemBase;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumMovingObjectType;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.event.ClientEventHandler;
+import xreliquary.event.CommonEventHandler;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -29,8 +30,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemDistortionCloak extends ItemBase {
 
-	protected ItemDistortionCloak(int par1) {
-		super(par1, Reference.MOD_ID, Names.DISTORTION_CLOAK_NAME);
+	public ItemDistortionCloak() {
+		super(Reference.MOD_ID, Names.DISTORTION_CLOAK_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(2401);
 		this.setMaxStackSize(1);
@@ -67,7 +68,7 @@ public class ItemDistortionCloak extends ItemBase {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private Icon iconOverlay;
+	private IIcon iconOverlay;
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -77,13 +78,13 @@ public class ItemDistortionCloak extends ItemBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister) {
+	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
 		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.DISTORTION_CLOAK_OVERLAY_NAME);
 	}
 
 	@Override
-	public Icon getIcon(ItemStack itemStack, int renderPass) {
+	public IIcon getIcon(ItemStack itemStack, int renderPass) {
 		if (renderPass != 1)
 			return this.itemIcon;
 		else
@@ -94,7 +95,7 @@ public class ItemDistortionCloak extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
 		if (renderPass == 1) {
-			// int i = TimeKeeperHandler.getTime();
+			int i = ClientEventHandler.getTime();
 			i %= 87;
 			if (i > 43) {
 				i = 87 - i;
@@ -120,7 +121,7 @@ public class ItemDistortionCloak extends ItemBase {
 			if (player.inventory.mainInventory[slot] == null) {
 				continue;
 			}
-			if (player.inventory.mainInventory[slot].getItem() == Item.enderPearl) {
+			if (player.inventory.mainInventory[slot].getItem() == Items.ender_pearl) {
 				player.inventory.decrStackSize(slot, 1);
 				return true;
 			}
@@ -181,7 +182,7 @@ public class ItemDistortionCloak extends ItemBase {
 			if (this.isOnCooldown(ist))
 				return ist;
 			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
-			if (mop != null && mop.typeOfHit == EnumMovingObjectType.TILE) {
+			if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
 				if (!findAndRemoveEnderPearl(player))
 					return ist;
 				float xOff = mop.blockX;

@@ -1,6 +1,7 @@
 package xreliquary.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -30,7 +31,7 @@ public class TEAltar extends TileEntity {
 			cycleTime--;
 		} else {
 			isActive = false;
-			worldObj.setBlock(xCoord, yCoord + 1, zCoord, Block.glowStone.blockID);
+			worldObj.setBlock(xCoord, yCoord + 1, zCoord, Blocks.glowstone);
 			BlockAltar.updateAltarBlockState(isActive(), worldObj, xCoord, yCoord, zCoord);
 		}
 	}

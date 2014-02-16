@@ -23,8 +23,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMagicbane extends ItemSword {
 
-	protected ItemMagicbane(int par1) {
-		super(par1, EnumToolMaterial.GOLD);
+	public ItemMagicbane() {
+		super(ToolMaterial.GOLD);
 		this.setMaxDamage(16);
 		this.setMaxStackSize(1);
 		canRepair = true;

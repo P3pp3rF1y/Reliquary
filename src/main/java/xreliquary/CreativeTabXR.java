@@ -1,7 +1,7 @@
 package xreliquary;
 
 import net.minecraft.creativetab.CreativeTabs;
-import xreliquary.items.XRItems;
+import xreliquary.init.XRItems;
 
 public class CreativeTabXR extends CreativeTabs {
 

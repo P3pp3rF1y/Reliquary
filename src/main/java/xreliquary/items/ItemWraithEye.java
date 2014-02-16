@@ -5,20 +5,21 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
-import mods.themike.core.item.ItemBase;
-import net.minecraft.client.renderer.texture.IconRegister;
+import mods.themike.core.util.ObjectUtils;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.blocks.XRBlocks;
+import xreliquary.init.XRBlocks;
+import xreliquary.event.ClientEventHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.NBTHelper;
@@ -27,8 +28,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemWraithEye extends ItemSalamanderEye {
 
-	protected ItemWraithEye(int par1) {
-		super(par1, Reference.MOD_ID, Names.WRAITH_EYE_NAME);
+	public ItemWraithEye() {
+		super(Reference.MOD_ID, Names.WRAITH_EYE_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -36,13 +37,13 @@ public class ItemWraithEye extends ItemSalamanderEye {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private Icon iconOverlay[];
+	private IIcon iconOverlay[];
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister) {
+	public void registerIcons(IIconRegister iconRegister) {
 		this.itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.WRAITH_EYE_NAME);
-		iconOverlay = new Icon[4];
+		iconOverlay = new IIcon[4];
 		for (int i = 0; i < 4; i++) {
 			iconOverlay[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.WRAITH_EYE_OVERLAY_NAME + i);
 		}
@@ -55,11 +56,11 @@ public class ItemWraithEye extends ItemSalamanderEye {
 	}
 
 	@Override
-	public Icon getIcon(ItemStack itemStack, int renderPass) {
+	public IIcon getIcon(ItemStack itemStack, int renderPass) {
 		if (renderPass != 1)
 			return this.itemIcon;
 		else {
-			// int i = TimeKeeperHandler.getTime();
+			int i = ClientEventHandler.getTime();
 			i %= 80;
 			if (i < 7) {
 				// i == 0, open, i == 3, closed.
@@ -85,16 +86,14 @@ public class ItemWraithEye extends ItemSalamanderEye {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack eye, World world, EntityPlayer par2EntityPlayer) {
-		checkForOldVersions(eye);
-
 		if (NBTHelper.getShort("cooldown", eye) > 0)
 			return eye;
 
 		if (eye.getTagCompound() != null && eye.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(par2EntityPlayer))) {
 			if (!world.isRemote) {
-				par2EntityPlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.DARK_RED + "Out of range!"));
+                par2EntityPlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "Out of range!"));
 			}
-		} else if (eye.getTagCompound() != null && world.getBlockId(eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer))) == XRBlocks.wraithNode.blockID) {
+		} else if (eye.getTagCompound() != null && ObjectUtils.areBlocksEqual(world.getBlock(eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer))), XRBlocks.wraithNode)) {
 
 			if (canTeleport(world, eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer)))) {
 
@@ -106,7 +105,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 		} else if (eye.getTagCompound() != null && eye.getTagCompound().hasKey("dimensionID")) {
 			eye.setTagCompound(null);
 			if (!world.isRemote)
-				par2EntityPlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.DARK_RED + "Node dosen't exist!"));
+                par2EntityPlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "Node dosen't exist!"));
 			else
 				par2EntityPlayer.playSound("mob.endermen.death", 1.0f, 1.0f);
 		}
@@ -129,7 +128,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 			if (player.inventory.mainInventory[slot] == null) {
 				continue;
 			}
-			if (player.inventory.mainInventory[slot].getItem() == Item.enderPearl) {
+			if (player.inventory.mainInventory[slot].getItem() == Items.ender_pearl) {
 				player.inventory.decrStackSize(slot, 1);
 				return true;
 			}
@@ -156,7 +155,6 @@ public class ItemWraithEye extends ItemSalamanderEye {
 	public void addInformation(ItemStack eye, EntityPlayer par2EntityPlayer, List list, boolean par4) {
 		String phrase = "Currently bound to";
 		String position = null;
-		checkForOldVersions(eye);
 		if (eye.getTagCompound() != null && eye.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(par2EntityPlayer))) {
 			phrase = "Out of range!";
 		} else if (eye.getTagCompound() != null && eye.getTagCompound().hasKey("nodeX" + getWorld(par2EntityPlayer)) && eye.getTagCompound().hasKey("nodeY" + getWorld(par2EntityPlayer)) && eye.getTagCompound().hasKey("nodeZ" + getWorld(par2EntityPlayer))) {
@@ -170,7 +168,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 	@Override
 	public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
 		// if right clicking on a wraith node, bind the eye to that wraith node.
-		if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && world.getBlockId(x, y, z) == XRBlocks.wraithNode.blockID) {
+		if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && ObjectUtils.areBlocksEqual(world.getBlock(x, y, z), XRBlocks.wraithNode)) {
 			setWraithNode(ist, x, y, z, Integer.valueOf(getWorld(player)), player);
 
 			player.playSound("mob.endermen.portal", 1.0f, 1.0f);
@@ -194,29 +192,5 @@ public class ItemWraithEye extends ItemSalamanderEye {
 
 	public String getWorld(EntityPlayer player) {
 		return Integer.valueOf(player.worldObj.provider.dimensionId).toString();
-	}
-
-	private ItemStack checkForOldVersions(ItemStack eye) {
-		if (eye.getTagCompound() != null && !eye.getTagCompound().hasKey("dimensionID")) {
-			Iterator keys = eye.getTagCompound().getTags().iterator();
-			NBTTagCompound dummy = new NBTTagCompound();
-			eye.setTagCompound(new NBTTagCompound());
-
-			while (keys.hasNext()) {
-				NBTBase base = (NBTBase) keys.next();
-				if (base.getName().contains("nodeX")) {
-					dummy.setTag("nodeX", base.copy());
-					eye.getTagCompound().setInteger(base.getName(), (int) dummy.getShort("nodeX"));
-					eye.getTagCompound().setInteger("dimensionID", Integer.valueOf(base.getName().charAt(base.getName().indexOf("X"))));
-				} else if (base.getName().contains("nodeY")) {
-					dummy.setTag("nodeY", base.copy());
-					eye.getTagCompound().setInteger(base.getName(), (int) dummy.getShort("nodeY"));
-				} else if (base.getName().contains("nodeZ")) {
-					dummy.setTag("nodeZ", base.copy());
-					eye.getTagCompound().setInteger(base.getName(), (int) dummy.getShort("nodeZ"));
-				}
-			}
-		}
-		return eye;
 	}
 }

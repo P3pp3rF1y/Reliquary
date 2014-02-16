@@ -3,7 +3,7 @@ package xreliquary.blocks;
 import java.util.List;
 import java.util.Random;
 
-import mods.themike.core.util.BlockUtils;
+import mods.themike.core.util.ObjectUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.material.Material;
@@ -23,7 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockFertileLilypad extends BlockFlower {
 
-	protected BlockFertileLilypad() {
+	public BlockFertileLilypad() {
 		super(0);
 		float var3 = 0.5F;
 		float var4 = 0.015625F;
@@ -66,7 +66,7 @@ public class BlockFertileLilypad extends BlockFlower {
 					int z = zO + zD;
 					Block block = world.getBlock(x, y, z);
 
-					if (block != null && Block.blockRegistry.getNameForObject(block).equals(BlockUtils.getBlockIdentifier(block))) {
+					if (block != null && Block.blockRegistry.getNameForObject(block).equals(ObjectUtils.getBlockIdentifier(block))) {
 						continue;
 					}
 
@@ -98,7 +98,7 @@ public class BlockFertileLilypad extends BlockFlower {
 
 	@Override
 	protected boolean canPlaceBlockOn(Block block) {
-		return block == null ? false : BlockUtils.getBlockIdentifier(block).equals(BlockUtils.getBlockIdentifier(Blocks.water));
+		return block == null ? false : ObjectUtils.areBlocksEqual(block, Blocks.water);
 	}
 
 	@Override

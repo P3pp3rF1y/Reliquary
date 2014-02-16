@@ -9,12 +9,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraft.item.ItemStack;
 import xreliquary.Reliquary;
 import xreliquary.blocks.TEAltar;
-import xreliquary.blocks.XRBlocks;
+import xreliquary.init.XRBlocks;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.entities.*;
 import xreliquary.entities.EntityStormShot;
 import xreliquary.event.CommonEventHandler;
-import xreliquary.items.XRItems;
+import xreliquary.init.XRItems;
 import xreliquary.items.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -39,8 +39,6 @@ public class CommonProxy {
 
 	public void init() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
-
-        // For later. This is where all the events will be called.
         FMLCommonHandler.instance().bus().register(new CommonEventHandler());
 
 		this.registerEntities();

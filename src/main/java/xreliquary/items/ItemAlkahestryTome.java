@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemAlkahestryTome extends ItemBase {
 
-	protected ItemAlkahestryTome() {
+	public ItemAlkahestryTome() {
 		super(Reference.MOD_ID, Names.TOME_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(Reliquary.PROXY.tombRedstoneLimit + 1);

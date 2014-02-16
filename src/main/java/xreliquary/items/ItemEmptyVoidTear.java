@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.init.XRItems;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 

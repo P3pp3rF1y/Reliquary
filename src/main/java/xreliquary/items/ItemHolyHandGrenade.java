@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemHolyHandGrenade extends ItemBase {
 
-	protected ItemHolyHandGrenade() {
+	public ItemHolyHandGrenade() {
 		super(Reference.MOD_ID, Names.GRENADE_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);

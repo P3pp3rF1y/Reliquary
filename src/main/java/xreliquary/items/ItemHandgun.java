@@ -18,6 +18,7 @@ import xreliquary.entities.EntityNeutralShot;
 import xreliquary.entities.EntitySandShot;
 import xreliquary.entities.EntitySeekerShot;
 import xreliquary.entities.EntityStormShot;
+import xreliquary.init.XRItems;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -30,7 +31,7 @@ public class ItemHandgun extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	private IIcon iconOverlay;
 
-	protected ItemHandgun() {
+	public ItemHandgun() {
 		super(Reference.MOD_ID, Names.HANDGUN_NAME);
 		this.setMaxDamage((8 << 5) + 11);
 		this.setMaxStackSize(1);

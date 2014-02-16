@@ -1,6 +1,7 @@
 package xreliquary.proxy;
 
 // TODO: Make Forge-only wrapper around this.
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 import net.minecraft.init.Items;
@@ -17,7 +18,8 @@ import xreliquary.client.render.RenderSeekerShot;
 import xreliquary.client.render.RenderStormShot;
 import xreliquary.client.render.RenderThrown;
 import xreliquary.entities.*;
-import xreliquary.items.XRItems;
+import xreliquary.event.ClientEventHandler;
+import xreliquary.init.XRItems;
 import xreliquary.lib.Reference;
 import xreliquary.util.LanguageHelper;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -35,7 +37,9 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void init() {
 		super.init();
-		LanguageHelper.loadLanguages(new String[]{"en_US"});
+        FMLCommonHandler.instance().bus().register(new ClientEventHandler());
+
+        LanguageHelper.loadLanguages(new String[]{"en_US"});
 		this.registerRenderers();
 	}
 

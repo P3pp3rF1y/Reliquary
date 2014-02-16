@@ -20,7 +20,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemEmperorChalice extends ItemBase {
 
-	protected ItemEmperorChalice() {
+	public ItemEmperorChalice() {
 		super(Reference.MOD_ID, Names.CHALICE_NAME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
@@ -100,7 +100,7 @@ public class ItemEmperorChalice extends ItemBase {
 			return ist;
 		} else {
 
-			if (mop.typeOfHit == EnumMovingObjectType.TILE) {
+			if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
 				int var13 = mop.blockX;
 				int var14 = mop.blockY;
 				int var15 = mop.blockZ;
