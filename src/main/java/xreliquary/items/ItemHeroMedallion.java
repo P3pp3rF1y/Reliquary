@@ -11,7 +11,6 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Reference;
 import xreliquary.util.NBTHelper;
-import mods.themike.core.item.ItemBase;
 
 public class ItemHeroMedallion extends ItemBase {
 

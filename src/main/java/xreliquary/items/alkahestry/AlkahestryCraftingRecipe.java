@@ -1,6 +1,6 @@
 package xreliquary.items.alkahestry;
 
-import mods.themike.core.util.ObjectUtils;
+import xreliquary.util.ObjectUtils;
 import net.minecraft.init.Blocks;
 import xreliquary.Reliquary;
 import xreliquary.init.XRItems;

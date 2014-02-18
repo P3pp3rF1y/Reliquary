@@ -3,8 +3,7 @@ package xreliquary.items;
 import java.util.Iterator;
 import java.util.List;
 
-import mods.themike.core.item.ItemBase;
-import mods.themike.core.util.ObjectUtils;
+import xreliquary.util.ObjectUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,8 +1,7 @@
 package xreliquary;
 
-import java.util.logging.Level;
-
 import net.minecraft.item.Item;
+import org.apache.logging.log4j.Level;
 import org.modstats.ModstatInfo;
 import org.modstats.Modstats;
 
@@ -10,7 +9,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-// TODO: Use jTOML (https://github.com/asafh/jtoml) over Forge's configuration system. This will allow for a better/cleaner syntax, and Minetweak support.
+// TODO: Use jTOML (https://github.com/asafh/jtoml) over Forge's configuration system. This will allow for a better/cleaner syntax, since we only need the config for options now (since IDs don't conflict anymore, because they don't exist).
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -47,7 +46,6 @@ public class Reliquary {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		LogHelper.init();
 		CONFIG = new Configuration(event.getSuggestedConfigurationFile());
 
 		CONFIG.load();
@@ -86,7 +84,7 @@ public class Reliquary {
 						Alkahestry.addKey(new AlkahestRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
 					LogHelper.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + Item.itemRegistry.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item"))) + " from " + message.getSender() + " to registry.");
 				} else {
-					LogHelper.log(Level.WARNING, "[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");
+					LogHelper.log(Level.WARN, "[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");
 				}
 			}
 		}

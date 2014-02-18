@@ -3,7 +3,6 @@ package xreliquary.client.gui;
 import xreliquary.init.XRItems;
 import xreliquary.lib.Reference;
 import xreliquary.util.LanguageHelper;
-import mods.themike.core.client.gui.GuiBase;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;

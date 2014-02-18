@@ -3,7 +3,7 @@ package xreliquary.items.alkahestry;
 import java.util.HashMap;
 import java.util.Map;
 
-import mods.themike.core.util.ObjectUtils;
+import xreliquary.util.ObjectUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

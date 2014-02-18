@@ -1,6 +1,5 @@
 package xreliquary.items;
 
-import mods.themike.core.item.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

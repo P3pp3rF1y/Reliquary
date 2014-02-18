@@ -1,19 +1,14 @@
 package xreliquary.items;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import mods.themike.core.item.ItemBase;
-import mods.themike.core.util.ObjectUtils;
-import net.minecraft.block.Block;
+import xreliquary.util.ObjectUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;

@@ -3,7 +3,7 @@ package xreliquary.blocks;
 import java.util.List;
 import java.util.Random;
 
-import mods.themike.core.util.ObjectUtils;
+import xreliquary.util.ObjectUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.material.Material;

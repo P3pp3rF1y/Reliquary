@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
-import mods.themike.core.item.ItemBase;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;

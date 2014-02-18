@@ -1,4 +1,4 @@
-package mods.themike.core.client.gui;
+package xreliquary.client.gui;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;

@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
-import mods.themike.core.item.ItemBase;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;

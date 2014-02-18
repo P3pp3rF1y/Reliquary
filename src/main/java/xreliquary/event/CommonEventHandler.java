@@ -2,7 +2,7 @@ package xreliquary.event;
 
 import cpw.mods.fml.common.eventhandler.*;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import mods.themike.core.util.ObjectUtils;
+import xreliquary.util.ObjectUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;

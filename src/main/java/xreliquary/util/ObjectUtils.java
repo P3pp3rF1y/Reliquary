@@ -1,4 +1,4 @@
-package mods.themike.core.util;
+package xreliquary.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

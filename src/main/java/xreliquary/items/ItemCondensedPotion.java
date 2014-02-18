@@ -2,7 +2,6 @@ package xreliquary.items;
 
 import java.util.List;
 
-import mods.themike.core.item.ItemBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -29,7 +28,6 @@ import xreliquary.entities.EntityCondensedSplashSlowness;
 import xreliquary.entities.EntityCondensedSplashWeakness;
 import xreliquary.entities.EntityCondensedSplashWither;
 import xreliquary.event.ClientEventHandler;
-import xreliquary.event.CommonEventHandler;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;

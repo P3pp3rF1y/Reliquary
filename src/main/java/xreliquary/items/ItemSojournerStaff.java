@@ -1,9 +1,6 @@
 package xreliquary.items;
 
-import java.util.List;
-
-import mods.themike.core.item.ItemBase;
-import mods.themike.core.util.ObjectUtils;
+import xreliquary.util.ObjectUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -177,7 +174,7 @@ public class ItemSojournerStaff extends ItemBase {
 		float var20 = var14 * var16;
 		double var21 = 32.0D;
 		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
-		return par1World.rayTraceBlocks_do_do(var13, var23, par3, !par3);
+		return par1World.rayTraceBlocks(var13, var23, par3);
 	}
 
 	@Override

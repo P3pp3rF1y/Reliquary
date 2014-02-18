@@ -1,4 +1,4 @@
-package mods.themike.core.item;
+package xreliquary.items;
 
 import java.util.Iterator;
 import java.util.List;

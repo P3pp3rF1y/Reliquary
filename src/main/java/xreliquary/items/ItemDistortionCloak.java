@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
-import mods.themike.core.item.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +19,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.event.ClientEventHandler;
-import xreliquary.event.CommonEventHandler;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -213,7 +211,7 @@ public class ItemDistortionCloak extends ItemBase {
 		float var20 = var14 * var16;
 		double var21 = 128.0D;
 		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
-		return par1World.rayTraceBlocks_do_do(var13, var23, par3, !par3);
+		return par1World.rayTraceBlocks(var13, var23, par3);
 	}
 
 	private void doTeleport(World world, EntityPlayer player, ItemStack ist, float x, float y, float z) {
