@@ -1,26 +1,19 @@
-Reliquary
+Reliquary [![Build Status](https://drone.io/github.com/TrainerGuy22/Reliquary/status.png)](https://drone.io/github.com/TrainerGuy22/Reliquary/latest)
 =========
 
 The offical repository of Reliquary! That mod, with the magical swag, and a weapon, and stuff.
 
-Originally made by x3n0ph0b3, now maintained by TheMike.
+Originally made by x3n0ph0b3, Reliquary is now developed by both TheMike and x3n0ph0b3.
 
 Building
 =========
 
-As of December 17th, 2013, Reliquary uses ForgeGradle for the build process. A small outline of the build process is outlined here.
-
-1. Make sure you have Gradle installed (http://www.gradle.org/).
-2. Open up Terminal (Unix) or cmd (Windows).
-3. Navigate to the mod's main folder.
-4. 'gradle setupCIWorkspace'
-5. 'gradle build'
-6. Enjoy!
+We use ForgeGradle. There are instructions inside the 'gradle.build' file in this repository.
 
 Versioning
 =========
 
-I'm eventually heading to a 1.7.x-2.0 release, using 1.6.4-1.0 as a base and building up from there. Versioning and downloads is provided by Github and used client-side by ModStats.
+Every major version increase means a Minecraft version increase. 1.1.x is for 1.6.4. 1.2.x will be for Minecraft 1.7. 1.3 will be for Minecraft 1.8. And so on. 
 
 Licence
 =========
