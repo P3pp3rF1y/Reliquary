@@ -7,8 +7,8 @@ How to use:
 1. Make sure you have Gradle installed (http://www.gradle.org/).
 2. Open up Terminal (Unix) or cmd (Windows).
 3. Navigate to the mod's main folder.
-4. 'gradle setupCIWorkspace'
-5. 'gradle build'
+4. './gradlew setupCIWorkspace'
+5. './gradlew build'
 6. Enjoy!
 
 */
@@ -23,7 +23,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.1-SNAPSHOT'
     }
 }
 
@@ -31,27 +31,19 @@ buildscript {
 apply plugin: 'forge'
 
 group = 'xreliquary' // Your main package.
-version = "1.6.4-1.1" 
+version = "1.2" 
 archivesBaseName = 'Reliquary'
 
 minecraft {
-	version = "1.6.4-9.11.1.964"
+	version = "1.7.2-10.12.0.1024"
 }
-
-// This is just for me. I have my Mac set up to switch between JDK 6 and 7, so I need this to compile with JDK 6.
-/*
-compileJava { 
-    options.fork = true 
-    options.forkOptions.executable = "/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/bin/javac" 
-}
-*/
 
 processResources
 {
     // Replace stuff in mcmod.info and in .lang files, nothing else.
     from(sourceSets.main.resources.srcDirs) {
         include '**/*.lang'
-        include 'mcmod/info'
+        include 'mcmod.info'
                 
         // Replace version and mcversion.
         expand 'version':project.version, 'mcversion':project.minecraft.version
