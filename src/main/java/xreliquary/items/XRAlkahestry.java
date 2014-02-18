@@ -8,66 +8,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class XRAlkahestry {
     public static void init() {
         addAlkahestry();
-        addReverseAlkahestry();
-    }
-
-    private static void addReverseAlkahestry() {
-        // adds the basic outline of recipes which destroy for reagents.
-        // the actual handling of the recipes is done in the AlkahestHandler.
-        // Using these recipes is actually capable of giving you nothing in
-        // return.
-        addReverseRecipe(Block.dirt);
-        addReverseRecipe(Block.cobblestone);
-        addReverseRecipe(Block.sand);
-        addReverseRecipe(Block.gravel);
-        addReverseRecipe(Block.wood, -1);
-        addReverseRecipe(Block.sandStone);
-        addReverseRecipe(Block.blockClay);
-        addReverseRecipe(Block.obsidian);
-        addReverseRecipe(Block.netherrack);
-        addReverseRecipe(Block.slowSand);
-        addReverseRecipe(Block.netherBrick);
-        addReverseRecipe(Block.whiteStone);
-        addReverseRecipe(Block.cloth);
-        addReverseRecipe(Block.pumpkin);
-        addReverseRecipe(Block.melon);
-        addReverseRecipe(Block.sapling);
-        addReverseRecipe(Item.coal, 1);
-        addReverseRecipe(Item.diamond);
-        addReverseRecipe(Item.ingotGold);
-        addReverseRecipe(Item.ingotIron);
-        addReverseRecipe(Item.gunpowder);
-        addReverseRecipe(Item.flint);
-        addReverseRecipe(Item.dyePowder, 4);
-        addReverseRecipe(Item.glowstone);
-        addReverseRecipe(Item.netherStalkSeeds);
-        addReverseRecipe(Item.pumpkinSeeds);
-        addReverseRecipe(Item.melonSeeds);
-        addReverseRecipe(Item.carrot);
-        addReverseRecipe(Item.potato);
-        addReverseRecipe(Item.wheat);
-        addReverseRecipe(Item.seeds);
-        addReverseRecipe(Item.reed);
-        addReverseRecipe(Item.sugar);
-        addReverseRecipe(Item.blazeRod);
-        addReverseRecipe(Item.blazePowder);
-        addReverseRecipe(Item.slimeBall);
-        addReverseRecipe(Item.silk);
-        addReverseRecipe(Item.spiderEye);
-        addReverseRecipe(Item.magmaCream);
-        addReverseRecipe(Item.rottenFlesh);
-        addReverseRecipe(Item.porkRaw);
-        addReverseRecipe(Item.porkCooked);
-        addReverseRecipe(Item.beefRaw);
-        addReverseRecipe(Item.beefCooked);
-        addReverseRecipe(Item.fishRaw);
-        addReverseRecipe(Item.fishCooked);
-        addReverseRecipe(Item.chickenRaw);
-        addReverseRecipe(Item.chickenCooked);
-        addReverseRecipe(Item.bone);
-        addReverseRecipe(Item.egg);
-        addReverseRecipe(Item.feather);
-        addReverseRecipe(Item.leather);
     }
 
     private static void addAlkahestry() {
@@ -129,28 +69,6 @@ public class XRAlkahestry {
         }
         GameRegistry.addShapelessRecipe(new ItemStack(original.getItem(),
                 yield, meta), recipeItems);
-    }
-
-    public static void addReverseRecipe(Object baseItem) {
-        addReverseRecipe(baseItem, 0);
-    }
-
-    public static void addReverseRecipe(Object baseItem, int meta) {
-        ItemStack original = null;
-        if (baseItem instanceof ItemStack) {
-            original = (ItemStack) baseItem;
-        } else if (baseItem instanceof Item) {
-            original = new ItemStack((Item) baseItem, 1, meta);
-        } else if (baseItem instanceof Block) {
-            original = new ItemStack((Block) baseItem, 1, meta);
-        }
-        if (original == null)
-            return;
-        Object recipeItems[] = new Object[2];
-        recipeItems[0] = new ItemStack(XRItems.alkahest, 1);
-        recipeItems[1] = original;
-        GameRegistry.addShapelessRecipe(new ItemStack(XRItems.alkahest, 1),
-                recipeItems);
     }
 
     // reagent types as follows:

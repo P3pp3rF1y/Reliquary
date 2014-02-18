@@ -4,8 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.Config;
-import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
-import xreliquary.items.alkahestry.XRAlkahestryCraftingHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -329,10 +327,7 @@ public class XRItems {
                         Item.ingotGold, Block.glowStone, Item.netherStalkSeeds,
                         new ItemStack(Item.skull, 1, 1), Item.ghastTear,
                         Item.bucketLava });
-        
-        GameRegistry.registerCraftingHandler(new XRAlkahestryCraftingHandler());
-        GameRegistry.addRecipe(new AlkahestryRedstoneRecipe());
-        
+                
         // touchstone
         GameRegistry
                 .addRecipe(new ItemStack(midasTouchstone, 1, 0),

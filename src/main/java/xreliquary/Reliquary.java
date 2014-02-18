@@ -19,8 +19,8 @@ import net.minecraftforge.fluids.FluidStack;
 import xreliquary.blocks.XRBlocks;
 import xreliquary.common.CommonProxy;
 import xreliquary.items.ItemDestructionCatalyst;
+import xreliquary.items.XRAlkahestry;
 import xreliquary.items.XRItems;
-import xreliquary.items.alkahestry.XRAlkahestry;
 import xreliquary.lib.Reference;
 import xreliquary.util.LogHelper;
 import cpw.mods.fml.common.Mod;
@@ -63,7 +63,6 @@ public class Reliquary {
 
         proxy.registerSoundHandler();
         proxy.registerTickHandlers();
-
         XRItems.init();
         XRAlkahestry.init();
 
