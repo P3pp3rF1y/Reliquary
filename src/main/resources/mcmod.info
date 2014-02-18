@@ -5,12 +5,9 @@
   "description": "Two words: magical swag. Oh, and a gun.",
   "version": "${version}",
   "updateUrl": "",
-  "logoFile": "/mods/xreliquary/textures/logo/xrlogo.png",
+  "logoFile": "assets/xreliquary/textures/logo/xrlogo.png",
   "mcversion": "${mcversion}",
-  "authorList": [
-  "x3n0ph0b3"
-  "TheMike"
-  ],
+  "authorList": ["x3n0ph0b3" "TheMike"],
   "credits": "",
   "screenshots": [
   ],
