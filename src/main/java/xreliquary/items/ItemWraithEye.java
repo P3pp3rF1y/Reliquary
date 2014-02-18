@@ -96,12 +96,10 @@ public class ItemWraithEye extends ItemSalamanderEye {
         	if(!world.isRemote) {
         		par2EntityPlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.DARK_RED + "Out of range!"));
         	}
-        } else if (eye.getTagCompound() != null && world.getBlockId(eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer))) == XRBlocks.wraithNode.blockID) {
-            
-        	if (canTeleport(world, eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer)))) {
-
+        } else if (eye.getTagCompound() != null && world.getBlockId(eye.getTagCompound().getInteger("nodeX"), eye.getTagCompound().getInteger("nodeY"), eye.getTagCompound().getInteger("nodeZ")) == XRBlocks.wraithNode.blockID) {
+        	if (canTeleport(world, eye.getTagCompound().getInteger("nodeX"), eye.getTagCompound().getInteger("nodeY"), eye.getTagCompound().getInteger("nodeZ"))) {
         		if (findAndRemoveEnderPearl(par2EntityPlayer)) {
-                    teleportPlayer(world, eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer)), par2EntityPlayer);
+                    teleportPlayer(world, eye.getTagCompound().getInteger("nodeX"), eye.getTagCompound().getInteger("nodeY"), eye.getTagCompound().getInteger("nodeZ"), par2EntityPlayer);
                     setCooldown(eye);
                 }
             }
@@ -162,9 +160,10 @@ public class ItemWraithEye extends ItemSalamanderEye {
     	checkForOldVersions(eye);
         if (eye.getTagCompound() != null && eye.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(par2EntityPlayer))) {
         	details = EnumChatFormatting.DARK_PURPLE + "Out of range!";
-        } else if(eye.getTagCompound() != null && eye.getTagCompound().hasKey("nodeX" + getWorld(par2EntityPlayer)) && eye.getTagCompound().hasKey("nodeY" + getWorld(par2EntityPlayer)) && eye.getTagCompound().hasKey("nodeZ" + getWorld(par2EntityPlayer))) {
-            details += "X: " + eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)) + " Y: "
-                    + eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)) + " Z: " + eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer));
+        } else if(eye.getTagCompound() != null && eye.getTagCompound().hasKey("nodeX") && eye.getTagCompound().hasKey("nodeY") && eye.getTagCompound().hasKey("nodeZ")) {
+            details += "X: " + eye.getTagCompound().getInteger("nodeX") + " Y: "
+                    + eye.getTagCompound().getInteger("nodeY") + " Z: " 
+            		+ eye.getTagCompound().getInteger("nodeZ");
         } else {
         	details += "nowhere.";
         }
@@ -191,9 +190,9 @@ public class ItemWraithEye extends ItemSalamanderEye {
     }
 
     public void setWraithNode(ItemStack eye, int x, int y, int z, int dimensionID, EntityPlayer player) {
-        setInteger("nodeX" + getWorld(player), eye, x);
-        setInteger("nodeY" + getWorld(player), eye, y);
-        setInteger("nodeZ" + getWorld(player), eye, z);
+        setInteger("nodeX", eye, x);
+        setInteger("nodeY", eye, y);
+        setInteger("nodeZ", eye, z);
         setInteger("dimensionID", eye, dimensionID);
     }
 
@@ -204,21 +203,17 @@ public class ItemWraithEye extends ItemSalamanderEye {
     private ItemStack checkForOldVersions(ItemStack eye) {
         if(eye.getTagCompound() != null && !eye.getTagCompound().hasKey("dimensionID")) {
         	Iterator keys = eye.getTagCompound().getTags().iterator();
-        	NBTTagCompound dummy = new NBTTagCompound();
         	eye.setTagCompound(new NBTTagCompound());
         	
             while(keys.hasNext()) {
             	NBTBase base = (NBTBase) keys.next();
             	if(base.getName().contains("nodeX")) {
-            		dummy.setTag("nodeX", base.copy());
-            		eye.getTagCompound().setInteger(base.getName(), (int) dummy.getShort("nodeX"));
-            		eye.getTagCompound().setInteger("dimensionID", Integer.valueOf(base.getName().charAt(base.getName().length() - 1)));
+            		eye.getTagCompound().setInteger("nodeX", Integer.valueOf(base.toString()));
+            		eye.getTagCompound().setInteger("dimensionID", Integer.valueOf(base.getName().substring(base.getName().indexOf("X") + 1)));
             	} else if(base.getName().contains("nodeY")) {
-            		dummy.setTag("nodeY", base.copy());
-            		eye.getTagCompound().setInteger(base.getName(), (int) dummy.getShort("nodeY"));
+            		eye.getTagCompound().setInteger("nodeY", Integer.valueOf(base.toString()));
             	} else if(base.getName().contains("nodeZ")) {
-            		dummy.setTag("nodeZ", base.copy());
-            		eye.getTagCompound().setInteger(base.getName(), (int) dummy.getShort("nodeZ"));
+            		eye.getTagCompound().setInteger("nodeZ", Integer.valueOf(base.toString()));
             	}
             }
         }

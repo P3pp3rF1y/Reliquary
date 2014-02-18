@@ -3,11 +3,11 @@
   "modid": "xreliquary",
   "name": "Xeno's Reliquary",
   "description": "Two words: magical swag. Oh, and a gun.",
-  "version": "${version}",
+  "version": "1.1.2",
   "updateUrl": "",
   "logoFile": "assets/xreliquary/textures/logo/xrlogo.png",
   "mcversion": "${mcversion}",
-  "authorList": ["x3n0ph0b3" "TheMike"],
+  "authorList": ["x3n0ph0b3", "TheMike"],
   "credits": "",
   "screenshots": [
   ],
