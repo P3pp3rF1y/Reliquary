@@ -2,7 +2,8 @@ package xreliquary;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import xreliquary.init.XRItems;
+import xreliquary.init.AbstractionHandler;
+import xreliquary.lib.Names;
 
 public class CreativeTabXR extends CreativeTabs {
 
@@ -12,7 +13,7 @@ public class CreativeTabXR extends CreativeTabs {
 
 	@Override
 	public Item getTabIconItem() {
-        return XRItems.mercyCross;
+        return AbstractionHandler.getItem(Names.CROSS_NAME);
 	}
 
 }

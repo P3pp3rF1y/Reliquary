@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import xreliquary.init.XRInit;
 import xreliquary.util.ObjectUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -19,6 +20,7 @@ import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@XRInit
 public class ItemSojournerStaff extends ItemBase {
 
 	public ItemSojournerStaff() {

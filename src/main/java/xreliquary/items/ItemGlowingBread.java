@@ -10,13 +10,14 @@ import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.LanguageHelper;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@XRInit
 public class ItemGlowingBread extends ItemFood {
 
 	public ItemGlowingBread() {
@@ -25,7 +26,6 @@ public class ItemGlowingBread extends ItemFood {
 		this.setMaxStackSize(64);
 		canRepair = false;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		GameRegistry.registerItem(this, Reference.MOD_ID + ":" + Names.BREAD_NAME);
 		this.setUnlocalizedName(Names.BREAD_NAME);
 	}
 

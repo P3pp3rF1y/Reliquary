@@ -28,12 +28,14 @@ import xreliquary.entities.EntityCondensedSplashSlowness;
 import xreliquary.entities.EntityCondensedSplashWeakness;
 import xreliquary.entities.EntityCondensedSplashWither;
 import xreliquary.event.ClientEventHandler;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@XRInit
 public class ItemCondensedPotion extends ItemBase {
 
 	public ItemCondensedPotion() {

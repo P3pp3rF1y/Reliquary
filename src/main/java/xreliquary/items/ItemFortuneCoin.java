@@ -15,12 +15,14 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@XRInit
 public class ItemFortuneCoin extends ItemBase {
 
 	public ItemFortuneCoin() {

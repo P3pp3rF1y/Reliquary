@@ -42,7 +42,7 @@ public class XRBlocks {
 
 	public static void addRecipes() {
 		GameRegistry.addRecipe(new ItemStack(altarIdle, 1), "olo", "lel", "olo", 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'e', Items.emerald);
-		GameRegistry.addRecipe(new ItemStack(lilypad, 1), "www", "wlw", "www", 'w', XRItems.potion(Reference.FERTILIZER_META), 'l', Blocks.waterlily);
-		GameRegistry.addRecipe(new ItemStack(wraithNode, 1), "vv", "vv", 'v', XRItems.emptyVoidTear);
+		GameRegistry.addRecipe(new ItemStack(lilypad, 1), "www", "wlw", "www", 'w', XRRecipes.potion(Reference.FERTILIZER_META), 'l', Blocks.waterlily);
+		GameRegistry.addRecipe(new ItemStack(wraithNode, 1), "vv", "vv", 'v', AbstractionHandler.getItem(Names.EMPTY_VOID_TEAR_NAME));
 	}
 }

@@ -19,7 +19,8 @@ import xreliquary.client.render.RenderStormShot;
 import xreliquary.client.render.RenderThrown;
 import xreliquary.entities.*;
 import xreliquary.event.ClientEventHandler;
-import xreliquary.init.XRItems;
+import xreliquary.init.AbstractionHandler;
+import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.LanguageHelper;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -68,7 +69,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedSplashRuin.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.RUINATION_META));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedFertility.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.FERTILIZER_META));
 
-		MinecraftForgeClient.registerItemRenderer(XRItems.handgun, new ItemRendererHandgun());
+		MinecraftForgeClient.registerItemRenderer(AbstractionHandler.getItem(Names.HANDGUN_NAME), new ItemRendererHandgun());
 	}
 
 }

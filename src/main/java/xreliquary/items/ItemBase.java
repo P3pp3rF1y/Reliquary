@@ -31,7 +31,6 @@ public class ItemBase extends Item {
 		this.modName = modName;
 		this.textureName = textureName;
 		this.setUnlocalizedName(textureName);
-		GameRegistry.registerItem(this, modName + ":" + textureName);
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import xreliquary.init.XRInit;
 import xreliquary.util.ObjectUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,6 +18,7 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@XRInit
 public class ItemEmperorChalice extends ItemBase {
 
 	public ItemEmperorChalice() {

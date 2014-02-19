@@ -3,6 +3,7 @@ package xreliquary.items;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import xreliquary.init.XRInit;
 import xreliquary.util.ObjectUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -14,6 +15,7 @@ import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
+@XRInit
 public class ItemDestructionCatalyst extends ItemBase {
 
 	public static List<String> ids = ImmutableList.of("minecraft:dirt", "minecraft:grass", "minecraft:gravel", "minecraft:cobblestone", "minecraft:stone", "minecraft:sand", "minecraft:sandstone", "minecraft:snow", "minecraft:soul_sand", "minecraft:netherrack", "minecraft:end_stone");

@@ -21,13 +21,14 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import xreliquary.Reliquary;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.LanguageHelper;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@XRInit
 public class ItemMercyCross extends ItemSword {
 
 	public ItemMercyCross() {
@@ -36,7 +37,6 @@ public class ItemMercyCross extends ItemSword {
 		this.setMaxStackSize(1);
 		canRepair = true;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		GameRegistry.registerItem(this, Reference.MOD_ID + ":" + Names.CROSS_NAME);
 		this.setUnlocalizedName(Names.CROSS_NAME);
 	}
 

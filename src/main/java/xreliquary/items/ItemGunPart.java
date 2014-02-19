@@ -8,11 +8,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import xreliquary.Reliquary;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@XRInit
 public class ItemGunPart extends ItemBase {
 
 	@SideOnly(Side.CLIENT)

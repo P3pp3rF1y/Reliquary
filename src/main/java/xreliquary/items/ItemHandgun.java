@@ -17,7 +17,8 @@ import xreliquary.entities.EntityNeutralShot;
 import xreliquary.entities.EntitySandShot;
 import xreliquary.entities.EntitySeekerShot;
 import xreliquary.entities.EntityStormShot;
-import xreliquary.init.XRItems;
+import xreliquary.init.AbstractionHandler;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -25,6 +26,7 @@ import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@XRInit
 public class ItemHandgun extends ItemBase {
 
 	@SideOnly(Side.CLIENT)
@@ -222,14 +224,14 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	private void spawnClip(EntityPlayer player) {
-		if (!player.inventory.addItemStackToInventory(new ItemStack(XRItems.magazine, 1, 0))) {
-			player.entityDropItem(new ItemStack(XRItems.magazine, 1, 0), 0.1F);
+		if (!player.inventory.addItemStackToInventory(new ItemStack(AbstractionHandler.getItem(Names.MAGAZINE_NAME), 1, 0))) {
+			player.entityDropItem(new ItemStack(AbstractionHandler.getItem(Names.MAGAZINE_NAME), 1, 0), 0.1F);
 		}
 	}
 
 	private void spawnCasing(EntityPlayer player) {
-		if (!player.inventory.addItemStackToInventory(new ItemStack(XRItems.bullet, 1, 0))) {
-			player.entityDropItem(new ItemStack(XRItems.bullet, 1, 0), 0.1F);
+		if (!player.inventory.addItemStackToInventory(new ItemStack(AbstractionHandler.getItem(Names.BULLET_NAME), 1, 0))) {
+			player.entityDropItem(new ItemStack(AbstractionHandler.getItem(Names.BULLET_NAME), 1, 0), 0.1F);
 		}
 	}
 
@@ -238,7 +240,7 @@ public class ItemHandgun extends ItemBase {
 			if (ist == null) {
 				continue;
 			}
-			if (ist.getItem() == XRItems.magazine && ist.getItemDamage() != 0)
+			if (ist.getItem() == AbstractionHandler.getItem(Names.MAGAZINE_NAME) && ist.getItemDamage() != 0)
 				return true;
 		}
 		return false;
@@ -250,7 +252,7 @@ public class ItemHandgun extends ItemBase {
 			if (player.inventory.mainInventory[slot] == null) {
 				continue;
 			}
-			if (player.inventory.mainInventory[slot].getItem() == XRItems.magazine && player.inventory.mainInventory[slot].getItemDamage() != 0) {
+			if (player.inventory.mainInventory[slot].getItem() == AbstractionHandler.getItem(Names.MAGAZINE_NAME) && player.inventory.mainInventory[slot].getItemDamage() != 0) {
 				bulletFound = player.inventory.mainInventory[slot].getItemDamage();
 				player.inventory.decrStackSize(slot, 1);
 				return bulletFound;

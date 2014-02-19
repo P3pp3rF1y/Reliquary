@@ -5,9 +5,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityGlowingWater;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
+@XRInit
 public class ItemGlowingWater extends ItemBase {
 
 	public ItemGlowingWater() {

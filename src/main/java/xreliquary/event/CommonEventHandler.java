@@ -2,6 +2,8 @@ package xreliquary.event;
 
 import cpw.mods.fml.common.eventhandler.*;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import xreliquary.init.AbstractionHandler;
+import xreliquary.lib.Names;
 import xreliquary.util.ObjectUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
@@ -10,7 +12,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import xreliquary.init.XRBlocks;
-import xreliquary.init.XRItems;
 import xreliquary.items.IVoidUpgradable;
 import xreliquary.items.ItemVoidSatchel;
 import xreliquary.items.ItemVoidTear;
@@ -26,9 +27,9 @@ public class CommonEventHandler {
 			if (event.craftMatrix.getStackInSlot(slot) == null) {
 				continue;
 			}
-			if (event.craftMatrix.getStackInSlot(slot).getItem() == XRItems.glowingWater)
-				if (!event.player.inventory.addItemStackToInventory(new ItemStack(XRItems.condensedPotion, 1, Reference.EMPTY_VIAL_META))) {
-					event.player.entityDropItem(new ItemStack(XRItems.condensedPotion, 1, Reference.EMPTY_VIAL_META), 0.1F);
+			if (event.craftMatrix.getStackInSlot(slot).getItem() == AbstractionHandler.getItem(Names.GLOWING_WATER_NAME))
+				if (!event.player.inventory.addItemStackToInventory(new ItemStack(AbstractionHandler.getItem(Names.CONDENSED_POTION_NAME), 1, Reference.EMPTY_VIAL_META))) {
+					event.player.entityDropItem(new ItemStack(AbstractionHandler.getItem(Names.CONDENSED_POTION_NAME), 1, Reference.EMPTY_VIAL_META), 0.1F);
 				}
 		}
 	}
@@ -41,7 +42,7 @@ public class CommonEventHandler {
         for (int count = 0; count < event.craftMatrix.getSizeInventory(); count++) {
             ItemStack stack = event.craftMatrix.getStackInSlot(count);
             if (stack != null) {
-                if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(XRItems.alkahestryTome))) {
+                if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(AbstractionHandler.getItem(Names.TOME_NAME)))) {
                     tomb = count;
                 } else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(Items.redstone)) || ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
                     isCharging = true;
@@ -73,7 +74,7 @@ public class CommonEventHandler {
                 if (event.craftMatrix.getStackInSlot(slot) == null) {
                     continue;
                 }
-                if (event.craftMatrix.getStackInSlot(slot).getItem() != XRItems.voidTear && ObjectUtils.areItemsEqual(event.craftMatrix.getStackInSlot(slot).getItem(), Item.getItemFromBlock(XRBlocks.wraithNode))) {
+                if (event.craftMatrix.getStackInSlot(slot).getItem() != AbstractionHandler.getItem(Names.VOID_TEAR_NAME) && ObjectUtils.areItemsEqual(event.craftMatrix.getStackInSlot(slot).getItem(), Item.getItemFromBlock(XRBlocks.wraithNode))) {
                     continue;
                 }
                 if (event.crafting.getItem() instanceof ItemVoidSatchel) {
@@ -128,7 +129,7 @@ public class CommonEventHandler {
                 if (event.craftMatrix.getStackInSlot(slot) == null) {
                     continue;
                 }
-                if (event.craftMatrix.getStackInSlot(slot).getItem() != XRItems.voidSatchel) {
+                if (event.craftMatrix.getStackInSlot(slot).getItem() != AbstractionHandler.getItem(Names.VOID_SATCHEL_NAME)) {
                     continue;
                 }
                 ItemStack oldSatchel = event.craftMatrix.getStackInSlot(slot);
@@ -145,7 +146,7 @@ public class CommonEventHandler {
                         if (event.craftMatrix.getStackInSlot(slot0) == null) {
                             continue;
                         }
-                        if (event.craftMatrix.getStackInSlot(slot0).getItem() == XRItems.emptyVoidTear) {
+                        if (event.craftMatrix.getStackInSlot(slot0).getItem() == AbstractionHandler.getItem(Names.EMPTY_VOID_TEAR_NAME)) {
                             event.craftMatrix.getStackInSlot(slot0).stackSize++;
                         }
                     }
@@ -165,14 +166,14 @@ public class CommonEventHandler {
     public void satchelHandler(PlayerEvent.ItemCraftedEvent event) {
         if (event.crafting == null)
             return;
-        if (event.crafting.getItem() != XRItems.voidSatchel)
+        if (event.crafting.getItem() != AbstractionHandler.getItem(Names.VOID_SATCHEL_NAME))
             return;
         // handles creation of VoidSatchel
         for (int slot = 0; slot < event.craftMatrix.getSizeInventory(); slot++) {
             if (event.craftMatrix.getStackInSlot(slot) == null) {
                 continue;
             }
-            if (event.craftMatrix.getStackInSlot(slot).getItem() != XRItems.voidTear) {
+            if (event.craftMatrix.getStackInSlot(slot).getItem() != AbstractionHandler.getItem(Names.VOID_TEAR_NAME)) {
                 continue;
             }
             ItemStack tear = event.craftMatrix.getStackInSlot(slot);
@@ -219,7 +220,7 @@ public class CommonEventHandler {
             if (event.craftMatrix.getStackInSlot(slot) == null) {
                 continue;
             }
-            if (event.craftMatrix.getStackInSlot(slot).getItem() != XRItems.voidSatchel) {
+            if (event.craftMatrix.getStackInSlot(slot).getItem() != AbstractionHandler.getItem(Names.VOID_SATCHEL_NAME)) {
                 continue;
             }
             ItemStack oldSatchel = event.craftMatrix.getStackInSlot(slot);
@@ -236,7 +237,7 @@ public class CommonEventHandler {
                     if (event.craftMatrix.getStackInSlot(slot0) == null) {
                         continue;
                     }
-                    if (event.craftMatrix.getStackInSlot(slot0).getItem() == XRItems.emptyVoidTear) {
+                    if (event.craftMatrix.getStackInSlot(slot0).getItem() == AbstractionHandler.getItem(Names.EMPTY_VOID_TEAR_NAME)) {
                         event.craftMatrix.getStackInSlot(slot0).stackSize++;
                     }
                 }

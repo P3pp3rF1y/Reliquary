@@ -1,9 +1,9 @@
 package xreliquary.items.alkahestry;
 
+import xreliquary.init.AbstractionHandler;
+import xreliquary.lib.Names;
 import xreliquary.util.ObjectUtils;
-import net.minecraft.init.Blocks;
 import xreliquary.Reliquary;
-import xreliquary.init.XRItems;
 import xreliquary.util.AlkahestRecipe;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -20,9 +20,9 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(XRItems.alkahestryTome))) {
+				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(AbstractionHandler.getItem(Names.TOME_NAME)))) {
 					tomb = stack.copy();
-				} else if (!ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(XRItems.alkahestryTome))) {
+				} else if (!ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(AbstractionHandler.getItem(Names.TOME_NAME)))) {
 					if (valid == 0) {
 						valid = 1;
 						itemStack = stack;
@@ -51,7 +51,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (!(ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(XRItems.alkahestryTome)))) {
+				if (!(ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(AbstractionHandler.getItem(Names.TOME_NAME))))) {
 					if (Alkahestry.getDictionaryKey(stack) == null)
 						returned = Alkahestry.getRegistry().get(ObjectUtils.getItemIdentifier(stack.getItem()));
 					else {
@@ -75,7 +75,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 
 	@Override
 	public ItemStack getRecipeOutput() {
-		return new ItemStack(XRItems.alkahestryTome, 1);
+		return new ItemStack(AbstractionHandler.getItem(Names.TOME_NAME), 1);
 	}
 
 }

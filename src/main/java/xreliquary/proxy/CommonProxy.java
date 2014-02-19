@@ -6,15 +6,15 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-import net.minecraft.item.ItemStack;
 import xreliquary.Reliquary;
 import xreliquary.blocks.TEAltar;
+import xreliquary.init.AbstractionHandler;
 import xreliquary.init.XRBlocks;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.entities.*;
 import xreliquary.entities.EntityStormShot;
 import xreliquary.event.CommonEventHandler;
-import xreliquary.init.XRItems;
+import xreliquary.init.XRRecipes;
 import xreliquary.items.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -30,11 +30,14 @@ public class CommonProxy {
 	public void preInit() {
 		this.initOptions();
 
-		XRItems.init();
+        try {
+            AbstractionHandler.init();
+        } catch(Exception e) { e.printStackTrace(); System.exit(1); }
+		XRRecipes.init();
 		XRBlocks.init();
 		Alkahestry.init();
 
-		FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), XRItems.potion(Reference.WATER_META), XRItems.potion(Reference.EMPTY_VIAL_META));
+		FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), XRRecipes.potion(Reference.WATER_META), XRRecipes.potion(Reference.EMPTY_VIAL_META));
 	}
 
 	public void init() {

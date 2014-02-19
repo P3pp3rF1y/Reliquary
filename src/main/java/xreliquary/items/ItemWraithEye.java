@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
+import xreliquary.init.XRInit;
 import xreliquary.util.ObjectUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -23,6 +24,7 @@ import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@XRInit
 public class ItemWraithEye extends ItemSalamanderEye {
 
 	public ItemWraithEye() {

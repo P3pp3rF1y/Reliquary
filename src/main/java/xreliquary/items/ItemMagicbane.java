@@ -15,13 +15,14 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import xreliquary.Reliquary;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.LanguageHelper;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@XRInit
 public class ItemMagicbane extends ItemSword {
 
 	public ItemMagicbane() {
@@ -30,7 +31,6 @@ public class ItemMagicbane extends ItemSword {
 		this.setMaxStackSize(1);
 		canRepair = true;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		GameRegistry.registerItem(this, Reference.MOD_ID + ":" + Names.MAGICBANE_NAME);
 		this.setUnlocalizedName(Names.MAGICBANE_NAME);
 	}
 

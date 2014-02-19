@@ -64,8 +64,8 @@ public class Reliquary {
 	@EventHandler
 	public void modsLoaded(FMLPostInitializationEvent event) {
 		LogHelper.log(Level.INFO, "Loaded successfully!");
-        if (event.getSide() == Side.CLIENT && !Loader.isModLoaded("NotEnoughItems")) {
-        	LogHelper.log(Level.INFO, "Hey NEI! I got a plugin for you!");
+        if (event.getSide() == Side.CLIENT && Loader.isModLoaded("NotEnoughItems")) {
+        	LogHelper.log(Level.INFO, "Hey NEI! I got a plugin for you! (hopefully in the near future).");
         }
 	}
 

@@ -1,5 +1,7 @@
 package xreliquary.items;
 
+import xreliquary.init.AbstractionHandler;
+import xreliquary.init.XRInit;
 import xreliquary.util.ObjectUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,10 +11,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.init.XRItems;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
+@XRInit
 public class ItemEmptyVoidTear extends ItemBase {
 
 	public ItemEmptyVoidTear() {
@@ -63,7 +65,7 @@ public class ItemEmptyVoidTear extends ItemBase {
 		int itemMeta = target.getItemDamage();
 		Item item = target.getItem();
 		int itemQuantity = getQuantityInInventory(target, inventory);
-		ItemStack tear = new ItemStack(XRItems.voidTear, 1);
+		ItemStack tear = new ItemStack(AbstractionHandler.getItem(Names.VOID_TEAR_NAME), 1);
 		tear.setTagCompound(createStackTagCompoundForTear(itemMeta, ObjectUtils.getItemIdentifier(item), itemQuantity));
 		findAndRemoveQuantity(inventory, new ItemStack(item, 1, itemMeta), itemQuantity);
 		return tear;

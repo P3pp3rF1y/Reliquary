@@ -9,9 +9,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Reference;
 import xreliquary.util.NBTHelper;
 
+@XRInit
 public class ItemHeroMedallion extends ItemBase {
 
 	public ItemHeroMedallion() {

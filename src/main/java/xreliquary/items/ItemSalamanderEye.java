@@ -3,6 +3,7 @@ package xreliquary.items;
 import java.util.Iterator;
 import java.util.List;
 
+import xreliquary.init.XRInit;
 import xreliquary.util.ObjectUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -23,6 +24,7 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@XRInit
 public class ItemSalamanderEye extends ItemBase {
 
 	public ItemSalamanderEye() {

@@ -2,12 +2,11 @@ package xreliquary.client.gui;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import xreliquary.init.XRItems;
+import xreliquary.init.AbstractionHandler;
+import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.LanguageHelper;
-import net.minecraft.block.Block;
 import net.minecraft.inventory.Container;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -32,7 +31,7 @@ public class GuiAlkahestTome extends GuiBase {
 		this.drawTexturedModalRect(((this.width - 16) / 2) + 19, ((this.height - 179) / 2) + 148, 0, 180, 10, 10);
 		this.drawTexturedModalRect(((this.width - 16) / 2) - 14, ((this.height - 179) / 2) + 148, 10, 180, 10, 10);
 		
-		this.drawItemStack(new ItemStack(XRItems.alkahestryTome), (this.width - 16) / 2, ((this.height - 179) / 2) + 145);
+		this.drawItemStack(new ItemStack(AbstractionHandler.getItem(Names.TOME_NAME)), (this.width - 16) / 2, ((this.height - 179) / 2) + 145);
 		this.drawItemStack(new ItemStack(Items.redstone), ((this.width - 16) / 2) - 32, ((this.height - 179) / 2) + 145);
 		this.drawItemStack(new ItemStack(Blocks.redstone_block), ((this.width - 16) / 2) + 32, ((this.height - 179) / 2) + 145);
 	}
