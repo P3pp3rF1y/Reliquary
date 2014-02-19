@@ -225,7 +225,7 @@ public class EntityBlazeShot extends Entity implements IProjectile {
 			MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
 
 			this.setPosition(posX, posY, posZ);
-			this.doBlockCollisions();
+			this.func_145775_I();
 		}
 	}
 
@@ -317,11 +317,12 @@ public class EntityBlazeShot extends Entity implements IProjectile {
 	}
 
 	private void onImpact(MovingObjectPosition mop) {
-		if (mop.typeOfHit == EnumMovingObjectType.ENTITY && mop.entityHit != null) {
+		
+		if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
 			if (mop.entityHit == shootingEntity)
 				return;
 			this.onImpact(mop.entityHit);
-		} else if (mop.typeOfHit == EnumObjectMovingType.) {
+		} else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
 			this.groundImpact(mop.sideHit);
 		}
 	}

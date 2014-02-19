@@ -34,7 +34,7 @@ public class CommonProxy {
 		XRBlocks.init();
 		Alkahestry.init();
 
-		FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), new ItemStack(XRItems.potion(WATER_META)), XRItems.potion(Reference.EMPTY_VIAL_META));
+		FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), XRItems.potion(Reference.WATER_META), XRItems.potion(Reference.EMPTY_VIAL_META));
 	}
 
 	public void init() {

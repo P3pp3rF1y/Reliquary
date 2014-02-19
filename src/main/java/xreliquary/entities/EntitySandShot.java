@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
@@ -14,7 +15,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -161,26 +161,23 @@ public class EntitySandShot extends Entity implements IProjectile {
 			prevRotationPitch = rotationPitch = (float) (Math.atan2(motionY, var1) * 180.0D / Math.PI);
 		}
 
-		int var16 = worldObj.getBlockId(xTile, yTile, zTile);
 
-		if (var16 > 0) {
-			Block.blocksList[var16].setBlockBoundsBasedOnState(worldObj, xTile, yTile, zTile);
-			AxisAlignedBB var2 = Block.blocksList[var16].getCollisionBoundingBoxFromPool(worldObj, xTile, yTile, zTile);
 
-			if (var2 != null && var2.isVecInside(worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ))) {
-				inGround = true;
-			}
-		}
+        Block block = this.worldObj.getBlock(this.xTile, this.yTile, this.zTile);
 
-		if (inGround) {
-			int var18 = worldObj.getBlockId(xTile, yTile, zTile);
-			int var19 = worldObj.getBlockMetadata(xTile, yTile, zTile);
+        if (block.getMaterial() != Material.air)
+        {
+            block.setBlockBoundsBasedOnState(this.worldObj, this.xTile, this.yTile, this.zTile);
+            AxisAlignedBB axisalignedbb = block.getCollisionBoundingBoxFromPool(this.worldObj, this.xTile, this.yTile, this.zTile);
 
-			if (var18 == inTile && var19 == inData) {
-				// this.groundImpact();
-				// this.setDead();
-			}
-		} else {
+            if (axisalignedbb != null && axisalignedbb.isVecInside(this.worldObj.getWorldVec3Pool().getVecFromPool(this.posX, this.posY, this.posZ)))
+            {
+                this.inGround = true;
+            }
+        }
+
+
+		if (!inGround) {
 			++ticksInAir;
 			if (ticksInAir > 1 && ticksInAir < 3) {
 				worldObj.spawnParticle("flame", posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0D, 0D, 0D);
@@ -190,7 +187,7 @@ public class EntitySandShot extends Entity implements IProjectile {
 			}
 			Vec3 var17 = worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
 			Vec3 var3 = worldObj.getWorldVec3Pool().getVecFromPool(posX + motionX, posY + motionY, posZ + motionZ);
-			MovingObjectPosition var4 = worldObj.rayTraceBlocks_do_do(var17, var3, false, true);
+			MovingObjectPosition var4 = worldObj.func_147447_a(var17, var3, false, true, false);
 			var17 = worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
 			var3 = worldObj.getWorldVec3Pool().getVecFromPool(posX + motionX, posY + motionY, posZ + motionZ);
 
@@ -239,7 +236,7 @@ public class EntitySandShot extends Entity implements IProjectile {
 			MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
 
 			this.setPosition(posX, posY, posZ);
-			this.doBlockCollisions();
+			this.func_145775_I();
 		}
 	}
 
@@ -335,11 +332,11 @@ public class EntitySandShot extends Entity implements IProjectile {
 	}
 
 	private void onImpact(MovingObjectPosition mop) {
-		if (mop.typeOfHit == EnumMovingObjectType.ENTITY && mop.entityHit != null) {
+		if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
 			if (mop.entityHit == shootingEntity)
 				return;
 			this.onImpact(mop.entityHit);
-		} else if (mop.typeOfHit == EnumMovingObjectType.TILE) {
+		} else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
 			this.groundImpact(mop.sideHit);
 		}
 	}

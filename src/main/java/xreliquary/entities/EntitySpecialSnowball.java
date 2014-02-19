@@ -8,9 +8,10 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.projectile.EntitySnowball;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumMovingObjectType;
+
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
 public class EntitySpecialSnowball extends EntitySnowball {
 	public int ticksInAir;
 	public int ticksInGround;
-	public int inTile;
+	public Block inTile;
 	public int xTile;
 	public int yTile;
 	public int zTile;
@@ -85,10 +86,10 @@ public class EntitySpecialSnowball extends EntitySnowball {
 		xTile = (int) Math.round(posX);
 		yTile = (int) Math.round(posY);
 		zTile = (int) Math.round(posZ);
-		inTile = worldObj.getBlockId(xTile, yTile, zTile);
+		inTile = worldObj.getBlock(xTile, yTile, zTile);
 
 		if (inGround) {
-			int var1 = worldObj.getBlockId(xTile, yTile, zTile);
+			Block var1 = worldObj.getBlock(xTile, yTile, zTile);
 
 			if (var1 == inTile) {
 				++ticksInGround;
@@ -112,7 +113,7 @@ public class EntitySpecialSnowball extends EntitySnowball {
 
 		Vec3 var16 = worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
 		Vec3 var2 = worldObj.getWorldVec3Pool().getVecFromPool(posX + motionX, posY + motionY, posZ + motionZ);
-		MovingObjectPosition var3 = worldObj.rayTraceBlocks_do_do(var16, var2, false, false);
+		MovingObjectPosition var3 = worldObj.func_147447_a(var16, var2, false, true, false);
 		var16 = worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
 		var2 = worldObj.getWorldVec3Pool().getVecFromPool(posX + motionX, posY + motionY, posZ + motionZ);
 
@@ -151,7 +152,7 @@ public class EntitySpecialSnowball extends EntitySnowball {
 		}
 
 		if (var3 != null) {
-			if (var3.typeOfHit == EnumMovingObjectType.TILE && worldObj.getBlockId(var3.blockX, var3.blockY, var3.blockZ) == Block.portal.blockID) {
+			if (var3.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlock(var3.blockX, var3.blockY, var3.blockZ) == Blocks.portal) {
 				this.setInPortal();
 			} else {
 				this.onImpact(var3);

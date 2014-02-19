@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
@@ -74,7 +75,7 @@ public class EntityCondensedSplashHarm extends EntityThrowable {
 		double var8 = posX;
 		double var10 = posY;
 		double var12 = posZ;
-		String var14 = "iconcrack_" + Item.potion.itemID;
+		String var14 = "iconcrack_" + Item.getIdFromItem(Items.potionitem);
 		Random var7 = rand;
 		for (int var15 = 0; var15 < 8; ++var15) {
 			worldObj.spawnParticle(var14, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);

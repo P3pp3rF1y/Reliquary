@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
@@ -63,7 +64,7 @@ public class EntityCondensedFertility extends EntityThrowable {
 			for (int yD = -2; yD <= 1; yD++) {
 				for (int zD = -1; zD <= 1; zD++) {
 					if (this.getThrower() instanceof EntityPlayer) {
-						Item.itemsList[Item.dyePowder.itemID].onItemUse(new ItemStack(Item.dyePowder, 1, 15), (EntityPlayer) this.getThrower(), worldObj, x + xD, y + yD, z + zD, 1, 0F, 0F, 0F);
+						Items.dye.onItemUse(new ItemStack(Items.dye, 1, 15), (EntityPlayer) this.getThrower(), worldObj, x + xD, y + yD, z + zD, 1, 0F, 0F, 0F);
 					}
 				}
 			}
@@ -77,7 +78,7 @@ public class EntityCondensedFertility extends EntityThrowable {
 		double var8 = posX;
 		double var10 = posY;
 		double var12 = posZ;
-		String var14 = "iconcrack_" + Item.potion.itemID;
+		String var14 = "iconcrack_" + Item.getIdFromItem(Items.potionitem);
 		Random var7 = rand;
 		for (int var15 = 0; var15 < 8; ++var15) {
 			worldObj.spawnParticle(var14, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);

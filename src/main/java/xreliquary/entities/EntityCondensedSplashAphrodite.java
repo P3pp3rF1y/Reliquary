@@ -9,6 +9,7 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
@@ -69,14 +70,16 @@ public class EntityCondensedSplashAphrodite extends EntityThrowable {
 			if (e.getGrowingAge() != 0) {
 				continue;
 			}
-			e.inLove = 600;
-			for (int var3 = 0; var3 < 7; ++var3) {
-				double var4 = rand.nextGaussian() * 0.02D;
-				double var6 = rand.nextGaussian() * 0.02D;
-				double var8 = rand.nextGaussian() * 0.02D;
-				worldObj.spawnParticle("heart", e.posX + rand.nextFloat() * e.width * 2.0F - e.width, e.posY + 0.5D + rand.nextFloat() * e.height, e.posZ + rand.nextFloat() * e.width * 2.0F - e.width, var4, var6, var8);
+			
+			if ((this.getThrower() instanceof EntityPlayer)) {
+				e.func_146082_f((EntityPlayer)this.getThrower());
+				for (int var3 = 0; var3 < 7; ++var3) {
+					double var4 = rand.nextGaussian() * 0.02D;
+					double var6 = rand.nextGaussian() * 0.02D;
+					double var8 = rand.nextGaussian() * 0.02D;
+					worldObj.spawnParticle("heart", e.posX + rand.nextFloat() * e.width * 2.0F - e.width, e.posY + 0.5D + rand.nextFloat() * e.height, e.posZ + rand.nextFloat() * e.width * 2.0F - e.width, var4, var6, var8);
+				}
 			}
-
 		}
 
 		this.setDead();
@@ -87,7 +90,7 @@ public class EntityCondensedSplashAphrodite extends EntityThrowable {
 		double var8 = posX;
 		double var10 = posY;
 		double var12 = posZ;
-		String var14 = "iconcrack_" + Item.potion.itemID;
+		String var14 = "iconcrack_" + Item.getIdFromItem(Items.potionitem);
 		Random var7 = rand;
 		for (int var15 = 0; var15 < 8; ++var15) {
 			worldObj.spawnParticle(var14, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
