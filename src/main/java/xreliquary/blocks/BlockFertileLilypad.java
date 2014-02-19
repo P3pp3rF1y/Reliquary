@@ -3,6 +3,9 @@ package xreliquary.blocks;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import xreliquary.util.ObjectUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
@@ -105,4 +108,10 @@ public class BlockFertileLilypad extends BlockFlower {
 	public boolean canBlockStay(World world, int par2, int par3, int par4) {
 		return par3 >= 0 && par3 < 256 ? world.getBlock(par2, par3 - 1, par4).getMaterial() == Material.water && world.getBlockMetadata(par2, par3 - 1, par4) == 0 : false;
 	}
+
+    @SideOnly(Side.CLIENT)
+    public void getSubBlocks(Item item, CreativeTabs tab, List list) {
+        list.add(new ItemStack(item, 1));
+    }
+
 }

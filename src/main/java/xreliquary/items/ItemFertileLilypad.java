@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemFertileLilypad extends ItemBlock {
 
-	public ItemFertileLilypad() {
+	public ItemFertileLilypad(Block block) {
 		super(XRBlocks.lilypad);
 	}
 
@@ -25,12 +26,6 @@ public class ItemFertileLilypad extends ItemBlock {
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.epic;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
-		return true;
 	}
 
 	@Override

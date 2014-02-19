@@ -4,6 +4,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.RecipeSorter;
 import xreliquary.Reliquary;
 import xreliquary.items.*;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
@@ -178,7 +179,10 @@ public class XRItems {
 		GameRegistry.addRecipe(new AlkahestryRedstoneRecipe());
 		GameRegistry.addRecipe(new AlkahestryCraftingRecipe());
 
-		// touchstone
+        RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
+        RecipeSorter.register(Reference.MOD_ID + ":alkahest_redstone", AlkahestryRedstoneRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
+
+        // touchstone
 		GameRegistry.addRecipe(new ItemStack(midasTouchstone, 1, 0), new Object[] { "bbb", "rtr", "ggg", 'b', Blocks.glowstone, 'r', Items.blaze_rod, 'g', Items.gold_ingot, 't', Items.ghast_tear });
 
 		// chalice

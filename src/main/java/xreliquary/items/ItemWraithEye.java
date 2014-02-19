@@ -140,7 +140,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 	}
 
 	private void teleportPlayer(World world, int x, int y, int z, EntityPlayer player) {
-		player.setPositionAndUpdate(x, y, z);
+		player.setPositionAndUpdate(x + 0.5, y + 0.875, z + 0.5);
 		player.playSound("mob.endermen.portal", 1.0f, 1.0f);
 		for (int particles = 0; particles < 2; particles++) {
 			world.spawnParticle("portal", player.posX, player.posY, player.posZ, world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());

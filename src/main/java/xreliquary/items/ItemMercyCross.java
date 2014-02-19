@@ -2,10 +2,14 @@ package xreliquary.items;
 
 import java.util.List;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityPigZombie;
@@ -16,7 +20,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.util.DamageSource;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -77,14 +80,21 @@ public class ItemMercyCross extends ItemSword {
         return block == Blocks.web ? 15.0F : 1.5F;
     }
 
-    // TODO: Test if this actually works.
+    @Override
+    public Multimap getItemAttributeModifiers() {
+        Multimap multimap = HashMultimap.create();
+        multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double) 0, 0));
+        return multimap;
+    }
+
+    // About time it worked. :D
 	@Override
 	public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase monster, EntityLivingBase player) {
         if (isUndead(monster)) {
             monster.worldObj.spawnParticle("largeexplode", monster.posX, monster.posY + monster.height / 2, monster.posZ, 0.0F, 0.0F, 0.0F);
-            monster.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) player), super.func_150931_i());
+            monster.heal(-(4.0F * 2));
         } else {
-            monster.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) player), super.func_150931_i() * 2);
+            monster.heal(-4.0F);
         }
 		return true;
 	}
