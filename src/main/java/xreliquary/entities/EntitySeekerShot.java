@@ -66,7 +66,7 @@ public class EntitySeekerShot extends Entity implements IProjectile {
 
 	@Override
 	protected void entityInit() {
-		dataWatcher.addObject(16, Byte.valueOf((byte) 0));
+		dataWatcher.addObject(16, (byte) 0);
 	}
 
 	/**
