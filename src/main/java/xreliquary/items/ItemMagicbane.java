@@ -74,9 +74,8 @@ public class ItemMagicbane extends ItemSword {
 	 * entry argument beside ev. They just raise the damage on the stack.
 	 */
 	@Override
-	public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase) {
-		if (par2EntityLivingBase instanceof EntityLivingBase) {
-			EntityLivingBase e = par2EntityLivingBase;
+	public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase e, EntityLivingBase par3EntityLivingBase) {
+		if (e != null) {
 			int random = e.worldObj.rand.nextInt(16);
 			switch (random) {
 			case 0:
@@ -117,7 +116,7 @@ public class ItemMagicbane extends ItemSword {
                     bonus += enchants.getCompoundTagAt(enchant).getShort("lvl");
                 }
 			}
-			par2EntityLivingBase.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) par3EntityLivingBase), bonus + 4);
+			e.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) par3EntityLivingBase), bonus + 4);
 		}
 		par1ItemStack.damageItem(1, par3EntityLivingBase);
 		return true;
