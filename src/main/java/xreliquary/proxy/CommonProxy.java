@@ -32,10 +32,11 @@ public class CommonProxy {
 
         try {
             AbstractionHandler.init();
+            XRRecipes.init();
+            XRBlocks.init();
+            Alkahestry.init();
         } catch(Exception e) { e.printStackTrace(); System.exit(1); }
-		XRRecipes.init();
-		XRBlocks.init();
-		Alkahestry.init();
+
 
 		FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), XRRecipes.potion(Reference.WATER_META), XRRecipes.potion(Reference.EMPTY_VIAL_META));
 	}

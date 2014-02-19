@@ -8,10 +8,16 @@ import org.apache.logging.log4j.Level;
 import xreliquary.lib.Reference;
 import xreliquary.util.LogHelper;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AbstractionHandler {
 
     private static final String blocksPath = "xreliquary.blocks";
     private static final String itemsPath = "xreliquary.items";
+
+    private static Map<String, Block> blockRegistry = new HashMap<String, Block>();
+    private static Map<String, Item> itemRegistry = new HashMap<String, Item>();
 
     public static void init() {
         try {
@@ -35,9 +41,13 @@ public class AbstractionHandler {
                 // We've gotten the object, and confirmed it uses @XRInit, now let's check it for compatible types.
                 if(obj instanceof Item) {
                     Item item = (Item) obj;
+                    System.out.println(item.getUnlocalizedName());
+                    itemRegistry.put(item.getUnlocalizedName(), item);
                     GameRegistry.registerItem(item, item.getUnlocalizedName());
                 } else if(obj instanceof Block) {
                     Block block = (Block) obj;
+                    System.out.println(block.getUnlocalizedName());
+                    blockRegistry.put(block.getUnlocalizedName(), block);
                     GameRegistry.registerBlock(block, block.getUnlocalizedName());
                 } else {
                     LogHelper.log(Level.WARN, "Class '" + info.getName() + "' is not a Block or an Item! You shouldn't be calling @XRInit on this! Ignoring!");
@@ -47,11 +57,11 @@ public class AbstractionHandler {
     }
 
     public static Block getBlock(String blockName) {
-        return Block.getBlockFromName(Reference.MOD_ID + ":" + blockName);
+        return blockRegistry.get("tile." + blockName);
     }
 
     public static Item getItem(String itemName) {
-        return (Item) Item.itemRegistry.getObject(itemName);
+        return itemRegistry.get("item." + itemName);
     }
 
 }
