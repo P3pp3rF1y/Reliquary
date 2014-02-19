@@ -176,7 +176,7 @@ public class EntityBlazeShot extends Entity implements IProjectile {
 			}
 			Vec3 var17 = worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
 			Vec3 var3 = worldObj.getWorldVec3Pool().getVecFromPool(posX + motionX, posY + motionY, posZ + motionZ);
-			MovingObjectPosition var4 = worldObj.rayTraceBlocks(var17, var3, false);
+			MovingObjectPosition var4 = worldObj.func_147447_a(var17, var3, false, true, false);
 			var17 = worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
 			var3 = worldObj.getWorldVec3Pool().getVecFromPool(posX + motionX, posY + motionY, posZ + motionZ);
 
