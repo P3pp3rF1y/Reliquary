@@ -61,12 +61,6 @@ public class ItemAlkahestryTome extends ItemBase {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
-		return true;
-	}
-
-	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List list) {
 		ItemStack tombStack = new ItemStack(item, 1, 0);
 		tombStack.setItemDamage(Reliquary.PROXY.tombRedstoneLimit);

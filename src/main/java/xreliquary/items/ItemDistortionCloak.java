@@ -47,12 +47,6 @@ public class ItemDistortionCloak extends ItemBase {
 		return EnumRarity.epic;
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
-		return isActive(stack);
-	}
-
 	public boolean isActive(ItemStack ist) {
 		return NBTHelper.getBoolean("isActive", ist);
 	}

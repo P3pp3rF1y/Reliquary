@@ -68,12 +68,6 @@ public class ItemEmperorChalice extends ItemBase {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
-		return true;
-	}
-
-	@Override
 	public ItemStack onEaten(ItemStack ist, World world, EntityPlayer player) {
 		if (world.isRemote)
 			return ist;

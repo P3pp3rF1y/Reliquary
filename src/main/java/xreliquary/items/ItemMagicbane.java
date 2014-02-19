@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -54,19 +55,13 @@ public class ItemMagicbane extends ItemSword {
 		}
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
-		return true;
-	}
-
 	/**
 	 * Returns the strength of the stack against a given block. 1.0F base,
 	 * (Quality+1)*2 if correct blocktype, 1.5F if sword
 	 */
 	@Override
-	public float getStrVsBlock(ItemStack par1ItemStack, Block par2Block) {
-		return 1.5F;
+	public float func_150893_a(ItemStack stack, Block block) {
+		return block == Blocks.web ? 15.0F : 1.5F;
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package xreliquary;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import xreliquary.init.XRItems;
 
 public class CreativeTabXR extends CreativeTabs {
@@ -10,8 +11,8 @@ public class CreativeTabXR extends CreativeTabs {
 	}
 
 	@Override
-	public int getTabIconItemIndex() {
-		return XRItems.mercyCross.itemID;
+	public Item getTabIconItem() {
+        return XRItems.mercyCross;
 	}
 
 }

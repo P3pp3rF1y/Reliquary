@@ -12,9 +12,11 @@ import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.util.DamageSource;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -49,12 +51,6 @@ public class ItemMercyCross extends ItemSword {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
-		return true;
-	}
-
-	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
 		String value = LanguageHelper.getLocalization("item." + Names.CROSS_NAME + ".tooltip");
 		for (String descriptionLine : value.split(";")) {
@@ -63,13 +59,10 @@ public class ItemMercyCross extends ItemSword {
 		}
 	}
 
-	@Override
-	public float getDamageVsEntity(Entity par1Entity, ItemStack stack) {
-		if (isUndead(par1Entity)) {
-			par1Entity.worldObj.spawnParticle("largeexplode", par1Entity.posX, par1Entity.posY + par1Entity.height / 2, par1Entity.posZ, 0.0F, 0.0F, 0.0F);
-		}
-		return isUndead(par1Entity) ? super.getDamageVsEntity(par1Entity, stack) * 2 : super.getDamageVsEntity(par1Entity, stack) * 1;
-	}
+    @Override
+    public float func_150931_i() {
+        return 0.0F;
+    }
 
 	private boolean isUndead(Entity mop) {
 		return mop instanceof EntitySkeleton || mop instanceof EntityGhast || mop instanceof EntityWither || mop instanceof EntityZombie || mop instanceof EntityPigZombie;
@@ -79,18 +72,20 @@ public class ItemMercyCross extends ItemSword {
 	 * Returns the strength of the stack against a given block. 1.0F base,
 	 * (Quality+1)*2 if correct blocktype, 1.5F if sword
 	 */
-	@Override
-	public float getStrVsBlock(ItemStack par1ItemStack, Block par2Block) {
-		return 1.5F;
-	}
+    @Override
+    public float func_150893_a(ItemStack stack, Block block) {
+        return block == Blocks.web ? 15.0F : 1.5F;
+    }
 
-	/**
-	 * Current implementations of this method in child classes do not use the
-	 * entry argument beside ev. They just raise the damage on the stack.
-	 */
+    // TODO: Test if this actually works.
 	@Override
-	public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase) {
-		par1ItemStack.damageItem(1, par3EntityLivingBase);
+	public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase monster, EntityLivingBase player) {
+        if (isUndead(monster)) {
+            monster.worldObj.spawnParticle("largeexplode", monster.posX, monster.posY + monster.height / 2, monster.posZ, 0.0F, 0.0F, 0.0F);
+            monster.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) player), super.func_150931_i());
+        } else {
+            monster.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) player), super.func_150931_i() * 2);
+        }
 		return true;
 	}
 }
