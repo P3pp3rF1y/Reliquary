@@ -24,9 +24,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class EntityStormShot extends Entity implements IProjectile {
 	private int xTile = -1;
 	private int yTile = -1;
-	private int zTile = -1;
-	private int inTile = 0;
-	private int inData = 0;
+	private int zTile = -1; 
 	private boolean inGround = false;
 
 	/** The owner of this arrow. */
@@ -259,9 +257,7 @@ public class EntityStormShot extends Entity implements IProjectile {
 	public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
 		par1NBTTagCompound.setShort("xTile", (short) xTile);
 		par1NBTTagCompound.setShort("yTile", (short) yTile);
-		par1NBTTagCompound.setShort("zTile", (short) zTile);
-		par1NBTTagCompound.setByte("inTile", (byte) inTile);
-		par1NBTTagCompound.setByte("inData", (byte) inData);
+		par1NBTTagCompound.setShort("zTile", (short) zTile); 
 		par1NBTTagCompound.setByte("inGround", (byte) (inGround ? 1 : 0));
 	}
 
@@ -272,9 +268,7 @@ public class EntityStormShot extends Entity implements IProjectile {
 	public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
 		xTile = par1NBTTagCompound.getShort("xTile");
 		yTile = par1NBTTagCompound.getShort("yTile");
-		zTile = par1NBTTagCompound.getShort("zTile");
-		inTile = par1NBTTagCompound.getByte("inTile") & 255;
-		inData = par1NBTTagCompound.getByte("inData") & 255;
+		zTile = par1NBTTagCompound.getShort("zTile"); 
 		inGround = par1NBTTagCompound.getByte("inGround") == 1;
 	}
 
@@ -364,11 +358,8 @@ public class EntityStormShot extends Entity implements IProjectile {
 	private void doDamage(int i, Entity mop) {
 		if (mop instanceof EntityCreeper) {
 			((EntityCreeper) mop).onStruckByLightning(new EntityLightningBolt(worldObj, mop.posX, mop.posY, mop.posZ));
-		} else {
-			//TODO - this line no longer works due to lack of accessor methods for these methods
-			//it's worth revisiting this formula to tune the damage down, this may be way too much.
-			//i *= 1 + worldObj.rainingStrength + worldObj.thunderingStrength * 2;
-			i *= 1 + (worldObj.isRaining()? 1 : 0) + (worldObj.isThundering() ? 2 : 0); 
+		} else { 
+			i *= Math.round(1F + (worldObj.isRaining()? 0.5F : 0F) + (worldObj.isThundering() ? 0.5F : 0F)); 
 			if (worldObj.canLightningStrikeAt((int) (mop.posX + 0.5F), (int) (mop.posY + 0.5F), (int) (mop.posZ + 0.5F))) {
 				worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, mop.posX, mop.posY, mop.posZ));
 			}

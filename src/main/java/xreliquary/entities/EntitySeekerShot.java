@@ -23,9 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class EntitySeekerShot extends Entity implements IProjectile {
 	private int xTile = -1;
 	private int yTile = -1;
-	private int zTile = -1;
-	private int inTile = 0;
-	private int inData = 0;
+	private int zTile = -1; 
 	private boolean inGround = false;
 
 	/** The owner of this arrow. */
@@ -299,9 +297,7 @@ public class EntitySeekerShot extends Entity implements IProjectile {
 	public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
 		par1NBTTagCompound.setShort("xTile", (short) xTile);
 		par1NBTTagCompound.setShort("yTile", (short) yTile);
-		par1NBTTagCompound.setShort("zTile", (short) zTile);
-		par1NBTTagCompound.setByte("inTile", (byte) inTile);
-		par1NBTTagCompound.setByte("inData", (byte) inData);
+		par1NBTTagCompound.setShort("zTile", (short) zTile); 
 		par1NBTTagCompound.setByte("inGround", (byte) (inGround ? 1 : 0));
 	}
 
@@ -312,9 +308,7 @@ public class EntitySeekerShot extends Entity implements IProjectile {
 	public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
 		xTile = par1NBTTagCompound.getShort("xTile");
 		yTile = par1NBTTagCompound.getShort("yTile");
-		zTile = par1NBTTagCompound.getShort("zTile");
-		inTile = par1NBTTagCompound.getByte("inTile") & 255;
-		inData = par1NBTTagCompound.getByte("inData") & 255;
+		zTile = par1NBTTagCompound.getShort("zTile"); 
 		inGround = par1NBTTagCompound.getByte("inGround") == 1;
 	}
 
