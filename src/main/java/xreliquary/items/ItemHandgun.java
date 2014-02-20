@@ -17,7 +17,7 @@ import xreliquary.entities.EntityNeutralShot;
 import xreliquary.entities.EntitySandShot;
 import xreliquary.entities.EntitySeekerShot;
 import xreliquary.entities.EntityStormShot;
-import xreliquary.init.AbstractionHandler;
+import xreliquary.init.ContentHandler;
 import xreliquary.init.XRInit;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
@@ -224,14 +224,14 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	private void spawnClip(EntityPlayer player) {
-		if (!player.inventory.addItemStackToInventory(new ItemStack(AbstractionHandler.getItem(Names.MAGAZINE_NAME), 1, 0))) {
-			player.entityDropItem(new ItemStack(AbstractionHandler.getItem(Names.MAGAZINE_NAME), 1, 0), 0.1F);
+		if (!player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.MAGAZINE_NAME), 1, 0))) {
+			player.entityDropItem(new ItemStack(ContentHandler.getItem(Names.MAGAZINE_NAME), 1, 0), 0.1F);
 		}
 	}
 
 	private void spawnCasing(EntityPlayer player) {
-		if (!player.inventory.addItemStackToInventory(new ItemStack(AbstractionHandler.getItem(Names.BULLET_NAME), 1, 0))) {
-			player.entityDropItem(new ItemStack(AbstractionHandler.getItem(Names.BULLET_NAME), 1, 0), 0.1F);
+		if (!player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.BULLET_NAME), 1, 0))) {
+			player.entityDropItem(new ItemStack(ContentHandler.getItem(Names.BULLET_NAME), 1, 0), 0.1F);
 		}
 	}
 
@@ -240,7 +240,7 @@ public class ItemHandgun extends ItemBase {
 			if (ist == null) {
 				continue;
 			}
-			if (ist.getItem() == AbstractionHandler.getItem(Names.MAGAZINE_NAME) && ist.getItemDamage() != 0)
+			if (ist.getItem() == ContentHandler.getItem(Names.MAGAZINE_NAME) && ist.getItemDamage() != 0)
 				return true;
 		}
 		return false;
@@ -252,7 +252,7 @@ public class ItemHandgun extends ItemBase {
 			if (player.inventory.mainInventory[slot] == null) {
 				continue;
 			}
-			if (player.inventory.mainInventory[slot].getItem() == AbstractionHandler.getItem(Names.MAGAZINE_NAME) && player.inventory.mainInventory[slot].getItemDamage() != 0) {
+			if (player.inventory.mainInventory[slot].getItem() == ContentHandler.getItem(Names.MAGAZINE_NAME) && player.inventory.mainInventory[slot].getItemDamage() != 0) {
 				bulletFound = player.inventory.mainInventory[slot].getItemDamage();
 				player.inventory.decrStackSize(slot, 1);
 				return bulletFound;

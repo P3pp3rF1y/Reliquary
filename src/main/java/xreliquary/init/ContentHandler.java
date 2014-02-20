@@ -5,13 +5,12 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import org.apache.logging.log4j.Level;
-import xreliquary.lib.Reference;
 import xreliquary.util.LogHelper;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AbstractionHandler {
+public class ContentHandler {
 
     private static final String blocksPath = "xreliquary.blocks";
     private static final String itemsPath = "xreliquary.items";
@@ -28,30 +27,37 @@ public class AbstractionHandler {
         }
     }
 
-    // TODO: Add support for ItemBlocks, for blocks.
-    // TODO: Search subclasses.
     private static void init(String packageName) throws Exception {
         // Gets the classpath, and searches it for all classes in packageName.
         ClassPath classPath = ClassPath.from(ClassLoader.getSystemClassLoader());
         for(ClassPath.ClassInfo info : classPath.getTopLevelClasses(packageName)) {
             Class objClass = Class.forName(info.getName());
-            if(objClass.isAnnotationPresent(XRInit.class)) {
-                Object obj = objClass.newInstance();
+            checkAndRegister(objClass);
+            // TODO: This is 'registering' somehow, but it dosen't work. This needs to work.
+            for(ClassPath.ClassInfo info1 : classPath.getTopLevelClasses(objClass.getName())) {
+                checkAndRegister(Class.forName(info1.getName()));
+            }
+        }
+    }
 
-                // We've gotten the object, and confirmed it uses @XRInit, now let's check it for compatible types.
-                if(obj instanceof Item) {
-                    Item item = (Item) obj;
-                    System.out.println(item.getUnlocalizedName());
-                    itemRegistry.put(item.getUnlocalizedName(), item);
-                    GameRegistry.registerItem(item, item.getUnlocalizedName());
-                } else if(obj instanceof Block) {
-                    Block block = (Block) obj;
-                    System.out.println(block.getUnlocalizedName());
-                    blockRegistry.put(block.getUnlocalizedName(), block);
+    private static void checkAndRegister(Class objClass) throws Exception {
+        if(objClass.isAnnotationPresent(XRInit.class)) {
+            Object obj = objClass.newInstance();
+
+            // We've gotten the object, and confirmed it uses @XRInit, now let's check it for compatible types.
+            if(obj instanceof Item) {
+                Item item = (Item) obj;
+                itemRegistry.put(item.getUnlocalizedName(), item);
+                GameRegistry.registerItem(item, item.getUnlocalizedName());
+            } else if(obj instanceof Block) {
+                Block block = (Block) obj;
+                blockRegistry.put(block.getUnlocalizedName(), block);
+                if(((XRInit) objClass.getAnnotation(XRInit.class)).itemBlock() != XRInit.class)
+                    GameRegistry.registerBlock(block, ((XRInit) objClass.getAnnotation(XRInit.class)).itemBlock(), block.getUnlocalizedName());
+                else
                     GameRegistry.registerBlock(block, block.getUnlocalizedName());
-                } else {
-                    LogHelper.log(Level.WARN, "Class '" + info.getName() + "' is not a Block or an Item! You shouldn't be calling @XRInit on this! Ignoring!");
-                }
+            } else {
+                LogHelper.log(Level.WARN, "Class '" + objClass.getName() + "' is not a Block or an Item! You shouldn't be calling @XRInit on this! Ignoring!");
             }
         }
     }

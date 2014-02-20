@@ -1,4 +1,4 @@
-package xreliquary.proxy;
+package xreliquary.client;
 
 // TODO: Make Forge-only wrapper around this.
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -17,9 +17,10 @@ import xreliquary.client.render.RenderSandShot;
 import xreliquary.client.render.RenderSeekerShot;
 import xreliquary.client.render.RenderStormShot;
 import xreliquary.client.render.RenderThrown;
+import xreliquary.common.CommonProxy;
 import xreliquary.entities.*;
 import xreliquary.event.ClientEventHandler;
-import xreliquary.init.AbstractionHandler;
+import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.LanguageHelper;
@@ -69,7 +70,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedSplashRuin.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.RUINATION_META));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedFertility.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.FERTILIZER_META));
 
-		MinecraftForgeClient.registerItemRenderer(AbstractionHandler.getItem(Names.HANDGUN_NAME), new ItemRendererHandgun());
+		MinecraftForgeClient.registerItemRenderer(ContentHandler.getItem(Names.HANDGUN_NAME), new ItemRendererHandgun());
 	}
 
 }

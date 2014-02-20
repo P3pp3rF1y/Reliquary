@@ -13,13 +13,33 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.init.XRBlocks;
+import xreliquary.blocks.tile.TileEntityAltar;
+import xreliquary.init.ContentHandler;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockAltar extends BlockContainer {
+
+    @XRInit
+    public class BlockActiveAltar extends BlockAltar {
+        public BlockActiveAltar() {
+            super(true);
+            System.out.println("Hi #1.");
+
+        }
+    }
+
+    @XRInit
+    public class BlockIdleAltar extends BlockAltar {
+        public BlockIdleAltar() {
+            super(true);
+            System.out.println("Hi #2.");
+
+        }
+    }
 
 	private final boolean isActive;
 
@@ -54,7 +74,7 @@ public class BlockAltar extends BlockContainer {
 
 	@Override
     public Item getItemDropped(int par1, Random random, int par3) {
-        return ItemBlock.getItemFromBlock(XRBlocks.altarIdle);
+        return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.ALTAR_IDLE_NAME));
     }
 
 	@Override
@@ -75,7 +95,7 @@ public class BlockAltar extends BlockContainer {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xOff, float yOff, float zOff) {
 		if (isActive)
 			return true;
-		TEAltar altar = (TEAltar) world.getTileEntity(x, y, z);
+		TileEntityAltar altar = (TileEntityAltar) world.getTileEntity(x, y, z);
 		if (altar == null)
 			return true;
 		if (player.getCurrentEquippedItem() == null)
@@ -111,9 +131,9 @@ public class BlockAltar extends BlockContainer {
 		int meta = world.getBlockMetadata(x, y, z);
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (active) {
-			world.setBlock(x, y, z, XRBlocks.altarActive);
+			world.setBlock(x, y, z, ContentHandler.getBlock(Names.ALTAR_ACTIVE_NAME));
 		} else {
-			world.setBlock(x, y, z, XRBlocks.altarIdle);
+			world.setBlock(x, y, z, ContentHandler.getBlock(Names.ALTAR_IDLE_NAME));
 		}
 
 		world.setBlockMetadataWithNotify(x, y, z, meta, 3);
@@ -125,7 +145,7 @@ public class BlockAltar extends BlockContainer {
 
 	@Override
 	public TileEntity createNewTileEntity(World var1, int dunnoWhatThisIs) {
-		return new TEAltar();
+		return new TileEntityAltar();
 	}
 
 }

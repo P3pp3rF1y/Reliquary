@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.init.AbstractionHandler;
+import xreliquary.init.ContentHandler;
 import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -125,8 +125,8 @@ public class ItemVoidTear extends ItemBase {
 	}
 
 	private void addEmptyTearToPlayerInventory(EntityPlayer player) {
-		if (!player.inventory.addItemStackToInventory(new ItemStack(AbstractionHandler.getItem(Names.EMPTY_VOID_TEAR_NAME), 1))) {
-			player.worldObj.spawnEntityInWorld(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, new ItemStack(AbstractionHandler.getItem(Names.EMPTY_VOID_TEAR_NAME), 1)));
+		if (!player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.EMPTY_VOID_TEAR_NAME), 1))) {
+			player.worldObj.spawnEntityInWorld(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, new ItemStack(ContentHandler.getItem(Names.EMPTY_VOID_TEAR_NAME), 1)));
 		}
 	}
 

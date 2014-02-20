@@ -1,6 +1,6 @@
 package xreliquary.items.alkahestry;
 
-import xreliquary.init.AbstractionHandler;
+import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
 import xreliquary.util.ObjectUtils;
 import net.minecraft.init.Blocks;
@@ -20,7 +20,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(AbstractionHandler.getItem(Names.TOME_NAME)))) {
+				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.TOME_NAME)))) {
 					tomb = stack.copy();
 				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(Items.redstone))) {
 					if (valid == 0) {
@@ -58,7 +58,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(AbstractionHandler.getItem(Names.TOME_NAME)))) {
+				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.TOME_NAME)))) {
 					tomb = stack.copy();
 				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
 					isRedstoneBlock = true;
@@ -80,7 +80,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 
 	@Override
 	public ItemStack getRecipeOutput() {
-		return new ItemStack(AbstractionHandler.getItem(Names.TOME_NAME), 1);
+		return new ItemStack(ContentHandler.getItem(Names.TOME_NAME), 1);
 	}
 
 }

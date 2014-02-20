@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import xreliquary.init.XRBlocks;
+import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemFertileLilypad extends ItemBlock {
 
 	public ItemFertileLilypad(Block block) {
-		super(XRBlocks.lilypad);
+		super(ContentHandler.getBlock(Names.LILYPAD_NAME));
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class ItemFertileLilypad extends ItemBlock {
 					return par1ItemStack;
 
 				if (par2World.getBlock(var5, var6, var7).getMaterial() == Material.water && par2World.getBlockMetadata(var5, var6, var7) == 0 && par2World.isAirBlock(var5, var6 + 1, var7)) {
-					par2World.setBlock(var5, var6 + 1, var7, XRBlocks.lilypad);
+					par2World.setBlock(var5, var6 + 1, var7, ContentHandler.getBlock(Names.LILYPAD_NAME));
 
 					if (!par3EntityPlayer.capabilities.isCreativeMode) {
 						--par1ItemStack.stackSize;

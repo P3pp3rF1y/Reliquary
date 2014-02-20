@@ -1,4 +1,4 @@
-package xreliquary.proxy;
+package xreliquary.common;
 
 // TODO: Remove these. We want to be FML-only, so I can use this on Minetweak too. (or find a way to support both)
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -7,9 +7,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import xreliquary.Reliquary;
-import xreliquary.blocks.TEAltar;
-import xreliquary.init.AbstractionHandler;
-import xreliquary.init.XRBlocks;
+import xreliquary.blocks.tile.TileEntityAltar;
+import xreliquary.init.ContentHandler;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.entities.*;
 import xreliquary.entities.EntityStormShot;
@@ -31,9 +30,8 @@ public class CommonProxy {
 		this.initOptions();
 
         try {
-            AbstractionHandler.init();
+            ContentHandler.init();
             XRRecipes.init();
-            XRBlocks.init();
             Alkahestry.init();
         } catch(Exception e) { e.printStackTrace(); System.exit(1); }
 
@@ -56,7 +54,7 @@ public class CommonProxy {
 	}
 
 	public void registerTileEntities() {
-		GameRegistry.registerTileEntity(TEAltar.class, "reliquaryAltar");
+		GameRegistry.registerTileEntity(TileEntityAltar.class, "reliquaryAltar");
 	}
 
 	public void registerEntities() {

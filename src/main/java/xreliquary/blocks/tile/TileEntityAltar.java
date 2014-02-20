@@ -1,16 +1,16 @@
-package xreliquary.blocks;
+package xreliquary.blocks.tile;
 
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import xreliquary.blocks.BlockAltar;
 
-public class TEAltar extends TileEntity {
+public class TileEntityAltar extends TileEntity {
 	private int cycleTime;
 	private boolean isActive;
 	private int redstoneCount;
 
-	public TEAltar() {
+	public TileEntityAltar() {
 		cycleTime = 0;
 		redstoneCount = 0;
 		isActive = false;

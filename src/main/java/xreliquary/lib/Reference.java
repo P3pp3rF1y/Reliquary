@@ -7,8 +7,8 @@ public class Reference {
 	public static final String MOD_ID = "xreliquary";
 	public static final String MOD_NAME = "Reliquary";
 
-	public static final String CLIENT_PROXY = "xreliquary.proxy.ClientProxy";
-	public static final String COMMON_PROXY = "xreliquary.proxy.CommonProxy";
+	public static final String CLIENT_PROXY = "xreliquary.client.ClientProxy";
+	public static final String COMMON_PROXY = "xreliquary.common.CommonProxy";
 
 	public static final int WATER_SPRITE = 0;
 	public static final int SPLASH_POTION_SPRITE = 1;
