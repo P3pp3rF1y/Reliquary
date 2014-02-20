@@ -28,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemSalamanderEye extends ItemBase {
 
 	public ItemSalamanderEye() {
-		super(Reference.MOD_ID, Names.SALAMANDER_EYE_NAME);
+		super(Reference.MOD_ID, Names.salamander_eye);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -66,7 +66,7 @@ public class ItemSalamanderEye extends ItemBase {
 		super.registerIcons(iconRegister);
 		iconOverlay = new IIcon[4];
 		for (int i = 0; i < 4; i++) {
-			iconOverlay[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.SALAMANDER_EYE_OVERLAY_NAME + i);
+			iconOverlay[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.salamander_eye_overlay + i);
 		}
 	}
 

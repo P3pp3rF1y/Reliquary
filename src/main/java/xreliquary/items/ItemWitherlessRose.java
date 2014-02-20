@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemWitherlessRose extends ItemBase {
 
 	public ItemWitherlessRose() {
-		super(Reference.MOD_ID, Names.WITHERLESS_ROSE_NAME);
+		super(Reference.MOD_ID, Names.witherless_rose);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);

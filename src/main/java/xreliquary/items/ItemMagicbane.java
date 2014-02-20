@@ -31,7 +31,7 @@ public class ItemMagicbane extends ItemSword {
 		this.setMaxStackSize(1);
 		canRepair = true;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		this.setUnlocalizedName(Names.MAGICBANE_NAME);
+		this.setUnlocalizedName(Names.magicbane);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class ItemMagicbane extends ItemSword {
 
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		String value = LanguageHelper.getLocalization("item." + Names.MAGICBANE_NAME + ".tooltip");
+		String value = LanguageHelper.getLocalization("item." + Names.magicbane + ".tooltip");
 		for (String descriptionLine : value.split(";")) {
 			if (descriptionLine != null && descriptionLine.length() > 0)
 				list.add(descriptionLine);

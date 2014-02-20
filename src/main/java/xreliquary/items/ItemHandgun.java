@@ -33,7 +33,7 @@ public class ItemHandgun extends ItemBase {
 	private IIcon iconOverlay;
 
 	public ItemHandgun() {
-		super(Reference.MOD_ID, Names.HANDGUN_NAME);
+		super(Reference.MOD_ID, Names.handgun);
 		this.setMaxDamage((8 << 5) + 11);
 		this.setMaxStackSize(1);
 		canRepair = false;
@@ -50,7 +50,7 @@ public class ItemHandgun extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
-		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.HANDGUN_OVERLAY_NAME);
+		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.handgun_overlay);
 	}
 
 	@Override
@@ -224,14 +224,14 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	private void spawnClip(EntityPlayer player) {
-		if (!player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.MAGAZINE_NAME), 1, 0))) {
-			player.entityDropItem(new ItemStack(ContentHandler.getItem(Names.MAGAZINE_NAME), 1, 0), 0.1F);
+		if (!player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.magazine), 1, 0))) {
+			player.entityDropItem(new ItemStack(ContentHandler.getItem(Names.magazine), 1, 0), 0.1F);
 		}
 	}
 
 	private void spawnCasing(EntityPlayer player) {
-		if (!player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.BULLET_NAME), 1, 0))) {
-			player.entityDropItem(new ItemStack(ContentHandler.getItem(Names.BULLET_NAME), 1, 0), 0.1F);
+		if (!player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.bullet), 1, 0))) {
+			player.entityDropItem(new ItemStack(ContentHandler.getItem(Names.bullet), 1, 0), 0.1F);
 		}
 	}
 
@@ -240,7 +240,7 @@ public class ItemHandgun extends ItemBase {
 			if (ist == null) {
 				continue;
 			}
-			if (ist.getItem() == ContentHandler.getItem(Names.MAGAZINE_NAME) && ist.getItemDamage() != 0)
+			if (ist.getItem() == ContentHandler.getItem(Names.magazine) && ist.getItemDamage() != 0)
 				return true;
 		}
 		return false;
@@ -252,7 +252,7 @@ public class ItemHandgun extends ItemBase {
 			if (player.inventory.mainInventory[slot] == null) {
 				continue;
 			}
-			if (player.inventory.mainInventory[slot].getItem() == ContentHandler.getItem(Names.MAGAZINE_NAME) && player.inventory.mainInventory[slot].getItemDamage() != 0) {
+			if (player.inventory.mainInventory[slot].getItem() == ContentHandler.getItem(Names.magazine) && player.inventory.mainInventory[slot].getItemDamage() != 0) {
 				bulletFound = player.inventory.mainInventory[slot].getItemDamage();
 				player.inventory.decrStackSize(slot, 1);
 				return bulletFound;

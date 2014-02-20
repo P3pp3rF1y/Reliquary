@@ -21,7 +21,7 @@ public class ItemGunPart extends ItemBase {
 	private IIcon[] icons;
 
 	public ItemGunPart() {
-		super(Reference.MOD_ID, Names.GUNPART_NAME);
+		super(Reference.MOD_ID, Names.gun_part);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -34,7 +34,7 @@ public class ItemGunPart extends ItemBase {
 	public void registerIcons(IIconRegister iconRegister) {
 		icons = new IIcon[3];
 		for (int i = 0; i < 3; i++) {
-			icons[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.GUNPART_NAME + i);
+			icons[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.gun_part + i);
 		}
 	}
 

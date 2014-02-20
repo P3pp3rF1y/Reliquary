@@ -18,7 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemIceRod extends ItemBase {
 
 	public ItemIceRod() {
-		super(Reference.MOD_ID, Names.ICE_ROD_NAME);
+		super(Reference.MOD_ID, Names.ice_magnus_rod);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(257);
 		this.setMaxStackSize(1);

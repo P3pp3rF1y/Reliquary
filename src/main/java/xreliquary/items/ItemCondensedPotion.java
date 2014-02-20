@@ -39,7 +39,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemCondensedPotion extends ItemBase {
 
 	public ItemCondensedPotion() {
-		super(Reference.MOD_ID, Names.CONDENSED_POTION_NAME);
+		super(Reference.MOD_ID, Names.condensed_potion);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(16);
@@ -286,10 +286,10 @@ public class ItemCondensedPotion extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
-		iconBaseOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.CONDENSED_POTION_OVERLAY_NAME);
+		iconBaseOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.condensed_potion_overlay);
 
-		iconSplash = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.CONDENSED_POTION_SPLASH_NAME);
-		iconSplashOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.CONDENSED_POTION_SPLASH_OVERLAY_NAME);
+		iconSplash = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.condensed_potion_splash);
+		iconSplashOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.condensed_potion_splash_overlay);
 	}
 
 	@Override

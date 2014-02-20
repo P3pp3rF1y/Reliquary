@@ -19,7 +19,7 @@ public class BlockWraithNode extends Block {
 		this.setBlockBounds(0.125F, 0.125F, 0.125F, 0.875F, 0.875F, 0.875F);
 		blockHardness = 1.5F;
 		blockResistance = 5.0F;
-		this.setBlockName(Names.WRAITHNODE_NAME);
+		this.setBlockName(Names.wraith_node);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
@@ -36,7 +36,7 @@ public class BlockWraithNode extends Block {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister) {
-		blockIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.WRAITHNODE_NAME);
+		blockIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.wraith_node);
 	}
 
 	@Override

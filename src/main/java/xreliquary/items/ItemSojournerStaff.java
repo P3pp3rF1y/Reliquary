@@ -24,7 +24,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemSojournerStaff extends ItemBase {
 
 	public ItemSojournerStaff() {
-		super(Reference.MOD_ID, Names.TORCH_NAME);
+		super(Reference.MOD_ID, Names.sojourner_staff);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(513);
 		this.setMaxStackSize(1);

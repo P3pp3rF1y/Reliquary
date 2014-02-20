@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemDistortionCloak extends ItemBase {
 
 	public ItemDistortionCloak() {
-		super(Reference.MOD_ID, Names.DISTORTION_CLOAK_NAME);
+		super(Reference.MOD_ID, Names.distortion_cloak);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(2401);
 		this.setMaxStackSize(1);
@@ -74,7 +74,7 @@ public class ItemDistortionCloak extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
-		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.DISTORTION_CLOAK_OVERLAY_NAME);
+		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.distortion_cloak_overlay);
 	}
 
 	@Override

@@ -34,14 +34,14 @@ public class BlockFertileLilypad extends BlockFlower {
 		float var4 = 0.015625F;
 		this.setTickRandomly(true);
 		this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, var4, 0.5F + var3);
-		this.setBlockName(Names.LILYPAD_NAME);
+		this.setBlockName(Names.lilypad);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister) {
-		blockIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.LILYPAD_NAME);
+		blockIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.lilypad);
 	}
 
 	@Override

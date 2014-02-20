@@ -21,7 +21,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemMidasTouchstone extends ItemBase {
 
 	public ItemMidasTouchstone() {
-		super(Reference.MOD_ID, Names.TOUCHSTONE_NAME);
+		super(Reference.MOD_ID, Names.midas_touchstone);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(257);
 		this.setMaxStackSize(1);

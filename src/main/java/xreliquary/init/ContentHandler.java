@@ -34,8 +34,8 @@ public class ContentHandler {
             Class objClass = Class.forName(info.getName());
             checkAndRegister(objClass);
             // TODO: This is 'registering' somehow, but it dosen't work. This needs to work.
-            for(ClassPath.ClassInfo info1 : classPath.getTopLevelClasses(objClass.getName())) {
-                checkAndRegister(Class.forName(info1.getName()));
+            for(Class subClass : objClass.getClasses()) {
+                checkAndRegister(subClass);
             }
         }
     }

@@ -25,7 +25,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemVoidSatchel extends ItemBase implements IVoidUpgradable {
 
 	public ItemVoidSatchel() {
-		super(Reference.MOD_ID, Names.VOID_SATCHEL_NAME);
+		super(Reference.MOD_ID, Names.void_satchel);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);

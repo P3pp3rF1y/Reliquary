@@ -37,7 +37,7 @@ public class ItemMercyCross extends ItemSword {
 		this.setMaxStackSize(1);
 		canRepair = true;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		this.setUnlocalizedName(Names.CROSS_NAME);
+		this.setUnlocalizedName(Names.mercy_cross);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class ItemMercyCross extends ItemSword {
 
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		String value = LanguageHelper.getLocalization("item." + Names.CROSS_NAME + ".tooltip");
+		String value = LanguageHelper.getLocalization("item." + Names.mercy_cross + ".tooltip");
 		for (String descriptionLine : value.split(";")) {
 			if (descriptionLine != null && descriptionLine.length() > 0)
 				list.add(descriptionLine);

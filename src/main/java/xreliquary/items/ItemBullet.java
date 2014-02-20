@@ -23,7 +23,7 @@ public class ItemBullet extends ItemBase {
 	// 8 = Sand, 9 = Storm
 
 	public ItemBullet() {
-		super(Reference.MOD_ID, Names.BULLET_NAME);
+		super(Reference.MOD_ID, Names.bullet);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(64);
 		this.setHasSubtypes(true);
@@ -43,7 +43,7 @@ public class ItemBullet extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
-		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.BULLET_OVERLAY_NAME);
+		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.bullet_overlay);
 	}
 
 	@Override

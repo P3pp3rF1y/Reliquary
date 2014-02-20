@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemFertileLilypad extends ItemBlock {
 
 	public ItemFertileLilypad(Block block) {
-		super(ContentHandler.getBlock(Names.LILYPAD_NAME));
+		super(ContentHandler.getBlock(Names.lilypad));
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class ItemFertileLilypad extends ItemBlock {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
-		itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.LILYPAD_NAME);
+		itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.lilypad);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class ItemFertileLilypad extends ItemBlock {
 					return par1ItemStack;
 
 				if (par2World.getBlock(var5, var6, var7).getMaterial() == Material.water && par2World.getBlockMetadata(var5, var6, var7) == 0 && par2World.isAirBlock(var5, var6 + 1, var7)) {
-					par2World.setBlock(var5, var6 + 1, var7, ContentHandler.getBlock(Names.LILYPAD_NAME));
+					par2World.setBlock(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad));
 
 					if (!par3EntityPlayer.capabilities.isCreativeMode) {
 						--par1ItemStack.stackSize;

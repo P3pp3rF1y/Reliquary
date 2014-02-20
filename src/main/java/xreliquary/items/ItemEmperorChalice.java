@@ -22,7 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemEmperorChalice extends ItemBase {
 
 	public ItemEmperorChalice() {
-		super(Reference.MOD_ID, Names.CHALICE_NAME);
+		super(Reference.MOD_ID, Names.emperor_chalice);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -42,7 +42,7 @@ public class ItemEmperorChalice extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
-		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.CHALICE_OVERLAY_NAME);
+		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.emperor_chalice_overlay);
 	}
 
 	@Override

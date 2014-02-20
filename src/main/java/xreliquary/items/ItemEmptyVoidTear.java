@@ -18,7 +18,7 @@ import xreliquary.lib.Reference;
 public class ItemEmptyVoidTear extends ItemBase {
 
 	public ItemEmptyVoidTear() {
-		super(Reference.MOD_ID, Names.EMPTY_VOID_TEAR_NAME);
+		super(Reference.MOD_ID, Names.void_tear_empty);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);
@@ -65,7 +65,7 @@ public class ItemEmptyVoidTear extends ItemBase {
 		int itemMeta = target.getItemDamage();
 		Item item = target.getItem();
 		int itemQuantity = getQuantityInInventory(target, inventory);
-		ItemStack tear = new ItemStack(ContentHandler.getItem(Names.VOID_TEAR_NAME), 1);
+		ItemStack tear = new ItemStack(ContentHandler.getItem(Names.void_tear), 1);
 		tear.setTagCompound(createStackTagCompoundForTear(itemMeta, ObjectUtils.getItemIdentifier(item), itemQuantity));
 		findAndRemoveQuantity(inventory, new ItemStack(item, 1, itemMeta), itemQuantity);
 		return tear;

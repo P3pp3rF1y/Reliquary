@@ -21,7 +21,7 @@ public class ItemDestructionCatalyst extends ItemBase {
 	public static List<String> ids = ImmutableList.of("minecraft:dirt", "minecraft:grass", "minecraft:gravel", "minecraft:cobblestone", "minecraft:stone", "minecraft:sand", "minecraft:sandstone", "minecraft:snow", "minecraft:soul_sand", "minecraft:netherrack", "minecraft:end_stone");
 
 	public ItemDestructionCatalyst() {
-		super(Reference.MOD_ID, Names.DESTRUCTION_CATALYST_NAME);
+		super(Reference.MOD_ID, Names.destruction_catalyst);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		canRepair = false;

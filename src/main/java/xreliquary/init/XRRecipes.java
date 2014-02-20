@@ -18,7 +18,7 @@ public class XRRecipes {
     }
 
     public static ItemStack gunPart(int i, int m) {
-        return new ItemStack(ContentHandler.getItem(Names.GUNPART_NAME), i, m);
+        return new ItemStack(ContentHandler.getItem(Names.gun_part), i, m);
     }
 
     public static ItemStack magazine(int m) {
@@ -26,7 +26,7 @@ public class XRRecipes {
     }
 
     public static ItemStack magazine(int i, int m) {
-        return new ItemStack(ContentHandler.getItem(Names.MAGAZINE_NAME), i, m);
+        return new ItemStack(ContentHandler.getItem(Names.magazine), i, m);
     }
 
     public static ItemStack bullet(int m) {
@@ -34,7 +34,7 @@ public class XRRecipes {
     }
 
     public static ItemStack bullet(int i, int m) {
-        return new ItemStack(ContentHandler.getItem(Names.BULLET_NAME), i, m);
+        return new ItemStack(ContentHandler.getItem(Names.bullet), i, m);
     }
 
     public static ItemStack potion(int m) {
@@ -42,23 +42,23 @@ public class XRRecipes {
     }
 
     public static ItemStack potion(int i, int m) {
-        return new ItemStack(ContentHandler.getItem(Names.CONDENSED_POTION_NAME), i, m);
+        return new ItemStack(ContentHandler.getItem(Names.condensed_potion), i, m);
     }
 
     public static void init() {
 
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.ALTAR_IDLE_NAME), 1), "olo", "lel", "olo", 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'e', Items.emerald);
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.LILYPAD_NAME), 1), "www", "wlw", "www", 'w', XRRecipes.potion(Reference.FERTILIZER_META), 'l', Blocks.waterlily);
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.WRAITHNODE_NAME), 1), "vv", "vv", 'v', ContentHandler.getItem(Names.EMPTY_VOID_TEAR_NAME));
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.altar_idle), 1), "olo", "lel", "olo", 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'e', Items.emerald);
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.lilypad), 1), "www", "wlw", "www", 'w', XRRecipes.potion(Reference.FERTILIZER_META), 'l', Blocks.waterlily);
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.wraith_node), 1), "vv", "vv", 'v', ContentHandler.getItem(Names.void_tear_empty));
 
-        // GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.BREAD_NAME), 3), new Object[]{Items.bread, Items.bread, Items.bread, ContentHandler.getItem(Names.GLOWING_WATER_NAME)});
+        // GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.glowing_bread), 3), new Object[]{Items.bread, Items.bread, Items.bread, ContentHandler.getItem(Names.glowing_water)});
         // bullets...
         // empty cases back into nuggets
         GameRegistry.addShapelessRecipe(new ItemStack(Items.gold_nugget, 1), bullet(1, 0));
         // neutral
         GameRegistry.addRecipe(bullet(4, 1), new Object[] { "sis", "ngn", "ngn", 's', Blocks.stone, 'i', Items.iron_ingot, 'n', Items.gold_nugget, 'g', Items.gunpowder });
         // exorcist
-        GameRegistry.addRecipe(bullet(8, 2), new Object[] { "bbb", "bhb", "bbb", 'b', bullet(1, 1), 'h', ContentHandler.getItem(Names.GLOWING_WATER_NAME) });
+        GameRegistry.addRecipe(bullet(8, 2), new Object[] { "bbb", "bhb", "bbb", 'b', bullet(1, 1), 'h', ContentHandler.getItem(Names.glowing_water) });
         // blaze
         GameRegistry.addRecipe(bullet(4, 3), new Object[] { "prp", "npn", "ngn", 'p', Items.blaze_powder, 'r', Items.blaze_rod, 'n', Items.gold_nugget, 'g', Items.gunpowder });
         // ender
@@ -101,15 +101,15 @@ public class XRRecipes {
         GameRegistry.addShapelessRecipe(magazine(1, 9), new Object[] { bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), magazine(1, 0) });
 
         // coin
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.FORTUNE_COIN_NAME), 1), new Object[] { "ege", "ghg", "ege", 'e', Items.ender_eye, 'g', Items.gold_ingot, 'h', ContentHandler.getItem(Names.GLOWING_WATER_NAME) });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.fortune_coin), 1), new Object[] { "ege", "ghg", "ege", 'e', Items.ender_eye, 'g', Items.gold_ingot, 'h', ContentHandler.getItem(Names.glowing_water) });
 
         // cross
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.CROSS_NAME), 1), new Object[] { "wgw", "glg", "wgw", 'w', ContentHandler.getItem(Names.GLOWING_WATER_NAME), 'g', Items.gold_ingot, 'l', Items.leather });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.mercy_cross), 1), new Object[] { "wgw", "glg", "wgw", 'w', ContentHandler.getItem(Names.glowing_water), 'g', Items.gold_ingot, 'l', Items.leather });
 
         // grenade
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.GRENADE_NAME), 4), new Object[] { "wgw", "gtg", "wgw", 'w', ContentHandler.getItem(Names.GLOWING_WATER_NAME), 'g', Items.gold_nugget, 't', Blocks.tnt });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.holy_hand_grenade), 4), new Object[] { "wgw", "gtg", "wgw", 'w', ContentHandler.getItem(Names.glowing_water), 'g', Items.gold_nugget, 't', Blocks.tnt });
         // torch
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.TORCH_NAME), 1), new Object[] { "cgc", "gbg", "wgw", 'w', ContentHandler.getItem(Names.GLOWING_WATER_NAME), 'g', Items.gold_ingot, 'b', Items.blaze_rod, 'c', Items.magma_cream });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.sojourner_staff), 1), new Object[] { "cgc", "gbg", "wgw", 'w', ContentHandler.getItem(Names.glowing_water), 'g', Items.gold_ingot, 'b', Items.blaze_rod, 'c', Items.magma_cream });
 
         // gunpart 0 = grip, 1 = barrel, 2 = mechanism
         GameRegistry.addRecipe(gunPart(1, 0), new Object[] { "iii", "imi", "ici", 'i', Items.iron_ingot, 'c', magazine(1, 0), 'm', Items.magma_cream });
@@ -117,10 +117,10 @@ public class XRRecipes {
         GameRegistry.addRecipe(gunPart(1, 2), new Object[] { "iib", "rmi", "iii", 'i', Items.iron_ingot, 'b', Blocks.stone_button, 'r', Items.blaze_rod, 'm', Items.magma_cream });
 
         // handgun
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.HANDGUN_NAME), 1, 0), new Object[] { "bim", "isi", "igi", 'i', Items.iron_ingot, 'b', gunPart(1, 1), 'm', gunPart(1, 2), 'g', gunPart(1, 0), 's', Items.slime_ball });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.handgun), 1, 0), new Object[] { "bim", "isi", "igi", 'i', Items.iron_ingot, 'b', gunPart(1, 1), 'm', gunPart(1, 2), 'g', gunPart(1, 0), 's', Items.slime_ball });
 
         // tome
-        ItemStack tombStack = new ItemStack(ContentHandler.getItem(Names.TOME_NAME), 1, 0);
+        ItemStack tombStack = new ItemStack(ContentHandler.getItem(Names.alkahest_tome), 1, 0);
         tombStack.setItemDamage(Reliquary.PROXY.tombRedstoneLimit);
         GameRegistry.addShapelessRecipe(tombStack, new Object[] { Items.book, Items.blaze_rod, Items.magma_cream, Items.gold_ingot, Blocks.glowstone, Items.nether_wart, new ItemStack(Items.skull, 1, 1), Items.ghast_tear, Items.lava_bucket });
 
@@ -131,42 +131,42 @@ public class XRRecipes {
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_redstone", AlkahestryRedstoneRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
 
         // touchstone
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.TOUCHSTONE_NAME), 1, 0), new Object[] { "bbb", "rtr", "ggg", 'b', Blocks.glowstone, 'r', Items.blaze_rod, 'g', Items.gold_ingot, 't', Items.ghast_tear });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.midas_touchstone), 1, 0), new Object[] { "bbb", "rtr", "ggg", 'b', Blocks.glowstone, 'r', Items.blaze_rod, 'g', Items.gold_ingot, 't', Items.ghast_tear });
 
         // chalice
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.CHALICE_NAME), 1, 0), new Object[] { "gtg", "ege", "tgt", 't', Items.ghast_tear, 'e', Items.emerald, 'g', Items.gold_ingot });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.emperor_chalice), 1, 0), new Object[] { "gtg", "ege", "tgt", 't', Items.ghast_tear, 'e', Items.emerald, 'g', Items.gold_ingot });
 
         // salamander's eye
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.SALAMANDER_EYE_NAME), 1, 0), new Object[] { "bcb", "tet", "bcb", 'b', Items.blaze_rod, 'c', Items.magma_cream, 't', Items.ghast_tear, 'e', Items.ender_eye });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.salamander_eye), 1, 0), new Object[] { "bcb", "tet", "bcb", 'b', Items.blaze_rod, 'c', Items.magma_cream, 't', Items.ghast_tear, 'e', Items.ender_eye });
 
         // wraith's eye upgrade
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.WRAITH_EYE_NAME), 1, 0), new Object[] { "eee", "bsb", "eee", 'e', ContentHandler.getItem(Names.EMPTY_VOID_TEAR_NAME), 's', ContentHandler.getItem(Names.SALAMANDER_EYE_NAME), 'b', Blocks.emerald_block });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.wraith_eye), 1, 0), new Object[] { "eee", "bsb", "eee", 'e', ContentHandler.getItem(Names.void_tear_empty), 's', ContentHandler.getItem(Names.salamander_eye), 'b', Blocks.emerald_block });
 
         // ice rod
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.ICE_ROD_NAME), 1, 0), new Object[] { "dtd", "tit", "tit", 'd', Items.diamond, 't', Items.ghast_tear, 'i', Items.iron_ingot });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.ice_magnus_rod), 1, 0), new Object[] { "dtd", "tit", "tit", 'd', Items.diamond, 't', Items.ghast_tear, 'i', Items.iron_ingot });
 
         // magicbane
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.MAGICBANE_NAME), 1, 0), new Object[] { "eee", "ege", "iee", 'e', Items.ender_eye, 'g', Items.gold_ingot, 'i', Items.iron_ingot });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.magicbane), 1, 0), new Object[] { "eee", "ege", "iee", 'e', Items.ender_eye, 'g', Items.gold_ingot, 'i', Items.iron_ingot });
 
         // rose
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.WITHERLESS_ROSE_NAME), 1, 0), new Object[] { "hnh", "nrn", "hnh", 'h', ContentHandler.getItem(Names.GLOWING_WATER_NAME), 'n', Items.nether_star, 'r', Blocks.red_flower });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.witherless_rose), 1, 0), new Object[] { "hnh", "nrn", "hnh", 'h', ContentHandler.getItem(Names.glowing_water), 'n', Items.nether_star, 'r', Blocks.red_flower });
 
         // cloak
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.DISTORTION_CLOAK_NAME), 1, 0), new Object[] { "eee", "ewe", "eee", 'e', Items.ender_eye, 'w', new ItemStack(Blocks.wool, 1, 11) });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.distortion_cloak), 1, 0), new Object[] { "eee", "ewe", "eee", 'e', Items.ender_eye, 'w', new ItemStack(Blocks.wool, 1, 11) });
 
         // void tear
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.EMPTY_VOID_TEAR_NAME), 1, 0), new Object[] { "et", "te", 'e', Items.ender_eye, 't', Items.ghast_tear });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1, 0), new Object[] { "et", "te", 'e', Items.ender_eye, 't', Items.ghast_tear });
 
         // TODO possibly give satchels a damage bar, so these recipes will have
         // to change.
 
         // void satchel
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.VOID_SATCHEL_NAME), 1, 0), new Object[] { "lsl", "ltl", "lll", 'l', Items.leather, 's', Items.string, 't', ContentHandler.getItem(Names.VOID_TEAR_NAME) }); // upgrade
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_satchel), 1, 0), new Object[] { "lsl", "ltl", "lll", 'l', Items.leather, 's', Items.string, 't', ContentHandler.getItem(Names.void_tear) }); // upgrade
         // it!
-        GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.VOID_SATCHEL_NAME), 1, 0), new Object[] { ContentHandler.getItem(Names.EMPTY_VOID_TEAR_NAME), ContentHandler.getItem(Names.EMPTY_VOID_TEAR_NAME), ContentHandler.getItem(Names.EMPTY_VOID_TEAR_NAME), ContentHandler.getItem(Names.VOID_SATCHEL_NAME) });
+        GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.void_satchel), 1, 0), new Object[] { ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_satchel) });
 
         // destruction catalyst
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.DESTRUCTION_CATALYST_NAME), 1, 0), new Object[] { "rrr", "rtr", "rrf", 'f', Items.flint, 't', new ItemStack(ContentHandler.getItem(Names.TOUCHSTONE_NAME), 1, -1), 'r', Items.blaze_rod });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.destruction_catalyst), 1, 0), new Object[] { "rrr", "rtr", "rrf", 'f', Items.flint, 't', new ItemStack(ContentHandler.getItem(Names.midas_touchstone), 1, -1), 'r', Items.blaze_rod });
 
         // potions!
         // empty vial
@@ -179,7 +179,7 @@ public class XRRecipes {
         GameRegistry.addShapelessRecipe(potion(Reference.SPLASH_META), new Object[] { Items.nether_wart, Items.gunpowder, Items.glowstone_dust, potion(Reference.WATER_META) });
 
         // glowing water
-        GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.GLOWING_WATER_NAME), 1), new Object[] { potion(Reference.SPLASH_META), Items.glowstone_dust, Items.glowstone_dust, Items.glowstone_dust });
+        GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.glowing_water), 1), new Object[] { potion(Reference.SPLASH_META), Items.glowstone_dust, Items.glowstone_dust, Items.glowstone_dust });
 
         // speed potion
         GameRegistry.addShapelessRecipe(potion(Reference.SPEED_META), new Object[] { potion(Reference.POTION_META), Items.sugar, Items.redstone, Items.glowstone_dust });

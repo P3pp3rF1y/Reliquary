@@ -21,7 +21,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemMagazine extends ItemBase {
 
 	public ItemMagazine() {
-		super(Reference.MOD_ID, Names.MAGAZINE_NAME);
+		super(Reference.MOD_ID, Names.magazine);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(64);
 		canRepair = false;
@@ -41,7 +41,7 @@ public class ItemMagazine extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
-		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.MAGAZINE_OVERLAY_NAME);
+		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.magazine_overlay);
 	}
 
 	@Override
@@ -89,9 +89,9 @@ public class ItemMagazine extends ItemBase {
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
 		if (stack.getItemDamage() < 2) {
-			list.add(LanguageHelper.getLocalization("item." + Names.MAGAZINE_NAME + stack.getItemDamage() + ".tooltip"));
+			list.add(LanguageHelper.getLocalization("item." + Names.magazine + stack.getItemDamage() + ".tooltip"));
 		} else {
-			list.add(LanguageHelper.getLocalization("item." + Names.BULLET_NAME + stack.getItemDamage() + ".tooltip"));
+			list.add(LanguageHelper.getLocalization("item." + Names.bullet + stack.getItemDamage() + ".tooltip"));
 		}
 	}
 

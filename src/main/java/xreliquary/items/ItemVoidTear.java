@@ -24,7 +24,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemVoidTear extends ItemBase {
 
 	public ItemVoidTear() {
-		super(Reference.MOD_ID, Names.VOID_TEAR_NAME);
+		super(Reference.MOD_ID, Names.void_tear);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -125,8 +125,8 @@ public class ItemVoidTear extends ItemBase {
 	}
 
 	private void addEmptyTearToPlayerInventory(EntityPlayer player) {
-		if (!player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.EMPTY_VOID_TEAR_NAME), 1))) {
-			player.worldObj.spawnEntityInWorld(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, new ItemStack(ContentHandler.getItem(Names.EMPTY_VOID_TEAR_NAME), 1)));
+		if (!player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1))) {
+			player.worldObj.spawnEntityInWorld(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1)));
 		}
 	}
 

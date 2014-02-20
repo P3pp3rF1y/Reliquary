@@ -24,20 +24,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockAltar extends BlockContainer {
 
     @XRInit
-    public class BlockActiveAltar extends BlockAltar {
+    static public class BlockActiveAltar extends BlockAltar {
         public BlockActiveAltar() {
             super(true);
-            System.out.println("Hi #1.");
-
         }
     }
 
     @XRInit
-    public class BlockIdleAltar extends BlockAltar {
+    static public class BlockIdleAltar extends BlockAltar {
         public BlockIdleAltar() {
-            super(true);
-            System.out.println("Hi #2.");
-
+            super(false);
         }
     }
 
@@ -50,7 +46,7 @@ public class BlockAltar extends BlockContainer {
         this.setHardness(1.5F);
         this.setResistance(5.0F);
 
-		this.setBlockName(isActive ? Names.ALTAR_ACTIVE_NAME : Names.ALTAR_IDLE_NAME);
+		this.setBlockName(isActive ? Names.altar : Names.altar_idle);
 		this.setLightLevel(isActive ? 1.0F : 0.0F);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
     }
@@ -68,13 +64,13 @@ public class BlockAltar extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister) {
 		icons = new IIcon[2];
-		icons[0] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.ALTAR_IDLE_NAME);
-		icons[1] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.ALTAR_ACTIVE_NAME);
+		icons[0] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.altar_idle);
+		icons[1] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.altar);
 	}
 
 	@Override
     public Item getItemDropped(int par1, Random random, int par3) {
-        return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.ALTAR_IDLE_NAME));
+        return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.altar_idle));
     }
 
 	@Override
@@ -131,9 +127,9 @@ public class BlockAltar extends BlockContainer {
 		int meta = world.getBlockMetadata(x, y, z);
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (active) {
-			world.setBlock(x, y, z, ContentHandler.getBlock(Names.ALTAR_ACTIVE_NAME));
+			world.setBlock(x, y, z, ContentHandler.getBlock(Names.altar));
 		} else {
-			world.setBlock(x, y, z, ContentHandler.getBlock(Names.ALTAR_IDLE_NAME));
+			world.setBlock(x, y, z, ContentHandler.getBlock(Names.altar_idle));
 		}
 
 		world.setBlockMetadataWithNotify(x, y, z, meta, 3);

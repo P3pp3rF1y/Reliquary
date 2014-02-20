@@ -28,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemWraithEye extends ItemSalamanderEye {
 
 	public ItemWraithEye() {
-		super(Reference.MOD_ID, Names.WRAITH_EYE_NAME);
+		super(Reference.MOD_ID, Names.wraith_eye);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -41,10 +41,10 @@ public class ItemWraithEye extends ItemSalamanderEye {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
-		this.itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.WRAITH_EYE_NAME);
+		this.itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.wraith_eye);
 		iconOverlay = new IIcon[4];
 		for (int i = 0; i < 4; i++) {
-			iconOverlay[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.WRAITH_EYE_OVERLAY_NAME + i);
+			iconOverlay[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.wraith_eye_overlay + i);
 		}
 	}
 
@@ -92,7 +92,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 			if (!world.isRemote) {
                 par2EntityPlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "Out of range!"));
 			}
-		} else if (eye.getTagCompound() != null && ObjectUtils.areBlocksEqual(world.getBlock(eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer))), ContentHandler.getBlock(Names.WRAITHNODE_NAME))) {
+		} else if (eye.getTagCompound() != null && ObjectUtils.areBlocksEqual(world.getBlock(eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer))), ContentHandler.getBlock(Names.wraith_node))) {
 
 			if (canTeleport(world, eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer)))) {
 
@@ -167,7 +167,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 	@Override
 	public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
 		// if right clicking on a wraith node, bind the eye to that wraith node.
-		if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && ObjectUtils.areBlocksEqual(world.getBlock(x, y, z), ContentHandler.getBlock(Names.WRAITHNODE_NAME))) {
+		if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && ObjectUtils.areBlocksEqual(world.getBlock(x, y, z), ContentHandler.getBlock(Names.wraith_node))) {
 			setWraithNode(ist, x, y, z, Integer.valueOf(getWorld(player)), player);
 
 			player.playSound("mob.endermen.portal", 1.0f, 1.0f);

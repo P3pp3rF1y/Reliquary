@@ -20,9 +20,9 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.TOME_NAME)))) {
+				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
 					tomb = stack.copy();
-				} else if (!ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.TOME_NAME)))) {
+				} else if (!ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
 					if (valid == 0) {
 						valid = 1;
 						itemStack = stack;
@@ -51,7 +51,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (!(ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.TOME_NAME))))) {
+				if (!(ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome))))) {
 					if (Alkahestry.getDictionaryKey(stack) == null)
 						returned = Alkahestry.getRegistry().get(ObjectUtils.getItemIdentifier(stack.getItem()));
 					else {
@@ -75,7 +75,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 
 	@Override
 	public ItemStack getRecipeOutput() {
-		return new ItemStack(ContentHandler.getItem(Names.TOME_NAME), 1);
+		return new ItemStack(ContentHandler.getItem(Names.alkahest_tome), 1);
 	}
 
 }

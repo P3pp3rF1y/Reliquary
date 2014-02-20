@@ -26,7 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemFortuneCoin extends ItemBase {
 
 	public ItemFortuneCoin() {
-		super(Reference.MOD_ID, Names.FORTUNE_COIN_NAME);
+		super(Reference.MOD_ID, Names.fortune_coin);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -58,7 +58,7 @@ public class ItemFortuneCoin extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
-		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.FORTUNE_COIN_OVERLAY_NAME);
+		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.fortune_coin_overlay);
 	}
 
 	@Override

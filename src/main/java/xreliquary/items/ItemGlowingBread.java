@@ -26,7 +26,7 @@ public class ItemGlowingBread extends ItemFood {
 		this.setMaxStackSize(64);
 		canRepair = false;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		this.setUnlocalizedName(Names.BREAD_NAME);
+		this.setUnlocalizedName(Names.glowing_bread);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class ItemGlowingBread extends ItemFood {
 
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-		par3List.add(LanguageHelper.getLocalization("item." + Names.BREAD_NAME + ".tooltip"));
+		par3List.add(LanguageHelper.getLocalization("item." + Names.glowing_bread + ".tooltip"));
 	}
 
 	@Override
