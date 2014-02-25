@@ -1,0 +1,20 @@
+{
+    "xreliquary.book": {
+        "category": "neutral",
+        "sounds": [
+            "book"
+        ]
+    },
+    "xreliquary.xload": {
+        "category": "player",
+        "sounds": [
+            "xload"
+        ]
+    },
+    "xreliquary.xshot": {
+        "category": "player",
+        "sounds": [
+            "xshot"
+        ]
+    }
+}
