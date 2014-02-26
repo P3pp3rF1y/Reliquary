@@ -123,7 +123,7 @@ public class ConcussiveExplosion extends Explosion {
 	}
 
 	/**
-	 * Does the second part of the explosion (sound, particles, drop spawn)
+	 * Does the second part of the explosion (sounds, particles, drop spawn)
 	 */
 	@Override
 	public void doExplosionB(boolean par1) {

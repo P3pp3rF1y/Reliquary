@@ -56,7 +56,6 @@ public class Reference {
 	public static final String LOAD_SOUND = Reference.MOD_ID + ":xload";
 	public static final String SHOT_SOUND = Reference.MOD_ID + ":xshot";
 	public static final String BOOK_SOUND = Reference.MOD_ID + ":book";
-	public static final String[] soundFiles = { "xload.ogg", "xshot.ogg", "book.ogg" };
 
 	// Misc options for configuration
 	public static final boolean DISABLE_COIN_AUDIO_DEFAULT = false;
