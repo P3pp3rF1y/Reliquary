@@ -71,7 +71,7 @@ public class EntityBlazeShot extends EntityShotBase {
     @Override
     int getDamageOfShot(Entity mop) {
         //they're not COMPLETELY useless against fireImmune mobs, just mostly useless.
-        return mop.isImmuneToFire() ? 2 : 10 + d12();
+        return (mop.isImmuneToFire() ? 2 : 10) + d12();
     }
 
     @Override

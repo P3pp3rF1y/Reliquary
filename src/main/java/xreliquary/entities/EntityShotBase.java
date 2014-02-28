@@ -289,7 +289,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
     protected void doDamage(Entity mop) {
         //minor modification here, the shots are quite strong
         //so I've made it so they only do half damage against player entities.
-        mop.attackEntityFrom(this.getDamageSource(), mop instanceof EntityPlayer ? 0.5F : 1F * this.getDamageOfShot(mop));
+        mop.attackEntityFrom(this.getDamageSource(), (mop instanceof EntityPlayer ? 0.5F : 1F) * this.getDamageOfShot(mop));
     }
 
     protected DamageSource getDamageSource() {
