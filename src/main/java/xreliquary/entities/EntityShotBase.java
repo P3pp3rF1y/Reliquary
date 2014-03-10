@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import xreliquary.lib.ClientReference;
 
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +22,9 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
     protected int zTile = -1;
     protected boolean inGround = false;
 
-    /** The owner of this arrow. */
+    /**
+     * The owner of this arrow.
+     */
     public EntityPlayer shootingEntity;
     protected int ticksInAir = 0;
 
@@ -136,6 +139,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
                 shootingEntity = closestPlayer;
         }
     }
+
     /**
      * Called to update the entity's position/logic. Special snippets of the usual projectile code
      * have been removed so they can be handled manually in the onImpact methods of the base shot.
@@ -265,6 +269,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
     public float getShadowSize() {
         return 0.0F;
     }
+
     /**
      * If returns false, the item will not inflict any damage against entities.
      */
@@ -341,6 +346,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
      * Handles the ricochet "event", more or less determines when the entity does or doesn't ricochet.
      * If the ricochet limit is set to 0, it will still "ricochet" once, but will immediately
      * self destruct by calling its burstEffect and setting itself to dead.
+     *
      * @param sideHit
      */
     protected void ricochet(int sideHit) {
@@ -453,12 +459,14 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 
     /**
      * Additional entity impact effects should go here
+     *
      * @param mop the entity being struck
      */
     abstract void onImpact(Entity mop);
 
     /**
      * Additional effects of TILE/MISC [non-entity] impacts should go here
+     *
      * @param mop the MOP data of the tile/misc object being struck
      */
     abstract void onImpact(MovingObjectPosition mop);
@@ -466,6 +474,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
     /**
      * This is the effect called when the shot reaches the ground and has no ricochets remaining.
      * It can also be called at any time by hooking into flight/firing effects.
+     *
      * @param sideHit is sometimes used when you need particles to fly in a certain direction.
      */
     abstract void doBurstEffect(int sideHit);
@@ -482,10 +491,53 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 
     /**
      * The particles which spawn when the bullet impacts an entity.
+     *
      * @param string the name of the particle you want it to spawn
-     * @param i the number of times you want the inner for loop to produce a single particle at random velocity
+     * @param i      the number of times you want the inner for loop to produce a single particle at random velocity
      */
     abstract void spawnHitParticles(String string, int i);
+
+    // 0 = Empty, 1 = Neutral, 2 = Exorcism, 3 = Blaze
+    // 4 = Ender, 5 = Concussive, 6 = Buster, 7 = Seeker
+    // 8 = Sand, 9 = Storm
+    protected int getShotType() {
+        if (this instanceof EntityNeutralShot) return 1;
+        else if (this instanceof EntityExorcismShot) return 2;
+        else if (this instanceof EntityBlazeShot) return 3;
+        else if (this instanceof EntityEnderShot) return 4;
+        else if (this instanceof EntityConcussiveShot) return 5;
+        else if (this instanceof EntityBusterShot) return 6;
+        else if (this instanceof EntitySeekerShot) return 7;
+        else if (this instanceof EntitySandShot) return 8;
+        else if (this instanceof EntityStormShot) return 9;
+        return 0;
+    }
+
+    //used by the renderer to pull the shot texture directly from the entity. This might not work.
+    public ResourceLocation getShotTexture() {
+        switch (this.getShotType()) {
+            case 0:
+            case 1:
+                return ClientReference.NEUTRAL;
+            case 2:
+                return ClientReference.EXORCISM;
+            case 3:
+                return ClientReference.BLAZE;
+            case 4:
+                return ClientReference.ENDER;
+            case 5:
+                return ClientReference.CONCUSSIVE;
+            case 6:
+                return ClientReference.BUSTER;
+            case 7:
+                return ClientReference.SEEKER;
+            case 8:
+                return ClientReference.SAND;
+            case 9:
+                return ClientReference.STORM;
+        }
+        return ClientReference.NEUTRAL;
+    }
 
     /**
      * simple overloaded method for the standard doBurstEffect, basically calls the abstracted version
@@ -494,4 +546,6 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
     protected void doBurstEffect() {
         this.doBurstEffect(0);
     }
+
+
 }

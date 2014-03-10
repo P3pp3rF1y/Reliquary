@@ -7,15 +7,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraft.init.Items;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import xreliquary.client.render.ItemRendererHandgun;
-import xreliquary.client.render.RenderBlazeShot;
-import xreliquary.client.render.RenderBusterShot;
-import xreliquary.client.render.RenderConcussiveShot;
-import xreliquary.client.render.RenderEnderShot;
-import xreliquary.client.render.RenderExorcismShot;
-import xreliquary.client.render.RenderNeutralShot;
-import xreliquary.client.render.RenderSandShot;
-import xreliquary.client.render.RenderSeekerShot;
-import xreliquary.client.render.RenderStormShot;
+import xreliquary.client.render.RenderShot;
 import xreliquary.client.render.RenderThrown;
 import xreliquary.common.CommonProxy;
 import xreliquary.entities.*;
@@ -47,15 +39,15 @@ public class ClientProxy extends CommonProxy {
 
 	public void registerRenderers() {
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityBlazeShot.class, new RenderBlazeShot());
-		RenderingRegistry.registerEntityRenderingHandler(EntityBusterShot.class, new RenderBusterShot());
-		RenderingRegistry.registerEntityRenderingHandler(EntityConcussiveShot.class, new RenderConcussiveShot());
-		RenderingRegistry.registerEntityRenderingHandler(EntityEnderShot.class, new RenderEnderShot());
-		RenderingRegistry.registerEntityRenderingHandler(EntityExorcismShot.class, new RenderExorcismShot());
-		RenderingRegistry.registerEntityRenderingHandler(EntityNeutralShot.class, new RenderNeutralShot());
-		RenderingRegistry.registerEntityRenderingHandler(EntitySeekerShot.class, new RenderSeekerShot());
-		RenderingRegistry.registerEntityRenderingHandler(EntitySandShot.class, new RenderSandShot());
-		RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, new RenderStormShot());
+		RenderingRegistry.registerEntityRenderingHandler(EntityBlazeShot.class, new RenderShot());
+		RenderingRegistry.registerEntityRenderingHandler(EntityBusterShot.class, new RenderShot());
+		RenderingRegistry.registerEntityRenderingHandler(EntityConcussiveShot.class, new RenderShot());
+		RenderingRegistry.registerEntityRenderingHandler(EntityEnderShot.class, new RenderShot());
+		RenderingRegistry.registerEntityRenderingHandler(EntityExorcismShot.class, new RenderShot());
+		RenderingRegistry.registerEntityRenderingHandler(EntityNeutralShot.class, new RenderShot());
+		RenderingRegistry.registerEntityRenderingHandler(EntitySeekerShot.class, new RenderShot());
+		RenderingRegistry.registerEntityRenderingHandler(EntitySandShot.class, new RenderShot());
+		RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, new RenderShot());
 		RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, new RenderThrown(12));
 		RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, new RenderSnowball(Items.snowball));
 		RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, new RenderThrown(Reference.WATER_SPRITE));

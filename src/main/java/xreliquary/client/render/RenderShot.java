@@ -7,14 +7,15 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import xreliquary.entities.EntityConcussiveShot;
+import xreliquary.entities.EntityShotBase;
 import xreliquary.lib.ClientReference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderConcussiveShot extends Render {
-	public void doRenderConcussiveShot(EntityConcussiveShot entityShot, double par2, double par4, double par6, float par8, float par9) {
+public class RenderShot extends Render {
+	public void doRenderShot(EntityShotBase entityShot, double par2, double par4, double par6, float par8, float par9) {
+        this.bindEntityTexture(entityShot);
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) par2, (float) par4, (float) par6);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -43,11 +44,15 @@ public class RenderConcussiveShot extends Render {
 	 */
 	@Override
 	public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-		this.doRenderConcussiveShot((EntityConcussiveShot) par1Entity, par2, par4, par6, par8, par9);
+		this.doRenderShot((EntityShotBase) par1Entity, par2, par4, par6, par8, par9);
 	}
 
 	@Override
 	protected ResourceLocation getEntityTexture(Entity entity) {
-		return ClientReference.CONCUSSIVE;
+        if (entity instanceof EntityShotBase) {
+            EntityShotBase shot = (EntityShotBase)entity;
+            return shot.getShotTexture();
+        }
+		return ClientReference.NEUTRAL;
 	}
 }
