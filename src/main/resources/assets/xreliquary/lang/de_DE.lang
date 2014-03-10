@@ -1,6 +1,6 @@
 itemGroup.xreliquary=Reliquary
 
-gui.tome.text=The Tomb of Alkahest;is somewhat opposite;of the theory of the;Alkahest, as it allows;for the chemical ;makeup of Redstone to;match any other;resource.
+gui.tome.text=The Tome of Alkahest;is somewhat opposite;of the theory of the;Alkahest, as it allows;for the chemical ;makeup of Redstone to;match any other;resource.
 
 item.reliquaryHandgun.name=Pistole des Jägers
 item.reliquaryHandgun.tooltip=For great justice.;Right click fires, hold to reload.
@@ -58,7 +58,7 @@ item.holyHandGrenade.tooltip=Kills mobs, not blocks;or whoever threw it.
 item.fortuneCoin.name=Coin of Fortune
 item.fortuneCoin.tooltip=Draws in nearby items and XP.;Right click to toggle.
 item.glowWater.name=Glowing Water
-item.glowWater.tooltip=Destroys undead. Glowifies stuff.;Used in many recipies.
+item.glowWater.tooltip=Destroys undead. Glowifies stuff.;Used in many recipes.
 item.glowBread.name=Glowing Bread
 item.glowBread.tooltip=Glowy and delicious.
 item.midasTouchstone.name=Touchstone of Midas
@@ -85,6 +85,8 @@ item.voidTear.name=Void Tear
 item.voidTear.tooltip=This Void Tear currently;holds {{holds}}.
 item.voidSatchel.name=Void Satchel
 item.voidSatchel.tooltip=This Void Satchel currently;holds {{holds}}.;It has a capacity of {{capacity}}.
+item.heroMedallion.name=Heldenmedallion
+item.heroMedallion.tooltip=\u00a72Experience: {{experience}}/1760;For when you just need;somewhere to put;all that experience.
 
 tile.altarIdle.name=Altar des Lichts
 tile.altarActive.name=Altar des Lichts
