@@ -7,8 +7,10 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraft.init.Items;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import xreliquary.client.render.ItemRendererHandgun;
+import xreliquary.client.render.ItemRendererParticle;
 import xreliquary.client.render.RenderShot;
 import xreliquary.client.render.RenderThrown;
+import xreliquary.client.util.Particle;
 import xreliquary.common.CommonProxy;
 import xreliquary.entities.*;
 import xreliquary.event.ClientEventHandler;
@@ -63,6 +65,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedFertility.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.FERTILIZER_META));
 
 		MinecraftForgeClient.registerItemRenderer(ContentHandler.getItem(Names.handgun), new ItemRendererHandgun());
-	}
+        MinecraftForgeClient.registerItemRenderer(ContentHandler.getItem(Names.destruction_catalyst), new ItemRendererParticle(new Particle(222, 34, 35, 255)));
+    }
 
 }
