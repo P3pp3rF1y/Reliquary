@@ -20,7 +20,8 @@ public class ItemRendererParticle implements IItemRenderer {
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return type == ItemRenderType.INVENTORY;
+        // return type == ItemRenderType.INVENTORY;
+        return false;
     }
 
     @Override
@@ -33,17 +34,8 @@ public class ItemRendererParticle implements IItemRenderer {
         if(type != ItemRenderType.INVENTORY)
             return;
         GL11.glPushMatrix();
+        GL11.glDisable(GL11.GL_LIGHTING);
         renderItem.renderIcon(0, 0, item.getIconIndex(), 16, 16);
-        /*
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-
-        part.draw(1, 1, 200);
-        part.draw(14, 14, 200);
-        part.draw(1, 14, 200);
-        part.draw(14, 1, 200);
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        */
         GL11.glPopMatrix();
     }
 }

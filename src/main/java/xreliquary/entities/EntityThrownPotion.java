@@ -62,9 +62,7 @@ public abstract class EntityThrownPotion extends EntityThrowable {
     @Override
     protected void onImpact(MovingObjectPosition mop) {
         this.spawnParticles();
-
         this.doSplashEffect();
-
         this.setDead();
     }
 
@@ -84,7 +82,7 @@ public abstract class EntityThrownPotion extends EntityThrowable {
         }
     }
 
-    //called by doSplash effect, allows user to override the ground effect, since most of the potions don't have one.
+    //called by doSplash effect, allows user to override the ground effect, since most of the potion don't have one.
     abstract void doGroundSplashEffect();
 
     //most of these are the same in every potion, the only thing that isn't is the coloration of the particles.

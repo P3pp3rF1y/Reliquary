@@ -37,7 +37,7 @@ public class ItemMidasTouchstone extends ItemBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean hasEffect(ItemStack stack) {
-		return true;
+		return stack.getItemDamage() != 0;
 	}
 
 	@Override

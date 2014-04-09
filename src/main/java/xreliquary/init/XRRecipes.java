@@ -168,7 +168,7 @@ public class XRRecipes {
         // destruction catalyst
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.destruction_catalyst), 1, 0), new Object[] { "rrr", "rtr", "rrf", 'f', Items.flint, 't', new ItemStack(ContentHandler.getItem(Names.midas_touchstone), 1, -1), 'r', Items.blaze_rod });
 
-        // potions!
+        // potion!
         // empty vial
         GameRegistry.addRecipe(potion(5, Reference.EMPTY_VIAL_META), new Object[] { "g g", "g g", " g ", 'g', Blocks.glass_pane });
 

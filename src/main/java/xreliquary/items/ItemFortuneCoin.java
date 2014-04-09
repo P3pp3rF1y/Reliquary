@@ -42,7 +42,7 @@ public class ItemFortuneCoin extends ItemBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean hasEffect(ItemStack stack) {
-		return true;
+		return stack.getItemDamage() == 1;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -122,13 +122,12 @@ public class ItemFortuneCoin extends ItemBase {
 	}
 
 	private void teleportEntityToPlayer(Entity item, EntityPlayer player) {
-		player.worldObj.spawnParticle("portal", item.posX, item.posY, item.posZ, 0.0D, 0.1D, 0.0D);
+        player.worldObj.spawnParticle("mobSpell", item.posX + 0.5D + player.worldObj.rand.nextGaussian() / 8, item.posY + 0.2D, item.posZ + 0.5D + player.worldObj.rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
 		player.getLookVec();
 		double x = player.posX + player.getLookVec().xCoord * 0.2D;
 		double y = player.posY - player.height / 2F;
 		double z = player.posZ + player.getLookVec().zCoord * 0.2D;
 		item.setPosition(x, y, z);
-		player.worldObj.spawnParticle("portal", item.posX, item.posY, item.posZ, 0.0D, 0.1D, 0.0D);
 		if (!Reliquary.PROXY.disableCoinAudio) {
 			player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
 		}

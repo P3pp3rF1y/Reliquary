@@ -31,7 +31,7 @@ public class EntityCondensedFertility extends EntityThrownPotion {
         return false;
     }
 
-    //fertility is one of the only potions that has this effect, the rest of them will be mostly empty
+    //fertility is one of the only potion that has this effect, the rest of them will be mostly empty
     @Override
     void doGroundSplashEffect() {
         int x = (int) (posX + 0.5);
@@ -52,7 +52,7 @@ public class EntityCondensedFertility extends EntityThrownPotion {
 
     @Override
     void doLivingSplashEffect(EntityLiving e) {
-        //overridden because fertility potions have no effect on living entities.
+        //overridden because fertility potion have no effect on living entities.
     }
 
     @Override
