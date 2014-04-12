@@ -110,7 +110,7 @@ public class ItemCondensedPotion extends ItemBase {
 
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
-		return "item.reliquaryPotion" + ist.getItemDamage();
+		return "item.potion_" + ist.getItemDamage();
 	}
 
 	@Override

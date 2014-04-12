@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.init.XRInit;
+import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.NBTHelper;
 
@@ -18,7 +19,7 @@ import xreliquary.util.NBTHelper;
 public class ItemHeroMedallion extends ItemBase {
 
 	public ItemHeroMedallion() {
-		super(Reference.MOD_ID, "heroMedallion");
+		super(Reference.MOD_ID, Names.hero_medallion);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);

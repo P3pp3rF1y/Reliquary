@@ -98,7 +98,7 @@ public class ItemBullet extends ItemBase {
 
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
-		return "item.reliquaryBullet" + ist.getItemDamage();
+		return "item." + Names.bullet + "_" + ist.getItemDamage();
 	}
 
 	@Override

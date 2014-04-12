@@ -35,17 +35,10 @@ public class ItemWraithEye extends ItemSalamanderEye {
 		canRepair = false;
 	}
 
-	@SideOnly(Side.CLIENT)
-	private IIcon iconOverlay[];
-
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
 		this.itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.wraith_eye);
-		iconOverlay = new IIcon[4];
-		for (int i = 0; i < 4; i++) {
-			iconOverlay[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.wraith_eye_overlay + i);
-		}
 	}
 
 	@Override
@@ -56,20 +49,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 
 	@Override
 	public IIcon getIcon(ItemStack itemStack, int renderPass) {
-		if (renderPass != 1)
-			return this.itemIcon;
-		else {
-			int i = ClientEventHandler.getTime();
-			i %= 80;
-			if (i < 7) {
-				// i == 0, open, i == 3, closed.
-				if (i > 2) {
-					i = 6 - i;
-				}
-				return iconOverlay[i];
-			} else
-				return this.itemIcon;
-		}
+	    return this.itemIcon;
 	}
 
 	@Override

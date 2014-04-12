@@ -54,15 +54,9 @@ public class ItemGunPart extends ItemBase {
 
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
-		switch (stack.getItemDamage()) {
-		case 0:
-			return "item.gunPart0";
-		case 1:
-			return "item.gunPart1";
-		case 2:
-			return "item.gunPart2";
-		default:
-			return "item.gunPart0";
-		}
+        if(stack.getItemDamage() > 2) {
+            return "item." + Names.gun_part + "0";
+        }
+        return "item." + Names.gun_part + String.valueOf(stack.getItemDamage());
 	}
 }

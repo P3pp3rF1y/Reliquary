@@ -18,6 +18,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class EntitySpecialSnowball extends EntitySnowball {
+
 	public int ticksInAir;
 	public int ticksInGround;
 	public Block inTile;
