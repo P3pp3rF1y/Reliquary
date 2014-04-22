@@ -8,7 +8,7 @@ Originally made by x3n0ph0b3, Reliquary is now developed by both TheMike and x3n
 Building
 =========
 
-We use ForgeGradle. There are instructions inside the 'gradle.build' file in this repository.
+We use ForgeGradle. There are instructions inside the 'build.gradle' file in this repository.
 
 Versioning
 =========
