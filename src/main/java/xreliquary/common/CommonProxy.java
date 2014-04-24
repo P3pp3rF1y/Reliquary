@@ -1,6 +1,5 @@
 package xreliquary.common;
 
-// TODO: Remove these. We want to be FML-only, so I can use this on Minetweak too. (or find a way to support both)
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;

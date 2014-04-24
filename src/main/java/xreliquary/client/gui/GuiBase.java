@@ -4,6 +4,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
 
 /**
  * GuiBase, a helper class for guis. Handles String parsing and positioning, and easily drawing ItemStacks.
@@ -58,12 +59,14 @@ public abstract class GuiBase extends GuiContainer {
      * @param y Where the stack will be placed on the y axis.
      */
     public void drawItemStack(ItemStack stack, int x, int y) {
+        GL11.glDisable(GL11.GL_LIGHTING);
         this.zLevel = 200.0F;
         itemRender.zLevel = 200.0F;
         itemRender.renderItemAndEffectIntoGUI(stack.getItem().getFontRenderer(stack), this.mc.getTextureManager(), stack, x, y);
         itemRender.renderItemOverlayIntoGUI(stack.getItem().getFontRenderer(stack), this.mc.getTextureManager(), stack, x, y);
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
+        GL11.glEnable(GL11.GL_LIGHTING);
     }
 
 	@Override

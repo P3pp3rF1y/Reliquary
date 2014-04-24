@@ -33,8 +33,9 @@ public class Names {
 	public static final String void_tear = "void_tear";
 	public static final String void_satchel = "void_satchel";
     public static final String hero_medallion = "hero_medallion";
+    public static final String ender_staff = "ender_staff";
 
-	// potion info
+    // potion info
 	public static final String condensed_potion = "condensed_potion";
 	public static final String condensed_potion_splash = "condensed_potion_splash";
 	public static final String condensed_potion_overlay = "condensed_potion_overlay";

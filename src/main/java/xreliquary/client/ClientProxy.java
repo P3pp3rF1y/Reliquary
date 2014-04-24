@@ -35,7 +35,7 @@ public class ClientProxy extends CommonProxy {
 		super.init();
         FMLCommonHandler.instance().bus().register(new ClientEventHandler());
 
-        LanguageHelper.loadLanguages(new String[]{"en_US"});
+        LanguageHelper.loadLanguages(new String[]{"en_US", "de_DE", "zh_CN"});
 		this.registerRenderers();
 	}
 

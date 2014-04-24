@@ -87,6 +87,8 @@ item.void_satchel.name=Void Satchel
 item.void_satchel.tooltip=This Void Satchel currently;holds {{holds}}.;It has a capacity of {{capacity}}.
 item.hero_medallion.name=Hero's Medallion
 item.hero_medallion.tooltip=\u00a72Experience: {{experience}}/1760;For when you just need;somewhere to put;all that experience.
+item.ender_staff.name=Ender Staff
+item.ender_staff.tooltip=Consumes Ender Pearls from inventory.;Throws them a bit farther.
 
 tile.altar_idle.name=Altar of Light
 tile.altar.name=Altar of Light

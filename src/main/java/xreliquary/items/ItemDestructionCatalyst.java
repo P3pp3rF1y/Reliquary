@@ -30,7 +30,7 @@ public class ItemDestructionCatalyst extends ItemBase {
 
 	@Override
 	public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
-		if (hasGunpowder(player)) {
+		if (hasGunpowder(player) || player.capabilities.isCreativeMode) {
 			doExplosion(world, x, y, z, side, player);
 		}
 		return true;
@@ -69,6 +69,9 @@ public class ItemDestructionCatalyst extends ItemBase {
 	}
 
 	public boolean consumeGunpowder(EntityPlayer player) {
+        if(player.capabilities.isCreativeMode)
+            return true;
+
 		int gunPowderCost = Reference.DESTRUCTION_CATALYST_COST;
 		IInventory inventory = player.inventory;
 		for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {

@@ -5,6 +5,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import org.apache.logging.log4j.Level;
+import xreliquary.Reliquary;
 import xreliquary.util.LogHelper;
 
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class ContentHandler {
 
     private static void init(String packageName) throws Exception {
         // Gets the classpath, and searches it for all classes in packageName.
-        ClassPath classPath = ClassPath.from(ClassLoader.getSystemClassLoader());
+        ClassPath classPath = ClassPath.from(Reliquary.class.getClassLoader());
         for(ClassPath.ClassInfo info : classPath.getTopLevelClasses(packageName)) {
             Class objClass = Class.forName(info.getName());
             checkAndRegister(objClass);

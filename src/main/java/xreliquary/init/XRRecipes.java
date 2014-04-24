@@ -143,13 +143,13 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.wraith_eye), 1, 0), new Object[] { "eee", "bsb", "eee", 'e', ContentHandler.getItem(Names.void_tear_empty), 's', ContentHandler.getItem(Names.salamander_eye), 'b', Blocks.emerald_block });
 
         // ice rod
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.ice_magnus_rod), 1, 0), new Object[] { "dtd", "tit", "tit", 'd', Items.diamond, 't', Items.ghast_tear, 'i', Items.iron_ingot });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.ice_magnus_rod), 1, 0), new Object[] { "dtd", "tpt", "tpt", 'd', Items.diamond, 't', Items.ghast_tear, 'p', Blocks.packed_ice});
 
         // magicbane
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.magicbane), 1, 0), new Object[] { "eee", "ege", "iee", 'e', Items.ender_eye, 'g', Items.gold_ingot, 'i', Items.iron_ingot });
 
         // rose
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.witherless_rose), 1, 0), new Object[] { "hnh", "nrn", "hnh", 'h', ContentHandler.getItem(Names.glowing_water), 'n', Items.nether_star, 'r', Blocks.red_flower });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.witherless_rose), 1, 0), new Object[] { "hnh", "nrn", "hnh", 'h', ContentHandler.getItem(Names.glowing_water), 'n', Items.nether_star, 'r', new ItemStack(Blocks.double_plant, 1, 4) });
 
         // cloak
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.distortion_cloak), 1, 0), new Object[] { "eee", "ewe", "eee", 'e', Items.ender_eye, 'w', new ItemStack(Blocks.wool, 1, 11) });
@@ -161,16 +161,16 @@ public class XRRecipes {
         // to change.
 
         // void satchel
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_satchel), 1, 0), new Object[] { "lsl", "ltl", "lll", 'l', Items.leather, 's', Items.string, 't', ContentHandler.getItem(Names.void_tear) }); // upgrade
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_satchel), 1, 0), new Object[]{"lsl", "ltl", "lll", 'l', Items.leather, 's', Items.string, 't', ContentHandler.getItem(Names.void_tear)}); // upgrade
         // it!
-        GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.void_satchel), 1, 0), new Object[] { ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_satchel) });
+        GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.void_satchel), 1, 0), new Object[]{ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_satchel)});
 
         // destruction catalyst
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.destruction_catalyst), 1, 0), new Object[] { "rrr", "rtr", "rrf", 'f', Items.flint, 't', new ItemStack(ContentHandler.getItem(Names.midas_touchstone), 1, -1), 'r', Items.blaze_rod });
 
         // potion!
         // empty vial
-        GameRegistry.addRecipe(potion(5, Reference.EMPTY_VIAL_META), new Object[] { "g g", "g g", " g ", 'g', Blocks.glass_pane });
+        GameRegistry.addRecipe(potion(5, Reference.EMPTY_VIAL_META), new Object[]{"g g", "g g", " g ", 'g', Blocks.glass_pane});
 
         // base solvent
         GameRegistry.addShapelessRecipe(potion(Reference.POTION_META), new Object[] { Items.nether_wart, Items.redstone, Items.glowstone_dust, potion(Reference.WATER_META) });

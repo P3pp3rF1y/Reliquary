@@ -46,6 +46,12 @@ public class ItemMagicbane extends ItemSword {
 		return EnumRarity.epic;
 	}
 
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean hasEffect(ItemStack stack) {
+        return true;
+    }
+
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
 		String value = LanguageHelper.getLocalization("item." + Names.magicbane + ".tooltip");
