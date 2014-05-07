@@ -11,6 +11,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.init.ContentHandler;
@@ -25,7 +26,6 @@ public class ItemVoidTear extends ItemBase {
 
 	public ItemVoidTear() {
 		super(Reference.MOD_ID, Names.void_tear);
-		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		canRepair = false;
@@ -46,7 +46,7 @@ public class ItemVoidTear extends ItemBase {
 		} else {
 			ItemStack contents = new ItemStack((Item) Item.itemRegistry.getObject(tag.getString("itemID")), 1, tag.getShort("itemMeta"));
 			String itemName = contents.getDisplayName();
-			holds = tag.getShort("itemQuantity") + "x " + itemName;
+            holds = "" + EnumChatFormatting.YELLOW + tag.getShort("itemQuantity") + " of " + itemName;
 		}
 		this.formatTooltip(ImmutableMap.of("holds", holds), ist, list);
 	}

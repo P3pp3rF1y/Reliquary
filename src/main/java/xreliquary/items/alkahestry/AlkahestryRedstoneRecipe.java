@@ -15,7 +15,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) {
         ItemStack tomb = null;
-		boolean isRedstoneBlock = false;
+        int amount = 0;
 		int valid = 0;
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
@@ -23,25 +23,18 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
 					tomb = stack.copy();
 				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(Items.redstone))) {
-					if (valid == 0) {
-						valid = 1;
-					} else {
-                        valid = 2;
-					}
-				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
-					if (valid == 0) {
-                        valid = 1;
-						isRedstoneBlock = true;
-					} else {
-                        valid = 2;
-					}
-				}
+					if (valid == 0) valid = 1;
+                    amount++;
+                } else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
+                    if (valid == 0) valid = 1;
+                    amount += 9;
+                } else {
+                    valid = 2;
+                }
 			}
 		}
         if (tomb != null && valid == 1 && tomb.getItemDamage() != 0) {
-            if (!isRedstoneBlock) {
-                return true;
-            } else if (isRedstoneBlock && tomb.getItemDamage() >= 8) {
+            if (tomb.getItemDamage() >= amount) {
                 return true;
             } else {
                 return false;
@@ -54,22 +47,21 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv) {
 		ItemStack tomb = null;
-		boolean isRedstoneBlock = false;
+        int amount = 0;
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
 				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
 					tomb = stack.copy();
 				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
-					isRedstoneBlock = true;
-				}
+					amount += 9;
+                } else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(Items.redstone))) {
+                    amount++;
+                }
 			}
 		}
 
-		if (isRedstoneBlock)
-			tomb.setItemDamage(tomb.getItemDamage() - 9);
-		else
-			tomb.setItemDamage(tomb.getItemDamage() - 1);
+		tomb.setItemDamage(tomb.getItemDamage() - amount);
 		return tomb;
 	}
 
