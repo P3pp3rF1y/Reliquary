@@ -26,8 +26,8 @@ public class Names {
 	public static final String ice_magnus_rod = "ice_magnus_rod";
 	public static final String magicbane = "magicbane";
 	public static final String witherless_rose = "witherless_rose";
-	public static final String distortion_cloak = "distortion_cloak";
-	public static final String distortion_cloak_overlay = "distortion_cloak_overlay";
+	public static final String twilight_cloak = "twilight_cloak";
+	public static final String twilight_cloak_overlay = "twilight_cloak_overlay";
 	public static final String wraith_eye = "wraith_eye";
 	public static final String void_tear_empty = "void_tear_empty";
 	public static final String void_tear = "void_tear";

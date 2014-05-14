@@ -118,7 +118,7 @@ public class ItemHandgun extends ItemBase {
 
 	@Override
 	public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
-		System.out.println("Tick count: " + count);
+		//System.out.println("Tick count: " + count);
 		if (!hasASpareClip(player)) {
 			NBTHelper.setShort("cooldownTime", ist, 12);
 			// play click!

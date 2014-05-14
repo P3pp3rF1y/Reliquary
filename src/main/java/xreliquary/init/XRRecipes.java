@@ -152,7 +152,7 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.witherless_rose), 1, 0), new Object[] { "hnh", "nrn", "hnh", 'h', ContentHandler.getItem(Names.glowing_water), 'n', Items.nether_star, 'r', new ItemStack(Blocks.double_plant, 1, 4) });
 
         // cloak
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.distortion_cloak), 1, 0), new Object[] { "eee", "ewe", "eee", 'e', Items.ender_eye, 'w', new ItemStack(Blocks.wool, 1, 11) });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.twilight_cloak), 1, 0), new Object[] { "eee", "ewe", "eee", 'e', Items.ender_eye, 'w', new ItemStack(Blocks.wool, 1, 11) });
 
         // void tear
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1, 0), new Object[] { "et", "te", 'e', Items.ender_eye, 't', Items.ghast_tear });

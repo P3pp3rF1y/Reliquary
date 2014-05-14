@@ -77,7 +77,8 @@ public class ItemEnderStaff extends ItemBase {
             return ist;
         if (ist.getItemDamage() < ist.getMaxDamage() - 1) {
             world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-            world.spawnEntityInWorld(new EntityEnderStaffProjectile(world, player));
+            //if the player is sneaking, it fires a "reduced gravity" ender pearl, for a longer range/shallow arc.
+            world.spawnEntityInWorld(new EntityEnderStaffProjectile(world, player, !player.isSneaking()));
             ist.setItemDamage(ist.getItemDamage() == ist.getMaxDamage() - 2 ? 0 : ist.getItemDamage() + 1);
         }
         return ist;
