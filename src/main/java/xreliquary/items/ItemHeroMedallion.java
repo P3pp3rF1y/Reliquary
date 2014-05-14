@@ -4,10 +4,14 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.init.XRInit;
@@ -22,7 +26,7 @@ public class ItemHeroMedallion extends ItemBase {
 		super(Reference.MOD_ID, Names.hero_medallion);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
-		this.setMaxStackSize(64);
+		this.setMaxStackSize(1);
 		canRepair = false;
 	}
 	
@@ -30,6 +34,25 @@ public class ItemHeroMedallion extends ItemBase {
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
 		this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getShort("experience", stack))), stack, list);
 	}
+
+    @SideOnly(Side.CLIENT)
+    private IIcon iconOverlay;
+
+    //next two methods are an imitation of the coin of fortune, similar On/Off effects on the two "coins"
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister iconRegister) {
+        super.registerIcons(iconRegister);
+        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.hero_medallion_overlay);
+    }
+
+    @Override
+    public IIcon getIcon(ItemStack itemStack, int renderPass) {
+        if (itemStack.getItemDamage() == 0 || renderPass != 1)
+            return this.itemIcon;
+        else
+            return iconOverlay;
+    }
 
 	// below is an excerpt of the player class to show some of the formulas involved.
 //	public void addExperience(int par1)    {	
