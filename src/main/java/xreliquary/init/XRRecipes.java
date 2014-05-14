@@ -120,9 +120,9 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.handgun), 1, 0), new Object[] { "bim", "isi", "igi", 'i', Items.iron_ingot, 'b', gunPart(1, 1), 'm', gunPart(1, 2), 'g', gunPart(1, 0), 's', Items.slime_ball });
 
         // tome
-        ItemStack tombStack = new ItemStack(ContentHandler.getItem(Names.alkahest_tome), 1, 0);
-        tombStack.setItemDamage(Reliquary.PROXY.tombRedstoneLimit);
-        GameRegistry.addShapelessRecipe(tombStack, new Object[] { Items.book, Items.blaze_rod, Items.magma_cream, Items.gold_ingot, Blocks.glowstone, Items.nether_wart, new ItemStack(Items.skull, 1, 1), Items.ghast_tear, Items.lava_bucket });
+        ItemStack tomeStack = new ItemStack(ContentHandler.getItem(Names.alkahest_tome), 1, 0);
+        tomeStack.setItemDamage(Reliquary.PROXY.tomeRedstoneLimit);
+        GameRegistry.addShapelessRecipe(tomeStack, new Object[] { Items.book, Items.blaze_rod, Items.magma_cream, Items.gold_ingot, Blocks.glowstone, Items.nether_wart, new ItemStack(Items.skull, 1, 1), Items.ghast_tear, Items.lava_bucket });
 
         GameRegistry.addRecipe(new AlkahestryRedstoneRecipe());
         GameRegistry.addRecipe(new AlkahestryCraftingRecipe());

@@ -36,13 +36,13 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onCraftingAlkahest(PlayerEvent.ItemCraftedEvent event) {
         boolean isCharging = false;
-        int tomb = 9;
+        int tome = 9;
         AlkahestRecipe recipe = null;
         for (int count = 0; count < event.craftMatrix.getSizeInventory(); count++) {
             ItemStack stack = event.craftMatrix.getStackInSlot(count);
             if (stack != null) {
                 if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
-                    tomb = count;
+                    tome = count;
                 } else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(Items.redstone)) || ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
                     isCharging = true;
                 } else {
@@ -54,12 +54,12 @@ public class CommonEventHandler {
                 }
             }
         }
-        if (tomb != 9 && isCharging) {
-            event.craftMatrix.setInventorySlotContents(tomb, null);
-        } else if (tomb != 9 && !isCharging && recipe != null) {
-            ItemStack temp = event.craftMatrix.getStackInSlot(tomb);
+        if (tome != 9 && isCharging) {
+            event.craftMatrix.setInventorySlotContents(tome, null);
+        } else if (tome != 9 && !isCharging && recipe != null) {
+            ItemStack temp = event.craftMatrix.getStackInSlot(tome);
             temp.setItemDamage(temp.getItemDamage() + recipe.cost);
-            event.craftMatrix.setInventorySlotContents(tomb, temp);
+            event.craftMatrix.setInventorySlotContents(tome, temp);
         }
     }
 

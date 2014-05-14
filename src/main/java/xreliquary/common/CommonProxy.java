@@ -22,7 +22,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class CommonProxy {
 
 	public int chaliceMultiplier;
-	public int tombRedstoneLimit;
+	public int tomeRedstoneLimit;
 	public boolean disableCoinAudio;
 
 	public void preInit() {
@@ -49,7 +49,7 @@ public class CommonProxy {
 	public void initOptions() {
 		disableCoinAudio = Reliquary.CONFIG.get("Misc_Options", "disableCoinAudio", false).getBoolean(Reference.DISABLE_COIN_AUDIO_DEFAULT);
 		chaliceMultiplier = Reliquary.CONFIG.get("Misc_Options", "chaliceMultiplier", 1).getInt(1);
-		tombRedstoneLimit = Reliquary.CONFIG.get("Misc_Options", "tombRedstoneLimit", 256).getInt(256);
+		tomeRedstoneLimit = Reliquary.CONFIG.get("Misc_Options", "tomeRedstoneLimit", 256).getInt(256);
 	}
 
 	public void registerTileEntities() {

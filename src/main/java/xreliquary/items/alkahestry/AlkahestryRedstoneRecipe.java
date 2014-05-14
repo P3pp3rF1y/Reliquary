@@ -14,14 +14,14 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) {
-        ItemStack tomb = null;
+        ItemStack tome = null;
         int amount = 0;
 		int valid = 0;
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
 				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
-					tomb = stack.copy();
+					tome = stack.copy();
 				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(Items.redstone))) {
 					if (valid == 0) valid = 1;
                     amount++;
@@ -33,8 +33,8 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
                 }
 			}
 		}
-        if (tomb != null && valid == 1 && tomb.getItemDamage() != 0) {
-            if (tomb.getItemDamage() >= amount) {
+        if (tome != null && valid == 1 && tome.getItemDamage() != 0) {
+            if (tome.getItemDamage() >= amount) {
                 return true;
             } else {
                 return false;
@@ -46,13 +46,13 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv) {
-		ItemStack tomb = null;
+		ItemStack tome = null;
         int amount = 0;
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
 				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
-					tomb = stack.copy();
+					tome = stack.copy();
 				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
 					amount += 9;
                 } else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(Items.redstone))) {
@@ -61,8 +61,8 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 			}
 		}
 
-		tomb.setItemDamage(tomb.getItemDamage() - amount);
-		return tomb;
+		tome.setItemDamage(tome.getItemDamage() - amount);
+		return tome;
 	}
 
 	@Override

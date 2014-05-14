@@ -14,14 +14,14 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) {
-		ItemStack tomb = null;
+		ItemStack tome = null;
 		ItemStack itemStack = null;
 		int valid = 0;
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
 				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
-					tomb = stack.copy();
+					tome = stack.copy();
 				} else if (!ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
 					if (valid == 0) {
 						valid = 1;
@@ -32,13 +32,13 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 				}
 			}
 		}
-		if (tomb != null && valid == 1 && itemStack != null) {
+		if (tome != null && valid == 1 && itemStack != null) {
 			AlkahestRecipe recipe = null;
 			if (Alkahestry.getDictionaryKey(itemStack) == null)
 				recipe = Alkahestry.getRegistry().get(ObjectUtils.getItemIdentifier(itemStack.getItem()));
 			else
 				recipe = Alkahestry.getDictionaryKey(itemStack);
-   			return recipe != null && (tomb.getItemDamage() + recipe.cost <= Reliquary.PROXY.tombRedstoneLimit);
+   			return recipe != null && (tome.getItemDamage() + recipe.cost <= Reliquary.PROXY.tomeRedstoneLimit);
 		} else {
 			return false;
 		}

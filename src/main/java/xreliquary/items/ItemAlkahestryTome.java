@@ -23,7 +23,7 @@ public class ItemAlkahestryTome extends ItemBase {
 	public ItemAlkahestryTome() {
 		super(Reference.MOD_ID, Names.alkahest_tome);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		this.setMaxDamage(Reliquary.PROXY.tombRedstoneLimit + 1);
+		this.setMaxDamage(Reliquary.PROXY.tomeRedstoneLimit + 1);
 		this.setMaxStackSize(1);
 		this.canRepair = false;
 		this.hasSubtypes = true;
@@ -45,7 +45,7 @@ public class ItemAlkahestryTome extends ItemBase {
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		this.formatTooltip(ImmutableMap.of("redstoneAmount", String.valueOf((Reliquary.PROXY.tombRedstoneLimit - stack.getItemDamage())), "redstoneLimit", String.valueOf(Reliquary.PROXY.tombRedstoneLimit)), stack, list);
+		this.formatTooltip(ImmutableMap.of("redstoneAmount", String.valueOf((Reliquary.PROXY.tomeRedstoneLimit - stack.getItemDamage())), "redstoneLimit", String.valueOf(Reliquary.PROXY.tomeRedstoneLimit)), stack, list);
 	}
 
 	@Override
@@ -64,9 +64,9 @@ public class ItemAlkahestryTome extends ItemBase {
 
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List list) {
-		ItemStack tombStack = new ItemStack(item, 1, 0);
-		tombStack.setItemDamage(Reliquary.PROXY.tombRedstoneLimit);
-		list.add(tombStack);
+		ItemStack tomeStack = new ItemStack(item, 1, 0);
+		tomeStack.setItemDamage(Reliquary.PROXY.tomeRedstoneLimit);
+		list.add(tomeStack);
 	}
 
 }
