@@ -137,33 +137,21 @@ public class ItemHeroMedallion extends ItemBase {
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        //this is the right click behavior you'd want if you wanted it to
-        //drain a set amount of experience every time you right clicked.
-//		if(!stack.hasTagCompound())
-//            stack.setTagCompound(new NBTTagCompound());
-//        if(!player.isSneaking()) {
-//            if(stack.getTagCompound().hasKey("experience")) {
-//                if(stack.getTagCompound().getShort("experience") + 10 <= 1760) {
-//                    stack.getTagCompound().setShort("experience", (short) (stack.getTagCompound().getShort("experience") + 10));
-//                    player.addExperience(-10);
-//                }
-//            } else {
-//                stack.getTagCompound().setShort("experience", (short) 10);
-//                player.addExperience(-10);
-//            }
-//        } else {
-//            if(stack.getTagCompound().hasKey("experience")) {
-//                if(stack.getTagCompound().getShort("experience") - 10 >= 0) {
-//                    stack.getTagCompound().setShort("experience", (short) (stack.getTagCompound().getShort("experience") - 10));
-//                    player.addExperience(10);
-//                }
-//            }
-//        }
-        //checks to see if the item is active, toggles it.
-        if (stack.getItemDamage() == 1) stack.setItemDamage(0);
-                else stack.setItemDamage(1);
-		return stack;
+	public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+        if (world.isRemote)
+            return ist;
+        //if we wanted to add some special functionality for sneaking (copied directly from coin)
+        //if (player.isSneaking()) {
+            //player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
+        //} else {
+
+        //if we wanted sound effects. There's none for now.
+        //if (!Reliquary.PROXY.disableCoinAudio) {
+        //    NBTHelper.setShort("soundTimer", ist, 6);
+        //}
+        ist.setItemDamage(ist.getItemDamage() == 0 ? 1 : 0);
+        //}
+        return ist;
 	}
 
 }
