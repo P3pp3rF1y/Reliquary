@@ -57,7 +57,7 @@ public class EntityEnderStaffProjectile extends EntityEnderPearl {
             --throwableShake;
         }
         if (ticksInAir % 4 == worldObj.rand.nextInt(5)) {
-            worldObj.spawnParticle("portal", posX, posY, posZ, 5.0D, 5.0D, 1.0D);
+            worldObj.spawnParticle("portal", posX, posY, posZ, 0.0D, 0.0D, 1.0D);
         }
         xTile = (int) Math.round(posX);
         yTile = (int) Math.round(posY);
@@ -165,12 +165,6 @@ public class EntityEnderStaffProjectile extends EntityEnderPearl {
         if (this.isInWater()) {
             //nobody likes being at the bottom of a lake.
             this.onThrowableCollision(null);
-//            for (int var7 = 0; var7 < 4; ++var7) {
-//                float var20 = 0.25F;
-//                worldObj.spawnParticle("bubble", posX - motionX * var20, posY - motionY * var20, posZ - motionZ * var20, motionX, motionY, motionZ);
-//            }
-//
-//            var18 = 0.8F;
         }
 
         motionX *= var18;
