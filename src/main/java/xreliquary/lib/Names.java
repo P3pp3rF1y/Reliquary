@@ -23,7 +23,7 @@ public class Names {
 	public static final String emperor_chalice_overlay = "emperor_chalice_overlay";
 	public static final String salamander_eye = "salamander_eye";
 	public static final String destruction_catalyst = "destruction_catalyst";
-	public static final String ice_magnus_rod = "ice_magnus_rod";
+	public static final String ice_magus_rod = "ice_magus_rod";
 	public static final String magicbane = "magicbane";
 	public static final String witherless_rose = "witherless_rose";
 	public static final String twilight_cloak = "twilight_cloak";

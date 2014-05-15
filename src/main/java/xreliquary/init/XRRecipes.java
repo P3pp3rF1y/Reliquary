@@ -143,7 +143,7 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.wraith_eye), 1, 0), new Object[] { "eee", "bsb", "eee", 'e', ContentHandler.getItem(Names.void_tear_empty), 's', ContentHandler.getItem(Names.salamander_eye), 'b', Blocks.emerald_block });
 
         // ice rod
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.ice_magnus_rod), 1, 0), new Object[] { "dtd", "tpt", "tpt", 'd', Items.diamond, 't', Items.ghast_tear, 'p', Blocks.packed_ice});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.ice_magus_rod), 1, 0), new Object[] { "dtd", "tpt", "tpt", 'd', Items.diamond, 't', Items.ghast_tear, 'p', Blocks.packed_ice});
 
         // magicbane
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.magicbane), 1, 0), new Object[] { "eee", "ege", "iee", 'e', Items.ender_eye, 'g', Items.gold_ingot, 'i', Items.iron_ingot });
