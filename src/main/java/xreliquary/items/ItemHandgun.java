@@ -30,7 +30,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemHandgun extends ItemBase {
 
 	@SideOnly(Side.CLIENT)
-	private IIcon iconOverlay;
+//	private IIcon iconOverlay;
 
 	public ItemHandgun() {
 		super(Reference.MOD_ID, Names.handgun);
@@ -50,15 +50,15 @@ public class ItemHandgun extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
-		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.handgun_overlay);
+//		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.handgun_overlay);
 	}
 
 	@Override
 	public IIcon getIcon(ItemStack itemStack, int renderPass) {
-		if (itemStack.getItemDamage() == 0 || renderPass != 1)
+//		if (itemStack.getItemDamage() == 0 || renderPass != 1)
 			return this.itemIcon;
-		else
-			return iconOverlay;
+//		else
+//			return iconOverlay;
 	}
 
 	@Override

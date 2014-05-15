@@ -19,7 +19,6 @@ import xreliquary.lib.Reference;
 import xreliquary.util.AlkahestRecipe;
 
 public class CommonEventHandler {
-
 	@SubscribeEvent
 	public void onCraftingPotion(PlayerEvent.ItemCraftedEvent event) {
 		for (int slot = 0; slot < event.craftMatrix.getSizeInventory(); slot++) {

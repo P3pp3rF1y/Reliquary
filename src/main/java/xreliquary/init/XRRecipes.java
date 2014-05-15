@@ -152,7 +152,7 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.witherless_rose), 1, 0), new Object[] { "hnh", "nrn", "hnh", 'h', ContentHandler.getItem(Names.glowing_water), 'n', Items.nether_star, 'r', new ItemStack(Blocks.double_plant, 1, 4) });
 
         // cloak
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.twilight_cloak), 1, 0), new Object[] { "eee", "ewe", "eee", 'e', Items.ender_eye, 'w', new ItemStack(Blocks.wool, 1, 11) });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.twilight_cloak), 1, 0), new Object[] { "pep", "ewe", "epe", 'p', potion(Reference.INVISIBILITY_META), 'e', Items.ender_eye, 'w', new ItemStack(Blocks.wool, 1, 11) });
 
         // void tear
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1, 0), new Object[] { "et", "te", 'e', Items.ender_eye, 't', Items.ghast_tear });
@@ -161,8 +161,8 @@ public class XRRecipes {
         // to change.
 
         // void satchel
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_satchel), 1, 0), new Object[]{"lsl", "ltl", "lll", 'l', Items.leather, 's', Items.string, 't', ContentHandler.getItem(Names.void_tear)}); // upgrade
-        // it!
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_satchel), 1, 0), new Object[]{"lsl", "ltl", "lll", 'l', Items.leather, 's', Items.string, 't', ContentHandler.getItem(Names.void_tear)});
+        // upgrade it!
         GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.void_satchel), 1, 0), new Object[]{ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_satchel)});
 
         // destruction catalyst
@@ -217,7 +217,7 @@ public class XRRecipes {
         // protection potion
         GameRegistry.addShapelessRecipe(potion(8, Reference.PROTECTION_META), new Object[] { potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), Items.glowstone_dust, potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META) });
 
-        // potence potion
+        // potency potion
         GameRegistry.addShapelessRecipe(potion(8, Reference.POTENCE_META), new Object[] { potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), Items.glowstone_dust, potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META) });
 
         // celerity potion
