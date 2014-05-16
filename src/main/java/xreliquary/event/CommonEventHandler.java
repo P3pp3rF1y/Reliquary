@@ -4,6 +4,11 @@ import cpw.mods.fml.common.eventhandler.*;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.DamageSource;
+import net.minecraft.world.World;
 import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
 import xreliquary.util.ObjectUtils;
@@ -40,8 +45,47 @@ public class CommonEventHandler {
        Entity entity = event.entity;
        if (entity == null || !(entity instanceof EntityPlayer)) return;
        EntityPlayer player = (EntityPlayer)entity;
+        //I'm rounding because I'm not 100% on whether the health value being a fraction matters for determining death
+        //Rounding would be worst case. I'm doing an early abort to keep my indentation shallow.
+       if (player.getHealth() > Math.round(event.ammount)) return;
+       if (!playerHasPhoenixDown(player)) return;
+       revertPhoenixDownToAngelicFeather(player);
+       event.setCanceled(true);
+       player.setHealth(player.getMaxHealth());
+
+        //added bonus, has some extra effects when drowning or dying to lava.
+        //there are some things the feather can't protect you from (such as falling out of the world or wither/poison)
+        //it will rescue you from the damage, but if the source is sustained, you will eventually die anyway.
+        //even so, these are some added benefits to improve your chances of making it out of lava/water alive.
+       if (event.source == DamageSource.lava)
+           //five seconds of fire resistance, should hopefully be enough to get you out of the lava.
+           player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 100, 0));
+       if (event.source == DamageSource.drown) {
+           //no clue if air is 10 or 20. In most cases this should be plenty, not to mention 5 seconds of water breathing.
+           player.setAir(10);
+           player.addPotionEffect(new PotionEffect(Potion.waterBreathing.id, 100, 0));
+       }
+    }
 
 
+    private void revertPhoenixDownToAngelicFeather(EntityPlayer player) {
+        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+            if (player.inventory.mainInventory[slot] == null) continue;
+            if (player.inventory.mainInventory[slot].getItem() == ContentHandler.getItem(Names.phoenix_down)) {
+                player.inventory.mainInventory[slot] = new ItemStack(ContentHandler.getItem(Names.angelic_feather));
+                return;
+            }
+        }
+    }
+
+   private boolean playerHasPhoenixDown(EntityPlayer player) {
+        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+            if (player.inventory.mainInventory[slot] == null) continue;
+            if (player.inventory.mainInventory[slot].getItem() == ContentHandler.getItem(Names.phoenix_down)) {
+                return true;
+            }
+        }
+       return false;
     }
 
     @SubscribeEvent

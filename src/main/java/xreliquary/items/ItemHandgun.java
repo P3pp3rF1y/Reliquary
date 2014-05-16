@@ -119,7 +119,7 @@ public class ItemHandgun extends ItemBase {
 	@Override
 	public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
 		//System.out.println("Tick count: " + count);
-		if (!hasASpareClip(player)) {
+		if (!hasFilledMagazine(player)) {
 			NBTHelper.setShort("cooldownTime", ist, 12);
 			// play click!
 			resetReloadDuration(ist);
@@ -128,10 +128,10 @@ public class ItemHandgun extends ItemBase {
 		}
 		if (reloadTicks(count) >= calculatePlayerSkillTimer(player) - 1) {
 			NBTHelper.setShort("cooldownTime", ist, 24);
-			NBTHelper.setShort("bulletType", ist, getClipTypeAndSubtractOne(player));
+			NBTHelper.setShort("bulletType", ist, getMagazineTypeAndRemoveOne(player));
 			if (NBTHelper.getShort("bulletType", ist) != 0) {
 				player.swingItem();
-				this.spawnClip(player);
+				this.spawnEmptyMagazine(player);
 				NBTHelper.setShort("bulletCount", ist, 8);
 				player.worldObj.playSoundAtEntity(player, Reference.LOAD_SOUND, 0.25F, 1.0F);
 			}
@@ -223,7 +223,7 @@ public class ItemHandgun extends ItemBase {
 		ist.setItemDamage((8 - NBTHelper.getShort("bulletCount", ist) << 5) + NBTHelper.getShort("bulletType", ist));
 	}
 
-	private void spawnClip(EntityPlayer player) {
+	private void spawnEmptyMagazine(EntityPlayer player) {
 		if (!player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.magazine), 1, 0))) {
 			player.entityDropItem(new ItemStack(ContentHandler.getItem(Names.magazine), 1, 0), 0.1F);
 		}
@@ -235,7 +235,7 @@ public class ItemHandgun extends ItemBase {
 		}
 	}
 
-	private boolean hasASpareClip(EntityPlayer player) {
+	private boolean hasFilledMagazine(EntityPlayer player) {
 		for (ItemStack ist : player.inventory.mainInventory) {
 			if (ist == null) {
 				continue;
@@ -246,7 +246,7 @@ public class ItemHandgun extends ItemBase {
 		return false;
 	}
 
-	private int getClipTypeAndSubtractOne(EntityPlayer player) {
+	private int getMagazineTypeAndRemoveOne(EntityPlayer player) {
 		int bulletFound = 0;
 		for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
 			if (player.inventory.mainInventory[slot] == null) {
