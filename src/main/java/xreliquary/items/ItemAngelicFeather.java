@@ -8,12 +8,14 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 /**
  * Created by Xeno on 5/15/14.
  */
+@XRInit
 public class ItemAngelicFeather extends ItemBase {
 
 

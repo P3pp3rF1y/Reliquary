@@ -1,12 +1,14 @@
 package xreliquary.items;
 
 import xreliquary.Reliquary;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 /**
  * Created by Xeno on 5/15/14.
  */
+@XRInit
 public class ItemPhoenixDown extends ItemAngelicFeather {
 
 

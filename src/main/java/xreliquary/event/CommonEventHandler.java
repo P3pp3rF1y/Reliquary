@@ -2,10 +2,13 @@ package xreliquary.event;
 
 import cpw.mods.fml.common.eventhandler.*;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
 import xreliquary.util.ObjectUtils;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -31,6 +34,15 @@ public class CommonEventHandler {
 				}
 		}
 	}
+
+    @SubscribeEvent
+    public void onPlayerHurt(LivingHurtEvent event) {
+       Entity entity = event.entity;
+       if (entity == null || !(entity instanceof EntityPlayer)) return;
+       EntityPlayer player = (EntityPlayer)entity;
+
+
+    }
 
     @SubscribeEvent
     public void onCraftingAlkahest(PlayerEvent.ItemCraftedEvent event) {
