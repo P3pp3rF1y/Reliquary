@@ -89,6 +89,8 @@ item.hero_medallion.name=Hero's Medallion
 item.hero_medallion.tooltip=\u00a72Experience: {{experience}};For when you just need;somewhere to put;all that experience.
 item.ender_staff.name=Ender Staff
 item.ender_staff.tooltip=Consumes Ender Pearls from inventory.;Throws them a bit farther.
+item.angelic_feather.tooltip=Protects you from falls,;at the expense of hunger.
+item.phoenix_down.tooltip=Resurrects you once,; reverts to an Angelic Feather.
 
 tile.altar_idle.name=Altar of Light
 tile.altar.name=Altar of Light
