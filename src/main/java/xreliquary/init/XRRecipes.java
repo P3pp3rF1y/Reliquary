@@ -157,6 +157,12 @@ public class XRRecipes {
         // void tear
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1, 0), new Object[] { "et", "te", 'e', Items.ender_eye, 't', Items.ghast_tear });
 
+        // angelic feather
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.angelic_feather), 1, 0), new Object[] { "gvg", "vfv", "gvg", 'g', ContentHandler.getItem(Names.glowing_water), 'v', ContentHandler.getItem(Names.void_tear_empty), 'f', Items.feather});
+
+        // phoenix down
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.phoenix_down), 1, 0), new Object[] { "mbm", "vfv", "mbm", 'm', Items.magma_cream, 'b', 'v', ContentHandler.getItem(Names.void_tear_empty), Items.blaze_rod, 'f', ContentHandler.getItem(Names.angelic_feather)});
+
         // TODO possibly give satchels a damage bar, so these recipes will have
         // to change.
 

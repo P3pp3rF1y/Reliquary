@@ -35,6 +35,8 @@ public class Names {
     public static final String hero_medallion = "hero_medallion";
     public static final String hero_medallion_overlay = "hero_medallion_overlay";
     public static final String ender_staff = "ender_staff";
+    public static final String angelic_feather = "angelic_feather";
+    public static final String phoenix_down = "phoenix_down";
 
     // potion info
 	public static final String condensed_potion = "condensed_potion";
