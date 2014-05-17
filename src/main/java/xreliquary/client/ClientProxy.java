@@ -34,6 +34,7 @@ public class ClientProxy extends CommonProxy {
 	public void init() {
 		super.init();
         FMLCommonHandler.instance().bus().register(new ClientEventHandler());
+        //FMLCommonHandler.instance().bus().register(new HandgunHUD());
 
         LanguageHelper.loadLanguages(new String[]{"en_US", "de_DE", "zh_CN"});
 		this.registerRenderers();

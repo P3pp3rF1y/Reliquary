@@ -34,7 +34,6 @@ public class ItemHandgun extends ItemBase {
 
 	public ItemHandgun() {
 		super(Reference.MOD_ID, Names.handgun);
-		this.setMaxDamage((8 << 5) + 11);
 		this.setMaxStackSize(1);
 		canRepair = false;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
@@ -42,71 +41,56 @@ public class ItemHandgun extends ItemBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean requiresMultipleRenderPasses() {
-		return true;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
 		super.registerIcons(iconRegister);
-//		iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.handgun_overlay);
 	}
 
 	@Override
 	public IIcon getIcon(ItemStack itemStack, int renderPass) {
-//		if (itemStack.getItemDamage() == 0 || renderPass != 1)
 			return this.itemIcon;
-//		else
-//			return iconOverlay;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-
-		if (renderPass == 1)
-			return getColor(itemStack);
-		else
 			return Integer.parseInt(Colors.PURE, 16);
 	}
 
-	public int getColor(ItemStack itemStack) {
+    public int getBulletCount(ItemStack ist) {
+        return NBTHelper.getShort("bulletCount", ist);
+    }
 
-		switch (itemStack.getItemDamage()) {
-		case 1:
-			return Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16);
-		case 2:
-			return Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16);
-		case 3:
-			return Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16);
-		case 4:
-			return Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16);
-		case 5:
-			return Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16);
-		case 6:
-			return Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16);
-		case 7:
-			return Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16);
-		case 8:
-			return Integer.parseInt(Colors.SAND_SHOT_COLOR, 16);
-		case 9:
-			return Integer.parseInt(Colors.STORM_SHOT_COLOR, 16);
-		}
-		return Integer.parseInt(Colors.PURE, 16);
-	}
+    public void setBulletCount(ItemStack ist, int i) {
+        NBTHelper.setShort("bulletCount", ist, i);
+    }
+
+    public int getBulletType(ItemStack ist) {
+        return NBTHelper.getShort("bulletType", ist);
+    }
+
+    public void setBulletType(ItemStack ist, int i) {
+        NBTHelper.setShort("bulletType", ist, i);
+    }
+
+    public int getCooldown(ItemStack ist) {
+        return NBTHelper.getShort("cooldownTime", ist);
+    }
+
+    public void setCooldown(ItemStack ist, int i) {
+        NBTHelper.setShort("cooldownTime", ist, i);
+    }
 
 	@Override
 	public void onUpdate(ItemStack ist, World worldObj, Entity e, int i, boolean flag) {
-		if (NBTHelper.getShort("cooldownTime", ist) > 0) {
-			NBTHelper.setShort("cooldownTime", ist, NBTHelper.getShort("cooldownTime", ist) - 1);
+		if (getCooldown(ist) > 0) {
+			setCooldown(ist, getCooldown(ist) - 1);
 		}
 	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack ist, World worldObj, EntityPlayer player) {
-		if (NBTHelper.getShort("cooldownTime", ist) <= 0) {
-			if (!(NBTHelper.getShort("bulletCount", ist) > 0) && !(NBTHelper.getShort("bulletType", ist) > 0)) {
+		if (getCooldown(ist) <= 0) {
+			if (!(getBulletCount(ist) > 0) && !(getBulletType(ist) > 0)) {
 				player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
 
 			} else {
@@ -118,27 +102,25 @@ public class ItemHandgun extends ItemBase {
 
 	@Override
 	public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
-		//System.out.println("Tick count: " + count);
 		if (!hasFilledMagazine(player)) {
-			NBTHelper.setShort("cooldownTime", ist, 12);
+			setCooldown(ist, 12);
 			// play click!
 			resetReloadDuration(ist);
 			player.stopUsingItem();
 			return;
 		}
 		if (reloadTicks(count) >= calculatePlayerSkillTimer(player) - 1) {
-			NBTHelper.setShort("cooldownTime", ist, 24);
-			NBTHelper.setShort("bulletType", ist, getMagazineTypeAndRemoveOne(player));
-			if (NBTHelper.getShort("bulletType", ist) != 0) {
+            setCooldown(ist, 24);
+			setBulletType(ist, getMagazineTypeAndRemoveOne(player));
+			if (getBulletType(ist) != 0) {
 				player.swingItem();
 				this.spawnEmptyMagazine(player);
-				NBTHelper.setShort("bulletCount", ist, 8);
+				setBulletCount(ist, 8);
 				player.worldObj.playSoundAtEntity(player, Reference.LOAD_SOUND, 0.25F, 1.0F);
 			}
-			if (NBTHelper.getShort("bulletCount", ist) == 0) {
-				NBTHelper.setShort("bulletType", ist, 0);
+			if (getBulletCount(ist) == 0) {
+				setBulletType(ist, 0);
 			}
-			setGunDamageByContents(ist);
 			player.stopUsingItem();
 		}
 	}
@@ -163,8 +145,8 @@ public class ItemHandgun extends ItemBase {
 
 	private void fireBullet(ItemStack ist, World worldObj, EntityPlayer player) {
 		if (!worldObj.isRemote) {
-			NBTHelper.setShort("cooldownTime", ist, 12);
-			switch (NBTHelper.getShort("bulletType", ist)) {
+			setCooldown(ist, 12);
+			switch (getBulletType(ist)) {
 			case 0:
 				return;
 			case 1:
@@ -206,21 +188,16 @@ public class ItemHandgun extends ItemBase {
 			}
 			resetReloadDuration(ist);
 			worldObj.playSoundAtEntity(player, Reference.SHOT_SOUND, 0.2F, 1.2F);
-			NBTHelper.setShort("bulletCount", ist, NBTHelper.getShort("bulletCount", ist) - 1);
-			if (NBTHelper.getShort("bulletCount", ist) == 0) {
-				NBTHelper.setShort("bulletType", ist, 0);
+			setBulletCount(ist, getBulletCount(ist) - 1);
+			if (getBulletCount(ist) == 0) {
+				setBulletType(ist, 0);
 			}
 			spawnCasing(player);
 		}
-		setGunDamageByContents(ist);
 	}
 
 	private void resetReloadDuration(ItemStack ist) {
 		NBTHelper.setShort("reloadDuration", ist, 0);
-	}
-
-	private void setGunDamageByContents(ItemStack ist) {
-		ist.setItemDamage((8 - NBTHelper.getShort("bulletCount", ist) << 5) + NBTHelper.getShort("bulletType", ist));
 	}
 
 	private void spawnEmptyMagazine(EntityPlayer player) {
