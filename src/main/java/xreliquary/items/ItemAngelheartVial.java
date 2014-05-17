@@ -15,7 +15,7 @@ import xreliquary.lib.Reference;
 public class ItemAngelheartVial extends ItemBase {
 
 	public ItemAngelheartVial() {
-		super(Reference.MOD_ID, Names.glowing_water);
+		super(Reference.MOD_ID, Names.angelheart_vial);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);
