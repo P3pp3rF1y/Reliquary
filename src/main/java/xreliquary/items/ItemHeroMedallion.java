@@ -144,18 +144,7 @@ public class ItemHeroMedallion extends ItemBase {
 	public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (world.isRemote)
             return ist;
-        //if we wanted to add some special functionality for sneaking (copied directly from coin)
-        //if (player.isSneaking()) {
-            //player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
-        //} else {
-
-        //if we wanted sound effects. There's none for now.
-        //if (!Reliquary.PROXY.disableCoinAudio) {
-        //    NBTHelper.setShort("soundTimer", ist, 6);
-        //}
         ist.setItemDamage(ist.getItemDamage() == 0 ? 1 : 0);
-        //}
         return ist;
 	}
-
 }
