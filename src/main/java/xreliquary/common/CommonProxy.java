@@ -24,6 +24,7 @@ public class CommonProxy {
 	public int chaliceMultiplier;
 	public int tomeRedstoneLimit;
 	public int handgunHUDPosition;
+    public int heroMedallionLevelThreshold;
     public boolean disableCoinAudio;
 
 	public void preInit() {
@@ -50,7 +51,8 @@ public class CommonProxy {
 	public void initOptions() {
 		disableCoinAudio = Reliquary.CONFIG.get("Misc_Options", "disableCoinAudio", false).getBoolean(Reference.DISABLE_COIN_AUDIO_DEFAULT);
 		chaliceMultiplier = Reliquary.CONFIG.get("Misc_Options", "chaliceMultiplier", 1).getInt(1);
-		tomeRedstoneLimit = Reliquary.CONFIG.get("Misc_Options", "tomeRedstoneLimit", 256).getInt(256);
+        tomeRedstoneLimit = Reliquary.CONFIG.get("Misc_Options", "tomeRedstoneLimit", 256).getInt(256);
+        heroMedallionLevelThreshold = Reliquary.CONFIG.get("Misc_Options", "heroMedallionLevelThreshold", 30).getInt(30);
         handgunHUDPosition = Reliquary.CONFIG.get("Misc_Options", "handgunHUDPosition", 3).getInt(3);
 	}
 

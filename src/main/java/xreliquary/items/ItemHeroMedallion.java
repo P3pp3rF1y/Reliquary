@@ -80,14 +80,14 @@ public class ItemHeroMedallion extends ItemBase {
 		if (e instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer)e;
 			//in order to make this stop at 30, we will need to do a preemptive check for level 30.
-			if (player.experienceLevel < 30) { 
+			if (player.experienceLevel < Reliquary.PROXY.heroMedallionLevelThreshold) {
 				if (getExperience(ist) > 0) {
                     increasePlayerExperience(player);
                     decreaseMedallionExperience(ist);
                 }
 
 			} else {
-				if ((player.experienceLevel > 30 || player.experience > 0F) && getExperience(ist) < Integer.MAX_VALUE){
+				if ((player.experienceLevel > Reliquary.PROXY.heroMedallionLevelThreshold || player.experience > 0F) && getExperience(ist) < Integer.MAX_VALUE){
 					decreasePlayerExperience(player);
                     increaseMedallionExperience(ist);
                 }
@@ -98,7 +98,7 @@ public class ItemHeroMedallion extends ItemBase {
     //I'm not 100% this is needed. You may be able to avoid this whole call by
     //using the method in the player class, might be worth testing (player.addExperience(-1)?)
 	public void decreasePlayerExperience(EntityPlayer player) {
-		if (player.experience - (1.0F / (float)player.xpBarCap()) <= 0 && player.experienceLevel > 30){
+		if (player.experience - (1.0F / (float)player.xpBarCap()) <= 0 && player.experienceLevel > Reliquary.PROXY.heroMedallionLevelThreshold){
 			decreasePlayerLevel(player);
             return;
         }
