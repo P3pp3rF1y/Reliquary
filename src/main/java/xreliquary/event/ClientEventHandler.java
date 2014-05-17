@@ -71,10 +71,18 @@ public class ClientEventHandler {
         int hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
 
         renderItemIntoGUI(minecraft.fontRenderer, handgunStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
-        //renders the number of bullets onto the screen, I hope.
-        for (int xOffset = 0; xOffset < bulletStack.stackSize; xOffset++) {
-            //xOffset * 4 makes the bullets "overlap" one another, -16 moves them to the left by a bit
-            renderItemIntoGUI(minecraft.fontRenderer, bulletStack, hudOverlayX + (xOffset * 4) - 16 , hudOverlayY, overlayOpacity, overlayScale / 2F);
+        //if the gun is empty, displays a blinking empty magazine instead.
+        if (bulletStack.stackSize == 0) {
+            if ((getTime() - 10) % 13 > 7) {
+                //offsets it a little to the left, it looks silly if you put it over the gun.
+                renderItemIntoGUI(minecraft.fontRenderer, new ItemStack(ContentHandler.getItem(Names.magazine), 1, 0), hudOverlayX - 12 , hudOverlayY + 12, 1.0F, overlayScale / 2F);
+            }
+        } else {
+            //renders the number of bullets onto the screen.
+            for (int xOffset = 0; xOffset < bulletStack.stackSize; xOffset++) {
+                //xOffset * 6 makes the bullets line up, -16 moves them all to the left by a bit
+                renderItemIntoGUI(minecraft.fontRenderer, bulletStack, hudOverlayX + (xOffset * 6) - 16 , hudOverlayY + 4, 1.0F, overlayScale / 2F);
+            }
         }
 
         GL11.glDisable(GL11.GL_LIGHTING);

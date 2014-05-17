@@ -152,7 +152,7 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.witherless_rose), 1, 0), new Object[] { "hnh", "nrn", "hnh", 'h', ContentHandler.getItem(Names.glowing_water), 'n', Items.nether_star, 'r', new ItemStack(Blocks.double_plant, 1, 4) });
 
         // cloak
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.twilight_cloak), 1, 0), new Object[] { "pep", "ewe", "epe", 'p', potion(Reference.INVISIBILITY_META), 'e', Items.ender_eye, 'w', new ItemStack(Blocks.wool, 1, 11) });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.twilight_cloak), 1, 0), new Object[] { "pep", "vwv", "epe", 'p', potion(Reference.INVISIBILITY_META), 'v', ContentHandler.getItem(Names.void_tear_empty), 'e', Items.ender_eye, 'w', new ItemStack(Blocks.wool, 1, 11) });
 
         // void tear
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1, 0), new Object[] { "et", "te", 'e', Items.ender_eye, 't', Items.ghast_tear });
@@ -162,6 +162,9 @@ public class XRRecipes {
 
         // phoenix down
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.phoenix_down), 1, 0), new Object[] { "mbm", "vfv", "mbm", 'm', Items.magma_cream, 'v', ContentHandler.getItem(Names.void_tear_empty), 'b', Items.blaze_rod, 'f', ContentHandler.getItem(Names.angelic_feather)});
+
+        // hero medallion
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.hero_medallion), 1), new Object[] { "eie", "ivi", "eie", 'e', Items.ender_eye, 'i', Items.iron_ingot, 'v', ContentHandler.getItem(Names.void_tear_empty) });
 
         // TODO possibly give satchels a damage bar, so these recipes will have
         // to change.
