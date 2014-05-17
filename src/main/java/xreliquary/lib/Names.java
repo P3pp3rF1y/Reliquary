@@ -42,6 +42,8 @@ public class Names {
     public static final String dragon_talon = "dragon_talon";
     public static final String dragon_claws = "dragon_claws";
     public static final String claws_of_the_firedrinker = "claws_of_the_firedrinker";
+    public static final String squid_beak = "squid_beak";
+    public static final String kraken_shell_fragment = "kraken_shell_fragment";
     public static final String kraken_shell = "kraken_shell";
 
     // potion info

@@ -60,4 +60,37 @@ public class Reference {
 	// Misc options for configuration
 	public static final boolean DISABLE_COIN_AUDIO_DEFAULT = false;
 
+    public static final int WHITE_WOOL_META = 0;
+    public static final int ORAGE_WOOL_META = 1;
+    public static final int MAGENTA_WOOL_META = 2;
+    public static final int LIGHT_BLUE_WOOL_META = 3;
+    public static final int YELLOW_WOOL_META = 4;
+    public static final int LIME_WOOL_META = 5;
+    public static final int PINK_WOOL_META = 6;
+    public static final int GRAY_WOOL_META = 7;
+    public static final int LIGHT_GRAY_WOOL_META = 8;
+    public static final int CYAN_WOOL_META = 9;
+    public static final int PURPLE_WOOL_META = 10;
+    public static final int BLUE_WOOL_META = 11;
+    public static final int BROWN_WOOL_META = 12;
+    public static final int GREEN_WOOL_META = 13;
+    public static final int RED_WOOL_META = 14;
+    public static final int BLACK_WOOL_META = 15;
+
+    public static final int WHITE_DYE_META = 15;
+    public static final int ORAGE_DYE_META = 14;
+    public static final int MAGENTA_DYE_META = 13;
+    public static final int LIGHT_BLUE_DYE_META = 12;
+    public static final int YELLOW_DYE_META = 11;
+    public static final int LIME_DYE_META = 10;
+    public static final int PINK_DYE_META = 9;
+    public static final int GRAY_DYE_META = 8;
+    public static final int LIGHT_GRAY_DYE_META = 7;
+    public static final int CYAN_DYE_META = 6;
+    public static final int PURPLE_DYE_META = 5;
+    public static final int BLUE_DYE_META = 4;
+    public static final int BROWN_DYE_META = 3;
+    public static final int GREEN_DYE_META = 2;
+    public static final int RED_DYE_META = 1;
+    public static final int BLACK_DYE_META = 0;
 }

@@ -5,6 +5,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.potion.Potion;
@@ -12,6 +13,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
 import xreliquary.util.ObjectUtils;
@@ -44,6 +47,26 @@ public class CommonEventHandler {
 				}
 		}
 	}
+
+    @SubscribeEvent
+    public void onLivingDrops(LivingDropsEvent event) {
+        Entity e = event.entity;
+        handleSquidCheck(e, event);
+    }
+
+    public void handleSquidCheck(Entity e, LivingDropsEvent event) {
+        if (!(e instanceof EntitySquid)) return;
+        float squidBeakProbability = 0.04F + (0.07F * (float)(event.lootingLevel + 1));
+        if (e.worldObj.rand.nextFloat() <= squidBeakProbability) {
+            if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityPlayer && event.source.damageType.equals("player"))
+            {
+                ItemStack dropStack = new ItemStack(ContentHandler.getItem(Names.squid_beak), 1, 0);
+                EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, dropStack);
+                entityitem.delayBeforeCanPickup = 10;
+                event.drops.add(entityitem);
+            }
+        }
+    }
 
     @SubscribeEvent
     public void onPlayerHurt(LivingHurtEvent event) {
