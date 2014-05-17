@@ -25,6 +25,11 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
+        handleTickIncrement(event);
+        handleHandgunHUDCheck();
+    }
+
+    public void handleTickIncrement(TickEvent.RenderTickEvent event) {
         //handles the color shifting of the twilight cloak, until we can throw it on an animation
         if(event.phase != TickEvent.Phase.END)
             return;
@@ -33,7 +38,9 @@ public class ClientEventHandler {
         } else {
             time++;
         }
+    }
 
+    public void handleHandgunHUDCheck() {
         //handles rendering the hud for the handgun, WIP
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;

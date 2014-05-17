@@ -37,6 +37,12 @@ public class Names {
     public static final String ender_staff = "ender_staff";
     public static final String angelic_feather = "angelic_feather";
     public static final String phoenix_down = "phoenix_down";
+    public static final String crimson_cloth = "crimson_cloth";
+    public static final String angelheart_vial = "angelheart_vial";
+    public static final String dragon_talon = "dragon_talon";
+    public static final String dragon_claws = "dragon_claws";
+    public static final String claws_of_the_firedrinker = "claws_of_the_firedrinker";
+    public static final String kraken_shell = "kraken_shell";
 
     // potion info
 	public static final String condensed_potion = "condensed_potion";

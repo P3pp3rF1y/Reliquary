@@ -25,6 +25,7 @@ public class CommonProxy {
 	public int tomeRedstoneLimit;
 	public int handgunHUDPosition;
     public int heroMedallionLevelThreshold;
+    public int twilightCloakLightThreshold;
     public boolean disableCoinAudio;
 
 	public void preInit() {
@@ -53,6 +54,7 @@ public class CommonProxy {
 		chaliceMultiplier = Reliquary.CONFIG.get("Misc_Options", "chaliceMultiplier", 1).getInt(1);
         tomeRedstoneLimit = Reliquary.CONFIG.get("Misc_Options", "tomeRedstoneLimit", 256).getInt(256);
         heroMedallionLevelThreshold = Reliquary.CONFIG.get("Misc_Options", "heroMedallionLevelThreshold", 30).getInt(30);
+        twilightCloakLightThreshold = Reliquary.CONFIG.get("Misc_Options", "twilightCloakLightThreshold", 4).getInt(4);
         handgunHUDPosition = Reliquary.CONFIG.get("Misc_Options", "handgunHUDPosition", 3).getInt(3);
 	}
 

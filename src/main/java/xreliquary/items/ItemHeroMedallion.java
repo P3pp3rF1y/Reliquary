@@ -72,14 +72,14 @@ public class ItemHeroMedallion extends ItemBase {
 		this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getShort("experience", stack))), stack, list);
 	}
 
-    //this drains experience beyond level thirty
+    //this drains experience beyond level specified in configs
 	@Override
 	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
         //1 for on, 0 for off. Pretty straightforward.
         if (ist.getItemDamage() == 0) return;
 		if (e instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer)e;
-			//in order to make this stop at 30, we will need to do a preemptive check for level 30.
+			//in order to make this stop at a specific leve, we will need to do a preemptive check for a specific leve.
 			if (player.experienceLevel < Reliquary.PROXY.heroMedallionLevelThreshold) {
 				if (getExperience(ist) > 0) {
                     increasePlayerExperience(player);
