@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import xreliquary.Reliquary;
 import xreliquary.init.ContentHandler;
 import xreliquary.items.ItemHandgun;
 import xreliquary.lib.Names;
@@ -67,15 +68,47 @@ public class ClientEventHandler {
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         GL11.glEnable(GL11.GL_LIGHTING);
 
-        int hudOverlayX = (int) (sr.getScaledWidth() - 16 * overlayScale);
-        int hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
+        int hudOverlayX = 0;
+        int hudOverlayY = 0;
+
+        switch (Reliquary.PROXY.handgunHUDPosition)
+        {
+            case 0:
+            {
+                hudOverlayX = 0;
+                hudOverlayY = 0;
+                break;
+            }
+            case 1:
+            {
+                hudOverlayX = (int) (sr.getScaledWidth() - 16 * overlayScale);
+                hudOverlayY = 0;
+                break;
+            }
+            case 2:
+            {
+                hudOverlayX = 0;
+                hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
+                break;
+            }
+            case 3:
+            {
+                hudOverlayX = (int) (sr.getScaledWidth() - 16 * overlayScale);
+                hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
 
         renderItemIntoGUI(minecraft.fontRenderer, handgunStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
         //if the gun is empty, displays a blinking empty magazine instead.
         if (bulletStack.stackSize == 0) {
             if ((getTime() - 10) % 13 > 7) {
                 //offsets it a little to the left, it looks silly if you put it over the gun.
-                renderItemIntoGUI(minecraft.fontRenderer, new ItemStack(ContentHandler.getItem(Names.magazine), 1, 0), hudOverlayX - 12 , hudOverlayY + 12, 1.0F, overlayScale / 2F);
+                renderItemIntoGUI(minecraft.fontRenderer, new ItemStack(ContentHandler.getItem(Names.magazine), 1, 0), hudOverlayX - 8 , hudOverlayY + 12, 1.0F, overlayScale / 2F);
             }
         } else {
             //renders the number of bullets onto the screen.

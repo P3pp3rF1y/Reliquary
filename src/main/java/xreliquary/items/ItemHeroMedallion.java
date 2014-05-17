@@ -87,7 +87,7 @@ public class ItemHeroMedallion extends ItemBase {
                 }
 
 			} else {
-				if (player.experienceTotal > 0 && getExperience(ist) < Integer.MAX_VALUE){
+				if ((player.experienceLevel > 30 || player.experience > 0F) && getExperience(ist) < Integer.MAX_VALUE){
 					decreasePlayerExperience(player);
                     increaseMedallionExperience(ist);
                 }
@@ -98,7 +98,7 @@ public class ItemHeroMedallion extends ItemBase {
     //I'm not 100% this is needed. You may be able to avoid this whole call by
     //using the method in the player class, might be worth testing (player.addExperience(-1)?)
 	public void decreasePlayerExperience(EntityPlayer player) {
-		if (player.experience == 0 && player.experienceLevel > 30){
+		if (player.experience - (1.0F / (float)player.xpBarCap()) <= 0 && player.experienceLevel > 30){
 			decreasePlayerLevel(player);
             return;
         }
@@ -111,8 +111,9 @@ public class ItemHeroMedallion extends ItemBase {
     }
 	
 	public void decreasePlayerLevel(EntityPlayer player) {
+        player.experience = 1.0F - (1.0F / (float)player.xpBarCap());
+        player.experienceTotal -= 1;
 		player.experienceLevel -= 1;
-		player.experience = 1.0F - (1.0F / (float)player.xpBarCap());
 	}
 	
 	public void increasePlayerExperience(EntityPlayer player) {
