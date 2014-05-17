@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
@@ -29,16 +30,28 @@ public class ItemHeroMedallion extends ItemBase {
 		this.setMaxStackSize(1);
 		canRepair = false;
 	}
-	
-	@Override
-	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getShort("experience", stack))), stack, list);
-	}
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public EnumRarity getRarity(ItemStack stack) {
+        return EnumRarity.epic;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean hasEffect(ItemStack stack) {
+        return stack.getItemDamage() == 1;
+    }
 
     @SideOnly(Side.CLIENT)
     private IIcon iconOverlay;
 
-    //next two methods are an imitation of the coin of fortune, similar On/Off effects on the two "coins"
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean requiresMultipleRenderPasses() {
+        return true;
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister) {
@@ -53,21 +66,11 @@ public class ItemHeroMedallion extends ItemBase {
         else
             return iconOverlay;
     }
-
-	// below is an excerpt of the player class to show some of the formulas involved.
-//	public void addExperience(int par1)    {	
-		//simply prevents the value being added to experience from exceeding the int cap
-//        int j = Integer.MAX_VALUE - this.experienceTotal;
-//        if (par1 > j) par1 = j;
-		//here is where the experience bar is increased, as a fraction of the bar.
-//        this.experience += (float)par1 / (float)this.xpBarCap();  //xpBarCap is a really weird formula
-		//if experience >= 1.0, it means the bar is full
-		//it would be extremely unusual for this to fire twice, but I guess it's theoretically possible
-//        for (this.experienceTotal += par1; this.experience >= 1.0F; this.experience /= (float)this.xpBarCap()) {
-//            this.experience = (this.experience - 1.0F) * (float)this.xpBarCap();
-//            this.addExperienceLevel(1);
-//        }
-//    }
+	
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+		this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getShort("experience", stack))), stack, list);
+	}
 
     //this drains experience beyond level thirty
 	@Override
@@ -129,8 +132,8 @@ public class ItemHeroMedallion extends ItemBase {
 		ensureTagCompound(stack);
 		stack.stackTagCompound.setInteger("experience", i);
 	}
-	
-	public void ensureTagCompound(ItemStack stack) {
+
+    public void ensureTagCompound(ItemStack stack) {
 		if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
 		//may be unnecessary. Not sure, but I think trying to grab unavailable keys defaults to 0.
 		if (!stack.stackTagCompound.hasKey("experience")) stack.stackTagCompound.setInteger("experience", 0);
