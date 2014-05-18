@@ -39,9 +39,9 @@ public class EntityCondensedSplashRuin extends EntityThrownPotion {
 
     @Override
     void doLivingSplashEffect(EntityLiving e) {
-        e.addPotionEffect(new PotionEffect(Potion.weakness.id, 1200, 0));
-        e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 1200, 0));
-        e.addPotionEffect(new PotionEffect(Potion.poison.id, 1200, 0));
+        e.addPotionEffect(new PotionEffect(Potion.weakness.id, 900, 1));
+        e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 900, 1));
+        e.addPotionEffect(new PotionEffect(Potion.poison.id, 900, 1));
     }
 
     @Override

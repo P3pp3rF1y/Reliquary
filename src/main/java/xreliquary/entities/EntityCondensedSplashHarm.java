@@ -37,7 +37,7 @@ public class EntityCondensedSplashHarm extends EntityThrownPotion {
 
     @Override
     void doLivingSplashEffect(EntityLiving e) {
-        e.attackEntityFrom(DamageSource.magic, 12);
+        e.attackEntityFrom(DamageSource.magic, 8);
     }
 
     @Override

@@ -51,7 +51,8 @@ public class Reference {
 	public static final int POTENCE_META = 25;
 	public static final int CELERITY_META = 26;
 	public static final int PANACEA_META = 27;
-	public static final int WATER_META = 28;
+    public static final int STALKER_META = 28;
+    public static final int WATER_META = 29;
 
 	public static final String LOAD_SOUND = Reference.MOD_ID + ":xload";
 	public static final String SHOT_SOUND = Reference.MOD_ID + ":xshot";

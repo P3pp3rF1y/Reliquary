@@ -45,6 +45,7 @@ public class Names {
     public static final String squid_beak = "squid_beak";
     public static final String kraken_shell_fragment = "kraken_shell_fragment";
     public static final String kraken_shell = "kraken_shell";
+    public static final String elsewhere_flask = "elsewhere_flask";
 
     // potion info
 	public static final String condensed_potion = "condensed_potion";

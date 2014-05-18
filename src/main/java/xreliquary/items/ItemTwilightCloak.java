@@ -87,7 +87,7 @@ public class ItemTwilightCloak extends ItemBase {
 		EntityPlayer player = (EntityPlayer) e;
         //always on for now, takes effect only at night, or low light (configurable)
         //if (ist.getItemDamage() == 0) return;
-        if (world.getWorldTime() % 24000 < 12000 && player.worldObj.getLightBrightness((int)Math.floor(player.posX), (int)Math.floor(player.posY), (int)Math.floor(player.posZ)) <= Reliquary.PROXY.twilightCloakLightThreshold) return;
+        if (world.getWorldTime() % 24000 < 12000 && player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int)Math.floor(player.posY), (int)Math.floor(player.posZ)) > Reliquary.PROXY.twilightCloakLightThreshold) return;
         //checks if the effect would do anything.
         PotionEffect invisForFiveTicks = new PotionEffect(Potion.invisibility.id, 5, 0);
         if (!player.isPotionApplicable(invisForFiveTicks)) return;

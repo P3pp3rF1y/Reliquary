@@ -49,7 +49,7 @@ public class EntityCondensedSplashConfusion extends EntityThrownPotion {
 
     @Override
     void doLivingSplashEffect(EntityLiving e) {
-        e.addPotionEffect(new PotionEffect(Potion.confusion.id, 60, 0));
+        e.addPotionEffect(new PotionEffect(Potion.confusion.id, 900, 0));
     }
 
     @Override

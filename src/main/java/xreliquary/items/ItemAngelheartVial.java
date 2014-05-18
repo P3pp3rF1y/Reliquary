@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityGlowingWater;
+import xreliquary.init.ContentHandler;
 import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -28,5 +29,15 @@ public class ItemAngelheartVial extends ItemBase {
         return true;
     }
 
+    @Override
+    public ItemStack getContainerItem(ItemStack ist) {
+        return new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META);
+    }
+
+    //returns an empty vial when used in crafting recipes.
+    @Override
+    public boolean hasContainerItem(ItemStack ist) {
+        return true;
+    }
     //event driven item, see client events.
 }

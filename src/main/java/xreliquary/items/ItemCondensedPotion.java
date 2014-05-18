@@ -28,6 +28,7 @@ import xreliquary.entities.EntityCondensedSplashSlowness;
 import xreliquary.entities.EntityCondensedSplashWeakness;
 import xreliquary.entities.EntityCondensedSplashWither;
 import xreliquary.event.ClientEventHandler;
+import xreliquary.init.ContentHandler;
 import xreliquary.init.XRInit;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
@@ -46,6 +47,18 @@ public class ItemCondensedPotion extends ItemBase {
 		this.setHasSubtypes(true);
 		canRepair = false;
 	}
+
+
+    @Override
+    public ItemStack getContainerItem(ItemStack ist) {
+        return new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META);
+    }
+
+    //returns an empty vial when used in crafting recipes, unless it's one of the base potion types.
+    @Override
+    public boolean hasContainerItem(ItemStack ist) {
+        return (ist.getItemDamage() != Reference.POTION_META && ist.getItemDamage() != Reference.SPLASH_META && ist.getItemDamage() != Reference.EMPTY_VIAL_META);
+    }
 
 	public int emptyVialMeta() {
 		return Reference.EMPTY_VIAL_META;
@@ -144,6 +157,7 @@ public class ItemCondensedPotion extends ItemBase {
 		par3List.add(new ItemStack(par1, 1, 26));
 		par3List.add(new ItemStack(par1, 1, 27));
 		par3List.add(new ItemStack(par1, 1, 28));
+        par3List.add(new ItemStack(par1, 1, 29));
 	}
 
 	@Override
@@ -154,12 +168,8 @@ public class ItemCondensedPotion extends ItemBase {
 			--ist.stackSize;
 		}
 		if (!world.isRemote) {
-			PotionEffect effects[] = new PotionEffect[2];
-			effects = getPotionEffects(ist);
-			for (PotionEffect effect : effects) {
-				if (effect == null) {
-					continue;
-				}
+			for (PotionEffect effect : getPotionEffects(ist)) {
+				if (effect == null) continue;
 				player.addPotionEffect(effect);
 			}
 			if (isPanacea(ist)) {
@@ -215,41 +225,41 @@ public class ItemCondensedPotion extends ItemBase {
 		int potion = ist.getItemDamage();
 		switch (potion) {
 		case Reference.SPEED_META:
-			effects[0] = new PotionEffect(Potion.moveSpeed.id, 6000, 1);
+			effects[0] = new PotionEffect(Potion.moveSpeed.id, 3600, 1);
 			break;
 		case Reference.DIGGING_META:
-			effects[0] = new PotionEffect(Potion.digSpeed.id, 6000, 1);
+			effects[0] = new PotionEffect(Potion.digSpeed.id, 3600, 1);
 			break;
 		case Reference.STRENGTH_META:
-			effects[0] = new PotionEffect(Potion.damageBoost.id, 6000, 1);
+			effects[0] = new PotionEffect(Potion.damageBoost.id, 3600, 1);
 			break;
 		case Reference.HEALING_META:
-			effects[0] = new PotionEffect(Potion.heal.id, 12, 0);
+			effects[0] = new PotionEffect(Potion.heal.id, 0, 1);
 			break;
 		case Reference.BOUNDING_META:
-			effects[0] = new PotionEffect(Potion.jump.id, 6000, 1);
+			effects[0] = new PotionEffect(Potion.jump.id, 3600, 1);
 			break;
 		case Reference.REGENERATION_META:
-			effects[0] = new PotionEffect(Potion.regeneration.id, 1200, 1);
+			effects[0] = new PotionEffect(Potion.regeneration.id, 900, 1);
 			break;
 		case Reference.RESISTANCE_META:
-			effects[0] = new PotionEffect(Potion.resistance.id, 6000, 0);
+			effects[0] = new PotionEffect(Potion.resistance.id, 3600, 0);
 			break;
 		case Reference.FIRE_WARDING_META:
-			effects[0] = new PotionEffect(Potion.fireResistance.id, 6000, 0);
+			effects[0] = new PotionEffect(Potion.fireResistance.id, 3600, 0);
 			break;
 		case Reference.BREATHING_META:
-			effects[0] = new PotionEffect(Potion.waterBreathing.id, 6000, 0);
+			effects[0] = new PotionEffect(Potion.waterBreathing.id, 3600, 0);
 			break;
 		case Reference.INVISIBILITY_META:
-			effects[0] = new PotionEffect(Potion.invisibility.id, 6000, 0);
+			effects[0] = new PotionEffect(Potion.invisibility.id, 3600, 0);
 			break;
 		case Reference.INFRAVISION_META:
-			effects[0] = new PotionEffect(Potion.nightVision.id, 6000, 0);
+			effects[0] = new PotionEffect(Potion.nightVision.id, 3600, 0);
 			break;
 		case Reference.PROTECTION_META:
 			effects[0] = new PotionEffect(Potion.resistance.id, 3600, 1);
-			effects[1] = new PotionEffect(Potion.fireResistance.id, 3600, 1);
+			effects[1] = new PotionEffect(Potion.fireResistance.id, 3600, 0);
 			break;
 		case Reference.POTENCE_META:
 			effects[0] = new PotionEffect(Potion.damageBoost.id, 3600, 1);
@@ -260,9 +270,13 @@ public class ItemCondensedPotion extends ItemBase {
 			effects[1] = new PotionEffect(Potion.moveSpeed.id, 3600, 1);
 			break;
 		case Reference.PANACEA_META:
-			effects[0] = new PotionEffect(Potion.heal.id, 6, 0);
-			effects[1] = new PotionEffect(Potion.regeneration.id, 600, 1);
+			effects[0] = new PotionEffect(Potion.heal.id, 0, 1);
+			effects[1] = new PotionEffect(Potion.regeneration.id, 900, 1);
 			break;
+        case Reference.STALKER_META:
+            effects[0] = new PotionEffect(Potion.nightVision.id, 3600, 0);
+            effects[1] = new PotionEffect(Potion.nightVision.id, 3600, 0);
+            break;
 		}
 		return effects;
 	}
@@ -319,9 +333,9 @@ public class ItemCondensedPotion extends ItemBase {
 	}
 
 	public int getColor(ItemStack itemStack) {
-		String red = "";
-		String green = "";
-		String blue = "";
+		String red;
+		String green;
+		String blue;
 		int timeFactor = ClientEventHandler.getTime();
 		if (timeFactor > 43) {
 			timeFactor = 87 - timeFactor;
@@ -373,6 +387,8 @@ public class ItemCondensedPotion extends ItemBase {
 			green = "00";
 			blue = "FF";
 			return Integer.parseInt(String.format("%s%s%s", red, green, blue), 16);
+        case Reference.STALKER_META:
+            return Integer.parseInt(Colors.STALKER_COLOR, 16);
 		case Reference.APHRODITE_META:
 			return Integer.parseInt(Colors.APHRODITE_COLOR, 16);
 		case Reference.POISON_META:

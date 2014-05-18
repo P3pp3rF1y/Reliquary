@@ -49,7 +49,7 @@ public class EntityCondensedSplashSlowness extends EntityThrownPotion {
 
     @Override
     void doLivingSplashEffect(EntityLiving e) {
-        e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 1200, 0));
+        e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 900, 1));
     }
 
     @Override

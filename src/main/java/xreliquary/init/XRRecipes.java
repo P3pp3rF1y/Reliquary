@@ -140,10 +140,10 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.emperor_chalice), 1, 0), new Object[] { "gtg", "ege", "tgt", 't', Items.ghast_tear, 'e', Items.emerald, 'g', Items.gold_ingot });
 
         // salamander's eye
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.salamander_eye), 1, 0), new Object[] { "bcb", "tet", "bcb", 'b', Items.blaze_rod, 'c', Items.magma_cream, 't', Items.ghast_tear, 'e', Items.ender_eye });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.salamander_eye), 1), new Object[] { "bcb", "tet", "bcb", 'b', Items.blaze_rod, 'c', Items.magma_cream, 't', Items.ghast_tear, 'e', Items.ender_eye });
 
         // wraith's eye upgrade
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.wraith_eye), 1, 0), new Object[] { "eee", "bsb", "eee", 'e', ContentHandler.getItem(Names.void_tear_empty), 's', ContentHandler.getItem(Names.salamander_eye), 'b', Blocks.emerald_block });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.wraith_eye), 1), new Object[] { "eee", "bsb", "eee", 'e', ContentHandler.getItem(Names.void_tear_empty), 's', ContentHandler.getItem(Names.salamander_eye), 'b', Blocks.emerald_block });
 
         // ice rod
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.ice_magus_rod), 1, 0), new Object[] { "dtd", "tpt", "tpt", 'd', Items.diamond, 't', Items.ghast_tear, 'p', Blocks.packed_ice});
@@ -152,31 +152,31 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.magicbane), 1, 0), new Object[] { "eee", "ege", "iee", 'e', Items.ender_eye, 'g', Items.gold_ingot, 'i', Items.iron_ingot });
 
         // rose
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.witherless_rose), 1, 0), new Object[] { "hnh", "nrn", "hnh", 'h', ContentHandler.getItem(Names.glowing_water), 'n', Items.nether_star, 'r', new ItemStack(Blocks.double_plant, 1, 4) });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.witherless_rose), 1), new Object[] { "hnh", "nrn", "hnh", 'h', ContentHandler.getItem(Names.glowing_water), 'n', Items.nether_star, 'r', new ItemStack(Blocks.double_plant, 1, 4) });
 
         // crimson cloth
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.crimson_cloth), 1, 0), new Object[] { "prp", "bdb", "prp", 'p', potion(Reference.INVISIBILITY_META), 'r', new ItemStack(Blocks.wool, 1, Reference.RED_WOOL_META), 'b', new ItemStack(Blocks.wool, 1, Reference.BLACK_WOOL_META), 'd', potion(Reference.BLINDING_META) });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.crimson_cloth), 1), new Object[] { "prp", "bdb", "prp", 'p', potion(Reference.INVISIBILITY_META), 'r', new ItemStack(Blocks.wool, 1, Reference.RED_WOOL_META), 'b', new ItemStack(Blocks.wool, 1, Reference.BLACK_WOOL_META), 'd', potion(Reference.BLINDING_META) });
 
         // cloak
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.twilight_cloak), 1, 0), new Object[] { "bcb", "cvc", "cbc", 'b', new ItemStack(Blocks.wool, Reference.BLACK_WOOL_META), 'c', ContentHandler.getItem(Names.crimson_cloth), 'v', ContentHandler.getItem(Names.void_tear_empty) });
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.twilight_cloak), 1), new Object[] { "bcb", "cvc", "cbc", 'b', new ItemStack(Blocks.wool, 1, Reference.BLACK_WOOL_META), 'c', ContentHandler.getItem(Names.crimson_cloth), 'v', ContentHandler.getItem(Names.void_tear_empty) });
 
         // void tear
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1, 0), new Object[] { "et", "te", 'e', Items.ender_eye, 't', Items.ghast_tear });
 
         // angelic feather
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.angelic_feather), 1, 0), new Object[] { "aja", "vfv", "aja", 'a', ContentHandler.getItem(Names.angelheart_vial), 'v', ContentHandler.getItem(Names.void_tear_empty), 'f', Items.feather, 'j', potion(Reference.BOUNDING_META)});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.angelic_feather), 1), new Object[] { "aja", "vfv", "aja", 'a', ContentHandler.getItem(Names.angelheart_vial), 'v', ContentHandler.getItem(Names.void_tear_empty), 'f', Items.feather, 'j', potion(Reference.BOUNDING_META)});
 
         // phoenix down
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.phoenix_down), 1, 0), new Object[] { "ama", "mfm", "ama", 'm', Items.magma_cream, 'a', ContentHandler.getItem(Names.angelheart_vial), 'f', ContentHandler.getItem(Names.angelic_feather)});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.phoenix_down), 1), new Object[] { "ama", "mfm", "ama", 'm', Items.magma_cream, 'a', ContentHandler.getItem(Names.angelheart_vial), 'f', ContentHandler.getItem(Names.angelic_feather)});
 
         // dragon talon
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.dragon_talon), 1, 0), new Object[] { "flf", "lvl", "flf", 'f', potion(Reference.FIRE_WARDING_META), 'l', Items.leather, 'v', ContentHandler.getItem(Names.void_tear_empty)});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.dragon_talon), 1), new Object[] { "flf", "lvl", "flf", 'f', potion(Reference.FIRE_WARDING_META), 'l', Items.leather, 'v', ContentHandler.getItem(Names.void_tear_empty)});
 
         // dragon claws
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.dragon_claws), 1, 0), new Object[] { "cmc", "cvc", "mcm", 'c', ContentHandler.getItem(Names.dragon_talon), 'm', Items.magma_cream, 'v', ContentHandler.getItem(Names.void_tear_empty)});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.dragon_claws), 1), new Object[] { "cmc", "cvc", "mcm", 'c', ContentHandler.getItem(Names.dragon_talon), 'm', Items.magma_cream, 'v', ContentHandler.getItem(Names.void_tear_empty)});
 
         // claws of the firedrinker
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.claws_of_the_firedrinker), 1, 0), new Object[] { "cmc", "mem", "cmc", 'c', ContentHandler.getItem(Names.dragon_claws), 'm', Items.magma_cream, 'e', ContentHandler.getItem(Names.salamander_eye)});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.claws_of_the_firedrinker), 1), new Object[] { "cmc", "mem", "cmc", 'c', ContentHandler.getItem(Names.dragon_claws), 'm', Items.magma_cream, 'e', ContentHandler.getItem(Names.salamander_eye)});
 
         // squid beak to bonemeal
         GameRegistry.addShapelessRecipe(new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META), new Object[] { ContentHandler.getItem(Names.squid_beak) });
@@ -205,10 +205,11 @@ public class XRRecipes {
         GameRegistry.addRecipe(potion(5, Reference.EMPTY_VIAL_META), new Object[]{"g g", "g g", " g ", 'g', Blocks.glass_pane});
 
         // base solvent
-        GameRegistry.addShapelessRecipe(potion(Reference.POTION_META), new Object[] { Items.nether_wart, Items.redstone, Items.glowstone_dust, potion(Reference.WATER_META) });
+        GameRegistry.addShapelessRecipe(potion(Reference.POTION_META), new Object[] { Items.nether_wart, potion(Reference.WATER_META) });
 
         // base splash solvent
-        GameRegistry.addShapelessRecipe(potion(Reference.SPLASH_META), new Object[] { Items.nether_wart, Items.gunpowder, Items.glowstone_dust, potion(Reference.WATER_META) });
+        GameRegistry.addShapelessRecipe(potion(Reference.SPLASH_META), new Object[] { Items.nether_wart, Items.gunpowder, potion(Reference.WATER_META) });
+        GameRegistry.addShapelessRecipe(potion(Reference.SPLASH_META), new Object[] { potion(Reference.POTION_META), Items.gunpowder});
 
         // glowing water
         GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.glowing_water), 1), new Object[] { potion(Reference.SPLASH_META), Items.glowstone_dust, Items.glowstone_dust, Items.glowstone_dust });
@@ -226,40 +227,43 @@ public class XRRecipes {
         GameRegistry.addShapelessRecipe(potion(Reference.STRENGTH_META), new Object[] { potion(Reference.POTION_META), Items.blaze_powder, Items.redstone, Items.glowstone_dust });
 
         // heal potion
-        GameRegistry.addShapelessRecipe(potion(Reference.HEALING_META), new Object[] { potion(Reference.POTION_META), Items.speckled_melon, Items.glowstone_dust, Items.glowstone_dust });
+        GameRegistry.addShapelessRecipe(potion(Reference.HEALING_META), new Object[] { potion(Reference.POTION_META), Items.speckled_melon, Items.glowstone_dust});
 
         // jump potion
         GameRegistry.addShapelessRecipe(potion(Reference.BOUNDING_META), new Object[] { potion(Reference.POTION_META), Items.feather, Items.redstone, Items.glowstone_dust });
 
         // regen potion
-        GameRegistry.addShapelessRecipe(potion(Reference.REGENERATION_META), new Object[] { potion(Reference.POTION_META), Items.ghast_tear, Items.redstone, Items.redstone });
+        GameRegistry.addShapelessRecipe(potion(Reference.REGENERATION_META), new Object[] { potion(Reference.POTION_META), Items.ghast_tear, Items.redstone, Items.glowstone_dust });
 
         // resist potion
-        GameRegistry.addShapelessRecipe(potion(Reference.RESISTANCE_META), new Object[] { potion(Reference.POTION_META), Items.leather, Items.redstone, Items.redstone });
+        GameRegistry.addShapelessRecipe(potion(Reference.RESISTANCE_META), new Object[] { potion(Reference.POTION_META), Items.leather, Items.redstone, Items.glowstone_dust });
 
         // fire resist potion
-        GameRegistry.addShapelessRecipe(potion(Reference.FIRE_WARDING_META), new Object[] { potion(Reference.POTION_META), Items.magma_cream, Items.redstone, Items.redstone });
+        GameRegistry.addShapelessRecipe(potion(Reference.FIRE_WARDING_META), new Object[] { potion(Reference.POTION_META), Items.magma_cream, Items.redstone });
 
         // breathing potion
-        GameRegistry.addShapelessRecipe(potion(Reference.BREATHING_META), new Object[] { potion(Reference.POTION_META), new ItemStack(Items.dye, 1, 0), Items.redstone, Items.redstone });
+        GameRegistry.addShapelessRecipe(potion(Reference.BREATHING_META), new Object[] { potion(Reference.POTION_META), new ItemStack(Items.dye, 1, 0), Items.redstone });
 
         // invis potion
-        GameRegistry.addShapelessRecipe(potion(Reference.INVISIBILITY_META), new Object[] { potion(Reference.INFRAVISION_META), Items.fermented_spider_eye, Items.redstone, Items.redstone });
+        GameRegistry.addShapelessRecipe(potion(Reference.INVISIBILITY_META), new Object[] { potion(Reference.INFRAVISION_META), Items.fermented_spider_eye, Items.redstone });
 
         // vision potion
-        GameRegistry.addShapelessRecipe(potion(Reference.INFRAVISION_META), new Object[] { potion(Reference.POTION_META), Items.golden_carrot, Items.redstone, Items.redstone });
+        GameRegistry.addShapelessRecipe(potion(Reference.INFRAVISION_META), new Object[] { potion(Reference.POTION_META), Items.golden_carrot, Items.redstone });
 
         // protection potion
-        GameRegistry.addShapelessRecipe(potion(8, Reference.PROTECTION_META), new Object[] { potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), Items.glowstone_dust, potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META) });
+        GameRegistry.addShapelessRecipe(potion(4, Reference.PROTECTION_META), new Object[] { potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), Items.glowstone_dust, potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META) });
 
         // potency potion
-        GameRegistry.addShapelessRecipe(potion(8, Reference.POTENCE_META), new Object[] { potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), Items.glowstone_dust, potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META) });
+        GameRegistry.addShapelessRecipe(potion(4, Reference.POTENCE_META), new Object[] { potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), Items.glowstone_dust, potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META) });
 
         // celerity potion
-        GameRegistry.addShapelessRecipe(potion(8, Reference.CELERITY_META), new Object[] { potion(Reference.DIGGING_META), potion(Reference.DIGGING_META), potion(Reference.DIGGING_META), potion(Reference.DIGGING_META), Items.glowstone_dust, potion(Reference.SPEED_META), potion(Reference.SPEED_META), potion(Reference.SPEED_META), potion(Reference.SPEED_META) });
+        GameRegistry.addShapelessRecipe(potion(4, Reference.CELERITY_META), new Object[] { potion(Reference.DIGGING_META), potion(Reference.DIGGING_META), potion(Reference.DIGGING_META), potion(Reference.DIGGING_META), Items.glowstone_dust, potion(Reference.SPEED_META), potion(Reference.SPEED_META), potion(Reference.SPEED_META), potion(Reference.SPEED_META) });
+
+        // stalker potion
+        GameRegistry.addShapelessRecipe(potion(Reference.STALKER_META), new Object[] { potion(Reference.INFRAVISION_META), potion(Reference.INFRAVISION_META), potion(Reference.INFRAVISION_META), potion(Reference.INFRAVISION_META), Items.glowstone_dust, potion(Reference.INVISIBILITY_META), potion(Reference.INVISIBILITY_META), potion(Reference.INVISIBILITY_META), potion(Reference.INVISIBILITY_META)});
 
         // panacea potion
-        GameRegistry.addShapelessRecipe(potion(8, Reference.PANACEA_META), new Object[] { potion(Reference.HEALING_META), potion(Reference.HEALING_META), potion(Reference.HEALING_META), potion(Reference.HEALING_META), Items.milk_bucket, potion(Reference.REGENERATION_META), potion(Reference.REGENERATION_META), potion(Reference.REGENERATION_META), potion(Reference.REGENERATION_META) });
+        GameRegistry.addShapelessRecipe(potion(4, Reference.PANACEA_META), new Object[] { potion(Reference.HEALING_META), potion(Reference.HEALING_META), potion(Reference.HEALING_META), potion(Reference.HEALING_META), Items.milk_bucket, potion(Reference.REGENERATION_META), potion(Reference.REGENERATION_META), potion(Reference.REGENERATION_META), potion(Reference.REGENERATION_META) });
 
         // aphrodite
         GameRegistry.addShapelessRecipe(potion(Reference.APHRODITE_META), new Object[] { potion(Reference.SPLASH_META), new ItemStack(Items.dye, 1, 3), new ItemStack(Items.dye, 1, 1), Items.redstone });

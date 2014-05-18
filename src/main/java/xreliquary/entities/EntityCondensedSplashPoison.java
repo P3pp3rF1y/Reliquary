@@ -38,7 +38,7 @@ public class EntityCondensedSplashPoison extends EntityThrownPotion {
 
     @Override
     void doLivingSplashEffect(EntityLiving e) {
-        e.addPotionEffect(new PotionEffect(Potion.poison.id, 1200, 0));
+        e.addPotionEffect(new PotionEffect(Potion.poison.id, 900, 1));
     }
 
     @Override

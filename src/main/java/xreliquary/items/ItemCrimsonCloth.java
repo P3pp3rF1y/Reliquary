@@ -4,12 +4,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.ItemStack;
 import xreliquary.Reliquary;
+import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
-/**
- * Created by Tony on 5/17/14.
- */
+@XRInit
 public class ItemCrimsonCloth extends ItemBase {
     public ItemCrimsonCloth() {
         super(Reference.MOD_ID, Names.crimson_cloth);
