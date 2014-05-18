@@ -110,7 +110,7 @@ item.kraken_shell.tooltip=Improves your mobility;when in water.;Absorb drowning 
 item.angelheart_vial.name=Angelheart Vial
 item.angelheart_vial.tooltip=Resurrects you once;and breaks.
 item.elsewhere_flask.name=Elsewhere Flask
-item.elsewhere_flask.tooltip=Potions encased will mingle. Contains:
+item.elsewhere_flask.tooltip=Imbibe potions within it simultaneously.{{ contents }}
 
 tile.altar_idle.name=Altar of Light
 tile.altar.name=Altar of Light
@@ -178,3 +178,15 @@ item.potion_26.tooltip=Speed and jump boost;for 3 minutes.
 item.potion_27.tooltip=Heal, regenerate and;cure any ailment.
 item.potion_28.tooltip=Lets you take;to the shadows.
 item.potion_29.tooltip=It's a vial of;plain ol' water.
+
+potion.haste.name=Dig
+potion.leaping.name=Jump
+potion.strength.name=Power
+potion.movespeed.name=Speed
+potion.nightvision.name=Vision
+potion.invisibility.name=Vanish
+potion.heal.name=Heal
+potion.regeneration.name=Regen
+potion.resistance.name=Armor
+potion.fireresistance.name=Fireproof
+potion.milk.name=Cure

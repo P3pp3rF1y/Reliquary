@@ -54,6 +54,21 @@ public class Reference {
     public static final int STALKER_META = 28;
     public static final int WATER_META = 29;
 
+    // these are the names that point the Elsewhere Flask to the proper localization names in the lang files.
+    //they don't perfectly line up with what I've called them throughout the mod (in code/in localizations)
+    //I may line them all up later. Most of them are obvious.
+    public static final String HASTE_POTION_SHORTHAND = "haste";
+    public static final String JUMP_POTION_SHORTHAND = "leaping";
+    public static final String STRENGTH_POTION_SHORTHAND = "strength";
+    public static final String MOVESPEED_POTION_SHORTHAND = "movespeed";
+    public static final String NIGHTVISION_POTION_SHORTHAND = "nightvision";
+    public static final String INVISIBILITY_POTION_SHORTHAND = "invisibility";
+    public static final String HEAL_POTION_SHORTHAND = "heal";
+    public static final String REGENERATION_POTION_SHORTHAND = "regeneration";
+    public static final String RESISTANCE_POTION_SHORTHAND = "resistance";
+    public static final String FIRE_RESISTANCE_POTION_SHORTHAND = "fireresistance";
+    public static final String MILK_POTION_SHORTHAND = "milk";
+
 	public static final String LOAD_SOUND = Reference.MOD_ID + ":xload";
 	public static final String SHOT_SOUND = Reference.MOD_ID + ":xshot";
 	public static final String BOOK_SOUND = Reference.MOD_ID + ":book";
