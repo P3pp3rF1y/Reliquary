@@ -89,7 +89,7 @@ public class ItemTwilightCloak extends ItemBase {
         //if (ist.getItemDamage() == 0) return;
         if (world.getWorldTime() % 24000 < 12000 && player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int)Math.floor(player.posY), (int)Math.floor(player.posZ)) > Reliquary.PROXY.twilightCloakLightThreshold) return;
         //checks if the effect would do anything.
-        PotionEffect invisForFiveTicks = new PotionEffect(Potion.invisibility.id, 5, 0, true);
+        PotionEffect invisForFiveTicks = new PotionEffect(Potion.invisibility.id, 1, 0, true);
         if (!player.isPotionApplicable(invisForFiveTicks)) return;
         player.addPotionEffect(invisForFiveTicks);
 	}
