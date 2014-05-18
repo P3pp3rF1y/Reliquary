@@ -1,6 +1,6 @@
 itemGroup.xreliquary=Reliquary
 
-gui.tome.text=The Tome of Alkahestry;allows you to create other;resources form Redstone.
+gui.tome.text=The Tome of Alkahestry;allows you to create other;resources from Redstone.
 
 item.handgun.name=Hunter's Handgun
 item.handgun.tooltip=For great justice.;Right click fires, hold to reload.
