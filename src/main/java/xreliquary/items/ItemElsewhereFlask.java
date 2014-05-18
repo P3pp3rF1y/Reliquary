@@ -13,8 +13,11 @@ import xreliquary.Reliquary;
 import xreliquary.init.XRInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.util.LanguageHelper;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 @XRInit
 public class ItemElsewhereFlask extends ItemBase {
@@ -24,53 +27,46 @@ public class ItemElsewhereFlask extends ItemBase {
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		this.canRepair = false;
-		this.setContainerItem(this);
 	}
 
     //this is tricky because tooltips have limited real estate.
     //we need to know what's in the flask though.. so we use shortened names.
-
     //dig, run, jump, hit, breath, fire, heal, cure [from panacea], regen, armor, vanish, vision
 
     //potion uses are measured in "sips". you always attempt to drink one of every potion in the flask.
-	
-	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		player.playSound(Reference.BOOK_SOUND, 1.0f, 1.0f);
-		player.openGui(Reliquary.INSTANCE, 0, world, (int) player.posX, (int) player.posY, (int) player.posZ);
-		return stack;
-	}
-
-	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack ist) {
-		ist = null;
-		return false;
-	}
+    //the potion durations/potency in the mod are all "standard" so the dual-potions just add two effects (sips)
+    //instead of one.
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		this.formatTooltip(ImmutableMap.of("redstoneAmount", String.valueOf((Reliquary.PROXY.tomeRedstoneLimit - stack.getItemDamage())), "redstoneLimit", String.valueOf(Reliquary.PROXY.tomeRedstoneLimit)), stack, list);
+
 	}
+
+    //due to the added complexity of the flask's tooltip, we need to piggyback on the formatTooltip method
+    //to make it easier for localization to rename the potion effects that show up, since they would otherwise
+    //be added in code (and thus, in English)
+    public void formatPotionList(ImmutableMap<String, String> toFormat, ItemStack stack, List list) {
+
+//        String langTooltip = LanguageHelper.getLocalization(this.getUnlocalizedName(stack) + ".tooltip");
+//        if (langTooltip == null)
+//            return;
+//        if (toFormat != null) {
+//            Iterator<Map.Entry<String, String>> entrySet = toFormat.entrySet().iterator();
+//            while (entrySet.hasNext()) {
+//                Map.Entry<String, String> toReplace = entrySet.next();
+//                langTooltip = langTooltip.replace("{{" + toReplace.getKey() + "}}", toReplace.getValue());
+//            }
+//        }
+//
+//        for (String descriptionLine : langTooltip.split(";")) {
+//            if (descriptionLine != null && descriptionLine.length() > 0)
+//                list.add(descriptionLine);
+//        }
+    }
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.epic;
 	}
-
-	@Override
-	public ItemStack getContainerItem(ItemStack stack) {
-		ItemStack copy = stack.copy();
-		
-		copy.stackSize = 1;
-		return copy;
-	}
-
-	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list) {
-		ItemStack tomeStack = new ItemStack(item, 1, 0);
-		tomeStack.setItemDamage(Reliquary.PROXY.tomeRedstoneLimit);
-		list.add(tomeStack);
-	}
-
 }
