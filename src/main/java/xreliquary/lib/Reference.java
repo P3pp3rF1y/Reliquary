@@ -17,10 +17,10 @@ public class Reference {
 	public static final int DESTRUCTION_CATALYST_COST = 3; // gunpowder cost
 	public static final int CAPACITY_UPGRADE_INCREMENT = 64;
 
-	public static final String ART_PATH_ENTITIES = "/textures/entities/";
+	public static final String ART_PATH_ENTITIES = "textures/entities/";
 	public static final String THROWN_ITEM_SPRITES = "thrownItemsSheet.png";
 
-	public static final String MODEL_TEXTURE_PATH = "/textures/models/";
+	public static final String MODEL_TEXTURE_PATH = "textures/models/";
 
 	public static final int SPLASH_META = 0;
 	public static final int APHRODITE_META = 1;
