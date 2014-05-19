@@ -190,12 +190,6 @@ public class XRRecipes {
         // hero medallion
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.hero_medallion), 1), new Object[] { "eie", "ivi", "eie", 'e', Items.ender_eye, 'i', Items.iron_ingot, 'v', ContentHandler.getItem(Names.void_tear_empty) });
 
-        // void satchel // TODO possibly give satchels a damage bar, so these recipes will have
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_satchel), 1, 0), new Object[]{"lsl", "ltl", "lll", 'l', Items.leather, 's', Items.string, 't', ContentHandler.getItem(Names.void_tear)});
-
-        // upgrading the void satchel
-        GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.void_satchel), 1, 0), new Object[]{ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_tear_empty), ContentHandler.getItem(Names.void_satchel)});
-
         // destruction catalyst
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.destruction_catalyst), 1, 0), new Object[] { "rrr", "rtr", "rrf", 'f', Items.flint, 't', new ItemStack(ContentHandler.getItem(Names.midas_touchstone), 1, -1), 'r', Items.blaze_rod });
 

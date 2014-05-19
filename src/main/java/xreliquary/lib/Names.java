@@ -31,7 +31,6 @@ public class Names {
 	public static final String wraith_eye = "wraith_eye";
 	public static final String void_tear_empty = "void_tear_empty";
 	public static final String void_tear = "void_tear";
-	public static final String void_satchel = "void_satchel";
     public static final String hero_medallion = "hero_medallion";
     public static final String hero_medallion_overlay = "hero_medallion_overlay";
     public static final String ender_staff = "ender_staff";
