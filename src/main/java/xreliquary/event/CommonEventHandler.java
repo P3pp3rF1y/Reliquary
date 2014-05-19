@@ -121,6 +121,9 @@ public class CommonEventHandler {
         //player should see a vial "shatter" effect and hear the glass break to let them know they lost a vial.
         spawnAngelheartVialParticles(player);
 
+        //play some glass breaking effects at the player location
+        player.worldObj.playSoundEffect(player.posX + 0.5D, player.posY + 0.5D, player.posZ + 0.5D, "dig.glass", 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+
         //gives the player a few hearts, sparing them from death.
         player.setHealth(4);
 

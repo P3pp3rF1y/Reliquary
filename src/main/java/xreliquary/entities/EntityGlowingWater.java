@@ -118,6 +118,6 @@ public class EntityGlowingWater extends EntityThrowable {
             }
         }
 
-        worldObj.playSoundEffect(posX + 0.5D, posY + 0.5D, posZ + 0.5D, "random.glass", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+        worldObj.playSoundEffect(posX + 0.5D, posY + 0.5D, posZ + 0.5D, "dig.glass", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 	}
 }

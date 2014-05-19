@@ -33,8 +33,10 @@ public class ClientEventHandler {
         //handles the color shifting of the twilight cloak, until we can throw it on an animation
         if(event.phase != TickEvent.Phase.END)
             return;
-        if (getTime() > 88) {
-            time = 10;
+        //used to go arbitrarily all the way to 88, which left us limited on how to handle our ticks.
+        //this is a nice even number. Also we don't handle blinking with this anymore so no need for weird math/modulo.
+        if (getTime() > 4096) {
+            time = 0;
         } else {
             time++;
         }
@@ -113,7 +115,7 @@ public class ClientEventHandler {
         renderItemIntoGUI(minecraft.fontRenderer, handgunStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
         //if the gun is empty, displays a blinking empty magazine instead.
         if (bulletStack.stackSize == 0) {
-            if ((getTime() - 10) % 13 > 7) {
+            if (getTime() % 256 > 14) {
                 //offsets it a little to the left, it looks silly if you put it over the gun.
                 renderItemIntoGUI(minecraft.fontRenderer, new ItemStack(ContentHandler.getItem(Names.magazine), 1, 0), hudOverlayX - 8 , hudOverlayY + 12, 1.0F, overlayScale / 2F);
             }
