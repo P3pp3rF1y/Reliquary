@@ -46,9 +46,7 @@ public class ItemAngelicFeather extends ItemBase {
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
         if (e instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer)e;
-            if (!player.isInWater()) {
-                player.addPotionEffect(new PotionEffect(Potion.jump.id, 5, 0));
-            }
+            player.addPotionEffect(new PotionEffect(Potion.jump.id, 2, 0, true)); 
         }
     }
 }

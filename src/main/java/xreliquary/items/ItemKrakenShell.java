@@ -36,9 +36,9 @@ public class ItemKrakenShell extends ItemBase {
         if (e instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer)e;
             if (player.isInWater()) {
-                player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 1, 0, true));
-                player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 1, 0, true));
-                player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 1, 0, true));
+                player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 2, 0, true));
+                player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 2, 0, true));
+                player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 2, 0, true));
             }
         }
     }

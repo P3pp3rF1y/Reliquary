@@ -336,9 +336,9 @@ public class ItemCondensedPotion extends ItemBase {
 		String red;
 		String green;
 		String blue;
-		int timeFactor = ClientEventHandler.getTime();
-		if (timeFactor > 43) {
-			timeFactor = 87 - timeFactor;
+		int timeFactor = ClientEventHandler.getTime() % 256;
+		if (timeFactor > 127) {
+			timeFactor = 255 - timeFactor;
 		}
 		int potion = itemStack.getItemDamage();
 		switch (potion) {
@@ -361,29 +361,29 @@ public class ItemCondensedPotion extends ItemBase {
 		case Reference.BREATHING_META:
 			return Integer.parseInt(Colors.BREATHING_COLOR, 16);
 		case Reference.INVISIBILITY_META:
-			red = Integer.toHexString(timeFactor * 3 + 22);
-			green = Integer.toHexString(timeFactor * 3 + 22);
-			blue = Integer.toHexString(timeFactor * 3 + 22);
+			red = Integer.toHexString(timeFactor * 2);
+			green = Integer.toHexString(timeFactor * 2);
+			blue = Integer.toHexString(timeFactor * 2);
 			return Integer.parseInt(String.format("%s%s%s", red, green, blue), 16);
 		case Reference.INFRAVISION_META:
 			return Integer.parseInt(Colors.INFRAVISION_COLOR, 16);
 		case Reference.PROTECTION_META:
-			red = Integer.toHexString(timeFactor * 3 + 88);
-			green = Integer.toHexString(timeFactor * 3 + 88);
-			blue = Integer.toHexString(timeFactor * 3 + 88);
+			red = Integer.toHexString(timeFactor + 127);
+			green = Integer.toHexString(timeFactor + 127);
+			blue = Integer.toHexString(timeFactor + 127);
 			return Integer.parseInt(String.format("%s%s%s", red, green, blue), 16);
 		case Reference.POTENCE_META:
-			red = Integer.toHexString(timeFactor * 4 + 22);
-			green = Integer.toHexString(timeFactor * 2 + 22);
+			red = Integer.toHexString(timeFactor + 127);
+			green = Integer.toHexString(timeFactor / 4 + 32);
 			blue = "00";
 			return Integer.parseInt(String.format("%s%s%s", red, green, blue), 16);
 		case Reference.CELERITY_META:
 			red = "00";
-			green = Integer.toHexString(timeFactor * 4 + 22);
+			green = Integer.toHexString(timeFactor * 2);
 			blue = "FF";
 			return Integer.parseInt(String.format("%s%s%s", red, green, blue), 16);
 		case Reference.PANACEA_META:
-			red = Integer.toHexString(timeFactor * 4 + 22);
+			red = Integer.toHexString(timeFactor * 2);
 			green = "00";
 			blue = "FF";
 			return Integer.parseInt(String.format("%s%s%s", red, green, blue), 16);
@@ -406,7 +406,7 @@ public class ItemCondensedPotion extends ItemBase {
 		case Reference.BLINDING_META:
 			return Integer.parseInt(Colors.BLINDING_COLOR, 16);
 		case Reference.RUINATION_META:
-			red = Integer.toHexString(timeFactor * 5 + 22);
+			red = Integer.toHexString(timeFactor * 2);
 			green = "FF";
 			blue = "00";
 			return Integer.parseInt(String.format("%s%s%s", red, green, blue), 16);
