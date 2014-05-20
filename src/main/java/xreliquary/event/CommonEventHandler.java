@@ -11,6 +11,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
@@ -62,28 +63,30 @@ public class CommonEventHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerHurt(LivingHurtEvent event) {
-       Entity entity = event.entity;
-       if (entity == null || !(entity instanceof EntityPlayer)) return;
-       EntityPlayer player = (EntityPlayer)entity;
+    public void beforePlayerHurt(LivingAttackEvent event) {
+        Entity entity = event.entity;
+        if (entity == null || !(entity instanceof EntityPlayer)) return;
+        EntityPlayer player = (EntityPlayer)entity;
         handleDragonClawsCheck(player, event);
         handleFiredrinkerCheck(player, event);
-        handleAngelheartVialCheck(player, event);
-        handlePhoenixDownCheck(player, event);
         handleAngelicFeatherCheck(player, event);
         handleKrakenEyeCheck(player, event);
+        //check
+        handlePhoenixDownCheck(player, event);
+        handleAngelheartVialCheck(player, event);
+        if (event.isCanceled()) event.setResult(null);
     }
 
-    public void handleDragonClawsCheck(EntityPlayer player, LivingHurtEvent event) {
+    public void handleDragonClawsCheck(EntityPlayer player, LivingAttackEvent event) {
         if (!playerHasItem(player, ContentHandler.getItem(Names.dragon_claws))) return;
-        if (event.source == DamageSource.inFire || event.source == DamageSource.onFire) {
-            //trades all fire damage for exhaustion (which causes the hunger bar to be depleted).
-            player.addExhaustion(event.ammount * 0.5F);
-        }
+        if (!(event.source == DamageSource.inFire) && !(event.source == DamageSource.onFire)) return;
+        if (player.getFoodStats().getSaturationLevel() < event.ammount * 0.5F) return;
+        //trades all fire damage for exhaustion (which causes the hunger bar to be depleted).
+        player.addExhaustion(event.ammount * 0.5F);
         event.setCanceled(true);
     }
 
-    public void handleFiredrinkerCheck(EntityPlayer player, LivingHurtEvent event) {
+    public void handleFiredrinkerCheck(EntityPlayer player, LivingAttackEvent event) {
         if (!playerHasItem(player, ContentHandler.getItem(Names.claws_of_the_firedrinker))) return;
         if (event.source == DamageSource.inFire || event.source == DamageSource.onFire) {
             //trades all fire damage for food saturation (which causes the hunger bar to be regenerated).
@@ -97,19 +100,22 @@ public class CommonEventHandler {
             }
             player.addExhaustion(event.ammount * 0.5F);
         }
-        if (event.source == DamageSource.lava) {
-            //trades all lava damage for exhaustion (which causes the hunger bar to be depleted rapidly).
-            //3.0F is what you lose when you regerate half a heart. I'm cutting that rate in half to make the item powerful.
-            player.addExhaustion(event.ammount * 1.5F);
-        }
+        if (!(event.source == DamageSource.lava)) return;
+        if (player.getFoodStats().getSaturationLevel() < event.ammount * 1.5F) return;
+        //trades all lava damage for exhaustion (which causes the hunger bar to be depleted rapidly).
+        //3.0F is what you lose when you regenerate half a heart. I'm cutting that rate in half to make the item powerful.
+        player.addExhaustion(event.ammount * 1.5F);
+
         event.setCanceled(true);
     }
 
-    public void handleAngelheartVialCheck(EntityPlayer player, LivingHurtEvent event) {
+    public void handleAngelheartVialCheck(EntityPlayer player, LivingAttackEvent event) {
         //I'm rounding because I'm not 100% on whether the health value being a fraction matters for determining death
         //Rounding would be worst case. I'm doing an early abort to keep my indentation shallow.
         if (player.getHealth() > Math.round(event.ammount)) return;
         if (!playerHasItem(player, ContentHandler.getItem(Names.angelheart_vial))) return;
+
+        decreaseItemByOne(player, ContentHandler.getItem(Names.angelheart_vial));
 
         //player should see a vial "shatter" effect and hear the glass break to let them know they lost a vial.
         spawnAngelheartVialParticles(player);
@@ -119,7 +125,6 @@ public class CommonEventHandler {
 
         //gives the player a few hearts, sparing them from death.
         player.setHealth(4);
-
         //if the player had any negative status effects [vanilla only for now], remove them:
         removeNegativeStatusEffects(player);
 
@@ -173,7 +178,7 @@ public class CommonEventHandler {
         player.removePotionEffect(Potion.weakness.id);
     }
 
-    public void handlePhoenixDownCheck(EntityPlayer player, LivingHurtEvent event) {
+    public void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
         //I'm rounding because I'm not 100% on whether the health value being a fraction matters for determining death
         //Rounding would be worst case. I'm doing an early abort to keep my indentation shallow.
         if (player.getHealth() > Math.round(event.ammount)) return;
@@ -216,23 +221,24 @@ public class CommonEventHandler {
         }
     }
 
-    public void handleAngelicFeatherCheck(EntityPlayer player, LivingHurtEvent event) {
+    public void handleAngelicFeatherCheck(EntityPlayer player, LivingAttackEvent event) {
         if (!playerHasItem(player, ContentHandler.getItem(Names.phoenix_down)) && !playerHasItem(player, ContentHandler.getItem(Names.angelic_feather))) return;
-        if (event.source == DamageSource.fall) {
-            if (player.fallDistance > 0.0F) {
-                //trades fallDistance for exhaustion (which causes the hunger bar to be depleted).
-                player.addExhaustion(player.fallDistance * 2.0F);
-                player.fallDistance = 0.0F;
-            }
+        if (!(event.source == DamageSource.fall)) return;
+        if (player.fallDistance > 0.0F) {
+            if (player.getFoodStats().getSaturationLevel() < player.fallDistance * 2F) return;
+            //trades fallDistance for exhaustion (which causes the hunger bar to be depleted).
+            player.addExhaustion(player.fallDistance * 2.0F);
+            player.fallDistance = 0.0F;
         }
         event.setCanceled(true);
     }
 
-    public void handleKrakenEyeCheck(EntityPlayer player, LivingHurtEvent event) {
+    public void handleKrakenEyeCheck(EntityPlayer player, LivingAttackEvent event) {
         if (!playerHasItem(player, ContentHandler.getItem(Names.kraken_shell))) return;
         //player absorbs drowning damage in exchange for hunger, at a relatively low rate.
         if (event.source == DamageSource.drown) {
-            float hungerDamage = 0.5F * (float)event.ammount;
+            if (player.getFoodStats().getSaturationLevel() < event.ammount * 0.5F) return;
+            float hungerDamage = 0.5F * event.ammount;
             player.addExhaustion(hungerDamage);
             event.setCanceled(true);
         }
@@ -257,6 +263,17 @@ public class CommonEventHandler {
             }
         }
        return false;
+    }
+
+    //pretty much the same as above, specific to angelheart vial. finds it and breaks one.
+    private void decreaseItemByOne(EntityPlayer player, Item item) {
+        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+            if (player.inventory.mainInventory[slot] == null) continue;
+            if (player.inventory.mainInventory[slot].getItem() == item) {
+                player.inventory.decrStackSize(slot, 1);
+                return;
+            }
+        }
     }
 
     @SubscribeEvent
