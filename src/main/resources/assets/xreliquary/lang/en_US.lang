@@ -1,6 +1,6 @@
 itemGroup.xreliquary=Reliquary
 
-gui.tome.text=The Tome of Alkahestry;allows you to create other;resources from Redstone.
+gui.tome.text=The Tome of Alkahestry;allows you to create;other resources from;Redstone.
 
 item.handgun.name=Hunter's Handgun
 item.handgun.tooltip=For great justice.;Right click fires, hold to reload.
@@ -92,7 +92,7 @@ item.ender_staff.tooltip=Consumes Ender Pearls from inventory.;Throws them a bit
 item.angelic_feather.name=Angelic Feather
 item.angelic_feather.tooltip=Protects you from falls,;at the expense of hunger.
 item.phoenix_down.name=Phoenix Down
-item.phoenix_down.tooltip=Resurrects you once and;reverts to an Angelic Feather.
+item.phoenix_down.tooltip=Resurrects you once with;full health and reverts;to an Angelic Feather.
 item.crimson_cloth.name=Crimson Cloth
 item.crimson_cloth.tooltip=Blood red cloth, soaked;with alchemical concoctions.
 item.dragon_talon.name=Dragon Talon
@@ -110,7 +110,7 @@ item.kraken_shell.tooltip=Improves your mobility;when in water.;Absorb drowning 
 item.angelheart_vial.name=Angelheart Vial
 item.angelheart_vial.tooltip=Resurrects you once;and breaks.
 item.elsewhere_flask.name=Elsewhere Flask
-item.elsewhere_flask.tooltip=Imbibe potions within it simultaneously.{{ contents }}
+item.elsewhere_flask.tooltip=Imbibe potions within it simultaneously.{{contents}}
 
 tile.altar_idle.name=Altar of Light
 tile.altar.name=Altar of Light

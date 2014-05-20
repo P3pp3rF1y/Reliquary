@@ -1,6 +1,8 @@
 package xreliquary.common;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -44,6 +46,7 @@ public class CommonProxy {
 	public void init() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
         FMLCommonHandler.instance().bus().register(new CommonEventHandler());
+        MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
 
 		this.registerEntities();
 		this.registerTileEntities();

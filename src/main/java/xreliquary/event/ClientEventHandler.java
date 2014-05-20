@@ -115,15 +115,15 @@ public class ClientEventHandler {
         renderItemIntoGUI(minecraft.fontRenderer, handgunStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
         //if the gun is empty, displays a blinking empty magazine instead.
         if (bulletStack.stackSize == 0) {
-            if (getTime() % 256 > 14) {
+            if (getTime() % 32 > 16) {
                 //offsets it a little to the left, it looks silly if you put it over the gun.
-                renderItemIntoGUI(minecraft.fontRenderer, new ItemStack(ContentHandler.getItem(Names.magazine), 1, 0), hudOverlayX - 8 , hudOverlayY + 12, 1.0F, overlayScale / 2F);
+                renderItemIntoGUI(minecraft.fontRenderer, new ItemStack(ContentHandler.getItem(Names.magazine), 1, 0), hudOverlayX - 8 , hudOverlayY + 12, overlayOpacity, overlayScale / 2F);
             }
         } else {
             //renders the number of bullets onto the screen.
             for (int xOffset = 0; xOffset < bulletStack.stackSize; xOffset++) {
                 //xOffset * 6 makes the bullets line up, -16 moves them all to the left by a bit
-                renderItemIntoGUI(minecraft.fontRenderer, bulletStack, hudOverlayX + (xOffset * 6) - 16 , hudOverlayY + 4, 1.0F, overlayScale / 2F);
+                renderItemIntoGUI(minecraft.fontRenderer, bulletStack, hudOverlayX - 8 - (xOffset * 12), hudOverlayY + 12, 1.0F, overlayScale / 2F);
             }
         }
 
