@@ -1,4 +1,4 @@
-package xreliquary.util;
+package xreliquary.util.alkahestry;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

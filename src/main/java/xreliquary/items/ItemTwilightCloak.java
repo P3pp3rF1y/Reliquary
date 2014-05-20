@@ -69,15 +69,15 @@ public class ItemTwilightCloak extends ItemBase {
 	public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
 		if (renderPass == 1) {
 			int i = ClientEventHandler.getTime();
-			i %= 87;
-			if (i > 43) {
-				i = 87 - i;
+			i %= 100;
+			if (i > 50) {
+				i = 100 - i;
 			}
-			i = (int) (i * 255F / 43F);
-			String red = Integer.toHexString(i);
-			return Integer.parseInt(String.format("%s%s%s", red, "00", "00"), 16);
+			i = (int) (i * 160F / 50F);
+			String red = Integer.toHexString(i + 30);
+            return Integer.parseInt(String.format("%s%s%s", red, "00", "00"), 16);
 		} else
-			return Integer.parseInt(Colors.DARKEST, 16);
+			return Integer.parseInt("0A0A0A", 16);
     }
 
 	@Override

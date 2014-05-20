@@ -7,13 +7,10 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
-import net.minecraft.world.World;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
@@ -26,7 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.items.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
-import xreliquary.util.AlkahestRecipe;
+import xreliquary.util.alkahestry.AlkahestRecipe;
 
 import java.util.Random;
 

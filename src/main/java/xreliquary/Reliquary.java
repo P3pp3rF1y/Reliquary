@@ -17,7 +17,7 @@ import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
 import xreliquary.common.CommonProxy;
-import xreliquary.util.AlkahestRecipe;
+import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.LogHelper;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;

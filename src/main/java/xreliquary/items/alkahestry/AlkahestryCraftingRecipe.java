@@ -4,7 +4,7 @@ import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
 import xreliquary.util.ObjectUtils;
 import xreliquary.Reliquary;
-import xreliquary.util.AlkahestRecipe;
+import xreliquary.util.alkahestry.AlkahestRecipe;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
