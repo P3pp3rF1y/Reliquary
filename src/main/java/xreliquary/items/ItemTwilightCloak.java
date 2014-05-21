@@ -77,7 +77,7 @@ public class ItemTwilightCloak extends ItemBase {
 			String red = Integer.toHexString(i + 70);
             return Integer.parseInt(String.format("%s%s%s", red, "00", "00"), 16);
 		} else
-			return Integer.parseInt("0A0A0A", 16);
+			return Integer.parseInt(Colors.DARKEST, 16);
     }
 
 	@Override

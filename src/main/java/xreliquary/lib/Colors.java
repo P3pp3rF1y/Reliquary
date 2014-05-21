@@ -48,8 +48,9 @@ public class Colors {
 	public static final String RUINATION_COLOR = "676720";
 	public static final String FERTILIZER_COLOR = "DDDDDD";
 
-    //unicode colors that you can use in the tooltips/names lang files. might be helpful to abstract these out
-    //and give people replace options, but I'm storing them here for my own reference, mainly.
+    /* Unicode colors that you can use in the tooltips/names lang files.
+     * Use by calling {{!name}}, with name being the name of the color without the UNICODE_ prefix.
+     * Case dosen't matter, can be lowercase (I prefer it). */
     public static final String UNICODE_BLACK = "\u00A70";
     public static final String UNICODE_NAVY = "\u00A71";
     public static final String UNICODE_GREEN = "\u00A72";

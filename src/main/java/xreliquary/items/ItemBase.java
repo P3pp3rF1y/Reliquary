@@ -9,7 +9,6 @@ import xreliquary.util.LanguageHelper;
 
 import com.google.common.collect.ImmutableMap;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -74,7 +73,13 @@ public class ItemBase extends Item {
 		}
 	}
 
-	@Override
+    @Override
+    @SideOnly(Side.CLIENT)
+    public String getItemStackDisplayName(ItemStack stack) {
+        return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
+    }
+
+    @Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
 		itemIcon = iconRegister.registerIcon(this.modName + ":" + this.textureName);
