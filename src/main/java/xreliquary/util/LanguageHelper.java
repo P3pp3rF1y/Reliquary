@@ -20,10 +20,11 @@ public class LanguageHelper {
 	
 	public static String getLocalization(String key) {
         String localization;
-        //??? dead code here in this if statement.
-		//if(LanguageRegistry.instance().getStringLocalization(key) != null)
-			//localization = LanguageRegistry.instance().getStringLocalization(key);
-		localization = LanguageRegistry.instance().getStringLocalization(key, "en_US");
+		if(LanguageRegistry.instance().getStringLocalization(key) != null)
+			localization = LanguageRegistry.instance().getStringLocalization(key);
+        else
+		    localization = LanguageRegistry.instance().getStringLocalization(key, "en_US");
+
         if(localization.contains("{{!")) {
             while(localization.contains("{{!")) {
                 int startingIndex = localization.indexOf("{{!");
@@ -44,12 +45,10 @@ public class LanguageHelper {
                 LanguageRegistry.instance().addStringLocalization(key, "en_US", localization);
             }
 
-            //this is a stack overflow. <_<
-            //return getLocalization(key);
-        //} else {
+            return localization;
+        } else {
+            return localization;
         }
-        return localization;
-        //}
 	}
 
 }
