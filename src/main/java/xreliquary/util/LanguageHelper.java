@@ -20,8 +20,9 @@ public class LanguageHelper {
 	
 	public static String getLocalization(String key) {
         String localization;
-		if(LanguageRegistry.instance().getStringLocalization(key) != null)
-			localization = LanguageRegistry.instance().getStringLocalization(key);
+        //??? dead code here in this if statement.
+		//if(LanguageRegistry.instance().getStringLocalization(key) != null)
+			//localization = LanguageRegistry.instance().getStringLocalization(key);
 		localization = LanguageRegistry.instance().getStringLocalization(key, "en_US");
         if(localization.contains("{{!")) {
             while(localization.contains("{{!")) {
@@ -43,10 +44,12 @@ public class LanguageHelper {
                 LanguageRegistry.instance().addStringLocalization(key, "en_US", localization);
             }
 
-            return getLocalization(key);
-        } else {
-            return localization;
+            //this is a stack overflow. <_<
+            //return getLocalization(key);
+        //} else {
         }
+        return localization;
+        //}
 	}
 
 }
