@@ -44,11 +44,8 @@ public class LanguageHelper {
             } else {
                 LanguageRegistry.instance().addStringLocalization(key, "en_US", localization);
             }
-
-            return localization;
-        } else {
-            return localization;
         }
+        return localization;
 	}
 
 }

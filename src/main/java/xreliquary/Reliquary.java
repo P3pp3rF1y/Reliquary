@@ -14,7 +14,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
 import xreliquary.items.ItemDestructionCatalyst;
-import xreliquary.items.alkahestry.Alkahestry;
+import xreliquary.lib.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
 import xreliquary.common.CommonProxy;
 import xreliquary.util.alkahestry.AlkahestRecipe;

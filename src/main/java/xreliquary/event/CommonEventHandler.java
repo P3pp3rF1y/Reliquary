@@ -17,12 +17,11 @@ import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
 import xreliquary.util.ObjectUtils;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import xreliquary.items.alkahestry.Alkahestry;
+import xreliquary.lib.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 

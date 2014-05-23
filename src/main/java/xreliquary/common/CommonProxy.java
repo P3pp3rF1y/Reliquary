@@ -1,7 +1,6 @@
 package xreliquary.common;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -15,7 +14,7 @@ import xreliquary.entities.*;
 import xreliquary.entities.EntityStormShot;
 import xreliquary.event.CommonEventHandler;
 import xreliquary.init.XRRecipes;
-import xreliquary.items.alkahestry.Alkahestry;
+import xreliquary.lib.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;

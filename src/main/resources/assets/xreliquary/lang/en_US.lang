@@ -2,6 +2,13 @@ itemGroup.xreliquary=Reliquary
 
 gui.tome.text=The Tome of Alkahestry;allows you to create;other resources from;Redstone.
 
+tile.altar_idle.name=Altar of Light
+tile.altar.name=Altar of Light
+tile.lilypad.name=Lilypad of Fertility
+tile.wraith_node.name=Wraith Node
+tile.interdiction_torch.name={{!yellow}}Interdiction Torch
+tile.interdiction_torch.tooltip=Seems to repel monsters. Neat.
+
 item.handgun.name=Hunter's Handgun
 item.handgun.tooltip=For great justice.;Right click fires, hold to reload.
 
@@ -83,8 +90,6 @@ item.void_tear_empty.name=Empty Void Tear
 item.void_tear_empty.tooltip=An empty void tear, right clicking;absorbs the dominant inventory item.
 item.void_tear.name=Void Tear
 item.void_tear.tooltip=This Void Tear currently;holds {{holds}}.
-item.void_satchel.name=Void Satchel
-item.void_satchel.tooltip=This Void Satchel currently;holds {{holds}}.;It has a capacity of {{capacity}}.
 item.hero_medallion.name=Hero's Medallion
 item.hero_medallion.tooltip={{!green}}Experience: {{experience}};For when you just need;somewhere to put;all that experience.
 item.ender_staff.name=Ender Staff
@@ -111,11 +116,8 @@ item.angelheart_vial.name=Angelheart Vial
 item.angelheart_vial.tooltip=Resurrects you once;and breaks.
 item.elsewhere_flask.name=Elsewhere Flask
 item.elsewhere_flask.tooltip=Imbibe potions within it simultaneously.{{contents}}
-
-tile.altar_idle.name=Altar of Light
-tile.altar.name=Altar of Light
-tile.lilypad.name=Lilypad of Fertility
-tile.wraith_node.name=Wraith Node
+item.serpent_staff.name={{!green}}Serpent Staff
+item.serpent_staff.tooltip=All that nasty stuff;from a Kraken's spit,;thrown at your enemies.
 
 item.potion_0.name=Condensed Splash Serum
 item.potion_1.name=Love Potion #9

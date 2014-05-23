@@ -6,8 +6,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.RecipeSorter;
 import xreliquary.Reliquary;
-import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
-import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
+import xreliquary.lib.alkahestry.AlkahestryCraftingRecipe;
+import xreliquary.lib.alkahestry.AlkahestryRedstoneRecipe;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
@@ -50,6 +50,7 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.altar_idle), 1), "olo", "lel", "olo", 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'e', Items.emerald);
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.lilypad), 1), "www", "wlw", "www", 'w', XRRecipes.potion(Reference.FERTILIZER_META), 'l', Blocks.waterlily);
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.wraith_node), 1), "vv", "vv", 'v', ContentHandler.getItem(Names.void_tear_empty));
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.interdiction_torch), 1, 0), "mdm", "gbg", "gbg", 'm', Items.magma_cream, 'd', Items.diamond, 'g', ContentHandler.getItem(Names.glowing_water), 'b', Items.blaze_rod);
 
         // GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.glowing_bread), 3), new Object[]{Items.bread, Items.bread, Items.bread, ContentHandler.getItem(Names.glowing_water)});
         // bullets...

@@ -74,8 +74,8 @@ public class ItemBase extends Item {
 	}
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public String getItemStackDisplayName(ItemStack stack) {
+         @SideOnly(Side.CLIENT)
+         public String getItemStackDisplayName(ItemStack stack) {
         return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
     }
 

@@ -45,6 +45,7 @@ public class Names {
     public static final String kraken_shell_fragment = "kraken_shell_fragment";
     public static final String kraken_shell = "kraken_shell";
     public static final String elsewhere_flask = "elsewhere_flask";
+    public static final String serpent_staff = "serpent_staff";
 
     // potion info
 	public static final String condensed_potion = "condensed_potion";
@@ -57,5 +58,6 @@ public class Names {
 	public static final String altar = "altar";
 	public static final String lilypad = "lilypad";
 	public static final String wraith_node = "wraith_node";
+    public static final String interdiction_torch = "interdiction_torch";
 
 }

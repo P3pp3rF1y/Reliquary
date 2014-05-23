@@ -1,4 +1,4 @@
-package xreliquary.items.alkahestry;
+package xreliquary.lib.alkahestry;
 
 import java.util.HashMap;
 import java.util.Map;
