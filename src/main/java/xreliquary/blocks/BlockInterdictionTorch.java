@@ -4,8 +4,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
@@ -49,39 +52,56 @@ public class BlockInterdictionTorch extends BlockTorch {
         if (world.isRemote)
             return;
 
-        List<EntityMob> monsters = world.getEntitiesWithinAABB(EntityMob.class, AxisAlignedBB.getBoundingBox(x - 5, y - 4, z - 5, x + 6, y + 4, z + 6));
-        for(EntityMob monster : monsters) {
-            System.out.println(monster.getCommandSenderName());
+        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(x - 5, y - 5, z - 5, x + 5, y + 5, z + 5));
+        for(EntityLivingBase entity : entities) {
             // TODO: Add a blacklist via config option.
-            if(monster instanceof IBossDisplayData)
-                return;
-
-            double distance = 5.0d - Math.sqrt(Math.pow(monster.posX - (x + 0.5), 2) + Math.pow(monster.posZ - (z + 0.5), 2));
-
-            if(distance <= 0)
+            if(entity instanceof IBossDisplayData || entity instanceof EntityPlayer)
                 continue;
+//
+//            double distance = 5.0d - Math.sqrt(Math.pow(monster.posX - (x + 0.5), 2) + Math.pow(monster.posZ - (z + 0.5), 2));
+//
+//            if(distance <= 0)
+//                continue;
+//
+//            double knockbackMultiplier = 1.0 + (0.32 * distance);
+//
+//            // TODO: Sometimes zombies break through. I think this is because of how I handle the 'monster.posZ + monster.motionZ <= z' part.
+//
+//            if(monster.posX + monster.motionX > monster.posX)
+//                monster.motionX *= monster.posX + monster.motionX <= x ? -knockbackMultiplier : knockbackMultiplier;
+//            else
+//                monster.motionX *= monster.posX + monster.motionX <= x ? knockbackMultiplier : -knockbackMultiplier;
+//
+//            if(monster.posZ + monster.motionZ > monster.posZ)
+//                monster.motionZ *= monster.posZ + monster.motionZ <= z ? -knockbackMultiplier : knockbackMultiplier;
+//            else
+//                monster.motionZ *= monster.posZ + monster.motionZ <= z ? knockbackMultiplier : -knockbackMultiplier;
+//
+//            if(monster.posX + monster.motionX == monster.posX)
+//                monster.motionX = monster.posX <= x ? -knockbackMultiplier : knockbackMultiplier;
+//
+//            if(monster.posZ + monster.motionZ == monster.posZ)
+//                monster.motionZ = monster.posZ <= z ? -knockbackMultiplier : knockbackMultiplier;
+//
+//            monster.moveEntity(monster.motionX, monster.motionY, monster.motionZ);
 
-            double knockbackMultiplier = 1.0 + (0.32 * distance);
+            //start x3n0's attempt to rebuild his old algorithm
+            //slight offset to account for the block technically not being precisely at a whole number, positionally
+            //we're intentionally ignoring y because it does wonky stuff and makes mobs float/etc.
+            double sourceX = (double)x + 0.5D;
+            double sourceZ = (double)z + 0.5D;
 
-            // TODO: Sometimes zombies break through. I think this is because of how I handle the 'monster.posZ + monster.motionZ <= z' part.
+            //first we get the difference, but we also check the absolute value to minimize the effect of the
+            //formula in the event of an infinitesimally small difference, which produces "Infinity" in the calculation (not even kidding)
+            double xDiff = (entity.posX - sourceX);
+            if (Math.abs(xDiff) < 0.25D) xDiff = xDiff < 0 ? -0.25D : 0.25D;
+            double zDiff = (entity.posZ - sourceZ);
+            if (Math.abs(zDiff) < 0.25D) zDiff = zDiff < 0 ? -0.25D : 0.25D;
 
-            if(monster.posX + monster.motionX > monster.posX)
-                monster.motionX *= monster.posX + monster.motionX <= x ? -knockbackMultiplier : knockbackMultiplier;
-            else
-                monster.motionX *= monster.posX + monster.motionX <= x ? knockbackMultiplier : -knockbackMultiplier;
-
-            if(monster.posZ + monster.motionZ > monster.posZ)
-                monster.motionZ *= monster.posZ + monster.motionZ <= z ? -knockbackMultiplier : knockbackMultiplier;
-            else
-                monster.motionZ *= monster.posZ + monster.motionZ <= z ? knockbackMultiplier : -knockbackMultiplier;
-
-            if(monster.posX + monster.motionX == monster.posX)
-                monster.motionX = monster.posX <= x ? -knockbackMultiplier : knockbackMultiplier;
-
-            if(monster.posZ + monster.motionZ == monster.posZ)
-                monster.motionZ = monster.posZ <= z ? -knockbackMultiplier : knockbackMultiplier;
-
-            monster.moveEntity(monster.motionX, monster.motionY, monster.motionZ);
+            double xMotion = 5D / xDiff * 0.03D;
+            double zMotion = 5D / zDiff * 0.03D;
+            entity.motionX += xMotion;
+            entity.motionZ += zMotion;
         }
     }
 
