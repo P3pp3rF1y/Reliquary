@@ -81,10 +81,6 @@ public class BlockInterdictionTorch extends BlockTorch {
             entity.motionX += xForce;
             entity.motionY += yForce;
             entity.motionZ += zForce;
-            System.out.println("Entity pushed: " + entity.getCommandSenderName());
-            System.out.println("Force: X: " + xForce + " Y: " + yForce + " Z: " + zForce);
-            //this doesn't appear to work.
-            //entity.moveEntity(xForce, yForce,zForce);
 
         }
     }
