@@ -10,6 +10,7 @@ import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.init.XRInit;
@@ -57,51 +58,34 @@ public class BlockInterdictionTorch extends BlockTorch {
             // TODO: Add a blacklist via config option.
             if(entity instanceof IBossDisplayData || entity instanceof EntityPlayer)
                 continue;
-//
-//            double distance = 5.0d - Math.sqrt(Math.pow(monster.posX - (x + 0.5), 2) + Math.pow(monster.posZ - (z + 0.5), 2));
-//
-//            if(distance <= 0)
-//                continue;
-//
-//            double knockbackMultiplier = 1.0 + (0.32 * distance);
-//
-//            // TODO: Sometimes zombies break through. I think this is because of how I handle the 'monster.posZ + monster.motionZ <= z' part.
-//
-//            if(monster.posX + monster.motionX > monster.posX)
-//                monster.motionX *= monster.posX + monster.motionX <= x ? -knockbackMultiplier : knockbackMultiplier;
-//            else
-//                monster.motionX *= monster.posX + monster.motionX <= x ? knockbackMultiplier : -knockbackMultiplier;
-//
-//            if(monster.posZ + monster.motionZ > monster.posZ)
-//                monster.motionZ *= monster.posZ + monster.motionZ <= z ? -knockbackMultiplier : knockbackMultiplier;
-//            else
-//                monster.motionZ *= monster.posZ + monster.motionZ <= z ? knockbackMultiplier : -knockbackMultiplier;
-//
-//            if(monster.posX + monster.motionX == monster.posX)
-//                monster.motionX = monster.posX <= x ? -knockbackMultiplier : knockbackMultiplier;
-//
-//            if(monster.posZ + monster.motionZ == monster.posZ)
-//                monster.motionZ = monster.posZ <= z ? -knockbackMultiplier : knockbackMultiplier;
-//
-//            monster.moveEntity(monster.motionX, monster.motionY, monster.motionZ);
+            double distance = entity.getDistance((double)x, (double) y, (double)z);
+            if(distance >= 5D || distance == 0) continue;
 
-            //start x3n0's attempt to rebuild his old algorithm
-            //slight offset to account for the block technically not being precisely at a whole number, positionally
-            //we're intentionally ignoring y because it does wonky stuff and makes mobs float/etc.
-            double sourceX = (double)x + 0.5D;
-            double sourceZ = (double)z + 0.5D;
+            //the multiplier is based on a set rate added to an inverse proportion to the distance.
+            //we raise the distance to 1 if it's less than one, or it becomes a crazy multiplier we don't want/need.
+            if (distance < 1D) distance = 1D;
+            double knockbackMultiplier = 1D + (1D / distance);
 
-            //first we get the difference, but we also check the absolute value to minimize the effect of the
-            //formula in the event of an infinitesimally small difference, which produces "Infinity" in the calculation (not even kidding)
-            double xDiff = (entity.posX - sourceX);
-            if (Math.abs(xDiff) < 0.25D) xDiff = xDiff < 0 ? -0.25D : 0.25D;
-            double zDiff = (entity.posZ - sourceZ);
-            if (Math.abs(zDiff) < 0.25D) zDiff = zDiff < 0 ? -0.25D : 0.25D;
+            //we also need a reduction coefficient because the above force is WAY TOO MUCH to apply every tick.
+            double reductionCoefficient = 0.04D;
 
-            double xMotion = 5D / xDiff * 0.03D;
-            double zMotion = 5D / zDiff * 0.03D;
-            entity.motionX += xMotion;
-            entity.motionZ += zMotion;
+            //the resultant vector between the two 3d coordinates is the difference of each coordinate pair
+            //note that we do not add 0.5 to the y coord, if we wanted to be SUPER accurate, we would be using
+            //the entity height offset to find its "center of mass"
+            Vec3 angleOfAttack = Vec3.createVectorHelper(entity.posX - (x + 0.5D), entity.posY - y, entity.posZ - (z + 0.5D));
+
+            //we use the resultant vector to determine the force to apply.
+            double xForce = angleOfAttack.xCoord * knockbackMultiplier * reductionCoefficient;
+            double yForce = angleOfAttack.yCoord * knockbackMultiplier * reductionCoefficient;
+            double zForce = angleOfAttack.zCoord * knockbackMultiplier * reductionCoefficient;
+            entity.motionX += xForce;
+            entity.motionY += yForce;
+            entity.motionZ += zForce;
+            System.out.println("Entity pushed: " + entity.getCommandSenderName());
+            System.out.println("Force: X: " + xForce + " Y: " + yForce + " Z: " + zForce);
+            //this doesn't appear to work.
+            //entity.moveEntity(xForce, yForce,zForce);
+
         }
     }
 
