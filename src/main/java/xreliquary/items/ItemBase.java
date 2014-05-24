@@ -19,7 +19,7 @@ import net.minecraft.item.ItemStack;
 /**
  * ItemBase, a helper class for items. Handles language names, language
  * tooltips, and icon registering.
- * 
+ *
  * @author TheMike
  */
 public class ItemBase extends Item {

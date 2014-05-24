@@ -5,7 +5,6 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import xreliquary.ConcussiveExplosion;
 
 public class EntityConcussiveShot extends EntityShotBase {
 	public EntityConcussiveShot(World par1World) {

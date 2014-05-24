@@ -1,4 +1,4 @@
-package xreliquary.lib.alkahestry;
+package xreliquary.items.alkahestry;
 
 import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;

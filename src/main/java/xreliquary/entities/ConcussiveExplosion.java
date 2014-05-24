@@ -1,4 +1,4 @@
-package xreliquary;
+package xreliquary.entities;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -6,8 +6,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.RecipeSorter;
 import xreliquary.Reliquary;
-import xreliquary.lib.alkahestry.AlkahestryCraftingRecipe;
-import xreliquary.lib.alkahestry.AlkahestryRedstoneRecipe;
+import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
+import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 

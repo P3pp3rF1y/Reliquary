@@ -23,7 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.lib.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
-import xreliquary.util.alkahestry.AlkahestRecipe;
+import xreliquary.lib.alkahestry.AlkahestRecipe;
 
 import java.util.Random;
 

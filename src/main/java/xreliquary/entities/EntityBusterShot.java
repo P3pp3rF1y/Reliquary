@@ -4,7 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import xreliquary.ConcussiveExplosion;
 
 public class EntityBusterShot extends EntityShotBase {
 	public EntityBusterShot(World par1World) {
