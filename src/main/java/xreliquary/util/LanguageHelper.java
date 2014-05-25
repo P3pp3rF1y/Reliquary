@@ -1,29 +1,17 @@
 package xreliquary.util;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.LanguageRegistry;
+import net.minecraft.util.StatCollector;
 import xreliquary.lib.Colors;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LanguageHelper {
 
-    public static List<String> languages = new ArrayList<String>();
-	
-	public static void loadLanguages(String[] par1) {
-		for(String language : par1) {
-            languages.add(language);
-			LanguageRegistry.instance().loadLocalization("/assets/xreliquary/lang/" + language + ".lang", language, false);
-		}
-	}
-	
+    public static Map<String, String> preprocesssed = new HashMap<String, String>();
+
 	public static String getLocalization(String key) {
-        String localization;
-		if(LanguageRegistry.instance().getStringLocalization(key) != null)
-			localization = LanguageRegistry.instance().getStringLocalization(key);
-        else
-		    localization = LanguageRegistry.instance().getStringLocalization(key, "en_US");
+        String localization = getLocalization(key, true);
 
         if(localization.contains("{{!")) {
             while(localization.contains("{{!")) {
@@ -39,13 +27,19 @@ public class LanguageHelper {
                 }
             }
 
-            if(languages.contains(FMLCommonHandler.instance().getCurrentLanguage())) {
-                LanguageRegistry.instance().addStringLocalization(key, FMLCommonHandler.instance().getCurrentLanguage(), localization);
-            } else {
-                LanguageRegistry.instance().addStringLocalization(key, "en_US", localization);
-            }
+            preprocesssed.put(key, localization);
+        } else if(preprocesssed.containsKey(key)) {
+            return preprocesssed.get(key);
         }
         return localization;
 	}
+
+    private static String getLocalization(String key, boolean fallback) {
+        String localization = StatCollector.translateToLocal(key);
+        if(localization.equals(key) && fallback) {
+            localization = StatCollector.translateToFallback(key);
+        }
+        return localization;
+    }
 
 }

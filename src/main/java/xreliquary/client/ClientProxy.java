@@ -8,14 +8,12 @@ import net.minecraft.client.renderer.entity.RenderSnowball;
 import xreliquary.client.render.ItemRendererHandgun;
 import xreliquary.client.render.RenderShot;
 import xreliquary.client.render.RenderThrown;
-import xreliquary.client.util.Particle;
 import xreliquary.common.CommonProxy;
 import xreliquary.entities.*;
 import xreliquary.event.ClientEventHandler;
 import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-import xreliquary.util.LanguageHelper;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -34,7 +32,6 @@ public class ClientProxy extends CommonProxy {
         FMLCommonHandler.instance().bus().register(new ClientEventHandler());
         //FMLCommonHandler.instance().bus().register(new HandgunHUD());
 
-        LanguageHelper.loadLanguages(new String[]{"en_US", "de_DE", "zh_CN"});
 		this.registerRenderers();
 	}
 
