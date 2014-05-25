@@ -59,5 +59,6 @@ public class Names {
 	public static final String lilypad = "lilypad";
 	public static final String wraith_node = "wraith_node";
     public static final String interdiction_torch = "interdiction_torch";
+    public static final String apothecary_cauldron = "apothecary_cauldron";
 
 }

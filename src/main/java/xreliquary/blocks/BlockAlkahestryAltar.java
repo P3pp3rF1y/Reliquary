@@ -21,25 +21,25 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockAltar extends BlockContainer {
+public class BlockAlkahestryAltar extends BlockContainer {
 
     @XRInit
-    static public class BlockActiveAltar extends BlockAltar {
-        public BlockActiveAltar() {
+    static public class BlockActiveAlkahestryAltar extends BlockAlkahestryAltar {
+        public BlockActiveAlkahestryAltar() {
             super(true);
         }
     }
 
     @XRInit
-    static public class BlockIdleAltar extends BlockAltar {
-        public BlockIdleAltar() {
+    static public class BlockIdleAlkahestryAltar extends BlockAlkahestryAltar {
+        public BlockIdleAlkahestryAltar() {
             super(false);
         }
     }
 
 	private final boolean isActive;
 
-	public BlockAltar(boolean par1) {
+	public BlockAlkahestryAltar(boolean par1) {
 		super(Material.rock);
 		isActive = par1;
 

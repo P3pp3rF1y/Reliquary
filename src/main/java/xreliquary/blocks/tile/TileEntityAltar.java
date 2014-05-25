@@ -3,7 +3,7 @@ package xreliquary.blocks.tile;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import xreliquary.blocks.BlockAltar;
+import xreliquary.blocks.BlockAlkahestryAltar;
 
 public class TileEntityAltar extends TileEntity {
 	private int cycleTime;
@@ -32,7 +32,7 @@ public class TileEntityAltar extends TileEntity {
 		} else {
 			isActive = false;
 			worldObj.setBlock(xCoord, yCoord + 1, zCoord, Blocks.glowstone);
-			BlockAltar.updateAltarBlockState(isActive(), worldObj, xCoord, yCoord, zCoord);
+			BlockAlkahestryAltar.updateAltarBlockState(isActive(), worldObj, xCoord, yCoord, zCoord);
 		}
 	}
 
@@ -41,7 +41,7 @@ public class TileEntityAltar extends TileEntity {
 		cycleTime = (int) (24000 + 6000D * worldObj.rand.nextGaussian());
 		isActive = true;
 		redstoneCount = 0;
-		BlockAltar.updateAltarBlockState(isActive(), worldObj, xCoord, yCoord, zCoord);
+		BlockAlkahestryAltar.updateAltarBlockState(isActive(), worldObj, xCoord, yCoord, zCoord);
 	}
 
 	@Override
