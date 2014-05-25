@@ -2,7 +2,6 @@ package xreliquary.util;
 
 import org.apache.logging.log4j.Level;
 
-import cpw.mods.fml.common.FMLLog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xreliquary.lib.Reference;

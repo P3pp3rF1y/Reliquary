@@ -6,18 +6,13 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import org.apache.logging.log4j.Level;
 import xreliquary.Reliquary;
+import xreliquary.lib.Reference;
 import xreliquary.util.LogHelper;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ContentHandler {
 
     private static final String blocksPath = "xreliquary.blocks";
     private static final String itemsPath = "xreliquary.items";
-
-    private static Map<String, Block> blockRegistry = new HashMap<String, Block>();
-    private static Map<String, Item> itemRegistry = new HashMap<String, Item>();
 
     public static void init() {
         try {
@@ -34,7 +29,6 @@ public class ContentHandler {
         for(ClassPath.ClassInfo info : classPath.getTopLevelClasses(packageName)) {
             Class objClass = Class.forName(info.getName());
             checkAndRegister(objClass);
-            // TODO: This is 'registering' somehow, but it doesn't work. This needs to work.
             for(Class subClass : objClass.getClasses()) {
                 checkAndRegister(subClass);
             }
@@ -48,15 +42,13 @@ public class ContentHandler {
             // We've gotten the object, and confirmed it uses @XRInit, now let's check it for compatible types.
             if(obj instanceof Item) {
                 Item item = (Item) obj;
-                itemRegistry.put(item.getUnlocalizedName(), item);
-                GameRegistry.registerItem(item, item.getUnlocalizedName());
+                GameRegistry.registerItem(item, item.getUnlocalizedName().substring(5));
             } else if(obj instanceof Block) {
                 Block block = (Block) obj;
-                blockRegistry.put(block.getUnlocalizedName(), block);
                 if(((XRInit) objClass.getAnnotation(XRInit.class)).itemBlock() != XRInit.class)
-                    GameRegistry.registerBlock(block, ((XRInit) objClass.getAnnotation(XRInit.class)).itemBlock(), block.getUnlocalizedName());
+                    GameRegistry.registerBlock(block, ((XRInit) objClass.getAnnotation(XRInit.class)).itemBlock(), block.getUnlocalizedName().substring(5));
                 else
-                    GameRegistry.registerBlock(block, block.getUnlocalizedName());
+                    GameRegistry.registerBlock(block, block.getUnlocalizedName().substring(5));
             } else {
                 LogHelper.log(Level.WARN, "Class '" + objClass.getName() + "' is not a Block or an Item! You shouldn't be calling @XRInit on this! Ignoring!");
             }
@@ -64,11 +56,24 @@ public class ContentHandler {
     }
 
     public static Block getBlock(String blockName) {
-        return blockRegistry.get("tile." + blockName);
+        String selection = blockName;
+        if(!selection.contains("!"))
+            selection = Reference.MOD_ID + ":" + selection;
+        return (Block) Block.blockRegistry.getObject(selection);
     }
 
     public static Item getItem(String itemName) {
-        return itemRegistry.get("item." + itemName);
+        String selection = itemName;
+        if(!selection.contains("!"))
+            selection = Reference.MOD_ID + ":" + selection;
+        return (Item) Item.itemRegistry.getObject(selection);
+    }
+
+    public static Item getItemBlock(String blockName) {
+        String selection = blockName;
+        if(!selection.contains("!"))
+            selection = Reference.MOD_ID + ":" + selection;
+        return Item.getItemFromBlock((Block) Block.blockRegistry.getObject(selection));
     }
 
 }

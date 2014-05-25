@@ -52,7 +52,7 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.wraith_node), 1), "vv", "vv", 'v', ContentHandler.getItem(Names.void_tear_empty));
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.interdiction_torch), 1, 0), "mdm", "gbg", "gbg", 'm', Items.magma_cream, 'd', Items.diamond, 'g', ContentHandler.getItem(Names.glowing_water), 'b', Items.blaze_rod);
 
-        // GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.glowing_bread), 3), new Object[]{Items.bread, Items.bread, Items.bread, ContentHandler.getItem(Names.glowing_water)});
+        GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.glowing_bread), 3), new Object[]{Items.bread, Items.bread, Items.bread, ContentHandler.getItem(Names.glowing_water)});
         // bullets...
         // empty cases back into nuggets
         GameRegistry.addShapelessRecipe(new ItemStack(Items.gold_nugget, 1), bullet(1, 0));

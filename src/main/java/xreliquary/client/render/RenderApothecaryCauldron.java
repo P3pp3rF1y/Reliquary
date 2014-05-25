@@ -13,9 +13,6 @@ import net.minecraft.world.IBlockAccess;
 import org.lwjgl.opengl.GL11;
 import xreliquary.blocks.BlockApothecaryCauldron;
 
-/**
- * Created by Xeno on 5/25/14.
- */
 public class RenderApothecaryCauldron implements ISimpleBlockRenderingHandler {
     public static int renderID = RenderingRegistry.getNextAvailableRenderId();
 
@@ -34,23 +31,13 @@ public class RenderApothecaryCauldron implements ISimpleBlockRenderingHandler {
             float f2 = (float)(l & 255) / 255.0F;
             float f4;
 
-            if (EntityRenderer.anaglyphEnable)
-            {
-                float f3 = (f * 30.0F + f1 * 59.0F + f2 * 11.0F) / 100.0F;
-                f4 = (f * 30.0F + f1 * 70.0F) / 100.0F;
-                float f5 = (f * 30.0F + f2 * 70.0F) / 100.0F;
-                f = f3;
-                f1 = f4;
-                f2 = f5;
-            }
-
             tessellator.setColorOpaque_F(f, f1, f2);
-            IIcon sideTexture = block.getBlockTextureFromSide(2);
             f4 = 0.125F;
-            renderer.renderFaceXPos(block, (double) ((float) x - 1.0F + f4), (double) y, (double) z, sideTexture);
-            renderer.renderFaceXNeg(block, (double) ((float) x + 1.0F - f4), (double) y, (double) z, sideTexture);
-            renderer.renderFaceZPos(block, (double) x, (double) y, (double) ((float) z - 1.0F + f4), sideTexture);
-            renderer.renderFaceZNeg(block, (double) x, (double) y, (double) ((float) z + 1.0F - f4), sideTexture);
+            IIcon insideTexture = BlockApothecaryCauldron.getCauldronIcon("inside");
+            renderer.renderFaceXPos(block, (double) ((float) x - 1.0F + f4), (double) y, (double) z, insideTexture);
+            renderer.renderFaceZPos(block, (double) x, (double) y, (double) ((float) z - 1.0F + f4), insideTexture);
+            renderer.renderFaceZNeg(block, (double) x, (double) y, (double) ((float) z + 1.0F - f4), insideTexture);
+            renderer.renderFaceXNeg(block, (double) ((float) x + 1.0F - f4), (double) y, (double) z, insideTexture);
             IIcon innerTexture = BlockApothecaryCauldron.getCauldronIcon("inner");
             renderer.renderFaceYPos(block, (double) x, (double) ((float) y - 1.0F + 0.25F), (double) z, innerTexture);
             renderer.renderFaceYNeg(block, (double) x, (double) ((float) y + 1.0F - 0.75F), (double) z, innerTexture);
@@ -67,37 +54,37 @@ public class RenderApothecaryCauldron implements ISimpleBlockRenderingHandler {
     }
 
     @Override
-    public void renderInventoryBlock (Block block, int metadata, int modelID, RenderBlocks renderer)
-    {
+    public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
         this.renderStandardBlock(block, metadata, renderer);
+        float f4 = 0.125F;
 
-        int l = 0xfffff;
-        float f = (float)(l >> 16 & 255) / 255.0F;
-        float f1 = (float)(l >> 8 & 255) / 255.0F;
-        float f2 = (float)(l & 255) / 255.0F;
-        float f4;
+        Tessellator tessellator = Tessellator.instance;
+        IIcon insideTexture = BlockApothecaryCauldron.getCauldronIcon("inside");
 
-        if (EntityRenderer.anaglyphEnable)
-        {
-            float f3 = (f * 30.0F + f1 * 59.0F + f2 * 11.0F) / 100.0F;
-            f4 = (f * 30.0F + f1 * 70.0F) / 100.0F;
-            float f5 = (f * 30.0F + f2 * 70.0F) / 100.0F;
-        }
-
-        IIcon sideTexture = block.getBlockTextureFromSide(2);
-        f4 = 0.125F;
-        renderer.renderFaceXPos(block, - 1.0F + f4, 0D, 0D, sideTexture);
-        renderer.renderFaceXNeg(block, 1.0F - f4, 0D, 0D, sideTexture);
-        renderer.renderFaceZPos(block, 0D, 0D, - 1.0F + f4, sideTexture);
-        renderer.renderFaceZNeg(block, 0D, 0D, 1.0F - f4, sideTexture);
-        IIcon innerTexture = BlockApothecaryCauldron.getCauldronIcon("inner");
-        renderer.renderFaceYPos(block, 0D, - 1.0F + 0.25F, 0D, innerTexture);
-        renderer.renderFaceYNeg(block, 0D, 1.0F - 0.75F, 0D, innerTexture);
+        renderer.renderFromInside = true;
+        GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+        tessellator.startDrawingQuads();
+        tessellator.setNormal(0.0F, 0.0F, -1.0F + f4);
+        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, insideTexture);
+        tessellator.draw();
+        tessellator.startDrawingQuads();
+        tessellator.setNormal(0.0F, 0.0F, 1.0F - f4);
+        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, insideTexture);
+        tessellator.draw();
+        tessellator.startDrawingQuads();
+        tessellator.setNormal(-1.0F + f4, 0.0F, 0.0F);
+        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, insideTexture);
+        tessellator.draw();
+        tessellator.startDrawingQuads();
+        tessellator.setNormal(1.0F - f4, 0.0F, 0.0F);
+        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, insideTexture);
+        tessellator.draw();
+        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+        renderer.renderFromInside = false;
     }
 
 
-    private void renderStandardBlock (Block block, int meta, RenderBlocks renderer)
-    {
+    private void renderStandardBlock (Block block, int meta, RenderBlocks renderer) {
         Tessellator tessellator = Tessellator.instance;
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
         tessellator.startDrawingQuads();

@@ -33,6 +33,7 @@ import java.util.Random;
 
 @XRInit(itemBlock = ItemBlockBase.class)
 public class BlockApothecaryCauldron extends BlockContainer {
+
 	public BlockApothecaryCauldron() {
 		super(Material.iron);
 
@@ -46,6 +47,9 @@ public class BlockApothecaryCauldron extends BlockContainer {
 
     @SideOnly(Side.CLIENT)
     private IIcon innerTexture;
+
+    @SideOnly(Side.CLIENT)
+    private IIcon insideTexture;
 
     @SideOnly(Side.CLIENT)
     private IIcon topTexture;
@@ -63,6 +67,7 @@ public class BlockApothecaryCauldron extends BlockContainer {
     public void registerBlockIcons(IIconRegister iconRegister)
     {
         this.innerTexture = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_cauldron + "_" + "inner");
+        this.insideTexture = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_cauldron + "_" + "inside");
         this.topTexture = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_cauldron + "_top");
         this.bottomTexture = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_cauldron + "_" + "bottom");
         this.blockIcon = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_cauldron + "_side");
@@ -90,7 +95,7 @@ public class BlockApothecaryCauldron extends BlockContainer {
     public static IIcon getCauldronIcon(String textureName)
     {
         BlockApothecaryCauldron cauldronStatic = (BlockApothecaryCauldron)ContentHandler.getBlock(Names.apothecary_cauldron);
-        return textureName.equals("inner") ? cauldronStatic.innerTexture : (textureName.equals("bottom") ? cauldronStatic.bottomTexture : null);
+        return textureName.equals("inner") ? cauldronStatic.innerTexture : (textureName.equals("bottom") ? cauldronStatic.bottomTexture : textureName.equals("inside") ? cauldronStatic.insideTexture : null);
     }
 
     /**
