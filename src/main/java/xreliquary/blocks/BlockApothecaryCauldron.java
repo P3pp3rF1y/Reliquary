@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -20,20 +21,25 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityCauldron;
+import xreliquary.client.render.RenderApothecaryCauldron;
 import xreliquary.init.ContentHandler;
 import xreliquary.init.XRInit;
+import xreliquary.items.block.ItemBlockBase;
 import xreliquary.lib.Names;
+import xreliquary.lib.Reference;
 
 import java.util.List;
 import java.util.Random;
 
-@XRInit
+@XRInit(itemBlock = ItemBlockBase.class)
 public class BlockApothecaryCauldron extends BlockContainer {
-	public BlockApothecaryCauldron(boolean par1) {
+	public BlockApothecaryCauldron() {
 		super(Material.iron);
 
         this.setHardness(1.5F);
         this.setResistance(5.0F);
+
+        this.setBlockName(Names.apothecary_cauldron);
 
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
     }
@@ -56,10 +62,10 @@ public class BlockApothecaryCauldron extends BlockContainer {
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        this.innerTexture = iconRegister.registerIcon(this.getTextureName() + "_" + "inner");
-        this.topTexture = iconRegister.registerIcon(this.getTextureName() + "_top");
-        this.bottomTexture = iconRegister.registerIcon(this.getTextureName() + "_" + "bottom");
-        this.blockIcon = iconRegister.registerIcon(this.getTextureName() + "_side");
+        this.innerTexture = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_cauldron + "_" + "inner");
+        this.topTexture = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_cauldron + "_top");
+        this.bottomTexture = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_cauldron + "_" + "bottom");
+        this.blockIcon = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_cauldron + "_side");
     }
 
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List cbList, Entity collisionEntity)
@@ -109,7 +115,7 @@ public class BlockApothecaryCauldron extends BlockContainer {
      */
     public int getRenderType()
     {
-        return 24;
+        return RenderApothecaryCauldron.renderID;
     }
 
     /**
@@ -125,7 +131,7 @@ public class BlockApothecaryCauldron extends BlockContainer {
      */
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity collidingEntity)
     {
-        int l = func_150027_b(world.getBlockMetadata(x, y, z));
+        int l = returnMetadataPointlessly(world.getBlockMetadata(x, y, z));
         float f = (float)y + (6.0F + (float)(3 * l)) / 16.0F;
 
         if (!world.isRemote && collidingEntity.isBurning() && l > 0 && collidingEntity.boundingBox.minY <= (double)f)
@@ -138,15 +144,15 @@ public class BlockApothecaryCauldron extends BlockContainer {
     /**
      * Called upon block activation (right click on the block.)
      */
-    public boolean onBlockActivated(World p_149727_1_, int p_149727_2_, int p_149727_3_, int p_149727_4_, EntityPlayer p_149727_5_, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_)
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metaMaybe, float playerX, float playerY, float playerZ)
     {
-        if (p_149727_1_.isRemote)
+        if (world.isRemote)
         {
             return true;
         }
         else
         {
-            ItemStack itemstack = p_149727_5_.inventory.getCurrentItem();
+            ItemStack itemstack = player.inventory.getCurrentItem();
 
             if (itemstack == null)
             {
@@ -154,19 +160,19 @@ public class BlockApothecaryCauldron extends BlockContainer {
             }
             else
             {
-                int i1 = p_149727_1_.getBlockMetadata(p_149727_2_, p_149727_3_, p_149727_4_);
-                int j1 = func_150027_b(i1);
+                int i1 = world.getBlockMetadata(x, y, z);
+                int j1 = returnMetadataPointlessly(i1);
 
                 if (itemstack.getItem() == Items.water_bucket)
                 {
                     if (j1 < 3)
                     {
-                        if (!p_149727_5_.capabilities.isCreativeMode)
+                        if (!player.capabilities.isCreativeMode)
                         {
-                            p_149727_5_.inventory.setInventorySlotContents(p_149727_5_.inventory.currentItem, new ItemStack(Items.bucket));
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket));
                         }
 
-                        this.setMetaData(p_149727_1_, p_149727_2_, p_149727_3_, p_149727_4_, 3);
+                        this.setMetaData(world, x, y, z, 3);
                     }
 
                     return true;
@@ -177,35 +183,35 @@ public class BlockApothecaryCauldron extends BlockContainer {
                     {
                         if (j1 > 0)
                         {
-                            if (!p_149727_5_.capabilities.isCreativeMode)
+                            if (!player.capabilities.isCreativeMode)
                             {
                                 ItemStack itemstack1 = new ItemStack(Items.potionitem, 1, 0);
 
-                                if (!p_149727_5_.inventory.addItemStackToInventory(itemstack1))
+                                if (!player.inventory.addItemStackToInventory(itemstack1))
                                 {
-                                    p_149727_1_.spawnEntityInWorld(new EntityItem(p_149727_1_, (double)p_149727_2_ + 0.5D, (double)p_149727_3_ + 1.5D, (double)p_149727_4_ + 0.5D, itemstack1));
+                                    world.spawnEntityInWorld(new EntityItem(world, (double) x + 0.5D, (double) y + 1.5D, (double) z + 0.5D, itemstack1));
                                 }
-                                else if (p_149727_5_ instanceof EntityPlayerMP)
+                                else if (player instanceof EntityPlayerMP)
                                 {
-                                    ((EntityPlayerMP)p_149727_5_).sendContainerToPlayer(p_149727_5_.inventoryContainer);
+                                    ((EntityPlayerMP)player).sendContainerToPlayer(player.inventoryContainer);
                                 }
 
                                 --itemstack.stackSize;
 
                                 if (itemstack.stackSize <= 0)
                                 {
-                                    p_149727_5_.inventory.setInventorySlotContents(p_149727_5_.inventory.currentItem, (ItemStack)null);
+                                    player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack)null);
                                 }
                             }
 
-                            this.setMetaData(p_149727_1_, p_149727_2_, p_149727_3_, p_149727_4_, j1 - 1);
+                            this.setMetaData(world, x, y, z, j1 - 1);
                         }
                     }
                     else if (j1 > 0 && itemstack.getItem() instanceof ItemArmor && ((ItemArmor)itemstack.getItem()).getArmorMaterial() == ItemArmor.ArmorMaterial.CLOTH)
                     {
                         ItemArmor itemarmor = (ItemArmor)itemstack.getItem();
                         itemarmor.removeColor(itemstack);
-                        this.setMetaData(p_149727_1_, p_149727_2_, p_149727_3_, p_149727_4_, j1 - 1);
+                        this.setMetaData(world, x, y, z, j1 - 1);
                         return true;
                     }
 
@@ -237,18 +243,20 @@ public class BlockApothecaryCauldron extends BlockContainer {
         }
     }
 
-    //public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
-    //{
-        //TODO does this seriously need to be here? It should drop itself by default.
-    //}
+    @Override
+    public Item getItemDropped(int someInt, Random unusedRandom, int fortuneEnchantLevelIThink)
+    {
+        //this might destroy the universe
+        return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.apothecary_cauldron));
+    }
 
     /**
      * Gets an item for the block being called on. Args: world, x, y, z
      */
     @SideOnly(Side.CLIENT)
-    public Item getItem(World p_149694_1_, int p_149694_2_, int p_149694_3_, int p_149694_4_)
+    public Item getItem(World world, int x, int y, int z)
     {
-        return Items.cauldron;
+        return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.apothecary_cauldron));
     }
 
     /**
@@ -264,23 +272,27 @@ public class BlockApothecaryCauldron extends BlockContainer {
      * If hasComparatorInputOverride returns true, the return value from this is used instead of the redstone signal
      * strength when this block inputs to a comparator.
      */
-    public int getComparatorInputOverride(World p_149736_1_, int p_149736_2_, int p_149736_3_, int p_149736_4_, int p_149736_5_)
+    public int getComparatorInputOverride(World world, int x, int y, int z, int noClueWhatThisIntIs)
     {
-        int i1 = p_149736_1_.getBlockMetadata(p_149736_2_, p_149736_3_, p_149736_4_);
-        return func_150027_b(i1);
+        int meta = world.getBlockMetadata(x, y, z);
+        //lol at this wasted cycle.
+        return returnMetadataPointlessly(meta);
     }
 
-    public static int func_150027_b(int p_150027_0_)
+    //I named this method this because it's a straight rip of the cauldron and serves no purpose whatsoever.
+    public static int returnMetadataPointlessly(int meta)
     {
-        return p_150027_0_;
+        //revolving door?
+        return meta;
     }
 
     @SideOnly(Side.CLIENT)
-    public static float getRenderLiquidLevel(int p_150025_0_)
+    public static float getRenderLiquidLevel(int liquidMeta)
     {
-        int j = MathHelper.clamp_int(p_150025_0_, 0, 3);
+        int j = MathHelper.clamp_int(liquidMeta, 0, 3);
         return (float)(6 + 3 * j) / 16.0F;
     }
+
 	@Override
 	public TileEntity createNewTileEntity(World var1, int dunnoWhatThisIs) {
 		return new TileEntityCauldron();

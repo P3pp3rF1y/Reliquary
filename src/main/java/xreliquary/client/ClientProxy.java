@@ -6,6 +6,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraft.init.Items;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import xreliquary.client.render.ItemRendererHandgun;
+import xreliquary.client.render.RenderApothecaryCauldron;
 import xreliquary.client.render.RenderShot;
 import xreliquary.client.render.RenderThrown;
 import xreliquary.common.CommonProxy;
@@ -60,6 +61,8 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedSplashBlindness.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.BLINDING_META));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedSplashRuin.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.RUINATION_META));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedFertility.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.FERTILIZER_META));
+
+        RenderingRegistry.registerBlockHandler(new RenderApothecaryCauldron());
 
 		MinecraftForgeClient.registerItemRenderer(ContentHandler.getItem(Names.handgun), new ItemRendererHandgun());
     }

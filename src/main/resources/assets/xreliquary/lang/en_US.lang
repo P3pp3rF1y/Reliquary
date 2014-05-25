@@ -8,6 +8,8 @@ tile.lilypad.name=Lilypad of Fertility
 tile.wraith_node.name=Wraith Node
 tile.interdiction_torch.name={{!yellow}}Interdiction Torch
 tile.interdiction_torch.tooltip=Seems to repel monsters. Neat.
+tile.apothecary_cauldron.name=Apothecary Cauldron
+tile.apothecary_cauldron.tooltip=Used to brew potions, stylishly.
 
 item.handgun.name=Hunter's Handgun
 item.handgun.tooltip=For great justice.;Right click fires, hold to reload.
