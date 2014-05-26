@@ -10,6 +10,8 @@ tile.interdiction_torch.name={{!yellow}}Interdiction Torch
 tile.interdiction_torch.tooltip=Seems to repel monsters. Neat.
 tile.apothecary_cauldron.name=Apothecary Cauldron
 tile.apothecary_cauldron.tooltip=Used to brew potions, stylishly.
+tile.apothecary_mortar.name=Apothecary Mortar
+tile.apothecary_mortar.tooltip=Used to grind potion;essence, stylishly.
 
 item.handgun.name=Hunter's Handgun
 item.handgun.tooltip=For great justice.;Right click fires, hold to reload.

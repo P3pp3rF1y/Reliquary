@@ -48,31 +48,15 @@ public class BlockApothecaryMortar extends BlockContainer {
     }
 
     @SideOnly(Side.CLIENT)
-    private IIcon innerTexture;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon insideTexture;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon topTexture;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon bottomTexture;
-
-    @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta)
     {
-        return side == 1 ? this.topTexture : (side == 0 ? this.bottomTexture : this.blockIcon);
+        return this.blockIcon;
     }
 
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        this.innerTexture = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_mortar + "_" + "inner");
-        this.insideTexture = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_mortar + "_" + "inside");
-        this.topTexture = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_mortar + "_top");
-        this.bottomTexture = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_mortar + "_" + "bottom");
-        this.blockIcon = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_mortar + "_side");
+        this.blockIcon = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_mortar);
     }
 
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List cbList, Entity collisionEntity)
@@ -80,15 +64,6 @@ public class BlockApothecaryMortar extends BlockContainer {
         this.setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.3125F, 0.75F);
         super.addCollisionBoxesToList(world, x, y, z, aabb, cbList, collisionEntity);
         this.setBlockBoundsForItemRender();
-    }
-
-
-    //called by the renderer to get the texture in a static method.
-    @SideOnly(Side.CLIENT)
-    public static IIcon getMortarIcon(String textureName)
-    {
-        BlockApothecaryMortar mortarStatic = (BlockApothecaryMortar)ContentHandler.getBlock(Names.apothecary_mortar);
-        return textureName.equals("inner") ? mortarStatic.innerTexture : (textureName.equals("bottom") ? mortarStatic.bottomTexture : textureName.equals("inside") ? mortarStatic.insideTexture : null);
     }
 
     /**
