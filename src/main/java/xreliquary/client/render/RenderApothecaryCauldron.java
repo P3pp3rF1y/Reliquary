@@ -5,7 +5,6 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
@@ -16,9 +15,6 @@ import xreliquary.blocks.BlockApothecaryCauldron;
 public class RenderApothecaryCauldron implements ISimpleBlockRenderingHandler {
     public static int renderID = RenderingRegistry.getNextAvailableRenderId();
 
-    /**
-     * Render block cauldron
-     */
     @Override
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
         if (modelId == renderID) {
@@ -43,8 +39,7 @@ public class RenderApothecaryCauldron implements ISimpleBlockRenderingHandler {
             renderer.renderFaceYNeg(block, (double) x, (double) ((float) y + 1.0F - 0.75F), (double) z, innerTexture);
             int i1 = world.getBlockMetadata(x, y, z);
 
-            if (i1 > 0)
-            {
+            if (i1 > 0) {
                 //obviously wrong, but this will be what determines the liquid texture within the cauldron.
                 IIcon liquidTexture = BlockLiquid.getLiquidIcon("water_still");
                 renderer.renderFaceYPos(block, (double) x, (double) ((float) y - 1.0F + BlockCauldron.getRenderLiquidLevel(i1)), (double) z, liquidTexture);
@@ -55,32 +50,32 @@ public class RenderApothecaryCauldron implements ISimpleBlockRenderingHandler {
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
-        this.renderStandardBlock(block, metadata, renderer);
         float f4 = 0.125F;
 
         Tessellator tessellator = Tessellator.instance;
         IIcon insideTexture = BlockApothecaryCauldron.getCauldronIcon("inside");
 
-        renderer.renderFromInside = true;
+        renderer.setRenderFromInside(true);
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
         tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 0.0F, -1.0F + f4);
+        tessellator.setNormal(0.0F, 0.0F, 1.0F - f4);
         renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, insideTexture);
         tessellator.draw();
         tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 0.0F, 1.0F - f4);
+        tessellator.setNormal(0.0F, 0.0F, -1.0F + f4);
         renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, insideTexture);
         tessellator.draw();
         tessellator.startDrawingQuads();
-        tessellator.setNormal(-1.0F + f4, 0.0F, 0.0F);
+        tessellator.setNormal(1.0F - f4, 0.0F, 0.0F);
         renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, insideTexture);
         tessellator.draw();
         tessellator.startDrawingQuads();
-        tessellator.setNormal(1.0F - f4, 0.0F, 0.0F);
+        tessellator.setNormal(-1.0F + f4, 0.0F, 0.0F);
         renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, insideTexture);
         tessellator.draw();
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-        renderer.renderFromInside = false;
+        renderer.setRenderFromInside(false);
+        this.renderStandardBlock(block, metadata, renderer);
     }
 
 

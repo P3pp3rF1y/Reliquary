@@ -36,6 +36,10 @@ public class PotionEssence {
         }
     }
 
+    public PotionEssence(PotionIngredient... ingredients) {
+        // TODO
+    }
+
     public NBTTagCompound writeToNBT() {
         NBTTagCompound tag = new NBTTagCompound();
         int count = 0;
@@ -58,7 +62,13 @@ public class PotionEssence {
                     continue;
 
                 found = true;
-                PotionEffect newEffect = new PotionEffect(effect1.getPotionID(), effect1.getDuration() >= effect.getDuration() ? effect1.getDuration() : effect.getDuration(), effect1.getAmplifier() >= effect.getAmplifier() ? effect1.getAmplifier() : effect.getAmplifier());
+
+                int minPotency = Math.min(effect.getAmplifier(), effect1.getAmplifier());
+                int maxPotency = Math.max(effect.getAmplifier(), effect1.getAmplifier());
+                PotionEffect lessPotentPotion = effect.getAmplifier() == minPotency ? effect : effect1;
+                PotionEffect morePotentPotion = effect.getAmplifier() == minPotency ? effect : effect1;
+
+                PotionEffect newEffect = new PotionEffect(effect1.getPotionID(), morePotentPotion.getDuration() + (lessPotentPotion.getDuration() / (maxPotency - minPotency + 1)), ((minPotency + 1) + (maxPotency + 1) - 1));
                 potionEffects.remove(effect1);
                 potionEffects.add(newEffect);
             }
