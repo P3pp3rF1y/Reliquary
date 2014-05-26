@@ -71,7 +71,7 @@ public class BlockApothecaryMortar extends BlockContainer {
      */
     public void setBlockBoundsForItemRender()
     {
-        this.setBlockBounds(0.25F, 0F, 0.25F, 0.75F, 0.25F, 0.75F);
+        this.setBlockBounds(0.25F, 0F, 0.25F, 0.75F, 0.3F, 0.75F);
     }
 
     /**
@@ -104,7 +104,27 @@ public class BlockApothecaryMortar extends BlockContainer {
      */
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metaMaybe, float playerX, float playerY, float playerZ)
     {
+        if (world.isRemote) return false;
         //do things
+        ItemStack heldItem = player.getCurrentEquippedItem();
+        if (heldItem == null) return false;
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity == null || !(tileEntity instanceof TileEntityMortar)) return false;
+        TileEntityMortar mortar = (TileEntityMortar)tileEntity;
+        ItemStack[] mortarItems = mortar.getItemStacks();
+        boolean hadItem = false;
+        for (int slot = 0; slot < mortarItems.length; slot++) {
+            if (mortarItems[slot] == null) {
+                ItemStack item = new ItemStack(player.getCurrentEquippedItem().getItem(), 1, player.getCurrentEquippedItem().getItemDamage());
+                player.getCurrentEquippedItem().stackSize--;
+                mortarItems[slot] = item;
+                hadItem = true;
+                break;
+            }
+        }
+        if (!hadItem) {
+
+        }
         return true;
     }
 

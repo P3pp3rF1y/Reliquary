@@ -14,8 +14,10 @@ public class Reference {
 	public static final int SPLASH_POTION_SPRITE = 1;
 	public static final int GRENADE_SPRITE = 12;
 
+    //miscellaneous configurable things
 	public static final int DESTRUCTION_CATALYST_COST = 3; // gunpowder cost
 	public static final int CAPACITY_UPGRADE_INCREMENT = 64;
+    public static final int PESTLE_USAGE_MAX = 5; //the number of times you have to use the pestle.
 
 	public static final String ART_PATH_ENTITIES = "textures/entities/";
 	public static final String THROWN_ITEM_SPRITES = "thrownItemsSheet.png";
