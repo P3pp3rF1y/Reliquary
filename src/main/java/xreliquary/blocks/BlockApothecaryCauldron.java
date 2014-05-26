@@ -136,7 +136,7 @@ public class BlockApothecaryCauldron extends BlockContainer {
      */
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity collidingEntity)
     {
-        int l = returnMetadataPointlessly(world.getBlockMetadata(x, y, z));
+        int l = world.getBlockMetadata(x, y, z);
         float f = (float)y + (6.0F + (float)(3 * l)) / 16.0F;
 
         if (!world.isRemote && collidingEntity.isBurning() && l > 0 && collidingEntity.boundingBox.minY <= (double)f)
@@ -165,8 +165,7 @@ public class BlockApothecaryCauldron extends BlockContainer {
             }
             else
             {
-                int i1 = world.getBlockMetadata(x, y, z);
-                int j1 = returnMetadataPointlessly(i1);
+                int j1 = world.getBlockMetadata(x, y, z);
 
                 if (itemstack.getItem() == Items.water_bucket)
                 {
@@ -281,13 +280,6 @@ public class BlockApothecaryCauldron extends BlockContainer {
     {
         int meta = world.getBlockMetadata(x, y, z);
         //lol at this wasted cycle.
-        return returnMetadataPointlessly(meta);
-    }
-
-    //I named this method this because it's a straight rip of the cauldron and serves no purpose whatsoever.
-    public static int returnMetadataPointlessly(int meta)
-    {
-        //revolving door?
         return meta;
     }
 

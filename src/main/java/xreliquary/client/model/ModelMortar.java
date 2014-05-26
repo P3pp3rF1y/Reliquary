@@ -4,8 +4,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
-public class ModelMortar extends ModelBase
-{
+public class ModelMortar extends ModelBase {
   //fields
     ModelRenderer backAngle;
     ModelRenderer bottom;
@@ -20,8 +19,8 @@ public class ModelMortar extends ModelBase
     ModelRenderer leg2;
     ModelRenderer right;
     ModelRenderer rightAngle;
-    ModelRenderer pestleKnob;
-    ModelRenderer pestle;
+    public ModelRenderer pestleKnob;
+    public ModelRenderer pestle;
   
   public ModelMortar()
   {
@@ -140,8 +139,6 @@ public class ModelMortar extends ModelBase
     leg2.render(f5);
     right.render(f5);
     rightAngle.render(f5);
-    pestleKnob.render(f5);
-    pestle.render(f5);
   }
   
   private void setRotation(ModelRenderer model, float x, float y, float z)
