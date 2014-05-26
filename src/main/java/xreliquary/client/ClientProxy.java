@@ -1,14 +1,14 @@
 package xreliquary.client;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 import net.minecraft.init.Items;
 import net.minecraft.client.renderer.entity.RenderSnowball;
-import xreliquary.client.render.ItemRendererHandgun;
-import xreliquary.client.render.RenderApothecaryCauldron;
-import xreliquary.client.render.RenderShot;
-import xreliquary.client.render.RenderThrown;
+import xreliquary.blocks.tile.TileEntityMortar;
+import xreliquary.client.render.*;
 import xreliquary.common.CommonProxy;
 import xreliquary.entities.*;
 import xreliquary.event.ClientEventHandler;
@@ -64,7 +64,10 @@ public class ClientProxy extends CommonProxy {
 
         RenderingRegistry.registerBlockHandler(new RenderApothecaryCauldron());
 
-		MinecraftForgeClient.registerItemRenderer(ContentHandler.getItem(Names.handgun), new ItemRendererHandgun());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMortar.class, new RenderApothecaryMortar());
+
+        MinecraftForgeClient.registerItemRenderer(ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.apothecary_mortar)), new ItemRendererApothecaryMortar());
+        MinecraftForgeClient.registerItemRenderer(ContentHandler.getItem(Names.handgun), new ItemRendererHandgun());
     }
 
 }
