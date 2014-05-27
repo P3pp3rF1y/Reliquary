@@ -8,13 +8,14 @@ import net.minecraftforge.fluids.FluidStack;
 
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityAltar;
+import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.init.ContentHandler;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.entities.*;
 import xreliquary.entities.EntityStormShot;
 import xreliquary.event.CommonEventHandler;
 import xreliquary.init.XRRecipes;
-import xreliquary.lib.alkahestry.Alkahestry;
+import xreliquary.util.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -62,7 +63,8 @@ public class CommonProxy {
 
 	public void registerTileEntities() {
 		GameRegistry.registerTileEntity(TileEntityAltar.class, "reliquaryAltar");
-	}
+        GameRegistry.registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
+    }
 
 	public void registerEntities() {
 

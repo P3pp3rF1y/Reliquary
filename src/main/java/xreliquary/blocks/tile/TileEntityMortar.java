@@ -1,16 +1,22 @@
 package xreliquary.blocks.tile;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import xreliquary.lib.Reference;
 
 import java.util.List;
 
 public class TileEntityMortar extends TileEntity implements IInventory {
+
     //counts the number of times the player has right clicked the block
     //arbitrarily setting the number of times the player needs to grind the materials to five.
     private int pestleUsedCounter;
@@ -20,7 +26,7 @@ public class TileEntityMortar extends TileEntity implements IInventory {
 
 	public TileEntityMortar() {
 		pestleUsedCounter = 0;
-        itemStacks = new ItemStack[4];
+        itemStacks = new ItemStack[2];
 	}
 
 	@Override
@@ -28,53 +34,61 @@ public class TileEntityMortar extends TileEntity implements IInventory {
         //do stuff on tick? I don't think we need this to tick.
 	}
 
+    public Packet getDescriptionPacket() {
+        NBTTagCompound nbtTag = new NBTTagCompound();
+        this.writeToNBT(nbtTag);
+        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, nbtTag);
+    }
+
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        readFromNBT(packet.func_148857_g());
+    }
+
 	@Override
-	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-		super.readFromNBT(par1NBTTagCompound);
-        NBTTagList nbttaglist = par1NBTTagCompound.getTagList("Items", 10);
+	public void readFromNBT(NBTTagCompound tag) {
+		super.readFromNBT(tag);
+        NBTTagList items = tag.getTagList("Items", 10);
         this.itemStacks = new ItemStack[this.getSizeInventory()];
 
-        for (int i = 0; i < nbttaglist.tagCount(); ++i)
-        {
-            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
-            byte b0 = nbttagcompound1.getByte("Slot");
+        for (int i = 0; i < items.tagCount(); ++i) {
+            NBTTagCompound item = items.getCompoundTagAt(i);
+            byte b0 = item.getByte("Slot");
 
-            if (b0 >= 0 && b0 < this.itemStacks.length)
-            {
-                this.itemStacks[b0] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
+            if (b0 >= 0 && b0 < this.itemStacks.length) {
+                this.itemStacks[b0] = ItemStack.loadItemStackFromNBT(item);
+                if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+                    System.out.println("Hi #1");
             }
         }
 
-        this.pestleUsedCounter = par1NBTTagCompound.getShort("pestleUsed");
+        this.pestleUsedCounter = tag.getShort("pestleUsed");
 
-        if (par1NBTTagCompound.hasKey("CustomName", 8))
+        if (tag.hasKey("CustomName", 8))
         {
-            this.customInventoryName = par1NBTTagCompound.getString("CustomName");
+            this.customInventoryName = tag.getString("CustomName");
         }
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-		super.writeToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setShort("pestleUsed", (short)this.pestleUsedCounter);
-        NBTTagList nbttaglist = new NBTTagList();
+	public void writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
+        tag.setShort("pestleUsed", (short) this.pestleUsedCounter);
+        NBTTagList items = new NBTTagList();
 
-        for (int i = 0; i < this.itemStacks.length; ++i)
-        {
-            if (this.itemStacks[i] != null)
-            {
-                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                nbttagcompound1.setByte("Slot", (byte)i);
-                this.itemStacks[i].writeToNBT(nbttagcompound1);
-                nbttaglist.appendTag(nbttagcompound1);
+        for (int i = 0; i < this.itemStacks.length; ++i) {
+            if (this.itemStacks[i] != null) {
+                NBTTagCompound item = new NBTTagCompound();
+                this.itemStacks[i].writeToNBT(item);
+                item.setByte("Slot", (byte) i);
+                System.out.println("Hi #2");
+                items.appendTag(item);
             }
         }
 
-        par1NBTTagCompound.setTag("Items", nbttaglist);
+        tag.setTag("Items", items);
 
-        if (this.hasCustomInventoryName())
-        {
-            par1NBTTagCompound.setString("CustomName", this.getInventoryName());
+        if (this.hasCustomInventoryName()) {
+            tag.setString("CustomName", this.getInventoryName());
         }
 	}
 
@@ -148,12 +162,17 @@ public class TileEntityMortar extends TileEntity implements IInventory {
 
     @Override
     public void setInventorySlotContents(int var1, ItemStack var2) {
+        if(worldObj.isRemote)
+            System.out.println("Huh?");
         this.itemStacks[var1] = var2;
-
         if (var2 != null && var2.stackSize > this.getInventoryStackLimit())
         {
             var2.stackSize = this.getInventoryStackLimit();
         }
+    }
+
+    public void setInventory(ItemStack[] inventory) {
+
     }
 
     @Override

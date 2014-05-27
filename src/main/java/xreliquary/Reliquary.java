@@ -14,10 +14,10 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
 import xreliquary.items.ItemDestructionCatalyst;
-import xreliquary.lib.alkahestry.Alkahestry;
+import xreliquary.util.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
 import xreliquary.common.CommonProxy;
-import xreliquary.lib.alkahestry.AlkahestRecipe;
+import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.LogHelper;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;

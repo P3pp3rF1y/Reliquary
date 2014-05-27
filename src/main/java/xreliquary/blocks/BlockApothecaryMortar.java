@@ -38,27 +38,28 @@ public class BlockApothecaryMortar extends BlockContainer {
 
 	public BlockApothecaryMortar() {
 		super(Material.rock);
-
         this.setHardness(1.5F);
         this.setResistance(2.0F);
-
         this.setBlockName(Names.apothecary_mortar);
-
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
+        this.setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.3125F, 0.75F);
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta)
     {
         return this.blockIcon;
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister)
     {
         this.blockIcon = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_mortar);
     }
 
+    @Override
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List cbList, Entity collisionEntity)
     {
         this.setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.3125F, 0.75F);
@@ -102,10 +103,7 @@ public class BlockApothecaryMortar extends BlockContainer {
     /**
      * Called upon block activation (right click on the block.)
      */
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metaMaybe, float playerX, float playerY, float playerZ)
-    {
-        if (world.isRemote) return false;
-        //do things
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metaMaybe, float playerX, float playerY, float playerZ) {
         ItemStack heldItem = player.getCurrentEquippedItem();
         if (heldItem == null) return false;
         TileEntity tileEntity = world.getTileEntity(x, y, z);
@@ -117,13 +115,15 @@ public class BlockApothecaryMortar extends BlockContainer {
             if (mortarItems[slot] == null) {
                 ItemStack item = new ItemStack(player.getCurrentEquippedItem().getItem(), 1, player.getCurrentEquippedItem().getItemDamage());
                 player.getCurrentEquippedItem().stackSize--;
-                mortarItems[slot] = item;
+                if(player.getCurrentEquippedItem().stackSize == 0)
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                mortar.setInventorySlotContents(slot, item);
                 hadItem = true;
                 break;
             }
         }
         if (!hadItem) {
-
+            return false;
         }
         return true;
     }

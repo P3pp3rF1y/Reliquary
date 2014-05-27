@@ -2,8 +2,8 @@ package xreliquary.items.alkahestry;
 
 import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
-import xreliquary.lib.alkahestry.AlkahestRecipe;
-import xreliquary.lib.alkahestry.Alkahestry;
+import xreliquary.util.alkahestry.AlkahestRecipe;
+import xreliquary.util.alkahestry.Alkahestry;
 import xreliquary.util.ObjectUtils;
 import xreliquary.Reliquary;
 import net.minecraft.inventory.InventoryCrafting;

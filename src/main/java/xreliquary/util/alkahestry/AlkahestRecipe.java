@@ -1,7 +1,6 @@
-package xreliquary.lib.alkahestry;
+package xreliquary.util.alkahestry;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class AlkahestRecipe {
 

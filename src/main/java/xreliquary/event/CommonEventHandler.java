@@ -21,9 +21,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import xreliquary.lib.alkahestry.Alkahestry;
+import xreliquary.util.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
-import xreliquary.lib.alkahestry.AlkahestRecipe;
+import xreliquary.util.alkahestry.AlkahestRecipe;
 
 import java.util.Random;
 

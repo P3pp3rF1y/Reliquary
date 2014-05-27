@@ -1,4 +1,4 @@
-package xreliquary.lib.potions;
+package xreliquary.util.potions;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
