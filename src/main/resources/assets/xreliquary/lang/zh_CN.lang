@@ -2,6 +2,17 @@ itemGroup.xreliquary=圣遗物
 
 gui.tome.text=万能溶剂之经所载之知识某种程度;上正与万能溶剂之原理相左,;它能将用红石做的化学品变成世间万物.
 
+tile.altar_idle.name=光明祭坛
+tile.altar.name=光明祭坛
+tile.lilypad.name=富饶莲叶
+tile.wraith_node.name=幽魂节点
+tile.interdiction_torch.name={{!yellow}}结界火炬
+tile.interdiction_torch.tooltip=妙哉!拒敌于外.
+tile.apothecary_cauldron.name=药师坩埚
+tile.apothecary_cauldron.tooltip=用于炫酷地酿造药水.
+tile.apothecary_mortar.name=药师研钵
+tile.apothecary_mortar.tooltip=用于炫酷地研磨药材;提取精髓.
+
 item.handgun.name=狩猎手枪
 item.handgun.tooltip=为了伟大的正义.;右击开火,长按上子弹.
 
@@ -87,11 +98,32 @@ item.void_satchel.name=虚空手袋
 item.void_satchel.tooltip=虚空手袋;当前装着{{holds}}.;它的容量为{{capacity}}.
 item.hero_medallion.name=英雄之章
 item.hero_medallion.tooltip=\u00a72经验: {{experience}};现在你指需要一个;放入所有经验的;地方了.
-
-tile.altar_idle.name=光明祭坛
-tile.altar.name=光明祭坛
-tile.lilypad.name=富饶莲叶
-tile.wraith_node.name=幽魂节点
+item.ender_staff.name=末影手杖
+item.ender_staff.tooltip=消耗物品栏中的末影珍珠.;将其投掷到更远的地方.
+item.angelic_feather.name=天使之羽
+item.angelic_feather.tooltip=保护你免受跌落伤害,;代之以消耗饱腹度.
+item.phoenix_down.name=凤凰之尾
+item.phoenix_down.tooltip=原地满血复活一次后会;还原成天使之羽.
+item.crimson_cloth.name=腥红之布
+item.crimson_cloth.tooltip=一块血红色的布,浸透了;炼金药剂.
+item.dragon_talon.name=龙拳
+item.dragon_talon.tooltip=灵巧的龙拳;,不单独使用.
+item.dragon_claws.name=龙爪
+item.dragon_claws.tooltip=吸收火焰伤害;但会消耗饱腹度.
+item.claws_of_the_firedrinker.name={{!red}}饮火者之爪
+item.claws_of_the_firedrinker.tooltip=消耗火焰伤害(yum!);消耗饱腹度来;吸收岩浆伤害.
+item.squid_beak.name=鱿鱼嘴
+item.squid_beak.tooltip=某处一定有这样一只;非常悲伤的无嘴鱿鱼.
+item.kraken_shell_fragment.name=海妖壳甲残片
+item.kraken_shell_fragment.tooltip=海妖之喙拼成;的光滑贝壳.
+item.kraken_shell.name=海妖壳甲
+item.kraken_shell.tooltip=提升水下机动性;.;消耗饱腹度;来吸收窒息伤害.
+item.angelheart_vial.name=天使心瓶
+item.angelheart_vial.tooltip=能让你复活一次;然后会碎掉.
+item.elsewhere_flask.name=彼方瓶
+item.elsewhere_flask.tooltip=同时吸入多种药剂.{{contents}}
+item.serpent_staff.name={{!green}}蛇杖
+item.serpent_staff.tooltip=下流的法杖啊;将海妖的唾沫;砸向你的敌人.
 
 item.potion_0.name=浓缩溅射药剂
 item.potion_1.name=春之药#9
@@ -152,3 +184,15 @@ item.potion_25.tooltip=失明效果;持续六十秒.
 item.potion_26.tooltip=缓慢,虚弱和中毒效果;持续六十秒.
 item.potion_27.tooltip=在一大片方形区域内;催生作物生长.
 item.potion_28.tooltip=一瓶普通的水.
+
+potion.haste.name=挖掘
+potion.leaping.name=跳跃
+potion.strength.name=能量
+potion.movespeed.name=速度
+potion.nightvision.name=夜视
+potion.invisibility.name=隐形
+potion.heal.name=治愈
+potion.regeneration.name=重生
+potion.resistance.name=护甲
+potion.fireresistance.name=抗火
+potion.milk.name=驱散
