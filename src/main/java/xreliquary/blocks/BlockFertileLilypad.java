@@ -7,6 +7,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.init.XRInit;
+import xreliquary.items.block.ItemFertileLilypad;
 import xreliquary.util.ObjectUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
@@ -25,7 +26,7 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit(itemBlock = xreliquary.items.ItemFertileLilypad.class)
+@XRInit(itemBlock = ItemFertileLilypad.class)
 public class BlockFertileLilypad extends BlockFlower {
 
 	public BlockFertileLilypad() {

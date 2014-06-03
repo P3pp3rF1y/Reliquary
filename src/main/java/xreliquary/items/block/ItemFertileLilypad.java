@@ -1,4 +1,4 @@
-package xreliquary.items;
+package xreliquary.items.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import xreliquary.Reliquary;
 import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -19,8 +20,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemFertileLilypad extends ItemBlock {
 
 	public ItemFertileLilypad(Block block) {
-		super(ContentHandler.getBlock(Names.lilypad));
-	}
+		super(block);
+    }
 
 	@Override
 	@SideOnly(Side.CLIENT)
