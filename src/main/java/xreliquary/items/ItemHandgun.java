@@ -29,9 +29,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @XRInit
 public class ItemHandgun extends ItemBase {
 
-	@SideOnly(Side.CLIENT)
-//	private IIcon iconOverlay;
-
 	public ItemHandgun() {
 		super(Reference.MOD_ID, Names.handgun);
 		this.setMaxStackSize(1);

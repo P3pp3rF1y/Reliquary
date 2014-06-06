@@ -47,7 +47,6 @@ public class ContentHandler {
                 Block block = (Block) obj;
                 if(((XRInit) objClass.getAnnotation(XRInit.class)).itemBlock() != XRInit.class) {
                     GameRegistry.registerBlock(block, ((XRInit) objClass.getAnnotation(XRInit.class)).itemBlock(), block.getUnlocalizedName().substring(5));
-                    System.out.println(block.getUnlocalizedName().substring(5));
                 } else
                     GameRegistry.registerBlock(block, block.getUnlocalizedName().substring(5));
             } else {

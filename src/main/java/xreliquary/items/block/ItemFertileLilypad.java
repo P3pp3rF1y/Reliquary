@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import xreliquary.Reliquary;
 import xreliquary.init.ContentHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
