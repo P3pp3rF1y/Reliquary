@@ -2,20 +2,15 @@ package xreliquary.blocks.tile;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import xreliquary.lib.Reference;
 
-import java.util.List;
-
-public class TileEntityMortar extends TileEntity implements IInventory {
+public class TileEntityMortar extends TileEntityBase implements IInventory {
 
     //counts the number of times the player has right clicked the block
     //arbitrarily setting the number of times the player needs to grind the materials to five.
@@ -33,16 +28,6 @@ public class TileEntityMortar extends TileEntity implements IInventory {
 	public void updateEntity() {
         //do stuff on tick? I don't think we need this to tick.
 	}
-
-    public Packet getDescriptionPacket() {
-        NBTTagCompound nbtTag = new NBTTagCompound();
-        this.writeToNBT(nbtTag);
-        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, nbtTag);
-    }
-
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
-        readFromNBT(packet.func_148857_g());
-    }
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {

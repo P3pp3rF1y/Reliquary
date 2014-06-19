@@ -6,34 +6,26 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.blocks.tile.TileEntityMortar;
-import xreliquary.client.render.RenderApothecaryCauldron;
-import xreliquary.client.render.RenderApothecaryMortar;
-import xreliquary.init.ContentHandler;
-import xreliquary.init.XRInit;
-import xreliquary.items.block.ItemBlockBase;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 import java.util.List;
 import java.util.Random;
 
-@XRInit(itemBlock = ItemBlockBase.class)
+@ContentInit(itemBlock = ItemBlockBase.class)
 public class BlockApothecaryMortar extends BlockContainer {
 
 	public BlockApothecaryMortar() {

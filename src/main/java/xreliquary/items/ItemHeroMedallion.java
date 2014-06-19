@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableMap;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,16 +16,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.NBTHelper;
 
-@XRInit
+@ContentInit
 public class ItemHeroMedallion extends ItemBase {
 
 	public ItemHeroMedallion() {
-		super(Reference.MOD_ID, Names.hero_medallion);
+		super(Names.hero_medallion);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -80,14 +81,14 @@ public class ItemHeroMedallion extends ItemBase {
 		if (e instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer)e;
 			//in order to make this stop at a specific leve, we will need to do a preemptive check for a specific leve.
-			if (player.experienceLevel < Reliquary.PROXY.heroMedallionLevelThreshold) {
+			if (player.experienceLevel < Reliquary.CONFIG.getInt(Names.hero_medallion, "xpLevelCap")) {
 				if (getExperience(ist) > 0) {
                     increasePlayerExperience(player);
                     decreaseMedallionExperience(ist);
                 }
 
 			} else {
-				if ((player.experienceLevel > Reliquary.PROXY.heroMedallionLevelThreshold || player.experience > 0F) && getExperience(ist) < Integer.MAX_VALUE){
+				if ((player.experienceLevel > Reliquary.CONFIG.getInt(Names.hero_medallion, "xpLevelCap") || player.experience > 0F) && getExperience(ist) < Integer.MAX_VALUE){
 					decreasePlayerExperience(player);
                     increaseMedallionExperience(ist);
                 }
@@ -98,7 +99,7 @@ public class ItemHeroMedallion extends ItemBase {
     //I'm not 100% this is needed. You may be able to avoid this whole call by
     //using the method in the player class, might be worth testing (player.addExperience(-1)?)
 	public void decreasePlayerExperience(EntityPlayer player) {
-		if (player.experience - (1.0F / (float)player.xpBarCap()) <= 0 && player.experienceLevel > Reliquary.PROXY.heroMedallionLevelThreshold){
+		if (player.experience - (1.0F / (float)player.xpBarCap()) <= 0 && player.experienceLevel > Reliquary.CONFIG.getInt(Names.hero_medallion, "xpLevelCap")){
 			decreasePlayerLevel(player);
             return;
         }

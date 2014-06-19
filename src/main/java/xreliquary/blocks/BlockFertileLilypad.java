@@ -6,9 +6,9 @@ import java.util.Random;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.items.block.ItemFertileLilypad;
-import xreliquary.util.ObjectUtils;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.material.Material;
@@ -26,7 +26,7 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit(itemBlock = ItemFertileLilypad.class)
+@ContentInit(itemBlock = ItemFertileLilypad.class)
 public class BlockFertileLilypad extends BlockFlower {
 
 	public BlockFertileLilypad() {
@@ -72,7 +72,7 @@ public class BlockFertileLilypad extends BlockFlower {
 					int z = zO + zD;
 					Block block = world.getBlock(x, y, z);
 
-					if (block != null && Block.blockRegistry.getNameForObject(block).equals(ObjectUtils.getBlockIdentifier(block))) {
+					if (block != null && Block.blockRegistry.getNameForObject(block).equals(ContentHelper.getIndent(block))) {
 						continue;
 					}
 
@@ -104,7 +104,7 @@ public class BlockFertileLilypad extends BlockFlower {
 
 	@Override
 	protected boolean canPlaceBlockOn(Block block) {
-		return block == null ? false : ObjectUtils.areBlocksEqual(block, Blocks.water);
+		return block == null ? false : ContentHelper.areBlocksEqual(block, Blocks.water);
 	}
 
 	@Override

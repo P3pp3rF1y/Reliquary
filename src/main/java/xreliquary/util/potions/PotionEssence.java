@@ -10,8 +10,6 @@ import java.util.List;
 /**
  * PotionEssence, the helper class for well, potion essences.
  * Abstracts away juggling all that NBT data, combining effects, and applying effects.
- *
- * @author TheMike
  */
 public class PotionEssence {
 

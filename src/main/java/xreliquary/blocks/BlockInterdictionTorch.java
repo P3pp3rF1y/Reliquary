@@ -4,24 +4,22 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.init.XRInit;
-import xreliquary.items.block.ItemBlockBase;
+import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 import java.util.List;
 import java.util.Random;
 
-@XRInit(itemBlock = ItemBlockBase.class)
+@ContentInit(itemBlock = ItemBlockBase.class)
 public class BlockInterdictionTorch extends BlockTorch {
 
     public BlockInterdictionTorch() {

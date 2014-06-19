@@ -14,8 +14,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityAltar;
-import xreliquary.init.ContentHandler;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
@@ -23,14 +23,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockAlkahestryAltar extends BlockContainer {
 
-    @XRInit
+    @ContentInit
     static public class BlockActiveAlkahestryAltar extends BlockAlkahestryAltar {
         public BlockActiveAlkahestryAltar() {
             super(true);
         }
     }
 
-    @XRInit
+    @ContentInit
     static public class BlockIdleAlkahestryAltar extends BlockAlkahestryAltar {
         public BlockIdleAlkahestryAltar() {
             super(false);

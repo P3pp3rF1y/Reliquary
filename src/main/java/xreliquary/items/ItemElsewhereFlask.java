@@ -3,27 +3,22 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.creativetab.CreativeTabs;
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-import xreliquary.util.LanguageHelper;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-@XRInit
+@ContentInit
 public class ItemElsewhereFlask extends ItemBase {
 
 	public ItemElsewhereFlask() {
-		super(Reference.MOD_ID, Names.elsewhere_flask);
+		super(Names.elsewhere_flask);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		this.canRepair = false;

@@ -1,13 +1,9 @@
 package xreliquary.items;
 
-import java.util.List;
-
-import com.google.common.collect.ImmutableMap;
-
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -16,18 +12,18 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.event.ClientEventHandler;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemTwilightCloak extends ItemBase {
 
 	public ItemTwilightCloak() {
-		super(Reference.MOD_ID, Names.twilight_cloak);
+		super(Names.twilight_cloak);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		//this.setMaxDamage(2401);
 		this.setMaxStackSize(1);
@@ -87,7 +83,7 @@ public class ItemTwilightCloak extends ItemBase {
 		EntityPlayer player = (EntityPlayer) e;
         //always on for now, takes effect only at night, or low light (configurable)
         //if (ist.getItemDamage() == 0) return;
-        if (world.getWorldTime() % 24000 < 12000 && player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int)Math.floor(player.posY), (int)Math.floor(player.posZ)) > Reliquary.PROXY.twilightCloakLightThreshold) return;
+        if (world.getWorldTime() % 24000 < 12000 && player.worldObj.getBlockLightValue((int)Math.floor(player.posX), (int)Math.floor(player.posY), (int)Math.floor(player.posZ)) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "maxLightLevel")) return;
         //checks if the effect would do anything.
         PotionEffect quickInvisibility = new PotionEffect(Potion.invisibility.id, 2, 0, true);
         if (!player.isPotionApplicable(quickInvisibility)) return;

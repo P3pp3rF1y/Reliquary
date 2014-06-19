@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -10,18 +11,18 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemMidasTouchstone extends ItemBase {
 
 	public ItemMidasTouchstone() {
-		super(Reference.MOD_ID, Names.midas_touchstone);
+		super(Names.midas_touchstone);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(257);
 		this.setMaxStackSize(1);

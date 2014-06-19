@@ -2,21 +2,22 @@ package xreliquary.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityGlowingWater;
-import xreliquary.init.ContentHandler;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
-@XRInit
+@ContentInit
 public class ItemGlowingWater extends ItemBase {
 
 	public ItemGlowingWater() {
-		super(Reference.MOD_ID, Names.glowing_water);
+		super(Names.glowing_water);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);

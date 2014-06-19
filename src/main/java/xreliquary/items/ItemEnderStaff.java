@@ -3,8 +3,8 @@ package xreliquary.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
@@ -12,16 +12,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityEnderStaffProjectile;
-import xreliquary.entities.EntitySpecialSnowball;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
-@XRInit
+@ContentInit
 public class ItemEnderStaff extends ItemBase {
 
     public ItemEnderStaff() {
-        super(Reference.MOD_ID, Names.ender_staff);
+        super(Names.ender_staff);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
         this.setMaxDamage(257);

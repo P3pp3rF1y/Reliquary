@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -8,17 +9,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntitySpecialSnowball;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemIceRod extends ItemBase {
 
 	public ItemIceRod() {
-		super(Reference.MOD_ID, Names.ice_magus_rod);
+		super(Names.ice_magus_rod);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(257);
 		this.setMaxStackSize(1);

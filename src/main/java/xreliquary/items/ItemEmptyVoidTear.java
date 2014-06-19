@@ -1,8 +1,9 @@
 package xreliquary.items;
 
-import xreliquary.init.ContentHandler;
-import xreliquary.init.XRInit;
-import xreliquary.util.ObjectUtils;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -12,13 +13,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 
-@XRInit
+@ContentInit
 public class ItemEmptyVoidTear extends ItemBase {
 
 	public ItemEmptyVoidTear() {
-		super(Reference.MOD_ID, Names.void_tear_empty);
+		super(Names.void_tear_empty);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);
@@ -66,7 +66,7 @@ public class ItemEmptyVoidTear extends ItemBase {
 		Item item = target.getItem();
 		int itemQuantity = getQuantityInInventory(target, inventory);
 		ItemStack tear = new ItemStack(ContentHandler.getItem(Names.void_tear), 1);
-		tear.setTagCompound(createStackTagCompoundForTear(itemMeta, ObjectUtils.getItemIdentifier(item), itemQuantity));
+		tear.setTagCompound(createStackTagCompoundForTear(itemMeta, ContentHelper.getIdent(item), itemQuantity));
 		findAndRemoveQuantity(inventory, new ItemStack(item, 1, itemMeta), itemQuantity);
 		return tear;
 	}
@@ -109,7 +109,7 @@ public class ItemEmptyVoidTear extends ItemBase {
 			if (ist == null) {
 				continue;
 			}
-			if (ObjectUtils.getItemIdentifier(ist.getItem()).equals(ObjectUtils.getItemIdentifier(this))) {
+			if (ContentHelper.getIdent(ist.getItem()).equals(ContentHelper.getIdent(this))) {
 				continue;
 			}
 			if (ist.getMaxStackSize() == 1) {

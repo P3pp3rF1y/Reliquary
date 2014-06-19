@@ -2,7 +2,7 @@ package xreliquary;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import xreliquary.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentHandler;
 import xreliquary.lib.Names;
 
 public class CreativeTabXR extends CreativeTabs {

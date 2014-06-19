@@ -1,9 +1,9 @@
 package xreliquary.blocks.tile;
 
+import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 
-public class TileEntityCauldron extends TileEntity {
+public class TileEntityCauldron extends TileEntityBase {
 
 	public TileEntityCauldron() {
 		//TODO initialization stuff, as needed.

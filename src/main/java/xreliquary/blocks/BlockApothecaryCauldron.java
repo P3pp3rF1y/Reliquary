@@ -22,16 +22,16 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.client.render.RenderApothecaryCauldron;
-import xreliquary.init.ContentHandler;
-import xreliquary.init.XRInit;
-import xreliquary.items.block.ItemBlockBase;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 import java.util.List;
 import java.util.Random;
 
-@XRInit(itemBlock = ItemBlockBase.class)
+@ContentInit(itemBlock = ItemBlockBase.class)
 public class BlockApothecaryCauldron extends BlockContainer {
 
 	public BlockApothecaryCauldron() {
@@ -92,9 +92,8 @@ public class BlockApothecaryCauldron extends BlockContainer {
 
     //called by the renderer to get the texture in a static method.
     @SideOnly(Side.CLIENT)
-    public static IIcon getCauldronIcon(String textureName)
-    {
-        BlockApothecaryCauldron cauldronStatic = (BlockApothecaryCauldron)ContentHandler.getBlock(Names.apothecary_cauldron);
+    public static IIcon getCauldronIcon(String textureName) {
+        BlockApothecaryCauldron cauldronStatic = (BlockApothecaryCauldron) ContentHandler.getBlock(Names.apothecary_cauldron);
         return textureName.equals("inner") ? cauldronStatic.innerTexture : (textureName.equals("bottom") ? cauldronStatic.bottomTexture : textureName.equals("inside") ? cauldronStatic.insideTexture : null);
     }
 

@@ -1,19 +1,19 @@
 package xreliquary.items;
 
 import xreliquary.Reliquary;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 /**
  * Created by Xeno on 5/15/14.
  */
-@XRInit
+@ContentInit
 public class ItemPhoenixDown extends ItemAngelicFeather {
 
 
     public ItemPhoenixDown() {
-        super(Reference.MOD_ID, Names.phoenix_down);
+        super(Names.phoenix_down);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
         canRepair = false;

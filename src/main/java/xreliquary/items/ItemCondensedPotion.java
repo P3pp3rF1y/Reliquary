@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import java.util.List;
 
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -28,19 +29,19 @@ import xreliquary.entities.EntityCondensedSplashSlowness;
 import xreliquary.entities.EntityCondensedSplashWeakness;
 import xreliquary.entities.EntityCondensedSplashWither;
 import xreliquary.event.ClientEventHandler;
-import xreliquary.init.ContentHandler;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemCondensedPotion extends ItemBase {
 
 	public ItemCondensedPotion() {
-		super(Reference.MOD_ID, Names.condensed_potion);
+		super(Names.condensed_potion);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(16);

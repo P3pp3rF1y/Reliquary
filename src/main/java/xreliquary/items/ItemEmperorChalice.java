@@ -1,7 +1,8 @@
 package xreliquary.items;
 
-import xreliquary.init.XRInit;
-import xreliquary.util.ObjectUtils;
+import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -18,11 +19,11 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemEmperorChalice extends ItemBase {
 
 	public ItemEmperorChalice() {
-		super(Reference.MOD_ID, Names.emperor_chalice);
+		super(Names.emperor_chalice);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -74,8 +75,9 @@ public class ItemEmperorChalice extends ItemBase {
 		if (world.isRemote)
 			return ist;
 
-		player.getFoodStats().addStats(1, (float) (Reliquary.PROXY.chaliceMultiplier / 2));
-		player.attackEntityFrom(DamageSource.drown, Reliquary.PROXY.chaliceMultiplier);
+		int multiplier = (Integer) Reliquary.CONFIG.get(Names.emperor_chalice, "multiplier");
+		player.getFoodStats().addStats(1, (float) (multiplier / 2));
+		player.attackEntityFrom(DamageSource.drown, multiplier);
 		return new ItemStack(this, 1, 0);
 	}
 
@@ -106,8 +108,8 @@ public class ItemEmperorChalice extends ItemBase {
 				if (!player.canPlayerEdit(var13, var14, var15, mop.sideHit, ist))
 					return ist;
 
-                String ident = ObjectUtils.getBlockIdentifier(world.getBlock(var13, var14, var15));
-				if ((ident.equals(ObjectUtils.getBlockIdentifier(Blocks.flowing_water)) || ident.equals(ObjectUtils.getBlockIdentifier(Blocks.water))) && world.getBlockMetadata(var13, var14, var15) == 0) {
+                String ident = ContentHelper.getIndent(world.getBlock(var13, var14, var15));
+				if ((ident.equals(ContentHelper.getIndent(Blocks.flowing_water)) || ident.equals(ContentHelper.getIndent(Blocks.water))) && world.getBlockMetadata(var13, var14, var15) == 0) {
 					world.setBlock(var13, var14, var15, Blocks.air);
 
 					return new ItemStack(ist.getItem(), 1, 1);

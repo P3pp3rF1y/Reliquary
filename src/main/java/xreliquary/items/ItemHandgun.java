@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,8 +18,8 @@ import xreliquary.entities.EntityNeutralShot;
 import xreliquary.entities.EntitySandShot;
 import xreliquary.entities.EntitySeekerShot;
 import xreliquary.entities.EntityStormShot;
-import xreliquary.init.ContentHandler;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -26,11 +27,11 @@ import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemHandgun extends ItemBase {
 
 	public ItemHandgun() {
-		super(Reference.MOD_ID, Names.handgun);
+		super(Names.handgun);
 		this.setMaxStackSize(1);
 		canRepair = false;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);

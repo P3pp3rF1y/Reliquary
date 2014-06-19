@@ -3,6 +3,7 @@ package xreliquary.items;
 import java.util.Iterator;
 import java.util.List;
 
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -15,18 +16,18 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemFortuneCoin extends ItemBase {
 
 	public ItemFortuneCoin() {
-		super(Reference.MOD_ID, Names.fortune_coin);
+		super(Names.fortune_coin);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -71,7 +72,7 @@ public class ItemFortuneCoin extends ItemBase {
 
 	@Override
 	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
-		if (!Reliquary.PROXY.disableCoinAudio)
+		if (!Reliquary.CONFIG.getBool(Names.fortune_coin, "disableAudio"))
 			if (NBTHelper.getShort("soundTimer", ist) > 0) {
 				if (NBTHelper.getShort("soundTimer", ist) % 2 == 0) {
 					world.playSoundAtEntity(e, "random.orb", 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
@@ -128,7 +129,7 @@ public class ItemFortuneCoin extends ItemBase {
 		double y = player.posY - player.height / 2F;
 		double z = player.posZ + player.getLookVec().zCoord * 0.2D;
 		item.setPosition(x, y, z);
-		if (!Reliquary.PROXY.disableCoinAudio) {
+		if (!Reliquary.CONFIG.getBool(Names.fortune_coin, "disableAudio")) {
 			player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
 		}
 	}
@@ -184,7 +185,7 @@ public class ItemFortuneCoin extends ItemBase {
 		if (player.isSneaking()) {
 			player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
 		} else {
-			if (!Reliquary.PROXY.disableCoinAudio) {
+			if (!Reliquary.CONFIG.getBool(Names.fortune_coin, "disableAudio")) {
 				NBTHelper.setShort("soundTimer", ist, 6);
 			}
 			ist.setItemDamage(ist.getItemDamage() == 0 ? 1 : 0);

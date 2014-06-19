@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -11,19 +12,19 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemAlkahestryTome extends ItemBase {
 
 	public ItemAlkahestryTome() {
-		super(Reference.MOD_ID, Names.alkahest_tome);
+		super(Names.alkahestry_tome);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		this.setMaxDamage(Reliquary.PROXY.tomeRedstoneLimit + 1);
+		this.setMaxDamage(((Integer) Reliquary.CONFIG.get(Names.alkahestry_tome, "redstoneLimit")) + 1);
 		this.setMaxStackSize(1);
 		this.canRepair = false;
 		this.hasSubtypes = true;
@@ -45,7 +46,7 @@ public class ItemAlkahestryTome extends ItemBase {
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		this.formatTooltip(ImmutableMap.of("redstoneAmount", String.valueOf((Reliquary.PROXY.tomeRedstoneLimit - stack.getItemDamage())), "redstoneLimit", String.valueOf(Reliquary.PROXY.tomeRedstoneLimit)), stack, list);
+		this.formatTooltip(ImmutableMap.of("redstoneAmount", String.valueOf((Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit") - stack.getItemDamage())), "redstoneLimit", String.valueOf(Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit"))), stack, list);
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class ItemAlkahestryTome extends ItemBase {
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List list) {
 		ItemStack tomeStack = new ItemStack(item, 1, 0);
-		tomeStack.setItemDamage(Reliquary.PROXY.tomeRedstoneLimit);
+		tomeStack.setItemDamage(Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit"));
 		list.add(tomeStack);
 	}
 

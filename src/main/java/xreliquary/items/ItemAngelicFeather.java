@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -10,27 +11,26 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 
 /**
  * Created by Xeno on 5/15/14.
  */
-@XRInit
+@ContentInit
 public class ItemAngelicFeather extends ItemBase {
 
 
     public ItemAngelicFeather() {
-        super(Reference.MOD_ID, Names.angelic_feather);
+        super(Names.angelic_feather);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
         canRepair = false;
     }
 
     //so it can be extended by phoenix down
-    protected ItemAngelicFeather(String modid, String name) {
-        super(modid, name);
+    protected ItemAngelicFeather(String name) {
+        super(name);
     }
 
     @Override

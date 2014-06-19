@@ -3,7 +3,7 @@ package xreliquary.util.alkahestry;
 import java.util.HashMap;
 import java.util.Map;
 
-import xreliquary.util.ObjectUtils;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -20,7 +20,7 @@ public class Alkahestry {
 
 	public static void addKey(AlkahestRecipe recipe) {
 		if (recipe.dictionaryName == null)
-			REGISTRY.put(ObjectUtils.getItemIdentifier(recipe.item.getItem()), recipe);
+			REGISTRY.put(ContentHelper.getIdent(recipe.item.getItem()), recipe);
 		else
 			REGISTRY.put("OreDictionary:" + String.valueOf(OreDictionary.getOreID(recipe.dictionaryName)), recipe);
 	}

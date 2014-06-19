@@ -1,6 +1,7 @@
 package xreliquary.init;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import lib.enderwizards.sandstone.init.ContentHandler;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -110,8 +111,8 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.handgun), 1, 0), new Object[] { "bim", "isi", "igi", 'i', Items.iron_ingot, 'b', gunPart(1, 1), 'm', gunPart(1, 2), 'g', gunPart(1, 0), 's', Items.slime_ball });
 
         // tome and alkahestry recipes
-        ItemStack tomeStack = new ItemStack(ContentHandler.getItem(Names.alkahest_tome), 1, 0);
-        tomeStack.setItemDamage(Reliquary.PROXY.tomeRedstoneLimit);
+        ItemStack tomeStack = new ItemStack(ContentHandler.getItem(Names.alkahestry_tome), 1, 0);
+        tomeStack.setItemDamage((Integer) Reliquary.CONFIG.get(Names.alkahestry_tome, "redstoneLimit"));
         GameRegistry.addShapelessRecipe(tomeStack, new Object[] { Items.book, Items.blaze_rod, Items.magma_cream, Items.gold_ingot, Blocks.glowstone, Items.nether_wart, new ItemStack(Items.skull, 1, 1), Items.ghast_tear, Items.lava_bucket });
 
         GameRegistry.addRecipe(new AlkahestryRedstoneRecipe());
@@ -194,6 +195,9 @@ public class XRRecipes {
         // destruction catalyst
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.destruction_catalyst), 1, 0), new Object[] { "rrr", "rtr", "rrf", 'f', Items.flint, 't', new ItemStack(ContentHandler.getItem(Names.midas_touchstone), 1, -1), 'r', Items.blaze_rod });
 
+        // serpent staff
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.serpent_staff), 1), "oeo", "sks", " s ", 'o', Blocks.obsidian, 'e', Items.ender_eye, 's', Items.stick, 'k', ContentHandler.getItem(Names.kraken_shell));
+        
         /* potions and splash potions */
 
         // empty vial

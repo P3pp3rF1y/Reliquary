@@ -1,6 +1,5 @@
 package xreliquary.entities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,6 @@ public class ConcussiveExplosion extends Explosion {
 	public double explosionZ;
 	public Entity exploder;
 	public float explosionSize;
-	public List field_77281_g = new ArrayList();
 	private Map field_77288_k = new HashMap();
 	private EntityPlayer shootingEntity;
 	public boolean hurtsPlayer;

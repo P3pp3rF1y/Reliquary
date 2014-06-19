@@ -1,10 +1,10 @@
 package xreliquary.items.alkahestry;
 
-import xreliquary.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import xreliquary.lib.Names;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
-import xreliquary.util.ObjectUtils;
 import xreliquary.Reliquary;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -21,9 +21,9 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
+				if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome)))) {
 					tome = stack.copy();
-				} else if (!ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
+				} else if (!ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome)))) {
 					if (valid == 0) {
 						valid = 1;
 						itemStack = stack;
@@ -36,10 +36,10 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		if (tome != null && valid == 1 && itemStack != null) {
 			AlkahestRecipe recipe = null;
 			if (Alkahestry.getDictionaryKey(itemStack) == null)
-				recipe = Alkahestry.getRegistry().get(ObjectUtils.getItemIdentifier(itemStack.getItem()));
+				recipe = Alkahestry.getRegistry().get(ContentHelper.getIdent(itemStack.getItem()));
 			else
 				recipe = Alkahestry.getDictionaryKey(itemStack);
-   			return recipe != null && (tome.getItemDamage() + recipe.cost <= Reliquary.PROXY.tomeRedstoneLimit);
+   			return recipe != null && (tome.getItemDamage() + recipe.cost <= Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit"));
 		} else {
 			return false;
 		}
@@ -52,9 +52,9 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (!(ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome))))) {
+				if (!(ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome))))) {
 					if (Alkahestry.getDictionaryKey(stack) == null)
-						returned = Alkahestry.getRegistry().get(ObjectUtils.getItemIdentifier(stack.getItem()));
+						returned = Alkahestry.getRegistry().get(ContentHelper.getIdent(stack.getItem()));
 					else {
 						returned = Alkahestry.getDictionaryKey(stack);
 						dictStack = stack;
@@ -76,7 +76,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 
 	@Override
 	public ItemStack getRecipeOutput() {
-		return new ItemStack(ContentHandler.getItem(Names.alkahest_tome), 1);
+		return new ItemStack(ContentHandler.getItem(Names.alkahestry_tome), 1);
 	}
 
 }

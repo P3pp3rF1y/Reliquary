@@ -3,8 +3,9 @@ package xreliquary.items;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import xreliquary.init.XRInit;
-import xreliquary.util.ObjectUtils;
+import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -15,13 +16,13 @@ import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
-@XRInit
+@ContentInit
 public class ItemDestructionCatalyst extends ItemBase {
 
 	public static List<String> ids = ImmutableList.of("minecraft:dirt", "minecraft:grass", "minecraft:gravel", "minecraft:cobblestone", "minecraft:stone", "minecraft:sand", "minecraft:sandstone", "minecraft:snow", "minecraft:soul_sand", "minecraft:netherrack", "minecraft:end_stone");
 
 	public ItemDestructionCatalyst() {
-		super(Reference.MOD_ID, Names.destruction_catalyst);
+		super(Names.destruction_catalyst);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		canRepair = false;
@@ -45,7 +46,7 @@ public class ItemDestructionCatalyst extends ItemBase {
 		for (int xD = -1; xD <= 1; xD++) {
 			for (int yD = -1; yD <= 1; yD++) {
 				for (int zD = -1; zD <= 1; zD++) {
-					if (isBreakable(ObjectUtils.getBlockIdentifier(world.getBlock(x + xD, y + yD, z + zD)))) {
+					if (isBreakable(ContentHelper.getIndent(world.getBlock(x + xD, y + yD, z + zD)))) {
 						world.setBlock(x + xD, y + yD, z + zD, Blocks.air);
 						if (world.rand.nextInt(2) == 0) {
 							world.spawnParticle("largeexplode", x + xD, y + yD, z + zD, 1.0D, 0.0D, 0.0D);

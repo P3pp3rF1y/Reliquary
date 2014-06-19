@@ -13,9 +13,11 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import xreliquary.init.ContentHandler;
+import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import xreliquary.entities.EntityKrakenSlime;
 import xreliquary.lib.Names;
-import xreliquary.util.ObjectUtils;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -28,6 +30,7 @@ import xreliquary.util.alkahestry.AlkahestRecipe;
 import java.util.Random;
 
 public class CommonEventHandler {
+	
 	@SubscribeEvent
 	public void onCraftingPotion(PlayerEvent.ItemCraftedEvent event) {
 		for (int slot = 0; slot < event.craftMatrix.getSizeInventory(); slot++) {
@@ -283,13 +286,13 @@ public class CommonEventHandler {
         for (int count = 0; count < event.craftMatrix.getSizeInventory(); count++) {
             ItemStack stack = event.craftMatrix.getStackInSlot(count);
             if (stack != null) {
-                if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
+                if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome)))) {
                     tome = count;
-                } else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(Items.redstone)) || ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
+                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone)) || ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIndent(Blocks.redstone_block))) {
                     isCharging = true;
                 } else {
                     if (Alkahestry.getDictionaryKey(stack) == null) {
-                        recipe = Alkahestry.getRegistry().get(ObjectUtils.getItemIdentifier(stack.getItem()));
+                        recipe = Alkahestry.getRegistry().get(ContentHelper.getIdent(stack.getItem()));
                     } else {
                         recipe = Alkahestry.getDictionaryKey(stack);
                     }

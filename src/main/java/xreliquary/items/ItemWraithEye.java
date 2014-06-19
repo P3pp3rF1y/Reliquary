@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
-import xreliquary.init.ContentHandler;
-import xreliquary.init.XRInit;
-import xreliquary.util.ObjectUtils;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,18 +17,17 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.event.ClientEventHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemWraithEye extends ItemSalamanderEye {
 
 	public ItemWraithEye() {
-		super(Reference.MOD_ID, Names.wraith_eye);
+		super(Names.wraith_eye);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -72,7 +71,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 			if (!world.isRemote) {
                 par2EntityPlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "Out of range!"));
 			}
-		} else if (eye.getTagCompound() != null && ObjectUtils.areBlocksEqual(world.getBlock(eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer))), ContentHandler.getBlock(Names.wraith_node))) {
+		} else if (eye.getTagCompound() != null && ContentHelper.areBlocksEqual(world.getBlock(eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer))), ContentHandler.getBlock(Names.wraith_node))) {
 
 			if (canTeleport(world, eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer)))) {
 
@@ -147,7 +146,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 	@Override
 	public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
 		// if right clicking on a wraith node, bind the eye to that wraith node.
-		if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && ObjectUtils.areBlocksEqual(world.getBlock(x, y, z), ContentHandler.getBlock(Names.wraith_node))) {
+		if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && ContentHelper.areBlocksEqual(world.getBlock(x, y, z), ContentHandler.getBlock(Names.wraith_node))) {
 			setWraithNode(ist, x, y, z, Integer.valueOf(getWorld(player)), player);
 
 			player.playSound("mob.endermen.portal", 1.0f, 1.0f);

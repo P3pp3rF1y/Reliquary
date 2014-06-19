@@ -1,8 +1,8 @@
 package xreliquary.items.alkahestry;
 
-import xreliquary.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import xreliquary.lib.Names;
-import xreliquary.util.ObjectUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
@@ -20,12 +20,12 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
+				if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome)))) {
 					tome = stack.copy();
-				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(Items.redstone))) {
+				} else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone))) {
 					if (valid == 0) valid = 1;
                     amount++;
-                } else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
+                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIndent(Blocks.redstone_block))) {
                     if (valid == 0) valid = 1;
                     amount += 9;
                 } else {
@@ -51,11 +51,11 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 		for (int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if (stack != null) {
-				if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(ContentHandler.getItem(Names.alkahest_tome)))) {
+				if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome)))) {
 					tome = stack.copy();
-				} else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getBlockIdentifier(Blocks.redstone_block))) {
+				} else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIndent(Blocks.redstone_block))) {
 					amount += 9;
-                } else if (ObjectUtils.getItemIdentifier(stack.getItem()).equals(ObjectUtils.getItemIdentifier(Items.redstone))) {
+                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone))) {
                     amount++;
                 }
 			}
@@ -72,7 +72,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 
 	@Override
 	public ItemStack getRecipeOutput() {
-		return new ItemStack(ContentHandler.getItem(Names.alkahest_tome), 1);
+		return new ItemStack(ContentHandler.getItem(Names.alkahestry_tome), 1);
 	}
 
 }

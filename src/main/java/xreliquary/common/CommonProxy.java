@@ -1,21 +1,20 @@
 package xreliquary.common;
 
+import lib.enderwizards.sandstone.mod.config.TomlConfig;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.blocks.tile.TileEntityMortar;
-import xreliquary.init.ContentHandler;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.entities.*;
-import xreliquary.entities.EntityStormShot;
 import xreliquary.event.CommonEventHandler;
 import xreliquary.init.XRRecipes;
 import xreliquary.util.alkahestry.Alkahestry;
+import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -23,18 +22,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
 
-	public int chaliceMultiplier;
-	public int tomeRedstoneLimit;
-	public int handgunHUDPosition;
-    public int heroMedallionLevelThreshold;
-    public int twilightCloakLightThreshold;
-    public boolean disableCoinAudio;
-
-	public void preInit() {
-		this.initOptions();
-
+	public void preInit() {		
         try {
-            ContentHandler.init();
             XRRecipes.init();
             Alkahestry.init();
         } catch(Exception e) { e.printStackTrace(); System.exit(1); }
@@ -53,12 +42,12 @@ public class CommonProxy {
 	}
 
 	public void initOptions() {
-		disableCoinAudio = Reliquary.CONFIG.get("Misc_Options", "disableCoinAudio", false).getBoolean(Reference.DISABLE_COIN_AUDIO_DEFAULT);
-		chaliceMultiplier = Reliquary.CONFIG.get("Misc_Options", "chaliceMultiplier", 1).getInt(1);
-        tomeRedstoneLimit = Reliquary.CONFIG.get("Misc_Options", "tomeRedstoneLimit", 256).getInt(256);
-        heroMedallionLevelThreshold = Reliquary.CONFIG.get("Misc_Options", "heroMedallionLevelThreshold", 30).getInt(30);
-        twilightCloakLightThreshold = Reliquary.CONFIG.get("Misc_Options", "twilightCloakLightThreshold", 4).getInt(4);
-        handgunHUDPosition = Reliquary.CONFIG.get("Misc_Options", "handgunHUDPosition", 3).getInt(3);
+		Reliquary.CONFIG.require(Names.fortune_coin, "disableAudio", false);
+		Reliquary.CONFIG.require(Names.emperor_chalice, "multiplier", 1);
+		Reliquary.CONFIG.require(Names.alkahestry_tome, "redstoneLimit", 256);
+		Reliquary.CONFIG.require(Names.hero_medallion, "xpLevelCap", 30);
+		Reliquary.CONFIG.require(Names.twilight_cloak, "maxLightLevel", 4);
+		Reliquary.CONFIG.require(Names.handgun, "hudPosition", 3);
 	}
 
 	public void registerTileEntities() {
@@ -67,7 +56,6 @@ public class CommonProxy {
     }
 
 	public void registerEntities() {
-
 		EntityRegistry.registerModEntity(EntityHolyHandGrenade.class, "entityHGrenade", 0, Reliquary.INSTANCE, 128, 5, true);
 		EntityRegistry.registerModEntity(EntityGlowingWater.class, "entityHolyWater", 1, Reliquary.INSTANCE, 128, 5, true);
 		EntityRegistry.registerModEntity(EntitySpecialSnowball.class, "entitySpecialSnowball", 2, Reliquary.INSTANCE, 128, 5, true);
@@ -90,6 +78,7 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityCondensedSplashWeakness.class, "entitySplashWeakness", 19, Reliquary.INSTANCE, 128, 5, true);
 		EntityRegistry.registerModEntity(EntityCondensedSplashWither.class, "entitySplashWither", 20, Reliquary.INSTANCE, 128, 5, true);
 		EntityRegistry.registerModEntity(EntityCondensedFertility.class, "entitySplashFertility", 21, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(EntityKrakenSlime.class, "entityKSlime", 22, Reliquary.INSTANCE, 128, 5, true);
 	}
 
 }

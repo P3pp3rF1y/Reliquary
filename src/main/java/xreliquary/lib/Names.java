@@ -11,7 +11,7 @@ public class Names {
 	public static final String magazine = "magazine";
 	public static final String magazine_overlay = "magazine_overlay";
 	public static final String sojourner_staff = "sojourner_staff";
-	public static final String alkahest_tome = "alkahest_tome";
+	public static final String alkahestry_tome = "alkahest_tome";
 	public static final String holy_hand_grenade = "holy_hand_grenade";
 	public static final String fortune_coin = "fortune_coin";
 	public static final String fortune_coin_overlay = "fortune_coin_overlay";

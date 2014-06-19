@@ -15,7 +15,7 @@ import net.minecraft.util.IIcon;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import xreliquary.Reliquary;
-import xreliquary.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentHandler;
 import xreliquary.items.ItemHandgun;
 import xreliquary.lib.Names;
 
@@ -80,7 +80,7 @@ public class ClientEventHandler {
         int hudOverlayX = 0;
         int hudOverlayY = 0;
 
-        switch (Reliquary.PROXY.handgunHUDPosition)
+        switch (Reliquary.CONFIG.getInt(Names.handgun, "hudPosition"))
         {
             case 0:
             {

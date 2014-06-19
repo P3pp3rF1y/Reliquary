@@ -1,7 +1,8 @@
 package xreliquary.items;
 
-import xreliquary.init.XRInit;
-import xreliquary.util.ObjectUtils;
+import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,16 +16,15 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemSojournerStaff extends ItemBase {
 
 	public ItemSojournerStaff() {
-		super(Reference.MOD_ID, Names.sojourner_staff);
+		super(Names.sojourner_staff);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(513);
 		this.setMaxStackSize(1);
@@ -84,9 +84,9 @@ public class ItemSojournerStaff extends ItemBase {
 			return false;
 		Block blockTargetted = world.getBlock(x, y, z);
 
-		if (ObjectUtils.areBlocksEqual(blockTargetted, Blocks.snow)) {
+		if (ContentHelper.areBlocksEqual(blockTargetted, Blocks.snow)) {
 			side = 1;
-		} else if (!ObjectUtils.areBlocksEqual(blockTargetted, Blocks.vine) && !ObjectUtils.areBlocksEqual(blockTargetted, Blocks.tallgrass) && !ObjectUtils.areBlocksEqual(blockTargetted, Blocks.deadbush) && (blockTargetted == null || !blockTargetted.isReplaceable(world, x, y, z))) {
+		} else if (!ContentHelper.areBlocksEqual(blockTargetted, Blocks.vine) && !ContentHelper.areBlocksEqual(blockTargetted, Blocks.tallgrass) && !ContentHelper.areBlocksEqual(blockTargetted, Blocks.deadbush) && (blockTargetted == null || !blockTargetted.isReplaceable(world, x, y, z))) {
 			x += side == 4 ? -1 : side == 5 ? 1 : 0;
 			y += side == 0 ? -1 : side == 1 ? 1 : 0;
 			z += side == 2 ? -1 : side == 3 ? 1 : 0;
@@ -188,7 +188,7 @@ public class ItemSojournerStaff extends ItemBase {
 		if (!world.setBlock(x, y, z, Blocks.torch, metadata, 3))
 			return false;
 
-		if (ObjectUtils.areBlocksEqual(world.getBlock(x, y, z), Blocks.torch)) {
+		if (ContentHelper.areBlocksEqual(world.getBlock(x, y, z), Blocks.torch)) {
 			Blocks.torch.onNeighborBlockChange(world, x, y, z, world.getBlock(x, y, z));
 			Blocks.torch.onBlockPlacedBy(world, x, y, z, player, stack);
 		}

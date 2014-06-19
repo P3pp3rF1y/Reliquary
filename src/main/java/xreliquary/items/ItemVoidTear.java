@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -13,19 +14,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
-import xreliquary.Reliquary;
-import xreliquary.init.ContentHandler;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemVoidTear extends ItemBase {
 
 	public ItemVoidTear() {
-		super(Reference.MOD_ID, Names.void_tear);
+		super(Names.void_tear);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		canRepair = false;

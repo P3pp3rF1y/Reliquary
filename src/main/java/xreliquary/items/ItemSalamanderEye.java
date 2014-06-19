@@ -3,8 +3,9 @@ package xreliquary.items;
 import java.util.Iterator;
 import java.util.List;
 
-import xreliquary.init.XRInit;
-import xreliquary.util.ObjectUtils;
+import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,25 +19,23 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.event.ClientEventHandler;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemSalamanderEye extends ItemBase {
 
 	public ItemSalamanderEye() {
-		super(Reference.MOD_ID, Names.salamander_eye);
+		super(Names.salamander_eye);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		canRepair = false;
 	}
 
-    protected ItemSalamanderEye(String modid, String name) {
-        super(modid, name);
+    protected ItemSalamanderEye(String name) {
+        super(name);
     }
 
 	@Override
@@ -115,7 +114,7 @@ public class ItemSalamanderEye extends ItemBase {
 		for (int xOff = -3; xOff <= 3; xOff++) {
 			for (int yOff = -3; yOff <= 3; yOff++) {
 				for (int zOff = -3; zOff <= 3; zOff++)
-					if (ObjectUtils.getBlockIdentifier(player.worldObj.getBlock(x + xOff, y + yOff, z + zOff)).equals(ObjectUtils.getBlockIdentifier(Blocks.fire))) {
+					if (ContentHelper.getIndent(player.worldObj.getBlock(x + xOff, y + yOff, z + zOff)).equals(ContentHelper.getIndent(Blocks.fire))) {
 						player.worldObj.setBlock(x + xOff, y + yOff, z + zOff, Blocks.air);
 						player.worldObj.playSoundEffect(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, "random.fizz", 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F);
 					}

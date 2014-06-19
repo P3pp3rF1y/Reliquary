@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import java.util.List;
 
+import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,19 +10,19 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import xreliquary.Reliquary;
-import xreliquary.init.XRInit;
+import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-import xreliquary.util.LanguageHelper;
+import lib.enderwizards.sandstone.util.LanguageHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@XRInit
+@ContentInit
 public class ItemMagazine extends ItemBase {
 
 	public ItemMagazine() {
-		super(Reference.MOD_ID, Names.magazine);
+		super(Names.magazine);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(64);
 		canRepair = false;
