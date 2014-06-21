@@ -24,7 +24,7 @@ public class ItemAlkahestryTome extends ItemBase {
 	public ItemAlkahestryTome() {
 		super(Names.alkahestry_tome);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		this.setMaxDamage(((Integer) Reliquary.CONFIG.get(Names.alkahestry_tome, "redstoneLimit")) + 1);
+		this.setMaxDamage(Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit") + 1);
 		this.setMaxStackSize(1);
 		this.canRepair = false;
 		this.hasSubtypes = true;

@@ -26,7 +26,9 @@ public class CommonProxy {
         try {
             XRRecipes.init();
             Alkahestry.init();
-        } catch(Exception e) { e.printStackTrace(); System.exit(1); }
+        } catch(Exception e) { 
+        	e.printStackTrace(); System.exit(1); 
+        }
 
 
 		FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), XRRecipes.potion(Reference.WATER_META), XRRecipes.potion(Reference.EMPTY_VIAL_META));
