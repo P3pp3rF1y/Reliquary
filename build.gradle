@@ -1,4 +1,4 @@
-/* 
+/*
 
 ForgeGradle building for Reliquary! This script is meant to be a easy way to build the mod, as well as example for implementing ForgeGradle in your own mods.
 
@@ -35,11 +35,17 @@ buildscript {
 apply plugin: 'forge'
 
 group = 'xreliquary' // Your main package.
-version = "1.2" 
+version = "1.2"
 archivesBaseName = 'Reliquary'
 
 minecraft {
 	version = "1.7.2-10.12.1.1065"
+}
+
+jar {
+    manifest {
+        attributes("FMLCorePlugin": "xreliquary.common.asm.DepLoader", "FMLCorePluginContainsFMLMod": "true")
+    }
 }
 
 processResources
@@ -48,11 +54,11 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         include '**/*.lang'
         include 'mcmod.info'
-                
+
         // Replace version and mcversion.
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-        
+
     // Copy everything else that wasn't replaced.
     from(sourceSets.main.resources.srcDirs) {
         exclude '**/*.lang'
