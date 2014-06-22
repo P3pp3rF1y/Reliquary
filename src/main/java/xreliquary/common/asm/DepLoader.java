@@ -531,9 +531,6 @@ public class DepLoader implements IFMLLoadingPlugin, IFMLCallHook {
         }
 
         private void loadJson(JsonObject node) throws IOException {
-            boolean obfuscated = ((LaunchClassLoader) DepLoader.class.getClassLoader())
-                    .getClassBytes("net.minecraft.world.World") == null;
-
             String testClass = node.get("class").getAsString();
             if (DepLoader.class.getResource("/" + testClass.replace('.', '/') + ".class") != null)
                 return;
