@@ -44,10 +44,7 @@ minecraft {
 
 jar {
     manifest {
-        attributes {
-            "FMLCorePlugin": "xreliquary.common.asm.DepLoader",
-            "FMLCorePluginContainsFMLMod": "true"
-        }
+        attributes("FMLCorePlugin": "xreliquary.common.asm.DepLoader", "FMLCorePluginContainsFMLMod": "true")
     }
 }
 
