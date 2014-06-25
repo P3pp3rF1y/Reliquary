@@ -48,6 +48,11 @@ jar {
     }
 }
 
+dependencies {
+  // From Maven Central.
+  compile 'io.ous:jtoml:1.0.1'
+}
+
 processResources
 {
     // Replace stuff in mcmod.info and in .lang files, nothing else.
