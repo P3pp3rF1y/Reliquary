@@ -46,7 +46,7 @@ public class ItemDestructionCatalyst extends ItemBase {
 		for (int xD = -1; xD <= 1; xD++) {
 			for (int yD = -1; yD <= 1; yD++) {
 				for (int zD = -1; zD <= 1; zD++) {
-					if (isBreakable(ContentHelper.getIndent(world.getBlock(x + xD, y + yD, z + zD)))) {
+					if (isBreakable(ContentHelper.getIdent(world.getBlock(x + xD, y + yD, z + zD)))) {
 						world.setBlock(x + xD, y + yD, z + zD, Blocks.air);
 						if (world.rand.nextInt(2) == 0) {
 							world.spawnParticle("largeexplode", x + xD, y + yD, z + zD, 1.0D, 0.0D, 0.0D);

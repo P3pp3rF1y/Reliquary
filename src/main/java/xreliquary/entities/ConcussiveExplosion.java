@@ -80,9 +80,9 @@ public class ConcussiveExplosion extends Explosion {
 		int var28 = MathHelper.floor_double(explosionY + explosionSize + 1.0D);
 		int var7 = MathHelper.floor_double(explosionZ - explosionSize - 1.0D);
 		int var29 = MathHelper.floor_double(explosionZ + explosionSize + 1.0D);
-		List var9 = worldObj.getEntitiesWithinAABBExcludingEntity(exploder, AxisAlignedBB.getAABBPool().getAABB(var3, var5, var7, var4, var28, var29));
+		List var9 = worldObj.getEntitiesWithinAABBExcludingEntity(exploder, AxisAlignedBB.getBoundingBox(var3, var5, var7, var4, var28, var29));
 
-		Vec3 var30 = worldObj.getWorldVec3Pool().getVecFromPool(explosionX, explosionY, explosionZ);
+		Vec3 var30 = Vec3.createVectorHelper(explosionX, explosionY, explosionZ);
 
 		for (int var11 = 0; var11 < var9.size(); ++var11) {
 			Entity var31 = (Entity) var9.get(var11);
@@ -111,7 +111,7 @@ public class ConcussiveExplosion extends Explosion {
 					var31.motionZ += var19 * var34;
 
 					if (var31 instanceof EntityPlayer) {
-						field_77288_k.put(var31, worldObj.getWorldVec3Pool().getVecFromPool(var15 * var34, var17 * var34, var19 * var34));
+						field_77288_k.put(var31, Vec3.createVectorHelper(var15 * var34, var17 * var34, var19 * var34));
 					}
 				}
 			}

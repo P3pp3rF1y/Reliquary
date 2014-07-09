@@ -61,7 +61,7 @@ public class Reliquary {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		// Modstats.instance().getReporter().registerMod(this);
+		Modstats.instance().getReporter().registerMod(this);
 
 		PROXY.init();
 		MinecraftForge.EVENT_BUS.register(this);

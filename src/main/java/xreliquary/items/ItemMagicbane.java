@@ -48,7 +48,7 @@ public class ItemMagicbane extends ItemSword {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack) {
+    public boolean hasEffect(ItemStack stack, int pass) {
         return true;
     }
 

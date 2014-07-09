@@ -22,7 +22,7 @@ public class ItemClawsOfTheFiredrinker extends ItemBase {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public boolean hasEffect(ItemStack stack) {
+        public boolean hasEffect(ItemStack stack, int pass) {
             return true;
         }
 

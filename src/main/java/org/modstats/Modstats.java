@@ -45,36 +45,21 @@ public class Modstats
         return reporter;
     }
     
-    private IModstatsReporter locateReporter()
-    {
-        int i=1;
+    private IModstatsReporter locateReporter() {
         Class<?> latest = null;
-        while(i<100)
-        {
-            try
-            {
-                Class<?> candidate = Class.forName(String.format(CLASS_TEMPLATE, i));
-                if(IModstatsReporter.class.isAssignableFrom(candidate))
-                {
-                    latest = candidate;
-                }
+        try {
+            Class<?> candidate = Class.forName(String.format(CLASS_TEMPLATE, 2));
+            if(IModstatsReporter.class.isAssignableFrom(candidate)) {
+                latest = candidate;
             }
-            catch (Exception e) {
-                break;
-            }
-            i++;
-        }
-        if(latest == null)
-        {
+        } catch (Exception e) {}
+
+        if(latest == null) {
             FMLLog.warning("Modstats reporter class not found.");
-        }
-        else
-        {
-            try
-            {
+        } else {
+            try {
                 return (IModstatsReporter)latest.newInstance();
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 FMLLog.warning("Modstats reporter class can't be instantiated.");
             } 
         }

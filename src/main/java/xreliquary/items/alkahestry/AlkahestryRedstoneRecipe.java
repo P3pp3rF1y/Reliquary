@@ -25,7 +25,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 				} else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone))) {
 					if (valid == 0) valid = 1;
                     amount++;
-                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIndent(Blocks.redstone_block))) {
+                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.redstone_block))) {
                     if (valid == 0) valid = 1;
                     amount += 9;
                 } else {
@@ -53,7 +53,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 			if (stack != null) {
 				if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome)))) {
 					tome = stack.copy();
-				} else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIndent(Blocks.redstone_block))) {
+				} else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.redstone_block))) {
 					amount += 9;
                 } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone))) {
                     amount++;

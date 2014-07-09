@@ -112,9 +112,8 @@ class DataSender extends Thread
         return "";
     }
     
-    private String getSignature(String data)
-    {
-        return Hashing.md5().hashString(data).toString();
+    private String getSignature(String data) {
+        return Hashing.md5().hashString(data, Charsets.UTF_8).toString();
     }
     
     private String getData()
@@ -263,7 +262,7 @@ class DataSender extends Thread
         {
             String data = getData();
             String playerId = getPlayerId();
-            String hash = getSignature(playerId+"!"+data);
+            String hash = getSignature(playerId + "!" + data);
             String template = manual?urlManualTemplate:urlAutoTemplate;
             String mcVersion = FMLCommonHandler.instance().getModName();
             URL url = new URL(String.format(template, mcVersion, playerId, data, hash, reporter.config.betaNotifications, reporter.config.forCurrentMinecraftVersion));

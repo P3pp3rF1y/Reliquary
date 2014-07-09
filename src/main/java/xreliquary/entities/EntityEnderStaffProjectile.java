@@ -87,14 +87,14 @@ public class EntityEnderStaffProjectile extends EntityEnderPearl {
             ++ticksInAir;
         }
 
-        Vec3 var16 = worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
-        Vec3 var2 = worldObj.getWorldVec3Pool().getVecFromPool(posX + motionX, posY + motionY, posZ + motionZ);
+        Vec3 var16 = Vec3.createVectorHelper(posX, posY, posZ);
+        Vec3 var2 = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
         MovingObjectPosition var3 = worldObj.func_147447_a(var16, var2, false, true, false);
-        var16 = worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
-        var2 = worldObj.getWorldVec3Pool().getVecFromPool(posX + motionX, posY + motionY, posZ + motionZ);
+        var16 = Vec3.createVectorHelper(posX, posY, posZ);
+        var2 = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
 
         if (var3 != null) {
-            var2 = worldObj.getWorldVec3Pool().getVecFromPool(var3.hitVec.xCoord, var3.hitVec.yCoord, var3.hitVec.zCoord);
+            var2 = Vec3.createVectorHelper(var3.hitVec.xCoord, var3.hitVec.yCoord, var3.hitVec.zCoord);
         }
 
         if (!worldObj.isRemote) {

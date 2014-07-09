@@ -13,9 +13,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import lib.enderwizards.sandstone.init.ContentHandler;
-import xreliquary.entities.EntityKrakenSlime;
 import xreliquary.lib.Names;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.entity.item.EntityItem;
@@ -288,7 +286,7 @@ public class CommonEventHandler {
             if (stack != null) {
                 if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome)))) {
                     tome = count;
-                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone)) || ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIndent(Blocks.redstone_block))) {
+                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone)) || ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.redstone_block))) {
                     isCharging = true;
                 } else {
                     if (Alkahestry.getDictionaryKey(stack) == null) {

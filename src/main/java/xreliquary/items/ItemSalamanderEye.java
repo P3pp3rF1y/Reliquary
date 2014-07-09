@@ -52,7 +52,7 @@ public class ItemSalamanderEye extends ItemBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
+	public boolean hasEffect(ItemStack stack, int pass) {
 		return true;
 	}
 
@@ -114,7 +114,7 @@ public class ItemSalamanderEye extends ItemBase {
 		for (int xOff = -3; xOff <= 3; xOff++) {
 			for (int yOff = -3; yOff <= 3; yOff++) {
 				for (int zOff = -3; zOff <= 3; zOff++)
-					if (ContentHelper.getIndent(player.worldObj.getBlock(x + xOff, y + yOff, z + zOff)).equals(ContentHelper.getIndent(Blocks.fire))) {
+					if (ContentHelper.getIdent(player.worldObj.getBlock(x + xOff, y + yOff, z + zOff)).equals(ContentHelper.getIdent(Blocks.fire))) {
 						player.worldObj.setBlock(x + xOff, y + yOff, z + zOff, Blocks.air);
 						player.worldObj.playSoundEffect(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, "random.fizz", 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F);
 					}

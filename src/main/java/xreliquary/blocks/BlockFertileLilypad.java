@@ -72,7 +72,7 @@ public class BlockFertileLilypad extends BlockFlower {
 					int z = zO + zD;
 					Block block = world.getBlock(x, y, z);
 
-					if (block != null && Block.blockRegistry.getNameForObject(block).equals(ContentHelper.getIndent(block))) {
+					if (block != null && Block.blockRegistry.getNameForObject(block).equals(ContentHelper.getIdent(block))) {
 						continue;
 					}
 
@@ -98,7 +98,7 @@ public class BlockFertileLilypad extends BlockFlower {
 
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
-		return AxisAlignedBB.getAABBPool().getAABB(par2 + minX, par3 + minY, par4 + minZ, par2 + maxX, par3 + maxY, par4 + maxZ);
+		return AxisAlignedBB.getBoundingBox(par2 + minX, par3 + minY, par4 + minZ, par2 + maxX, par3 + maxY, par4 + maxZ);
 
 	}
 

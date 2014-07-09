@@ -166,7 +166,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
             block.setBlockBoundsBasedOnState(this.worldObj, this.xTile, this.yTile, this.zTile);
             AxisAlignedBB axisalignedbb = block.getCollisionBoundingBoxFromPool(this.worldObj, this.xTile, this.yTile, this.zTile);
 
-            if (axisalignedbb != null && axisalignedbb.isVecInside(this.worldObj.getWorldVec3Pool().getVecFromPool(this.posX, this.posY, this.posZ)))
+            if (axisalignedbb != null && axisalignedbb.isVecInside(Vec3.createVectorHelper(this.posX, this.posY, this.posZ)))
                 this.inGround = true;
 
         }
@@ -181,14 +181,14 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
             } else
                 this.doFlightEffects();
 
-            Vec3 var17 = worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
-            Vec3 var3 = worldObj.getWorldVec3Pool().getVecFromPool(posX + motionX, posY + motionY, posZ + motionZ);
+            Vec3 var17 = Vec3.createVectorHelper(posX, posY, posZ);
+            Vec3 var3 = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
             MovingObjectPosition var4 = worldObj.func_147447_a(var17, var3, false, true, false);
-            var17 = worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
-            var3 = worldObj.getWorldVec3Pool().getVecFromPool(posX + motionX, posY + motionY, posZ + motionZ);
+            var17 = Vec3.createVectorHelper(posX, posY, posZ);
+            var3 = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
 
             if (var4 != null)
-                var3 = worldObj.getWorldVec3Pool().getVecFromPool(var4.hitVec.xCoord, var4.hitVec.yCoord, var4.hitVec.zCoord);
+                var3 = Vec3.createVectorHelper(var4.hitVec.xCoord, var4.hitVec.yCoord, var4.hitVec.zCoord);
 
             Entity var5 = null;
             List var6 = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));

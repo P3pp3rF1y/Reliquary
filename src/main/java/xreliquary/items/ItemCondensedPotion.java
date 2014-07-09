@@ -82,7 +82,7 @@ public class ItemCondensedPotion extends ItemBase {
 	}
 
 	@Override
-	public boolean hasEffect(ItemStack stack) {
+	public boolean hasEffect(ItemStack stack, int pass) {
 		return !(isEmptyVial(stack) || isBaseSplash(stack) || isBasePotion(stack) || isJustWater(stack));
 	}
 

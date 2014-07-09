@@ -20,6 +20,9 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CommonProxy {
 
 	public void preInit() {		
@@ -44,12 +47,14 @@ public class CommonProxy {
 	}
 
 	public void initOptions() {
+        Reliquary.CONFIG.require("recipes", "disabled", new ArrayList<String>());
 		Reliquary.CONFIG.require(Names.fortune_coin, "disableAudio", false);
 		Reliquary.CONFIG.require(Names.emperor_chalice, "multiplier", 1);
 		Reliquary.CONFIG.require(Names.alkahestry_tome, "redstoneLimit", 256);
 		Reliquary.CONFIG.require(Names.hero_medallion, "xpLevelCap", 30);
 		Reliquary.CONFIG.require(Names.twilight_cloak, "maxLightLevel", 4);
 		Reliquary.CONFIG.require(Names.handgun, "hudPosition", 3);
+        Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ArrayList<String>());
 	}
 
 	public void registerTileEntities() {
