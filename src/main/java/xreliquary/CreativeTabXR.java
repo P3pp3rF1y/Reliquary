@@ -13,7 +13,7 @@ public class CreativeTabXR extends CreativeTabs {
 
 	@Override
 	public Item getTabIconItem() {
-        return ContentHandler.getItem(Names.mercy_cross);
+		return ContentHandler.getItem(Names.mercy_cross);
 	}
 
 }

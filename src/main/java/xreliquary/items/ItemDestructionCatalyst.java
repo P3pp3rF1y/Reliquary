@@ -70,8 +70,8 @@ public class ItemDestructionCatalyst extends ItemBase {
 	}
 
 	public boolean consumeGunpowder(EntityPlayer player) {
-        if(player.capabilities.isCreativeMode)
-            return true;
+		if (player.capabilities.isCreativeMode)
+			return true;
 
 		int gunPowderCost = Reference.DESTRUCTION_CATALYST_COST;
 		IInventory inventory = player.inventory;

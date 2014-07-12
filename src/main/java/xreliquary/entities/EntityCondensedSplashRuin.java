@@ -26,36 +26,35 @@ public class EntityCondensedSplashRuin extends EntityThrownPotion {
 		super(par1World, par2, par4, par6);
 	}
 
+	@Override
+	boolean hasLivingEntityEffect() {
+		return true;
+	}
 
-    @Override
-    boolean hasLivingEntityEffect() {
-        return true;
-    }
+	@Override
+	void doGroundSplashEffect() {
+		// none
+	}
 
-    @Override
-    void doGroundSplashEffect() {
-        //none
-    }
+	@Override
+	void doLivingSplashEffect(EntityLiving e) {
+		e.addPotionEffect(new PotionEffect(Potion.weakness.id, 900, 1));
+		e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 900, 1));
+		e.addPotionEffect(new PotionEffect(Potion.poison.id, 900, 1));
+	}
 
-    @Override
-    void doLivingSplashEffect(EntityLiving e) {
-        e.addPotionEffect(new PotionEffect(Potion.weakness.id, 900, 1));
-        e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 900, 1));
-        e.addPotionEffect(new PotionEffect(Potion.poison.id, 900, 1));
-    }
+	@Override
+	float getRed() {
+		return 0.3F;
+	}
 
-    @Override
-    float getRed() {
-        return 0.3F;
-    }
+	@Override
+	float getGreen() {
+		return 1.0F;
+	}
 
-    @Override
-    float getGreen() {
-        return 1.0F;
-    }
-
-    @Override
-    float getBlue() {
-        return 0.1F;
-    }
+	@Override
+	float getBlue() {
+		return 0.1F;
+	}
 }

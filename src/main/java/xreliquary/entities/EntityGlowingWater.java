@@ -60,10 +60,9 @@ public class EntityGlowingWater extends EntityThrowable {
 		return -20.0F;
 	}
 
-    private boolean isUndead(Entity mop) {
-        return mop instanceof EntitySkeleton || mop instanceof EntityGhast || mop instanceof EntityWither ||
-                mop instanceof EntityZombie || mop instanceof EntityPigZombie;
-    }
+	private boolean isUndead(Entity mop) {
+		return mop instanceof EntitySkeleton || mop instanceof EntityGhast || mop instanceof EntityWither || mop instanceof EntityZombie || mop instanceof EntityPigZombie;
+	}
 
 	/**
 	 * Called when this EntityThrowable hits a block or entity.
@@ -88,36 +87,36 @@ public class EntityGlowingWater extends EntityThrowable {
 	}
 
 	private void spawnParticles() {
-        double var8 = posX;
-        double var10 = posY;
-        double var12 = posZ;
-        String var14 = "iconcrack_" + Item.getIdFromItem(Items.potionitem);
-        Random var7 = rand;
-        for (int var15 = 0; var15 < 8; ++var15) {
-            worldObj.spawnParticle(var14, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
-        }
+		double var8 = posX;
+		double var10 = posY;
+		double var12 = posZ;
+		String var14 = "iconcrack_" + Item.getIdFromItem(Items.potionitem);
+		Random var7 = rand;
+		for (int var15 = 0; var15 < 8; ++var15) {
+			worldObj.spawnParticle(var14, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+		}
 
-        float red = 1.0F;
-        float green = 1.0F;
-        float blue = 0.0F;
-        String var19 = "spell";
+		float red = 1.0F;
+		float green = 1.0F;
+		float blue = 0.0F;
+		String var19 = "spell";
 
-        for (int var20 = 0; var20 < 100; ++var20) {
-            double var39 = var7.nextDouble() * 4.0D;
-            double var23 = var7.nextDouble() * Math.PI * 2.0D;
-            double var25 = Math.cos(var23) * var39;
-            double var27 = 0.01D + var7.nextDouble() * 0.5D;
-            double var29 = Math.sin(var23) * var39;
-            if (worldObj.isRemote) {
-                EntityFX var31 = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(var19, var8 + var25 * 0.1D, var10 + 0.3D, var12 + var29 * 0.1D, var25, var27, var29);
-                if (var31 != null) {
-                    float var32 = 0.75F + var7.nextFloat() * 0.25F;
-                    var31.setRBGColorF(red * var32, green * var32, blue * var32);
-                    var31.multiplyVelocity((float) var39);
-                }
-            }
-        }
+		for (int var20 = 0; var20 < 100; ++var20) {
+			double var39 = var7.nextDouble() * 4.0D;
+			double var23 = var7.nextDouble() * Math.PI * 2.0D;
+			double var25 = Math.cos(var23) * var39;
+			double var27 = 0.01D + var7.nextDouble() * 0.5D;
+			double var29 = Math.sin(var23) * var39;
+			if (worldObj.isRemote) {
+				EntityFX var31 = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(var19, var8 + var25 * 0.1D, var10 + 0.3D, var12 + var29 * 0.1D, var25, var27, var29);
+				if (var31 != null) {
+					float var32 = 0.75F + var7.nextFloat() * 0.25F;
+					var31.setRBGColorF(red * var32, green * var32, blue * var32);
+					var31.multiplyVelocity((float) var39);
+				}
+			}
+		}
 
-        worldObj.playSoundEffect(posX + 0.5D, posY + 0.5D, posZ + 0.5D, "dig.glass", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		worldObj.playSoundEffect(posX + 0.5D, posY + 0.5D, posZ + 0.5D, "dig.glass", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 	}
 }

@@ -112,9 +112,9 @@ public class BlockFertileLilypad extends BlockFlower {
 		return par3 >= 0 && par3 < 256 ? world.getBlock(par2, par3 - 1, par4).getMaterial() == Material.water && world.getBlockMetadata(par2, par3 - 1, par4) == 0 : false;
 	}
 
-    @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item item, CreativeTabs tab, List list) {
-        list.add(new ItemStack(item, 1));
-    }
+	@SideOnly(Side.CLIENT)
+	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
+		list.add(new ItemStack(item, 1));
+	}
 
 }

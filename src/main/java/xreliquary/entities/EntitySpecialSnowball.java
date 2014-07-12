@@ -59,10 +59,10 @@ public class EntitySpecialSnowball extends EntitySnowball {
 			objPos.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), var2);
 		}
 
-        if(objPos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlock(objPos.blockX, objPos.blockY + 1, objPos.blockZ) == Blocks.fire) {
-            worldObj.playSoundEffect((double) objPos.blockX + 0.5D, ((double) objPos.blockY + 1) + 0.5D, (double) objPos.blockZ + 0.5D, "random.fizz", 0.5F, (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.8F);
-            worldObj.setBlock(objPos.blockX, objPos.blockY + 1, objPos.blockZ, Blocks.air);
-        }
+		if (objPos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlock(objPos.blockX, objPos.blockY + 1, objPos.blockZ) == Blocks.fire) {
+			worldObj.playSoundEffect((double) objPos.blockX + 0.5D, ((double) objPos.blockY + 1) + 0.5D, (double) objPos.blockZ + 0.5D, "random.fizz", 0.5F, (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.8F);
+			worldObj.setBlock(objPos.blockX, objPos.blockY + 1, objPos.blockZ, Blocks.air);
+		}
 
 		for (int var3 = 0; var3 < 8; ++var3) {
 			worldObj.spawnParticle("snowballpoof", posX, posY, posZ, 0.0D, 0.0D, 0.0D);

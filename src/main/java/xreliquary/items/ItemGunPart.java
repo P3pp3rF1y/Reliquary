@@ -55,9 +55,9 @@ public class ItemGunPart extends ItemBase {
 
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
-        if(stack.getItemDamage() > 2) {
-            return "item." + Names.gun_part + "0";
-        }
-        return "item." + Names.gun_part + String.valueOf(stack.getItemDamage());
+		if (stack.getItemDamage() > 2) {
+			return "item." + Names.gun_part + "0";
+		}
+		return "item." + Names.gun_part + String.valueOf(stack.getItemDamage());
 	}
 }

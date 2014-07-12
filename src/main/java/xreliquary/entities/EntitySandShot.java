@@ -22,20 +22,20 @@ public class EntitySandShot extends EntityShotBase {
 		super(par1World, par2EntityPlayer);
 	}
 
-    @Override
-    void doFiringEffects() {
+	@Override
+	void doFiringEffects() {
 		worldObj.spawnParticle("mobSpellAmbient", posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		worldObj.spawnParticle("flame", posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
 	}
 
-    @Override
-    void doFlightEffects() {
-        if (ticksInAir % 3 == 0)
-            spawnHitParticles("reddust", 1);
-    }
+	@Override
+	void doFlightEffects() {
+		if (ticksInAir % 3 == 0)
+			spawnHitParticles("reddust", 1);
+	}
 
-    @Override
-    void onImpact(MovingObjectPosition mop) {
+	@Override
+	void onImpact(MovingObjectPosition mop) {
 		if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
 			if (mop.entityHit == shootingEntity)
 				return;
@@ -45,13 +45,13 @@ public class EntitySandShot extends EntityShotBase {
 		}
 	}
 
-    @Override
-    void doBurstEffect(int sideHit) {
-        spawnHitParticles("reddust", 8);
-    }
+	@Override
+	void doBurstEffect(int sideHit) {
+		spawnHitParticles("reddust", 8);
+	}
 
-    @Override
-    void onImpact(Entity mop) {
+	@Override
+	void onImpact(Entity mop) {
 		if (mop != shootingEntity || ticksInAir > 3) {
 			doDamage(mop);
 		}
@@ -59,28 +59,28 @@ public class EntitySandShot extends EntityShotBase {
 		this.setDead();
 	}
 
-    @Override
-    void spawnHitParticles(String string, int i) {
+	@Override
+	void spawnHitParticles(String string, int i) {
 		for (int particles = 0; particles < i; particles++) {
 			worldObj.spawnParticle(string, posX, posY - (string == "portal" ? 1 : 0), posZ, 0.7F, 0.7F, 0.3F);
 		}
 	}
 
-    @Override
-    int getDamageOfShot(Entity mop) {
-        //creepers turn sand shots into straight explosions.
-        if (mop instanceof EntityCreeper) {
-            ConcussiveExplosion.customBusterExplosion(this, shootingEntity, posX, posY, posZ, 2.0F, false, true);
-            return 0;
-        }
-        //it also causes blinding
-        if (mop instanceof EntityLiving)
-            ((EntityLiving) mop).addPotionEffect(new PotionEffect(Potion.blindness.id, 200, 1));
-        return  (worldObj.getWorldInfo().isRaining() ? 4 : 8) + d6();
-    }
+	@Override
+	int getDamageOfShot(Entity mop) {
+		// creepers turn sand shots into straight explosions.
+		if (mop instanceof EntityCreeper) {
+			ConcussiveExplosion.customBusterExplosion(this, shootingEntity, posX, posY, posZ, 2.0F, false, true);
+			return 0;
+		}
+		// it also causes blinding
+		if (mop instanceof EntityLiving)
+			((EntityLiving) mop).addPotionEffect(new PotionEffect(Potion.blindness.id, 200, 1));
+		return (worldObj.getWorldInfo().isRaining() ? 4 : 8) + d6();
+	}
 
-    @Override
-    int getRicochetMax() {
+	@Override
+	int getRicochetMax() {
 		return 0;
 	}
 }

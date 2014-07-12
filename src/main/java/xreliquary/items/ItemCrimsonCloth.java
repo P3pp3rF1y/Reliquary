@@ -11,17 +11,17 @@ import xreliquary.lib.Reference;
 
 @ContentInit
 public class ItemCrimsonCloth extends ItemBase {
-    public ItemCrimsonCloth() {
-        super(Names.crimson_cloth);
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setMaxDamage(0);
-        this.setMaxStackSize(64);
-        canRepair = false;
-    }
+	public ItemCrimsonCloth() {
+		super(Names.crimson_cloth);
+		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+		this.setMaxDamage(0);
+		this.setMaxStackSize(64);
+		canRepair = false;
+	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack, int pass) {
-        return true;
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean hasEffect(ItemStack stack, int pass) {
+		return true;
+	}
 }

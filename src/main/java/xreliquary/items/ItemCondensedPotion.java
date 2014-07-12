@@ -49,17 +49,17 @@ public class ItemCondensedPotion extends ItemBase {
 		canRepair = false;
 	}
 
+	@Override
+	public ItemStack getContainerItem(ItemStack ist) {
+		return new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META);
+	}
 
-    @Override
-    public ItemStack getContainerItem(ItemStack ist) {
-        return new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META);
-    }
-
-    //returns an empty vial when used in crafting recipes, unless it's one of the base potion types.
-    @Override
-    public boolean hasContainerItem(ItemStack ist) {
-        return (ist.getItemDamage() != Reference.POTION_META && ist.getItemDamage() != Reference.SPLASH_META && ist.getItemDamage() != Reference.EMPTY_VIAL_META);
-    }
+	// returns an empty vial when used in crafting recipes, unless it's one of
+	// the base potion types.
+	@Override
+	public boolean hasContainerItem(ItemStack ist) {
+		return (ist.getItemDamage() != Reference.POTION_META && ist.getItemDamage() != Reference.SPLASH_META && ist.getItemDamage() != Reference.EMPTY_VIAL_META);
+	}
 
 	public int emptyVialMeta() {
 		return Reference.EMPTY_VIAL_META;
@@ -158,7 +158,7 @@ public class ItemCondensedPotion extends ItemBase {
 		par3List.add(new ItemStack(par1, 1, 26));
 		par3List.add(new ItemStack(par1, 1, 27));
 		par3List.add(new ItemStack(par1, 1, 28));
-        par3List.add(new ItemStack(par1, 1, 29));
+		par3List.add(new ItemStack(par1, 1, 29));
 	}
 
 	@Override
@@ -170,7 +170,8 @@ public class ItemCondensedPotion extends ItemBase {
 		}
 		if (!world.isRemote) {
 			for (PotionEffect effect : getPotionEffects(ist)) {
-				if (effect == null) continue;
+				if (effect == null)
+					continue;
 				player.addPotionEffect(effect);
 			}
 			if (isPanacea(ist)) {
@@ -274,10 +275,10 @@ public class ItemCondensedPotion extends ItemBase {
 			effects[0] = new PotionEffect(Potion.heal.id, 0, 1);
 			effects[1] = new PotionEffect(Potion.regeneration.id, 900, 1);
 			break;
-        case Reference.STALKER_META:
-            effects[0] = new PotionEffect(Potion.nightVision.id, 3600, 0);
-            effects[1] = new PotionEffect(Potion.nightVision.id, 3600, 0);
-            break;
+		case Reference.STALKER_META:
+			effects[0] = new PotionEffect(Potion.nightVision.id, 3600, 0);
+			effects[1] = new PotionEffect(Potion.nightVision.id, 3600, 0);
+			break;
 		}
 		return effects;
 	}
@@ -388,8 +389,8 @@ public class ItemCondensedPotion extends ItemBase {
 			green = "00";
 			blue = "FF";
 			return Integer.parseInt(String.format("%s%s%s", red, green, blue), 16);
-        case Reference.STALKER_META:
-            return Integer.parseInt(Colors.STALKER_COLOR, 16);
+		case Reference.STALKER_META:
+			return Integer.parseInt(Colors.STALKER_COLOR, 16);
 		case Reference.APHRODITE_META:
 			return Integer.parseInt(Colors.APHRODITE_COLOR, 16);
 		case Reference.POISON_META:

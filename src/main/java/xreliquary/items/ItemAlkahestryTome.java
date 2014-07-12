@@ -30,7 +30,7 @@ public class ItemAlkahestryTome extends ItemBase {
 		this.hasSubtypes = true;
 		this.setContainerItem(this);
 	}
-	
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		player.playSound(Reference.BOOK_SOUND, 1.0f, 1.0f);
@@ -58,7 +58,7 @@ public class ItemAlkahestryTome extends ItemBase {
 	@Override
 	public ItemStack getContainerItem(ItemStack stack) {
 		ItemStack copy = stack.copy();
-		
+
 		copy.stackSize = 1;
 		return copy;
 	}

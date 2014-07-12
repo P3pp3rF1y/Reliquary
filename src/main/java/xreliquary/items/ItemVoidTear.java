@@ -46,7 +46,7 @@ public class ItemVoidTear extends ItemBase {
 		} else {
 			ItemStack contents = new ItemStack((Item) Item.itemRegistry.getObject(tag.getString("itemID")), 1, tag.getShort("itemMeta"));
 			String itemName = contents.getDisplayName();
-            holds = "" + EnumChatFormatting.YELLOW + tag.getShort("itemQuantity") + " of " + itemName;
+			holds = "" + EnumChatFormatting.YELLOW + tag.getShort("itemQuantity") + " of " + itemName;
 		}
 		this.formatTooltip(ImmutableMap.of("holds", holds), ist, list);
 	}

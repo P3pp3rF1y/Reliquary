@@ -48,7 +48,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 
 	@Override
 	public IIcon getIcon(ItemStack itemStack, int renderPass) {
-	    return this.itemIcon;
+		return this.itemIcon;
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 
 		if (eye.getTagCompound() != null && eye.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(par2EntityPlayer))) {
 			if (!world.isRemote) {
-                par2EntityPlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "Out of range!"));
+				par2EntityPlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "Out of range!"));
 			}
 		} else if (eye.getTagCompound() != null && ContentHelper.areBlocksEqual(world.getBlock(eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)), eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer))), ContentHandler.getBlock(Names.wraith_node))) {
 
@@ -83,7 +83,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
 		} else if (eye.getTagCompound() != null && eye.getTagCompound().hasKey("dimensionID")) {
 			eye.setTagCompound(null);
 			if (!world.isRemote)
-                par2EntityPlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "Node dosen't exist!"));
+				par2EntityPlayer.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "Node dosen't exist!"));
 			else
 				par2EntityPlayer.playSound("mob.endermen.death", 1.0f, 1.0f);
 		}

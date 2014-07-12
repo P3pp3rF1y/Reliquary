@@ -30,8 +30,8 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void init() {
 		super.init();
-        FMLCommonHandler.instance().bus().register(new ClientEventHandler());
-        //FMLCommonHandler.instance().bus().register(new HandgunHUD());
+		FMLCommonHandler.instance().bus().register(new ClientEventHandler());
+		// FMLCommonHandler.instance().bus().register(new HandgunHUD());
 
 		this.registerRenderers();
 	}
@@ -49,8 +49,8 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, new RenderShot());
 		RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, new RenderThrown(12));
 		RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, new RenderSnowball(Items.snowball));
-        RenderingRegistry.registerEntityRenderingHandler(EntityEnderStaffProjectile.class, new RenderSnowball(Items.ender_pearl));
-        RenderingRegistry.registerEntityRenderingHandler(EntityKrakenSlime.class, new RenderThrown(13));
+		RenderingRegistry.registerEntityRenderingHandler(EntityEnderStaffProjectile.class, new RenderSnowball(Items.ender_pearl));
+		RenderingRegistry.registerEntityRenderingHandler(EntityKrakenSlime.class, new RenderThrown(13));
 		RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, new RenderThrown(Reference.WATER_SPRITE));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedSplashAphrodite.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.APHRODITE_META));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedSplashPoison.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.POISON_META));
@@ -63,12 +63,12 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedSplashRuin.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.RUINATION_META));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCondensedFertility.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.FERTILIZER_META));
 
-        RenderingRegistry.registerBlockHandler(new RenderApothecaryCauldron());
+		RenderingRegistry.registerBlockHandler(new RenderApothecaryCauldron());
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMortar.class, new RenderApothecaryMortar());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMortar.class, new RenderApothecaryMortar());
 
-        MinecraftForgeClient.registerItemRenderer(ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.apothecary_mortar)), new ItemRendererApothecaryMortar());
-        MinecraftForgeClient.registerItemRenderer(ContentHandler.getItem(Names.handgun), new ItemRendererHandgun());
-    }
+		MinecraftForgeClient.registerItemRenderer(ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.apothecary_mortar)), new ItemRendererApothecaryMortar());
+		MinecraftForgeClient.registerItemRenderer(ContentHandler.getItem(Names.handgun), new ItemRendererHandgun());
+	}
 
 }

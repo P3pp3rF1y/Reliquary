@@ -46,11 +46,11 @@ public class ItemMagicbane extends ItemSword {
 		return EnumRarity.epic;
 	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack, int pass) {
-        return true;
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean hasEffect(ItemStack stack, int pass) {
+		return true;
+	}
 
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
@@ -114,8 +114,8 @@ public class ItemMagicbane extends ItemSword {
 			int bonus = 0;
 			if (enchants != null) {
 				for (int enchant = 0; enchant < enchants.tagCount(); enchant++) {
-                    bonus += enchants.getCompoundTagAt(enchant).getShort("lvl");
-                }
+					bonus += enchants.getCompoundTagAt(enchant).getShort("lvl");
+				}
 			}
 			e.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) par3EntityLivingBase), bonus + 4);
 		}

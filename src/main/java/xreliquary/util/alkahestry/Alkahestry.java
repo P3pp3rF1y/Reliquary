@@ -62,11 +62,12 @@ public class Alkahestry {
 		addKey(new AlkahestRecipe(new ItemStack(Items.iron_ingot), 1, HIGH_TIER));
 		addKey(new AlkahestRecipe(new ItemStack(Items.emerald), 1, HIGH_TIER));
 
-        // I guess mods should start following the new naming convention. *shrugs*
-        addKey(new AlkahestRecipe("tin_ingot", 1, HIGH_TIER));
-        addKey(new AlkahestRecipe("silver_ingot", 1, HIGH_TIER));
-        addKey(new AlkahestRecipe("copper_ingot", 1, HIGH_TIER));
-        addKey(new AlkahestRecipe("steel_ingot", 1, HIGH_TIER));
+		// I guess mods should start following the new naming convention.
+		// *shrugs*
+		addKey(new AlkahestRecipe("tin_ingot", 1, HIGH_TIER));
+		addKey(new AlkahestRecipe("silver_ingot", 1, HIGH_TIER));
+		addKey(new AlkahestRecipe("copper_ingot", 1, HIGH_TIER));
+		addKey(new AlkahestRecipe("steel_ingot", 1, HIGH_TIER));
 
 		addKey(new AlkahestRecipe("ingotTin", 1, HIGH_TIER));
 		addKey(new AlkahestRecipe("ingotSilver", 1, HIGH_TIER));
@@ -75,7 +76,7 @@ public class Alkahestry {
 
 		addKey(new AlkahestRecipe(new ItemStack(Items.diamond), 1, UBER_TIER));
 
-        // TODO: Readd Nether Star recipe.
+		// TODO: Readd Nether Star recipe.
 		/*
 		 * GameRegistry.addRecipe(new ItemStack(Block.dragonEgg, 1), new
 		 * Object[] { "ddd", "dtd", "ddd", 'd', Block.blockDiamond, 't',

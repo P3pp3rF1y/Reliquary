@@ -9,14 +9,14 @@ public class GUIHandler implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		if(ID == 0)
+		if (ID == 0)
 			return new ContainerAlkahestTome();
 		return null;
 	}
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		if(ID == 0)
+		if (ID == 0)
 			return new GuiAlkahestTome(new ContainerAlkahestTome());
 		return null;
 	}

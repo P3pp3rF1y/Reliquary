@@ -21,21 +21,21 @@ public class ItemAngelheartVial extends ItemBase {
 		canRepair = false;
 	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack, int pass) {
-        return true;
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean hasEffect(ItemStack stack, int pass) {
+		return true;
+	}
 
-    @Override
-    public ItemStack getContainerItem(ItemStack ist) {
-        return new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META);
-    }
+	@Override
+	public ItemStack getContainerItem(ItemStack ist) {
+		return new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META);
+	}
 
-    //returns an empty vial when used in crafting recipes.
-    @Override
-    public boolean hasContainerItem(ItemStack ist) {
-        return true;
-    }
-    //event driven item, see client events.
+	// returns an empty vial when used in crafting recipes.
+	@Override
+	public boolean hasContainerItem(ItemStack ist) {
+		return true;
+	}
+	// event driven item, see client events.
 }

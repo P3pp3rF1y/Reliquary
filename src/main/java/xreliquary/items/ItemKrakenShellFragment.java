@@ -12,17 +12,17 @@ import xreliquary.lib.Reference;
 @ContentInit
 public class ItemKrakenShellFragment extends ItemBase {
 
-        public ItemKrakenShellFragment() {
-            super(Names.kraken_shell_fragment);
-            this.setCreativeTab(Reliquary.CREATIVE_TAB);
-            this.setMaxDamage(0);
-            this.setMaxStackSize(64);
-            canRepair = false;
-        }
+	public ItemKrakenShellFragment() {
+		super(Names.kraken_shell_fragment);
+		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+		this.setMaxDamage(0);
+		this.setMaxStackSize(64);
+		canRepair = false;
+	}
 
-        @Override
-        @SideOnly(Side.CLIENT)
-        public boolean hasEffect(ItemStack stack, int pass) {
-            return true;
-        }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean hasEffect(ItemStack stack, int pass) {
+		return true;
+	}
 }

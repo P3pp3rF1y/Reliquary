@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @ContentInit
 public class BlockWraithNode extends Block {
 
-    public IIcon topIcon;
+	public IIcon topIcon;
 
 	public BlockWraithNode() {
 		super(Material.rock);
@@ -25,14 +25,14 @@ public class BlockWraithNode extends Block {
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta) {
-        if(side > 1) {
-            return this.blockIcon;
-        }
-        return topIcon;
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int meta) {
+		if (side > 1) {
+			return this.blockIcon;
+		}
+		return topIcon;
+	}
 
 	@Override
 	public boolean isOpaqueCube() {
@@ -48,7 +48,7 @@ public class BlockWraithNode extends Block {
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister) {
 		blockIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.wraith_node);
-        topIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.wraith_node + "_top");
+		topIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.wraith_node + "_top");
 	}
 
 }

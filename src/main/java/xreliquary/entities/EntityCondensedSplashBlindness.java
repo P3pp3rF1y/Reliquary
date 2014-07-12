@@ -37,33 +37,33 @@ public class EntityCondensedSplashBlindness extends EntityThrownPotion {
 		super(par1World, par2, par4, par6);
 	}
 
-    @Override
-    boolean hasLivingEntityEffect() {
-        return true;
-    }
+	@Override
+	boolean hasLivingEntityEffect() {
+		return true;
+	}
 
-    @Override
-    void doGroundSplashEffect() {
-        //none
-    }
+	@Override
+	void doGroundSplashEffect() {
+		// none
+	}
 
-    @Override
-    void doLivingSplashEffect(EntityLiving e) {
-        e.addPotionEffect(new PotionEffect(Potion.blindness.id, 900, 0));
-    }
+	@Override
+	void doLivingSplashEffect(EntityLiving e) {
+		e.addPotionEffect(new PotionEffect(Potion.blindness.id, 900, 0));
+	}
 
-    @Override
-    float getRed() {
-        return 0.1F;
-    }
+	@Override
+	float getRed() {
+		return 0.1F;
+	}
 
-    @Override
-    float getGreen() {
-        return 0.1F;
-    }
+	@Override
+	float getGreen() {
+		return 0.1F;
+	}
 
-    @Override
-    float getBlue() {
-        return 0.1F;
-    }
+	@Override
+	float getBlue() {
+		return 0.1F;
+	}
 }

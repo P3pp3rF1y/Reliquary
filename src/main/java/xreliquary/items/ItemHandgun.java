@@ -45,38 +45,38 @@ public class ItemHandgun extends ItemBase {
 
 	@Override
 	public IIcon getIcon(ItemStack itemStack, int renderPass) {
-			return this.itemIcon;
+		return this.itemIcon;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-			return Integer.parseInt(Colors.PURE, 16);
+		return Integer.parseInt(Colors.PURE, 16);
 	}
 
-    public int getBulletCount(ItemStack ist) {
-        return NBTHelper.getShort("bulletCount", ist);
-    }
+	public int getBulletCount(ItemStack ist) {
+		return NBTHelper.getShort("bulletCount", ist);
+	}
 
-    public void setBulletCount(ItemStack ist, int i) {
-        NBTHelper.setShort("bulletCount", ist, i);
-    }
+	public void setBulletCount(ItemStack ist, int i) {
+		NBTHelper.setShort("bulletCount", ist, i);
+	}
 
-    public int getBulletType(ItemStack ist) {
-        return NBTHelper.getShort("bulletType", ist);
-    }
+	public int getBulletType(ItemStack ist) {
+		return NBTHelper.getShort("bulletType", ist);
+	}
 
-    public void setBulletType(ItemStack ist, int i) {
-        NBTHelper.setShort("bulletType", ist, i);
-    }
+	public void setBulletType(ItemStack ist, int i) {
+		NBTHelper.setShort("bulletType", ist, i);
+	}
 
-    public int getCooldown(ItemStack ist) {
-        return NBTHelper.getShort("cooldownTime", ist);
-    }
+	public int getCooldown(ItemStack ist) {
+		return NBTHelper.getShort("cooldownTime", ist);
+	}
 
-    public void setCooldown(ItemStack ist, int i) {
-        NBTHelper.setShort("cooldownTime", ist, i);
-    }
+	public void setCooldown(ItemStack ist, int i) {
+		NBTHelper.setShort("cooldownTime", ist, i);
+	}
 
 	@Override
 	public void onUpdate(ItemStack ist, World worldObj, Entity e, int i, boolean flag) {
@@ -108,7 +108,7 @@ public class ItemHandgun extends ItemBase {
 			return;
 		}
 		if (reloadTicks(count) >= calculatePlayerSkillTimer(player) - 1) {
-            setCooldown(ist, 24);
+			setCooldown(ist, 24);
 			setBulletType(ist, getMagazineTypeAndRemoveOne(player));
 			if (getBulletType(ist) != 0) {
 				player.swingItem();

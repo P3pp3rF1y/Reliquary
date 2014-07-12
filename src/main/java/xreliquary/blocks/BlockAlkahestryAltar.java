@@ -23,19 +23,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockAlkahestryAltar extends BlockContainer {
 
-    @ContentInit
-    static public class BlockActiveAlkahestryAltar extends BlockAlkahestryAltar {
-        public BlockActiveAlkahestryAltar() {
-            super(true);
-        }
-    }
+	@ContentInit
+	static public class BlockActiveAlkahestryAltar extends BlockAlkahestryAltar {
+		public BlockActiveAlkahestryAltar() {
+			super(true);
+		}
+	}
 
-    @ContentInit
-    static public class BlockIdleAlkahestryAltar extends BlockAlkahestryAltar {
-        public BlockIdleAlkahestryAltar() {
-            super(false);
-        }
-    }
+	@ContentInit
+	static public class BlockIdleAlkahestryAltar extends BlockAlkahestryAltar {
+		public BlockIdleAlkahestryAltar() {
+			super(false);
+		}
+	}
 
 	private final boolean isActive;
 
@@ -43,13 +43,13 @@ public class BlockAlkahestryAltar extends BlockContainer {
 		super(Material.rock);
 		isActive = par1;
 
-        this.setHardness(1.5F);
-        this.setResistance(5.0F);
+		this.setHardness(1.5F);
+		this.setResistance(5.0F);
 
 		this.setBlockName(isActive ? Names.altar : Names.altar_idle);
 		this.setLightLevel(isActive ? 1.0F : 0.0F);
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-    }
+		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+	}
 
 	@SideOnly(Side.CLIENT)
 	private static IIcon icons[];
@@ -69,9 +69,9 @@ public class BlockAlkahestryAltar extends BlockContainer {
 	}
 
 	@Override
-    public Item getItemDropped(int par1, Random random, int par3) {
-        return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.altar_idle));
-    }
+	public Item getItemDropped(int par1, Random random, int par3) {
+		return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.altar_idle));
+	}
 
 	@Override
 	public void randomDisplayTick(World world, int x, int y, int z, Random rand) {

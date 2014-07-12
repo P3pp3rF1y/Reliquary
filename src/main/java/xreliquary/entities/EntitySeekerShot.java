@@ -33,23 +33,23 @@ public class EntitySeekerShot extends EntityShotBase {
 		super(par1World, par2EntityPlayer);
 	}
 
-    @Override
-    void doFlightEffects() {
+	@Override
+	void doFlightEffects() {
 		if (ticksInAir % 3 == 0)
 			worldObj.spawnParticle("mobSpellAmbient", posX, posY, posZ, 0.0F, gaussian(1.0F), gaussian(1.0F));
 
-        //housed in the base class
-        seekTarget();
+		// housed in the base class
+		seekTarget();
 	}
 
-    @Override
-    void doFiringEffects() {
+	@Override
+	void doFiringEffects() {
 		worldObj.spawnParticle("mobSpellAmbient", posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		worldObj.spawnParticle("flame", posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
 	}
 
-    @Override
-    void onImpact(MovingObjectPosition mop) {
+	@Override
+	void onImpact(MovingObjectPosition mop) {
 		if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
 			if (mop.entityHit == shootingEntity)
 				return;
@@ -59,13 +59,13 @@ public class EntitySeekerShot extends EntityShotBase {
 		}
 	}
 
-    @Override
-    void doBurstEffect(int sideHit) {
-        //does nothing
-    }
+	@Override
+	void doBurstEffect(int sideHit) {
+		// does nothing
+	}
 
-    @Override
-    void onImpact(Entity mop) {
+	@Override
+	void onImpact(Entity mop) {
 		if (mop != shootingEntity || ticksInAir > 3) {
 			doDamage(mop);
 		}
@@ -73,19 +73,19 @@ public class EntitySeekerShot extends EntityShotBase {
 		this.setDead();
 	}
 
-    @Override
-    void spawnHitParticles(String string, int i) {
+	@Override
+	void spawnHitParticles(String string, int i) {
 		for (int particles = 0; particles < i; particles++)
 			worldObj.spawnParticle(string, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.1F, 1.0F, 1.0F);
 	}
 
-    @Override
-    int getRicochetMax() {
+	@Override
+	int getRicochetMax() {
 		return 3;
 	}
 
-    @Override
-    int getDamageOfShot(Entity mop) {
-        return 10 + d12();
-    }
+	@Override
+	int getDamageOfShot(Entity mop) {
+		return 10 + d12();
+	}
 }

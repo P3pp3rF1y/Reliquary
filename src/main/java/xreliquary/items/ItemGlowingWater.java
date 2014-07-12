@@ -24,24 +24,25 @@ public class ItemGlowingWater extends ItemBase {
 		canRepair = false;
 	}
 
-    @Override
-    public ItemStack getContainerItem(ItemStack ist) {
-        return new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META);
-    }
+	@Override
+	public ItemStack getContainerItem(ItemStack ist) {
+		return new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META);
+	}
 
-    //returns an empty vial when used in crafting recipes.
-    @Override
-    public boolean hasContainerItem(ItemStack ist) {
-        return true;
-        //return (ist.getItemDamage() != Reference.POTION_META && ist.getItemDamage() != Reference.SPLASH_META && ist.getItemDamage() != Reference.EMPTY_VIAL_META);
-    }
+	// returns an empty vial when used in crafting recipes.
+	@Override
+	public boolean hasContainerItem(ItemStack ist) {
+		return true;
+		// return (ist.getItemDamage() != Reference.POTION_META &&
+		// ist.getItemDamage() != Reference.SPLASH_META && ist.getItemDamage()
+		// != Reference.EMPTY_VIAL_META);
+	}
 
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack, int pass) {
-        return true;
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean hasEffect(ItemStack stack, int pass) {
+		return true;
+	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {

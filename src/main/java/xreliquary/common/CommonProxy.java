@@ -25,42 +25,42 @@ import java.util.List;
 
 public class CommonProxy {
 
-	public void preInit() {		
-        try {
-            XRRecipes.init();
-            Alkahestry.init();
-        } catch(Exception e) { 
-        	e.printStackTrace(); System.exit(1); 
-        }
-
+	public void preInit() {
+		try {
+			XRRecipes.init();
+			Alkahestry.init();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 
 		FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), XRRecipes.potion(Reference.WATER_META), XRRecipes.potion(Reference.EMPTY_VIAL_META));
 	}
 
 	public void init() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
-        FMLCommonHandler.instance().bus().register(new CommonEventHandler());
-        MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
+		FMLCommonHandler.instance().bus().register(new CommonEventHandler());
+		MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
 
 		this.registerEntities();
 		this.registerTileEntities();
 	}
 
 	public void initOptions() {
-        Reliquary.CONFIG.require("recipes", "disabled", new ArrayList<String>());
+		Reliquary.CONFIG.require("recipes", "disabled", new ArrayList<String>());
 		Reliquary.CONFIG.require(Names.fortune_coin, "disableAudio", false);
 		Reliquary.CONFIG.require(Names.emperor_chalice, "multiplier", 1);
 		Reliquary.CONFIG.require(Names.alkahestry_tome, "redstoneLimit", 256);
 		Reliquary.CONFIG.require(Names.hero_medallion, "xpLevelCap", 30);
 		Reliquary.CONFIG.require(Names.twilight_cloak, "maxLightLevel", 4);
 		Reliquary.CONFIG.require(Names.handgun, "hudPosition", 3);
-        Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ArrayList<String>());
+		Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ArrayList<String>());
 	}
 
 	public void registerTileEntities() {
 		GameRegistry.registerTileEntity(TileEntityAltar.class, "reliquaryAltar");
-        GameRegistry.registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
-    }
+		GameRegistry.registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
+	}
 
 	public void registerEntities() {
 		EntityRegistry.registerModEntity(EntityHolyHandGrenade.class, "entityHGrenade", 0, Reliquary.INSTANCE, 128, 5, true);

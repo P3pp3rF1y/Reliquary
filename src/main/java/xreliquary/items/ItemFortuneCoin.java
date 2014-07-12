@@ -123,7 +123,7 @@ public class ItemFortuneCoin extends ItemBase {
 	}
 
 	private void teleportEntityToPlayer(Entity item, EntityPlayer player) {
-        player.worldObj.spawnParticle("mobSpell", item.posX + 0.5D + player.worldObj.rand.nextGaussian() / 8, item.posY + 0.2D, item.posZ + 0.5D + player.worldObj.rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
+		player.worldObj.spawnParticle("mobSpell", item.posX + 0.5D + player.worldObj.rand.nextGaussian() / 8, item.posY + 0.2D, item.posZ + 0.5D + player.worldObj.rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
 		player.getLookVec();
 		double x = player.posX + player.getLookVec().xCoord * 0.2D;
 		double y = player.posY - player.height / 2F;

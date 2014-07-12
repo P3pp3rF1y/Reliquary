@@ -34,23 +34,25 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ModstatInfo 
-{
-    /**
-     * Modstats mod prefix. 
-     * @return
-     */
-    public String prefix();
-    
-    /**
-     * Mod name. Use this if your mod doesn't have @Mod annotation 
-     * @return
-     */
-    public String name() default "";
+public @interface ModstatInfo {
+	/**
+	 * Modstats mod prefix.
+	 * 
+	 * @return
+	 */
+	public String prefix();
 
-    /**
-     * Mod version. Use this if your mod doesn't have @Mod annotation 
-     * @return
-     */
-    public String version() default "";
+	/**
+	 * Mod name. Use this if your mod doesn't have @Mod annotation
+	 * 
+	 * @return
+	 */
+	public String name() default "";
+
+	/**
+	 * Mod version. Use this if your mod doesn't have @Mod annotation
+	 * 
+	 * @return
+	 */
+	public String version() default "";
 }

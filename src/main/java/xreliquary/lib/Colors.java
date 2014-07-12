@@ -44,7 +44,7 @@ public class Colors {
 	public static final String WEAKNESS_COLOR = "DDDD22";
 	public static final String WITHER_COLOR = "777777";
 	public static final String BLINDING_COLOR = "333333";
-    public static final String STALKER_COLOR = "222266";
+	public static final String STALKER_COLOR = "222266";
 	public static final String RUINATION_COLOR = "676720";
 	public static final String FERTILIZER_COLOR = "DDDDDD";
 

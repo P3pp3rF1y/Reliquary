@@ -20,7 +20,7 @@ public class ItemFertileLilypad extends ItemBlock {
 
 	public ItemFertileLilypad(Block block) {
 		super(block);
-    }
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)

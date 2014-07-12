@@ -12,19 +12,19 @@ import xreliquary.lib.Reference;
 @ContentInit
 public class ItemDragonClaws extends ItemBase {
 
-        public ItemDragonClaws() {
-            super(Names.dragon_claws);
-            this.setCreativeTab(Reliquary.CREATIVE_TAB);
-            this.setMaxDamage(0);
-            this.setMaxStackSize(1);
-            canRepair = false;
-        }
+	public ItemDragonClaws() {
+		super(Names.dragon_claws);
+		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+		this.setMaxDamage(0);
+		this.setMaxStackSize(1);
+		canRepair = false;
+	}
 
-        @Override
-        @SideOnly(Side.CLIENT)
-        public boolean hasEffect(ItemStack stack, int pass) {
-            return true;
-        }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean hasEffect(ItemStack stack, int pass) {
+		return true;
+	}
 
-        //this item's effects are handled in events
+	// this item's effects are handled in events
 }

@@ -62,10 +62,10 @@ public class ItemMercyCross extends ItemSword {
 		}
 	}
 
-    @Override
-    public float func_150931_i() {
-        return 0.0F;
-    }
+	@Override
+	public float func_150931_i() {
+		return 0.0F;
+	}
 
 	private boolean isUndead(Entity mop) {
 		return mop instanceof EntitySkeleton || mop instanceof EntityGhast || mop instanceof EntityWither || mop instanceof EntityZombie || mop instanceof EntityPigZombie;
@@ -75,27 +75,27 @@ public class ItemMercyCross extends ItemSword {
 	 * Returns the strength of the stack against a given block. 1.0F base,
 	 * (Quality+1)*2 if correct blocktype, 1.5F if sword
 	 */
-    @Override
-    public float func_150893_a(ItemStack stack, Block block) {
-        return block == Blocks.web ? 15.0F : 1.5F;
-    }
+	@Override
+	public float func_150893_a(ItemStack stack, Block block) {
+		return block == Blocks.web ? 15.0F : 1.5F;
+	}
 
-    @Override
-    public Multimap getItemAttributeModifiers() {
-        Multimap multimap = HashMultimap.create();
-        multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double) 0, 0));
-        return multimap;
-    }
+	@Override
+	public Multimap getItemAttributeModifiers() {
+		Multimap multimap = HashMultimap.create();
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double) 0, 0));
+		return multimap;
+	}
 
-    // About time it worked. :D
+	// About time it worked. :D
 	@Override
 	public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase monster, EntityLivingBase player) {
-        if (isUndead(monster)) {
-            monster.worldObj.spawnParticle("largeexplode", monster.posX, monster.posY + monster.height / 2, monster.posZ, 0.0F, 0.0F, 0.0F);
-            monster.heal(-(4.0F * 2));
-        } else {
-            monster.heal(-4.0F);
-        }
+		if (isUndead(monster)) {
+			monster.worldObj.spawnParticle("largeexplode", monster.posX, monster.posY + monster.height / 2, monster.posZ, 0.0F, 0.0F, 0.0F);
+			monster.heal(-(4.0F * 2));
+		} else {
+			monster.heal(-4.0F);
+		}
 		return true;
 	}
 }

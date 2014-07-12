@@ -70,8 +70,8 @@ public class ItemSojournerStaff extends ItemBase {
 			if (player.inventory.mainInventory[slot] == null) {
 				continue;
 			}
-            Item item = player.inventory.mainInventory[slot].getItem();
-            if (((List<String>) Reliquary.CONFIG.get(Names.sojourner_staff, "torches")).contains(ContentHelper.getIdent(item)) || ContentHelper.areItemsEqual(item, Item.getItemFromBlock(Blocks.torch))) {
+			Item item = player.inventory.mainInventory[slot].getItem();
+			if (((List<String>) Reliquary.CONFIG.get(Names.sojourner_staff, "torches")).contains(ContentHelper.getIdent(item)) || ContentHelper.areItemsEqual(item, Item.getItemFromBlock(Blocks.torch))) {
 				player.inventory.decrStackSize(slot, 1);
 				return true;
 			}
@@ -119,7 +119,7 @@ public class ItemSojournerStaff extends ItemBase {
 					}
 				} else {
 					if (placeBlockAt(ist, player, world, x, y, z, side, xOff, yOff, zOff, attemptSide(world, x, y, z, side))) {
-                        Blocks.torch.onBlockAdded(world, x, y, z);
+						Blocks.torch.onBlockAdded(world, x, y, z);
 						double gauss = 0.5D + world.rand.nextFloat() / 2;
 						player.swingItem();
 						world.spawnParticle("mobSpell", x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);

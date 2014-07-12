@@ -108,7 +108,7 @@ public class ItemEmperorChalice extends ItemBase {
 				if (!player.canPlayerEdit(var13, var14, var15, mop.sideHit, ist))
 					return ist;
 
-                String ident = ContentHelper.getIdent(world.getBlock(var13, var14, var15));
+				String ident = ContentHelper.getIdent(world.getBlock(var13, var14, var15));
 				if ((ident.equals(ContentHelper.getIdent(Blocks.flowing_water)) || ident.equals(ContentHelper.getIdent(Blocks.water))) && world.getBlockMetadata(var13, var14, var15) == 0) {
 					world.setBlock(var13, var14, var15, Blocks.air);
 

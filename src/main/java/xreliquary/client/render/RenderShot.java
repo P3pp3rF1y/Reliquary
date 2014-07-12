@@ -15,7 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderShot extends Render {
 	public void doRenderShot(EntityShotBase entityShot, double par2, double par4, double par6, float par8, float par9) {
-        this.bindEntityTexture(entityShot);
+		this.bindEntityTexture(entityShot);
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) par2, (float) par4, (float) par6);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -49,10 +49,10 @@ public class RenderShot extends Render {
 
 	@Override
 	protected ResourceLocation getEntityTexture(Entity entity) {
-        if (entity instanceof EntityShotBase) {
-            EntityShotBase shot = (EntityShotBase)entity;
-            return shot.getShotTexture();
-        }
+		if (entity instanceof EntityShotBase) {
+			EntityShotBase shot = (EntityShotBase) entity;
+			return shot.getShotTexture();
+		}
 		return ClientReference.NEUTRAL;
 	}
 }

@@ -34,9 +34,9 @@ public class ItemSalamanderEye extends ItemBase {
 		canRepair = false;
 	}
 
-    protected ItemSalamanderEye(String name) {
-        super(name);
-    }
+	protected ItemSalamanderEye(String name) {
+		super(name);
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -64,7 +64,7 @@ public class ItemSalamanderEye extends ItemBase {
 
 	@Override
 	public IIcon getIcon(ItemStack itemStack, int renderPass) {
-			return this.itemIcon;
+		return this.itemIcon;
 	}
 
 	/*

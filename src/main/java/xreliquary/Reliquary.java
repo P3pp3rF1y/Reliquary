@@ -48,12 +48,12 @@ public class Reliquary {
 
 	public static TomlConfig CONFIG;
 	public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID(), Reference.MOD_ID);
-    public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+	public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
-    @EventHandler
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		CONFIG = Configuration.toml(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".toml"));
-        
+
 		PROXY.initOptions();
 		Sandstone.preInit();
 		PROXY.preInit();
@@ -70,16 +70,16 @@ public class Reliquary {
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		LOGGER.log(Level.INFO, "Loaded successfully!");
-        if (event.getSide() == Side.CLIENT && Loader.isModLoaded("NotEnoughItems")) {
-            LOGGER.log(Level.INFO, "Hey NEI! I got a plugin for you! (hopefully in the near future).");
-        }
+		if (event.getSide() == Side.CLIENT && Loader.isModLoaded("NotEnoughItems")) {
+			LOGGER.log(Level.INFO, "Hey NEI! I got a plugin for you! (hopefully in the near future).");
+		}
 	}
 
 	@EventHandler
 	public void onMessage(IMCEvent event) {
 		for (IMCMessage message : event.getMessages()) {
 			if (message.key.equals("DestructionCatalyst")) {
-                LOGGER.log(Level.INFO, "[IMC] Added block " + message.getStringValue() + " from " + message.getSender() + " was added to the Destruction Catalyst's registry.");
+				LOGGER.log(Level.INFO, "[IMC] Added block " + message.getStringValue() + " from " + message.getSender() + " was added to the Destruction Catalyst's registry.");
 				ItemDestructionCatalyst.ids.add(message.getStringValue());
 			} else if (message.key.equals("Alkahest")) {
 				NBTTagCompound tag = message.getNBTValue();
@@ -88,9 +88,9 @@ public class Reliquary {
 						Alkahestry.addKey(new AlkahestRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
 					else
 						Alkahestry.addKey(new AlkahestRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
-                    LOGGER.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + Item.itemRegistry.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item"))) + " from " + message.getSender() + " to registry.");
+					LOGGER.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + Item.itemRegistry.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item"))) + " from " + message.getSender() + " to registry.");
 				} else {
-                    LOGGER.log(Level.WARN, "[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");
+					LOGGER.log(Level.WARN, "[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");
 				}
 			}
 		}
