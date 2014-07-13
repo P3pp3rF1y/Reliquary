@@ -4,12 +4,10 @@ ForgeGradle building for Reliquary! This script is meant to be a easy way to bui
 
 How to use:
 
-1. Make sure you have Gradle installed (http://www.gradle.org/).
-2. Open up Terminal (Unix) or cmd (Windows).
-3. Navigate to the mod's main folder.
-4. './gradlew setupCIWorkspace'
-5. './gradlew build'
-6. Enjoy!
+(from a Terminal or Command Prompt)
+1. './gradlew setupCIWorkspace'
+2. './gradlew build'
+3. Enjoy!
 
 */
 
