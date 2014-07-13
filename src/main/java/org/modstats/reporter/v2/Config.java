@@ -27,12 +27,12 @@
 
 package org.modstats.reporter.v2;
 
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Loader;
+import java.io.File;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-
-import java.io.File;
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Loader;
 
 public class Config {
 	private static final String CONFIG_NAME = "modstats.cfg";

@@ -2,6 +2,8 @@ package xreliquary.items;
 
 import java.util.List;
 
+import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,10 +17,8 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import xreliquary.Reliquary;
-import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-import lib.enderwizards.sandstone.util.LanguageHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

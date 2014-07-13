@@ -1,14 +1,14 @@
 package xreliquary.client.gui;
 
 import lib.enderwizards.sandstone.client.gui.GuiBase;
+import lib.enderwizards.sandstone.init.ContentHandler;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import lib.enderwizards.sandstone.init.ContentHandler;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import xreliquary.lib.Names;
+import xreliquary.lib.Reference;
 
 public class GuiAlkahestTome extends GuiBase {
 

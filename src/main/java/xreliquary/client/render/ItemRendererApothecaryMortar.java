@@ -1,12 +1,14 @@
 package xreliquary.client.render;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.GL11;
+
 import xreliquary.client.model.ModelMortar;
 import xreliquary.lib.ClientReference;
+import cpw.mods.fml.client.FMLClientHandler;
 
 public class ItemRendererApothecaryMortar implements IItemRenderer {
 

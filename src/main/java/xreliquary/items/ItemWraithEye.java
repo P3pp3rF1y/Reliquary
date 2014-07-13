@@ -2,8 +2,6 @@ package xreliquary.items;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableMap;
-
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.ContentHelper;
@@ -20,6 +18,9 @@ import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.NBTHelper;
+
+import com.google.common.collect.ImmutableMap;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

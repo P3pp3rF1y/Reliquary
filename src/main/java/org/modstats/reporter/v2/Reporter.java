@@ -27,18 +27,20 @@
 
 package org.modstats.reporter.v2;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
+
 import org.modstats.IModstatsReporter;
 import org.modstats.ModVersionData;
 import org.modstats.ModstatInfo;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class Reporter implements IModstatsReporter {
 

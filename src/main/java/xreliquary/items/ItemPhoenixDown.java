@@ -1,9 +1,8 @@
 package xreliquary.items;
 
-import xreliquary.Reliquary;
 import lib.enderwizards.sandstone.init.ContentInit;
+import xreliquary.Reliquary;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 
 /**
  * Created by Xeno on 5/15/14.

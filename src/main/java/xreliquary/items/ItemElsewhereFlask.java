@@ -1,18 +1,19 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
+
+import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import xreliquary.Reliquary;
-import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 
-import java.util.List;
+import com.google.common.collect.ImmutableMap;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @ContentInit
 public class ItemElsewhereFlask extends ItemBase {

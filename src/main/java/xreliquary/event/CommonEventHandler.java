@@ -1,33 +1,33 @@
 package xreliquary.event;
 
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.eventhandler.*;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
+import java.util.Random;
+
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import xreliquary.util.alkahestry.Alkahestry;
 import xreliquary.lib.Reference;
 import xreliquary.util.alkahestry.AlkahestRecipe;
-
-import java.util.Random;
+import xreliquary.util.alkahestry.Alkahestry;
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 public class CommonEventHandler {
 

@@ -1,8 +1,8 @@
 package xreliquary.common.gui;
 
-import xreliquary.client.gui.GuiAlkahestTome;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import xreliquary.client.gui.GuiAlkahestTome;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GUIHandler implements IGuiHandler {

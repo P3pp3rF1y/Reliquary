@@ -1,8 +1,8 @@
 package xreliquary.util.potions;
 
+import lib.enderwizards.sandstone.util.misc.Duo;
 import net.minecraft.item.Item;
 import net.minecraft.potion.PotionEffect;
-import lib.enderwizards.sandstone.util.misc.Duo;
 
 public class PotionIngredient {
 

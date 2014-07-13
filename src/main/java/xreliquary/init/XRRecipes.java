@@ -1,6 +1,5 @@
 package xreliquary.init;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -11,6 +10,7 @@ import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
 import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class XRRecipes {
 

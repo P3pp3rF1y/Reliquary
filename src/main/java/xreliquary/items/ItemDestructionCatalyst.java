@@ -2,7 +2,6 @@ package xreliquary.items;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.util.ContentHelper;
@@ -15,6 +14,8 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+
+import com.google.common.collect.ImmutableList;
 
 @ContentInit
 public class ItemDestructionCatalyst extends ItemBase {

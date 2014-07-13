@@ -2,14 +2,14 @@ package xreliquary.items.alkahestry;
 
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.util.ContentHelper;
-import xreliquary.lib.Names;
-import xreliquary.util.alkahestry.AlkahestRecipe;
-import xreliquary.util.alkahestry.Alkahestry;
-import xreliquary.Reliquary;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import xreliquary.Reliquary;
+import xreliquary.lib.Names;
+import xreliquary.util.alkahestry.AlkahestRecipe;
+import xreliquary.util.alkahestry.Alkahestry;
 
 public class AlkahestryCraftingRecipe implements IRecipe {
 

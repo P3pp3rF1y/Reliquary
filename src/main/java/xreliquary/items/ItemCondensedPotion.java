@@ -2,6 +2,8 @@ package xreliquary.items;
 
 import java.util.List;
 
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -29,8 +31,6 @@ import xreliquary.entities.EntityCondensedSplashSlowness;
 import xreliquary.entities.EntityCondensedSplashWeakness;
 import xreliquary.entities.EntityCondensedSplashWither;
 import xreliquary.event.ClientEventHandler;
-import lib.enderwizards.sandstone.init.ContentHandler;
-import lib.enderwizards.sandstone.init.ContentInit;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;

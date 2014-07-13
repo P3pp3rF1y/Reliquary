@@ -5,9 +5,11 @@ import java.io.File;
 import lib.enderwizards.sandstone.Sandstone;
 import lib.enderwizards.sandstone.mod.SandstoneMod;
 import lib.enderwizards.sandstone.mod.config.Config;
-import lib.enderwizards.sandstone.mod.config.Configuration;
-import lib.enderwizards.sandstone.mod.config.ConfigImpl;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.MinecraftForge;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -15,15 +17,11 @@ import org.apache.logging.log4j.Logger;
 import org.modstats.ModstatInfo;
 import org.modstats.Modstats;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.MinecraftForge;
-import xreliquary.items.ItemDestructionCatalyst;
-import xreliquary.util.alkahestry.Alkahestry;
-import xreliquary.lib.Reference;
 import xreliquary.common.CommonProxy;
+import xreliquary.items.ItemDestructionCatalyst;
+import xreliquary.lib.Reference;
 import xreliquary.util.alkahestry.AlkahestRecipe;
+import xreliquary.util.alkahestry.Alkahestry;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -53,7 +51,7 @@ public class Reliquary {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		CONFIG = Configuration.toml(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".toml"));
+		CONFIG = Config.toml(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".toml"));
 
 		PROXY.initOptions();
 		Sandstone.preInit();

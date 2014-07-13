@@ -1,5 +1,7 @@
 package xreliquary.items;
 
+import java.util.List;
+
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.util.ContentHelper;
@@ -19,8 +21,6 @@ import xreliquary.lib.Names;
 import xreliquary.util.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import java.util.List;
 
 @ContentInit
 public class ItemSojournerStaff extends ItemBase {

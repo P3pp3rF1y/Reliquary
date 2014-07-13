@@ -1,7 +1,10 @@
 package xreliquary.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
+import java.util.Random;
+
+import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -11,13 +14,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-
-import java.util.List;
-import java.util.Random;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @ContentInit(itemBlock = ItemBlockBase.class)
 public class BlockInterdictionTorch extends BlockTorch {

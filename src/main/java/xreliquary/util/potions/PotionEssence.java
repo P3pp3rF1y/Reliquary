@@ -1,11 +1,11 @@
 package xreliquary.util.potions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * PotionEssence, the helper class for well, potion essences. Abstracts away

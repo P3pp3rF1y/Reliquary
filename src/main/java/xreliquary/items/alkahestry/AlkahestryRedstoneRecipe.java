@@ -2,13 +2,13 @@ package xreliquary.items.alkahestry;
 
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.util.ContentHelper;
-import xreliquary.lib.Names;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import xreliquary.lib.Names;
 
 public class AlkahestryRedstoneRecipe implements IRecipe {
 

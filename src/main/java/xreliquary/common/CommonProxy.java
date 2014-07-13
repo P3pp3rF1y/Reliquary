@@ -1,7 +1,7 @@
 package xreliquary.common;
 
-import lib.enderwizards.sandstone.mod.config.ConfigImpl;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.ArrayList;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -10,18 +10,38 @@ import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.common.gui.GUIHandler;
-import xreliquary.entities.*;
+import xreliquary.entities.EntityBlazeShot;
+import xreliquary.entities.EntityBusterShot;
+import xreliquary.entities.EntityConcussiveShot;
+import xreliquary.entities.EntityCondensedFertility;
+import xreliquary.entities.EntityCondensedSplashAphrodite;
+import xreliquary.entities.EntityCondensedSplashBlindness;
+import xreliquary.entities.EntityCondensedSplashConfusion;
+import xreliquary.entities.EntityCondensedSplashHarm;
+import xreliquary.entities.EntityCondensedSplashPoison;
+import xreliquary.entities.EntityCondensedSplashRuin;
+import xreliquary.entities.EntityCondensedSplashSlowness;
+import xreliquary.entities.EntityCondensedSplashWeakness;
+import xreliquary.entities.EntityCondensedSplashWither;
+import xreliquary.entities.EntityEnderShot;
+import xreliquary.entities.EntityExorcismShot;
+import xreliquary.entities.EntityGlowingWater;
+import xreliquary.entities.EntityHolyHandGrenade;
+import xreliquary.entities.EntityKrakenSlime;
+import xreliquary.entities.EntityNeutralShot;
+import xreliquary.entities.EntitySandShot;
+import xreliquary.entities.EntitySeekerShot;
+import xreliquary.entities.EntitySpecialSnowball;
+import xreliquary.entities.EntityStormShot;
 import xreliquary.event.CommonEventHandler;
 import xreliquary.init.XRRecipes;
-import xreliquary.util.alkahestry.Alkahestry;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.util.alkahestry.Alkahestry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CommonProxy {
 
@@ -47,7 +67,6 @@ public class CommonProxy {
 	}
 
 	public void initOptions() {
-		Reliquary.CONFIG.require("recipes", "disabled", new ArrayList<String>());
 		Reliquary.CONFIG.require(Names.fortune_coin, "disableAudio", false);
 		Reliquary.CONFIG.require(Names.emperor_chalice, "multiplier", 1);
 		Reliquary.CONFIG.require(Names.alkahestry_tome, "redstoneLimit", 256);
