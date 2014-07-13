@@ -36,7 +36,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 
 @ModstatInfo(prefix = "reliquary")
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:libsandstone")
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:libsandstone", guiFactory = "xreliquary.client.gui.XRGuiFactory")
 @SandstoneMod(basePackage = "xreliquary")
 public class Reliquary {
 

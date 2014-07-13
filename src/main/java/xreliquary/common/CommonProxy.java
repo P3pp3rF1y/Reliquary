@@ -55,6 +55,8 @@ public class CommonProxy {
 		Reliquary.CONFIG.require(Names.twilight_cloak, "maxLightLevel", 4);
 		Reliquary.CONFIG.require(Names.handgun, "hudPosition", 3);
 		Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ArrayList<String>());
+		
+		Reliquary.CONFIG.save();
 	}
 
 	public void registerTileEntities() {
