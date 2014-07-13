@@ -4,8 +4,9 @@ import java.io.File;
 
 import lib.enderwizards.sandstone.Sandstone;
 import lib.enderwizards.sandstone.mod.SandstoneMod;
+import lib.enderwizards.sandstone.mod.config.Config;
 import lib.enderwizards.sandstone.mod.config.Configuration;
-import lib.enderwizards.sandstone.mod.config.TomlConfig;
+import lib.enderwizards.sandstone.mod.config.ConfigImpl;
 import net.minecraft.item.Item;
 
 import org.apache.logging.log4j.Level;
@@ -46,7 +47,7 @@ public class Reliquary {
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
 	public static CommonProxy PROXY;
 
-	public static TomlConfig CONFIG;
+	public static Config CONFIG;
 	public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID(), Reference.MOD_ID);
 	public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 

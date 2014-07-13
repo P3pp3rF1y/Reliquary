@@ -1,5 +1,6 @@
 package xreliquary.event;
 
+import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.*;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.client.Minecraft;
@@ -14,6 +15,7 @@ import net.minecraft.util.FoodStats;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import lib.enderwizards.sandstone.init.ContentHandler;
+import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.entity.item.EntityItem;
@@ -39,6 +41,13 @@ public class CommonEventHandler {
 				if (!event.player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META))) {
 					event.player.entityDropItem(new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META), 0.1F);
 				}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+		if(event.modID.equals(Reference.MOD_ID)) {
+			Reliquary.CONFIG.save();
 		}
 	}
 

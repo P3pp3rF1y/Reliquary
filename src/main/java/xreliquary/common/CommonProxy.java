@@ -1,6 +1,6 @@
 package xreliquary.common;
 
-import lib.enderwizards.sandstone.mod.config.TomlConfig;
+import lib.enderwizards.sandstone.mod.config.ConfigImpl;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
