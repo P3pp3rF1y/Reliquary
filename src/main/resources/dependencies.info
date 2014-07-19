@@ -1,5 +1,5 @@
 {
-	"repo": "https://drone.io/github.com/EnderWizards/libsandstone/files/build/libs/",
+	"repo": "https://drone.io/github.com/EnderWizards/libsandstone/files/build/libs",
 	"file": "LibSandstone-@VERSION@.jar",
 	"version": "1.0.0",
 	"coreLib": false

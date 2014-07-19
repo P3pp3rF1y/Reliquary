@@ -8,14 +8,16 @@
   "url": "",
   "updateUrl": "",
   "authorList": [
-    "x3n0ph0b3", 
+    "x3n0ph0b3",
     "TheMike"],
   "credits": "Originally made by x3n0ph0b3, now maintained by TheMike.",
   "logoFile": "/mods/xreliquary/textures/logo/xrlogo.png",
   "screenshots": [
   ],
   "parent": "",
-  "dependencies": [
-  ]
+  "requiredMods": [ libsandstone@[1.0.0,)" ],
+  "dependencies": [ libsandstone@[1.0.0,)" ],
+  "dependants": [  ],
+  "useDependencyInformation": "true"
 }
 ]
