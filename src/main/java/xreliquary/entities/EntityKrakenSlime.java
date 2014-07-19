@@ -38,7 +38,7 @@ public class EntityKrakenSlime extends EntityThrowable {
 
 	@Override
 	protected float getGravityVelocity() {
-		return 0F;
+		return 0.001F;
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class EntityKrakenSlime extends EntityThrowable {
 			return;
 
 
-		if (this.motionX == 0 && this.motionY == 0 && this.motionZ == 0) {
+		if (this.motionX < 0.5 && this.motionY == 0 && this.motionZ == 0) {
 			this.setDead();
 			return;
 		}

@@ -2,6 +2,7 @@ package xreliquary.common;
 
 import java.util.ArrayList;
 
+import lib.enderwizards.sandstone.mod.config.ConfigReference;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -51,7 +52,6 @@ public class CommonProxy {
 			Alkahestry.init();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.exit(1);
 		}
 
 		FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), XRRecipes.potion(Reference.WATER_META), XRRecipes.potion(Reference.EMPTY_VIAL_META));
@@ -67,13 +67,13 @@ public class CommonProxy {
 	}
 
 	public void initOptions() {
-		Reliquary.CONFIG.require(Names.fortune_coin, "disableAudio", false);
-		Reliquary.CONFIG.require(Names.emperor_chalice, "multiplier", 1);
-		Reliquary.CONFIG.require(Names.alkahestry_tome, "redstoneLimit", 256);
-		Reliquary.CONFIG.require(Names.hero_medallion, "xpLevelCap", 30);
-		Reliquary.CONFIG.require(Names.twilight_cloak, "maxLightLevel", 4);
-		Reliquary.CONFIG.require(Names.handgun, "hudPosition", 3);
-		Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ArrayList<String>());
+		Reliquary.CONFIG.require(Names.fortune_coin, "disableAudio", new ConfigReference(false).setClientSide());
+		Reliquary.CONFIG.require(Names.emperor_chalice, "multiplier", new ConfigReference(1).setMinimumValue(0));
+		Reliquary.CONFIG.require(Names.alkahestry_tome, "redstoneLimit", new ConfigReference(256).setMinimumValue(0));
+		Reliquary.CONFIG.require(Names.hero_medallion, "xpLevelCap", new ConfigReference(30).setMinimumValue(0));
+		Reliquary.CONFIG.require(Names.twilight_cloak, "maxLightLevel", new ConfigReference(4).setMinimumValue(0).setMaximumValue(15));
+		Reliquary.CONFIG.require(Names.handgun, "hudPosition", new ConfigReference(3).setMinimumValue(0).setMaximumValue(4));
+		Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ConfigReference(new ArrayList<String>()));
 		
 		Reliquary.CONFIG.save();
 	}
