@@ -1,7 +1,7 @@
 {
 	"repo": "https://drone.io/github.com/EnderWizards/libsandstone/files/build/libs",
 	"file": "LibSandstone-@VERSION@.jar",
-	"class": "lib.enderwizards.sandstone.Sandstone"
+	"class": "lib.enderwizards.sandstone.Sandstone",
 	"version": "1.0.0",
 	"coreLib": false
 }

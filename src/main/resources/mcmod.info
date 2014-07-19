@@ -15,8 +15,8 @@
   "screenshots": [
   ],
   "parent": "",
-  "requiredMods": [ libsandstone@[1.0.0,)" ],
-  "dependencies": [ libsandstone@[1.0.0,)" ],
+  "requiredMods": [ "libsandstone@[1.0.0,)" ],
+  "dependencies": [ "libsandstone@[1.0.0,)" ],
   "dependants": [  ],
   "useDependencyInformation": "true"
 }
