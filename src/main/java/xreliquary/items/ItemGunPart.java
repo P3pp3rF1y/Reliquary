@@ -25,7 +25,7 @@ public class ItemGunPart extends ItemBase {
 		super(Names.gun_part);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
-		this.setMaxStackSize(1);
+		this.setMaxStackSize(4);
 		this.setHasSubtypes(true);
 		canRepair = false;
 	}
