@@ -27,8 +27,6 @@ public class ItemEmptyVoidTear extends ItemBase {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
-		if (player.capabilities.isCreativeMode)
-			return ist;
 		ItemStack tear = compressInventoryIntoTearForPlayer(player.inventory, player);
 		if (tear == null)
 			return ist;

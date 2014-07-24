@@ -5,6 +5,7 @@ import java.util.List;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -59,7 +60,7 @@ public class ItemVoidTear extends ItemBase {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
-		unloadContentsIntoPlayerInventory(ist, player.inventory, player);
+		unloadContentsIntoInventory(ist, player.inventory, player, true);
 		return ist;
 	}
 
@@ -67,57 +68,37 @@ public class ItemVoidTear extends ItemBase {
 	public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 		if (world.getTileEntity(x, y, z) instanceof IInventory) {
 			IInventory inventory = (IInventory) world.getTileEntity(x, y, z);
-			unloadContentsIntoInventory(ist, inventory, player);
+			unloadContentsIntoInventory(ist, inventory, player, false);
 			return false;
 		}
 		return false;
 	}
 
-	public void unloadContentsIntoInventory(ItemStack ist, IInventory inventory, EntityPlayer player) {
+	public void unloadContentsIntoInventory(ItemStack ist, IInventory inventory, EntityPlayer player, boolean playerInv) {
 		NBTTagCompound tearTag = ist.getTagCompound();
 		if (tearTag == null)
 			return;
-		ItemStack contents = new ItemStack((Item) Item.itemRegistry.getObject(tearTag.getString("itemID")), 1, tearTag.getShort("itemMeta"));
+		ItemStack contents = new ItemStack(ContentHandler.getItem(tearTag.getString("itemID")), 1, tearTag.getShort("itemMeta"));
 		int quantity = tearTag.getShort("itemQuantity");
-		while (quantity > 0) {
-			if (!tryToAddToInventory(contents, inventory)) {
-				break;
-			}
-			quantity--;
-		}
+        int minQuantity = quantity - contents.getMaxStackSize();
+        while (quantity > Math.max(0, minQuantity)) {
+            if(playerInv) {
+                if (!tryToAddToPlayerInventory(contents, inventory, player)) {
+                    break;
+                }
+            } else {
+                if (!tryToAddToInventory(contents, inventory)) {
+                    break;
+                }
+            }
+            quantity--;
+        }
 		if (quantity == 0) {
 			addEmptyTearToPlayerInventory(player);
 			player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
-
-			player.inventory.decrStackSize(player.inventory.currentItem, 1);
 			return;
 		} else {
-			player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
-			tearTag.setShort("itemQuantity", (short) quantity);
-			ist.setTagCompound(tearTag);
-		}
-		return;
-	}
-
-	public void unloadContentsIntoPlayerInventory(ItemStack ist, IInventory inventory, EntityPlayer player) {
-		NBTTagCompound tearTag = ist.getTagCompound();
-		if (tearTag == null)
-			return;
-		ItemStack contents = new ItemStack((Item) Item.itemRegistry.getObject(tearTag.getString("itemID")), 1, tearTag.getShort("itemMeta"));
-		int quantity = tearTag.getShort("itemQuantity");
-		while (quantity > 0) {
-			if (!tryToAddToPlayerInventory(contents, inventory, player)) {
-				break;
-			}
-			quantity--;
-		}
-		if (quantity == 0) {
-			addEmptyTearToPlayerInventory(player);
-			player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
-			player.inventory.decrStackSize(player.inventory.currentItem, 1);
-			return;
-		} else {
-			player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
+			player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
 			tearTag.setShort("itemQuantity", (short) quantity);
 			ist.setTagCompound(tearTag);
 		}
@@ -125,9 +106,7 @@ public class ItemVoidTear extends ItemBase {
 	}
 
 	private void addEmptyTearToPlayerInventory(EntityPlayer player) {
-		if (!player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1))) {
-			player.worldObj.spawnEntityInWorld(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1)));
-		}
+        player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(ContentHandler.getItem(Names.void_tear_empty)));
 	}
 
 	public boolean tryToAddToInventory(ItemStack contents, IInventory inventory) {
@@ -154,10 +133,10 @@ public class ItemVoidTear extends ItemBase {
 
 	public boolean tryToAddToPlayerInventory(ItemStack contents, IInventory inventory, EntityPlayer player) {
 		for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
-			if (inventory.getStackInSlot(slot) == null) {
-				continue;
-			}
-			if (slot >= player.inventory.mainInventory.length) {
+            if (slot >= player.inventory.mainInventory.length) {
+                continue;
+            }
+            if (inventory.getStackInSlot(slot) == null) {
 				continue;
 			}
 			if (inventory.getStackInSlot(slot).isItemEqual(contents)) {
@@ -169,6 +148,9 @@ public class ItemVoidTear extends ItemBase {
 			}
 		}
 		for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+            if (slot >= player.inventory.mainInventory.length) {
+                continue;
+            }
 			if (inventory.getStackInSlot(slot) == null) {
 				inventory.setInventorySlotContents(slot, new ItemStack(contents.getItem(), contents.stackSize, contents.getItemDamage()));
 				return true;
