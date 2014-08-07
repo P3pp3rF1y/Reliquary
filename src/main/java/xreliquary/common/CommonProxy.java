@@ -67,7 +67,7 @@ public class CommonProxy {
 	}
 
 	public void initOptions() {
-		Reliquary.CONFIG.require(Names.fortune_coin, "disableAudio", new ConfigReference(false).setClientSide());
+		Reliquary.CONFIG.require(Names.fortune_coin, "disableAudio", new ConfigReference(false));
 		Reliquary.CONFIG.require(Names.emperor_chalice, "multiplier", new ConfigReference(1).setMinimumValue(0));
 		Reliquary.CONFIG.require(Names.alkahestry_tome, "redstoneLimit", new ConfigReference(256).setMinimumValue(0));
 		Reliquary.CONFIG.require(Names.hero_medallion, "xpLevelCap", new ConfigReference(30).setMinimumValue(0));
