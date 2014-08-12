@@ -27,31 +27,39 @@ public class ItemEmptyVoidTear extends ItemBase {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+        if(player.capabilities.isCreativeMode)
+            return ist;
 		ItemStack tear = compressInventoryIntoTearForPlayer(player.inventory, player);
 		if (tear == null)
 			return ist;
 		else {
 			player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
-			addTearToInventory(player, tear);
 			--ist.stackSize;
+            if (ist.stackSize == 0) {
+                return tear;
+            } else {
+                addTearToInventory(player, tear);
+            }
 		}
 		return ist;
 	}
 
 	@Override
 	public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+        if(player.capabilities.isCreativeMode)
+            return false;
 		if (world.getTileEntity(x, y, z) instanceof IInventory) {
 			IInventory inventory = (IInventory) world.getTileEntity(x, y, z);
 			ItemStack tear = compressInventoryIntoTearForPlayer(inventory, player);
 			if (tear != null) {
 				player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
-				if (player.inventory.decrStackSize(player.inventory.currentItem, 1).stackSize < 1) {
+				if (player.inventory.decrStackSize(player.inventory.currentItem, 1).stackSize == 0) {
 					player.inventory.setInventorySlotContents(player.inventory.currentItem, tear);
 				} else {
 					addTearToInventory(player, tear);
 				}
 			}
-			return false;
+			return true;
 		}
 		return false;
 	}

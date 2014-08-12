@@ -3,10 +3,11 @@ package xreliquary.items;
 import java.util.Iterator;
 import java.util.List;
 
+import baubles.api.BaubleType;
 import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +25,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @ContentInit
-public class ItemFortuneCoin extends ItemBase {
+public class ItemFortuneCoin extends ItemBauble {
 
 	public ItemFortuneCoin() {
 		super(Names.fortune_coin);
@@ -63,27 +64,27 @@ public class ItemFortuneCoin extends ItemBase {
 	}
 
 	@Override
-	public IIcon getIcon(ItemStack itemStack, int renderPass) {
-		if (itemStack.getItemDamage() == 0 || renderPass != 1)
+	public IIcon getIcon(ItemStack stack, int renderPass) {
+		if (stack.getItemDamage() == 0 || renderPass != 1)
 			return this.itemIcon;
 		else
 			return iconOverlay;
 	}
 
 	@Override
-	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
+	public void onUpdate(ItemStack stack, World world, Entity entity, int i, boolean f) {
 		if (!Reliquary.CONFIG.getBool(Names.fortune_coin, "disableAudio"))
-			if (NBTHelper.getShort("soundTimer", ist) > 0) {
-				if (NBTHelper.getShort("soundTimer", ist) % 2 == 0) {
-					world.playSoundAtEntity(e, "random.orb", 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
+			if (NBTHelper.getShort("soundTimer", stack) > 0) {
+				if (NBTHelper.getShort("soundTimer", stack) % 2 == 0) {
+					world.playSoundAtEntity(entity, "random.orb", 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
 				}
-				NBTHelper.setShort("soundTimer", ist, NBTHelper.getShort("soundTimer", ist) - 1);
+				NBTHelper.setShort("soundTimer", stack, NBTHelper.getShort("soundTimer", stack) - 1);
 			}
-		if (ist.getItemDamage() == 0)
+		if (stack.getItemDamage() == 0)
 			return;
 		EntityPlayer player = null;
-		if (e instanceof EntityPlayer) {
-			player = (EntityPlayer) e;
+		if (entity instanceof EntityPlayer) {
+			player = (EntityPlayer) entity;
 		}
 		if (player == null)
 			return;
@@ -169,27 +170,37 @@ public class ItemFortuneCoin extends ItemBase {
 	}
 
 	@Override
-	public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+	public int getMaxItemUseDuration(ItemStack stack) {
 		return 64;
 	}
 
 	@Override
-	public EnumAction getItemUseAction(ItemStack par1ItemStack) {
+	public EnumAction getItemUseAction(ItemStack stack) {
 		return EnumAction.block;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		if (world.isRemote)
-			return ist;
+			return stack;
 		if (player.isSneaking()) {
-			player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
+			player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 		} else {
 			if (!Reliquary.CONFIG.getBool(Names.fortune_coin, "disableAudio")) {
-				NBTHelper.setShort("soundTimer", ist, 6);
+				NBTHelper.setShort("soundTimer", stack, 6);
 			}
-			ist.setItemDamage(ist.getItemDamage() == 0 ? 1 : 0);
+			stack.setItemDamage(stack.getItemDamage() == 0 ? 1 : 0);
 		}
-		return ist;
+		return stack;
 	}
+
+    @Override
+    public BaubleType getBaubleType(ItemStack stack) {
+        return BaubleType.AMULET;
+    }
+
+    @Override
+    public void onWornTick(ItemStack stack, EntityLivingBase player) {
+        this.onUpdate(stack, player.worldObj, player, 0, false);
+    }
 }
