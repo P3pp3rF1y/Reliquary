@@ -1,9 +1,12 @@
 package xreliquary.event;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -11,10 +14,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import xreliquary.Reliquary;
+import xreliquary.client.model.ModelWitchHat;
 import xreliquary.items.ItemHandgun;
 import xreliquary.lib.Names;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -31,7 +37,37 @@ public class ClientEventHandler {
 		handleHandgunHUDCheck();
 	}
 
-	public void handleTickIncrement(TickEvent.RenderTickEvent event) {
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void onRenderPlayer(RenderPlayerEvent.SetArmorModel event) {
+        /*
+        if(event.entityPlayer != null && event.stack != null && event.stack.getItem() == ContentHandler.getItem(Names.witch_hat)) {
+            Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("minecraft:textures/entity/witch.png"));
+            ModelBiped model = event.renderer.modelArmor;
+            model.bipedHead.showModel = false;
+            model.bipedHeadwear.showModel = false;
+            model.bipedBody.showModel = false;
+            model.bipedRightArm.showModel = false;
+            model.bipedLeftArm.showModel = false;
+            model.bipedRightLeg.showModel = false;
+            model.bipedLeftLeg.showModel = false;
+            model = ModelWitchHat.self;
+            event.renderer.setRenderPassModel(model);
+            model.onGround = event.renderer.modelBipedMain.onGround;
+            model.isRiding = event.entityPlayer.isRiding();
+            model.isChild = event.renderer.modelBipedMain.isChild;
+
+            event.result = 1;
+            return;
+        } else if(event.stack != null && event.stack.getItem() == ContentHandler.getItem(Names.witch_hat)) {
+            event.result = 0;
+            return;
+        }
+        */
+    }
+
+
+    public void handleTickIncrement(TickEvent.RenderTickEvent event) {
 		// handles the color shifting of the twilight cloak, until we can throw
 		// it on an animation
 		if (event.phase != TickEvent.Phase.END)

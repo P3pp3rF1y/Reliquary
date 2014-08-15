@@ -113,7 +113,7 @@ public class XRRecipes {
 		// tome and alkahestry recipes
 		ItemStack tomeStack = new ItemStack(ContentHandler.getItem(Names.alkahestry_tome), 1, 0);
 		tomeStack.setItemDamage(Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit"));
-		GameRegistry.addShapelessRecipe(tomeStack, new Object[] { Items.book, Items.blaze_rod, Items.magma_cream, Items.gold_ingot, Blocks.glowstone, Items.nether_wart, new ItemStack(Items.skull, 1, 1), Items.ghast_tear, Items.lava_bucket });
+		GameRegistry.addShapelessRecipe(tomeStack, new Object[] { Items.book, ContentHandler.getItem(Names.witch_hat), Items.magma_cream, Items.gold_ingot, Blocks.glowstone, Items.nether_wart, new ItemStack(Items.skull, 1, 1), Items.ghast_tear, Items.lava_bucket });
 
 		GameRegistry.addRecipe(new AlkahestryRedstoneRecipe());
 		GameRegistry.addRecipe(new AlkahestryCraftingRecipe());

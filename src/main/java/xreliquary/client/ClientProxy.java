@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.MinecraftForge;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.client.render.ItemRendererApothecaryMortar;
 import xreliquary.client.render.ItemRendererHandgun;
@@ -38,6 +39,7 @@ import xreliquary.entities.EntitySeekerShot;
 import xreliquary.entities.EntitySpecialSnowball;
 import xreliquary.entities.EntityStormShot;
 import xreliquary.event.ClientEventHandler;
+import xreliquary.event.CommonEventHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -58,7 +60,7 @@ public class ClientProxy extends CommonProxy {
 	public void init() {
 		super.init();
 		FMLCommonHandler.instance().bus().register(new ClientEventHandler());
-		// FMLCommonHandler.instance().bus().register(new HandgunHUD());
+        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 
 		this.registerRenderers();
 	}

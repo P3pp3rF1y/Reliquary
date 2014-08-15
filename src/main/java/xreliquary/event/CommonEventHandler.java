@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -55,6 +56,7 @@ public class CommonEventHandler {
 	public void onLivingDrops(LivingDropsEvent event) {
 		Entity e = event.entity;
 		handleSquidCheck(e, event);
+        handleWitchCheck(e, event);
 	}
 
 	public void handleSquidCheck(Entity e, LivingDropsEvent event) {
@@ -70,6 +72,19 @@ public class CommonEventHandler {
 			}
 		}
 	}
+
+    public void handleWitchCheck(Entity e, LivingDropsEvent event) {
+        if (!(e instanceof EntityWitch))
+            return;
+        if (e.worldObj.rand.nextBoolean()) {
+            if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityPlayer && event.source.damageType.equals("player")) {
+                ItemStack dropStack = new ItemStack(ContentHandler.getItem(Names.witch_hat), 1, 0);
+                EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, dropStack);
+                entityitem.delayBeforeCanPickup = 10;
+                event.drops.add(entityitem);
+            }
+        }
+    }
 
 	@SubscribeEvent
 	public void beforePlayerHurt(LivingAttackEvent event) {

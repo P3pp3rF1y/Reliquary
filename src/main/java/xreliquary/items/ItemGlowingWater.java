@@ -33,9 +33,6 @@ public class ItemGlowingWater extends ItemBase {
 	@Override
 	public boolean hasContainerItem(ItemStack ist) {
 		return true;
-		// return (ist.getItemDamage() != Reference.POTION_META &&
-		// ist.getItemDamage() != Reference.SPLASH_META && ist.getItemDamage()
-		// != Reference.EMPTY_VIAL_META);
 	}
 
 	@Override

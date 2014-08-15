@@ -99,7 +99,7 @@ public class ItemVoidTear extends ItemBase {
             player = (EntityPlayer) entity;
         } else
             return;
-        if (stack.getItemDamage() == 0 || stack.getItemDamage() > 4) {
+        if (stack.getTagCompound().hasKey("absorb")) {
             if (findAndConsume(stack, player)) {
                 stack.getTagCompound().setShort("itemQuantity", ((Integer) (stack.getTagCompound().getShort("itemQuantity") + 1)).shortValue());
             }
@@ -108,22 +108,21 @@ public class ItemVoidTear extends ItemBase {
 
     private boolean findAndConsume(ItemStack stack, EntityPlayer player) {
         int suggestedSlot = -1;
-        int maxStackSize = 64;
         int count = 0;
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
             if (player.inventory.mainInventory[slot] == null) {
                 continue;
             }
-            count += player.inventory.mainInventory[slot].stackSize;
             if (ContentHelper.getIdent(player.inventory.mainInventory[slot].getItem()).equals(stack.getTagCompound().getString("itemID")) && player.inventory.mainInventory[slot].getItemDamage() == stack.getTagCompound().getShort("itemMeta")) {
+                count += player.inventory.mainInventory[slot].stackSize;
                 if(suggestedSlot == -1) {
                     suggestedSlot = slot;
-                    maxStackSize = player.inventory.mainInventory[slot].getMaxStackSize();
                 }
             }
         }
-        if(suggestedSlot != -1 && count > maxStackSize + 1) {
+        if(suggestedSlot != -1 && count > 64) {
             player.inventory.decrStackSize(suggestedSlot, 1);
+            return true;
         }
         return false;
     }
@@ -133,10 +132,8 @@ public class ItemVoidTear extends ItemBase {
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if(player.isSneaking()) {
             if(stack.getTagCompound().hasKey("absorb")) {
-                System.out.println("BLARRG");
                stack.getTagCompound().removeTag("absorb");
             } else {
-                System.out.println("BLAARG");
                 stack.getTagCompound().setBoolean("absorb", true);
             }
             player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
