@@ -18,6 +18,7 @@ import org.modstats.ModstatInfo;
 import org.modstats.Modstats;
 
 import xreliquary.common.CommonProxy;
+import xreliquary.integration.NEIModIntegration;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.lib.Reference;
 import xreliquary.util.alkahestry.AlkahestRecipe;
@@ -61,6 +62,7 @@ public class Reliquary {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		Modstats.instance().getReporter().registerMod(this);
+		Sandstone.addModIntegration(new NEIModIntegration());
 
 		PROXY.init();
 		MinecraftForge.EVENT_BUS.register(this);
@@ -69,9 +71,7 @@ public class Reliquary {
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		LOGGER.log(Level.INFO, "Loaded successfully!");
-		if (event.getSide() == Side.CLIENT && Loader.isModLoaded("NotEnoughItems")) {
-			LOGGER.log(Level.INFO, "Hey NEI! I got a plugin for you! (hopefully in the near future).");
-		}
+		Sandstone.postInit();
 	}
 
 	@EventHandler

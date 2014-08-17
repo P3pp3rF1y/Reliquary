@@ -1,6 +1,7 @@
 package xreliquary.blocks.tile;
 
 import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
+import lib.enderwizards.sandstone.blocks.tile.TileEntityInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -10,7 +11,7 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
-public class TileEntityMortar extends TileEntityBase implements IInventory {
+public class TileEntityMortar extends TileEntityInventory {
 
 	// counts the number of times the player has right clicked the block
 	// arbitrarily setting the number of times the player needs to grind the
@@ -18,11 +19,9 @@ public class TileEntityMortar extends TileEntityBase implements IInventory {
 	private int pestleUsedCounter;
 	private String customInventoryName;
 
-	private ItemStack[] itemStacks;
-
 	public TileEntityMortar() {
+		super(2);
 		pestleUsedCounter = 0;
-		itemStacks = new ItemStack[2];
 	}
 
 	@Override
@@ -34,14 +33,14 @@ public class TileEntityMortar extends TileEntityBase implements IInventory {
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 		NBTTagList items = tag.getTagList("Items", 10);
-		this.itemStacks = new ItemStack[this.getSizeInventory()];
+		this.inventory = new ItemStack[this.getSizeInventory()];
 
 		for (int i = 0; i < items.tagCount(); ++i) {
 			NBTTagCompound item = items.getCompoundTagAt(i);
 			byte b0 = item.getByte("Slot");
 
-			if (b0 >= 0 && b0 < this.itemStacks.length) {
-				this.itemStacks[b0] = ItemStack.loadItemStackFromNBT(item);
+			if (b0 >= 0 && b0 < this.inventory.length) {
+				this.inventory[b0] = ItemStack.loadItemStackFromNBT(item);
 				if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 					System.out.println("Hi #1");
 			}
@@ -60,10 +59,10 @@ public class TileEntityMortar extends TileEntityBase implements IInventory {
 		tag.setShort("pestleUsed", (short) this.pestleUsedCounter);
 		NBTTagList items = new NBTTagList();
 
-		for (int i = 0; i < this.itemStacks.length; ++i) {
-			if (this.itemStacks[i] != null) {
+		for (int i = 0; i < this.inventory.length; ++i) {
+			if (this.inventory[i] != null) {
 				NBTTagCompound item = new NBTTagCompound();
-				this.itemStacks[i].writeToNBT(item);
+				this.inventory[i].writeToNBT(item);
 				item.setByte("Slot", (byte) i);
 				System.out.println("Hi #2");
 				items.appendTag(item);
@@ -77,9 +76,9 @@ public class TileEntityMortar extends TileEntityBase implements IInventory {
 		}
 	}
 
-	// gets the contents of the tile entity as an array of itemstacks
+	// gets the contents of the tile entity as an array of inventory
 	public ItemStack[] getItemStacks() {
-		return itemStacks;
+		return inventory;
 	}
 
 	// increases the "pestleUsed" counter, checks to see if it is at its limit
@@ -89,64 +88,6 @@ public class TileEntityMortar extends TileEntityBase implements IInventory {
 		if (pestleUsedCounter >= Reference.PESTLE_USAGE_MAX) {
 			// do things
 		}
-	}
-
-	@Override
-	public int getSizeInventory() {
-		return itemStacks.length;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int var1) {
-		return itemStacks[var1];
-	}
-
-	@Override
-	public ItemStack decrStackSize(int var1, int var2) {
-		if (this.itemStacks[var1] != null) {
-			ItemStack itemstack;
-
-			if (this.itemStacks[var1].stackSize <= var2) {
-				itemstack = this.itemStacks[var1];
-				this.itemStacks[var1] = null;
-				return itemstack;
-			} else {
-				itemstack = this.itemStacks[var1].splitStack(var2);
-
-				if (this.itemStacks[var1].stackSize == 0) {
-					this.itemStacks[var1] = null;
-				}
-
-				return itemstack;
-			}
-		} else {
-			return null;
-		}
-	}
-
-	@Override
-	public ItemStack getStackInSlotOnClosing(int var1) {
-		if (this.itemStacks[var1] != null) {
-			ItemStack itemstack = this.itemStacks[var1];
-			this.itemStacks[var1] = null;
-			return itemstack;
-		} else {
-			return null;
-		}
-	}
-
-	@Override
-	public void setInventorySlotContents(int var1, ItemStack var2) {
-		if (worldObj.isRemote)
-			System.out.println("Huh?");
-		this.itemStacks[var1] = var2;
-		if (var2 != null && var2.stackSize > this.getInventoryStackLimit()) {
-			var2.stackSize = this.getInventoryStackLimit();
-		}
-	}
-
-	public void setInventory(ItemStack[] inventory) {
-
 	}
 
 	@Override
