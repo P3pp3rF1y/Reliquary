@@ -3,6 +3,7 @@ package xreliquary.blocks;
 import java.util.List;
 import java.util.Random;
 
+import lib.enderwizards.sandstone.blocks.BlockBase;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.block.ItemBlockBase;
@@ -31,17 +32,12 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@ContentInit(itemBlock = ItemBlockBase.class)
-public class BlockApothecaryCauldron extends BlockContainer {
+public class BlockApothecaryCauldron extends BlockBase {
 
 	public BlockApothecaryCauldron() {
-		super(Material.iron);
-
+		super(Material.iron, Names.apothecary_cauldron);
 		this.setHardness(1.5F);
 		this.setResistance(5.0F);
-
-		this.setBlockName(Names.apothecary_cauldron);
-
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 

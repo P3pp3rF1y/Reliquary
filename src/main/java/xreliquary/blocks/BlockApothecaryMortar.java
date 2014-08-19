@@ -3,6 +3,7 @@ package xreliquary.blocks;
 import java.util.List;
 import java.util.Random;
 
+import lib.enderwizards.sandstone.blocks.BlockBase;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.block.ItemBlockBase;
@@ -25,28 +26,14 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@ContentInit(itemBlock = ItemBlockBase.class)
-public class BlockApothecaryMortar extends BlockContainer {
+public class BlockApothecaryMortar extends BlockBase {
 
 	public BlockApothecaryMortar() {
-		super(Material.rock);
+		super(Material.rock, Names.apothecary_mortar);
 		this.setHardness(1.5F);
 		this.setResistance(2.0F);
-		this.setBlockName(Names.apothecary_mortar);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.3125F, 0.75F);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta) {
-		return this.blockIcon;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister iconRegister) {
-		this.blockIcon = iconRegister.registerIcon(Reference.MOD_ID + ":" + Names.apothecary_mortar);
 	}
 
 	@Override
@@ -56,40 +43,22 @@ public class BlockApothecaryMortar extends BlockContainer {
 		this.setBlockBoundsForItemRender();
 	}
 
-	/**
-	 * Sets the block's bounds for rendering it as an item
-	 */
 	public void setBlockBoundsForItemRender() {
 		this.setBlockBounds(0.25F, 0F, 0.25F, 0.75F, 0.3F, 0.75F);
 	}
 
-	/**
-	 * Is this block (a) opaque and (b) a full 1m cube? This determines whether
-	 * or not to render the shared face of two adjacent blocks and also whether
-	 * the player can attach torches, redstone wire, etc to this block.
-	 */
 	public boolean isOpaqueCube() {
 		return false;
 	}
 
-	/**
-	 * The type of render function that is called for this block
-	 */
 	public int getRenderType() {
 		return -1;
 	}
 
-	/**
-	 * If this block doesn't render as an ordinary block it will return False
-	 * (examples: signs, buttons, stairs, etc)
-	 */
 	public boolean renderAsNormalBlock() {
 		return false;
 	}
 
-	/**
-	 * Called upon block activation (right click on the block.)
-	 */
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metaMaybe, float playerX, float playerY, float playerZ) {
 		ItemStack heldItem = player.getCurrentEquippedItem();
 		if (heldItem == null)
@@ -123,9 +92,6 @@ public class BlockApothecaryMortar extends BlockContainer {
 		return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.apothecary_mortar));
 	}
 
-	/**
-	 * Gets an item for the block being called on. Args: world, x, y, z
-	 */
 	@SideOnly(Side.CLIENT)
 	public Item getItem(World world, int x, int y, int z) {
 		return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.apothecary_mortar));

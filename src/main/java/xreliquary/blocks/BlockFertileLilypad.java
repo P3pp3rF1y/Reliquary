@@ -3,6 +3,7 @@ package xreliquary.blocks;
 import java.util.List;
 import java.util.Random;
 
+import lib.enderwizards.sandstone.blocks.ICustomItemBlock;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.Block;
@@ -14,6 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -26,8 +28,7 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@ContentInit(itemBlock = ItemFertileLilypad.class)
-public class BlockFertileLilypad extends BlockFlower {
+public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock {
 
 	public BlockFertileLilypad() {
 		super(0);
@@ -51,8 +52,6 @@ public class BlockFertileLilypad extends BlockFlower {
 		return blockIcon;
 	}
 
-	// the update tick for this block, rather than growing, forces stuff around
-	// it to grow.
 	@Override
 	public void updateTick(World par1World, int x, int y, int z, Random par5Random) {
 		this.growCropsNearby(par1World, x, y, z);
@@ -115,6 +114,11 @@ public class BlockFertileLilypad extends BlockFlower {
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 		list.add(new ItemStack(item, 1));
+	}
+
+	@Override
+	public Class<? extends ItemBlock> getCustomItemBlock() {
+		return ItemFertileLilypad.class;
 	}
 
 }

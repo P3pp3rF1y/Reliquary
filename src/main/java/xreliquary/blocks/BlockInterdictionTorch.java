@@ -3,6 +3,7 @@ package xreliquary.blocks;
 import java.util.List;
 import java.util.Random;
 
+import lib.enderwizards.sandstone.blocks.ICustomItemBlock;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import net.minecraft.block.BlockTorch;
@@ -10,6 +11,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -19,8 +21,7 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@ContentInit(itemBlock = ItemBlockBase.class)
-public class BlockInterdictionTorch extends BlockTorch {
+public class BlockInterdictionTorch extends BlockTorch implements ICustomItemBlock {
 
 	public BlockInterdictionTorch() {
 		super();
@@ -120,6 +121,11 @@ public class BlockInterdictionTorch extends BlockTorch {
 			world.spawnParticle("mobSpell", xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
 			world.spawnParticle("flame", xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
 		}
+	}
+
+	@Override
+	public Class<? extends ItemBlock> getCustomItemBlock() {
+		return ItemBlockBase.class;
 	}
 
 }
