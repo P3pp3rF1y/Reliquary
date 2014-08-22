@@ -52,6 +52,7 @@ public class CommonProxy {
 			Alkahestry.init();
 		} catch (Exception e) {
 			e.printStackTrace();
+			FMLCommonHandler.instance().raiseException(e, "Reliquary failed to initiate recipies.", true);
 		}
 
 		FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), XRRecipes.potion(Reference.WATER_META), XRRecipes.potion(Reference.EMPTY_VIAL_META));

@@ -31,6 +31,18 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 public class CommonEventHandler {
+	
+	@SubscribeEvent
+	public void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
+		// Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
+		if(event.player.getGameProfile().getName() == "Drullkus") {
+			if(!event.player.getEntityData().hasKey("gift")) {
+				if(event.player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.witch_hat)))) {
+					event.player.getEntityData().setBoolean("gift", true);
+				}
+			}
+		}
+	}
 
 	@SubscribeEvent
 	public void onCraftingPotion(PlayerEvent.ItemCraftedEvent event) {

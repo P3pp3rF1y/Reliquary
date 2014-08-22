@@ -48,6 +48,7 @@ public class Names {
 	public static final String elsewhere_flask = "elsewhere_flask";
 	public static final String serpent_staff = "serpent_staff";
     public static final String witch_hat = "witch_hat";
+    public static final String infernal_tear = "infernal_tear";
 
 	// potion info
 	public static final String condensed_potion = "condensed_potion";

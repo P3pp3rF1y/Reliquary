@@ -28,6 +28,7 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@ContentInit
 public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock {
 
 	public BlockFertileLilypad() {

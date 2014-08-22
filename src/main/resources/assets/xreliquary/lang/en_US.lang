@@ -124,6 +124,8 @@ item.serpent_staff.name={{!colors.green}}Serpent Staff
 item.serpent_staff.tooltip=All that nasty stuff;from a Kraken's spit,;thrown at your enemies.
 item.witch_hat.name={{!colors.yellow}}Witch Hat
 item.witch_hat.tooltip=All that was left of that nasty Witch.;I wonder if I could use it somehow.
+item.infernal_tear.name={{!colors.red}}Infernal Tear
+item.infernal_tear.tooltip=Burns items into their raw essence.;Might make a good brewing ingredient.
 
 item.potion_0.name=Condensed Splash Serum
 item.potion_1.name=Love Potion #9

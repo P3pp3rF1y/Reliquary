@@ -40,7 +40,6 @@ public class ClientEventHandler {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onRenderPlayer(RenderPlayerEvent.SetArmorModel event) {
-        /*
         if(event.entityPlayer != null && event.stack != null && event.stack.getItem() == ContentHandler.getItem(Names.witch_hat)) {
             Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("minecraft:textures/entity/witch.png"));
             ModelBiped model = event.renderer.modelArmor;
@@ -63,7 +62,6 @@ public class ClientEventHandler {
             event.result = 0;
             return;
         }
-        */
     }
 
 
