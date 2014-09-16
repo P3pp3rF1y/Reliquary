@@ -40,7 +40,6 @@ public class ItemVoidTear extends ItemBase {
     @SideOnly(Side.CLIENT)
     private IIcon iconOverlay;
 
-
     @Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -78,7 +77,7 @@ public class ItemVoidTear extends ItemBase {
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass) {
-        if (renderPass == 1 && stack.getTagCompound().hasKey("absorb"))
+        if (renderPass == 1 && stack.getTagCompound() != null && stack.getTagCompound().hasKey("absorb"))
             return iconOverlay;
         else
             return this.itemIcon;
@@ -99,7 +98,7 @@ public class ItemVoidTear extends ItemBase {
             player = (EntityPlayer) entity;
         } else
             return;
-        if (stack.getTagCompound().hasKey("absorb")) {
+        if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("absorb")) {
             if (findAndConsume(stack, player)) {
                 stack.getTagCompound().setShort("itemQuantity", ((Integer) (stack.getTagCompound().getShort("itemQuantity") + 1)).shortValue());
             }

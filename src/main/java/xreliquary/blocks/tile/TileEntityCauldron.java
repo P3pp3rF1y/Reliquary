@@ -24,8 +24,8 @@ public class TileEntityCauldron extends TileEntityBase {
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-		super.readFromNBT(par1NBTTagCompound);
+	public void readFromNBT(NBTTagCompound tag) {
+		super.readFromNBT(tag);
 		// TODO remember the itemstack (essence or potion type), the amount of
 		// water, maybe?
 		// TODO remember if it's cooking, the amount of time, etc.
@@ -33,8 +33,8 @@ public class TileEntityCauldron extends TileEntityBase {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-		super.writeToNBT(par1NBTTagCompound);
+	public void writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
 		// TODO see above
 	}
 

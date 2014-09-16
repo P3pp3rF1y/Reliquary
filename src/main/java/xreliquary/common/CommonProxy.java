@@ -9,6 +9,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityAltar;
+import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.entities.EntityBlazeShot;
@@ -46,6 +47,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
 
+
 	public void preInit() {
 		try {
 			XRRecipes.init();
@@ -82,7 +84,8 @@ public class CommonProxy {
 	public void registerTileEntities() {
 		GameRegistry.registerTileEntity(TileEntityAltar.class, "reliquaryAltar");
 		GameRegistry.registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
-	}
+        GameRegistry.registerTileEntity(TileEntityCauldron.class, "reliquaryCauldron");
+    }
 
 	public void registerEntities() {
 		EntityRegistry.registerModEntity(EntityHolyHandGrenade.class, "entityHGrenade", 0, Reliquary.INSTANCE, 128, 5, true);
