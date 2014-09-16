@@ -26,7 +26,7 @@ import xreliquary.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@ContentInit
+// @ContentInit
 public class BlockApothecaryMortar extends BlockBase {
 
 	public BlockApothecaryMortar() {

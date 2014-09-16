@@ -83,8 +83,8 @@ public class CommonProxy {
 
 	public void registerTileEntities() {
 		GameRegistry.registerTileEntity(TileEntityAltar.class, "reliquaryAltar");
-		GameRegistry.registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
-        GameRegistry.registerTileEntity(TileEntityCauldron.class, "reliquaryCauldron");
+		// GameRegistry.registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
+        // GameRegistry.registerTileEntity(TileEntityCauldron.class, "reliquaryCauldron");
     }
 
 	public void registerEntities() {
