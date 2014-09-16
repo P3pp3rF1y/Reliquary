@@ -135,10 +135,9 @@ public class ItemInfernalTear extends ItemBase {
                 String ident = stack.getTagCompound().getString("itemID");
                 if(Alkahestry.getRegistry().containsKey(ident)) {
                     AlkahestRecipe recipe = Alkahestry.getRegistry().get(ident);
-                    System.out.println(recipe.yield);
-                    System.out.println(recipe.cost);
-                    System.out.println(recipe.yield / recipe.cost);
-                    player.addExperience((int) (Math.ceil((double) ((double) recipe.yield / (double) recipe.cost) * 125)));
+                    if(recipe.yield != 32 && recipe.cost != 4) {
+                        player.addExperience((int) (Math.ceil((double) ((double) recipe.yield / (double) recipe.cost) * 125)));
+                    }
                 }
             }
         }
