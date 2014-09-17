@@ -4,8 +4,8 @@ import lib.enderwizards.sandstone.client.gui.GuiFactory;
 
 public class XRGuiFactory extends GuiFactory {
 
-	public XRGuiFactory() {
-		super(XRGuiConfig.class);
-	}
+    public XRGuiFactory() {
+        super(XRGuiConfig.class);
+    }
 
 }

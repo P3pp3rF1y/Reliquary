@@ -20,7 +20,7 @@ public abstract class ItemBauble extends ItemBase implements IBauble {
 
     @Override
     public void onEquipped(ItemStack stack, EntityLivingBase player) {
-        if(!player.worldObj.isRemote)
+        if (!player.worldObj.isRemote)
             player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 2.2F));
         onWornTick(stack, player);
     }

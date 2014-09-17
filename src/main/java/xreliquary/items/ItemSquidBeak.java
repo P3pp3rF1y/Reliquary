@@ -8,11 +8,11 @@ import xreliquary.lib.Names;
 @ContentInit
 public class ItemSquidBeak extends ItemBase {
 
-	public ItemSquidBeak() {
-		super(Names.squid_beak);
-		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		this.setMaxDamage(0);
-		this.setMaxStackSize(64);
-		canRepair = false;
-	}
+    public ItemSquidBeak() {
+        super(Names.squid_beak);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
+        this.setMaxDamage(0);
+        this.setMaxStackSize(64);
+        canRepair = false;
+    }
 }

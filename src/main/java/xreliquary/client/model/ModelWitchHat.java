@@ -29,12 +29,12 @@ public class ModelWitchHat extends ModelBiped {
         setRotationAngles(f, f1, f2, f3, f4, f5, par1Entity);
         this.witchHat.rotateAngleY = this.bipedHead.rotateAngleY;
         this.witchHat.rotateAngleX = this.bipedHead.rotateAngleX;
-        
-        if(this.isSneak)
-        	this.witchHat.rotationPointY = 1.0F;
+
+        if (this.isSneak)
+            this.witchHat.rotationPointY = 1.0F;
         else
-        	this.witchHat.rotationPointY = 0.0F;	
-        
+            this.witchHat.rotationPointY = 0.0F;
+
         GL11.glPushMatrix();
         this.witchHat.render(f5);
         GL11.glPopMatrix();

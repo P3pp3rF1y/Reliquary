@@ -3,12 +3,14 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.util.ContentHelper;
+import lib.enderwizards.sandstone.util.InventoryHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,32 +18,26 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 
 import java.util.List;
 
+
+// TODO: Look into the equivalent of an onItemPickup event.
 @ContentInit
 public class ItemInfernalTear extends ItemBase {
 
-	public ItemInfernalTear() {
-		super(Names.infernal_tear);
-		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+    public ItemInfernalTear() {
+        super(Names.infernal_tear);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.hasSubtypes = true;
-	}
+    }
 
     @Override
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack, int pass) {
         return stack.getTagCompound() != null && stack.getTagCompound().hasKey("itemID");
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
     }
 
     @Override
@@ -60,11 +56,11 @@ public class ItemInfernalTear extends ItemBase {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if(stack.getTagCompound().hasKey("itemID")) {
+        if (stack.getTagCompound().hasKey("itemID")) {
             stack.getTagCompound().removeTag("itemID");
             stack.getTagCompound().removeTag("itemMeta");
         } else {
-            ItemStack target = getTargetItem(player.inventory);
+            ItemStack target = InventoryHelper.getTargetItem(stack, player.inventory);
             stack.getTagCompound().setString("itemID", ContentHelper.getIdent(target.getItem()));
             stack.getTagCompound().setShort("itemMeta", (short) target.getItemDamage());
         }
@@ -81,46 +77,6 @@ public class ItemInfernalTear extends ItemBase {
         return false;
     }
 
-    public ItemStack getTargetItem(IInventory inventory) {
-        ItemStack targetItem = null;
-        int itemQuantity = 0;
-        for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
-            ItemStack ist = inventory.getStackInSlot(slot);
-            if (ist == null) {
-                continue;
-            }
-            if (ContentHelper.getIdent(ist.getItem()).equals(ContentHelper.getIdent(this))) {
-                continue;
-            }
-            if (ist.getMaxStackSize() == 1) {
-                continue;
-            }
-            if (ist.getTagCompound() != null) {
-                continue;
-            }
-            if (getQuantityInInventory(ist, inventory) > itemQuantity) {
-                itemQuantity = getQuantityInInventory(ist, inventory);
-                inventory.decrStackSize(slot, 1);
-                targetItem = ist.copy();
-            }
-        }
-        return targetItem;
-    }
-
-    public int getQuantityInInventory(ItemStack ist, IInventory inventory) {
-        int itemQuantity = 0;
-        for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
-            ItemStack stack = inventory.getStackInSlot(slot);
-            if (stack == null) {
-                continue;
-            }
-            if (ist.isItemEqual(stack)) {
-                itemQuantity += stack.stackSize;
-            }
-        }
-        return itemQuantity;
-    }
-
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int i, boolean f) {
         if (world.isRemote)
@@ -131,42 +87,28 @@ public class ItemInfernalTear extends ItemBase {
         } else
             return;
         if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("itemID")) {
-            if (findAndConsume(stack, player)) {
-                String ident = stack.getTagCompound().getString("itemID");
-                if(Alkahestry.getRegistry().containsKey(ident)) {
-                    AlkahestRecipe recipe = Alkahestry.getRegistry().get(ident);
-                    if(recipe.yield != 32 && recipe.cost != 4) {
-                        player.addExperience((int) (Math.ceil((double) ((double) recipe.yield / (double) recipe.cost) * 125)));
-                    }
-                }
+            Item item = ContentHandler.getItem(stack.getTagCompound().getString("itemID"));
+            ItemStack newStack = new ItemStack(item, 0, (int) stack.getTagCompound().getShort("itemMeta"));
+            if (InventoryHelper.consumeItem(newStack, player, newStack.getMaxStackSize())) {
+                giveExperience(stack, player);
             }
         }
     }
 
-    private boolean findAndConsume(ItemStack stack, EntityPlayer player) {
-        int suggestedSlot = -1;
-        int count = 0;
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-            if (player.inventory.mainInventory[slot] == null) {
-                continue;
-            }
-            if (ContentHelper.getIdent(player.inventory.mainInventory[slot].getItem()).equals(stack.getTagCompound().getString("itemID")) && player.inventory.mainInventory[slot].getItemDamage() == stack.getTagCompound().getShort("itemMeta")) {
-                count += player.inventory.mainInventory[slot].stackSize;
-                if(suggestedSlot == -1) {
-                    suggestedSlot = slot;
-                }
+    public void giveExperience(ItemStack stack, EntityPlayer player) {
+        String ident = stack.getTagCompound().getString("itemID");
+        if (Alkahestry.getRegistry().containsKey(ident)) {
+            AlkahestRecipe recipe = Alkahestry.getRegistry().get(ident);
+            // You need above Cobblestone level to get XP.
+            if (recipe.yield != 32 && recipe.cost != 4) {
+                player.addExperience((int) (Math.round(((double) (1d / (double) recipe.cost) / (double) recipe.yield) * 150)));
             }
         }
-        if(suggestedSlot != -1 && count > 64) {
-            player.inventory.decrStackSize(suggestedSlot, 1);
-            return true;
-        }
-        return false;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item item, CreativeTabs tabs, List list)  {
+    public void getSubItems(Item item, CreativeTabs tabs, List list) {
         ItemStack stack = new ItemStack(item, 1);
         stack.setTagCompound(new NBTTagCompound());
         list.add(stack);

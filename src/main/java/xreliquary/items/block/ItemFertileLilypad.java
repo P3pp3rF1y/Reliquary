@@ -1,5 +1,7 @@
 package xreliquary.items.block;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -13,67 +15,65 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemFertileLilypad extends ItemBlock {
 
-	public ItemFertileLilypad(Block block) {
-		super(block);
-	}
+    public ItemFertileLilypad(Block block) {
+        super(block);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public EnumRarity getRarity(ItemStack stack) {
-		return EnumRarity.epic;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public EnumRarity getRarity(ItemStack stack) {
+        return EnumRarity.epic;
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister iconRegister) {
-		itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.lilypad);
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister iconRegister) {
+        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.lilypad);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(ItemStack i, int renderpass) {
-		return itemIcon;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(ItemStack i, int renderpass) {
+        return itemIcon;
+    }
 
-	/**
-	 * Called whenever this item is equipped and the right mouse button is
-	 * pressed. Args: itemStack, world, entityPlayer
-	 */
-	@Override
-	public ItemStack onItemRightClick(ItemStack par1ItemStack, World world, EntityPlayer par3EntityPlayer) {
-		MovingObjectPosition var4 = this.getMovingObjectPositionFromPlayer(world, par3EntityPlayer, true);
+    /**
+     * Called whenever this item is equipped and the right mouse button is
+     * pressed. Args: itemStack, world, entityPlayer
+     */
+    @Override
+    public ItemStack onItemRightClick(ItemStack par1ItemStack, World world, EntityPlayer par3EntityPlayer) {
+        MovingObjectPosition var4 = this.getMovingObjectPositionFromPlayer(world, par3EntityPlayer, true);
 
-		if (var4 == null)
-			return par1ItemStack;
-		else {
-			if (var4.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-				int var5 = var4.blockX;
-				int var6 = var4.blockY;
-				int var7 = var4.blockZ;
+        if (var4 == null)
+            return par1ItemStack;
+        else {
+            if (var4.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+                int var5 = var4.blockX;
+                int var6 = var4.blockY;
+                int var7 = var4.blockZ;
 
-				if (!world.canMineBlock(par3EntityPlayer, var5, var6, var7))
-					return par1ItemStack;
+                if (!world.canMineBlock(par3EntityPlayer, var5, var6, var7))
+                    return par1ItemStack;
 
-				if (!par3EntityPlayer.canPlayerEdit(var5, var6, var7, var4.sideHit, par1ItemStack))
-					return par1ItemStack;
+                if (!par3EntityPlayer.canPlayerEdit(var5, var6, var7, var4.sideHit, par1ItemStack))
+                    return par1ItemStack;
 
-				if (world.getBlock(var5, var6, var7).getMaterial() == Material.water && world.getBlockMetadata(var5, var6, var7) == 0 && world.isAirBlock(var5, var6 + 1, var7)) {
-					world.setBlock(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad));
+                if (world.getBlock(var5, var6, var7).getMaterial() == Material.water && world.getBlockMetadata(var5, var6, var7) == 0 && world.isAirBlock(var5, var6 + 1, var7)) {
+                    world.setBlock(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad));
                     world.scheduleBlockUpdate(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad), 20);
 
-					if (!par3EntityPlayer.capabilities.isCreativeMode) {
-						--par1ItemStack.stackSize;
-					}
-				}
-			}
+                    if (!par3EntityPlayer.capabilities.isCreativeMode) {
+                        --par1ItemStack.stackSize;
+                    }
+                }
+            }
 
-			return par1ItemStack;
-		}
-	}
+            return par1ItemStack;
+        }
+    }
 
 }
