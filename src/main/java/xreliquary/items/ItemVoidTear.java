@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -24,7 +25,7 @@ import xreliquary.lib.Reference;
 import java.util.List;
 
 @ContentInit
-public class ItemVoidTear extends ItemBase {
+public class ItemVoidTear extends ItemToggleable {
 
     public ItemVoidTear() {
         super(Names.void_tear);
@@ -67,13 +68,13 @@ public class ItemVoidTear extends ItemBase {
             holds = "" + EnumChatFormatting.YELLOW + tag.getShort("itemQuantity") + " of " + itemName;
         }
         this.formatTooltip(ImmutableMap.of("holds", holds), stack, list);
-        if (stack.getTagCompound().hasKey("absorb"))
+        if (this.isEnabled(stack))
             list.add(EnumChatFormatting.LIGHT_PURPLE + "Automagically absorbs items.");
     }
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass) {
-        if (renderPass == 1 && stack.getTagCompound() != null && stack.getTagCompound().hasKey("absorb"))
+        if (renderPass == 1 && stack.getTagCompound() != null && this.isEnabled(stack))
             return iconOverlay;
         else
             return this.itemIcon;
@@ -94,7 +95,7 @@ public class ItemVoidTear extends ItemBase {
             player = (EntityPlayer) entity;
         } else
             return;
-        if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("absorb")) {
+        if (stack.getTagCompound() != null && this.isEnabled(stack)) {
             Item item = ContentHandler.getItem(stack.getTagCompound().getString("itemID"));
             ItemStack newStack = new ItemStack(item, 0, (int) stack.getTagCompound().getShort("itemMeta"));
             if (InventoryHelper.consumeItem(newStack, player, newStack.getMaxStackSize())) {
@@ -105,15 +106,10 @@ public class ItemVoidTear extends ItemBase {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (player.isSneaking()) {
-            if (stack.getTagCompound().hasKey("absorb")) {
-                stack.getTagCompound().removeTag("absorb");
-            } else {
-                stack.getTagCompound().setBoolean("absorb", true);
-            }
-            player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
-            return stack;
-        }
+        ItemStack newStack = super.onItemRightClick(stack, world, player);
+        if(newStack != null)
+            return newStack;
+
         unloadContentsIntoInventory(stack, player.inventory, player, true);
         return stack;
     }
