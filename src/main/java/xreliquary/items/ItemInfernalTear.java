@@ -6,11 +6,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,25 +25,25 @@ import xreliquary.util.alkahestry.Alkahestry;
 
 import java.util.List;
 
-
-// TODO: Look into the equivalent of an onItemPickup event.
+// TODO: Poke a texture artist about making an empty form of the Infernal Tear.
 @ContentInit
-public class ItemInfernalTear extends ItemBase {
+public class ItemInfernalTear extends ItemToggleable {
 
     public ItemInfernalTear() {
         super(Names.infernal_tear);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
+        this.setMaxStackSize(1);
         this.hasSubtypes = true;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack, int pass) {
-        return stack.getTagCompound() != null && stack.getTagCompound().hasKey("itemID");
+        return stack.getTagCompound() != null && stack.getTagCompound().hasKey("itemID") && this.isEnabled(stack);
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         NBTTagCompound tag = stack.getTagCompound();
         String holds;
         if (tag == null || !tag.hasKey("itemID") || new ItemStack((Item) Item.itemRegistry.getObject(tag.getString("itemID")), 1, tag.getShort("itemMeta")).getItem() == null) {
@@ -56,24 +58,46 @@ public class ItemInfernalTear extends ItemBase {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (stack.getTagCompound().hasKey("itemID")) {
-            stack.getTagCompound().removeTag("itemID");
-            stack.getTagCompound().removeTag("itemMeta");
+        ItemStack newStack = super.onItemRightClick(stack, world, player);
+        if(player.isSneaking())
+            return newStack;
+
+        NBTTagCompound tag = stack.getTagCompound();
+        if (tag.hasKey("itemID")) {
+            tag.removeTag("itemID");
+            tag.removeTag("itemMeta");
         } else {
             ItemStack target = InventoryHelper.getTargetItem(stack, player.inventory);
-            stack.getTagCompound().setString("itemID", ContentHelper.getIdent(target.getItem()));
-            stack.getTagCompound().setShort("itemMeta", (short) target.getItemDamage());
+            tag.setString("itemID", ContentHelper.getIdent(target.getItem()));
+            tag.setShort("itemMeta", (short) target.getItemDamage());
+            tag.setBoolean("enabled", true);
         }
 
         player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
         return stack;
     }
 
-    // TODO: Do something on shift right-click?
-    // TODO: Do the click-on-chest thing with the Infernal Tear.
-
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+        if (player.isSneaking())
+            return false;
+
+        NBTTagCompound tag = stack.getTagCompound();
+        if (tag.hasKey("itemID"))
+            return false;
+
+        if (world.getTileEntity(x, y, z) instanceof IInventory) {
+            IInventory inventory = (IInventory) world.getTileEntity(x, y, z);
+
+            ItemStack target = InventoryHelper.getTargetItem(stack, inventory);
+
+            if(target != null) {
+                tag.setString("itemID", ContentHelper.getIdent(target.getItem()));
+                tag.setShort("itemMeta", (short) target.getItemDamage());
+                tag.setBoolean("enabled", true);
+                return true;
+            }
+        }
         return false;
     }
 
@@ -81,17 +105,22 @@ public class ItemInfernalTear extends ItemBase {
     public void onUpdate(ItemStack stack, World world, Entity entity, int i, boolean f) {
         if (world.isRemote)
             return;
+        if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("itemID"))
+            return;
+        if(!this.isEnabled(stack))
+            return;
+
         EntityPlayer player;
         if (entity instanceof EntityPlayer) {
             player = (EntityPlayer) entity;
-        } else
+        } else {
             return;
-        if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("itemID")) {
-            Item item = ContentHandler.getItem(stack.getTagCompound().getString("itemID"));
-            ItemStack newStack = new ItemStack(item, 0, (int) stack.getTagCompound().getShort("itemMeta"));
-            if (InventoryHelper.consumeItem(newStack, player, newStack.getMaxStackSize())) {
-                giveExperience(stack, player);
-            }
+        }
+
+        Item item = ContentHandler.getItem(stack.getTagCompound().getString("itemID"));
+        ItemStack newStack = new ItemStack(item, 0, (int) stack.getTagCompound().getShort("itemMeta"));
+        if (InventoryHelper.consumeItem(newStack, player, newStack.getMaxStackSize())) {
+            giveExperience(stack, player);
         }
     }
 
@@ -105,13 +134,4 @@ public class ItemInfernalTear extends ItemBase {
             }
         }
     }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(Item item, CreativeTabs tabs, List list) {
-        ItemStack stack = new ItemStack(item, 1);
-        stack.setTagCompound(new NBTTagCompound());
-        list.add(stack);
-    }
-
 }

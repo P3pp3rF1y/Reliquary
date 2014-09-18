@@ -107,7 +107,7 @@ public class ItemVoidTear extends ItemToggleable {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         ItemStack newStack = super.onItemRightClick(stack, world, player);
-        if(newStack != null)
+        if(player.isSneaking())
             return newStack;
 
         unloadContentsIntoInventory(stack, player.inventory, player, true);
