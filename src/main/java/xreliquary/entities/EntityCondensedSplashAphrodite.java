@@ -2,7 +2,7 @@ package xreliquary.entities;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -36,7 +36,7 @@ public class EntityCondensedSplashAphrodite extends EntityThrownPotion {
     }
 
     @Override
-    void doLivingSplashEffect(EntityLiving el) {
+    void doLivingSplashEffect(EntityLivingBase el) {
         if (!(el instanceof EntityAnimal))
             return;
         EntityAnimal e = (EntityAnimal) el;

@@ -47,9 +47,7 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onCraftingPotion(PlayerEvent.ItemCraftedEvent event) {
         for (int slot = 0; slot < event.craftMatrix.getSizeInventory(); slot++) {
-            if (event.craftMatrix.getStackInSlot(slot) == null) {
-                continue;
-            }
+            if (event.craftMatrix.getStackInSlot(slot) == null) continue;
             if (event.craftMatrix.getStackInSlot(slot).getItem() == ContentHandler.getItem(Names.glowing_water))
                 if (!event.player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META))) {
                     event.player.entityDropItem(new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META), 0.1F);

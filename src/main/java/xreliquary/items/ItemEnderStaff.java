@@ -58,6 +58,7 @@ public class ItemEnderStaff extends ItemBase {
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (world.isRemote)
             return ist;
+        player.swingItem();
         if (ist.getItemDamage() == 0)
             return ist;
         if (ist.getItemDamage() < ist.getMaxDamage() - 1) {

@@ -40,10 +40,10 @@ public class ItemCondensedPotion extends ItemBase {
         canRepair = false;
     }
 
-    @Override
-    public ItemStack getContainerItem(ItemStack ist) {
-        return new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META);
-    }
+//    @Override
+//    public ItemStack getContainerItem(ItemStack ist) {
+//        return new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META);
+//    }
 
     // returns an empty vial when used in crafting recipes, unless it's one of
     // the base potion types.
@@ -74,6 +74,10 @@ public class ItemCondensedPotion extends ItemBase {
 
     @Override
     public boolean hasEffect(ItemStack stack, int pass) {
+        return hasPotionEffect(stack);
+    }
+
+    private boolean hasPotionEffect(ItemStack stack) {
         return !(isEmptyVial(stack) || isBaseSplash(stack) || isBasePotion(stack) || isJustWater(stack));
     }
 
@@ -460,7 +464,7 @@ public class ItemCondensedPotion extends ItemBase {
                     }
                 }
             }
-        } else if (!hasEffect(ist))
+        } else if (!hasPotionEffect(ist))
             return ist;
         else if (isPotion(ist)) {
             player.setItemInUse(ist, this.getMaxItemUseDuration(ist));

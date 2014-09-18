@@ -4,7 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Items;
@@ -75,10 +75,10 @@ public abstract class EntityThrownPotion extends EntityThrowable {
         if (!this.hasLivingEntityEffect())
             return;
         AxisAlignedBB bb = boundingBox.expand(4.0D, 2.0D, 4.0D);
-        List eList = worldObj.getEntitiesWithinAABB(EntityLiving.class, bb);
+        List eList = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, bb);
         Iterator i = eList.iterator();
         while (i.hasNext()) {
-            EntityLiving e = (EntityLiving) i.next();
+            EntityLivingBase e = (EntityLivingBase) i.next();
             this.doLivingSplashEffect(e);
         }
     }
@@ -118,8 +118,8 @@ public abstract class EntityThrownPotion extends EntityThrowable {
     }
 
     // this gets called inside the on-impact method on EVERY living entity
-    // within the
-    abstract void doLivingSplashEffect(EntityLiving e);
+    // within the AOE
+    abstract void doLivingSplashEffect(EntityLivingBase e);
 
     // these are just the getters for the particle coloration. They're all the
     // same particle style, so it's really just a matter of coloration.
