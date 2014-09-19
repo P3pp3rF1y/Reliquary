@@ -3,14 +3,17 @@ package xreliquary.blocks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.ICustomItemBlock;
+import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
+import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -72,11 +75,7 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
                     int z = zO + zD;
                     Block block = world.getBlock(x, y, z);
 
-                    if (block != null && Block.blockRegistry.getNameForObject(block).equals(ContentHelper.getIdent(block))) {
-                        continue;
-                    }
-
-                    if (block instanceof IPlantable) {
+                    if ((block instanceof IPlantable || block instanceof IGrowable) && !(block instanceof BlockFertileLilypad)) {
                         block.updateTick(world, x, y, z, world.rand);
                     }
                 }
@@ -108,8 +107,8 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
     }
 
     @Override
-    public boolean canBlockStay(World world, int par2, int par3, int par4) {
-        return par3 >= 0 && par3 < 256 ? world.getBlock(par2, par3 - 1, par4).getMaterial() == Material.water && world.getBlockMetadata(par2, par3 - 1, par4) == 0 : false;
+    public boolean canBlockStay(World world, int x, int y, int z) {
+        return y >= 0 && y < 256 ? world.getBlock(x, y - 1, z).getMaterial() == Material.water && world.getBlockMetadata(x, y - 1, z) == 0 : false;
     }
 
     @SideOnly(Side.CLIENT)
@@ -121,5 +120,4 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
     public Class<? extends ItemBlock> getCustomItemBlock() {
         return ItemFertileLilypad.class;
     }
-
 }
