@@ -9,8 +9,6 @@ import net.minecraft.world.World;
 
 public class EntityKrakenSlime extends EntityThrowable {
 
-    public static DamageSource SOURCE = new DamageSource("slimed").setDamageIsAbsolute().setProjectile().setMagicDamage();
-
     public EntityKrakenSlime(World world) {
         super(world);
     }
@@ -25,7 +23,7 @@ public class EntityKrakenSlime extends EntityThrowable {
             return;
         if (object.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && object.entityHit instanceof EntityLiving) {
             EntityLiving living = (EntityLiving) object.entityHit;
-            living.attackEntityFrom(SOURCE, 7.5f);
+            living.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 7.5f);
         }
 
         for (int count = 0; count < 6; ++count) {
