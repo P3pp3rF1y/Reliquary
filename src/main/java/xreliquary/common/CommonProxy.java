@@ -4,6 +4,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.mod.config.ConfigReference;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -16,6 +17,8 @@ import xreliquary.entities.*;
 import xreliquary.event.CommonEventHandler;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemDestructionCatalyst;
+import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
+import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.alkahestry.Alkahestry;
@@ -38,6 +41,9 @@ public class CommonProxy {
     }
 
     public void init() {
+        AlkahestryCraftingRecipe.returnedItem = ContentHandler.getItem(Names.alkahestry_tome);
+        AlkahestryRedstoneRecipe.returnedItem = ContentHandler.getItem(Names.alkahestry_tome);
+
         NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
         FMLCommonHandler.instance().bus().register(new CommonEventHandler());
         MinecraftForge.EVENT_BUS.register(new CommonEventHandler());

@@ -1,8 +1,8 @@
 package xreliquary.items.alkahestry;
 
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
@@ -13,6 +13,8 @@ import xreliquary.util.alkahestry.Alkahestry;
 
 public class AlkahestryCraftingRecipe implements IRecipe {
 
+    public static Item returnedItem;
+
     @Override
     public boolean matches(InventoryCrafting inv, World world) {
         ItemStack tome = null;
@@ -21,9 +23,9 @@ public class AlkahestryCraftingRecipe implements IRecipe {
         for (int count = 0; count < inv.getSizeInventory(); count++) {
             ItemStack stack = inv.getStackInSlot(count);
             if (stack != null) {
-                if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome)))) {
+                if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(returnedItem))) {
                     tome = stack.copy();
-                } else if (!ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome)))) {
+                } else if (!ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(returnedItem))) {
                     if (valid == 0) {
                         valid = 1;
                         itemStack = stack;
@@ -52,7 +54,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
         for (int count = 0; count < inv.getSizeInventory(); count++) {
             ItemStack stack = inv.getStackInSlot(count);
             if (stack != null) {
-                if (!(ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome))))) {
+                if (!(ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(returnedItem)))) {
                     if (Alkahestry.getDictionaryKey(stack) == null)
                         returned = Alkahestry.getRegistry().get(ContentHelper.getIdent(stack.getItem()));
                     else {
@@ -76,7 +78,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 
     @Override
     public ItemStack getRecipeOutput() {
-        return new ItemStack(ContentHandler.getItem(Names.alkahestry_tome), 1);
+        return new ItemStack(returnedItem, 1);
     }
 
 }

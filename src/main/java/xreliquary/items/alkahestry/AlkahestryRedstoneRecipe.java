@@ -1,16 +1,17 @@
 package xreliquary.items.alkahestry;
 
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
-import xreliquary.lib.Names;
 
 public class AlkahestryRedstoneRecipe implements IRecipe {
+
+    public static Item returnedItem;
 
     @Override
     public boolean matches(InventoryCrafting inv, World world) {
@@ -20,7 +21,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
         for (int count = 0; count < inv.getSizeInventory(); count++) {
             ItemStack stack = inv.getStackInSlot(count);
             if (stack != null) {
-                if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome)))) {
+                if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(returnedItem))) {
                     tome = stack.copy();
                 } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone))) {
                     if (valid == 0)
@@ -53,7 +54,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
         for (int count = 0; count < inv.getSizeInventory(); count++) {
             ItemStack stack = inv.getStackInSlot(count);
             if (stack != null) {
-                if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome)))) {
+                if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(returnedItem))) {
                     tome = stack.copy();
                 } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.redstone_block))) {
                     amount += 9;
@@ -74,7 +75,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
 
     @Override
     public ItemStack getRecipeOutput() {
-        return new ItemStack(ContentHandler.getItem(Names.alkahestry_tome), 1);
+        return new ItemStack(returnedItem, 1);
     }
 
 }
