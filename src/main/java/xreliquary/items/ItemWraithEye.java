@@ -116,8 +116,9 @@ public class ItemWraithEye extends ItemSalamanderEye {
 
     @Override
     public void addInformation(ItemStack eye, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-        String phrase = "Currently bound to";
-        String position = null;
+        //added spacing here to make sure the tooltips didn't come out with weird punctuation derps.
+        String phrase = "Currently bound to ";
+        String position = "";
         if (eye.getTagCompound() != null && eye.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(par2EntityPlayer))) {
             phrase = "Out of range!";
         } else if (eye.getTagCompound() != null && eye.getTagCompound().hasKey("nodeX" + getWorld(par2EntityPlayer)) && eye.getTagCompound().hasKey("nodeY" + getWorld(par2EntityPlayer)) && eye.getTagCompound().hasKey("nodeZ" + getWorld(par2EntityPlayer))) {

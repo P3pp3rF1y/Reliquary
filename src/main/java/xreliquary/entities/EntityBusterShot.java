@@ -1,6 +1,7 @@
 package xreliquary.entities;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -23,7 +24,9 @@ public class EntityBusterShot extends EntityShotBase {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
             if (mop.entityHit == shootingEntity)
                 return;
-            this.onImpact(mop.entityHit);
+            if (!(mop.entityHit instanceof EntityLivingBase))
+                return;
+            this.onImpact((EntityLivingBase)mop.entityHit);
         } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
             this.groundImpact(mop.sideHit);
     }
@@ -52,7 +55,7 @@ public class EntityBusterShot extends EntityShotBase {
     }
 
     @Override
-    void onImpact(Entity mop) {
+    void onImpact(EntityLivingBase mop) {
         if (mop != shootingEntity || ticksInAir > 3)
             doDamage(mop);
         this.doBurstEffect();
@@ -65,7 +68,7 @@ public class EntityBusterShot extends EntityShotBase {
     }
 
     @Override
-    int getDamageOfShot(Entity mop) {
+    int getDamageOfShot(EntityLivingBase mop) {
         // if the damage doesn't kill them, the explosion will.
         // Buster shots are almost guaranteed fatal.
         return 8 + d6();

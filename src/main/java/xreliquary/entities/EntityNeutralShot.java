@@ -1,6 +1,7 @@
 package xreliquary.entities;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -24,12 +25,12 @@ public class EntityNeutralShot extends EntityShotBase {
     }
 
     @Override
-    int getDamageOfShot(Entity mop) {
+    int getDamageOfShot(EntityLivingBase mop) {
         return 8 + d6();
     }
 
     @Override
-    void onImpact(Entity mop) {
+    void onImpact(EntityLivingBase mop) {
         if (mop != shootingEntity || ticksInAir > 3)
             doDamage(mop);
         spawnHitParticles("magicCrit", 8);
@@ -41,7 +42,9 @@ public class EntityNeutralShot extends EntityShotBase {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
             if (mop.entityHit == shootingEntity)
                 return;
-            this.onImpact(mop.entityHit);
+            if (!(mop.entityHit instanceof EntityLivingBase))
+                return;
+            this.onImpact((EntityLivingBase)mop.entityHit);
         } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             this.groundImpact(mop.sideHit);
         }

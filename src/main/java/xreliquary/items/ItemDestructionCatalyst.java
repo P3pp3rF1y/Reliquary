@@ -59,7 +59,7 @@ public class ItemDestructionCatalyst extends ItemBase {
                 }
             }
         }
-        if (destroyedSomething && !(player.capabilities.isCreativeMode)) {
+        if (destroyedSomething) {
             InventoryHelper.consumeItem(new ItemStack(Items.gunpowder), player, 0, Reliquary.CONFIG.getInt(Names.destruction_catalyst, "cost"));
         }
     }

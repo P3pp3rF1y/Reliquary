@@ -272,7 +272,7 @@ public class ItemCondensedPotion extends ItemBase {
                 break;
             case Reference.STALKER_META:
                 effects[0] = new PotionEffect(Potion.nightVision.id, 3600, 0);
-                effects[1] = new PotionEffect(Potion.nightVision.id, 3600, 0);
+                effects[1] = new PotionEffect(Potion.invisibility.id, 3600, 0);
                 break;
         }
         return effects;

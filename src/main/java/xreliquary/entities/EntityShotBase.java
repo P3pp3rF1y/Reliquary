@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -295,10 +296,10 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
         return rand.nextInt(12) + 1;
     }
 
-    protected void doDamage(Entity mop) {
+    protected void doDamage(EntityLivingBase e) {
         // minor modification here, the shots are quite strong
         // so I've made it so they only do half damage against player entities.
-        mop.attackEntityFrom(this.getDamageSource(), (mop instanceof EntityPlayer ? 0.5F : 1F) * this.getDamageOfShot(mop));
+        e.attackEntityFrom(this.getDamageSource(), (e instanceof EntityPlayer ? 0.5F : 1F) * this.getDamageOfShot(e));
     }
 
     protected DamageSource getDamageSource() {
@@ -463,19 +464,19 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
     abstract int getRicochetMax();
 
     /**
-     * @param mop an optional parameter, some shots need to know what entity
+     * @param e an optional parameter, some shots need to know what entity
      *            they're hitting for damage counts
      * @return the int of damage the shot should deal. Most of these use my "dX"
      * methods of this class to randomize damage, to a degree.
      */
-    abstract int getDamageOfShot(Entity mop);
+    abstract int getDamageOfShot(EntityLivingBase e);
 
     /**
      * Additional entity impact effects should go here
      *
      * @param mop the entity being struck
      */
-    abstract void onImpact(Entity mop);
+    abstract void onImpact(EntityLivingBase mop);
 
     /**
      * Additional effects of TILE/MISC [non-entity] impacts should go here

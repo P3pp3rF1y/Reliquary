@@ -2,6 +2,7 @@ package xreliquary.entities;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
@@ -40,7 +41,9 @@ public class EntitySandShot extends EntityShotBase {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
             if (mop.entityHit == shootingEntity)
                 return;
-            this.onImpact(mop.entityHit);
+            if (!(mop.entityHit instanceof EntityLivingBase))
+                return;
+            this.onImpact((EntityLivingBase)mop.entityHit);
         } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             this.groundImpact(mop.sideHit);
         }
@@ -52,7 +55,7 @@ public class EntitySandShot extends EntityShotBase {
     }
 
     @Override
-    void onImpact(Entity mop) {
+    void onImpact(EntityLivingBase mop) {
         if (mop != shootingEntity || ticksInAir > 3) {
             doDamage(mop);
         }
@@ -68,7 +71,7 @@ public class EntitySandShot extends EntityShotBase {
     }
 
     @Override
-    int getDamageOfShot(Entity e) {
+    int getDamageOfShot(EntityLivingBase e) {
         // creepers turn sand shots into straight explosions.
         if (e instanceof EntityCreeper) {
             ConcussiveExplosion.customBusterExplosion(this, shootingEntity, posX, posY, posZ, 2.0F, false, true);
@@ -77,7 +80,7 @@ public class EntitySandShot extends EntityShotBase {
         }
         // it also causes blinding
         if (e instanceof EntityLiving)
-            ((EntityLiving) e).addPotionEffect(new PotionEffect(Potion.blindness.id, 200, 1));
+             e.addPotionEffect(new PotionEffect(Potion.blindness.id, 200, 1));
         return (worldObj.getWorldInfo().isRaining() ? 4 : 8) + d6();
     }
 

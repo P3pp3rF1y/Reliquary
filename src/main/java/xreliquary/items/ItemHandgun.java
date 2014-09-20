@@ -8,6 +8,7 @@ import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -17,6 +18,7 @@ import xreliquary.entities.*;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.network.ReliquaryMessage;
 import xreliquary.util.NBTHelper;
 
 @ContentInit
@@ -27,7 +29,14 @@ public class ItemHandgun extends ItemBase {
         this.setMaxStackSize(1);
         canRepair = false;
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
+
     }
+
+    @Override
+    public boolean getShareTag(){
+        return false;
+    }
+
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -82,7 +91,6 @@ public class ItemHandgun extends ItemBase {
         if (getCooldown(ist) <= 0) {
             if (!(getBulletCount(ist) > 0) && !(getBulletType(ist) > 0)) {
                 player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
-
             } else {
                 fireBullet(ist, worldObj, player);
             }
@@ -177,12 +185,21 @@ public class ItemHandgun extends ItemBase {
                     break;
             }
             resetReloadDuration(ist);
+
             worldObj.playSoundAtEntity(player, Reference.SHOT_SOUND, 0.2F, 1.2F);
+            ReliquaryMessage fireZeMissiles = new ReliquaryMessage();
+
+            Reliquary.networkWrapper.sendTo(fireZeMissiles, (EntityPlayerMP)player);
+
             setBulletCount(ist, getBulletCount(ist) - 1);
             if (getBulletCount(ist) == 0) {
                 setBulletType(ist, 0);
             }
             spawnCasing(player);
+        //} else {
+            //System.out.printf("Before: %f After: %f\n", player.rotationPitch, player.rotationPitch - (float)calculatePlayerSkillRecoil(player));
+            //player.rotationPitch -= (float)calculatePlayerSkillRecoil(player);
+
         }
     }
 

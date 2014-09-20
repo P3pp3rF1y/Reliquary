@@ -10,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.boss.EntityWither;
@@ -22,6 +23,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.util.DamageSource;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -67,8 +69,8 @@ public class ItemMercyCross extends ItemSword {
         return 0.0F;
     }
 
-    private boolean isUndead(Entity mop) {
-        return mop instanceof EntitySkeleton || mop instanceof EntityGhast || mop instanceof EntityWither || mop instanceof EntityZombie || mop instanceof EntityPigZombie;
+    private boolean isUndead(EntityLivingBase e) {
+        return e.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
     }
 
     /**
@@ -88,12 +90,13 @@ public class ItemMercyCross extends ItemSword {
     }
 
     @Override
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase monster, EntityLivingBase player) {
+    public boolean hitEntity(ItemStack stack, EntityLivingBase monster, EntityLivingBase player) {
+        if (player instanceof EntityPlayer) {
+            monster.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 6);
+        }
         if (isUndead(monster)) {
             monster.worldObj.spawnParticle("largeexplode", monster.posX, monster.posY + monster.height / 2, monster.posZ, 0.0F, 0.0F, 0.0F);
-            monster.heal(-(4.0F * 2));
-        } else {
-            monster.heal(-4.0F);
+            monster.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) player), 6);
         }
         return true;
     }

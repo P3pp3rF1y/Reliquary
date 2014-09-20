@@ -1,6 +1,7 @@
 package xreliquary.entities;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -24,7 +25,7 @@ public class EntityConcussiveShot extends EntityShotBase {
     }
 
     @Override
-    int getDamageOfShot(Entity mop) {
+    int getDamageOfShot(EntityLivingBase mop) {
         return 8 + d6();
     }
 
@@ -51,14 +52,16 @@ public class EntityConcussiveShot extends EntityShotBase {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
             if (mop.entityHit == shootingEntity)
                 return;
-            this.onImpact(mop.entityHit);
+            if (!(mop.entityHit instanceof EntityLivingBase))
+                return;
+            this.onImpact((EntityLivingBase)mop.entityHit);
         } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             this.groundImpact(mop.sideHit);
         }
     }
 
     @Override
-    void onImpact(Entity mop) {
+    void onImpact(EntityLivingBase mop) {
         if (mop != shootingEntity || ticksInAir > 3)
             doDamage(mop);
         ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, posX, posY, posZ, 1.5F, true, true);

@@ -1,6 +1,7 @@
 package xreliquary.entities;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -43,7 +44,9 @@ public class EntityEnderShot extends EntityShotBase {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
             if (mop.entityHit == shootingEntity)
                 return;
-            this.onImpact(mop.entityHit);
+            if (!(mop.entityHit instanceof EntityLivingBase))
+                return;
+            this.onImpact((EntityLivingBase)mop.entityHit);
         }
         // note that there is no tile impact.
     }
@@ -63,7 +66,7 @@ public class EntityEnderShot extends EntityShotBase {
     }
 
     @Override
-    void onImpact(Entity mop) {
+    void onImpact(EntityLivingBase mop) {
         if (mop != shootingEntity || ticksInAir > 3) {
             doDamage(mop);
         }
@@ -83,7 +86,7 @@ public class EntityEnderShot extends EntityShotBase {
     }
 
     @Override
-    int getDamageOfShot(Entity mop) {
+    int getDamageOfShot(EntityLivingBase mop) {
         return 16 + d12();
     }
 }

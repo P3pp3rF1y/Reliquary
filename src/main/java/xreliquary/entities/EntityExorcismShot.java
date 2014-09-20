@@ -1,6 +1,9 @@
 package xreliquary.entities;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityPigZombie;
@@ -42,7 +45,9 @@ public class EntityExorcismShot extends EntityShotBase {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
             if (mop.entityHit == shootingEntity)
                 return;
-            this.onImpact(mop.entityHit);
+            if (!(mop.entityHit instanceof EntityLivingBase))
+                return;
+            this.onImpact((EntityLivingBase)mop.entityHit);
         } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             this.groundImpact(mop.sideHit);
         }
@@ -54,9 +59,9 @@ public class EntityExorcismShot extends EntityShotBase {
     }
 
     @Override
-    void onImpact(Entity mop) {
-        if (mop != shootingEntity || ticksInAir > 3) {
-            doDamage(mop);
+    void onImpact(EntityLivingBase e) {
+        if (e != shootingEntity || ticksInAir > 3) {
+            doDamage(e);
         }
         // unfortunately this isn't a traditional call of spawnHitParticles or
         // we could factor out the whole method. "mobSpellAmbient" is a weird
@@ -71,8 +76,8 @@ public class EntityExorcismShot extends EntityShotBase {
             worldObj.spawnParticle(string, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), posGauss(1.0F), posGauss(1.0F), 0.0F);
     }
 
-    boolean isUndead(Entity mop) {
-        return mop instanceof EntitySkeleton || mop instanceof EntityGhast || mop instanceof EntityWither || mop instanceof EntityZombie || mop instanceof EntityPigZombie;
+    private boolean isUndead(EntityLivingBase e) {
+        return e.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
     }
 
     @Override
@@ -81,12 +86,12 @@ public class EntityExorcismShot extends EntityShotBase {
     }
 
     @Override
-    int getDamageOfShot(Entity mop) {
+    int getDamageOfShot(EntityLivingBase e) {
         // there is a relatively small chance this will fail to kill an undead
         // creature.
         // undead take 10-12 damage, in addition to the 9-14 damage they would
         // normally do.
-        return (isUndead(mop) ? (9 + d3()) : 0) + 8 + d6();
+        return (isUndead(e) ? (9 + d3()) : 0) + 8 + d6();
     }
 
 }

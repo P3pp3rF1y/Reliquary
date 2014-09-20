@@ -9,6 +9,8 @@ import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
 import lib.enderwizards.sandstone.Sandstone;
 import lib.enderwizards.sandstone.mod.SandstoneMod;
 import lib.enderwizards.sandstone.mod.config.Config;
@@ -25,6 +27,8 @@ import org.modstats.Modstats;
 import xreliquary.common.CommonProxy;
 import xreliquary.integration.NEIModIntegration;
 import xreliquary.lib.Reference;
+import xreliquary.network.HandgunRecoilPacketHandler;
+import xreliquary.network.ReliquaryMessage;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 
@@ -45,6 +49,7 @@ public class Reliquary {
     public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID(), Reference.MOD_ID);
     public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
+    public static SimpleNetworkWrapper networkWrapper;
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         CONFIG = Config.toml(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".toml"));
@@ -52,6 +57,12 @@ public class Reliquary {
         PROXY.initOptions();
         Sandstone.preInit();
         PROXY.preInit();
+
+        networkWrapper = new SimpleNetworkWrapper(Reference.MOD_ID);
+        networkWrapper.registerMessage(HandgunRecoilPacketHandler.class, ReliquaryMessage.class, 0, Side.CLIENT);
+
+
+
     }
 
     @EventHandler
