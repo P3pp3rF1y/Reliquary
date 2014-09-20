@@ -5,13 +5,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityEnderPearl;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import java.util.List;
 
-public class EntityEnderStaffProjectile extends EntityEnderPearl {
+public class EntityEnderStaffProjectile extends EntityThrowable {
     public int ticksInAir;
     public int ticksInGround;
     public Block inTile;
@@ -52,14 +53,16 @@ public class EntityEnderStaffProjectile extends EntityEnderPearl {
         lastTickPosX = posX;
         lastTickPosY = posY;
         lastTickPosZ = posZ;
-        super.onUpdate();
-
+        //super.onUpdate();
+        onEntityUpdate();
         if (throwableShake > 0) {
             --throwableShake;
         }
+
         if (ticksInAir % 4 == worldObj.rand.nextInt(5)) {
             worldObj.spawnParticle("portal", posX, posY, posZ, 0.0D, 0.0D, 1.0D);
         }
+
         xTile = (int) Math.round(posX);
         yTile = (int) Math.round(posY);
         zTile = (int) Math.round(posZ);
@@ -79,9 +82,9 @@ public class EntityEnderStaffProjectile extends EntityEnderPearl {
             }
 
             inGround = false;
-            motionX *= rand.nextFloat() * 0.2F;
-            motionY *= rand.nextFloat() * 0.2F;
-            motionZ *= rand.nextFloat() * 0.2F;
+            motionX = 0F;
+            motionY = 0F;
+            motionZ = 0F;
             ticksInGround = 0;
             ticksInAir = 0;
         } else {
@@ -108,7 +111,7 @@ public class EntityEnderStaffProjectile extends EntityEnderPearl {
                 Entity var10 = (Entity) var5.get(var9);
 
                 if (var10.canBeCollidedWith() && (var10 != var8 || ticksInAir >= 5)) {
-                    float var11 = 0.1F;
+                    float var11 = 0.5F;
                     AxisAlignedBB var12 = var10.boundingBox.expand(var11, var11, var11);
                     MovingObjectPosition var13 = var12.calculateIntercept(var16, var2);
 
@@ -175,12 +178,18 @@ public class EntityEnderStaffProjectile extends EntityEnderPearl {
         this.setPosition(posX, posY, posZ);
     }
 
-    protected void onThrowableCollision(MovingObjectPosition movingobjectposition) {
+
+    @Override
+    protected void onImpact(MovingObjectPosition mop) {
+        onThrowableCollision(mop);
+    }
+
+    protected void onThrowableCollision(MovingObjectPosition mop) {
         // I broke this because I pass null when it touches water.. only cos I
         // ain't using it.
         // so you have to check for MoP null as well.
-        if (movingobjectposition != null && movingobjectposition.entityHit != null) {
-            if (!movingobjectposition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, getThrower()), 0))
+        if (mop != null && mop.entityHit != null) {
+            if (!mop.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, getThrower()), 0))
                 ;
         }
         for (int i = 0; i < 32; i++) {
@@ -196,12 +205,26 @@ public class EntityEnderStaffProjectile extends EntityEnderPearl {
                 // the pearl will always land somewhere safe
                 // and the player needs to learn to teleport properly if they
                 // wind up crushing themselves.
-                getThrower().setPositionAndUpdate(this.posX, this.posY, this.posZ);
+                getThrower().fallDistance = 0.0F;
+                int side = 1;
+
+                int x = (int) Math.round(posX);
+                int y = (int) Math.round(posY);
+                int z = (int) Math.round(posZ);
+
+                if (mop != null) {
+                    side = mop.sideHit;
+
+                    y = mop.blockY + (side == 0 ? -1 : side == 1 ? 1 : 0);
+                    x = mop.blockX + (side == 4 ? -1 : side == 5 ? 1 : 0);
+                    z = mop.blockZ + (side == 2  ? -1 : side == 3 ? 1 : 0);
+                }
+
+                getThrower().setPositionAndUpdate(x + 0.5F, y + 0.5F, z + 0.5F);
                 // allows you to defy whatever gravity you were being affected
                 // by whilst casting the ender pearl.
                 // doing so in midair "cheats" physics and prevents you from
                 // taking some (if not all) of the fall damage.
-                getThrower().fallDistance = 0.0F;
             }
             this.setDead();
         }

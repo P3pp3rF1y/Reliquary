@@ -56,7 +56,7 @@ public class ItemFertileLilypad extends ItemBlock {
                         && world.getBlock(var5, var6, var7).getMaterial() == Material.water
                         && world.getBlockMetadata(var5, var6, var7) == 0 && world.isAirBlock(var5, var6 + 1, var7)) {
                     world.setBlock(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad));
-                    //world.scheduleBlockUpdate(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad), 20);
+                    world.scheduleBlockUpdate(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad), 1360);
 
                     if (!player.capabilities.isCreativeMode) --stack.stackSize;
                     blockPlaced = true;

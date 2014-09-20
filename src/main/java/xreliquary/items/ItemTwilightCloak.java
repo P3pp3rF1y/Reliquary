@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.event.ClientEventHandler;
@@ -86,7 +87,12 @@ public class ItemTwilightCloak extends ItemBase {
         // always on for now, takes effect only at night, or low light
         // (configurable)
         // if (ist.getItemDamage() == 0) return;
-        if (world.getWorldTime() % 24000 < 12000 && player.worldObj.getBlockLightValue((int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ)) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "maxLightLevel"))
+
+        int playerX = MathHelper.floor_double(player.posX);
+        int playerY = MathHelper.floor_double(player.boundingBox.minY);
+        int playerZ = MathHelper.floor_double(player.posZ);
+
+        if (player.worldObj.getBlockLightValue(playerX, playerY, playerZ) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "maxLightLevel"))
             return;
         // checks if the effect would do anything.
         PotionEffect quickInvisibility = new PotionEffect(Potion.invisibility.id, 2, 0, true);

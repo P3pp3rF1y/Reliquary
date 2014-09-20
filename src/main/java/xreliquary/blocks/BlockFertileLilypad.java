@@ -1,5 +1,6 @@
 package xreliquary.blocks;
 
+import com.sun.javafx.geom.Vec3d;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.ICustomItemBlock;
@@ -38,7 +39,7 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
         super(0);
         float var3 = 0.5F;
         float var4 = 0.015625F;
-        this.setTickRandomly(true);
+        this.setTickRandomly(false);
         this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, var4, 0.5F + var3);
         this.setBlockName(Names.lilypad);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
@@ -57,8 +58,9 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
     }
 
     @Override
-    public void updateTick(World par1World, int x, int y, int z, Random par5Random) {
-        this.growCropsNearby(par1World, x, y, z);
+    public void updateTick(World world, int x, int y, int z, Random par5Random) {
+
+        this.growCropsNearby(world, x, y, z);
     }
 
     @Override
@@ -67,20 +69,38 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
     }
 
     public void growCropsNearby(World world, int xO, int yO, int zO) {
+        int lilyPadsFound = 0;
+        //int scheduleDelay = 0;
         for (int xD = -4; xD <= 4; xD++) {
             for (int yD = -1; yD <= 4; yD++) {
                 for (int zD = -4; zD <= 4; zD++) {
                     int x = xO + xD;
                     int y = yO + yD;
                     int z = zO + zD;
+
+                    double distance = Math.sqrt(Math.pow(x-xO, 2) + Math.pow(y - yO,2) + Math.pow(z - zO,2));
+                    distance += 7;
+
                     Block block = world.getBlock(x, y, z);
 
-                    if ((block instanceof IPlantable || block instanceof IGrowable) && !(block instanceof BlockFertileLilypad)) {
-                        block.updateTick(world, x, y, z, world.rand);
+                    if (block instanceof IPlantable || block instanceof IGrowable) {
+                        if (!(block instanceof BlockFertileLilypad)) {
+                            //68 is a completely arbitrary number to multiply the distance coefficient by
+                            //it schedules the next tick. It caps out around 47 seconds, and bottoms out around 27. Both are at least as good or better than average growth.
+                            world.scheduleBlockUpdate(x, y, z, block, (int)distance * 68);
+                            block.updateTick(world, x, y, z, world.rand);
+                        } else {
+                            lilyPadsFound++;
+                        }
                     }
                 }
             }
         }
+
+        //1360 is 68 seconds (roughly the average time of a block's growth tick)
+        //420 is the maximum that would have to be subtracted from 1360 to get down to 47 seconds (roughly the mean average of a block's growth tick)
+        //20 * the lilyPadsFound is a delay to diminish (lightly) the effect of multiple lilyPads in an area. Not a huge impact.
+        world.scheduleBlockUpdate(xO, yO, zO, world.getBlock(xO, yO, zO), 1360 - world.rand.nextInt(420) + (lilyPadsFound * 20));
     }
 
     @Override
