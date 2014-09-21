@@ -1,6 +1,5 @@
 package xreliquary.blocks;
 
-import com.sun.javafx.geom.Vec3d;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.ICustomItemBlock;
