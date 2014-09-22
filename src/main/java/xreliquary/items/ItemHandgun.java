@@ -140,8 +140,7 @@ public class ItemHandgun extends ItemBase {
         if (!hasFilledMagazine(player)) {
             //arbitrary "feels good" cooldown for after the reload - this one just plays so you can't "fail" at reloading too fast.
             setCooldown(ist, 12);
-            // play click!
-            resetReloadDuration(ist);
+
             player.stopUsingItem();
             return;
         }
@@ -211,7 +210,6 @@ public class ItemHandgun extends ItemBase {
                 case Reference.SAND_SHOT_INDEX: worldObj.spawnEntityInWorld(new EntitySandShot(worldObj, player)); break;
                 case Reference.STORM_SHOT_INDEX: worldObj.spawnEntityInWorld(new EntityStormShot(worldObj, player));break;
             }
-            resetReloadDuration(ist);
 
             worldObj.playSoundAtEntity(player, Reference.SHOT_SOUND, 0.2F, 1.2F);
 
@@ -224,10 +222,6 @@ public class ItemHandgun extends ItemBase {
             }
             spawnCasing(player);
         }
-    }
-
-    private void resetReloadDuration(ItemStack ist) {
-        NBTHelper.setShort("reloadDuration", ist, 0);
     }
 
     private void spawnEmptyMagazine(EntityPlayer player) {
