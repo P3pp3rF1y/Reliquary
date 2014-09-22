@@ -57,7 +57,7 @@ public class ItemSerpentStaff extends ItemBase {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        player.setItemInUse(stack, 72000);
+        player.setItemInUse(stack, getMaxItemUseDuration(stack));
         return stack;
     }
 

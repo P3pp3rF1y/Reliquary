@@ -126,6 +126,8 @@ item.witch_hat.name={{!colors.yellow}}Witch Hat
 item.witch_hat.tooltip=All that was left of that nasty Witch.;I wonder if I could use it somehow.
 item.infernal_tear.name={{!colors.red}}Infernal Tear
 item.infernal_tear.tooltip=Burns items into their raw essence.;Might make a good brewing ingredient.;Currently holds {{holds}}.;{{!colors.purple}}Always leaves a stack of the item in inventory.
+item.lantern_of_paranoia.name={{!colors.yellow}}Lantern Of Paranoia
+item.lantern_of_paranoia.tooltip=Places torches in unlit;areas automatically.
 
 item.potion_0.name=Condensed Splash Serum
 item.potion_1.name=Love Potion #9

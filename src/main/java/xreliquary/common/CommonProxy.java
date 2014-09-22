@@ -1,5 +1,6 @@
 package xreliquary.common;
 
+import com.google.common.collect.ImmutableList;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -24,6 +25,7 @@ import xreliquary.lib.Reference;
 import xreliquary.util.alkahestry.Alkahestry;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CommonProxy {
 
@@ -39,6 +41,7 @@ public class CommonProxy {
 
         FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), XRRecipes.potion(Reference.WATER_META), XRRecipes.potion(Reference.EMPTY_VIAL_META));
     }
+
 
     public void init() {
         AlkahestryCraftingRecipe.returnedItem = ContentHandler.getItem(Names.alkahestry_tome);
@@ -58,8 +61,10 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.alkahestry_tome, "redstoneLimit", new ConfigReference(256).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.hero_medallion, "xpLevelCap", new ConfigReference(30).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.twilight_cloak, "maxLightLevel", new ConfigReference(4).setMinimumValue(0).setMaximumValue(15));
+        Reliquary.CONFIG.require(Names.lantern_of_paranoia, "minLightLevel", new ConfigReference(7).setMinimumValue(0).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.handgun, "hudPosition", new ConfigReference(3).setMinimumValue(0).setMaximumValue(4));
-        Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ConfigReference(new ArrayList<String>()));
+        List<String> torches = ImmutableList.of("minecraft:torch");
+        Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ConfigReference(torches));
         Reliquary.CONFIG.require(Names.destruction_catalyst, "mundane_blocks", new ConfigReference(new ArrayList<String>(ItemDestructionCatalyst.ids)));
         Reliquary.CONFIG.require(Names.destruction_catalyst, "cost", new ConfigReference(3).setMinimumValue(0));
 

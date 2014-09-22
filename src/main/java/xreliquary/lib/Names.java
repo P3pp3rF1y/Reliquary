@@ -49,6 +49,7 @@ public class Names {
     public static final String serpent_staff = "serpent_staff";
     public static final String witch_hat = "witch_hat";
     public static final String infernal_tear = "infernal_tear";
+    public static final String lantern_of_paranoia = "lantern_of_paranoia";
 
     // potion info
     public static final String condensed_potion = "condensed_potion";

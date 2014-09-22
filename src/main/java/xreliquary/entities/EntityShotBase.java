@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import xreliquary.lib.ClientReference;
+import xreliquary.lib.Reference;
 
 import java.util.Iterator;
 import java.util.List;
@@ -516,28 +517,25 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
      */
     abstract void spawnHitParticles(String string, int i);
 
-    // 0 = Empty, 1 = Neutral, 2 = Exorcism, 3 = Blaze
-    // 4 = Ender, 5 = Concussive, 6 = Buster, 7 = Seeker
-    // 8 = Sand, 9 = Storm
     protected int getShotType() {
         if (this instanceof EntityNeutralShot)
-            return 1;
+            return Reference.NEUTRAL_SHOT_INDEX;
         else if (this instanceof EntityExorcismShot)
-            return 2;
+            return Reference.EXORCISM_SHOT_INDEX;
         else if (this instanceof EntityBlazeShot)
-            return 3;
+            return Reference.BLAZE_SHOT_INDEX;
         else if (this instanceof EntityEnderShot)
-            return 4;
+            return Reference.ENDER_SHOT_INDEX;
         else if (this instanceof EntityConcussiveShot)
-            return 5;
+            return Reference.CONCUSSIVE_SHOT_INDEX;
         else if (this instanceof EntityBusterShot)
-            return 6;
+            return Reference.BUSTER_SHOT_INDEX;
         else if (this instanceof EntitySeekerShot)
-            return 7;
+            return Reference.SEEKER_SHOT_INDEX;
         else if (this instanceof EntitySandShot)
-            return 8;
+            return Reference.SAND_SHOT_INDEX;
         else if (this instanceof EntityStormShot)
-            return 9;
+            return Reference.STORM_SHOT_INDEX;
         return 0;
     }
 
@@ -546,23 +544,23 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
     public ResourceLocation getShotTexture() {
         switch (this.getShotType()) {
             case 0:
-            case 1:
+            case Reference.NEUTRAL_SHOT_INDEX:
                 return ClientReference.NEUTRAL;
-            case 2:
+            case  Reference.EXORCISM_SHOT_INDEX:
                 return ClientReference.EXORCISM;
-            case 3:
+            case Reference.BLAZE_SHOT_INDEX:
                 return ClientReference.BLAZE;
-            case 4:
+            case Reference.ENDER_SHOT_INDEX:
                 return ClientReference.ENDER;
-            case 5:
+            case Reference.CONCUSSIVE_SHOT_INDEX:
                 return ClientReference.CONCUSSIVE;
-            case 6:
+            case Reference.BUSTER_SHOT_INDEX:
                 return ClientReference.BUSTER;
-            case 7:
+            case Reference.SEEKER_SHOT_INDEX:
                 return ClientReference.SEEKER;
-            case 8:
+            case Reference.SAND_SHOT_INDEX:
                 return ClientReference.SAND;
-            case 9:
+            case Reference.STORM_SHOT_INDEX:
                 return ClientReference.STORM;
         }
         return ClientReference.NEUTRAL;

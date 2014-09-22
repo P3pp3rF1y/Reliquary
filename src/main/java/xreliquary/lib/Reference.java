@@ -113,4 +113,35 @@ public class Reference {
     public static final int GREEN_DYE_META = 2;
     public static final int RED_DYE_META = 1;
     public static final int BLACK_DYE_META = 0;
+
+    public static final int PLAYER_HANDGUN_SKILL_MAXIMUM = 20;
+
+    public static final int HANDGUN_RELOAD_PITCH_OFFSET = 20;
+    public static final int HANDGUN_RELOAD_SKILL_OFFSET = 10;
+    // This should never exceed (HANDGUN_RELOAD_SKILL_OFFSET) / 2
+    public static final int HANDGUN_RELOAD_ANIMATION_TICKS = 5;
+
+    public static final int HANDGUN_RECOIL_SKILL_OFFSET = 5;
+    public static final int HANDGUN_COOLDOWN_SKILL_OFFSET = 5;
+    public static final int HANDGUN_KNOCKBACK_SKILL_OFFSET = 0;
+
+
+    //Packet ID Section for identifying packet types
+    public static final int RECOIL_PACKET_ID = 0;
+    public static final int RECOIL_COMPENSATION_PACKET_ID = 1;
+    public static final int RELOAD_PACKET_ID = 0;
+    public static final int RELOAD_COMPENSATION_PACKET_ID = 1;
+
+    //Shot Type Indexes
+    public static final int NEUTRAL_SHOT_INDEX = 1;
+    public static final int EXORCISM_SHOT_INDEX = 2;
+    public static final int BLAZE_SHOT_INDEX = 3;
+    public static final int ENDER_SHOT_INDEX = 4;
+    public static final int CONCUSSIVE_SHOT_INDEX = 5;
+    public static final int BUSTER_SHOT_INDEX = 6;
+    public static final int SEEKER_SHOT_INDEX = 7;
+    public static final int SAND_SHOT_INDEX = 8;
+    public static final int STORM_SHOT_INDEX = 9;
+
+
 }
