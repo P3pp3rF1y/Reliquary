@@ -6,6 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityPigZombie;
@@ -60,8 +62,8 @@ public class EntityGlowingWater extends EntityThrowable {
         return -20.0F;
     }
 
-    private boolean isUndead(Entity mop) {
-        return mop instanceof EntitySkeleton || mop instanceof EntityGhast || mop instanceof EntityWither || mop instanceof EntityZombie || mop instanceof EntityPigZombie;
+    private boolean isUndead(EntityLivingBase e) {
+        return e.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
     }
 
     /**

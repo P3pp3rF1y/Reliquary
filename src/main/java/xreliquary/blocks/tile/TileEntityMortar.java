@@ -39,8 +39,8 @@ public class TileEntityMortar extends TileEntityInventory {
 
             if (b0 >= 0 && b0 < this.inventory.length) {
                 this.inventory[b0] = ItemStack.loadItemStackFromNBT(item);
-                if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-                    System.out.println("Hi #1");
+//                if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+//                    System.out.println("Hi #1");
             }
         }
 
@@ -62,7 +62,7 @@ public class TileEntityMortar extends TileEntityInventory {
                 NBTTagCompound item = new NBTTagCompound();
                 this.inventory[i].writeToNBT(item);
                 item.setByte("Slot", (byte) i);
-                System.out.println("Hi #2");
+                //System.out.println("Hi #2");
                 items.appendTag(item);
             }
         }

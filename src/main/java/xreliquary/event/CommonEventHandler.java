@@ -114,44 +114,34 @@ public class CommonEventHandler {
     }
 
     public void handleDragonClawsCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.dragon_claws)))
+        if (!playerHasItem(player, ContentHandler.getItem(Names.dragon_claws)) || playerHasItem(player, ContentHandler.getItem(Names.claws_of_the_firedrinker)))
             return;
         if (!(event.source == DamageSource.inFire) && !(event.source == DamageSource.onFire))
             return;
-        if (player.getFoodStats().getSaturationLevel() < event.ammount * 0.5F)
+        if (player.getFoodStats().getFoodLevel() <= 0)
             return;
+
         // trades all fire damage for exhaustion (which causes the hunger bar to
         // be depleted).
-        player.addExhaustion(event.ammount * 0.5F);
+        player.addExhaustion(event.ammount * 0.1F);
         event.setCanceled(true);
     }
 
     public void handleFiredrinkerCheck(EntityPlayer player, LivingAttackEvent event) {
         if (!playerHasItem(player, ContentHandler.getItem(Names.claws_of_the_firedrinker)))
             return;
-        if (event.source == DamageSource.inFire || event.source == DamageSource.onFire) {
-            // trades all fire damage for food saturation (which causes the
-            // hunger bar to be regenerated).
-            FoodStats food = player.getFoodStats();
-            if (food.getSaturationLevel() + (event.ammount * 0.5F) >= food.getFoodLevel()) {
-                // regenerate a little hunger if the saturation level maxes out,
-                // wrap food saturation
-                food.addStats(1, (food.getSaturationLevel() + (event.ammount * 0.5F)) - food.getFoodLevel());
-            } else {
-                // add a little food saturation.
-                food.addStats(0, (event.ammount * 0.5F));
-            }
-            player.addExhaustion(event.ammount * 0.5F);
+        if (event.source != DamageSource.inFire && event.source != DamageSource.onFire && event.source != DamageSource.lava)
+            return;
+        if (player.getFoodStats().getFoodLevel() <= 0)
+            return;
+        if (!(event.source == DamageSource.lava)) {
+            // adds a slightly reduced amount of damage (50%) as hunger damage than the previous version of the item (dragon claws)
+            player.addExhaustion(event.ammount * 0.05F);
+        } else {
+            // I noticed that in lava, this effect is EXTREMELY rapid, I believe it's compounding all three damage types in some form,
+            // because you're on fire at the same time as you're in lava.
+            player.addExhaustion(event.ammount * 0.05F);
         }
-        if (!(event.source == DamageSource.lava))
-            return;
-        if (player.getFoodStats().getSaturationLevel() < event.ammount * 1.5F)
-            return;
-        // trades all lava damage for exhaustion (which causes the hunger bar to
-        // be depleted rapidly).
-        // 3.0F is what you lose when you regenerate half a heart. I'm cutting
-        // that rate in half to make the item powerful.
-        player.addExhaustion(event.ammount * 1.5F);
 
         event.setCanceled(true);
     }
@@ -288,13 +278,17 @@ public class CommonEventHandler {
             return;
         if (!(event.source == DamageSource.fall))
             return;
+        if (player.getFoodStats().getFoodLevel() <= 0)
+            return;
+
         if (player.fallDistance > 0.0F) {
-            if (player.getFoodStats().getSaturationLevel() < player.fallDistance * 2F)
-                return;
+//            if (player.getFoodStats().getSaturationLevel() < event.ammount * 0.5F)
+//                return;
             // trades fallDistance for exhaustion (which causes the hunger bar
             // to be depleted).
-            player.addExhaustion(player.fallDistance * 2.0F);
-            player.fallDistance = 0.0F;
+            float hungerDamage = 0.5F * event.ammount;
+            player.addExhaustion(hungerDamage);
+            player.getFoodStats().onUpdate(player);
         }
         event.setCanceled(true);
     }
@@ -302,12 +296,15 @@ public class CommonEventHandler {
     public void handleKrakenEyeCheck(EntityPlayer player, LivingAttackEvent event) {
         if (!playerHasItem(player, ContentHandler.getItem(Names.kraken_shell)))
             return;
+        if (player.getFoodStats().getFoodLevel() <= 0)
+            return;
+
         // player absorbs drowning damage in exchange for hunger, at a
         // relatively low rate.
         if (event.source == DamageSource.drown) {
-            if (player.getFoodStats().getSaturationLevel() < event.ammount * 0.5F)
-                return;
-            float hungerDamage = 0.5F * event.ammount;
+//            if (player.getFoodStats().getSaturationLevel() < event.ammount * 0.5F)
+//                return;
+            float hungerDamage = 0.25F * event.ammount;
             player.addExhaustion(hungerDamage);
             event.setCanceled(true);
         }

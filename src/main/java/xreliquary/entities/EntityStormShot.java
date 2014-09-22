@@ -1,6 +1,7 @@
 package xreliquary.entities;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,7 +37,9 @@ public class EntityStormShot extends EntityShotBase {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
             if (mop.entityHit == shootingEntity)
                 return;
-            this.onImpact(mop.entityHit);
+            if (!(mop.entityHit instanceof EntityLivingBase))
+                return;
+            this.onImpact((EntityLivingBase)mop.entityHit);
         } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             if (worldObj.canLightningStrikeAt(mop.blockX, mop.blockY, mop.blockZ) && worldObj.getWorldInfo().isRaining() && worldObj.getWorldInfo().isThundering())
                 worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, mop.blockX, mop.blockY, mop.blockZ));
@@ -50,7 +53,7 @@ public class EntityStormShot extends EntityShotBase {
     }
 
     @Override
-    void onImpact(Entity mop) {
+    void onImpact(EntityLivingBase mop) {
         if (mop != shootingEntity || ticksInAir > 3)
             doDamage(mop);
         spawnHitParticles("bubble", 18);
@@ -69,7 +72,7 @@ public class EntityStormShot extends EntityShotBase {
     }
 
     @Override
-    int getDamageOfShot(Entity mop) {
+    int getDamageOfShot(EntityLivingBase mop) {
         if (mop instanceof EntityCreeper)
             ((EntityCreeper) mop).onStruckByLightning(new EntityLightningBolt(worldObj, mop.posX, mop.posY, mop.posZ));
         if (worldObj.canLightningStrikeAt((int) (mop.posX + 0.5F), (int) (mop.posY + 0.5F), (int) (mop.posZ + 0.5F)) && worldObj.getWorldInfo().isRaining() && worldObj.getWorldInfo().isThundering())

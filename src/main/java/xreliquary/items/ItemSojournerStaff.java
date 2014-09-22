@@ -107,24 +107,15 @@ public class ItemSojournerStaff extends ItemBase {
                     }
                     if (ist.getItemDamage() >= ist.getMaxDamage() - cost)
                         return false;
-                    ist.setItemDamage(ist.getItemDamage() == 1535 ? 0 : ist.getItemDamage() + cost);
-                    if (placeBlockAt(ist, player, world, x, y, z, side, xOff, yOff, zOff, attemptSide(world, x, y, z, side))) {
-                        Blocks.torch.onBlockAdded(world, x, y, z);
-                        double gauss = 0.5D + world.rand.nextFloat() / 2;
-                        player.swingItem();
-                        world.spawnParticle("mobSpell", x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);
-                        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, var12.stepSound.getStepResourcePath(), (var12.stepSound.getVolume() + 1.0F) / 2.0F, var12.stepSound.getPitch() * 0.8F);
-                        this.setCooldown(ist);
-                    }
-                } else {
-                    if (placeBlockAt(ist, player, world, x, y, z, side, xOff, yOff, zOff, attemptSide(world, x, y, z, side))) {
-                        Blocks.torch.onBlockAdded(world, x, y, z);
-                        double gauss = 0.5D + world.rand.nextFloat() / 2;
-                        player.swingItem();
-                        world.spawnParticle("mobSpell", x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);
-                        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, var12.stepSound.getStepResourcePath(), (var12.stepSound.getVolume() + 1.0F) / 2.0F, var12.stepSound.getPitch() * 0.8F);
-                        this.setCooldown(ist);
-                    }
+                    ist.setItemDamage(ist.getItemDamage() == ist.getMaxDamage() - 1 ? 0 : ist.getItemDamage() + cost);
+                }
+                if (placeBlockAt(ist, player, world, x, y, z, side, xOff, yOff, zOff, attemptSide(world, x, y, z, side))) {
+                    Blocks.torch.onBlockAdded(world, x, y, z);
+                    double gauss = 0.5D + world.rand.nextFloat() / 2;
+                    player.swingItem();
+                    world.spawnParticle("mobSpell", x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);
+                    world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, var12.stepSound.getStepResourcePath(), (var12.stepSound.getVolume() + 1.0F) / 2.0F, var12.stepSound.getPitch() * 0.8F);
+                    this.setCooldown(ist);
                 }
             }
         }

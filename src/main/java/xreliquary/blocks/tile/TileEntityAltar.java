@@ -61,7 +61,6 @@ public class TileEntityAltar extends TileEntityBase {
     }
 
     public void addRedstone() {
-        System.out.println("Redstone count was " + redstoneCount + " and is now " + (redstoneCount + 1) + " - machine currently " + (this.isActive() ? "active." : "inactive."));
         redstoneCount++;
         if (redstoneCount > 2) {
             this.startCycle();

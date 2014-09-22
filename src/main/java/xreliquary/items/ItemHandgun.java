@@ -8,6 +8,7 @@ import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -17,6 +18,8 @@ import xreliquary.entities.*;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.network.PacketHandler;
+import xreliquary.network.RecoilAnimationPacket;
 import xreliquary.util.NBTHelper;
 
 @ContentInit
@@ -62,18 +65,48 @@ public class ItemHandgun extends ItemBase {
         NBTHelper.setShort("bulletType", ist, i);
     }
 
-    public int getCooldown(ItemStack ist) {
-        return NBTHelper.getShort("cooldownTime", ist);
+    public int getLastFiredShotType(ItemStack ist) { return NBTHelper.getShort("lastFiredShot", ist); }
+
+    public void setLastFiredShotType(ItemStack ist, int i) {
+        NBTHelper.setShort("lastFiredShot", ist, i);
     }
 
-    public void setCooldown(ItemStack ist, int i) {
-        NBTHelper.setShort("cooldownTime", ist, i);
-    }
+    public int getRecoilFrameCounter(ItemStack ist) { return NBTHelper.getShort("compensateRecoil", ist); }
+
+    public void setRecoilFrameCounter(ItemStack ist, int i) { NBTHelper.setShort("compensateRecoil", ist, i); }
+
+    public void decrementRecoilCompensationFrames(ItemStack ist) { setRecoilFrameCounter(ist, getRecoilFrameCounter(ist) - 1); }
+
+    public int getCooldown(ItemStack ist) { return NBTHelper.getShort("cooldownTime", ist); }
+
+    public void setCooldown(ItemStack ist, int i) { NBTHelper.setShort("cooldownTime", ist, i); }
 
     @Override
     public void onUpdate(ItemStack ist, World worldObj, Entity e, int i, boolean flag) {
         if (getCooldown(ist) > 0) {
             setCooldown(ist, getCooldown(ist) - 1);
+        }
+        if (getRecoilFrameCounter(ist) > 0) {
+            if (getRecoilFrameCounter(ist) <= 3) {
+                if (!worldObj.isRemote) {
+                    if (!(e instanceof EntityPlayer))
+                        return;
+                    EntityPlayer player = (EntityPlayer) e;
+
+                    PacketHandler.networkWrapper.sendTo(new RecoilAnimationPacket(Reference.RECOIL_COMPENSATION_PACKET_ID, getRecoilCoefficient(ist)), (EntityPlayerMP) player);
+                }
+            }
+            if (getRecoilFrameCounter(ist) > 3) {
+
+                if (!worldObj.isRemote) {
+                    if (!(e instanceof EntityPlayer))
+                        return;
+                    EntityPlayer player = (EntityPlayer) e;
+
+                    PacketHandler.networkWrapper.sendTo(new RecoilAnimationPacket(Reference.RECOIL_PACKET_ID, getRecoilCoefficient(ist)), (EntityPlayerMP) player);
+                }
+            }
+            decrementRecoilCompensationFrames(ist);
         }
     }
 
@@ -82,25 +115,38 @@ public class ItemHandgun extends ItemBase {
         if (getCooldown(ist) <= 0) {
             if (!(getBulletCount(ist) > 0) && !(getBulletType(ist) > 0)) {
                 player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
-
             } else {
+                setCooldown(ist, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM));
+
                 fireBullet(ist, worldObj, player);
+
+                //4 is the frame counter
+                //on frame 4, decrease (raise angle) the pitch
+                //on frames 1-3, increase (lower angle) the pitch
+                //skip if 0
+                setRecoilFrameCounter(ist, 4);
             }
         }
         return ist;
     }
 
     @Override
-    public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
+    public void onUsingTick(ItemStack ist, EntityPlayer player, int unadjustedCount) {
+        int maxUseOffset = getItemUseDuration() - getPlayerReloadDelay(player);
+        int actualCount = unadjustedCount - maxUseOffset;
+        actualCount -= 1;
+
+        //you can't reload if you don't have any full mags left, so the rest of the method doesn't fire at all.
         if (!hasFilledMagazine(player)) {
+            //arbitrary "feels good" cooldown for after the reload - this one just plays so you can't "fail" at reloading too fast.
             setCooldown(ist, 12);
-            // play click!
-            resetReloadDuration(ist);
+
             player.stopUsingItem();
             return;
         }
-        if (reloadTicks(count) >= calculatePlayerSkillTimer(player) - 1) {
-            setCooldown(ist, 24);
+        if (actualCount == 0) {
+            //arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
+            setCooldown(ist, 12);
             setBulletType(ist, getMagazineTypeAndRemoveOne(player));
             if (getBulletType(ist) != 0) {
                 player.swingItem();
@@ -112,6 +158,23 @@ public class ItemHandgun extends ItemBase {
                 setBulletType(ist, 0);
             }
             player.stopUsingItem();
+        }
+
+        if (!(reloadTicks(actualCount, player) > 0))
+            return;
+        if (actualCount > getPlayerReloadDelay(player) - Reference.HANDGUN_RELOAD_ANIMATION_TICKS) {
+            //only 4 ticks of this animation, 5 of the other - to explain why this one is decreased by 1
+            float pitchChange = (float)Reference.HANDGUN_RELOAD_PITCH_OFFSET / ((float)Reference.HANDGUN_RELOAD_ANIMATION_TICKS - 1);
+            float rotationPitch = player.prevRotationPitch + pitchChange;
+
+            player.setPositionAndRotation(player.posX, player.posY, player.posZ, player.rotationYaw, rotationPitch);
+        }
+        if (actualCount <= Reference.HANDGUN_RELOAD_ANIMATION_TICKS) {
+
+            float pitchChange = (float)Reference.HANDGUN_RELOAD_PITCH_OFFSET / (float)Reference.HANDGUN_RELOAD_ANIMATION_TICKS;
+            float rotationPitch = player.prevRotationPitch - pitchChange;
+
+            player.setPositionAndRotation(player.posX, player.posY, player.posZ, player.rotationYaw, rotationPitch);
         }
     }
 
@@ -125,69 +188,40 @@ public class ItemHandgun extends ItemBase {
         return this.getItemUseDuration();
     }
 
-    private int reloadTicks(int i) {
-        return this.getItemUseDuration() - i;
+    private int reloadTicks(int i, EntityPlayer player) {
+        return getPlayerReloadDelay(player) - i;
     }
 
     private int getItemUseDuration() {
-        return 256;
+        return Reference.HANDGUN_RELOAD_SKILL_OFFSET + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM;
     }
 
     private void fireBullet(ItemStack ist, World worldObj, EntityPlayer player) {
         if (!worldObj.isRemote) {
-            setCooldown(ist, 12);
             switch (getBulletType(ist)) {
-                case 0:
-                    return;
-                case 1:
-                    EntityNeutralShot ns = new EntityNeutralShot(worldObj, player);
-                    worldObj.spawnEntityInWorld(ns);
-                    break;
-                case 2:
-                    EntityExorcismShot exs = new EntityExorcismShot(worldObj, player);
-                    worldObj.spawnEntityInWorld(exs);
-                    break;
-                case 3:
-                    EntityBlazeShot bls = new EntityBlazeShot(worldObj, player);
-                    worldObj.spawnEntityInWorld(bls);
-                    break;
-                case 4:
-                    EntityEnderShot es = new EntityEnderShot(worldObj, player);
-                    worldObj.spawnEntityInWorld(es);
-                    break;
-                case 5:
-                    EntityConcussiveShot cs = new EntityConcussiveShot(worldObj, player);
-                    worldObj.spawnEntityInWorld(cs);
-                    break;
-                case 6:
-                    EntityBusterShot bs = new EntityBusterShot(worldObj, player);
-                    worldObj.spawnEntityInWorld(bs);
-                    break;
-                case 7:
-                    EntitySeekerShot ss = new EntitySeekerShot(worldObj, player);
-                    worldObj.spawnEntityInWorld(ss);
-                    break;
-                case 8:
-                    EntitySandShot sas = new EntitySandShot(worldObj, player);
-                    worldObj.spawnEntityInWorld(sas);
-                    break;
-                case 9:
-                    EntityStormShot sts = new EntityStormShot(worldObj, player);
-                    worldObj.spawnEntityInWorld(sts);
-                    break;
+                case 0: return;
+                case Reference.NEUTRAL_SHOT_INDEX: worldObj.spawnEntityInWorld(new EntityNeutralShot(worldObj, player)); break;
+                case Reference.EXORCISM_SHOT_INDEX: worldObj.spawnEntityInWorld(new EntityExorcismShot(worldObj, player)); break;
+                case Reference.BLAZE_SHOT_INDEX: worldObj.spawnEntityInWorld(new EntityBlazeShot(worldObj, player)); break;
+                case Reference.ENDER_SHOT_INDEX: worldObj.spawnEntityInWorld(new EntityEnderShot(worldObj, player)); break;
+                case Reference.CONCUSSIVE_SHOT_INDEX: worldObj.spawnEntityInWorld(new EntityConcussiveShot(worldObj, player)); break;
+                case Reference.BUSTER_SHOT_INDEX: worldObj.spawnEntityInWorld(new EntityBusterShot(worldObj, player)); break;
+                case Reference.SEEKER_SHOT_INDEX: worldObj.spawnEntityInWorld(new EntitySeekerShot(worldObj, player)); break;
+                case Reference.SAND_SHOT_INDEX: worldObj.spawnEntityInWorld(new EntitySandShot(worldObj, player)); break;
+                case Reference.STORM_SHOT_INDEX: worldObj.spawnEntityInWorld(new EntityStormShot(worldObj, player));break;
             }
-            resetReloadDuration(ist);
+
             worldObj.playSoundAtEntity(player, Reference.SHOT_SOUND, 0.2F, 1.2F);
+
+            //prevents the gun from forgetting that it fired a certain type of shot.
+            setLastFiredShotType(ist, getBulletType(ist));
+
             setBulletCount(ist, getBulletCount(ist) - 1);
             if (getBulletCount(ist) == 0) {
                 setBulletType(ist, 0);
             }
             spawnCasing(player);
         }
-    }
-
-    private void resetReloadDuration(ItemStack ist) {
-        NBTHelper.setShort("reloadDuration", ist, 0);
     }
 
     private void spawnEmptyMagazine(EntityPlayer player) {
@@ -233,9 +267,25 @@ public class ItemHandgun extends ItemBase {
         return true;
     }
 
-    private int calculatePlayerSkillTimer(EntityPlayer player) {
-        if (player.experienceLevel >= 20)
-            return 12;
-        return 20 - player.experienceLevel + 12;
+    private int getPlayerReloadDelay(EntityPlayer player) {
+        return Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_RELOAD_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM);
     }
+
+    private float getRecoilCoefficient(ItemStack ist) {
+        switch (getLastFiredShotType(ist)) {
+            case 0: return 1.0F;
+            case Reference.NEUTRAL_SHOT_INDEX: return 1.0F;
+            case Reference.EXORCISM_SHOT_INDEX: return 1.0F;
+            case Reference.BLAZE_SHOT_INDEX: return 1.0F;
+            case Reference.ENDER_SHOT_INDEX: return 0.5F;
+            case Reference.CONCUSSIVE_SHOT_INDEX: return 1.25F;
+            case Reference.BUSTER_SHOT_INDEX: return 1.5F;
+            case Reference.SEEKER_SHOT_INDEX: return 0.75F;
+            case Reference.SAND_SHOT_INDEX: return 1.0F;
+            case Reference.STORM_SHOT_INDEX: return 1.0F;
+        }
+        return 1.0F;
+    }
+
+
 }

@@ -2,10 +2,12 @@ package xreliquary.entities;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -39,7 +41,9 @@ public class EntitySandShot extends EntityShotBase {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
             if (mop.entityHit == shootingEntity)
                 return;
-            this.onImpact(mop.entityHit);
+            if (!(mop.entityHit instanceof EntityLivingBase))
+                return;
+            this.onImpact((EntityLivingBase)mop.entityHit);
         } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             this.groundImpact(mop.sideHit);
         }
@@ -51,7 +55,7 @@ public class EntitySandShot extends EntityShotBase {
     }
 
     @Override
-    void onImpact(Entity mop) {
+    void onImpact(EntityLivingBase mop) {
         if (mop != shootingEntity || ticksInAir > 3) {
             doDamage(mop);
         }
@@ -67,15 +71,16 @@ public class EntitySandShot extends EntityShotBase {
     }
 
     @Override
-    int getDamageOfShot(Entity mop) {
+    int getDamageOfShot(EntityLivingBase e) {
         // creepers turn sand shots into straight explosions.
-        if (mop instanceof EntityCreeper) {
+        if (e instanceof EntityCreeper) {
             ConcussiveExplosion.customBusterExplosion(this, shootingEntity, posX, posY, posZ, 2.0F, false, true);
+            e.attackEntityFrom(DamageSource.causePlayerDamage(shootingEntity), 20);
             return 0;
         }
         // it also causes blinding
-        if (mop instanceof EntityLiving)
-            ((EntityLiving) mop).addPotionEffect(new PotionEffect(Potion.blindness.id, 200, 1));
+        if (e instanceof EntityLiving)
+             e.addPotionEffect(new PotionEffect(Potion.blindness.id, 200, 1));
         return (worldObj.getWorldInfo().isRaining() ? 4 : 8) + d6();
     }
 

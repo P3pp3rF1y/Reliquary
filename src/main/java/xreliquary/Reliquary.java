@@ -25,6 +25,7 @@ import org.modstats.Modstats;
 import xreliquary.common.CommonProxy;
 import xreliquary.integration.NEIModIntegration;
 import xreliquary.lib.Reference;
+import xreliquary.network.PacketHandler;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 
@@ -52,6 +53,8 @@ public class Reliquary {
         PROXY.initOptions();
         Sandstone.preInit();
         PROXY.preInit();
+
+        PacketHandler.init();
     }
 
     @EventHandler
