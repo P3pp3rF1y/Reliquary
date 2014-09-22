@@ -29,7 +29,6 @@ public class Names {
     public static final String twilight_cloak = "twilight_cloak";
     public static final String twilight_cloak_overlay = "twilight_cloak_overlay";
     public static final String wraith_eye = "wraith_eye";
-    public static final String void_tear_empty = "void_tear_empty";
     public static final String void_tear = "void_tear";
     public static final String void_tear_overlay = "void_tear_overlay";
     public static final String hero_medallion = "hero_medallion";

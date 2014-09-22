@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -13,6 +14,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
@@ -77,6 +79,10 @@ public class ItemAlkahestryTome extends ItemToggleable {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
         this.formatTooltip(ImmutableMap.of("redstoneAmount", String.valueOf((Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit") - stack.getItemDamage())), "redstoneLimit", String.valueOf(Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit"))), stack, list);
+
+        if(this.isEnabled(stack))
+            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.RED + Items.redstone.getItemStackDisplayName(new ItemStack(Items.redstone))), stack, list);
+        list.add(LanguageHelper.getLocalization("tooltip.absorb"));
     }
 
     @Override

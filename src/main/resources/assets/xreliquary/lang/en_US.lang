@@ -2,6 +2,14 @@ itemGroup.xreliquary=Reliquary
 
 gui.tome.text=The Tome of Alkahestry;allows you to create;other resources from;Redstone.
 
+tooltip.absorb={{!colors.light_purple}}Right click to toggle auto-absorb.
+tooltip.absorb_active={{!colors.purple}}Automagically absorbs {{item}}{{!colors.purple}}.
+tooltip.absorb_tear={{!colors.purple}}Always leaves a stack of the item in inventory.
+
+tooltip.tear=Currently holds {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+tooltip.tear_empty=Current holds nothing.
+tooltip.tear_quantity=Current holds {{!colors.yellow}}{{amount}}{{!colors.light_gray}} of {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+
 tile.altar_idle.name=Altar of Light
 tile.altar.name=Altar of Light
 tile.lilypad.name=Lilypad of Fertility
@@ -93,7 +101,6 @@ item.wraith_eye.tooltip=Right clicking a Wraith Node binds to it;allowing you to
 item.void_tear_empty.name=Empty Void Tear
 item.void_tear_empty.tooltip=An empty void tear, right clicking;absorbs the dominant inventory item.
 item.void_tear.name=Void Tear
-item.void_tear.tooltip=This Void Tear currently;holds {{holds}}.
 item.hero_medallion.name=Hero's Medallion
 item.hero_medallion.tooltip={{!colors.green}}Experience: {{experience}};For when you just need;somewhere to put;all that experience.
 item.ender_staff.name=Ender Staff
@@ -124,8 +131,10 @@ item.serpent_staff.name={{!colors.green}}Serpent Staff
 item.serpent_staff.tooltip=All that nasty stuff;from a Kraken's spit,;thrown at your enemies.
 item.witch_hat.name={{!colors.yellow}}Witch Hat
 item.witch_hat.tooltip=All that was left of that nasty Witch.;I wonder if I could use it somehow.
+item.infernal_tear_empty.name={{!colors.yellow}}Empty Infernal Tear
+item.infernal_tear_empty.tooltip=An empty infernal tear, right clicking;absorbs the dominant inventory item.
 item.infernal_tear.name={{!colors.red}}Infernal Tear
-item.infernal_tear.tooltip=Burns items into their raw essence.;Might make a good brewing ingredient.;Currently holds {{holds}}.;{{!colors.purple}}Always leaves a stack of the item in inventory.
+item.infernal_tear.tooltip=Burns items into their raw essence.;Might make a good brewing ingredient.
 
 item.potion_0.name=Condensed Splash Serum
 item.potion_1.name=Love Potion #9

@@ -51,7 +51,7 @@ public class XRRecipes {
 
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.altar_idle), 1), "olo", "lel", "olo", 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'e', Items.emerald);
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.lilypad), 1), "www", "wlw", "www", 'w', XRRecipes.potion(Reference.FERTILIZER_META), 'l', Blocks.waterlily);
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.wraith_node), 1), "vv", "vv", 'v', ContentHandler.getItem(Names.void_tear_empty));
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getBlock(Names.wraith_node), 1), "vv", "vv", 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0));
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.interdiction_torch), 1, 0), "mdm", "gbg", "gbg", 'm', Items.magma_cream, 'd', Items.diamond, 'g', ContentHandler.getItem(Names.glowing_water), 'b', Items.blaze_rod);
 
         GameRegistry.addShapelessRecipe(new ItemStack(ContentHandler.getItem(Names.glowing_bread), 3), new Object[]{Items.bread, Items.bread, Items.bread, ContentHandler.getItem(Names.glowing_water)});
@@ -144,7 +144,7 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.salamander_eye), 1), new Object[]{"bcb", "tet", "bcb", 'b', Items.blaze_rod, 'c', Items.magma_cream, 't', Items.ghast_tear, 'e', Items.ender_eye});
 
         // wraith's eye upgrade
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.wraith_eye), 1), new Object[]{"eee", "bsb", "eee", 'e', ContentHandler.getItem(Names.void_tear_empty), 's', ContentHandler.getItem(Names.salamander_eye), 'b', Blocks.emerald_block});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.wraith_eye), 1), new Object[]{"eee", "bsb", "eee", 'e', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0), 's', ContentHandler.getItem(Names.salamander_eye), 'b', Blocks.emerald_block});
 
         // ice rod
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.ice_magus_rod), 1, 0), new Object[]{"dtd", "tpt", "tpt", 'd', Items.diamond, 't', Items.ghast_tear, 'p', Blocks.packed_ice});
@@ -159,22 +159,22 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.crimson_cloth), 1), new Object[]{"prp", "bdb", "prp", 'p', potion(Reference.INVISIBILITY_META), 'r', new ItemStack(Blocks.wool, 1, Reference.RED_WOOL_META), 'b', new ItemStack(Blocks.wool, 1, Reference.BLACK_WOOL_META), 'd', potion(Reference.BLINDING_META)});
 
         // cloak
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.twilight_cloak), 1), new Object[]{"bcb", "cvc", "cbc", 'b', new ItemStack(Blocks.wool, 1, Reference.BLACK_WOOL_META), 'c', ContentHandler.getItem(Names.crimson_cloth), 'v', ContentHandler.getItem(Names.void_tear_empty)});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.twilight_cloak), 1), new Object[]{"bcb", "cvc", "cbc", 'b', new ItemStack(Blocks.wool, 1, Reference.BLACK_WOOL_META), 'c', ContentHandler.getItem(Names.crimson_cloth), 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0)});
 
         // void tear
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1, 0), new Object[]{"et", "te", 'e', Items.ender_eye, 't', Items.ghast_tear});
+        GameRegistry.addRecipe(((ItemToggleable) ContentHandler.getItem(Names.void_tear)).newItemStack(), new Object[]{"et", "te", 'e', Items.ender_eye, 't', Items.ghast_tear});
 
         // angelic feather
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.angelic_feather), 1), new Object[]{"aja", "vfv", "aja", 'a', ContentHandler.getItem(Names.angelheart_vial), 'v', ContentHandler.getItem(Names.void_tear_empty), 'f', Items.feather, 'j', potion(Reference.BOUNDING_META)});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.angelic_feather), 1), new Object[]{"aja", "vfv", "aja", 'a', ContentHandler.getItem(Names.angelheart_vial), 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0), 'f', Items.feather, 'j', potion(Reference.BOUNDING_META)});
 
         // phoenix down
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.phoenix_down), 1), new Object[]{"ama", "mfm", "ama", 'm', Items.magma_cream, 'a', ContentHandler.getItem(Names.angelheart_vial), 'f', ContentHandler.getItem(Names.angelic_feather)});
 
         // dragon talon
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.dragon_talon), 1), new Object[]{"flf", "lvl", "flf", 'f', potion(Reference.FIRE_WARDING_META), 'l', Items.leather, 'v', ContentHandler.getItem(Names.void_tear_empty)});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.dragon_talon), 1), new Object[]{"flf", "lvl", "flf", 'f', potion(Reference.FIRE_WARDING_META), 'l', Items.leather, 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0)});
 
         // dragon claws
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.dragon_claws), 1), new Object[]{"cmc", "cvc", "mcm", 'c', ContentHandler.getItem(Names.dragon_talon), 'm', Items.magma_cream, 'v', ContentHandler.getItem(Names.void_tear_empty)});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.dragon_claws), 1), new Object[]{"cmc", "cvc", "mcm", 'c', ContentHandler.getItem(Names.dragon_talon), 'm', Items.magma_cream, 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0)});
 
         // claws of the firedrinker
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.claws_of_the_firedrinker), 1), new Object[]{"cmc", "mem", "cmc", 'c', ContentHandler.getItem(Names.dragon_claws), 'm', Items.magma_cream, 'e', ContentHandler.getItem(Names.salamander_eye)});
@@ -186,10 +186,10 @@ public class XRRecipes {
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.kraken_shell_fragment), 1, 0), new Object[]{"awa", "wbw", "awa", 'a', ContentHandler.getItem(Names.angelheart_vial), 'w', potion(Reference.BREATHING_META), 'b', ContentHandler.getItem(Names.squid_beak)});
 
         // kraken shell
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.kraken_shell), 1, 0), new Object[]{"sss", "svs", "sss", 's', ContentHandler.getItem(Names.kraken_shell_fragment), 'v', ContentHandler.getItem(Names.void_tear_empty)});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.kraken_shell), 1, 0), new Object[]{"sss", "svs", "sss", 's', ContentHandler.getItem(Names.kraken_shell_fragment), 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0)});
 
         // hero medallion
-        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.hero_medallion), 1), new Object[]{"eie", "ivi", "eie", 'e', Items.ender_eye, 'i', Items.iron_ingot, 'v', ContentHandler.getItem(Names.void_tear_empty)});
+        GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.hero_medallion), 1), new Object[]{"eie", "ivi", "eie", 'e', Items.ender_eye, 'i', Items.iron_ingot, 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0)});
 
         // destruction catalyst
         GameRegistry.addRecipe(new ItemStack(ContentHandler.getItem(Names.destruction_catalyst), 1, 0), new Object[]{"rrr", "rtr", "rrf", 'f', Items.flint, 't', new ItemStack(ContentHandler.getItem(Names.midas_touchstone), 1, -1), 'r', Items.blaze_rod});
