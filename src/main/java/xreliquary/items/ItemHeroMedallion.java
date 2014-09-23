@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.items.ItemToggleable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +22,7 @@ import xreliquary.util.NBTHelper;
 import java.util.List;
 
 @ContentInit
-public class ItemHeroMedallion extends ItemBase {
+public class ItemHeroMedallion extends ItemToggleable {
 
     public ItemHeroMedallion() {
         super(Names.hero_medallion);
@@ -75,24 +76,25 @@ public class ItemHeroMedallion extends ItemBase {
     // this drains experience beyond level specified in configs
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
-        // 1 for on, 0 for off. Pretty straightforward.
-        if (ist.getItemDamage() == 0)
+        if (!this.isEnabled(ist))
             return;
         if (e instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) e;
-            // in order to make this stop at a specific leve, we will need to do
-            // a preemptive check for a specific leve.
-            if (player.experienceLevel < Reliquary.CONFIG.getInt(Names.hero_medallion, "xpLevelCap")) {
-                if (getExperience(ist) > 0) {
-                    increasePlayerExperience(player);
-                    decreaseMedallionExperience(ist);
-                }
+            // in order to make this stop at a specific level, we will need to do
+            // a preemptive check for a specific level.
+            if ((player.experienceLevel > Reliquary.CONFIG.getInt(Names.hero_medallion, "xpLevelCap") || player.experience > 0F) && getExperience(ist) < Integer.MAX_VALUE) {
+                decreasePlayerExperience(player);
+                increaseMedallionExperience(ist);
+            }
+        }
+    }
 
-            } else {
-                if ((player.experienceLevel > Reliquary.CONFIG.getInt(Names.hero_medallion, "xpLevelCap") || player.experience > 0F) && getExperience(ist) < Integer.MAX_VALUE) {
-                    decreasePlayerExperience(player);
-                    increaseMedallionExperience(ist);
-                }
+    @Override
+    public void onUsingTick(ItemStack ist, EntityPlayer player, int unadjustedCount) {
+        if (player.experienceLevel < Reliquary.CONFIG.getInt(Names.hero_medallion, "xpLevelCap")) {
+            if (getExperience(ist) > 0) {
+                increasePlayerExperience(player);
+                decreaseMedallionExperience(ist);
             }
         }
     }
@@ -150,7 +152,14 @@ public class ItemHeroMedallion extends ItemBase {
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (world.isRemote)
             return ist;
-        ist.setItemDamage(ist.getItemDamage() == 0 ? 1 : 0);
+        if (this.isEnabled(ist))
+            return ist;
+        player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
         return ist;
+    }
+
+    @Override
+    public int getMaxItemUseDuration(ItemStack stack) {
+        return 250;
     }
 }

@@ -80,7 +80,12 @@ public class ItemWraithEye extends ItemSalamanderEye {
                 }
             }
         } else if (eye.getTagCompound() != null && eye.getTagCompound().hasKey("dimensionID")) {
-            eye.setTagCompound(null);
+            //eye.setTagCompound(null);
+            eye.getTagCompound().removeTag("dimensionID");
+            eye.getTagCompound().removeTag("nodeX");
+            eye.getTagCompound().removeTag("nodeY");
+            eye.getTagCompound().removeTag("nodeZ");
+            eye.getTagCompound().removeTag("cooldown");
             if (!world.isRemote) {
                 player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "Node dosen't exist!"));
             } else {

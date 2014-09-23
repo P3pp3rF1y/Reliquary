@@ -60,6 +60,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.emperor_chalice, "multiplier", new ConfigReference(4).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.alkahestry_tome, "redstoneLimit", new ConfigReference(256).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.hero_medallion, "xpLevelCap", new ConfigReference(30).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.hero_medallion, "xpLevelMin", new ConfigReference(0).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.twilight_cloak, "maxLightLevel", new ConfigReference(4).setMinimumValue(0).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.lantern_of_paranoia, "minLightLevel", new ConfigReference(8).setMinimumValue(0).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.handgun, "hudPosition", new ConfigReference(3).setMinimumValue(0).setMaximumValue(4));
