@@ -28,8 +28,14 @@ public class ItemHandgun extends ItemBase {
     public ItemHandgun() {
         super(Names.handgun);
         this.setMaxStackSize(1);
+        this.setMaxDamage(0);
         canRepair = false;
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
+    }
+
+    @Override
+    public boolean getShareTag() {
+        return false;
     }
 
     @Override
@@ -83,30 +89,27 @@ public class ItemHandgun extends ItemBase {
 
     @Override
     public void onUpdate(ItemStack ist, World worldObj, Entity e, int i, boolean flag) {
-        if (getCooldown(ist) > 0) {
-            setCooldown(ist, getCooldown(ist) - 1);
-        }
-        if (getRecoilFrameCounter(ist) > 0) {
-            if (getRecoilFrameCounter(ist) <= 3) {
-                if (!worldObj.isRemote) {
+        if (!worldObj.isRemote) {
+            if (getCooldown(ist) > 0) {
+                setCooldown(ist, getCooldown(ist) - 1);
+            }
+            if (getRecoilFrameCounter(ist) > 0) {
+                if (getRecoilFrameCounter(ist) <= 3) {
                     if (!(e instanceof EntityPlayer))
                         return;
                     EntityPlayer player = (EntityPlayer) e;
 
                     PacketHandler.networkWrapper.sendTo(new RecoilAnimationPacket(Reference.RECOIL_COMPENSATION_PACKET_ID, getRecoilCoefficient(ist)), (EntityPlayerMP) player);
                 }
-            }
-            if (getRecoilFrameCounter(ist) > 3) {
-
-                if (!worldObj.isRemote) {
+                if (getRecoilFrameCounter(ist) > 3) {
                     if (!(e instanceof EntityPlayer))
                         return;
                     EntityPlayer player = (EntityPlayer) e;
 
                     PacketHandler.networkWrapper.sendTo(new RecoilAnimationPacket(Reference.RECOIL_PACKET_ID, getRecoilCoefficient(ist)), (EntityPlayerMP) player);
                 }
+                decrementRecoilCompensationFrames(ist);
             }
-            decrementRecoilCompensationFrames(ist);
         }
     }
 
@@ -135,7 +138,6 @@ public class ItemHandgun extends ItemBase {
         int maxUseOffset = getItemUseDuration() - getPlayerReloadDelay(player);
         int actualCount = unadjustedCount - maxUseOffset;
         actualCount -= 1;
-
         //you can't reload if you don't have any full mags left, so the rest of the method doesn't fire at all.
         if (!hasFilledMagazine(player)) {
             //arbitrary "feels good" cooldown for after the reload - this one just plays so you can't "fail" at reloading too fast.
@@ -144,6 +146,7 @@ public class ItemHandgun extends ItemBase {
             player.stopUsingItem();
             return;
         }
+
         if (actualCount == 0) {
             //arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
             setCooldown(ist, 12);
@@ -164,18 +167,21 @@ public class ItemHandgun extends ItemBase {
             return;
         if (actualCount > getPlayerReloadDelay(player) - Reference.HANDGUN_RELOAD_ANIMATION_TICKS) {
             //only 4 ticks of this animation, 5 of the other - to explain why this one is decreased by 1
-            float pitchChange = (float)Reference.HANDGUN_RELOAD_PITCH_OFFSET / ((float)Reference.HANDGUN_RELOAD_ANIMATION_TICKS - 1);
+            float pitchChange = (float) Reference.HANDGUN_RELOAD_PITCH_OFFSET / ((float) Reference.HANDGUN_RELOAD_ANIMATION_TICKS - 1);
             float rotationPitch = player.prevRotationPitch + pitchChange;
 
-            player.setPositionAndRotation(player.posX, player.posY, player.posZ, player.rotationYaw, rotationPitch);
+            player.prevRotationPitch = player.rotationPitch;
+            player.rotationPitch = rotationPitch;
         }
         if (actualCount <= Reference.HANDGUN_RELOAD_ANIMATION_TICKS) {
 
-            float pitchChange = (float)Reference.HANDGUN_RELOAD_PITCH_OFFSET / (float)Reference.HANDGUN_RELOAD_ANIMATION_TICKS;
+            float pitchChange = (float) Reference.HANDGUN_RELOAD_PITCH_OFFSET / (float) Reference.HANDGUN_RELOAD_ANIMATION_TICKS;
             float rotationPitch = player.prevRotationPitch - pitchChange;
 
-            player.setPositionAndRotation(player.posX, player.posY, player.posZ, player.rotationYaw, rotationPitch);
+            player.prevRotationPitch = player.rotationPitch;
+            player.rotationPitch = rotationPitch;
         }
+
     }
 
     @Override

@@ -28,12 +28,14 @@ public class ItemVoidTear extends ItemTear {
 
         int quantity = tag.getShort("itemQuantity");
         int minQuantity = quantity - contents.getMaxStackSize();
+
         while (quantity > Math.max(0, minQuantity)) {
             if (!tryToAddToInventory(contents, inventory, limit)) {
                 break;
             }
             quantity--;
         }
+        inventory.markDirty();
 
         if (quantity == 0) {
             player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
@@ -55,7 +57,10 @@ public class ItemVoidTear extends ItemTear {
                 if (inventory.getStackInSlot(slot).stackSize == inventory.getStackInSlot(slot).getMaxStackSize()) {
                     continue;
                 }
-                inventory.getStackInSlot(slot).stackSize++;
+                ItemStack newStack = inventory.getStackInSlot(slot).copy();
+                newStack.stackSize++;
+
+                inventory.setInventorySlotContents(slot, newStack);
                 return true;
             }
         }

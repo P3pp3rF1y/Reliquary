@@ -49,7 +49,8 @@ public class ItemCondensedPotion extends ItemBase {
     // the base potion types.
     @Override
     public boolean hasContainerItem(ItemStack ist) {
-        return (ist.getItemDamage() != Reference.POTION_META && ist.getItemDamage() != Reference.SPLASH_META && ist.getItemDamage() != Reference.EMPTY_VIAL_META);
+        return false;
+        //return (ist.getItemDamage() != Reference.POTION_META && ist.getItemDamage() != Reference.SPLASH_META && ist.getItemDamage() != Reference.EMPTY_VIAL_META);
     }
 
     public int emptyVialMeta() {

@@ -18,6 +18,8 @@ import xreliquary.entities.*;
 import xreliquary.event.ClientEventHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.network.PacketHandler;
+import xreliquary.network.RecoilAnimationPacket;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
@@ -36,8 +38,8 @@ public class ClientProxy extends CommonProxy {
         this.registerRenderers();
     }
 
-    public void registerRenderers() {
 
+    public void registerRenderers() {
         RenderingRegistry.registerEntityRenderingHandler(EntityBlazeShot.class, new RenderShot());
         RenderingRegistry.registerEntityRenderingHandler(EntityBusterShot.class, new RenderShot());
         RenderingRegistry.registerEntityRenderingHandler(EntityConcussiveShot.class, new RenderShot());

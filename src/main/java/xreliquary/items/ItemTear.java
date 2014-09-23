@@ -134,20 +134,21 @@ public class ItemTear extends ItemToggleable {
 
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-
+        if (world.isRemote)
+            return false;
         if (world.getTileEntity(x, y, z) instanceof IInventory) {
             IInventory inventory = (IInventory) world.getTileEntity(x, y, z);
 
             if(stack.getItemDamage() == 1) {
-                if(this.shouldEmpty(stack, player, inventory, 0)) {
+                if (this.shouldEmpty(stack, player, inventory, 0)) {
                     player.inventory.setInventorySlotContents(player.inventory.currentItem, this.newItemStack());
                 }
                 return true;
             }
-
             ItemStack returnStack = this.buildTear(stack, player, inventory, 0);
-            if(returnStack != null)
+            if(returnStack != null) {
                 player.inventory.setInventorySlotContents(player.inventory.currentItem, returnStack);
+            }
         }
         return false;
     }

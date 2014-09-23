@@ -37,48 +37,6 @@ public class ItemTwilightCloak extends ItemBase {
         return EnumRarity.epic;
     }
 
-    @SideOnly(Side.CLIENT)
-    private IIcon iconOverlay;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.twilight_cloak_overlay);
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack itemStack, int renderPass) {
-        if (renderPass != 1)
-            return this.itemIcon;
-        else
-            return iconOverlay;
-    }
-
-    // should probably be replaced by the new overlay system (the one the eyes
-    // use)
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-        if (renderPass == 1) {
-            int i = ClientEventHandler.getTime();
-            i %= 110;
-            if (i > 55) {
-                i = 110 - i;
-            }
-            i = (int) (i * 160F / 50F);
-            String red = Integer.toHexString(i + 70);
-            return Integer.parseInt(String.format("%s%s%s", red, "00", "00"), 16);
-        } else
-            return Integer.parseInt(Colors.DARKEST, 16);
-    }
-
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
         if (!(e instanceof EntityPlayer))
