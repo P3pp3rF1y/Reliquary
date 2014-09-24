@@ -75,7 +75,7 @@ public class ItemEmperorChalice extends ItemBase {
         if (world.isRemote)
             return ist;
 
-        int multiplier = (Integer) Reliquary.CONFIG.get(Names.emperor_chalice, "multiplier");
+        int multiplier = (Integer) Reliquary.CONFIG.get(Names.emperor_chalice, "hunger_satiation_multiplier");
         player.getFoodStats().addStats(1, (float) (multiplier / 2));
         player.attackEntityFrom(DamageSource.drown, multiplier);
         return new ItemStack(this, 1, 0);

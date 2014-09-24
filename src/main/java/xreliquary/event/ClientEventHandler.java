@@ -117,7 +117,7 @@ public class ClientEventHandler {
         int hudOverlayX = 0;
         int hudOverlayY = 0;
 
-        switch (Reliquary.CONFIG.getInt(Names.handgun, "hudPosition")) {
+        switch (Reliquary.CONFIG.getInt(Names.handgun, "hud_position")) {
             case 0: {
                 hudOverlayX = 0;
                 hudOverlayY = 0;
@@ -156,7 +156,7 @@ public class ClientEventHandler {
             for (int xOffset = 0; xOffset < bulletStack.stackSize; xOffset++) {
                 // xOffset * 6 makes the bullets line up, -16 moves them all to
                 // the left by a bit
-                renderItemIntoGUI(minecraft.fontRenderer, bulletStack, hudOverlayX - 8 - (xOffset * 12), hudOverlayY + 12, 1.0F, overlayScale / 2F);
+                renderItemIntoGUI(minecraft.fontRenderer, bulletStack, hudOverlayX - 8 - (xOffset * 10), hudOverlayY + 12, 1.0F, overlayScale / 2F);
             }
         }
 

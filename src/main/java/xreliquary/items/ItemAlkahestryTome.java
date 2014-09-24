@@ -28,7 +28,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
     public ItemAlkahestryTome() {
         super(Names.alkahestry_tome);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setMaxDamage(Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit") + 1);
+        this.setMaxDamage(getRedstoneLimit() + 1);
         this.setMaxStackSize(1);
         this.canRepair = false;
         this.hasSubtypes = true;
@@ -60,12 +60,11 @@ public class ItemAlkahestryTome extends ItemToggleable {
             return;
         }
 
-        int limit = Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit");
-        int amount = limit - stack.getItemDamage();
+        int amount = getRedstoneLimit() - stack.getItemDamage();
 
-        if(amount + 9 <= limit && InventoryHelper.consumeItem(Blocks.redstone_block, player)) {
+        if(amount + 9 <= getRedstoneLimit() && InventoryHelper.consumeItem(Blocks.redstone_block, player)) {
             stack.setItemDamage(stack.getItemDamage() - 9);
-        } else if(amount + 1 <= limit && InventoryHelper.consumeItem(Items.redstone, player)) {
+        } else if(amount + 1 <= getRedstoneLimit() && InventoryHelper.consumeItem(Items.redstone, player)) {
             stack.setItemDamage(stack.getItemDamage() - 1);
         }
     }
@@ -78,7 +77,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-        this.formatTooltip(ImmutableMap.of("redstoneAmount", String.valueOf((Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit") - stack.getItemDamage())), "redstoneLimit", String.valueOf(Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit"))), stack, list);
+        this.formatTooltip(ImmutableMap.of("redstoneAmount", String.valueOf((getRedstoneLimit() - stack.getItemDamage())), "redstoneLimit", String.valueOf(getRedstoneLimit())), stack, list);
 
         if(this.isEnabled(stack))
             LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.RED + Items.redstone.getItemStackDisplayName(new ItemStack(Items.redstone))), stack, list);
@@ -103,7 +102,11 @@ public class ItemAlkahestryTome extends ItemToggleable {
     public ItemStack newItemStack() {
         ItemStack stack = new ItemStack(this, 1);
         stack.setTagCompound(new NBTTagCompound());
-        stack.setItemDamage(Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit"));
+        stack.setItemDamage(getRedstoneLimit());
         return stack;
+    }
+
+    private int getRedstoneLimit() {
+        return Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstone_limit");
     }
 }

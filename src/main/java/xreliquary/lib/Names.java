@@ -4,7 +4,6 @@ public class Names {
 
     // items
     public static final String handgun = "handgun";
-    public static final String handgun_overlay = "handgun_overlay";
     public static final String bullet = "bullet";
     public static final String bullet_overlay = "bullet_overlay";
     public static final String mercy_cross = "mercy_cross";
@@ -27,10 +26,8 @@ public class Names {
     public static final String magicbane = "magicbane";
     public static final String witherless_rose = "witherless_rose";
     public static final String twilight_cloak = "twilight_cloak";
-    public static final String twilight_cloak_overlay = "twilight_cloak_overlay";
     public static final String wraith_eye = "wraith_eye";
     public static final String void_tear = "void_tear";
-    public static final String void_tear_overlay = "void_tear_overlay";
     public static final String hero_medallion = "hero_medallion";
     public static final String hero_medallion_overlay = "hero_medallion_overlay";
     public static final String ender_staff = "ender_staff";
@@ -64,4 +61,6 @@ public class Names {
     public static final String interdiction_torch = "interdiction_torch";
     public static final String apothecary_cauldron = "apothecary_cauldron";
     public static final String apothecary_mortar = "apothecary_mortar";
+
+    public static final String recipe_enabled = "recipe_enabled";
 }

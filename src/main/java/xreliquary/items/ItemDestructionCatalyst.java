@@ -30,7 +30,7 @@ public class ItemDestructionCatalyst extends ItemBase {
 
     @Override
     public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
-        if (InventoryHelper.getItemQuantity(new ItemStack(Items.gunpowder), player.inventory) >= Reliquary.CONFIG.getInt(Names.destruction_catalyst, "cost") || player.capabilities.isCreativeMode) {
+        if (InventoryHelper.getItemQuantity(new ItemStack(Items.gunpowder), player.inventory) >= gunpowderCost() || player.capabilities.isCreativeMode) {
             doExplosion(world, x, y, z, side, player);
         }
         return true;
@@ -60,11 +60,15 @@ public class ItemDestructionCatalyst extends ItemBase {
             }
         }
         if (destroyedSomething) {
-            InventoryHelper.consumeItem(new ItemStack(Items.gunpowder), player, 0, Reliquary.CONFIG.getInt(Names.destruction_catalyst, "cost"));
+            InventoryHelper.consumeItem(new ItemStack(Items.gunpowder), player, 0, gunpowderCost());
         }
     }
 
     public boolean isBreakable(String id) {
         return ((List<String>) Reliquary.CONFIG.get(Names.destruction_catalyst, "mundane_blocks")).indexOf(id) != -1;
+    }
+
+    private int gunpowderCost() {
+        return Reliquary.CONFIG.getInt(Names.destruction_catalyst, "gunpowder_cost");
     }
 }

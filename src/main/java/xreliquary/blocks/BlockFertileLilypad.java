@@ -67,18 +67,42 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
         world.spawnParticle("mobSpell", x + 0.5D + rand.nextGaussian() / 8, y, z + 0.5D + rand.nextGaussian() / 8, 0.0D, 0.9D, 0.5D);
     }
 
+    private int growthRatePercentage() {
+        return Reliquary.CONFIG.getInt(Names.lilypad, "time_between_ticks_percent");
+    }
+
+    private int tileRange() {
+        return Reliquary.CONFIG.getInt(Names.lilypad, "tile_range");
+    }
+
+    private int fullPotencyRange() {
+        return Reliquary.CONFIG.getInt(Names.lilypad, "full_potency_range");
+    }
+
+    private int fullPotencyThreshold() {
+        return Reliquary.CONFIG.getInt(Names.lilypad, "full_potency_threshold");
+    }
+
+    private int fullPotencyOffset() {
+        return Reliquary.CONFIG.getInt(Names.lilypad, "full_potency_offset");
+    }
+
     public void growCropsNearby(World world, int xO, int yO, int zO) {
         int lilyPadsFound = 0;
         //int scheduleDelay = 0;
-        for (int xD = -4; xD <= 4; xD++) {
-            for (int yD = -1; yD <= 4; yD++) {
-                for (int zD = -4; zD <= 4; zD++) {
+        for (int xD = -tileRange(); xD <= tileRange(); xD++) {
+            for (int yD = -1; yD <= tileRange(); yD++) {
+                for (int zD = -tileRange(); zD <= tileRange(); zD++) {
                     int x = xO + xD;
                     int y = yO + yD;
                     int z = zO + zD;
 
                     double distance = Math.sqrt(Math.pow(x-xO, 2) + Math.pow(y - yO,2) + Math.pow(z - zO,2));
-                    distance += 7;
+                    distance -= fullPotencyThreshold();
+                    if (distance <= fullPotencyRange()) distance = 1D;
+                    distance += fullPotencyOffset();
+
+                    distance = Math.min(1D, distance);
 
                     Block block = world.getBlock(x, y, z);
 
@@ -86,7 +110,7 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
                         if (!(block instanceof BlockFertileLilypad)) {
                             //68 is a completely arbitrary number to multiply the distance coefficient by
                             //it schedules the next tick. It caps out around 47 seconds, and bottoms out around 27. Both are at least as good or better than average growth.
-                            world.scheduleBlockUpdate(x, y, z, block, (int)distance * 68);
+                            world.scheduleBlockUpdate(x, y, z, block, (int)(distance * 68F * ((float) growthRatePercentage() / 100F)));
                             block.updateTick(world, x, y, z, world.rand);
                         } else {
                             lilyPadsFound++;

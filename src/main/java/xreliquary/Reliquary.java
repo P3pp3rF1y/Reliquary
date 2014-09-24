@@ -52,7 +52,10 @@ public class Reliquary {
 
         PROXY.initOptions();
         Sandstone.preInit();
+
         //important that this initializes before the pre-init phase
+        PROXY.initRecipeDisablers();
+
         PROXY.preInit();
         PacketHandler.init();
 

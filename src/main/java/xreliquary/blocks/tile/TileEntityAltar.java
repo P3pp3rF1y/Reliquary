@@ -3,7 +3,9 @@ package xreliquary.blocks.tile;
 import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import xreliquary.Reliquary;
 import xreliquary.blocks.BlockAlkahestryAltar;
+import xreliquary.lib.Names;
 
 public class TileEntityAltar extends TileEntityBase {
     private int cycleTime;
@@ -37,8 +39,10 @@ public class TileEntityAltar extends TileEntityBase {
     }
 
     public void startCycle() {
-        // number of ticks in a minecraft day 20 * 60 * 20 = 24000;
-        cycleTime = (int) (24000 + 6000D * worldObj.rand.nextGaussian());
+        //grabs the cycle time from the configs
+        int defaultCycleTime = Reliquary.CONFIG.getInt(Names.altar, "time_in_minutes");
+        int maximumVariance = Reliquary.CONFIG.getInt(Names.altar, "maximum_time_variance_in_minutes");
+        cycleTime = (int) (defaultCycleTime + (double)maximumVariance * worldObj.rand.nextGaussian());
         isActive = true;
         redstoneCount = 0;
         BlockAlkahestryAltar.updateAltarBlockState(isActive(), worldObj, xCoord, yCoord, zCoord);
@@ -62,10 +66,12 @@ public class TileEntityAltar extends TileEntityBase {
 
     public void addRedstone() {
         redstoneCount++;
-        if (redstoneCount > 2) {
+        if (redstoneCount >= getRedstoneCost()) {
             this.startCycle();
         }
     }
+
+    private int getRedstoneCost() { return Reliquary.CONFIG.getInt(Names.altar, "redstone_cost"); }
 
     public int getRedstoneCount() {
         return redstoneCount;

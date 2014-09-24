@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
@@ -56,7 +57,7 @@ public class ItemFertileLilypad extends ItemBlock {
                         && world.getBlock(var5, var6, var7).getMaterial() == Material.water
                         && world.getBlockMetadata(var5, var6, var7) == 0 && world.isAirBlock(var5, var6 + 1, var7)) {
                     world.setBlock(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad));
-                    world.scheduleBlockUpdate(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad), 1360);
+                    world.scheduleBlockUpdate(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad), (int)(1360F * ((float)growthRatePercentage() / 100F)));
 
                     if (!player.capabilities.isCreativeMode) --stack.stackSize;
                     blockPlaced = true;
@@ -126,7 +127,7 @@ public class ItemFertileLilypad extends ItemBlock {
 
                 if (world.getBlock(var5, var6, var7).getMaterial() == Material.water && world.getBlockMetadata(var5, var6, var7) == 0 && world.isAirBlock(var5, var6 + 1, var7)) {
                     world.setBlock(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad));
-                    world.scheduleBlockUpdate(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad), 20);
+                    world.scheduleBlockUpdate(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad), (int)(1360F * ((float)growthRatePercentage() / 100F)));
 
                     if (!par3EntityPlayer.capabilities.isCreativeMode) {
                         --par1ItemStack.stackSize;
@@ -136,6 +137,10 @@ public class ItemFertileLilypad extends ItemBlock {
 
             return par1ItemStack;
         }
+    }
+
+    private int growthRatePercentage() {
+        return Reliquary.CONFIG.getInt(Names.lilypad, "time_between_ticks_percent");
     }
 
 }

@@ -123,7 +123,7 @@ public class CommonEventHandler {
 
         // trades all fire damage for exhaustion (which causes the hunger bar to
         // be depleted).
-        player.addExhaustion(event.ammount * 0.1F);
+        player.addExhaustion(event.ammount * ((float)Reliquary.CONFIG.getInt(Names.dragon_claws, "hunger_cost_percent") / 100F));
         event.setCanceled(true);
     }
 
@@ -136,11 +136,11 @@ public class CommonEventHandler {
             return;
         if (!(event.source == DamageSource.lava)) {
             // adds a slightly reduced amount of damage (50%) as hunger damage than the previous version of the item (dragon claws)
-            player.addExhaustion(event.ammount * 0.05F);
+            player.addExhaustion(event.ammount * ((float)Reliquary.CONFIG.getInt(Names.claws_of_the_firedrinker, "hunger_cost_percent") / 100F));
         } else {
             // I noticed that in lava, this effect is EXTREMELY rapid, I believe it's compounding all three damage types in some form,
             // because you're on fire at the same time as you're in lava.
-            player.addExhaustion(event.ammount * 0.05F);
+            player.addExhaustion(event.ammount * ((float) Reliquary.CONFIG.getInt(Names.claws_of_the_firedrinker, "hunger_cost_percent") / 100F));
         }
 
         event.setCanceled(true);
@@ -166,10 +166,12 @@ public class CommonEventHandler {
         player.worldObj.playSoundEffect(player.posX + 0.5D, player.posY + 0.5D, player.posZ + 0.5D, "dig.glass", 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
 
         // gives the player a few hearts, sparing them from death.
-        player.setHealth(4);
-        // if the player had any negative status effects [vanilla only for now],
-        // remove them:
-        removeNegativeStatusEffects(player);
+        float amountHealed = player.getMaxHealth() * (float)Reliquary.CONFIG.getInt(Names.angelheart_vial, "heal_percentage_of_max_life") / 100F;
+        player.setHealth(amountHealed);
+
+        // if the player had any negative status effects [vanilla only for now], remove them:
+        if (Reliquary.CONFIG.getBool(Names.angelheart_vial, "remove_negative_status"))
+            removeNegativeStatusEffects(player);
 
         event.setCanceled(true);
     }
@@ -222,49 +224,55 @@ public class CommonEventHandler {
     }
 
     public void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
-        // I'm rounding because I'm not 100% on whether the health value being a
-        // fraction matters for determining death
-        // Rounding would be worst case. I'm doing an early abort to keep my
-        // indentation shallow.
-        if (player.getHealth() > Math.round(event.ammount))
-            return;
         if (!playerHasItem(player, ContentHandler.getItem(Names.phoenix_down)))
             return;
+        if (player.getHealth() > Math.round(event.ammount)) {
+            if (!(event.source == DamageSource.fall))
+                return;
+            if (player.getFoodStats().getFoodLevel() <= 0)
+                return;
 
-        // item reverts to a normal feather.
-        revertPhoenixDownToAngelicFeather(player);
-        event.setCanceled(true);
+            float hungerDamage = event.ammount * ((float)Reliquary.CONFIG.getInt(Names.phoenix_down, "hunger_cost_percent") / 100F);
+            player.addExhaustion(hungerDamage);
+            player.getFoodStats().onUpdate(player);
 
-        // max player health, whatever it is.
-        player.setHealth(player.getMaxHealth());
+            event.setCanceled(true);
 
-        // added bonus, has some extra effects when drowning or dying to lava,
-        // and grants you temporary damage resistance
-        // there are some things the feather can't prevent (falling out of the
-        // world comes to mind)
-        if (event.source == DamageSource.lava)
-            // ten seconds of fire resistance, should hopefully be enough to get
-            // you out of the lava.
-            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 200, 0));
-        if (event.source == DamageSource.drown) {
-            // no clue if air is 10 or 20. In most cases this should be plenty,
-            // not to mention 10 seconds of water breathing.
-            player.setAir(10);
-            player.addPotionEffect(new PotionEffect(Potion.waterBreathing.id, 200, 0));
+            return;
+        } else {
+
+            // item reverts to a normal feather.
+            revertPhoenixDownToAngelicFeather(player);
+
+            // gives the player a few hearts, sparing them from death.
+            float amountHealed = player.getMaxHealth() * (float)Reliquary.CONFIG.getInt(Names.phoenix_down, "heal_percentage_of_max_life") / 100F;
+            player.setHealth(amountHealed);
+
+            // if the player had any negative status effects [vanilla only for now], remove them:
+            if (Reliquary.CONFIG.getBool(Names.phoenix_down, "remove_negative_status"))
+                removeNegativeStatusEffects(player);
+
+            // added bonus, has some extra effects when drowning or dying to lava
+            if (event.source == DamageSource.lava && Reliquary.CONFIG.getBool(Names.phoenix_down, "give_temporary_fire_resistance_if_fire_damage_killed_you"))
+                player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 200, 0));
+            if (event.source == DamageSource.drown && Reliquary.CONFIG.getBool(Names.phoenix_down, "give_temporary_water_breathing_if_drowning_killed_you")) {
+                player.setAir(10);
+                player.addPotionEffect(new PotionEffect(Potion.waterBreathing.id, 200, 0));
+            }
+
+            // give the player temporary resistance to other damages.
+            if (Reliquary.CONFIG.getBool(Names.phoenix_down, "give_temporary_damage_resistance"))
+                player.addPotionEffect(new PotionEffect(Potion.resistance.id, 200, 1));
+
+            // give the player temporary regeneration.
+            if (Reliquary.CONFIG.getBool(Names.phoenix_down, "give_temporary_regeneration"))
+                player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 200, 1));
+
+            // particles, lots of them
+            spawnPhoenixResurrectionParticles(player);
+
+            event.setCanceled(true);
         }
-
-        // give the player temporary resistance to other damages.
-        player.addPotionEffect(new PotionEffect(Potion.resistance.id, 200, 1));
-
-        // give the player temporary regeneration.
-        player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 200, 1));
-
-        // if the player had any negative status effects [vanilla only for now],
-        // remove them:
-        removeNegativeStatusEffects(player);
-
-        // particles, lots of them
-        spawnPhoenixResurrectionParticles(player);
     }
 
     public void spawnPhoenixResurrectionParticles(EntityPlayer player) {
@@ -274,7 +282,7 @@ public class CommonEventHandler {
     }
 
     public void handleAngelicFeatherCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.phoenix_down)) && !playerHasItem(player, ContentHandler.getItem(Names.angelic_feather)))
+        if (!playerHasItem(player, ContentHandler.getItem(Names.angelic_feather)))
             return;
         if (!(event.source == DamageSource.fall))
             return;
@@ -282,11 +290,7 @@ public class CommonEventHandler {
             return;
 
         if (player.fallDistance > 0.0F) {
-//            if (player.getFoodStats().getSaturationLevel() < event.ammount * 0.5F)
-//                return;
-            // trades fallDistance for exhaustion (which causes the hunger bar
-            // to be depleted).
-            float hungerDamage = 0.5F * event.ammount;
+            float hungerDamage = event.ammount * ((float)Reliquary.CONFIG.getInt(Names.angelic_feather, "hunger_cost_percent") / 100F);
             player.addExhaustion(hungerDamage);
             player.getFoodStats().onUpdate(player);
         }
@@ -299,12 +303,9 @@ public class CommonEventHandler {
         if (player.getFoodStats().getFoodLevel() <= 0)
             return;
 
-        // player absorbs drowning damage in exchange for hunger, at a
-        // relatively low rate.
+        // player absorbs drowning damage in exchange for hunger, at a relatively low rate.
         if (event.source == DamageSource.drown) {
-//            if (player.getFoodStats().getSaturationLevel() < event.ammount * 0.5F)
-//                return;
-            float hungerDamage = 0.25F * event.ammount;
+            float hungerDamage = event.ammount * ((float)Reliquary.CONFIG.getInt(Names.kraken_shell, "hunger_cost_percent") / 100F);
             player.addExhaustion(hungerDamage);
             event.setCanceled(true);
         }
@@ -332,8 +333,7 @@ public class CommonEventHandler {
         return false;
     }
 
-    // pretty much the same as above, specific to angelheart vial. finds it and
-    // breaks one.
+    // pretty much the same as above, specific to angelheart vial. finds it and breaks one.
     private void decreaseItemByOne(EntityPlayer player, Item item) {
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
             if (player.inventory.mainInventory[slot] == null)

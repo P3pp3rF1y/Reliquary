@@ -50,7 +50,7 @@ public class ItemTwilightCloak extends ItemBase {
         int playerY = MathHelper.floor_double(player.boundingBox.minY);
         int playerZ = MathHelper.floor_double(player.posZ);
 
-        if (player.worldObj.getBlockLightValue(playerX, playerY, playerZ) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "maxLightLevel"))
+        if (player.worldObj.getBlockLightValue(playerX, playerY, playerZ) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "max_light_level"))
             return;
         // checks if the effect would do anything.
         PotionEffect quickInvisibility = new PotionEffect(Potion.invisibility.id, 2, 0, true);

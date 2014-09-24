@@ -73,6 +73,14 @@ public class ItemHeroMedallion extends ItemToggleable {
         this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getShort("experience", stack))), stack, list);
     }
 
+    private int getExperienceMinimum() {
+        return Reliquary.CONFIG.getInt(Names.hero_medallion, "experience_level_minimum");
+    }
+
+    private int getExperienceMaximum() {
+        return Reliquary.CONFIG.getInt(Names.hero_medallion, "experience_level_maximum");
+    }
+
     // this drains experience beyond level specified in configs
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
@@ -82,7 +90,7 @@ public class ItemHeroMedallion extends ItemToggleable {
             EntityPlayer player = (EntityPlayer) e;
             // in order to make this stop at a specific level, we will need to do
             // a preemptive check for a specific level.
-            if ((player.experienceLevel > Reliquary.CONFIG.getInt(Names.hero_medallion, "xpLevelCap") || player.experience > 0F) && getExperience(ist) < Integer.MAX_VALUE) {
+            if ((player.experienceLevel > getExperienceMinimum() || player.experience > 0F) && getExperience(ist) < Integer.MAX_VALUE) {
                 decreasePlayerExperience(player);
                 increaseMedallionExperience(ist);
             }
@@ -91,7 +99,7 @@ public class ItemHeroMedallion extends ItemToggleable {
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int unadjustedCount) {
-        if (player.experienceLevel < Reliquary.CONFIG.getInt(Names.hero_medallion, "xpLevelCap")) {
+        if (player.experienceLevel < getExperienceMaximum()) {
             if (getExperience(ist) > 0) {
                 increasePlayerExperience(player);
                 decreaseMedallionExperience(ist);
@@ -103,7 +111,7 @@ public class ItemHeroMedallion extends ItemToggleable {
     // using the method in the player class, might be worth testing
     // (player.addExperience(-1)?)
     public void decreasePlayerExperience(EntityPlayer player) {
-        if (player.experience - (1.0F / (float) player.xpBarCap()) <= 0 && player.experienceLevel > Reliquary.CONFIG.getInt(Names.hero_medallion, "xpLevelCap")) {
+        if (player.experience - (1.0F / (float) player.xpBarCap()) <= 0 && player.experienceLevel > getExperienceMinimum()) {
             decreasePlayerLevel(player);
             return;
         }

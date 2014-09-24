@@ -85,7 +85,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
                     if (!player.worldObj.isAirBlock(x, y, z))
                         continue;
                     int lightLevel = player.worldObj.getBlockLightValue(x, y, z);
-                    if (lightLevel > Reliquary.CONFIG.getInt(Names.lantern_of_paranoia, "minLightLevel"))
+                    if (lightLevel > Reliquary.CONFIG.getInt(Names.lantern_of_paranoia, "min_light_level"))
                         continue;
                     tryToPlaceTorchAround(ist, x, y, z, player, world);
                 }

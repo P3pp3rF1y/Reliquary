@@ -73,7 +73,7 @@ public class ItemFortuneCoin extends ItemBauble {
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int i, boolean f) {
-        if (!Reliquary.CONFIG.getBool(Names.fortune_coin, "disableAudio"))
+        if (!disabledAudio())
             if (NBTHelper.getShort("soundTimer", stack) > 0) {
                 if (NBTHelper.getShort("soundTimer", stack) % 2 == 0) {
                     world.playSoundAtEntity(entity, "random.orb", 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
@@ -130,7 +130,7 @@ public class ItemFortuneCoin extends ItemBauble {
         double y = player.posY - player.height / 2F;
         double z = player.posZ + player.getLookVec().zCoord * 0.2D;
         item.setPosition(x, y, z);
-        if (!Reliquary.CONFIG.getBool(Names.fortune_coin, "disableAudio")) {
+        if (!disabledAudio()) {
             player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
         }
     }
@@ -186,7 +186,7 @@ public class ItemFortuneCoin extends ItemBauble {
         if (player.isSneaking()) {
             player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
         } else {
-            if (!Reliquary.CONFIG.getBool(Names.fortune_coin, "disableAudio")) {
+            if (!disabledAudio()) {
                 NBTHelper.setShort("soundTimer", stack, 6);
             }
             stack.setItemDamage(stack.getItemDamage() == 0 ? 1 : 0);
@@ -202,5 +202,9 @@ public class ItemFortuneCoin extends ItemBauble {
     @Override
     public void onWornTick(ItemStack stack, EntityLivingBase player) {
         this.onUpdate(stack, player.worldObj, player, 0, false);
+    }
+
+    private boolean disabledAudio() {
+        return Reliquary.CONFIG.getBool(Names.fortune_coin, "disable_audio");
     }
 }

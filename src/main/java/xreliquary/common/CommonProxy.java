@@ -25,6 +25,7 @@ import xreliquary.lib.Reference;
 import xreliquary.util.alkahestry.Alkahestry;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CommonProxy {
@@ -56,19 +57,66 @@ public class CommonProxy {
     }
 
     public void initOptions() {
-        Reliquary.CONFIG.require(Names.fortune_coin, "disableAudio", new ConfigReference(false));
-        Reliquary.CONFIG.require(Names.emperor_chalice, "multiplier", new ConfigReference(4).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.alkahestry_tome, "redstoneLimit", new ConfigReference(256).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.hero_medallion, "xpLevelCap", new ConfigReference(30).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.hero_medallion, "xpLevelMin", new ConfigReference(0).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.twilight_cloak, "maxLightLevel", new ConfigReference(4).setMinimumValue(0).setMaximumValue(15));
-        Reliquary.CONFIG.require(Names.lantern_of_paranoia, "minLightLevel", new ConfigReference(8).setMinimumValue(0).setMaximumValue(15));
-        Reliquary.CONFIG.require(Names.handgun, "hudPosition", new ConfigReference(3).setMinimumValue(0).setMaximumValue(4));
+        //hero's medallion config
+        Reliquary.CONFIG.require(Names.hero_medallion, "experience_level_maximum", new ConfigReference(30).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.hero_medallion, "experience_level_minimum", new ConfigReference(0).setMinimumValue(0));
+
+        //sojourners staff configs
         List<String> torches = ImmutableList.of("minecraft:torch");
         Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ConfigReference(torches));
-        Reliquary.CONFIG.require(Names.destruction_catalyst, "mundane_blocks", new ConfigReference(new ArrayList<String>(ItemDestructionCatalyst.ids)));
-        Reliquary.CONFIG.require(Names.destruction_catalyst, "cost", new ConfigReference(3).setMinimumValue(0));
 
+        //destruction catalyst configs
+        Reliquary.CONFIG.require(Names.destruction_catalyst, "mundane_blocks", new ConfigReference(new ArrayList<String>(ItemDestructionCatalyst.ids)));
+        Reliquary.CONFIG.require(Names.destruction_catalyst, "gunpowder_cost", new ConfigReference(3).setMinimumValue(0));
+
+        //altar configs
+        Reliquary.CONFIG.require(Names.altar, "redstone_cost", new ConfigReference(3).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.altar, "time_in_minutes", new ConfigReference(20).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.altar, "maximum_time_variance_in_minutes", new ConfigReference(5).setMinimumValue(0));
+
+        //hunger-consuming damage-absorbing items
+        Reliquary.CONFIG.require(Names.dragon_claws, "hunger_cost_percent", new ConfigReference(10).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.claws_of_the_firedrinker, "hunger_cost_percent", new ConfigReference(5).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.angelic_feather, "hunger_cost_percent", new ConfigReference(50).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.phoenix_down, "hunger_cost_percent", new ConfigReference(25).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.kraken_shell, "hunger_cost_percent", new ConfigReference(25).setMinimumValue(0));
+
+        //angelheart vial and phoenix down effect enablers
+        Reliquary.CONFIG.require(Names.angelheart_vial, "heal_percentage_of_max_life", new ConfigReference(25));
+        Reliquary.CONFIG.require(Names.angelheart_vial, "remove_negative_status", new ConfigReference(true));
+        Reliquary.CONFIG.require(Names.phoenix_down, "heal_percentage_of_max_life", new ConfigReference(100));
+        Reliquary.CONFIG.require(Names.phoenix_down, "remove_negative_status", new ConfigReference(true));
+        Reliquary.CONFIG.require(Names.phoenix_down, "give_temporary_damage_resistance", new ConfigReference(true));
+        Reliquary.CONFIG.require(Names.phoenix_down, "give_temporary_regeneration", new ConfigReference(true));
+        Reliquary.CONFIG.require(Names.phoenix_down, "give_temporary_fire_resistance_if_fire_damage_killed_you", new ConfigReference(true));
+        Reliquary.CONFIG.require(Names.phoenix_down, "give_temporary_water_breathing_if_drowning_killed_you", new ConfigReference(true));
+
+        //lilypad of fertility configs
+        Reliquary.CONFIG.require(Names.lilypad, "time_between_ticks_percent", new ConfigReference(100).setMinimumValue(2));
+        Reliquary.CONFIG.require(Names.lilypad, "tile_range", new ConfigReference(4).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.lilypad, "full_potency_range", new ConfigReference(0).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.lilypad, "full_potency_threshold", new ConfigReference(0).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.lilypad, "full_potency_offset", new ConfigReference(7).setMinimumValue(0));
+
+
+        //misc configs
+        Reliquary.CONFIG.require(Names.fortune_coin, "disable_audio", new ConfigReference(false));
+        Reliquary.CONFIG.require(Names.emperor_chalice, "hunger_satiation_multiplier", new ConfigReference(4).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.alkahestry_tome, "redstone_limit", new ConfigReference(256).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.twilight_cloak, "max_light_level", new ConfigReference(4).setMinimumValue(0).setMaximumValue(15));
+        Reliquary.CONFIG.require(Names.lantern_of_paranoia, "min_light_level", new ConfigReference(8).setMinimumValue(0).setMaximumValue(15));
+        Reliquary.CONFIG.require(Names.handgun, "hud_position", new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+
+        Reliquary.CONFIG.save();
+    }
+
+    public void initRecipeDisablers() {
+        //this is the substring(5) version of the unlocalized name!!!
+        List<String> sortedObjectNames = ContentHandler.registeredObjectNames.subList(1, ContentHandler.registeredObjectNames.size());
+        Collections.sort(sortedObjectNames);
+        for (int i = 0; i < sortedObjectNames.size(); i++) {
+            Reliquary.CONFIG.require(Names.recipe_enabled, sortedObjectNames.get(i), new ConfigReference(true));
+        }
         Reliquary.CONFIG.save();
     }
 
