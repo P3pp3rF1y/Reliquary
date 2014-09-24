@@ -2,6 +2,14 @@ itemGroup.xreliquary=Reliquary
 
 gui.tome.text=Книга Алкагеста;позволяет Вам создавать;разные ресурсы из;красного камня.
 
+tooltip.absorb={{!colors.light_purple}}ПКМ, чтобы переключить автопоглащение.
+tooltip.absorb_active={{!colors.purple}}Автомагически поглощает {{item}}{{!colors.purple}}.
+tooltip.absorb_tear={{!colors.purple}}Всегда оставляет стак предметов в инвентаре.
+
+tooltip.tear=Сейчас содержит {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+tooltip.tear_empty=Ничего не содержит.
+tooltip.tear_quantity=Сейчас содержит {{!colors.yellow}}{{amount}}{{!colors.light_gray}} {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+
 tile.altar_idle.name=Алтарь света
 tile.altar.name=Алтарь света
 tile.lilypad.name=Кувшинка плодородия
@@ -11,7 +19,7 @@ tile.interdiction_torch.tooltip=Кажется отпугивает монстр
 tile.apothecary_cauldron.name=Фармацевтический котёл
 tile.apothecary_cauldron.tooltip=Используется для варки зелий, со стилем.
 tile.apothecary_mortar.name=Фармацевтический ступа
-tile.apothecary_mortar.tooltip=Используется для измельчения зелий;эссенции, со стилем.
+tile.apothecary_mortar.tooltip=Используется для измельчения эссенции;зелий, со стилем.
 
 item.handgun.name=Пистолет охотника
 item.handgun.tooltip=За великую справедливость.;ПКМ, чтобы стрелять, удерживайте, чтобы перезарядить.
@@ -93,7 +101,6 @@ item.wraith_eye.tooltip=ПКМ призрачным глазом привязы�
 item.void_tear_empty.name=Пустая пустотная слеза
 item.void_tear_empty.tooltip=Пустая пустотная слеза; ПКМ поглощает предметы инвентаря.
 item.void_tear.name=Пустотная слеза
-item.void_tear.tooltip=Эта пустотная слеза;содержит {{holds}}.
 item.hero_medallion.name=Медальон героя
 item.hero_medallion.tooltip={{!green}}Опыт: {{experience}};Когда Вам просто необходимо;куда-то положить;весь этот опыт.
 item.ender_staff.name=Посох Края
@@ -110,18 +117,26 @@ item.dragon_claws.name=Драконьи когти
 item.dragon_claws.tooltip=Поглощают урон от огня,;расходуя голод.
 item.claws_of_the_firedrinker.name={{!red}}Когти огнеглотателя
 item.claws_of_the_firedrinker.tooltip=Потребляет урон от огня (ням!);поглощает повреждения лавы,;расходуя голод.
-item.squid_beak.name=Squid Beak
+item.squid_beak.name=Клюв спрута
 item.squid_beak.tooltip=Где-то там;очень грустный, очень;безротый спрут.
 item.kraken_shell_fragment.name=Фрагмент панциря Кракена
-item.kraken_shell_fragment.tooltip=A seaworthy monster;beak, crafted into;a smooth shell.
+item.kraken_shell_fragment.tooltip=Клюв морского;монстра, созданный в;гладкую оболочку.
 item.kraken_shell.name=Панцирь Кракена
 item.kraken_shell.tooltip=Повышает подвижность;в воде.;Поглощает урон от утопления,;расходуя голод.
 item.angelheart_vial.name=Флакон с ангельским сердцем
 item.angelheart_vial.tooltip=Воскрешает Вас один раз;и ломается.
-item.elsewhere_flask.name=Elsewhere Flask
+item.elsewhere_flask.name=Универсальная фляга
 item.elsewhere_flask.tooltip=Одновременно впитывает зелья в себя.{{contents}}
 item.serpent_staff.name={{!green}}Посох Змея
 item.serpent_staff.tooltip=All that nasty stuff;from a Kraken's spit,;thrown at your enemies.
+item.witch_hat.name={{!colors.yellow}}Шляпа ведьмы
+item.witch_hat.tooltip=Всё, что осталось от этой отвратительной ведьмы.;Интересно, смогу ли я использовать её как-то.
+item.infernal_tear_empty.name={{!colors.yellow}}Пустая адская слеза
+item.infernal_tear_empty.tooltip=Пустая адская слеза, ПКМ;поглощает основной предмет инвентаря.
+item.infernal_tear.name={{!colors.red}}Адская слеза
+item.infernal_tear.tooltip=Сжигает предметы в их сырую эссенцию.;Может быть хорошим ингредиентом для зельеварения.
+item.lantern_of_paranoia.name={{!colors.yellow}}Фонарь паранойи
+item.lantern_of_paranoia.tooltip=Автоматически ставит факелы в;неосвещённой территории.
 
 item.potion_0.name=Сгущённая брызгающая сыворотка
 item.potion_1.name=Зелье любви #9
@@ -182,7 +197,7 @@ item.potion_24.tooltip=Сопротивление огню и;урону в те
 item.potion_25.tooltip=Повышение силы и скор. копания;в течение 3 минут.
 item.potion_26.tooltip=Повышение скорости и прыжка;в течение 3 минут.
 item.potion_27.tooltip=Лечит, регенерирует и;исцеляет любую хворь.
-item.potion_28.tooltip=Lets you take;to the shadows.
+item.potion_28.tooltip=Отправляет Вас;в тени.
 item.potion_29.tooltip=Это флакон;простой воды.
 
 potion.haste.name=Копание
