@@ -112,8 +112,8 @@ public class CommonProxy {
 
     public void initRecipeDisablers() {
         //this is the substring(5) version of the unlocalized name!!!
-        List<String> sortedObjectNames = ContentHandler.registeredObjectNames.subList(1, ContentHandler.registeredObjectNames.size());
-        Collections.sort(sortedObjectNames);
+        List<String> sortedObjectNames = ContentHandler.registeredObjectNames.subList(0, ContentHandler.registeredObjectNames.size());
+        java.util.Collections.sort(sortedObjectNames);
         for (int i = 0; i < sortedObjectNames.size(); i++) {
             Reliquary.CONFIG.require(Names.recipe_enabled, sortedObjectNames.get(i), new ConfigReference(true));
         }

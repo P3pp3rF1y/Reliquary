@@ -3,6 +3,7 @@ package xreliquary.init;
 import cpw.mods.fml.common.registry.GameRegistry;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.items.ItemToggleable;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -52,16 +53,16 @@ public class XRRecipes {
     //this version of the addRecipe method checks first to see if the recipe is disabled in our automated recipe-disabler config
     //if any component of the item is in the recipe disabler list, it will ALSO block the recipe automatically.
     public static void addRecipe(boolean isShapeless, ItemStack result, Object... params) {
-        boolean enabled = Reliquary.CONFIG.getKeys(Names.recipe_enabled).contains(result.getUnlocalizedName().substring(5)) && Reliquary.CONFIG.getBool(Names.recipe_enabled, result.getUnlocalizedName().substring(5));
+        boolean enabled = Reliquary.CONFIG.getGroup(Names.recipe_enabled).containsKey(ContentHelper.getIdent(result.getItem())) && Reliquary.CONFIG.getBool(Names.recipe_enabled, ContentHelper.getIdent(result.getItem()));
         if (!enabled) return;
         for (Object obj : params) {
             String unlocalizedName = null;
             if (obj instanceof Block) {
-                unlocalizedName = ((Block) obj).getUnlocalizedName().substring(5);
+                unlocalizedName = ContentHelper.getIdent((Block) obj);
             } else if(obj instanceof Item) {
-                unlocalizedName = ((Item) obj).getUnlocalizedName().substring(5);
+                unlocalizedName = ContentHelper.getIdent((Item) obj);
             } else if(obj instanceof ItemStack) {
-                unlocalizedName = ((ItemStack)obj).getUnlocalizedName().substring(5);
+                unlocalizedName = ContentHelper.getIdent(((ItemStack)obj).getItem());
             }
             if (!Reliquary.CONFIG.getKeys(Names.recipe_enabled).contains(unlocalizedName))
                 continue;
@@ -80,7 +81,7 @@ public class XRRecipes {
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_redstone", AlkahestryRedstoneRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
 
-        addRecipe(false, ((ItemToggleable) ContentHandler.getItem(Names.alkahestry_tome)).newItemStack(), new Object[]{Items.book, ContentHandler.getItem(Names.witch_hat), Items.magma_cream, Items.gold_ingot, Blocks.glowstone, Items.nether_wart, new ItemStack(Items.skull, 1, 1), Items.ghast_tear, Items.lava_bucket});
+        addRecipe(true, ((ItemToggleable) ContentHandler.getItem(Names.alkahestry_tome)).newItemStack(), new Object[]{Items.book, ContentHandler.getItem(Names.witch_hat), Items.magma_cream, Items.gold_ingot, Blocks.glowstone, Items.nether_wart, new ItemStack(Items.skull, 1, 1), Items.ghast_tear, Items.lava_bucket});
 
         addRecipe(false, new ItemStack(ContentHandler.getBlock(Names.altar_idle), 1), "olo", "lel", "olo", 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'e', Items.emerald);
         addRecipe(false, new ItemStack(ContentHandler.getBlock(Names.lilypad), 1), "www", "wlw", "www", 'w', XRRecipes.potion(Reference.FERTILIZER_META), 'l', Blocks.waterlily);

@@ -62,6 +62,10 @@ public class ClientEventHandler {
         }
     }
 
+    public static int getTime() {
+        return time;
+    }
+
 
     public void handleTickIncrement(TickEvent.RenderTickEvent event) {
         // handles the color shifting of the twilight cloak, until we can throw
@@ -188,10 +192,6 @@ public class ClientEventHandler {
         tessellator.addVertexWithUV(x + width, y, zLevel, icon.getMaxU(), icon.getMinV());
         tessellator.addVertexWithUV(x, y, zLevel, icon.getMinU(), icon.getMinV());
         tessellator.draw();
-    }
-
-    public static int getTime() {
-        return time;
     }
 
 }
