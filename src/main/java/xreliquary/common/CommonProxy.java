@@ -106,6 +106,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.twilight_cloak, "max_light_level", new ConfigReference(4).setMinimumValue(0).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.lantern_of_paranoia, "min_light_level", new ConfigReference(8).setMinimumValue(0).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.handgun, "hud_position", new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.wraith_eye, "cost", new ConfigReference(1).setMinimumValue(0));
 
         Reliquary.CONFIG.save();
     }

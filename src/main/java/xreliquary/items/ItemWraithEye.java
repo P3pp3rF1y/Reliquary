@@ -74,7 +74,7 @@ public class ItemWraithEye extends ItemSalamanderEye {
         } else if (eye.getTagCompound() != null && ContentHelper.areBlocksEqual(world.getBlock(eye.getTagCompound().getInteger("nodeX" + getWorld(player)), eye.getTagCompound().getInteger("nodeY" + getWorld(player)), eye.getTagCompound().getInteger("nodeZ" + getWorld(player))), ContentHandler.getBlock(Names.wraith_node))) {
 
             if (canTeleport(world, eye.getTagCompound().getInteger("nodeX" + getWorld(player)), eye.getTagCompound().getInteger("nodeY" + getWorld(player)), eye.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
-                if (InventoryHelper.consumeItem(new ItemStack(Items.ender_pearl), player)) {
+                if (InventoryHelper.consumeItem(new ItemStack(Items.ender_pearl), player, Reliquary.CONFIG.getInt(Names.wraith_eye, "cost"))) {
                     teleportPlayer(world, eye.getTagCompound().getInteger("nodeX" + getWorld(player)), eye.getTagCompound().getInteger("nodeY" + getWorld(player)), eye.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
                     setCooldown(eye);
                 }
