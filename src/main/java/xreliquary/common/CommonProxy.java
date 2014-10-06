@@ -62,7 +62,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.hero_medallion, "experience_level_minimum", new ConfigReference(0).setMinimumValue(0));
 
         //sojourners staff configs
-        List<String> torches = ImmutableList.of("minecraft:torch", "minecraft:dirt");
+        List<String> torches = ImmutableList.of();
         Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ConfigReference(torches));
         Reliquary.CONFIG.require(Names.sojourner_staff, "max_capacity_per_item_type", new ConfigReference(1500).setMinimumValue(1));
         Reliquary.CONFIG.require(Names.sojourner_staff, "hud_position", new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));

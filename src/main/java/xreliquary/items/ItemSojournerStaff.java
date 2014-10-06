@@ -79,9 +79,15 @@ public class ItemSojournerStaff extends ItemToggleable {
         List<String> torches = (List<String>) Reliquary.CONFIG.get(Names.sojourner_staff, "torches");
         List<Item> items = new ArrayList<Item>();
 
+        //default to always work with vanilla torches
+        ItemStack vanillaTorch = new ItemStack(Blocks.torch, 1, 0);
+        items.add(vanillaTorch.getItem());
+
         for (String torch : torches) {
-            items.add(ContentHandler.getItem(torch));
+            if (!items.contains(ContentHandler.getItem(torch)))
+                items.add(ContentHandler.getItem(torch));
         }
+
         for (Item item : items) {
             if (!isInternalStorageFullOfItem(ist, item) && InventoryHelper.consumeItem(item, player)) {
                 addItemToInternalStorage(ist, item);
