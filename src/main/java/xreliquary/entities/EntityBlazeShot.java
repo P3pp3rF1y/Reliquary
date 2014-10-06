@@ -3,6 +3,10 @@ package xreliquary.entities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -33,6 +37,11 @@ public class EntityBlazeShot extends EntityShotBase {
     }
 
     @Override
+    protected DamageSource getDamageSource() {
+        return super.getDamageSource().setFireDamage();
+    }
+
+    @Override
     void onImpact(MovingObjectPosition mop) {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
             if (mop.entityHit == shootingEntity)
@@ -41,15 +50,48 @@ public class EntityBlazeShot extends EntityShotBase {
                 return;
             this.onImpact((EntityLivingBase)mop.entityHit);
         } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            if (shootingEntity == null) return;
+
             this.groundImpact(mop.sideHit);
+
+            int x = mop.blockX;
+            int y = mop.blockY;
+            int z = mop.blockZ;
+            switch (mop.sideHit) {
+                case (0):
+                    y--;
+                    break;
+                case (1):
+                    y++;
+                    break;
+                case (2):
+                    z--;
+                    break;
+                case (3):
+                    z++;
+                    break;
+                case (4):
+                    x--;
+                    break;
+                case (5):
+                    x++;
+                    break;
+            }
+            if (shootingEntity.canPlayerEdit(x, y, z, mop.sideHit, new ItemStack(Items.flint_and_steel, 1, 0)))
+            {
+                if (this.worldObj.isAirBlock(x, y, z))
+                {
+                    worldObj.setBlock(x, y, z, Blocks.fire);
+                }
+            }
         }
     }
 
     @Override
     void onImpact(EntityLivingBase mop) {
         if (mop != shootingEntity || ticksInAir > 3) {
-            doDamage(mop);
             mop.setFire(40);
+            doDamage(mop);
         }
         spawnHitParticles("flame", 8);
         this.setDead();
@@ -75,6 +117,7 @@ public class EntityBlazeShot extends EntityShotBase {
     int getDamageOfShot(EntityLivingBase mop) {
         // they're not COMPLETELY useless against fireImmune mobs, just mostly
         // useless.
+        //this probably isn't gonna work now the bullets do purely fire damage.
         return mop.isImmuneToFire() ? 2 : (10 + d12());
     }
 
@@ -102,5 +145,7 @@ public class EntityBlazeShot extends EntityShotBase {
                     break;
             }
         }
+
+
     }
 }

@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import baubles.api.BaubleType;
+import baubles.api.BaublesApi;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;

@@ -4,6 +4,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.items.ItemToggleable;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,8 +16,10 @@ import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.util.NBTHelper;
 
+import java.util.List;
+
 @ContentInit
-public class ItemMidasTouchstone extends ItemBase {
+public class ItemMidasTouchstone extends ItemToggleable {
 
     public ItemMidasTouchstone() {
         super(Names.midas_touchstone);
@@ -32,25 +36,24 @@ public class ItemMidasTouchstone extends ItemBase {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack, int pass) {
-        return stack.getItemDamage() != 0;
-    }
-
-    @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
         if (world.isRemote)
             return;
-        EntityPlayer player = null;
+        EntityPlayer player;
         if (e instanceof EntityPlayer) {
             player = (EntityPlayer) e;
         } else
             return;
-        if (ist.getItemDamage() == 0 || ist.getItemDamage() > 4) {
-            if (InventoryHelper.consumeItem(new ItemStack(Items.glowstone_dust), player)) {
-                ist.setItemDamage(ist.getItemDamage() == 0 ? 251 : ist.getItemDamage() - 4);
+
+        //don't drain glowstone if it isn't activated.
+        if (this.isEnabled(ist)) {
+            if (ist.getItemDamage() == 0 || ist.getItemDamage() > getGlowStoneWorth()) {
+                if (InventoryHelper.consumeItem(new ItemStack(Items.glowstone_dust), player)) {
+                    ist.setItemDamage(ist.getItemDamage() == 0 ? (ist.getMaxDamage() - 1) - getGlowStoneWorth() : ist.getItemDamage() - getGlowStoneWorth());
+                }
             }
         }
+
         if (getCooldown(ist) == 0) {
             doRepairAndDamageTouchstone(ist, player);
         } else {
@@ -67,6 +70,9 @@ public class ItemMidasTouchstone extends ItemBase {
     }
 
     private void doRepairAndDamageTouchstone(ItemStack ist, EntityPlayer player) {
+        //list of customizable items added through configs that can be repaired by the touchstone.
+        List<String> goldItems = (List<String>) Reliquary.CONFIG.get(Names.midas_touchstone, "gold_items");
+
         for (int slot = 0; slot < player.inventory.armorInventory.length; slot++) {
             if (player.inventory.armorInventory[slot] == null) {
                 continue;
@@ -75,7 +81,7 @@ public class ItemMidasTouchstone extends ItemBase {
                 continue;
             }
             ItemArmor armor = (ItemArmor) player.inventory.armorInventory[slot].getItem();
-            if (armor.getArmorMaterial() != ItemArmor.ArmorMaterial.GOLD) {
+            if (armor.getArmorMaterial() != ItemArmor.ArmorMaterial.GOLD && !goldItems.contains(ContentHelper.getIdent(armor))) {
                 continue;
             }
             if (player.inventory.armorInventory[slot].getItemDamage() <= 0) {
@@ -91,7 +97,7 @@ public class ItemMidasTouchstone extends ItemBase {
             }
             if (player.inventory.mainInventory[slot].getItem() instanceof ItemSword) {
                 ItemSword sword = (ItemSword) player.inventory.mainInventory[slot].getItem();
-                if (sword.getToolMaterialName() != "GOLD") {
+                if (sword.getToolMaterialName() != ItemSword.ToolMaterial.GOLD.name() && !goldItems.contains(ContentHelper.getIdent(sword))) {
                     continue;
                 }
                 if (player.inventory.mainInventory[slot].getItemDamage() <= 0) {
@@ -102,10 +108,21 @@ public class ItemMidasTouchstone extends ItemBase {
                 }
             } else if (player.inventory.mainInventory[slot].getItem() instanceof ItemTool) {
                 ItemTool tool = (ItemTool) player.inventory.mainInventory[slot].getItem();
-                if (tool.getToolMaterialName() != "GOLD") {
+                if (tool.getToolMaterialName() != ItemSword.ToolMaterial.GOLD.name()  && !goldItems.contains(ContentHelper.getIdent(tool))) {
                     continue;
                 }
                 if (player.inventory.mainInventory[slot].getItemDamage() <= 0) {
+                    continue;
+                }
+                if (decrementTouchStoneCharge(ist)) {
+                    player.inventory.mainInventory[slot].setItemDamage(player.inventory.mainInventory[slot].getItemDamage() - 1);
+                }
+            } else {
+                Item item = player.inventory.mainInventory[slot].getItem();
+                if (!goldItems.contains(ContentHelper.getIdent(item))) {
+                    continue;
+                }
+                if (player.inventory.mainInventory[slot].getItemDamage() <= 0 || !item.isDamageable()) {
                     continue;
                 }
                 if (decrementTouchStoneCharge(ist)) {
@@ -121,10 +138,18 @@ public class ItemMidasTouchstone extends ItemBase {
     }
 
     private boolean decrementTouchStoneCharge(ItemStack ist) {
-        if (ist.getItemDamage() != 0 && ist.getItemDamage() < ist.getMaxDamage() - 1) {
-            ist.setItemDamage(ist.getItemDamage() + 1);
+        if (ist.getItemDamage() != 0 && ist.getItemDamage() < ist.getMaxDamage() - getGlowStoneCost()) {
+            ist.setItemDamage(ist.getItemDamage() + getGlowStoneCost());
             return true;
         }
         return false;
+    }
+
+    private int getGlowStoneCost() {
+        return Reliquary.CONFIG.getInt(Names.midas_touchstone, "glowstone_cost");
+    }
+
+    private int getGlowStoneWorth() {
+        return Reliquary.CONFIG.getInt(Names.midas_touchstone, "glowstone_worth");
     }
 }

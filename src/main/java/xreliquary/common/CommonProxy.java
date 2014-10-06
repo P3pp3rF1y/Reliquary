@@ -62,8 +62,22 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.hero_medallion, "experience_level_minimum", new ConfigReference(0).setMinimumValue(0));
 
         //sojourners staff configs
-        List<String> torches = ImmutableList.of("minecraft:torch");
+        List<String> torches = ImmutableList.of("minecraft:torch", "minecraft:dirt");
         Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ConfigReference(torches));
+        Reliquary.CONFIG.require(Names.sojourner_staff, "max_capacity_per_item_type", new ConfigReference(1500).setMinimumValue(1));
+        Reliquary.CONFIG.require(Names.sojourner_staff, "hud_position", new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+
+        //ender staff configs
+        Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_cast_cost", new ConfigReference(1).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_node_warp_cost", new ConfigReference(1).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_worth", new ConfigReference(1).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.ender_staff, "node_warp_cast_time", new ConfigReference(32).setMinimumValue(10));
+
+        //midas touchstone configs
+        List<String> goldItems = ImmutableList.of();
+        Reliquary.CONFIG.require(Names.midas_touchstone, "gold_items", new ConfigReference(goldItems));
+        Reliquary.CONFIG.require(Names.midas_touchstone, "glowstone_cost", new ConfigReference(1).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.midas_touchstone, "glowstone_worth", new ConfigReference(4).setMinimumValue(0));
 
         //destruction catalyst configs
         Reliquary.CONFIG.require(Names.destruction_catalyst, "mundane_blocks", new ConfigReference(new ArrayList<String>(ItemDestructionCatalyst.ids)));
@@ -98,7 +112,6 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.lilypad, "full_potency_threshold", new ConfigReference(0).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.lilypad, "full_potency_offset", new ConfigReference(7).setMinimumValue(0));
 
-
         //misc configs
         Reliquary.CONFIG.require(Names.fortune_coin, "disable_audio", new ConfigReference(false));
         Reliquary.CONFIG.require(Names.emperor_chalice, "hunger_satiation_multiplier", new ConfigReference(4).setMinimumValue(0));
@@ -106,7 +119,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.twilight_cloak, "max_light_level", new ConfigReference(4).setMinimumValue(0).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.lantern_of_paranoia, "min_light_level", new ConfigReference(8).setMinimumValue(0).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.handgun, "hud_position", new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require(Names.wraith_eye, "cost", new ConfigReference(1).setMinimumValue(0));
+        //Reliquary.CONFIG.require(Names.wraith_eye, "cost", new ConfigReference(1).setMinimumValue(0));
 
         Reliquary.CONFIG.save();
     }

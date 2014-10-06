@@ -153,14 +153,17 @@ public class XRRecipes {
         // cross of mercy
         addRecipe(false, new ItemStack(ContentHandler.getItem(Names.mercy_cross), 1), new Object[]{"wgw", "glg", "wgw", 'w', ContentHandler.getItem(Names.glowing_water), 'g', Items.gold_ingot, 'l', Items.leather});
 
-        // grenade
+        // holy hand grenade
         addRecipe(false, new ItemStack(ContentHandler.getItem(Names.holy_hand_grenade), 4), new Object[]{"wgw", "gtg", "wgw", 'w', ContentHandler.getItem(Names.glowing_water), 'g', Items.gold_nugget, 't', Blocks.tnt});
 
         // sojourner's staff
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.sojourner_staff), 1), new Object[]{"cgc", "gbg", "wgw", 'w', ContentHandler.getItem(Names.glowing_water), 'g', Items.gold_ingot, 'b', Items.blaze_rod, 'c', Items.magma_cream});
+        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.sojourner_staff), 1), new Object[]{"cvc", "gbg", "wgw", 'w', ContentHandler.getItem(Names.glowing_water), 'g', Items.gold_ingot, 'b', Items.blaze_rod, 'c', Items.magma_cream, 'v', ((ItemToggleable) ContentHandler.getItem(Names.void_tear)).newItemStack() });
+
+        // lantern of paranoia
+        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.lantern_of_paranoia), 1), new Object[] {"ici", "gfg", "ivi", 'i', Items.iron_ingot, 'c', Items.magma_cream, 'g', Blocks.glass, 'f', Items.flint_and_steel, 'v', ((ItemToggleable) ContentHandler.getItem(Names.void_tear)).newItemStack() });
 
         // touchstone
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.midas_touchstone), 1, 0), new Object[]{"bbb", "rtr", "ggg", 'b', Blocks.glowstone, 'r', Items.blaze_rod, 'g', Items.gold_ingot, 't', Items.ghast_tear});
+        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.midas_touchstone), 1, 0), new Object[]{"bbb", "rvr", "ggg", 'b', Blocks.glowstone, 'r', Items.blaze_rod, 'g', Items.gold_ingot, 'v', ((ItemToggleable) ContentHandler.getItem(Names.void_tear)).newItemStack() });
 
         // chalice
         addRecipe(false, new ItemStack(ContentHandler.getItem(Names.emperor_chalice), 1, 0), new Object[]{"gtg", "ege", "tgt", 't', Items.ghast_tear, 'e', Items.emerald, 'g', Items.gold_ingot});
@@ -169,10 +172,10 @@ public class XRRecipes {
         addRecipe(false, new ItemStack(ContentHandler.getItem(Names.salamander_eye), 1), new Object[]{"bcb", "tet", "bcb", 'b', Items.blaze_rod, 'c', Items.magma_cream, 't', Items.ghast_tear, 'e', Items.ender_eye});
 
         // wraith's eye upgrade
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.wraith_eye), 1), new Object[]{"eee", "bsb", "eee", 'e', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0), 's', ContentHandler.getItem(Names.salamander_eye), 'b', Blocks.emerald_block});
+        //addRecipe(false, new ItemStack(ContentHandler.getItem(Names.wraith_eye), 1), new Object[]{"eee", "bsb", "eee", 'e', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0), 's', ContentHandler.getItem(Names.salamander_eye), 'b', Blocks.emerald_block});
 
         // ice rod
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.ice_magus_rod), 1, 0), new Object[]{"dtd", "tpt", "tpt", 'd', Items.diamond, 't', Items.ghast_tear, 'p', Blocks.packed_ice});
+        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.ice_magus_rod), 1, 0), new Object[]{"dtd", "tpt", "tpt", 'd', Items.diamond, 't', ((ItemToggleable) ContentHandler.getItem(Names.void_tear)).newItemStack(), 'p', Blocks.packed_ice});
 
         // magicbane
         addRecipe(false, new ItemStack(ContentHandler.getItem(Names.magicbane), 1, 0), new Object[]{"eee", "ege", "iee", 'e', Items.ender_eye, 'g', Items.gold_ingot, 'i', Items.iron_ingot});

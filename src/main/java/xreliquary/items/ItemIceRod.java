@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +17,7 @@ import xreliquary.entities.EntitySpecialSnowball;
 import xreliquary.lib.Names;
 
 @ContentInit
-public class ItemIceRod extends ItemBase {
+public class ItemIceRod extends ItemToggleable {
 
     public ItemIceRod() {
         super(Names.ice_magus_rod);
@@ -33,12 +34,6 @@ public class ItemIceRod extends ItemBase {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack, int pass) {
-        return true;
-    }
-
-    @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
         if (world.isRemote)
             return;
@@ -48,9 +43,12 @@ public class ItemIceRod extends ItemBase {
         }
         if (player == null)
             return;
-        if (ist.getItemDamage() == 0 || ist.getItemDamage() > 1) {
-            if (InventoryHelper.consumeItem(new ItemStack(Items.snowball), player)) {
-                ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 1 : ist.getItemDamage() - 1);
+
+        if (this.isEnabled(ist)) {
+            if (ist.getItemDamage() == 0 || ist.getItemDamage() > 1) {
+                if (InventoryHelper.consumeItem(new ItemStack(Items.snowball), player)) {
+                    ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 1 : ist.getItemDamage() - 1);
+                }
             }
         }
     }
@@ -62,7 +60,10 @@ public class ItemIceRod extends ItemBase {
 
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+        ist = super.onItemRightClick(ist, world, player);
         if (world.isRemote)
+            return ist;
+        if (player.isSneaking())
             return ist;
         if (ist.getItemDamage() == 0)
             return ist;

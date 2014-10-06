@@ -15,6 +15,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -76,18 +77,19 @@ public class ItemLanternOfParanoia extends ItemToggleable {
             int playerY = MathHelper.floor_double(player.boundingBox.minY);
             int playerZ = MathHelper.floor_double(player.posZ);
 
-            int y = playerY;// + yDiff;
-
             for (int xDiff = -6; xDiff <= 6; xDiff++) {
                 for (int zDiff = -6; zDiff <= 6; zDiff++) {
-                    int x = playerX + xDiff;
-                    int z = playerZ + zDiff;
-                    if (!player.worldObj.isAirBlock(x, y, z))
-                        continue;
-                    int lightLevel = player.worldObj.getBlockLightValue(x, y, z);
-                    if (lightLevel > Reliquary.CONFIG.getInt(Names.lantern_of_paranoia, "min_light_level"))
-                        continue;
-                    tryToPlaceTorchAround(ist, x, y, z, player, world);
+                    for (int yDiff = 2; yDiff >= -2; yDiff--) {
+                        int x = playerX + xDiff;
+                        int y = playerY + yDiff;
+                        int z = playerZ + zDiff;
+                        if (!player.worldObj.isAirBlock(x, y, z))
+                            continue;
+                        int lightLevel = player.worldObj.getBlockLightValue(x, y, z);
+                        if (lightLevel > Reliquary.CONFIG.getInt(Names.lantern_of_paranoia, "min_light_level"))
+                            continue;
+                        tryToPlaceTorchAround(ist, x, y, z, player, world);
+                    }
                 }
             }
         }
@@ -112,10 +114,9 @@ public class ItemLanternOfParanoia extends ItemToggleable {
                 continue;
             if (!(staffItem == player.inventory.getStackInSlot(slot).getItem()))
                 continue;
-            if (player.inventory.getStackInSlot(slot).getItemDamage() >= player.inventory.getStackInSlot(slot).getMaxDamage() - 1)
-                return false;
-            player.inventory.getStackInSlot(slot).setItemDamage(player.inventory.getStackInSlot(slot).getItemDamage() == player.inventory.getStackInSlot(slot).getMaxDamage() ? 0 : player.inventory.getStackInSlot(slot).getItemDamage() + 1);
-            return true;
+            Item torch = ItemBlock.getItemFromBlock(Blocks.torch);
+            if (((ItemSojournerStaff)staffItem).removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch, 1))
+                return true;
         }
         return false;
     }
@@ -124,29 +125,56 @@ public class ItemLanternOfParanoia extends ItemToggleable {
         Block var12 = Blocks.torch;
 
         int x = xO;
+        int y = yO;
         int z = zO;
         float xOff = (float)player.posX;
         float zOff = (float)player.posZ;
         float yOff = (float)player.posY;
 
-        for (int yD = 2; yD >= 0; yD--) {
-            int y = yO + yD;
-            if (!Blocks.torch.canPlaceBlockAt(world, x, y, z))
-                continue;
-            for (int side = 0; side < 6; side++) {
-                if (!world.canPlaceEntityOnSide(Blocks.torch, x, y, z, false, side, player, ist))
-                    continue;
-                if (!(findAndRemoveTorch(player) || findAndDrainSojournersStaff(player)))
-                    continue;
-                if (placeBlockAt(ist, player, world, x, y, z, side, xOff, yOff, zOff, attemptSide(world, x, y, z, side))) {
-                    Blocks.torch.onBlockAdded(world, x, y, z);
-                    double gauss = 0.5D + world.rand.nextFloat() / 2;
-                    world.spawnParticle("mobSpell", x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);
-                    world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, var12.stepSound.getStepResourcePath(), (var12.stepSound.getVolume() + 1.0F) / 2.0F, var12.stepSound.getPitch() * 0.8F);
-                    return;
+//        for (int yD = 2; yD >= -2; yD--) {
+//            int y = yO + yD;
+            if (Blocks.torch.canPlaceBlockAt(world, x, y, z)) {
+
+                int rotation = ((MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3) + 2) % 4;
+                int trySide = 0;
+                switch (rotation) {
+                    case (0):
+                        trySide = 5;
+                        break;
+                    case (1):
+                        trySide = 3;
+                        break;
+                    case (2):
+                        trySide = 4;
+                        break;
+                    case (3):
+                        trySide = 2;
+                        break;
+                }
+
+                List<Integer> trySides = new ArrayList<Integer>();
+                trySides.add(trySide);
+                trySides.add(0);
+                int[] tryOtherSides = {2, 3, 4, 5};
+                for (int tryOtherSide : tryOtherSides) {
+                    if (trySides.contains(tryOtherSide)) continue;
+                    trySides.add(tryOtherSide);
+                }
+                for (int side : trySides) {
+                    if (!world.canPlaceEntityOnSide(Blocks.torch, x, y, z, false, side, player, ist))
+                        continue;
+                    if (!(findAndRemoveTorch(player) || findAndDrainSojournersStaff(player)))
+                        continue;
+                    if (placeBlockAt(ist, player, world, x, y, z, side, xOff, yOff, zOff, attemptSide(world, x, y, z, side))) {
+                        Blocks.torch.onBlockAdded(world, x, y, z);
+                        double gauss = 0.5D + world.rand.nextFloat() / 2;
+                        world.spawnParticle("mobSpell", x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);
+                        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, var12.stepSound.getStepResourcePath(), (var12.stepSound.getVolume() + 1.0F) / 2.0F, var12.stepSound.getPitch() * 0.8F);
+                        return;
+                    }
                 }
             }
-        }
+        //}
     }
 
     private int attemptSide(World world, int x, int y, int z, int side) {

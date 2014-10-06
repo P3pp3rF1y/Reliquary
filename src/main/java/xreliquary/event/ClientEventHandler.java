@@ -6,14 +6,19 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.util.ContentHelper;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
@@ -23,16 +28,18 @@ import org.lwjgl.opengl.GL12;
 import xreliquary.Reliquary;
 import xreliquary.client.model.ModelWitchHat;
 import xreliquary.items.ItemHandgun;
+import xreliquary.items.ItemSojournerStaff;
 import xreliquary.lib.Names;
 
 public class ClientEventHandler {
-
+    private static RenderItem itemRenderer = new RenderItem();
     private static int time;
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         handleTickIncrement(event);
         handleHandgunHUDCheck();
+        handleSojournerHUDCheck();
     }
 
     @SubscribeEvent
@@ -94,6 +101,27 @@ public class ClientEventHandler {
         ItemHandgun handgunItem = (ItemHandgun) handgunStack.getItem();
         ItemStack bulletStack = new ItemStack(ContentHandler.getItem(Names.bullet), handgunItem.getBulletCount(handgunStack), handgunItem.getBulletType(handgunStack));
         renderHandgunHUD(mc, player, handgunStack, bulletStack);
+    }
+
+    public void handleSojournerHUDCheck() {
+        // handles rendering the hud for the sojourner's staff so we don't have to use chat messages, because annoying.
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemSojournerStaff))
+            return;
+        ItemStack sojournerStack = player.getCurrentEquippedItem();
+        ItemSojournerStaff sojournerItem = (ItemSojournerStaff) sojournerStack.getItem();
+        String placementItemName = sojournerItem.getTorchPlacementMode(sojournerStack);
+        Item placementItem = null;
+        if (placementItemName != null)
+            placementItem = ContentHandler.getItem(placementItemName);
+
+        ItemStack placementStack = null;
+        if (placementItem != null) {
+            placementStack = new ItemStack(placementItem, 1, 0);
+        }
+        renderSojournerHUD(mc, player, sojournerStack, placementStack);
     }
 
     private static void renderHandgunHUD(Minecraft minecraft, EntityPlayer player, ItemStack handgunStack, ItemStack bulletStack) {
@@ -169,9 +197,79 @@ public class ClientEventHandler {
         GL11.glPopMatrix();
     }
 
-    public static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float opacity, float scale) {
+    private static void renderSojournerHUD(Minecraft minecraft, EntityPlayer player, ItemStack sojournerStack, ItemStack placementStack) {
+
+        float overlayScale = 2.5F;
+        float overlayOpacity = 0.75F;
+
+        GL11.glPushMatrix();
+        ScaledResolution sr = new ScaledResolution(minecraft, minecraft.displayWidth, minecraft.displayHeight);
+        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glLoadIdentity();
+        GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
+
+        GL11.glPushMatrix();
+        RenderHelper.enableGUIStandardItemLighting();
         GL11.glDisable(GL11.GL_LIGHTING);
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationItemsTexture);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+        GL11.glEnable(GL11.GL_LIGHTING);
+
+        int hudOverlayX = 0;
+        int hudOverlayY = 0;
+
+        switch (Reliquary.CONFIG.getInt(Names.sojourner_staff, "hud_position")) {
+            case 0: {
+                hudOverlayX = 0;
+                hudOverlayY = 0;
+                break;
+            }
+            case 1: {
+                hudOverlayX = (int) (sr.getScaledWidth() - 16 * overlayScale);
+                hudOverlayY = 0;
+                break;
+            }
+            case 2: {
+                hudOverlayX = 0;
+                hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
+                break;
+            }
+            case 3: {
+                hudOverlayX = (int) (sr.getScaledWidth() - 16 * overlayScale);
+                hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+
+        //render an image of the sojourner's staff
+        renderItemIntoGUI(minecraft.fontRenderer, sojournerStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
+        //itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), sojournerStack, hudOverlayX, hudOverlayY);
+        //render the placement item on screen in the GUI
+        if (placementStack != null)
+            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), placementStack, hudOverlayX, hudOverlayY);
+        //    renderItemIntoGUI(minecraft.fontRenderer, placementStack, hudOverlayX + 8, hudOverlayY + 4, 1.0F, overlayScale / 2F);
+
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glPopMatrix();
+        GL11.glPopMatrix();
+    }
+
+    public static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float opacity, float scale) {
+        if (itemStack == null)
+            return;
+        GL11.glDisable(GL11.GL_LIGHTING);
+        if (!(itemStack.getItem() instanceof ItemBlock)) {
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationItemsTexture);
+        } else {
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+        }
         for (int passes = 0; passes < itemStack.getItem().getRenderPasses(itemStack.getItemDamage()); passes++) {
             int overlayColour = itemStack.getItem().getColorFromItemStack(itemStack, passes);
             IIcon icon = itemStack.getItem().getIcon(itemStack, passes);
@@ -193,5 +291,4 @@ public class ClientEventHandler {
         tessellator.addVertexWithUV(x, y, zLevel, icon.getMinU(), icon.getMinV());
         tessellator.draw();
     }
-
 }

@@ -48,7 +48,7 @@ public class Reliquary {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        CONFIG = Config.toml(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".toml"));
+        CONFIG = Config.toml(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".cfg"));
 
         PROXY.initOptions();
         Sandstone.preInit();

@@ -185,12 +185,8 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
     }
 
     protected void onThrowableCollision(MovingObjectPosition mop) {
-        // I broke this because I pass null when it touches water.. only cos I
-        // ain't using it.
-        // so you have to check for MoP null as well.
         if (mop != null && mop.entityHit != null) {
-            if (!mop.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, getThrower()), 0))
-                ;
+            if (!mop.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, getThrower()), 0));
         }
         for (int i = 0; i < 32; i++) {
             worldObj.spawnParticle("portal", posX, posY + rand.nextDouble() * 2D, posZ, rand.nextGaussian(), 0.0D, rand.nextGaussian());
@@ -199,32 +195,27 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
         if (!worldObj.isRemote) {
             // zombies are too stupid to bend the fabric of space and time.
             if (this.getThrower() != null && getThrower() instanceof EntityPlayer) {
-                // lazy teleportation. This should more appropriately do a quick
-                // scan for "safe" positions to place a player.
-                // for now I'm operating under the [incorrect] assumption that
-                // the pearl will always land somewhere safe
-                // and the player needs to learn to teleport properly if they
-                // wind up crushing themselves.
                 getThrower().fallDistance = 0.0F;
-                int side = 1;
 
                 int x = (int) Math.round(posX);
                 int y = (int) Math.round(posY);
+                //apparently in transition, player gets pushed out to the void. That's no good.
                 int z = (int) Math.round(posZ);
 
                 if (mop != null) {
-                    side = mop.sideHit;
+                    int side = mop.sideHit;
 
                     y = mop.blockY + (side == 0 ? -1 : side == 1 ? 1 : 0);
                     x = mop.blockX + (side == 4 ? -1 : side == 5 ? 1 : 0);
                     z = mop.blockZ + (side == 2  ? -1 : side == 3 ? 1 : 0);
                 }
 
+                if (y < 0) {
+                    this.setDead();
+                    return;
+                }
+
                 getThrower().setPositionAndUpdate(x + 0.5F, y + 0.5F, z + 0.5F);
-                // allows you to defy whatever gravity you were being affected
-                // by whilst casting the ender pearl.
-                // doing so in midair "cheats" physics and prevents you from
-                // taking some (if not all) of the fall damage.
             }
             this.setDead();
         }
