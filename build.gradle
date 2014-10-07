@@ -29,6 +29,9 @@ buildscript {
     }
 }
 
+sourceCompatiblity = 1.6
+targetCompatiblity = 1.7
+
 // We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
 apply plugin: 'forge'
 
