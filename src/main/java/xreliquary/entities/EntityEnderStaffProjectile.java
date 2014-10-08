@@ -215,6 +215,7 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
                     return;
                 }
 
+                getThrower().playSound("mob.endermen.portal", 1.0f, 1.0f);
                 getThrower().setPositionAndUpdate(x + 0.5F, y + 0.5F, z + 0.5F);
             }
             this.setDead();

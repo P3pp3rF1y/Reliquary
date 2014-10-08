@@ -8,7 +8,6 @@ import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -18,8 +17,6 @@ import xreliquary.entities.*;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-import xreliquary.network.PacketHandler;
-import xreliquary.network.RecoilAnimationPacket;
 import xreliquary.util.NBTHelper;
 
 @ContentInit
@@ -71,17 +68,9 @@ public class ItemHandgun extends ItemBase {
         NBTHelper.setShort("bulletType", ist, i);
     }
 
-    public int getLastFiredShotType(ItemStack ist) { return NBTHelper.getShort("lastFiredShot", ist); }
-
     public void setLastFiredShotType(ItemStack ist, int i) {
         NBTHelper.setShort("lastFiredShot", ist, i);
     }
-
-    public int getRecoilFrameCounter(ItemStack ist) { return NBTHelper.getShort("compensateRecoil", ist); }
-
-    public void setRecoilFrameCounter(ItemStack ist, int i) { NBTHelper.setShort("compensateRecoil", ist, i); }
-
-    public void decrementRecoilCompensationFrames(ItemStack ist) { setRecoilFrameCounter(ist, getRecoilFrameCounter(ist) - 1); }
 
     public int getCooldown(ItemStack ist) { return NBTHelper.getShort("cooldownTime", ist); }
 
@@ -93,23 +82,6 @@ public class ItemHandgun extends ItemBase {
             if (getCooldown(ist) > 0) {
                 setCooldown(ist, getCooldown(ist) - 1);
             }
-            if (getRecoilFrameCounter(ist) > 0) {
-                if (getRecoilFrameCounter(ist) <= 3) {
-                    if (!(e instanceof EntityPlayer))
-                        return;
-                    EntityPlayer player = (EntityPlayer) e;
-
-                    PacketHandler.networkWrapper.sendTo(new RecoilAnimationPacket(Reference.RECOIL_COMPENSATION_PACKET_ID, getRecoilCoefficient(ist)), (EntityPlayerMP) player);
-                }
-                if (getRecoilFrameCounter(ist) > 3) {
-                    if (!(e instanceof EntityPlayer))
-                        return;
-                    EntityPlayer player = (EntityPlayer) e;
-
-                    PacketHandler.networkWrapper.sendTo(new RecoilAnimationPacket(Reference.RECOIL_PACKET_ID, getRecoilCoefficient(ist)), (EntityPlayerMP) player);
-                }
-                decrementRecoilCompensationFrames(ist);
-            }
         }
     }
 
@@ -119,15 +91,11 @@ public class ItemHandgun extends ItemBase {
             if (!(getBulletCount(ist) > 0) && !(getBulletType(ist) > 0)) {
                 player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
             } else {
-                setCooldown(ist, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM));
+                if (!worldObj.isRemote) {
+                    setCooldown(ist, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM));
 
-                fireBullet(ist, worldObj, player);
-
-                //4 is the frame counter
-                //on frame 4, decrease (raise angle) the pitch
-                //on frames 1-3, increase (lower angle) the pitch
-                //skip if 0
-                setRecoilFrameCounter(ist, 4);
+                    fireBullet(ist, worldObj, player);
+                }
             }
         }
         return ist;
@@ -162,26 +130,6 @@ public class ItemHandgun extends ItemBase {
             }
             player.stopUsingItem();
         }
-
-        if (!(reloadTicks(actualCount, player) > 0))
-            return;
-        if (actualCount > getPlayerReloadDelay(player) - Reference.HANDGUN_RELOAD_ANIMATION_TICKS) {
-            //only 4 ticks of this animation, 5 of the other - to explain why this one is decreased by 1
-            float pitchChange = (float) Reference.HANDGUN_RELOAD_PITCH_OFFSET / ((float) Reference.HANDGUN_RELOAD_ANIMATION_TICKS - 1);
-            float rotationPitch = player.prevRotationPitch + pitchChange;
-
-            player.prevRotationPitch = player.rotationPitch;
-            player.rotationPitch = rotationPitch;
-        }
-        if (actualCount <= Reference.HANDGUN_RELOAD_ANIMATION_TICKS) {
-
-            float pitchChange = (float) Reference.HANDGUN_RELOAD_PITCH_OFFSET / (float) Reference.HANDGUN_RELOAD_ANIMATION_TICKS;
-            float rotationPitch = player.prevRotationPitch - pitchChange;
-
-            player.prevRotationPitch = player.rotationPitch;
-            player.rotationPitch = rotationPitch;
-        }
-
     }
 
     @Override
@@ -192,10 +140,6 @@ public class ItemHandgun extends ItemBase {
     @Override
     public int getMaxItemUseDuration(ItemStack par1ItemStack) {
         return this.getItemUseDuration();
-    }
-
-    private int reloadTicks(int i, EntityPlayer player) {
-        return getPlayerReloadDelay(player) - i;
     }
 
     private int getItemUseDuration() {
@@ -275,22 +219,6 @@ public class ItemHandgun extends ItemBase {
 
     private int getPlayerReloadDelay(EntityPlayer player) {
         return Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_RELOAD_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM);
-    }
-
-    private float getRecoilCoefficient(ItemStack ist) {
-        switch (getLastFiredShotType(ist)) {
-            case 0: return 1.0F;
-            case Reference.NEUTRAL_SHOT_INDEX: return 1.0F;
-            case Reference.EXORCISM_SHOT_INDEX: return 1.0F;
-            case Reference.BLAZE_SHOT_INDEX: return 1.0F;
-            case Reference.ENDER_SHOT_INDEX: return 0.5F;
-            case Reference.CONCUSSIVE_SHOT_INDEX: return 1.25F;
-            case Reference.BUSTER_SHOT_INDEX: return 1.5F;
-            case Reference.SEEKER_SHOT_INDEX: return 0.75F;
-            case Reference.SAND_SHOT_INDEX: return 1.0F;
-            case Reference.STORM_SHOT_INDEX: return 1.0F;
-        }
-        return 1.0F;
     }
 
 

@@ -18,8 +18,6 @@ import xreliquary.entities.*;
 import xreliquary.event.ClientEventHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-import xreliquary.network.PacketHandler;
-import xreliquary.network.RecoilAnimationPacket;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {

@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.BlockBase;
 import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.ContentInit;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +21,7 @@ import xreliquary.lib.Names;
 import java.util.List;
 import java.util.Random;
 
-// @ContentInit
+@ContentInit
 public class BlockApothecaryMortar extends BlockBase {
 
     public BlockApothecaryMortar() {

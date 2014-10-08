@@ -3,8 +3,10 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableList;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -16,13 +18,13 @@ import xreliquary.lib.Names;
 import java.util.List;
 
 @ContentInit
-public class ItemDestructionCatalyst extends ItemBase {
+public class ItemDestructionCatalyst extends ItemToggleable {
 
     public static List<String> ids = ImmutableList.of("minecraft:dirt", "minecraft:grass", "minecraft:gravel", "minecraft:cobblestone", "minecraft:stone", "minecraft:sand", "minecraft:sandstone", "minecraft:snow", "minecraft:soul_sand", "minecraft:netherrack", "minecraft:end_stone");
 
     public ItemDestructionCatalyst() {
         super(Names.destruction_catalyst);
-        this.setMaxDamage(0);
+        this.setMaxDamage(257);
         this.setMaxStackSize(1);
         canRepair = false;
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
@@ -30,13 +32,34 @@ public class ItemDestructionCatalyst extends ItemBase {
 
     @Override
     public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
-        if (InventoryHelper.getItemQuantity(new ItemStack(Items.gunpowder), player.inventory) >= gunpowderCost() || player.capabilities.isCreativeMode) {
-            doExplosion(world, x, y, z, side, player);
+        if (ist.getItemDamage() != 0 && (ist.getMaxDamage() - 1) >= ist.getItemDamage() + gunpowderCost() || player.capabilities.isCreativeMode) {
+            doExplosion(world, x, y, z, side, player, ist);
         }
         return true;
     }
 
-    public void doExplosion(World world, int x, int y, int z, int side, EntityPlayer player) {
+
+    @Override
+    public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
+        if (world.isRemote)
+            return;
+        EntityPlayer player = null;
+        if (e instanceof EntityPlayer) {
+            player = (EntityPlayer) e;
+        }
+        if (player == null)
+            return;
+
+        if (this.isEnabled(ist)) {
+            if (ist.getItemDamage() == 0 || ist.getItemDamage() > 1) {
+                if (InventoryHelper.consumeItem(new ItemStack(Items.gunpowder), player)) {
+                    ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 1 : ist.getItemDamage() - 1);
+                }
+            }
+        }
+    }
+
+    public void doExplosion(World world, int x, int y, int z, int side, EntityPlayer player, ItemStack ist) {
         boolean destroyedSomething = false;
         boolean playOnce = true;
         y = y + (side == 0 ? 1 : side == 1 ? -1 : 0);
@@ -60,7 +83,7 @@ public class ItemDestructionCatalyst extends ItemBase {
             }
         }
         if (destroyedSomething) {
-            InventoryHelper.consumeItem(new ItemStack(Items.gunpowder), player, 0, gunpowderCost());
+            ist.setItemDamage(ist.getItemDamage() + gunpowderCost());
         }
     }
 

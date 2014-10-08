@@ -13,6 +13,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityAltar;
+import xreliquary.blocks.tile.TileEntityCauldron;
+import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.entities.*;
 import xreliquary.event.CommonEventHandler;
@@ -71,7 +73,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_cast_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_node_warp_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_worth", new ConfigReference(1).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.ender_staff, "node_warp_cast_time", new ConfigReference(32).setMinimumValue(10));
+        Reliquary.CONFIG.require(Names.ender_staff, "node_warp_cast_time", new ConfigReference(60).setMinimumValue(10));
 
         //midas touchstone configs
         List<String> goldItems = ImmutableList.of();
@@ -136,8 +138,8 @@ public class CommonProxy {
 
     public void registerTileEntities() {
         GameRegistry.registerTileEntity(TileEntityAltar.class, "reliquaryAltar");
-        // GameRegistry.registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
-        // GameRegistry.registerTileEntity(TileEntityCauldron.class, "reliquaryCauldron");
+        GameRegistry.registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
+        GameRegistry.registerTileEntity(TileEntityCauldron.class, "reliquaryCauldron");
     }
 
     public void registerEntities() {

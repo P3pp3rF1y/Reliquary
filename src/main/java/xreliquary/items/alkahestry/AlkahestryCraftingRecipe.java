@@ -41,7 +41,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
                 recipe = Alkahestry.getRegistry().get(ContentHelper.getIdent(itemStack.getItem()));
             else
                 recipe = Alkahestry.getDictionaryKey(itemStack);
-            return recipe != null && (tome.getItemDamage() + recipe.cost <= Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstoneLimit"));
+            return recipe != null && (tome.getItemDamage() + recipe.cost <= Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstone_limit"));
         } else {
             return false;
         }

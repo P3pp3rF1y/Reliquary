@@ -14,6 +14,5 @@ public class PacketHandler {
 
     public static void init() {
         networkWrapper = new SimpleNetworkWrapper(Reference.MOD_ID);
-        networkWrapper.registerMessage(RecoilAnimationPacket.class, RecoilAnimationPacket.class, 0, Side.CLIENT);
     }
 }
