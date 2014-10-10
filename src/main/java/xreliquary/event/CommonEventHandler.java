@@ -57,6 +57,12 @@ public class CommonEventHandler {
     }
 
     @SubscribeEvent
+    public void onEntityLiving(LivingEvent event) {
+        doTwilightCloakCheck(event);
+        doSerpentStaffDebuffCheck(event);
+    }
+
+    @SubscribeEvent
     public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
 //        if (event.entityLiving.isPotionActive(PotionSerpentStaff.serpentStaffDebuff)) {
 //            if (event.entityLiving.worldObj.rand.nextInt(20) == 0) {
@@ -77,6 +83,41 @@ public class CommonEventHandler {
         if (event.entityLiving.isPotionActive(PotionSerpentStaff.serpentStaffDebuff.id)) {
             if (event.entity instanceof EntityLiving) {
                 ((EntityLiving)event.entity).setAttackTarget(null);
+            }
+        }
+    }
+
+    public void doTwilightCloakCheck(LivingEvent event) {
+        if (event.entity instanceof EntityLiving) {
+            EntityLiving entityLiving = ((EntityLiving)event.entity);
+            if (entityLiving.getAttackTarget() == null)
+                return;
+            if (!(entityLiving.getAttackTarget() instanceof EntityPlayer))
+                return;
+            EntityPlayer player = (EntityPlayer)entityLiving.getAttackTarget();
+            if (!playerHasItem(player, ContentHandler.getItem(Names.twilight_cloak), true))
+                return;
+
+            //toggled effect, makes player invisible based on light level (configurable)
+            int playerX = MathHelper.floor_double(player.posX);
+            int playerY = MathHelper.floor_double(player.boundingBox.minY);
+            int playerZ = MathHelper.floor_double(player.posZ);
+
+            if (player.worldObj.getBlockLightValue(playerX, playerY, playerZ) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "max_light_level"))
+                return;
+
+        }
+    }
+
+    public void doSerpentStaffDebuffCheck(LivingEvent event) {
+        if (event.entity instanceof EntityLiving) {
+            EntityLiving entityLiving = ((EntityLiving) event.entity);
+            if (entityLiving.getAttackTarget() == null)
+                return;
+            if (event.entityLiving.isPotionActive(PotionSerpentStaff.serpentStaffDebuff.id)) {
+                if (event.entity instanceof EntityLiving) {
+                    ((EntityLiving) event.entity).setAttackTarget(null);
+                }
             }
         }
     }
