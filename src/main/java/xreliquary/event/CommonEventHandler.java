@@ -4,10 +4,12 @@ import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.passive.EntitySquid;
@@ -19,10 +21,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.FoodStats;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import xreliquary.Potion.PotionSerpentStaff;
 import xreliquary.Reliquary;
+import xreliquary.items.ItemTwilightCloak;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.alkahestry.AlkahestRecipe;
@@ -41,6 +47,57 @@ public class CommonEventHandler {
                     event.player.getEntityData().setBoolean("gift", true);
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityTargetted(LivingSetAttackTargetEvent event) {
+        doTwilightCloakCheck(event);
+        doSerpentStaffDebuffCheck(event);
+    }
+
+    @SubscribeEvent
+    public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
+//        if (event.entityLiving.isPotionActive(PotionSerpentStaff.serpentStaffDebuff)) {
+//            if (event.entityLiving.worldObj.rand.nextInt(20) == 0) {
+//                event.entityLiving.attackEntityFrom(DamageSource.generic, 2);
+//            }
+//        }
+        if (!event.entityLiving.isPotionActive(PotionSerpentStaff.serpentStaffDebuff))
+            return;
+        if (event.entityLiving.getActivePotionEffect(PotionSerpentStaff.serpentStaffDebuff).getDuration()==0) {
+            event.entityLiving.removePotionEffect(PotionSerpentStaff.serpentStaffDebuff.id);
+            return;
+        }
+    }
+
+    public void doSerpentStaffDebuffCheck(LivingSetAttackTargetEvent event) {
+        if (event.target == null)
+            return;
+        if (event.entityLiving.isPotionActive(PotionSerpentStaff.serpentStaffDebuff.id)) {
+            if (event.entity instanceof EntityLiving) {
+                ((EntityLiving)event.entity).setAttackTarget(null);
+            }
+        }
+    }
+
+    public void doTwilightCloakCheck(LivingSetAttackTargetEvent event) {
+
+        if (!(event.target instanceof EntityPlayer))
+            return;
+        EntityPlayer player = (EntityPlayer)event.target;
+        if (!playerHasItem(player, ContentHandler.getItem(Names.twilight_cloak), true))
+            return;
+
+        //toggled effect, makes player invisible based on light level (configurable)
+        int playerX = MathHelper.floor_double(player.posX);
+        int playerY = MathHelper.floor_double(player.boundingBox.minY);
+        int playerZ = MathHelper.floor_double(player.posZ);
+
+        if (player.worldObj.getBlockLightValue(playerX, playerY, playerZ) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "max_light_level"))
+            return;
+        if (event.entity instanceof EntityLiving) {
+            ((EntityLiving)event.entity).setAttackTarget(null);
         }
     }
 
@@ -114,7 +171,7 @@ public class CommonEventHandler {
     }
 
     public void handleDragonClawsCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.dragon_claws)) || playerHasItem(player, ContentHandler.getItem(Names.claws_of_the_firedrinker)))
+        if (!playerHasItem(player, ContentHandler.getItem(Names.dragon_claws), false) || playerHasItem(player, ContentHandler.getItem(Names.claws_of_the_firedrinker), false))
             return;
         if (!(event.source == DamageSource.inFire) && !(event.source == DamageSource.onFire))
             return;
@@ -128,7 +185,7 @@ public class CommonEventHandler {
     }
 
     public void handleFiredrinkerCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.claws_of_the_firedrinker)))
+        if (!playerHasItem(player, ContentHandler.getItem(Names.claws_of_the_firedrinker), false))
             return;
         if (event.source != DamageSource.inFire && event.source != DamageSource.onFire && event.source != DamageSource.lava)
             return;
@@ -153,7 +210,7 @@ public class CommonEventHandler {
         // indentation shallow.
         if (player.getHealth() > Math.round(event.ammount))
             return;
-        if (!playerHasItem(player, ContentHandler.getItem(Names.angelheart_vial)))
+        if (!playerHasItem(player, ContentHandler.getItem(Names.angelheart_vial), false))
             return;
 
         decreaseItemByOne(player, ContentHandler.getItem(Names.angelheart_vial));
@@ -224,7 +281,7 @@ public class CommonEventHandler {
     }
 
     public void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.phoenix_down)))
+        if (!playerHasItem(player, ContentHandler.getItem(Names.phoenix_down), false))
             return;
         if (player.getHealth() > Math.round(event.ammount)) {
             if (!(event.source == DamageSource.fall))
@@ -282,7 +339,7 @@ public class CommonEventHandler {
     }
 
     public void handleAngelicFeatherCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.angelic_feather)))
+        if (!playerHasItem(player, ContentHandler.getItem(Names.angelic_feather), false))
             return;
         if (!(event.source == DamageSource.fall))
             return;
@@ -298,7 +355,7 @@ public class CommonEventHandler {
     }
 
     public void handleKrakenEyeCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.kraken_shell)))
+        if (!playerHasItem(player, ContentHandler.getItem(Names.kraken_shell), false))
             return;
         if (player.getFoodStats().getFoodLevel() <= 0)
             return;
@@ -322,11 +379,18 @@ public class CommonEventHandler {
         }
     }
 
-    private boolean playerHasItem(EntityPlayer player, Item item) {
+    private boolean playerHasItem(EntityPlayer player, Item item, boolean checkEnabled) {
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
             if (player.inventory.mainInventory[slot] == null)
                 continue;
             if (player.inventory.mainInventory[slot].getItem() == item) {
+                if (checkEnabled) {
+                    if (player.inventory.mainInventory[slot].getItem() instanceof ItemToggleable) {
+                        if (((ItemToggleable) player.inventory.mainInventory[slot].getItem()).isEnabled(player.inventory.mainInventory[slot]))
+                            return true;
+                        return false;
+                    }
+                }
                 return true;
             }
         }

@@ -53,10 +53,9 @@ public class ItemTwilightCloak extends ItemToggleable {
         if (player.worldObj.getBlockLightValue(playerX, playerY, playerZ) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "max_light_level"))
             return;
 
-        // checks if the effect would do anything.
-        PotionEffect quickInvisibility = new PotionEffect(Potion.invisibility.id, 2, 0, true);
-        if (!player.isPotionApplicable(quickInvisibility))
-            return;
+        //checks if the effect would do anything. Literally all this does is make the player invisible. It doesn't interfere with mob AI.
+        //for that, we're attempting to use an event handler.
+        PotionEffect quickInvisibility = new PotionEffect(Potion.invisibility.id, 2, 0, false);
         player.addPotionEffect(quickInvisibility);
     }
 }

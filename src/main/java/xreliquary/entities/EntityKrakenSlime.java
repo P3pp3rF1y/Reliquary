@@ -3,9 +3,11 @@ package xreliquary.entities;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import xreliquary.Potion.PotionSerpentStaff;
 
 public class EntityKrakenSlime extends EntityThrowable {
 
@@ -24,6 +26,7 @@ public class EntityKrakenSlime extends EntityThrowable {
         if (object.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && object.entityHit instanceof EntityLiving) {
             EntityLiving living = (EntityLiving) object.entityHit;
             living.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 7.5f);
+            living.addPotionEffect(new PotionEffect(PotionSerpentStaff.serpentStaffDebuff.id, 300, 0));
         }
 
         for (int count = 0; count < 6; ++count) {
