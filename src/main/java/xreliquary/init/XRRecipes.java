@@ -68,7 +68,7 @@ public class XRRecipes {
             } else if(obj instanceof ItemStack) {
                 unlocalizedName = ContentHelper.getIdent(((ItemStack)obj).getItem());
             }
-            if (!Reliquary.CONFIG.getKeys(Names.recipe_enabled).contains(unlocalizedName.replace(Reference.MOD_ID + "_", Reference.MOD_ID + ":")))
+            if (unlocalizedName == null || !Reliquary.CONFIG.getKeys(Names.recipe_enabled).contains(unlocalizedName.replace(Reference.MOD_ID + "_", Reference.MOD_ID + ":")))
                 continue;
             enabled = enabled && Reliquary.CONFIG.getBool(Names.recipe_enabled, unlocalizedName);
         }
@@ -228,6 +228,9 @@ public class XRRecipes {
         // void tear
         addRecipe(true, emptyVoidTear(), Items.ghast_tear, ingredient(Reference.ENDER_INGREDIENT_META), ingredient(Reference.SLIME_INGREDIENT_META), lapis());
 
+        // infernal tear
+        addRecipe(true, new ItemStack(getItem(Names.infernal_tear), 1, 0), emptyVoidTear(), getItem(Names.witch_hat), ingredient(Reference.MOLTEN_INGREDIENT_META), ingredient(Reference.CLAW_INGREDIENT_META));
+        
         // angelic feather
         addRecipe(true, new ItemStack(getItem(Names.angelic_feather), 1), Items.feather, ingredient(Reference.FROZEN_INGREDIENT_META), ingredient(Reference.BAT_INGREDIENT_META), ingredient(Reference.FERTILE_INGREDIENT_META));
 
