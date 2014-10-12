@@ -1,8 +1,8 @@
 itemGroup.xreliquary=Reliquary
 
-gui.tome.text=Das Buch der Alkahestrie;ermöglicht die Kreierung;anderer Ressourcen aus;Redstone.
+gui.tome.text=Das Buch der Alkahestrie;ermöglicht die Kreierung;anderer Ressourcen aus;Redstone oder Glowstone.;Shift-Rechtsklick auto-absorbiert jenes,;um sich wiederaufzuladen.
 
-tooltip.absorb={{!colors.light_purple}}Rechtsklicke, um Auto-Absorption zu (de-)aktivieren.
+tooltip.absorb={{!colors.light_purple}}Shift-Rechtsklicke, um Auto-Absorption zu (de-)aktivieren.
 tooltip.absorb_active={{!colors.purple}}Absorbiert automatisch: {{item}}{{!colors.purple}}.
 tooltip.absorb_tear={{!colors.purple}}Lässt immer einen Stack des Items im Inventar.
 
@@ -73,7 +73,7 @@ item.sojourner_staff.name=Zepter des Weilens
 item.sojourner_staff.tooltip=Consumes torches, can place them;long distance, but costs extra.;{{!colors.yellow}}Contents:;{{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}}
 
 item.alkahest_tome.name=Buch der Alkahestrie
-item.alkahest_tome.tooltip={{!colors.rose}}Redstone: {{redstoneAmount}}/{{redstoneLimit}};Es steht geschrieben: Vollziehe grundlegende, mäßige oder;fortgeschrittene Alkahestrie, was auch immer das ist.
+item.alkahest_tome.tooltip={{!colors.rose}}Ladung: {{redstoneAmount}}/{{redstoneLimit}};Es steht geschrieben: Vollziehe grundlegende, mäßige oder;fortgeschrittene Alkahestrie, was auch immer das ist.
 
 item.holy_hand_grenade.name=Heilige Handgranate
 item.holy_hand_grenade.tooltip=Tötet Monster, nicht Blöcke; oder wer auch immer sie geworfen hat.
