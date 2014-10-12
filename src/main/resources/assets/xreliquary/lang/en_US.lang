@@ -216,7 +216,7 @@ item.heart_pearl_9.tooltip=The condensed essence of a Magma Cube.
 item.heart_zhu_9.name={{!colors.gold}}Magma Cube Nian Zhu
 item.heart_zhu_9.tooltip=This nian zhu wards off Magma Cubes.
 item.heart_pearl_10.name={{!colors.dark_purple}}Enderman Heart Pearl
-item.heart_pearl_10.tooltip=The condensed essence of an Enderman .
+item.heart_pearl_10.tooltip=The condensed essence of an Enderman.
 item.heart_zhu_10.name={{!colors.dark_purple}}Enderman Nian Zhu
 item.heart_zhu_10.tooltip=This nian zhu wards off Endermen.
 
