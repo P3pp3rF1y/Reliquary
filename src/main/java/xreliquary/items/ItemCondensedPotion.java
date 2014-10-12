@@ -40,10 +40,6 @@ public class ItemCondensedPotion extends ItemBase {
         canRepair = false;
     }
 
-//    @Override
-//    public ItemStack getContainerItem(ItemStack ist) {
-//        return new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META);
-//    }
 
     // returns an empty vial when used in crafting recipes, unless it's one of
     // the base potion types.
@@ -125,36 +121,8 @@ public class ItemCondensedPotion extends ItemBase {
 
     @Override
     public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        par3List.add(new ItemStack(par1, 1, 0));
-        par3List.add(new ItemStack(par1, 1, 1));
-        par3List.add(new ItemStack(par1, 1, 2));
-        par3List.add(new ItemStack(par1, 1, 3));
-        par3List.add(new ItemStack(par1, 1, 4));
-        par3List.add(new ItemStack(par1, 1, 5));
-        par3List.add(new ItemStack(par1, 1, 6));
-        par3List.add(new ItemStack(par1, 1, 7));
-        par3List.add(new ItemStack(par1, 1, 8));
-        par3List.add(new ItemStack(par1, 1, 9));
-        par3List.add(new ItemStack(par1, 1, 10));
-        par3List.add(new ItemStack(par1, 1, 11));
-        par3List.add(new ItemStack(par1, 1, 12));
-        par3List.add(new ItemStack(par1, 1, 13));
-        par3List.add(new ItemStack(par1, 1, 14));
-        par3List.add(new ItemStack(par1, 1, 15));
-        par3List.add(new ItemStack(par1, 1, 16));
-        par3List.add(new ItemStack(par1, 1, 17));
-        par3List.add(new ItemStack(par1, 1, 18));
-        par3List.add(new ItemStack(par1, 1, 19));
-        par3List.add(new ItemStack(par1, 1, 20));
-        par3List.add(new ItemStack(par1, 1, 21));
-        par3List.add(new ItemStack(par1, 1, 22));
-        par3List.add(new ItemStack(par1, 1, 23));
-        par3List.add(new ItemStack(par1, 1, 24));
-        par3List.add(new ItemStack(par1, 1, 25));
-        par3List.add(new ItemStack(par1, 1, 26));
-        par3List.add(new ItemStack(par1, 1, 27));
-        par3List.add(new ItemStack(par1, 1, 28));
-        par3List.add(new ItemStack(par1, 1, 29));
+        for (int i = 0; i <= 29; i++)
+            par3List.add(new ItemStack(par1, 1, i));
     }
 
     @Override

@@ -11,7 +11,8 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntityWitch;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -25,10 +26,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import xreliquary.Potion.PotionSerpentStaff;
 import xreliquary.Reliquary;
-import xreliquary.items.ItemTwilightCloak;
+import xreliquary.init.XRRecipes;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.alkahestry.AlkahestRecipe;
@@ -51,39 +51,122 @@ public class CommonEventHandler {
     }
 
     @SubscribeEvent
-    public void onEntityTargetted(LivingSetAttackTargetEvent event) {
-        doTwilightCloakCheck(event);
-        doSerpentStaffDebuffCheck(event);
-    }
-
-    @SubscribeEvent
     public void onEntityLiving(LivingEvent event) {
         doTwilightCloakCheck(event);
-        doSerpentStaffDebuffCheck(event);
+        doPacifiedDebuffCheck(event);
+        doHeartZhuCheck(event);
     }
 
     @SubscribeEvent
     public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
-//        if (event.entityLiving.isPotionActive(PotionSerpentStaff.serpentStaffDebuff)) {
-//            if (event.entityLiving.worldObj.rand.nextInt(20) == 0) {
-//                event.entityLiving.attackEntityFrom(DamageSource.generic, 2);
-//            }
-//        }
-        if (!event.entityLiving.isPotionActive(PotionSerpentStaff.serpentStaffDebuff))
+        if (!event.entityLiving.isPotionActive(PotionSerpentStaff.mobPacificationDebuff))
             return;
-        if (event.entityLiving.getActivePotionEffect(PotionSerpentStaff.serpentStaffDebuff).getDuration()==0) {
-            event.entityLiving.removePotionEffect(PotionSerpentStaff.serpentStaffDebuff.id);
+        if (event.entityLiving.getActivePotionEffect(PotionSerpentStaff.mobPacificationDebuff).getDuration()==0) {
+            event.entityLiving.removePotionEffect(PotionSerpentStaff.mobPacificationDebuff.id);
             return;
         }
     }
 
-    public void doSerpentStaffDebuffCheck(LivingSetAttackTargetEvent event) {
-        if (event.target == null)
-            return;
-        if (event.entityLiving.isPotionActive(PotionSerpentStaff.serpentStaffDebuff.id)) {
-            if (event.entity instanceof EntityLiving) {
-                ((EntityLiving)event.entity).setAttackTarget(null);
-            }
+    public void doHeartZhuCheck(LivingEvent event) {
+        if (event.entity instanceof EntityLiving) {
+            EntityLiving entityLiving = ((EntityLiving) event.entity);
+            if (entityLiving.getAttackTarget() == null)
+                return;
+            if (!(entityLiving.getAttackTarget() instanceof EntityPlayer))
+                return;
+            EntityPlayer player = (EntityPlayer) entityLiving.getAttackTarget();
+            doZombieZhuCheck(event.entity, player);
+            doPigZombieZhuCheck(event.entity, player);
+            doSkeletonZhuCheck(event.entity, player);
+            doWitherSkeletonZhuCheck(event.entity, player);
+            doCreeperZhuCheck(event.entity, player);
+            doGhastZhuCheck(event.entity, player);
+            doSpiderZhuCheck(event.entity, player);
+            doCaveSpiderZhuCheck(event.entity, player);
+            doMagmaCubeZhuCheck(event.entity, player);
+            doBlazeZhuCheck(event.entity, player);
+            doEndermanZhuCheck(event.entity, player);
+        }
+    }
+
+    private ItemStack heartZhu(int meta) {
+        return XRRecipes.heartZhu(meta);
+    }
+
+    public void doZombieZhuCheck(Entity e, EntityPlayer p) {
+        if (e instanceof EntityZombie && !(e instanceof EntityPigZombie)) {
+            if (playerHasItem(p, heartZhu(Reference.ZOMBIE_ZHU_META), false))
+                ((EntityZombie) e).setAttackTarget(null);
+        }
+    }
+
+    public void doPigZombieZhuCheck(Entity e, EntityPlayer p) {
+        if (e instanceof EntityPigZombie) {
+            if (playerHasItem(p, heartZhu(Reference.PIG_ZOMBIE_ZHU_META), false))
+                ((EntityPigZombie) e).setAttackTarget(null);
+        }
+    }
+
+    public void doSkeletonZhuCheck(Entity e, EntityPlayer p) {
+        if (e instanceof EntitySkeleton && ((EntitySkeleton) e).getSkeletonType() != 1) {
+            if (playerHasItem(p, heartZhu(Reference.SKELETON_ZHU_META), false))
+                ((EntitySkeleton) e).setAttackTarget(null);
+        }
+    }
+
+    public void doWitherSkeletonZhuCheck(Entity e, EntityPlayer p) {
+        if (e instanceof EntitySkeleton && ((EntitySkeleton) e).getSkeletonType() == 1) {
+            if (playerHasItem(p, heartZhu(Reference.WITHER_SKELETON_ZHU_META), false))
+                ((EntitySkeleton) e).setAttackTarget(null);
+        }
+    }
+
+    public void doCreeperZhuCheck(Entity e, EntityPlayer p) {
+        if (e instanceof EntityCreeper) {
+            if (playerHasItem(p, heartZhu(Reference.CREEPER_ZHU_META), false))
+                ((EntityCreeper) e).setAttackTarget(null);
+        }
+    }
+
+    public void doGhastZhuCheck(Entity e, EntityPlayer p) {
+        if (e instanceof EntityGhast) {
+            if (playerHasItem(p, heartZhu(Reference.GHAST_ZHU_META), false))
+                ((EntityGhast) e).setAttackTarget(null);
+        }
+    }
+
+    public void doSpiderZhuCheck(Entity e, EntityPlayer p) {
+        if (e instanceof EntitySpider && !(e instanceof EntityCaveSpider)) {
+            if (playerHasItem(p, heartZhu(Reference.SPIDER_ZHU_META), false))
+                ((EntitySpider) e).setAttackTarget(null);
+        }
+    }
+
+    public void doCaveSpiderZhuCheck(Entity e, EntityPlayer p) {
+        if (e instanceof EntityCaveSpider) {
+            if (playerHasItem(p, heartZhu(Reference.CAVE_SPIDER_ZHU_META), false))
+                ((EntityCaveSpider) e).setAttackTarget(null);
+        }
+    }
+
+    public void doMagmaCubeZhuCheck(Entity e, EntityPlayer p) {
+        if (e instanceof EntityMagmaCube) {
+            if (playerHasItem(p, heartZhu(Reference.MAGMA_CUBE_ZHU_META), false))
+                ((EntityMagmaCube) e).setAttackTarget(null);
+        }
+    }
+
+    public void doBlazeZhuCheck(Entity e, EntityPlayer p) {
+        if (e instanceof EntityBlaze) {
+            if (playerHasItem(p, heartZhu(Reference.BLAZE_ZHU_META), false))
+                ((EntityBlaze) e).setAttackTarget(null);
+        }
+    }
+
+    public void doEndermanZhuCheck(Entity e, EntityPlayer p) {
+        if (e instanceof EntityEnderman) {
+            if (playerHasItem(p, heartZhu(Reference.ENDERMAN_ZHU_META), false))
+                ((EntityEnderman) e).setAttackTarget(null);
         }
     }
 
@@ -105,40 +188,23 @@ public class CommonEventHandler {
 
             if (player.worldObj.getBlockLightValue(playerX, playerY, playerZ) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "max_light_level"))
                 return;
+            if (event.entity instanceof EntityLiving) {
+                ((EntityLiving)event.entity).setAttackTarget(null);
+            }
 
         }
     }
 
-    public void doSerpentStaffDebuffCheck(LivingEvent event) {
+    public void doPacifiedDebuffCheck(LivingEvent event) {
         if (event.entity instanceof EntityLiving) {
             EntityLiving entityLiving = ((EntityLiving) event.entity);
             if (entityLiving.getAttackTarget() == null)
                 return;
-            if (event.entityLiving.isPotionActive(PotionSerpentStaff.serpentStaffDebuff.id)) {
+            if (event.entityLiving.isPotionActive(PotionSerpentStaff.mobPacificationDebuff.id)) {
                 if (event.entity instanceof EntityLiving) {
                     ((EntityLiving) event.entity).setAttackTarget(null);
                 }
             }
-        }
-    }
-
-    public void doTwilightCloakCheck(LivingSetAttackTargetEvent event) {
-
-        if (!(event.target instanceof EntityPlayer))
-            return;
-        EntityPlayer player = (EntityPlayer)event.target;
-        if (!playerHasItem(player, ContentHandler.getItem(Names.twilight_cloak), true))
-            return;
-
-        //toggled effect, makes player invisible based on light level (configurable)
-        int playerX = MathHelper.floor_double(player.posX);
-        int playerY = MathHelper.floor_double(player.boundingBox.minY);
-        int playerZ = MathHelper.floor_double(player.posZ);
-
-        if (player.worldObj.getBlockLightValue(playerX, playerY, playerZ) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "max_light_level"))
-            return;
-        if (event.entity instanceof EntityLiving) {
-            ((EntityLiving)event.entity).setAttackTarget(null);
         }
     }
 
@@ -163,35 +229,105 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onLivingDrops(LivingDropsEvent event) {
         Entity e = event.entity;
-        handleSquidCheck(e, event);
-        handleWitchCheck(e, event);
+        handleSquidDropsCheck(e, event);
+        handleWitchDropsCheck(e, event);
+        handleSpiderOrCaveSpiderDropsCheck(e, event);
+        handleSkeletonDropsCheck(e, event);
+        handleWitherDropsCheck(e, event);
+        handleZombieOrZombiePigmanDropsCheck(e, event);
+        handleSlimeDropsCheck(e, event);
+        handleBlazeOrMagmaCubeDropsCheck(e, event);
+        handleGhastOrCreeperDropsCheck(e, event);
+        handleEndermanDropsCheck(e, event);
+        handleBatsDropsCheck(e, event);
+        handleSnowGolemDropsCheck(e, event);
     }
 
-    public void handleSquidCheck(Entity e, LivingDropsEvent event) {
-        if (!(e instanceof EntitySquid))
-            return;
-        float squidBeakProbability = 0.04F + (0.07F * (float) (event.lootingLevel + 1));
-        if (e.worldObj.rand.nextFloat() <= squidBeakProbability) {
+    public void handleEventDropListAddition(Entity e, LivingDropsEvent event, float probabilityBase, float lootingProbabilityIncrement, ItemStack ist) {
+        float dropProbability = 0.04F + (0.07F * (float) (event.lootingLevel + 1));
+        if (e.worldObj.rand.nextFloat() <= dropProbability) {
             if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityPlayer && event.source.damageType.equals("player")) {
-                ItemStack dropStack = new ItemStack(ContentHandler.getItem(Names.squid_beak), 1, 0);
-                EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, dropStack);
+                EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, ist);
                 entityitem.delayBeforeCanPickup = 10;
                 event.drops.add(entityitem);
             }
         }
     }
 
-    public void handleWitchCheck(Entity e, LivingDropsEvent event) {
-        if (!(e instanceof EntityWitch))
-            return;
-        if (e.worldObj.rand.nextBoolean()) {
-            if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityPlayer && event.source.damageType.equals("player")) {
-                ItemStack dropStack = new ItemStack(ContentHandler.getItem(Names.witch_hat), 1, 0);
-                EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, dropStack);
-                entityitem.delayBeforeCanPickup = 10;
-                event.drops.add(entityitem);
+    private ItemStack ingredient(int meta) {
+        return XRRecipes.ingredient(meta);
+    }
+
+    public void handleSquidDropsCheck(Entity e, LivingDropsEvent event) {
+        if (e instanceof EntitySquid)
+            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.SQUID_INGREDIENT_META));
+    }
+
+    public void handleWitchDropsCheck(Entity e, LivingDropsEvent event) {
+        if (e instanceof EntityWitch)
+            handleEventDropListAddition(e, event, 0.5F, 0.0F, new ItemStack(ContentHandler.getItem(Names.witch_hat), 1, 0));
+    }
+
+    public void handleSpiderOrCaveSpiderDropsCheck(Entity e, LivingDropsEvent event) {
+        if (e instanceof EntitySpider || e instanceof EntityCaveSpider) {
+            float coefficient = e instanceof EntityCaveSpider ? 2F : 1F;
+            handleEventDropListAddition(e, event, 0.04F * coefficient, 0.07F * coefficient, ingredient(Reference.SPIDER_INGREDIENT_META));
+        }
+    }
+
+    public void handleSkeletonDropsCheck(Entity e, LivingDropsEvent event) {
+        if (e instanceof EntitySkeleton && ((EntitySkeleton) e).getSkeletonType() != 1)
+            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.SKELETON_INGREDIENT_META));
+    }
+
+    public void handleWitherDropsCheck(Entity e, LivingDropsEvent event) {
+        if (e instanceof EntitySkeleton && ((EntitySkeleton) e).getSkeletonType() == 1)
+            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.WITHER_INGREDIENT_META));
+    }
+
+    public void handleZombieOrZombiePigmanDropsCheck(Entity e, LivingDropsEvent event) {
+        if (e instanceof EntityZombie || e instanceof EntityPigZombie) {
+            float coefficient = e instanceof EntityPigZombie ? 2F : 1F;
+            handleEventDropListAddition(e, event, 0.04F * coefficient, 0.07F * coefficient, ingredient(Reference.ZOMBIE_INGREDIENT_META));
+        }
+    }
+
+    public void handleSlimeDropsCheck(Entity e, LivingDropsEvent event) {
+        if (e instanceof EntitySlime)
+            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.SLIME_INGREDIENT_META));
+
+    }
+
+    public void handleBlazeOrMagmaCubeDropsCheck(Entity e, LivingDropsEvent event) {
+        if (e instanceof EntityBlaze || e instanceof EntityMagmaCube) {
+            float coefficient = e instanceof EntityBlaze ? 2F : 1F;
+            handleEventDropListAddition(e, event, 0.04F * coefficient, 0.07F * coefficient, ingredient(Reference.MOLTEN_INGREDIENT_META));
+        }
+    }
+
+    public void handleGhastOrCreeperDropsCheck(Entity e, LivingDropsEvent event) {
+        if (e instanceof EntityCreeper || e instanceof EntityGhast) {
+            float coefficient = e instanceof EntityGhast ? 2F : 1F;
+            handleEventDropListAddition(e, event, 0.04F * coefficient, 0.07F * coefficient, ingredient(Reference.CREEPER_INGREDIENT_META));
+            if (e instanceof EntityCreeper && ((EntityCreeper) e).getPowered()) {
+                handleEventDropListAddition(e, event, 0.04F * coefficient, 0.07F * coefficient, ingredient(Reference.STORM_INGREDIENT_META));
             }
         }
+    }
+
+    public void handleEndermanDropsCheck(Entity e, LivingDropsEvent event) {
+        if (e instanceof EntityEnderman)
+            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.ENDER_INGREDIENT_META));
+    }
+
+    public void handleBatsDropsCheck(Entity e, LivingDropsEvent event) {
+        if (e instanceof EntityBat)
+            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.BAT_INGREDIENT_META));
+    }
+
+    public void handleSnowGolemDropsCheck(Entity e, LivingDropsEvent event) {
+        if (e instanceof EntitySnowman)
+            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.FROZEN_INGREDIENT_META));
     }
 
     @SubscribeEvent
@@ -200,8 +336,8 @@ public class CommonEventHandler {
         if (entity == null || !(entity instanceof EntityPlayer))
             return;
         EntityPlayer player = (EntityPlayer) entity;
-        handleDragonClawsCheck(player, event);
-        handleFiredrinkerCheck(player, event);
+        handleInfernalClawsCheck(player, event);
+        handleInfernalChaliceCheck(player, event);
         handleAngelicFeatherCheck(player, event);
         handleKrakenEyeCheck(player, event);
         // check
@@ -211,8 +347,8 @@ public class CommonEventHandler {
             event.setResult(null);
     }
 
-    public void handleDragonClawsCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.dragon_claws), false) || playerHasItem(player, ContentHandler.getItem(Names.claws_of_the_firedrinker), false))
+    public void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {
+        if (!playerHasItem(player, ContentHandler.getItem(Names.infernal_claws), false))
             return;
         if (!(event.source == DamageSource.inFire) && !(event.source == DamageSource.onFire))
             return;
@@ -221,24 +357,19 @@ public class CommonEventHandler {
 
         // trades all fire damage for exhaustion (which causes the hunger bar to
         // be depleted).
-        player.addExhaustion(event.ammount * ((float)Reliquary.CONFIG.getInt(Names.dragon_claws, "hunger_cost_percent") / 100F));
+        player.addExhaustion(event.ammount * ((float) Reliquary.CONFIG.getInt(Names.infernal_claws, "hunger_cost_percent") / 100F));
         event.setCanceled(true);
     }
 
-    public void handleFiredrinkerCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.claws_of_the_firedrinker), false))
+    public void handleInfernalChaliceCheck(EntityPlayer player, LivingAttackEvent event) {
+        if (!playerHasItem(player, ContentHandler.getItem(Names.infernal_chalice), false))
             return;
-        if (event.source != DamageSource.inFire && event.source != DamageSource.onFire && event.source != DamageSource.lava)
+        if (event.source != DamageSource.lava)
             return;
         if (player.getFoodStats().getFoodLevel() <= 0)
             return;
         if (!(event.source == DamageSource.lava)) {
-            // adds a slightly reduced amount of damage (50%) as hunger damage than the previous version of the item (dragon claws)
-            player.addExhaustion(event.ammount * ((float)Reliquary.CONFIG.getInt(Names.claws_of_the_firedrinker, "hunger_cost_percent") / 100F));
-        } else {
-            // I noticed that in lava, this effect is EXTREMELY rapid, I believe it's compounding all three damage types in some form,
-            // because you're on fire at the same time as you're in lava.
-            player.addExhaustion(event.ammount * ((float) Reliquary.CONFIG.getInt(Names.claws_of_the_firedrinker, "hunger_cost_percent") / 100F));
+            player.addExhaustion(event.ammount * ((float)Reliquary.CONFIG.getInt(Names.infernal_chalice, "hunger_cost_percent") / 100F));
         }
 
         event.setCanceled(true);
@@ -425,6 +556,24 @@ public class CommonEventHandler {
             if (player.inventory.mainInventory[slot] == null)
                 continue;
             if (player.inventory.mainInventory[slot].getItem() == item) {
+                if (checkEnabled) {
+                    if (player.inventory.mainInventory[slot].getItem() instanceof ItemToggleable) {
+                        if (((ItemToggleable) player.inventory.mainInventory[slot].getItem()).isEnabled(player.inventory.mainInventory[slot]))
+                            return true;
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean playerHasItem(EntityPlayer player, ItemStack ist, boolean checkEnabled) {
+        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+            if (player.inventory.mainInventory[slot] == null)
+                continue;
+            if (player.inventory.mainInventory[slot].isItemEqual(ist)) {
                 if (checkEnabled) {
                     if (player.inventory.mainInventory[slot].getItem() instanceof ItemToggleable) {
                         if (((ItemToggleable) player.inventory.mainInventory[slot].getItem()).isEnabled(player.inventory.mainInventory[slot]))

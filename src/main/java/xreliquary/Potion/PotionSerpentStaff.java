@@ -6,7 +6,7 @@ import net.minecraft.potion.Potion;
  * Created by Xeno on 10/9/2014.
  */
 public class PotionSerpentStaff extends Potion {
-    public static final Potion serpentStaffDebuff = (new PotionSerpentStaff(getFirstAvailableID(), false, 0)).setIconIndex(0, 0).setPotionName("potion.serpentStaffDebuff");
+    public static final Potion mobPacificationDebuff = (new PotionSerpentStaff(getFirstAvailableID(), false, 0)).setIconIndex(0, 0).setPotionName("potion.mobPacificationDebuff");
 
     protected PotionSerpentStaff(int id, boolean isNegative, int liquidColor) {
         super(id, isNegative, liquidColor);

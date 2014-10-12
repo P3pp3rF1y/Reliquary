@@ -9,13 +9,13 @@ import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 
 @ContentInit
-public class ItemKrakenShellFragment extends ItemBase {
+public class ItemInfernalClaws extends ItemBase {
 
-    public ItemKrakenShellFragment() {
-        super(Names.kraken_shell_fragment);
+    public ItemInfernalClaws() {
+        super(Names.infernal_claws);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(0);
-        this.setMaxStackSize(64);
+        this.setMaxStackSize(1);
         canRepair = false;
     }
 
@@ -24,4 +24,6 @@ public class ItemKrakenShellFragment extends ItemBase {
     public boolean hasEffect(ItemStack stack, int pass) {
         return true;
     }
+
+    // this item's effects are handled in events
 }

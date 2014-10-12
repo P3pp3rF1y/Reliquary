@@ -48,4 +48,16 @@ public class Colors {
     public static final String RUINATION_COLOR = "676720";
     public static final String FERTILIZER_COLOR = "DDDDDD";
 
+    public static final String ZOMBIE_HEART_ZHU_COLOR = "993300";
+    public static final String PIG_ZOMBIE_HEART_ZHU_COLOR = "FF5050";
+    public static final String SKELETON_HEART_ZHU_COLOR = "FFFFCC";
+    public static final String WITHER_SKELETON_HEART_ZHU_COLOR = "333329";
+    public static final String CREEPER_HEART_ZHU_COLOR = "00CC00";
+    public static final String GHAST_HEART_ZHU_COLOR = "66FFFF";
+    public static final String SPIDER_HEART_ZHU_COLOR = "660066";
+    public static final String CAVE_SPIDER_HEART_ZHU_COLOR = "006600";
+    public static final String MAGMA_CUBE_HEART_ZHU_COLOR = "CC3300";
+    public static final String BLAZE_HEART_ZHU_COLOR = "FFFF00";
+    public static final String ENDERMAN_HEART_ZHU_COLOR = "9900FF";
+
 }

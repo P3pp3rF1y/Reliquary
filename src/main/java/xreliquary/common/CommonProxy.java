@@ -30,7 +30,6 @@ import xreliquary.util.alkahestry.Alkahestry;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CommonProxy {
@@ -90,7 +89,7 @@ public class CommonProxy {
 
     public void initOptions() {
         //hero's medallion config
-        Reliquary.CONFIG.require(Names.hero_medallion, "experience_level_maximum", new ConfigReference(30).setMinimumValue(0));
+        //Reliquary.CONFIG.require(Names.hero_medallion, "experience_level_maximum", new ConfigReference(30).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.hero_medallion, "experience_level_minimum", new ConfigReference(0).setMinimumValue(0));
 
         //sojourners staff configs
@@ -121,8 +120,8 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.altar, "maximum_time_variance_in_minutes", new ConfigReference(5).setMinimumValue(0));
 
         //hunger-consuming damage-absorbing items
-        Reliquary.CONFIG.require(Names.dragon_claws, "hunger_cost_percent", new ConfigReference(10).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.claws_of_the_firedrinker, "hunger_cost_percent", new ConfigReference(5).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.infernal_claws, "hunger_cost_percent", new ConfigReference(10).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.infernal_chalice, "hunger_cost_percent", new ConfigReference(5).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.angelic_feather, "hunger_cost_percent", new ConfigReference(50).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.phoenix_down, "hunger_cost_percent", new ConfigReference(25).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.kraken_shell, "hunger_cost_percent", new ConfigReference(25).setMinimumValue(0));
@@ -151,7 +150,6 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.twilight_cloak, "max_light_level", new ConfigReference(4).setMinimumValue(0).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.lantern_of_paranoia, "min_light_level", new ConfigReference(8).setMinimumValue(0).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.handgun, "hud_position", new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        //Reliquary.CONFIG.require(Names.wraith_eye, "cost", new ConfigReference(1).setMinimumValue(0));
 
         Reliquary.CONFIG.save();
     }

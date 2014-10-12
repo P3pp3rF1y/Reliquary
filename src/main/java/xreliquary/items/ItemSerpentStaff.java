@@ -4,9 +4,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityKrakenSlime;
@@ -48,6 +50,18 @@ public class ItemSerpentStaff extends ItemBase {
         player.worldObj.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
         player.worldObj.spawnEntityInWorld(new EntityKrakenSlime(player.worldObj, player));
         item.damageItem(1, player);
+    }
+
+    @Override
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
+    {
+        //drain effect
+        int drain = player.worldObj.rand.nextInt(4);
+        if (entity.attackEntityFrom(DamageSource.causePlayerDamage(player), drain)) {
+            player.heal(drain);
+            stack.damageItem(1, player);
+        }
+        return false;
     }
 
     @Override

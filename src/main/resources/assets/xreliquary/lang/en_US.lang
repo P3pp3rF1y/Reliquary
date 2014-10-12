@@ -68,73 +68,157 @@ item.magazine_1.tooltip=Ordinary bullets.
 
 item.mercy_cross.name=Cross of Mercy
 item.mercy_cross.tooltip="Damn, that thing's heavy!";That, my friend, is because;it's so full of mercy.
+
 item.sojourner_staff.name=Sojourner's Staff
 item.sojourner_staff.tooltip=Consumes torches, can place them;long distance, but costs extra.;{{!colors.yellow}}Contents:;{{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}}
+
 item.alkahest_tome.name=Tome of Alkahestry
 item.alkahest_tome.tooltip={{!colors.rose}}Redstone: {{redstoneAmount}}/{{redstoneLimit}};It says: perform basic, intermediate or;advanced Alkahestry, whatever that is.
+
 item.holy_hand_grenade.name=Holy Hand Grenade
 item.holy_hand_grenade.tooltip=Kills mobs, not blocks;or whoever threw it.
+
 item.fortune_coin.name=Coin of Fortune
 item.fortune_coin.tooltip=Draws in nearby items and XP.;Right click to toggle.
+
 item.glowing_water.name=Glowing Water
 item.glowing_water.tooltip=Destroys undead. Glowifies stuff.;Used in many recipes.
+
 item.glowing_bread.name=Glowing Bread
 item.glowing_bread.tooltip=Glowy and delicious.
+
 item.midas_touchstone.name=Touchstone of Midas
 item.midas_touchstone.tooltip=Repairs items made of gold,;consumes glowstone dust.
+
 item.emperor_chalice.name=Emperor's Chalice
 item.emperor_chalice.tooltip=An infinite water bucket;unless you drink from it.;Trades life for hunger...
+
 item.salamander_eye.name=Salamander's Eye
 item.salamander_eye.tooltip=Dispels blaze fireballs and reflects;ghast fireballs while held.;Puts out fires on and around you.
+
 item.destruction_catalyst.name=Destruction Catalyst
 item.destruction_catalyst.tooltip=Consumes 3 Gunpowder on right click, no less.;Blows up a 3x3x3 Cube behind target cube.;{{!colors.white}}Destroys mundane blocks only.
+
 item.ice_magus_rod.name=Ice Magus Rod
 item.ice_magus_rod.tooltip=Consumes snowballs in inventory.;Makes snowballs a bit colder...
+
+item.glacial_staff.name=Glacial Staff
+item.glacial_staff.tooltip=Shoots snowballs; tears leaves from trees; and freezes the ground; you walk on.
+
+item.rod_of_lyssa.name=Rod of Lyssa
+item.rod_of_lyssa.tooltip=A magic fishing rod that can be; used as a grappling hook.;Invokes rage in anything;you hook.
+
+item.shears_of_winter.name=Shears of Winter
+item.shears_of_winter.tooltip=Magic shears that tear the;leaves from trees with cold.
+
+item.pyromancer_staff.name={{!colors.red}}Pyromancer's Staff
+item.pyromancer_staff.tooltip=Shoots fire of every variety,;sets fire to blocks,;extinguishes flames;and defends you;from fiery attackers.
+
+item.rending_gale.name={{!colors.yellow}}Rending Gale
+item.rending_gale.tooltip=Fly in the direction you're facing; and hold right-click to summon;might winds.
+
+item.harvest_rod.name={{!colors.green}}Harvest Rod
+item.harvest_rod.tooltip=Shift+Right-click to consume bonemeal.;Click blocks to fertilize,;strike crops to harvest an area.
+
 item.magicbane.name=Magicbane
 item.magicbane.tooltip=A rustproof, ensorcelled artifact.;Unfortunately not unbreakable.
+
 item.witherless_rose.name=Witherless Rose
 item.witherless_rose.tooltip=With the Nether Stars enchanting this rose;the holder is protected from Withering.
+
 item.twilight_cloak.name=Twilight Cloak
 item.twilight_cloak.tooltip=Makes you invisible at night.
+
 item.void_tear_empty.name=Empty Void Tear
 item.void_tear_empty.tooltip=An empty void tear, right clicking;absorbs the dominant inventory item.
 item.void_tear.name=Void Tear
+
 item.hero_medallion.name=Hero's Medallion
 item.hero_medallion.tooltip={{!colors.green}}Experience: {{experience}};For when you just need;somewhere to put;all that experience.
+
 item.ender_staff.name=Ender Staff
 item.ender_staff.tooltip=Casts Ender Pearls;Right clicking a Wraith Node binds to it;allowing you to return to it at will,;for Ender Pearls.;{{!colors.purple}}{{phrase}}{{position}}
+
 item.angelic_feather.name=Angelic Feather
 item.angelic_feather.tooltip=Protects you from falls,;at the expense of hunger.
+
 item.phoenix_down.name=Phoenix Down
 item.phoenix_down.tooltip=Resurrects you once with;full health and reverts;to an Angelic Feather.
-item.crimson_cloth.name=Crimson Cloth
-item.crimson_cloth.tooltip=Blood red cloth, soaked;with alchemical concoctions.
-item.dragon_talon.name=Dragon Talon
-item.dragon_talon.tooltip=An artificed dragon;talon, not much use alone.
-item.dragon_claws.name=Dragon Claws
-item.dragon_claws.tooltip=Absorbs fire damage at;the expense of hunger.
-item.claws_of_the_firedrinker.name={{!colors.red}}Claws of the Firedrinker
-item.claws_of_the_firedrinker.tooltip=Absorbs fire and;lava damage at;the expense of hunger.
-item.squid_beak.name=Squid Beak
-item.squid_beak.tooltip=Somewhere out there;is a very sad, very;mouthless squid.
-item.kraken_shell_fragment.name=Kraken Shell Fragment
-item.kraken_shell_fragment.tooltip=A seaworthy monster;beak, crafted into;a smooth shell.
+
+item.infernal_claws.name={{!colors.red}}Infernal Claws
+item.infernal_claws.tooltip=Absorbs fire damage at;the expense of hunger.
+
+item.infernal_chalice.name=Infernal Chalice
+item.infernal_chalice.tooltip=Can store an infinite amount of lava;Protects you from lava damage.
+
 item.kraken_shell.name=Kraken Shell
 item.kraken_shell.tooltip=Improves your mobility;when in water.;Absorb drowning damage at;the expense of hunger.
+
 item.angelheart_vial.name=Angelheart Vial
 item.angelheart_vial.tooltip=Resurrects you once;and breaks.
+
 item.elsewhere_flask.name=Elsewhere Flask
 item.elsewhere_flask.tooltip=Imbibe potions within it simultaneously.{{contents}}
+
 item.serpent_staff.name={{!colors.green}}Serpent Staff
 item.serpent_staff.tooltip=All that nasty stuff;from a Kraken's spit,;thrown at your enemies.
+
 item.witch_hat.name={{!colors.yellow}}Witch Hat
 item.witch_hat.tooltip=All that was left of that nasty Witch.;I wonder if I could use it somehow.
+
 item.infernal_tear_empty.name={{!colors.yellow}}Empty Infernal Tear
 item.infernal_tear_empty.tooltip=An empty infernal tear, right clicking;absorbs the dominant inventory item.
 item.infernal_tear.name={{!colors.red}}Infernal Tear
 item.infernal_tear.tooltip=Burns items into their raw essence.;Might make a good brewing ingredient.
+
 item.lantern_of_paranoia.name={{!colors.yellow}}Lantern Of Paranoia
 item.lantern_of_paranoia.tooltip=Places torches in unlit;areas automatically.
+
+
+item.heart_pearl_0.name={{!colors.rose}}Zombie Heart Pearl
+item.heart_pearl_0.tooltip=The condensed essence of a Zombie.
+item.heart_zhu_0.name={{!colors.rose}}Zombie Nian Zhu
+item.heart_zhu_0.tooltip=This nian zhu wards off Zombies.
+item.heart_pearl_1.name={{!colors.rose}}Pig Zombie Heart Pearl
+item.heart_pearl_1.tooltip=The condensed essence of a Pig Zombie.
+item.heart_zhu_1.name={{!colors.rose}}Pig Zombie Nian Zhu
+item.heart_zhu_1.tooltip=This nian zhu wards off Pig Zombies.
+item.heart_pearl_2.name={{!colors.white}}Skeleton Heart Pearl
+item.heart_pearl_2.tooltip=The condensed essence of a Skeleton.
+item.heart_zhu_2.name={{!colors.white}}Skeleton Nian Zhu
+item.heart_zhu_2.tooltip=This nian zhu wards off Skeletons.
+item.heart_pearl_3.name={{!colors.gray}}Wither Skeleton Heart Pearl
+item.heart_pearl_3.tooltip=The condensed essence of a Wither Skeleton.
+item.heart_zhu_3.name={{!colors.gray}}Wither Skeleton Nian Zhu
+item.heart_zhu_3.tooltip=This nian zhu wards off Wither Skeletons.
+item.heart_pearl_4.name={{!colors.purple}}Spider Heart Pearl
+item.heart_pearl_4.tooltip=The condensed essence of a Spider.
+item.heart_zhu_4.name={{!colors.purple}}Spider Nian Zhu
+item.heart_zhu_4.tooltip=This nian zhu wards off Spiders.
+item.heart_pearl_5.name={{!colors.green}}Cave Spider Heart Pearl
+item.heart_pearl_5.tooltip=The condensed essence of a Cave Spider.
+item.heart_zhu_5.name={{!colors.green}}Cave Spider Nian Zhu
+item.heart_zhu_5.tooltip=This nian zhu wards off Cave Spiders.
+item.heart_pearl_6.name={{!colors.light_green}}Creeper Heart Pearl
+item.heart_pearl_6.tooltip=The condensed essence of a Creeper.
+item.heart_zhu_6.name={{!colors.light_green}}Creeper Nian Zhu
+item.heart_zhu_6.tooltip=This nian zhu wards off Creepers.
+item.heart_pearl_7.name={{!colors.light_gray}}Ghast Heart Pearl
+item.heart_pearl_7.tooltip=The condensed essence of a Ghast.
+item.heart_zhu_7.name={{!colors.light_gray}}Ghast Nian Zhu
+item.heart_zhu_7.tooltip=This nian zhu wards off Ghasts.
+item.heart_pearl_8.name={{!colors.yellow}}Blaze Heart Pearl
+item.heart_pearl_8.tooltip=The condensed essence of a Blaze.
+item.heart_zhu_8.name={{!colors.yellow}}Blaze Nian Zhu
+item.heart_zhu_8.tooltip=This nian zhu wards off Blazes.
+item.heart_pearl_9.name={{!colors.gold}}Magma Cube Heart Pearl
+item.heart_pearl_9.tooltip=The condensed essence of a Magma Cube.
+item.heart_zhu_9.name={{!colors.gold}}Magma Cube Nian Zhu
+item.heart_zhu_9.tooltip=This nian zhu wards off Magma Cubes.
+item.heart_pearl_10.name={{!colors.dark_purple}}Enderman Heart Pearl
+item.heart_pearl_10.tooltip=The condensed essence of an Enderman .
+item.heart_zhu_10.name={{!colors.dark_purple}}Enderman Nian Zhu
+item.heart_zhu_10.tooltip=This nian zhu wards off Endermen.
 
 item.potion_0.name=Condensed Splash Serum
 item.potion_1.name=Love Potion #9
@@ -209,3 +293,36 @@ potion.regeneration.name=Regen
 potion.resistance.name=Armor
 potion.fireresistance.name=Fireproof
 potion.milk.name=Cure
+
+item.mob_ingredient_0.name=Rib Bone
+item.mob_ingredient_0.tooltip=A piece of a skeleton's ribcage.
+item.mob_ingredient_1.name=Withered Rib
+item.mob_ingredient_1.tooltip=A piece of a wither skeleton's ribcage.
+item.mob_ingredient_2.name=Chelicerae
+item.mob_ingredient_2.tooltip=A spider's mouthparts.;It won't be needing them anymore.
+item.mob_ingredient_3.name=Catalyzing Gland
+item.mob_ingredient_3.tooltip=A gland that produces explosive chemicals.
+item.mob_ingredient_4.name=Slime Pearl
+item.mob_ingredient_4.tooltip=A dense gem from a slime.
+item.mob_ingredient_5.name=Bat Wing
+item.mob_ingredient_5.tooltip=The wing of a currently wingless bat.
+item.mob_ingredient_6.name=Zombie Heart
+item.mob_ingredient_6.tooltip=A zombie's necrotic heart.
+item.mob_ingredient_7.name=Molten Core
+item.mob_ingredient_7.tooltip=The fiery core of a Nether creature.
+item.mob_ingredient_8.name=Eye of the Storm
+item.mob_ingredient_8.tooltip=The super-charged core of an electrified creeper.
+item.mob_ingredient_9.name=Fertile Essence
+item.mob_ingredient_9.tooltip=Fertility in its purest form.
+item.mob_ingredient_10.name=Frozen Core
+item.mob_ingredient_10.tooltip=The frozen core of some ice creature.
+item.mob_ingredient_11.name=Nebulous Heart
+item.mob_ingredient_11.tooltip=A strange pulsing energy source.
+item.mob_ingredient_12.name=Squid Beak
+item.mob_ingredient_12.tooltip=Somewhere out there;is a very sad, very;mouthless squid.
+item.mob_ingredient_13.name=Infernal Claw
+item.mob_ingredient_13.tooltip=A claw made from Nether materials.;It has fire properties.
+item.mob_ingredient_14.name=Kraken Shell Fragment
+item.mob_ingredient_14.tooltip=A seaworthy monster;beak, crafted into;a smooth shell.
+item.mob_ingredient_15.name=Crimson Cloth
+item.mob_ingredient_15.tooltip=Blood red cloth, soaked;with alchemical concoctions.

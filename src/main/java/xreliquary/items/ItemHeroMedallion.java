@@ -97,16 +97,6 @@ public class ItemHeroMedallion extends ItemToggleable {
         }
     }
 
-    @Override
-    public void onUsingTick(ItemStack ist, EntityPlayer player, int unadjustedCount) {
-        if (player.experienceLevel < getExperienceMaximum()) {
-            if (getExperience(ist) > 0) {
-                increasePlayerExperience(player);
-                decreaseMedallionExperience(ist);
-            }
-        }
-    }
-
     // I'm not 100% this is needed. You may be able to avoid this whole call by
     // using the method in the player class, might be worth testing
     // (player.addExperience(-1)?)
@@ -160,14 +150,17 @@ public class ItemHeroMedallion extends ItemToggleable {
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (world.isRemote)
             return ist;
-        if (this.isEnabled(ist))
-            return ist;
-        player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
-        return ist;
-    }
+        if (!player.isSneaking()) {
+            //turn it off.
+            if (this.isEnabled(ist))
+                this.toggleEnabled(ist);
+            int playerLevel = player.experienceLevel;
+            while (player.experienceLevel < getExperienceMaximum() && playerLevel == player.experienceLevel && getExperience(ist) > 0) {
+                increasePlayerExperience(player);
+                decreaseMedallionExperience(ist);
+            }
+        }
 
-    @Override
-    public int getMaxItemUseDuration(ItemStack stack) {
-        return 250;
+        return super.onItemRightClick(ist, world, player);
     }
 }

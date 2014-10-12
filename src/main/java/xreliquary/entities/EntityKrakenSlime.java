@@ -26,7 +26,7 @@ public class EntityKrakenSlime extends EntityThrowable {
         if (object.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && object.entityHit instanceof EntityLiving) {
             EntityLiving living = (EntityLiving) object.entityHit;
             living.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 7.5f);
-            living.addPotionEffect(new PotionEffect(PotionSerpentStaff.serpentStaffDebuff.id, 300, 0));
+            //living.addPotionEffect(new PotionEffect(PotionSerpentStaff.mobPacificationDebuff.id, 300, 0));
         }
 
         for (int count = 0; count < 6; ++count) {

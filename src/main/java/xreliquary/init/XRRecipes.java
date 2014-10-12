@@ -18,37 +18,41 @@ import xreliquary.lib.Reference;
 
 public class XRRecipes {
 
-    public static ItemStack gunPart(int m) {
-        return gunPart(1, m);
-    }
+    //convenience itemstack methods, these are just to make it a little easier to read.
+    public static Item getItem(String name) { return ContentHandler.getItem(name); }
 
-    public static ItemStack gunPart(int i, int m) {
-        return new ItemStack(ContentHandler.getItem(Names.gun_part), i, m);
-    }
+    public static ItemStack fertilizer() { return XRRecipes.potion(Reference.FERTILIZER_META); }
 
-    public static ItemStack magazine(int m) {
-        return magazine(1, m);
-    }
+    public static ItemStack emptyVoidTear() { return ((ItemToggleable) getItem(Names.void_tear)).newItemStack(); }
 
-    public static ItemStack magazine(int i, int m) {
-        return new ItemStack(ContentHandler.getItem(Names.magazine), i, m);
-    }
+    public static ItemStack witherSkull() { return new ItemStack(Items.skull, 1, 1); }
 
-    public static ItemStack bullet(int m) {
-        return bullet(1, m);
-    }
+    public static ItemStack roseBush() { return new ItemStack(Blocks.double_plant, 1, 4); }
 
-    public static ItemStack bullet(int i, int m) {
-        return new ItemStack(ContentHandler.getItem(Names.bullet), i, m);
-    }
+    public static ItemStack blackWool() { return new ItemStack(Blocks.wool, 1, Reference.BLACK_WOOL_META); }
 
-    public static ItemStack potion(int m) {
-        return potion(1, m);
-    }
+    public static ItemStack lapis() { return new ItemStack(Items.dye, 1, 4); }
 
-    public static ItemStack potion(int i, int m) {
-        return new ItemStack(ContentHandler.getItem(Names.condensed_potion), i, m);
-    }
+    public static ItemStack gunPart(int i, int m) { return new ItemStack(getItem(Names.gun_part), i, m); }
+
+    public static ItemStack magazine(int m) { return magazine(1, m); }
+
+    public static ItemStack magazine(int i, int m) { return new ItemStack(getItem(Names.magazine), i, m); }
+
+    public static ItemStack bullet(int m) { return bullet(1, m); }
+
+    public static ItemStack bullet(int i, int m) { return new ItemStack(getItem(Names.bullet), i, m); }
+
+    public static ItemStack potion(int m) { return potion(1, m); }
+
+    public static ItemStack potion(int i, int m) { return new ItemStack(getItem(Names.condensed_potion), i, m); }
+
+    public static ItemStack ingredient(int m) { return new ItemStack(getItem(Names.mob_ingredient), 1, m); }
+    
+    public static ItemStack heartPearl(int m) { return new ItemStack(getItem(Names.heart_pearl), 1, m); }
+
+    public static ItemStack heartZhu(int m) { return new ItemStack(getItem(Names.heart_zhu), 1, m); }
+
 
     //this version of the addRecipe method checks first to see if the recipe is disabled in our automated recipe-disabler config
     //if any component of the item is in the recipe disabler list, it will ALSO block the recipe automatically.
@@ -81,37 +85,47 @@ public class XRRecipes {
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_redstone", AlkahestryRedstoneRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
 
-        addRecipe(true, ((ItemToggleable) ContentHandler.getItem(Names.alkahestry_tome)).newItemStack(), Items.book, ContentHandler.getItem(Names.witch_hat), Items.magma_cream, Items.gold_ingot, Blocks.glowstone, Items.nether_wart, new ItemStack(Items.skull, 1, 1), Items.ghast_tear, Items.lava_bucket);
+        addRecipe(true, ((ItemToggleable) getItem(Names.alkahestry_tome)).newItemStack(), Items.book, getItem(Names.witch_hat), ingredient(Reference.MOLTEN_INGREDIENT_META), witherSkull());
 
-        addRecipe(false, new ItemStack(ContentHandler.getBlock(Names.altar_idle), 1), "olo", "lel", "olo", 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'e', Items.emerald);
-        addRecipe(false, new ItemStack(ContentHandler.getBlock(Names.lilypad), 1), "www", "wlw", "www", 'w', XRRecipes.potion(Reference.FERTILIZER_META), 'l', Blocks.waterlily);
-        addRecipe(false, new ItemStack(ContentHandler.getBlock(Names.wraith_node), 1), "vv", "vv", 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0));
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.interdiction_torch), 1, 0), "mdm", "gbg", "gbg", 'm', Items.magma_cream, 'd', Items.diamond, 'g', ContentHandler.getItem(Names.glowing_water), 'b', Items.blaze_rod);
+        addRecipe(true, new ItemStack(ContentHandler.getBlock(Names.altar_idle), 1), Blocks.obsidian, Blocks.redstone_lamp, ingredient(Reference.ENDER_INGREDIENT_META), ingredient(Reference.CREEPER_INGREDIENT_META));
+        addRecipe(true, new ItemStack(ContentHandler.getBlock(Names.lilypad), 1), ingredient(Reference.FERTILE_INGREDIENT_META), ingredient(Reference.FERTILE_INGREDIENT_META), ingredient(Reference.FERTILE_INGREDIENT_META), Blocks.waterlily);
+        addRecipe(true, new ItemStack(ContentHandler.getBlock(Names.wraith_node), 1), ingredient(Reference.ENDER_INGREDIENT_META), Items.emerald);
+        addRecipe(false, new ItemStack(getItem(Names.interdiction_torch), 1, 0), "bm", "nr", 'm', ingredient(Reference.MOLTEN_INGREDIENT_META), 'b', ingredient(Reference.BAT_INGREDIENT_META), 'r', Items.blaze_rod, 'n', ingredient(Reference.ENDER_INGREDIENT_META));
 
-        addRecipe(true, new ItemStack(ContentHandler.getItem(Names.glowing_bread), 3), Items.bread, Items.bread, Items.bread, ContentHandler.getItem(Names.glowing_water));
+        // glowy bread
+        addRecipe(true, new ItemStack(getItem(Names.glowing_bread), 3), Items.bread, Items.bread, Items.bread, getItem(Names.glowing_water));
+
+        // fertile essence
+        addRecipe(true, ingredient(Reference.FERTILE_INGREDIENT_META), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), Items.wheat_seeds);
+
         // bullets...
         // empty cases back into nuggets
-        addRecipe(true, new ItemStack(Items.gold_nugget, 1), bullet(1, 0));
+        addRecipe(true, new ItemStack(Items.gold_nugget, 1), bullet(1, 0), bullet(1, 0), bullet(1, 0), bullet(1, 0));
         // neutral
-        addRecipe(false, bullet(4, 1), "sis", "ngn", "ngn", 's', Blocks.stone, 'i', Items.iron_ingot, 'n', Items.gold_nugget, 'g', Items.gunpowder);
+        addRecipe(true, bullet(8, 1), Items.flint, Items.gold_nugget, Items.gold_nugget, Items.gunpowder);
         // exorcist
-        addRecipe(false, bullet(8, 2), "bbb", "bhb", "bbb", 'b', bullet(1, 1), 'h', ContentHandler.getItem(Names.glowing_water));
+        addRecipe(true, bullet(8, 2), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), ingredient(Reference.ZOMBIE_INGREDIENT_META));
         // blaze
-        addRecipe(false, bullet(4, 3), "prp", "npn", "ngn", 'p', Items.blaze_powder, 'r', Items.blaze_rod, 'n', Items.gold_nugget, 'g', Items.gunpowder);
+        addRecipe(true, bullet(8, 3), Items.blaze_powder, Items.blaze_rod, Items.gold_nugget, Items.gold_nugget);
         // ender
-        addRecipe(false, bullet(8, 4), "bbb", "beb", "bbb", 'b', bullet(1, 7), 'e', Items.ender_eye);
-        // venom
-        addRecipe(false, bullet(4, 5), "gfg", "ngn", "ngn", 'f', Items.slime_ball, 'n', Items.gold_nugget, 'g', Items.gunpowder);
+        addRecipe(true, bullet(8, 4),  bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), ingredient(Reference.ENDER_INGREDIENT_META));
+        // concussive
+        addRecipe(true, bullet(8, 5), ingredient(Reference.SLIME_INGREDIENT_META), Items.gold_nugget, Items.gold_nugget, Items.gunpowder);
         // buster
-        addRecipe(true, bullet(4, 6), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), Items.gunpowder, Items.gunpowder, Items.gunpowder, Items.gunpowder, Blocks.tnt);
+        addRecipe(true, bullet(8, 6), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), ingredient(Reference.CREEPER_INGREDIENT_META));
         // seeker
-        addRecipe(false, bullet(4, 7), "sls", "nbn", "ngn", 's', Items.string, 'l', new ItemStack(Items.dye, 1, 4), 'b', Items.slime_ball, 'n', Items.gold_nugget, 'g', Items.gunpowder);
-
+        addRecipe(true, bullet(8, 7), Items.string, ingredient(Reference.SLIME_INGREDIENT_META), Items.gold_nugget, Items.gunpowder);
         // sand
-        addRecipe(true, bullet(4, 8), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sandstone);
-
+        addRecipe(true, bullet(8, 8), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), Blocks.sandstone);
         // storm
-        addRecipe(false, bullet(8, 9), "bbb", "bhb", "bbb", 'b', bullet(1, 1), 'h', new ItemStack(Items.dye, 1, 4));
+        addRecipe(true, bullet(8, 9), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), ingredient(Reference.STORM_INGREDIENT_META));
+        // frozen shot TODO
+        // venom shot TODO
+        // fertile shot TODO
+        // rage shot TODO
+        // traitor shot TODO
+        // calm shot TODO
+        // molten shot TODO
 
         // magazines...
         addRecipe(false, magazine(5, 0), "i i", "igi", "sis", 's', Blocks.stone, 'i', Items.iron_ingot, 'g', Blocks.glass);
@@ -130,100 +144,144 @@ public class XRRecipes {
         addRecipe(true, magazine(1, 6), bullet(1, 6), bullet(1, 6), bullet(1, 6), bullet(1, 6), bullet(1, 6), bullet(1, 6), bullet(1, 6), bullet(1, 6), magazine(1, 0));
         // seeker
         addRecipe(true, magazine(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), magazine(1, 0));
-
         // sand
         addRecipe(true, magazine(1, 8), bullet(1, 8), bullet(1, 8), bullet(1, 8), bullet(1, 8), bullet(1, 8), bullet(1, 8), bullet(1, 8), bullet(1, 8), magazine(1, 0));
-
         // storm
         addRecipe(true, magazine(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), magazine(1, 0));
 
         // gunpart 0 = grip, 1 = barrel, 2 = mechanism
         addRecipe(false, gunPart(1, 0), "iii", "imi", "ici", 'i', Items.iron_ingot, 'c', magazine(1, 0), 'm', Items.magma_cream);
-        addRecipe(false, gunPart(1, 1), "iii", "eme", "iii", 'i', Items.iron_ingot, 'e', Items.ender_pearl, 'm', Items.magma_cream);
-        addRecipe(false, gunPart(1, 2), "iib", "rmi", "iii", 'i', Items.iron_ingot, 'b', Blocks.stone_button, 'r', Items.blaze_rod, 'm', Items.magma_cream);
+        addRecipe(false, gunPart(1, 1), "iii", "eme", "iii", 'i', Items.iron_ingot, 'e', ingredient(Reference.ENDER_INGREDIENT_META), 'm', Items.magma_cream);
+        addRecipe(false, gunPart(1, 2), "iib", "rmi", "iii", 'i', Items.iron_ingot, 'b', Blocks.stone_button, 'r', Items.blaze_rod, 'm', ingredient(Reference.MOLTEN_INGREDIENT_META));
 
         // handgun
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.handgun), 1, 0), "bim", "isi", "igi", 'i', Items.iron_ingot, 'b', gunPart(1, 1), 'm', gunPart(1, 2), 'g', gunPart(1, 0), 's', Items.slime_ball);
+        addRecipe(false, new ItemStack(getItem(Names.handgun), 1, 0), "bim", "isi", "igi", 'i', Items.iron_ingot, 'b', gunPart(1, 1), 'm', gunPart(1, 2), 'g', gunPart(1, 0), 's', ingredient(Reference.SLIME_INGREDIENT_META));
 
 		/* other items */
 
         // fortune coin
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.fortune_coin), 1), "ege", "ghg", "ege", 'e', Items.ender_eye, 'g', Items.gold_ingot, 'h', ContentHandler.getItem(Names.glowing_water));
+        addRecipe(true, new ItemStack(getItem(Names.fortune_coin), 1), ingredient(Reference.ENDER_INGREDIENT_META), Items.gold_nugget, ingredient(Reference.SLIME_INGREDIENT_META), ingredient(Reference.BAT_INGREDIENT_META));
 
         // cross of mercy
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.mercy_cross), 1), "wgw", "glg", "wgw", 'w', ContentHandler.getItem(Names.glowing_water), 'g', Items.gold_ingot, 'l', Items.leather);
+        addRecipe(false, new ItemStack(getItem(Names.mercy_cross), 1), "wgr", "glg", "sgz", 'w', ingredient(Reference.WITHER_INGREDIENT_META), 'g', Items.gold_ingot, 'r', ingredient(Reference.SKELETON_INGREDIENT_META), 'l', Items.leather, 's', new ItemStack(Items.skull, 1, 1), 'z', ingredient(Reference.ZOMBIE_INGREDIENT_META));
 
         // holy hand grenade
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.holy_hand_grenade), 4), "wgw", "gtg", "wgw", 'w', ContentHandler.getItem(Names.glowing_water), 'g', Items.gold_nugget, 't', Blocks.tnt);
+        addRecipe(true, new ItemStack(getItem(Names.holy_hand_grenade), 4), getItem(Names.glowing_water), Items.gold_nugget, Blocks.tnt, ingredient(Reference.CREEPER_INGREDIENT_META));
 
         // sojourner's staff
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.sojourner_staff), 1), "cvc", "gbg", "wgw", 'w', ContentHandler.getItem(Names.glowing_water), 'g', Items.gold_ingot, 'b', Items.blaze_rod, 'c', Items.magma_cream, 'v', ((ItemToggleable) ContentHandler.getItem(Names.void_tear)).newItemStack());
+        addRecipe(false, new ItemStack(getItem(Names.sojourner_staff), 1), "cmc", "gbg", "gvg", 'm', ingredient(Reference.MOLTEN_INGREDIENT_META), 'g', Items.gold_nugget, 'b', Items.blaze_rod, 'c', Items.magma_cream, 'v', emptyVoidTear());
 
         // lantern of paranoia
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.lantern_of_paranoia), 1), "ici", "gfg", "ivi", 'i', Items.iron_ingot, 'c', Items.magma_cream, 'g', Blocks.glass, 'f', Items.flint_and_steel, 'v', ((ItemToggleable) ContentHandler.getItem(Names.void_tear)).newItemStack());
+        addRecipe(false, new ItemStack(getItem(Names.lantern_of_paranoia), 1), "isi", "gmg", "ili", 'i', Items.iron_ingot, 'm', ingredient(Reference.MOLTEN_INGREDIENT_META), 'g', Blocks.glass, 'n', ingredient(Reference.SLIME_INGREDIENT_META), 'l', ingredient(Reference.CREEPER_INGREDIENT_META));
 
-        // touchstone
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.midas_touchstone), 1, 0), "bbb", "rvr", "ggg", 'b', Blocks.glowstone, 'r', Items.blaze_rod, 'g', Items.gold_ingot, 'v', ((ItemToggleable) ContentHandler.getItem(Names.void_tear)).newItemStack());
+        // midas touchstone
+        addRecipe(true, new ItemStack(getItem(Names.midas_touchstone), 1, 0), Blocks.anvil, Blocks.gold_block, Blocks.gold_block, Blocks.gold_block, ingredient(Reference.MOLTEN_INGREDIENT_META), ingredient(Reference.MOLTEN_INGREDIENT_META), ingredient(Reference.MOLTEN_INGREDIENT_META), ingredient(Reference.CREEPER_INGREDIENT_META), emptyVoidTear());
 
-        // chalice
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.emperor_chalice), 1, 0), "gtg", "ege", "tgt", 't', Items.ghast_tear, 'e', Items.emerald, 'g', Items.gold_ingot);
+        // emperor's chalice
+        addRecipe(false, new ItemStack(getItem(Names.emperor_chalice), 1, 0), "sgs", "iii", "lbl", 's', ingredient(Reference.SLIME_INGREDIENT_META), 'g', ingredient(Reference.CREEPER_INGREDIENT_META), 'i', Items.gold_ingot, 'l', lapis(), 'b', Items.bucket);
+
+        // infernal chalice
+        addRecipe(false, new ItemStack(getItem(Names.infernal_chalice), 1), "mmm", "mcm", "mim", 'i', getItem(Names.infernal_claws), 'm', ingredient(Reference.MOLTEN_INGREDIENT_META), 'c', getItem(Names.emperor_chalice));
 
         // salamander's eye
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.salamander_eye), 1), "bcb", "tet", "bcb", 'b', Items.blaze_rod, 'c', Items.magma_cream, 't', Items.ghast_tear, 'e', Items.ender_eye);
+        addRecipe(true, new ItemStack(getItem(Names.salamander_eye), 1), Items.ender_eye, ingredient(Reference.MOLTEN_INGREDIENT_META), ingredient(Reference.FROZEN_INGREDIENT_META), ingredient(Reference.ENDER_INGREDIENT_META));
 
         // ice rod
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.ice_magus_rod), 1, 0), "dtd", "tpt", "tpt", 'd', Items.diamond, 't', ((ItemToggleable) ContentHandler.getItem(Names.void_tear)).newItemStack(), 'p', Blocks.packed_ice);
+        addRecipe(false, new ItemStack(getItem(Names.ice_magus_rod), 1, 0), " df", " id", "v  ", 'd', Items.diamond, 'v', emptyVoidTear(), 'i', Items.iron_ingot, 'f', ingredient(Reference.FROZEN_INGREDIENT_META));
+
+        //glacial staff
+        addRecipe(true, new ItemStack(getItem(Names.glacial_staff), 1, 0), getItem(Names.ice_magus_rod), emptyVoidTear(), ingredient(Reference.FROZEN_INGREDIENT_META), getItem(Names.shears_of_winter));
 
         // ender staff
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.ender_staff), 1, 0), " ve", " vv", "s  ", 'v', ContentHandler.getItem(Names.void_tear), 'e', Items.ender_eye, 's', Items.stick);
+        addRecipe(false, new ItemStack(getItem(Names.ender_staff), 1, 0), " be", "nvb", "sn ", 'v', getItem(Names.void_tear), 'e', Items.ender_eye, 's', Items.stick, 'n', ingredient(Reference.ENDER_INGREDIENT_META), 'b', ingredient(Reference.BAT_INGREDIENT_META));
 
-        // magicbane
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.magicbane), 1, 0), "eee", "ege", "iee", 'e', Items.ender_eye, 'g', Items.gold_ingot, 'i', Items.iron_ingot);
+        // rending gale
+        addRecipe(false, new ItemStack(getItem(Names.rending_gale), 1, 0), " be", "gsb", "vg ", 'b', ingredient(Reference.BAT_INGREDIENT_META), 'e', ingredient(Reference.STORM_INGREDIENT_META), 'g', Items.gold_ingot, 's', Items.stick, 'v', emptyVoidTear());
 
-        // rose
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.witherless_rose), 1), "hnh", "nrn", "hnh", 'h', ContentHandler.getItem(Names.glowing_water), 'n', Items.nether_star, 'r', new ItemStack(Blocks.double_plant, 1, 4));
+        // harvest rod
+        addRecipe(false, new ItemStack(getItem(Names.harvest_rod), 1, 0), " rf", "vtr", "sv ", 'r', roseBush(), 'f', ingredient(Reference.FERTILE_INGREDIENT_META), 'v', Blocks.vine, 't', emptyVoidTear(), 's', Items.stick );
 
-        // crimson cloth
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.crimson_cloth), 1), "prp", "bdb", "prp", 'p', potion(Reference.INVISIBILITY_META), 'r', new ItemStack(Blocks.wool, 1, Reference.RED_WOOL_META), 'b', new ItemStack(Blocks.wool, 1, Reference.BLACK_WOOL_META), 'd', potion(Reference.BLINDING_META));
-
-        // cloak
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.twilight_cloak), 1), "bcb", "cvc", "cbc", 'b', new ItemStack(Blocks.wool, 1, Reference.BLACK_WOOL_META), 'c', ContentHandler.getItem(Names.crimson_cloth), 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0));
-
-        // void tear
-        addRecipe(false, ((ItemToggleable) ContentHandler.getItem(Names.void_tear)).newItemStack(), "et", "te", 'e', Items.ender_eye, 't', Items.ghast_tear);
-
-        // angelic feather
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.angelic_feather), 1), "aja", "vfv", "aja", 'a', ContentHandler.getItem(Names.angelheart_vial), 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0), 'f', Items.feather, 'j', potion(Reference.BOUNDING_META));
-
-        // phoenix down
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.phoenix_down), 1), "ama", "mfm", "ama", 'm', Items.magma_cream, 'a', ContentHandler.getItem(Names.angelheart_vial), 'f', ContentHandler.getItem(Names.angelic_feather));
-
-        // dragon talon
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.dragon_talon), 1), "flf", "lvl", "flf", 'f', potion(Reference.FIRE_WARDING_META), 'l', Items.leather, 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0));
-
-        // dragon claws
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.dragon_claws), 1), "cmc", "cvc", "mcm", 'c', ContentHandler.getItem(Names.dragon_talon), 'm', Items.magma_cream, 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0));
-
-        // claws of the firedrinker
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.claws_of_the_firedrinker), 1), "cmc", "mem", "cmc", 'c', ContentHandler.getItem(Names.dragon_claws), 'm', Items.magma_cream, 'e', ContentHandler.getItem(Names.salamander_eye));
-
-        // squid beak to bonemeal
-        addRecipe(true, new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META), ContentHandler.getItem(Names.squid_beak));
-
-        // kraken shell fragment
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.kraken_shell_fragment), 1, 0), "awa", "wbw", "awa", 'a', ContentHandler.getItem(Names.angelheart_vial), 'w', potion(Reference.BREATHING_META), 'b', ContentHandler.getItem(Names.squid_beak));
-
-        // kraken shell
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.kraken_shell), 1, 0), "sss", "svs", "sss", 's', ContentHandler.getItem(Names.kraken_shell_fragment), 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0));
-
-        // hero medallion
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.hero_medallion), 1), "eie", "ivi", "eie", 'e', Items.ender_eye, 'i', Items.iron_ingot, 'v', new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0));
-
-        // destruction catalyst
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.destruction_catalyst), 1, 0), "rrr", "rtr", "rrf", 'f', Items.flint, 't', new ItemStack(ContentHandler.getItem(Names.midas_touchstone), 1, -1), 'r', Items.blaze_rod);
+        // pyromancer staff
+        addRecipe(false, new ItemStack(getItem(Names.pyromancer_staff), 1, 0), " is", " ci", "v  ", 'i', ingredient(Reference.CLAW_INGREDIENT_META), 's', getItem(Names.salamander_eye), 'c', getItem(Names.infernal_claws), 'v', emptyVoidTear());
 
         // serpent staff
-        addRecipe(false, new ItemStack(ContentHandler.getItem(Names.serpent_staff), 1), "oeo", "sks", " s ", 'o', Blocks.obsidian, 'e', Items.ender_eye, 's', Items.stick, 'k', ContentHandler.getItem(Names.kraken_shell));
+        addRecipe(false, new ItemStack(getItem(Names.serpent_staff), 1), "oeo", "ckc", " s ", 'o', Blocks.obsidian, 'e', Items.ender_eye, 's', Items.stick, 'k', ingredient(Reference.SLIME_INGREDIENT_META), 'c', ingredient(Reference.SPIDER_INGREDIENT_META));
+
+        // rod of lyssa
+        addRecipe(true, new ItemStack(getItem(Names.rod_of_lyssa), 1, 0), ingredient(Reference.CLAW_INGREDIENT_META), ingredient(Reference.BAT_INGREDIENT_META), ingredient(Reference.ENDER_INGREDIENT_META), Items.fishing_rod);
+
+        // shears of winter
+        addRecipe(true, new ItemStack(getItem(Names.shears_of_winter), 1, 0), ingredient(Reference.FROZEN_INGREDIENT_META), Items.shears, Items.diamond, Items.diamond);
+
+        // magicbane
+        addRecipe(false, new ItemStack(getItem(Names.magicbane), 1, 0), "ng", "in", 'g', Items.gold_ingot, 'i', Items.iron_ingot, 'n', ingredient(Reference.ENDER_INGREDIENT_META));
+
+        // witherless rose
+        addRecipe(false, new ItemStack(getItem(Names.witherless_rose), 1), "fnf", "nrn", "fnf", 'f', ingredient(Reference.FERTILE_INGREDIENT_META), 'n', Items.nether_star, 'r', roseBush() );
+
+        // crimson cloth
+        addRecipe(true, ingredient(Reference.CLOTH_INGREDIENT_META), new ItemStack(Blocks.wool, 1, Reference.RED_WOOL_META), new ItemStack(Blocks.wool, 1, Reference.BLACK_WOOL_META), ingredient(Reference.ENDER_INGREDIENT_META), ingredient(Reference.ENDER_INGREDIENT_META));
+
+        // cloak
+        addRecipe(false, new ItemStack(getItem(Names.twilight_cloak), 1), "ici", "bcb", "bcb", 'i', Items.iron_ingot, 'b', blackWool(), 'c', ingredient(Reference.CLOTH_INGREDIENT_META));
+
+        // void tear
+        addRecipe(true, emptyVoidTear(), Items.ghast_tear, ingredient(Reference.ENDER_INGREDIENT_META), ingredient(Reference.SLIME_INGREDIENT_META), lapis());
+
+        // angelic feather
+        addRecipe(true, new ItemStack(getItem(Names.angelic_feather), 1), Items.feather, ingredient(Reference.FROZEN_INGREDIENT_META), ingredient(Reference.BAT_INGREDIENT_META), ingredient(Reference.FERTILE_INGREDIENT_META));
+
+        // phoenix down
+        addRecipe(true, new ItemStack(getItem(Names.phoenix_down), 1), getItem(Names.angelheart_vial), getItem(Names.angelheart_vial), getItem(Names.angelheart_vial), getItem(Names.angelic_feather));
+
+        // infernal claw
+        addRecipe(true, ingredient(Reference.CLAW_INGREDIENT_META), Items.leather, ingredient(Reference.MOLTEN_INGREDIENT_META), ingredient(Reference.SKELETON_INGREDIENT_META), ingredient(Reference.SLIME_INGREDIENT_META));
+
+        // infernal claws
+        addRecipe(true, new ItemStack(getItem(Names.infernal_claws), 1), ingredient(Reference.CLAW_INGREDIENT_META), ingredient(Reference.CLAW_INGREDIENT_META), ingredient(Reference.CLAW_INGREDIENT_META), ingredient(Reference.SLIME_INGREDIENT_META));
+
+        // squid beak, wither rib & rib bone to bonemeal
+        addRecipe(true, new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META), ingredient(Reference.SQUID_INGREDIENT_META));
+        addRecipe(true, new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META), ingredient(Reference.SKELETON_INGREDIENT_META));
+        addRecipe(true, new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META), ingredient(Reference.WITHER_INGREDIENT_META));
+
+        // kraken shell fragment
+        addRecipe(true, ingredient(Reference.SHELL_INGREDIENT_META), ingredient(Reference.SQUID_INGREDIENT_META), ingredient(Reference.SQUID_INGREDIENT_META), ingredient(Reference.SQUID_INGREDIENT_META), ingredient(Reference.SLIME_INGREDIENT_META));
+
+        // kraken shell
+        addRecipe(true, new ItemStack(getItem(Names.kraken_shell), 1, 0), ingredient(Reference.SHELL_INGREDIENT_META), ingredient(Reference.SHELL_INGREDIENT_META), ingredient(Reference.SHELL_INGREDIENT_META), ingredient(Reference.ENDER_INGREDIENT_META));
+
+        // hero medallion
+        addRecipe(true, new ItemStack(getItem(Names.hero_medallion), 1), ingredient(Reference.ENDER_INGREDIENT_META), getItem(Names.fortune_coin), getItem(Names.witch_hat), emptyVoidTear());
+
+        // destruction catalyst
+        addRecipe(true, new ItemStack(getItem(Names.destruction_catalyst), 1, 0), Items.flint_and_steel, ingredient(Reference.MOLTEN_INGREDIENT_META), ingredient(Reference.CREEPER_INGREDIENT_META), emptyVoidTear());
+
+        // nian zhu heart pearls
+        addRecipe(false, heartPearl(Reference.ZOMBIE_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.ZOMBIE_INGREDIENT_META), 's', Items.rotten_flesh, 't', Items.bone);
+        addRecipe(false, heartPearl(Reference.PIG_ZOMBIE_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.ZOMBIE_INGREDIENT_META), 's', Items.porkchop, 't', Items.gold_nugget);
+        addRecipe(false, heartPearl(Reference.SKELETON_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.SKELETON_INGREDIENT_META), 's', Items.bone, 't', Items.flint);
+        addRecipe(false, heartPearl(Reference.WITHER_SKELETON_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.WITHER_INGREDIENT_META), 's', Items.bone, 't', witherSkull());
+        addRecipe(false, heartPearl(Reference.CREEPER_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.CREEPER_INGREDIENT_META), 's', Items.gunpowder, 't', Items.bone);
+        addRecipe(false, heartPearl(Reference.GHAST_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.CREEPER_INGREDIENT_META), 's', Items.ghast_tear, 't', ingredient(Reference.MOLTEN_INGREDIENT_META));
+        addRecipe(false, heartPearl(Reference.SPIDER_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.SPIDER_INGREDIENT_META), 's', Items.string, 't', Items.spider_eye);
+        addRecipe(false, heartPearl(Reference.CAVE_SPIDER_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.SPIDER_INGREDIENT_META), 's', Items.spider_eye, 't', Items.iron_ingot);
+        addRecipe(false, heartPearl(Reference.MAGMA_CUBE_ZHU_META), "ppp", "sts", "ppp", 'p', Items.magma_cream, 's', Items.blaze_rod, 't', ingredient(Reference.MOLTEN_INGREDIENT_META));
+        addRecipe(false, heartPearl(Reference.BLAZE_ZHU_META), "ppp", "sts", "ppp", 'p', Items.blaze_rod, 's', ingredient(Reference.MOLTEN_INGREDIENT_META), 't', Items.magma_cream);
+        addRecipe(false, heartPearl(Reference.ENDERMAN_ZHU_META), "ppp", "sts", "ppp", 'p', Items.ender_eye, 's', ingredient(Reference.ENDER_INGREDIENT_META), 't', Items.ender_pearl);
+
+        // nian zhu actual items
+        addRecipe(true, heartZhu(Reference.ZOMBIE_ZHU_META), Items.string, heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META));
+        addRecipe(true, heartZhu(Reference.PIG_ZOMBIE_ZHU_META), Items.string, heartPearl(Reference.PIG_ZOMBIE_ZHU_META), heartPearl(Reference.PIG_ZOMBIE_ZHU_META), heartPearl(Reference.PIG_ZOMBIE_ZHU_META), heartPearl(Reference.PIG_ZOMBIE_ZHU_META), heartPearl(Reference.PIG_ZOMBIE_ZHU_META), heartPearl(Reference.PIG_ZOMBIE_ZHU_META));
+        addRecipe(true, heartZhu(Reference.SKELETON_ZHU_META), Items.string, heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META));
+        addRecipe(true, heartZhu(Reference.WITHER_SKELETON_ZHU_META), Items.string, heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META));
+        addRecipe(true, heartZhu(Reference.CREEPER_ZHU_META), Items.string, heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META));
+        addRecipe(true, heartZhu(Reference.GHAST_ZHU_META), Items.string, heartPearl(Reference.GHAST_ZHU_META), heartPearl(Reference.GHAST_ZHU_META), heartPearl(Reference.GHAST_ZHU_META), heartPearl(Reference.GHAST_ZHU_META), heartPearl(Reference.GHAST_ZHU_META), heartPearl(Reference.GHAST_ZHU_META));
+        addRecipe(true, heartZhu(Reference.SPIDER_ZHU_META), Items.string, heartPearl(Reference.SPIDER_ZHU_META), heartPearl(Reference.SPIDER_ZHU_META), heartPearl(Reference.SPIDER_ZHU_META), heartPearl(Reference.SPIDER_ZHU_META), heartPearl(Reference.SPIDER_ZHU_META), heartPearl(Reference.SPIDER_ZHU_META));
+        addRecipe(true, heartZhu(Reference.CAVE_SPIDER_ZHU_META), Items.string, heartPearl(Reference.CAVE_SPIDER_ZHU_META), heartPearl(Reference.CAVE_SPIDER_ZHU_META), heartPearl(Reference.CAVE_SPIDER_ZHU_META), heartPearl(Reference.CAVE_SPIDER_ZHU_META), heartPearl(Reference.CAVE_SPIDER_ZHU_META), heartPearl(Reference.CAVE_SPIDER_ZHU_META));
+        addRecipe(true, heartZhu(Reference.MAGMA_CUBE_ZHU_META), Items.string, heartPearl(Reference.MAGMA_CUBE_ZHU_META), heartPearl(Reference.MAGMA_CUBE_ZHU_META), heartPearl(Reference.MAGMA_CUBE_ZHU_META), heartPearl(Reference.MAGMA_CUBE_ZHU_META), heartPearl(Reference.MAGMA_CUBE_ZHU_META), heartPearl(Reference.MAGMA_CUBE_ZHU_META));
+        addRecipe(true, heartZhu(Reference.BLAZE_ZHU_META), Items.string, heartPearl(Reference.BLAZE_ZHU_META), heartPearl(Reference.BLAZE_ZHU_META), heartPearl(Reference.BLAZE_ZHU_META), heartPearl(Reference.BLAZE_ZHU_META), heartPearl(Reference.BLAZE_ZHU_META), heartPearl(Reference.BLAZE_ZHU_META));
+        addRecipe(true, heartZhu(Reference.ENDERMAN_ZHU_META), Items.string, heartPearl(Reference.ENDERMAN_ZHU_META), heartPearl(Reference.ENDERMAN_ZHU_META), heartPearl(Reference.ENDERMAN_ZHU_META), heartPearl(Reference.ENDERMAN_ZHU_META), heartPearl(Reference.ENDERMAN_ZHU_META), heartPearl(Reference.ENDERMAN_ZHU_META));
 
 		/* potions and splash potions */
 
@@ -238,10 +296,10 @@ public class XRRecipes {
         addRecipe(true, potion(Reference.SPLASH_META), potion(Reference.POTION_META), Items.gunpowder);
 
         // glowing water
-        addRecipe(true, new ItemStack(ContentHandler.getItem(Names.glowing_water), 1), potion(Reference.SPLASH_META), Items.glowstone_dust, Items.glowstone_dust, Items.glowstone_dust);
+        addRecipe(true, new ItemStack(getItem(Names.glowing_water), 1), potion(Reference.SPLASH_META), Items.glowstone_dust, Items.glowstone_dust, Items.glowstone_dust);
 
         // angelheart vial
-        addRecipe(true, new ItemStack(ContentHandler.getItem(Names.angelheart_vial), 2), potion(Reference.PANACEA_META), ContentHandler.getItem(Names.glowing_water));
+        addRecipe(true, new ItemStack(getItem(Names.angelheart_vial), 2), potion(Reference.PANACEA_META), getItem(Names.glowing_water));
 
         // speed potion
         addRecipe(true, potion(Reference.SPEED_META), potion(Reference.POTION_META), Items.sugar, Items.redstone, Items.glowstone_dust);
