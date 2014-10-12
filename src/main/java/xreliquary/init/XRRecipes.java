@@ -57,7 +57,7 @@ public class XRRecipes {
     //this version of the addRecipe method checks first to see if the recipe is disabled in our automated recipe-disabler config
     //if any component of the item is in the recipe disabler list, it will ALSO block the recipe automatically.
     public static void addRecipe(boolean isShapeless, ItemStack result, Object... params) {
-        boolean enabled = Reliquary.CONFIG.getGroup(Names.recipe_enabled).containsKey(ContentHelper.getIdent(result.getItem())) && Reliquary.CONFIG.getBool(Names.recipe_enabled, ContentHelper.getIdent(result.getItem()));
+        boolean enabled = Reliquary.CONFIG.getGroup(Names.recipe_enabled).containsKey(ContentHelper.getIdent(result.getItem()).replace(':', '_')) && Reliquary.CONFIG.getBool(Names.recipe_enabled, ContentHelper.getIdent(result.getItem()).replace(':', '_'));
         if (!enabled) return;
         for (Object obj : params) {
             String unlocalizedName = null;
@@ -68,7 +68,7 @@ public class XRRecipes {
             } else if(obj instanceof ItemStack) {
                 unlocalizedName = ContentHelper.getIdent(((ItemStack)obj).getItem());
             }
-            if (!Reliquary.CONFIG.getKeys(Names.recipe_enabled).contains(unlocalizedName))
+            if (!Reliquary.CONFIG.getKeys(Names.recipe_enabled).contains(unlocalizedName.replace(Reference.MOD_ID + "_", Reference.MOD_ID + ":")))
                 continue;
             enabled = enabled && Reliquary.CONFIG.getBool(Names.recipe_enabled, unlocalizedName);
         }

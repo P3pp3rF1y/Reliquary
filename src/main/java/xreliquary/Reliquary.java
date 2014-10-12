@@ -24,6 +24,7 @@ import org.modstats.ModstatInfo;
 import org.modstats.Modstats;
 import xreliquary.common.CommonProxy;
 import xreliquary.integration.NEIModIntegration;
+import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.network.PacketHandler;
 import xreliquary.util.alkahestry.AlkahestRecipe;
@@ -55,6 +56,9 @@ public class Reliquary {
 
         //important that this initializes before the pre-init phase
         PROXY.initRecipeDisablers();
+
+        //and finally save the file changes.
+        CONFIG.save();
 
         PROXY.preInit();
         PacketHandler.init();

@@ -61,7 +61,7 @@ public class CommonProxy {
                         f.set(null, newPotionTypes);
                     }
                 } catch (Exception e) {
-                    System.err.println("XReliquary Reflection error. This is a serious bug.");
+                    System.err.println("XReliquary Reflection error. This is a serious bug due to our custom potion effects.");
                     System.err.println(e);
                 }
             }
@@ -150,18 +150,13 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.twilight_cloak, "max_light_level", new ConfigReference(4).setMinimumValue(0).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.lantern_of_paranoia, "min_light_level", new ConfigReference(8).setMinimumValue(0).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.handgun, "hud_position", new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-
-        Reliquary.CONFIG.save();
     }
 
     public void initRecipeDisablers() {
-        //this is the substring(5) version of the unlocalized name!!!
-        List<String> sortedObjectNames = ContentHandler.registeredObjectNames.subList(0, ContentHandler.registeredObjectNames.size());
-        java.util.Collections.sort(sortedObjectNames);
-        for (int i = 0; i < sortedObjectNames.size(); i++) {
-            Reliquary.CONFIG.require(Names.recipe_enabled, sortedObjectNames.get(i), new ConfigReference(true));
+        //recipe disablers
+        for (int i = 0; i < ContentHandler.registeredObjectNames.size(); i++) {
+            Reliquary.CONFIG.require(Names.recipe_enabled, ContentHandler.registeredObjectNames.get(i).replace(':', '_'), new ConfigReference(true));
         }
-        Reliquary.CONFIG.save();
     }
 
     public void registerTileEntities() {

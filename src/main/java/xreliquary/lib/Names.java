@@ -51,7 +51,7 @@ public class Names {
     public static final String heart_pearl = "heart_pearl";
     public static final String heart_zhu = "heart_zhu";
 
-    public static final String gun_part = "gun_part_";
+    public static final String gun_part = "gun_part";
     // potion info
     public static final String condensed_potion = "condensed_potion";
     public static final String condensed_potion_splash = "condensed_potion_splash";

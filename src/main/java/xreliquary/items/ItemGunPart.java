@@ -35,7 +35,7 @@ public class ItemGunPart extends ItemBase {
     public void registerIcons(IIconRegister iconRegister) {
         icons = new IIcon[3];
         for (int i = 0; i < 3; i++) {
-            icons[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.gun_part + i);
+            icons[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.gun_part + "_" + i);
         }
     }
 
@@ -56,8 +56,8 @@ public class ItemGunPart extends ItemBase {
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         if (stack.getItemDamage() > 2) {
-            return "item." + Names.gun_part + "0";
+            return "item." + Names.gun_part + "_" + "0";
         }
-        return "item." + Names.gun_part + String.valueOf(stack.getItemDamage());
+        return "item." + Names.gun_part + "_" + String.valueOf(stack.getItemDamage());
     }
 }
