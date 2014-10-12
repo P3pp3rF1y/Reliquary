@@ -62,11 +62,26 @@ public class ItemAlkahestryTome extends ItemToggleable {
 
         int amount = getRedstoneLimit() - stack.getItemDamage();
 
+        //redstone handler
         if(amount + 9 <= getRedstoneLimit() && InventoryHelper.consumeItem(Blocks.redstone_block, player)) {
             stack.setItemDamage(stack.getItemDamage() - 9);
         } else if(amount + 1 <= getRedstoneLimit() && InventoryHelper.consumeItem(Items.redstone, player)) {
             stack.setItemDamage(stack.getItemDamage() - 1);
         }
+
+        //glowstone handler
+        if(amount + 4 <= getRedstoneLimit() && InventoryHelper.consumeItem(Blocks.glowstone, player)) {
+            stack.setItemDamage(stack.getItemDamage() - 9);
+        } else if(amount + 1 <= getRedstoneLimit() && InventoryHelper.consumeItem(Items.glowstone_dust, player)) {
+            stack.setItemDamage(stack.getItemDamage() - 1);
+        }
+
+        //lapis handler, commented out for now
+//        if(amount + 36 <= getRedstoneLimit() && InventoryHelper.consumeItem(Blocks.lapis_block, player)) {
+//            stack.setItemDamage(stack.getItemDamage() - 36);
+//        } else if(amount + 4 <= getRedstoneLimit() && InventoryHelper.consumeItem(new ItemStack(Items.dye, 1, 4), player)) {
+//            stack.setItemDamage(stack.getItemDamage() - 4);
+//        }
     }
 
     @Override

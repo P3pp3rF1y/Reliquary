@@ -1,8 +1,8 @@
 itemGroup.xreliquary=Reliquary
 
-gui.tome.text=The Tome of Alkahestry;allows you to create;other resources from;Redstone.
+gui.tome.text=The Tome of Alkahestry;allows you to create;other resources from;Redstone or Glowstone.;Shift + Right-click;auto-absorbs them;to restore its charge.
 
-tooltip.absorb={{!colors.light_purple}}Right click to toggle auto-absorb.
+tooltip.absorb={{!colors.light_purple}}Shift + Right click to toggle auto-absorb.
 tooltip.absorb_active={{!colors.purple}}Automagically absorbs {{item}}{{!colors.purple}}.
 tooltip.absorb_tear={{!colors.purple}}Always leaves a stack of the item in inventory.
 
@@ -73,7 +73,7 @@ item.sojourner_staff.name=Sojourner's Staff
 item.sojourner_staff.tooltip=Consumes torches, can place them;long distance, but costs extra.;{{!colors.yellow}}Contents:;{{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}}
 
 item.alkahest_tome.name=Tome of Alkahestry
-item.alkahest_tome.tooltip={{!colors.rose}}Redstone: {{redstoneAmount}}/{{redstoneLimit}};It says: perform basic, intermediate or;advanced Alkahestry, whatever that is.
+item.alkahest_tome.tooltip={{!colors.rose}}Charge: {{redstoneAmount}}/{{redstoneLimit}};It says: perform basic, intermediate or;advanced Alkahestry, whatever that is.
 
 item.holy_hand_grenade.name=Holy Hand Grenade
 item.holy_hand_grenade.tooltip=Kills mobs, not blocks;or whoever threw it.
@@ -115,7 +115,7 @@ item.pyromancer_staff.name={{!colors.red}}Pyromancer's Staff
 item.pyromancer_staff.tooltip=Shoots fire of every variety,;sets fire to blocks,;extinguishes flames;and defends you;from fiery attackers.
 
 item.rending_gale.name={{!colors.yellow}}Rending Gale
-item.rending_gale.tooltip=Fly in the direction you're facing; and hold right-click to summon;might winds.
+item.rending_gale.tooltip=Fly in the direction you're facing; and hold right-click to summon;mighty winds.
 
 item.harvest_rod.name={{!colors.green}}Harvest Rod
 item.harvest_rod.tooltip=Shift+Right-click to consume bonemeal.;Click blocks to fertilize,;strike crops to harvest an area.

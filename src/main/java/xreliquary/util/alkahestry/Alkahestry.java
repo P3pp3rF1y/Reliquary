@@ -47,6 +47,9 @@ public class Alkahestry {
         addKey(new AlkahestRecipe(new ItemStack(Blocks.clay), 2, LOW_TIER));
         addKey(new AlkahestRecipe(new ItemStack(Blocks.netherrack), 8, LOW_TIER));
         addKey(new AlkahestRecipe(new ItemStack(Items.coal, 1, 1), 4, LOW_TIER));
+        addKey(new AlkahestRecipe(new ItemStack(Items.glowstone_dust), 4, LOW_TIER));
+        addKey(new AlkahestRecipe(new ItemStack(Blocks.glowstone, 1, 0), 1, LOW_TIER));
+        addKey(new AlkahestRecipe(new ItemStack(Items.dye, 1, 4), 1, LOW_TIER));
 
         addKey(new AlkahestRecipe(new ItemStack(Blocks.obsidian), 4, MIDDLE_TIER));
         addKey(new AlkahestRecipe(new ItemStack(Blocks.soul_sand), 8, MIDDLE_TIER));
@@ -55,9 +58,9 @@ public class Alkahestry {
         addKey(new AlkahestRecipe(new ItemStack(Items.coal, 1, 0), 4, MIDDLE_TIER));
         addKey(new AlkahestRecipe(new ItemStack(Items.gunpowder), 2, MIDDLE_TIER));
         addKey(new AlkahestRecipe(new ItemStack(Items.flint), 8, MIDDLE_TIER));
-        addKey(new AlkahestRecipe(new ItemStack(Items.dye, 1, 4), 1, MIDDLE_TIER));
-        addKey(new AlkahestRecipe(new ItemStack(Items.glowstone_dust), 1, 9));
 
+
+        //high tier
         addKey(new AlkahestRecipe(new ItemStack(Items.gold_ingot), 1, HIGH_TIER));
         addKey(new AlkahestRecipe(new ItemStack(Items.iron_ingot), 1, HIGH_TIER));
         addKey(new AlkahestRecipe(new ItemStack(Items.emerald), 1, HIGH_TIER));
@@ -76,16 +79,8 @@ public class Alkahestry {
 
         addKey(new AlkahestRecipe(new ItemStack(Items.diamond), 1, UBER_TIER));
 
-        // TODO: Readd Nether Star recipe.
-        /*
-		 * GameRegistry.addRecipe(new ItemStack(Block.dragonEgg, 1), new
-		 * Object[] { "ddd", "dtd", "ddd", 'd', Block.blockDiamond, 't',
-		 * XRItems.alkahestryTome }); GameRegistry.addRecipe(new
-		 * ItemStack(Item.netherStar, 2), new Object[] { "tds", "www", "hhh",
-		 * 'd', Item.diamond, 'w', new ItemStack(Item.skull, 1, 1), 't',
-		 * XRItems.alkahestryTome, 's', Item.netherStar, 'h',
-		 * XRItems.glowingWater });
-		 */
+        //above uber
+        addKey(new AlkahestRecipe(new ItemStack(Items.nether_star), 1, UBER_TIER * 2));
     }
 
     public static Map<String, AlkahestRecipe> getRegistry() {
