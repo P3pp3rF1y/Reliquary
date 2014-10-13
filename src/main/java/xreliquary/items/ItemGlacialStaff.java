@@ -2,19 +2,254 @@ package xreliquary.items;
 
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
+import lib.enderwizards.sandstone.util.ContentHelper;
+import lib.enderwizards.sandstone.util.InventoryHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraftforge.common.IShearable;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Xeno on 10/11/2014.
  */
 @ContentInit
-public class ItemGlacialStaff extends ItemToggleable {
+public class ItemGlacialStaff extends ItemIceRod {
     public ItemGlacialStaff() {
         super(Names.glacial_staff);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxDamage(513);
         this.setMaxStackSize(1);
         canRepair = false;
+    }
+
+    @Override
+    public boolean isFull3D(){ return true; }
+
+    @Override
+    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+        return 2500;
+    }
+
+    @Override
+    public EnumAction getItemUseAction(ItemStack ist) {
+        return EnumAction.block;
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+        if (!player.isSneaking()) {
+            player.setItemInUse(ist, getMaxItemUseDuration(ist));
+        }
+
+        if (!this.isEnabled(ist))
+            doHasInfernalChaliceEnabledCheck(player);
+        return super.onItemRightClick(ist, world, player);
+    }
+
+    @Override
+    public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
+        Vec3 lookVector = player.getLookVec();
+        spawnBlizzardParticles(lookVector, player);
+
+        castBlizzardForward(player, lookVector, count);
+    }
+
+    public void castBlizzardForward(EntityPlayer player, Vec3 lookVector, int tickCount) {
+        if (player.worldObj.isRemote)
+            return;
+        double lowerX = Math.min(player.posX, player.posX + lookVector.xCoord * 10D);
+        double lowerY = Math.min(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.yCoord * 10D);
+        double lowerZ = Math.min(player.posZ, player.posZ + lookVector.zCoord * 10D);
+        double upperX = Math.max(player.posX, player.posX + lookVector.xCoord * 10D);
+        double upperY = Math.max(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.yCoord * 10D);
+        double upperZ = Math.max(player.posZ, player.posZ + lookVector.zCoord * 10D);
+        List eList = player.worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
+        Iterator iterator = eList.iterator();
+        while (iterator.hasNext()) {
+            Entity e = (Entity)iterator.next();
+            if (e instanceof EntityLivingBase && !e.isEntityEqual(player)) {
+                ((EntityLivingBase) e).addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 120, 1));
+                if (tickCount % 20 == 0)
+                    e.attackEntityFrom(DamageSource.causePlayerDamage(player), 2F);
+            }
+        }
+    }
+
+
+    @Override
+    public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
+        EntityPlayer player = null;
+        if (e instanceof EntityPlayer) {
+            player = (EntityPlayer) e;
+        }
+        if (player == null)
+            return;
+
+        int x = MathHelper.floor_double(player.posX);
+        int y = MathHelper.floor_double(player.boundingBox.minY) - 1;
+        int z = MathHelper.floor_double(player.posZ);
+
+        if (this.isEnabled(ist)) {
+            doHasInfernalChaliceEnabledCheck(player);
+            if (ist.getItemDamage() == 0 || ist.getItemDamage() > 1) {
+                if (InventoryHelper.consumeItem(new ItemStack(Items.snowball), player)) {
+                    ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 1 : ist.getItemDamage() - 1);
+                }
+            }
+
+            for (int xOff = -3; xOff <= 3; xOff++) {
+                for (int zOff = -3; zOff <= 3; zOff++) {
+                    doFreezeCheck(ist, x, y, z, world, xOff, zOff);
+                }
+            }
+        }
+
+        for (int xOff = -7; xOff <= 7; xOff++) {
+            for (int yOff = -2; yOff <= 0; yOff++) {
+                for (int zOff = -7; zOff <= 7; zOff++) {
+                    if (Math.abs(xOff) < 4 && Math.abs(zOff) < 4)
+                        continue;
+                    doThawCheck(ist, x, y, z, world, xOff, yOff, zOff);
+                }
+            }
+        }
+    }
+
+    public void doHasInfernalChaliceEnabledCheck(EntityPlayer player) {
+        for (int i = 0; i < player.inventory.mainInventory.length; ++i) {
+            if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() instanceof ItemInfernalChalice) {
+                if (((ItemToggleable) player.inventory.mainInventory[i].getItem()).isEnabled(player.inventory.mainInventory[i])) {
+                    ((ItemToggleable) player.inventory.mainInventory[i].getItem()).toggleEnabled(player.inventory.mainInventory[i]);
+                }
+            }
+        }
+    }
+
+    public void doFreezeCheck(ItemStack ist, int x, int y, int z, World world, int xOff, int zOff) {
+        x += xOff;
+        z += zOff;
+        Block block = world.getBlock(x, y, z);
+        if (block.getMaterial() == Material.water  && world.getBlockMetadata(x, y, z) == 0) {
+            addFrozenBlockToList(ist, x, y, z);
+            world.setBlock(x, y, z, Blocks.packed_ice);
+        } else if (block.getMaterial() == Material.lava && world.getBlockMetadata(x, y, z) == 0) {
+            addFrozenBlockToList(ist, x, y, z);
+            world.setBlock(x, y, z, Blocks.obsidian);
+        }
+    }
+
+    public void doThawCheck(ItemStack ist, int x, int y, int z, World world, int xOff, int yOff, int zOff) {
+        x += xOff;
+        y += yOff;
+        z += zOff;
+        Block block = world.getBlock(x, y, z);
+        if (block == Blocks.packed_ice) {
+            if (removeFrozenBlockFromList(ist, x, y, z))
+                world.setBlock(x, y, z, Blocks.water);
+        } else if (block == Blocks.obsidian) {
+            if (removeFrozenBlockFromList(ist, x, y, z))
+                world.setBlock(x, y, z, Blocks.lava);
+        }
+    }
+
+    private void addFrozenBlockToList(ItemStack ist, int x, int y, int z) {
+        NBTTagCompound tagCompound = ist.getTagCompound();
+        if (tagCompound == null) {
+            tagCompound = new NBTTagCompound();
+        }
+
+        if (tagCompound.getTag("BlockLocations") == null)
+            tagCompound.setTag("BlockLocations", new NBTTagList());
+        NBTTagList tagList = tagCompound.getTagList("BlockLocations", 10);
+
+        NBTTagCompound newTagData = new NBTTagCompound();
+        newTagData.setInteger("x", x);
+        newTagData.setInteger("y", y);
+        newTagData.setInteger("z", z);
+
+        tagList.appendTag(newTagData);
+
+        tagCompound.setTag("BlockLocations", tagList);
+
+        ist.setTagCompound(tagCompound);
+    }
+
+    private boolean removeFrozenBlockFromList(ItemStack ist, int x, int y, int z) {
+        NBTTagCompound tagCompound = ist.getTagCompound();
+        if (tagCompound == null) {
+            tagCompound = new NBTTagCompound();
+        }
+
+        if (tagCompound.getTag("BlockLocations") == null)
+            tagCompound.setTag("BlockLocations", new NBTTagList());
+        NBTTagList tagList = tagCompound.getTagList("BlockLocations", 10);
+
+        boolean removedBlock = false;
+
+        for (int i = 0; i < tagList.tagCount(); ++i)
+        {
+            NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
+            if (tagItemData.getInteger("x") == x && tagItemData.getInteger("y") == y && tagItemData.getInteger("z") == z) {
+                tagItemData.setBoolean("remove", true);
+                removedBlock = true;
+            }
+        }
+
+        NBTTagList newTagList = new NBTTagList();
+        for (int i = 0; i < tagList.tagCount(); ++i) {
+            NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
+            if (!tagItemData.getBoolean("remove")) {
+                NBTTagCompound newTagData = new NBTTagCompound();
+                newTagData.setInteger("x", tagItemData.getInteger("x"));
+                newTagData.setInteger("y", tagItemData.getInteger("y"));
+                newTagData.setInteger("z", tagItemData.getInteger("z"));
+                newTagList.appendTag(newTagData);
+            }
+        }
+
+        tagCompound.setTag("BlockLocations", newTagList);
+        ist.setTagCompound(tagCompound);
+        return removedBlock;
+    }
+
+    public void spawnBlizzardParticles(Vec3 lookVector, EntityPlayer player) {
+        //spawn a whole mess of particles every tick.
+        for (int i = 0; i < 16; ++i) {
+            float randX = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
+            float randY = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
+            float randZ = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
+
+            player.worldObj.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
+
+            //player.worldObj.spawnParticle("snowballpoof", player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
+        }
+
     }
 }

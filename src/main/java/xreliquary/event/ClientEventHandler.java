@@ -93,10 +93,13 @@ public class ClientEventHandler {
     public void handleHandgunHUDCheck() {
         // handles rendering the hud for the handgun, WIP
         Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHandgun))
             return;
+
         ItemStack handgunStack = player.getCurrentEquippedItem();
         ItemHandgun handgunItem = (ItemHandgun) handgunStack.getItem();
         ItemStack bulletStack = new ItemStack(ContentHandler.getItem(Names.bullet), handgunItem.getBulletCount(handgunStack), handgunItem.getBulletType(handgunStack));
@@ -106,6 +109,8 @@ public class ClientEventHandler {
     public void handleSojournerHUDCheck() {
         // handles rendering the hud for the sojourner's staff so we don't have to use chat messages, because annoying.
         Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemSojournerStaff))

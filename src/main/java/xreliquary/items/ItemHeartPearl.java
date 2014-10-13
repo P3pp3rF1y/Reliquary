@@ -62,7 +62,7 @@ public class ItemHeartPearl extends ItemBase {
 
     @Override
     public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        for (int i = 0; i <= 10; i++)
+        for (int i = 0; i <= 8; i++)
             par3List.add(new ItemStack(par1, 1, i));
     }
 
@@ -80,25 +80,11 @@ public class ItemHeartPearl extends ItemBase {
             case 0:
                 return Integer.parseInt(Colors.ZOMBIE_HEART_ZHU_COLOR, 16);
             case 1:
-                return Integer.parseInt(Colors.PIG_ZOMBIE_HEART_ZHU_COLOR, 16);
-            case 2:
                 return Integer.parseInt(Colors.SKELETON_HEART_ZHU_COLOR, 16);
-            case 3:
+            case 2:
                 return Integer.parseInt(Colors.WITHER_SKELETON_HEART_ZHU_COLOR, 16);
-            case 4:
-                return Integer.parseInt(Colors.SPIDER_HEART_ZHU_COLOR, 16);
-            case 5:
-                return Integer.parseInt(Colors.CAVE_SPIDER_HEART_ZHU_COLOR, 16);
-            case 6:
+            case 3:
                 return Integer.parseInt(Colors.CREEPER_HEART_ZHU_COLOR, 16);
-            case 7:
-                return Integer.parseInt(Colors.GHAST_HEART_ZHU_COLOR, 16);
-            case 8:
-                return Integer.parseInt(Colors.BLAZE_HEART_ZHU_COLOR, 16);
-            case 9:
-                return Integer.parseInt(Colors.MAGMA_CUBE_HEART_ZHU_COLOR, 16);
-            case 10:
-                return Integer.parseInt(Colors.ENDERMAN_HEART_ZHU_COLOR, 16);
         }
         return Integer.parseInt(Colors.PURE, 16);
     }

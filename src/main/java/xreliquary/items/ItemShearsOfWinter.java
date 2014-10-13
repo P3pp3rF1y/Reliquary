@@ -5,6 +5,8 @@ import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -15,16 +17,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
+import xreliquary.lib.Reference;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -304,6 +309,8 @@ public class ItemShearsOfWinter extends ItemBase {
                     if (player.worldObj.isRemote) {
                         for (int particles = 0; particles <= 8; particles++)
                             player.worldObj.spawnParticle("blockcrack_" + Block.getIdFromBlock(block) + "_" + player.worldObj.getBlockMetadata(x, y, z), x, y, z, (rand.nextFloat() - 0.5F) * 4F, 0.5F, (rand.nextFloat() - 0.5F) * 4F);
+                        if (block.getMaterial() != Material.air)
+                            Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(new ResourceLocation(block.stepSound.getBreakSound()), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F, (float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F));
 
                     } else {
                         for(ItemStack stack : drops)

@@ -51,7 +51,7 @@ public class XRRecipes {
     
     public static ItemStack heartPearl(int m) { return new ItemStack(getItem(Names.heart_pearl), 1, m); }
 
-    public static ItemStack heartZhu(int m) { return new ItemStack(getItem(Names.heart_zhu), 1, m); }
+    public static ItemStack nianZhu(int m) { return new ItemStack(getItem(Names.heart_zhu), 1, m); }
 
 
     //this version of the addRecipe method checks first to see if the recipe is disabled in our automated recipe-disabler config
@@ -262,29 +262,15 @@ public class XRRecipes {
 
         // nian zhu heart pearls
         addRecipe(false, heartPearl(Reference.ZOMBIE_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.ZOMBIE_INGREDIENT_META), 's', Items.rotten_flesh, 't', Items.bone);
-        addRecipe(false, heartPearl(Reference.PIG_ZOMBIE_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.ZOMBIE_INGREDIENT_META), 's', Items.porkchop, 't', Items.gold_nugget);
         addRecipe(false, heartPearl(Reference.SKELETON_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.SKELETON_INGREDIENT_META), 's', Items.bone, 't', Items.flint);
         addRecipe(false, heartPearl(Reference.WITHER_SKELETON_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.WITHER_INGREDIENT_META), 's', Items.bone, 't', witherSkull());
         addRecipe(false, heartPearl(Reference.CREEPER_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.CREEPER_INGREDIENT_META), 's', Items.gunpowder, 't', Items.bone);
-        addRecipe(false, heartPearl(Reference.GHAST_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.CREEPER_INGREDIENT_META), 's', Items.ghast_tear, 't', ingredient(Reference.MOLTEN_INGREDIENT_META));
-        addRecipe(false, heartPearl(Reference.SPIDER_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.SPIDER_INGREDIENT_META), 's', Items.string, 't', Items.spider_eye);
-        addRecipe(false, heartPearl(Reference.CAVE_SPIDER_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.SPIDER_INGREDIENT_META), 's', Items.spider_eye, 't', Items.iron_ingot);
-        addRecipe(false, heartPearl(Reference.MAGMA_CUBE_ZHU_META), "ppp", "sts", "ppp", 'p', Items.magma_cream, 's', Items.blaze_rod, 't', ingredient(Reference.MOLTEN_INGREDIENT_META));
-        addRecipe(false, heartPearl(Reference.BLAZE_ZHU_META), "ppp", "sts", "ppp", 'p', Items.blaze_rod, 's', ingredient(Reference.MOLTEN_INGREDIENT_META), 't', Items.magma_cream);
-        addRecipe(false, heartPearl(Reference.ENDERMAN_ZHU_META), "ppp", "sts", "ppp", 'p', Items.ender_eye, 's', ingredient(Reference.ENDER_INGREDIENT_META), 't', Items.ender_pearl);
 
         // nian zhu actual items
-        addRecipe(true, heartZhu(Reference.ZOMBIE_ZHU_META), Items.string, heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META));
-        addRecipe(true, heartZhu(Reference.PIG_ZOMBIE_ZHU_META), Items.string, heartPearl(Reference.PIG_ZOMBIE_ZHU_META), heartPearl(Reference.PIG_ZOMBIE_ZHU_META), heartPearl(Reference.PIG_ZOMBIE_ZHU_META), heartPearl(Reference.PIG_ZOMBIE_ZHU_META), heartPearl(Reference.PIG_ZOMBIE_ZHU_META), heartPearl(Reference.PIG_ZOMBIE_ZHU_META));
-        addRecipe(true, heartZhu(Reference.SKELETON_ZHU_META), Items.string, heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META));
-        addRecipe(true, heartZhu(Reference.WITHER_SKELETON_ZHU_META), Items.string, heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META));
-        addRecipe(true, heartZhu(Reference.CREEPER_ZHU_META), Items.string, heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META));
-        addRecipe(true, heartZhu(Reference.GHAST_ZHU_META), Items.string, heartPearl(Reference.GHAST_ZHU_META), heartPearl(Reference.GHAST_ZHU_META), heartPearl(Reference.GHAST_ZHU_META), heartPearl(Reference.GHAST_ZHU_META), heartPearl(Reference.GHAST_ZHU_META), heartPearl(Reference.GHAST_ZHU_META));
-        addRecipe(true, heartZhu(Reference.SPIDER_ZHU_META), Items.string, heartPearl(Reference.SPIDER_ZHU_META), heartPearl(Reference.SPIDER_ZHU_META), heartPearl(Reference.SPIDER_ZHU_META), heartPearl(Reference.SPIDER_ZHU_META), heartPearl(Reference.SPIDER_ZHU_META), heartPearl(Reference.SPIDER_ZHU_META));
-        addRecipe(true, heartZhu(Reference.CAVE_SPIDER_ZHU_META), Items.string, heartPearl(Reference.CAVE_SPIDER_ZHU_META), heartPearl(Reference.CAVE_SPIDER_ZHU_META), heartPearl(Reference.CAVE_SPIDER_ZHU_META), heartPearl(Reference.CAVE_SPIDER_ZHU_META), heartPearl(Reference.CAVE_SPIDER_ZHU_META), heartPearl(Reference.CAVE_SPIDER_ZHU_META));
-        addRecipe(true, heartZhu(Reference.MAGMA_CUBE_ZHU_META), Items.string, heartPearl(Reference.MAGMA_CUBE_ZHU_META), heartPearl(Reference.MAGMA_CUBE_ZHU_META), heartPearl(Reference.MAGMA_CUBE_ZHU_META), heartPearl(Reference.MAGMA_CUBE_ZHU_META), heartPearl(Reference.MAGMA_CUBE_ZHU_META), heartPearl(Reference.MAGMA_CUBE_ZHU_META));
-        addRecipe(true, heartZhu(Reference.BLAZE_ZHU_META), Items.string, heartPearl(Reference.BLAZE_ZHU_META), heartPearl(Reference.BLAZE_ZHU_META), heartPearl(Reference.BLAZE_ZHU_META), heartPearl(Reference.BLAZE_ZHU_META), heartPearl(Reference.BLAZE_ZHU_META), heartPearl(Reference.BLAZE_ZHU_META));
-        addRecipe(true, heartZhu(Reference.ENDERMAN_ZHU_META), Items.string, heartPearl(Reference.ENDERMAN_ZHU_META), heartPearl(Reference.ENDERMAN_ZHU_META), heartPearl(Reference.ENDERMAN_ZHU_META), heartPearl(Reference.ENDERMAN_ZHU_META), heartPearl(Reference.ENDERMAN_ZHU_META), heartPearl(Reference.ENDERMAN_ZHU_META));
+        addRecipe(true, nianZhu(Reference.ZOMBIE_ZHU_META), Items.string, heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META));
+        addRecipe(true, nianZhu(Reference.SKELETON_ZHU_META), Items.string, heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META));
+        addRecipe(true, nianZhu(Reference.WITHER_SKELETON_ZHU_META), Items.string, heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META));
+        addRecipe(true, nianZhu(Reference.CREEPER_ZHU_META), Items.string, heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META));
 
 		/* potions and splash potions */
 

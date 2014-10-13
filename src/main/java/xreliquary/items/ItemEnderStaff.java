@@ -68,6 +68,7 @@ public class ItemEnderStaff extends ItemToggleable {
 
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
+
         if (entityLiving.worldObj.isRemote)
             return false;
         if (!(entityLiving instanceof EntityPlayer))

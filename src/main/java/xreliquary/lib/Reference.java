@@ -25,16 +25,9 @@ public class Reference {
     public static final String MODEL_TEXTURE_PATH = "textures/models/";
 
     public static final int ZOMBIE_ZHU_META = 0;
-    public static final int PIG_ZOMBIE_ZHU_META = 1;
-    public static final int SKELETON_ZHU_META = 2;
-    public static final int WITHER_SKELETON_ZHU_META = 3;
-    public static final int SPIDER_ZHU_META= 4;
-    public static final int CAVE_SPIDER_ZHU_META= 5;
-    public static final int CREEPER_ZHU_META = 6;
-    public static final int GHAST_ZHU_META = 7;
-    public static final int BLAZE_ZHU_META = 8;
-    public static final int MAGMA_CUBE_ZHU_META = 9;
-    public static final int ENDERMAN_ZHU_META = 10;
+    public static final int SKELETON_ZHU_META = 1;
+    public static final int WITHER_SKELETON_ZHU_META = 2;
+    public static final int CREEPER_ZHU_META = 3;;
 
     public static final int SKELETON_INGREDIENT_META = 0;
     public static final int WITHER_INGREDIENT_META = 1;

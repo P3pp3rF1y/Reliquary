@@ -7,6 +7,7 @@ import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
@@ -25,6 +26,26 @@ public class ItemIceRod extends ItemToggleable {
         this.setMaxDamage(257);
         this.setMaxStackSize(1);
         canRepair = false;
+    }
+
+    public ItemIceRod(String langName) {
+        super(langName);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
+        this.setMaxStackSize(1);
+        canRepair = false;
+    }
+
+
+    @Override
+    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
+        if (ist.getItemDamage() == 0)
+            return false;
+        if (ist.getItemDamage() < ist.getMaxDamage() - 1) {
+            entityLiving.worldObj.playSoundAtEntity(entityLiving, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+            entityLiving.worldObj.spawnEntityInWorld(new EntitySpecialSnowball(entityLiving.worldObj, entityLiving));
+            ist.setItemDamage(ist.getItemDamage() == ist.getMaxDamage() - 2 ? 0 : ist.getItemDamage() + 1);
+        }
+        return true;
     }
 
     @Override
@@ -56,22 +77,5 @@ public class ItemIceRod extends ItemToggleable {
     @Override
     public boolean isFull3D() {
         return true;
-    }
-
-    @Override
-    public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
-        ist = super.onItemRightClick(ist, world, player);
-        if (world.isRemote)
-            return ist;
-        if (player.isSneaking())
-            return ist;
-        if (ist.getItemDamage() == 0)
-            return ist;
-        if (ist.getItemDamage() < ist.getMaxDamage() - 1) {
-            world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-            world.spawnEntityInWorld(new EntitySpecialSnowball(world, player));
-            ist.setItemDamage(ist.getItemDamage() == ist.getMaxDamage() - 2 ? 0 : ist.getItemDamage() + 1);
-        }
-        return ist;
     }
 }

@@ -18,4 +18,7 @@ public class ItemPyromancerStaff extends ItemBase {
         this.setMaxStackSize(1);
         canRepair = false;
     }
+
+    @Override
+    public boolean isFull3D(){ return true; }
 }
