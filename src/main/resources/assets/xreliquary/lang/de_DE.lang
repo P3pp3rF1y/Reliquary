@@ -149,7 +149,7 @@ item.infernal_claws.name={{!colors.red}}Höllenklauen
 item.infernal_claws.tooltip=Absorbiert Feuerschaden,;welcher dich stattdessen hungrig macht.
 
 item.infernal_chalice.name=Höllenkelch
-item.infernal_chalice.tooltip=Kann eine unbegrenzte Menge Lava speichern;Schützt dich vor Lavaschaden.
+item.infernal_chalice.tooltip=Kann eine gewaltige Menge Lava speichern;Schützt dich vor Lavaschaden.
 
 item.kraken_shell.name=Seekrakenpanzer
 item.kraken_shell.tooltip=Verbessert deine Beweglichkeit;im Wasser.;Absorbiert Schaden durch Ertrinken,;welcher dich stattdessen hungrig macht.
