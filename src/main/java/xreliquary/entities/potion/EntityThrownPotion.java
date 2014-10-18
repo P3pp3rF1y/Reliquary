@@ -1,4 +1,4 @@
-package xreliquary.entities;
+package xreliquary.entities.potion;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

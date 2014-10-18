@@ -1,10 +1,10 @@
-package xreliquary.entities;
+package xreliquary.entities.shot;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import xreliquary.entities.ConcussiveExplosion;
 
 public class EntityBusterShot extends EntityShotBase {
     public EntityBusterShot(World par1World) {

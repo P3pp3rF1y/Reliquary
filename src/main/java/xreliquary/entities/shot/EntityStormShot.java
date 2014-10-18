@@ -1,6 +1,5 @@
-package xreliquary.entities;
+package xreliquary.entities.shot;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntityCreeper;

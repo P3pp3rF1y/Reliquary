@@ -1,31 +1,44 @@
-package xreliquary.entities;
+package xreliquary.entities.shot;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import xreliquary.entities.ConcussiveExplosion;
 
-public class EntitySeekerShot extends EntityShotBase {
-    public EntitySeekerShot(World par1World) {
+public class EntityConcussiveShot extends EntityShotBase {
+    public EntityConcussiveShot(World par1World) {
         super(par1World);
     }
 
-    public EntitySeekerShot(World par1World, double par2, double par4, double par6) {
+    public EntityConcussiveShot(World par1World, double par2, double par4, double par6) {
         super(par1World, par2, par4, par6);
     }
 
-    public EntitySeekerShot(World par1World, EntityPlayer par2EntityPlayer) {
+    public EntityConcussiveShot(World par1World, EntityPlayer par2EntityPlayer) {
         super(par1World, par2EntityPlayer);
     }
 
     @Override
-    void doFlightEffects() {
-        if (ticksInAir % 3 == 0)
-            worldObj.spawnParticle("mobSpellAmbient", posX, posY, posZ, 0.0F, gaussian(1.0F), gaussian(1.0F));
+    int getRicochetMax() {
+        return 0;
+    }
 
-        // housed in the base class
-        seekTarget();
+    @Override
+    int getDamageOfShot(EntityLivingBase mop) {
+        return 8 + d6();
+    }
+
+    @Override
+    void doFlightEffects() {
+        if (ticksInAir % 3 == 0) {
+            worldObj.spawnParticle("smoke", posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+        }
+    }
+
+    @Override
+    void spawnHitParticles(String string, int i) {
+        // no need
     }
 
     @Override
@@ -48,32 +61,16 @@ public class EntitySeekerShot extends EntityShotBase {
     }
 
     @Override
-    void doBurstEffect(int sideHit) {
-        // does nothing
-    }
-
-    @Override
     void onImpact(EntityLivingBase mop) {
-        if (mop != shootingEntity || ticksInAir > 3) {
+        if (mop != shootingEntity || ticksInAir > 3)
             doDamage(mop);
-        }
-        spawnHitParticles("mobSpellAmbient", 8);
+        ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, posX, posY, posZ, 1.5F, true, true);
         this.setDead();
     }
 
     @Override
-    void spawnHitParticles(String string, int i) {
-        for (int particles = 0; particles < i; particles++)
-            worldObj.spawnParticle(string, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.1F, 1.0F, 1.0F);
-    }
-
-    @Override
-    int getRicochetMax() {
-        return 3;
-    }
-
-    @Override
-    int getDamageOfShot(EntityLivingBase mop) {
-        return 10 + d12();
+    void doBurstEffect(int sideHit) {
+        ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, posX, posY, posZ, 1.5F, true, true);
+        this.setDead();
     }
 }

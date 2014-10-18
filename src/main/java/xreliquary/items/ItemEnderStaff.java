@@ -70,15 +70,15 @@ public class ItemEnderStaff extends ItemToggleable {
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
 
         if (entityLiving.worldObj.isRemote)
-            return false;
+            return true;
         if (!(entityLiving instanceof EntityPlayer))
-            return false;
+            return true;
         if (getCooldown(ist) > 0)
-            return false;
+            return true;
         EntityPlayer player = (EntityPlayer)entityLiving;
 
         if (ist.getItemDamage() == 0)
-            return false;
+            return true;
         if (ist.getItemDamage() < ist.getMaxDamage() - getEnderStaffPearlCost()) {
             player.worldObj.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
             // if the player is sneaking, it fires a "reduced gravity" ender
@@ -87,7 +87,7 @@ public class ItemEnderStaff extends ItemToggleable {
             ist.setItemDamage(ist.getItemDamage() >= (ist.getMaxDamage() - 1) - getEnderStaffPearlCost() ? 0 : ist.getItemDamage() + getEnderStaffPearlCost());
             setCooldown(ist);
         }
-        return true;
+        return false;
     }
 
     @Override

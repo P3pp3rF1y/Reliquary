@@ -18,6 +18,8 @@ import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.entities.*;
+import xreliquary.entities.potion.*;
+import xreliquary.entities.shot.*;
 import xreliquary.event.CommonEventHandler;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemDestructionCatalyst;

@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.entities.*;
+import xreliquary.entities.shot.*;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;

@@ -6,6 +6,8 @@ import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -68,8 +70,8 @@ public class ItemGlacialStaff extends ItemIceRod {
             player.setItemInUse(ist, getMaxItemUseDuration(ist));
         }
 
-        if (!this.isEnabled(ist))
-            doHasInfernalChaliceEnabledCheck(player);
+//        if (!this.isEnabled(ist))
+//            doHasInfernalChaliceEnabledCheck(player);
         return super.onItemRightClick(ist, world, player);
     }
 
@@ -117,24 +119,26 @@ public class ItemGlacialStaff extends ItemIceRod {
         int z = MathHelper.floor_double(player.posZ);
 
         if (this.isEnabled(ist)) {
-            doHasInfernalChaliceEnabledCheck(player);
+            //doHasInfernalChaliceEnabledCheck(player);
             if (ist.getItemDamage() == 0 || ist.getItemDamage() > 1) {
                 if (InventoryHelper.consumeItem(new ItemStack(Items.snowball), player)) {
                     ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 1 : ist.getItemDamage() - 1);
                 }
             }
 
-            for (int xOff = -3; xOff <= 3; xOff++) {
-                for (int zOff = -3; zOff <= 3; zOff++) {
+            for (int xOff = -2; xOff <= 2; xOff++) {
+                for (int zOff = -2; zOff <= 2; zOff++) {
+                    if (Math.abs(xOff) == 2 && Math.abs(zOff) == 2)
+                        continue;
                     doFreezeCheck(ist, x, y, z, world, xOff, zOff);
                 }
             }
         }
 
-        for (int xOff = -7; xOff <= 7; xOff++) {
-            for (int yOff = -2; yOff <= 0; yOff++) {
-                for (int zOff = -7; zOff <= 7; zOff++) {
-                    if (Math.abs(xOff) < 4 && Math.abs(zOff) < 4)
+        for (int xOff = -5; xOff <= 5; xOff++) {
+            for (int yOff = -5; yOff <= 5; yOff++) {
+                for (int zOff = -5; zOff <= 5; zOff++) {
+                    if (Math.abs(yOff) < 3 && Math.abs(xOff) < 3 && Math.abs(zOff) < 3 && !(Math.abs(xOff) == 2 && Math.abs(zOff) == 2))
                         continue;
                     doThawCheck(ist, x, y, z, world, xOff, yOff, zOff);
                 }
@@ -142,15 +146,15 @@ public class ItemGlacialStaff extends ItemIceRod {
         }
     }
 
-    public void doHasInfernalChaliceEnabledCheck(EntityPlayer player) {
-        for (int i = 0; i < player.inventory.mainInventory.length; ++i) {
-            if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() instanceof ItemInfernalChalice) {
-                if (((ItemToggleable) player.inventory.mainInventory[i].getItem()).isEnabled(player.inventory.mainInventory[i])) {
-                    ((ItemToggleable) player.inventory.mainInventory[i].getItem()).toggleEnabled(player.inventory.mainInventory[i]);
-                }
-            }
-        }
-    }
+//    public void doHasInfernalChaliceEnabledCheck(EntityPlayer player) {
+//        for (int i = 0; i < player.inventory.mainInventory.length; ++i) {
+//            if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() instanceof ItemInfernalChalice) {
+//                if (((ItemToggleable) player.inventory.mainInventory[i].getItem()).isEnabled(player.inventory.mainInventory[i])) {
+//                    ((ItemToggleable) player.inventory.mainInventory[i].getItem()).toggleEnabled(player.inventory.mainInventory[i]);
+//                }
+//            }
+//        }
+//    }
 
     public void doFreezeCheck(ItemStack ist, int x, int y, int z, World world, int xOff, int zOff) {
         x += xOff;
@@ -159,9 +163,31 @@ public class ItemGlacialStaff extends ItemIceRod {
         if (block.getMaterial() == Material.water  && world.getBlockMetadata(x, y, z) == 0) {
             addFrozenBlockToList(ist, x, y, z);
             world.setBlock(x, y, z, Blocks.packed_ice);
+
+            float red = 0.75F;
+            float green = 0.75F;
+            float blue = 1.0F;
+            String nameOfParticle = "reddust";
+
+            for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
+                if (world.isRemote) {
+                    float xVel = world.rand.nextFloat();
+                    float yVel = world.rand.nextFloat() + 0.5F;
+                    float zVel = world.rand.nextFloat();
+                    EntityFX effect = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(nameOfParticle, x + xVel, y + yVel, z + zVel, red, green, blue);
+                }
+            }
         } else if (block.getMaterial() == Material.lava && world.getBlockMetadata(x, y, z) == 0) {
             addFrozenBlockToList(ist, x, y, z);
             world.setBlock(x, y, z, Blocks.obsidian);
+            for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
+                float xVel = world.rand.nextFloat();
+                float yVel = world.rand.nextFloat() + 0.5F;
+                float zVel = world.rand.nextFloat();
+                world.spawnParticle(world.rand.nextInt(3) == 0 ? "largesmoke" : "smoke", x + xVel, y + yVel, z + zVel, 0.0D, 0.2D, 0.0D);
+
+            }
+
         }
     }
 
@@ -171,11 +197,34 @@ public class ItemGlacialStaff extends ItemIceRod {
         z += zOff;
         Block block = world.getBlock(x, y, z);
         if (block == Blocks.packed_ice) {
-            if (removeFrozenBlockFromList(ist, x, y, z))
+            if (removeFrozenBlockFromList(ist, x, y, z)) {
                 world.setBlock(x, y, z, Blocks.water);
+                for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
+                    float xVel = world.rand.nextFloat();
+                    float yVel = world.rand.nextFloat() + 0.5F;
+                    float zVel = world.rand.nextFloat();
+                    world.spawnParticle(world.rand.nextInt(3) == 0 ? "largesmoke" : "smoke", x + xVel, y + yVel, z + zVel, 0.0D, 0.2D, 0.0D);
+
+                }
+            }
         } else if (block == Blocks.obsidian) {
-            if (removeFrozenBlockFromList(ist, x, y, z))
+            if (removeFrozenBlockFromList(ist, x, y, z)) {
                 world.setBlock(x, y, z, Blocks.lava);
+
+                float red = 1.0F;
+                float green = 0.0F;
+                float blue = 0.0F;
+                String nameOfParticle = "reddust";
+
+                for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
+                    if (world.isRemote) {
+                        float xVel = world.rand.nextFloat();
+                        float yVel = world.rand.nextFloat() + 0.5F;
+                        float zVel = world.rand.nextFloat();
+                        EntityFX effect = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(nameOfParticle, x + xVel, y + yVel, z + zVel, red, green, blue);
+                    }
+                }
+            }
         }
     }
 

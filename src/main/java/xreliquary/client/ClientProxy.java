@@ -15,6 +15,8 @@ import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.client.render.*;
 import xreliquary.common.CommonProxy;
 import xreliquary.entities.*;
+import xreliquary.entities.potion.*;
+import xreliquary.entities.shot.*;
 import xreliquary.event.ClientEventHandler;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;

@@ -8,7 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import xreliquary.entities.EntityShotBase;
+import xreliquary.entities.shot.EntityShotBase;
 import xreliquary.lib.ClientReference;
 
 @SideOnly(Side.CLIENT)

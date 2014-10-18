@@ -32,7 +32,7 @@ public class ItemRendingGale extends ItemToggleable {
     public ItemRendingGale() {
         super(Names.rending_gale);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setMaxDamage(1601);
+        this.setMaxDamage(321);
         this.setMaxStackSize(1);
         canRepair = false;
     }
@@ -46,7 +46,7 @@ public class ItemRendingGale extends ItemToggleable {
 
         EntityPlayer player = (EntityPlayer)entityLiving;
 
-        Vec3 lookVec = player.getLookVec();
+        Vec3 lookVec = player.getLook(0.66F);
 
         double x = lookVec.xCoord;
         double y = lookVec.yCoord;
@@ -61,13 +61,30 @@ public class ItemRendingGale extends ItemToggleable {
                         if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z))) {
                             //z is fine
                             y = 0D;
-                        } else
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D)))
                             z = 0D;
                     } else {
                         if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D))) {
                             //y is fine
                             z = 0D;
-                        } else
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z)))
+                            y = 0D;
+                    }
+                } else {
+                    //x is not fine
+                    x = 0D;
+                    //and also do the standard y/z checks
+                    if (Math.abs(z) > Math.abs(y)) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z))) {
+                            //z is fine
+                            y = 0D;
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D)))
+                            z = 0D;
+                    } else {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D))) {
+                            //y is fine
+                            z = 0D;
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z)))
                             y = 0D;
                     }
                 }
@@ -78,13 +95,29 @@ public class ItemRendingGale extends ItemToggleable {
                         if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D))) {
                             //x is fine
                             y = 0D;
-                        } else
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D)))
                             x = 0D;
                     } else {
                         if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D))) {
                             //y is fine
                             x = 0D;
-                        } else
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D)))
+                            y = 0D;
+                    }
+                } else {
+                    //z is not fine
+                    z = 0D;
+                    if (Math.abs(x) > Math.abs(y)) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D))) {
+                            //x is fine
+                            y = 0D;
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D)))
+                            x = 0D;
+                    } else {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D))) {
+                            //y is fine
+                            x = 0D;
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D)))
                             y = 0D;
                     }
                 }
@@ -94,15 +127,31 @@ public class ItemRendingGale extends ItemToggleable {
                     if (Math.abs(x) > Math.abs(z)) {
                         if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D))) {
                             //x is fine
-                            x = 0D;
-                        } else
                             z = 0D;
+                        } else  if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z)))
+                            x = 0D;
+                    } else {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D))) {
+                            //x is fine
+                            z = 0D;
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z)))
+                            x = 0D;
+                    }
+                } else {
+                    //y is not fine
+                    y = 0D;
+                    if (Math.abs(x) > Math.abs(z)) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D))) {
+                            //x is fine
+                            z = 0D;
+                        } else  if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z)))
+                            x = 0D;
                     } else {
                         if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z))) {
                             //x is fine
-                            z = 0D;
-                        } else
                             x = 0D;
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D)))
+                            z = 0D;
                     }
                 }
             }
@@ -194,23 +243,11 @@ public class ItemRendingGale extends ItemToggleable {
             return;
 
         if (this.isEnabled(ist)) {
-            if (ist.getItemDamage() == 0 || ist.getItemDamage() > 10) {
+            if (ist.getItemDamage() == 0 || ist.getItemDamage() > 2) {
                 if (InventoryHelper.consumeItem(new ItemStack(Items.feather), player)) {
-                    ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 10: ist.getItemDamage() - 10);
+                    ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 2: ist.getItemDamage() - 2);
                 }
             }
-
-//            if (ist.getItemDamage() == 0 || ist.getItemDamage() > 40) {
-//                if (InventoryHelper.consumeItem(new ItemStack(ContentHandler.getItem(Names.mob_ingredient), 1, Reference.BAT_INGREDIENT_META), player)) {
-//                    ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 40: ist.getItemDamage() - 40);
-//                }
-//            }
-//
-//            if (ist.getItemDamage() == 0 || ist.getItemDamage() > 160) {
-//                if (InventoryHelper.consumeItem(new ItemStack(ContentHandler.getItem(Names.mob_ingredient), 1, Reference.STORM_INGREDIENT_META), player)) {
-//                    ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 160: ist.getItemDamage() - 160);
-//                }
-//            }
         }
     }
 

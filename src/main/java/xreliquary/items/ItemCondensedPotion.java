@@ -2,7 +2,6 @@ package xreliquary.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.block.material.Material;
@@ -20,7 +19,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.entities.*;
+import xreliquary.entities.potion.*;
 import xreliquary.event.ClientEventHandler;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;

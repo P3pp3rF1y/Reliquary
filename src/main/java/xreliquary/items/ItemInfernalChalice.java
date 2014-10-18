@@ -5,6 +5,8 @@ import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -31,67 +33,67 @@ public class ItemInfernalChalice extends ItemToggleable {
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (player.isSneaking()) {
-            if (!this.isEnabled(ist))
-                doHasGlacialStaffEnabledCheck(player);
+//            if (!this.isEnabled(ist))
+//                doHasGlacialStaffEnabledCheck(player);
             return super.onItemRightClick(ist, world, player);
         }
 
-        float var4 = 1.0F;
-        double var5 = player.prevPosX + (player.posX - player.prevPosX) * var4;
-        double var7 = player.prevPosY + (player.posY - player.prevPosY) * var4 + 1.62D - player.yOffset;
-        double var9 = player.prevPosZ + (player.posZ - player.prevPosZ) * var4;
+        float movementThresholdCoefficient = 1.0F;
+        double xOffset = player.prevPosX + (player.posX - player.prevPosX) * movementThresholdCoefficient;
+        double yOffset = player.prevPosY + (player.posY - player.prevPosY) * movementThresholdCoefficient + 1.62D - player.yOffset;
+        double zOffset = player.prevPosZ + (player.posZ - player.prevPosZ) * movementThresholdCoefficient;
         MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
 
         if (mop == null) {
             return ist;
         } else {
             if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                int var13 = mop.blockX;
-                int var14 = mop.blockY;
-                int var15 = mop.blockZ;
+                int x = mop.blockX;
+                int y = mop.blockY;
+                int z = mop.blockZ;
 
-                if (!world.canMineBlock(player, var13, var14, var15))
+                if (!world.canMineBlock(player, x, y, z))
                     return ist;
 
-                if (!player.canPlayerEdit(var13, var14, var15, mop.sideHit, ist))
+                if (!player.canPlayerEdit(x, y, z, mop.sideHit, ist))
                     return ist;
 
-                String ident = ContentHelper.getIdent(world.getBlock(var13, var14, var15));
-                if ((ident.equals(ContentHelper.getIdent(Blocks.flowing_lava)) || ident.equals(ContentHelper.getIdent(Blocks.lava))) && world.getBlockMetadata(var13, var14, var15) == 0) {
-                    world.setBlock(var13, var14, var15, Blocks.air);
+                String ident = ContentHelper.getIdent(world.getBlock(x, y, z));
+                if (this.isEnabled(ist) && (ident.equals(ContentHelper.getIdent(Blocks.flowing_lava)) || ident.equals(ContentHelper.getIdent(Blocks.lava))) && world.getBlockMetadata(x, y, z) == 0) {
+                    world.setBlock(x, y, z, Blocks.air);
                     ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 1 : ist.getItemDamage() - 1);
                     return ist;
                 }
 
-                if (ist.getItemDamage() == 1) {
+                if (!this.isEnabled(ist) && ist.getItemDamage() >= 1 && ist.getItemDamage() < ist.getMaxDamage() - 1) {
                     if (mop.sideHit == 0) {
-                        --var14;
+                        --y;
                     }
 
                     if (mop.sideHit == 1) {
-                        ++var14;
+                        ++y;
                     }
 
                     if (mop.sideHit == 2) {
-                        --var15;
+                        --z;
                     }
 
                     if (mop.sideHit == 3) {
-                        ++var15;
+                        ++z;
                     }
 
                     if (mop.sideHit == 4) {
-                        --var13;
+                        --x;
                     }
 
                     if (mop.sideHit == 5) {
-                        ++var13;
+                        ++x;
                     }
 
-                    if (!player.canPlayerEdit(var13, var14, var15, mop.sideHit, ist))
+                    if (!player.canPlayerEdit(x, y, z, mop.sideHit, ist))
                         return ist;
 
-                    if (ist.getItemDamage() != 0 && ist.getItemDamage() <= ist.getMaxDamage() - 1 && this.tryPlaceContainedLiquid(world, ist, var5, var7, var9, var13, var14, var15) && !player.capabilities.isCreativeMode) {
+                    if (ist.getItemDamage() != 0 && ist.getItemDamage() <= ist.getMaxDamage() - 1 && this.tryPlaceContainedLiquid(world, ist, xOffset, yOffset, zOffset, x, y, z) && !player.capabilities.isCreativeMode) {
                         ist.setItemDamage(ist.getItemDamage() >= ist.getMaxDamage() - 1 ? 0 : ist.getItemDamage() + 1);
                         return ist;
                     }
@@ -103,21 +105,23 @@ public class ItemInfernalChalice extends ItemToggleable {
         }
     }
 
-    public void doHasGlacialStaffEnabledCheck(EntityPlayer player) {
-        for (int i = 0; i < player.inventory.mainInventory.length; i++) {
-            if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() instanceof ItemGlacialStaff) {
-                if (((ItemToggleable)player.inventory.mainInventory[i].getItem()).isEnabled(player.inventory.mainInventory[i])) {
-                    ((ItemToggleable)player.inventory.mainInventory[i].getItem()).toggleEnabled(player.inventory.mainInventory[i]);
-                }
-            }
-        }
-    }
+//    public void doHasGlacialStaffEnabledCheck(EntityPlayer player) {
+//        for (int i = 0; i < player.inventory.mainInventory.length; i++) {
+//            if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() instanceof ItemGlacialStaff) {
+//                if (((ItemToggleable)player.inventory.mainInventory[i].getItem()).isEnabled(player.inventory.mainInventory[i])) {
+//                    ((ItemToggleable)player.inventory.mainInventory[i].getItem()).toggleEnabled(player.inventory.mainInventory[i]);
+//                }
+//            }
+//        }
+//    }
 
-    public boolean tryPlaceContainedLiquid(World par1World, ItemStack ist, double par2, double par4, double par6, int par8, int par9, int par10) {
-        if (!par1World.isAirBlock(par8, par9, par10) && par1World.getBlock(par8, par9, par10).getMaterial().isSolid())
+    public boolean tryPlaceContainedLiquid(World world, ItemStack ist, double par2, double par4, double par6, int x, int y, int z) {
+        Material material = world.getBlock(x, y, z).getMaterial();
+        if ((!world.isAirBlock(x, y, z) && material.isSolid()) || (material.isLiquid() && (material != Material.lava || world.getBlockMetadata(x, y, z) == 0)))
             return false;
         else {
-            par1World.setBlock(par8, par9, par10, Blocks.flowing_lava, 0, 3);
+
+            world.setBlock(x, y, z, Blocks.flowing_lava, 0, 3);
             return true;
         }
     }
@@ -131,34 +135,48 @@ public class ItemInfernalChalice extends ItemToggleable {
         if (player == null)
             return;
 
-        if (this.isEnabled(ist)) {
-            doHasGlacialStaffEnabledCheck(player);
-
-
-            int x = MathHelper.floor_double(player.posX);
-            int y = MathHelper.floor_double(player.boundingBox.minY) - 1;
-            int z = MathHelper.floor_double(player.posZ);
-
-            for (int xOff = -3; xOff <= 3; xOff++) {
-                for (int yOff = -3; yOff <= 3; yOff++) {
-                    for (int zOff = -3; zOff <= 3; zOff++) {
-                        if (ist.getItemDamage() == 0 || ist.getItemDamage() > 1)
-                            doDrainCheck(ist, x, y, z, world, xOff, yOff, zOff);
-                    }
-                }
-            }
-
-        }
+//        if (this.isEnabled(ist)) {
+//            doHasGlacialStaffEnabledCheck(player);
+//
+//
+//            int x = MathHelper.floor_double(player.posX);
+//            int y = MathHelper.floor_double(player.boundingBox.minY) - 1;
+//            int z = MathHelper.floor_double(player.posZ);
+//
+//            for (int xOff = -3; xOff <= 3; xOff++) {
+//                for (int yOff = -3; yOff <= 3; yOff++) {
+//                    for (int zOff = -3; zOff <= 3; zOff++) {
+//                        if (ist.getItemDamage() == 0 || ist.getItemDamage() > 1)
+//                            doDrainCheck(ist, x, y, z, world, xOff, yOff, zOff);
+//                    }
+//                }
+//            }
+//
+//        }
     }
-
-    public void doDrainCheck(ItemStack ist, int x, int y, int z, World world, int xOff, int yOff, int zOff) {
-        x += xOff;
-        y += yOff;
-        z += zOff;
-        Block block = world.getBlock(x, y, z);
-        if (block.getMaterial() == Material.lava && world.getBlockMetadata(x, y, z) == 0) {
-            ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 1 : ist.getItemDamage() - 1);
-            world.setBlock(x, y, z, Blocks.cobblestone);
-        }
-    }
+//
+//    public void doDrainCheck(ItemStack ist, int x, int y, int z, World world, int xOff, int yOff, int zOff) {
+//        x += xOff;
+//        y += yOff;
+//        z += zOff;
+//        Block block = world.getBlock(x, y, z);
+//        if (block.getMaterial() == Material.lava && world.getBlockMetadata(x, y, z) == 0) {
+//            ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 1 : ist.getItemDamage() - 1);
+//            world.setBlock(x, y, z, Blocks.cobblestone);
+//
+//            float red = 1.0F;
+//            float green = 0.0F;
+//            float blue = 0.0F;
+//            String nameOfParticle = "reddust";
+//
+//            for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
+//                if (world.isRemote) {
+//                    float xVel = world.rand.nextFloat();
+//                    float yVel = world.rand.nextFloat() + 0.5F;
+//                    float zVel = world.rand.nextFloat();
+//                    EntityFX effect = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(nameOfParticle, x + xVel, y + yVel, z + zVel, red, green, blue);
+//                }
+//            }
+//        }
+//    }
 }

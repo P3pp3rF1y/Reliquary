@@ -106,16 +106,16 @@ item.glacial_staff.name=Glacial Staff
 item.glacial_staff.tooltip=Shoots snowballs; tears leaves from trees; and freezes the ground; you walk on.
 
 item.rod_of_lyssa.name=Rod of Lyssa
-item.rod_of_lyssa.tooltip=A magic fishing rod that can be; used as a grappling hook.;Invokes rage in anything;you hook.
+item.rod_of_lyssa.tooltip=A magic fishing rod that can be;used to reel in items and pick pockets.
 
 item.shears_of_winter.name=Shears of Winter
 item.shears_of_winter.tooltip=Magic shears that tear the;leaves from trees with cold.
 
 item.pyromancer_staff.name={{!colors.red}}Pyromancer's Staff
-item.pyromancer_staff.tooltip=Shoots fire of every variety,;sets fire to blocks,;extinguishes flames;and defends you;from fiery attackers.
+item.pyromancer_staff.tooltip=Shoots fire of every variety,;sets fire to blocks,;extinguishes flames;and defends you;from fiery attackers.;{{!colors.red}}Charges: {{charges}};{{!colors.red}}Blaze: {{blaze}}
 
 item.rending_gale.name={{!colors.yellow}}Rending Gale
-item.rending_gale.tooltip=Fly in the direction you're facing; and hold right-click to summon;mighty winds.
+item.rending_gale.tooltip=Fly in the direction you're facing with right-click.;Left-click launches a column of wind.
 
 item.harvest_rod.name={{!colors.green}}Harvest Rod
 item.harvest_rod.tooltip=Shift+Right-click to consume bonemeal.;Click blocks to fertilize,;strike crops to harvest an area.
@@ -149,7 +149,7 @@ item.infernal_claws.name={{!colors.red}}Infernal Claws
 item.infernal_claws.tooltip=Absorbs fire damage at;the expense of hunger.
 
 item.infernal_chalice.name=Infernal Chalice
-item.infernal_chalice.tooltip=Can store a huge amount of lava;Protects you from lava damage.
+item.infernal_chalice.tooltip=Can store a huge amount of lava.;Protects you from lava damage.
 
 item.kraken_shell.name=Kraken Shell
 item.kraken_shell.tooltip=Improves your mobility;when in water.;Absorb drowning damage at;the expense of hunger.

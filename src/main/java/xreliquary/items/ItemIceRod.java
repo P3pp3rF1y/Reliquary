@@ -39,13 +39,13 @@ public class ItemIceRod extends ItemToggleable {
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
         if (ist.getItemDamage() == 0)
-            return false;
+            return true;
         if (ist.getItemDamage() < ist.getMaxDamage() - 1) {
             entityLiving.worldObj.playSoundAtEntity(entityLiving, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
             entityLiving.worldObj.spawnEntityInWorld(new EntitySpecialSnowball(entityLiving.worldObj, entityLiving));
             ist.setItemDamage(ist.getItemDamage() == ist.getMaxDamage() - 2 ? 0 : ist.getItemDamage() + 1);
         }
-        return true;
+        return false;
     }
 
     @Override

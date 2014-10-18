@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.util.ContentHelper;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -153,20 +154,21 @@ public class ItemEmperorChalice extends ItemBase {
         }
     }
 
-    public boolean tryPlaceContainedLiquid(World par1World, ItemStack ist, double par2, double par4, double par6, int par8, int par9, int par10) {
+    public boolean tryPlaceContainedLiquid(World world, ItemStack ist, double posX, double posY, double posZ, int x, int y, int z) {
+        Material material = world.getBlock(x, y, z).getMaterial();
         if (ist.getItemDamage() != 1)
             return false;
-        else if (!par1World.isAirBlock(par8, par9, par10) && par1World.getBlock(par8, par9, par10).getMaterial().isSolid())
+        if ((!world.isAirBlock(x, y, z) && material.isSolid()) || material.isLiquid())
             return false;
         else {
-            if (par1World.provider.isHellWorld) {
-                par1World.playSoundEffect(par2 + 0.5D, par4 + 0.5D, par6 + 0.5D, "random.fizz", 0.5F, 2.6F + (par1World.rand.nextFloat() - par1World.rand.nextFloat()) * 0.8F);
+            if (world.provider.isHellWorld) {
+                world.playSoundEffect(posX + 0.5D, posY + 0.5D, posZ + 0.5D, "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
                 for (int var11 = 0; var11 < 8; ++var11) {
-                    par1World.spawnParticle("largesmoke", par8 + Math.random(), par9 + Math.random(), par10 + Math.random(), 0.0D, 0.0D, 0.0D);
+                    world.spawnParticle("largesmoke", x + Math.random(), y + Math.random(), z + Math.random(), 0.0D, 0.0D, 0.0D);
                 }
             } else {
-                par1World.setBlock(par8, par9, par10, Blocks.flowing_water, 0, 3);
+                world.setBlock(x, y, z, Blocks.flowing_water, 0, 3);
             }
 
             return true;
