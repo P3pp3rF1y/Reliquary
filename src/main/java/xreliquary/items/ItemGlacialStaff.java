@@ -81,10 +81,11 @@ public class ItemGlacialStaff extends ItemIceRod {
         //start the blizzard after a short delay, this prevents some abuse.
         if (getMaxItemUseDuration(ist) - count <= 5)
             return;
-        if ((getMaxItemUseDuration(ist) - count) % 50 == 0) {
-            float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
-            player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.25F, randomPitch);
-        }
+//        if ((getMaxItemUseDuration(ist) - count) % 40 == 0) {
+//            System.out.println("count " + count + " % 40 = " + (getMaxItemUseDuration(ist) - count) % 40);
+//            float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
+//            player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.25F, randomPitch);
+//        }
         Vec3 lookVector = player.getLookVec();
         spawnBlizzardParticles(lookVector, player);
 

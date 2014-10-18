@@ -280,10 +280,11 @@ public class ItemRendingGale extends ItemToggleable {
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
         if (ist.getItemDamage() == 0 || ist.getItemDamage() >= ist.getMaxDamage() - 1)
             return;
-        if (getMaxItemUseDuration(ist) - count % 50 == 0) {
-            float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
-            player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.25F, randomPitch);
-        }
+//        if ((getMaxItemUseDuration(ist) - count) % 40 == 0) {
+//            System.out.println("count " + count + " % 40 = " + (getMaxItemUseDuration(ist) - count) % 40);
+//            float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
+//            player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.25F, randomPitch);
+//        }
         Vec3 lookVector = player.getLookVec();
         spawnHurricaneParticles(lookVector, player);
 
