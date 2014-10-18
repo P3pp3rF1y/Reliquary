@@ -54,11 +54,12 @@ public class ItemPyromancerStaff extends ItemToggleable {
         EntityPlayer player = (EntityPlayer) e;
         if (player.getCurrentEquippedItem() == null)
             return;
-        if (player.getCurrentEquippedItem().getItem() instanceof ItemPyromancerStaff) {
+        //always on!
+        //if (player.getCurrentEquippedItem().getItem() instanceof ItemPyromancerStaff) {
             doFireballEffect(ist, player);
             if (!this.isEnabled(ist))
                 doExtinguishEffect(player);
-        }
+        //}
 
         if (this.isEnabled(ist)) {
             scanForFireChargeAndBlazePowder(ist, player);
@@ -370,11 +371,10 @@ public class ItemPyromancerStaff extends ItemToggleable {
             if (player.getDistanceToEntity(fireball) < 4) {
                 if (!isInternalStorageFullOfItem(ist, Items.fire_charge) && InventoryHelper.consumeItem(Items.fire_charge, player)) {
                     addItemToInternalStorage(ist, Items.fire_charge);
+                    player.worldObj.playSoundEffect(fireball.posX, fireball.posY, fireball.posZ, "random.fizz", 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F);
                 }
-                fireball.setDead();
+                    fireball.setDead();
             }
-            fireball.attackEntityFrom(DamageSource.causePlayerDamage(player), 1);
-            player.worldObj.playSoundEffect(fireball.posX, fireball.posY, fireball.posZ, "random.fizz", 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F);
         }
         List blazeFireballs = player.worldObj.getEntitiesWithinAABB(EntitySmallFireball.class, AxisAlignedBB.getBoundingBox(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));
         Iterator fire2 = blazeFireballs.iterator();

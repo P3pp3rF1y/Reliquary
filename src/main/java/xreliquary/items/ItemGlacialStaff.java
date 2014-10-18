@@ -77,6 +77,9 @@ public class ItemGlacialStaff extends ItemIceRod {
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
+        //start the blizzard after a short delay, this prevents some abuse.
+        if (getMaxItemUseDuration(ist) - count <= 5)
+            return;
         Vec3 lookVector = player.getLookVec();
         spawnBlizzardParticles(lookVector, player);
 
@@ -97,9 +100,21 @@ public class ItemGlacialStaff extends ItemIceRod {
         while (iterator.hasNext()) {
             Entity e = (Entity)iterator.next();
             if (e instanceof EntityLivingBase && !e.isEntityEqual(player)) {
-                ((EntityLivingBase) e).addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 120, 1));
+                EntityLivingBase livingBase = (EntityLivingBase)e;
+                PotionEffect slow = null;
+                if (livingBase.getActivePotionEffect(Potion.moveSlowdown) == null) {
+                    //if normal, create the first stack of freezing effect.
+                    slow = new PotionEffect(Potion.moveSlowdown.id, 120, 0);
+                } else {
+                    //if the creature is slowed already, refresh the duration and increase the amplifier by 1.
+                    //5 hits is all it takes to max out the amplitude.
+                    slow = new PotionEffect(Potion.moveSlowdown.id, Math.min(livingBase.getActivePotionEffect(Potion.moveSlowdown).getDuration() + 120, 240), Math.min(livingBase.getActivePotionEffect(Potion.moveSlowdown).getAmplifier() + 1, 4));
+
+                }
+
+                ((EntityLivingBase) e).addPotionEffect(slow);
                 if (tickCount % 20 == 0)
-                    e.attackEntityFrom(DamageSource.causePlayerDamage(player), 2F);
+                    e.attackEntityFrom(DamageSource.causePlayerDamage(player), slow.getAmplifier());
             }
         }
     }
