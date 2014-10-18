@@ -91,6 +91,10 @@ public class ItemPyromancerStaff extends ItemToggleable {
         if (getMaxItemUseDuration(ist) - count <= 5)
             return;
         Vec3 lookVector = player.getLookVec();
+        double soundX = player.posX + lookVector.xCoord;
+        double soundY = player.posX + lookVector.xCoord;
+        double soundZ = player.posX + lookVector.xCoord;
+        player.worldObj.playSound(soundX, soundY, soundZ, "mob.ghast.fireball", 0.1F, 0.1F + (0.1F * itemRand.nextFloat()), false);
         castFireForward(player, lookVector, count);
         spawnFlameParticles(lookVector, player);
     }

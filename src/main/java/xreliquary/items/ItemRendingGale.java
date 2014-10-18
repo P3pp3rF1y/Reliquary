@@ -233,6 +233,11 @@ public class ItemRendingGale extends ItemToggleable {
             return;
 
         if (player.isSwingInProgress && player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().isItemEqual(ist)) {
+            if (player.swingProgressInt == -1) {
+                float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
+                player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.15F, randomPitch);
+            }
+
             for (int frames = 0; frames < 5; frames++) {
                 doPushEffect(ist, player, player.getLookVec());
                 spawnHurricaneParticles(player.getLookVec(), player);
@@ -275,6 +280,10 @@ public class ItemRendingGale extends ItemToggleable {
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
         if (ist.getItemDamage() == 0 || ist.getItemDamage() >= ist.getMaxDamage() - 1)
             return;
+        if (getMaxItemUseDuration(ist) - count % 50 == 0) {
+            float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
+            player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.25F, randomPitch);
+        }
         Vec3 lookVector = player.getLookVec();
         spawnHurricaneParticles(lookVector, player);
 

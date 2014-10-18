@@ -98,6 +98,7 @@ public class Reference {
     public static final String LOAD_SOUND = Reference.MOD_ID + ":xload";
     public static final String SHOT_SOUND = Reference.MOD_ID + ":xshot";
     public static final String BOOK_SOUND = Reference.MOD_ID + ":book";
+    public static final String GUST_SOUND = Reference.MOD_ID + ":gust";
 
 
     public static final int WHITE_WOOL_META = 0;

@@ -6,9 +6,6 @@ import lib.enderwizards.sandstone.util.InventoryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.IGrowable;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -103,10 +100,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
         if (player.worldObj.isRemote) {
             for (int particles = 0; particles <= 8; particles++)
-                player.worldObj.spawnParticle("blockcrack_" + Block.getIdFromBlock(block) + "_" + player.worldObj.getBlockMetadata(x, y, z), x, y, z, (rand.nextFloat() - 0.5F) * 4F, 0.5F, (rand.nextFloat() - 0.5F) * 4F);
-            if (block.getMaterial() != Material.air)
-                Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(new ResourceLocation(block.stepSound.getBreakSound()), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F, (float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F));
-
+                player.worldObj.playAuxSFXAtEntity(player, 2001, x, y, z, player.worldObj.getBlockMetadata(x, y, z));
         } else {
             for(ItemStack stack : drops)
             {

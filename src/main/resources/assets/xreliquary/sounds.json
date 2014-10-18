@@ -16,5 +16,11 @@
         "sounds": [
             "xshot"
         ]
+    },
+    "gust": {
+        "category": "player",
+        "sounds": [
+            "gust"
+        ]
     }
 }
