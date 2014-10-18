@@ -16,7 +16,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import xreliquary.Reliquary;
@@ -99,8 +98,7 @@ public class ItemHarvestRod extends ItemToggleable {
         Random rand = new Random();
 
         if (player.worldObj.isRemote) {
-            for (int particles = 0; particles <= 8; particles++)
-                player.worldObj.playAuxSFXAtEntity(player, 2001, x, y, z, player.worldObj.getBlockMetadata(x, y, z));
+            for (int particles = 0; particles <= 8; particles++)player.worldObj.playAuxSFXAtEntity(player, 2001, x, y, z, Block.getIdFromBlock(block) + (player.worldObj.getBlockMetadata(x, y, z) << 12));
         } else {
             for(ItemStack stack : drops)
             {

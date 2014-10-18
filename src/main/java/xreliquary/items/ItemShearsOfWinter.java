@@ -14,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -158,6 +157,13 @@ public class ItemShearsOfWinter extends ItemBase {
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
+        //start the blizzard after a short delay, this prevents some abuse.
+        if (getMaxItemUseDuration(ist) - count <= 5)
+            return;
+        if ((getMaxItemUseDuration(ist) - count) % 50 == 0) {
+            float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
+            player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.25F, randomPitch);
+        }
         Vec3 lookVector = player.getLookVec();
         spawnBlizzardParticles(lookVector, player);
 
@@ -305,7 +311,7 @@ public class ItemShearsOfWinter extends ItemBase {
 
                     if (player.worldObj.isRemote) {
                         if (block.getMaterial() != Material.air)
-                            player.worldObj.playAuxSFXAtEntity(player, 2001, x, y, z, player.worldObj.getBlockMetadata(x, y, z));
+                            player.worldObj.playAuxSFXAtEntity(player, 2001, x, y, z, Block.getIdFromBlock(block) + (player.worldObj.getBlockMetadata(x, y, z) << 12));
 
                     } else {
                         for(ItemStack stack : drops)

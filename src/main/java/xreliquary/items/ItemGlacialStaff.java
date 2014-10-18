@@ -81,7 +81,7 @@ public class ItemGlacialStaff extends ItemIceRod {
         //start the blizzard after a short delay, this prevents some abuse.
         if (getMaxItemUseDuration(ist) - count <= 5)
             return;
-        if (getMaxItemUseDuration(ist) - count % 50 == 0) {
+        if ((getMaxItemUseDuration(ist) - count) % 50 == 0) {
             float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
             player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.25F, randomPitch);
         }

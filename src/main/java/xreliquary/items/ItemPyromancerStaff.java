@@ -92,9 +92,9 @@ public class ItemPyromancerStaff extends ItemToggleable {
             return;
         Vec3 lookVector = player.getLookVec();
         double soundX = player.posX + lookVector.xCoord;
-        double soundY = player.posX + lookVector.xCoord;
-        double soundZ = player.posX + lookVector.xCoord;
-        player.worldObj.playSound(soundX, soundY, soundZ, "mob.ghast.fireball", 0.1F, 0.1F + (0.1F * itemRand.nextFloat()), false);
+        double soundY = player.posY + lookVector.yCoord;
+        double soundZ = player.posZ + lookVector.zCoord;
+        player.worldObj.playSound(soundX, soundY, soundZ, "mob.ghast.fireball", 0.5F, 0.2F + (0.2F * itemRand.nextFloat()), false);
         castFireForward(player, lookVector, count);
         spawnFlameParticles(lookVector, player);
     }
