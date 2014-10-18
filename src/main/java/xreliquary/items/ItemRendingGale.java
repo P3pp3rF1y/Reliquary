@@ -305,8 +305,11 @@ public class ItemRendingGale extends ItemToggleable {
 
             int probabilityFactor = (distance - 3) / 2;
 
-            if ( probabilityFactor > 0 && player.worldObj.rand.nextInt(probabilityFactor) != 0)
-                continue;
+            if ( probabilityFactor > 0 && player.worldObj.rand.nextInt(probabilityFactor) != 0) {
+                //added to reduce the number of push frames that fail by 50%, no matter what.
+                if (player.worldObj.rand.nextInt(2) == 0)
+                    continue;
+            }
 
             if (e.equals(player))
                 continue;
