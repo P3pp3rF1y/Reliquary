@@ -89,6 +89,8 @@ public class ItemEmperorChalice extends ItemToggleable {
 
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+        if (player.isSneaking())
+            return super.onItemRightClick(ist, world, player);
         float coeff = 1.0F;
         double xOff = player.prevPosX + (player.posX - player.prevPosX) * coeff;
         double yOff = player.prevPosY + (player.posY - player.prevPosY) * coeff + 1.62D - player.yOffset;
@@ -136,12 +138,6 @@ public class ItemEmperorChalice extends ItemToggleable {
                         return ist;
                     }
                 }
-                String ident = ContentHelper.getIdent(world.getBlock(x, y, z));
-                if ((ident.equals(ContentHelper.getIdent(Blocks.flowing_water)) || ident.equals(ContentHelper.getIdent(Blocks.water))) && world.getBlockMetadata(x, y, z) == 0) {
-                    world.setBlock(x, y, z, Blocks.air);
-
-                    return ist;
-                }
 
                 if (!this.isEnabled(ist)) {
                     if (mop.sideHit == 0) {
@@ -171,9 +167,16 @@ public class ItemEmperorChalice extends ItemToggleable {
                     if (!player.canPlayerEdit(x, y, z, mop.sideHit, ist))
                         return ist;
 
-                    if (this.tryPlaceContainedLiquid(world, ist, xOff, yOff, zOff, x, y, z) && !player.capabilities.isCreativeMode)
+                    if (this.tryPlaceContainedLiquid(world, ist, xOff, yOff, zOff, x, y, z))
                         return ist;
 
+                } else {
+                    String ident = ContentHelper.getIdent(world.getBlock(x, y, z));
+                    if ((ident.equals(ContentHelper.getIdent(Blocks.flowing_water)) || ident.equals(ContentHelper.getIdent(Blocks.water))) && world.getBlockMetadata(x, y, z) == 0) {
+                        world.setBlock(x, y, z, Blocks.air);
+
+                        return ist;
+                    }
                 }
             }
 
@@ -183,9 +186,10 @@ public class ItemEmperorChalice extends ItemToggleable {
 
     public boolean tryPlaceContainedLiquid(World world, ItemStack ist, double posX, double posY, double posZ, int x, int y, int z) {
         Material material = world.getBlock(x, y, z).getMaterial();
-        if (!this.isEnabled(ist))
+        if (this.isEnabled(ist))
             return false;
-        if ((!world.isAirBlock(x, y, z) && material.isSolid()) || material.isLiquid())
+        boolean isNotSolid = !material.isSolid();
+        if (!world.isAirBlock(x, y, z) && !isNotSolid)
             return false;
         else {
             if (world.provider.isHellWorld) {

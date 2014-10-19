@@ -47,7 +47,8 @@ public class ItemInfernalChalice extends ItemToggleable {
         double xOffset = player.prevPosX + (player.posX - player.prevPosX) * movementThresholdCoefficient;
         double yOffset = player.prevPosY + (player.posY - player.prevPosY) * movementThresholdCoefficient + 1.62D - player.yOffset;
         double zOffset = player.prevPosZ + (player.posZ - player.prevPosZ) * movementThresholdCoefficient;
-        MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+        boolean isInDrainMode = this.isEnabled(ist);
+        MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, isInDrainMode);
 
         if (mop == null) {
             return ist;
@@ -149,7 +150,8 @@ public class ItemInfernalChalice extends ItemToggleable {
 
     public boolean tryPlaceContainedLiquid(World world, ItemStack ist, double par2, double par4, double par6, int x, int y, int z) {
         Material material = world.getBlock(x, y, z).getMaterial();
-        if ((!world.isAirBlock(x, y, z) && material.isSolid()) || (material.isLiquid() && (material != Material.lava || world.getBlockMetadata(x, y, z) == 0)))
+        boolean isNotSolid = !material.isSolid();
+        if (!world.isAirBlock(x, y, z) && !isNotSolid)
             return false;
         else {
 
