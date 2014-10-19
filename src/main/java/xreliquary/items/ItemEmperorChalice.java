@@ -13,10 +13,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.*;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -86,12 +89,12 @@ public class ItemEmperorChalice extends ItemToggleable {
 
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
-        float var4 = 1.0F;
-        double var5 = player.prevPosX + (player.posX - player.prevPosX) * var4;
-        double var7 = player.prevPosY + (player.posY - player.prevPosY) * var4 + 1.62D - player.yOffset;
-        double var9 = player.prevPosZ + (player.posZ - player.prevPosZ) * var4;
-        boolean var11 = this.isEnabled(ist);
-        MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, var11);
+        float coeff = 1.0F;
+        double xOff = player.prevPosX + (player.posX - player.prevPosX) * coeff;
+        double yOff = player.prevPosY + (player.posY - player.prevPosY) * coeff + 1.62D - player.yOffset;
+        double zOff = player.prevPosZ + (player.posZ - player.prevPosZ) * coeff;
+        boolean isInDrainMode = this.isEnabled(ist);
+        MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, isInDrainMode);
 
         if (mop == null) {
             if (!this.isEnabled(ist)) {
@@ -101,52 +104,74 @@ public class ItemEmperorChalice extends ItemToggleable {
         } else {
 
             if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                int var13 = mop.blockX;
-                int var14 = mop.blockY;
-                int var15 = mop.blockZ;
+                int x = mop.blockX;
+                int y = mop.blockY;
+                int z = mop.blockZ;
 
-                if (!world.canMineBlock(player, var13, var14, var15))
+                if (!world.canMineBlock(player, x, y, z))
                     return ist;
 
-                if (!player.canPlayerEdit(var13, var14, var15, mop.sideHit, ist))
+                if (!player.canPlayerEdit(x, y, z, mop.sideHit, ist))
                     return ist;
 
-                String ident = ContentHelper.getIdent(world.getBlock(var13, var14, var15));
-                if ((ident.equals(ContentHelper.getIdent(Blocks.flowing_water)) || ident.equals(ContentHelper.getIdent(Blocks.water))) && world.getBlockMetadata(var13, var14, var15) == 0) {
-                    world.setBlock(var13, var14, var15, Blocks.air);
+                if (this.isEnabled(ist)) {
+                    TileEntity tile = world.getTileEntity(x, y, z);
+                    if (tile instanceof IFluidHandler) {
+                        //it's got infinite water.. it just drains water, nothing more.
+                        FluidStack fluid = new FluidStack(FluidRegistry.WATER, 1000);
+                        ((IFluidHandler) tile).drain(ForgeDirection.getOrientation(mop.sideHit), fluid, true);
+
+                        return ist;
+                    }
+                } else {
+                    TileEntity tile = world.getTileEntity(x, y, z);
+                    if (tile instanceof IFluidHandler) {
+                        FluidStack fluid = new FluidStack(FluidRegistry.WATER, 1000);
+                        int amount = ((IFluidHandler) tile).fill(ForgeDirection.getOrientation(mop.sideHit), fluid, false);
+
+                        if (amount > 0) {
+                            ((IFluidHandler) tile).fill(ForgeDirection.getOrientation(mop.sideHit), fluid, true);
+                        }
+
+                        return ist;
+                    }
+                }
+                String ident = ContentHelper.getIdent(world.getBlock(x, y, z));
+                if ((ident.equals(ContentHelper.getIdent(Blocks.flowing_water)) || ident.equals(ContentHelper.getIdent(Blocks.water))) && world.getBlockMetadata(x, y, z) == 0) {
+                    world.setBlock(x, y, z, Blocks.air);
 
                     return ist;
                 }
 
                 if (!this.isEnabled(ist)) {
                     if (mop.sideHit == 0) {
-                        --var14;
+                        --y;
                     }
 
                     if (mop.sideHit == 1) {
-                        ++var14;
+                        ++y;
                     }
 
                     if (mop.sideHit == 2) {
-                        --var15;
+                        --z;
                     }
 
                     if (mop.sideHit == 3) {
-                        ++var15;
+                        ++z;
                     }
 
                     if (mop.sideHit == 4) {
-                        --var13;
+                        --x;
                     }
 
                     if (mop.sideHit == 5) {
-                        ++var13;
+                        ++x;
                     }
 
-                    if (!player.canPlayerEdit(var13, var14, var15, mop.sideHit, ist))
+                    if (!player.canPlayerEdit(x, y, z, mop.sideHit, ist))
                         return ist;
 
-                    if (this.tryPlaceContainedLiquid(world, ist, var5, var7, var9, var13, var14, var15) && !player.capabilities.isCreativeMode)
+                    if (this.tryPlaceContainedLiquid(world, ist, xOff, yOff, zOff, x, y, z) && !player.capabilities.isCreativeMode)
                         return ist;
 
                 }
@@ -176,6 +201,4 @@ public class ItemEmperorChalice extends ItemToggleable {
             return true;
         }
     }
-
-
 }

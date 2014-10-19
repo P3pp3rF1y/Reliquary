@@ -11,9 +11,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidHandler;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 
@@ -57,6 +62,33 @@ public class ItemInfernalChalice extends ItemToggleable {
 
                 if (!player.canPlayerEdit(x, y, z, mop.sideHit, ist))
                     return ist;
+
+                //fluid handler support!
+                if (this.isEnabled(ist) && (ist.getItemDamage() == 0 || ist.getItemDamage() >= 1)) {
+                    TileEntity tile = world.getTileEntity(x, y, z);
+                    if (tile instanceof IFluidHandler) {
+                        FluidStack fluid = new FluidStack(FluidRegistry.LAVA, 1000);
+                        FluidStack simulatedDrainedFluid = ((IFluidHandler) tile).drain(ForgeDirection.getOrientation(mop.sideHit), fluid, false);
+                        if (simulatedDrainedFluid.amount == 1000) {
+                            ist.setItemDamage(ist.getItemDamage() - 1);
+                        }
+
+                        return ist;
+                    }
+                } else {
+                    TileEntity tile = world.getTileEntity(x, y, z);
+                    if (tile instanceof IFluidHandler && (ist.getItemDamage() > 0 || ist.getItemDamage() < ist.getMaxDamage() - 1)) {
+                        FluidStack fluid = new FluidStack(FluidRegistry.LAVA, 1000);
+                        int amount = ((IFluidHandler) tile).fill(ForgeDirection.getOrientation(mop.sideHit), fluid, false);
+
+                        if (amount == 1000) {
+                            ((IFluidHandler) tile).fill(ForgeDirection.getOrientation(mop.sideHit), fluid, true);
+                            ist.setItemDamage(ist.getItemDamage() + 1);
+                        }
+
+                        return ist;
+                    }
+                }
 
                 String ident = ContentHelper.getIdent(world.getBlock(x, y, z));
                 if (this.isEnabled(ist) && (ident.equals(ContentHelper.getIdent(Blocks.flowing_lava)) || ident.equals(ContentHelper.getIdent(Blocks.lava))) && world.getBlockMetadata(x, y, z) == 0) {
