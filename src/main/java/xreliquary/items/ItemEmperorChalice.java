@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -21,7 +22,7 @@ import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 @ContentInit
-public class ItemEmperorChalice extends ItemBase {
+public class ItemEmperorChalice extends ItemToggleable {
 
     public ItemEmperorChalice() {
         super(Names.emperor_chalice);
@@ -49,7 +50,8 @@ public class ItemEmperorChalice extends ItemBase {
 
     @Override
     public IIcon getIcon(ItemStack itemStack, int renderPass) {
-        if (itemStack.getItemDamage() == 0 || renderPass != 1)
+        //same as infernal, enabled == drink mode.
+        if (this.isEnabled(itemStack) || renderPass != 1)
             return this.itemIcon;
         else
             return iconOverlay;
@@ -79,7 +81,7 @@ public class ItemEmperorChalice extends ItemBase {
         int multiplier = (Integer) Reliquary.CONFIG.get(Names.emperor_chalice, "hunger_satiation_multiplier");
         player.getFoodStats().addStats(1, (float) (multiplier / 2));
         player.attackEntityFrom(DamageSource.drown, multiplier);
-        return new ItemStack(this, 1, 0);
+        return ist;
     }
 
     @Override
@@ -88,11 +90,11 @@ public class ItemEmperorChalice extends ItemBase {
         double var5 = player.prevPosX + (player.posX - player.prevPosX) * var4;
         double var7 = player.prevPosY + (player.posY - player.prevPosY) * var4 + 1.62D - player.yOffset;
         double var9 = player.prevPosZ + (player.posZ - player.prevPosZ) * var4;
-        boolean var11 = ist.getItemDamage() == 0;
+        boolean var11 = this.isEnabled(ist);
         MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, var11);
 
         if (mop == null) {
-            if (ist.getItemDamage() > 0) {
+            if (!this.isEnabled(ist)) {
                 player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
             }
             return ist;
@@ -113,10 +115,10 @@ public class ItemEmperorChalice extends ItemBase {
                 if ((ident.equals(ContentHelper.getIdent(Blocks.flowing_water)) || ident.equals(ContentHelper.getIdent(Blocks.water))) && world.getBlockMetadata(var13, var14, var15) == 0) {
                     world.setBlock(var13, var14, var15, Blocks.air);
 
-                    return new ItemStack(ist.getItem(), 1, 1);
+                    return ist;
                 }
 
-                if (ist.getItemDamage() == 1) {
+                if (!this.isEnabled(ist)) {
                     if (mop.sideHit == 0) {
                         --var14;
                     }
@@ -145,7 +147,7 @@ public class ItemEmperorChalice extends ItemBase {
                         return ist;
 
                     if (this.tryPlaceContainedLiquid(world, ist, var5, var7, var9, var13, var14, var15) && !player.capabilities.isCreativeMode)
-                        return new ItemStack(this, 1, player.isSneaking() ? 0 : 1);
+                        return ist;
 
                 }
             }
@@ -156,7 +158,7 @@ public class ItemEmperorChalice extends ItemBase {
 
     public boolean tryPlaceContainedLiquid(World world, ItemStack ist, double posX, double posY, double posZ, int x, int y, int z) {
         Material material = world.getBlock(x, y, z).getMaterial();
-        if (ist.getItemDamage() != 1)
+        if (!this.isEnabled(ist))
             return false;
         if ((!world.isAirBlock(x, y, z) && material.isSolid()) || material.isLiquid())
             return false;
