@@ -106,16 +106,16 @@ item.glacial_staff.name=Glazialstab
 item.glacial_staff.tooltip=Schießt Schneebälle,; fegt Blätter von Bäumen; und friert den Boden ein,; auf dem du gehst.
 
 item.rod_of_lyssa.name=Lyssa's Rute
-item.rod_of_lyssa.tooltip=Eine magische Angelrute, die; als Enterhaken verwendet werden kann.;Versetzt alles, was du triffst,;in Zorn.
+item.rod_of_lyssa.tooltip=Eine magische Angelrute, die;du zum Einholen von Items und;zum Taschendiebstahl verwenden kannst.
 
 item.shears_of_winter.name=Schere des Winters
 item.shears_of_winter.tooltip=Magische Schere, die mit Kälte; die Blätter von Bäumen fegt.
 
 item.pyromancer_staff.name={{!colors.red}}Pyromantenstab
-item.pyromancer_staff.tooltip=Schießt Feuer aller Art,;entzündet Blöcke,;löscht Flammen;und schützt dich vor;feurigen Attacken.
+item.pyromancer_staff.tooltip=Schießt Feuer aller Art,;entzündet Blöcke,;löscht Flammen;und schützt dich vor;feurigen Attacken.;{{!colors.red}}Ladungen: {{charges}};{{!colors.red}}Lohe: {{blaze}}
 
 item.rending_gale.name={{!colors.yellow}}Helfender Sturm
-item.rending_gale.tooltip=Fliege in die Rightung, in die du schaust; und halte Rechtsklick, um;mächtige Winde zu beschwören.
+item.rending_gale.tooltip=Fliege per Rechtsklick in die Rightung, in die du schaust.; Linksklick beschwört eine Windsäule herauf.
 
 item.harvest_rod.name={{!colors.green}}Ernterute
 item.harvest_rod.tooltip=Shift+Rechtsklicke, um Knochenmehl zu absorbieren.;Klicke auf Blöcke zum Düngen,;schlage Feldfrüchte, um einen großen Bereich abzuernten.
@@ -149,7 +149,7 @@ item.infernal_claws.name={{!colors.red}}Höllenklauen
 item.infernal_claws.tooltip=Absorbiert Feuerschaden,;welcher dich stattdessen hungrig macht.
 
 item.infernal_chalice.name=Höllenkelch
-item.infernal_chalice.tooltip=Kann eine gewaltige Menge Lava speichern;Schützt dich vor Lavaschaden.
+item.infernal_chalice.tooltip=Kann eine gewaltige Menge Lava speichern.;Schützt dich vor Lavaschaden.
 
 item.kraken_shell.name=Seekrakenpanzer
 item.kraken_shell.tooltip=Verbessert deine Beweglichkeit;im Wasser.;Absorbiert Schaden durch Ertrinken,;welcher dich stattdessen hungrig macht.
