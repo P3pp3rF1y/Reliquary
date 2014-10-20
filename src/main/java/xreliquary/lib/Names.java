@@ -26,6 +26,7 @@ public class Names {
     public static final String magicbane = "magicbane";
     public static final String witherless_rose = "witherless_rose";
     public static final String twilight_cloak = "twilight_cloak";
+    public static final String void_tear_empty = "void_tear_empty";
     public static final String void_tear = "void_tear";
     public static final String hero_medallion = "hero_medallion";
     public static final String hero_medallion_overlay = "hero_medallion_overlay";

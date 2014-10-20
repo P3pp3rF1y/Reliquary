@@ -1,6 +1,7 @@
 package xreliquary.items.alkahestry;
 
 import lib.enderwizards.sandstone.util.ContentHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
@@ -36,15 +37,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
                 }
             }
         }
-        if (tome != null && valid == 1 && tome.getItemDamage() != 0) {
-            if (tome.getItemDamage() >= amount) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        return tome != null && valid == 1 && NBTHelper.getInteger("redstone", tome) >= amount;
     }
 
     @Override
@@ -64,7 +57,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
             }
         }
 
-        tome.setItemDamage(tome.getItemDamage() - amount);
+        NBTHelper.setInteger("redstone", tome, NBTHelper.getInteger("redstone", tome) - amount);
         return tome;
     }
 

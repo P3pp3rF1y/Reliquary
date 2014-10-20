@@ -5,7 +5,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
@@ -22,7 +21,7 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.lib.Names;
-import xreliquary.util.NBTHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 
 import java.util.List;
 
@@ -33,7 +32,6 @@ public class ItemEnderStaff extends ItemToggleable {
         super(Names.ender_staff);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
-        this.setMaxDamage(257);
         canRepair = false;
     }
 
@@ -52,15 +50,11 @@ public class ItemEnderStaff extends ItemToggleable {
     private int getEnderStaffPearlCost() {
         return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_cast_cost");
     }
-
-    private int getEnderStaffNodeWarpCost() {
-        return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_node_warp_cost");
-    }
-
+    private int getEnderStaffNodeWarpCost() { return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_node_warp_cost"); }
     private int getEnderPearlWorth() {
         return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_worth");
     }
-
+    private int getEnderPearlLimit() {        return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_limit");    }
     private int getNodeWarpCastTime() {
         return Reliquary.CONFIG.getInt(Names.ender_staff, "node_warp_cast_time");
     }
@@ -77,16 +71,16 @@ public class ItemEnderStaff extends ItemToggleable {
             return true;
         EntityPlayer player = (EntityPlayer)entityLiving;
 
-        if (ist.getItemDamage() == 0)
+        if (NBTHelper.getInteger("ender_pearls", ist) < getEnderStaffPearlCost())
             return true;
-        if (ist.getItemDamage() < ist.getMaxDamage() - getEnderStaffPearlCost()) {
-            player.worldObj.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-            // if the player is sneaking, it fires a "reduced gravity" ender
-            // pearl, for a longer range/shallow arc.
-            player.worldObj.spawnEntityInWorld(new EntityEnderStaffProjectile(player.worldObj, player, !player.isSneaking()));
-            ist.setItemDamage(ist.getItemDamage() >= (ist.getMaxDamage() - 1) - getEnderStaffPearlCost() ? 0 : ist.getItemDamage() + getEnderStaffPearlCost());
-            setCooldown(ist);
-        }
+        player.worldObj.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        // if the player is sneaking, it fires a "reduced gravity" ender
+        // pearl, for a longer range/shallow arc.
+        player.worldObj.spawnEntityInWorld(new EntityEnderStaffProjectile(player.worldObj, player, !player.isSneaking()));
+        NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffPearlCost());
+
+        setCooldown(ist);
+
         return false;
     }
 
@@ -106,9 +100,9 @@ public class ItemEnderStaff extends ItemToggleable {
         }
         if (player == null)
             return;
-        if (ist.getItemDamage() == 0 || ist.getItemDamage() > getEnderPearlWorth()) {
+        if (NBTHelper.getInteger("ender_pearls", ist) + getEnderPearlWorth() <= getEnderPearlLimit()) {
             if (InventoryHelper.consumeItem(new ItemStack(Items.ender_pearl), player)) {
-                ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - getEnderPearlWorth() : ist.getItemDamage() - getEnderPearlWorth());
+                NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) + getEnderPearlWorth());
             }
         }
     }
@@ -144,7 +138,7 @@ public class ItemEnderStaff extends ItemToggleable {
     private ItemStack doWraithNodeWarpCheck(ItemStack ist, World world, EntityPlayer player) {
         if (getCooldown(ist) > 0)
             return ist;
-        if (ist.getItemDamage() == 0)
+        if (NBTHelper.getInteger("ender_pearls", ist) < getEnderStaffNodeWarpCost())
             return ist;
 
         if (ist.getTagCompound() != null && ist.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(player))) {
@@ -153,11 +147,9 @@ public class ItemEnderStaff extends ItemToggleable {
             }
         } else if (ist.getTagCompound() != null && ContentHelper.areBlocksEqual(world.getBlock(ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player))), ContentHandler.getBlock(Names.wraith_node))) {
             if (canTeleport(world, ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
-                if (ist.getItemDamage() < ist.getMaxDamage() - getEnderStaffNodeWarpCost()) {
-                    teleportPlayer(world, ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
-                    setCooldown(ist);
-                    ist.setItemDamage(ist.getItemDamage() >= (ist.getMaxDamage() - 1) - getEnderStaffPearlCost() ? 0 : ist.getItemDamage() + getEnderStaffNodeWarpCost());
-                }
+                teleportPlayer(world, ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
+                setCooldown(ist);
+                NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffNodeWarpCost());
             }
         } else if (ist.getTagCompound() != null && ist.getTagCompound().hasKey("dimensionID")) {
             ist.getTagCompound().removeTag("dimensionID");

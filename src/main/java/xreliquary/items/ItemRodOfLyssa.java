@@ -4,17 +4,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.S12PacketEntityVelocity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityLyssaHook;
 import xreliquary.lib.Names;
-import xreliquary.util.NBTHelper;
 
 /**
  * Created by Xeno on 10/11/2014.

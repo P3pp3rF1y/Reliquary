@@ -3,7 +3,6 @@ package xreliquary.items;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
@@ -14,7 +13,7 @@ import net.minecraft.item.*;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
-import xreliquary.util.NBTHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 
 import java.util.List;
 

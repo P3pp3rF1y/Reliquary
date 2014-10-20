@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -17,7 +16,7 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-import xreliquary.util.NBTHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 
 import java.util.List;
 
@@ -70,7 +69,7 @@ public class ItemHeroMedallion extends ItemToggleable {
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-        this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getShort("experience", stack))), stack, list);
+        this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getInteger("experience", stack))), stack, list);
     }
 
     private int getExperienceMinimum() {
@@ -128,22 +127,11 @@ public class ItemHeroMedallion extends ItemToggleable {
     }
 
     public int getExperience(ItemStack stack) {
-        ensureTagCompound(stack);
-        return stack.stackTagCompound.getInteger("experience");
+        return NBTHelper.getInteger("experience", stack);
     }
 
     public void setExperience(ItemStack stack, int i) {
-        ensureTagCompound(stack);
-        stack.stackTagCompound.setInteger("experience", i);
-    }
-
-    public void ensureTagCompound(ItemStack stack) {
-        if (!stack.hasTagCompound())
-            stack.setTagCompound(new NBTTagCompound());
-        // may be unnecessary. Not sure, but I think trying to grab unavailable
-        // keys defaults to 0.
-        if (!stack.stackTagCompound.hasKey("experience"))
-            stack.stackTagCompound.setInteger("experience", 0);
+        NBTHelper.setInteger("experience", stack, i);
     }
 
     @Override

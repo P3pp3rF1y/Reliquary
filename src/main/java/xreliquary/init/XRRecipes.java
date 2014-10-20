@@ -23,7 +23,7 @@ public class XRRecipes {
 
     public static ItemStack fertilizer() { return XRRecipes.potion(Reference.FERTILIZER_META); }
 
-    public static ItemStack emptyVoidTear() { return ((ItemToggleable) getItem(Names.void_tear)).newItemStack(); }
+    public static ItemStack emptyVoidTear() { return new ItemStack(getItem(Names.void_tear), 1, 0); }
 
     public static ItemStack witherSkull() { return new ItemStack(Items.skull, 1, 1); }
 
@@ -85,7 +85,7 @@ public class XRRecipes {
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_redstone", AlkahestryRedstoneRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
 
-        addRecipe(true, ((ItemToggleable) getItem(Names.alkahestry_tome)).newItemStack(), Items.book, getItem(Names.witch_hat), ingredient(Reference.MOLTEN_INGREDIENT_META), witherSkull());
+        addRecipe(true, new ItemStack(getItem(Names.alkahestry_tome), 1, 0), Items.book, getItem(Names.witch_hat), ingredient(Reference.MOLTEN_INGREDIENT_META), witherSkull());
 
         addRecipe(true, new ItemStack(ContentHandler.getBlock(Names.altar_idle), 1), Blocks.obsidian, Blocks.redstone_lamp, ingredient(Reference.ENDER_INGREDIENT_META), ingredient(Reference.CREEPER_INGREDIENT_META));
         addRecipe(true, new ItemStack(ContentHandler.getBlock(Names.lilypad), 1), ingredient(Reference.FERTILE_INGREDIENT_META), ingredient(Reference.FERTILE_INGREDIENT_META), ingredient(Reference.FERTILE_INGREDIENT_META), Blocks.waterlily);

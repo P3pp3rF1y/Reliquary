@@ -4,6 +4,7 @@ import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -46,10 +47,6 @@ import java.util.Random;
 public class ItemGlacialStaff extends ItemIceRod {
     public ItemGlacialStaff() {
         super(Names.glacial_staff);
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setMaxDamage(513);
-        this.setMaxStackSize(1);
-        canRepair = false;
     }
 
     @Override
@@ -71,8 +68,6 @@ public class ItemGlacialStaff extends ItemIceRod {
             player.setItemInUse(ist, getMaxItemUseDuration(ist));
         }
 
-//        if (!this.isEnabled(ist))
-//            doHasInfernalChaliceEnabledCheck(player);
         return super.onItemRightClick(ist, world, player);
     }
 
@@ -81,11 +76,6 @@ public class ItemGlacialStaff extends ItemIceRod {
         //start the blizzard after a short delay, this prevents some abuse.
         if (getMaxItemUseDuration(ist) - count <= 5)
             return;
-//        if ((getMaxItemUseDuration(ist) - count) % 40 == 0) {
-//            System.out.println("count " + count + " % 40 = " + (getMaxItemUseDuration(ist) - count) % 40);
-//            float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
-//            player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.25F, randomPitch);
-//        }
         Vec3 lookVector = player.getLookVec();
         spawnBlizzardParticles(lookVector, player);
 
@@ -125,9 +115,9 @@ public class ItemGlacialStaff extends ItemIceRod {
         }
     }
 
-
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
+        super.onUpdate(ist, world, e, i, b);
         EntityPlayer player = null;
         if (e instanceof EntityPlayer) {
             player = (EntityPlayer) e;
@@ -140,13 +130,6 @@ public class ItemGlacialStaff extends ItemIceRod {
         int z = MathHelper.floor_double(player.posZ);
 
         if (this.isEnabled(ist)) {
-            //doHasInfernalChaliceEnabledCheck(player);
-            if (ist.getItemDamage() == 0 || ist.getItemDamage() > 1) {
-                if (InventoryHelper.consumeItem(new ItemStack(Items.snowball), player)) {
-                    ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 1 : ist.getItemDamage() - 1);
-                }
-            }
-
             for (int xOff = -2; xOff <= 2; xOff++) {
                 for (int zOff = -2; zOff <= 2; zOff++) {
                     if (Math.abs(xOff) == 2 && Math.abs(zOff) == 2)
@@ -166,16 +149,6 @@ public class ItemGlacialStaff extends ItemIceRod {
             }
         }
     }
-
-//    public void doHasInfernalChaliceEnabledCheck(EntityPlayer player) {
-//        for (int i = 0; i < player.inventory.mainInventory.length; ++i) {
-//            if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() instanceof ItemInfernalChalice) {
-//                if (((ItemToggleable) player.inventory.mainInventory[i].getItem()).isEnabled(player.inventory.mainInventory[i])) {
-//                    ((ItemToggleable) player.inventory.mainInventory[i].getItem()).toggleEnabled(player.inventory.mainInventory[i]);
-//                }
-//            }
-//        }
-//    }
 
     public void doFreezeCheck(ItemStack ist, int x, int y, int z, World world, int xOff, int zOff) {
         x += xOff;
@@ -317,8 +290,6 @@ public class ItemGlacialStaff extends ItemIceRod {
             float randZ = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
 
             player.worldObj.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
-
-            //player.worldObj.spawnParticle("snowballpoof", player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
         }
 
     }

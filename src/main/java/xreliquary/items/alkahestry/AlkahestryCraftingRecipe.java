@@ -1,6 +1,7 @@
 package xreliquary.items.alkahestry;
 
 import lib.enderwizards.sandstone.util.ContentHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -41,7 +42,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
                 recipe = Alkahestry.getRegistry().get(ContentHelper.getIdent(itemStack.getItem()));
             else
                 recipe = Alkahestry.getDictionaryKey(itemStack);
-            return recipe != null && (tome.getItemDamage() + recipe.cost <= Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstone_limit"));
+            return recipe != null && (NBTHelper.getInteger("redstone", tome) - recipe.cost >= 0);
         } else {
             return false;
         }

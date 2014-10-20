@@ -1,7 +1,6 @@
 package xreliquary.items;
 
 import baubles.api.BaubleType;
-import baubles.api.BaublesApi;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
@@ -20,7 +19,7 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-import xreliquary.util.NBTHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 
 import java.util.Iterator;
 import java.util.List;
@@ -165,8 +164,6 @@ public class ItemFortuneCoin extends ItemBauble {
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
-        if (ist.getItemDamage() == 0)
-            return;
         scanForEntitiesInRange(player.worldObj, player, 15.0D);
     }
 
@@ -181,18 +178,18 @@ public class ItemFortuneCoin extends ItemBauble {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+    public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (world.isRemote)
-            return stack;
+            return ist;
         if (player.isSneaking()) {
-            player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
-        } else {
             if (!disabledAudio()) {
-                NBTHelper.setShort("soundTimer", stack, 6);
+                NBTHelper.setShort("soundTimer", ist, 6);
             }
-            stack.setItemDamage(stack.getItemDamage() == 0 ? 1 : 0);
+            NBTHelper.setBoolean("enabled", ist, !NBTHelper.getBoolean("enabled", ist));
+        } else {
+            player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
         }
-        return stack;
+        return ist;
     }
 
     @Override

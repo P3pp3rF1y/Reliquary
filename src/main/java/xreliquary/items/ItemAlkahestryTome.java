@@ -7,6 +7,7 @@ import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import lib.enderwizards.sandstone.util.LanguageHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -28,7 +29,6 @@ public class ItemAlkahestryTome extends ItemToggleable {
     public ItemAlkahestryTome() {
         super(Names.alkahestry_tome);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setMaxDamage(getRedstoneLimit() + 1);
         this.setMaxStackSize(1);
         this.canRepair = false;
         this.hasSubtypes = true;
@@ -47,10 +47,10 @@ public class ItemAlkahestryTome extends ItemToggleable {
     }
 
     @Override
-    public void onUpdate(ItemStack stack, World world, Entity entity, int i, boolean f) {
+    public void onUpdate(ItemStack ist, World world, Entity entity, int i, boolean f) {
         if (world.isRemote)
             return;
-        if(!this.isEnabled(stack))
+        if(!this.isEnabled(ist))
             return;
 
         EntityPlayer player;
@@ -59,21 +59,18 @@ public class ItemAlkahestryTome extends ItemToggleable {
         } else {
             return;
         }
-
-        int amount = getRedstoneLimit() - stack.getItemDamage();
-
         //redstone handler
-        if(amount + 9 <= getRedstoneLimit() && InventoryHelper.consumeItem(Blocks.redstone_block, player)) {
-            stack.setItemDamage(stack.getItemDamage() - 9);
-        } else if(amount + 1 <= getRedstoneLimit() && InventoryHelper.consumeItem(Items.redstone, player)) {
-            stack.setItemDamage(stack.getItemDamage() - 1);
+        if(NBTHelper.getInteger("redstone", ist) + 9 <= getRedstoneLimit() && InventoryHelper.consumeItem(Blocks.redstone_block, player)) {
+            NBTHelper.setInteger("redstone", ist, NBTHelper.getInteger("redstone", ist) + 9);
+        } else if(NBTHelper.getInteger("redstone", ist) + 1 <= getRedstoneLimit() && InventoryHelper.consumeItem(Items.redstone, player)) {
+            NBTHelper.setInteger("redstone", ist, NBTHelper.getInteger("redstone", ist) + 1);
         }
 
         //glowstone handler
-        if(amount + 4 <= getRedstoneLimit() && InventoryHelper.consumeItem(Blocks.glowstone, player)) {
-            stack.setItemDamage(stack.getItemDamage() - 9);
-        } else if(amount + 1 <= getRedstoneLimit() && InventoryHelper.consumeItem(Items.glowstone_dust, player)) {
-            stack.setItemDamage(stack.getItemDamage() - 1);
+        if(NBTHelper.getInteger("redstone", ist) + 4 <= getRedstoneLimit() && InventoryHelper.consumeItem(Blocks.glowstone, player)) {
+            NBTHelper.setInteger("redstone", ist, NBTHelper.getInteger("redstone", ist) + 4);
+        } else if(NBTHelper.getInteger("redstone", ist) + 1 <= getRedstoneLimit() && InventoryHelper.consumeItem(Items.glowstone_dust, player)) {
+            NBTHelper.setInteger("redstone", ist, NBTHelper.getInteger("redstone", ist) + 1);
         }
 
         //lapis handler, commented out for now
@@ -91,11 +88,11 @@ public class ItemAlkahestryTome extends ItemToggleable {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-        this.formatTooltip(ImmutableMap.of("redstoneAmount", String.valueOf((getRedstoneLimit() - stack.getItemDamage())), "redstoneLimit", String.valueOf(getRedstoneLimit())), stack, list);
+    public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+        this.formatTooltip(ImmutableMap.of("redstoneAmount", String.valueOf(NBTHelper.getInteger("redstone", ist)), "redstoneLimit", String.valueOf(getRedstoneLimit())), ist, list);
 
-        if(this.isEnabled(stack))
-            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.RED + Items.redstone.getItemStackDisplayName(new ItemStack(Items.redstone))), stack, list);
+        if(this.isEnabled(ist))
+            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.RED + Items.redstone.getItemStackDisplayName(new ItemStack(Items.redstone))), ist, list);
         list.add(LanguageHelper.getLocalization("tooltip.absorb"));
     }
 
@@ -111,14 +108,6 @@ public class ItemAlkahestryTome extends ItemToggleable {
 
         copy.stackSize = 1;
         return copy;
-    }
-
-    @Override
-    public ItemStack newItemStack() {
-        ItemStack stack = new ItemStack(this, 1);
-        stack.setTagCompound(new NBTTagCompound());
-        stack.setItemDamage(getRedstoneLimit());
-        return stack;
     }
 
     private int getRedstoneLimit() {

@@ -130,7 +130,6 @@ item.twilight_cloak.name=Twilight Cloak
 item.twilight_cloak.tooltip=Makes you invisible at night.
 
 item.void_tear_empty.name=Empty Void Tear
-item.void_tear_empty.tooltip=An empty void tear, right clicking;absorbs the dominant inventory item.
 item.void_tear.name=Void Tear
 
 item.hero_medallion.name=Hero's Medallion

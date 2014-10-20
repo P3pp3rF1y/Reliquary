@@ -3,6 +3,7 @@ package xreliquary.items;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.IGrowable;
@@ -34,13 +35,16 @@ public class ItemHarvestRod extends ItemToggleable {
     public ItemHarvestRod() {
         super(Names.harvest_rod);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setMaxDamage(513);
         this.setMaxStackSize(1);
         canRepair = false;
     }
 
     @Override
     public boolean isFull3D(){ return true; }
+
+    public int getBonemealLimit() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_limit"); }
+    public int getBonemealWorth() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_worth"); }
+    public int getBonemealCost() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_cost"); }
 
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
@@ -54,9 +58,9 @@ public class ItemHarvestRod extends ItemToggleable {
             return;
 
         if (this.isEnabled(ist)) {
-            if (ist.getItemDamage() == 0 || ist.getItemDamage() > 1) {
+            if (NBTHelper.getInteger("bonemeal", ist) + getBonemealWorth() <= Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_limit")) {
                 if (InventoryHelper.consumeItem(new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META), player)) {
-                    ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 1 : ist.getItemDamage() - 1);
+                    NBTHelper.setInteger("bonemeal", ist, NBTHelper.getInteger("bonemeal", ist) + getBonemealWorth());
                 }
             }
         }
@@ -119,7 +123,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
     @Override
     public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
-        if (ist.getItemDamage() > 0 && ist.getItemDamage() < ist.getMaxDamage() - 1) {
+        if (NBTHelper.getInteger("bonemeal", ist) >= getBonemealCost()) {
             ItemStack fakeItemStack = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
             ItemDye fakeItemDye = (ItemDye)fakeItemStack.getItem();
 
@@ -132,7 +136,7 @@ public class ItemHarvestRod extends ItemToggleable {
             }
 
             if (usedRod)
-                ist.setItemDamage(ist.getItemDamage() + 1);
+                NBTHelper.setInteger("bonemeal", ist, NBTHelper.getInteger("bonemeal", ist) - getBonemealCost());
         }
 
         return true;

@@ -37,7 +37,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-        handleTickIncrement(event);
+        //handleTickIncrement(event);
         handleHandgunHUDCheck();
         handleSojournerHUDCheck();
     }
@@ -73,23 +73,6 @@ public class ClientEventHandler {
         return time;
     }
 
-
-    public void handleTickIncrement(TickEvent.RenderTickEvent event) {
-        // handles the color shifting of the twilight cloak, until we can throw
-        // it on an animation
-        if (event.phase != TickEvent.Phase.END)
-            return;
-        // used to go arbitrarily all the way to 88, which left us limited on
-        // how to handle our ticks.
-        // this is a nice even number. Also we don't handle blinking with this
-        // anymore so no need for weird math/modulo.
-        if (getTime() > 4096) {
-            time = 0;
-        } else {
-            time++;
-        }
-    }
-
     public void handleHandgunHUDCheck() {
         // handles rendering the hud for the handgun, WIP
         Minecraft mc = Minecraft.getMinecraft();
@@ -118,6 +101,7 @@ public class ClientEventHandler {
         ItemStack sojournerStack = player.getCurrentEquippedItem();
         ItemSojournerStaff sojournerItem = (ItemSojournerStaff) sojournerStack.getItem();
         String placementItemName = sojournerItem.getTorchPlacementMode(sojournerStack);
+        int amountOfItem = sojournerItem.getTorchCount(sojournerStack, ContentHandler.getItem(placementItemName));
         Item placementItem = null;
         if (placementItemName != null)
             placementItem = ContentHandler.getItem(placementItemName);
@@ -257,8 +241,9 @@ public class ClientEventHandler {
         renderItemIntoGUI(minecraft.fontRenderer, sojournerStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
         //itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), sojournerStack, hudOverlayX, hudOverlayY);
         //render the placement item on screen in the GUI
-        if (placementStack != null)
-            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), placementStack, hudOverlayX, hudOverlayY);
+        if (placementStack != null) {
+            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), placementStack, hudOverlayX + 12, hudOverlayY + 12);
+        }
         //    renderItemIntoGUI(minecraft.fontRenderer, placementStack, hudOverlayX + 8, hudOverlayY + 4, 1.0F, overlayScale / 2F);
 
         GL11.glDisable(GL11.GL_LIGHTING);

@@ -36,7 +36,6 @@ public class ItemLanternOfParanoia extends ItemToggleable {
     public ItemLanternOfParanoia() {
         super(Names.lantern_of_paranoia);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        //this.setMaxDamage(513);
         this.setMaxStackSize(1);
         canRepair = false;
     }

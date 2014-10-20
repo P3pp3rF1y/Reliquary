@@ -6,6 +6,7 @@ import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +24,6 @@ public class ItemIceRod extends ItemToggleable {
     public ItemIceRod() {
         super(Names.ice_magus_rod);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setMaxDamage(257);
         this.setMaxStackSize(1);
         canRepair = false;
     }
@@ -35,15 +35,18 @@ public class ItemIceRod extends ItemToggleable {
         canRepair = false;
     }
 
+    public int getSnowballCap() { return Reliquary.CONFIG.getInt(this instanceof ItemGlacialStaff ? Names.glacial_staff : Names.ice_magus_rod, "snowball_limit"); }
+    public int getSnowballCost() { return Reliquary.CONFIG.getInt(this instanceof ItemGlacialStaff ? Names.glacial_staff : Names.ice_magus_rod, "snowball_cost"); }
+    public int getSnowballWorth() { return Reliquary.CONFIG.getInt(this instanceof ItemGlacialStaff ? Names.glacial_staff : Names.ice_magus_rod, "snowball_worth"); }
 
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
         if (ist.getItemDamage() == 0)
             return true;
-        if (ist.getItemDamage() < ist.getMaxDamage() - 1) {
+        if (NBTHelper.getInteger("snowballs", ist) >= getSnowballCost()) {
             entityLiving.worldObj.playSoundAtEntity(entityLiving, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
             entityLiving.worldObj.spawnEntityInWorld(new EntitySpecialSnowball(entityLiving.worldObj, entityLiving));
-            ist.setItemDamage(ist.getItemDamage() == ist.getMaxDamage() - 2 ? 0 : ist.getItemDamage() + 1);
+            NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
         }
         return false;
     }
@@ -66,9 +69,9 @@ public class ItemIceRod extends ItemToggleable {
             return;
 
         if (this.isEnabled(ist)) {
-            if (ist.getItemDamage() == 0 || ist.getItemDamage() > 1) {
+            if (NBTHelper.getInteger("snowballs", ist) + getSnowballWorth() <= getSnowballCap()) {
                 if (InventoryHelper.consumeItem(new ItemStack(Items.snowball), player)) {
-                    ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 1 : ist.getItemDamage() - 1);
+                    NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) + getSnowballWorth());
                 }
             }
         }

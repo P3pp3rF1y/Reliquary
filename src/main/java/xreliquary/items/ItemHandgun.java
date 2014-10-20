@@ -17,7 +17,7 @@ import xreliquary.entities.shot.*;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-import xreliquary.util.NBTHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 
 @ContentInit
 public class ItemHandgun extends ItemBase {

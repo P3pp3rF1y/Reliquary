@@ -1,5 +1,7 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
+import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
@@ -64,6 +66,31 @@ public class ItemPyromancerStaff extends ItemToggleable {
         if (this.isEnabled(ist)) {
             scanForFireChargeAndBlazePowder(ist, player);
         }
+    }
+
+
+    @Override
+    public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+        //maps the contents of the Sojourner's staff to a tooltip, so the player can review the torches stored within.
+        String charges = "0";
+        String blaze = "0";
+        NBTTagCompound tagCompound = ist.getTagCompound();
+        if (tagCompound != null) {
+            NBTTagList tagList = tagCompound.getTagList("Items", 10);
+            for (int i = 0; i < tagList.tagCount(); ++i) {
+                NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
+                String itemName = tagItemData.getString("Name");
+                Item containedItem = ContentHandler.getItem(itemName);
+                int quantity = tagItemData.getInteger("Quantity");
+
+                if (containedItem == Items.blaze_powder) {
+                    blaze = Integer.toString(quantity);
+                } else if (containedItem == Items.fire_charge) {
+                    charges = Integer.toString(quantity);
+                }
+            }
+        }
+        this.formatTooltip(ImmutableMap.of("charges", charges, "blaze", blaze), ist, list);
     }
 
 

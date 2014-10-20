@@ -24,9 +24,9 @@ import org.modstats.ModstatInfo;
 import org.modstats.Modstats;
 import xreliquary.common.CommonProxy;
 import xreliquary.integration.NEIModIntegration;
-import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.network.PacketHandler;
+import lib.enderwizards.sandstone.util.WorldDataHandler;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 
@@ -53,6 +53,8 @@ public class Reliquary {
 
         PROXY.initOptions();
         Sandstone.preInit();
+
+        WorldDataHandler.register();
 
         //important that this initializes before the pre-init phase
         PROXY.initRecipeDisablers();

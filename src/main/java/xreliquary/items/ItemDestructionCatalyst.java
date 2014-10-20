@@ -2,10 +2,10 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableList;
 import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -24,7 +24,6 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 
     public ItemDestructionCatalyst() {
         super(Names.destruction_catalyst);
-        this.setMaxDamage(257);
         this.setMaxStackSize(1);
         canRepair = false;
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
@@ -32,7 +31,7 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 
     @Override
     public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
-        if (ist.getItemDamage() != 0 && (ist.getMaxDamage() - 1) >= ist.getItemDamage() + gunpowderCost() || player.capabilities.isCreativeMode) {
+        if (NBTHelper.getInteger("gunpowder", ist) > gunpowderCost() || player.capabilities.isCreativeMode) {
             doExplosion(world, x, y, z, side, player, ist);
         }
         return true;
@@ -51,9 +50,9 @@ public class ItemDestructionCatalyst extends ItemToggleable {
             return;
 
         if (this.isEnabled(ist)) {
-            if (ist.getItemDamage() == 0 || ist.getItemDamage() > 1) {
+            if (NBTHelper.getInteger("gunpowder", ist) + gunpowderWorth() < gunpowderLimit()) {
                 if (InventoryHelper.consumeItem(new ItemStack(Items.gunpowder), player)) {
-                    ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 1 : ist.getItemDamage() - 1);
+                    NBTHelper.setInteger("gunpowder", ist, NBTHelper.getInteger("gunpowder", ist) + gunpowderWorth());
                 }
             }
         }
@@ -83,7 +82,7 @@ public class ItemDestructionCatalyst extends ItemToggleable {
             }
         }
         if (destroyedSomething) {
-            ist.setItemDamage(ist.getItemDamage() + gunpowderCost());
+            NBTHelper.setInteger("gunpowder", ist, NBTHelper.getInteger("gunpowder", ist) - gunpowderCost());
         }
     }
 
@@ -91,7 +90,7 @@ public class ItemDestructionCatalyst extends ItemToggleable {
         return ((List<String>) Reliquary.CONFIG.get(Names.destruction_catalyst, "mundane_blocks")).indexOf(id) != -1;
     }
 
-    private int gunpowderCost() {
-        return Reliquary.CONFIG.getInt(Names.destruction_catalyst, "gunpowder_cost");
-    }
+    private int gunpowderCost() {return Reliquary.CONFIG.getInt(Names.destruction_catalyst, "gunpowder_cost"); }
+    private int gunpowderWorth() {return Reliquary.CONFIG.getInt(Names.destruction_catalyst, "gunpowder_worth"); }
+    private int gunpowderLimit() { return Reliquary.CONFIG.getInt(Names.destruction_catalyst, "gunpowder_limit"); }
 }
