@@ -4,6 +4,7 @@ import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -32,10 +33,13 @@ public class ItemRendingGale extends ItemToggleable {
     public ItemRendingGale() {
         super(Names.rending_gale);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setMaxDamage(321);
         this.setMaxStackSize(1);
         canRepair = false;
     }
+
+    private int getFeathersLimit() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_limit"); }
+    private int getFeathersCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_cost"); }
+    private int getFeathersWorth() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_worth"); }
 
     @Override
     public boolean isFull3D(){ return true; }
@@ -162,8 +166,10 @@ public class ItemRendingGale extends ItemToggleable {
 
         }
 
-        if (tickUsed % 20 == 0)
-            ist.setItemDamage(ist.getItemDamage() + 1);
+        //we're gonna roll with per-tick drain and see how badly it hurts the server.
+        //if (tickUsed % 20 == 0)
+        //ist.setItemDamage(ist.getItemDamage() + 1);
+        NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getFeathersCost());
 
 
         //player.setVelocity(x, y, z);
@@ -248,9 +254,9 @@ public class ItemRendingGale extends ItemToggleable {
             return;
 
         if (this.isEnabled(ist)) {
-            if (ist.getItemDamage() == 0 || ist.getItemDamage() > 2) {
+            if (NBTHelper.getInteger("feathers", ist) + getFeathersWorth() <= getFeathersLimit()) {
                 if (InventoryHelper.consumeItem(new ItemStack(Items.feather), player)) {
-                    ist.setItemDamage(ist.getItemDamage() == 0 ? ist.getMaxDamage() - 2: ist.getItemDamage() - 2);
+                    NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) + getFeathersWorth());
                 }
             }
         }
@@ -278,7 +284,7 @@ public class ItemRendingGale extends ItemToggleable {
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
-        if (ist.getItemDamage() == 0 || ist.getItemDamage() >= ist.getMaxDamage() - 1)
+        if (NBTHelper.getInteger("feathers", ist) >= getFeathersCost())
             return;
 //        if ((getMaxItemUseDuration(ist) - count) % 40 == 0) {
 //            System.out.println("count " + count + " % 40 = " + (getMaxItemUseDuration(ist) - count) % 40);
@@ -292,8 +298,9 @@ public class ItemRendingGale extends ItemToggleable {
     }
 
     public void doPushEffect(ItemStack ist, EntityPlayer player, Vec3 lookVector) {
-        if (ist.getItemDamage() == 0 || ist.getItemDamage() >= ist.getMaxDamage() - 1)
-            return;
+        //push effect free at the moment, if you restore cost, remember to change this to NBTHelper.getInteger("feathers", ist)
+//        if (ist.getItemDamage() == 0 || ist.getItemDamage() >= ist.getMaxDamage() - 1)
+//            return;
         spawnHurricaneParticles(lookVector, player);
         if (player.worldObj.isRemote)
             return;

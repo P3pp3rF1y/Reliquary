@@ -148,7 +148,7 @@ item.infernal_claws.name={{!colors.red}}Infernal Claws
 item.infernal_claws.tooltip=Absorbs fire damage at;the expense of hunger.
 
 item.infernal_chalice.name=Infernal Chalice
-item.infernal_chalice.tooltip=Can store a huge amount of lava.;Protects you from lava damage.
+item.infernal_chalice.tooltip=Protects you from lava damage.;{{!colors.red}}Holds {{amount}} mB of Lava
 
 item.kraken_shell.name=Kraken Shell
 item.kraken_shell.tooltip=Improves your mobility;when in water.;Absorb drowning damage at;the expense of hunger.

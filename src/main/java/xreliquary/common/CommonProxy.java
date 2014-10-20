@@ -155,14 +155,17 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.pyromancer_staff, "fire_charge_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "fire_charge_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "fire_charge_worth", new ConfigReference(1).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.pyromancer_staff, "ghast_absorb_worth", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_powder_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_powder_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_powder_worth", new ConfigReference(1).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_absorb_worth", new ConfigReference(1).setMinimumValue(0));
 
         //rending gale configs
-        Reliquary.CONFIG.require(Names.rending_gale, "feather_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
+        //rending gale flight is per-tick for balance reasons and to prevent exploits. Feathers are "worth" a lot by default.
+        Reliquary.CONFIG.require(Names.rending_gale, "feather_limit", new ConfigReference(cleanShortMax).setMinimumValue(0).setMaximumValue(cleanIntMax));
         Reliquary.CONFIG.require(Names.rending_gale, "feather_cost", new ConfigReference(1).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.rending_gale, "feather_worth", new ConfigReference(1).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.rending_gale, "feather_worth", new ConfigReference(100).setMinimumValue(0));
 
         //destruction catalyst configs
         Reliquary.CONFIG.require(Names.destruction_catalyst, "mundane_blocks", new ConfigReference(new ArrayList<String>(ItemDestructionCatalyst.ids)));
@@ -199,7 +202,7 @@ public class CommonProxy {
 
         //lilypad of fertility configs
         Reliquary.CONFIG.require(Names.lilypad, "time_between_ticks_percent", new ConfigReference(100).setMinimumValue(2));
-        Reliquary.CONFIG.require(Names.lilypad, "tile_range", new ConfigReference(4).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.lilypad, "tile_range", new ConfigReference(4).setMinimumValue(1).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.lilypad, "full_potency_range", new ConfigReference(0).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.lilypad, "full_potency_threshold", new ConfigReference(0).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.lilypad, "full_potency_offset", new ConfigReference(7).setMinimumValue(0));

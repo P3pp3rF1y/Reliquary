@@ -23,7 +23,6 @@ public class ItemMidasTouchstone extends ItemToggleable {
     public ItemMidasTouchstone() {
         super(Names.midas_touchstone);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setMaxDamage(257);
         this.setMaxStackSize(1);
         canRepair = false;
     }
@@ -46,9 +45,9 @@ public class ItemMidasTouchstone extends ItemToggleable {
 
         //don't drain glowstone if it isn't activated.
         if (this.isEnabled(ist)) {
-            if (ist.getItemDamage() == 0 || ist.getItemDamage() > getGlowStoneWorth()) {
+            if (NBTHelper.getInteger("glowstone", ist) + getGlowStoneWorth() <= getGlowstoneLimit()) {
                 if (InventoryHelper.consumeItem(new ItemStack(Items.glowstone_dust), player)) {
-                    ist.setItemDamage(ist.getItemDamage() == 0 ? (ist.getMaxDamage() - 1) - getGlowStoneWorth() : ist.getItemDamage() - getGlowStoneWorth());
+                    NBTHelper.setInteger("glowstone", ist, NBTHelper.getInteger("glowstone", ist) + getGlowStoneWorth());
                 }
             }
         }
@@ -137,8 +136,8 @@ public class ItemMidasTouchstone extends ItemToggleable {
     }
 
     private boolean decrementTouchStoneCharge(ItemStack ist) {
-        if (ist.getItemDamage() != 0 && ist.getItemDamage() < ist.getMaxDamage() - getGlowStoneCost()) {
-            ist.setItemDamage(ist.getItemDamage() + getGlowStoneCost());
+        if (NBTHelper.getInteger("glowstone", ist) - getGlowStoneCost() >= 0) {
+            NBTHelper.setInteger("glowstone", ist, NBTHelper.getInteger("glowstone", ist) - getGlowStoneCost());
             return true;
         }
         return false;
@@ -151,4 +150,6 @@ public class ItemMidasTouchstone extends ItemToggleable {
     private int getGlowStoneWorth() {
         return Reliquary.CONFIG.getInt(Names.midas_touchstone, "glowstone_worth");
     }
+
+    private int getGlowstoneLimit() { return Reliquary.CONFIG.getInt(Names.midas_touchstone, "glowstone_limit"); }
 }

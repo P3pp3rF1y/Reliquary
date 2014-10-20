@@ -95,7 +95,7 @@ public class ItemSojournerStaff extends ItemToggleable {
     }
 
     private void addItemToInternalStorage(ItemStack ist, Item item) {
-        NBTTagCompound tagCompound = ist.getTagCompound();
+        NBTTagCompound tagCompound = NBTHelper.getTag(ist);
         if (tagCompound == null) {
             tagCompound = new NBTTagCompound();
         }
@@ -124,11 +124,11 @@ public class ItemSojournerStaff extends ItemToggleable {
 
         tagCompound.setTag("Items", tagList);
 
-        ist.setTagCompound(tagCompound);
+        NBTHelper.setTag(ist, tagCompound);
     }
 
     private boolean hasItemInInternalStorage(ItemStack ist, Item item, int cost) {
-        NBTTagCompound tagCompound = ist.getTagCompound();
+        NBTTagCompound tagCompound = NBTHelper.getTag(ist);
         if (tagCompound == null) {
             tagCompound = new NBTTagCompound();
         }
@@ -153,7 +153,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 
     private boolean isInternalStorageFullOfItem(ItemStack ist, Item item) {
         if (hasItemInInternalStorage(ist, item, 1)) {
-            NBTTagCompound tagCompound = ist.getTagCompound();
+            NBTTagCompound tagCompound = NBTHelper.getTag(ist);
             NBTTagList tagList = tagCompound.getTagList("Items", 10);
 
             for (int i = 0; i < tagList.tagCount(); ++i)
@@ -170,11 +170,11 @@ public class ItemSojournerStaff extends ItemToggleable {
     }
 
     public String getTorchPlacementMode(ItemStack ist) {
-        if (ist.getTagCompound() == null) {
+        if (NBTHelper.getTag(ist) == null) {
             return null;
         }
 
-        NBTTagCompound tagCompound = ist.getTagCompound();
+        NBTTagCompound tagCompound = NBTHelper.getTag(ist);
         String torchToPlace = tagCompound.getString("Torch");
 
         NBTTagList tagList = tagCompound.getTagList("Items", 10);
@@ -214,7 +214,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         if (mode == null || mode.isEmpty())
             return;
 
-        NBTTagCompound tagCompound = ist.getTagCompound();
+        NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 
         NBTTagList tagList = tagCompound.getTagList("Items", 10);
 
@@ -247,7 +247,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 
     public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost) {
         if (hasItemInInternalStorage(ist, item, cost)) {
-            NBTTagCompound tagCompound = ist.getTagCompound();
+            NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 
             NBTTagList tagList = tagCompound.getTagList("Items", 10);
 
@@ -264,7 +264,7 @@ public class ItemSojournerStaff extends ItemToggleable {
                 replacementTagList.appendTag(tagItemData);
             }
             tagCompound.setTag("Items", replacementTagList);
-            ist.setTagCompound(tagCompound);
+            NBTHelper.setTag(ist, tagCompound);
             return true;
         }
         return false;
@@ -276,7 +276,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         //maps the contents of the Sojourner's staff to a tooltip, so the player can review the torches stored within.
         String phrase = "Nothing.";
         String placing = "Nothing.";
-        NBTTagCompound tagCompound = ist.getTagCompound();
+        NBTTagCompound tagCompound = NBTHelper.getTag(ist);
         if (tagCompound != null) {
             NBTTagList tagList = tagCompound.getTagList("Items", 10);
             for (int i = 0; i < tagList.tagCount(); ++i) {
@@ -381,24 +381,25 @@ public class ItemSojournerStaff extends ItemToggleable {
         return super.onItemRightClick(ist, world, player);
     }
 
+    //I named the vars in this method weird crap cos I have no idea what they do. This was stolen from the bucket code, I think.
     @Override
-    protected MovingObjectPosition getMovingObjectPositionFromPlayer(World par1World, EntityPlayer par2EntityPlayer, boolean par3) {
-        float var4 = 1.0F;
-        float var5 = par2EntityPlayer.prevRotationPitch + (par2EntityPlayer.rotationPitch - par2EntityPlayer.prevRotationPitch) * var4;
-        float var6 = par2EntityPlayer.prevRotationYaw + (par2EntityPlayer.rotationYaw - par2EntityPlayer.prevRotationYaw) * var4;
-        double var7 = par2EntityPlayer.prevPosX + (par2EntityPlayer.posX - par2EntityPlayer.prevPosX) * var4;
-        double var9 = par2EntityPlayer.prevPosY + (par2EntityPlayer.posY - par2EntityPlayer.prevPosY) * var4 + 1.62D - par2EntityPlayer.yOffset;
-        double var11 = par2EntityPlayer.prevPosZ + (par2EntityPlayer.posZ - par2EntityPlayer.prevPosZ) * var4;
-        Vec3 var13 = Vec3.createVectorHelper(var7, var9, var11);
-        float var14 = MathHelper.cos(-var6 * 0.017453292F - (float) Math.PI);
-        float var15 = MathHelper.sin(-var6 * 0.017453292F - (float) Math.PI);
-        float var16 = -MathHelper.cos(-var5 * 0.017453292F);
-        float var17 = MathHelper.sin(-var5 * 0.017453292F);
-        float var18 = var15 * var16;
-        float var20 = var14 * var16;
-        double var21 = 32.0D;
-        Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
-        return par1World.rayTraceBlocks(var13, var23, par3);
+    protected MovingObjectPosition getMovingObjectPositionFromPlayer(World world, EntityPlayer player, boolean weirdBucketBoolean) {
+        float movementCoefficient = 1.0F;
+        float pitchOff = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * movementCoefficient;
+        float yawOff = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * movementCoefficient;
+        double xOff = player.prevPosX + (player.posX - player.prevPosX) * movementCoefficient;
+        double yOff = player.prevPosY + (player.posY - player.prevPosY) * movementCoefficient + 1.62D - player.yOffset;
+        double zOff = player.prevPosZ + (player.posZ - player.prevPosZ) * movementCoefficient;
+        Vec3 traceVector = Vec3.createVectorHelper(xOff, yOff, zOff);
+        float cosTraceYaw = MathHelper.cos(-yawOff * 0.017453292F - (float) Math.PI);
+        float sinTraceYaw = MathHelper.sin(-yawOff * 0.017453292F - (float) Math.PI);
+        float cosTracePitch = -MathHelper.cos(-pitchOff * 0.017453292F);
+        float sinTracePitch = MathHelper.sin(-pitchOff * 0.017453292F);
+        float pythagoraStuff = sinTraceYaw * cosTracePitch;
+        float pythagoraStuff2 = cosTraceYaw * cosTracePitch;
+        double weirdDistanceCoefficient = 32.0D;
+        Vec3 rayTraceVector = traceVector.addVector(pythagoraStuff * weirdDistanceCoefficient, sinTracePitch * weirdDistanceCoefficient, pythagoraStuff2 * weirdDistanceCoefficient);
+        return world.rayTraceBlocks(traceVector, rayTraceVector, weirdBucketBoolean);
     }
 
     @Override
@@ -413,11 +414,6 @@ public class ItemSojournerStaff extends ItemToggleable {
             block.onNeighborBlockChange(world, x, y, z, world.getBlock(x, y, z));
             block.onBlockPlacedBy(world, x, y, z, player, stack);
         }
-
-
         return true;
     }
-
-
-
 }

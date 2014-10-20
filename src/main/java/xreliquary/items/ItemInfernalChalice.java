@@ -1,5 +1,7 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
+import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
@@ -11,7 +13,11 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -23,6 +29,8 @@ import net.minecraftforge.fluids.IFluidHandler;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 
+import java.util.List;
+
 /**
  * Created by Xeno on 10/11/2014.
  */
@@ -33,6 +41,13 @@ public class ItemInfernalChalice extends ItemToggleable {
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
         canRepair = false;
+    }
+
+    @Override
+    public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+        //String fluid = "lava.";
+        String amount = Integer.toString(NBTHelper.getInteger("fluidStacks", ist));
+        this.formatTooltip(ImmutableMap.of("amount", amount), ist, list);
     }
 
     protected int fluidLimit() { return Reliquary.CONFIG.getInt(Names.infernal_chalice, "fluid_limit"); }

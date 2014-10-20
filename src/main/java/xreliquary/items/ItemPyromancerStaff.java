@@ -6,6 +6,7 @@ import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -71,10 +72,10 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
-        //maps the contents of the Sojourner's staff to a tooltip, so the player can review the torches stored within.
+        //maps the contents of the Pyromancer's staff to a tooltip, so the player can review the torches stored within.
         String charges = "0";
         String blaze = "0";
-        NBTTagCompound tagCompound = ist.getTagCompound();
+        NBTTagCompound tagCompound = NBTHelper.getTag(ist);
         if (tagCompound != null) {
             NBTTagList tagList = tagCompound.getTagList("Items", 10);
             for (int i = 0; i < tagList.tagCount(); ++i) {
@@ -201,7 +202,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
     public void spawnFlameParticles(Vec3 lookVector, EntityPlayer player) {
         //spawn a whole mess of particles every tick.
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 8; ++i) {
             float randX = 1F * (player.worldObj.rand.nextFloat() - 0.5F);
             float randY = 1F * (player.worldObj.rand.nextFloat() - 0.5F);
             float randZ = 1F * (player.worldObj.rand.nextFloat() - 0.5F);
@@ -211,7 +212,8 @@ public class ItemPyromancerStaff extends ItemToggleable {
             float randZ2 = 5F * player.worldObj.rand.nextFloat() * (float)lookVector.zCoord ;
 
             player.worldObj.spawnParticle("flame", player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
-            player.worldObj.spawnParticle("lava", player.posX + randX2, player.posY + randY2, player.posZ + randZ2, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
+            if (i % 3 == 0) //less lava
+                player.worldObj.spawnParticle("lava", player.posX + randX2, player.posY + randY2, player.posZ + randZ2, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
         }
 
     }
@@ -222,17 +224,15 @@ public class ItemPyromancerStaff extends ItemToggleable {
         absorbItems.add(Items.blaze_powder);
         for (Item absorbItem : absorbItems) {
             if (!isInternalStorageFullOfItem(ist, absorbItem) && InventoryHelper.consumeItem(absorbItem, player)) {
-                addItemToInternalStorage(ist, absorbItem);
+                addItemToInternalStorage(ist, absorbItem, false);
             }
         }
     }
 
 
-    private void addItemToInternalStorage(ItemStack ist, Item item) {
-        NBTTagCompound tagCompound = ist.getTagCompound();
-        if (tagCompound == null) {
-            tagCompound = new NBTTagCompound();
-        }
+    private void addItemToInternalStorage(ItemStack ist, Item item, boolean isAbsorb) {
+        int quantityIncrease = item == Items.fire_charge ? (isAbsorb ? getGhastAbsorbWorth() : getFireChargeWorth()) : (isAbsorb ? getBlazeAbsorbWorth() : getBlazePowderWorth());
+        NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 
         if (tagCompound.getTag("Items") == null)
             tagCompound.setTag("Items", new NBTTagList());
@@ -245,20 +245,20 @@ public class ItemPyromancerStaff extends ItemToggleable {
             String itemName = tagItemData.getString("Name");
             if (itemName.equals(ContentHelper.getIdent(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
-                tagItemData.setInteger("Quantity", quantity + 1);
+                tagItemData.setInteger("Quantity", quantity + quantityIncrease);
                 added = true;
             }
         }
         if (!added) {
             NBTTagCompound newTagData = new NBTTagCompound();
             newTagData.setString("Name", ContentHelper.getIdent(item));
-            newTagData.setInteger("Quantity", 1);
+            newTagData.setInteger("Quantity", quantityIncrease);
             tagList.appendTag(newTagData);
         }
 
         tagCompound.setTag("Items", tagList);
 
-        ist.setTagCompound(tagCompound);
+        NBTHelper.setTag(ist, tagCompound);
     }
 
     @Override
@@ -270,7 +270,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
         if (player.isSneaking()) {
             //ghast fireball!
-            if (removeItemFromInternalStorage(ist, Items.fire_charge, 1)) {
+            if (removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost())) {
                 player.worldObj.playAuxSFXAtEntity(player, 1008, (int)player.posX, (int)player.posY, (int)player.posZ, 0);
                 //if (!player.worldObj.isRemote) {
                 EntityLargeFireball fireball = new EntityLargeFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
@@ -288,7 +288,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
         } else {
             //blaze fireball!
-            if (removeItemFromInternalStorage(ist, Items.blaze_powder, 1)) {
+            if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost())) {
                 player.worldObj.playAuxSFXAtEntity(player, 1009, (int)player.posX, (int)player.posY, (int)player.posZ, 0);
                 //if (!player.worldObj.isRemote) {
                 EntitySmallFireball fireball = new EntitySmallFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
@@ -308,7 +308,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
     public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost) {
         if (hasItemInInternalStorage(ist, item, cost)) {
-            NBTTagCompound tagCompound = ist.getTagCompound();
+            NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 
             NBTTagList tagList = tagCompound.getTagList("Items", 10);
 
@@ -325,7 +325,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
                 replacementTagList.appendTag(tagItemData);
             }
             tagCompound.setTag("Items", replacementTagList);
-            ist.setTagCompound(tagCompound);
+            NBTHelper.setTag(ist, tagCompound);
             return true;
         }
         return false;
@@ -333,10 +333,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
     }
 
     private boolean hasItemInInternalStorage(ItemStack ist, Item item, int cost) {
-        NBTTagCompound tagCompound = ist.getTagCompound();
-        if (tagCompound == null) {
-            tagCompound = new NBTTagCompound();
-        }
+        NBTTagCompound tagCompound = NBTHelper.getTag(ist);
         if (tagCompound.hasNoTags()) {
             tagCompound.setTag("Items", new NBTTagList());
             return false;
@@ -357,8 +354,9 @@ public class ItemPyromancerStaff extends ItemToggleable {
     }
 
     private boolean isInternalStorageFullOfItem(ItemStack ist, Item item) {
+        int quantityLimit = item == Items.fire_charge ? getFireChargeLimit() : getBlazePowderLimit();
         if (hasItemInInternalStorage(ist, item, 1)) {
-            NBTTagCompound tagCompound = ist.getTagCompound();
+            NBTTagCompound tagCompound = NBTHelper.getTag(ist);
             NBTTagList tagList = tagCompound.getTagList("Items", 10);
 
             for (int i = 0; i < tagList.tagCount(); ++i)
@@ -367,12 +365,38 @@ public class ItemPyromancerStaff extends ItemToggleable {
                 String itemName = tagItemData.getString("Name");
                 if (itemName.equals(ContentHelper.getIdent(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
-                    return quantity >= 256;
+                    return quantity >= quantityLimit;
                 }
             }
         }
         return false;
     }
+
+    private int getFireChargeWorth() {
+        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "fire_charge_worth");
+    }
+    private int getFireChargeCost() {
+        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "fire_charge_cost");
+    }
+    private int getFireChargeLimit() {
+        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "fire_charge_limit");
+    }
+    private int getBlazePowderWorth() {
+        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "blaze_powder_worth");
+    }
+    private int getBlazePowderCost() {
+        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "blaze_powder_cost");
+    }
+    private int getBlazePowderLimit() {
+        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "blaze_powder_limit");
+    }
+    private int getBlazeAbsorbWorth() {
+        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "blaze_absorb_worth");
+    }
+    private int getGhastAbsorbWorth() {
+        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "ghast_absorb_worth");
+    }
+
 
     private void doExtinguishEffect(EntityPlayer player) {
         if (player.isBurning()) {
@@ -401,7 +425,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
                 continue;
             if (player.getDistanceToEntity(fireball) < 4) {
                 if (!isInternalStorageFullOfItem(ist, Items.fire_charge) && InventoryHelper.consumeItem(Items.fire_charge, player)) {
-                    addItemToInternalStorage(ist, Items.fire_charge);
+                        addItemToInternalStorage(ist, Items.fire_charge, true);
                     player.worldObj.playSoundEffect(fireball.posX, fireball.posY, fireball.posZ, "random.fizz", 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F);
                 }
                     fireball.setDead();
@@ -419,7 +443,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
             player.worldObj.playSoundEffect(fireball.posX, fireball.posY, fireball.posZ, "random.fizz", 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F);
 
             if (!isInternalStorageFullOfItem(ist, Items.blaze_powder) && InventoryHelper.consumeItem(Items.blaze_powder, player)) {
-                addItemToInternalStorage(ist, Items.blaze_powder);
+                    addItemToInternalStorage(ist, Items.blaze_powder, true);
             }
             fireball.setDead();
         }
