@@ -130,7 +130,6 @@ item.twilight_cloak.name=Zwielichtumhang
 item.twilight_cloak.tooltip=Macht dich unsichtbar bei Nacht.
 
 item.void_tear_empty.name=Leere Leerträne
-item.void_tear_empty.tooltip=Eine leere Leerträne, Rechtsklicken;absorbiert das dominante Item im Inventar.
 item.void_tear.name=Leerträne
 
 item.hero_medallion.name=Heldenmedallion
