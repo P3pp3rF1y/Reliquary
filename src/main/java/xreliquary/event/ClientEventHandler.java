@@ -40,6 +40,18 @@ public class ClientEventHandler {
         //handleTickIncrement(event);
         handleHandgunHUDCheck();
         handleSojournerHUDCheck();
+        handleTomeHUDCheck();
+        handleDestructionCatalystHUDCheck();
+        handleEnderStaffHUDCheck();
+        handleIceMagusRodHUDCheck();
+        handleGlacialStaffHUDCheck();
+        handleVoidTearHUDCheck();
+        handleMidasTouchstoneHUDCheck();
+        handleHarvestRodHUDCheck();
+        handleInfernalChaliceHUDCheck();
+        handleHeroMedallionHUDCheck();
+        handlePyromancerStaffHUDCheck();
+        handleRendingGaleHUDCheck();
     }
 
     @SubscribeEvent
@@ -67,6 +79,32 @@ public class ClientEventHandler {
             event.result = 0;
             return;
         }
+    }
+
+
+    public void handleTomeHUDCheck() { //todo
+    }
+    public void handleDestructionCatalystHUDCheck(){ //todo
+    }
+    public void handleEnderStaffHUDCheck(){ //todo
+    }
+    public void handleIceMagusRodHUDCheck(){ //todo
+    }
+    public void handleGlacialStaffHUDCheck(){ //todo
+    }
+    public void handleVoidTearHUDCheck(){ //todo
+    }
+    public void handleMidasTouchstoneHUDCheck(){ //todo
+    }
+    public void handleHarvestRodHUDCheck(){ //todo
+    }
+    public void handleInfernalChaliceHUDCheck(){ //todo
+    }
+    public void handleHeroMedallionHUDCheck(){ //todo
+    }
+    public void handlePyromancerStaffHUDCheck(){ //todo
+    }
+    public void handleRendingGaleHUDCheck(){ //todo
     }
 
     public static int getTime() {
