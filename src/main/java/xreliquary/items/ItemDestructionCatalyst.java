@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
@@ -27,6 +28,12 @@ public class ItemDestructionCatalyst extends ItemToggleable {
         this.setMaxStackSize(1);
         canRepair = false;
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
+    }
+
+    @Override
+    public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+        String charge = Integer.toString(NBTHelper.getInteger("gunpowder", ist));
+        this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
     }
 
     @Override

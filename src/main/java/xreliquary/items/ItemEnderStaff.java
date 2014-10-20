@@ -196,18 +196,19 @@ public class ItemEnderStaff extends ItemToggleable {
     }
 
     @Override
-    public void addInformation(ItemStack eye, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+    public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean flag) {
         //added spacing here to make sure the tooltips didn't come out with weird punctuation derps.
+        String charge = Integer.toString(NBTHelper.getInteger("ender_pearls", ist));
         String phrase = "Currently bound to ";
         String position = "";
-        if (eye.getTagCompound() != null && eye.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(par2EntityPlayer))) {
+        if (ist.getTagCompound() != null && ist.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(player))) {
             phrase = "Out of range!";
-        } else if (eye.getTagCompound() != null && eye.getTagCompound().hasKey("nodeX" + getWorld(par2EntityPlayer)) && eye.getTagCompound().hasKey("nodeY" + getWorld(par2EntityPlayer)) && eye.getTagCompound().hasKey("nodeZ" + getWorld(par2EntityPlayer))) {
-            position = "X: " + eye.getTagCompound().getInteger("nodeX" + getWorld(par2EntityPlayer)) + " Y: " + eye.getTagCompound().getInteger("nodeY" + getWorld(par2EntityPlayer)) + " Z: " + eye.getTagCompound().getInteger("nodeZ" + getWorld(par2EntityPlayer));
+        } else if (ist.getTagCompound() != null && ist.getTagCompound().hasKey("nodeX" + getWorld(player)) && ist.getTagCompound().hasKey("nodeY" + getWorld(player)) && ist.getTagCompound().hasKey("nodeZ" + getWorld(player))) {
+            position = "X: " + ist.getTagCompound().getInteger("nodeX" + getWorld(player)) + " Y: " + ist.getTagCompound().getInteger("nodeY" + getWorld(player)) + " Z: " + ist.getTagCompound().getInteger("nodeZ" + getWorld(player));
         } else {
             position = "nowhere.";
         }
-        this.formatTooltip(ImmutableMap.of("phrase", phrase, "position", position), eye, list);
+        this.formatTooltip(ImmutableMap.of("phrase", phrase, "position", position, "charge", charge), ist, list);
     }
 
     @Override

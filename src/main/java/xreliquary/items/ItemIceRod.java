@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
@@ -18,6 +19,8 @@ import xreliquary.Reliquary;
 import xreliquary.entities.EntitySpecialSnowball;
 import xreliquary.lib.Names;
 
+import java.util.List;
+
 @ContentInit
 public class ItemIceRod extends ItemToggleable {
 
@@ -26,6 +29,12 @@ public class ItemIceRod extends ItemToggleable {
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
         canRepair = false;
+    }
+
+    @Override
+    public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+        String charge = Integer.toString(NBTHelper.getInteger("snowballs", ist));
+        this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
     }
 
     public ItemIceRod(String langName) {

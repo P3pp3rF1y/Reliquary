@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
@@ -25,6 +26,12 @@ public class ItemMidasTouchstone extends ItemToggleable {
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
         canRepair = false;
+    }
+
+    @Override
+    public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+        String charge = Integer.toString(NBTHelper.getInteger("glowstone", ist));
+        this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
     }
 
     @Override

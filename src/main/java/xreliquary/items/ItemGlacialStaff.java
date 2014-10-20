@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
@@ -69,6 +70,12 @@ public class ItemGlacialStaff extends ItemIceRod {
         }
 
         return super.onItemRightClick(ist, world, player);
+    }
+
+    @Override
+    public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+        String charge = Integer.toString(NBTHelper.getInteger("snowballs", ist));
+        this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
     }
 
     @Override

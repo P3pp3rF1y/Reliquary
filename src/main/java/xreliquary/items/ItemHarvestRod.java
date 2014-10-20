@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
@@ -25,6 +26,7 @@ import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -37,6 +39,12 @@ public class ItemHarvestRod extends ItemToggleable {
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
         canRepair = false;
+    }
+
+    @Override
+    public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+        String charge = Integer.toString(NBTHelper.getInteger("bonemeal", ist));
+        this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
     }
 
     @Override
@@ -58,7 +66,7 @@ public class ItemHarvestRod extends ItemToggleable {
             return;
 
         if (this.isEnabled(ist)) {
-            if (NBTHelper.getInteger("bonemeal", ist) + getBonemealWorth() <= Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_limit")) {
+            if (NBTHelper.getInteger("bonemeal", ist) + getBonemealWorth() <= getBonemealLimit()) {
                 if (InventoryHelper.consumeItem(new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META), player)) {
                     NBTHelper.setInteger("bonemeal", ist, NBTHelper.getInteger("bonemeal", ist) + getBonemealWorth());
                 }

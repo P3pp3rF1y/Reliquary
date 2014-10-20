@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
@@ -35,6 +36,12 @@ public class ItemRendingGale extends ItemToggleable {
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
         canRepair = false;
+    }
+
+    @Override
+    public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+        String charge = Integer.toString(NBTHelper.getInteger("feathers", ist));
+        this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
     }
 
     private int getFeathersLimit() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_limit"); }
