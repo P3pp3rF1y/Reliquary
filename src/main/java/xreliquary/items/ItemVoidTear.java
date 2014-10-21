@@ -104,7 +104,7 @@ public class ItemVoidTear extends ItemToggleable {
         NBTHelper.setInteger("itemQuantity", ist, NBTHelper.getInteger("itemQuantity", ist) + 1);
     }
 
-    protected ItemStack getContainedItem(ItemStack ist) {
+    public ItemStack getContainedItem(ItemStack ist) {
         return new ItemStack((Item) Item.itemRegistry.getObject(NBTHelper.getString("itemID", ist)), NBTHelper.getInteger("itemQuantity", ist), NBTHelper.getShort("itemMeta", ist));
     }
 

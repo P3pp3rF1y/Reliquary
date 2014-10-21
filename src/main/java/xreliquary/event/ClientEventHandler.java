@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.util.ContentHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -17,9 +18,13 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -27,9 +32,9 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import xreliquary.Reliquary;
 import xreliquary.client.model.ModelWitchHat;
-import xreliquary.items.ItemHandgun;
-import xreliquary.items.ItemSojournerStaff;
+import xreliquary.items.*;
 import xreliquary.lib.Names;
+import xreliquary.lib.Reference;
 
 public class ClientEventHandler {
     private static RenderItem itemRenderer = new RenderItem();
@@ -37,14 +42,14 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-        //handleTickIncrement(event);
+        handleTickIncrement(event);
         handleHandgunHUDCheck();
         handleSojournerHUDCheck();
         handleTomeHUDCheck();
         handleDestructionCatalystHUDCheck();
         handleEnderStaffHUDCheck();
+        //handles glacial staff as well
         handleIceMagusRodHUDCheck();
-        handleGlacialStaffHUDCheck();
         handleVoidTearHUDCheck();
         handleMidasTouchstoneHUDCheck();
         handleHarvestRodHUDCheck();
@@ -52,6 +57,26 @@ public class ClientEventHandler {
         handleHeroMedallionHUDCheck();
         handlePyromancerStaffHUDCheck();
         handleRendingGaleHUDCheck();
+    }
+
+    public void handleTickIncrement(TickEvent.RenderTickEvent event) {
+        // handles the color shifting of the twilight cloak, until we can throw
+        // it on an animation
+        if (event.phase != TickEvent.Phase.END)
+            return;
+        // used to go arbitrarily all the way to 88, which left us limited on
+        // how to handle our ticks.
+        // this is a nice even number. Also we don't handle blinking with this
+        // anymore so no need for weird math/modulo.
+        if (getTime() > 4096) {
+            time = 0;
+        } else {
+            time++;
+        }
+    }
+
+    public static int getTime() {
+        return time;
     }
 
     @SubscribeEvent
@@ -82,33 +107,226 @@ public class ClientEventHandler {
     }
 
 
-    public void handleTomeHUDCheck() { //todo
-    }
-    public void handleDestructionCatalystHUDCheck(){ //todo
-    }
-    public void handleEnderStaffHUDCheck(){ //todo
-    }
-    public void handleIceMagusRodHUDCheck(){ //todo
-    }
-    public void handleGlacialStaffHUDCheck(){ //todo
-    }
-    public void handleVoidTearHUDCheck(){ //todo
-    }
-    public void handleMidasTouchstoneHUDCheck(){ //todo
-    }
-    public void handleHarvestRodHUDCheck(){ //todo
-    }
-    public void handleInfernalChaliceHUDCheck(){ //todo
-    }
-    public void handleHeroMedallionHUDCheck(){ //todo
-    }
-    public void handlePyromancerStaffHUDCheck(){ //todo
-    }
-    public void handleRendingGaleHUDCheck(){ //todo
+    public void handleTomeHUDCheck() {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemAlkahestryTome))
+            return;
+
+        ItemStack tomeStack = player.getCurrentEquippedItem();
+        ItemStack redstoneStack = new ItemStack(Items.redstone, NBTHelper.getInteger("redstone", tomeStack), 0);
+        renderTomeHUD(mc, player, tomeStack, redstoneStack);
     }
 
-    public static int getTime() {
-        return time;
+    private static void renderTomeHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
+//TODO
+    }
+
+    public void handleDestructionCatalystHUDCheck(){
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemDestructionCatalyst))
+            return;
+
+        ItemStack destructionCatalystStack = player.getCurrentEquippedItem();
+        ItemStack gunpowderStack = new ItemStack(Items.gunpowder, NBTHelper.getInteger("gunpowder", destructionCatalystStack), 0);
+        renderDestructionCatalystHUD(mc, player, destructionCatalystStack, gunpowderStack);
+    }
+
+    private static void renderDestructionCatalystHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
+//TODO
+    }
+
+    public void handleEnderStaffHUDCheck(){
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemEnderStaff))
+            return;
+
+        ItemStack enderStaffStack = player.getCurrentEquippedItem();
+        ItemStack enderPearlStack = new ItemStack(Items.ender_pearl, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
+        renderEnderStaffHUD(mc, player, enderStaffStack, enderPearlStack);
+    }
+
+    private static void renderEnderStaffHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
+        //TODO
+    }
+
+    public void handleIceMagusRodHUDCheck(){
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        //returns true for Glacial Staff because it extends IceRod.
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemIceRod))
+            return;
+
+        ItemStack iceRodStack = player.getCurrentEquippedItem();
+        ItemStack snowballStack = new ItemStack(Items.snowball, NBTHelper.getInteger("snowballs", iceRodStack), 0);
+        renderIceRodHUD(mc, player, iceRodStack, snowballStack);
+    }
+
+    private static void renderIceRodHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
+//TODO
+    }
+
+    public void handleVoidTearHUDCheck(){
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemVoidTear))
+            return;
+
+        ItemStack voidTearStack = player.getCurrentEquippedItem();
+        ItemVoidTear voidTearItem = (ItemVoidTear)voidTearStack.getItem();
+        ItemStack containedItemStack = voidTearItem.getContainedItem(voidTearStack);
+        renderVoidTearHUD(mc, player, voidTearStack, containedItemStack);
+    }
+
+    private static void renderVoidTearHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
+//TODO
+    }
+
+    public void handleMidasTouchstoneHUDCheck(){
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemMidasTouchstone))
+            return;
+
+        ItemStack midasTouchstoneStack = player.getCurrentEquippedItem();
+        ItemStack glowstoneStack = new ItemStack(Items.glowstone_dust, NBTHelper.getInteger("glowstone", midasTouchstoneStack), 0);
+        renderMidasTouchstoneHUD(mc, player, midasTouchstoneStack, glowstoneStack);
+    }
+
+    private static void renderMidasTouchstoneHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
+//TODO
+    }
+
+    public void handleHarvestRodHUDCheck(){
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHarvestRod))
+            return;
+
+        ItemStack harvestRodStack = player.getCurrentEquippedItem();
+        ItemStack bonemealStack = new ItemStack(Items.dye, NBTHelper.getInteger("bonemeal", harvestRodStack), Reference.WHITE_DYE_META);
+        renderHarvestRodHUD(mc, player, harvestRodStack, bonemealStack);
+    }
+
+    private static void renderHarvestRodHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
+//TODO
+    }
+
+    public void handleInfernalChaliceHUDCheck(){
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemInfernalChalice))
+            return;
+
+        ItemStack infernalChaliceStack = player.getCurrentEquippedItem();
+        ItemStack lavaStack = new ItemStack(Blocks.lava, NBTHelper.getInteger("fluidStacks", infernalChaliceStack), 0);
+        renderInfernalChaliceHUD(mc, player, infernalChaliceStack, lavaStack);
+    }
+
+    private static void renderInfernalChaliceHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
+//TODO
+    }
+
+    public void handleHeroMedallionHUDCheck(){
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHeroMedallion))
+            return;
+
+        ItemStack heroMedallionStack = player.getCurrentEquippedItem();
+        int experience = NBTHelper.getInteger("experience", heroMedallionStack);
+        renderHeroMedallionHUD(mc, player, heroMedallionStack, experience);
+    }
+
+    private static void renderHeroMedallionHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, int exp) {
+//TODO
+    }
+
+    public void handlePyromancerStaffHUDCheck(){
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemPyromancerStaff))
+            return;
+
+
+        ItemStack pyromancerStaffStack = player.getCurrentEquippedItem();
+
+        int charge = 0;
+        int blaze = 0;
+        NBTTagCompound tagCompound = NBTHelper.getTag(pyromancerStaffStack);
+        if (tagCompound != null) {
+            NBTTagList tagList = tagCompound.getTagList("Items", 10);
+            for (int i = 0; i < tagList.tagCount(); ++i) {
+                NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
+                String itemName = tagItemData.getString("Name");
+                Item containedItem = ContentHandler.getItem(itemName);
+                int quantity = tagItemData.getInteger("Quantity");
+
+                if (containedItem == Items.blaze_powder) {
+                    blaze = quantity;
+                } else if (containedItem == Items.fire_charge) {
+                    charge = quantity;
+                }
+            }
+        }
+
+        ItemStack fireChargeStack = new ItemStack(Items.fire_charge, charge, 0);
+        ItemStack blazePowderStack = new ItemStack(Items.blaze_powder, blaze, 0);
+        renderPyromancerStaffHUD(mc, player, pyromancerStaffStack, fireChargeStack, blazePowderStack);
+    }
+
+    private static void renderPyromancerStaffHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst, ItemStack otherOtherIst) {
+//TODO
+    }
+
+    public void handleRendingGaleHUDCheck(){
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemRendingGale))
+            return;
+
+        ItemStack rendingGaleStack = player.getCurrentEquippedItem();
+        ItemStack featherStack = new ItemStack(Items.feather, NBTHelper.getInteger("feathers", rendingGaleStack), 0);
+        renderRendingGaleHUD(mc, player, rendingGaleStack, featherStack);
+    }
+
+    private static void renderRendingGaleHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
+//TODO
     }
 
     public void handleHandgunHUDCheck() {
@@ -125,30 +343,6 @@ public class ClientEventHandler {
         ItemHandgun handgunItem = (ItemHandgun) handgunStack.getItem();
         ItemStack bulletStack = new ItemStack(ContentHandler.getItem(Names.bullet), handgunItem.getBulletCount(handgunStack), handgunItem.getBulletType(handgunStack));
         renderHandgunHUD(mc, player, handgunStack, bulletStack);
-    }
-
-    public void handleSojournerHUDCheck() {
-        // handles rendering the hud for the sojourner's staff so we don't have to use chat messages, because annoying.
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
-        EntityPlayer player = mc.thePlayer;
-
-        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemSojournerStaff))
-            return;
-        ItemStack sojournerStack = player.getCurrentEquippedItem();
-        ItemSojournerStaff sojournerItem = (ItemSojournerStaff) sojournerStack.getItem();
-        String placementItemName = sojournerItem.getTorchPlacementMode(sojournerStack);
-        int amountOfItem = sojournerItem.getTorchCount(sojournerStack, ContentHandler.getItem(placementItemName));
-        Item placementItem = null;
-        if (placementItemName != null)
-            placementItem = ContentHandler.getItem(placementItemName);
-
-        ItemStack placementStack = null;
-        if (placementItem != null) {
-            placementStack = new ItemStack(placementItem, 1, 0);
-        }
-        renderSojournerHUD(mc, player, sojournerStack, placementStack);
     }
 
     private static void renderHandgunHUD(Minecraft minecraft, EntityPlayer player, ItemStack handgunStack, ItemStack bulletStack) {
@@ -224,6 +418,30 @@ public class ClientEventHandler {
         GL11.glPopMatrix();
     }
 
+    public void handleSojournerHUDCheck() {
+        // handles rendering the hud for the sojourner's staff so we don't have to use chat messages, because annoying.
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemSojournerStaff))
+            return;
+        ItemStack sojournerStack = player.getCurrentEquippedItem();
+        ItemSojournerStaff sojournerItem = (ItemSojournerStaff) sojournerStack.getItem();
+        String placementItemName = sojournerItem.getTorchPlacementMode(sojournerStack);
+        int amountOfItem = sojournerItem.getTorchCount(sojournerStack, ContentHandler.getItem(placementItemName));
+        Item placementItem = null;
+        if (placementItemName != null)
+            placementItem = ContentHandler.getItem(placementItemName);
+
+        ItemStack placementStack = null;
+        if (placementItem != null) {
+            placementStack = new ItemStack(placementItem, 1, 0);
+        }
+        renderSojournerHUD(mc, player, sojournerStack, placementStack);
+    }
+
     private static void renderSojournerHUD(Minecraft minecraft, EntityPlayer player, ItemStack sojournerStack, ItemStack placementStack) {
 
         float overlayScale = 2.5F;
@@ -277,17 +495,17 @@ public class ClientEventHandler {
 
         //render an image of the sojourner's staff
         renderItemIntoGUI(minecraft.fontRenderer, sojournerStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
-        //itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), sojournerStack, hudOverlayX, hudOverlayY);
-        //render the placement item on screen in the GUI
         if (placementStack != null) {
+            //experiment with GL11.glScalef for size?
             itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), placementStack, hudOverlayX + 12, hudOverlayY + 12);
         }
-        //    renderItemIntoGUI(minecraft.fontRenderer, placementStack, hudOverlayX + 8, hudOverlayY + 4, 1.0F, overlayScale / 2F);
 
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
     }
+
+
 
     public static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float opacity, float scale) {
         if (itemStack == null)
