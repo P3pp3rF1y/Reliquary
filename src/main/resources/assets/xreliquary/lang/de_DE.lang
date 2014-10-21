@@ -79,7 +79,7 @@ item.holy_hand_grenade.name=Heilige Handgranate
 item.holy_hand_grenade.tooltip=Tötet Monster, nicht Blöcke; oder wer auch immer sie geworfen hat.
 
 item.fortune_coin.name=Münze des Schicksals
-item.fortune_coin.tooltip=Zieht nahe Items und XP an.;Rechtsklick zum (de-)aktivieren.
+item.fortune_coin.tooltip=Zieht nahe Items und XP an.;Shift-Rechtsklick zum (de-)aktivieren.;Halte Rechtsklick für Super-Vakuum.
 
 item.glowing_water.name=Leuchtendes Wasser
 item.glowing_water.tooltip=Vernichtet Untote. Leuchtifiziert Dinge.;Wird in vielen Rezepten genutzt.
@@ -88,7 +88,7 @@ item.glowing_bread.name=Leuchtendes Brot
 item.glowing_bread.tooltip=Leuchtend und lecker.
 
 item.midas_touchstone.name=Prüfstein des Midas
-item.midas_touchstone.tooltip=Repariert Items aus Gold,;verbraucht Glowstone-Staub.
+item.midas_touchstone.tooltip=Repariert Items aus Gold,;verbraucht Glowstone-Staub.;{{!colors.yellow}}Ladung: {{charge}}
 
 item.emperor_chalice.name=Kaiserlicher Kelch
 item.emperor_chalice.tooltip=Ein unendlicher Wassereimer,;es sei denn, du trinkst aus ihm.;Tauscht Leben gegen Hunger...
@@ -97,13 +97,13 @@ item.salamander_eye.name=Salamanderauge
 item.salamander_eye.tooltip=Schützt gegen Lohen-Feuerbälle und reflektiert;Ghast-Feuerbälle, während es gehalten wird.;Löscht Feuer an dir und in deiner Nähe.
 
 item.destruction_catalyst.name=Zerstörungskatalysator
-item.destruction_catalyst.tooltip=Verbraucht nicht weniger als 3 Schwarzpulver bei Rechtsklick.;Jagt einen 3x3x3-Würfel hinder dem Zielblock in die Luft.;{{!colors.white}}Zerstört nur profane Blöcke.
+item.destruction_catalyst.tooltip=Verbraucht nicht weniger als 3 Schwarzpulver bei Rechtsklick.;Jagt einen 3x3x3-Würfel hinder dem Zielblock in die Luft.;{{!colors.white}}Zerstört nur profane Blöcke.;{{!colors.yellow}}Ladung: {{charge}}
 
 item.ice_magus_rod.name=Eis-Magiestab
-item.ice_magus_rod.tooltip=Verbraucht Schneebälle im Inventar.;Macht Schneebälle ein wenig kälter...
+item.ice_magus_rod.tooltip=Verbraucht Schneebälle im Inventar.;Macht Schneebälle ein wenig kälter...;{{!colors.blue}}Ladung: {{charge}}
 
 item.glacial_staff.name=Glazialstab
-item.glacial_staff.tooltip=Schießt Schneebälle,; fegt Blätter von Bäumen; und friert den Boden ein,; auf dem du gehst.
+item.glacial_staff.tooltip=Schießt Schneebälle,; fegt Blätter von Bäumen; und friert den Boden ein,; auf dem du gehst.;{{!colors.blue}}Ladung: {{charge}}
 
 item.rod_of_lyssa.name=Lyssa's Rute
 item.rod_of_lyssa.tooltip=Eine magische Angelrute, die;du zum Einholen von Items und;zum Taschendiebstahl verwenden kannst.
@@ -115,10 +115,10 @@ item.pyromancer_staff.name={{!colors.red}}Pyromantenstab
 item.pyromancer_staff.tooltip=Schießt Feuer aller Art,;entzündet Blöcke,;löscht Flammen;und schützt dich vor;feurigen Attacken.;{{!colors.red}}Ladungen: {{charges}};{{!colors.red}}Lohe: {{blaze}}
 
 item.rending_gale.name={{!colors.yellow}}Helfender Sturm
-item.rending_gale.tooltip=Fliege per Rechtsklick in die Rightung, in die du schaust.; Linksklick beschwört eine Windsäule herauf.
+item.rending_gale.tooltip=Fliege per Rechtsklick in die Rightung, in die du schaust.; Linksklick beschwört eine Windsäule herauf.;{{!colors.yellow}}Ladung: {{charge}}
 
 item.harvest_rod.name={{!colors.green}}Ernterute
-item.harvest_rod.tooltip=Shift+Rechtsklicke, um Knochenmehl zu absorbieren.;Klicke auf Blöcke zum Düngen,;schlage Feldfrüchte, um einen großen Bereich abzuernten.
+item.harvest_rod.tooltip=Shift+Rechtsklicke, um Knochenmehl zu absorbieren.;Klicke auf Blöcke zum Düngen,;schlage Feldfrüchte, um einen großen Bereich abzuernten.{{!colors.green}}Ladung: {{charge}}
 
 item.magicbane.name=Magiefluch
 item.magicbane.tooltip=Ein rostfreies, verzaubertes Artefakt.;Leider nicht unzerstörbar.
@@ -136,7 +136,7 @@ item.hero_medallion.name=Heldenmedallion
 item.hero_medallion.tooltip={{!colors.green}}Erfahrung: {{experience}};Wenn du mal einfach einen Ort brauchst,;um all diese Erfahrung zu speichern.
 
 item.ender_staff.name=Enderstab
-item.ender_staff.tooltip=Wirft Enerperlen;Rechtsklick auf eine Geisternodie verbindet beides,;was dir erlaubt, bei Bedarf zu ihr zurückzukehren,;was Enderperlen kostet.;{{!colors.purple}}{{phrase}}{{position}}
+item.ender_staff.tooltip={{!colors.purple}}Enderperlen: {{charge}};Linksklick wirft sie.;Shift + Rechtsklick, um Perlen zu absorbieren.;Rechtsklick auf eine Geisternodie verbindet beides,;was dir erlaubt, bei Bedarf zu ihr zurückzukehren.;{{!colors.purple}}{{phrase}}{{position}}
 
 item.angelic_feather.name=Engelsfeder
 item.angelic_feather.tooltip=Schützt dich vor Fall,;was dich stattdessen hungrig macht.
@@ -148,7 +148,7 @@ item.infernal_claws.name={{!colors.red}}Höllenklauen
 item.infernal_claws.tooltip=Absorbiert Feuerschaden,;welcher dich stattdessen hungrig macht.
 
 item.infernal_chalice.name=Höllenkelch
-item.infernal_chalice.tooltip=Kann eine gewaltige Menge Lava speichern.;Schützt dich vor Lavaschaden.
+item.infernal_chalice.tooltip=Schützt dich vor Lavaschaden.;{{!colors.red}}Hält {{amount}} mB an Lava
 
 item.kraken_shell.name=Seekrakenpanzer
 item.kraken_shell.tooltip=Verbessert deine Beweglichkeit;im Wasser.;Absorbiert Schaden durch Ertrinken,;welcher dich stattdessen hungrig macht.
@@ -172,7 +172,6 @@ item.infernal_tear.tooltip=Brennt Items in ihre rohe Essenz nieder.;Könnte sich
 
 item.lantern_of_paranoia.name={{!colors.yellow}}Laterne der Paranoia
 item.lantern_of_paranoia.tooltip=Platziert automatisch Fackeln;in unbeleuchteten Gebieten.
-
 
 item.heart_pearl_0.name={{!colors.rose}}Zombie-Herzperle
 item.heart_pearl_0.tooltip=Die komprimierte Essenz eines Zombies.
