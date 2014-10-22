@@ -2,44 +2,28 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import lib.enderwizards.sandstone.util.InventoryHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
-import net.minecraftforge.common.IShearable;
-import xreliquary.Reliquary;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Xeno on 10/11/2014.
@@ -80,45 +64,66 @@ public class ItemGlacialStaff extends ItemIceRod {
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
-        //start the blizzard after a short delay, this prevents some abuse.
-        if (getMaxItemUseDuration(ist) - count <= 5)
-            return;
-        Vec3 lookVector = player.getLookVec();
-        spawnBlizzardParticles(lookVector, player);
-
-        castBlizzardForward(player, lookVector, count);
+        MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+        if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            float xOff = (float) (mop.blockX - player.posX);
+            float yOff = (float) (mop.blockY - player.posY);
+            float zOff = (float) (mop.blockZ - player.posZ);
+            this.onItemUse(ist, player, player.worldObj, mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, xOff, yOff, zOff);
+        }
     }
 
-    public void castBlizzardForward(EntityPlayer player, Vec3 lookVector, int tickCount) {
+    @Override
+    public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int sideHit, float xOff, float yOff, float zOff) {
+        if (NBTHelper.getInteger("snowballs", ist) >= getSnowballCost()) {
+            double areaCoefficient = 3D;
+            spawnBlizzardParticles(player, x, y, z, areaCoefficient);
+            if (player.getItemInUseDuration() != 0 && player.getItemInUseDuration() % 20 == 0) {
+                NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
+                doBlizzardEffect(player, x, y, z, areaCoefficient);
+            }
+        }
+        return false;
+    }
+
+    public void doBlizzardEffect(EntityPlayer player, int x, int y, int z, double areaCoefficient) {
         if (player.worldObj.isRemote)
             return;
-        double lowerX = Math.min(player.posX, player.posX + lookVector.xCoord * 10D);
-        double lowerY = Math.min(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.yCoord * 10D);
-        double lowerZ = Math.min(player.posZ, player.posZ + lookVector.zCoord * 10D);
-        double upperX = Math.max(player.posX, player.posX + lookVector.xCoord * 10D);
-        double upperY = Math.max(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.yCoord * 10D);
-        double upperZ = Math.max(player.posZ, player.posZ + lookVector.zCoord * 10D);
+        double lowerX = x - areaCoefficient;
+        double lowerY = y;
+        double lowerZ = z - areaCoefficient;
+        double upperX = x + areaCoefficient;
+        double upperY = y + 15D;
+        double upperZ = z + areaCoefficient;
         List eList = player.worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
         Iterator iterator = eList.iterator();
         while (iterator.hasNext()) {
             Entity e = (Entity)iterator.next();
             if (e instanceof EntityLivingBase && !e.isEntityEqual(player)) {
                 EntityLivingBase livingBase = (EntityLivingBase)e;
-                PotionEffect slow = null;
-                if (livingBase.getActivePotionEffect(Potion.moveSlowdown) == null) {
-                    //if normal, create the first stack of freezing effect.
-                    slow = new PotionEffect(Potion.moveSlowdown.id, 120, 0);
-                } else {
-                    //if the creature is slowed already, refresh the duration and increase the amplifier by 1.
-                    //5 hits is all it takes to max out the amplitude.
-                    slow = new PotionEffect(Potion.moveSlowdown.id, Math.min(livingBase.getActivePotionEffect(Potion.moveSlowdown).getDuration() + 120, 240), Math.min(livingBase.getActivePotionEffect(Potion.moveSlowdown).getAmplifier() + 1, 4));
+                PotionEffect slow = new PotionEffect(Potion.moveSlowdown.id, 60, 0);
 
-                }
+                //if the creature is slowed already, refresh the duration and increase the amplifier by 1.
+                //5 hits is all it takes to max out the amplitude.
+                if (livingBase.getActivePotionEffect(Potion.moveSlowdown) != null)
+                    slow = new PotionEffect(Potion.moveSlowdown.id, Math.min(livingBase.getActivePotionEffect(Potion.moveSlowdown).getDuration() + 60, 300), Math.min(livingBase.getActivePotionEffect(Potion.moveSlowdown).getAmplifier() + 1, 4));
 
                 ((EntityLivingBase) e).addPotionEffect(slow);
-                if (tickCount % 20 == 0)
-                    e.attackEntityFrom(DamageSource.causePlayerDamage(player), slow.getAmplifier());
+                e.attackEntityFrom(DamageSource.causePlayerDamage(player), slow.getAmplifier());
             }
+        }
+    }
+
+    public void spawnBlizzardParticles(EntityPlayer player, int x, int y, int z, double areaCoefficient) {
+        //spawn a whole mess of particles every tick.
+        for (int i = 0; i < 16; ++i) {
+            double randX = areaCoefficient * (player.worldObj.rand.nextFloat() - 0.5F);
+            double randMotX = player.worldObj.rand.nextGaussian() * 0.1D;
+            double randY = 10D;
+            double randMotY = (0.2F + (player.worldObj.rand.nextFloat() * 0.2F)) * -1F;
+            double randZ = areaCoefficient * (player.worldObj.rand.nextFloat() - 0.5F);
+            double randMotZ = player.worldObj.rand.nextGaussian() * 0.1D;
+            player.worldObj.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, randX, randY, randZ, randMotX, randMotY, randMotZ);
         }
     }
 
@@ -287,17 +292,5 @@ public class ItemGlacialStaff extends ItemIceRod {
         tagCompound.setTag("BlockLocations", newTagList);
         ist.setTagCompound(tagCompound);
         return removedBlock;
-    }
-
-    public void spawnBlizzardParticles(Vec3 lookVector, EntityPlayer player) {
-        //spawn a whole mess of particles every tick.
-        for (int i = 0; i < 16; ++i) {
-            float randX = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
-            float randY = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
-            float randZ = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
-
-            player.worldObj.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
-        }
-
     }
 }

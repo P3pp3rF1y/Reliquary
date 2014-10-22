@@ -114,7 +114,7 @@ public class XRRecipes {
         // buster
         addRecipe(true, bullet(8, 6), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), ingredient(Reference.CREEPER_INGREDIENT_META));
         // seeker
-        addRecipe(true, bullet(8, 7), Items.string, ingredient(Reference.SLIME_INGREDIENT_META), Items.gold_nugget, Items.gunpowder);
+        addRecipe(true, bullet(8, 7), lapis(), Items.gold_nugget, Items.gold_nugget, Items.gunpowder);
         // sand
         addRecipe(true, bullet(8, 8), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), Blocks.sandstone);
         // storm

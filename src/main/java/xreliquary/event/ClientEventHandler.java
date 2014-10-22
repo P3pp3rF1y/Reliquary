@@ -61,14 +61,10 @@ public class ClientEventHandler {
     }
 
     public void handleTickIncrement(TickEvent.RenderTickEvent event) {
-        // handles the color shifting of the twilight cloak, until we can throw
-        // it on an animation
+        // this is currently used for nothing but the blinking magazine in the handgun HUD renderer
         if (event.phase != TickEvent.Phase.END)
             return;
-        // used to go arbitrarily all the way to 88, which left us limited on
-        // how to handle our ticks.
-        // this is a nice even number. Also we don't handle blinking with this
-        // anymore so no need for weird math/modulo.
+        //4096 is just an arbitrary stopping point, I didn't need it to go that high, honestly. left in case we need something weird.
         if (getTime() > 4096) {
             time = 0;
         } else {

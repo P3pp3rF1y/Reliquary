@@ -7,7 +7,6 @@ import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,10 +20,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
@@ -116,106 +114,98 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
-        if (getMaxItemUseDuration(ist) - count <= 5)
-            return;
-        Vec3 lookVector = player.getLookVec();
-        double soundX = player.posX + lookVector.xCoord;
-        double soundY = player.posY + lookVector.yCoord;
-        double soundZ = player.posZ + lookVector.zCoord;
-        player.worldObj.playSound(soundX, soundY, soundZ, "mob.ghast.fireball", 0.3F, 0.13F + (0.1F * itemRand.nextFloat()), false);
-        castFireForward(player, lookVector, count);
-        spawnFlameParticles(lookVector, player);
+        //mop call and fakes onItemUse, getting read to do the eruption effect. If the item is enabled, it just sets a bunch of fires!
+        MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+        if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            float xOff = (float) (mop.blockX - player.posX);
+            float yOff = (float) (mop.blockY - player.posY);
+            float zOff = (float) (mop.blockZ - player.posZ);
+            this.onItemUse(ist, player, player.worldObj, mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, xOff, yOff, zOff);
+        }
     }
 
     public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int sideHit, float xOff, float yOff, float zOff)
     {
-        if (!this.isEnabled(ist))
-            return false;
-        if (sideHit == 0)
-        {
-            --y;
-        }
+        //while enabled only, if disabled, it will do an eruption effect instead.
+        if (this.isEnabled(ist)) {
+            if (sideHit == 0) {
+                --y;
+            }
 
-        if (sideHit == 1)
-        {
-            ++y;
-        }
+            if (sideHit == 1) {
+                ++y;
+            }
 
-        if (sideHit == 2)
-        {
-            --z;
-        }
+            if (sideHit == 2) {
+                --z;
+            }
 
-        if (sideHit == 3)
-        {
-            ++z;
-        }
+            if (sideHit == 3) {
+                ++z;
+            }
 
-        if (sideHit == 4)
-        {
-            --x;
-        }
+            if (sideHit == 4) {
+                --x;
+            }
 
-        if (sideHit == 5)
-        {
-            ++x;
-        }
+            if (sideHit == 5) {
+                ++x;
+            }
 
-        if (!player.canPlayerEdit(x, y, z, sideHit, ist))
-        {
-            return false;
-        }
-        else
-        {
-            if (world.isAirBlock(x, y, z))
-            {
-                world.playSoundEffect((double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F);
-                world.setBlock(x, y, z, Blocks.fire);
+            if (!player.canPlayerEdit(x, y, z, sideHit, ist)) {
+                return false;
+            } else {
+                if (world.isAirBlock(x, y, z)) {
+                    world.playSoundEffect((double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F);
+                    world.setBlock(x, y, z, Blocks.fire);
+                }
+                return false;
+            }
+        } else {
+            double areaCoefficient = 3D;
+
+            double soundX = x;
+            double soundY = y;
+            double soundZ = z;
+            player.worldObj.playSound(soundX, soundY, soundZ, "mob.ghast.fireball", 0.3F, 0.13F + (0.1F * itemRand.nextFloat()), false);
+
+            if (player.getItemInUseDuration() != 0 && player.getItemInUseDuration() % 20 == 0) {
+                if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
+                    doEruptionEffect(ist, player, x, y, z, areaCoefficient);
+                }
+            }
+            for (int particleCount = 0; particleCount < 4; ++particleCount) {
+                double randX = x + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient;
+                double randY = y + 0.5D + (player.worldObj.rand.nextFloat() / 2D);
+                double randZ = z + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient;
+                player.worldObj.spawnParticle("lava", randX, randY, randZ, 0D,0D,0D);
             }
             return false;
         }
     }
 
 
-    public void castFireForward(EntityPlayer player, Vec3 lookVector, int tickCount) {
+    public void doEruptionEffect(ItemStack ist, EntityPlayer player, int x, int y, int z, double areaCoefficient) {
         if (player.worldObj.isRemote)
             return;
-        double lowerX = Math.min(player.posX, player.posX + lookVector.xCoord * 5D);
-        double lowerY = Math.min(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.yCoord * 5D);
-        double lowerZ = Math.min(player.posZ, player.posZ + lookVector.zCoord * 5D);
-        double upperX = Math.max(player.posX, player.posX + lookVector.xCoord * 5D);
-        double upperY = Math.max(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.yCoord * 5D);
-        double upperZ = Math.max(player.posZ, player.posZ + lookVector.zCoord * 5D);
+        double lowerX = x - areaCoefficient;
+        double lowerY = y;
+        double lowerZ = z - areaCoefficient;
+        double upperX = x + areaCoefficient;
+        double upperY = y + areaCoefficient;
+        double upperZ = z + areaCoefficient;
         List eList = player.worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
         Iterator iterator = eList.iterator();
+
+
         while (iterator.hasNext()) {
             Entity e = (Entity)iterator.next();
             if (e instanceof EntityLivingBase && !e.isEntityEqual(player)) {
-                if (tickCount % 20 == 0) {
-                    if (!e.isImmuneToFire())
-                        e.attackEntityFrom(DamageSource.causePlayerDamage(player), 4F);
-                    e.setFire(40);
-                }
+                if (!e.isImmuneToFire())
+                    e.attackEntityFrom(DamageSource.causePlayerDamage(player), 4F);
+                e.setFire(40);
             }
         }
-    }
-
-    public void spawnFlameParticles(Vec3 lookVector, EntityPlayer player) {
-        //spawn a whole mess of particles every tick.
-        for (int i = 0; i < 8; ++i) {
-            float randX = 1F * (player.worldObj.rand.nextFloat() - 0.5F);
-            float randY = 1F * (player.worldObj.rand.nextFloat() - 0.5F);
-            float randZ = 1F * (player.worldObj.rand.nextFloat() - 0.5F);
-
-            float randX2 = 5F * player.worldObj.rand.nextFloat() * (float)lookVector.xCoord;
-            float randY2 = 5F * player.worldObj.rand.nextFloat() * (float)lookVector.yCoord;
-            float randZ2 = 5F * player.worldObj.rand.nextFloat() * (float)lookVector.zCoord ;
-
-            player.worldObj.spawnParticle("flame", player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
-            if (i % 3 == 0) //less lava
-                player.worldObj.spawnParticle("lava", player.posX + randX2, player.posY + randY2, player.posZ + randZ2, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
-        }
-
     }
 
     private void scanForFireChargeAndBlazePowder(ItemStack ist, EntityPlayer player) {
