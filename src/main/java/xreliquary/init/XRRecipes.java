@@ -23,7 +23,7 @@ public class XRRecipes {
 
     public static ItemStack fertilizer() { return XRRecipes.potion(Reference.FERTILIZER_META); }
 
-    public static ItemStack emptyVoidTear() { return new ItemStack(getItem(Names.void_tear), 1, 0); }
+    public static ItemStack emptyVoidTear() { return new ItemStack(getItem(Names.void_tear_empty), 1, 0); }
 
     public static ItemStack witherSkull() { return new ItemStack(Items.skull, 1, 1); }
 
