@@ -319,7 +319,6 @@ public class ItemSojournerStaff extends ItemToggleable {
             }
 
             //add "currently placing: blah blah blah" to the tooltip.
-
             Item placingItem = ContentHandler.getItem(getTorchPlacementMode(ist));
 
             if (placingItem != null) {
@@ -359,7 +358,6 @@ public class ItemSojournerStaff extends ItemToggleable {
 
         if (blockAttemptingPlacement.canPlaceBlockAt(world, x, y, z)) {
             if (world.canPlaceEntityOnSide(blockAttemptingPlacement, x, y, z, false, side, player, ist)) {
-
                 if (!player.capabilities.isCreativeMode) {
                     int cost = 1;
                     int distance = (int) player.getDistance(x, y, z);
@@ -381,7 +379,6 @@ public class ItemSojournerStaff extends ItemToggleable {
     }
 
     private int attemptSide(World world, int x, int y, int z, int side, Block block) {
-
         return block.onBlockPlaced(world, x, y, z, side, x, y, z, 0);
     }
 
