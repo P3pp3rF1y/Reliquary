@@ -69,4 +69,5 @@ public class Names {
     public static final String apothecary_mortar = "apothecary_mortar";
 
     public static final String recipe_enabled = "recipe_enabled";
+    public static final String hud_positions = "hud_positions";
 }

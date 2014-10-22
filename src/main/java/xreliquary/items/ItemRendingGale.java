@@ -173,12 +173,6 @@ public class ItemRendingGale extends ItemToggleable {
 
         }
 
-        //we're gonna roll with per-tick drain and see how badly it hurts the server.
-        //if (tickUsed % 20 == 0)
-        //ist.setItemDamage(ist.getItemDamage() + 1);
-        NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getFeathersCost());
-
-
         //player.setVelocity(x, y, z);
         player.motionX = x;
         player.motionY = y;
@@ -191,20 +185,6 @@ public class ItemRendingGale extends ItemToggleable {
 
         spawnHurricaneParticles(player.getLookVec(), player);
         return;
-    }
-
-    public AxisAlignedBB directionalExpand(double x, double y, double z, AxisAlignedBB aabb)
-    {
-        double minX = aabb.minX + (x < 0D ? x : 0D);
-        double minY = aabb.minY + (y < 0D ? y : 0D);
-        double minZ = aabb.minZ + (z < 0D ? z : 0D);
-        double maxX = aabb.maxX + (x > 0D ? x : 0D);
-        double maxY = aabb.maxY + (y > 0D ? y : 0D);
-        double maxZ = aabb.maxZ + (z > 0D ? z : 0D);
-        /**
-         * Returns a bounding box with the specified bounds. Args: minX, minY, minZ, maxX, maxY, maxZ
-         */
-        return aabb.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     public boolean isAABBInAnythingButAir(World worldObj, AxisAlignedBB aabb)
@@ -225,7 +205,7 @@ public class ItemRendingGale extends ItemToggleable {
                     Block block = worldObj.getBlock(xOff, yOff, zOff);
 
                     if (block.getMaterial() != Material.air && block.getMaterial() != Material.water && block.getMaterial() != Material.lava &&
-                            block.getMaterial() != Material.fire && block.getMaterial() != Material.vine && block.getMaterial() != Material.plants)
+                            block.getMaterial() != Material.fire && block.getMaterial() != Material.vine && block.getMaterial() != Material.plants && block.getMaterial() != Material.circuits)
                     {
                         return true;
                     }
@@ -291,18 +271,35 @@ public class ItemRendingGale extends ItemToggleable {
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
-        if (NBTHelper.getInteger("feathers", ist) >= getFeathersCost())
-            return;
-//        if ((getMaxItemUseDuration(ist) - count) % 40 == 0) {
-//            System.out.println("count " + count + " % 40 = " + (getMaxItemUseDuration(ist) - count) % 40);
-//            float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
-//            player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.25F, randomPitch);
-//        }
-        Vec3 lookVector = player.getLookVec();
-        spawnHurricaneParticles(lookVector, player);
+        if (getMaxItemUseDuration(ist) - count >= NBTHelper.getInteger("feathers", ist)) {
+            player.stopUsingItem();
+        }
 
-        attemptFlight(player, ist, count);
+        //if (removeFeather(ist, player.worldObj.isRemote)) {
+
+            Vec3 lookVector = player.getLookVec();
+            spawnHurricaneParticles(lookVector, player);
+
+            attemptFlight(player, ist, count);
+        //}
     }
+
+    //experimenting with a more sophisticated charge/drain mechanism
+    @Override
+    public void onPlayerStoppedUsing(ItemStack ist, World world, EntityPlayer player, int count) {
+        int chargeUsed = getMaxItemUseDuration(ist) - count;
+        NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - chargeUsed);
+    }
+
+//    public boolean removeFeather(ItemStack ist, boolean simulate) {
+//        if (NBTHelper.getInteger("feathers", ist) > getFeathersCost()) {
+//            if (!simulate)
+//                NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getFeathersCost());
+//            return true;
+//        }
+//
+//        return false;
+//    }
 
     public void doPushEffect(ItemStack ist, EntityPlayer player, Vec3 lookVector) {
         //push effect free at the moment, if you restore cost, remember to change this to NBTHelper.getInteger("feathers", ist)

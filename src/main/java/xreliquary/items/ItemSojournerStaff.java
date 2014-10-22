@@ -48,10 +48,6 @@ public class ItemSojournerStaff extends ItemToggleable {
         if (world.isRemote)
             return;
 
-        if (this.isOnCooldown(ist)) {
-            decrementCooldown(ist);
-        }
-
         EntityPlayer player = null;
         if (e instanceof EntityPlayer) {
             player = (EntityPlayer) e;
@@ -66,9 +62,10 @@ public class ItemSojournerStaff extends ItemToggleable {
 
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
-        if (entityLiving.isSneaking() && !isOnCooldown(ist)) {
+        if (entityLiving.worldObj.isRemote)
+            return false;
+        if (entityLiving.isSneaking()) {
             cycleTorchMode(ist);
-            setCooldown(ist);
             return true;
         }
         return false;
@@ -205,7 +202,41 @@ public class ItemSojournerStaff extends ItemToggleable {
         return torchToPlace;
     }
 
-    public int getTorchCount(ItemStack ist, Item item) {
+    public int getTorchCount(ItemStack ist) {
+        if (NBTHelper.getTag(ist) == null) {
+            return 0;
+        }
+
+        NBTTagCompound tagCompound = NBTHelper.getTag(ist);
+        String torchToPlace = tagCompound.getString("Torch");
+
+        NBTTagList tagList = tagCompound.getTagList("Items", 10);
+
+        if (torchToPlace != null) {
+            for (int i = 0; i < tagList.tagCount(); ++i) {
+                NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
+                String itemName = tagItemData.getString("Name");
+                if (itemName.equals(torchToPlace)) {
+                    int quantity = tagItemData.getInteger("Quantity");
+                    if (quantity <= 0)
+                        torchToPlace = null;
+                    else
+                        return quantity;
+                }
+            }
+        }
+        if (torchToPlace == null || torchToPlace.isEmpty()) {
+            for (int i = 0; i < tagList.tagCount(); ++i) {
+                NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
+                String itemName = tagItemData.getString("Name");
+
+                int quantity = tagItemData.getInteger("Quantity");
+                if (quantity > 0) {
+                    tagCompound.setString("Torch", itemName);
+                    return quantity;
+                }
+            }
+        }
         return 0;
     }
 
@@ -301,7 +332,10 @@ public class ItemSojournerStaff extends ItemToggleable {
 
     @Override
     public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
-        if (this.isOnCooldown(ist))
+        if (player.isSwingInProgress)
+            return false;
+        player.swingItem();
+        if (world.isRemote)
             return false;
         if (!player.canPlayerEdit(x, y, z, side, ist))
             return false;
@@ -338,10 +372,8 @@ public class ItemSojournerStaff extends ItemToggleable {
                 if (placeBlockAt(ist, player, world, x, y, z, side, xOff, yOff, zOff, attemptSide(world, x, y, z, side, blockAttemptingPlacement), blockAttemptingPlacement)) {
                     blockAttemptingPlacement.onBlockAdded(world, x, y, z);
                     double gauss = 0.5D + world.rand.nextFloat() / 2;
-                    player.swingItem();
                     world.spawnParticle("mobSpell", x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);
                     world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, blockAttemptingPlacement.stepSound.getStepResourcePath(), (blockAttemptingPlacement.stepSound.getVolume() + 1.0F) / 2.0F, blockAttemptingPlacement.stepSound.getPitch() * 0.8F);
-                    this.setCooldown(ist);
                 }
             }
         }
@@ -353,22 +385,9 @@ public class ItemSojournerStaff extends ItemToggleable {
         return block.onBlockPlaced(world, x, y, z, side, x, y, z, 0);
     }
 
-    private void decrementCooldown(ItemStack ist) {
-        NBTHelper.setShort("cooldown", ist, NBTHelper.getShort("cooldown", ist) - 1);
-    }
-
-    private boolean isOnCooldown(ItemStack ist) {
-        return NBTHelper.getShort("cooldown", ist) > 0;
-    }
-
-    private void setCooldown(ItemStack ist) {
-        NBTHelper.setShort("cooldown", ist, 10);
-    }
-
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
-        if (this.isOnCooldown(ist))
-            return ist;
+        //calls onItemUse so all of the functionality we'd normally have to do preventative checks on gets handled there.
         if (!player.isSneaking()) {
             MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
             if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {

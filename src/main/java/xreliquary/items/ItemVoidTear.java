@@ -54,7 +54,7 @@ public class ItemVoidTear extends ItemToggleable {
                 return super.onItemRightClick(ist, world, player);
             if (this.attemptToEmptyIntoInventory(ist, player, player.inventory, player.inventory.mainInventory.length)) {
                 player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
-                NBTHelper.removeTag(ist);
+                NBTHelper.resetTag(ist);
                 return new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1, 0);
             }
         }
@@ -73,7 +73,9 @@ public class ItemVoidTear extends ItemToggleable {
 
             ItemStack contents = this.getContainedItem(stack);
             if (contents.stackSize < Reliquary.CONFIG.getInt(Names.void_tear, "item_limit") && InventoryHelper.consumeItem(contents, player, 1)) {
-                this.onAbsorb(stack, player);
+                //doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
+                if (!player.capabilities.isCreativeMode)
+                    this.onAbsorb(stack, player);
             }
         }
     }
@@ -90,7 +92,7 @@ public class ItemVoidTear extends ItemToggleable {
                 } else {
                     //disabled == placement mode, try and stuff the tear's contents into the inventory
                     if (this.attemptToEmptyIntoInventory(ist, player, inventory, 0)) {
-                        NBTHelper.removeTag(ist);
+                        NBTHelper.resetTag(ist);
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(ContentHandler.getItem(Names.void_tear_empty), 1, 0));
                     }
                 }
@@ -105,6 +107,9 @@ public class ItemVoidTear extends ItemToggleable {
     }
 
     public ItemStack getContainedItem(ItemStack ist) {
+        //something awful happened. We either lost data or this is an invalid tear by some other means. Either way, not great.
+        if (NBTHelper.getString("itemID", ist).equals(""))
+            return null;
         return new ItemStack((Item) Item.itemRegistry.getObject(NBTHelper.getString("itemID", ist)), NBTHelper.getInteger("itemQuantity", ist), NBTHelper.getShort("itemMeta", ist));
     }
 

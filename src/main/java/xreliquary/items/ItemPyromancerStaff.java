@@ -270,7 +270,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
         if (player.isSneaking()) {
             //ghast fireball!
-            if (removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost())) {
+            if (removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost(), player.worldObj.isRemote)) {
                 player.worldObj.playAuxSFXAtEntity(player, 1008, (int)player.posX, (int)player.posY, (int)player.posZ, 0);
                 //if (!player.worldObj.isRemote) {
                 EntityLargeFireball fireball = new EntityLargeFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
@@ -288,7 +288,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
         } else {
             //blaze fireball!
-            if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost())) {
+            if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
                 player.worldObj.playAuxSFXAtEntity(player, 1009, (int)player.posX, (int)player.posY, (int)player.posZ, 0);
                 //if (!player.worldObj.isRemote) {
                 EntitySmallFireball fireball = new EntitySmallFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
@@ -303,10 +303,10 @@ public class ItemPyromancerStaff extends ItemToggleable {
                 //}
             }
         }
-        return true;
+        return false;
     }
 
-    public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost) {
+    public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, boolean simulate) {
         if (hasItemInInternalStorage(ist, item, cost)) {
             NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 
@@ -320,7 +320,8 @@ public class ItemPyromancerStaff extends ItemToggleable {
                 String itemName = tagItemData.getString("Name");
                 if (itemName.equals(ContentHelper.getIdent(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
-                    tagItemData.setInteger("Quantity", quantity - cost);
+                    if (!simulate)
+                        tagItemData.setInteger("Quantity", quantity - cost);
                 }
                 replacementTagList.appendTag(tagItemData);
             }

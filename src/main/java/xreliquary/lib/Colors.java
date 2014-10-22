@@ -2,8 +2,15 @@ package xreliquary.lib;
 
 public class Colors {
 
+    public static int get(String s) {
+        return Integer.parseInt(s, 16);
+    }
+
     // Colors
     public static final String PURE = "FFFFFF";
+    public static final String BRIGHT_GREEN = "00FF00";
+    public static final String GREEN = "009900";
+    public static final String DARK_GREEN = "006600";
     public static final String SHADED = "CCCCCC";
     public static final String DARK = "999999";
     public static final String DARKER = "666666";

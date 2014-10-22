@@ -33,6 +33,7 @@ import org.lwjgl.opengl.GL12;
 import xreliquary.Reliquary;
 import xreliquary.client.model.ModelWitchHat;
 import xreliquary.items.*;
+import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
@@ -106,7 +107,6 @@ public class ClientEventHandler {
         }
     }
 
-
     public void handleTomeHUDCheck() {
         Minecraft mc = Minecraft.getMinecraft();
         if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
@@ -118,11 +118,7 @@ public class ClientEventHandler {
 
         ItemStack tomeStack = player.getCurrentEquippedItem();
         ItemStack redstoneStack = new ItemStack(Items.redstone, NBTHelper.getInteger("redstone", tomeStack), 0);
-        renderTomeHUD(mc, player, tomeStack, redstoneStack);
-    }
-
-    private static void renderTomeHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
-//TODO
+        renderStandardTwoItemHUD(mc, player, tomeStack, redstoneStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.alkahestry_tome), 0, 0);
     }
 
     public void handleDestructionCatalystHUDCheck(){
@@ -136,11 +132,7 @@ public class ClientEventHandler {
 
         ItemStack destructionCatalystStack = player.getCurrentEquippedItem();
         ItemStack gunpowderStack = new ItemStack(Items.gunpowder, NBTHelper.getInteger("gunpowder", destructionCatalystStack), 0);
-        renderDestructionCatalystHUD(mc, player, destructionCatalystStack, gunpowderStack);
-    }
-
-    private static void renderDestructionCatalystHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
-//TODO
+        renderStandardTwoItemHUD(mc, player, destructionCatalystStack, gunpowderStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.destruction_catalyst), 0, 0);
     }
 
     public void handleEnderStaffHUDCheck(){
@@ -154,11 +146,7 @@ public class ClientEventHandler {
 
         ItemStack enderStaffStack = player.getCurrentEquippedItem();
         ItemStack enderPearlStack = new ItemStack(Items.ender_pearl, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
-        renderEnderStaffHUD(mc, player, enderStaffStack, enderPearlStack);
-    }
-
-    private static void renderEnderStaffHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
-        //TODO
+        renderStandardTwoItemHUD(mc, player, enderStaffStack, enderPearlStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.ender_staff), 0, 0);
     }
 
     public void handleIceMagusRodHUDCheck(){
@@ -173,11 +161,9 @@ public class ClientEventHandler {
 
         ItemStack iceRodStack = player.getCurrentEquippedItem();
         ItemStack snowballStack = new ItemStack(Items.snowball, NBTHelper.getInteger("snowballs", iceRodStack), 0);
-        renderIceRodHUD(mc, player, iceRodStack, snowballStack);
-    }
-
-    private static void renderIceRodHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
-//TODO
+        //still allows for differing HUD positions, like a baws.
+        String hudSelector = (player.getCurrentEquippedItem().getItem() instanceof ItemGlacialStaff) ? Names.glacial_staff : Names.ice_magus_rod;
+        renderStandardTwoItemHUD(mc, player, iceRodStack, snowballStack, Reliquary.CONFIG.getInt(Names.hud_positions, hudSelector), 0, 0);
     }
 
     public void handleVoidTearHUDCheck(){
@@ -192,11 +178,7 @@ public class ClientEventHandler {
         ItemStack voidTearStack = player.getCurrentEquippedItem();
         ItemVoidTear voidTearItem = (ItemVoidTear)voidTearStack.getItem();
         ItemStack containedItemStack = voidTearItem.getContainedItem(voidTearStack);
-        renderVoidTearHUD(mc, player, voidTearStack, containedItemStack);
-    }
-
-    private static void renderVoidTearHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
-//TODO
+        renderStandardTwoItemHUD(mc, player, voidTearStack, containedItemStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.void_tear), 0, 0);
     }
 
     public void handleMidasTouchstoneHUDCheck(){
@@ -210,11 +192,7 @@ public class ClientEventHandler {
 
         ItemStack midasTouchstoneStack = player.getCurrentEquippedItem();
         ItemStack glowstoneStack = new ItemStack(Items.glowstone_dust, NBTHelper.getInteger("glowstone", midasTouchstoneStack), 0);
-        renderMidasTouchstoneHUD(mc, player, midasTouchstoneStack, glowstoneStack);
-    }
-
-    private static void renderMidasTouchstoneHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
-//TODO
+        renderStandardTwoItemHUD(mc, player, midasTouchstoneStack, glowstoneStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.midas_touchstone), 0, 0);
     }
 
     public void handleHarvestRodHUDCheck(){
@@ -228,11 +206,7 @@ public class ClientEventHandler {
 
         ItemStack harvestRodStack = player.getCurrentEquippedItem();
         ItemStack bonemealStack = new ItemStack(Items.dye, NBTHelper.getInteger("bonemeal", harvestRodStack), Reference.WHITE_DYE_META);
-        renderHarvestRodHUD(mc, player, harvestRodStack, bonemealStack);
-    }
-
-    private static void renderHarvestRodHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
-//TODO
+        renderStandardTwoItemHUD(mc, player, harvestRodStack, bonemealStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.harvest_rod), 0, 0);
     }
 
     public void handleInfernalChaliceHUDCheck(){
@@ -245,12 +219,8 @@ public class ClientEventHandler {
             return;
 
         ItemStack infernalChaliceStack = player.getCurrentEquippedItem();
-        ItemStack lavaStack = new ItemStack(Blocks.lava, NBTHelper.getInteger("fluidStacks", infernalChaliceStack), 0);
-        renderInfernalChaliceHUD(mc, player, infernalChaliceStack, lavaStack);
-    }
-
-    private static void renderInfernalChaliceHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
-//TODO
+        ItemStack lavaStack = new ItemStack(Items.lava_bucket, NBTHelper.getInteger("fluidStacks", infernalChaliceStack), 0);
+        renderStandardTwoItemHUD(mc, player, infernalChaliceStack, lavaStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.infernal_chalice), Colors.get(Colors.BLOOD_RED_COLOR), 0);
     }
 
     public void handleHeroMedallionHUDCheck(){
@@ -264,11 +234,7 @@ public class ClientEventHandler {
 
         ItemStack heroMedallionStack = player.getCurrentEquippedItem();
         int experience = NBTHelper.getInteger("experience", heroMedallionStack);
-        renderHeroMedallionHUD(mc, player, heroMedallionStack, experience);
-    }
-
-    private static void renderHeroMedallionHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, int exp) {
-//TODO
+        renderStandardTwoItemHUD(mc, player, heroMedallionStack, null, Reliquary.CONFIG.getInt(Names.hud_positions, Names.rending_gale), Colors.get(Colors.GREEN), experience);
     }
 
     public void handlePyromancerStaffHUDCheck(){
@@ -307,45 +273,8 @@ public class ClientEventHandler {
         renderPyromancerStaffHUD(mc, player, pyromancerStaffStack, fireChargeStack, blazePowderStack);
     }
 
-    private static void renderPyromancerStaffHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst, ItemStack otherOtherIst) {
-//TODO
-    }
-
-    public void handleRendingGaleHUDCheck(){
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
-        EntityPlayer player = mc.thePlayer;
-
-        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemRendingGale))
-            return;
-
-        ItemStack rendingGaleStack = player.getCurrentEquippedItem();
-        ItemStack featherStack = new ItemStack(Items.feather, NBTHelper.getInteger("feathers", rendingGaleStack), 0);
-        renderRendingGaleHUD(mc, player, rendingGaleStack, featherStack);
-    }
-
-    private static void renderRendingGaleHUD(Minecraft minecraft, EntityPlayer player, ItemStack ist, ItemStack otherIst) {
-//TODO
-    }
-
-    public void handleHandgunHUDCheck() {
-        // handles rendering the hud for the handgun, WIP
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
-        EntityPlayer player = mc.thePlayer;
-
-        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHandgun))
-            return;
-
-        ItemStack handgunStack = player.getCurrentEquippedItem();
-        ItemHandgun handgunItem = (ItemHandgun) handgunStack.getItem();
-        ItemStack bulletStack = new ItemStack(ContentHandler.getItem(Names.bullet), handgunItem.getBulletCount(handgunStack), handgunItem.getBulletType(handgunStack));
-        renderHandgunHUD(mc, player, handgunStack, bulletStack);
-    }
-
-    private static void renderHandgunHUD(Minecraft minecraft, EntityPlayer player, ItemStack handgunStack, ItemStack bulletStack) {
+    private static void renderPyromancerStaffHUD(Minecraft minecraft, EntityPlayer player, ItemStack hudStack, ItemStack secondaryStack, ItemStack tertiaryStack) {
+        int color = Colors.get(Colors.PURE);
 
         float overlayScale = 2.5F;
         float overlayOpacity = 0.75F;
@@ -370,7 +299,109 @@ public class ClientEventHandler {
         int hudOverlayX = 0;
         int hudOverlayY = 0;
 
-        switch (Reliquary.CONFIG.getInt(Names.handgun, "hud_position")) {
+        switch (Reliquary.CONFIG.getInt(Names.hud_positions, Names.pyromancer_staff)) {
+            case 0: {
+                hudOverlayX = 0;
+                hudOverlayY = 0;
+                break;
+            }
+            case 1: {
+                hudOverlayX = (int) (sr.getScaledWidth() - 16 * overlayScale);
+                hudOverlayY = 0;
+                break;
+            }
+            case 2: {
+                hudOverlayX = 0;
+                hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
+                break;
+            }
+            case 3: {
+                hudOverlayX = (int) (sr.getScaledWidth() - 16 * overlayScale);
+                hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+
+        renderItemIntoGUI(minecraft.fontRenderer, hudStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
+
+        if (secondaryStack != null) {
+            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX + 6, hudOverlayY + 6);
+            int stringWidthOffset = minecraft.fontRenderer.getStringWidth(Integer.toString(secondaryStack.stackSize)) / 2;
+            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(secondaryStack.stackSize),hudOverlayX + 30 - stringWidthOffset, hudOverlayY + 6, color);
+        }
+        if (tertiaryStack != null) {
+            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), tertiaryStack, hudOverlayX + 6, hudOverlayY + 24);
+            int stringWidthOffset = minecraft.fontRenderer.getStringWidth(Integer.toString(tertiaryStack.stackSize)) / 2;
+            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(tertiaryStack.stackSize),hudOverlayX + 30 - stringWidthOffset, hudOverlayY + 24, color);
+        }
+
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glPopMatrix();
+        GL11.glPopMatrix();
+    }
+
+    public void handleRendingGaleHUDCheck(){
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemRendingGale))
+            return;
+
+        ItemStack rendingGaleStack = player.getCurrentEquippedItem();
+        ItemStack featherStack = new ItemStack(Items.feather, NBTHelper.getInteger("feathers", rendingGaleStack), 0);
+        int charge = featherStack.stackSize;
+        if (player.isUsingItem()) {
+            charge -= player.getItemInUseDuration();
+        }
+        renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.rending_gale), 0, Math.max(charge,0));
+    }
+
+    public void handleHandgunHUDCheck() {
+        // handles rendering the hud for the handgun, WIP
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
+            return;
+        EntityPlayer player = mc.thePlayer;
+
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHandgun))
+            return;
+
+        ItemStack handgunStack = player.getCurrentEquippedItem();
+        ItemHandgun handgunItem = (ItemHandgun) handgunStack.getItem();
+        ItemStack bulletStack = new ItemStack(ContentHandler.getItem(Names.bullet), handgunItem.getBulletCount(handgunStack), handgunItem.getBulletType(handgunStack));
+        renderHandgunHUD(mc, player, handgunStack, bulletStack);
+    }
+
+    private static void renderHandgunHUD(Minecraft minecraft, EntityPlayer player, ItemStack handgunStack, ItemStack bulletStack) {
+        float overlayScale = 2.5F;
+        float overlayOpacity = 0.75F;
+
+        GL11.glPushMatrix();
+        ScaledResolution sr = new ScaledResolution(minecraft, minecraft.displayWidth, minecraft.displayHeight);
+        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glLoadIdentity();
+        GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
+
+        GL11.glPushMatrix();
+        RenderHelper.enableGUIStandardItemLighting();
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+        GL11.glEnable(GL11.GL_LIGHTING);
+
+        int hudOverlayX = 0;
+        int hudOverlayY = 0;
+
+        switch (Reliquary.CONFIG.getInt(Names.hud_positions, Names.handgun)) {
             case 0: {
                 hudOverlayX = 0;
                 hudOverlayY = 0;
@@ -430,20 +461,26 @@ public class ClientEventHandler {
         ItemStack sojournerStack = player.getCurrentEquippedItem();
         ItemSojournerStaff sojournerItem = (ItemSojournerStaff) sojournerStack.getItem();
         String placementItemName = sojournerItem.getTorchPlacementMode(sojournerStack);
-        int amountOfItem = sojournerItem.getTorchCount(sojournerStack, ContentHandler.getItem(placementItemName));
+        //for use with font renderer, hopefully.
+        int amountOfItem = sojournerItem.getTorchCount(sojournerStack);
         Item placementItem = null;
         if (placementItemName != null)
             placementItem = ContentHandler.getItem(placementItemName);
 
         ItemStack placementStack = null;
         if (placementItem != null) {
-            placementStack = new ItemStack(placementItem, 1, 0);
+            placementStack = new ItemStack(placementItem, amountOfItem, 0);
         }
-        renderSojournerHUD(mc, player, sojournerStack, placementStack);
+        renderStandardTwoItemHUD(mc, player, sojournerStack, placementStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.sojourner_staff), 0, 0);
     }
 
-    private static void renderSojournerHUD(Minecraft minecraft, EntityPlayer player, ItemStack sojournerStack, ItemStack placementStack) {
-
+    private static void renderStandardTwoItemHUD(Minecraft minecraft, EntityPlayer player, ItemStack hudStack, ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride) {
+        int stackSize = 0;
+        if (stackSizeOverride > 0)
+            stackSize = stackSizeOverride;
+        int color = Colors.get(Colors.PURE);
+        if (colorOverride > 0)
+            color = colorOverride;
         float overlayScale = 2.5F;
         float overlayOpacity = 0.75F;
 
@@ -467,7 +504,7 @@ public class ClientEventHandler {
         int hudOverlayX = 0;
         int hudOverlayY = 0;
 
-        switch (Reliquary.CONFIG.getInt(Names.sojourner_staff, "hud_position")) {
+        switch (hudPosition) {
             case 0: {
                 hudOverlayX = 0;
                 hudOverlayY = 0;
@@ -493,19 +530,20 @@ public class ClientEventHandler {
             }
         }
 
-        //render an image of the sojourner's staff
-        renderItemIntoGUI(minecraft.fontRenderer, sojournerStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
-        if (placementStack != null) {
-            //experiment with GL11.glScalef for size?
-            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), placementStack, hudOverlayX + 12, hudOverlayY + 12);
+        renderItemIntoGUI(minecraft.fontRenderer, hudStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
+
+        if (secondaryStack != null) {
+            if (stackSize == 0)
+                stackSize = secondaryStack.stackSize;
+            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX + 6, hudOverlayY + 6);
         }
 
+        int stringWidthOffset = minecraft.fontRenderer.getStringWidth(Integer.toString(stackSize)) / 2;
+        minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize),hudOverlayX + 6 - stringWidthOffset, hudOverlayY + 24, color);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
     }
-
-
 
     public static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float opacity, float scale) {
         if (itemStack == null)

@@ -93,20 +93,21 @@ public class CommonProxy {
         int cleanShortMax = 30000;
         int cleanIntMax = 2000000000;
         //global HUD positions
-        Reliquary.CONFIG.require("hud_positions", Names.sojourner_staff, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.handgun, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.alkahestry_tome, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.destruction_catalyst, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.elsewhere_flask, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.ender_staff, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.glacial_staff, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.void_tear, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.midas_touchstone, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.harvest_rod, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.infernal_chalice, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.hero_medallion, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.pyromancer_staff, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-        Reliquary.CONFIG.require("hud_positions", Names.rending_gale, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.sojourner_staff, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.handgun, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.alkahestry_tome, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.destruction_catalyst, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.elsewhere_flask, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.ender_staff, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.ice_magus_rod, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.glacial_staff, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.void_tear, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.midas_touchstone, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.harvest_rod, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.infernal_chalice, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.hero_medallion, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.pyromancer_staff, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
+        Reliquary.CONFIG.require(Names.hud_positions, Names.rending_gale, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
 
         //hero's medallion config
         //Reliquary.CONFIG.require(Names.hero_medallion, "experience_level_maximum", new ConfigReference(30).setMinimumValue(0));
