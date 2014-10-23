@@ -52,6 +52,13 @@ public class Names {
     public static final String heart_pearl = "heart_pearl";
     public static final String heart_zhu = "heart_zhu";
 
+    //these aren't the names of the items but they're used for configs
+    public static final String seeker_shot = "seeker_shot";
+    public static final String fertile_essence = "fertile_essence";
+    public static final String infernal_claw = "infernal_claw";
+
+
+
     public static final String gun_part = "gun_part";
     // potion info
     public static final String condensed_potion = "condensed_potion";
@@ -70,4 +77,5 @@ public class Names {
 
     public static final String recipe_enabled = "recipe_enabled";
     public static final String hud_positions = "hud_positions";
+    public static final String easy_mode_recipes = "easy_mode_recipes";
 }

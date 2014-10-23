@@ -139,7 +139,7 @@ public class ItemHeroMedallion extends ItemToggleable {
         if (world.isRemote)
             return ist;
         if (!player.isSneaking()) {
-            //turn it off.
+            //turn it on/off.
             if (this.isEnabled(ist))
                 this.toggleEnabled(ist);
             int playerLevel = player.experienceLevel;
