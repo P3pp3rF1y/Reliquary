@@ -258,11 +258,11 @@ public class XRRecipes {
         // kraken shell
         addRecipe(true, new ItemStack(getItem(Names.kraken_shell), 1, 0), ingredient(Reference.SHELL_INGREDIENT_META), ingredient(Reference.SHELL_INGREDIENT_META), ingredient(Reference.SHELL_INGREDIENT_META), ingredient(Reference.ENDER_INGREDIENT_META));
 
-        // hero medallion
-        addRecipe(true, new ItemStack(getItem(Names.hero_medallion), 1), ingredient(Reference.ENDER_INGREDIENT_META), getItem(Names.fortune_coin), getItem(Names.witch_hat), emptyVoidTear());
+        // hero medallion - any meta fortune coin for people with "grandfathered" fortune coins (pre-Enabled NBT used item damage)
+        addRecipe(true, new ItemStack(getItem(Names.hero_medallion), 1), ingredient(Reference.ENDER_INGREDIENT_META), new ItemStack(getItem(Names.fortune_coin), 1, -1), getItem(Names.witch_hat), emptyVoidTear());
 
         // destruction catalyst
-        addRecipe(true, new ItemStack(getItem(Names.destruction_catalyst), 1, 0), Items.flint_and_steel, ingredient(Reference.MOLTEN_INGREDIENT_META), ingredient(Reference.CREEPER_INGREDIENT_META), emptyVoidTear());
+        addRecipe(true, new ItemStack(getItem(Names.destruction_catalyst), 1, 0), Items.flint_and_steel, ingredient(Reference.MOLTEN_INGREDIENT_META), ingredient(Reference.CREEPER_INGREDIENT_META), getItem(Names.infernal_tear));
 
         // nian zhu heart pearls
         addRecipe(false, heartPearl(Reference.ZOMBIE_ZHU_META), "ppp", "sts", "ppp", 'p', ingredient(Reference.ZOMBIE_INGREDIENT_META), 's', Items.rotten_flesh, 't', Items.bone);

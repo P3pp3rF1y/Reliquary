@@ -43,8 +43,8 @@ public class ItemFortuneCoin extends ItemBauble {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack, int pass) {
-        return stack.getItemDamage() == 1;
+    public boolean hasEffect(ItemStack ist, int pass) {
+        return NBTHelper.getBoolean("enabled", ist);
     }
 
     @SideOnly(Side.CLIENT)
@@ -64,23 +64,25 @@ public class ItemFortuneCoin extends ItemBauble {
     }
 
     @Override
-    public IIcon getIcon(ItemStack stack, int renderPass) {
-        if (stack.getItemDamage() == 0 || renderPass != 1)
+    public IIcon getIcon(ItemStack ist, int renderPass) {
+        if (!NBTHelper.getBoolean("enabled", ist) || renderPass != 1)
             return this.itemIcon;
         else
             return iconOverlay;
     }
 
     @Override
-    public void onUpdate(ItemStack stack, World world, Entity entity, int i, boolean f) {
+    public void onUpdate(ItemStack ist, World world, Entity entity, int i, boolean f) {
+        if (world.isRemote)
+            return;
         if (!disabledAudio())
-            if (NBTHelper.getShort("soundTimer", stack) > 0) {
-                if (NBTHelper.getShort("soundTimer", stack) % 2 == 0) {
+            if (NBTHelper.getShort("soundTimer", ist) > 0) {
+                if (NBTHelper.getShort("soundTimer", ist) % 2 == 0) {
                     world.playSoundAtEntity(entity, "random.orb", 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
                 }
-                NBTHelper.setShort("soundTimer", stack, NBTHelper.getShort("soundTimer", stack) - 1);
+                NBTHelper.setShort("soundTimer", ist, NBTHelper.getShort("soundTimer", ist) - 1);
             }
-        if (stack.getItemDamage() == 0)
+        if (!NBTHelper.getBoolean("enabled", ist))
             return;
         EntityPlayer player = null;
         if (entity instanceof EntityPlayer) {
@@ -179,8 +181,6 @@ public class ItemFortuneCoin extends ItemBauble {
 
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
-        if (world.isRemote)
-            return ist;
         if (player.isSneaking()) {
             if (!disabledAudio()) {
                 NBTHelper.setShort("soundTimer", ist, 6);
