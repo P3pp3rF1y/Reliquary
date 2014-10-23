@@ -20,10 +20,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
@@ -49,21 +46,60 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
-        // handleEyeEffect(ist);
         if (!(e instanceof EntityPlayer))
             return;
         EntityPlayer player = (EntityPlayer) e;
-        if (player.getCurrentEquippedItem() == null)
-            return;
-        //always on!
-        //if (player.getCurrentEquippedItem().getItem() instanceof ItemPyromancerStaff) {
-            doFireballEffect(ist, player);
-            if (!this.isEnabled(ist))
-                doExtinguishEffect(player);
-        //}
 
-        if (this.isEnabled(ist)) {
+        doFireballAbsorbEffect(ist, player);
+
+        if (!this.isEnabled(ist))
+            doExtinguishEffect(player);
+        else
             scanForFireChargeAndBlazePowder(ist, player);
+
+        if (player.isSwingInProgress && player.swingProgressInt == -1) {
+            if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == this)
+            shootFireball(player, ist);
+        }
+    }
+
+    public void shootFireball(EntityPlayer player, ItemStack ist) {
+        Vec3 lookVec = player.getLookVec();
+
+        if (player.isSneaking()) {
+            //ghast fireball!
+            if (removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost(), player.worldObj.isRemote)) {
+                player.worldObj.playAuxSFXAtEntity(player, 1008, (int)player.posX, (int)player.posY, (int)player.posZ, 0);
+                //if (!player.worldObj.isRemote) {
+                EntityLargeFireball fireball = new EntityLargeFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
+                fireball.accelerationX = lookVec.xCoord;
+                fireball.accelerationY = lookVec.yCoord;
+                fireball.accelerationZ = lookVec.zCoord;
+                fireball.posX += lookVec.xCoord;
+                fireball.posY += lookVec.yCoord;
+                fireball.posZ += lookVec.zCoord;
+                fireball.posY = player.posY + player.getEyeHeight();
+                player.worldObj.spawnEntityInWorld(fireball);
+                //}
+
+            }
+
+        } else {
+            //blaze fireball!
+            if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
+                player.worldObj.playAuxSFXAtEntity(player, 1009, (int)player.posX, (int)player.posY, (int)player.posZ, 0);
+                //if (!player.worldObj.isRemote) {
+                EntitySmallFireball fireball = new EntitySmallFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
+                fireball.accelerationX = lookVec.xCoord;
+                fireball.accelerationY = lookVec.yCoord;
+                fireball.accelerationZ = lookVec.zCoord;
+                fireball.posX += lookVec.xCoord;
+                fireball.posY += lookVec.yCoord;
+                fireball.posZ += lookVec.zCoord;
+                fireball.posY = player.posY + player.getEyeHeight();
+                player.worldObj.spawnEntityInWorld(fireball);
+                //}
+            }
         }
     }
 
@@ -95,7 +131,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
     @Override
     public int getMaxItemUseDuration(ItemStack par1ItemStack) {
-        return 32000;
+        return 11;
     }
 
     @Override
@@ -112,10 +148,31 @@ public class ItemPyromancerStaff extends ItemToggleable {
         return ist;
     }
 
+    //a longer ranged version of "getMovingObjectPositionFromPlayer" basically
+    public MovingObjectPosition getEruptionBlockTarget(World world, EntityPlayer player) {
+        float f = 1.0F;
+        float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
+        float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
+        double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double)f;
+        double d1 = player.prevPosY + (player.posY - player.prevPosY) * (double)f + (double)(world.isRemote ? player.getEyeHeight() - player.getDefaultEyeHeight() : player.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
+        double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double)f;
+        Vec3 vec3 = Vec3.createVectorHelper(d0, d1, d2);
+        float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
+        float f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
+        float f5 = -MathHelper.cos(-f1 * 0.017453292F);
+        float f6 = MathHelper.sin(-f1 * 0.017453292F);
+        float f7 = f4 * f5;
+        float f8 = f3 * f5;
+        double d3 = 12.0D;
+        Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
+        return world.func_147447_a(vec3, vec31, true, false, false);
+    }
+
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
         //mop call and fakes onItemUse, getting read to do the eruption effect. If the item is enabled, it just sets a bunch of fires!
-        MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+        MovingObjectPosition mop = this.getEruptionBlockTarget(player.worldObj, player);
+
         if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             float xOff = (float) (mop.blockX - player.posX);
             float yOff = (float) (mop.blockY - player.posY);
@@ -162,39 +219,63 @@ public class ItemPyromancerStaff extends ItemToggleable {
                 return false;
             }
         } else {
-            double areaCoefficient = 3D;
+            double areaCoefficient = 5D;
 
-            double soundX = x;
-            double soundY = y;
-            double soundZ = z;
-            player.worldObj.playSound(soundX, soundY, soundZ, "mob.ghast.fireball", 0.3F, 0.13F + (0.1F * itemRand.nextFloat()), false);
-
-            if (player.getItemInUseDuration() != 0 && player.getItemInUseDuration() % 20 == 0) {
+            if (player.getItemInUseDuration() != 0 && player.getItemInUseDuration() % 10 == 0) {
                 if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
-                    doEruptionEffect(ist, player, x, y, z, areaCoefficient);
+                    doEruptionEffect(player, x, y, z, areaCoefficient);
                 }
             }
-            for (int particleCount = 0; particleCount < 4; ++particleCount) {
-                double randX = x + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient;
-                double randY = y + 0.5D + (player.worldObj.rand.nextFloat() / 2D);
-                double randZ = z + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient;
-                player.worldObj.spawnParticle("lava", randX, randY, randZ, 0D,0D,0D);
-            }
+
+            doEruptionAuxEffects(player, x, y, z, areaCoefficient);
             return false;
         }
     }
 
+    public void doEruptionAuxEffects(EntityPlayer player, int x, int y, int z, double areaCoefficient) {
+        double soundX = x;
+        double soundY = y;
+        double soundZ = z;
+        player.worldObj.playSound(soundX + 0.5D, soundY + 0.5D, soundZ + 0.5D, "mob.ghast.fireball", 0.2F, 0.03F + (0.07F * itemRand.nextFloat()), false);
 
-    public void doEruptionEffect(ItemStack ist, EntityPlayer player, int x, int y, int z, double areaCoefficient) {
-        if (player.worldObj.isRemote)
-            return;
-        double lowerX = x - areaCoefficient;
-        double lowerY = y;
-        double lowerZ = z - areaCoefficient;
-        double upperX = x + areaCoefficient;
+        for (int particleCount = 0; particleCount < 2; ++particleCount) {
+            double randX = (x + 0.5D) + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient;
+            double randZ = (z + 0.5D) + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient;
+            if (Math.abs(randX - (x + 0.5D)) >= 4.0D && Math.abs(randZ - (z + 0.5D)) >= 4.0D)
+                continue;
+            player.worldObj.spawnParticle("lava", randX, y + 1D, randZ, 0D,0D,0D);
+        }
+        for (int particleCount = 0; particleCount < 4; ++particleCount) {
+            double randX = x + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient / 2D;
+            double randZ = z + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient / 2D;
+            if (Math.abs(randX - (x + 0.5D)) >= 4.0D && Math.abs(randZ - (z + 0.5D)) >= 4.0D)
+                continue;
+            player.worldObj.spawnParticle("lava", randX, y + 1D, randZ, 0D,0D,0D);
+        }
+        for (int particleCount = 0; particleCount < 6; ++particleCount) {
+            double randX = x + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient;
+            double randZ = z + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient;
+            if (Math.abs(randX - (x + 0.5D)) >= 4.0D && Math.abs(randZ - (z + 0.5D)) >= 4.0D)
+                continue;
+            player.worldObj.spawnParticle("flame", randX, y + 1D, randZ, player.worldObj.rand.nextGaussian() * 0.2D, player.worldObj.rand.nextGaussian() * 0.2D, player.worldObj.rand.nextGaussian() * 0.2D);
+        }
+        for (int particleCount = 0; particleCount < 8; ++particleCount) {
+            double randX = x + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient / 2D;
+            double randZ = z + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient / 2D;
+            if (Math.abs(randX - (x + 0.5D)) >= 4.0D && Math.abs(randZ - (z + 0.5D)) >= 4.0D)
+                continue;
+            player.worldObj.spawnParticle("flame", randX, y + 1D, randZ, player.worldObj.rand.nextGaussian() * 0.2D, player.worldObj.rand.nextGaussian() * 0.2D, player.worldObj.rand.nextGaussian() * 0.2D);
+        }
+    }
+
+
+    public void doEruptionEffect(EntityPlayer player, int x, int y, int z, double areaCoefficient) {
+        double lowerX = x - areaCoefficient + 0.5D;
+        double lowerZ = z - areaCoefficient + 0.5D;
+        double upperX = x + areaCoefficient + 0.5D;
         double upperY = y + areaCoefficient;
-        double upperZ = z + areaCoefficient;
-        List eList = player.worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
+        double upperZ = z + areaCoefficient + 0.5D;
+        List eList = player.worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(lowerX, y, lowerZ, upperX, upperY, upperZ));
         Iterator iterator = eList.iterator();
 
 
@@ -249,51 +330,6 @@ public class ItemPyromancerStaff extends ItemToggleable {
         tagCompound.setTag("Items", tagList);
 
         NBTHelper.setTag(ist, tagCompound);
-    }
-
-    @Override
-    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
-        if (!(entityLiving instanceof EntityPlayer))
-            return true;
-        EntityPlayer player = (EntityPlayer)entityLiving;
-        Vec3 lookVec = player.getLookVec();
-
-        if (player.isSneaking()) {
-            //ghast fireball!
-            if (removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost(), player.worldObj.isRemote)) {
-                player.worldObj.playAuxSFXAtEntity(player, 1008, (int)player.posX, (int)player.posY, (int)player.posZ, 0);
-                //if (!player.worldObj.isRemote) {
-                EntityLargeFireball fireball = new EntityLargeFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
-                fireball.accelerationX = lookVec.xCoord;
-                fireball.accelerationY = lookVec.yCoord;
-                fireball.accelerationZ = lookVec.zCoord;
-                fireball.posX += lookVec.xCoord;
-                fireball.posY += lookVec.yCoord;
-                fireball.posZ += lookVec.zCoord;
-                fireball.posY = player.posY + player.getEyeHeight();
-                player.worldObj.spawnEntityInWorld(fireball);
-                //}
-
-            }
-
-        } else {
-            //blaze fireball!
-            if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
-                player.worldObj.playAuxSFXAtEntity(player, 1009, (int)player.posX, (int)player.posY, (int)player.posZ, 0);
-                //if (!player.worldObj.isRemote) {
-                EntitySmallFireball fireball = new EntitySmallFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
-                fireball.accelerationX = lookVec.xCoord;
-                fireball.accelerationY = lookVec.yCoord;
-                fireball.accelerationZ = lookVec.zCoord;
-                fireball.posX += lookVec.xCoord;
-                fireball.posY += lookVec.yCoord;
-                fireball.posZ += lookVec.zCoord;
-                fireball.posY = player.posY + player.getEyeHeight();
-                player.worldObj.spawnEntityInWorld(fireball);
-                //}
-            }
-        }
-        return false;
     }
 
     public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, boolean simulate) {
@@ -407,7 +443,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         }
     }
 
-    private void doFireballEffect(ItemStack ist, EntityPlayer player) {
+    private void doFireballAbsorbEffect(ItemStack ist, EntityPlayer player) {
         List ghastFireballs = player.worldObj.getEntitiesWithinAABB(EntityLargeFireball.class, AxisAlignedBB.getBoundingBox(player.posX - 5, player.posY - 5, player.posZ - 5, player.posX + 5, player.posY + 5, player.posZ + 5));
         Iterator fire1 = ghastFireballs.iterator();
         while (fire1.hasNext()) {

@@ -66,7 +66,7 @@ public class ItemSerpentStaff extends ItemBase {
 
     @Override
     public int getMaxItemUseDuration(ItemStack stack) {
-        return 72000;
+        return 11;
     }
 
     @Override

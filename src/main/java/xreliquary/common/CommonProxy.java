@@ -165,7 +165,8 @@ public class CommonProxy {
         //rending gale configs
         //rending gale flight is per-tick for balance reasons and to prevent exploits. Feathers are "worth" a lot by default.
         Reliquary.CONFIG.require(Names.rending_gale, "feather_limit", new ConfigReference(cleanShortMax).setMinimumValue(0).setMaximumValue(cleanIntMax));
-        Reliquary.CONFIG.require(Names.rending_gale, "feather_cost", new ConfigReference(1).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.rending_gale, "feather_flight_cost", new ConfigReference(1).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.rending_gale, "feather_whirlwind_cost", new ConfigReference(10).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.rending_gale, "feather_worth", new ConfigReference(100).setMinimumValue(0));
 
         //destruction catalyst configs
@@ -202,6 +203,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.phoenix_down, "give_temporary_water_breathing_if_drowning_killed_you", new ConfigReference(true));
 
         //lilypad of fertility configs
+        Reliquary.CONFIG.require(Names.lilypad, "easy_mode_recipe", new ConfigReference(false));
         Reliquary.CONFIG.require(Names.lilypad, "time_between_ticks_percent", new ConfigReference(100).setMinimumValue(2));
         Reliquary.CONFIG.require(Names.lilypad, "tile_range", new ConfigReference(4).setMinimumValue(1).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.lilypad, "full_potency_range", new ConfigReference(0).setMinimumValue(0));

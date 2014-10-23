@@ -352,7 +352,7 @@ public class ClientEventHandler {
         ItemStack featherStack = new ItemStack(Items.feather, NBTHelper.getInteger("feathers", rendingGaleStack), 0);
         int charge = featherStack.stackSize;
         if (player.isUsingItem()) {
-            charge -= player.getItemInUseDuration();
+            charge -= player.getItemInUseDuration() * ItemRendingGale.getFeathersFlightCost();
         }
         renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.rending_gale), 0, Math.max(charge,0));
     }

@@ -1,7 +1,6 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
@@ -25,6 +24,7 @@ import xreliquary.lib.Reference;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Xeno on 10/11/2014.
@@ -44,14 +44,15 @@ public class ItemRendingGale extends ItemToggleable {
         this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
     }
 
-    private int getFeathersLimit() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_limit"); }
-    private int getFeathersCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_cost"); }
-    private int getFeathersWorth() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_worth"); }
+    private static int getFeathersLimit() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_limit"); }
+    private static int getFeathersWhirlwindCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_whirlwind_cost"); }
+    public static int getFeathersFlightCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_flight_cost"); }
+    private static int getFeathersWorth() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_worth"); }
 
     @Override
     public boolean isFull3D(){ return true; }
 
-    public void attemptFlight(EntityLivingBase entityLiving, ItemStack ist, int tickUsed) {
+    public void attemptFlight(EntityLivingBase entityLiving) {
         if (!(entityLiving instanceof EntityPlayer))
             return;
 
@@ -226,14 +227,17 @@ public class ItemRendingGale extends ItemToggleable {
             return;
 
         if (player.isSwingInProgress && player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().isItemEqual(ist)) {
-            if (player.swingProgressInt == -1) {
-                float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
-                player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.15F, randomPitch);
-            }
+            if (NBTHelper.getInteger("feathers", ist) >= getFeathersWhirlwindCost()) {
+                if (player.swingProgressInt == -1) {
+                    NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getFeathersWhirlwindCost());
+                    float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
+                    player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.15F, randomPitch);
+                }
 
-            for (int frames = 0; frames < 5; frames++) {
-                doPushEffect(ist, player, player.getLookVec());
-                spawnHurricaneParticles(player.getLookVec(), player);
+                for (int frames = 0; frames < 7; frames++) {
+                    doPushEffect(ist, player, player.getLookVec());
+                    spawnHurricaneParticles(player.getLookVec(), player);
+                }
             }
         }
 
@@ -252,7 +256,7 @@ public class ItemRendingGale extends ItemToggleable {
 
     @Override
     public int getMaxItemUseDuration(ItemStack par1ItemStack) {
-        return 32000;
+        return 11;
     }
 
     @Override
@@ -269,6 +273,21 @@ public class ItemRendingGale extends ItemToggleable {
         return ist;
     }
 
+
+
+    @Override
+    public boolean onLeftClickEntity(ItemStack ist, EntityPlayer player, Entity e) {
+        if (NBTHelper.getInteger("feathers", ist) >= getFeathersWhirlwindCost()) {
+            float areaCoefficient = 5F;
+            spawnWhirlwindParticles((int)e.posX, (int)e.posY, (int)e.posZ, e.worldObj, areaCoefficient);
+            float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
+            player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.15F, randomPitch);
+            NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getFeathersWhirlwindCost());
+            e.moveEntity(0.0D, 0.8D, 0.0D);
+        }
+        return false;
+    }
+
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
         if (getMaxItemUseDuration(ist) - count >= NBTHelper.getInteger("feathers", ist)) {
@@ -277,10 +296,14 @@ public class ItemRendingGale extends ItemToggleable {
 
         //if (removeFeather(ist, player.worldObj.isRemote)) {
 
+        if (isEnabled(ist)) {
             Vec3 lookVector = player.getLookVec();
             spawnHurricaneParticles(lookVector, player);
 
-            attemptFlight(player, ist, count);
+            attemptFlight(player);
+        } else {
+            doRadialPush(player);
+        }
         //}
     }
 
@@ -291,20 +314,46 @@ public class ItemRendingGale extends ItemToggleable {
         NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - chargeUsed);
     }
 
-//    public boolean removeFeather(ItemStack ist, boolean simulate) {
-//        if (NBTHelper.getInteger("feathers", ist) > getFeathersCost()) {
-//            if (!simulate)
-//                NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getFeathersCost());
-//            return true;
-//        }
-//
-//        return false;
-//    }
+    public void doRadialPush(EntityPlayer player) {
+        //push effect free at the moment, if you restore cost, remember to change this to NBTHelper.getInteger("feathers", ist)
+        spawnRadialHurricaneParticles(player);
+        if (player.worldObj.isRemote)
+            return;
+
+        double lowerX = player.posX - 10D;
+        double lowerY = player.posY - 2D;
+        double lowerZ = player.posZ - 10D;
+        double upperX = player.posX + 10D;
+        double upperY = player.posY + 5D;
+        double upperZ = player.posZ + 10D;
+
+        List eList = player.worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(lowerX - 1D, lowerY - 1D, lowerZ - 1D, upperX + 1D, upperY + 1D, upperZ + 1D));
+
+        Iterator iterator = eList.iterator();
+        while (iterator.hasNext()) {
+            Entity e = (Entity)iterator.next();
+
+            int distance = (int)player.getDistanceToEntity(e);
+
+            int probabilityFactor = (distance - 3) / 2;
+
+            if ( probabilityFactor > 0 && player.worldObj.rand.nextInt(probabilityFactor) != 0) {
+                //added to reduce the number of push frames that fail by 50%, no matter what.
+                if (player.worldObj.rand.nextInt(2) == 0)
+                    continue;
+            }
+
+            if (e.equals(player))
+                continue;
+            Vec3 pushVector = Vec3.createVectorHelper(e.posX - player.posX, e.posY - player.posY, e.posZ - player.posZ);
+            pushVector= pushVector.normalize();
+            e.moveEntity(0.0D, 0.2D, 0.0D);
+            e.moveEntity(pushVector.xCoord, Math.min(pushVector.yCoord,0.1D) * 1.5D, pushVector.zCoord);
+        }
+    }
 
     public void doPushEffect(ItemStack ist, EntityPlayer player, Vec3 lookVector) {
         //push effect free at the moment, if you restore cost, remember to change this to NBTHelper.getInteger("feathers", ist)
-//        if (ist.getItemDamage() == 0 || ist.getItemDamage() >= ist.getMaxDamage() - 1)
-//            return;
         spawnHurricaneParticles(lookVector, player);
         if (player.worldObj.isRemote)
             return;
@@ -335,7 +384,20 @@ public class ItemRendingGale extends ItemToggleable {
             if (e.equals(player))
                 continue;
 
-            e.moveEntity(lookVector.xCoord, lookVector.yCoord, lookVector.zCoord);
+            //always has some upward force
+            e.moveEntity(0.0D, 0.2D, 0.0D);
+            e.moveEntity(lookVector.xCoord, Math.min(lookVector.yCoord,0.1D) * 1.5D, lookVector.zCoord);
+        }
+    }
+
+
+    public void spawnWhirlwindParticles(int x, int y, int z, World world, float areaCoefficient) {
+        //spawn a whole mess of particles every tick.
+        for (int i = 0; i < 20; ++i) {
+            float randX = (x + 0.5F) + areaCoefficient * (world.rand.nextFloat() - 0.5F);
+            float randZ = (z + 0.5F) + areaCoefficient * (world.rand.nextFloat() - 0.5F);
+
+            world.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, randX, y, randZ, world.rand.nextGaussian(), 0.2F + world.rand.nextFloat() * 0.2F, world.rand.nextGaussian());
         }
     }
 
@@ -347,6 +409,17 @@ public class ItemRendingGale extends ItemToggleable {
             float randZ = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
 
             player.worldObj.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
+        }
+    }
+
+    public void spawnRadialHurricaneParticles(EntityPlayer player) {
+        //spawn a whole mess of particles every tick.
+        for (int i = 0; i < 24; ++i) {
+            float randX = 2F * (player.worldObj.rand.nextFloat() - 0.5F);
+            float randY = 2F * (player.worldObj.rand.nextFloat() - 0.5F);
+            float randZ = 2F * (player.worldObj.rand.nextFloat() - 0.5F);
+
+            player.worldObj.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, player.posX + randX, player.posY + randY, player.posZ + randZ, player.worldObj.rand.nextGaussian(), player.worldObj.rand.nextGaussian(), player.worldObj.rand.nextGaussian());
         }
 
     }

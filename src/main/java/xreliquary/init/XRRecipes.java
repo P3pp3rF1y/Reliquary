@@ -96,7 +96,11 @@ public class XRRecipes {
         addRecipe(true, new ItemStack(getItem(Names.glowing_bread), 3), Items.bread, Items.bread, Items.bread, getItem(Names.glowing_water));
 
         // fertile essence
-        addRecipe(true, ingredient(Reference.FERTILE_INGREDIENT_META), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), Items.wheat_seeds);
+        //has an easy_mode_recipe
+        if (Reliquary.CONFIG.getBool(Names.lilypad, "easy_mode_recipe"))
+            addRecipe(true, ingredient(Reference.FERTILE_INGREDIENT_META), fertilizer(), fertilizer(), fertilizer(), Items.wheat_seeds);
+        else
+            addRecipe(true, ingredient(Reference.FERTILE_INGREDIENT_META), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), Items.wheat_seeds);
 
         // bullets...
         // empty cases back into nuggets

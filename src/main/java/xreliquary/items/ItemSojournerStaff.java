@@ -382,11 +382,33 @@ public class ItemSojournerStaff extends ItemToggleable {
         return block.onBlockPlaced(world, x, y, z, side, x, y, z, 0);
     }
 
+
+
+    //a longer ranged version of "getMovingObjectPositionFromPlayer" basically
+    public MovingObjectPosition getBlockTarget(World world, EntityPlayer player) {
+        float f = 1.0F;
+        float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
+        float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
+        double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double)f;
+        double d1 = player.prevPosY + (player.posY - player.prevPosY) * (double)f + (double)(world.isRemote ? player.getEyeHeight() - player.getDefaultEyeHeight() : player.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
+        double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double)f;
+        Vec3 vec3 = Vec3.createVectorHelper(d0, d1, d2);
+        float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
+        float f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
+        float f5 = -MathHelper.cos(-f1 * 0.017453292F);
+        float f6 = MathHelper.sin(-f1 * 0.017453292F);
+        float f7 = f4 * f5;
+        float f8 = f3 * f5;
+        double d3 = 30.0D;
+        Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
+        return world.func_147447_a(vec3, vec31, true, false, false);
+    }
+
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         //calls onItemUse so all of the functionality we'd normally have to do preventative checks on gets handled there.
         if (!player.isSneaking()) {
-            MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+            MovingObjectPosition mop = this.getBlockTarget(world, player);
             if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
                 float xOff = (float) (mop.blockX - player.posX);
                 float yOff = (float) (mop.blockY - player.posY);
