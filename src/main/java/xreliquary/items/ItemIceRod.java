@@ -8,6 +8,7 @@ import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,12 +51,23 @@ public class ItemIceRod extends ItemToggleable {
 
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
-        if (NBTHelper.getInteger("snowballs", ist) >= getSnowballCost()) {
-            entityLiving.worldObj.playSoundAtEntity(entityLiving, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-            entityLiving.worldObj.spawnEntityInWorld(new EntitySpecialSnowball(entityLiving.worldObj, entityLiving));
-            NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
-        }
         return false;
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+        //acts as a cooldown.
+        if (player.isSwingInProgress)
+            return ist;
+        player.swingItem();
+        if (!player.isSneaking()) {
+            if (NBTHelper.getInteger("snowballs", ist) >= getSnowballCost()) {
+                world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+                world.spawnEntityInWorld(new EntitySpecialSnowball(world, player));
+                NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
+            }
+        }
+        return super.onItemRightClick(ist, world, player);
     }
 
     @Override

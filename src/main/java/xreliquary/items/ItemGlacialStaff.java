@@ -20,6 +20,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.lib.Names;
 
 import java.util.Iterator;
@@ -50,18 +51,53 @@ public class ItemGlacialStaff extends ItemIceRod {
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (!player.isSneaking()) {
-            player.setItemInUse(ist, getMaxItemUseDuration(ist));
+            if (getMode(ist).equals("snowballs"))
+                return super.onItemRightClick(ist, world, player);
+            else
+                player.setItemInUse(ist, getMaxItemUseDuration(ist));
         }
 
         return super.onItemRightClick(ist, world, player);
     }
+
+    public String getMode(ItemStack ist) {
+        if (NBTHelper.getString("mode", ist).equals("")) {
+            setMode(ist, "snowballs");
+        }
+        return NBTHelper.getString("mode", ist);
+    }
+
+    public void setMode(ItemStack ist, String s) {
+        NBTHelper.setString("mode", ist, s);
+    }
+
+    public void cycleMode(ItemStack ist) {
+        if (getMode(ist).equals("snowballs"))
+            setMode(ist, "blizzard");
+        else
+            setMode(ist, "snowballs");
+    }
+
+    @Override
+    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
+
+        if (entityLiving.worldObj.isRemote)
+            return true;
+        if (!(entityLiving instanceof EntityPlayer))
+            return true;
+        EntityPlayer player = (EntityPlayer)entityLiving;
+        if (player.isSneaking()) {
+            cycleMode(ist);
+        }
+        return false;
+    }
+
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
         String charge = Integer.toString(NBTHelper.getInteger("snowballs", ist));
         this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
     }
-
 
     //a longer ranged version of "getMovingObjectPositionFromPlayer" basically
     public MovingObjectPosition getBlockTarget(World world, EntityPlayer player) {

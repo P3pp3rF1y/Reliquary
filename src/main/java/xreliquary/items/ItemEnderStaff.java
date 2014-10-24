@@ -8,6 +8,7 @@ import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -61,26 +62,44 @@ public class ItemEnderStaff extends ItemToggleable {
 
 
     @Override
-    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
+    public float getDigSpeed(ItemStack ist, Block block, int meta) {
+        //temporarily sets the item damage to 1, this prevents it from being rapid fired due to swing animations during an attempt to break blocks, hopefully.
+        if (ist.getItemDamage() == 0)
+            ist.setItemDamage(1);
+        return 0F;
+    }
 
+
+    public String getMode(ItemStack ist) {
+        if (NBTHelper.getString("mode", ist).equals("")) {
+            setMode(ist, "cast");
+        }
+        return NBTHelper.getString("mode", ist);
+    }
+
+    public void setMode(ItemStack ist, String s) {
+        NBTHelper.setString("mode", ist, s);
+    }
+
+    public void cycleMode(ItemStack ist) {
+        if (getMode(ist).equals("cast"))
+            setMode(ist, "long_cast");
+        else if (getMode(ist).equals("long_cast"))
+            setMode(ist, "node_warp");
+        else
+            setMode(ist, "cast");
+    }
+
+    @Override
+    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
         if (entityLiving.worldObj.isRemote)
             return true;
         if (!(entityLiving instanceof EntityPlayer))
             return true;
-        if (getCooldown(ist) > 0)
-            return true;
         EntityPlayer player = (EntityPlayer)entityLiving;
-
-        if (NBTHelper.getInteger("ender_pearls", ist) < getEnderStaffPearlCost())
-            return true;
-        player.worldObj.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-        // if the player is sneaking, it fires a "reduced gravity" ender
-        // pearl, for a longer range/shallow arc.
-        player.worldObj.spawnEntityInWorld(new EntityEnderStaffProjectile(player.worldObj, player, !player.isSneaking()));
-        NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffPearlCost());
-
-        setCooldown(ist);
-
+        if (player.isSneaking()) {
+            cycleMode(ist);
+        }
         return false;
     }
 
@@ -90,7 +109,7 @@ public class ItemEnderStaff extends ItemToggleable {
             return;
 
         // checks to see if cooldown variable > 0 and decrements if true, each tick.
-        decrementCooldown(ist);
+       //decrementCooldown(ist);
 
         if (!this.isEnabled(ist))
             return;
@@ -130,14 +149,27 @@ public class ItemEnderStaff extends ItemToggleable {
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (!player.isSneaking()) {
-            player.setItemInUse(ist, getMaxItemUseDuration(ist));
+            if (getMode(ist).equals("cast") || getMode(ist).equals("long_cast")) {
+                if (player.isSwingInProgress)
+                    return ist;
+                player.swingItem();
+                if (NBTHelper.getInteger("ender_pearls", ist) < getEnderStaffPearlCost())
+                    return ist;
+                player.worldObj.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+                player.worldObj.spawnEntityInWorld(new EntityEnderStaffProjectile(player.worldObj, player, !getMode(ist).equals("long_cast")));
+                NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffPearlCost());
+
+                //setCooldown(ist);
+            } else {
+                player.setItemInUse(ist, getMaxItemUseDuration(ist));
+            }
         }
         return super.onItemRightClick(ist, world, player);
     }
 
     private ItemStack doWraithNodeWarpCheck(ItemStack ist, World world, EntityPlayer player) {
-        if (getCooldown(ist) > 0)
-            return ist;
+        //if (getCooldown(ist) > 0)
+        //    return ist;
         if (NBTHelper.getInteger("ender_pearls", ist) < getEnderStaffNodeWarpCost())
             return ist;
 
@@ -148,7 +180,7 @@ public class ItemEnderStaff extends ItemToggleable {
         } else if (ist.getTagCompound() != null && ContentHelper.areBlocksEqual(world.getBlock(ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player))), ContentHandler.getBlock(Names.wraith_node))) {
             if (canTeleport(world, ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
                 teleportPlayer(world, ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
-                setCooldown(ist);
+                //setCooldown(ist);
                 NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffNodeWarpCost());
             }
         } else if (ist.getTagCompound() != null && ist.getTagCompound().hasKey("dimensionID")) {
@@ -167,18 +199,18 @@ public class ItemEnderStaff extends ItemToggleable {
     }
 
 
-    private int getCooldown(ItemStack ist) {
-        return NBTHelper.getShort("cooldown", ist);
-    }
-
-    private void setCooldown(ItemStack ist) {
-        NBTHelper.setShort("cooldown", ist, (short) 20);
-    }
-
-    private void decrementCooldown(ItemStack ist) {
-        if (NBTHelper.getShort("cooldown", ist) > 0)
-            NBTHelper.setShort("cooldown", ist, NBTHelper.getShort("cooldown", ist) - 1);
-    }
+//    private int getCooldown(ItemStack ist) {
+//        return NBTHelper.getShort("cooldown", ist);
+//    }
+//
+//    private void setCooldown(ItemStack ist) {
+//        NBTHelper.setShort("cooldown", ist, (short) 20);
+//    }
+//
+//    private void decrementCooldown(ItemStack ist) {
+//        if (NBTHelper.getShort("cooldown", ist) > 0)
+//            NBTHelper.setShort("cooldown", ist, NBTHelper.getShort("cooldown", ist) - 1);
+//    }
 
     private boolean canTeleport(World world, int x, int y, int z) {
         if (!world.isAirBlock(x, y + 1, z) || !world.isAirBlock(x, y + 2, z))
@@ -221,7 +253,7 @@ public class ItemEnderStaff extends ItemToggleable {
             for (int particles = 0; particles < 12; particles++) {
                 world.spawnParticle("portal", x + world.rand.nextDouble(), y + world.rand.nextDouble(), z + world.rand.nextDouble(), world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
             }
-            setCooldown(ist);
+            //setCooldown(ist);
             return true;
         } else {
             return false;

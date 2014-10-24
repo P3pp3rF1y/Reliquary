@@ -7,6 +7,7 @@ import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -56,53 +57,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
             doExtinguishEffect(player);
         else
             scanForFireChargeAndBlazePowder(ist, player);
-
-        if (player.isSwingInProgress && player.swingProgressInt == -1) {
-            if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == this)
-            shootFireball(player, ist);
-        }
     }
-
-    public void shootFireball(EntityPlayer player, ItemStack ist) {
-        Vec3 lookVec = player.getLookVec();
-
-        if (player.isSneaking()) {
-            //ghast fireball!
-            if (removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost(), player.worldObj.isRemote)) {
-                player.worldObj.playAuxSFXAtEntity(player, 1008, (int)player.posX, (int)player.posY, (int)player.posZ, 0);
-                //if (!player.worldObj.isRemote) {
-                EntityLargeFireball fireball = new EntityLargeFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
-                fireball.accelerationX = lookVec.xCoord;
-                fireball.accelerationY = lookVec.yCoord;
-                fireball.accelerationZ = lookVec.zCoord;
-                fireball.posX += lookVec.xCoord;
-                fireball.posY += lookVec.yCoord;
-                fireball.posZ += lookVec.zCoord;
-                fireball.posY = player.posY + player.getEyeHeight();
-                player.worldObj.spawnEntityInWorld(fireball);
-                //}
-
-            }
-
-        } else {
-            //blaze fireball!
-            if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
-                player.worldObj.playAuxSFXAtEntity(player, 1009, (int)player.posX, (int)player.posY, (int)player.posZ, 0);
-                //if (!player.worldObj.isRemote) {
-                EntitySmallFireball fireball = new EntitySmallFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
-                fireball.accelerationX = lookVec.xCoord;
-                fireball.accelerationY = lookVec.yCoord;
-                fireball.accelerationZ = lookVec.zCoord;
-                fireball.posX += lookVec.xCoord;
-                fireball.posY += lookVec.yCoord;
-                fireball.posZ += lookVec.zCoord;
-                fireball.posY = player.posY + player.getEyeHeight();
-                player.worldObj.spawnEntityInWorld(fireball);
-                //}
-            }
-        }
-    }
-
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
@@ -139,12 +94,81 @@ public class ItemPyromancerStaff extends ItemToggleable {
         return EnumAction.block;
     }
 
+
+    public String getMode(ItemStack ist) {
+        if (NBTHelper.getString("mode", ist).equals("")) {
+            setMode(ist, "blaze");
+        }
+        return NBTHelper.getString("mode", ist);
+    }
+
+    public void setMode(ItemStack ist, String s) {
+        NBTHelper.setString("mode", ist, s);
+    }
+
+    public void cycleMode(ItemStack ist) {
+        if (getMode(ist).equals("blaze"))
+            setMode(ist, "charge");
+        else if (getMode(ist).equals("charge"))
+            setMode(ist, "eruption");
+        else if (getMode(ist).equals("eruption"))
+            setMode(ist, "flint_and_steel");
+        else
+            setMode(ist, "blaze");
+    }
+
+    @Override
+    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
+        if (entityLiving.worldObj.isRemote)
+            return true;
+        if (!(entityLiving instanceof EntityPlayer))
+            return true;
+        EntityPlayer player = (EntityPlayer)entityLiving;
+        if (player.isSneaking()) {
+            cycleMode(ist);
+        }
+        return false;
+    }
+
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (player.isSneaking())
             super.onItemRightClick(ist, world, player);
-        else
-            player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
+        else {
+            if (getMode(ist).equals("blaze")) {
+                Vec3 lookVec = player.getLookVec();
+                //blaze fireball!
+                if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
+                    player.worldObj.playAuxSFXAtEntity(player, 1009, (int)player.posX, (int)player.posY, (int)player.posZ, 0);
+                    EntitySmallFireball fireball = new EntitySmallFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
+                    fireball.accelerationX = lookVec.xCoord;
+                    fireball.accelerationY = lookVec.yCoord;
+                    fireball.accelerationZ = lookVec.zCoord;
+                    fireball.posX += lookVec.xCoord;
+                    fireball.posY += lookVec.yCoord;
+                    fireball.posZ += lookVec.zCoord;
+                    fireball.posY = player.posY + player.getEyeHeight();
+                    player.worldObj.spawnEntityInWorld(fireball);
+                }
+            } else if (getMode(ist).equals("charge")) {
+                Vec3 lookVec = player.getLookVec();
+                //ghast fireball!
+                if (removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost(), player.worldObj.isRemote)) {
+                    player.worldObj.playAuxSFXAtEntity(player, 1008, (int)player.posX, (int)player.posY, (int)player.posZ, 0);
+                    EntityLargeFireball fireball = new EntityLargeFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
+                    fireball.accelerationX = lookVec.xCoord;
+                    fireball.accelerationY = lookVec.yCoord;
+                    fireball.accelerationZ = lookVec.zCoord;
+                    fireball.posX += lookVec.xCoord;
+                    fireball.posY += lookVec.yCoord;
+                    fireball.posZ += lookVec.zCoord;
+                    fireball.posY = player.posY + player.getEyeHeight();
+                    player.worldObj.spawnEntityInWorld(fireball);
+
+                }
+            } else
+                player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
+        }
         return ist;
     }
 
@@ -184,7 +208,8 @@ public class ItemPyromancerStaff extends ItemToggleable {
     public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int sideHit, float xOff, float yOff, float zOff)
     {
         //while enabled only, if disabled, it will do an eruption effect instead.
-        if (this.isEnabled(ist)) {
+        //if (this.isEnabled(ist)) {
+        if (getMode(ist).equals("flint_and_steel")) {
             if (sideHit == 0) {
                 --y;
             }
@@ -218,7 +243,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
                 }
                 return false;
             }
-        } else {
+        } else if (getMode(ist).equals("eruption")) {
             double areaCoefficient = 5D;
 
             if (player.getItemInUseDuration() != 0 && player.getItemInUseDuration() % 10 == 0) {
@@ -228,8 +253,8 @@ public class ItemPyromancerStaff extends ItemToggleable {
             }
 
             doEruptionAuxEffects(player, x, y, z, areaCoefficient);
-            return false;
         }
+        return false;
     }
 
     public void doEruptionAuxEffects(EntityPlayer player, int x, int y, int z, double areaCoefficient) {

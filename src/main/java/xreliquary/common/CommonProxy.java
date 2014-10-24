@@ -131,7 +131,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.emperor_chalice, new ConfigReference(false));
         Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.hero_medallion, new ConfigReference(false));
         Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.ice_magus_rod, new ConfigReference(false));
-        Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.infernal_claw, new ConfigReference(false));
+        Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.infernal_claws, new ConfigReference(false));
         Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.destruction_catalyst, new ConfigReference(false));
         Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.interdiction_torch, new ConfigReference(false));
         Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.void_tear, new ConfigReference(false));
@@ -199,6 +199,9 @@ public class CommonProxy {
         //infernal chalice configs
         Reliquary.CONFIG.require(Names.infernal_chalice, "hunger_cost_percent", new ConfigReference(5).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.infernal_chalice, "fluid_limit", new ConfigReference(500000).setMinimumValue(0).setMaximumValue(cleanIntMax));
+
+        //interdiction torch configs
+
 
         //kraken shell configs
         Reliquary.CONFIG.require(Names.kraken_shell, "hunger_cost_percent", new ConfigReference(25).setMinimumValue(0));
