@@ -94,7 +94,6 @@ public class ItemPyromancerStaff extends ItemToggleable {
         return EnumAction.block;
     }
 
-
     public String getMode(ItemStack ist) {
         if (NBTHelper.getString("mode", ist).equals("")) {
             setMode(ist, "blaze");

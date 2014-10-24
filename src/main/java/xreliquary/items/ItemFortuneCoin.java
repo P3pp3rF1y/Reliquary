@@ -90,7 +90,7 @@ public class ItemFortuneCoin extends ItemBauble {
         }
         if (player == null)
             return;
-        scanForEntitiesInRange(world, player, 5.0D);
+        scanForEntitiesInRange(world, player, getStandardPullDistance());
     }
 
     private void scanForEntitiesInRange(World world, EntityPlayer player, double d) {
@@ -166,7 +166,15 @@ public class ItemFortuneCoin extends ItemBauble {
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
-        scanForEntitiesInRange(player.worldObj, player, 15.0D);
+        scanForEntitiesInRange(player.worldObj, player, getLongRangePullDistance());
+    }
+
+    public double getLongRangePullDistance() {
+        return (double)Reliquary.CONFIG.getInt(Names.fortune_coin, "long_range_pull_distance");
+    }
+
+    public double getStandardPullDistance() {
+        return (double)Reliquary.CONFIG.getInt(Names.fortune_coin, "standard_pull_distance");
     }
 
     @Override

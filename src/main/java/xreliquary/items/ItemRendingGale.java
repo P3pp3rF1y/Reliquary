@@ -16,15 +16,14 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Xeno on 10/11/2014.
@@ -44,10 +43,14 @@ public class ItemRendingGale extends ItemToggleable {
         this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
     }
 
-    private static int getFeathersLimit() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_limit"); }
-    private static int getFeathersWhirlwindCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_whirlwind_cost"); }
-    public static int getFeathersFlightCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_flight_cost"); }
-    private static int getFeathersWorth() { return Reliquary.CONFIG.getInt(Names.rending_gale, "feather_worth"); }
+    private static int getChargeLimit() { return Reliquary.CONFIG.getInt(Names.rending_gale, "charge_limit"); }
+    public static int getChargeCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "cast_charge_cost"); }
+    private static int getFeathersWorth() { return Reliquary.CONFIG.getInt(Names.rending_gale, "charge_feather_worth"); }
+    private static int getColumnSize() { return Reliquary.CONFIG.getInt(Names.rending_gale, "push_column_size"); }
+    private int getColumnLength() { return ((getColumnSize() * 2) + 1) * 2; }
+    private static int getVerticalColumnTargetingRange() { return Reliquary.CONFIG.getInt(Names.rending_gale, "horizontal_column_radius"); }
+    private static int getRadialPushRadius() { return Reliquary.CONFIG.getInt(Names.rending_gale, "radial_push_radius"); }
+    private static boolean canPushProjectiles() { return Reliquary.CONFIG.getBool(Names.rending_gale, "can_push_projectiles"); }
 
     @Override
     public boolean isFull3D(){ return true; }
@@ -183,8 +186,6 @@ public class ItemRendingGale extends ItemToggleable {
 
         player.fallDistance = 0.0F;
 
-
-        spawnHurricaneParticles(player.getLookVec(), player);
         return;
     }
 
@@ -225,27 +226,10 @@ public class ItemRendingGale extends ItemToggleable {
         }
         if (player == null)
             return;
-
-        if (player.isSwingInProgress && player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().isItemEqual(ist)) {
-            if (NBTHelper.getInteger("feathers", ist) >= getFeathersWhirlwindCost()) {
-                if (player.swingProgressInt == -1) {
-                    NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getFeathersWhirlwindCost());
-                    float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
-                    player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.15F, randomPitch);
-                }
-
-                for (int frames = 0; frames < 7; frames++) {
-                    doPushEffect(ist, player, player.getLookVec());
-                    spawnHurricaneParticles(player.getLookVec(), player);
-                }
-            }
-        }
-
         if (world.isRemote)
             return;
-
         if (this.isEnabled(ist)) {
-            if (NBTHelper.getInteger("feathers", ist) + getFeathersWorth() <= getFeathersLimit()) {
+            if (NBTHelper.getInteger("feathers", ist) + getFeathersWorth() <= getChargeLimit()) {
                 if (InventoryHelper.consumeItem(new ItemStack(Items.feather), player)) {
                     NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) + getFeathersWorth());
                 }
@@ -253,6 +237,42 @@ public class ItemRendingGale extends ItemToggleable {
         }
     }
 
+    public String getMode(ItemStack ist) {
+        if (NBTHelper.getString("mode", ist).equals("")) {
+            setMode(ist, "flight");
+        }
+        return NBTHelper.getString("flight", ist);
+    }
+
+    public void setMode(ItemStack ist, String s) {
+        NBTHelper.setString("mode", ist, s);
+    }
+
+    public void cycleMode(ItemStack ist) {
+        if (getMode(ist).equals("flight"))
+            setMode(ist, "lift");
+        else if (getMode(ist).equals("lift"))
+            setMode(ist, "push");
+        else if (getMode(ist).equals("push"))
+            setMode(ist, "radial");
+        else if (getMode(ist).equals("radial"))
+            setMode(ist, "bolt");
+        else
+            setMode(ist, "flight");
+    }
+
+    @Override
+    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
+        if (entityLiving.worldObj.isRemote)
+            return true;
+        if (!(entityLiving instanceof EntityPlayer))
+            return true;
+        EntityPlayer player = (EntityPlayer)entityLiving;
+        if (player.isSneaking()) {
+            cycleMode(ist);
+        }
+        return false;
+    }
 
     @Override
     public int getMaxItemUseDuration(ItemStack par1ItemStack) {
@@ -273,44 +293,67 @@ public class ItemRendingGale extends ItemToggleable {
         return ist;
     }
 
-
-
-    @Override
-    public boolean onLeftClickEntity(ItemStack ist, EntityPlayer player, Entity e) {
-        if (NBTHelper.getInteger("feathers", ist) >= getFeathersWhirlwindCost()) {
-            float areaCoefficient = 5F;
-            spawnWhirlwindParticles((int)e.posX, (int)e.posY, (int)e.posZ, e.worldObj, areaCoefficient);
-            float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
-            player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.15F, randomPitch);
-            NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getFeathersWhirlwindCost());
-            e.moveEntity(0.0D, 0.8D, 0.0D);
-        }
-        return false;
+    //a longer ranged version of "getMovingObjectPositionFromPlayer" basically
+    public MovingObjectPosition getCycloneBlockTarget(World world, EntityPlayer player) {
+        float f = 1.0F;
+        float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
+        float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
+        double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double)f;
+        double d1 = player.prevPosY + (player.posY - player.prevPosY) * (double)f + (double)(world.isRemote ? player.getEyeHeight() - player.getDefaultEyeHeight() : player.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
+        double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double)f;
+        Vec3 vec3 = Vec3.createVectorHelper(d0, d1, d2);
+        float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
+        float f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
+        float f5 = -MathHelper.cos(-f1 * 0.017453292F);
+        float f6 = MathHelper.sin(-f1 * 0.017453292F);
+        float f7 = f4 * f5;
+        float f8 = f3 * f5;
+        double d3 = 12.0D;
+        Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
+        return world.func_147447_a(vec3, vec31, true, false, false);
     }
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
-        if (getMaxItemUseDuration(ist) - count >= NBTHelper.getInteger("feathers", ist)) {
+        if ((getMaxItemUseDuration(ist) - count) * getChargeCost() >= NBTHelper.getInteger("feathers", ist)) {
             player.stopUsingItem();
         }
-
-        //if (removeFeather(ist, player.worldObj.isRemote)) {
-
-        if (isEnabled(ist)) {
-            Vec3 lookVector = player.getLookVec();
-            spawnHurricaneParticles(lookVector, player);
-
+        if (getMode(ist).equals("flight")) {
             attemptFlight(player);
-        } else {
+            for (int frames = 0; frames < 7; ++frames)
+                spawnHurricaneParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
+        } else if (getMode(ist).equals("radial")) {
             doRadialPush(player);
+        } else if (getMode(ist).equals("push")) {
+            for (int frames = 0; frames < 7; frames++) {
+                doPushEffect(player, player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
+                spawnHurricaneParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
+            }
+        } else if (getMode(ist).equals("lift") || getMode(ist).equals("bolt")) {
+            MovingObjectPosition mop = this.getCycloneBlockTarget(player.worldObj, player);
+
+            if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+                if (getMode(ist).equals("lift")) {
+                    double x = (double) mop.blockX + 0.5D;
+                    double y = (double) mop.blockY + 1D;
+                    double z = (double) mop.blockZ + 0.5D;
+                    Vec3 straightUpVector = Vec3.createVectorHelper(0D, 1D, 0D);
+                    for (int frames = 0; frames < 7; frames++) {
+                        doPushEffect(player, player.worldObj, x, y, z, straightUpVector);
+                        spawnHurricaneParticles(player.worldObj, x, y, z, straightUpVector);
+                    }
+                } else {
+                    //todo
+                    //lightning bolt mechanics, these should have a really heavy drain on charge
+                }
+            }
         }
-        //}
     }
 
     //experimenting with a more sophisticated charge/drain mechanism
     @Override
     public void onPlayerStoppedUsing(ItemStack ist, World world, EntityPlayer player, int count) {
-        int chargeUsed = getMaxItemUseDuration(ist) - count;
+        int chargeUsed = (getMaxItemUseDuration(ist) - count) * getChargeCost();
         NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - chargeUsed);
     }
 
@@ -320,28 +363,22 @@ public class ItemRendingGale extends ItemToggleable {
         if (player.worldObj.isRemote)
             return;
 
-        double lowerX = player.posX - 10D;
-        double lowerY = player.posY - 2D;
-        double lowerZ = player.posZ - 10D;
-        double upperX = player.posX + 10D;
-        double upperY = player.posY + 5D;
-        double upperZ = player.posZ + 10D;
+        double lowerX = player.posX - getRadialPushRadius();
+        double lowerY = player.posY - (double)getRadialPushRadius() / 5D;
+        double lowerZ = player.posZ - getRadialPushRadius();
+        double upperX = player.posX + getRadialPushRadius();
+        double upperY = player.posY + (double)getRadialPushRadius() / 2D;
+        double upperZ = player.posZ + getRadialPushRadius();
 
-        List eList = player.worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(lowerX - 1D, lowerY - 1D, lowerZ - 1D, upperX + 1D, upperY + 1D, upperZ + 1D));
+        List eList = player.worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 
         Iterator iterator = eList.iterator();
         while (iterator.hasNext()) {
             Entity e = (Entity)iterator.next();
 
-            int distance = (int)player.getDistanceToEntity(e);
-
-            int probabilityFactor = (distance - 3) / 2;
-
-            if ( probabilityFactor > 0 && player.worldObj.rand.nextInt(probabilityFactor) != 0) {
-                //added to reduce the number of push frames that fail by 50%, no matter what.
-                if (player.worldObj.rand.nextInt(2) == 0)
-                    continue;
-            }
+            double distance = player.getDistanceToEntity(e);
+            if (distance >= getRadialPushRadius())
+                continue;
 
             if (e.equals(player))
                 continue;
@@ -352,34 +389,37 @@ public class ItemRendingGale extends ItemToggleable {
         }
     }
 
-    public void doPushEffect(ItemStack ist, EntityPlayer player, Vec3 lookVector) {
-        //push effect free at the moment, if you restore cost, remember to change this to NBTHelper.getInteger("feathers", ist)
-        spawnHurricaneParticles(lookVector, player);
-        if (player.worldObj.isRemote)
-            return;
+    public void doPushEffect(EntityPlayer player, World world, double x, double y, double z, Vec3 lookVector) {
+        double xDiff;
+        if (lookVector.xCoord < 0)
+            xDiff = Math.min(lookVector.xCoord * (double)getColumnLength(), -(double)getColumnSize());
+        else
+            xDiff = Math.max(lookVector.xCoord * (double)getColumnLength(), (double)getColumnSize());
 
-        double lowerX = Math.min(player.posX, player.posX + lookVector.xCoord * 10D);
-        double lowerY = Math.min(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.yCoord * 10D);
-        double lowerZ = Math.min(player.posZ, player.posZ + lookVector.zCoord * 10D);
-        double upperX = Math.max(player.posX, player.posX + lookVector.xCoord * 10D);
-        double upperY = Math.max(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.yCoord * 10D);
-        double upperZ = Math.max(player.posZ, player.posZ + lookVector.zCoord * 10D);
+        double yDiff;
+        if (lookVector.yCoord < 0)
+            yDiff = Math.min(lookVector.yCoord * (double)getColumnLength(), -(double)getColumnSize());
+        else
+            yDiff = Math.max(lookVector.yCoord * (double)getColumnLength(), (double)getColumnSize());
 
-        List eList = player.worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(lowerX - 1D, lowerY - 1D, lowerZ - 1D, upperX + 1D, upperY + 1D, upperZ + 1D));
+        double zDiff;
+        if (lookVector.zCoord < 0)
+            zDiff = Math.min(lookVector.zCoord * (double)getColumnLength(), -(double)getColumnSize());
+        else
+            zDiff = Math.max(lookVector.zCoord * (double)getColumnLength(), (double)getColumnSize());
+
+        double lowerX = Math.min(x, x + xDiff);
+        double lowerY = Math.min(y, y + yDiff);
+        double lowerZ = Math.min(z, z + zDiff);
+        double upperX = Math.max(x, x + xDiff);
+        double upperY = Math.max(y, y + yDiff);
+        double upperZ = Math.max(z, z + zDiff);
+
+        List eList = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 
         Iterator iterator = eList.iterator();
         while (iterator.hasNext()) {
             Entity e = (Entity)iterator.next();
-
-            int distance = (int)player.getDistanceToEntity(e);
-
-            int probabilityFactor = (distance - 3) / 2;
-
-            if ( probabilityFactor > 0 && player.worldObj.rand.nextInt(probabilityFactor) != 0) {
-                //added to reduce the number of push frames that fail by 50%, no matter what.
-                if (player.worldObj.rand.nextInt(2) == 0)
-                    continue;
-            }
 
             if (e.equals(player))
                 continue;
@@ -390,25 +430,14 @@ public class ItemRendingGale extends ItemToggleable {
         }
     }
 
-
-    public void spawnWhirlwindParticles(int x, int y, int z, World world, float areaCoefficient) {
-        //spawn a whole mess of particles every tick.
-        for (int i = 0; i < 20; ++i) {
-            float randX = (x + 0.5F) + areaCoefficient * (world.rand.nextFloat() - 0.5F);
-            float randZ = (z + 0.5F) + areaCoefficient * (world.rand.nextFloat() - 0.5F);
-
-            world.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, randX, y, randZ, world.rand.nextGaussian(), 0.2F + world.rand.nextFloat() * 0.2F, world.rand.nextGaussian());
-        }
-    }
-
-    public void spawnHurricaneParticles(Vec3 lookVector, EntityPlayer player) {
+    public void spawnHurricaneParticles(World world, double x, double y, double z, Vec3 lookVector) {
         //spawn a whole mess of particles every tick.
         for (int i = 0; i < 3; ++i) {
-            float randX = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
-            float randY = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
-            float randZ = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
+            float randX = (float)getColumnLength() * (itemRand.nextFloat() - 0.5F);
+            float randY = (float)getColumnLength() * (itemRand.nextFloat() - 0.5F);
+            float randZ = (float)getColumnLength() * (itemRand.nextFloat() - 0.5F);
 
-            player.worldObj.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
+            world.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, x + randX, y + randY, z + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
         }
     }
 

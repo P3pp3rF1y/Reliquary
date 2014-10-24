@@ -3,7 +3,6 @@ package xreliquary.blocks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.ICustomItemBlock;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.Block;
@@ -13,7 +12,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -67,8 +65,8 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
         world.spawnParticle("mobSpell", x + 0.5D + rand.nextGaussian() / 8, y, z + 0.5D + rand.nextGaussian() / 8, 0.0D, 0.9D, 0.5D);
     }
 
-    private int growthRatePercentage() {
-        return Reliquary.CONFIG.getInt(Names.lilypad, "time_between_ticks_percent");
+    private int secondsBetweenGrowthTicks() {
+        return Reliquary.CONFIG.getInt(Names.lilypad, "seconds_between_growth_ticks");
     }
 
     private int tileRange() {
@@ -79,17 +77,7 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
         return Reliquary.CONFIG.getInt(Names.lilypad, "full_potency_range");
     }
 
-    private int fullPotencyThreshold() {
-        return Reliquary.CONFIG.getInt(Names.lilypad, "full_potency_threshold");
-    }
-
-    private int fullPotencyOffset() {
-        return Reliquary.CONFIG.getInt(Names.lilypad, "full_potency_offset");
-    }
-
     public void growCropsNearby(World world, int xO, int yO, int zO) {
-        int lilyPadsFound = 0;
-        //int scheduleDelay = 0;
         for (int xD = -tileRange(); xD <= tileRange(); xD++) {
             for (int yD = -1; yD <= tileRange(); yD++) {
                 for (int zD = -tileRange(); zD <= tileRange(); zD++) {
@@ -98,32 +86,23 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
                     int z = zO + zD;
 
                     double distance = Math.sqrt(Math.pow(x-xO, 2) + Math.pow(y - yO,2) + Math.pow(z - zO,2));
-                    distance -= fullPotencyThreshold();
-                    if (distance <= fullPotencyRange()) distance = 1D;
-                    distance += fullPotencyOffset();
-
+                    distance -= fullPotencyRange();
                     distance = Math.min(1D, distance);
+                    double distanceCoefficient = 1D - (distance / tileRange());
 
                     Block block = world.getBlock(x, y, z);
 
                     if (block instanceof IPlantable || block instanceof IGrowable) {
                         if (!(block instanceof BlockFertileLilypad)) {
-                            //68 is a completely arbitrary number to multiply the distance coefficient by
-                            //it schedules the next tick. It caps out around 47 seconds, and bottoms out around 27. Both are at least as good or better than average growth.
-                            world.scheduleBlockUpdate(x, y, z, block, (int)(distance * 68F * ((float) growthRatePercentage() / 100F)));
+                            //it schedules the next tick.
+                            world.scheduleBlockUpdate(x, y, z, block, (int) (distanceCoefficient * (float) secondsBetweenGrowthTicks() * 20F));
                             block.updateTick(world, x, y, z, world.rand);
-                        } else {
-                            lilyPadsFound++;
                         }
                     }
                 }
             }
         }
-
-        //1360 is 68 seconds (roughly the average time of a block's growth tick)
-        //420 is the maximum that would have to be subtracted from 1360 to get down to 47 seconds (roughly the mean average of a block's growth tick)
-        //20 * the lilyPadsFound is a delay to diminish (lightly) the effect of multiple lilyPads in an area. Not a huge impact.
-        world.scheduleBlockUpdate(xO, yO, zO, world.getBlock(xO, yO, zO), 1360 - world.rand.nextInt(420) + (lilyPadsFound * 20));
+        world.scheduleBlockUpdate(xO, yO, zO, world.getBlock(xO, yO, zO), secondsBetweenGrowthTicks() * 20);
     }
 
     @Override
@@ -146,12 +125,12 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
 
     @Override
     protected boolean canPlaceBlockOn(Block block) {
-        return block == null ? false : ContentHelper.areBlocksEqual(block, Blocks.water);
+        return block != null && ContentHelper.areBlocksEqual(block, Blocks.water);
     }
 
     @Override
     public boolean canBlockStay(World world, int x, int y, int z) {
-        return y >= 0 && y < 256 ? world.getBlock(x, y - 1, z).getMaterial() == Material.water && world.getBlockMetadata(x, y - 1, z) == 0 : false;
+        return y >= 0 && y < 256 && world.getBlock(x, y - 1, z).getMaterial() == Material.water && world.getBlockMetadata(x, y - 1, z) == 0;
     }
 
     @SideOnly(Side.CLIENT)

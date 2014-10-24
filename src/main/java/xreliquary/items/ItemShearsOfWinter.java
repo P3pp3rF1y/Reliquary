@@ -160,11 +160,6 @@ public class ItemShearsOfWinter extends ItemBase {
         //start the blizzard after a short delay, this prevents some abuse.
         if (getMaxItemUseDuration(ist) - count <= 5)
             return;
-//        if ((getMaxItemUseDuration(ist) - count) % 40 == 0) {
-//            System.out.println("count " + count + " % 40 = " + (getMaxItemUseDuration(ist) - count) % 40);
-//            float randomPitch = 0.75F + (0.25F * itemRand.nextFloat());
-//            player.worldObj.playSoundAtEntity(player, Reference.GUST_SOUND, 0.25F, randomPitch);
-//        }
         Vec3 lookVector = player.getLookVec();
         spawnBlizzardParticles(lookVector, player);
 
@@ -294,9 +289,9 @@ public class ItemShearsOfWinter extends ItemBase {
         z += (int)player.posZ;
 
         int distance = (int)player.getDistance((double)x, (double)y, (double)z);
-        int probabilityFactor = (distance - 3) / 2;
+        int probabilityFactor = 5 + distance;
         //chance of block break diminishes over distance
-        if (probabilityFactor <= 0 || player.worldObj.rand.nextInt(probabilityFactor) == 0) {
+        if (player.worldObj.rand.nextInt(probabilityFactor) == 0) {
             Block block = player.worldObj.getBlock(x, y, z);
             if (block instanceof IShearable)
             {

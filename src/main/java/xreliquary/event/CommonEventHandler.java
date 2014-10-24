@@ -220,7 +220,7 @@ public class CommonEventHandler {
     }
 
     public void handleEventDropListAddition(Entity e, LivingDropsEvent event, float probabilityBase, float lootingProbabilityIncrement, ItemStack ist) {
-        float dropProbability = 0.04F + (0.07F * (float) (event.lootingLevel + 1));
+        float dropProbability = probabilityBase + (lootingProbabilityIncrement * (float) event.lootingLevel);
         if (e.worldObj.rand.nextFloat() <= dropProbability) {
             if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityPlayer && event.source.damageType.equals("player")) {
                 EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, ist);
@@ -230,80 +230,92 @@ public class CommonEventHandler {
         }
     }
 
+    public float getBaseDrop(String s) {
+        return (float)Reliquary.CONFIG.getInt(Names.mob_drop_probability, s + "_base") * 0.01F;
+    }
+
+    public float getLootingDrop(String s) {
+        return (float)Reliquary.CONFIG.getInt(Names.mob_drop_probability, s + "_looting") * 0.01F;
+    }
+
     private ItemStack ingredient(int meta) {
         return XRRecipes.ingredient(meta);
     }
 
     public void handleSquidDropsCheck(Entity e, LivingDropsEvent event) {
         if (e instanceof EntitySquid)
-            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.SQUID_INGREDIENT_META));
+            handleEventDropListAddition(e, event, getBaseDrop(Names.squid_beak), getLootingDrop(Names.squid_beak), ingredient(Reference.SQUID_INGREDIENT_META));
     }
 
     public void handleWitchDropsCheck(Entity e, LivingDropsEvent event) {
         if (e instanceof EntityWitch)
-            handleEventDropListAddition(e, event, 0.5F, 0.0F, new ItemStack(ContentHandler.getItem(Names.witch_hat), 1, 0));
+            handleEventDropListAddition(e, event, getBaseDrop(Names.witch_hat), getLootingDrop(Names.witch_hat), new ItemStack(ContentHandler.getItem(Names.witch_hat), 1, 0));
     }
 
     public void handleSpiderOrCaveSpiderDropsCheck(Entity e, LivingDropsEvent event) {
-        if (e instanceof EntitySpider || e instanceof EntityCaveSpider) {
-            float coefficient = e instanceof EntityCaveSpider ? 2F : 1F;
-            handleEventDropListAddition(e, event, 0.04F * coefficient, 0.07F * coefficient, ingredient(Reference.SPIDER_INGREDIENT_META));
+        if (e instanceof EntitySpider) {
+            float base = getBaseDrop((e instanceof EntityCaveSpider) ? Names.cave_spider_fangs : Names.spider_fangs);
+            float looting = getLootingDrop((e instanceof EntityCaveSpider) ? Names.cave_spider_fangs : Names.spider_fangs);
+            handleEventDropListAddition(e, event, base, looting, ingredient(Reference.SPIDER_INGREDIENT_META));
         }
     }
 
     public void handleSkeletonDropsCheck(Entity e, LivingDropsEvent event) {
         if (e instanceof EntitySkeleton && ((EntitySkeleton) e).getSkeletonType() != 1)
-            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.SKELETON_INGREDIENT_META));
+            handleEventDropListAddition(e, event, getBaseDrop(Names.rib_bone), getLootingDrop(Names.rib_bone), ingredient(Reference.SKELETON_INGREDIENT_META));
     }
 
     public void handleWitherDropsCheck(Entity e, LivingDropsEvent event) {
         if (e instanceof EntitySkeleton && ((EntitySkeleton) e).getSkeletonType() == 1)
-            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.WITHER_INGREDIENT_META));
+            handleEventDropListAddition(e, event, getBaseDrop(Names.withered_rib), getLootingDrop(Names.withered_rib), ingredient(Reference.WITHER_INGREDIENT_META));
     }
 
     public void handleZombieOrZombiePigmanDropsCheck(Entity e, LivingDropsEvent event) {
-        if (e instanceof EntityZombie || e instanceof EntityPigZombie) {
-            float coefficient = e instanceof EntityPigZombie ? 2F : 1F;
-            handleEventDropListAddition(e, event, 0.04F * coefficient, 0.07F * coefficient, ingredient(Reference.ZOMBIE_INGREDIENT_META));
+        if (e instanceof EntityZombie) {
+            float base = getBaseDrop((e instanceof EntityPigZombie) ? Names.pigman_heart : Names.zombie_heart);
+            float looting = getLootingDrop((e instanceof EntityPigZombie) ? Names.pigman_heart: Names.zombie_heart);
+            handleEventDropListAddition(e, event, base, looting, ingredient(Reference.ZOMBIE_INGREDIENT_META));
         }
     }
 
     public void handleSlimeDropsCheck(Entity e, LivingDropsEvent event) {
         if (e instanceof EntitySlime)
-            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.SLIME_INGREDIENT_META));
+            handleEventDropListAddition(e, event, getBaseDrop(Names.slime_pearl), getLootingDrop(Names.slime_pearl), ingredient(Reference.SLIME_INGREDIENT_META));
 
     }
 
     public void handleBlazeOrMagmaCubeDropsCheck(Entity e, LivingDropsEvent event) {
         if (e instanceof EntityBlaze || e instanceof EntityMagmaCube) {
-            float coefficient = e instanceof EntityBlaze ? 2F : 1F;
-            handleEventDropListAddition(e, event, 0.04F * coefficient, 0.07F * coefficient, ingredient(Reference.MOLTEN_INGREDIENT_META));
+            float base = getBaseDrop((e instanceof EntityMagmaCube) ? Names.magma_cube_molten_core : Names.blaze_molten_core);
+            float looting = getLootingDrop((e instanceof EntityMagmaCube) ? Names.magma_cube_molten_core: Names.blaze_molten_core);
+            handleEventDropListAddition(e, event, base, looting, ingredient(Reference.MOLTEN_INGREDIENT_META));
         }
     }
 
     public void handleGhastOrCreeperDropsCheck(Entity e, LivingDropsEvent event) {
         if (e instanceof EntityCreeper || e instanceof EntityGhast) {
-            float coefficient = e instanceof EntityGhast ? 2F : 1F;
-            handleEventDropListAddition(e, event, 0.04F * coefficient, 0.07F * coefficient, ingredient(Reference.CREEPER_INGREDIENT_META));
+            float base = getBaseDrop((e instanceof EntityGhast) ? Names.ghast_gland : Names.creeper_gland);
+            float looting = getLootingDrop((e instanceof EntityGhast) ? Names.ghast_gland: Names.creeper_gland);
+            handleEventDropListAddition(e, event, base, looting, ingredient(Reference.CREEPER_INGREDIENT_META));
             if (e instanceof EntityCreeper && ((EntityCreeper) e).getPowered()) {
-                handleEventDropListAddition(e, event, 0.04F * coefficient, 0.07F * coefficient, ingredient(Reference.STORM_INGREDIENT_META));
+                handleEventDropListAddition(e, event, getBaseDrop(Names.eye_of_the_storm), getLootingDrop(Names.eye_of_the_storm), ingredient(Reference.STORM_INGREDIENT_META));
             }
         }
     }
 
     public void handleEndermanDropsCheck(Entity e, LivingDropsEvent event) {
         if (e instanceof EntityEnderman)
-            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.ENDER_INGREDIENT_META));
+            handleEventDropListAddition(e, event, getBaseDrop(Names.ender_heart), getLootingDrop(Names.ender_heart), ingredient(Reference.ENDER_INGREDIENT_META));
     }
 
     public void handleBatsDropsCheck(Entity e, LivingDropsEvent event) {
         if (e instanceof EntityBat)
-            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.BAT_INGREDIENT_META));
+            handleEventDropListAddition(e, event, getBaseDrop(Names.bat_wing), getLootingDrop(Names.bat_wing), ingredient(Reference.BAT_INGREDIENT_META));
     }
 
     public void handleSnowGolemDropsCheck(Entity e, LivingDropsEvent event) {
         if (e instanceof EntitySnowman)
-            handleEventDropListAddition(e, event, 0.04F, 0.07F, ingredient(Reference.FROZEN_INGREDIENT_META));
+            handleEventDropListAddition(e, event, getBaseDrop(Names.frozen_core), getLootingDrop(Names.frozen_core), ingredient(Reference.FROZEN_INGREDIENT_META));
     }
 
     @SubscribeEvent

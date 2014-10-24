@@ -52,10 +52,26 @@ public class Names {
     public static final String heart_pearl = "heart_pearl";
     public static final String heart_zhu = "heart_zhu";
 
-    //these aren't the names of the items but they're used for configs
+    //these aren't the names of the items (those are based on metadata, purely) but they're used for config readability.
     public static final String seeker_shot = "seeker_shot";
+    public static final String zombie_heart = "necrotic_heart_zombie";
+    public static final String pigman_heart = "necrotic_heart_pigman";
+    public static final String rib_bone = "rib_bone";
+    public static final String withered_rib = "wither_rib";
+    public static final String spider_fangs = "spider_chelicerae";
+    public static final String cave_spider_fangs = "cave_spider_chelicerae";
+    public static final String blaze_molten_core = "molten_core_blaze";
+    public static final String magma_cube_molten_core = "molten_core_magma_cube";
+    public static final String frozen_core = "frozen_core";
+    public static final String eye_of_the_storm = "eye_of_the_storm";
+    public static final String bat_wing = "bat_wing";
+    public static final String creeper_gland = "catalyzing_gland_creeper";
+    public static final String ghast_gland = "catalyzing_gland_ghast";
+    public static final String squid_beak = "squid_beak";
+    public static final String slime_pearl = "slime_pearl";
+    public static final String ender_heart = "nebulous_heart";
     public static final String fertile_essence = "fertile_essence";
-    public static final String infernal_claw = "infernal_claw";
+    //public static final String infernal_claw = "infernal_claw";
 
 
 
@@ -75,7 +91,16 @@ public class Names {
     public static final String apothecary_cauldron = "apothecary_cauldron";
     public static final String apothecary_mortar = "apothecary_mortar";
 
+    //these are for configs, they're just the names of things I didn't want to magic string.
     public static final String recipe_enabled = "recipe_enabled";
     public static final String hud_positions = "hud_positions";
     public static final String easy_mode_recipes = "easy_mode_recipes";
+    public static final String mob_drop_probability = "mob_drop_probability";
+
+    //these are for items, like above, didn't want to magic string them. I will use them eventually.
+//    public static final String snowball_mode = "snowballs";
+//    public static final String eruption_mode = "eruption";
+//    public static final String blaze_mode = "blaze";
+//    public static final String charge_mode = "charge";
+
 }

@@ -6,9 +6,7 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentHandler;
-import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -18,7 +16,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -368,7 +365,7 @@ public class ClientEventHandler {
         ItemStack featherStack = new ItemStack(Items.feather, NBTHelper.getInteger("feathers", rendingGaleStack), 0);
         int charge = featherStack.stackSize;
         if (player.isUsingItem()) {
-            charge -= player.getItemInUseDuration() * ItemRendingGale.getFeathersFlightCost();
+            charge -= player.getItemInUseDuration() * ItemRendingGale.getChargeCost();
         }
         renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.rending_gale), 0, Math.max(charge,0));
     }
@@ -552,16 +549,31 @@ public class ClientEventHandler {
             String staffMode = staffItem.getMode(hudStack);
             if (!staffMode.equals("snowballs"))
                 skipStackRender = true;
+        } else if (hudStack.getItem() instanceof ItemRendingGale) {
+            ItemRendingGale staffItem = (ItemRendingGale)hudStack.getItem();
+            String staffMode = staffItem.getMode(hudStack);
+            if (staffMode.equals("flight"))
+                staffMode = "FLIGHT";
+            else if (staffMode.equals("push"))
+                staffMode = "PUSH";
+            else if (staffMode.equals("lift"))
+                staffMode = "LIFT";
+            else if (staffMode.equals("radial"))
+                staffMode = "RADIAL";
+            else
+                staffMode = "BOLT";
+            int modeStringWidthOffset = minecraft.fontRenderer.getStringWidth(staffMode);
+            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize),hudOverlayX + 6 - modeStringWidthOffset, hudOverlayY + 24, color);
         }
 
         if (secondaryStack != null && !skipStackRender) {
             if (stackSize == 0)
                 stackSize = secondaryStack.stackSize;
-            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX + 6, hudOverlayY + 6);
+            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX , hudOverlayY + 6);
         }
 
-        int stringWidthOffset = minecraft.fontRenderer.getStringWidth(Integer.toString(stackSize)) / 2;
-        minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize),hudOverlayX + 6 - stringWidthOffset, hudOverlayY + 24, color);
+        int stringWidthOffset = minecraft.fontRenderer.getStringWidth(Integer.toString(stackSize));
+        minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize),hudOverlayX + 30 - stringWidthOffset, hudOverlayY + 6, color);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
         GL11.glPopMatrix();

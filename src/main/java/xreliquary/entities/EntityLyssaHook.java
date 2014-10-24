@@ -532,9 +532,9 @@ public class EntityLyssaHook extends EntityFishHook {
                 double d2 = this.field_146042_b.posY - this.posY;
                 double d4 = this.field_146042_b.posZ - this.posZ;
                 double d6 = (double)MathHelper.sqrt_double(d0 * d0 + d2 * d2 + d4 * d4);
-                double d8 = field_146042_b.isSneaking() ? 0.0D : 0.3D;
+                double d8 = field_146042_b.isSneaking() ? 0.0D : 0.1D;
                 this.inEntity.motionX += d0 * d8;
-                this.inEntity.motionY += d2 * d8 + (double)MathHelper.sqrt_double(d6) * 0.08D;
+                this.inEntity.motionY += d2 * d8 + (double)MathHelper.sqrt_double(d6) * 0.12D;
                 this.inEntity.motionZ += d4 * d8;
 
                 if (field_146042_b.isSneaking() && this.inEntity instanceof EntityLivingBase) {
