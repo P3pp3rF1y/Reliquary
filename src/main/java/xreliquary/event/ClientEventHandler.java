@@ -334,17 +334,15 @@ public class ClientEventHandler {
             friendlyStaffMode = "ERUPT";
 
         if (secondaryStack != null && (staffMode.equals("charge"))) {
-            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX + 6, hudOverlayY + 6);
-            int stringWidthOffset = minecraft.fontRenderer.getStringWidth(Integer.toString(secondaryStack.stackSize)) / 2;
-            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(secondaryStack.stackSize),hudOverlayX + 30 - stringWidthOffset, hudOverlayY + 6, color);
+            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX, hudOverlayY + 24);
+            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(secondaryStack.stackSize),hudOverlayX + 18, hudOverlayY + 30, color);
         } else if (tertiaryStack != null && (staffMode.equals("eruption") || staffMode.equals("blaze"))) {
-            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), tertiaryStack, hudOverlayX + 6, hudOverlayY + 24);
-            int stringWidthOffset = minecraft.fontRenderer.getStringWidth(Integer.toString(tertiaryStack.stackSize)) / 2;
-            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(tertiaryStack.stackSize),hudOverlayX + 30 - stringWidthOffset, hudOverlayY + 24, color);
+            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), tertiaryStack, hudOverlayX, hudOverlayY + 24);
+            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(tertiaryStack.stackSize),hudOverlayX + 18, hudOverlayY + 30, color);
             if (staffMode.equals("eruption"))
-                minecraft.fontRenderer.drawStringWithShadow(friendlyStaffMode, hudOverlayX + 6, hudOverlayY + 6, color);
+                minecraft.fontRenderer.drawStringWithShadow(friendlyStaffMode, hudOverlayX, hudOverlayY + 18, color);
         } else if (staffMode.equals("flint_and_steel")) {
-            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), new ItemStack(Items.flint_and_steel, 1, 0), hudOverlayX + 6, hudOverlayY + 24);
+            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), new ItemStack(Items.flint_and_steel, 1, 0), hudOverlayX, hudOverlayY + 24);
         }
 
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -366,6 +364,7 @@ public class ClientEventHandler {
         int charge = featherStack.stackSize;
         if (player.isUsingItem()) {
             charge -= player.getItemInUseDuration() * ItemRendingGale.getChargeCost();
+            charge /= 100;
         }
         renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.rending_gale), 0, Math.max(charge,0));
     }
@@ -562,18 +561,16 @@ public class ClientEventHandler {
                 staffMode = "RADIAL";
             else
                 staffMode = "BOLT";
-            int modeStringWidthOffset = minecraft.fontRenderer.getStringWidth(staffMode);
-            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize),hudOverlayX + 6 - modeStringWidthOffset, hudOverlayY + 24, color);
+            minecraft.fontRenderer.drawStringWithShadow(staffMode,hudOverlayX, hudOverlayY + 18, color);
         }
 
         if (secondaryStack != null && !skipStackRender) {
             if (stackSize == 0)
                 stackSize = secondaryStack.stackSize;
-            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX , hudOverlayY + 6);
+            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX, hudOverlayY + 24);
         }
 
-        int stringWidthOffset = minecraft.fontRenderer.getStringWidth(Integer.toString(stackSize));
-        minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize),hudOverlayX + 30 - stringWidthOffset, hudOverlayY + 6, color);
+        minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize),hudOverlayX + 18, hudOverlayY + 30, color);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
