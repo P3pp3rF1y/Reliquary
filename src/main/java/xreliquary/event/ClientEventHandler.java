@@ -141,8 +141,15 @@ public class ClientEventHandler {
             return;
 
         ItemStack enderStaffStack = player.getCurrentEquippedItem();
-        ItemStack enderPearlStack = new ItemStack(Items.ender_pearl, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
-        renderStandardTwoItemHUD(mc, player, enderStaffStack, enderPearlStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.ender_staff), 0, 0);
+        ItemEnderStaff enderStaffItem = (ItemEnderStaff)enderStaffStack.getItem();
+        String staffMode = enderStaffItem.getMode(enderStaffStack);
+        ItemStack displayItemStack = new ItemStack(Items.ender_pearl, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
+        if (staffMode.equals("node_warp")) {
+            displayItemStack = new ItemStack(ContentHandler.getBlock(Names.wraith_node), NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
+        } else if (staffMode.equals("long_cast")) {
+            displayItemStack = new ItemStack(Items.ender_eye, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
+        }
+        renderStandardTwoItemHUD(mc, player, enderStaffStack, displayItemStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.ender_staff), 0, 0);
     }
 
     public void handleIceMagusRodHUDCheck(){
@@ -264,12 +271,14 @@ public class ClientEventHandler {
             }
         }
 
+        String staffMode = ((ItemPyromancerStaff)pyromancerStaffStack.getItem()).getMode(pyromancerStaffStack);
+
         ItemStack fireChargeStack = new ItemStack(Items.fire_charge, charge, 0);
         ItemStack blazePowderStack = new ItemStack(Items.blaze_powder, blaze, 0);
-        renderPyromancerStaffHUD(mc, player, pyromancerStaffStack, fireChargeStack, blazePowderStack);
+        renderPyromancerStaffHUD(mc, player, pyromancerStaffStack, fireChargeStack, blazePowderStack, staffMode);
     }
 
-    private static void renderPyromancerStaffHUD(Minecraft minecraft, EntityPlayer player, ItemStack hudStack, ItemStack secondaryStack, ItemStack tertiaryStack) {
+    private static void renderPyromancerStaffHUD(Minecraft minecraft, EntityPlayer player, ItemStack hudStack, ItemStack secondaryStack, ItemStack tertiaryStack, String staffMode) {
         int color = Colors.get(Colors.PURE);
 
         float overlayScale = 2.5F;
@@ -323,15 +332,22 @@ public class ClientEventHandler {
 
         renderItemIntoGUI(minecraft.fontRenderer, hudStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
 
-        if (secondaryStack != null) {
+        String friendlyStaffMode = "";
+        if (staffMode.equals("eruption"))
+            friendlyStaffMode = "ERUPT";
+
+        if (secondaryStack != null && (staffMode.equals("charge"))) {
             itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX + 6, hudOverlayY + 6);
             int stringWidthOffset = minecraft.fontRenderer.getStringWidth(Integer.toString(secondaryStack.stackSize)) / 2;
             minecraft.fontRenderer.drawStringWithShadow(Integer.toString(secondaryStack.stackSize),hudOverlayX + 30 - stringWidthOffset, hudOverlayY + 6, color);
-        }
-        if (tertiaryStack != null) {
+        } else if (tertiaryStack != null && (staffMode.equals("eruption") || staffMode.equals("blaze"))) {
             itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), tertiaryStack, hudOverlayX + 6, hudOverlayY + 24);
             int stringWidthOffset = minecraft.fontRenderer.getStringWidth(Integer.toString(tertiaryStack.stackSize)) / 2;
             minecraft.fontRenderer.drawStringWithShadow(Integer.toString(tertiaryStack.stackSize),hudOverlayX + 30 - stringWidthOffset, hudOverlayY + 24, color);
+            if (staffMode.equals("eruption"))
+                minecraft.fontRenderer.drawStringWithShadow(friendlyStaffMode, hudOverlayX + 6, hudOverlayY + 6, color);
+        } else if (staffMode.equals("flint_and_steel")) {
+            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), new ItemStack(Items.flint_and_steel, 1, 0), hudOverlayX + 6, hudOverlayY + 24);
         }
 
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -528,7 +544,17 @@ public class ClientEventHandler {
 
         renderItemIntoGUI(minecraft.fontRenderer, hudStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
 
-        if (secondaryStack != null) {
+        boolean skipStackRender = false;
+
+        //special item conditions are handled on a per-item-type basis:
+        if (hudStack.getItem() instanceof ItemGlacialStaff) {
+            ItemGlacialStaff staffItem = (ItemGlacialStaff)hudStack.getItem();
+            String staffMode = staffItem.getMode(hudStack);
+            if (!staffMode.equals("snowballs"))
+                skipStackRender = true;
+        }
+
+        if (secondaryStack != null && !skipStackRender) {
             if (stackSize == 0)
                 stackSize = secondaryStack.stackSize;
             itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX + 6, hudOverlayY + 6);
