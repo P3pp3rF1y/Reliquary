@@ -40,8 +40,8 @@ public class TileEntityAltar extends TileEntityBase {
 
     public void startCycle() {
         //grabs the cycle time from the configs
-        int defaultCycleTime = Reliquary.CONFIG.getInt(Names.altar, "time_in_minutes");
-        int maximumVariance = Reliquary.CONFIG.getInt(Names.altar, "maximum_time_variance_in_minutes");
+        int defaultCycleTime = Reliquary.CONFIG.getInt(Names.altar, "time_in_minutes") * 60 * 20;
+        int maximumVariance = Reliquary.CONFIG.getInt(Names.altar, "maximum_time_variance_in_minutes") * 60 * 20;
         cycleTime = (int) (defaultCycleTime + (double)maximumVariance * worldObj.rand.nextGaussian());
         isActive = true;
         redstoneCount = 0;
@@ -71,7 +71,7 @@ public class TileEntityAltar extends TileEntityBase {
         }
     }
 
-    private int getRedstoneCost() { return Reliquary.CONFIG.getInt(Names.altar, "redstone_cost"); }
+    public static int getRedstoneCost() { return Reliquary.CONFIG.getInt(Names.altar, "redstone_cost"); }
 
     public int getRedstoneCount() {
         return redstoneCount;

@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
@@ -46,6 +47,11 @@ public class ItemAlkahestryTome extends ItemToggleable {
         return stack;
     }
 
+//    @Override
+//    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+//        return world.getTileEntity(x, y, z) instanceof TileEntityAltar;
+//    }
+
     @Override
     public void onUpdate(ItemStack ist, World world, Entity entity, int i, boolean f) {
         if (world.isRemote)
@@ -72,13 +78,6 @@ public class ItemAlkahestryTome extends ItemToggleable {
         } else if(NBTHelper.getInteger("redstone", ist) + 1 <= getRedstoneLimit() && InventoryHelper.consumeItem(Items.glowstone_dust, player)) {
             NBTHelper.setInteger("redstone", ist, NBTHelper.getInteger("redstone", ist) + 1);
         }
-
-        //lapis handler, commented out for now
-//        if(amount + 36 <= getRedstoneLimit() && InventoryHelper.consumeItem(Blocks.lapis_block, player)) {
-//            stack.setItemDamage(stack.getItemDamage() - 36);
-//        } else if(amount + 4 <= getRedstoneLimit() && InventoryHelper.consumeItem(new ItemStack(Items.dye, 1, 4), player)) {
-//            stack.setItemDamage(stack.getItemDamage() - 4);
-//        }
     }
 
     @Override

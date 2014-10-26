@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.RecipeSorter;
 import xreliquary.Reliquary;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
+import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
 import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -101,10 +102,12 @@ public class XRRecipes {
 
     public static void init() {
         // tome and alkahestry recipes
+        GameRegistry.addRecipe(new AlkahestryDrainRecipe());
         GameRegistry.addRecipe(new AlkahestryRedstoneRecipe());
         GameRegistry.addRecipe(new AlkahestryCraftingRecipe());
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_redstone", AlkahestryRedstoneRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
+        RecipeSorter.register(Reference.MOD_ID + ":alkahest_drain", AlkahestryDrainRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_redstone");
 
         //alkahestry tome
         if (isEasyMode(Names.alkahestry_tome))

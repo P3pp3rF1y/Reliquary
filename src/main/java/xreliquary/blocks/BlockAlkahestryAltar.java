@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -16,6 +17,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityAltar;
+import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
@@ -107,6 +109,15 @@ public class BlockAlkahestryAltar extends BlockContainer {
             if (world.isRemote)
                 return true;
             player.inventory.decrStackSize(slot, 1);
+            altar.addRedstone();
+        } else if (player.getCurrentEquippedItem().getItem() instanceof ItemAlkahestryTome && NBTHelper.getInteger("redstone", player.getCurrentEquippedItem()) >  0) {
+            world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.3F, 0.5F + 0.5F * altar.getRedstoneCount() + (float) (world.rand.nextGaussian() / 8));
+            for (int particles = world.rand.nextInt(3); particles < 3 + altar.getRedstoneCount() * 4 + altar.getRedstoneCount(); particles++) {
+                world.spawnParticle("reddust", x + 0.5D + world.rand.nextGaussian() / 5, y + 1.2D, z + 0.5D + world.rand.nextGaussian() / 5, 1D, 0D, 0D);
+            }
+            if (world.isRemote)
+                return true;
+            NBTHelper.setInteger("redstone", player.getCurrentEquippedItem(), NBTHelper.getInteger("redstone", player.getCurrentEquippedItem()) - 1);
             altar.addRedstone();
         }
         return true;

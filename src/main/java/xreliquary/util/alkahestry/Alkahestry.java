@@ -47,8 +47,6 @@ public class Alkahestry {
         addKey(new AlkahestRecipe(new ItemStack(Blocks.clay), 2, LOW_TIER));
         addKey(new AlkahestRecipe(new ItemStack(Blocks.netherrack), 8, LOW_TIER));
         addKey(new AlkahestRecipe(new ItemStack(Items.coal, 1, 1), 4, LOW_TIER));
-        addKey(new AlkahestRecipe(new ItemStack(Items.glowstone_dust), 4, LOW_TIER));
-        addKey(new AlkahestRecipe(new ItemStack(Blocks.glowstone, 1, 0), 1, LOW_TIER));
         addKey(new AlkahestRecipe(new ItemStack(Items.dye, 1, 4), 1, LOW_TIER));
 
         addKey(new AlkahestRecipe(new ItemStack(Blocks.obsidian), 4, MIDDLE_TIER));
