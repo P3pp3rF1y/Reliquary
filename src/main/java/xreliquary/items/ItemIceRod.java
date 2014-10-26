@@ -63,7 +63,7 @@ public class ItemIceRod extends ItemToggleable {
         if (!player.isSneaking()) {
             if (NBTHelper.getInteger("snowballs", ist) >= getSnowballCost()) {
                 world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-                world.spawnEntityInWorld(new EntitySpecialSnowball(world, player));
+                world.spawnEntityInWorld(new EntitySpecialSnowball(world, player, this instanceof ItemGlacialStaff));
                 NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
             }
         }

@@ -39,59 +39,9 @@ public class ItemGlacialStaff extends ItemIceRod {
     public boolean isFull3D(){ return true; }
 
     @Override
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
-        return 11;
-    }
-
-    @Override
-    public EnumAction getItemUseAction(ItemStack ist) {
-        return EnumAction.block;
-    }
-
-    @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
-        if (!player.isSneaking()) {
-            if (getMode(ist).equals("snowballs"))
-                return super.onItemRightClick(ist, world, player);
-            else
-                player.setItemInUse(ist, getMaxItemUseDuration(ist));
-        }
-
         return super.onItemRightClick(ist, world, player);
     }
-
-    public String getMode(ItemStack ist) {
-        if (NBTHelper.getString("mode", ist).equals("")) {
-            setMode(ist, "snowballs");
-        }
-        return NBTHelper.getString("mode", ist);
-    }
-
-    public void setMode(ItemStack ist, String s) {
-        NBTHelper.setString("mode", ist, s);
-    }
-
-    public void cycleMode(ItemStack ist) {
-        if (getMode(ist).equals("snowballs"))
-            setMode(ist, "blizzard");
-        else
-            setMode(ist, "snowballs");
-    }
-
-    @Override
-    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
-
-        if (entityLiving.worldObj.isRemote)
-            return true;
-        if (!(entityLiving instanceof EntityPlayer))
-            return true;
-        EntityPlayer player = (EntityPlayer)entityLiving;
-        if (player.isSneaking()) {
-            cycleMode(ist);
-        }
-        return false;
-    }
-
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
@@ -99,91 +49,22 @@ public class ItemGlacialStaff extends ItemIceRod {
         this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
     }
 
-    //a longer ranged version of "getMovingObjectPositionFromPlayer" basically
-    public MovingObjectPosition getBlockTarget(World world, EntityPlayer player) {
-        float f = 1.0F;
-        float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
-        float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
-        double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double)f;
-        double d1 = player.prevPosY + (player.posY - player.prevPosY) * (double)f + (double)(world.isRemote ? player.getEyeHeight() - player.getDefaultEyeHeight() : player.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
-        double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double)f;
-        Vec3 vec3 = Vec3.createVectorHelper(d0, d1, d2);
-        float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
-        float f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
-        float f5 = -MathHelper.cos(-f1 * 0.017453292F);
-        float f6 = MathHelper.sin(-f1 * 0.017453292F);
-        float f7 = f4 * f5;
-        float f8 = f3 * f5;
-        double d3 = 12.0D;
-        Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
-        return world.func_147447_a(vec3, vec31, true, false, false);
-    }
-
     @Override
-    public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
-        MovingObjectPosition mop = this.getBlockTarget(player.worldObj, player);
-        if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-            float xOff = (float) (mop.blockX - player.posX);
-            float yOff = (float) (mop.blockY - player.posY);
-            float zOff = (float) (mop.blockZ - player.posZ);
-            this.onItemUse(ist, player, player.worldObj, mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, xOff, yOff, zOff);
+    public boolean onLeftClickEntity(ItemStack ist, EntityPlayer player, Entity e) {
+        if (e instanceof EntityLivingBase && NBTHelper.getInteger("snowballs", ist) >= getSnowballCost()) {
+            EntityLivingBase livingBase = (EntityLivingBase) e;
+            PotionEffect slow = new PotionEffect(Potion.moveSlowdown.id, 30, 0);
+
+            //if the creature is slowed already, refresh the duration and increase the amplifier by 1.
+            //5 hits is all it takes to max out the amplitude.
+            if (livingBase.getActivePotionEffect(Potion.moveSlowdown) != null)
+                slow = new PotionEffect(Potion.moveSlowdown.id, Math.min(livingBase.getActivePotionEffect(Potion.moveSlowdown).getDuration() + 30, 300), Math.min(livingBase.getActivePotionEffect(Potion.moveSlowdown).getAmplifier() + 1, 4));
+
+            ((EntityLivingBase) e).addPotionEffect(slow);
+            e.attackEntityFrom(DamageSource.causePlayerDamage(player), slow.getAmplifier());
+            NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
         }
-    }
-
-    @Override
-    public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int sideHit, float xOff, float yOff, float zOff) {
-        if (NBTHelper.getInteger("snowballs", ist) >= getSnowballCost()) {
-            double areaCoefficient = 5D;
-            spawnBlizzardParticles(player, x, y, z, areaCoefficient);
-            if (player.getItemInUseDuration() != 0 && player.getItemInUseDuration() % 10 == 0) {
-                NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
-                doBlizzardEffect(player, x, y, z, areaCoefficient);
-            }
-        }
-        return false;
-    }
-
-    public void doBlizzardEffect(EntityPlayer player, int x, int y, int z, double areaCoefficient) {
-        if (player.worldObj.isRemote)
-            return;
-        double lowerX = x - areaCoefficient;
-        double lowerY = y;
-        double lowerZ = z - areaCoefficient;
-        double upperX = x + areaCoefficient;
-        double upperY = y + 15D;
-        double upperZ = z + areaCoefficient;
-        List eList = player.worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
-        Iterator iterator = eList.iterator();
-        while (iterator.hasNext()) {
-            Entity e = (Entity)iterator.next();
-            if (e instanceof EntityLivingBase && !e.isEntityEqual(player)) {
-                EntityLivingBase livingBase = (EntityLivingBase)e;
-                PotionEffect slow = new PotionEffect(Potion.moveSlowdown.id, 30, 0);
-
-                //if the creature is slowed already, refresh the duration and increase the amplifier by 1.
-                //5 hits is all it takes to max out the amplitude.
-                if (livingBase.getActivePotionEffect(Potion.moveSlowdown) != null)
-                    slow = new PotionEffect(Potion.moveSlowdown.id, Math.min(livingBase.getActivePotionEffect(Potion.moveSlowdown).getDuration() + 30, 300), Math.min(livingBase.getActivePotionEffect(Potion.moveSlowdown).getAmplifier() + 1, 4));
-
-                ((EntityLivingBase) e).addPotionEffect(slow);
-                e.attackEntityFrom(DamageSource.causePlayerDamage(player), slow.getAmplifier());
-            }
-        }
-    }
-
-    public void spawnBlizzardParticles(EntityPlayer player, int x, int y, int z, double areaCoefficient) {
-        //spawn a whole mess of particles every tick.
-        for (int i = 0; i < 16; ++i) {
-            double randX = (x + 0.5D) + areaCoefficient * (player.worldObj.rand.nextFloat() - 0.5F);
-            double randMotX = player.worldObj.rand.nextGaussian() * 0.1D;
-            double randY = y + 10D;
-            double randMotY = (0.2F + (player.worldObj.rand.nextFloat() * 0.2F)) * -1F;
-            double randZ = (z + 0.5D) + areaCoefficient * (player.worldObj.rand.nextFloat() - 0.5F);
-            double randMotZ = player.worldObj.rand.nextGaussian() * 0.1D;
-            if (Math.abs(randX - (x + 0.5D)) >= 4.0D && Math.abs(randZ - (z + 0.5D)) >= 4.0D)
-                continue;
-            player.worldObj.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, randX, randY, randZ, randMotX, randMotY, randMotZ);
-        }
+        return super.onLeftClickEntity(ist, player, e);
     }
 
     @Override
@@ -239,7 +120,7 @@ public class ItemGlacialStaff extends ItemIceRod {
                     float xVel = world.rand.nextFloat();
                     float yVel = world.rand.nextFloat() + 0.5F;
                     float zVel = world.rand.nextFloat();
-                    EntityFX effect = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(nameOfParticle, x + xVel, y + yVel, z + zVel, red, green, blue);
+                    Minecraft.getMinecraft().renderGlobal.doSpawnParticle(nameOfParticle, x + xVel, y + yVel, z + zVel, red, green, blue);
                 }
             }
         } else if (block.getMaterial() == Material.lava && world.getBlockMetadata(x, y, z) == 0) {
@@ -286,7 +167,7 @@ public class ItemGlacialStaff extends ItemIceRod {
                         float xVel = world.rand.nextFloat();
                         float yVel = world.rand.nextFloat() + 0.5F;
                         float zVel = world.rand.nextFloat();
-                        EntityFX effect = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(nameOfParticle, x + xVel, y + yVel, z + zVel, red, green, blue);
+                        Minecraft.getMinecraft().renderGlobal.doSpawnParticle(nameOfParticle, x + xVel, y + yVel, z + zVel, red, green, blue);
                     }
                 }
             }

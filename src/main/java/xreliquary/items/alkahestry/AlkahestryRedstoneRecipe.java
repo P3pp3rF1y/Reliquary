@@ -9,6 +9,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import xreliquary.Reliquary;
+import xreliquary.lib.Names;
 
 public class AlkahestryRedstoneRecipe implements IRecipe {
 
@@ -32,12 +34,20 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
                     if (valid == 0)
                         valid = 1;
                     amount += 9;
+                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.glowstone_dust))) {
+                    if (valid == 0)
+                        valid = 1;
+                    amount++;
+                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.glowstone))) {
+                    if (valid == 0)
+                        valid = 1;
+                    amount += 4;
                 } else {
                     valid = 2;
                 }
             }
         }
-        return tome != null && valid == 1 && NBTHelper.getInteger("redstone", tome) >= amount;
+        return tome != null && valid == 1 && NBTHelper.getInteger("redstone", tome) + amount <= Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstone_limit");
     }
 
     @Override
@@ -57,7 +67,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
             }
         }
 
-        NBTHelper.setInteger("redstone", tome, NBTHelper.getInteger("redstone", tome) - amount);
+        NBTHelper.setInteger("redstone", tome, NBTHelper.getInteger("redstone", tome) + amount);
         return tome;
     }
 

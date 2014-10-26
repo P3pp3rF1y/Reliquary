@@ -135,6 +135,9 @@ public class ItemPyromancerStaff extends ItemToggleable {
             super.onItemRightClick(ist, world, player);
         else {
             if (getMode(ist).equals("blaze")) {
+                if (player.isSwingInProgress)
+                    return ist;
+                player.swingItem();
                 Vec3 lookVec = player.getLookVec();
                 //blaze fireball!
                 if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
@@ -150,6 +153,9 @@ public class ItemPyromancerStaff extends ItemToggleable {
                     player.worldObj.spawnEntityInWorld(fireball);
                 }
             } else if (getMode(ist).equals("charge")) {
+                if (player.isSwingInProgress)
+                    return ist;
+                player.swingItem();
                 Vec3 lookVec = player.getLookVec();
                 //ghast fireball!
                 if (removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost(), player.worldObj.isRemote)) {

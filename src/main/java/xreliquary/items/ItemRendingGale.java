@@ -8,7 +8,10 @@ import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -46,10 +49,9 @@ public class ItemRendingGale extends ItemToggleable {
     private static int getChargeLimit() { return Reliquary.CONFIG.getInt(Names.rending_gale, "charge_limit"); }
     public static int getChargeCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "cast_charge_cost"); }
     private static int getFeathersWorth() { return Reliquary.CONFIG.getInt(Names.rending_gale, "charge_feather_worth"); }
-    private static int getColumnSize() { return Reliquary.CONFIG.getInt(Names.rending_gale, "push_column_size"); }
-    private int getColumnLength() { return ((getColumnSize() * 2) + 1) * 2; }
-    private static int getVerticalColumnTargetingRange() { return Reliquary.CONFIG.getInt(Names.rending_gale, "horizontal_column_radius"); }
-    private static int getRadialPushRadius() { return Reliquary.CONFIG.getInt(Names.rending_gale, "radial_push_radius"); }
+    private static int getBoltChargeCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "bolt_charge_cost"); }
+    private static int getBoltTargetRange() { return Reliquary.CONFIG.getInt(Names.rending_gale, "block_target_range"); }
+    private static int getRadialPushRadius() { return Reliquary.CONFIG.getInt(Names.rending_gale, "push_pull_radius"); }
     private static boolean canPushProjectiles() { return Reliquary.CONFIG.getBool(Names.rending_gale, "can_push_projectiles"); }
 
     @Override
@@ -241,21 +243,19 @@ public class ItemRendingGale extends ItemToggleable {
         if (NBTHelper.getString("mode", ist).equals("")) {
             setMode(ist, "flight");
         }
-        return NBTHelper.getString("flight", ist);
+        return NBTHelper.getString("mode", ist);
     }
 
     public void setMode(ItemStack ist, String s) {
         NBTHelper.setString("mode", ist, s);
     }
 
-    public void cycleMode(ItemStack ist) {
+    public void cycleMode(ItemStack ist, boolean isRaining) {
         if (getMode(ist).equals("flight"))
-            setMode(ist, "lift");
-        else if (getMode(ist).equals("lift"))
             setMode(ist, "push");
         else if (getMode(ist).equals("push"))
-            setMode(ist, "radial");
-        else if (getMode(ist).equals("radial"))
+            setMode(ist, "pull");
+        else if (getMode(ist).equals("pull") && isRaining)
             setMode(ist, "bolt");
         else
             setMode(ist, "flight");
@@ -264,19 +264,20 @@ public class ItemRendingGale extends ItemToggleable {
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
         if (entityLiving.worldObj.isRemote)
-            return true;
+            return false;
         if (!(entityLiving instanceof EntityPlayer))
-            return true;
+            return false;
         EntityPlayer player = (EntityPlayer)entityLiving;
         if (player.isSneaking()) {
-            cycleMode(ist);
+            cycleMode(ist, player.worldObj.isRaining());
+            return true;
         }
         return false;
     }
 
     @Override
     public int getMaxItemUseDuration(ItemStack par1ItemStack) {
-        return 11;
+        return 64;
     }
 
     @Override
@@ -308,43 +309,40 @@ public class ItemRendingGale extends ItemToggleable {
         float f6 = MathHelper.sin(-f1 * 0.017453292F);
         float f7 = f4 * f5;
         float f8 = f3 * f5;
-        double d3 = 12.0D;
+        double d3 = (double) getBoltTargetRange();
         Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
         return world.func_147447_a(vec3, vec31, true, false, false);
     }
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
-        if ((getMaxItemUseDuration(ist) - count) * getChargeCost() >= NBTHelper.getInteger("feathers", ist)) {
+        count -= 1;
+        count = getMaxItemUseDuration(ist) - count;
+        if (count == getMaxItemUseDuration(ist) || (getMaxItemUseDuration(ist) - count) * getChargeCost() >= NBTHelper.getInteger("feathers", ist)) {
+            int chargeUsed = count * getChargeCost();
+            NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - chargeUsed);
             player.stopUsingItem();
         }
+
         if (getMode(ist).equals("flight")) {
             attemptFlight(player);
-            for (int frames = 0; frames < 7; ++frames)
-                spawnHurricaneParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
-        } else if (getMode(ist).equals("radial")) {
-            doRadialPush(player);
+            spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
         } else if (getMode(ist).equals("push")) {
-            for (int frames = 0; frames < 7; frames++) {
-                doPushEffect(player, player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
-                spawnHurricaneParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
-            }
-        } else if (getMode(ist).equals("lift") || getMode(ist).equals("bolt")) {
+            doRadialPush(player, false);
+        } else if (getMode(ist).equals("pull")) {
+            doRadialPush(player, true);
+            //doPushEffect(player, player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
+            //spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
+
+        } else if (getMode(ist).equals("bolt")) {
             MovingObjectPosition mop = this.getCycloneBlockTarget(player.worldObj, player);
 
-            if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                if (getMode(ist).equals("lift")) {
-                    double x = (double) mop.blockX + 0.5D;
-                    double y = (double) mop.blockY + 1D;
-                    double z = (double) mop.blockZ + 0.5D;
-                    Vec3 straightUpVector = Vec3.createVectorHelper(0D, 1D, 0D);
-                    for (int frames = 0; frames < 7; frames++) {
-                        doPushEffect(player, player.worldObj, x, y, z, straightUpVector);
-                        spawnHurricaneParticles(player.worldObj, x, y, z, straightUpVector);
+            if (mop != null) {
+                if (getMaxItemUseDuration(ist) - count % 10 == 0 && player.worldObj.canLightningStrikeAt(mop.blockX, mop.blockY, mop.blockZ)) {
+                    if (getBoltChargeCost() <= NBTHelper.getInteger("feathers", ist)) {
+                        NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getBoltChargeCost());
+                        player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, (double) mop.blockX, (double) mop.blockY, (double) mop.blockZ));
                     }
-                } else {
-                    //todo
-                    //lightning bolt mechanics, these should have a really heavy drain on charge
                 }
             }
         }
@@ -353,13 +351,17 @@ public class ItemRendingGale extends ItemToggleable {
     //experimenting with a more sophisticated charge/drain mechanism
     @Override
     public void onPlayerStoppedUsing(ItemStack ist, World world, EntityPlayer player, int count) {
+        if (world.isRemote)
+            return;
+        //count starts at 64 instead of 63, so it needs to account for its first used tick.
+        count -= 1;
         int chargeUsed = (getMaxItemUseDuration(ist) - count) * getChargeCost();
         NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - chargeUsed);
     }
 
-    public void doRadialPush(EntityPlayer player) {
+    public void doRadialPush(EntityPlayer player, boolean pull) {
         //push effect free at the moment, if you restore cost, remember to change this to NBTHelper.getInteger("feathers", ist)
-        spawnRadialHurricaneParticles(player);
+        spawnRadialHurricaneParticles(player, pull);
         if (player.worldObj.isRemote)
             return;
 
@@ -375,80 +377,52 @@ public class ItemRendingGale extends ItemToggleable {
         Iterator iterator = eList.iterator();
         while (iterator.hasNext()) {
             Entity e = (Entity)iterator.next();
+            if (e instanceof EntityLiving || (!pull && canPushProjectiles() && e instanceof IProjectile)) {
+                double distance = player.getDistanceToEntity(e);
+                if (distance >= getRadialPushRadius())
+                    continue;
 
-            double distance = player.getDistanceToEntity(e);
-            if (distance >= getRadialPushRadius())
-                continue;
-
-            if (e.equals(player))
-                continue;
-            Vec3 pushVector = Vec3.createVectorHelper(e.posX - player.posX, e.posY - player.posY, e.posZ - player.posZ);
-            pushVector= pushVector.normalize();
-            e.moveEntity(0.0D, 0.2D, 0.0D);
-            e.moveEntity(pushVector.xCoord, Math.min(pushVector.yCoord,0.1D) * 1.5D, pushVector.zCoord);
+                if (e.equals(player))
+                    continue;
+                Vec3 pushVector;
+                if (pull) {
+                    pushVector = Vec3.createVectorHelper(player.posX - e.posX, player.posY - e.posY, player.posZ - e.posZ);
+                } else {
+                    pushVector = Vec3.createVectorHelper(e.posX - player.posX, e.posY - player.posY, e.posZ - player.posZ);
+                }
+                pushVector = pushVector.normalize();
+                e.moveEntity(0.0D, 0.2D, 0.0D);
+                e.moveEntity(pushVector.xCoord, Math.min(pushVector.yCoord, 0.1D) * 1.5D, pushVector.zCoord);
+            }
         }
     }
 
-    public void doPushEffect(EntityPlayer player, World world, double x, double y, double z, Vec3 lookVector) {
-        double xDiff;
-        if (lookVector.xCoord < 0)
-            xDiff = Math.min(lookVector.xCoord * (double)getColumnLength(), -(double)getColumnSize());
-        else
-            xDiff = Math.max(lookVector.xCoord * (double)getColumnLength(), (double)getColumnSize());
-
-        double yDiff;
-        if (lookVector.yCoord < 0)
-            yDiff = Math.min(lookVector.yCoord * (double)getColumnLength(), -(double)getColumnSize());
-        else
-            yDiff = Math.max(lookVector.yCoord * (double)getColumnLength(), (double)getColumnSize());
-
-        double zDiff;
-        if (lookVector.zCoord < 0)
-            zDiff = Math.min(lookVector.zCoord * (double)getColumnLength(), -(double)getColumnSize());
-        else
-            zDiff = Math.max(lookVector.zCoord * (double)getColumnLength(), (double)getColumnSize());
-
-        double lowerX = Math.min(x, x + xDiff);
-        double lowerY = Math.min(y, y + yDiff);
-        double lowerZ = Math.min(z, z + zDiff);
-        double upperX = Math.max(x, x + xDiff);
-        double upperY = Math.max(y, y + yDiff);
-        double upperZ = Math.max(z, z + zDiff);
-
-        List eList = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
-
-        Iterator iterator = eList.iterator();
-        while (iterator.hasNext()) {
-            Entity e = (Entity)iterator.next();
-
-            if (e.equals(player))
-                continue;
-
-            //always has some upward force
-            e.moveEntity(0.0D, 0.2D, 0.0D);
-            e.moveEntity(lookVector.xCoord, Math.min(lookVector.yCoord,0.1D) * 1.5D, lookVector.zCoord);
-        }
-    }
-
-    public void spawnHurricaneParticles(World world, double x, double y, double z, Vec3 lookVector) {
+    public void spawnFlightParticles(World world, double x, double y, double z, Vec3 lookVector) {
         //spawn a whole mess of particles every tick.
-        for (int i = 0; i < 3; ++i) {
-            float randX = (float)getColumnLength() * (itemRand.nextFloat() - 0.5F);
-            float randY = (float)getColumnLength() * (itemRand.nextFloat() - 0.5F);
-            float randZ = (float)getColumnLength() * (itemRand.nextFloat() - 0.5F);
+        for (int i = 0; i < 8; ++i) {
+            float randX = 10F * (itemRand.nextFloat() - 0.5F);
+            float randY = 10F * (itemRand.nextFloat() - 0.5F);
+            float randZ = 10F * (itemRand.nextFloat() - 0.5F);
 
             world.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, x + randX, y + randY, z + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
         }
     }
 
-    public void spawnRadialHurricaneParticles(EntityPlayer player) {
+    public void spawnRadialHurricaneParticles(EntityPlayer player, boolean pull) {
         //spawn a whole mess of particles every tick.
-        for (int i = 0; i < 24; ++i) {
-            float randX = 2F * (player.worldObj.rand.nextFloat() - 0.5F);
-            float randY = 2F * (player.worldObj.rand.nextFloat() - 0.5F);
-            float randZ = 2F * (player.worldObj.rand.nextFloat() - 0.5F);
+        for (int i = 0; i < 3; ++i) {
+            float randX = player.worldObj.rand.nextFloat() - 0.5F;
+            float randZ = player.worldObj.rand.nextFloat() - 0.5F;
+            float motX = randX * 10F;
+            float motZ = randZ * 10F;
+            if (pull) {
+                randX *= 10F;
+                randZ *= 10F;
+                motX *= -1F;
+                motZ *= -1F;
+            }
 
-            player.worldObj.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, player.posX + randX, player.posY + randY, player.posZ + randZ, player.worldObj.rand.nextGaussian(), player.worldObj.rand.nextGaussian(), player.worldObj.rand.nextGaussian());
+            player.worldObj.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, player.posX + randX, (player.posY + player.getEyeHeight()) - (player.height / 2), player.posZ + randZ, motX, 0.0D, motZ);
         }
 
     }

@@ -220,24 +220,23 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.glacial_staff, "snowball_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
         Reliquary.CONFIG.require(Names.glacial_staff, "snowball_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.glacial_staff, "snowball_worth", new ConfigReference(1).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.glacial_staff, "snowball_damage", new ConfigReference(2).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.glacial_staff, "snowball_damage_bonus_fire_immune", new ConfigReference(2).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.glacial_staff, "snowball_damage_bonus_blaze", new ConfigReference(4).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.glacial_staff, "blizzard_target_range", new ConfigReference(12).setMaximumValue(15));
-        Reliquary.CONFIG.require(Names.glacial_staff, "chill_stack_potency", new ConfigReference(1).setMaximumValue(5).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.glacial_staff, "chill_stack_maximum", new ConfigReference(1).setMaximumValue(5).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.glacial_staff, "chill_damage_maximum", new ConfigReference(5).setMaximumValue(5).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.glacial_staff, "chill_stack_duration", new ConfigReference(30).setMaximumValue(cleanShortMax).setMinimumValue(15));
+        Reliquary.CONFIG.require(Names.glacial_staff, "snowball_damage", new ConfigReference(3).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.glacial_staff, "snowball_damage_bonus_fire_immune", new ConfigReference(3).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.glacial_staff, "snowball_damage_bonus_blaze", new ConfigReference(6).setMinimumValue(0));
+//        Reliquary.CONFIG.require(Names.glacial_staff, "chill_stack_potency", new ConfigReference(1).setMaximumValue(5).setMinimumValue(0));
+//        Reliquary.CONFIG.require(Names.glacial_staff, "chill_stack_maximum", new ConfigReference(1).setMaximumValue(5).setMinimumValue(0));
+//        Reliquary.CONFIG.require(Names.glacial_staff, "chill_damage_maximum", new ConfigReference(5).setMaximumValue(5).setMinimumValue(0));
+//        Reliquary.CONFIG.require(Names.glacial_staff, "chill_stack_duration", new ConfigReference(30).setMaximumValue(cleanShortMax).setMinimumValue(15));
 
         //harvest rod configs
         Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
         Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_worth", new ConfigReference(1).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.harvest_rod, "cast_radius", new ConfigReference(5).setMinimumValue(1).setMaximumValue(15));
-        Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_luck_factor", new ConfigReference(50).setMinimumValue(1).setMaximumValue(100));
-        Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_luck_rolls", new ConfigReference(2).setMinimumValue(0).setMaximumValue(7));
-        Reliquary.CONFIG.require(Names.harvest_rod, "harvest_break_radius", new ConfigReference(2).setMinimumValue(0).setMaximumValue(5));
-        Reliquary.CONFIG.require(Names.harvest_rod, "cast_cost_percentage", new ConfigReference(80).setMinimumValue(0).setMaximumValue(200));
+//        Reliquary.CONFIG.require(Names.harvest_rod, "cast_radius", new ConfigReference(5).setMinimumValue(1).setMaximumValue(15));
+//        Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_luck_factor", new ConfigReference(50).setMinimumValue(1).setMaximumValue(100));
+//        Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_luck_rolls", new ConfigReference(2).setMinimumValue(0).setMaximumValue(7));
+//        Reliquary.CONFIG.require(Names.harvest_rod, "harvest_break_radius", new ConfigReference(2).setMinimumValue(0).setMaximumValue(5));
+//        Reliquary.CONFIG.require(Names.harvest_rod, "cast_cost_percentage", new ConfigReference(80).setMinimumValue(0).setMaximumValue(200));
 
         //hero's medallion config
         Reliquary.CONFIG.require(Names.hero_medallion, "experience_level_maximum", new ConfigReference(30).setMinimumValue(0));
@@ -306,18 +305,18 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_powder_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_powder_worth", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_absorb_worth", new ConfigReference(1).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.pyromancer_staff, "eruption_target_range", new ConfigReference(12).setMaximumValue(15));
-        Reliquary.CONFIG.require(Names.pyromancer_staff, "eruption_radius", new ConfigReference(2).setMaximumValue(5).setMinimumValue(1));
-        Reliquary.CONFIG.require(Names.pyromancer_staff, "eruption_damage", new ConfigReference(4).setMaximumValue(20).setMinimumValue(1));
-        Reliquary.CONFIG.require(Names.pyromancer_staff, "eruption_ignite_duration", new ConfigReference(40).setMaximumValue(cleanShortMax).setMinimumValue(20));
+//        Reliquary.CONFIG.require(Names.pyromancer_staff, "eruption_target_range", new ConfigReference(12).setMaximumValue(15));
+//        Reliquary.CONFIG.require(Names.pyromancer_staff, "eruption_radius", new ConfigReference(2).setMaximumValue(5).setMinimumValue(1));
+//        Reliquary.CONFIG.require(Names.pyromancer_staff, "eruption_damage", new ConfigReference(4).setMaximumValue(20).setMinimumValue(1));
+//        Reliquary.CONFIG.require(Names.pyromancer_staff, "eruption_ignite_duration", new ConfigReference(40).setMaximumValue(cleanShortMax).setMinimumValue(20));
 
         //rending gale configs
         Reliquary.CONFIG.require(Names.rending_gale, "charge_limit", new ConfigReference(cleanShortMax).setMinimumValue(0).setMaximumValue(cleanIntMax));
         Reliquary.CONFIG.require(Names.rending_gale, "cast_charge_cost", new ConfigReference(1).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.rending_gale, "bolt_charge_cost", new ConfigReference(100).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.rending_gale, "charge_feather_worth", new ConfigReference(100).setMinimumValue(1));
-        Reliquary.CONFIG.require(Names.rending_gale, "push_column_size", new ConfigReference(2).setMinimumValue(1));
-        Reliquary.CONFIG.require(Names.rending_gale, "vertical_column_block_target_range", new ConfigReference(12).setMaximumValue(15));
-        Reliquary.CONFIG.require(Names.rending_gale, "radial_push_radius", new ConfigReference(10).setMinimumValue(1));
+        Reliquary.CONFIG.require(Names.rending_gale, "block_target_range", new ConfigReference(12).setMaximumValue(15));
+        Reliquary.CONFIG.require(Names.rending_gale, "push_pull_radius", new ConfigReference(10).setMinimumValue(1));
         Reliquary.CONFIG.require(Names.rending_gale, "can_push_projectiles", new ConfigReference(false));
 
         //rod of lyssa configs

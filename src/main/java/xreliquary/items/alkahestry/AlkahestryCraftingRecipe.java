@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.lib.Names;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
@@ -52,9 +53,13 @@ public class AlkahestryCraftingRecipe implements IRecipe {
     public ItemStack getCraftingResult(InventoryCrafting inv) {
         AlkahestRecipe returned = null;
         ItemStack dictStack = null;
+        ItemStack tome = null;
         for (int count = 0; count < inv.getSizeInventory(); count++) {
             ItemStack stack = inv.getStackInSlot(count);
             if (stack != null) {
+                if (stack.getItem() instanceof ItemAlkahestryTome) {
+                    tome = stack;
+                }
                 if (!(ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(returnedItem)))) {
                     if (Alkahestry.getDictionaryKey(stack) == null)
                         returned = Alkahestry.getRegistry().get(ContentHelper.getIdent(stack.getItem()));
@@ -66,10 +71,12 @@ public class AlkahestryCraftingRecipe implements IRecipe {
             }
         }
 
-        if (dictStack == null)
+        NBTHelper.setInteger("redstone", tome, NBTHelper.getInteger("redstone", tome) - returned.cost);
+        if (dictStack == null) {
             return new ItemStack(returned.item.getItem(), returned.yield + 1, returned.item.getItemDamage());
-        else
+        } else {
             return new ItemStack(dictStack.getItem(), returned.yield + 1, dictStack.getItemDamage());
+        }
     }
 
     @Override

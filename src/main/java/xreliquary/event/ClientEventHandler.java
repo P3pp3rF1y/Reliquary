@@ -163,7 +163,7 @@ public class ClientEventHandler {
         ItemStack snowballStack = new ItemStack(Items.snowball, NBTHelper.getInteger("snowballs", iceRodStack), 0);
         //still allows for differing HUD positions, like a baws.
         String hudSelector = (player.getCurrentEquippedItem().getItem() instanceof ItemGlacialStaff) ? Names.glacial_staff : Names.ice_magus_rod;
-        renderStandardTwoItemHUD(mc, player, iceRodStack, snowballStack, Reliquary.CONFIG.getInt(Names.hud_positions, hudSelector), 0, 0);
+        renderStandardTwoItemHUD(mc, player, iceRodStack, snowballStack, Reliquary.CONFIG.getInt(Names.hud_positions, hudSelector), 0, NBTHelper.getInteger("snowballs", iceRodStack));
     }
 
     public void handleVoidTearHUDCheck(){
@@ -363,9 +363,10 @@ public class ClientEventHandler {
         ItemStack featherStack = new ItemStack(Items.feather, NBTHelper.getInteger("feathers", rendingGaleStack), 0);
         int charge = featherStack.stackSize;
         if (player.isUsingItem()) {
-            charge -= player.getItemInUseDuration() * ItemRendingGale.getChargeCost();
-            charge /= 100;
+            int count = rendingGaleStack.getItem().getMaxItemUseDuration(rendingGaleStack) - (player.getItemInUseCount() - 1);
+             charge -= (count * ItemRendingGale.getChargeCost());
         }
+        charge /= 100;
         renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.rending_gale), 0, Math.max(charge,0));
     }
 
@@ -543,32 +544,23 @@ public class ClientEventHandler {
         boolean skipStackRender = false;
 
         //special item conditions are handled on a per-item-type basis:
-        if (hudStack.getItem() instanceof ItemGlacialStaff) {
-            ItemGlacialStaff staffItem = (ItemGlacialStaff)hudStack.getItem();
-            String staffMode = staffItem.getMode(hudStack);
-            if (!staffMode.equals("snowballs"))
-                skipStackRender = true;
-        } else if (hudStack.getItem() instanceof ItemRendingGale) {
+        if (hudStack.getItem() instanceof ItemRendingGale) {
             ItemRendingGale staffItem = (ItemRendingGale)hudStack.getItem();
             String staffMode = staffItem.getMode(hudStack);
             if (staffMode.equals("flight"))
                 staffMode = "FLIGHT";
             else if (staffMode.equals("push"))
                 staffMode = "PUSH";
-            else if (staffMode.equals("lift"))
-                staffMode = "LIFT";
-            else if (staffMode.equals("radial"))
-                staffMode = "RADIAL";
+            else if (staffMode.equals("pull"))
+                staffMode = "PULL";
             else
                 staffMode = "BOLT";
             minecraft.fontRenderer.drawStringWithShadow(staffMode,hudOverlayX, hudOverlayY + 18, color);
         }
 
-        if (secondaryStack != null && !skipStackRender) {
-            if (stackSize == 0)
-                stackSize = secondaryStack.stackSize;
-            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX, hudOverlayY + 24);
-        }
+        if (stackSize == 0)
+            stackSize = secondaryStack.stackSize;
+        itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX, hudOverlayY + 24);
 
         minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize),hudOverlayX + 18, hudOverlayY + 30, color);
         GL11.glDisable(GL11.GL_LIGHTING);

@@ -103,7 +103,7 @@ item.ice_magus_rod.name=Ice Magus Rod
 item.ice_magus_rod.tooltip=Consumes snowballs in inventory.;Makes snowballs a bit colder...;{{!colors.blue}}Charge: {{charge}}
 
 item.glacial_staff.name=Glacial Staff
-item.glacial_staff.tooltip=Shoots snowballs; tears leaves from trees; and freezes the ground; you walk on.;{{!colors.blue}}Charge: {{charge}}
+item.glacial_staff.tooltip=Shoots snowballs,; chills enemies on strike; and freezes the ground; you walk on.;{{!colors.blue}}Charge: {{charge}}
 
 item.rod_of_lyssa.name=Rod of Lyssa
 item.rod_of_lyssa.tooltip=A magic fishing rod that can be;used to reel in items and pick pockets.

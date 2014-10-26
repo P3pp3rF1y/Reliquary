@@ -8,6 +8,9 @@ import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import xreliquary.Reliquary;
+import xreliquary.items.ItemGlacialStaff;
+import xreliquary.lib.Names;
 
 import java.util.List;
 
@@ -16,6 +19,7 @@ public class EntitySpecialSnowball extends EntitySnowball {
     public int ticksInAir;
     public int ticksInGround;
     public Block inTile;
+    public boolean fromGlacialStaff;
     public int xTile;
     public int yTile;
     public int zTile;
@@ -24,9 +28,10 @@ public class EntitySpecialSnowball extends EntitySnowball {
         super(par1World);
     }
 
-    public EntitySpecialSnowball(World par1World, EntityLivingBase par2EntityLiving) {
+    public EntitySpecialSnowball(World par1World, EntityLivingBase par2EntityLiving, boolean b) {
         super(par1World, par2EntityLiving);
         this.setSize(0.01F, 0.01F);
+        this.fromGlacialStaff = b;
     }
 
     public EntitySpecialSnowball(World par1World, double par2, double par4, double par6) {
@@ -38,19 +43,24 @@ public class EntitySpecialSnowball extends EntitySnowball {
         return 1.2F;
     }
 
+    public int getSnowballDamage() { return Reliquary.CONFIG.getInt(fromGlacialStaff ? Names.glacial_staff : Names.ice_magus_rod, "snowball_damage"); }
+    public int getSnowballDamageFireImmuneBonus() { return Reliquary.CONFIG.getInt(fromGlacialStaff ? Names.glacial_staff : Names.ice_magus_rod, "snowball_damage_bonus_fire_immune"); }
+    public int getSnowballDamageBlazeBonus() { return Reliquary.CONFIG.getInt(fromGlacialStaff ? Names.glacial_staff : Names.ice_magus_rod, "snowball_damage_bonus_blaze"); }
+
     /**
      * Called when this EntityThrowable hits a block or entity.
      */
     @Override
     protected void onImpact(MovingObjectPosition objPos) {
         if (objPos.entityHit != null) {
-            byte var2 = 2;
-
+            int damage = getSnowballDamage();
+            if (objPos.entityHit.isImmuneToFire())
+                damage += getSnowballDamageFireImmuneBonus();
             if (objPos.entityHit instanceof EntityBlaze) {
-                var2 = 8;
+                damage += getSnowballDamageBlazeBonus();
             }
 
-            objPos.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), var2);
+            objPos.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), damage);
         }
 
         if (objPos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlock(objPos.blockX, objPos.blockY + 1, objPos.blockZ) == Blocks.fire) {
