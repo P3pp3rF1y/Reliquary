@@ -175,7 +175,6 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.mob_drop_probability, Names.ender_heart + "_base", new ConfigReference(10));
         Reliquary.CONFIG.require(Names.mob_drop_probability, Names.ender_heart + "_looting", new ConfigReference(5));
 
-
         //alkahestry tome configs
         Reliquary.CONFIG.require(Names.alkahestry_tome, "redstone_limit", new ConfigReference(250).setMinimumValue(0));
 
