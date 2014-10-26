@@ -205,6 +205,8 @@ public class ItemPyromancerStaff extends ItemToggleable {
         if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             count -= 1;
             count = getMaxItemUseDuration(ist) - count;
+
+            doEruptionAuxEffects(player, mop.blockX, mop.blockY, mop.blockZ, 5D);
             if (count % 10 == 0) {
                 if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
                     doEruptionEffect(player, mop.blockX, mop.blockY, mop.blockZ, 5D);
@@ -251,9 +253,6 @@ public class ItemPyromancerStaff extends ItemToggleable {
                 }
                 return false;
             }
-        } else if (getMode(ist).equals("eruption")) {
-            double areaCoefficient = 5D;
-            doEruptionAuxEffects(player, x, y, z, areaCoefficient);
         }
         return false;
     }
