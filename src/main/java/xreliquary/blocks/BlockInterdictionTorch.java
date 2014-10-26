@@ -8,10 +8,12 @@ import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
@@ -20,6 +22,7 @@ import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -56,12 +59,18 @@ public class BlockInterdictionTorch extends BlockTorch implements ICustomItemBlo
             return;
         int radius = Reliquary.CONFIG.getInt(Names.interdiction_torch, "push_radius");
 
-        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius));
+        List<String> entitiesThatCanBePushed = (List<String>) Reliquary.CONFIG.get(Names.interdiction_torch, "entities_that_can_be_pushed");
+        List<String> projectilesThatCanBePushed = (List<String>) Reliquary.CONFIG.get(Names.interdiction_torch, "projectiles_that_can_be_pushed");
+
+
+        List<Entity> entities = (List<Entity>) world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius));
         for (Entity entity : entities) {
             // TODO: Add a blacklist via config option.
-            if (entity instanceof IBossDisplayData || entity instanceof EntityPlayer)
+            if (entity instanceof EntityPlayer)
                 continue;
-            if (entity instanceof EntityLivingBase || (entity instanceof IProjectile && Reliquary.CONFIG.getBool(Names.interdiction_torch, "can_push_projectiles"))) {
+            Class entityClass = entity.getClass();
+            String entityName = (String)EntityList.classToStringMapping.get(entityClass);
+            if (entitiesThatCanBePushed.contains(entityName) || (projectilesThatCanBePushed.contains(entityName) && Reliquary.CONFIG.getBool(Names.interdiction_torch, "can_push_projectiles"))) {
                 double distance = entity.getDistance((double) x, (double) y, (double) z);
                 if (distance >= radius || distance == 0)
                     continue;

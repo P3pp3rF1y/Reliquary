@@ -51,6 +51,11 @@ public class EntityEnderShot extends EntityShotBase {
     }
 
     @Override
+    protected void groundImpact(int SideHit) {
+        //do absolutely nothing. this avoids a death sentence.
+    }
+
+    @Override
     void doFlightEffects() {
         if (ticksInAir % 3 == 0)
             worldObj.spawnParticle("portal", posX, posY - 1, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));

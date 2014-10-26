@@ -7,6 +7,9 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.mod.config.ConfigReference;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.potion.Potion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -252,9 +255,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.infernal_chalice, "fluid_limit", new ConfigReference(500000).setMinimumValue(0).setMaximumValue(cleanIntMax));
 
         //interdiction torch configs
-        //this will probably need to be moved out of preinit and into a different file.
-        List<String> interdictionTorchMobs = ImmutableList.of();
-        Reliquary.CONFIG.require(Names.interdiction_torch, "entities_that_can_be_pushed", new ConfigReference(interdictionTorchMobs));
+        //see post init for entity configs
         Reliquary.CONFIG.require(Names.interdiction_torch, "push_radius", new ConfigReference(5).setMinimumValue(1).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.interdiction_torch, "can_push_projectiles", new ConfigReference(false));
 
@@ -317,11 +318,6 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.rod_of_lyssa, "fail_steal_from_vacant_slots", new ConfigReference(false));
         Reliquary.CONFIG.require(Names.rod_of_lyssa, "anger_on_steal_failure", new ConfigReference(true));
 
-        //seeker shot/murderface bullet exceptions
-        //this will probably need to be moved out of preinit and into a different file.
-        List<String> seekerShotMobs = ImmutableList.of();
-        Reliquary.CONFIG.require(Names.seeker_shot, "entities_that_can_be_hunted", new ConfigReference(seekerShotMobs));
-
         //sojourners staff configs
         List<String> torches = ImmutableList.of();
         Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ConfigReference(torches));
@@ -331,11 +327,36 @@ public class CommonProxy {
 
         //twilight cloak configs
         Reliquary.CONFIG.require(Names.twilight_cloak, "max_light_level", new ConfigReference(4).setMinimumValue(0).setMaximumValue(15));
-        Reliquary.CONFIG.require(Names.twilight_cloak, "only_works_at_night", new ConfigReference(false));
+        //Reliquary.CONFIG.require(Names.twilight_cloak, "only_works_at_night", new ConfigReference(false));
 
         //void tear configs
         Reliquary.CONFIG.require(Names.void_tear, "item_limit", new ConfigReference(2000000000).setMinimumValue(0).setMaximumValue(cleanIntMax));
         Reliquary.CONFIG.require(Names.void_tear, "absorb_when_created", new ConfigReference(true));
+    }
+
+    public void postInit() {
+        List<String> entityNames = new ArrayList<String>();
+        for (Object o : EntityList.stringToClassMapping.values()) {
+            Class c = (Class)o;
+            if (EntityLiving.class.isAssignableFrom(c)) {
+                entityNames.add((String)EntityList.classToStringMapping.get(o));
+            }
+        }
+        List<String> projectileNames = new ArrayList<String>();
+        for (Object o : EntityList.stringToClassMapping.values()) {
+            Class c = (Class)o;
+            if (IProjectile.class.isAssignableFrom(c)) {
+                projectileNames.add((String)EntityList.classToStringMapping.get(o));
+            }
+        }
+
+        Reliquary.CONFIG.require(Names.interdiction_torch, "entities_that_can_be_pushed", new ConfigReference(entityNames));
+        Reliquary.CONFIG.require(Names.interdiction_torch, "projectiles_that_can_be_pushed", new ConfigReference(projectileNames));
+
+        Reliquary.CONFIG.require(Names.rending_gale, "entities_that_can_be_pushed", new ConfigReference(entityNames));
+        Reliquary.CONFIG.require(Names.rending_gale, "projectiles_that_can_be_pushed", new ConfigReference(projectileNames));
+
+        Reliquary.CONFIG.require(Names.seeker_shot, "entities_that_can_be_hunted", new ConfigReference(entityNames));
 
     }
 

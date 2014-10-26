@@ -7,10 +7,7 @@ import lib.enderwizards.sandstone.util.InventoryHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.*;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -372,12 +369,18 @@ public class ItemRendingGale extends ItemToggleable {
         double upperY = player.posY + (double)getRadialPushRadius() / 2D;
         double upperZ = player.posZ + getRadialPushRadius();
 
+
+        List<String> entitiesThatCanBePushed = (List<String>) Reliquary.CONFIG.get(Names.rending_gale, "entities_that_can_be_pushed");
+        List<String> projectilesThatCanBePushed = (List<String>) Reliquary.CONFIG.get(Names.rending_gale, "projectiles_that_can_be_pushed");
+
         List eList = player.worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 
         Iterator iterator = eList.iterator();
         while (iterator.hasNext()) {
             Entity e = (Entity)iterator.next();
-            if (e instanceof EntityLiving || (!pull && canPushProjectiles() && e instanceof IProjectile)) {
+            Class entityClass = e.getClass();
+            String entityName = (String) EntityList.classToStringMapping.get(entityClass);
+            if (entitiesThatCanBePushed.contains(entityName) || (!pull && canPushProjectiles() && projectilesThatCanBePushed.contains(entityName))) {
                 double distance = player.getDistanceToEntity(e);
                 if (distance >= getRadialPushRadius())
                     continue;

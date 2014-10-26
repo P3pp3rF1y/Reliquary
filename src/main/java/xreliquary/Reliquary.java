@@ -59,9 +59,6 @@ public class Reliquary {
         //important that this initializes before the pre-init phase
         PROXY.initRecipeDisablers();
 
-        //and finally save the file changes.
-        CONFIG.save();
-
         PROXY.preInit();
         PacketHandler.init();
 
@@ -78,6 +75,11 @@ public class Reliquary {
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        PROXY.postInit();
+
+        //and finally save the file changes. post init is the last stage of configuration, it does an entity scan, hopefully it's cross-mod compatible.
+        CONFIG.save();
+
         LOGGER.log(Level.INFO, "Loaded successfully!");
         Sandstone.postInit();
     }

@@ -4,15 +4,14 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import xreliquary.Reliquary;
 import xreliquary.lib.ClientReference;
+import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 import java.util.Iterator;
@@ -49,7 +48,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
         super(par1World);
         shootingEntity = par2EntityPlayer;
         float par3 = 0.8F;
-        this.setSize(0.1F, 0.1F);
+        this.setSize(0.5F, 0.5F);
         this.setLocationAndAngles(par2EntityPlayer.posX, par2EntityPlayer.posY + par2EntityPlayer.getEyeHeight(), par2EntityPlayer.posZ, par2EntityPlayer.rotationYaw, par2EntityPlayer.rotationPitch);
         posX -= MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
         posY -= 0.2D;
@@ -160,9 +159,9 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
         ensurePlayerShooterEntity();
 
         if (prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
-            float var1 = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
+            float pythingy = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
             prevRotationYaw = rotationYaw = (float) (Math.atan2(motionX, motionZ) * 180.0D / Math.PI);
-            prevRotationPitch = rotationPitch = (float) (Math.atan2(motionY, var1) * 180.0D / Math.PI);
+            prevRotationPitch = rotationPitch = (float) (Math.atan2(motionY, pythingy) * 180.0D / Math.PI);
         }
 
         Block block = this.worldObj.getBlock(this.xTile, this.yTile, this.zTile);
@@ -186,55 +185,56 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
             } else
                 this.doFlightEffects();
 
-            Vec3 var17 = Vec3.createVectorHelper(posX, posY, posZ);
-            Vec3 var3 = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
-            MovingObjectPosition var4 = worldObj.func_147447_a(var17, var3, false, true, false);
-            var17 = Vec3.createVectorHelper(posX, posY, posZ);
-            var3 = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
+            Vec3 posVector = Vec3.createVectorHelper(posX, posY, posZ);
+            Vec3 approachVector = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
+            MovingObjectPosition objectStruckByVector = worldObj.func_147447_a(posVector, approachVector, false, true, false);
+            posVector = Vec3.createVectorHelper(posX, posY, posZ);
+            approachVector = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
 
-            if (var4 != null)
-                var3 = Vec3.createVectorHelper(var4.hitVec.xCoord, var4.hitVec.yCoord, var4.hitVec.zCoord);
+            if (objectStruckByVector != null)
+                approachVector = Vec3.createVectorHelper(objectStruckByVector.hitVec.xCoord, objectStruckByVector.hitVec.yCoord, objectStruckByVector.hitVec.zCoord);
 
-            Entity var5 = null;
-            List var6 = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
+            Entity hitEntity = null;
+            List struckEntitiesInAABB = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
             double var7 = 0.0D;
-            Iterator var9 = var6.iterator();
+            Iterator struckEntityIterator = struckEntitiesInAABB.iterator();
             float var11;
 
-            while (var9.hasNext()) {
-                Entity var10 = (Entity) var9.next();
-                if (var10.canBeCollidedWith() && (var10 != shootingEntity || ticksInAir >= 5)) {
-                    var11 = 0.3F;
-                    AxisAlignedBB var12 = var10.boundingBox.expand(var11, var11, var11);
-                    MovingObjectPosition var13 = var12.calculateIntercept(var17, var3);
+            while (struckEntityIterator.hasNext()) {
+                Entity struckEntity = (Entity) struckEntityIterator.next();
+                if (struckEntity.canBeCollidedWith() && (struckEntity != shootingEntity || ticksInAir >= 5)) {
+                    var11 = 0.5F;
+                    AxisAlignedBB var12 = struckEntity.boundingBox.expand(var11, var11, var11);
+                    MovingObjectPosition var13 = var12.calculateIntercept(posVector, approachVector);
 
                     if (var13 != null) {
-                        double var14 = var17.distanceTo(var13.hitVec);
+                        double var14 = posVector.distanceTo(var13.hitVec);
 
                         if (var14 < var7 || var7 == 0.0D) {
-                            var5 = var10;
+                            hitEntity = struckEntity;
                             var7 = var14;
                         }
                     }
                 }
             }
 
-            if (var5 != null)
-                var4 = new MovingObjectPosition(var5);
+            if (hitEntity != null)
+                objectStruckByVector = new MovingObjectPosition(hitEntity);
 
-            if (var4 != null) {
-                this.onImpact(var4);
+            if (objectStruckByVector != null) {
+                this.onImpact(objectStruckByVector);
                 if (scheduledForDeath)
                     this.setDead();
             }
 
-            posX += motionX;
-            posY += motionY;
-            posZ += motionZ;
-            MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
+            this.moveEntity(motionX, motionY, motionZ);
+//            posX += motionX;
+//            posY += motionY;
+//            posZ += motionZ;
+//            MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
 
-            this.setPosition(posX, posY, posZ);
-            this.func_145775_I();
+//            this.setPosition(posX, posY, posZ);
+//            this.func_145775_I();
         }
     }
 
@@ -415,14 +415,16 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
      */
     protected void seekTarget() {
         Entity closestTarget = null;
+        List<String> entitiesThatCanBeHunted = (List<String>) Reliquary.CONFIG.get(Names.seeker_shot, "entities_that_can_be_hunted");
         List targetsList = worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.getBoundingBox(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5));
         Iterator iTarget = targetsList.iterator();
         double closestDistance = Double.MAX_VALUE;
         while (iTarget.hasNext()) {
             Entity currentTarget = (Entity) iTarget.next();
-            // if it's not living, is the shooter or is dead (but was living)
-            // ignore it.
-            if (!(currentTarget instanceof EntityLiving) || (currentTarget == shootingEntity) || (currentTarget.isDead))
+
+            Class entityClass = currentTarget.getClass();
+            String entityName = (String) EntityList.classToStringMapping.get(entityClass);
+            if (!entitiesThatCanBeHunted.contains(entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead))
                 continue;
             // goes for the closest thing it can
             if (this.getDistanceToEntity(currentTarget) < closestDistance) {
@@ -431,28 +433,26 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
             }
         }
         // these are extremely touchy, tune them lightly.
-        if (closestTarget != null) {
-            motionX = Math.sqrt(Math.abs(closestTarget.posX - posX)) / 6;
-            motionX *= closestTarget.posX - posX < 0 ? -1 : 1;
-            motionY = Math.sqrt(Math.abs(closestTarget.posY + closestTarget.height / 1.75 - posY)) / 6;
-            motionY *= closestTarget.posY + closestTarget.height / 1.75 - posY < 0 ? -1 : 1;
-            motionZ = Math.sqrt(Math.abs(closestTarget.posZ - posZ)) / 6;
-            motionZ *= closestTarget.posZ - posZ < 0 ? -1 : 1;
-            if (Math.abs(motionX) < .6D) {
-                motionX *= 1.1;
-            } else if (Math.abs(motionX) > .7D) {
-                motionX *= .9;
-            }
-            if (Math.abs(motionY) < 0.6D) {
-                motionY *= 1.1;
-            } else if (Math.abs(motionY) > .7D) {
-                motionY *= .9;
-            }
-            if (Math.abs(motionZ) < 0.6D) {
-                motionZ *= 1.1;
-            } else if (Math.abs(motionZ) > .7D) {
-                motionZ *= .9;
-            }
+        if (closestTarget != null && shootingEntity != null) {
+            double x = closestTarget.boundingBox.minX + closestTarget.boundingBox.maxX;
+            x /= 2D;
+            double y = closestTarget.boundingBox.minY + Math.max(closestTarget.yOffset, closestTarget.height);
+            y -= Math.max(closestTarget.ySize, closestTarget.height) / 2D;
+            double z = closestTarget.boundingBox.minZ + closestTarget.boundingBox.maxZ;
+            z /= 2D;
+            double trueX = this.boundingBox.minX + this.boundingBox.maxX;
+            trueX /= 2D;
+            double trueY = this.boundingBox.minY + this.yOffset;
+            trueY -= this.ySize  / 2D;
+            double trueZ = this.boundingBox.minZ + this.boundingBox.maxZ;
+            trueZ /= 2D;
+            Vec3 seekVector = Vec3.createVectorHelper(x - trueX, y - trueY, z - trueZ);
+            seekVector = seekVector.normalize();
+
+            this.motionX = seekVector.xCoord * 0.4D;
+            this.motionY = seekVector.yCoord * 0.4D;
+            this.motionZ = seekVector.zCoord * 0.4D;
+            this.setVelocity(motionX, motionY, motionZ);
         }
     }
 
