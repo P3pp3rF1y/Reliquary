@@ -361,7 +361,7 @@ public class ItemSojournerStaff extends ItemToggleable {
                 if (!player.capabilities.isCreativeMode) {
                     int cost = 1;
                     int distance = (int) player.getDistance(x, y, z);
-                    for (; distance > 6; distance -= 6) {
+                    for (; distance > Reliquary.CONFIG.getInt(Names.sojourner_staff, "tile_per_cost_multiplier"); distance -= Reliquary.CONFIG.getInt(Names.sojourner_staff, "tile_per_cost_multiplier")) {
                         cost++;
                     }
                     if (!removeItemFromInternalStorage(ist, Item.getItemFromBlock(blockAttemptingPlacement), cost))
@@ -399,7 +399,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         float f6 = MathHelper.sin(-f1 * 0.017453292F);
         float f7 = f4 * f5;
         float f8 = f3 * f5;
-        double d3 = 30.0D;
+        double d3 = Reliquary.CONFIG.getInt(Names.sojourner_staff, "max_range");
         Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
         return world.func_147447_a(vec3, vec31, true, false, false);
     }
