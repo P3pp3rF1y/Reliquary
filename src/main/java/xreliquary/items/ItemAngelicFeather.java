@@ -43,9 +43,11 @@ public class ItemAngelicFeather extends ItemBase {
     // minor jump buff
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
+        int potency = Reliquary.CONFIG.getInt(this instanceof ItemPhoenixDown ? Names.phoenix_down : Names.angelic_feather, "leaping_potency") - 1;
+        if (potency == 0) return;
         if (e instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) e;
-            player.addPotionEffect(new PotionEffect(Potion.jump.id, 2, 0, true));
+            player.addPotionEffect(new PotionEffect(Potion.jump.id, 2, potency, true));
         }
     }
 }

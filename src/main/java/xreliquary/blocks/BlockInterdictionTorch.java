@@ -7,7 +7,9 @@ import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -52,43 +54,45 @@ public class BlockInterdictionTorch extends BlockTorch implements ICustomItemBlo
         world.scheduleBlockUpdate(x, y, z, this, tickRate());
         if (world.isRemote)
             return;
+        int radius = Reliquary.CONFIG.getInt(Names.interdiction_torch, "push_radius");
 
-        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(x - 5, y - 5, z - 5, x + 5, y + 5, z + 5));
-        for (EntityLivingBase entity : entities) {
+        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius));
+        for (Entity entity : entities) {
             // TODO: Add a blacklist via config option.
             if (entity instanceof IBossDisplayData || entity instanceof EntityPlayer)
                 continue;
-            double distance = entity.getDistance((double) x, (double) y, (double) z);
-            if (distance >= 5D || distance == 0)
-                continue;
+            if (entity instanceof EntityLivingBase || (entity instanceof IProjectile && Reliquary.CONFIG.getBool(Names.interdiction_torch, "can_push_projectiles"))) {
+                double distance = entity.getDistance((double) x, (double) y, (double) z);
+                if (distance >= radius || distance == 0)
+                    continue;
 
-            // the multiplier is based on a set rate added to an inverse
-            // proportion to the distance.
-            // we raise the distance to 1 if it's less than one, or it becomes a
-            // crazy multiplier we don't want/need.
-            if (distance < 1D)
-                distance = 1D;
-            double knockbackMultiplier = 1D + (1D / distance);
+                // the multiplier is based on a set rate added to an inverse
+                // proportion to the distance.
+                // we raise the distance to 1 if it's less than one, or it becomes a
+                // crazy multiplier we don't want/need.
+                if (distance < 1D)
+                    distance = 1D;
+                double knockbackMultiplier = 1D + (1D / distance);
 
-            // we also need a reduction coefficient because the above force is
-            // WAY TOO MUCH to apply every tick.
-            double reductionCoefficient = 0.04D;
+                // we also need a reduction coefficient because the above force is
+                // WAY TOO MUCH to apply every tick.
+                double reductionCoefficient = 0.04D;
 
-            // the resultant vector between the two 3d coordinates is the
-            // difference of each coordinate pair
-            // note that we do not add 0.5 to the y coord, if we wanted to be
-            // SUPER accurate, we would be using
-            // the entity height offset to find its "center of mass"
-            Vec3 angleOfAttack = Vec3.createVectorHelper(entity.posX - (x + 0.5D), entity.posY - y, entity.posZ - (z + 0.5D));
+                // the resultant vector between the two 3d coordinates is the
+                // difference of each coordinate pair
+                // note that we do not add 0.5 to the y coord, if we wanted to be
+                // SUPER accurate, we would be using
+                // the entity height offset to find its "center of mass"
+                Vec3 angleOfAttack = Vec3.createVectorHelper(entity.posX - (x + 0.5D), entity.posY - y, entity.posZ - (z + 0.5D));
 
-            // we use the resultant vector to determine the force to apply.
-            double xForce = angleOfAttack.xCoord * knockbackMultiplier * reductionCoefficient;
-            double yForce = angleOfAttack.yCoord * knockbackMultiplier * reductionCoefficient;
-            double zForce = angleOfAttack.zCoord * knockbackMultiplier * reductionCoefficient;
-            entity.motionX += xForce;
-            entity.motionY += yForce;
-            entity.motionZ += zForce;
-
+                // we use the resultant vector to determine the force to apply.
+                double xForce = angleOfAttack.xCoord * knockbackMultiplier * reductionCoefficient;
+                double yForce = angleOfAttack.yCoord * knockbackMultiplier * reductionCoefficient;
+                double zForce = angleOfAttack.zCoord * knockbackMultiplier * reductionCoefficient;
+                entity.motionX += xForce;
+                entity.motionY += yForce;
+                entity.motionZ += zForce;
+            }
         }
     }
 

@@ -51,6 +51,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
         return EnumRarity.epic;
     }
 
+    public int getRadius() { return Reliquary.CONFIG.getInt(Names.lantern_of_paranoia, "placement_scan_radius"); }
     // event driven item, does nothing here.
 
     // minor jump buff
@@ -76,9 +77,9 @@ public class ItemLanternOfParanoia extends ItemToggleable {
             int playerY = MathHelper.floor_double(player.boundingBox.minY);
             int playerZ = MathHelper.floor_double(player.posZ);
 
-            for (int xDiff = -6; xDiff <= 6; xDiff++) {
-                for (int zDiff = -6; zDiff <= 6; zDiff++) {
-                    for (int yDiff = 2; yDiff >= -2; yDiff--) {
+            for (int xDiff = -getRadius(); xDiff <= getRadius(); xDiff++) {
+                for (int zDiff = -getRadius(); zDiff <= getRadius(); zDiff++) {
+                    for (int yDiff = getRadius() / 2; yDiff >= -getRadius() / 2; yDiff--) {
                         int x = playerX + xDiff;
                         int y = playerY + yDiff;
                         int z = playerZ + zDiff;

@@ -99,8 +99,8 @@ public class ItemVoidTearEmpty extends ItemBase {
         int quantity = InventoryHelper.getItemQuantity(target, inventory);
         InventoryHelper.removeItem(target, inventory, quantity);
         NBTHelper.setInteger("itemQuantity", filledTear, quantity);
-        //comes in with auto-drain enabled, I think this is what people would prefer.
-        NBTHelper.setBoolean("enabled", filledTear, true);
+        //configurable auto-drain when created.
+        NBTHelper.setBoolean("enabled", filledTear, Reliquary.CONFIG.getBool(Names.void_tear, "absorb_when_created"));
 
         return filledTear;
     }

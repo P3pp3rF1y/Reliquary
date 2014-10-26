@@ -256,6 +256,7 @@ public class CommonProxy {
         List<String> interdictionTorchMobs = ImmutableList.of();
         Reliquary.CONFIG.require(Names.interdiction_torch, "entities_that_can_be_pushed", new ConfigReference(interdictionTorchMobs));
         Reliquary.CONFIG.require(Names.interdiction_torch, "push_radius", new ConfigReference(5).setMinimumValue(1).setMaximumValue(15));
+        Reliquary.CONFIG.require(Names.interdiction_torch, "can_push_projectiles", new ConfigReference(false));
 
         //kraken shell configs
         Reliquary.CONFIG.require(Names.kraken_shell, "hunger_cost_percent", new ConfigReference(25).setMinimumValue(0));
@@ -263,7 +264,7 @@ public class CommonProxy {
         //lantern of paranoia configs
         Reliquary.CONFIG.require(Names.lantern_of_paranoia, "min_light_level", new ConfigReference(8).setMinimumValue(0).setMaximumValue(15));
         Reliquary.CONFIG.require(Names.lantern_of_paranoia, "placement_scan_radius", new ConfigReference(6).setMinimumValue(1).setMaximumValue(15));
-        Reliquary.CONFIG.require(Names.lantern_of_paranoia, "only_place_on_visible_blocks", new ConfigReference(false));
+        //Reliquary.CONFIG.require(Names.lantern_of_paranoia, "only_place_on_visible_blocks", new ConfigReference(false));
 
         //lilypad of fertility configs
         Reliquary.CONFIG.require(Names.lilypad, "seconds_between_growth_ticks", new ConfigReference(47).setMinimumValue(1));
