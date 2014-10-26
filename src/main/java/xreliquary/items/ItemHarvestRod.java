@@ -53,6 +53,9 @@ public class ItemHarvestRod extends ItemToggleable {
     public int getBonemealLimit() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_limit"); }
     public int getBonemealWorth() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_worth"); }
     public int getBonemealCost() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_cost"); }
+    public int getLuckRolls() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_luck_rolls"); }
+    public int getLuckPercent() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_luck_percent_chance"); }
+    public int getBreakRadius() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "harvest_break_radius"); }
 
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
@@ -81,9 +84,9 @@ public class ItemHarvestRod extends ItemToggleable {
 
         Block block = player.worldObj.getBlock(x, y, z);
         if (block instanceof IPlantable || block instanceof IGrowable) {
-            for (int xOff = -1; xOff <= 1; xOff++) {
-                for (int yOff = -1; yOff <= 1; yOff++) {
-                    for (int zOff = -1; zOff <= 1; zOff++) {
+            for (int xOff = -getBreakRadius(); xOff <= getBreakRadius(); xOff++) {
+                for (int yOff = -getBreakRadius(); yOff <= getBreakRadius(); yOff++) {
+                    for (int zOff = -getBreakRadius(); zOff <= getBreakRadius(); zOff++) {
                         doHarvestBlockBreak(ist, x, y, z, player, xOff, yOff, zOff);
                     }
                 }
@@ -136,10 +139,12 @@ public class ItemHarvestRod extends ItemToggleable {
             ItemDye fakeItemDye = (ItemDye)fakeItemStack.getItem();
 
             boolean usedRod = false;
-            for (int repeatedUses = 0; repeatedUses <= world.rand.nextInt(3); repeatedUses++) {
-                if (fakeItemDye.onItemUse(fakeItemStack, player, world, x, y, z, side, xOff, yOff, zOff)) {
-                    if (!usedRod) usedRod = true;
-                    player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+            for (int repeatedUses = 0; repeatedUses <= getLuckRolls(); repeatedUses++) {
+                if (repeatedUses == 0 || world.rand.nextInt(100) <= getLuckPercent()) {
+                    if (fakeItemDye.onItemUse(fakeItemStack, player, world, x, y, z, side, xOff, yOff, zOff)) {
+                        if (!usedRod) usedRod = true;
+                        player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+                    }
                 }
             }
 

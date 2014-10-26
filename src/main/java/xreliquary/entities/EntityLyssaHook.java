@@ -22,6 +22,7 @@ import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 
 import java.util.ArrayList;
@@ -542,11 +543,24 @@ public class EntityLyssaHook extends EntityFishHook {
                     if (!(livingBase instanceof EntityPlayer)) {
                         int slotBeingStolenFrom = worldObj.rand.nextInt(5);
                         ItemStack stolenStack = livingBase.getEquipmentInSlot(slotBeingStolenFrom);
-                        int failProbabilityFactor = (int)Math.sqrt((double)Math.max(1, field_146042_b.experienceLevel)) * 2;
+                        if (stolenStack == null && !Reliquary.CONFIG.getBool(Names.rod_of_lyssa, "steal_from_vacant_slots")) {
+                            for (int i = 0; i < 5; ++i) {
+                                stolenStack = livingBase.getEquipmentInSlot(i);
+                                if (stolenStack != null)
+                                    break;
+                            }
+                        }
 
-                        int failsIfZero = worldObj.rand.nextInt(Math.min(Math.max(failProbabilityFactor, 1), 20));
-                        if (failsIfZero == 0) {
-                            livingBase.attackEntityFrom(DamageSource.causePlayerDamage(this.field_146042_b),0.0F);
+                        float failProbabilityFactor;
+
+                        if (Reliquary.CONFIG.getBool(Names.rod_of_lyssa, "use_leveled_failure_rate"))
+                            failProbabilityFactor = 1F / ((float)Math.sqrt((double)Math.max(1, Math.min(field_146042_b.experienceLevel, Reliquary.CONFIG.getInt(Names.rod_of_lyssa, "level_cap_for_leveled_formula")))) * 2);
+                        else
+                            failProbabilityFactor = (float)Reliquary.CONFIG.getInt(Names.rod_of_lyssa, "flat_steal_failure_percent_rate") / 100F;
+
+                        if (rand.nextFloat() <= failProbabilityFactor || (stolenStack == null && Reliquary.CONFIG.getBool(Names.rod_of_lyssa, "fail_steal_from_vacant_slots"))) {
+                            if (Reliquary.CONFIG.getBool(Names.rod_of_lyssa, "anger_on_steal_failure"))
+                                livingBase.attackEntityFrom(DamageSource.causePlayerDamage(this.field_146042_b),0.0F);
                         }
                         if (stolenStack != null) {
                             int randomItemDamage = worldObj.rand.nextInt(3);
