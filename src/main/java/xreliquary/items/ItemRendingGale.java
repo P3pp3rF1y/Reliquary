@@ -313,6 +313,8 @@ public class ItemRendingGale extends ItemToggleable {
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
+        if (NBTHelper.getInteger("feathers", ist) < getChargeCost())
+            return;
         count -= 1;
         count = getMaxItemUseDuration(ist) - count;
         if (count == getMaxItemUseDuration(ist) || (getMaxItemUseDuration(ist) - count) * getChargeCost() >= NBTHelper.getInteger("feathers", ist)) {
@@ -353,7 +355,7 @@ public class ItemRendingGale extends ItemToggleable {
         //count starts at 64 instead of 63, so it needs to account for its first used tick.
         count -= 1;
         int chargeUsed = (getMaxItemUseDuration(ist) - count) * getChargeCost();
-        NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - chargeUsed);
+        NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - Math.min(chargeUsed, NBTHelper.getInteger("feathers", ist)));
     }
 
     public void doRadialPush(EntityPlayer player, boolean pull) {

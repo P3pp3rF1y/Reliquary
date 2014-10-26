@@ -156,9 +156,10 @@ public class ItemEnderStaff extends ItemToggleable {
                 if (NBTHelper.getInteger("ender_pearls", ist) < getEnderStaffPearlCost())
                     return ist;
                 player.worldObj.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-                player.worldObj.spawnEntityInWorld(new EntityEnderStaffProjectile(player.worldObj, player, !getMode(ist).equals("long_cast")));
-                NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffPearlCost());
-
+                if  (!player.worldObj.isRemote) {
+                    player.worldObj.spawnEntityInWorld(new EntityEnderStaffProjectile(player.worldObj, player, !getMode(ist).equals("long_cast")));
+                    NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffPearlCost());
+                }
                 //setCooldown(ist);
             } else {
                 player.setItemInUse(ist, getMaxItemUseDuration(ist));
