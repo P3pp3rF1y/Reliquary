@@ -558,9 +558,11 @@ public class ClientEventHandler {
             minecraft.fontRenderer.drawStringWithShadow(staffMode,hudOverlayX, hudOverlayY + 18, color);
         }
 
-        if (stackSize == 0)
-            stackSize = secondaryStack.stackSize;
-        itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX, hudOverlayY + 24);
+        if (secondaryStack != null) {
+            if (stackSize == 0)
+                stackSize = secondaryStack.stackSize;
+            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX, hudOverlayY + 24);
+        }
 
         minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize),hudOverlayX + 18, hudOverlayY + 30, color);
         GL11.glDisable(GL11.GL_LIGHTING);

@@ -203,10 +203,13 @@ public class ItemPyromancerStaff extends ItemToggleable {
         MovingObjectPosition mop = this.getEruptionBlockTarget(player.worldObj, player);
 
         if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-            float xOff = (float) (mop.blockX - player.posX);
-            float yOff = (float) (mop.blockY - player.posY);
-            float zOff = (float) (mop.blockZ - player.posZ);
-            this.onItemUse(ist, player, player.worldObj, mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, xOff, yOff, zOff);
+            count -= 1;
+            count = getMaxItemUseDuration(ist) - count;
+            if (count % 10 == 0) {
+                if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
+                    doEruptionEffect(player, mop.blockX, mop.blockY, mop.blockZ, 5D);
+                }
+            }
         }
     }
 
@@ -250,13 +253,6 @@ public class ItemPyromancerStaff extends ItemToggleable {
             }
         } else if (getMode(ist).equals("eruption")) {
             double areaCoefficient = 5D;
-
-            if (player.getItemInUseDuration() != 0 && player.getItemInUseDuration() % 10 == 0) {
-                if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
-                    doEruptionEffect(player, x, y, z, areaCoefficient);
-                }
-            }
-
             doEruptionAuxEffects(player, x, y, z, areaCoefficient);
         }
         return false;
