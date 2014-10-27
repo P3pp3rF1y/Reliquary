@@ -213,7 +213,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
                         doEruptionEffect(player, mop.blockX, mop.blockY, mop.blockZ, 5D);
                     }
                 }
-            } else if (getMode(ist).equals("fires")) {
+            } else if (getMode(ist).equals("flint_and_steel")) {
                 this.onItemUse(ist, player, player.worldObj, mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, (float)player.posX, (float)player.posY, (float)player.posZ);
             }
         }
