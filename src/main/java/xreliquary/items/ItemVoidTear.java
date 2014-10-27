@@ -72,10 +72,37 @@ public class ItemVoidTear extends ItemToggleable {
             EntityPlayer player = (EntityPlayer) entity;
 
             ItemStack contents = this.getContainedItem(stack);
-            if (contents.stackSize < Reliquary.CONFIG.getInt(Names.void_tear, "item_limit") && InventoryHelper.consumeItem(contents, player, 1)) {
+            if (contents.stackSize < Reliquary.CONFIG.getInt(Names.void_tear, "item_limit") && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize())) {
                 //doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
                 if (!player.capabilities.isCreativeMode)
                     this.onAbsorb(stack, player);
+            }
+
+            attemptToReplenishSingleStack(player, stack);
+        }
+    }
+
+    public void attemptToReplenishSingleStack(EntityPlayer player, ItemStack ist) {
+        int preferredSlot = -1;
+        int stackCount = 0;
+        IInventory inventory = player.inventory;
+        for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+            ItemStack stackFound = inventory.getStackInSlot(slot);
+            if (stackFound == null) {
+                continue;
+            }
+            if (stackFound.isItemEqual(getContainedItem(ist))) {
+                if (preferredSlot == -1) preferredSlot = slot;
+                stackCount += 1;
+            }
+        }
+        if (stackCount == 1 && preferredSlot != -1) {
+            ItemStack stackToIncrease = player.inventory.getStackInSlot(preferredSlot);
+            if (stackToIncrease == null)
+                return;
+            while (stackToIncrease.stackSize < stackToIncrease.getMaxStackSize() && getContainedItem(ist).stackSize > 1) {
+                stackToIncrease.stackSize++;
+                NBTHelper.setInteger("itemQuantity", ist, NBTHelper.getInteger("itemQuantity", ist) - 1);
             }
         }
     }

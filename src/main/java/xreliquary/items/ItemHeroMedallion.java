@@ -138,17 +138,15 @@ public class ItemHeroMedallion extends ItemToggleable {
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (world.isRemote)
             return ist;
-        if (!player.isSneaking()) {
+        if (player.isSneaking())
+            return super.onItemRightClick(ist, world, player);
             //turn it on/off.
-            if (this.isEnabled(ist))
-                this.toggleEnabled(ist);
-            int playerLevel = player.experienceLevel;
-            while (player.experienceLevel < getExperienceMaximum() && playerLevel == player.experienceLevel && getExperience(ist) > 0) {
-                increasePlayerExperience(player);
-                decreaseMedallionExperience(ist);
-            }
-        }
 
-        return super.onItemRightClick(ist, world, player);
+        int playerLevel = player.experienceLevel;
+        while (player.experienceLevel < getExperienceMaximum() && playerLevel == player.experienceLevel && getExperience(ist) > 0) {
+            increasePlayerExperience(player);
+            decreaseMedallionExperience(ist);
+        }
+        return ist;
     }
 }

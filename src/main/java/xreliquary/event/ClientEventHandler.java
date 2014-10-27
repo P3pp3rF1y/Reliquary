@@ -220,7 +220,7 @@ public class ClientEventHandler {
 
         ItemStack infernalChaliceStack = player.getCurrentEquippedItem();
         ItemStack lavaStack = new ItemStack(Items.lava_bucket, NBTHelper.getInteger("fluidStacks", infernalChaliceStack), 0);
-        renderStandardTwoItemHUD(mc, player, infernalChaliceStack, lavaStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.infernal_chalice), Colors.get(Colors.BLOOD_RED_COLOR), 0);
+        renderStandardTwoItemHUD(mc, player, infernalChaliceStack, lavaStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.infernal_chalice), Colors.get(Colors.BLOOD_RED_COLOR), lavaStack.stackSize / 1000);
     }
 
     public void handleHeroMedallionHUDCheck(){

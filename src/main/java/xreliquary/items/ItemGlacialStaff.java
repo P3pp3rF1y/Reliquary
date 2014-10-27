@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLilyPad;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
@@ -20,6 +21,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import xreliquary.blocks.BlockFertileLilypad;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.lib.Names;
 
@@ -106,7 +108,7 @@ public class ItemGlacialStaff extends ItemIceRod {
         x += xOff;
         z += zOff;
         Block block = world.getBlock(x, y, z);
-        if (block.getMaterial() == Material.water  && world.getBlockMetadata(x, y, z) == 0) {
+        if (block.getMaterial() == Material.water  && world.getBlockMetadata(x, y, z) == 0 && world.isAirBlock(x, y + 1, z)) {
             addFrozenBlockToList(ist, x, y, z);
             world.setBlock(x, y, z, Blocks.packed_ice);
 

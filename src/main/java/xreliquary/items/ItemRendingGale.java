@@ -337,10 +337,16 @@ public class ItemRendingGale extends ItemToggleable {
             MovingObjectPosition mop = this.getCycloneBlockTarget(player.worldObj, player);
 
             if (mop != null) {
-                if (getMaxItemUseDuration(ist) - count % 10 == 0 && player.worldObj.canLightningStrikeAt(mop.blockX, mop.blockY, mop.blockZ)) {
-                    if (getBoltChargeCost() <= NBTHelper.getInteger("feathers", ist)) {
-                        NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getBoltChargeCost());
-                        player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, (double) mop.blockX, (double) mop.blockY, (double) mop.blockZ));
+                if (count % 8 == 0) {
+                    int attemptedY = mop.blockY;
+                    if (!player.worldObj.canLightningStrikeAt(mop.blockX, mop.blockY, mop.blockZ)) {
+                        attemptedY++;
+                    }
+                    if (player.worldObj.canLightningStrikeAt(mop.blockX, attemptedY, mop.blockZ)) {
+                        if (NBTHelper.getInteger("feathers", ist) >= getBoltChargeCost()) {
+                            NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getBoltChargeCost());
+                            player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, (double) mop.blockX, (double) mop.blockY, (double) mop.blockZ));
+                        }
                     }
                 }
             }

@@ -46,7 +46,7 @@ public class RenderApothecaryMortar extends TileEntitySpecialRenderer {
                 GL11.glRotatef(180F, 1.0F, 0F, 0F);
                 GL11.glRotatef(1F, 0F, 0F, 1.0F);
                 GL11.glRotatef(180.0F - RenderManager.instance.playerViewY + 3.0F, 0.0f, 1.0f, 0.0f);
-                GL11.glScaled(0.94d, 0.94d, 0.94d);
+                GL11.glScaled(0.40d, 0.40d, 0.40d);
                 RenderManager.instance.renderEntityWithPosYaw(item, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
                 GL11.glPopMatrix();
             }
@@ -60,7 +60,7 @@ public class RenderApothecaryMortar extends TileEntitySpecialRenderer {
                 GL11.glRotatef(180F, 1.0F, 0F, 0F);
                 GL11.glRotatef(-1F, 0F, 0F, 1.0F);
                 GL11.glRotatef(180.0F - RenderManager.instance.playerViewY - 2.0F, 0.0f, 1.0f, 0.0f);
-                GL11.glScaled(0.94d, 0.94d, 0.94d);
+                GL11.glScaled(0.40d, 0.40d, 0.40d);
                 RenderManager.instance.renderEntityWithPosYaw(item, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
                 GL11.glPopMatrix();
             }

@@ -27,6 +27,7 @@ import xreliquary.event.CommonEventHandler;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
+import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
 import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -83,6 +84,15 @@ public class CommonProxy {
     public void init() {
         AlkahestryCraftingRecipe.returnedItem = ContentHandler.getItem(Names.alkahestry_tome);
         AlkahestryRedstoneRecipe.returnedItem = ContentHandler.getItem(Names.alkahestry_tome);
+
+        AlkahestryCraftingRecipe alkahestryCraftingRecipeHandler = new AlkahestryCraftingRecipe();
+        AlkahestryDrainRecipe alkahestryDrainRecipeHandler = new AlkahestryDrainRecipe();
+
+        MinecraftForge.EVENT_BUS.register(alkahestryCraftingRecipeHandler);
+        MinecraftForge.EVENT_BUS.register(alkahestryDrainRecipeHandler);
+
+        FMLCommonHandler.instance().bus().register(alkahestryCraftingRecipeHandler);
+        FMLCommonHandler.instance().bus().register(alkahestryDrainRecipeHandler);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
         FMLCommonHandler.instance().bus().register(new CommonEventHandler());

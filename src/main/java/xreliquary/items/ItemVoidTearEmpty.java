@@ -42,7 +42,7 @@ public class ItemVoidTearEmpty extends ItemBase {
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (!world.isRemote) {
-            ItemStack createdTear = buildTear(ist, player, player.inventory);
+            ItemStack createdTear = buildTear(ist, player, player.inventory, true);
             if (createdTear != null) {
                 --ist.stackSize;
                 player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
@@ -62,7 +62,7 @@ public class ItemVoidTearEmpty extends ItemBase {
             if (world.getTileEntity(x, y, z) instanceof IInventory) {
                 IInventory inventory = (IInventory) world.getTileEntity(x, y, z);
 
-                ItemStack createdTear = buildTear(ist, player, inventory);
+                ItemStack createdTear = buildTear(ist, player, inventory, false);
                 if (createdTear != null) {
                     --ist.stackSize;
                     player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
@@ -87,7 +87,7 @@ public class ItemVoidTearEmpty extends ItemBase {
         player.worldObj.spawnEntityInWorld(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, ist));
     }
 
-    protected ItemStack buildTear(ItemStack ist, EntityPlayer player, IInventory inventory) {
+    protected ItemStack buildTear(ItemStack ist, EntityPlayer player, IInventory inventory, boolean isPlayerInventory) {
         ItemStack target = InventoryHelper.getTargetItem(ist, inventory, false);
         if(target == null)
             return null;
@@ -97,7 +97,10 @@ public class ItemVoidTearEmpty extends ItemBase {
         NBTHelper.setShort("itemMeta", filledTear, (short) target.getItemDamage());
 
         int quantity = InventoryHelper.getItemQuantity(target, inventory);
-        InventoryHelper.removeItem(target, inventory, quantity);
+        if (isPlayerInventory)
+            InventoryHelper.consumeItem(target, player, target.getMaxStackSize(), quantity - target.getMaxStackSize());
+        else
+            InventoryHelper.removeItem(target, player, quantity - target.getMaxStackSize());
         NBTHelper.setInteger("itemQuantity", filledTear, quantity);
         //configurable auto-drain when created.
         NBTHelper.setBoolean("enabled", filledTear, Reliquary.CONFIG.getBool(Names.void_tear, "absorb_when_created"));

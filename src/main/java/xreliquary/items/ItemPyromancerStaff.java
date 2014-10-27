@@ -311,9 +311,9 @@ public class ItemPyromancerStaff extends ItemToggleable {
         while (iterator.hasNext()) {
             Entity e = (Entity)iterator.next();
             if (e instanceof EntityLivingBase && !e.isEntityEqual(player)) {
+                e.setFire(40);
                 if (!e.isImmuneToFire())
                     e.attackEntityFrom(DamageSource.causePlayerDamage(player), 4F);
-                e.setFire(40);
             }
         }
     }

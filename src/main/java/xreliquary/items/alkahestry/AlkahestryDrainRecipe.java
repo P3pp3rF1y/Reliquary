@@ -1,5 +1,7 @@
 package xreliquary.items.alkahestry;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.init.Items;
@@ -48,10 +50,27 @@ public class AlkahestryDrainRecipe implements IRecipe {
 
             if (quantity == 0)
                 return null;
-            NBTHelper.setInteger("redstone", tome, NBTHelper.getInteger("redstone", tome) - quantity);
             return new ItemStack(Items.redstone, quantity);
         }
         return null;
+    }
+
+
+    @SubscribeEvent
+    public void onItemCraftedEvent(PlayerEvent.ItemCraftedEvent event)
+    {
+        if (event.crafting == null)
+            return;
+        if (event.crafting.getItem() == Items.redstone) {
+            for (int i = 0; i < event.craftMatrix.getSizeInventory(); ++i) {
+                ItemStack stack = event.craftMatrix.getStackInSlot(i);
+                if (stack == null)
+                    continue;
+                if (stack.getItem() instanceof ItemAlkahestryTome) {
+                    NBTHelper.setInteger("redstone", event.craftMatrix.getStackInSlot(i), NBTHelper.getInteger("redstone", event.craftMatrix.getStackInSlot(i)) - event.crafting.stackSize);
+                }
+            }
+        }
     }
 
     @Override
