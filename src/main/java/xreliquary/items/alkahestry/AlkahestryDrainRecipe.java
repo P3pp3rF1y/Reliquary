@@ -25,7 +25,7 @@ public class AlkahestryDrainRecipe implements IRecipe {
             ItemStack stack = inv.getStackInSlot(count);
             if (stack == null)
                 continue;
-            if (!(stack.getItem() instanceof ItemAlkahestryTome)) {
+            if ((stack.getItem() instanceof ItemAlkahestryTome)) {
                 valid = NBTHelper.getInteger("redstone", stack) > 0;
             }
         }
