@@ -95,15 +95,15 @@ public class ItemLanternOfParanoia extends ItemToggleable {
         }
     }
 
-    private boolean findAndRemoveTorch(EntityPlayer player) {
-        List<String> torches = (List<String>) Reliquary.CONFIG.get(Names.sojourner_staff, "torches");
-        List<Item> items = new ArrayList<Item>();
-
-        for (String torch : torches) {
-            items.add(ContentHandler.getItem(torch));
-        }
-        return InventoryHelper.consumeItem(items.toArray(), player, 0, 1);
-    }
+//    private boolean findAndRemoveTorch(EntityPlayer player) {
+//        List<String> torches = (List<String>) Reliquary.CONFIG.get(Names.sojourner_staff, "torches");
+//        List<Item> items = new ArrayList<Item>();
+//
+//        for (String torch : torches) {
+//            items.add(ContentHandler.getItem(torch));
+//        }
+//        return InventoryHelper.consumeItem(items.toArray(), player, 0, 1);
+//    }
 
     private boolean findAndDrainSojournersStaff(EntityPlayer player) {
         Item staffItem = ContentHandler.getItem(Names.sojourner_staff);
@@ -163,7 +163,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
                 for (int side : trySides) {
                     if (!world.canPlaceEntityOnSide(Blocks.torch, x, y, z, false, side, player, ist))
                         continue;
-                    if (!(findAndRemoveTorch(player) || findAndDrainSojournersStaff(player)))
+                    if (!(InventoryHelper.consumeItem(Blocks.torch, player, 0, 1) || findAndDrainSojournersStaff(player)))
                         continue;
                     if (placeBlockAt(ist, player, world, x, y, z, side, xOff, yOff, zOff, attemptSide(world, x, y, z, side))) {
                         Blocks.torch.onBlockAdded(world, x, y, z);
