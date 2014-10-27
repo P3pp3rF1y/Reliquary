@@ -1,40 +1,31 @@
 itemGroup.xreliquary=Reliquary
 
-gui.tome.text=The Tome of Alkahestry;allows you to create;other resources from;Redstone or Glowstone.;Shift + Right-click;auto-absorbs them;to restore its charge.
+gui.tome.text=The Tome of Alkahestry;allows you to create;other resources from;Redstone or Glowstone.;Shift + Right-click;auto-absorbs them;to restore its charge.;You can right-click;altars to feed them.
 
 tooltip.absorb={{!colors.light_purple}}Shift + Right click to toggle auto-absorb.
 tooltip.absorb_active={{!colors.purple}}Automagically absorbs {{item}}{{!colors.purple}}.
 tooltip.absorb_tear={{!colors.purple}}Always leaves a stack of the item in inventory.
 
-tooltip.tear=Currently holds {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
-tooltip.tear_empty=Current holds nothing.
-tooltip.tear_quantity=Current holds {{!colors.yellow}}{{amount}}{{!colors.light_gray}} of {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+item.alkahest_tome.name=Tome of Alkahestry
+item.alkahest_tome.tooltip={{!colors.rose}}Charge: {{redstoneAmount}}/{{redstoneLimit}};Shift + Right-Click to absorb redstone.;Right-click to read.
 
 tile.altar_idle.name=Altar of Light
+tile.altar_idle.tooltip=Feed it redstone and;it will grow glowstone.
 tile.altar.name=Altar of Light
-tile.lilypad.name=Lilypad of Fertility
-tile.wraith_node.name=Wraith Node
-tile.interdiction_torch.name={{!colors.yellow}}Interdiction Torch
-tile.interdiction_torch.tooltip=Seems to repel monsters. Neat.
+
+item.angelheart_vial.name=Angelheart Vial
+item.angelheart_vial.tooltip=Resurrects you;once and breaks.
+
+item.angelic_feather.name=Angelic Feather
+item.angelic_feather.tooltip=Protects you from falls,;at the expense of hunger.
+
 tile.apothecary_cauldron.name=Apothecary Cauldron
-tile.apothecary_cauldron.tooltip=Used to brew potions, stylishly.
+tile.apothecary_cauldron.tooltip=Used to brew potions;from potion essence.
 tile.apothecary_mortar.name=Apothecary Mortar
-tile.apothecary_mortar.tooltip=Used to grind potion;essence, stylishly.
-
-item.handgun.name=Hunter's Handgun
-item.handgun.tooltip=For great justice.;Right click fires, hold to reload.
-
-item.gun_part_0.name=Grip Assembly
-item.gun_part_1.name=Barrel Assembly
-item.gun_part_2.name=Hammer Assembly
-item.gun_part_0.tooltip=It's one of three gun parts.
-item.gun_part_1.tooltip=It's one of three gun parts.
-item.gun_part_2.tooltip=It's one of three gun parts.
+tile.apothecary_mortar.tooltip=Used to grind ingredients;into potion essence.
 
 item.bullet_0.name=Empty Casing
-item.bullet_0.tooltip=An empty shell.
 item.bullet_1.name=Neutral Shot
-item.bullet_1.tooltip=An ordinary bullet.
 item.bullet_2.name=Exorcism Shot
 item.bullet_2.tooltip=Effective vs. undead.
 item.bullet_3.name=Blaze Shot
@@ -42,15 +33,94 @@ item.bullet_3.tooltip=Deals only fire damage.
 item.bullet_4.name=Ender Shot
 item.bullet_4.tooltip=Pierce enemies, seek targets.
 item.bullet_5.name=Concussive Shot
-item.bullet_5.tooltip=Deal damage to a small area.
+item.bullet_5.tooltip=Small area damage.
 item.bullet_6.name=Buster Shot
-item.bullet_6.tooltip=Create a sizable explosion.
+item.bullet_6.tooltip=Large area damage.
 item.bullet_7.name=Seeker Shot
 item.bullet_7.tooltip=Seeks its targets.
 item.bullet_8.name=Sand Shot
-item.bullet_8.tooltip=Blinds target. Wrecks creepers.
+item.bullet_8.tooltip=Blinds target,;irritates creepers.
 item.bullet_9.name=Storm Shot
-item.bullet_9.tooltip=Causes atmospheric weirdness.
+item.bullet_9.tooltip=Stronger during storms,;charges creepers.
+
+item.destruction_catalyst.name=Destruction Catalyst
+item.destruction_catalyst.tooltip=Consumes gunpowder to destroy blocks.;{{!colors.yellow}}Charge: {{charge}};Shift + Right-Click to charge.
+
+item.emperor_chalice.name=Emperor's Chalice
+item.emperor_chalice.tooltip=An infinite water bucket.;Enable to drain water.;Disable to place water.;Drinking restores hunger;in exchange for life.
+
+item.elsewhere_flask.name=Elsewhere Flask
+item.elsewhere_flask.tooltip=Imbibe potions within it simultaneously.{{contents}}
+
+item.ender_staff.name=Ender Staff
+item.ender_staff.tooltip={{!colors.purple}}Ender Pearls: {{charge}};Shift + Right-click to charge.;Shift + Left-click to change modes.;[Cast/Long Cast/Node Warp or Bind];{{!colors.purple}}{{phrase}}{{position}}
+
+item.fortune_coin.name=Coin of Fortune
+item.fortune_coin.tooltip=Draws in items and XP.;Shift+Right to activate.;Hold Right click to super-vacuum.
+
+item.glacial_staff.name=Glacial Staff
+item.glacial_staff.tooltip=Shoots snowballs,;chills enemies on strike; and freezes the ground; you walk on.;{{!colors.blue}}Charge: {{charge}};Shift + Right-Click to charge.
+
+item.glowing_water.name=Glowing Water
+item.glowing_water.tooltip=Harms undead enemies.
+
+item.glowing_bread.name=Glowing Bread
+item.glowing_bread.tooltip=Completely restores hunger.
+
+item.gun_part_0.name=Grip Assembly
+item.gun_part_1.name=Barrel Assembly
+item.gun_part_2.name=Hammer Assembly
+
+item.handgun.name=Hunter's Handgun
+item.handgun.tooltip=For great justice.;Right click fires, hold to reload.
+
+item.harvest_rod.name={{!colors.green}}Harvest Rod
+item.harvest_rod.tooltip=Right-click to fertilize,;breaks crops in an area.{{!colors.green}}Charge: {{charge}};Shift + Right-Click to charge.
+
+item.heart_pearl_0.name={{!colors.rose}}Zombie Pearl
+item.heart_zhu_0.name={{!colors.rose}}Zombie Nian Zhu
+item.heart_zhu_0.tooltip=Zombies can't see you with this.
+item.heart_pearl_1.name={{!colors.white}}Skeleton Pearl
+item.heart_zhu_1.name={{!colors.white}}Skeleton Nian Zhu
+item.heart_zhu_1.tooltip=Skeletons can't see you with this.
+item.heart_pearl_2.name={{!colors.gray}}Wither Skeleton Pearl
+item.heart_zhu_2.name={{!colors.gray}}Wither Skeleton Nian Zhu
+item.heart_zhu_2.tooltip=Wither skeletons can't see you with this.
+item.heart_pearl_3.name={{!colors.light_green}}Creeper Pearl
+item.heart_zhu_3.name={{!colors.light_green}}Creeper Nian Zhu
+item.heart_zhu_3.tooltip=Creepers can't see you with this.
+
+item.hero_medallion.name=Hero's Medallion
+item.hero_medallion.tooltip={{!colors.green}}Experience: {{experience}};Stores experience for you.;Shift + Right-Click to charge.;Right click to reclaim levels.
+
+item.holy_hand_grenade.name=Holy Hand Grenade
+item.holy_hand_grenade.tooltip=A powerful explosive that doesn't;break blocks or hurt the wielder.
+
+item.ice_magus_rod.name=Ice Magus Rod
+item.ice_magus_rod.tooltip=Lobs harmful snowballs.;{{!colors.blue}}Charge: {{charge}};Shift + Right-Click to charge.
+
+item.infernal_chalice.name=Infernal Chalice
+item.infernal_chalice.tooltip=Protects you from lava damage.;{{!colors.red}}Holds {{amount}} mB of Lava;Shift + Right-Click to charge/drain.;Disable to place lava.
+
+item.infernal_claws.name={{!colors.red}}Infernal Claws
+item.infernal_claws.tooltip=Absorbs fire damage at;the expense of hunger.
+
+item.infernal_tear.name={{!colors.red}}Infernal Tear
+item.infernal_tear.tooltip=Burns items into experience.;Shift + Right-Click to activate.
+
+tile.interdiction_torch.name={{!colors.yellow}}Interdiction Torch
+tile.interdiction_torch.tooltip=Repels creatures and projectiles.
+
+item.kraken_shell.name=Kraken Shell
+item.kraken_shell.tooltip=Absorbs drowning damage;at the expense of hunger.
+
+item.lantern_of_paranoia.name={{!colors.yellow}}Lantern Of Paranoia
+item.lantern_of_paranoia.tooltip=Places torches in unlit;areas automatically.;Shift + Right-Click to activate.
+
+tile.lilypad.name=Lilypad of Fertility
+
+item.magicbane.name=Magicbane
+item.magicbane.tooltip=Increases its strength;with each enchantment.
 
 item.magazine_0.name=Empty Magazine
 item.magazine_1.name=Neutral Magazine
@@ -63,132 +133,31 @@ item.magazine_7.name=Seeker Magazine
 item.magazine_8.name=Sand Magazine
 item.magazine_9.name=Storm Magazine
 
-item.magazine_0.tooltip=Just an empty magazine.
-item.magazine_1.tooltip=Ordinary bullets.
-
 item.mercy_cross.name=Cross of Mercy
-item.mercy_cross.tooltip="Damn, that thing's heavy!";That, my friend, is because;it's so full of mercy.
-
-item.sojourner_staff.name=Sojourner's Staff
-item.sojourner_staff.tooltip=Consumes torches, can place them;long distance, but costs extra.;{{!colors.yellow}}Contents:;{{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}}
-
-item.alkahest_tome.name=Tome of Alkahestry
-item.alkahest_tome.tooltip={{!colors.rose}}Charge: {{redstoneAmount}}/{{redstoneLimit}};It says: perform basic, intermediate or;advanced Alkahestry, whatever that is.
-
-item.holy_hand_grenade.name=Holy Hand Grenade
-item.holy_hand_grenade.tooltip=Kills mobs, not blocks;or whoever threw it.
-
-item.fortune_coin.name=Coin of Fortune
-item.fortune_coin.tooltip=Draws in nearby items and XP.;Shift + Right click to toggle.;Hold Right click to super-vacuum.
-
-item.glowing_water.name=Glowing Water
-item.glowing_water.tooltip=Destroys undead. Glowifies stuff.;Used in many recipes.
-
-item.glowing_bread.name=Glowing Bread
-item.glowing_bread.tooltip=Glowy and delicious.
+item.mercy_cross.tooltip=Deals extra damage;to undead creatures.
 
 item.midas_touchstone.name=Touchstone of Midas
-item.midas_touchstone.tooltip=Repairs items made of gold,;consumes glowstone dust.;{{!colors.yellow}}Charge: {{charge}}
+item.midas_touchstone.tooltip=Repairs gold items.;{{!colors.yellow}}Charge: {{charge}};Shift + Right-Click to charge.
 
-item.emperor_chalice.name=Emperor's Chalice
-item.emperor_chalice.tooltip=An infinite water bucket;unless you drink from it.;Trades life for hunger...
-
-item.salamander_eye.name=Salamander's Eye
-item.salamander_eye.tooltip=Dispels blaze fireballs and reflects;ghast fireballs while held.;Puts out fires on and around you.
-
-item.destruction_catalyst.name=Destruction Catalyst
-item.destruction_catalyst.tooltip=Consumes 3 Gunpowder on right click, no less.;Blows up a 3x3x3 Cube behind target cube.;{{!colors.white}}Destroys mundane blocks only.;{{!colors.yellow}}Charge: {{charge}}
-
-item.ice_magus_rod.name=Ice Magus Rod
-item.ice_magus_rod.tooltip=Consumes snowballs in inventory.;Makes snowballs a bit colder...;{{!colors.blue}}Charge: {{charge}}
-
-item.glacial_staff.name=Glacial Staff
-item.glacial_staff.tooltip=Shoots snowballs,; chills enemies on strike; and freezes the ground; you walk on.;{{!colors.blue}}Charge: {{charge}}
-
-item.rod_of_lyssa.name=Rod of Lyssa
-item.rod_of_lyssa.tooltip=A magic fishing rod that can be;used to reel in items and pick pockets.
-
-item.shears_of_winter.name=Shears of Winter
-item.shears_of_winter.tooltip=Magic shears that tear the;leaves from trees with cold.
-
-item.pyromancer_staff.name={{!colors.red}}Pyromancer's Staff
-item.pyromancer_staff.tooltip=Shoots fire of every variety,;sets fire to blocks,;extinguishes flames;and defends you;from fiery attackers.;{{!colors.red}}Charges: {{charges}};{{!colors.red}}Blaze: {{blaze}}
-
-item.rending_gale.name={{!colors.yellow}}Rending Gale
-item.rending_gale.tooltip=Fly in the direction you're facing with right-click.;Left-click launches a column of wind.;{{!colors.yellow}}Charge: {{charge}}
-
-item.harvest_rod.name={{!colors.green}}Harvest Rod
-item.harvest_rod.tooltip=Shift+Right-click to consume bonemeal.;Click blocks to fertilize,;strike crops to harvest an area.{{!colors.green}}Charge: {{charge}}
-
-item.magicbane.name=Magicbane
-item.magicbane.tooltip=A rustproof, ensorcelled artifact.;Unfortunately not unbreakable.
-
-item.witherless_rose.name=Witherless Rose
-item.witherless_rose.tooltip=With the Nether Stars enchanting this rose;the holder is protected from Withering.
-
-item.twilight_cloak.name=Twilight Cloak
-item.twilight_cloak.tooltip=Makes you invisible at night.
-
-item.void_tear_empty.name=Empty Void Tear
-item.void_tear.name=Void Tear
-
-item.hero_medallion.name=Hero's Medallion
-item.hero_medallion.tooltip={{!colors.green}}Experience: {{experience}};For when you just need;somewhere to put;all that experience.
-
-item.ender_staff.name=Ender Staff
-item.ender_staff.tooltip={{!colors.purple}}Ender Pearls: {{charge}};Left-Click casts them.;Shift + Right-click to absorb pearls.;Right-click a Wraith Node to bind it;allowing you to teleport to it.;{{!colors.purple}}{{phrase}}{{position}}
-
-item.angelic_feather.name=Angelic Feather
-item.angelic_feather.tooltip=Protects you from falls,;at the expense of hunger.
+item.mob_ingredient_0.name=Rib Bone
+item.mob_ingredient_1.name=Withered Rib
+item.mob_ingredient_2.name=Chelicerae
+item.mob_ingredient_3.name=Catalyzing Gland
+item.mob_ingredient_4.name=Slime Pearl
+item.mob_ingredient_5.name=Bat Wing
+item.mob_ingredient_6.name=Zombie Heart
+item.mob_ingredient_7.name=Molten Core
+item.mob_ingredient_8.name=Eye of the Storm
+item.mob_ingredient_9.name=Fertile Essence
+item.mob_ingredient_10.name=Frozen Core
+item.mob_ingredient_11.name=Nebulous Heart
+item.mob_ingredient_12.name=Squid Beak
+item.mob_ingredient_13.name=Infernal Claw
+item.mob_ingredient_14.name=Kraken Shell Fragment
+item.mob_ingredient_15.name=Crimson Cloth
 
 item.phoenix_down.name=Phoenix Down
 item.phoenix_down.tooltip=Resurrects you once with;full health and reverts;to an Angelic Feather.
-
-item.infernal_claws.name={{!colors.red}}Infernal Claws
-item.infernal_claws.tooltip=Absorbs fire damage at;the expense of hunger.
-
-item.infernal_chalice.name=Infernal Chalice
-item.infernal_chalice.tooltip=Protects you from lava damage.;{{!colors.red}}Holds {{amount}} mB of Lava
-
-item.kraken_shell.name=Kraken Shell
-item.kraken_shell.tooltip=Improves your mobility;when in water.;Absorb drowning damage at;the expense of hunger.
-
-item.angelheart_vial.name=Angelheart Vial
-item.angelheart_vial.tooltip=Resurrects you once;and breaks.
-
-item.elsewhere_flask.name=Elsewhere Flask
-item.elsewhere_flask.tooltip=Imbibe potions within it simultaneously.{{contents}}
-
-item.serpent_staff.name={{!colors.green}}Serpent Staff
-item.serpent_staff.tooltip=All that nasty stuff;from a Kraken's spit,;thrown at your enemies.
-
-item.witch_hat.name={{!colors.yellow}}Witch Hat
-item.witch_hat.tooltip=All that was left of that nasty Witch.;I wonder if I could use it somehow.
-
-item.infernal_tear_empty.name={{!colors.yellow}}Empty Infernal Tear
-item.infernal_tear_empty.tooltip=An empty infernal tear, right clicking;absorbs the dominant inventory item.
-item.infernal_tear.name={{!colors.red}}Infernal Tear
-item.infernal_tear.tooltip=Burns items into their raw essence.;Might make a good brewing ingredient.
-
-item.lantern_of_paranoia.name={{!colors.yellow}}Lantern Of Paranoia
-item.lantern_of_paranoia.tooltip=Places torches in unlit;areas automatically.
-
-item.heart_pearl_0.name={{!colors.rose}}Zombie Heart Pearl
-item.heart_pearl_0.tooltip=The condensed essence of a Zombie.
-item.heart_zhu_0.name={{!colors.rose}}Zombie Nian Zhu
-item.heart_zhu_0.tooltip=This nian zhu wards off Zombies.
-item.heart_pearl_1.name={{!colors.white}}Skeleton Heart Pearl
-item.heart_pearl_1.tooltip=The condensed essence of a Skeleton.
-item.heart_zhu_1.name={{!colors.white}}Skeleton Nian Zhu
-item.heart_zhu_1.tooltip=This nian zhu wards off Skeletons.
-item.heart_pearl_2.name={{!colors.gray}}Wither Skeleton Heart Pearl
-item.heart_pearl_2.tooltip=The condensed essence of a Wither Skeleton.
-item.heart_zhu_2.name={{!colors.gray}}Wither Skeleton Nian Zhu
-item.heart_zhu_2.tooltip=This nian zhu wards off Wither Skeletons.
-item.heart_pearl_3.name={{!colors.light_green}}Creeper Heart Pearl
-item.heart_pearl_3.tooltip=The condensed essence of a Creeper.
-item.heart_zhu_3.name={{!colors.light_green}}Creeper Nian Zhu
-item.heart_zhu_3.tooltip=This nian zhu wards off Creepers.
 
 item.potion_0.name=Condensed Splash Serum
 item.potion_1.name=Love Potion #9
@@ -264,35 +233,40 @@ potion.resistance.name=Armor
 potion.fireresistance.name=Fireproof
 potion.milk.name=Cure
 
-item.mob_ingredient_0.name=Rib Bone
-item.mob_ingredient_0.tooltip=A piece of a skeleton's ribcage.
-item.mob_ingredient_1.name=Withered Rib
-item.mob_ingredient_1.tooltip=A piece of a wither skeleton's ribcage.
-item.mob_ingredient_2.name=Chelicerae
-item.mob_ingredient_2.tooltip=A spider's mouthparts.;It won't be needing them anymore.
-item.mob_ingredient_3.name=Catalyzing Gland
-item.mob_ingredient_3.tooltip=A gland that produces explosive chemicals.
-item.mob_ingredient_4.name=Slime Pearl
-item.mob_ingredient_4.tooltip=A dense gem from a slime.
-item.mob_ingredient_5.name=Bat Wing
-item.mob_ingredient_5.tooltip=The wing of a currently wingless bat.
-item.mob_ingredient_6.name=Zombie Heart
-item.mob_ingredient_6.tooltip=A zombie's necrotic heart.
-item.mob_ingredient_7.name=Molten Core
-item.mob_ingredient_7.tooltip=The fiery core of a Nether creature.
-item.mob_ingredient_8.name=Eye of the Storm
-item.mob_ingredient_8.tooltip=The super-charged core of an electrified creeper.
-item.mob_ingredient_9.name=Fertile Essence
-item.mob_ingredient_9.tooltip=Fertility in its purest form.
-item.mob_ingredient_10.name=Frozen Core
-item.mob_ingredient_10.tooltip=The frozen core of some ice creature.
-item.mob_ingredient_11.name=Nebulous Heart
-item.mob_ingredient_11.tooltip=A strange pulsing energy source.
-item.mob_ingredient_12.name=Squid Beak
-item.mob_ingredient_12.tooltip=Somewhere out there;is a very sad, very;mouthless squid.
-item.mob_ingredient_13.name=Infernal Claw
-item.mob_ingredient_13.tooltip=A claw made from Nether materials.;It has fire properties.
-item.mob_ingredient_14.name=Kraken Shell Fragment
-item.mob_ingredient_14.tooltip=A seaworthy monster;beak, crafted into;a smooth shell.
-item.mob_ingredient_15.name=Crimson Cloth
-item.mob_ingredient_15.tooltip=Blood red cloth, soaked;with alchemical concoctions.
+item.pyromancer_staff.name={{!colors.red}}Pyromancer's Staff
+item.pyromancer_staff.tooltip=Shoots blaze and ghast;fireballs, creates firebursts;and lights fires.;{{!colors.red}}Charges: {{charges}};{{!colors.red}}Blaze: {{blaze}};Shift + Right-Click to charge.;Shift + Left-click to change modes.
+
+item.rending_gale.name={{!colors.yellow}}Rending Gale
+item.rending_gale.tooltip=Fly, push and pull mobs,;or shoot lightning;while raining.;Shift + Left-click changes modes.;{{!colors.yellow}}Charge: {{charge}};Shift + Right-Click to charge.
+
+item.rod_of_lyssa.name=Rod of Lyssa
+item.rod_of_lyssa.tooltip=A magic fishing rod that can be;used to reel in items and pick pockets.
+
+item.salamander_eye.name=Salamander's Eye
+item.salamander_eye.tooltip=Dispels blaze fireballs and reflects;ghast fireballs while held.;Puts out fires on and around you.
+
+item.serpent_staff.name={{!colors.green}}Serpent Staff
+item.serpent_staff.tooltip=All that nasty stuff;from a Kraken's spit,;thrown at your enemies.;Drains life on strike.
+
+item.shears_of_winter.name=Shears of Winter
+item.shears_of_winter.tooltip=Magic shears that tear the;leaves from trees with cold.
+
+item.sojourner_staff.name=Sojourner's Staff
+item.sojourner_staff.tooltip=Consumes torches, can place them;long distance, but costs extra.;{{!colors.yellow}}Contents:;{{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}};Shift + Right-Click to charge.
+
+item.twilight_cloak.name=Twilight Cloak
+item.twilight_cloak.tooltip=Makes you invisible in darkness.
+
+item.witch_hat.name={{!colors.yellow}}Witch Hat
+
+item.void_tear_empty.name=Empty Void Tear
+item.void_tear.name=Void Tear
+
+tooltip.tear=Currently holds {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+tooltip.tear_empty=Current holds nothing.
+tooltip.tear_quantity=Current holds {{!colors.yellow}}{{amount}}{{!colors.light_gray}} of {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+
+item.witherless_rose.name=Witherless Rose
+item.witherless_rose.tooltip=With the Nether Stars enchanting this rose;the holder is protected from Withering.
+
+tile.wraith_node.name=Wraith Node
