@@ -330,7 +330,7 @@ public class XRRecipes {
         if (isEasyMode(Names.angelic_feather))
             addRecipe(true, new ItemStack(getItem(Names.angelic_feather), 1), Items.feather, enderHeart(), batWing(), fertileEssence());
         else
-            addRecipe(false, new ItemStack(getItem(Names.angelic_feather), 1), "dgd", "bfb", "ene", 'd', Items.glowstone_dust, 'g', Items.gold_ingot, 'b', batWing(), 'e', fertileEssence(), 'n', enderHeart());
+            addRecipe(false, new ItemStack(getItem(Names.angelic_feather), 1), "dgd", "bfb", "ene", 'd', Items.glowstone_dust, 'g', Items.gold_ingot, 'b', batWing(), 'e', fertileEssence(), 'n', enderHeart(), 'f', Items.feather);
 
         // phoenix down
         addRecipe(true, new ItemStack(getItem(Names.phoenix_down), 1), getItem(Names.angelheart_vial), getItem(Names.angelheart_vial), getItem(Names.angelheart_vial));
