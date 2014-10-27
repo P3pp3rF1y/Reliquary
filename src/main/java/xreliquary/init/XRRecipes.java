@@ -477,7 +477,6 @@ public class XRRecipes {
 
         // fertility
         addRecipe(true, potion(Reference.FERTILIZER_META), potion(Reference.SPLASH_META), new ItemStack(Items.dye, 1, 15), new ItemStack(Items.dye, 1, 15), new ItemStack(Items.dye, 1, 15));
-
     }
 
 }

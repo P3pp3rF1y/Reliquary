@@ -20,16 +20,19 @@ public class AlkahestryDrainRecipe implements IRecipe {
 
     @Override
     public boolean matches(InventoryCrafting inv, World world) {
-        boolean valid = true;
+        boolean valid = false;
+        boolean foundNonTome = false;
         for (int count = 0; count < inv.getSizeInventory(); count++) {
             ItemStack stack = inv.getStackInSlot(count);
             if (stack == null)
                 continue;
             if ((stack.getItem() instanceof ItemAlkahestryTome)) {
-                valid = NBTHelper.getInteger("redstone", stack) > 0;
+                if (!valid) valid = NBTHelper.getInteger("redstone", stack) > 0;
+            } else {
+                foundNonTome = true;
             }
         }
-        return valid;
+        return !foundNonTome && valid;
     }
 
     @Override
@@ -62,12 +65,12 @@ public class AlkahestryDrainRecipe implements IRecipe {
         if (event.crafting == null)
             return;
         if (event.crafting.getItem() == Items.redstone) {
-            for (int i = 0; i < event.craftMatrix.getSizeInventory(); ++i) {
-                ItemStack stack = event.craftMatrix.getStackInSlot(i);
+            for (int count = 0; count < event.craftMatrix.getSizeInventory(); ++count) {
+                ItemStack stack = event.craftMatrix.getStackInSlot(count);
                 if (stack == null)
                     continue;
                 if (stack.getItem() instanceof ItemAlkahestryTome) {
-                    NBTHelper.setInteger("redstone", event.craftMatrix.getStackInSlot(i), NBTHelper.getInteger("redstone", event.craftMatrix.getStackInSlot(i)) - event.crafting.stackSize);
+                    NBTHelper.setInteger("redstone", event.craftMatrix.getStackInSlot(count), NBTHelper.getInteger("redstone", event.craftMatrix.getStackInSlot(count)) - event.crafting.stackSize);
                 }
             }
         }

@@ -21,6 +21,8 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
         ItemStack tome = null;
         int amount = 0;
         int valid = 0;
+
+
         for (int count = 0; count < inv.getSizeInventory(); count++) {
             ItemStack stack = inv.getStackInSlot(count);
             if (stack != null) {
