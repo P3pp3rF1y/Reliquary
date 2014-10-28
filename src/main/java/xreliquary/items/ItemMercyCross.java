@@ -8,10 +8,7 @@ import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityGhast;
@@ -90,13 +87,20 @@ public class ItemMercyCross extends ItemSword {
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, EntityLivingBase monster, EntityLivingBase player) {
-        if (player instanceof EntityPlayer) {
-            monster.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 6);
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity monster) {
+        if (monster instanceof EntityLiving) {
+            if (isUndead((EntityLiving)monster)) {
+                monster.worldObj.spawnParticle("largeexplode", monster.posX + (itemRand.nextFloat() - 0.5F), monster.posY + (itemRand.nextFloat() - 0.5F) + (monster.height / 2), monster.posZ + (itemRand.nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
+            }
         }
-        if (isUndead(monster)) {
-            monster.worldObj.spawnParticle("largeexplode", monster.posX, monster.posY + monster.height / 2, monster.posZ, 0.0F, 0.0F, 0.0F);
-            monster.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) player), 6);
+        return super.onLeftClickEntity(stack, player, monster);
+    }
+
+    @Override
+    public boolean hitEntity(ItemStack stack, EntityLivingBase monster, EntityLivingBase player) {
+        int dmg = isUndead(monster) ? 12 : 6;
+        if (player instanceof EntityPlayer) {
+            monster.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) player), dmg);
         }
         return true;
     }
