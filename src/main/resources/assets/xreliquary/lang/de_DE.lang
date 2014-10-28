@@ -1,40 +1,31 @@
 itemGroup.xreliquary=Reliquary
 
-gui.tome.text=Das Buch der Alkahestrie;ermöglicht die Kreierung;anderer Ressourcen aus;Redstone oder Glowstone.;Shift-Rechtsklick auto-absorbiert jenes,;um sich wiederaufzuladen.
+gui.tome.text=Das Buch der Alkahestrie;ermöglicht die Kreierung;anderer Ressourcen aus;Redstone oder Glowstone.;Shift-Rechtsklick auto-absorbiert jenes,;um sich wiederaufzuladen.;Du kannst Altare rechtsklicken,;um sie aufzufüllen.
 
 tooltip.absorb={{!colors.light_purple}}Shift-Rechtsklicke, um Auto-Absorption zu (de-)aktivieren.
 tooltip.absorb_active={{!colors.purple}}Absorbiert automatisch: {{item}}{{!colors.purple}}.
 tooltip.absorb_tear={{!colors.purple}}Lässt immer einen Stack des Items im Inventar.
 
-tooltip.tear=Hält aktuell: {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
-tooltip.tear_empty=Hält aktuell nichts.
-tooltip.tear_quantity=Hält aktuell: {{!colors.yellow}}{{amount}}{{!colors.light_gray}} mal {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+item.alkahest_tome.name=Buch der Alkahestrie
+item.alkahest_tome.tooltip={{!colors.rose}}Ladung: {{redstoneAmount}}/{{redstoneLimit}};Shift-rechtsklicke, um Redstone zu absorbieren.;Rechtsklicke zum lesen.
 
 tile.altar_idle.name=Altar des Lichts
+tile.altar_idle.tooltip=Füttere ihn mit Redstone und;er wird Glowstone produzieren.
 tile.altar.name=Altar des Lichts
-tile.lilypad.name=Seerose der Fruchtbarkeit
-tile.wraith_node.name=Geisternodie
-tile.interdiction_torch.name={{!colors.yellow}}Bannfackel
-tile.interdiction_torch.tooltip=Scheint Monster abzustoßen. Das könnte nützlich werden.
+
+item.angelheart_vial.name=Engelherz-Phiole
+item.angelheart_vial.tooltip=Belebt dich einmalig wieder;und zerbricht.
+
+item.angelic_feather.name=Engelsfeder
+item.angelic_feather.tooltip=Schützt dich vor Fall,;was dich stattdessen hungrig macht.
+
 tile.apothecary_cauldron.name=Apothekerkessel
-tile.apothecary_cauldron.tooltip=Damit braut man Tränke auf die stilvolle Art.
+tile.apothecary_cauldron.tooltip=Damit braut man Tränke;aus Trankessenz.
 tile.apothecary_mortar.name=Apothekermörser
-tile.apothecary_mortar.tooltip=Damit mahlt man Trankessenzen;auf die stilvolle Art.
-
-item.handgun.name=Pistole des Jägers
-item.handgun.tooltip=Für die Gerechtigkeit!;Rechtsklick feuert, halte zum nachladen.
-
-item.gun_part_0.name=Pistolengriff
-item.gun_part_1.name=Pistolenlauf
-item.gun_part_2.name=Pistolenhammer
-item.gun_part_0.tooltip=Dies ist eines von drei Pistolenteilen.
-item.gun_part_1.tooltip=Dies ist eines von drei Pistolenteilen.
-item.gun_part_2.tooltip=Dies ist eines von drei Pistolenteilen.
+tile.apothecary_mortar.tooltip=Damit mahlt man Zutaten;zu Trankessenz.
 
 item.bullet_0.name=Leere Hülle
-item.bullet_0.tooltip=Eine leere Hülle.
 item.bullet_1.name=Neutrale Kugel
-item.bullet_1.tooltip=Eine ordinäre Kugel.
 item.bullet_2.name=Exorzismuskugel
 item.bullet_2.tooltip=Effektiv gegen Untote.
 item.bullet_3.name=Lohenkugel
@@ -52,6 +43,85 @@ item.bullet_8.tooltip=Blendet Ziel. Vernichtet Creeper.
 item.bullet_9.name=Sturmkugel
 item.bullet_9.tooltip=Sorgt für atmosphärische Merkwürdigkeiten.
 
+item.destruction_catalyst.name=Zerstörungskatalysator
+item.destruction_catalyst.tooltip=Verbraucht Schwarzpulver, um Blöcke zu zerstören.;{{!colors.yellow}}Ladung: {{charge}};Shift + Rechtsklick zum Aufladen.
+
+item.emperor_chalice.name=Kaiserlicher Kelch
+item.emperor_chalice.tooltip=Ein unendlicher Wassereimer.;Aktiviere, um Wasser aufzunehmen.;Deaktiviere, um Wasser zu platzieren;Trinken macht dich satt,;kostet aber Lebensenergie.
+
+item.elsewhere_flask.name=Woandersbuddel
+item.elsewhere_flask.tooltip=Genehmige dir die Tränke in ihr gleichzeitig.{{contents}}
+
+item.ender_staff.name=Enderstab
+item.ender_staff.tooltip={{!colors.purple}}Enderperlen: {{charge}};Shift + Rechtsklick zum Aufladen.;Shift + Linksklick zum Moduswechseln.;[Wurf/Weitwurf/Nodienwarp oder Binden];{{!colors.purple}}{{phrase}}{{position}}
+
+item.fortune_coin.name=Münze des Schicksals
+item.fortune_coin.tooltip=Zieht nahe Items und XP an.;Shift-Rechtsklick zum (de-)aktivieren.;Halte Rechtsklick für Super-Vakuum.
+
+item.glacial_staff.name=Glazialstab
+item.glacial_staff.tooltip=Schießt Schneebälle,; friert Gegner durch Schlagen; und den Boden,; auf dem du gehst, ein.;{{!colors.blue}}Ladung: {{charge}}
+
+item.glowing_water.name=Leuchtendes Wasser
+item.glowing_water.tooltip=Vernichtet Untote.
+
+item.glowing_bread.name=Leuchtendes Brot
+item.glowing_bread.tooltip=Macht sehr satt.
+
+item.gun_part_0.name=Pistolengriff
+item.gun_part_1.name=Pistolenlauf
+item.gun_part_2.name=Pistolenhammer
+
+item.handgun.name=Pistole des Jägers
+item.handgun.tooltip=Für die Gerechtigkeit!;Rechtsklick feuert, halte zum nachladen.
+
+item.harvest_rod.name={{!colors.green}}Ernterute
+item.harvest_rod.tooltip=Klicke auf Blöcke zum Düngen,;schlage Feldfrüchte, um einen großen Bereich abzuernten.{{!colors.green}}Ladung: {{charge}};Shift + Rechtsklick zum Aufladen.
+
+item.heart_pearl_0.name={{!colors.rose}}Zombie-Herzperle
+item.heart_zhu_0.name={{!colors.rose}}Nian Zhu (Zombie)
+item.heart_zhu_0.tooltip=Zombies können dich hiermit nicht sehen.
+item.heart_pearl_1.name={{!colors.white}}Skelett-Herzperle
+item.heart_zhu_1.name={{!colors.white}}Nian Zhu (Skelett)
+item.heart_zhu_1.tooltip=Skelette können dich hiermit nicht sehen.
+item.heart_pearl_2.name={{!colors.gray}}Witherskelett-Herzperle
+item.heart_zhu_2.name={{!colors.gray}}Nian Zhu (Witherskelett)
+item.heart_zhu_2.tooltip=Witherskelette können dich hiermit nicht sehen.
+item.heart_pearl_3.name={{!colors.light_green}}Creeper-Herzperle
+item.heart_zhu_3.name={{!colors.light_green}}Nian Zhu (Creeper)
+item.heart_zhu_3.tooltip=Creeper können dich hiermit nicht sehen.
+
+item.hero_medallion.name=Heldenmedallion
+item.hero_medallion.tooltip={{!colors.green}}Erfahrung: {{experience}};Speichert deine Erfahrungen.;Shift + Rechtsklick zum Aufladen.;Rechtsklick, um Level herauszurücken.
+
+item.holy_hand_grenade.name=Heilige Handgranate
+item.holy_hand_grenade.tooltip=Eine mächtige Waffe, die weder Blöcke; noch den Werfer vernichtet.
+
+item.ice_magus_rod.name=Eis-Magiestab
+item.ice_magus_rod.tooltip=Lobbt schmerzhafte Schneebälle.;{{!colors.blue}}Ladung: {{charge}};Shift + Rechtsklick zum Aufladen.
+
+item.infernal_chalice.name=Höllenkelch
+item.infernal_chalice.tooltip=Schützt dich vor Lavaschaden.;{{!colors.red}}Hält {{amount}} mB an Lava
+
+item.infernal_claws.name={{!colors.red}}Höllenklauen
+item.infernal_claws.tooltip=Absorbiert Feuerschaden,;welcher dich stattdessen hungrig macht.
+
+item.infernal_tear.name={{!colors.red}}Höllenträne
+item.infernal_tear.tooltip=Brennt Items in ihre rohe Essenz nieder.;Könnte sich als eine gute Brauzutat machen.
+
+tile.interdiction_torch.name={{!colors.yellow}}Bannfackel
+tile.interdiction_torch.tooltip=Scheint Monster abzustoßen. Das könnte nützlich werden.
+
+item.kraken_shell.name=Seekrakenpanzer
+item.kraken_shell.tooltip=Verbessert deine Beweglichkeit;im Wasser.;Absorbiert Schaden durch Ertrinken,;welcher dich stattdessen hungrig macht.
+
+item.lantern_of_paranoia.name={{!colors.yellow}}Laterne der Paranoia
+item.lantern_of_paranoia.tooltip=Platziert automatisch Fackeln;in unbeleuchteten Gebieten.
+
+tile.lilypad.name=Seerose der Fruchtbarkeit
+
+item.magicbane.name=Magiefluch
+item.magicbane.tooltip=Ein rostfreies, verzaubertes Artefakt.;Leider nicht unzerstörbar.
+
 item.magazine_0.name=Leeres Magazin
 item.magazine_1.name=Neutrales Magazin
 item.magazine_2.name=Exorzismusmagazin
@@ -63,132 +133,31 @@ item.magazine_7.name=Suchermagazin
 item.magazine_8.name=Sandmagazin
 item.magazine_9.name=Sturmmagazin
 
-item.magazine_0.tooltip=Nur ein leeres Magazin.
-item.magazine_1.tooltip=Ordinäre Kugeln.
-
 item.mercy_cross.name=Kreuz der Gnade
 item.mercy_cross.tooltip="Verdammt, das Ding ist schwer!";Das, mein Freund, liegt an;all der Gnade in ihm.
-
-item.sojourner_staff.name=Zepter des Weilens
-item.sojourner_staff.tooltip=Consumes torches, can place them;long distance, but costs extra.;{{!colors.yellow}}Contents:;{{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}}
-
-item.alkahest_tome.name=Buch der Alkahestrie
-item.alkahest_tome.tooltip={{!colors.rose}}Ladung: {{redstoneAmount}}/{{redstoneLimit}};Es steht geschrieben: Vollziehe grundlegende, mäßige oder;fortgeschrittene Alkahestrie, was auch immer das ist.
-
-item.holy_hand_grenade.name=Heilige Handgranate
-item.holy_hand_grenade.tooltip=Tötet Monster, nicht Blöcke; oder wer auch immer sie geworfen hat.
-
-item.fortune_coin.name=Münze des Schicksals
-item.fortune_coin.tooltip=Zieht nahe Items und XP an.;Shift-Rechtsklick zum (de-)aktivieren.;Halte Rechtsklick für Super-Vakuum.
-
-item.glowing_water.name=Leuchtendes Wasser
-item.glowing_water.tooltip=Vernichtet Untote. Leuchtifiziert Dinge.;Wird in vielen Rezepten genutzt.
-
-item.glowing_bread.name=Leuchtendes Brot
-item.glowing_bread.tooltip=Leuchtend und lecker.
 
 item.midas_touchstone.name=Prüfstein des Midas
 item.midas_touchstone.tooltip=Repariert Items aus Gold,;verbraucht Glowstone-Staub.;{{!colors.yellow}}Ladung: {{charge}}
 
-item.emperor_chalice.name=Kaiserlicher Kelch
-item.emperor_chalice.tooltip=Ein unendlicher Wassereimer,;es sei denn, du trinkst aus ihm.;Tauscht Leben gegen Hunger...
+item.mob_ingredient_0.name=Rippenknochen
+item.mob_ingredient_1.name=Verfallene Rippe
+item.mob_ingredient_2.name=Chelicere
+item.mob_ingredient_3.name=Katalytische Drüse
+item.mob_ingredient_4.name=Schleimperle
+item.mob_ingredient_5.name=Fledermausflügel
+item.mob_ingredient_6.name=Zombieherz
+item.mob_ingredient_7.name=Schmelzkern
+item.mob_ingredient_8.name=Auge des Sturms
+item.mob_ingredient_9.name=Fruchtbare Essenz
+item.mob_ingredient_10.name=Frostkern
+item.mob_ingredient_11.name=Nebulöses Herz
+item.mob_ingredient_12.name=Tintenfischschnabel
+item.mob_ingredient_13.name=Höllenklaue
+item.mob_ingredient_14.name=Seekrakenpanzerfragment
+item.mob_ingredient_15.name=Karmesintuch
 
-item.salamander_eye.name=Salamanderauge
-item.salamander_eye.tooltip=Schützt gegen Lohen-Feuerbälle und reflektiert;Ghast-Feuerbälle, während es gehalten wird.;Löscht Feuer an dir und in deiner Nähe.
-
-item.destruction_catalyst.name=Zerstörungskatalysator
-item.destruction_catalyst.tooltip=Verbraucht nicht weniger als 3 Schwarzpulver bei Rechtsklick.;Jagt einen 3x3x3-Würfel hinder dem Zielblock in die Luft.;{{!colors.white}}Zerstört nur profane Blöcke.;{{!colors.yellow}}Ladung: {{charge}}
-
-item.ice_magus_rod.name=Eis-Magiestab
-item.ice_magus_rod.tooltip=Verbraucht Schneebälle im Inventar.;Macht Schneebälle ein wenig kälter...;{{!colors.blue}}Ladung: {{charge}}
-
-item.glacial_staff.name=Glazialstab
-item.glacial_staff.tooltip=Schießt Schneebälle,; fegt Blätter von Bäumen; und friert den Boden ein,; auf dem du gehst.;{{!colors.blue}}Ladung: {{charge}}
-
-item.rod_of_lyssa.name=Lyssa's Rute
-item.rod_of_lyssa.tooltip=Eine magische Angelrute, die;du zum Einholen von Items und;zum Taschendiebstahl verwenden kannst.
-
-item.shears_of_winter.name=Schere des Winters
-item.shears_of_winter.tooltip=Magische Schere, die mit Kälte; die Blätter von Bäumen fegt.
-
-item.pyromancer_staff.name={{!colors.red}}Pyromantenstab
-item.pyromancer_staff.tooltip=Schießt Feuer aller Art,;entzündet Blöcke,;löscht Flammen;und schützt dich vor;feurigen Attacken.;{{!colors.red}}Ladungen: {{charges}};{{!colors.red}}Lohe: {{blaze}}
-
-item.rending_gale.name={{!colors.yellow}}Helfender Sturm
-item.rending_gale.tooltip=Fliege per Rechtsklick in die Rightung, in die du schaust.; Linksklick beschwört eine Windsäule herauf.;{{!colors.yellow}}Ladung: {{charge}}
-
-item.harvest_rod.name={{!colors.green}}Ernterute
-item.harvest_rod.tooltip=Shift+Rechtsklicke, um Knochenmehl zu absorbieren.;Klicke auf Blöcke zum Düngen,;schlage Feldfrüchte, um einen großen Bereich abzuernten.{{!colors.green}}Ladung: {{charge}}
-
-item.magicbane.name=Magiefluch
-item.magicbane.tooltip=Ein rostfreies, verzaubertes Artefakt.;Leider nicht unzerstörbar.
-
-item.witherless_rose.name=Nie welkende Rose
-item.witherless_rose.tooltip=Durch das Verzaubern dieser Rose mit Nethersternen; ist der Träger gegen den Wither-Effekt geschützt.
-
-item.twilight_cloak.name=Zwielichtumhang
-item.twilight_cloak.tooltip=Macht dich unsichtbar bei Nacht.
-
-item.void_tear_empty.name=Leere Leerträne
-item.void_tear.name=Leerträne
-
-item.hero_medallion.name=Heldenmedallion
-item.hero_medallion.tooltip={{!colors.green}}Erfahrung: {{experience}};Wenn du mal einfach einen Ort brauchst,;um all diese Erfahrung zu speichern.
-
-item.ender_staff.name=Enderstab
-item.ender_staff.tooltip={{!colors.purple}}Enderperlen: {{charge}};Linksklick wirft sie.;Shift + Rechtsklick, um Perlen zu absorbieren.;Rechtsklick auf eine Geisternodie verbindet beides,;was dir erlaubt, bei Bedarf zu ihr zurückzukehren.;{{!colors.purple}}{{phrase}}{{position}}
-
-item.angelic_feather.name=Engelsfeder
-item.angelic_feather.tooltip=Schützt dich vor Fall,;was dich stattdessen hungrig macht.
-
-item.phoenix_down.name=Phönixdaunen
+item.phoenix_down.name=Phönixdaune
 item.phoenix_down.tooltip=Belebt dich einmalig mit;vollem Leben wieder und wandelt; sich zurück zu einer Engelsfeder.
-
-item.infernal_claws.name={{!colors.red}}Höllenklauen
-item.infernal_claws.tooltip=Absorbiert Feuerschaden,;welcher dich stattdessen hungrig macht.
-
-item.infernal_chalice.name=Höllenkelch
-item.infernal_chalice.tooltip=Schützt dich vor Lavaschaden.;{{!colors.red}}Hält {{amount}} mB an Lava
-
-item.kraken_shell.name=Seekrakenpanzer
-item.kraken_shell.tooltip=Verbessert deine Beweglichkeit;im Wasser.;Absorbiert Schaden durch Ertrinken,;welcher dich stattdessen hungrig macht.
-
-item.angelheart_vial.name=Engelherz-Phiole
-item.angelheart_vial.tooltip=Belebt dich einmalig wieder;und zerbricht.
-
-item.elsewhere_flask.name=Woandersbuddel
-item.elsewhere_flask.tooltip=Genehmige dir die Tränke in ihr gleichzeitig.{{contents}}
-
-item.serpent_staff.name={{!colors.green}}Seeschlangenstab
-item.serpent_staff.tooltip=All das scheußliche Zeug;aus Krakenspucke,;geworfen auf deine Feinde.
-
-item.witch_hat.name={{!colors.yellow}}Hexenhut
-item.witch_hat.tooltip=Alles, was von dieser grässlichen Hexe übrig ist.;Ich frage mich, ob ich ihn irgendwie benutzen könnte.
-
-item.infernal_tear_empty.name={{!colors.yellow}}Leere Höllenträne
-item.infernal_tear_empty.tooltip=Eine leere Höllenträne, Rechtsklicken;absorbiert das dominante Item im Inventar.
-item.infernal_tear.name={{!colors.red}}Höllenträne
-item.infernal_tear.tooltip=Brennt Items in ihre rohe Essenz nieder.;Könnte sich als eine gute Brauzutat machen.
-
-item.lantern_of_paranoia.name={{!colors.yellow}}Laterne der Paranoia
-item.lantern_of_paranoia.tooltip=Platziert automatisch Fackeln;in unbeleuchteten Gebieten.
-
-item.heart_pearl_0.name={{!colors.rose}}Zombie-Herzperle
-item.heart_pearl_0.tooltip=Die komprimierte Essenz eines Zombies.
-item.heart_zhu_0.name={{!colors.rose}}Nian Zhu (Zombie)
-item.heart_zhu_0.tooltip=Dieses Nian Zhu vertreibt Zombies.
-item.heart_pearl_1.name={{!colors.white}}Skelett-Herzperle
-item.heart_pearl_1.tooltip=Die komprimierte Essenz eines Skeletts.
-item.heart_zhu_1.name={{!colors.white}}Nian Zhu (Skelett)
-item.heart_zhu_1.tooltip=Dieses Nian Zhu vertreibt Skelette.
-item.heart_pearl_2.name={{!colors.gray}}Witherskelett-Herzperle
-item.heart_pearl_2.tooltip=Die komprimierte Essenz eines Witherskeletts.
-item.heart_zhu_2.name={{!colors.gray}}Nian Zhu (Witherskelett)
-item.heart_zhu_2.tooltip=Dieses Nian Zhu vertreibt Witherskelette.
-item.heart_pearl_3.name={{!colors.light_green}}Creeper-Herzperle
-item.heart_pearl_3.tooltip=Die komprimierte Essenz eines Creepers.
-item.heart_zhu_3.name={{!colors.light_green}}Nian Zhu (Creeper)
-item.heart_zhu_3.tooltip=Dieses Nian Zhu vertreibt Creeper.
 
 item.potion_0.name=Konzentriertes Trankserum
 item.potion_1.name=Liebestrank
@@ -264,35 +233,40 @@ potion.resistance.name=Rüstung
 potion.fireresistance.name=Feuerfest
 potion.milk.name=Kurieren
 
-item.mob_ingredient_0.name=Rippenknochen
-item.mob_ingredient_0.tooltip=Ein Stück des Brustkorbs eines Skeletts.
-item.mob_ingredient_1.name=Verfallene Rippe
-item.mob_ingredient_1.tooltip=Ein Stück des Brustkorbs eines Witherskeletts.
-item.mob_ingredient_2.name=Chelicere
-item.mob_ingredient_2.tooltip=Die Mundwerkzeuge einer Spinne.;Sie wird sie nicht vermissen.
-item.mob_ingredient_3.name=Katalytische Drüse
-item.mob_ingredient_3.tooltip=Eine Drüse, die explosive Chemikalien produziert.
-item.mob_ingredient_4.name=Schleimperle
-item.mob_ingredient_4.tooltip=Ein dichtes Juwel aus einem Schleim.
-item.mob_ingredient_5.name=Fledermausflügel
-item.mob_ingredient_5.tooltip=Der Flügel einer aktuell flügellosen Fledermaus.
-item.mob_ingredient_6.name=Zombieherz
-item.mob_ingredient_6.tooltip=Das nekrotische Herz eines Zombies.
-item.mob_ingredient_7.name=Schmelzkern
-item.mob_ingredient_7.tooltip=Der feurige Kern einer Netherkreatur.
-item.mob_ingredient_8.name=Auge des Sturms
-item.mob_ingredient_8.tooltip=Der überladene Kern eines elektrifizierten Creepers.
-item.mob_ingredient_9.name=Fruchtbare Essenz
-item.mob_ingredient_9.tooltip=Fruchtbarkeit in ihrer reinsten Form.
-item.mob_ingredient_10.name=Frostkern
-item.mob_ingredient_10.tooltip=Der gefrorene Kern einer eisigen Kreatur.
-item.mob_ingredient_11.name=Nebulöses Herz
-item.mob_ingredient_11.tooltip=Eine seltsame pulsierende Energiequelle.
-item.mob_ingredient_12.name=Tintenfischschnabel
-item.mob_ingredient_12.tooltip=Irgendwo da draußen gibt es;einen sehr traurigen, sehr;schnabellosen Tintenfisch.
-item.mob_ingredient_13.name=Höllenklaue
-item.mob_ingredient_13.tooltip=Eine Klaue, aus Nethermaterialien gemacht.;Sie hat feurige Eigenschaften.
-item.mob_ingredient_14.name=Seekrakenpanzerfragment
-item.mob_ingredient_14.tooltip=Ein seetüchtiger Monsterschnabel;zu einer feinen;Hülle gefertigt.
-item.mob_ingredient_15.name=Karmesintuch
-item.mob_ingredient_15.tooltip=Blutrotes Tuch, vollgesogen;mit alchemischem Gebräu.
+item.pyromancer_staff.name={{!colors.red}}Pyromantenstab
+item.pyromancer_staff.tooltip=Schießt Feuer aller Art,;entzündet Blöcke,;löscht Flammen;und schützt dich vor;feurigen Attacken.;{{!colors.red}}Ladungen: {{charges}};{{!colors.red}}Lohe: {{blaze}}
+
+item.rending_gale.name={{!colors.yellow}}Helfender Sturm
+item.rending_gale.tooltip=Fliege per Rechtsklick in die Rightung, in die du schaust.; Linksklick beschwört eine Windsäule herauf.;{{!colors.yellow}}Ladung: {{charge}}
+
+item.rod_of_lyssa.name=Lyssa's Rute
+item.rod_of_lyssa.tooltip=Eine magische Angelrute, die;du zum Einholen von Items und;zum Taschendiebstahl verwenden kannst.
+
+item.salamander_eye.name=Salamanderauge
+item.salamander_eye.tooltip=Schützt gegen Lohen-Feuerbälle und reflektiert;Ghast-Feuerbälle, während es gehalten wird.;Löscht Feuer an dir und in deiner Nähe.
+
+item.serpent_staff.name={{!colors.green}}Seeschlangenstab
+item.serpent_staff.tooltip=All das scheußliche Zeug;aus Krakenspucke,;geworfen auf deine Feinde.
+
+item.shears_of_winter.name=Schere des Winters
+item.shears_of_winter.tooltip=Magische Schere, die mit Kälte; die Blätter von Bäumen fegt.
+
+item.sojourner_staff.name=Zepter des Weilens
+item.sojourner_staff.tooltip=Consumes torches, can place them;long distance, but costs extra.;{{!colors.yellow}}Contents:;{{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}}
+
+item.twilight_cloak.name=Zwielichtumhang
+item.twilight_cloak.tooltip=Macht dich unsichtbar bei Nacht.
+
+item.witch_hat.name={{!colors.yellow}}Hexenhut
+
+item.void_tear_empty.name=Leere Leerträne
+item.void_tear.name=Leerträne
+
+tooltip.tear=Hält aktuell: {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+tooltip.tear_empty=Hält aktuell nichts.
+tooltip.tear_quantity=Hält aktuell: {{!colors.yellow}}{{amount}}{{!colors.light_gray}} mal {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+
+item.witherless_rose.name=Nie welkende Rose
+item.witherless_rose.tooltip=Durch das Verzaubern dieser Rose mit Nethersternen; ist der Träger gegen den Wither-Effekt geschützt.
+
+tile.wraith_node.name=Geisternodie
