@@ -75,7 +75,7 @@ item.handgun.name=Hunter's Handgun
 item.handgun.tooltip=For great justice.;Right click fires, hold to reload.
 
 item.harvest_rod.name={{!colors.green}}Harvest Rod
-item.harvest_rod.tooltip=Right-click to fertilize,;breaks crops in an area.{{!colors.green}}Charge: {{charge}};Shift + Right-Click to charge.
+item.harvest_rod.tooltip=Right-click to fertilize,;breaks crops in an area.;{{!colors.green}}Charge: {{charge}};Shift + Right-Click to charge.
 
 item.heart_pearl_0.name={{!colors.rose}}Zombie Pearl
 item.heart_zhu_0.name={{!colors.rose}}Zombie Nian Zhu
