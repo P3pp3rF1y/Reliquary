@@ -89,9 +89,11 @@ public class ItemHeroMedallion extends ItemToggleable {
             EntityPlayer player = (EntityPlayer) e;
             // in order to make this stop at a specific level, we will need to do
             // a preemptive check for a specific level.
-            if ((player.experienceLevel > getExperienceMinimum() || player.experience > 0F) && getExperience(ist) < Integer.MAX_VALUE) {
-                decreasePlayerExperience(player);
-                increaseMedallionExperience(ist);
+            for (int levelLoop = 0; levelLoop <= Math.sqrt(player.experienceLevel); ++levelLoop) {
+                if ((player.experienceLevel > getExperienceMinimum() || player.experience > 0F) && getExperience(ist) < Integer.MAX_VALUE) {
+                    decreasePlayerExperience(player);
+                    increaseMedallionExperience(ist);
+                }
             }
         }
     }
@@ -104,8 +106,8 @@ public class ItemHeroMedallion extends ItemToggleable {
             decreasePlayerLevel(player);
             return;
         }
-        player.experience -= 1.0F / (float) player.xpBarCap();
-        player.experienceTotal -= 1;
+        player.experience -= Math.min(1.0F / (float) player.xpBarCap(), player.experience);
+        player.experienceTotal -= Math.min(1, player.experienceTotal);
     }
 
     public void decreaseMedallionExperience(ItemStack ist) {
@@ -114,7 +116,7 @@ public class ItemHeroMedallion extends ItemToggleable {
 
     public void decreasePlayerLevel(EntityPlayer player) {
         player.experience = 1.0F - (1.0F / (float) player.xpBarCap());
-        player.experienceTotal -= 1;
+        player.experienceTotal -= Math.min(1, player.experienceTotal);
         player.experienceLevel -= 1;
     }
 
