@@ -6,6 +6,7 @@ import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import lib.enderwizards.sandstone.util.LanguageHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -23,6 +24,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 
@@ -62,6 +64,8 @@ public class ItemPyromancerStaff extends ItemToggleable {
     @Override
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
         //maps the contents of the Pyromancer's staff to a tooltip, so the player can review the torches stored within.
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+            return;
         String charges = "0";
         String blaze = "0";
         NBTTagCompound tagCompound = NBTHelper.getTag(ist);
@@ -81,6 +85,10 @@ public class ItemPyromancerStaff extends ItemToggleable {
             }
         }
         this.formatTooltip(ImmutableMap.of("charges", charges, "blaze", blaze), ist, list);
+        if(this.isEnabled(ist))
+            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.RED + Items.blaze_powder.getItemStackDisplayName(new ItemStack(Items.blaze_powder)) + EnumChatFormatting.WHITE + " & " + EnumChatFormatting.RED + Items.fire_charge.getItemStackDisplayName(new ItemStack(Items.fire_charge))), ist, list);
+
+        LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
 

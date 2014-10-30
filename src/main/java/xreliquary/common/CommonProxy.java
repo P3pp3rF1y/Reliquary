@@ -103,6 +103,7 @@ public class CommonProxy {
     }
 
     public void initOptions() {
+        int itemCap = 9999;
         int cleanShortMax = 30000;
         int cleanIntMax = 2000000000;
 
@@ -189,7 +190,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.mob_drop_probability, Names.ender_heart + "_looting", new ConfigReference(5));
 
         //alkahestry tome configs
-        Reliquary.CONFIG.require(Names.alkahestry_tome, "redstone_limit", new ConfigReference(250).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.alkahestry_tome, "redstone_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
 
         //altar configs
         Reliquary.CONFIG.require(Names.altar, "redstone_cost", new ConfigReference(3).setMinimumValue(0));
@@ -208,7 +209,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.destruction_catalyst, "mundane_blocks", new ConfigReference(new ArrayList<String>(ItemDestructionCatalyst.ids)));
         Reliquary.CONFIG.require(Names.destruction_catalyst, "gunpowder_cost", new ConfigReference(3).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.destruction_catalyst, "gunpowder_worth", new ConfigReference(1).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.destruction_catalyst, "gunpowder_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
+        Reliquary.CONFIG.require(Names.destruction_catalyst, "gunpowder_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
         Reliquary.CONFIG.require(Names.destruction_catalyst, "explosion_radius", new ConfigReference(1).setMinimumValue(1).setMaximumValue(5));
         Reliquary.CONFIG.require(Names.destruction_catalyst, "centered_explosion", new ConfigReference(false));
         Reliquary.CONFIG.require(Names.destruction_catalyst, "perfect_cube", new ConfigReference(true));
@@ -220,7 +221,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_cast_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_node_warp_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_worth", new ConfigReference(1).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
+        Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
         Reliquary.CONFIG.require(Names.ender_staff, "node_warp_cast_time", new ConfigReference(60).setMinimumValue(10));
 
         //fortune coin configs
@@ -229,7 +230,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.fortune_coin, "long_range_pull_distance", new ConfigReference(15));
 
         //glacial staff configs
-        Reliquary.CONFIG.require(Names.glacial_staff, "snowball_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
+        Reliquary.CONFIG.require(Names.glacial_staff, "snowball_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
         Reliquary.CONFIG.require(Names.glacial_staff, "snowball_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.glacial_staff, "snowball_worth", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.glacial_staff, "snowball_damage", new ConfigReference(3).setMinimumValue(0));
@@ -237,7 +238,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.glacial_staff, "snowball_damage_bonus_blaze", new ConfigReference(6).setMinimumValue(0));
 
         //harvest rod configs
-        Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
+        Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
         Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_worth", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_luck_percent_chance", new ConfigReference(33).setMinimumValue(1).setMaximumValue(100));
@@ -250,7 +251,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.hero_medallion, "experience_limit", new ConfigReference(cleanIntMax).setMinimumValue(0).setMaximumValue(cleanIntMax));
 
         //ice rod configs
-        Reliquary.CONFIG.require(Names.ice_magus_rod, "snowball_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
+        Reliquary.CONFIG.require(Names.ice_magus_rod, "snowball_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
         Reliquary.CONFIG.require(Names.ice_magus_rod, "snowball_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.ice_magus_rod, "snowball_worth", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.ice_magus_rod, "snowball_damage", new ConfigReference(2).setMinimumValue(0));
@@ -288,7 +289,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.midas_touchstone, "ticks_between_repair_ticks", new ConfigReference(4).setMinimumValue(1).setMaximumValue(cleanShortMax));
         Reliquary.CONFIG.require(Names.midas_touchstone, "glowstone_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.midas_touchstone, "glowstone_worth", new ConfigReference(4).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.midas_touchstone, "glowstone_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
+        Reliquary.CONFIG.require(Names.midas_touchstone, "glowstone_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
 
         //phoenix down configs
         Reliquary.CONFIG.require(Names.phoenix_down, "hunger_cost_percent", new ConfigReference(25).setMinimumValue(0));
@@ -302,11 +303,11 @@ public class CommonProxy {
 
         //pyromancer staff configs
         Reliquary.CONFIG.require(Names.pyromancer_staff, "hunger_cost_percent", new ConfigReference(5).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.pyromancer_staff, "fire_charge_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
+        Reliquary.CONFIG.require(Names.pyromancer_staff, "fire_charge_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "fire_charge_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "fire_charge_worth", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "ghast_absorb_worth", new ConfigReference(1).setMinimumValue(0));
-        Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_powder_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(cleanIntMax));
+        Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_powder_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_powder_cost", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_powder_worth", new ConfigReference(1).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_absorb_worth", new ConfigReference(1).setMinimumValue(0));
@@ -331,7 +332,7 @@ public class CommonProxy {
         //sojourners staff configs
         List<String> torches = ImmutableList.of();
         Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ConfigReference(torches));
-        Reliquary.CONFIG.require(Names.sojourner_staff, "max_capacity_per_item_type", new ConfigReference(1500).setMinimumValue(1).setMaximumValue(cleanIntMax));
+        Reliquary.CONFIG.require(Names.sojourner_staff, "max_capacity_per_item_type", new ConfigReference(1500).setMinimumValue(1).setMaximumValue(itemCap));
         Reliquary.CONFIG.require(Names.sojourner_staff, "max_range", new ConfigReference(30).setMinimumValue(1).setMaximumValue(30));
         Reliquary.CONFIG.require(Names.sojourner_staff, "tile_per_cost_multiplier", new ConfigReference(6).setMinimumValue(6).setMaximumValue(30));
 

@@ -6,6 +6,7 @@ import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import lib.enderwizards.sandstone.util.LanguageHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,8 +14,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 
@@ -34,8 +37,12 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
-        String charge = Integer.toString(NBTHelper.getInteger("gunpowder", ist));
-        this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+            return;
+        this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("gunpowder", ist))), ist, list);
+        if(this.isEnabled(ist))
+            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.GRAY + Items.gunpowder.getItemStackDisplayName(new ItemStack(Items.gunpowder))), ist, list);
+        LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
     @Override

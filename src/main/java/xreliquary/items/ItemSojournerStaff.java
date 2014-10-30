@@ -8,11 +8,13 @@ import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,6 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import lib.enderwizards.sandstone.util.NBTHelper;
@@ -304,6 +307,8 @@ public class ItemSojournerStaff extends ItemToggleable {
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+            return;
         //maps the contents of the Sojourner's staff to a tooltip, so the player can review the torches stored within.
         String phrase = "Nothing.";
         String placing = "Nothing.";
@@ -326,6 +331,9 @@ public class ItemSojournerStaff extends ItemToggleable {
             }
         }
         this.formatTooltip(ImmutableMap.of("phrase", phrase, "placing", placing), ist, list);
+        if(this.isEnabled(ist))
+            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.YELLOW + getItemStackDisplayName(new ItemStack(Blocks.torch))), ist, list);
+        LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
 

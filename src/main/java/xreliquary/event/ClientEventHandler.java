@@ -335,10 +335,10 @@ public class ClientEventHandler {
 
         if (secondaryStack != null && (staffMode.equals("charge"))) {
             itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX, hudOverlayY + 24);
-            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(secondaryStack.stackSize),hudOverlayX + 18, hudOverlayY + 30, color);
+            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(secondaryStack.stackSize),hudOverlayX + 15, hudOverlayY + 30, color);
         } else if (tertiaryStack != null && (staffMode.equals("eruption") || staffMode.equals("blaze"))) {
             itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), tertiaryStack, hudOverlayX, hudOverlayY + 24);
-            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(tertiaryStack.stackSize),hudOverlayX + 18, hudOverlayY + 30, color);
+            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(tertiaryStack.stackSize),hudOverlayX + 15, hudOverlayY + 30, color);
             if (staffMode.equals("eruption"))
                 minecraft.fontRenderer.drawStringWithShadow(friendlyStaffMode, hudOverlayX, hudOverlayY + 18, color);
         } else if (staffMode.equals("flint_and_steel")) {
@@ -564,7 +564,7 @@ public class ClientEventHandler {
             itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX, hudOverlayY + 24);
         }
 
-        minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize),hudOverlayX + 18, hudOverlayY + 30, color);
+        minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize),hudOverlayX + 15, hudOverlayY + 30, color);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
         GL11.glPopMatrix();

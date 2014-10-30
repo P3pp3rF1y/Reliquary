@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import lib.enderwizards.sandstone.init.ContentInit;
+import lib.enderwizards.sandstone.util.LanguageHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLilyPad;
@@ -13,6 +14,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,6 +23,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 import xreliquary.blocks.BlockFertileLilypad;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.lib.Names;
@@ -47,8 +50,12 @@ public class ItemGlacialStaff extends ItemIceRod {
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
-        String charge = Integer.toString(NBTHelper.getInteger("snowballs", ist));
-        this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+            return;
+        this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("snowballs", ist))), ist, list);
+        if(this.isEnabled(ist))
+            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.BLUE + Items.snowball.getItemStackDisplayName(new ItemStack(Items.snowball))), ist, list);
+        LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
     @Override

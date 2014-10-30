@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 
@@ -34,6 +35,8 @@ public class ItemVoidTear extends ItemToggleable {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+            return;
         this.formatTooltip(null, stack, list);
 
         ItemStack contents = this.getContainedItem(stack);

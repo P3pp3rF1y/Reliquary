@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import lib.enderwizards.sandstone.util.LanguageHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -14,11 +15,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 
@@ -39,8 +38,14 @@ public class ItemRendingGale extends ItemToggleable {
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
-        String charge = Integer.toString(NBTHelper.getInteger("feathers", ist));
-        this.formatTooltip(ImmutableMap.of("charge", charge), ist, list);
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+            return;
+
+        this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("feathers", ist))), ist, list);
+
+        if(this.isEnabled(ist))
+            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.WHITE + Items.feather.getItemStackDisplayName(new ItemStack(Items.feather))), ist, list);
+        LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
     private static int getChargeLimit() { return Reliquary.CONFIG.getInt(Names.rending_gale, "charge_limit"); }

@@ -5,14 +5,19 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
+import lib.enderwizards.sandstone.util.LanguageHelper;
+import net.java.games.input.Component;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -68,8 +73,13 @@ public class ItemHeroMedallion extends ItemToggleable {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-        this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getInteger("experience", stack))), stack, list);
+    public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+            return;
+        this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getInteger("experience", ist))), ist, list);
+        if(this.isEnabled(ist))
+            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.GREEN + "XP"), ist, list);
+        LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
     private int getExperienceMinimum() {

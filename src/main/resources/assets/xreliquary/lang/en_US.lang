@@ -1,13 +1,13 @@
 itemGroup.xreliquary=Reliquary
 
-gui.tome.text=The Tome of Alkahestry;allows you to create;other resources from;Redstone or Glowstone.;Shift + Right-click;auto-absorbs them;to restore its charge.;You can right-click;altars to feed them.
+gui.tome.text=Craft certain items and blocks;with the tome to duplicate them.;You can right-click Altars of;Alkahestry to fuel them with;redstone from the tome.
 
 tooltip.absorb={{!colors.light_purple}}Shift + Right click to toggle auto-absorb.
 tooltip.absorb_active={{!colors.purple}}Automagically absorbs {{item}}{{!colors.purple}}.
 tooltip.absorb_tear={{!colors.purple}}Always leaves a stack of the item in inventory.
 
 item.alkahest_tome.name=Tome of Alkahestry
-item.alkahest_tome.tooltip={{!colors.rose}}Charge: {{redstoneAmount}}/{{redstoneLimit}};Shift + Right-Click to absorb redstone.;Right-click to read.
+item.alkahest_tome.tooltip={{!colors.rose}}Charge: {{redstoneAmount}}/{{redstoneLimit}};Right-click to read.
 
 tile.altar_idle.name=Altar of Light
 tile.altar_idle.tooltip=Feed it redstone and;it will grow glowstone.
@@ -44,7 +44,7 @@ item.bullet_9.name=Storm Shot
 item.bullet_9.tooltip=Stronger during storms,;charges creepers.
 
 item.destruction_catalyst.name=Destruction Catalyst
-item.destruction_catalyst.tooltip=Consumes gunpowder to destroy blocks.;{{!colors.yellow}}Charge: {{charge}};Shift + Right-Click to charge.
+item.destruction_catalyst.tooltip=Consumes gunpowder to destroy blocks.;{{!colors.yellow}}Charge: {{charge}}
 
 item.emperor_chalice.name=Emperor's Chalice
 item.emperor_chalice.tooltip=An infinite water bucket.;Enable to drain water.;Disable to place water.;Drinking restores hunger;in exchange for life.
@@ -53,13 +53,13 @@ item.elsewhere_flask.name=Elsewhere Flask
 item.elsewhere_flask.tooltip=Imbibe potions within it simultaneously.{{contents}}
 
 item.ender_staff.name=Ender Staff
-item.ender_staff.tooltip={{!colors.purple}}Ender Pearls: {{charge}};Shift + Right-click to charge.;Shift + Left-click to change modes.;[Cast/Long Cast/Node Warp or Bind];{{!colors.purple}}{{phrase}}{{position}}
+item.ender_staff.tooltip=Shift + Left-click to cycle modes:;[Cast, Long Cast, Node Warp or Bind];{{!colors.purple}}Ender Pearls: {{charge}};{{!colors.purple}}{{phrase}}{{position}}
 
 item.fortune_coin.name=Coin of Fortune
 item.fortune_coin.tooltip=Draws in items and XP.;Shift+Right to activate.;Hold Right click to super-vacuum.
 
 item.glacial_staff.name=Glacial Staff
-item.glacial_staff.tooltip=Shoots snowballs,;chills enemies on strike; and freezes the ground; you walk on.;{{!colors.blue}}Charge: {{charge}};Shift + Right-Click to charge.
+item.glacial_staff.tooltip=Shoots snowballs, chills enemies on;strike and freezes the ground; you walk on.;{{!colors.blue}}Charge: {{charge}}
 
 item.glowing_water.name=Glowing Water
 item.glowing_water.tooltip=Harms undead enemies.
@@ -75,7 +75,7 @@ item.handgun.name=Hunter's Handgun
 item.handgun.tooltip=For great justice.;Right click fires, hold to reload.
 
 item.harvest_rod.name={{!colors.green}}Harvest Rod
-item.harvest_rod.tooltip=Right-click to fertilize,;breaks crops in an area.;{{!colors.green}}Charge: {{charge}};Shift + Right-Click to charge.
+item.harvest_rod.tooltip=Right-click to fertilize,;breaks crops in an area.;{{!colors.green}}Charge: {{charge}}
 
 item.heart_pearl_0.name={{!colors.rose}}Zombie Pearl
 item.heart_zhu_0.name={{!colors.rose}}Zombie Nian Zhu
@@ -91,16 +91,16 @@ item.heart_zhu_3.name={{!colors.light_green}}Creeper Nian Zhu
 item.heart_zhu_3.tooltip=Creepers can't see you with this.
 
 item.hero_medallion.name=Hero's Medallion
-item.hero_medallion.tooltip={{!colors.green}}Experience: {{experience}};Stores experience for you.;Shift + Right-Click to charge.;Right click to reclaim levels.
+item.hero_medallion.tooltip=Stores experience for you.;Right click to reclaim levels.;{{!colors.green}}Experience: {{experience}}
 
 item.holy_hand_grenade.name=Holy Hand Grenade
 item.holy_hand_grenade.tooltip=A powerful explosive that doesn't;break blocks or hurt the wielder.
 
 item.ice_magus_rod.name=Ice Magus Rod
-item.ice_magus_rod.tooltip=Lobs harmful snowballs.;{{!colors.blue}}Charge: {{charge}};Shift + Right-Click to charge.
+item.ice_magus_rod.tooltip=Lobs harmful snowballs.;{{!colors.blue}}Charge: {{charge}}
 
 item.infernal_chalice.name=Infernal Chalice
-item.infernal_chalice.tooltip=Protects you from lava damage.;{{!colors.red}}Holds {{amount}} mB of Lava;Shift + Right-Click to charge/drain.;Disable to place lava.
+item.infernal_chalice.tooltip=Protects you from lava damage.;{{!colors.red}}Holds {{amount}} mB of Lava;Shift + Right-Click to enable drain-mode.;Disable to place lava.
 
 item.infernal_claws.name={{!colors.red}}Infernal Claws
 item.infernal_claws.tooltip=Absorbs fire damage at;the expense of hunger.
@@ -137,7 +137,7 @@ item.mercy_cross.name=Cross of Mercy
 item.mercy_cross.tooltip=Deals extra damage;to undead creatures.
 
 item.midas_touchstone.name=Touchstone of Midas
-item.midas_touchstone.tooltip=Repairs gold items.;{{!colors.yellow}}Charge: {{charge}};Shift + Right-Click to charge.
+item.midas_touchstone.tooltip=Repairs gold items.;{{!colors.yellow}}Charge: {{charge}}
 
 item.mob_ingredient_0.name=Rib Bone
 item.mob_ingredient_1.name=Withered Rib
@@ -234,10 +234,10 @@ potion.fireresistance.name=Fireproof
 potion.milk.name=Cure
 
 item.pyromancer_staff.name={{!colors.red}}Pyromancer's Staff
-item.pyromancer_staff.tooltip=Shoots blaze and ghast;fireballs, creates firebursts;and lights fires.;{{!colors.red}}Charges: {{charges}};{{!colors.red}}Blaze: {{blaze}};Shift + Right-Click to charge.;Shift + Left-click to change modes.
+item.pyromancer_staff.tooltip=Shoots blaze and ghast;fireballs, creates firebursts;and lights fires.;{{!colors.red}}Charges: {{charges}};{{!colors.red}}Blaze: {{blaze}};Shift + Left-click to change modes.
 
 item.rending_gale.name={{!colors.yellow}}Rending Gale
-item.rending_gale.tooltip=Fly, push and pull mobs,;or shoot lightning;while raining.;Shift + Left-click changes modes.;{{!colors.yellow}}Charge: {{charge}};Shift + Right-Click to charge.
+item.rending_gale.tooltip=Fly, push and pull mobs, or shoot;lightning while raining.;Shift + Left-click changes modes.;{{!colors.yellow}}Charge: {{charge}}
 
 item.rod_of_lyssa.name=Rod of Lyssa
 item.rod_of_lyssa.tooltip=A magic fishing rod that can be;used to reel in items and pick pockets.
@@ -252,7 +252,7 @@ item.shears_of_winter.name=Shears of Winter
 item.shears_of_winter.tooltip=Magic shears that tear the;leaves from trees with cold.
 
 item.sojourner_staff.name=Sojourner's Staff
-item.sojourner_staff.tooltip=Consumes torches, can place them;long distance, but costs extra.;{{!colors.yellow}}Contents:;{{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}};Shift + Right-Click to charge.
+item.sojourner_staff.tooltip=Consumes torches, can place them;long distances, but costs extra.;{{!colors.yellow}}Contents: {{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}}
 
 item.twilight_cloak.name=Twilight Cloak
 item.twilight_cloak.tooltip=Makes you invisible in darkness.
@@ -263,7 +263,7 @@ item.void_tear_empty.name=Empty Void Tear
 item.void_tear.name=Void Tear
 
 tooltip.tear=Currently holds {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
-tooltip.tear_empty=Current holds nothing.
+tooltip.tear_empty=Right-click to capture whatever item you have the most of.
 tooltip.tear_quantity=Current holds {{!colors.yellow}}{{amount}}{{!colors.light_gray}} of {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
 
 item.witherless_rose.name=Witherless Rose

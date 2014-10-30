@@ -8,6 +8,7 @@ import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
+import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.lib.Names;
@@ -199,20 +201,6 @@ public class ItemEnderStaff extends ItemToggleable {
         return ist;
     }
 
-
-//    private int getCooldown(ItemStack ist) {
-//        return NBTHelper.getShort("cooldown", ist);
-//    }
-//
-//    private void setCooldown(ItemStack ist) {
-//        NBTHelper.setShort("cooldown", ist, (short) 20);
-//    }
-//
-//    private void decrementCooldown(ItemStack ist) {
-//        if (NBTHelper.getShort("cooldown", ist) > 0)
-//            NBTHelper.setShort("cooldown", ist, NBTHelper.getShort("cooldown", ist) - 1);
-//    }
-
     private boolean canTeleport(World world, int x, int y, int z) {
         if (!world.isAirBlock(x, y + 1, z) || !world.isAirBlock(x, y + 2, z))
             return false;
@@ -230,6 +218,8 @@ public class ItemEnderStaff extends ItemToggleable {
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean flag) {
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+            return;
         //added spacing here to make sure the tooltips didn't come out with weird punctuation derps.
         String charge = Integer.toString(NBTHelper.getInteger("ender_pearls", ist));
         String phrase = "Currently bound to ";
@@ -242,6 +232,9 @@ public class ItemEnderStaff extends ItemToggleable {
             position = "nowhere.";
         }
         this.formatTooltip(ImmutableMap.of("phrase", phrase, "position", position, "charge", charge), ist, list);
+        if(this.isEnabled(ist))
+            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.GREEN + Items.ender_pearl.getItemStackDisplayName(new ItemStack(Items.ender_pearl))), ist, list);
+        LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
     @Override

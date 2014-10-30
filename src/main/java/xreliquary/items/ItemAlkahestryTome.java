@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.lib.Names;
@@ -88,11 +89,13 @@ public class ItemAlkahestryTome extends ItemToggleable {
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+            return;
         this.formatTooltip(ImmutableMap.of("redstoneAmount", String.valueOf(NBTHelper.getInteger("redstone", ist)), "redstoneLimit", String.valueOf(getRedstoneLimit())), ist, list);
 
         if(this.isEnabled(ist))
             LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.RED + Items.redstone.getItemStackDisplayName(new ItemStack(Items.redstone))), ist, list);
-        list.add(LanguageHelper.getLocalization("tooltip.absorb"));
+        LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
     @Override
