@@ -336,7 +336,7 @@ public class XRRecipes {
             addRecipe(false, false, new ItemStack(getItem(Names.angelic_feather), 1), "dgd", "bfb", "ene", 'd', Items.glowstone_dust, 'g', Items.gold_ingot, 'b', batWing(), 'e', fertileEssence(), 'n', enderHeart(), 'f', Items.feather);
 
         // phoenix down
-        addRecipe(true, false, new ItemStack(getItem(Names.phoenix_down), 1), getItem(Names.angelheart_vial), getItem(Names.angelheart_vial), getItem(Names.angelheart_vial));
+        addRecipe(true, false, new ItemStack(getItem(Names.phoenix_down), 1), getItem(Names.angelheart_vial), getItem(Names.angelheart_vial), getItem(Names.angelheart_vial), getItem(Names.angelic_feather));
 
         // infernal claw
         addRecipe(true, false, infernalClaw(), Items.leather, moltenCore(), ribBone(), slimePearl());
