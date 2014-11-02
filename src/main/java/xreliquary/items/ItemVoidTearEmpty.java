@@ -97,10 +97,12 @@ public class ItemVoidTearEmpty extends ItemBase {
         NBTHelper.setShort("itemMeta", filledTear, (short) target.getItemDamage());
 
         int quantity = InventoryHelper.getItemQuantity(target, inventory);
-        if (isPlayerInventory)
+        if (isPlayerInventory) {
+            quantity = quantity - target.getMaxStackSize();
             InventoryHelper.consumeItem(target, player, target.getMaxStackSize(), quantity - target.getMaxStackSize());
-        else
+        } else {
             InventoryHelper.removeItem(target, inventory, quantity);
+        }
         NBTHelper.setInteger("itemQuantity", filledTear, quantity);
         //configurable auto-drain when created.
         NBTHelper.setBoolean("enabled", filledTear, Reliquary.CONFIG.getBool(Names.void_tear, "absorb_when_created"));
