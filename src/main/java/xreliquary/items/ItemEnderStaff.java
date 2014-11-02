@@ -218,7 +218,7 @@ public class ItemEnderStaff extends ItemToggleable {
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean flag) {
-        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
             return;
         //added spacing here to make sure the tooltips didn't come out with weird punctuation derps.
         String charge = Integer.toString(NBTHelper.getInteger("ender_pearls", ist));

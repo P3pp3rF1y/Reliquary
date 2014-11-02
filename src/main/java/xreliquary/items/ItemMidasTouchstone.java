@@ -33,7 +33,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
-        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
             return;
         this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("glowstone", ist))), ist, list);
         if(this.isEnabled(ist))

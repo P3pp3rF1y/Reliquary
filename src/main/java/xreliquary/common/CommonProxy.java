@@ -196,6 +196,7 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.altar, "redstone_cost", new ConfigReference(3).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.altar, "time_in_minutes", new ConfigReference(20).setMinimumValue(0));
         Reliquary.CONFIG.require(Names.altar, "maximum_time_variance_in_minutes", new ConfigReference(5).setMinimumValue(0));
+        Reliquary.CONFIG.require(Names.altar, "output_light_level_while_active", new ConfigReference(16).setMaximumValue(16).setMinimumValue(0));
 
         //angelic feather configs
         Reliquary.CONFIG.require(Names.angelic_feather, "hunger_cost_percent", new ConfigReference(50).setMinimumValue(0));

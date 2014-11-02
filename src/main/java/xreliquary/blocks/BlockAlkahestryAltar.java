@@ -49,8 +49,12 @@ public class BlockAlkahestryAltar extends BlockContainer {
         this.setResistance(5.0F);
 
         this.setBlockName(isActive ? Names.altar : Names.altar_idle);
-        this.setLightLevel(isActive ? 1.0F : 0.0F);
+        this.setLightLevel(isActive ? getAltarActiveLightLevel() : 0.0F);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
+    }
+
+    private float getAltarActiveLightLevel() {
+        return (float)Reliquary.CONFIG.getInt(Names.altar, "output_light_level_while_active") / 16F;
     }
 
     @SideOnly(Side.CLIENT)

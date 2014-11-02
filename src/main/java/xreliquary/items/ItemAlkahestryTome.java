@@ -89,7 +89,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
             return;
         this.formatTooltip(ImmutableMap.of("redstoneAmount", String.valueOf(NBTHelper.getInteger("redstone", ist)), "redstoneLimit", String.valueOf(getRedstoneLimit())), ist, list);
 

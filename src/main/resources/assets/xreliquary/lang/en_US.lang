@@ -264,7 +264,7 @@ item.void_tear.name=Void Tear
 
 tooltip.tear=Currently holds {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
 tooltip.tear_empty=Right-click to capture whatever item you have the most of.
-tooltip.tear_quantity=Current holds {{!colors.yellow}}{{amount}}{{!colors.light_gray}} of {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+tooltip.tear_quantity=Currently holds {{!colors.yellow}}{{amount}}{{!colors.light_gray}} {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
 
 item.witherless_rose.name=Witherless Rose
 item.witherless_rose.tooltip=With the Nether Stars enchanting this rose;the holder is protected from Withering.
