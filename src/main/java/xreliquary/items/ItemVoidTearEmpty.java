@@ -98,8 +98,8 @@ public class ItemVoidTearEmpty extends ItemBase {
 
         int quantity = InventoryHelper.getItemQuantity(target, inventory);
         if (isPlayerInventory) {
-            quantity = quantity - target.getMaxStackSize();
             InventoryHelper.consumeItem(target, player, target.getMaxStackSize(), quantity - target.getMaxStackSize());
+            quantity = quantity - target.getMaxStackSize();
         } else {
             InventoryHelper.removeItem(target, inventory, quantity);
         }
