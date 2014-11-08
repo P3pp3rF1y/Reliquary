@@ -34,21 +34,19 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 
     public EntityShotBase(World par1World) {
         super(par1World);
-        this.setSize(0.5F, 0.5F);
+        this.setSize(0.01F, 0.01F);
     }
 
     public EntityShotBase(World par1World, double par2, double par4, double par6) {
-        super(par1World);
-        this.setSize(0.5F, 0.5F);
+        this(par1World);
         this.setPosition(par2, par4, par6);
         yOffset = 0.0F;
     }
 
     public EntityShotBase(World par1World, EntityPlayer par2EntityPlayer) {
-        super(par1World);
+        this(par1World);
         shootingEntity = par2EntityPlayer;
         float par3 = 0.8F;
-        this.setSize(0.5F, 0.5F);
         this.setLocationAndAngles(par2EntityPlayer.posX, par2EntityPlayer.posY + par2EntityPlayer.getEyeHeight(), par2EntityPlayer.posZ, par2EntityPlayer.rotationYaw, par2EntityPlayer.rotationPitch);
         posX -= MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
         posY -= 0.2D;
@@ -228,13 +226,6 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
             }
 
             this.moveEntity(motionX, motionY, motionZ);
-//            posX += motionX;
-//            posY += motionY;
-//            posZ += motionZ;
-//            MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
-
-//            this.setPosition(posX, posY, posZ);
-//            this.func_145775_I();
         }
     }
 

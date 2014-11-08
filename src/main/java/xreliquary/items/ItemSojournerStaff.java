@@ -436,16 +436,16 @@ public class ItemSojournerStaff extends ItemToggleable {
         double xOff = player.prevPosX + (player.posX - player.prevPosX) * movementCoefficient;
         double yOff = player.prevPosY + (player.posY - player.prevPosY) * movementCoefficient + 1.62D - player.yOffset;
         double zOff = player.prevPosZ + (player.posZ - player.prevPosZ) * movementCoefficient;
-        Vec3 traceVector = Vec3.createVectorHelper(xOff, yOff, zOff);
+        Vec3 playerVector = Vec3.createVectorHelper(xOff, yOff, zOff);
         float cosTraceYaw = MathHelper.cos(-yawOff * 0.017453292F - (float) Math.PI);
         float sinTraceYaw = MathHelper.sin(-yawOff * 0.017453292F - (float) Math.PI);
         float cosTracePitch = -MathHelper.cos(-pitchOff * 0.017453292F);
         float sinTracePitch = MathHelper.sin(-pitchOff * 0.017453292F);
         float pythagoraStuff = sinTraceYaw * cosTracePitch;
         float pythagoraStuff2 = cosTraceYaw * cosTracePitch;
-        double weirdDistanceCoefficient = 32.0D;
-        Vec3 rayTraceVector = traceVector.addVector(pythagoraStuff * weirdDistanceCoefficient, sinTracePitch * weirdDistanceCoefficient, pythagoraStuff2 * weirdDistanceCoefficient);
-        return world.rayTraceBlocks(traceVector, rayTraceVector, weirdBucketBoolean);
+        double distCoeff = 32.0D;
+        Vec3 rayTraceVector = playerVector.addVector(pythagoraStuff * distCoeff, sinTracePitch * distCoeff, pythagoraStuff2 * distCoeff);
+        return world.rayTraceBlocks(playerVector, rayTraceVector, weirdBucketBoolean);
     }
 
     @Override
