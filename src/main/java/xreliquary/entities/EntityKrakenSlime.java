@@ -3,11 +3,9 @@ package xreliquary.entities;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import xreliquary.Potion.PotionSerpentStaff;
 
 public class EntityKrakenSlime extends EntityThrowable {
 
