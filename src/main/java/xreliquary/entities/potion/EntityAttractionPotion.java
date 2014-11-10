@@ -7,21 +7,21 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-public class EntityCondensedSplashAphrodite extends EntityThrownPotion {
-    public EntityCondensedSplashAphrodite(World par1World) {
+public class EntityAttractionPotion extends EntityThrownPotion {
+    public EntityAttractionPotion(World par1World) {
         super(par1World);
     }
 
-    public EntityCondensedSplashAphrodite(World par1World, EntityPlayer par2EntityPlayer) {
+    public EntityAttractionPotion(World par1World, EntityPlayer par2EntityPlayer) {
         super(par1World, par2EntityPlayer);
     }
 
     @SideOnly(Side.CLIENT)
-    public EntityCondensedSplashAphrodite(World par1World, double par2, double par4, double par6, int par8) {
+    public EntityAttractionPotion(World par1World, double par2, double par4, double par6, int par8) {
         this(par1World, par2, par4, par6);
     }
 
-    public EntityCondensedSplashAphrodite(World par1World, double par2, double par4, double par6) {
+    public EntityAttractionPotion(World par1World, double par2, double par4, double par6) {
         super(par1World, par2, par4, par6);
     }
 

@@ -26,7 +26,7 @@ public class ItemGlowingWater extends ItemBase {
 
     @Override
     public ItemStack getContainerItem(ItemStack ist) {
-        return new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META);
+        return new ItemStack(ContentHandler.getItem(Names.potion), 1, 0);
     }
 
     // returns an empty vial when used in crafting recipes.

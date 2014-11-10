@@ -14,7 +14,6 @@ public class Names {
     public static final String holy_hand_grenade = "holy_hand_grenade";
     public static final String fortune_coin = "fortune_coin";
     public static final String fortune_coin_overlay = "fortune_coin_overlay";
-    public static final String glowing_water = "glowing_water";
     public static final String glowing_bread = "glowing_bread";
     public static final String midas_touchstone = "midas_touchstone";
     public static final String emperor_chalice = "emperor_chalice";
@@ -33,7 +32,6 @@ public class Names {
     public static final String ender_staff = "ender_staff";
     public static final String angelic_feather = "angelic_feather";
     public static final String phoenix_down = "phoenix_down";
-    public static final String angelheart_vial = "angelheart_vial";
     public static final String infernal_claws = "infernal_claws";
     public static final String infernal_chalice = "infernal_chalice";
     public static final String kraken_shell = "kraken_shell";
@@ -72,9 +70,6 @@ public class Names {
     public static final String slime_pearl = "slime_pearl";
     public static final String ender_heart = "nebulous_heart";
     public static final String fertile_essence = "fertile_essence";
-    //public static final String infernal_claw = "infernal_claw";
-
-
 
     public static final String gun_part = "gun_part";
     // potion info
@@ -85,9 +80,11 @@ public class Names {
     public static final String potion_essence = "potion_essence";
     public static final String potion_ingredient = "potion_ingredient";
     public static final String condensed_potion = "condensed_potion";
-    public static final String condensed_potion_splash = "condensed_potion_splash";
-    public static final String condensed_potion_overlay = "condensed_potion_overlay";
-    public static final String condensed_potion_splash_overlay = "condensed_potion_splash_overlay";
+
+    public static final String glowing_water = "glowing_water";
+    public static final String angelheart_vial = "angelheart_vial";
+    public static final String fertile_potion = "fertile_potion";
+    public static final String attraction_potion = "attraction_potion";
 
     // blocks
     public static final String altar_idle = "altar_idle";

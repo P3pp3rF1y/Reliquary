@@ -8,21 +8,21 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class EntityCondensedFertility extends EntityThrownPotion {
-    public EntityCondensedFertility(World par1World) {
+public class EntityFertilePotion extends EntityThrownPotion {
+    public EntityFertilePotion(World par1World) {
         super(par1World);
     }
 
-    public EntityCondensedFertility(World par1World, EntityPlayer par2EntityPlayer) {
+    public EntityFertilePotion(World par1World, EntityPlayer par2EntityPlayer) {
         super(par1World, par2EntityPlayer);
     }
 
     @SideOnly(Side.CLIENT)
-    public EntityCondensedFertility(World par1World, double par2, double par4, double par6, int par8) {
+    public EntityFertilePotion(World par1World, double par2, double par4, double par6, int par8) {
         this(par1World, par2, par4, par6);
     }
 
-    public EntityCondensedFertility(World par1World, double par2, double par4, double par6) {
+    public EntityFertilePotion(World par1World, double par2, double par4, double par6) {
         super(par1World, par2, par4, par6);
     }
 

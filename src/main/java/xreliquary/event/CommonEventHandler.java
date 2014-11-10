@@ -170,30 +170,6 @@ public class CommonEventHandler {
         }
     }
 
-//    public void doPacifiedDebuffCheck(LivingEvent event) {
-//        if (event.entity instanceof EntityLiving) {
-//            EntityLiving entityLiving = ((EntityLiving) event.entity);
-//            if (entityLiving.getAttackTarget() == null)
-//                return;
-//            if (event.entityLiving.isPotionActive(PotionSerpentStaff.mobPacificationDebuff.id)) {
-//                if (event.entity instanceof EntityLiving) {
-//                    ((EntityLiving) event.entity).setAttackTarget(null);
-//                }
-//            }
-//        }
-//    }
-
-    @SubscribeEvent
-    public void onCraftingPotion(PlayerEvent.ItemCraftedEvent event) {
-        for (int slot = 0; slot < event.craftMatrix.getSizeInventory(); slot++) {
-            if (event.craftMatrix.getStackInSlot(slot) == null) continue;
-            if (event.craftMatrix.getStackInSlot(slot).getItem() == ContentHandler.getItem(Names.glowing_water))
-                if (!event.player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META))) {
-                    event.player.entityDropItem(new ItemStack(ContentHandler.getItem(Names.condensed_potion), 1, Reference.EMPTY_VIAL_META), 0.1F);
-                }
-        }
-    }
-
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.modID.equals(Reference.MOD_ID)) {
