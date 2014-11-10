@@ -3,11 +3,24 @@ package xreliquary.blocks.tile;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import lib.enderwizards.sandstone.blocks.tile.TileEntityInventory;
+import lib.enderwizards.sandstone.init.ContentHandler;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
+import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionIngredient;
+import xreliquary.util.potions.PotionMap;
+import xreliquary.util.potions.XRPotionHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileEntityMortar extends TileEntityInventory {
 
@@ -18,8 +31,19 @@ public class TileEntityMortar extends TileEntityInventory {
     private String customInventoryName;
 
     public TileEntityMortar() {
-        super(2);
+        //inventory size
+        super(3);
         pestleUsedCounter = 0;
+    }
+
+    @Override
+    public Packet getDescriptionPacket() {
+        return super.getDescriptionPacket();
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        super.onDataPacket(net, packet);
     }
 
     @Override
@@ -39,8 +63,6 @@ public class TileEntityMortar extends TileEntityInventory {
 
             if (b0 >= 0 && b0 < this.inventory.length) {
                 this.inventory[b0] = ItemStack.loadItemStackFromNBT(item);
-//                if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-//                    System.out.println("Hi #1");
             }
         }
 
@@ -62,7 +84,6 @@ public class TileEntityMortar extends TileEntityInventory {
                 NBTTagCompound item = new NBTTagCompound();
                 this.inventory[i].writeToNBT(item);
                 item.setByte("Slot", (byte) i);
-                //System.out.println("Hi #2");
                 items.appendTag(item);
             }
         }
@@ -81,11 +102,37 @@ public class TileEntityMortar extends TileEntityInventory {
 
     // increases the "pestleUsed" counter, checks to see if it is at its limit
     public void usePestle() {
-        pestleUsedCounter++;
-
-        if (pestleUsedCounter >= Reference.PESTLE_USAGE_MAX) {
-            // do things
+        int itemCount = 0;
+        List<PotionIngredient> potionIngredients = new ArrayList<PotionIngredient>();
+        for (ItemStack item : this.getItemStacks()) {
+            if (item == null)
+                continue;
+            ++itemCount;
+            potionIngredients.add(PotionMap.getIngredient(item));
         }
+        if (itemCount > 0) {
+            pestleUsedCounter++;
+            spawnPestleParticles();
+        }
+        if (pestleUsedCounter >= Reference.PESTLE_USAGE_MAX) {
+            for (int clearSlot = 0; clearSlot < this.getSizeInventory(); ++clearSlot) {
+                this.setInventorySlotContents(clearSlot, null);
+            }
+            pestleUsedCounter = 0;
+            if (worldObj.isRemote)
+                return;
+            PotionEssence resultEssence = new PotionEssence(potionIngredients.toArray(new PotionIngredient[potionIngredients.size()]));
+            ItemStack resultItem = new ItemStack(ContentHandler.getItem(Names.potion_essence), 1, 0);
+            resultItem.setTagCompound(resultEssence.writeToNBT());
+
+
+            EntityItem itemEntity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, resultItem);
+            worldObj.spawnEntityInWorld(itemEntity);
+        }
+    }
+
+    public void spawnPestleParticles() {
+        worldObj.spawnParticle("smoke", xCoord + 0.5D, yCoord + 0.15D, zCoord + 0.5D, 0.0D, 0.1D, 0.0D);
     }
 
     @Override
@@ -105,7 +152,7 @@ public class TileEntityMortar extends TileEntityInventory {
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer var1) {
-        return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : var1.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D) <= 64.0D;
+        return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && var1.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D) <= 64.0D;
     }
 
     @Override
@@ -117,18 +164,9 @@ public class TileEntityMortar extends TileEntityInventory {
     }
 
     @Override
-    public boolean isItemValidForSlot(int var1, ItemStack var2) {
-        // don't allow essence in slots after the second one.
-        // eventually would be nice to replace this with something that was more
-        // elaborate about
-        // allowing potions to mix, and rejecting items that aren't even
-        // ingredients.
-        // isIngredient would be nice.
-        return var1 >= 2 && isItemEssence(var2) ? false : true;
-    }
-
-    public boolean isItemEssence(ItemStack ist) {
-        // essence not quite a thing just yet, force return true.
-        return false;
+    public boolean isItemValidForSlot(int slot, ItemStack ist) {
+        // don't allow essence/items in slots after the third one.
+        //only allow valid potion items
+        return slot <= 3 && (XRPotionHelper.isItemIngredient(ist) || XRPotionHelper.isItemEssence(ist));
     }
 }

@@ -23,7 +23,7 @@ public class XRRecipes {
     //convenience itemstack methods, these are just to make it a little easier to read.
     public static Item getItem(String name) { return ContentHandler.getItem(name); }
 
-    public static ItemStack fertilizer() { return XRRecipes.potion(Reference.FERTILIZER_META); }
+    //public static ItemStack fertilizer() { return XRRecipes.potion(Reference.FERTILIZER_META); }
 
     public static ItemStack emptyVoidTear() { return new ItemStack(getItem(Names.void_tear_empty), 1, 0); }
 
@@ -45,9 +45,9 @@ public class XRRecipes {
 
     public static ItemStack bullet(int i, int m) { return new ItemStack(getItem(Names.bullet), i, m); }
 
-    public static ItemStack potion(int m) { return potion(1, m); }
+    //public static ItemStack potion(int m) { return potion(1, m); }
 
-    public static ItemStack potion(int i, int m) { return new ItemStack(getItem(Names.condensed_potion), i, m); }
+    //public static ItemStack potion(int i, int m) { return new ItemStack(getItem(Names.condensed_potion), i, m); }
 
     public static ItemStack ingredient(int m) { return new ItemStack(getItem(Names.mob_ingredient), 1, m); }
 
@@ -148,9 +148,9 @@ public class XRRecipes {
 
         //fertile essence
         if (isEasyMode(Names.fertile_essence))
-            addRecipe(true, false, fertileEssence(), fertilizer(), fertilizer(), fertilizer(), Items.wheat_seeds);
+            addRecipe(true, false, fertileEssence(), ribBone(), ribBone(), ribBone(), Items.wheat_seeds);
         else
-            addRecipe(true, false, fertileEssence(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), fertilizer(), Items.wheat_seeds);
+            addRecipe(true, false, fertileEssence(), ribBone(), ribBone(), ribBone(), ribBone(), ribBone(), ribBone(), ribBone(), ribBone(), Items.wheat_seeds);
 
         // bullets...
         // empty cases back into nuggets
@@ -391,100 +391,100 @@ public class XRRecipes {
         addRecipe(true, false, nianZhu(Reference.CREEPER_ZHU_META), Items.string, heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META));
 
 		/* potions and splash potions */
-
-        // empty vial
-        addRecipe(false, false, potion(5, Reference.EMPTY_VIAL_META), "g g", "g g", " g ", 'g', Blocks.glass_pane);
-
-        // base solvent
-        addRecipe(true, false, potion(Reference.POTION_META), Items.nether_wart, potion(Reference.WATER_META));
-
-        // base splash solvent
-        addRecipe(true, false, potion(Reference.SPLASH_META), Items.nether_wart, Items.gunpowder, potion(Reference.WATER_META));
-        addRecipe(true, false, potion(Reference.SPLASH_META), potion(Reference.POTION_META), Items.gunpowder);
-
-        // glowing water
-        addRecipe(true, false, new ItemStack(getItem(Names.glowing_water), 1), potion(Reference.SPLASH_META), Items.glowstone_dust, Items.glowstone_dust, Items.glowstone_dust);
-
-        // angelheart vial
-        addRecipe(true, false, new ItemStack(getItem(Names.angelheart_vial), 2), potion(Reference.PANACEA_META), getItem(Names.glowing_water));
-
-        // speed potion
-        addRecipe(true, false, potion(Reference.SPEED_META), potion(Reference.POTION_META), Items.sugar, Items.redstone, Items.glowstone_dust);
-
-        // dig potion
-        addRecipe(true, false, potion(Reference.DIGGING_META), potion(Reference.POTION_META), Items.bone, Items.redstone, Items.glowstone_dust);
-
-        // strength potion
-        addRecipe(true, false, potion(Reference.STRENGTH_META), potion(Reference.POTION_META), Items.blaze_powder, Items.redstone, Items.glowstone_dust);
-
-        // heal potion
-        addRecipe(true, false, potion(Reference.HEALING_META), potion(Reference.POTION_META), Items.speckled_melon, Items.glowstone_dust);
-
-        // jump potion
-        addRecipe(true, false, potion(Reference.BOUNDING_META), potion(Reference.POTION_META), Items.feather, Items.redstone, Items.glowstone_dust);
-
-        // regen potion
-        addRecipe(true, false, potion(Reference.REGENERATION_META), potion(Reference.POTION_META), Items.ghast_tear, Items.redstone, Items.glowstone_dust);
-
-        // resist potion
-        addRecipe(true, false, potion(Reference.RESISTANCE_META), potion(Reference.POTION_META), Items.leather, Items.redstone, Items.glowstone_dust);
-
-        // fire resist potion
-        addRecipe(true, false, potion(Reference.FIRE_WARDING_META), potion(Reference.POTION_META), Items.magma_cream, Items.redstone);
-
-        // breathing potion
-        addRecipe(true, false, potion(Reference.BREATHING_META), potion(Reference.POTION_META), new ItemStack(Items.dye, 1, 0), Items.redstone);
-
-        // invis potion
-        addRecipe(true, false, potion(Reference.INVISIBILITY_META), potion(Reference.INFRAVISION_META), Items.fermented_spider_eye, Items.redstone);
-
-        // vision potion
-        addRecipe(true, false, potion(Reference.INFRAVISION_META), potion(Reference.POTION_META), Items.golden_carrot, Items.redstone);
-
-        // protection potion
-        addRecipe(true, false, potion(8, Reference.PROTECTION_META), potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), Items.glowstone_dust, potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META));
-
-        // potency potion
-        addRecipe(true, false, potion(8, Reference.POTENCE_META), potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), Items.glowstone_dust, potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META));
-
-        // celerity potion
-        addRecipe(true, false, potion(8, Reference.CELERITY_META), potion(Reference.DIGGING_META), potion(Reference.DIGGING_META), potion(Reference.DIGGING_META), potion(Reference.DIGGING_META), Items.glowstone_dust, potion(Reference.SPEED_META), potion(Reference.SPEED_META), potion(Reference.SPEED_META), potion(Reference.SPEED_META));
-
-        // stalker potion
-        addRecipe(true, false, potion(8, Reference.STALKER_META), potion(Reference.INFRAVISION_META), potion(Reference.INFRAVISION_META), potion(Reference.INFRAVISION_META), potion(Reference.INFRAVISION_META), Items.glowstone_dust, potion(Reference.INVISIBILITY_META), potion(Reference.INVISIBILITY_META), potion(Reference.INVISIBILITY_META), potion(Reference.INVISIBILITY_META));
-
-        // panacea potion
-        addRecipe(true, false, potion(8, Reference.PANACEA_META), potion(Reference.HEALING_META), potion(Reference.HEALING_META), potion(Reference.HEALING_META), potion(Reference.HEALING_META), Items.milk_bucket, potion(Reference.REGENERATION_META), potion(Reference.REGENERATION_META), potion(Reference.REGENERATION_META), potion(Reference.REGENERATION_META));
-
-        // aphrodite
-        addRecipe(true, false, potion(Reference.APHRODITE_META), potion(Reference.SPLASH_META), new ItemStack(Items.dye, 1, 3), new ItemStack(Items.dye, 1, 1), Items.redstone);
-
-        // poison
-        addRecipe(true, false, potion(Reference.POISON_META), potion(Reference.SPLASH_META), Items.spider_eye, Items.fermented_spider_eye, Items.redstone);
-
-        // harm
-        addRecipe(true, false, potion(Reference.ACID_META), potion(Reference.SPLASH_META), Items.speckled_melon, Items.fermented_spider_eye, Items.glowstone_dust);
-
-        // confusion
-        addRecipe(true, false, potion(Reference.CONFUSION_META), potion(Reference.SPLASH_META), Items.golden_carrot, Items.fermented_spider_eye, Items.redstone);
-
-        // slowness
-        addRecipe(true, false, potion(Reference.SLOWING_META), potion(Reference.SPLASH_META), Items.sugar, Items.fermented_spider_eye, Items.glowstone_dust);
-
-        // weakness
-        addRecipe(true, false, potion(Reference.WEAKNESS_META), potion(Reference.SPLASH_META), Items.blaze_powder, Items.fermented_spider_eye, Items.glowstone_dust);
-
-        // wither
-        addRecipe(true, false, potion(Reference.WITHER_META), potion(Reference.SPLASH_META), new ItemStack(Items.skull, 1, 1), Items.glowstone_dust, Items.glowstone_dust);
-
-        // blindness
-        addRecipe(true, false, potion(Reference.BLINDING_META), potion(Reference.SPLASH_META), Items.golden_carrot, Items.fermented_spider_eye, Items.golden_carrot);
-
-        // ruin
-        addRecipe(true, false, potion(3, Reference.RUINATION_META), potion(Reference.SLOWING_META), potion(Reference.WEAKNESS_META), potion(Reference.POISON_META), Items.glowstone_dust);
-
-        // fertility
-        addRecipe(true, false, potion(Reference.FERTILIZER_META), potion(Reference.SPLASH_META), new ItemStack(Items.dye, 1, 15), new ItemStack(Items.dye, 1, 15), new ItemStack(Items.dye, 1, 15));
+//
+//        // empty vial
+//        addRecipe(false, false, potion(5, Reference.EMPTY_VIAL_META), "g g", "g g", " g ", 'g', Blocks.glass_pane);
+//
+//        // base solvent
+//        addRecipe(true, false, potion(Reference.POTION_META), Items.nether_wart, potion(Reference.WATER_META));
+//
+//        // base splash solvent
+//        addRecipe(true, false, potion(Reference.SPLASH_META), Items.nether_wart, Items.gunpowder, potion(Reference.WATER_META));
+//        addRecipe(true, false, potion(Reference.SPLASH_META), potion(Reference.POTION_META), Items.gunpowder);
+//
+//        // glowing water
+//        addRecipe(true, false, new ItemStack(getItem(Names.glowing_water), 1), potion(Reference.SPLASH_META), Items.glowstone_dust, Items.glowstone_dust, Items.glowstone_dust);
+//
+//        // angelheart vial
+//        addRecipe(true, false, new ItemStack(getItem(Names.angelheart_vial), 2), potion(Reference.PANACEA_META), getItem(Names.glowing_water));
+//
+//        // speed potion
+//        addRecipe(true, false, potion(Reference.SPEED_META), potion(Reference.POTION_META), Items.sugar, Items.redstone, Items.glowstone_dust);
+//
+//        // dig potion
+//        addRecipe(true, false, potion(Reference.DIGGING_META), potion(Reference.POTION_META), Items.bone, Items.redstone, Items.glowstone_dust);
+//
+//        // strength potion
+//        addRecipe(true, false, potion(Reference.STRENGTH_META), potion(Reference.POTION_META), Items.blaze_powder, Items.redstone, Items.glowstone_dust);
+//
+//        // heal potion
+//        addRecipe(true, false, potion(Reference.HEALING_META), potion(Reference.POTION_META), Items.speckled_melon, Items.glowstone_dust);
+//
+//        // jump potion
+//        addRecipe(true, false, potion(Reference.BOUNDING_META), potion(Reference.POTION_META), Items.feather, Items.redstone, Items.glowstone_dust);
+//
+//        // regen potion
+//        addRecipe(true, false, potion(Reference.REGENERATION_META), potion(Reference.POTION_META), Items.ghast_tear, Items.redstone, Items.glowstone_dust);
+//
+//        // resist potion
+//        addRecipe(true, false, potion(Reference.RESISTANCE_META), potion(Reference.POTION_META), Items.leather, Items.redstone, Items.glowstone_dust);
+//
+//        // fire resist potion
+//        addRecipe(true, false, potion(Reference.FIRE_WARDING_META), potion(Reference.POTION_META), Items.magma_cream, Items.redstone);
+//
+//        // breathing potion
+//        addRecipe(true, false, potion(Reference.BREATHING_META), potion(Reference.POTION_META), new ItemStack(Items.dye, 1, 0), Items.redstone);
+//
+//        // invis potion
+//        addRecipe(true, false, potion(Reference.INVISIBILITY_META), potion(Reference.INFRAVISION_META), Items.fermented_spider_eye, Items.redstone);
+//
+//        // vision potion
+//        addRecipe(true, false, potion(Reference.INFRAVISION_META), potion(Reference.POTION_META), Items.golden_carrot, Items.redstone);
+//
+//        // protection potion
+//        addRecipe(true, false, potion(8, Reference.PROTECTION_META), potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), potion(Reference.FIRE_WARDING_META), Items.glowstone_dust, potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META), potion(Reference.RESISTANCE_META));
+//
+//        // potency potion
+//        addRecipe(true, false, potion(8, Reference.POTENCE_META), potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), potion(Reference.STRENGTH_META), Items.glowstone_dust, potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META), potion(Reference.BOUNDING_META));
+//
+//        // celerity potion
+//        addRecipe(true, false, potion(8, Reference.CELERITY_META), potion(Reference.DIGGING_META), potion(Reference.DIGGING_META), potion(Reference.DIGGING_META), potion(Reference.DIGGING_META), Items.glowstone_dust, potion(Reference.SPEED_META), potion(Reference.SPEED_META), potion(Reference.SPEED_META), potion(Reference.SPEED_META));
+//
+//        // stalker potion
+//        addRecipe(true, false, potion(8, Reference.STALKER_META), potion(Reference.INFRAVISION_META), potion(Reference.INFRAVISION_META), potion(Reference.INFRAVISION_META), potion(Reference.INFRAVISION_META), Items.glowstone_dust, potion(Reference.INVISIBILITY_META), potion(Reference.INVISIBILITY_META), potion(Reference.INVISIBILITY_META), potion(Reference.INVISIBILITY_META));
+//
+//        // panacea potion
+//        addRecipe(true, false, potion(8, Reference.PANACEA_META), potion(Reference.HEALING_META), potion(Reference.HEALING_META), potion(Reference.HEALING_META), potion(Reference.HEALING_META), Items.milk_bucket, potion(Reference.REGENERATION_META), potion(Reference.REGENERATION_META), potion(Reference.REGENERATION_META), potion(Reference.REGENERATION_META));
+//
+//        // aphrodite
+//        addRecipe(true, false, potion(Reference.APHRODITE_META), potion(Reference.SPLASH_META), new ItemStack(Items.dye, 1, 3), new ItemStack(Items.dye, 1, 1), Items.redstone);
+//
+//        // poison
+//        addRecipe(true, false, potion(Reference.POISON_META), potion(Reference.SPLASH_META), Items.spider_eye, Items.fermented_spider_eye, Items.redstone);
+//
+//        // harm
+//        addRecipe(true, false, potion(Reference.ACID_META), potion(Reference.SPLASH_META), Items.speckled_melon, Items.fermented_spider_eye, Items.glowstone_dust);
+//
+//        // confusion
+//        addRecipe(true, false, potion(Reference.CONFUSION_META), potion(Reference.SPLASH_META), Items.golden_carrot, Items.fermented_spider_eye, Items.redstone);
+//
+//        // slowness
+//        addRecipe(true, false, potion(Reference.SLOWING_META), potion(Reference.SPLASH_META), Items.sugar, Items.fermented_spider_eye, Items.glowstone_dust);
+//
+//        // weakness
+//        addRecipe(true, false, potion(Reference.WEAKNESS_META), potion(Reference.SPLASH_META), Items.blaze_powder, Items.fermented_spider_eye, Items.glowstone_dust);
+//
+//        // wither
+//        addRecipe(true, false, potion(Reference.WITHER_META), potion(Reference.SPLASH_META), new ItemStack(Items.skull, 1, 1), Items.glowstone_dust, Items.glowstone_dust);
+//
+//        // blindness
+//        addRecipe(true, false, potion(Reference.BLINDING_META), potion(Reference.SPLASH_META), Items.golden_carrot, Items.fermented_spider_eye, Items.golden_carrot);
+//
+//        // ruin
+//        addRecipe(true, false, potion(3, Reference.RUINATION_META), potion(Reference.SLOWING_META), potion(Reference.WEAKNESS_META), potion(Reference.POISON_META), Items.glowstone_dust);
+//
+//        // fertility
+//        addRecipe(true, false, potion(Reference.FERTILIZER_META), potion(Reference.SPLASH_META), new ItemStack(Items.dye, 1, 15), new ItemStack(Items.dye, 1, 15), new ItemStack(Items.dye, 1, 15));
     }
 
 }

@@ -78,6 +78,12 @@ public class Names {
 
     public static final String gun_part = "gun_part";
     // potion info
+    public static final String potion = "potion";
+    public static final String potion_splash = "potion_splash";
+    public static final String potion_overlay = "potion_overlay";
+    public static final String potion_splash_overlay = "potion_splash_overlay";
+    public static final String potion_essence = "potion_essence";
+    public static final String potion_ingredient = "potion_ingredient";
     public static final String condensed_potion = "condensed_potion";
     public static final String condensed_potion_splash = "condensed_potion_splash";
     public static final String condensed_potion_overlay = "condensed_potion_overlay";
@@ -91,6 +97,8 @@ public class Names {
     public static final String interdiction_torch = "interdiction_torch";
     public static final String apothecary_cauldron = "apothecary_cauldron";
     public static final String apothecary_mortar = "apothecary_mortar";
+    public static final String cauldron_water = "cauldron_water";
+    public static final String cauldron_bubble = "cauldron_bubble";
 
     //these are for configs, they're just the names of things I didn't want to magic string.
     public static final String recipe_enabled = "recipe_enabled";

@@ -7,10 +7,14 @@ import net.minecraft.block.BlockCauldron;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import org.lwjgl.opengl.GL11;
 import xreliquary.blocks.BlockApothecaryCauldron;
+import xreliquary.blocks.tile.TileEntityCauldron;
+import xreliquary.util.potions.PotionEssence;
 
 public class RenderApothecaryCauldron implements ISimpleBlockRenderingHandler {
     public static int renderID = RenderingRegistry.getNextAvailableRenderId();
@@ -38,15 +42,20 @@ public class RenderApothecaryCauldron implements ISimpleBlockRenderingHandler {
             renderer.renderFaceYPos(block, (double) x, (double) ((float) y - 1.0F + 0.25F), (double) z, innerTexture);
             renderer.renderFaceYNeg(block, (double) x, (double) ((float) y + 1.0F - 0.75F), (double) z, innerTexture);
             int i1 = world.getBlockMetadata(x, y, z);
-
             if (i1 > 0) {
-                // obviously wrong, but this will be what determines the liquid
-                // texture within the cauldron.
-                IIcon liquidTexture = BlockLiquid.getLiquidIcon("water_still");
+                TileEntityCauldron cauldron = (TileEntityCauldron)world.getTileEntity(x, y, z);
+                int color = getColor(new PotionEssence(cauldron.potionEssences.toArray(new PotionEssence[cauldron.potionEssences.size()])));
+                tessellator.setColorOpaque_I(color);
+                IIcon liquidTexture = BlockApothecaryCauldron.waterTexture;
                 renderer.renderFaceYPos(block, (double) x, (double) ((float) y - 1.0F + BlockCauldron.getRenderLiquidLevel(i1)), (double) z, liquidTexture);
             }
         }
         return true;
+    }
+
+    public int getColor(PotionEssence essence) {
+        //basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
+        return  PotionHelper.calcPotionLiquidColor(essence.getEffects());
     }
 
     @Override

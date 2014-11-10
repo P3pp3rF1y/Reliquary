@@ -56,27 +56,31 @@ public class BlockApothecaryMortar extends BlockBase {
     }
 
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metaMaybe, float playerX, float playerY, float playerZ) {
-        ItemStack heldItem = player.getCurrentEquippedItem();
-        if (heldItem == null)
-            return false;
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         if (tileEntity == null || !(tileEntity instanceof TileEntityMortar))
             return false;
         TileEntityMortar mortar = (TileEntityMortar) tileEntity;
+        ItemStack heldItem = player.getCurrentEquippedItem();
+        if (heldItem == null) {
+            mortar.usePestle();
+            return false;
+        }
         ItemStack[] mortarItems = mortar.getItemStacks();
-        boolean hadItem = false;
+        boolean putItemInSlot = false;
         for (int slot = 0; slot < mortarItems.length; slot++) {
-            if (mortarItems[slot] == null) {
-                ItemStack item = new ItemStack(player.getCurrentEquippedItem().getItem(), 1, player.getCurrentEquippedItem().getItemDamage());
+            ItemStack item = new ItemStack(player.getCurrentEquippedItem().getItem(), 1, player.getCurrentEquippedItem().getItemDamage());
+            item.setTagCompound(player.getCurrentEquippedItem().getTagCompound());
+            if (mortarItems[slot] == null && mortar.isItemValidForSlot(slot, item)) {
                 player.getCurrentEquippedItem().stackSize--;
                 if (player.getCurrentEquippedItem().stackSize == 0)
                     player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                 mortar.setInventorySlotContents(slot, item);
-                hadItem = true;
+                putItemInSlot = true;
                 break;
             }
         }
-        if (!hadItem) {
+        if (!putItemInSlot) {
+            mortar.usePestle();
             return false;
         }
         return true;

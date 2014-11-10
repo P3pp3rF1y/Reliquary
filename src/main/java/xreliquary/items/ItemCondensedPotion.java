@@ -27,7 +27,6 @@ import xreliquary.lib.Reference;
 
 import java.util.List;
 
-@ContentInit
 public class ItemCondensedPotion extends ItemBase {
 
     public ItemCondensedPotion() {
@@ -308,30 +307,30 @@ public class ItemCondensedPotion extends ItemBase {
         int potion = itemStack.getItemDamage();
         switch (potion) {
             case Reference.SPEED_META:
-                return Integer.parseInt(Colors.SPEED_COLOR, 16);
+                return Integer.parseInt(Colors.MOVE_SPEED_COLOR, 16);
             case Reference.DIGGING_META:
-                return Integer.parseInt(Colors.DIGGING_COLOR, 16);
+                return Integer.parseInt(Colors.DIG_SPEED_COLOR, 16);
             case Reference.STRENGTH_META:
-                return Integer.parseInt(Colors.STRENGTH_COLOR, 16);
+                return Integer.parseInt(Colors.DAMAGE_BOOST_COLOR, 16);
             case Reference.HEALING_META:
-                return Integer.parseInt(Colors.HEALING_COLOR, 16);
+                return Integer.parseInt(Colors.HEAL_COLOR, 16);
             case Reference.BOUNDING_META:
-                return Integer.parseInt(Colors.BOUNDING_COLOR, 16);
+                return Integer.parseInt(Colors.JUMP_COLOR, 16);
             case Reference.REGENERATION_META:
                 return Integer.parseInt(Colors.REGENERATION_COLOR, 16);
             case Reference.RESISTANCE_META:
                 return Integer.parseInt(Colors.RESISTANCE_COLOR, 16);
             case Reference.FIRE_WARDING_META:
-                return Integer.parseInt(Colors.FIRE_WARDING_COLOR, 16);
+                return Integer.parseInt(Colors.FIRE_RESISTANCE_COLOR, 16);
             case Reference.BREATHING_META:
-                return Integer.parseInt(Colors.BREATHING_COLOR, 16);
+                return Integer.parseInt(Colors.WATER_BREATHING_COLOR, 16);
             case Reference.INVISIBILITY_META:
                 red = Integer.toHexString(timeFactor * 2);
                 green = Integer.toHexString(timeFactor * 2);
                 blue = Integer.toHexString(timeFactor * 2);
                 return Integer.parseInt(String.format("%s%s%s", red, green, blue), 16);
             case Reference.INFRAVISION_META:
-                return Integer.parseInt(Colors.INFRAVISION_COLOR, 16);
+                return Integer.parseInt(Colors.NIGHT_VISION_COLOR, 16);
             case Reference.PROTECTION_META:
                 red = Integer.toHexString(timeFactor + 127);
                 green = Integer.toHexString(timeFactor + 127);
@@ -359,11 +358,11 @@ public class ItemCondensedPotion extends ItemBase {
             case Reference.POISON_META:
                 return Integer.parseInt(Colors.POISON_COLOR, 16);
             case Reference.ACID_META:
-                return Integer.parseInt(Colors.ACID_COLOR, 16);
+                return Integer.parseInt(Colors.HARM_COLOR, 16);
             case Reference.CONFUSION_META:
                 return Integer.parseInt(Colors.CONFUSION_COLOR, 16);
             case Reference.SLOWING_META:
-                return Integer.parseInt(Colors.SLOWING_COLOR, 16);
+                return Integer.parseInt(Colors.DIG_SLOWDOWN, 16);
             case Reference.WEAKNESS_META:
                 return Integer.parseInt(Colors.WEAKNESS_COLOR, 16);
             case Reference.WITHER_META:

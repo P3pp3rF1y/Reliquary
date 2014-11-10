@@ -7,6 +7,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.mod.config.ConfigReference;
+import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
@@ -32,6 +33,7 @@ import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.alkahestry.Alkahestry;
+import xreliquary.util.potions.PotionMap;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -50,34 +52,34 @@ public class CommonProxy {
             FMLCommonHandler.instance().raiseException(e, "Reliquary failed to initiate recipies.", true);
         }
 
-        try {
-            Potion[] potionTypes = null;
+//        try {
+//            Potion[] potionTypes = null;
+//
+//            for (Field f : Potion.class.getDeclaredFields()) {
+//                f.setAccessible(true);
+//                try {
+//                    if (f.getName().equals("potionTypes") || f.getName().equals("field_76425_a")) {
+//                        Field modfield = Field.class.getDeclaredField("modifiers");
+//                        modfield.setAccessible(true);
+//                        modfield.setInt(f, f.getModifiers() & ~Modifier.FINAL);
+//
+//                        potionTypes = (Potion[]) f.get(null);
+//                        final Potion[] newPotionTypes = new Potion[256];
+//                        System.arraycopy(potionTypes, 0, newPotionTypes, 0, potionTypes.length);
+//                        f.set(null, newPotionTypes);
+//                    }
+//                } catch (Exception e) {
+//                    System.err.println("XReliquary Reflection error. This is a serious bug due to our custom potion effects.");
+//                    System.err.println(e);
+//                }
+//            }
+//        }
+//        catch (Exception e) {
+//            System.err.println("Reliquary failed trying to reflect custom potion effects!");
+//            System.err.println(e);
+//        }
 
-            for (Field f : Potion.class.getDeclaredFields()) {
-                f.setAccessible(true);
-                try {
-                    if (f.getName().equals("potionTypes") || f.getName().equals("field_76425_a")) {
-                        Field modfield = Field.class.getDeclaredField("modifiers");
-                        modfield.setAccessible(true);
-                        modfield.setInt(f, f.getModifiers() & ~Modifier.FINAL);
-
-                        potionTypes = (Potion[]) f.get(null);
-                        final Potion[] newPotionTypes = new Potion[256];
-                        System.arraycopy(potionTypes, 0, newPotionTypes, 0, potionTypes.length);
-                        f.set(null, newPotionTypes);
-                    }
-                } catch (Exception e) {
-                    System.err.println("XReliquary Reflection error. This is a serious bug due to our custom potion effects.");
-                    System.err.println(e);
-                }
-            }
-        }
-        catch (Exception e) {
-            System.err.println("Reliquary failed trying to reflect custom potion effects!");
-            System.err.println(e);
-        }
-
-        FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), XRRecipes.potion(Reference.WATER_META), XRRecipes.potion(Reference.EMPTY_VIAL_META));
+        //FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME / 8), XRRecipes.potion(Reference.WATER_META), XRRecipes.potion(Reference.EMPTY_VIAL_META));
     }
 
 
@@ -205,6 +207,12 @@ public class CommonProxy {
         //angelheart vial configs
         Reliquary.CONFIG.require(Names.angelheart_vial, "heal_percentage_of_max_life", new ConfigReference(25));
         Reliquary.CONFIG.require(Names.angelheart_vial, "remove_negative_status", new ConfigReference(true));
+
+        //apothecary cauldron configs
+        List<String> heatSources = ImmutableList.of();
+        Reliquary.CONFIG.require(Names.apothecary_cauldron, "redstone_limit", new ConfigReference(5).setMinimumValue(0).setMaximumValue(100));
+        Reliquary.CONFIG.require(Names.apothecary_cauldron, "cook_time", new ConfigReference(160).setMinimumValue(20).setMaximumValue(32000));
+        Reliquary.CONFIG.require(Names.apothecary_cauldron, "heat_sources", new ConfigReference(heatSources));
 
         //destruction catalyst configs
         Reliquary.CONFIG.require(Names.destruction_catalyst, "mundane_blocks", new ConfigReference(new ArrayList<String>(ItemDestructionCatalyst.ids)));

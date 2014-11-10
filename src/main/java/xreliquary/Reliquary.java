@@ -29,6 +29,7 @@ import xreliquary.network.PacketHandler;
 import lib.enderwizards.sandstone.util.WorldDataHandler;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
+import xreliquary.util.potions.PotionMap;
 
 import java.io.File;
 
@@ -52,9 +53,13 @@ public class Reliquary {
         CONFIG = Config.toml(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".cfg"));
 
         PROXY.initOptions();
+
         Sandstone.preInit();
 
         WorldDataHandler.register();
+
+        //important that this initializes AFTER items already exist.
+        PotionMap.init();
 
         //important that this initializes before the pre-init phase
         PROXY.initRecipeDisablers();
@@ -80,8 +85,12 @@ public class Reliquary {
         //and finally save the file changes. post init is the last stage of configuration, it does an entity scan, hopefully it's cross-mod compatible.
         CONFIG.save();
 
+        //finally, initialize the potion list, this is done after ensuring configs.
+        PotionMap.initializePotionMappings();
+
         LOGGER.log(Level.INFO, "Loaded successfully!");
         Sandstone.postInit();
+
     }
 
     @EventHandler

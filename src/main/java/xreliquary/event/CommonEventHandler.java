@@ -27,7 +27,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-import xreliquary.Potion.PotionSerpentStaff;
 import xreliquary.Reliquary;
 import xreliquary.init.XRRecipes;
 import xreliquary.lib.Names;
@@ -54,26 +53,26 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onEntityLiving(LivingEvent event) {
         doTwilightCloakCheck(event);
-        doPacifiedDebuffCheck(event);
+        //doPacifiedDebuffCheck(event);
         doHeartZhuCheck(event);
     }
 
     @SubscribeEvent
     public void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
         doTwilightCloakCheck(event);
-        doPacifiedDebuffCheck(event);
+        //doPacifiedDebuffCheck(event);
         doHeartZhuCheck(event);
     }
-
-    @SubscribeEvent
-    public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
-        if (!event.entityLiving.isPotionActive(PotionSerpentStaff.mobPacificationDebuff))
-            return;
-        if (event.entityLiving.getActivePotionEffect(PotionSerpentStaff.mobPacificationDebuff).getDuration()==0) {
-            event.entityLiving.removePotionEffect(PotionSerpentStaff.mobPacificationDebuff.id);
-            return;
-        }
-    }
+//
+//    @SubscribeEvent
+//    public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
+//        if (!event.entityLiving.isPotionActive(PotionSerpentStaff.mobPacificationDebuff))
+//            return;
+//        if (event.entityLiving.getActivePotionEffect(PotionSerpentStaff.mobPacificationDebuff).getDuration()==0) {
+//            event.entityLiving.removePotionEffect(PotionSerpentStaff.mobPacificationDebuff.id);
+//            return;
+//        }
+//    }
 
     public void doHeartZhuCheck(LivingSetAttackTargetEvent event) {
         if (event.target == null)
@@ -171,18 +170,18 @@ public class CommonEventHandler {
         }
     }
 
-    public void doPacifiedDebuffCheck(LivingEvent event) {
-        if (event.entity instanceof EntityLiving) {
-            EntityLiving entityLiving = ((EntityLiving) event.entity);
-            if (entityLiving.getAttackTarget() == null)
-                return;
-            if (event.entityLiving.isPotionActive(PotionSerpentStaff.mobPacificationDebuff.id)) {
-                if (event.entity instanceof EntityLiving) {
-                    ((EntityLiving) event.entity).setAttackTarget(null);
-                }
-            }
-        }
-    }
+//    public void doPacifiedDebuffCheck(LivingEvent event) {
+//        if (event.entity instanceof EntityLiving) {
+//            EntityLiving entityLiving = ((EntityLiving) event.entity);
+//            if (entityLiving.getAttackTarget() == null)
+//                return;
+//            if (event.entityLiving.isPotionActive(PotionSerpentStaff.mobPacificationDebuff.id)) {
+//                if (event.entity instanceof EntityLiving) {
+//                    ((EntityLiving) event.entity).setAttackTarget(null);
+//                }
+//            }
+//        }
+//    }
 
     @SubscribeEvent
     public void onCraftingPotion(PlayerEvent.ItemCraftedEvent event) {
