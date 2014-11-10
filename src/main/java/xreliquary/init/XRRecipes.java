@@ -118,6 +118,11 @@ public class XRRecipes {
         //frozen cores to make packed ice.
         addRecipe(true, true, new ItemStack(Blocks.packed_ice, 1, 0), Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, frozenCore());
 
+        //apothecary mortar recipe
+        addRecipe(false, false, new ItemStack(ContentHandler.getBlock(Names.apothecary_mortar), 1, 0), "gng", "ngn", "nnn", 'n', Blocks.quartz_block, 'g', creeperGland());
+
+        //apothecary cauldron recipe
+        addRecipe(false, false, new ItemStack(ContentHandler.getBlock(Names.apothecary_cauldron), 1, 0), "gng", "ici", "nmn", 'g', creeperGland(), 'n', enderHeart(), 'i', infernalClaw(), 'c', Blocks.cauldron, 'm', moltenCore());
 
         //alkahestry tome
         if (isEasyMode(Names.alkahestry_tome))
