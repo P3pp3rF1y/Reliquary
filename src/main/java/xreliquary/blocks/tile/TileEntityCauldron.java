@@ -81,7 +81,6 @@ public class TileEntityCauldron extends TileEntityBase {
         float green = (((color >> 8) & 255) / 256F);
         float blue = (((color >> 0) & 255) / 256F);
 
-
         EntityCauldronBubbleFX bubble = new EntityCauldronBubbleFX(worldObj, xCoord + 0.5D + xOffset, yCoord + 0.01D + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 0D, 0D, 0D, red, green, blue);
         EntityCauldronSteamFX steam = new EntityCauldronSteamFX(worldObj, xCoord + 0.5D + xOffset, yCoord + 0.01D + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 0D, 0.05D + 0.02F * BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), 0D, red, green, blue);
         if (worldObj.isRemote) {
