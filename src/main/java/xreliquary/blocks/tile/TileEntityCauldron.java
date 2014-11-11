@@ -27,8 +27,8 @@ import java.util.List;
 
 public class TileEntityCauldron extends TileEntityBase {
 
-    public List<PotionEssence> potionEssences = new ArrayList<PotionEssence>();
     public int redstoneCount = 0;
+    public PotionEssence potionEssence = null;
     public boolean hasGlowstone = false;
     public boolean hasGunpowder = false;
     public boolean hasNetherwart = false;
@@ -75,7 +75,7 @@ public class TileEntityCauldron extends TileEntityBase {
         float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
 
 
-        int color = potionEssences.size() == 0 ? Integer.parseInt(Colors.PURE, 16) : getColor(new PotionEssence(potionEssences.toArray(new PotionIngredient[potionEssences.size()])));
+        int color = potionEssence == null ? Integer.parseInt(Colors.PURE, 16) : getColor(new PotionEssence(potionEssence));
 
         float red = (((color >> 16) & 255) / 256F);
         float green = (((color >> 8) & 255) / 256F);
@@ -140,17 +140,13 @@ public class TileEntityCauldron extends TileEntityBase {
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-        potionEssences.clear();
         this.hasGlowstone = tag.getBoolean("hasGlowstone");
         this.hasNetherwart = tag.getBoolean("hasNetherwart");
         this.hasGunpowder = tag.getBoolean("hasGunpowder");
         this.redstoneCount = tag.getInteger("redstoneCount");
         this.finishedCooking = tag.getBoolean("finishedCooking");
         this.cookTime = tag.getInteger("cookTime");
-        NBTTagList potionEssenceList = tag.getTagList("effects", 10);
-        for (int tagCount = 0; tagCount < potionEssenceList.tagCount(); ++tagCount) {
-            potionEssences.add(new PotionEssence(potionEssenceList.getCompoundTagAt(tagCount)));
-        }
+        this.potionEssence = new PotionEssence((NBTTagCompound)tag.getTag("potionEssence"));
     }
 
     @Override
@@ -162,13 +158,7 @@ public class TileEntityCauldron extends TileEntityBase {
         tag.setBoolean("hasGunpowder", hasGunpowder);
         tag.setBoolean("hasNetherwart", hasNetherwart);
         tag.setBoolean("finishedCooking", finishedCooking);
-        NBTTagList potionEssenceList = new NBTTagList();
-        for (PotionEssence essence : potionEssences) {
-            NBTTagCompound essenceTag = essence.writeToNBT();
-            potionEssenceList.appendTag(essenceTag);
-        }
-        tag.setTag("effects", potionEssenceList);
-
+        tag.setTag("potionEssence", potionEssence == null ? new NBTTagCompound() : potionEssence.writeToNBT());
     }
 
     public NBTTagCompound removeContainedPotion() {
@@ -185,21 +175,10 @@ public class TileEntityCauldron extends TileEntityBase {
     }
 
     public NBTTagCompound getFinishedPotion() {
-        NBTTagCompound tag = new PotionEssence(potionEssences.toArray(new PotionIngredient[potionEssences.size()])).writeToNBT();
+        NBTTagCompound tag = potionEssence.writeToNBT();
         NBTTagList effectsList = tag.getTagList("effects",10);
-        NBTTagList rebuiltEffectsList = new NBTTagList();
-        for (int tagIndex = 0; tagIndex < effectsList.tagCount(); ++tagIndex) {
-            NBTTagCompound effectTag = effectsList.getCompoundTagAt(tagIndex);
-            if (effectTag.getInteger("potency") == 0)
-                continue;
-            NBTTagCompound rebuiltTag = new NBTTagCompound();
-            rebuiltTag.setInteger("id", effectTag.getInteger("id"));
-            rebuiltTag.setInteger("potency", effectTag.getInteger("potency") + (hasGlowstone ? 1 : 0));
-            rebuiltTag.setInteger("duration", (int)((float)effectTag.getInteger("duration") * (1F + (0.2F * (float)redstoneCount))));
-            rebuiltEffectsList.appendTag(rebuiltTag);
-        }
         NBTTagCompound newTag = new NBTTagCompound();
-        newTag.setTag("effects", rebuiltEffectsList);
+        newTag.setTag("effects", effectsList);
         newTag.setBoolean("hasPotion", true);
         if (hasGunpowder) { newTag.setBoolean("splash", true); }
         return newTag;
@@ -212,13 +191,13 @@ public class TileEntityCauldron extends TileEntityBase {
         this.hasNetherwart = false;
         this.finishedCooking = false;
         this.redstoneCount = 0;
-        this.potionEssences.clear();
+        this.potionEssence = null;
     }
 
     public boolean isItemValidForInput(ItemStack ist) {
         if (worldObj.getBlockMetadata(xCoord, yCoord, zCoord) < 3)
             return false;
-        return (ist.getItem() instanceof ItemPotionEssence
+        return ((ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null)
                 || (ist.getItem() == Items.gunpowder && !this.hasGunpowder)
                 || (ist.getItem() == Items.glowstone_dust && !this.hasGlowstone)
                 || (ist.getItem() == Items.redstone && this.redstoneCount <= getRedstoneAmpLimit())
@@ -227,7 +206,7 @@ public class TileEntityCauldron extends TileEntityBase {
 
     public void addItem(ItemStack ist) {
         if (ist.getItem() instanceof ItemPotionEssence) {
-            potionEssences.add(new PotionEssence(ist.getTagCompound()));
+            potionEssence = new PotionEssence(ist.getTagCompound());
         } else if (ist.getItem() == Items.gunpowder) {
             this.hasGunpowder = true;
         } else if (ist.getItem() == Items.glowstone_dust) {

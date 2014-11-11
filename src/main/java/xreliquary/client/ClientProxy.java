@@ -49,14 +49,14 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntitySeekerShot.class, new RenderShot());
         RenderingRegistry.registerEntityRenderingHandler(EntitySandShot.class, new RenderShot());
         RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, new RenderShot());
+        RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, new RenderThrown(0));
+        RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, new RenderThrown(2));
+        RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, new RenderThrown(11));
         RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, new RenderThrown(12));
+        RenderingRegistry.registerEntityRenderingHandler(EntityKrakenSlime.class, new RenderThrown(13));
         RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, new RenderSnowball(Items.snowball));
         RenderingRegistry.registerEntityRenderingHandler(EntityEnderStaffProjectile.class, new RenderSnowball(Items.ender_pearl));
-        RenderingRegistry.registerEntityRenderingHandler(EntityKrakenSlime.class, new RenderThrown(13));
-        RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, new RenderThrown(Reference.WATER_SPRITE));
-        RenderingRegistry.registerEntityRenderingHandler(EntityThrownXRPotion.class, new RenderThrownPotion(Reference.WATER_SPRITE));
-        RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.APHRODITE_META));
-        RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, new RenderThrown(Reference.SPLASH_POTION_SPRITE + Reference.FERTILIZER_META));
+        RenderingRegistry.registerEntityRenderingHandler(EntityThrownXRPotion.class, new RenderThrownPotion());
 
         RenderingRegistry.registerBlockHandler(new RenderApothecaryCauldron());
 

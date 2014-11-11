@@ -40,8 +40,12 @@ public class ItemFertilePotion extends ItemBase {
         return new ItemStack(ContentHandler.getItem(Names.potion), 1, 0);
     }
 
+
     @SideOnly(Side.CLIENT)
     private IIcon iconSplashOverlay;
+
+    @SideOnly(Side.CLIENT)
+    private IIcon iconSplash;
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -54,15 +58,15 @@ public class ItemFertilePotion extends ItemBase {
     public void registerIcons(IIconRegister iconRegister) {
         super.registerIcons(iconRegister);
         iconSplashOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_splash_overlay);
+        iconSplash = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_splash);
     }
 
     @Override
     public IIcon getIcon(ItemStack itemStack, int renderPass) {
         if (renderPass == 1)
             return iconSplashOverlay;
-        return this.itemIcon;
+        return this.iconSplash;
     }
-
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {

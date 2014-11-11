@@ -54,11 +54,13 @@ public class PotionEssence extends PotionIngredient {
 
     public NBTTagCompound writeToNBT() {
         NBTTagCompound tag = new NBTTagCompound();
+        if (tag.getTagList("effects",10) == null)
+            return null;
         NBTTagList effectList = tag.getTagList("effects", 10);
         for (PotionEffect object : effects) {
             NBTTagCompound effect = new NBTTagCompound();
             effect.setInteger("id", object.getPotionID());
-            effect.setInteger("duration", object.getDuration());
+            effect.setInteger("duration", Potion.potionTypes[object.getPotionID()].isInstant() ? 1 : object.getDuration());
             effect.setInteger("potency", object.getAmplifier());
             effectList.appendTag(effect);
         }

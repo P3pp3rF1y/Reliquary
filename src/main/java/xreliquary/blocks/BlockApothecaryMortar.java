@@ -63,6 +63,8 @@ public class BlockApothecaryMortar extends BlockBase {
         ItemStack heldItem = player.getCurrentEquippedItem();
         if (heldItem == null) {
             mortar.usePestle();
+            world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, this.stepSound.getStepResourcePath(), (this.stepSound.getVolume() + 1.0F) / 2.0F, this.stepSound.getPitch() * 0.8F);
+            player.swingItem();
             return false;
         }
         ItemStack[] mortarItems = mortar.getItemStacks();

@@ -24,6 +24,12 @@ tile.apothecary_cauldron.tooltip=Used to brew potions;from potion essence.
 tile.apothecary_mortar.name=Apothecary Mortar
 tile.apothecary_mortar.tooltip=Used to grind ingredients;into potion essence.
 
+item.attraction_potion.name=Aphrodite's Serum
+item.attraction_potion.tooltip=Makes animals mate.
+
+item.fertile_potion.name=Fertile Potion
+item.fertile_potion.tooltip=Causes plants to grow.
+
 item.bullet_0.name=Empty Casing
 item.bullet_1.name=Neutral Shot
 item.bullet_2.name=Exorcism Shot

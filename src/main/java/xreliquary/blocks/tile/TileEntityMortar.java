@@ -110,7 +110,7 @@ public class TileEntityMortar extends TileEntityInventory {
             ++itemCount;
             potionIngredients.add(PotionMap.getIngredient(item));
         }
-        if (itemCount > 0) {
+        if (itemCount > 1) {
             pestleUsedCounter++;
             spawnPestleParticles();
         }
@@ -167,6 +167,14 @@ public class TileEntityMortar extends TileEntityInventory {
     public boolean isItemValidForSlot(int slot, ItemStack ist) {
         // don't allow essence/items in slots after the third one.
         //only allow valid potion items
+
+        //also now doesn't allow the same item twice.
+        for (int i = 0; i < this.getSizeInventory(); ++i) {
+            if (this.getStackInSlot(i) == null)
+                continue;
+            if (this.getStackInSlot(i).isItemEqual(ist))
+                return false;
+        }
         return slot <= 3 && (XRPotionHelper.isItemIngredient(ist) || XRPotionHelper.isItemEssence(ist));
     }
 }

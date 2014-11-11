@@ -172,13 +172,13 @@ public class ItemXRPotion extends ItemBase {
     }
 
     @SideOnly(Side.CLIENT)
-    private IIcon iconBaseOverlay;
+    private static IIcon iconBaseOverlay;
 
     @SideOnly(Side.CLIENT)
-    private IIcon iconSplash;
+    public static IIcon iconSplash;
 
     @SideOnly(Side.CLIENT)
-    private IIcon iconSplashOverlay;
+    public static IIcon iconSplashOverlay;
 
     @Override
     @SideOnly(Side.CLIENT)

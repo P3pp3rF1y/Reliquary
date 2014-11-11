@@ -23,7 +23,7 @@ public class EntityCauldronBubbleFX extends EntityFX {
     public EntityCauldronBubbleFX(World world, double x, double y, double z, double xMot, double yMot, double zMot, float red, float green, float blue) {
         super(world, x, y, z, xMot, yMot, zMot);
         this.setSize(0.02F, 0.02F);
-        this.particleScale = 0.5F;
+        this.particleScale = 0.5F + (worldObj.rand.nextFloat() - 0.5F) * 0.4F;
         this.motionX = xMot;
         this.motionY = yMot;
         this.motionZ = zMot;

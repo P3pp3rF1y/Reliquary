@@ -143,14 +143,12 @@ public class BlockApothecaryCauldron extends BlockBase {
                 //this.setMetaData(world, x, y, z, l - 1);
             }
             if (collidingEntity instanceof EntityLivingBase) {
-                for (PotionEssence essence : cauldron.potionEssences) {
-                    for (PotionEffect effect : essence.getEffects()) {
-                        Potion potion = Potion.potionTypes[effect.getPotionID()];
-                        if (potion.isInstant() && world.getWorldTime() % 20 != 0)
-                            continue;
-                        PotionEffect reducedEffect = new PotionEffect(effect.getPotionID(), potion.isInstant() ? 1 : effect.getDuration() / 20, Math.max(0, effect.getAmplifier() - 1));
-                        ((EntityLivingBase) collidingEntity).addPotionEffect(reducedEffect);
-                    }
+                for (PotionEffect effect : cauldron.potionEssence.getEffects()) {
+                    Potion potion = Potion.potionTypes[effect.getPotionID()];
+                    if (potion.isInstant() && world.getWorldTime() % 20 != 0)
+                        continue;
+                    PotionEffect reducedEffect = new PotionEffect(effect.getPotionID(), potion.isInstant() ? 1 : effect.getDuration() / 20, Math.max(0, effect.getAmplifier() - 1));
+                    ((EntityLivingBase) collidingEntity).addPotionEffect(reducedEffect);
                 }
                 if (cauldron.cookTime > 0 && world.getWorldTime() % 20 != 0) {
                     collidingEntity.attackEntityFrom(DamageSource.inFire, 1.0F);

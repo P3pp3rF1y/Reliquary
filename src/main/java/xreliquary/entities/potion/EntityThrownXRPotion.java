@@ -2,20 +2,26 @@ package xreliquary.entities.potion;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import xreliquary.lib.Colors;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Xeno on 11/9/2014.
@@ -23,7 +29,7 @@ import java.util.List;
 public class EntityThrownXRPotion extends EntityThrowable
 {
     /** similarish to vanilla's potion except we use the NBT instead of the meta **/
-    private ItemStack potionItemStack;
+    public ItemStack potionItemStack;
 
     public EntityThrownXRPotion(World world)
     {
@@ -76,19 +82,6 @@ public class EntityThrownXRPotion extends EntityThrowable
         }
 
         this.potionItemStack.setItemDamage(p_82340_1_);
-    }
-
-    /**
-     * Returns the damage value of the thrown potion that this EntityPotion represents.
-     */
-    public int getPotionItemStack()
-    {
-        if (this.potionItemStack == null)
-        {
-            this.potionItemStack = new ItemStack(Items.potionitem, 1, 0);
-        }
-
-        return this.potionItemStack.getItemDamage();
     }
 
     /**
@@ -149,9 +142,50 @@ public class EntityThrownXRPotion extends EntityThrowable
                 }
             }
 
-            this.worldObj.playAuxSFX(2002, (int)Math.round(this.posX), (int)Math.round(this.posY), (int)Math.round(this.posZ), this.getPotionItemStack());
+            spawnParticles();
             this.setDead();
         }
+    }
+
+    public int getColor() {
+        //basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
+        return PotionHelper.calcPotionLiquidColor(new PotionEssence(potionItemStack.getTagCompound()).getEffects());
+    }
+
+    // most of these are the same in every potion, the only thing that isn't is
+    // the coloration of the particles.
+    protected void spawnParticles() {
+        String var14 = "iconcrack_" + Item.getIdFromItem(Items.potionitem);
+        Random var7 = rand;
+        for (int var15 = 0; var15 < 8; ++var15) {
+            worldObj.spawnParticle(var14, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+        }
+
+        int color = potionItemStack == null ? Integer.parseInt(Colors.PURE, 16) : getColor();
+
+        float red = (((color >> 16) & 255) / 256F);
+        float green = (((color >> 8) & 255) / 256F);
+        float blue = (((color >> 0) & 255) / 256F);
+
+        String var19 = "spell";
+
+        for (int var20 = 0; var20 < 100; ++var20) {
+            double var39 = var7.nextDouble() * 4.0D;
+            double var23 = var7.nextDouble() * Math.PI * 2.0D;
+            double var25 = Math.cos(var23) * var39;
+            double var27 = 0.01D + var7.nextDouble() * 0.5D;
+            double var29 = Math.sin(var23) * var39;
+            if (worldObj.isRemote) {
+                EntityFX var31 = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(var19, this.posX + var25 * 0.1D, this.posY + 0.3D, this.posZ + var29 * 0.1D, var25, var27, var29);
+                if (var31 != null) {
+                    float var32 = 0.75F + var7.nextFloat() * 0.25F;
+                    var31.setRBGColorF(red * var32, green * var32, blue * var32);
+                    var31.multiplyVelocity((float) var39);
+                }
+            }
+        }
+
+        worldObj.playSoundEffect(posX + 0.5D, posY + 0.5D, posZ + 0.5D, "dig.glass", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
     }
 
     /**
