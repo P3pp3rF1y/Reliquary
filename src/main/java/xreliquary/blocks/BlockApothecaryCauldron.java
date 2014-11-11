@@ -198,7 +198,7 @@ public class BlockApothecaryCauldron extends BlockBase {
                     if (itemstack.getItem() == ContentHandler.getItem(Names.potion) && (itemstack.getTagCompound() == null || !itemstack.getTagCompound().getBoolean("hasPotion"))) {
                         if (j1 > 0) {
 
-                            if (cauldron.finishedCooking) {
+                            if (cauldron.finishedCooking()) {
                                 ItemStack potion = new ItemStack(ContentHandler.getItem(Names.potion), 1, 0);
                                 potion.setTagCompound(cauldron.removeContainedPotion());
 

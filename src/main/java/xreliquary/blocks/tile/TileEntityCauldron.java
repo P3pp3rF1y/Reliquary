@@ -32,7 +32,6 @@ public class TileEntityCauldron extends TileEntityBase {
     public boolean hasGlowstone = false;
     public boolean hasGunpowder = false;
     public boolean hasNetherwart = false;
-    public boolean finishedCooking = false;
     public int cookTime = 0;
 
 
@@ -43,9 +42,8 @@ public class TileEntityCauldron extends TileEntityBase {
     public void updateEntity() {
         //Item addition gets handled by the block's onEntityCollided method.
         if (getHeatSources().contains(worldObj.getBlock(xCoord, yCoord - 1, zCoord)) && worldObj.getBlockMetadata(xCoord, yCoord, zCoord) > 0) {
-            if (!finishedCooking && ++cookTime >= getCookTime()) {
+            if (potionEssence != null && ++cookTime >= getCookTime()) {
                 if (hasNetherwart) {
-                    finishedCooking = true;
                     cookTime = 0;
                 } else {
                     cookTime = getCookTime();
@@ -55,11 +53,13 @@ public class TileEntityCauldron extends TileEntityBase {
                 spawnBoilingParticles();
             if (hasGunpowder) spawnGunpowderParticles();
             if (hasGlowstone) spawnGlowstoneParticles();
-            if (hasNetherwart) spawnNetherwartParticles();
-            if (redstoneCount > 0) spawnRedstoneParticles();
-            if (finishedCooking) {
-                spawnFinishedParticles();
+            if (hasNetherwart) {
+                spawnNetherwartParticles();
+                if (potionEssence != null) {
+                    spawnFinishedParticles();
+                }
             }
+            if (redstoneCount > 0) spawnRedstoneParticles();
         }
     }
 
@@ -144,9 +144,10 @@ public class TileEntityCauldron extends TileEntityBase {
         this.hasNetherwart = tag.getBoolean("hasNetherwart");
         this.hasGunpowder = tag.getBoolean("hasGunpowder");
         this.redstoneCount = tag.getInteger("redstoneCount");
-        this.finishedCooking = tag.getBoolean("finishedCooking");
         this.cookTime = tag.getInteger("cookTime");
         this.potionEssence = new PotionEssence((NBTTagCompound)tag.getTag("potionEssence"));
+        if (potionEssence.getEffects().size() == 0)
+            potionEssence = null;
     }
 
     @Override
@@ -157,12 +158,15 @@ public class TileEntityCauldron extends TileEntityBase {
         tag.setBoolean("hasGlowstone", hasGlowstone);
         tag.setBoolean("hasGunpowder", hasGunpowder);
         tag.setBoolean("hasNetherwart", hasNetherwart);
-        tag.setBoolean("finishedCooking", finishedCooking);
         tag.setTag("potionEssence", potionEssence == null ? new NBTTagCompound() : potionEssence.writeToNBT());
     }
 
+    public boolean finishedCooking() {
+        return hasNetherwart && potionEssence != null && this.cookTime >= getCookTime();
+    }
+
     public NBTTagCompound removeContainedPotion() {
-        if (!finishedCooking || worldObj.getBlockMetadata(xCoord, yCoord, zCoord) <= 0)
+        if (!hasNetherwart || potionEssence == null || worldObj.getBlockMetadata(xCoord, yCoord, zCoord) <= 0)
             return null;
         BlockApothecaryCauldron cauldron = (BlockApothecaryCauldron)worldObj.getBlock(xCoord, yCoord, zCoord);
         cauldron.setMetaData(worldObj, xCoord, yCoord, zCoord, worldObj.getBlockMetadata(xCoord, yCoord, zCoord) - 1);
@@ -189,7 +193,6 @@ public class TileEntityCauldron extends TileEntityBase {
         this.hasGlowstone = false;
         this.hasGunpowder = false;
         this.hasNetherwart = false;
-        this.finishedCooking = false;
         this.redstoneCount = 0;
         this.potionEssence = null;
     }
