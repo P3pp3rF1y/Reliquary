@@ -25,9 +25,9 @@ public class PotionMap {
 
     public static void init() {
         //initialize the potion mapping. This is powered mainly through config file.
-        addPotionConfig(Items.magma_cream, "fireResistance_1_1","damageBoost_1_1");
+        addPotionConfig(Items.magma_cream, "fireResistance_6_1","damageBoost_5_1");
         addPotionConfig(Items.sugar, "moveSpeed_3_0","absorption_1_0");
-        addPotionConfig(Items.speckled_melon,"heal_1_3","digSpeed_2_1");
+        addPotionConfig(Items.speckled_melon,"heal_1_2","digSpeed_2_1");
         addPotionConfig(Items.spider_eye,"poison_3_0","digSlowDown_2_0");
         addPotionConfig(Items.ghast_tear,"regeneration_1_1","moveSlowdown_5_4");
         addPotionConfig(Items.blaze_powder,"damageBoost_3_0","digSpeed_2_1");
@@ -38,7 +38,7 @@ public class PotionMap {
         addPotionConfig(Items.apple,"healthBoost_4_0","heal_1_1");
         addPotionConfig(Items.coal,"nightVision_2_0","resistance_1_0");
         addPotionConfig(Items.coal, 1,"invisibility_2_0","wither_1_0");
-        addPotionConfig(Items.diamond,"absorption_4_2","regeneration_3_2");
+        addPotionConfig(Items.diamond,"absorption_4_2","resistance_3_2");
         addPotionConfig(Items.iron_ingot,"resistance_2_1","damageBoost_1_1");
         addPotionConfig(Items.gold_ingot,"digSpeed_4_2","absorption_1_0");
         addPotionConfig(Items.string,"moveSlowdown_3_0","digSlowDown_3_0");
@@ -65,31 +65,31 @@ public class PotionMap {
         addPotionConfig(Items.dye, Reference.BLACK_DYE_META,"waterBreathing_3_0","Blindness_3_1"); //ink
         addPotionConfig(Items.dye, Reference.RED_DYE_META,"heal_1_1","regeneration_2_0"); //rose red
         addPotionConfig(Items.dye, Reference.GREEN_DYE_META,"saturation_2_1","absorption_1_0"); //cactus green
-        addPotionConfig(Items.dye, Reference.BLUE_DYE_META,"regeneration_1_1","invisibility_2_0");  //lapis lazuli
+        addPotionConfig(Items.dye, Reference.BLUE_DYE_META,"regeneration_1_0","invisibility_2_0");  //lapis lazuli
         addPotionConfig(Items.dye, Reference.YELLOW_DYE_META,"absorption_1_0","jump_2_0"); //dandellion yellow
-        addPotionConfig(Items.dye, Reference.WHITE_DYE_META,"digSpeed_1_1","moveSpeed_1_1"); //bone meal
+        addPotionConfig(Items.dye, Reference.WHITE_DYE_META,"digSpeed_1_1","moveSpeed_1_0"); //bone meal
         addPotionConfig(Items.bone,"digSpeed_3_1","moveSpeed_3_1");
-        addPotionConfig(Items.cookie,"heal_1_2","saturation_2_1");
-        addPotionConfig(Items.melon,"heal_1_2","healthBoost_1_1");
+        addPotionConfig(Items.cookie,"heal_1_0","saturation_1_0");
+        addPotionConfig(Items.melon,"heal_1_1","healthBoost_1_0");
         addPotionConfig(Items.pumpkin_seeds,"moveSlowdown_1_1","saturation_1_1");
-        addPotionConfig(Items.pumpkin_pie,"heal_1_2","saturation_2_1");
+        addPotionConfig(Items.pumpkin_pie,"heal_1_1","saturation_1_0");
         addPotionConfig(Items.beef,"saturation_1_0","confusion_1_1");
-        addPotionConfig(Items.cooked_beef,"saturation_2_1","damageBoost_2_0");
-        addPotionConfig(Items.chicken,"confusion_2_1","poison_1_1");
-        addPotionConfig(Items.cooked_chicken,"saturation_2_1","heal_1_1");
-        addPotionConfig(Items.rotten_flesh,"wither_2_1","hunger_2_2");
-        addPotionConfig(Items.ender_pearl,"harm_1_2","invisibility_4_1");
-        addPotionConfig(Items.blaze_rod,"damageBoost_3_1","digSpeed_3_1");
-        addPotionConfig(Items.gold_nugget,"digSpeed_2_0","harm_1_1");
-        addPotionConfig(Items.ender_eye,"harm_1_4","damageBoost_2_1");
-        addPotionConfig(Items.fire_charge,"damageBoost_2_1","harm_1_2");
-        addPotionConfig(Items.emerald,"absorption_2_2","resistance_4_2");
+        addPotionConfig(Items.cooked_beef,"saturation_2_1","damageBoost_1_0");
+        addPotionConfig(Items.chicken,"confusion_1_1","poison_1_0");
+        addPotionConfig(Items.cooked_chicken,"saturation_1_1","heal_1_0");
+        addPotionConfig(Items.rotten_flesh,"wither_2_0","hunger_2_1");
+        addPotionConfig(Items.ender_pearl,"harm_1_1","invisibility_4_0");
+        addPotionConfig(Items.blaze_rod,"damageBoost_3_1","digSpeed_3_0");
+        addPotionConfig(Items.gold_nugget,"digSpeed_2_1","harm_1_0");
+        addPotionConfig(Items.ender_eye,"harm_1_1","damageBoost_2_0");
+        addPotionConfig(Items.fire_charge,"damageBoost_2_0","harm_1_1");
+        addPotionConfig(Items.emerald,"absorption_2_1","resistance_4_0");
         addPotionConfig(Items.carrot,"nightVision_2_0","heal_1_1");
         addPotionConfig(Items.potato,"healthBoost_2_0","saturation_1_0");
         addPotionConfig(Items.baked_potato,"healthBoost_2_1","saturation_1_1");
         addPotionConfig(Items.poisonous_potato,"poison_4_1","wither_1_0");
-        addPotionConfig(Items.nether_star,"wither_8_3","absorption_40_3");
-        addPotionConfig(Items.quartz,"damageBoost_3_1","harm_1_1");
+        addPotionConfig(Items.nether_star,"wither_4_2","absorption_8_2");
+        addPotionConfig(Items.quartz,"damageBoost_3_0","harm_1_1");
         //mod items using mob items, using the XRRecipe shortcuts for ease-of-read
         addPotionConfig(XRRecipes.zombieHeart(),"confusion_8_1","wither_6_1");
         addPotionConfig(XRRecipes.ribBone(),"digSpeed_3_2","absorption_1_1");

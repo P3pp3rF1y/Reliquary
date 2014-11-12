@@ -48,7 +48,11 @@ public class PotionEssence extends PotionIngredient {
         Iterator i = mergedPotionEffects.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry<Integer, Duo<Integer, Integer>> pair = (Map.Entry<Integer, Duo<Integer, Integer>>)i.next();
-            effects.add(new PotionEffect(pair.getKey(), pair.getValue().one, pair.getValue().two));
+            //the effect is too weak to be added to the potion.
+            if (pair.getValue().two == 0)
+                continue;
+            //the effect is added, and its level is reduced by one.
+            effects.add(new PotionEffect(pair.getKey(), pair.getValue().one, pair.getValue().two - 1));
         }
     }
 
