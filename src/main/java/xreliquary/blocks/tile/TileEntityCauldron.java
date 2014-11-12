@@ -42,12 +42,9 @@ public class TileEntityCauldron extends TileEntityBase {
     public void updateEntity() {
         //Item addition gets handled by the block's onEntityCollided method.
         if (getHeatSources().contains(worldObj.getBlock(xCoord, yCoord - 1, zCoord)) && worldObj.getBlockMetadata(xCoord, yCoord, zCoord) > 0) {
-            if (potionEssence != null && ++cookTime >= getCookTime()) {
-                if (hasNetherwart) {
-                    cookTime = 0;
-                } else {
-                    cookTime = getCookTime();
-                }
+            if (potionEssence != null) {
+                if(cookTime < getCookTime())
+                    cookTime++;
             }
             for (int particleCount = 0; particleCount <= 2; ++particleCount)
                 spawnBoilingParticles();
@@ -96,44 +93,44 @@ public class TileEntityCauldron extends TileEntityBase {
     }
 
     public void spawnGunpowderParticles() {
-        if (worldObj.rand.nextInt(4) > 0)
+        if (worldObj.rand.nextInt(8) > 0)
             return;
-        float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
-        float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
+        float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
+        float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
         worldObj.spawnParticle("smoke", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
     }
 
     public void spawnGlowstoneParticles() {
-        if (worldObj.rand.nextInt(4) > 0)
+        if (worldObj.rand.nextInt(8) > 0)
             return;
         double gauss = 0.5D + worldObj.rand.nextFloat() / 2;
-        float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
-        float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
+        float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
+        float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
         worldObj.spawnParticle("mobSpell", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, gauss, gauss, 0.0F);
     }
 
     public void spawnNetherwartParticles() {
-        if (worldObj.rand.nextInt(4) > 0)
+        if (worldObj.rand.nextInt(8) > 0)
             return;
         double gauss = 0.5D + worldObj.rand.nextFloat() / 2;
-        float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
-        float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
+        float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
+        float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
         worldObj.spawnParticle("mobSpell", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, gauss, 0.0F, gauss);
     }
 
     public void spawnRedstoneParticles() {
-        if (worldObj.rand.nextInt(4) > 0)
+        if (worldObj.rand.nextInt(10) / this.redstoneCount > 0)
             return;
-        float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
-        float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
+        float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
+        float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
         worldObj.spawnParticle("reddust", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 1D, 0D, 0D);
     }
 
     public void spawnFinishedParticles() {
-        if (worldObj.rand.nextInt(4) > 0)
+        if (worldObj.rand.nextInt(8) > 0)
             return;
-        float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
-        float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
+        float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
+        float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
         worldObj.spawnParticle("witchMagic", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 0D, 0D, 0D);
     }
 
@@ -147,7 +144,7 @@ public class TileEntityCauldron extends TileEntityBase {
         this.cookTime = tag.getInteger("cookTime");
         this.potionEssence = new PotionEssence((NBTTagCompound)tag.getTag("potionEssence"));
         if (potionEssence.getEffects().size() == 0)
-            potionEssence = null;
+            this.potionEssence = null;
     }
 
     @Override

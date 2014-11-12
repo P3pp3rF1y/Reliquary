@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,30 +29,51 @@ import java.util.Random;
  */
 public class EntityThrownXRPotion extends EntityThrowable
 {
-    /** similarish to vanilla's potion except we use the NBT instead of the meta **/
-    public ItemStack potionItemStack;
 
     public EntityThrownXRPotion(World world)
     {
         super(world);
     }
 
+    public PotionEssence essence = null;
+    //public int color = Integer.parseInt(Colors.PURE, 16);
+
     public EntityThrownXRPotion(World world, EntityLivingBase elb, ItemStack ist)
     {
         super(world, elb);
-        this.potionItemStack = ist;
+        this.essence = new PotionEssence(ist.getTagCompound());
+        setEntityColor(getColor());
     }
 
-    @SideOnly(Side.CLIENT)
-    public EntityThrownXRPotion(World p_i1791_1_, double p_i1791_2_, double p_i1791_4_, double p_i1791_6_, int p_i1791_8_)
-    {
-        this(p_i1791_1_, p_i1791_2_, p_i1791_4_, p_i1791_6_, new ItemStack(Items.potionitem, 1, p_i1791_8_));
-    }
+//    @SideOnly(Side.CLIENT)
+//    public EntityThrownXRPotion(World p_i1791_1_, double p_i1791_2_, double p_i1791_4_, double p_i1791_6_, int p_i1791_8_)
+//    {
+//        this(p_i1791_1_, p_i1791_2_, p_i1791_4_, p_i1791_6_, new ItemStack(Items.potionitem, 1, 0));
+//        setEntityColor(getColor());
+//    }
 
-    public EntityThrownXRPotion(World p_i1792_1_, double p_i1792_2_, double p_i1792_4_, double p_i1792_6_, ItemStack p_i1792_8_)
+    public EntityThrownXRPotion(World p_i1792_1_, double p_i1792_2_, double p_i1792_4_, double p_i1792_6_, ItemStack ist)
     {
         super(p_i1792_1_, p_i1792_2_, p_i1792_4_, p_i1792_6_);
-        this.potionItemStack = p_i1792_8_;
+        this.essence = new PotionEssence(ist.getTagCompound());
+        setEntityColor(getColor());
+    }
+
+    @Override
+    protected void entityInit() {
+        super.entityInit();
+        this.getDataWatcher().addObjectByDataType(11, 2);
+    }
+
+    public int getEntityColor() {
+        int color = this.getDataWatcher().getWatchableObjectInt(11);
+        return color;
+    }
+
+    public void setEntityColor(int c)
+    {
+        this.getDataWatcher().updateObject(11, c);
+        this.getDataWatcher().setObjectWatched(11);
     }
 
     /**
@@ -59,7 +81,7 @@ public class EntityThrownXRPotion extends EntityThrowable
      */
     protected float getGravityVelocity()
     {
-        return 0.05F;
+        return 0.04F;
     }
 
     //no clue what these do
@@ -74,24 +96,15 @@ public class EntityThrownXRPotion extends EntityThrowable
         return -20.0F;
     }
 
-    public void setPotionItemStack(int p_82340_1_)
-    {
-        if (this.potionItemStack == null)
-        {
-            this.potionItemStack = new ItemStack(Items.potionitem, 1, 0);
-        }
-
-        this.potionItemStack.setItemDamage(p_82340_1_);
-    }
-
     /**
      * Called when this EntityThrowable hits a block or entity.
      */
     protected void onImpact(MovingObjectPosition mop)
     {
+        spawnParticles();
         if (!this.worldObj.isRemote)
         {
-            List list = new PotionEssence(potionItemStack.getTagCompound()).getEffects();
+            List list = essence.getEffects();
 
             if (list != null && !list.isEmpty())
             {
@@ -142,14 +155,13 @@ public class EntityThrownXRPotion extends EntityThrowable
                 }
             }
 
-            spawnParticles();
             this.setDead();
         }
     }
 
     public int getColor() {
         //basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
-        return PotionHelper.calcPotionLiquidColor(new PotionEssence(potionItemStack.getTagCompound()).getEffects());
+        return essence == null ? getEntityColor() : PotionHelper.calcPotionLiquidColor(essence.getEffects());
     }
 
     // most of these are the same in every potion, the only thing that isn't is
@@ -161,7 +173,7 @@ public class EntityThrownXRPotion extends EntityThrowable
             worldObj.spawnParticle(var14, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
         }
 
-        int color = potionItemStack == null ? Integer.parseInt(Colors.PURE, 16) : getColor();
+        int color = getColor();
 
         float red = (((color >> 16) & 255) / 256F);
         float green = (((color >> 8) & 255) / 256F);
@@ -191,36 +203,23 @@ public class EntityThrownXRPotion extends EntityThrowable
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
-    public void readEntityFromNBT(NBTTagCompound p_70037_1_)
+    public void readEntityFromNBT(NBTTagCompound tag)
     {
-        super.readEntityFromNBT(p_70037_1_);
-
-        if (p_70037_1_.hasKey("Potion", 10))
-        {
-            this.potionItemStack = ItemStack.loadItemStackFromNBT(p_70037_1_.getCompoundTag("Potion"));
-        }
-        else
-        {
-            this.setPotionItemStack(p_70037_1_.getInteger("potionValue"));
-        }
-
-        if (this.potionItemStack == null)
-        {
+        super.readEntityFromNBT(tag);
+        this.essence = new PotionEssence(tag);
+        setEntityColor(tag.getInteger("color"));
+        if (this.essence.getEffects().size() == 0)
             this.setDead();
-        }
     }
 
     /**
      * (abstract) Protected helper method to write subclass entity data to NBT.
      */
-    public void writeEntityToNBT(NBTTagCompound p_70014_1_)
+    public void writeEntityToNBT(NBTTagCompound tag)
     {
-        super.writeEntityToNBT(p_70014_1_);
-
-        if (this.potionItemStack != null)
-        {
-            p_70014_1_.setTag("Potion", this.potionItemStack.writeToNBT(new NBTTagCompound()));
-        }
+        super.writeEntityToNBT(tag);
+        tag.setTag("potion", essence == null ? new NBTTagCompound() : essence.writeToNBT());
+        tag.setInteger("color", getEntityColor());
     }
 }
 
