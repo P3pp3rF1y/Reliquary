@@ -46,62 +46,15 @@ public class Reference {
     public static final int SHELL_INGREDIENT_META = 14;
     public static final int CLOTH_INGREDIENT_META = 15;
 
-    //public static final int SPLASH_META = 0;
-//    public static final int APHRODITE_META = 1;
     public static final int APHRODITE_META = 0;
-//    public static final int POISON_META = 2;
-//    public static final int ACID_META = 3;
-//    public static final int CONFUSION_META = 4;
-//    public static final int SLOWING_META = 5;
-//    public static final int WEAKNESS_META = 6;
-//    public static final int WITHER_META = 7;
-//    public static final int BLINDING_META = 8;
-//    public static final int RUINATION_META = 9;
-    //public static final int FERTILIZER_META = 10;
     public static final int FERTILIZER_META = 1;
-//    public static final int EMPTY_VIAL_META = 11;
-//    public static final int POTION_META = 12;
-//    public static final int SPEED_META = 13;
-//    public static final int DIGGING_META = 14;
-//    public static final int STRENGTH_META = 15;
-//    public static final int HEALING_META = 16;
-//    public static final int BOUNDING_META = 17;
-//    public static final int REGENERATION_META = 18;
-//    public static final int RESISTANCE_META = 19;
-//    public static final int FIRE_WARDING_META = 20;
-//    public static final int BREATHING_META = 21;
-//    public static final int INVISIBILITY_META = 22;
-//    public static final int INFRAVISION_META = 23;
-//    public static final int PROTECTION_META = 24;
-//    public static final int POTENCE_META = 25;
-//    public static final int CELERITY_META = 26;
-//    public static final int PANACEA_META = 27;
-//    public static final int STALKER_META = 28;
-//    public static final int WATER_META = 29;
-
-    // these are the names that point the Elsewhere Flask to the proper
-    // localization names in the lang files.
-    // they don't perfectly line up with what I've called them throughout the
-    // mod (in code/in localizations)
-    // I may line them all up later. Most of them are obvious.
-//    public static final String HASTE_POTION_SHORTHAND = "haste";
-//    public static final String JUMP_POTION_SHORTHAND = "leaping";
-//    public static final String STRENGTH_POTION_SHORTHAND = "strength";
-//    public static final String MOVESPEED_POTION_SHORTHAND = "movespeed";
-//    public static final String NIGHTVISION_POTION_SHORTHAND = "nightvision";
-//    public static final String INVISIBILITY_POTION_SHORTHAND = "invisibility";
-//    public static final String HEAL_POTION_SHORTHAND = "heal";
-//    public static final String REGENERATION_POTION_SHORTHAND = "regeneration";
-//    public static final String RESISTANCE_POTION_SHORTHAND = "resistance";
-//    public static final String FIRE_RESISTANCE_POTION_SHORTHAND = "fireresistance";
-//    public static final String MILK_POTION_SHORTHAND = "milk";
 
     public static final String LOAD_SOUND = Reference.MOD_ID + ":xload";
     public static final String SHOT_SOUND = Reference.MOD_ID + ":xshot";
     public static final String BOOK_SOUND = Reference.MOD_ID + ":book";
     public static final String GUST_SOUND = Reference.MOD_ID + ":gust";
 
-
+//not all of these get used but they're good to keep around.
     public static final int WHITE_WOOL_META = 0;
     public static final int ORAGE_WOOL_META = 1;
     public static final int MAGENTA_WOOL_META = 2;
@@ -148,7 +101,7 @@ public class Reference {
     public static final int HANDGUN_KNOCKBACK_SKILL_OFFSET = 0;
 
 
-    //Packet ID Section for identifying packet types
+    //Packet ID Section for identifying packet types, now deprecated.
 //    public static final int RECOIL_PACKET_ID = 0;
 //    public static final int RECOIL_COMPENSATION_PACKET_ID = 1;
 //    public static final int RELOAD_PACKET_ID = 0;
@@ -165,5 +118,27 @@ public class Reference {
     public static final int SAND_SHOT_INDEX = 8;
     public static final int STORM_SHOT_INDEX = 9;
 
-
+    //minecraft under-the-hood potion names
+    public static final String INVIS = "invisibility";
+    public static final String ABSORB = "absorption";
+    public static final String HBOOST = "healthBoost";
+    public static final String DBOOST = "damageBoost";
+    public static final String HARM = "harm";
+    public static final String HEAL = "heal";
+    public static final String SPEED = "moveSpeed";
+    public static final String HASTE = "digSpeed";
+    public static final String SLOW = "moveSlowdown";
+    public static final String FATIGUE = "digSlowDown";
+    public static final String BREATH = "waterBreathing";
+    public static final String VISION = "nightVision";
+    public static final String RESIST = "resistance";
+    public static final String FRESIST = "fireResistance";
+    public static final String WEAK = "weakness";
+    public static final String JUMP = "jump";
+    public static final String NAUSEA = "confusion";
+    public static final String HUNGER = "";
+    public static final String SATURATION = "";
+    public static final String REGEN = "";
+    public static final String POISON = "";
+    public static final String WITHER = "";
 }
