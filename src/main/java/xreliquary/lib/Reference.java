@@ -136,9 +136,10 @@ public class Reference {
     public static final String WEAK = "weakness";
     public static final String JUMP = "jump";
     public static final String NAUSEA = "confusion";
-    public static final String HUNGER = "";
-    public static final String SATURATION = "";
-    public static final String REGEN = "";
-    public static final String POISON = "";
-    public static final String WITHER = "";
+    public static final String HUNGER = "hunger";
+    public static final String SATURATION = "saturation";
+    public static final String REGEN = "regeneration";
+    public static final String POISON = "poison";
+    public static final String WITHER = "wither";
+    public static final String BLIND = "blindness";
 }

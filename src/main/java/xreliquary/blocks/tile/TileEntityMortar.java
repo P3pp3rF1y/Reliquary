@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.potion.PotionEffect;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.potions.PotionEssence;
@@ -115,19 +116,32 @@ public class TileEntityMortar extends TileEntityInventory {
             spawnPestleParticles();
         }
         if (pestleUsedCounter >= Reference.PESTLE_USAGE_MAX) {
-            for (int clearSlot = 0; clearSlot < this.getSizeInventory(); ++clearSlot) {
-                this.setInventorySlotContents(clearSlot, null);
-            }
-            pestleUsedCounter = 0;
-            if (worldObj.isRemote)
-                return;
+            //we've "maxed" the pestle counter and we need to see if the essence would contain potion effects.
+            //if it doesn't, just return the ingredients to the player, we are nice like that.
             PotionEssence resultEssence = new PotionEssence(potionIngredients.toArray(new PotionIngredient[potionIngredients.size()]));
-            ItemStack resultItem = new ItemStack(ContentHandler.getItem(Names.potion_essence), 1, 0);
-            resultItem.setTagCompound(resultEssence.writeToNBT());
+            if (resultEssence.getEffects().size() == 0) {
+                pestleUsedCounter = 0;
+                for (int clearSlot = 0; clearSlot < this.getSizeInventory(); ++clearSlot) {
+                    if (!this.worldObj.isRemote) {
+                        EntityItem itemEntity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, this.getStackInSlot(clearSlot));
+                        worldObj.spawnEntityInWorld(itemEntity);
+                    }
+                    this.setInventorySlotContents(clearSlot, null);
+                }
+            } else {
+                for (int clearSlot = 0; clearSlot < this.getSizeInventory(); ++clearSlot) {
+                    this.setInventorySlotContents(clearSlot, null);
+                }
+                pestleUsedCounter = 0;
+                if (worldObj.isRemote)
+                    return;
+                ItemStack resultItem = new ItemStack(ContentHandler.getItem(Names.potion_essence), 1, 0);
+                resultItem.setTagCompound(resultEssence.writeToNBT());
 
 
-            EntityItem itemEntity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, resultItem);
-            worldObj.spawnEntityInWorld(itemEntity);
+                EntityItem itemEntity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, resultItem);
+                worldObj.spawnEntityInWorld(itemEntity);
+            }
         }
     }
 
