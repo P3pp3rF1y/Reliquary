@@ -72,7 +72,7 @@ public class TileEntityCauldron extends TileEntityBase {
         float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
 
 
-        int color = potionEssence == null ? Integer.parseInt(Colors.PURE, 16) : getColor(new PotionEssence(potionEssence));
+        int color = potionEssence == null ? Integer.parseInt(Colors.PURE, 16) : getColor(potionEssence);
 
         float red = (((color >> 16) & 255) / 256F);
         float green = (((color >> 8) & 255) / 256F);

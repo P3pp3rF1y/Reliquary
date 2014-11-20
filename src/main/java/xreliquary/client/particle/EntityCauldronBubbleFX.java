@@ -46,7 +46,7 @@ public class EntityCauldronBubbleFX extends EntityFX {
         float vMin = (float)this.particleTextureIndexY / 4F; // same, on Y (4)
         float vMax = vMin + 1F / 4F;
 
-        float scale = 0.1F * this.particleScale;
+        float scale = 0.1F * this.particleScale * (1.0F + (float)this.particleAge / 20F);
         float x = (float)(this.prevPosX + (this.posX - this.prevPosX) * subTick - interpPosX);
         float y = (float)(this.prevPosY + (this.posY - this.prevPosY) * subTick - interpPosY);
         float z = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * subTick - interpPosZ);
@@ -97,8 +97,8 @@ public class EntityCauldronBubbleFX extends EntityFX {
 
         // use setParticleTextureIndex based on the age of the particle
         int ageFromDeath = this.particleMaxAge - this.particleAge;
-        if (ageFromDeath <= 9) {
-            this.setParticleTextureIndex(4 - Math.max(ageFromDeath / 3, 1));
+        if (ageFromDeath <= 6) {
+            this.setParticleTextureIndex(4 - Math.max(ageFromDeath / 2, 1));
         }
 
         if (this.particleAge++ >= this.particleMaxAge)

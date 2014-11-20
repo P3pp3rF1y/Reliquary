@@ -79,7 +79,7 @@ public class PotionEssence extends PotionIngredient {
             Map.Entry<Integer, Duo<Integer, Integer>> pair = (Map.Entry<Integer, Duo<Integer, Integer>>)i.next();
             //the effect is added. If the end result of this contains nothing, it means the items are invalid for mixing.
             //this is important in cases where the grinder is full of incompatible ingredients. Rather than mix them, we simply return them to the player.
-            effects.add(new PotionEffect(pair.getKey(), pair.getValue().one, pair.getValue().two));
+            effects.add(new PotionEffect(pair.getKey(), Potion.potionTypes[pair.getKey()].isInstant() ? 1 : pair.getValue().one, pair.getValue().two));
         }
     }
 

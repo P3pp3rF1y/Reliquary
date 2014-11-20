@@ -143,6 +143,8 @@ public class BlockApothecaryCauldron extends BlockBase {
                 //this.setMetaData(world, x, y, z, l - 1);
             }
             if (collidingEntity instanceof EntityLivingBase) {
+                if (cauldron == null || cauldron.potionEssence == null)
+                    return;
                 for (PotionEffect effect : cauldron.potionEssence.getEffects()) {
                     Potion potion = Potion.potionTypes[effect.getPotionID()];
                     if (potion.isInstant() && world.getWorldTime() % 20 != 0)

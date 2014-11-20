@@ -122,8 +122,10 @@ public class TileEntityMortar extends TileEntityInventory {
             if (resultEssence.getEffects().size() == 0) {
                 pestleUsedCounter = 0;
                 for (int clearSlot = 0; clearSlot < this.getSizeInventory(); ++clearSlot) {
+                    if (this.getStackInSlot(clearSlot) == null)
+                        continue;
                     if (!this.worldObj.isRemote) {
-                        EntityItem itemEntity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, this.getStackInSlot(clearSlot));
+                        EntityItem itemEntity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, this.getStackInSlot(clearSlot).copy());
                         worldObj.spawnEntityInWorld(itemEntity);
                     }
                     this.setInventorySlotContents(clearSlot, null);

@@ -43,31 +43,31 @@ public class PotionMap {
         addPotionConfig(Items.dye, Reference.GREEN_DYE_META,resist(3, 0), absorb(3, 0)); //cactus green
         addPotionConfig(Items.dye, Reference.WHITE_DYE_META, weak(1, 0), fatigue(1, 0)); //bone meal
         addPotionConfig(Items.pumpkin_seeds,invis(1, 0), fireres(1,0));
-        addPotionConfig(Items.beef,slow(1,0), satur(1, 0));
+        addPotionConfig(Items.beef,slow(1,0), satur(0));
         addPotionConfig(Items.chicken,nausea(1, 0), poison(1, 0));
         addPotionConfig(Items.rotten_flesh,nausea(1, 0), hunger(1, 0), wither(0, 0));
         addPotionConfig(Items.gold_nugget, dboost(0, 0), haste(0, 0));
         addPotionConfig(Items.carrot,vision(3, 0), hboost(3, 0));
-        addPotionConfig(Items.potato,hboost(3, 0), satur(1, 0));
-        addPotionConfig(Items.fish, satur(1, 0), breath(1, 0));
+        addPotionConfig(Items.potato,hboost(3, 0), satur(0));
+        addPotionConfig(Items.fish, satur(0), breath(1, 0));
 
         //TIER TWO INGREDIENTS, one of the effects of each will always be a one, slightly increased duration vs. TIER ONE
         addPotionConfig(Items.spider_eye, vision(4, 0), poison(2, 0));
         addPotionConfig(Items.blaze_powder, dboost(4, 0), harm(0));
         addPotionConfig(Items.iron_ingot, resist(4, 0), slow(2, 0));
         addPotionConfig(Items.string, slow(2, 0), fatigue(2, 0));
-        addPotionConfig(Items.bread, hboost(4, 0), satur(2, 0));
-        addPotionConfig(Items.cooked_porkchop, fatigue(2, 0), satur(2, 0));
+        addPotionConfig(Items.bread, hboost(4, 0), satur(0));
+        addPotionConfig(Items.cooked_porkchop, fatigue(2, 0), satur(0));
         addPotionConfig(Items.slime_ball, resist(4, 0), fireres(2, 0));
-        addPotionConfig(Items.cooked_fished, satur(2, 0), breath(2, 0));
+        addPotionConfig(Items.cooked_fished, satur(0), breath(2, 0));
         addPotionConfig(Items.dye, Reference.BLUE_DYE_META, haste(4, 0), dboost(4, 0));  //lapis lazuli
         addPotionConfig(Items.dye, Reference.BLACK_DYE_META, blind(2, 0), invis(2, 0)); //ink
         addPotionConfig(Items.bone, weak(2, 0), fatigue(2, 0));
-        addPotionConfig(Items.cookie, heal(0), satur(2, 0));
+        addPotionConfig(Items.cookie, heal(0), satur(0));
         addPotionConfig(Items.melon, heal(0), speed(4, 0));
-        addPotionConfig(Items.cooked_beef, resist(4, 0), satur(2, 0));
-        addPotionConfig(Items.cooked_chicken, jump(4, 0), satur(2, 0));
-        addPotionConfig(Items.baked_potato, satur(2, 0), regen(1, 0));
+        addPotionConfig(Items.cooked_beef, resist(4, 0), satur(0));
+        addPotionConfig(Items.cooked_chicken, jump(4, 0), satur(0));
+        addPotionConfig(Items.baked_potato, satur(0), regen(1, 0));
         addPotionConfig(Items.poisonous_potato, poison(2, 0), wither(1, 0));
         addPotionConfig(Items.quartz, harm(0), dboost(4, 0));
         addPotionConfig(XRRecipes.zombieHeart(), nausea(2, 0), hunger(2, 0), wither(1, 0));
@@ -99,10 +99,10 @@ public class PotionMap {
         addPotionConfig(Items.nether_star, hboost(24, 1), regen(24, 1), absorb(24, 1)); //nether star is holy stonk
         addPotionConfig(XRRecipes.moltenCore(), dboost(6, 1), fireres(6, 0), harm(1));
         addPotionConfig(XRRecipes.stormEye(), haste(24, 1), speed(24, 1), jump(24, 1), harm(1));
-        addPotionConfig(XRRecipes.fertileEssence(), hboost(8, 1), regen(3, 1), heal(1), satur(3, 1), weak(9, 1), fatigue(9, 1));
+        addPotionConfig(XRRecipes.fertileEssence(), hboost(8, 1), regen(3, 1), heal(1), satur(1), weak(9, 1), fatigue(9, 1));
         addPotionConfig(XRRecipes.frozenCore(), absorb(6, 1), slow(3, 1), fatigue(3, 1), harm(1), fireres(6, 0));
         addPotionConfig(XRRecipes.enderHeart(), vision(6, 0), invis(6, 0), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
-        addPotionConfig(XRRecipes.infernalClaw(), harm(1), resist(6, 1), fireres(6, 0), dboost(6, 1), satur(3, 1), heal(1));
+        addPotionConfig(XRRecipes.infernalClaw(), harm(1), resist(6, 1), fireres(6, 0), dboost(6, 1), satur(1), heal(1));
 
         //hoping this produces an ordered list of the key/value pairs.
         Set orderedSet = configList.keySet();
@@ -115,9 +115,10 @@ public class PotionMap {
     }
 
     //include name helpers to quickly return the "proper" minecraft names for each effect, duration and potency
-    //heal and harm are speshul, they don't need a duration.
+    //heal, saturation and harm are speshul, they don't need a duration.
     public static String harm(int potency) { return effectString(Reference.HARM, Integer.toString(0),Integer.toString(potency)); }
     public static String heal(int potency) { return effectString(Reference.HEAL, Integer.toString(0),Integer.toString(potency)); }
+    public static String satur(int potency) { return effectString(Reference.SATURATION, Integer.toString(0),Integer.toString(potency)); }
     public static String invis(int duration, int potency) { return effectString(Reference.INVIS, Integer.toString(duration), Integer.toString(potency)); }
     public static String absorb(int duration, int potency) { return effectString(Reference.ABSORB, Integer.toString(duration),Integer.toString(potency)); }
     public static String hboost(int duration, int potency) { return effectString(Reference.HBOOST, Integer.toString(duration),Integer.toString(potency)); }
@@ -134,7 +135,6 @@ public class PotionMap {
     public static String jump(int duration, int potency) { return effectString(Reference.JUMP, Integer.toString(duration),Integer.toString(potency)); }
     public static String nausea(int duration, int potency) { return effectString(Reference.NAUSEA, Integer.toString(duration),Integer.toString(potency)); }
     public static String hunger(int duration, int potency) { return effectString(Reference.HUNGER, Integer.toString(duration),Integer.toString(potency)); }
-    public static String satur(int duration, int potency) { return effectString(Reference.SATURATION, Integer.toString(duration),Integer.toString(potency)); }
     public static String regen(int duration, int potency) { return effectString(Reference.REGEN, Integer.toString(duration),Integer.toString(potency)); }
     public static String poison(int duration, int potency) { return effectString(Reference.POISON, Integer.toString(duration),Integer.toString(potency)); }
     public static String wither(int duration, int potency) { return effectString(Reference.WITHER, Integer.toString(duration),Integer.toString(potency)); }
