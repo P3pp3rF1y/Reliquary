@@ -7,6 +7,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.mod.config.ConfigReference;
+import net.minecraft.init.Items;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
@@ -77,6 +78,7 @@ public class CommonProxy {
     public void init() {
         AlkahestryCraftingRecipe.returnedItem = ContentHandler.getItem(Names.alkahestry_tome);
         AlkahestryRedstoneRecipe.returnedItem = ContentHandler.getItem(Names.alkahestry_tome);
+        AlkahestryDrainRecipe.returnedItem = Items.redstone;
 
         AlkahestryCraftingRecipe alkahestryCraftingRecipeHandler = new AlkahestryCraftingRecipe();
         AlkahestryDrainRecipe alkahestryDrainRecipeHandler = new AlkahestryDrainRecipe();
