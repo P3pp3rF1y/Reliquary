@@ -1,6 +1,8 @@
 package xreliquary.blocks.tile;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import net.minecraft.block.Block;
@@ -46,17 +48,19 @@ public class TileEntityCauldron extends TileEntityBase {
                 if(cookTime < getCookTime())
                     cookTime++;
             }
-            for (int particleCount = 0; particleCount <= 2; ++particleCount)
-                spawnBoilingParticles();
-            if (hasGunpowder) spawnGunpowderParticles();
-            if (hasGlowstone) spawnGlowstoneParticles();
-            if (hasNetherwart) {
-                spawnNetherwartParticles();
-                if (potionEssence != null) {
-                    spawnFinishedParticles();
+            if (worldObj.isRemote) {
+                for (int particleCount = 0; particleCount <= 2; ++particleCount)
+                    spawnBoilingParticles();
+                if (hasGunpowder) spawnGunpowderParticles();
+                if (hasGlowstone) spawnGlowstoneParticles();
+                if (hasNetherwart) {
+                    spawnNetherwartParticles();
+                    if (potionEssence != null) {
+                        spawnFinishedParticles();
+                    }
                 }
+                if (redstoneCount > 0) spawnRedstoneParticles();
             }
-            if (redstoneCount > 0) spawnRedstoneParticles();
         }
     }
 
@@ -65,7 +69,7 @@ public class TileEntityCauldron extends TileEntityBase {
         return oldBlock != newBlock;
     }
 
-    public void spawnBoilingParticles() {
+    @SideOnly(Side.CLIENT)public void spawnBoilingParticles() {
         if (worldObj.rand.nextInt(getCookTime() * getCookTime()) > cookTime * cookTime)
             return;
         float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
@@ -80,11 +84,9 @@ public class TileEntityCauldron extends TileEntityBase {
 
         EntityCauldronBubbleFX bubble = new EntityCauldronBubbleFX(worldObj, xCoord + 0.5D + xOffset, yCoord + 0.01D + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 0D, 0D, 0D, red, green, blue);
         EntityCauldronSteamFX steam = new EntityCauldronSteamFX(worldObj, xCoord + 0.5D + xOffset, yCoord + 0.01D + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 0D, 0.05D + 0.02F * BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), 0D, red, green, blue);
-        if (worldObj.isRemote) {
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(bubble);
-            if (worldObj.rand.nextInt(6) == 0)
-                FMLClientHandler.instance().getClient().effectRenderer.addEffect(steam);
-        }
+        FMLClientHandler.instance().getClient().effectRenderer.addEffect(bubble);
+        if (worldObj.rand.nextInt(6) == 0)
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(steam);
     }
 
     public int getColor(PotionEssence essence) {
@@ -92,6 +94,7 @@ public class TileEntityCauldron extends TileEntityBase {
         return  PotionHelper.calcPotionLiquidColor(essence.getEffects());
     }
 
+    @SideOnly(Side.CLIENT)
     public void spawnGunpowderParticles() {
         if (worldObj.rand.nextInt(8) > 0)
             return;
@@ -100,6 +103,7 @@ public class TileEntityCauldron extends TileEntityBase {
         worldObj.spawnParticle("smoke", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
     }
 
+    @SideOnly(Side.CLIENT)
     public void spawnGlowstoneParticles() {
         if (worldObj.rand.nextInt(8) > 0)
             return;
@@ -109,6 +113,7 @@ public class TileEntityCauldron extends TileEntityBase {
         worldObj.spawnParticle("mobSpell", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, gauss, gauss, 0.0F);
     }
 
+    @SideOnly(Side.CLIENT)
     public void spawnNetherwartParticles() {
         if (worldObj.rand.nextInt(8) > 0)
             return;
@@ -118,6 +123,7 @@ public class TileEntityCauldron extends TileEntityBase {
         worldObj.spawnParticle("mobSpell", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, gauss, 0.0F, gauss);
     }
 
+    @SideOnly(Side.CLIENT)
     public void spawnRedstoneParticles() {
         if (worldObj.rand.nextInt(10) / this.redstoneCount > 0)
             return;
@@ -126,6 +132,7 @@ public class TileEntityCauldron extends TileEntityBase {
         worldObj.spawnParticle("reddust", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 1D, 0D, 0D);
     }
 
+    @SideOnly(Side.CLIENT)
     public void spawnFinishedParticles() {
         if (worldObj.rand.nextInt(8) > 0)
             return;

@@ -1,18 +1,25 @@
 package xreliquary.client.particle;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 /**
  * Created by Xeno on 11/9/2014.
  */
+@SideOnly(Side.CLIENT)
 public class EntityCauldronBubbleFX extends EntityFX {
     private static ResourceLocation bubbleTexture = new ResourceLocation(Reference.MOD_ID + ":textures/particles/" + Names.cauldron_bubble + ".png");
 
