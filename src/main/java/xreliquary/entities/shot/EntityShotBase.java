@@ -443,7 +443,9 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
             this.motionX = seekVector.xCoord * 0.4D;
             this.motionY = seekVector.yCoord * 0.4D;
             this.motionZ = seekVector.zCoord * 0.4D;
-            this.setVelocity(motionX, motionY, motionZ);
+            if(worldObj.isRemote){
+                this.setVelocity(motionX, motionY, motionZ);
+            }
         }
     }
 
