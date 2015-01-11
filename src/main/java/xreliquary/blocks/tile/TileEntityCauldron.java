@@ -1,6 +1,8 @@
 package xreliquary.blocks.tile;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
 import lib.enderwizards.sandstone.init.ContentHandler;
 import net.minecraft.block.Block;
@@ -20,7 +22,6 @@ import xreliquary.items.ItemPotionEssence;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.util.potions.PotionEssence;
-import xreliquary.util.potions.PotionIngredient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,17 +47,19 @@ public class TileEntityCauldron extends TileEntityBase {
                 if(cookTime < getCookTime())
                     cookTime++;
             }
-            for (int particleCount = 0; particleCount <= 2; ++particleCount)
-                spawnBoilingParticles();
-            if (hasGunpowder) spawnGunpowderParticles();
-            if (hasGlowstone) spawnGlowstoneParticles();
-            if (hasNetherwart) {
-                spawnNetherwartParticles();
-                if (potionEssence != null) {
-                    spawnFinishedParticles();
+            if(worldObj.isRemote) {
+                for (int particleCount = 0; particleCount <= 2; ++particleCount)
+                    spawnBoilingParticles();
+                if (hasGunpowder) spawnGunpowderParticles();
+                if (hasGlowstone) spawnGlowstoneParticles();
+                if (hasNetherwart) {
+                    spawnNetherwartParticles();
+                    if (potionEssence != null) {
+                        spawnFinishedParticles();
+                    }
                 }
+                if (redstoneCount > 0) spawnRedstoneParticles();
             }
-            if (redstoneCount > 0) spawnRedstoneParticles();
         }
     }
 
@@ -65,6 +68,7 @@ public class TileEntityCauldron extends TileEntityBase {
         return oldBlock != newBlock;
     }
 
+    @SideOnly(Side.CLIENT)
     public void spawnBoilingParticles() {
         if (worldObj.rand.nextInt(getCookTime() * getCookTime()) > cookTime * cookTime)
             return;
@@ -92,6 +96,7 @@ public class TileEntityCauldron extends TileEntityBase {
         return  PotionHelper.calcPotionLiquidColor(essence.getEffects());
     }
 
+    @SideOnly(Side.CLIENT)
     public void spawnGunpowderParticles() {
         if (worldObj.rand.nextInt(8) > 0)
             return;
@@ -100,6 +105,7 @@ public class TileEntityCauldron extends TileEntityBase {
         worldObj.spawnParticle("smoke", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
     }
 
+    @SideOnly(Side.CLIENT)
     public void spawnGlowstoneParticles() {
         if (worldObj.rand.nextInt(8) > 0)
             return;
@@ -109,6 +115,7 @@ public class TileEntityCauldron extends TileEntityBase {
         worldObj.spawnParticle("mobSpell", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, gauss, gauss, 0.0F);
     }
 
+    @SideOnly(Side.CLIENT)
     public void spawnNetherwartParticles() {
         if (worldObj.rand.nextInt(8) > 0)
             return;
@@ -118,6 +125,7 @@ public class TileEntityCauldron extends TileEntityBase {
         worldObj.spawnParticle("mobSpell", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, gauss, 0.0F, gauss);
     }
 
+    @SideOnly(Side.CLIENT)
     public void spawnRedstoneParticles() {
         if (worldObj.rand.nextInt(10) / this.redstoneCount > 0)
             return;
@@ -126,6 +134,7 @@ public class TileEntityCauldron extends TileEntityBase {
         worldObj.spawnParticle("reddust", xCoord + 0.5D + xOffset, yCoord + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 1D, 0D, 0D);
     }
 
+    @SideOnly(Side.CLIENT)
     public void spawnFinishedParticles() {
         if (worldObj.rand.nextInt(8) > 0)
             return;
