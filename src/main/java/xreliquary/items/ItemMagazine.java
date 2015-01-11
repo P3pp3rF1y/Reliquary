@@ -90,7 +90,7 @@ public class ItemMagazine extends ItemBase {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
         if (stack.getItemDamage() < 2) {
-            list.add(LanguageHelper.getLocalization("item." + Names.magazine + "_" + stack.getItemDamage() + ".tooltip"));
+            //list.add(LanguageHelper.getLocalization("item." + Names.magazine + "_" + stack.getItemDamage() + ".tooltip"));
         } else {
             list.add(LanguageHelper.getLocalization("item." + Names.bullet + "_" + stack.getItemDamage() + ".tooltip"));
         }

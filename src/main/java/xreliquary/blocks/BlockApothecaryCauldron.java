@@ -156,14 +156,16 @@ public class BlockApothecaryCauldron extends BlockBase {
                     collidingEntity.attackEntityFrom(DamageSource.inFire, 1.0F);
                 }
             }
-        }
+        
 
-
-        if (collidingEntity instanceof EntityItem) {
-            ItemStack item = ((EntityItem) collidingEntity).getEntityItem();
-            if (cauldron.isItemValidForInput(item)) {
-                cauldron.addItem(item);
-                collidingEntity.setDead();
+            if (collidingEntity instanceof EntityItem) {
+                ItemStack item = ((EntityItem) collidingEntity).getEntityItem();
+                while (cauldron.isItemValidForInput(item)) {
+                    
+                    cauldron.addItem(item);
+                    if (--item.stackSize < 1)
+                        collidingEntity.setDead();
+                }
             }
         }
     }

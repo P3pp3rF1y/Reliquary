@@ -84,11 +84,9 @@ public class TileEntityCauldron extends TileEntityBase {
 
         EntityCauldronBubbleFX bubble = new EntityCauldronBubbleFX(worldObj, xCoord + 0.5D + xOffset, yCoord + 0.01D + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 0D, 0D, 0D, red, green, blue);
         EntityCauldronSteamFX steam = new EntityCauldronSteamFX(worldObj, xCoord + 0.5D + xOffset, yCoord + 0.01D + BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), zCoord + 0.5D + zOffset, 0D, 0.05D + 0.02F * BlockCauldron.getRenderLiquidLevel(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)), 0D, red, green, blue);
-        if (worldObj.isRemote) {
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(bubble);
-            if (worldObj.rand.nextInt(6) == 0)
-                FMLClientHandler.instance().getClient().effectRenderer.addEffect(steam);
-        }
+        FMLClientHandler.instance().getClient().effectRenderer.addEffect(bubble);
+        if (worldObj.rand.nextInt(6) == 0)
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(steam);
     }
 
     public int getColor(PotionEssence essence) {
