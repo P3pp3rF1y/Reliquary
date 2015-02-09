@@ -3,7 +3,6 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
@@ -14,7 +13,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -83,8 +81,8 @@ public class ItemSojournerStaff extends ItemToggleable {
         items.add(vanillaTorch.getItem());
 
         for (String torch : torches) {
-            if (!items.contains(ContentHandler.getItem(torch)))
-                items.add(ContentHandler.getItem(torch));
+            if (!items.contains(Reliquary.CONTENT.getItem(torch)))
+                items.add(Reliquary.CONTENT.getItem(torch));
         }
 
         for (Item item : items) {
@@ -318,13 +316,13 @@ public class ItemSojournerStaff extends ItemToggleable {
             for (int i = 0; i < tagList.tagCount(); ++i) {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                Item containedItem = ContentHandler.getItem(itemName);
+                Item containedItem = Reliquary.CONTENT.getItem(itemName);
                 int quantity = tagItemData.getInteger("Quantity");
                 phrase = String.format("%s%s", phrase.equals("Nothing.") ? "" : String.format("%s;", phrase), new ItemStack(containedItem, 1, 0).getDisplayName() + ": " + quantity);
             }
 
             //add "currently placing: blah blah blah" to the tooltip.
-            Item placingItem = ContentHandler.getItem(getTorchPlacementMode(ist));
+            Item placingItem = Reliquary.CONTENT.getItem(getTorchPlacementMode(ist));
 
             if (placingItem != null) {
                 placing = new ItemStack(placingItem, 1, 0).getDisplayName();

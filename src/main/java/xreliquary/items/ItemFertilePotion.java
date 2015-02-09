@@ -2,17 +2,14 @@ package xreliquary.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
@@ -37,7 +34,7 @@ public class ItemFertilePotion extends ItemBase {
 
     @Override
     public ItemStack getContainerItem(ItemStack ist) {
-        return new ItemStack(ContentHandler.getItem(Names.potion), 1, 0);
+        return new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
     }
 
 

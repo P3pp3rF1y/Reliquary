@@ -3,7 +3,6 @@ package xreliquary.blocks.tile;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import lib.enderwizards.sandstone.blocks.tile.TileEntityInventory;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,6 +12,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.potion.PotionEffect;
+import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.potions.PotionEssence;
@@ -137,7 +137,7 @@ public class TileEntityMortar extends TileEntityInventory {
                 pestleUsedCounter = 0;
                 if (worldObj.isRemote)
                     return;
-                ItemStack resultItem = new ItemStack(ContentHandler.getItem(Names.potion_essence), 1, 0);
+                ItemStack resultItem = new ItemStack(Reliquary.CONTENT.getItem(Names.potion_essence), 1, 0);
                 resultItem.setTagCompound(resultEssence.writeToNBT());
 
 

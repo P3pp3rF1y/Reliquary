@@ -1,15 +1,12 @@
 package xreliquary.init;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import lib.enderwizards.sandstone.init.ContentHandler;
-import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.RecipeSorter;
 import xreliquary.Reliquary;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
@@ -21,7 +18,7 @@ import xreliquary.lib.Reference;
 public class XRRecipes {
 
     //convenience itemstack methods, these are just to make it a little easier to read.
-    public static Item getItem(String name) { return ContentHandler.getItem(name); }
+    public static Item getItem(String name) { return Reliquary.CONTENT.getItem(name); }
 
     //public static ItemStack fertilizer() { return XRRecipes.potion(Reference.FERTILIZER_META); }
 
@@ -119,10 +116,10 @@ public class XRRecipes {
         addRecipe(true, true, new ItemStack(Blocks.packed_ice, 1, 0), Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, frozenCore());
 
         //apothecary mortar recipe
-        addRecipe(false, false, new ItemStack(ContentHandler.getBlock(Names.apothecary_mortar), 1, 0), "gng", "ngn", "nnn", 'n', Blocks.quartz_block, 'g', creeperGland());
+        addRecipe(false, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.apothecary_mortar), 1, 0), "gng", "ngn", "nnn", 'n', Blocks.quartz_block, 'g', creeperGland());
 
         //apothecary cauldron recipe
-        addRecipe(false, false, new ItemStack(ContentHandler.getBlock(Names.apothecary_cauldron), 1, 0), "gng", "ici", "nmn", 'g', creeperGland(), 'n', enderHeart(), 'i', infernalClaw(), 'c', Items.cauldron, 'm', moltenCore());
+        addRecipe(false, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.apothecary_cauldron), 1, 0), "gng", "ici", "nmn", 'g', creeperGland(), 'n', enderHeart(), 'i', infernalClaw(), 'c', Items.cauldron, 'm', moltenCore());
 
         //alkahestry tome
         if (isEasyMode(Names.alkahestry_tome))
@@ -132,15 +129,15 @@ public class XRRecipes {
 
         //glowstone altar
         if (isEasyMode(Names.altar))
-            addRecipe(true, false, new ItemStack(ContentHandler.getBlock(Names.altar_idle), 1), Blocks.obsidian, Blocks.redstone_lamp, enderHeart(), creeperGland());
+            addRecipe(true, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.altar_idle), 1), Blocks.obsidian, Blocks.redstone_lamp, enderHeart(), creeperGland());
         else
-            addRecipe(false, false, new ItemStack(ContentHandler.getBlock(Names.altar_idle), 1), "dnd", "olo", "dgd", 'd', Items.glowstone_dust, 'n', enderHeart(), 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'g', creeperGland());
+            addRecipe(false, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.altar_idle), 1), "dnd", "olo", "dgd", 'd', Items.glowstone_dust, 'n', enderHeart(), 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'g', creeperGland());
 
         //lilypad
-        addRecipe(true, false, new ItemStack(ContentHandler.getBlock(Names.lilypad), 1), fertileEssence(), fertileEssence(), fertileEssence(), Blocks.waterlily);
+        addRecipe(true, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.lilypad), 1), fertileEssence(), fertileEssence(), fertileEssence(), Blocks.waterlily);
 
         //wraith node
-        addRecipe(true, false, new ItemStack(ContentHandler.getBlock(Names.wraith_node), 1), enderHeart(), Items.emerald);
+        addRecipe(true, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.wraith_node), 1), enderHeart(), Items.emerald);
 
         //interdiction torch
         if (isEasyMode(Names.interdiction_torch))
@@ -241,7 +238,7 @@ public class XRRecipes {
         if (isEasyMode(Names.lantern_of_paranoia))
             addRecipe(false, false, new ItemStack(getItem(Names.lantern_of_paranoia), 1), "isi", "gmg", " i ", 'i', Items.iron_ingot, 's', slimePearl(),  'g', Blocks.glass, 'm', moltenCore());
         else
-            addRecipe(false, false, new ItemStack(getItem(Names.lantern_of_paranoia), 1), "imi", "gtg", "ili", 'i', Items.iron_ingot, 'm', moltenCore(), 'g', Blocks.glass, 't', ContentHandler.getBlock(Names.interdiction_torch), 'l', creeperGland());
+            addRecipe(false, false, new ItemStack(getItem(Names.lantern_of_paranoia), 1), "imi", "gtg", "ili", 'i', Items.iron_ingot, 'm', moltenCore(), 'g', Blocks.glass, 't', Reliquary.CONTENT.getBlock(Names.interdiction_torch), 'l', creeperGland());
 
         // midas touchstone
         addRecipe(true, false, new ItemStack(getItem(Names.midas_touchstone), 1, 0), Blocks.anvil, Blocks.gold_block, Blocks.gold_block, moltenCore(), moltenCore(), moltenCore(), creeperGland(), creeperGland(), emptyVoidTear());

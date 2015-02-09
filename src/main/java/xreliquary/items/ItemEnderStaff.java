@@ -3,7 +3,6 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
@@ -180,7 +179,7 @@ public class ItemEnderStaff extends ItemToggleable {
             if (!world.isRemote) {
                 player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "Out of range!"));
             }
-        } else if (ist.getTagCompound() != null && ContentHelper.areBlocksEqual(world.getBlock(ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player))), ContentHandler.getBlock(Names.wraith_node))) {
+        } else if (ist.getTagCompound() != null && ContentHelper.areBlocksEqual(world.getBlock(ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player))), Reliquary.CONTENT.getBlock(Names.wraith_node))) {
             if (canTeleport(world, ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
                 teleportPlayer(world, ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
                 //setCooldown(ist);
@@ -240,7 +239,7 @@ public class ItemEnderStaff extends ItemToggleable {
     @Override
     public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
         // if right clicking on a wraith node, bind the eye to that wraith node.
-        if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && ContentHelper.areBlocksEqual(world.getBlock(x, y, z), ContentHandler.getBlock(Names.wraith_node))) {
+        if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && ContentHelper.areBlocksEqual(world.getBlock(x, y, z), Reliquary.CONTENT.getBlock(Names.wraith_node))) {
             setWraithNode(ist, x, y, z, Integer.valueOf(getWorld(player)), player);
 
             player.playSound("mob.endermen.portal", 1.0f, 1.0f);

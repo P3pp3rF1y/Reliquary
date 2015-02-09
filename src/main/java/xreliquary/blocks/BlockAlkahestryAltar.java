@@ -2,7 +2,6 @@ package xreliquary.blocks;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.BlockContainer;
@@ -76,7 +75,7 @@ public class BlockAlkahestryAltar extends BlockContainer {
 
     @Override
     public Item getItemDropped(int par1, Random random, int par3) {
-        return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.altar_idle));
+        return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.altar_idle));
     }
 
     @Override
@@ -142,9 +141,9 @@ public class BlockAlkahestryAltar extends BlockContainer {
         int meta = world.getBlockMetadata(x, y, z);
         TileEntity te = world.getTileEntity(x, y, z);
         if (active) {
-            world.setBlock(x, y, z, ContentHandler.getBlock(Names.altar));
+            world.setBlock(x, y, z, Reliquary.CONTENT.getBlock(Names.altar));
         } else {
-            world.setBlock(x, y, z, ContentHandler.getBlock(Names.altar_idle));
+            world.setBlock(x, y, z, Reliquary.CONTENT.getBlock(Names.altar_idle));
         }
 
         world.setBlockMetadataWithNotify(x, y, z, meta, 3);

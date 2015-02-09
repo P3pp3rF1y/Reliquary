@@ -2,7 +2,6 @@ package xreliquary.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,7 +25,7 @@ public class ItemGlowingWater extends ItemBase {
 
     @Override
     public ItemStack getContainerItem(ItemStack ist) {
-        return new ItemStack(ContentHandler.getItem(Names.potion), 1, 0);
+        return new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
     }
 
     // returns an empty vial when used in crafting recipes.

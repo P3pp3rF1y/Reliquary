@@ -4,7 +4,6 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.init.Blocks;
@@ -236,8 +235,8 @@ public class TileEntityCauldron extends TileEntityBase {
         List<String> heatSourceBlockNames = (List<String>) Reliquary.CONFIG.get(Names.apothecary_cauldron, "heat_sources");
 
         for (String blockName : heatSourceBlockNames) {
-            if (!heatSources.contains(ContentHandler.getBlock(blockName)))
-                heatSources.add(ContentHandler.getBlock(blockName));
+            if (!heatSources.contains(Reliquary.CONTENT.getBlock(blockName)))
+                heatSources.add(Reliquary.CONTENT.getBlock(blockName));
         }
         //defaults that can't be removed.
         heatSources.add(Blocks.lava);

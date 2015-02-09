@@ -2,7 +2,6 @@ package xreliquary.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
@@ -128,7 +127,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 //    }
 //
     private boolean findAndDrainSojournersStaff(EntityPlayer player) {
-        Item staffItem = ContentHandler.getItem(Names.sojourner_staff);
+        Item staffItem = Reliquary.CONTENT.getItem(Names.sojourner_staff);
         if (player.capabilities.isCreativeMode)
             return true;
         for (int slot = 0; slot < player.inventory.getSizeInventory(); slot++) {

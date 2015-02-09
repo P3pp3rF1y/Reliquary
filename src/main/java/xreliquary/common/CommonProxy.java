@@ -5,7 +5,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.mod.config.ConfigReference;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -75,8 +74,8 @@ public class CommonProxy {
 
 
     public void init() {
-        AlkahestryCraftingRecipe.returnedItem = ContentHandler.getItem(Names.alkahestry_tome);
-        AlkahestryRedstoneRecipe.returnedItem = ContentHandler.getItem(Names.alkahestry_tome);
+        AlkahestryCraftingRecipe.returnedItem = Reliquary.CONTENT.getItem(Names.alkahestry_tome);
+        AlkahestryRedstoneRecipe.returnedItem = Reliquary.CONTENT.getItem(Names.alkahestry_tome);
 
         AlkahestryCraftingRecipe alkahestryCraftingRecipeHandler = new AlkahestryCraftingRecipe();
         AlkahestryDrainRecipe alkahestryDrainRecipeHandler = new AlkahestryDrainRecipe();
@@ -373,8 +372,8 @@ public class CommonProxy {
 
     public void initRecipeDisablers() {
         //recipe disablers
-        for (int i = 0; i < ContentHandler.registeredObjectNames.size(); i++) {
-            Reliquary.CONFIG.require(Names.recipe_enabled, ContentHandler.registeredObjectNames.get(i).replace(':', '_'), new ConfigReference(true));
+        for (int i = 0; i < Reliquary.CONTENT.registeredObjectNames.size(); i++) {
+            Reliquary.CONFIG.require(Names.recipe_enabled, Reliquary.CONTENT.registeredObjectNames.get(i).replace(':', '_'), new ConfigReference(true));
         }
     }
 

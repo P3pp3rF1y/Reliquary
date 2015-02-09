@@ -3,7 +3,6 @@ package xreliquary.blocks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.BlockBase;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -11,10 +10,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -30,7 +27,6 @@ import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.client.render.RenderApothecaryCauldron;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
-import xreliquary.util.potions.PotionEssence;
 
 import java.util.List;
 import java.util.Random;
@@ -93,7 +89,7 @@ public class BlockApothecaryCauldron extends BlockBase {
     // called by the renderer to get the texture in a static method.
     @SideOnly(Side.CLIENT)
     public static IIcon getCauldronIcon(String textureName) {
-        BlockApothecaryCauldron cauldronStatic = (BlockApothecaryCauldron) ContentHandler.getBlock(Names.apothecary_cauldron);
+        BlockApothecaryCauldron cauldronStatic = (BlockApothecaryCauldron) Reliquary.CONTENT.getBlock(Names.apothecary_cauldron);
         return textureName.equals("inner") ? cauldronStatic.innerTexture : (textureName.equals("bottom") ? cauldronStatic.bottomTexture : textureName.equals("inside") ? cauldronStatic.insideTexture : null);
     }
 
@@ -199,11 +195,11 @@ public class BlockApothecaryCauldron extends BlockBase {
 
                     return true;
                 } else {
-                    if (itemstack.getItem() == ContentHandler.getItem(Names.potion) && (itemstack.getTagCompound() == null || !itemstack.getTagCompound().getBoolean("hasPotion"))) {
+                    if (itemstack.getItem() == Reliquary.CONTENT.getItem(Names.potion) && (itemstack.getTagCompound() == null || !itemstack.getTagCompound().getBoolean("hasPotion"))) {
                         if (j1 > 0) {
 
                             if (cauldron.finishedCooking()) {
-                                ItemStack potion = new ItemStack(ContentHandler.getItem(Names.potion), 1, 0);
+                                ItemStack potion = new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
                                 potion.setTagCompound(cauldron.removeContainedPotion());
 
                                 --itemstack.stackSize;
@@ -252,7 +248,7 @@ public class BlockApothecaryCauldron extends BlockBase {
     @Override
     public Item getItemDropped(int someInt, Random unusedRandom, int fortuneEnchantLevelIThink) {
         // this might destroy the universe
-        return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.apothecary_cauldron));
+        return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_cauldron));
     }
 
     /**
@@ -260,7 +256,7 @@ public class BlockApothecaryCauldron extends BlockBase {
      */
     @SideOnly(Side.CLIENT)
     public Item getItem(World world, int x, int y, int z) {
-        return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.apothecary_cauldron));
+        return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_cauldron));
     }
 
     /**

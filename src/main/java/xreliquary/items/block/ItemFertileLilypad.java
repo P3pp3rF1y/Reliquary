@@ -2,7 +2,6 @@ package xreliquary.items.block;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -56,8 +55,8 @@ public class ItemFertileLilypad extends ItemBlock {
                 if (world.canMineBlock(player, var5, var6, var7) && player.canPlayerEdit(var5, var6, var7, var4.sideHit, stack)
                         && world.getBlock(var5, var6, var7).getMaterial() == Material.water
                         && world.getBlockMetadata(var5, var6, var7) == 0 && world.isAirBlock(var5, var6 + 1, var7)) {
-                    world.setBlock(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad));
-                    world.scheduleBlockUpdate(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad), (int)(1360F * ((float) getDelayInSeconds() / 100F)));
+                    world.setBlock(var5, var6 + 1, var7, Reliquary.CONTENT.getBlock(Names.lilypad));
+                    world.scheduleBlockUpdate(var5, var6 + 1, var7, Reliquary.CONTENT.getBlock(Names.lilypad), (int)(1360F * ((float) getDelayInSeconds() / 100F)));
 
                     if (!player.capabilities.isCreativeMode) --stack.stackSize;
                     blockPlaced = true;
@@ -126,8 +125,8 @@ public class ItemFertileLilypad extends ItemBlock {
                     return par1ItemStack;
 
                 if (world.getBlock(var5, var6, var7).getMaterial() == Material.water && world.getBlockMetadata(var5, var6, var7) == 0 && world.isAirBlock(var5, var6 + 1, var7)) {
-                    world.setBlock(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad));
-                    world.scheduleBlockUpdate(var5, var6 + 1, var7, ContentHandler.getBlock(Names.lilypad), (int)(1200 * (float) getDelayInSeconds()));
+                    world.setBlock(var5, var6 + 1, var7, Reliquary.CONTENT.getBlock(Names.lilypad));
+                    world.scheduleBlockUpdate(var5, var6 + 1, var7, Reliquary.CONTENT.getBlock(Names.lilypad), (int)(1200 * (float) getDelayInSeconds()));
 
                     if (!par3EntityPlayer.capabilities.isCreativeMode) {
                         --par1ItemStack.stackSize;

@@ -1,34 +1,17 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
-import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.LanguageHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.init.XRRecipes;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
-
-import java.util.List;
 
 @ContentInit
 public class ItemVoidTearEmpty extends ItemBase {
@@ -91,7 +74,7 @@ public class ItemVoidTearEmpty extends ItemBase {
         ItemStack target = InventoryHelper.getTargetItem(ist, inventory, false);
         if(target == null)
             return null;
-        ItemStack filledTear = new ItemStack(ContentHandler.getItem(Names.void_tear), 1, 0);
+        ItemStack filledTear = new ItemStack(Reliquary.CONTENT.getItem(Names.void_tear), 1, 0);
 
         NBTHelper.setString("itemID", filledTear, ContentHelper.getIdent(target.getItem()));
         NBTHelper.setShort("itemMeta", filledTear, (short) target.getItemDamage());

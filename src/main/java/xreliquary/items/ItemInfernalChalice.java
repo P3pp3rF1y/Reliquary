@@ -1,7 +1,6 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;

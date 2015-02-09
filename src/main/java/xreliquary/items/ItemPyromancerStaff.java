@@ -1,14 +1,12 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import lib.enderwizards.sandstone.util.LanguageHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -74,7 +72,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
             for (int i = 0; i < tagList.tagCount(); ++i) {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                Item containedItem = ContentHandler.getItem(itemName);
+                Item containedItem = Reliquary.CONTENT.getItem(itemName);
                 int quantity = tagItemData.getInteger("Quantity");
 
                 if (containedItem == Items.blaze_powder) {

@@ -5,7 +5,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -25,12 +24,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import xreliquary.Reliquary;
 import xreliquary.client.model.ModelWitchHat;
-import xreliquary.client.particle.EntityCauldronBubbleFX;
 import xreliquary.items.*;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
@@ -78,7 +75,7 @@ public class ClientEventHandler {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onRenderPlayer(RenderPlayerEvent.SetArmorModel event) {
-        if (event.entityPlayer != null && event.stack != null && event.stack.getItem() == ContentHandler.getItem(Names.witch_hat)) {
+        if (event.entityPlayer != null && event.stack != null && event.stack.getItem() == Reliquary.CONTENT.getItem(Names.witch_hat)) {
             Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("minecraft:textures/entity/witch.png"));
             ModelBiped model = event.renderer.modelArmor;
             model.bipedHead.showModel = false;
@@ -96,7 +93,7 @@ public class ClientEventHandler {
 
             event.result = 1;
             return;
-        } else if (event.stack != null && event.stack.getItem() == ContentHandler.getItem(Names.witch_hat)) {
+        } else if (event.stack != null && event.stack.getItem() == Reliquary.CONTENT.getItem(Names.witch_hat)) {
             event.result = 0;
             return;
         }
@@ -144,7 +141,7 @@ public class ClientEventHandler {
         String staffMode = enderStaffItem.getMode(enderStaffStack);
         ItemStack displayItemStack = new ItemStack(Items.ender_pearl, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
         if (staffMode.equals("node_warp")) {
-            displayItemStack = new ItemStack(ContentHandler.getBlock(Names.wraith_node), NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
+            displayItemStack = new ItemStack(Reliquary.CONTENT.getBlock(Names.wraith_node), NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
         } else if (staffMode.equals("long_cast")) {
             displayItemStack = new ItemStack(Items.ender_eye, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
         }
@@ -259,7 +256,7 @@ public class ClientEventHandler {
             for (int i = 0; i < tagList.tagCount(); ++i) {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                Item containedItem = ContentHandler.getItem(itemName);
+                Item containedItem = Reliquary.CONTENT.getItem(itemName);
                 int quantity = tagItemData.getInteger("Quantity");
 
                 if (containedItem == Items.blaze_powder) {
@@ -384,7 +381,7 @@ public class ClientEventHandler {
 
         ItemStack handgunStack = player.getCurrentEquippedItem();
         ItemHandgun handgunItem = (ItemHandgun) handgunStack.getItem();
-        ItemStack bulletStack = new ItemStack(ContentHandler.getItem(Names.bullet), handgunItem.getBulletCount(handgunStack), handgunItem.getBulletType(handgunStack));
+        ItemStack bulletStack = new ItemStack(Reliquary.CONTENT.getItem(Names.bullet), handgunItem.getBulletCount(handgunStack), handgunItem.getBulletType(handgunStack));
         renderHandgunHUD(mc, player, handgunStack, bulletStack);
     }
 
@@ -444,7 +441,7 @@ public class ClientEventHandler {
             if (getTime() % 32 > 16) {
                 // offsets it a little to the left, it looks silly if you put it
                 // over the gun.
-                renderItemIntoGUI(minecraft.fontRenderer, new ItemStack(ContentHandler.getItem(Names.magazine), 1, 0), hudOverlayX - 8, hudOverlayY + 12, overlayOpacity, overlayScale / 2F);
+                renderItemIntoGUI(minecraft.fontRenderer, new ItemStack(Reliquary.CONTENT.getItem(Names.magazine), 1, 0), hudOverlayX - 8, hudOverlayY + 12, overlayOpacity, overlayScale / 2F);
             }
         } else {
             // renders the number of bullets onto the screen.
@@ -476,7 +473,7 @@ public class ClientEventHandler {
         int amountOfItem = sojournerItem.getTorchCount(sojournerStack);
         Item placementItem = null;
         if (placementItemName != null)
-            placementItem = ContentHandler.getItem(placementItemName);
+            placementItem = Reliquary.CONTENT.getItem(placementItemName);
 
         ItemStack placementStack = null;
         if (placementItem != null) {

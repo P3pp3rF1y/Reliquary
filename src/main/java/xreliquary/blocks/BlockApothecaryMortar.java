@@ -3,7 +3,6 @@ package xreliquary.blocks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.BlockBase;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.init.ContentInit;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -91,12 +90,12 @@ public class BlockApothecaryMortar extends BlockBase {
     @Override
     public Item getItemDropped(int someInt, Random unusedRandom, int fortuneEnchantLevelIThink) {
         // this might destroy the universe
-        return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.apothecary_mortar));
+        return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_mortar));
     }
 
     @SideOnly(Side.CLIENT)
     public Item getItem(World world, int x, int y, int z) {
-        return ItemBlock.getItemFromBlock(ContentHandler.getBlock(Names.apothecary_mortar));
+        return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_mortar));
     }
 
     @Override

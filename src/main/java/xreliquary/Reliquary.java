@@ -10,6 +10,7 @@ import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import lib.enderwizards.sandstone.Sandstone;
+import lib.enderwizards.sandstone.init.Content;
 import lib.enderwizards.sandstone.mod.SandstoneMod;
 import lib.enderwizards.sandstone.mod.config.Config;
 import net.minecraft.creativetab.CreativeTabs;
@@ -44,6 +45,7 @@ public class Reliquary {
     @SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
     public static CommonProxy PROXY;
 
+    public static Content CONTENT;
     public static Config CONFIG;
     public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID(), Reference.MOD_ID);
     public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
@@ -51,10 +53,9 @@ public class Reliquary {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         CONFIG = Config.toml(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".cfg"));
-
         PROXY.initOptions();
 
-        Sandstone.preInit();
+        CONTENT = Sandstone.preInit();
 
         WorldDataHandler.register();
 

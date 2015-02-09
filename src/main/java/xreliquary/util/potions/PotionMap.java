@@ -1,6 +1,6 @@
 package xreliquary.util.potions;
 
-import lib.enderwizards.sandstone.init.ContentHandler;
+import lib.enderwizards.sandstone.init.Content;
 import lib.enderwizards.sandstone.mod.config.ConfigReference;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.init.Items;
@@ -185,9 +185,8 @@ public class PotionMap {
             //we split the string a second time, but this time we're only doing this to match the first underscore so we can replace it with a colon.
             //the string is limited to being split "in two", one for the mod_id and the other the actual item name, and whatever meta it has having been dropped.
             splitKey = key.split("_", 2);
-            key = splitKey[0] + ":" + splitKey[1];
 
-            Item item = ContentHandler.getItem(key);
+            Item item = Reliquary.CONTENT.getItem(splitKey[0] + ":" + splitKey[1]);
             List<String> effectList = (List<String>)configIngredient.getValue();
             PotionIngredient ingredient = new PotionIngredient(item, meta);
             for (String effect : effectList) {

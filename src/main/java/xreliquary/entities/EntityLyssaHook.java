@@ -2,7 +2,6 @@ package xreliquary.entities;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -203,7 +202,7 @@ public class EntityLyssaHook extends EntityFishHook {
             {
                 ItemStack itemstack = this.field_146042_b.getCurrentEquippedItem();
 
-                if (this.field_146042_b.isDead || !this.field_146042_b.isEntityAlive() || itemstack == null || itemstack.getItem() != ContentHandler.getItem(Names.rod_of_lyssa) || this.getDistanceSqToEntity(this.field_146042_b) > 4096.0D)
+                if (this.field_146042_b.isDead || !this.field_146042_b.isEntityAlive() || itemstack == null || itemstack.getItem() != Reliquary.CONTENT.getItem(Names.rod_of_lyssa) || this.getDistanceSqToEntity(this.field_146042_b) > 4096.0D)
                 {
                     this.setDead();
                     this.field_146042_b.fishEntity = null;

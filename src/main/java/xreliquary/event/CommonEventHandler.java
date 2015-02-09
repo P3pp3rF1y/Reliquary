@@ -3,7 +3,6 @@ package xreliquary.event;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import lib.enderwizards.sandstone.init.ContentHandler;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.client.Minecraft;
@@ -43,7 +42,7 @@ public class CommonEventHandler {
         // Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
         if (event.player.getGameProfile().getName() == "Drullkus") {
             if (!event.player.getEntityData().hasKey("gift")) {
-                if (event.player.inventory.addItemStackToInventory(new ItemStack(ContentHandler.getItem(Names.witch_hat)))) {
+                if (event.player.inventory.addItemStackToInventory(new ItemStack(Reliquary.CONTENT.getItem(Names.witch_hat)))) {
                     event.player.getEntityData().setBoolean("gift", true);
                 }
             }
@@ -154,7 +153,7 @@ public class CommonEventHandler {
             if (!(entityLiving.getAttackTarget() instanceof EntityPlayer))
                 return;
             EntityPlayer player = (EntityPlayer)entityLiving.getAttackTarget();
-            if (!playerHasItem(player, ContentHandler.getItem(Names.twilight_cloak), true))
+            if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.twilight_cloak), true))
                 return;
 
             //toggled effect, makes player invisible based on light level (configurable)
@@ -224,7 +223,7 @@ public class CommonEventHandler {
 
     public void handleWitchDropsCheck(Entity e, LivingDropsEvent event) {
         if (e instanceof EntityWitch)
-            handleEventDropListAddition(e, event, getBaseDrop(Names.witch_hat), getLootingDrop(Names.witch_hat), new ItemStack(ContentHandler.getItem(Names.witch_hat), 1, 0));
+            handleEventDropListAddition(e, event, getBaseDrop(Names.witch_hat), getLootingDrop(Names.witch_hat), new ItemStack(Reliquary.CONTENT.getItem(Names.witch_hat), 1, 0));
     }
 
     public void handleSpiderOrCaveSpiderDropsCheck(Entity e, LivingDropsEvent event) {
@@ -311,7 +310,7 @@ public class CommonEventHandler {
     }
 
     public void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.infernal_claws), false))
+        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.infernal_claws), false))
             return;
         if (!(event.source == DamageSource.inFire) && !(event.source == DamageSource.onFire))
             return;
@@ -325,7 +324,7 @@ public class CommonEventHandler {
     }
 
     public void handleInfernalChaliceCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.infernal_chalice), false))
+        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.infernal_chalice), false))
             return;
         if (event.source != DamageSource.lava)
             return;
@@ -345,10 +344,10 @@ public class CommonEventHandler {
         // indentation shallow.
         if (player.getHealth() > Math.round(event.ammount))
             return;
-        if (!playerHasItem(player, ContentHandler.getItem(Names.angelheart_vial), false))
+        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.angelheart_vial), false))
             return;
 
-        decreaseItemByOne(player, ContentHandler.getItem(Names.angelheart_vial));
+        decreaseItemByOne(player, Reliquary.CONTENT.getItem(Names.angelheart_vial));
 
         // player should see a vial "shatter" effect and hear the glass break to
         // let them know they lost a vial.
@@ -416,7 +415,7 @@ public class CommonEventHandler {
     }
 
     public void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.phoenix_down), false))
+        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.phoenix_down), false))
             return;
         if (player.getHealth() > Math.round(event.ammount)) {
             if (!(event.source == DamageSource.fall))
@@ -474,7 +473,7 @@ public class CommonEventHandler {
     }
 
     public void handleAngelicFeatherCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.angelic_feather), false))
+        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.angelic_feather), false))
             return;
         if (!(event.source == DamageSource.fall))
             return;
@@ -490,7 +489,7 @@ public class CommonEventHandler {
     }
 
     public void handleKrakenEyeCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, ContentHandler.getItem(Names.kraken_shell), false))
+        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.kraken_shell), false))
             return;
         if (player.getFoodStats().getFoodLevel() <= 0)
             return;
@@ -507,8 +506,8 @@ public class CommonEventHandler {
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
             if (player.inventory.mainInventory[slot] == null)
                 continue;
-            if (player.inventory.mainInventory[slot].getItem() == ContentHandler.getItem(Names.phoenix_down)) {
-                player.inventory.mainInventory[slot] = new ItemStack(ContentHandler.getItem(Names.angelic_feather));
+            if (player.inventory.mainInventory[slot].getItem() == Reliquary.CONTENT.getItem(Names.phoenix_down)) {
+                player.inventory.mainInventory[slot] = new ItemStack(Reliquary.CONTENT.getItem(Names.angelic_feather));
                 return;
             }
         }
@@ -570,7 +569,7 @@ public class CommonEventHandler {
         for (int count = 0; count < event.craftMatrix.getSizeInventory(); count++) {
             ItemStack stack = event.craftMatrix.getStackInSlot(count);
             if (stack != null) {
-                if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(ContentHandler.getItem(Names.alkahestry_tome)))) {
+                if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Reliquary.CONTENT.getItem(Names.alkahestry_tome)))) {
                     tome = count;
                 } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone)) || ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.redstone_block))) {
                     isCharging = true;
