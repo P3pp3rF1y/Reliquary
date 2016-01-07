@@ -1,6 +1,6 @@
 package xreliquary.client.gui;
 
-import cpw.mods.fml.client.config.GuiConfig;
+import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import xreliquary.Reliquary;
 import xreliquary.lib.Reference;

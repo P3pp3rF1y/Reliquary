@@ -1,10 +1,10 @@
 package xreliquary.common;
 
 import com.google.common.collect.ImmutableList;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import lib.enderwizards.sandstone.mod.config.ConfigReference;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;

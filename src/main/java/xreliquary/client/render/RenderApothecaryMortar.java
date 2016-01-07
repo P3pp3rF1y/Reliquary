@@ -1,6 +1,6 @@
 package xreliquary.client.render;
 
-import cpw.mods.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

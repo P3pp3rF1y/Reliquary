@@ -1,6 +1,6 @@
 package xreliquary.init;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;

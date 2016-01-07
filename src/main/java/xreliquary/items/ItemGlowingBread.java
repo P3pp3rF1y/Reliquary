@@ -1,7 +1,7 @@
 package xreliquary.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.client.renderer.texture.IIconRegister;

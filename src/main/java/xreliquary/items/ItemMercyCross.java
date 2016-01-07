@@ -2,8 +2,8 @@ package xreliquary.items;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.block.Block;

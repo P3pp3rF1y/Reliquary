@@ -1,8 +1,8 @@
 package xreliquary.blocks.tile;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
