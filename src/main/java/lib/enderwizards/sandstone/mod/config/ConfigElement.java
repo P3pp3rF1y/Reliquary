@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class ConfigElement<T> implements IConfigElement<T> {
+public class ConfigElement implements IConfigElement {
 
     private boolean isProperty;
 
@@ -99,26 +99,27 @@ public class ConfigElement<T> implements IConfigElement<T> {
         return getType(config.get(group, key));
     }
 
-    public static ConfigElement<?> getTypedElement(String mod_id, String key, Map<String, Object> value, Map<String, Object> def) {
+    public static ConfigElement getTypedElement(String mod_id, String key, Map<String, Object> value, Map<String, Object> def) {
         return getTypedElement(mod_id, "", key, value, def);
     }
 
-    public static ConfigElement<?> getTypedElement(String mod_id, String group, String key, Map<String, Object> value, Map<String, Object> def) {
+    public static ConfigElement getTypedElement(String mod_id, String group, String key, Map<String, Object> value, Map<String, Object> def) {
+        //TODO: clean up as using objects instead of previous generics makes this code redundant
         ConfigGuiType type = getType(value);
 
         if (type == null) {
-            return new ConfigElement<String>(mod_id, key, value, def);
+            return new ConfigElement(mod_id, key, value, def);
         }
 
         switch (type) {
             case BOOLEAN:
-                return new ConfigElement<Boolean>(mod_id, key, value, def);
+                return new ConfigElement(mod_id, key, value, def);
             case DOUBLE:
-                return new ConfigElement<Double>(mod_id, key, value, def);
+                return new ConfigElement(mod_id, key, value, def);
             case INTEGER:
-                return new ConfigElement<Integer>(mod_id, key, value, def);
+                return new ConfigElement(mod_id, key, value, def);
             default:
-                return new ConfigElement<String>(mod_id, key, value, def);
+                return new ConfigElement(mod_id, key, value, def);
         }
     }
 
@@ -204,12 +205,12 @@ public class ConfigElement<T> implements IConfigElement<T> {
     }
 
     @Override
-    public void set(T value) {
+    public void set(Object value) {
         config.set(group, key, value);
     }
 
     @Override
-    public void set(T[] aVal) {
+    public void set(Object[] aVal) {
         if (isProperty) {
             config.set(group, key, aVal);
         }
@@ -221,13 +222,13 @@ public class ConfigElement<T> implements IConfigElement<T> {
     }
 
     @Override
-    public T getMinValue() {
-        return (T) String.valueOf(((ConfigReference) def.get(group, key)).minimum);
+    public Object getMinValue() {
+        return String.valueOf(((ConfigReference) def.get(group, key)).minimum);
     }
 
     @Override
-    public T getMaxValue() {
-        return (T) String.valueOf(((ConfigReference) def.get(group, key)).maximum);
+    public Object getMaxValue() {
+        return String.valueOf(((ConfigReference) def.get(group, key)).maximum);
     }
 
     @Override

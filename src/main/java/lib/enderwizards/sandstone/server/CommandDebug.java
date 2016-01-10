@@ -1,5 +1,6 @@
 package lib.enderwizards.sandstone.server;
 
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import lib.enderwizards.sandstone.init.Content;
@@ -28,7 +29,7 @@ public class CommandDebug extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender player, String[] args) {
-        if (player.getCommandSenderName().equals("Rcon"))
+        if (player.getCommandSenderEntity().getName().equals("Rcon"))
             return;
         if (args.length <= 0) {
             player.addChatMessage(new ChatComponentText(this.getCommandUsage(player)));
@@ -67,7 +68,8 @@ public class CommandDebug extends CommandBase {
                         player.addChatMessage(new ChatComponentText("The item you were given isn't in a creative tab! That means it might not work as intended, or is intended to be used via a different item."));
                     }
 
-                    EntityItem itemEntity = new EntityItem(player.getEntityWorld(), player.getPlayerCoordinates().posX, player.getPlayerCoordinates().posY, player.getPlayerCoordinates().posZ, stack);
+                    BlockPos playerPosition = player.getPosition();
+                    EntityItem itemEntity = new EntityItem(player.getEntityWorld(), playerPosition.getX(), playerPosition.getY(), playerPosition.getZ(), stack);
                     player.getEntityWorld().spawnEntityInWorld(itemEntity);
                 }
             } else {

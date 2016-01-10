@@ -18,7 +18,7 @@ public class ContentHelper {
      * @param block The block to get the identifier from.
      */
     public static String getIdent(Block block) {
-        return block == null ? null : Block.blockRegistry.getNameForObject(block);
+        return block == null ? null : Block.blockRegistry.getNameForObject(block).toString();
     }
 
     /**
@@ -28,7 +28,7 @@ public class ContentHelper {
      * @param item The item to get the identifier from.
      */
     public static String getIdent(Item item) {
-        return item == null ? null : Item.itemRegistry.getNameForObject(item);
+        return item == null ? null : Item.itemRegistry.getNameForObject(item).toString();
     }
 
     /**

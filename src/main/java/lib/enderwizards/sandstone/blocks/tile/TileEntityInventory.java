@@ -51,7 +51,7 @@ public abstract class TileEntityInventory extends TileEntityBase implements IInv
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slot) {
+    public ItemStack removeStackFromSlot(int slot) {
         if (this.inventory[slot] != null) {
             ItemStack itemstack = this.inventory[slot];
             this.inventory[slot] = null;
@@ -70,13 +70,10 @@ public abstract class TileEntityInventory extends TileEntityBase implements IInv
     }
 
     @Override
-    public abstract String getInventoryName();
-
-    @Override
-    public abstract boolean hasCustomInventoryName();
-
-    @Override
     public abstract int getInventoryStackLimit();
+
+    @Override
+    public abstract void markDirty();
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
@@ -84,10 +81,10 @@ public abstract class TileEntityInventory extends TileEntityBase implements IInv
     }
 
     @Override
-    public abstract void openInventory();
+    public abstract void openInventory(EntityPlayer player);
 
     @Override
-    public abstract void closeInventory();
+    public abstract void closeInventory(EntityPlayer player);
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
