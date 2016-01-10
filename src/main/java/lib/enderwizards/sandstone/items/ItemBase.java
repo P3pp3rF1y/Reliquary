@@ -1,14 +1,13 @@
 package lib.enderwizards.sandstone.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.mod.ModRegistry;
 import lib.enderwizards.sandstone.util.LanguageHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -58,12 +57,6 @@ public class ItemBase extends Item {
     @SideOnly(Side.CLIENT)
     public String getItemStackDisplayName(ItemStack stack) {
         return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        itemIcon = iconRegister.registerIcon(ModRegistry.getID(this.getClass().getCanonicalName()) + ":" + this.getUnlocalizedName().substring(5));
     }
 
     protected boolean showTooltipsAlways() {

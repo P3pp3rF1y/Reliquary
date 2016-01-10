@@ -1,5 +1,6 @@
 package xreliquary.blocks;
 
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.BlockBase;
@@ -55,14 +56,15 @@ public class BlockApothecaryMortar extends BlockBase {
     }
 
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metaMaybe, float playerX, float playerY, float playerZ) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
         if (tileEntity == null || !(tileEntity instanceof TileEntityMortar))
             return false;
         TileEntityMortar mortar = (TileEntityMortar) tileEntity;
         ItemStack heldItem = player.getCurrentEquippedItem();
         if (heldItem == null) {
             mortar.usePestle();
-            world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, this.stepSound.getStepResourcePath(), (this.stepSound.getVolume() + 1.0F) / 2.0F, this.stepSound.getPitch() * 0.8F);
+            //TODO:verify that SoundType getFrequency replaces getPitch
+            world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, this.stepSound.getStepSound(), (this.stepSound.getVolume() + 1.0F) / 2.0F, this.stepSound.getFrequency() * 0.8F);
             player.swingItem();
             return false;
         }

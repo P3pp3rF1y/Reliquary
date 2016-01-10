@@ -82,8 +82,8 @@ public abstract class GuiBase extends GuiContainer {
         GL11.glDisable(GL11.GL_LIGHTING);
         this.zLevel = 200.0F;
         itemRender.zLevel = 200.0F;
-        itemRender.renderItemAndEffectIntoGUI(stack.getItem().getFontRenderer(stack), this.mc.getTextureManager(), stack, x, y);
-        itemRender.renderItemOverlayIntoGUI(stack.getItem().getFontRenderer(stack), this.mc.getTextureManager(), stack, x, y);
+        itemRender.renderItemAndEffectIntoGUI(stack, x, y);
+        itemRender.renderItemOverlayIntoGUI(stack.getItem().getFontRenderer(stack), stack, x, y, null);
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
         GL11.glEnable(GL11.GL_LIGHTING);

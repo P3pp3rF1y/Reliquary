@@ -1,6 +1,7 @@
 package lib.enderwizards.sandstone.init;
 
 import com.google.common.reflect.ClassPath;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import lib.enderwizards.sandstone.Sandstone;
 import lib.enderwizards.sandstone.blocks.ICustomItemBlock;
@@ -88,7 +89,8 @@ public class Content {
             selection = ModRegistry.getID(modId) + ":" + selection;
         if (selection.indexOf(":") == 0)
             selection = selection.substring(1);
-        return (Block) Block.blockRegistry.getObject(selection);
+        //TODO: make sure that passing selection into ResourceLocation works
+        return (Block) Block.blockRegistry.getObject(new ResourceLocation(selection));
     }
 
     public Item getItem(String itemName) {
@@ -97,7 +99,8 @@ public class Content {
             selection = ModRegistry.getID(modId) + ":" + selection;
         if (selection.indexOf(":") == 0)
             selection = selection.substring(1);
-        return (Item) Item.itemRegistry.getObject(selection);
+        //TODO: make sure that passing selection into ResourceLocation works
+        return (Item) Item.itemRegistry.getObject(new ResourceLocation(selection));
     }
 
     public Item getItemBlock(String blockName) {
@@ -106,7 +109,8 @@ public class Content {
             selection = ModRegistry.getID(modId) + ":" + selection;
         if (selection.indexOf(":") == 0)
             selection = selection.substring(1);
-        return Item.getItemFromBlock((Block) Block.blockRegistry.getObject(selection));
+        //TODO: make sure that passing selection into ResourceLocation works
+        return Item.getItemFromBlock((Block) Block.blockRegistry.getObject(new ResourceLocation(selection)));
     }
 
 }

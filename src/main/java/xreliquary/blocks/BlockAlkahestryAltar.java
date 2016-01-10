@@ -1,5 +1,7 @@
 package xreliquary.blocks;
 
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
@@ -85,18 +87,19 @@ public class BlockAlkahestryAltar extends BlockContainer {
         int worldTime = (int) (world.getWorldTime() % 24000);
         if (worldTime >= 12000)
             return;
-        if (!world.canBlockSeeTheSky(x, y + 1, z))
+        if (!world.canBlockSeeSky( new BlockPos(x, y + 1, z )))
             return;
         if (rand.nextInt(3) != 0)
             return;
-        world.spawnParticle("mobSpell", x + 0.5D + rand.nextGaussian() / 8, y + 1.1D, z + 0.5D + rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
+        //TODO: verify particle
+        world.spawnParticle( EnumParticleTypes.SPELL_MOB, x + 0.5D + rand.nextGaussian() / 8, y + 1.1D, z + 0.5D + rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
     }
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xOff, float yOff, float zOff) {
         if (isActive)
             return true;
-        TileEntityAltar altar = (TileEntityAltar) world.getTileEntity(x, y, z);
+        TileEntityAltar altar = (TileEntityAltar) world.getTileEntity(new BlockPos(x, y, z));
         if (altar == null)
             return true;
         if (player.getCurrentEquippedItem() == null)
@@ -107,7 +110,8 @@ public class BlockAlkahestryAltar extends BlockContainer {
                 return true;
             world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.3F, 0.5F + 0.5F * altar.getRedstoneCount() + (float) (world.rand.nextGaussian() / 8));
             for (int particles = world.rand.nextInt(3); particles < 3 + altar.getRedstoneCount() * 4 + altar.getRedstoneCount(); particles++) {
-                world.spawnParticle("reddust", x + 0.5D + world.rand.nextGaussian() / 5, y + 1.2D, z + 0.5D + world.rand.nextGaussian() / 5, 1D, 0D, 0D);
+                //TODO: verify particle
+                world.spawnParticle(EnumParticleTypes.REDSTONE, x + 0.5D + world.rand.nextGaussian() / 5, y + 1.2D, z + 0.5D + world.rand.nextGaussian() / 5, 1D, 0D, 0D);
             }
             if (world.isRemote)
                 return true;
@@ -116,7 +120,8 @@ public class BlockAlkahestryAltar extends BlockContainer {
         } else if (player.getCurrentEquippedItem().getItem() instanceof ItemAlkahestryTome && NBTHelper.getInteger("redstone", player.getCurrentEquippedItem()) >  0) {
             world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.3F, 0.5F + 0.5F * altar.getRedstoneCount() + (float) (world.rand.nextGaussian() / 8));
             for (int particles = world.rand.nextInt(3); particles < 3 + altar.getRedstoneCount() * 4 + altar.getRedstoneCount(); particles++) {
-                world.spawnParticle("reddust", x + 0.5D + world.rand.nextGaussian() / 5, y + 1.2D, z + 0.5D + world.rand.nextGaussian() / 5, 1D, 0D, 0D);
+                //TODO: verify particle
+                world.spawnParticle(EnumParticleTypes.REDSTONE, x + 0.5D + world.rand.nextGaussian() / 5, y + 1.2D, z + 0.5D + world.rand.nextGaussian() / 5, 1D, 0D, 0D);
             }
             if (world.isRemote)
                 return true;
@@ -138,7 +143,7 @@ public class BlockAlkahestryAltar extends BlockContainer {
     }
 
     public static void updateAltarBlockState(boolean active, World world, int x, int y, int z) {
-        int meta = world.getBlockMetadata(x, y, z);
+        int meta = world.getBlockState( new BlockPos( x, y, z ) );
         TileEntity te = world.getTileEntity(x, y, z);
         if (active) {
             world.setBlock(x, y, z, Reliquary.CONTENT.getBlock(Names.altar));
