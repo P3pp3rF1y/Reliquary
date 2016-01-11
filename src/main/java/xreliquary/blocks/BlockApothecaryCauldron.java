@@ -31,6 +31,8 @@ import java.util.Random;
 @ContentInit
 public class BlockApothecaryCauldron extends BlockBase {
 
+    //TODO: add icon in xreliquary:items/apothecary_cauldron
+
     public static final PropertyInteger LEVEL = PropertyInteger.create("level", 0, 3);
 
     public BlockApothecaryCauldron() {

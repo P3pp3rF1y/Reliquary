@@ -1,5 +1,6 @@
 package xreliquary.blocks;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -31,11 +32,11 @@ public class BlockApothecaryMortar extends BlockBase {
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.3125F, 0.75F);
     }
-
     @Override
-    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List cbList, Entity collisionEntity) {
+    public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState state, AxisAlignedBB mask, List list, Entity collidingEntity) {
         this.setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.3125F, 0.75F);
-        super.addCollisionBoxesToList(world, x, y, z, aabb, cbList, collisionEntity);
+
+        super.addCollisionBoxesToList(world, pos, state, mask, list, collidingEntity);
         this.setBlockBoundsForItemRender();
     }
 
@@ -90,7 +91,7 @@ public class BlockApothecaryMortar extends BlockBase {
     }
 
     @Override
-    public Item getItemDropped(int someInt, Random unusedRandom, int fortuneEnchantLevelIThink) {
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         // this might destroy the universe
         return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_mortar));
     }
