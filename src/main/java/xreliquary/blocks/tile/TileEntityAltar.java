@@ -3,6 +3,7 @@ package xreliquary.blocks.tile;
 import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import xreliquary.Reliquary;
 import xreliquary.blocks.BlockAlkahestryAltar;
 import xreliquary.lib.Names;
@@ -19,13 +20,13 @@ public class TileEntityAltar extends TileEntityBase {
     }
 
     @Override
-    public void updateEntity() {
+    public void update() {
         if (!isActive)
             return;
         int worldTime = (int) (worldObj.getWorldTime() % 24000);
         if (worldTime >= 12000)
             return;
-        if (!worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord))
+        if (!worldObj.canSeeSky(getPos().add(0,1,0)))
             return;
         if (worldObj.isRemote)
             return;
@@ -33,8 +34,8 @@ public class TileEntityAltar extends TileEntityBase {
             cycleTime--;
         } else {
             isActive = false;
-            worldObj.setBlock(xCoord, yCoord + 1, zCoord, Blocks.glowstone);
-            BlockAlkahestryAltar.updateAltarBlockState(isActive(), worldObj, xCoord, yCoord, zCoord);
+            worldObj.setBlockState(getPos().add(0,1,0),Blocks.glowstone.getDefaultState());
+            BlockAlkahestryAltar.updateAltarBlockState(isActive(), worldObj, getPos());
         }
     }
 
@@ -45,7 +46,7 @@ public class TileEntityAltar extends TileEntityBase {
         cycleTime = (int) (defaultCycleTime + (double)maximumVariance * worldObj.rand.nextGaussian());
         isActive = true;
         redstoneCount = 0;
-        BlockAlkahestryAltar.updateAltarBlockState(isActive(), worldObj, xCoord, yCoord, zCoord);
+        BlockAlkahestryAltar.updateAltarBlockState(isActive(), worldObj, getPos());
     }
 
     @Override
