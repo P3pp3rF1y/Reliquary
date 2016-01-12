@@ -1,15 +1,14 @@
 package xreliquary.blocks;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.ICustomItemBlock;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFlower;
+import net.minecraft.block.BlockBush;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityBoat;
@@ -18,51 +17,41 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.items.block.ItemFertileLilypad;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 
 import java.util.List;
 import java.util.Random;
 
+//TODO: verify that newly changing this to inherit from BlockBush doesn't break it
 @ContentInit
-public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock {
-
+public class BlockFertileLilypad extends BlockBush implements ICustomItemBlock {
+//TODO: add json models
     public BlockFertileLilypad() {
-        super(0);
         float var3 = 0.5F;
         float var4 = 0.015625F;
         this.setTickRandomly(false);
         this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, var4, 0.5F + var3);
-        this.setBlockName(Names.lilypad);
+        this.setUnlocalizedName(Names.lilypad);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        blockIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.lilypad);
+    public void updateTick(World world, BlockPos pos, IBlockState state, Random par5Random) {
+
+        this.growCropsNearby(world, pos, state);
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta) {
-        return blockIcon;
-    }
-
-    @Override
-    public void updateTick(World world, int x, int y, int z, Random par5Random) {
-
-        this.growCropsNearby(world, x, y, z);
-    }
-
-    @Override
-    public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
-        world.spawnParticle("mobSpell", x + 0.5D + rand.nextGaussian() / 8, y, z + 0.5D + rand.nextGaussian() / 8, 0.0D, 0.9D, 0.5D);
+    public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random rand) {
+        world.spawnParticle(EnumParticleTypes.SPELL_MOB, pos.getX() + 0.5D + rand.nextGaussian() / 8, pos.getY(), pos.getZ() + 0.5D + rand.nextGaussian() / 8, 0.0D, 0.9D, 0.5D);
     }
 
     private int secondsBetweenGrowthTicks() {
@@ -77,7 +66,11 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
         return Reliquary.CONFIG.getInt(Names.lilypad, "full_potency_range");
     }
 
-    public void growCropsNearby(World world, int xO, int yO, int zO) {
+    public void growCropsNearby(World world, BlockPos pos, IBlockState state) {
+        int xO = pos.getX();
+        int yO = pos.getY();
+        int zO = pos.getZ();
+
         for (int xD = -tileRange(); xD <= tileRange(); xD++) {
             for (int yD = -1; yD <= tileRange(); yD++) {
                 for (int zD = -tileRange(); zD <= tileRange(); zD++) {
@@ -90,19 +83,21 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
                     distance = Math.min(1D, distance);
                     double distanceCoefficient = 1D - (distance / tileRange());
 
-                    Block block = world.getBlock(x, y, z);
+                    IBlockState cropState = world.getBlockState(new BlockPos(x, y, z));
+                    Block cropBlock = state.getBlock();
 
-                    if (block instanceof IPlantable || block instanceof IGrowable) {
-                        if (!(block instanceof BlockFertileLilypad)) {
+                    if (cropBlock instanceof IPlantable || cropBlock instanceof IGrowable) {
+                        if (!(cropBlock instanceof BlockFertileLilypad)) {
                             //it schedules the next tick.
-                            world.scheduleBlockUpdate(x, y, z, block, (int) (distanceCoefficient * (float) secondsBetweenGrowthTicks() * 20F));
-                            block.updateTick(world, x, y, z, world.rand);
+                            //TODO:verify that we're setting block update priority correctly
+                            world.scheduleBlockUpdate(new BlockPos(x, y, z), cropBlock, (int) (distanceCoefficient * (float) secondsBetweenGrowthTicks() * 20F), 1);
+                            cropBlock.updateTick(world, new BlockPos(x, y, z), cropState, world.rand);
                         }
                     }
                 }
             }
         }
-        world.scheduleBlockUpdate(xO, yO, zO, world.getBlock(xO, yO, zO), secondsBetweenGrowthTicks() * 20);
+        world.scheduleBlockUpdate(pos, state.getBlock(), secondsBetweenGrowthTicks() * 20, 1);
     }
 
     @Override
@@ -111,16 +106,10 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
     }
 
     @Override
-    public void addCollisionBoxesToList(World par1World, int par2, int par3, int par4, AxisAlignedBB par5AxisAlignedBB, List par6List, Entity par7Entity) {
-        if (par7Entity == null || !(par7Entity instanceof EntityBoat)) {
-            super.addCollisionBoxesToList(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+    public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
+        if (collidingEntity == null || !(collidingEntity instanceof EntityBoat)) {
+            super.addCollisionBoxesToList(world, pos, state, mask, list, collidingEntity);
         }
-    }
-
-    @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
-        return AxisAlignedBB.getBoundingBox(par2 + minX, par3 + minY, par4 + minZ, par2 + maxX, par3 + maxY, par4 + maxZ);
-
     }
 
     @Override
@@ -129,8 +118,11 @@ public class BlockFertileLilypad extends BlockFlower implements ICustomItemBlock
     }
 
     @Override
-    public boolean canBlockStay(World world, int x, int y, int z) {
-        return y >= 0 && y < 256 && world.getBlock(x, y - 1, z).getMaterial() == Material.water && world.getBlockMetadata(x, y - 1, z) == 0;
+    public boolean canBlockStay(World world, BlockPos pos, IBlockState state) {
+        IBlockState blockBelowState = world.getBlockState(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()));
+        return pos.getY() >= 0 && pos.getY() < 256
+                && blockBelowState.getBlock().getMaterial() == Material.water
+                && blockBelowState.getValue(BlockLiquid.LEVEL) == 0;
     }
 
     @SideOnly(Side.CLIENT)

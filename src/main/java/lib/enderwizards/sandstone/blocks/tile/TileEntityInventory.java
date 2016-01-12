@@ -73,9 +73,6 @@ public abstract class TileEntityInventory extends TileEntityBase implements IInv
     public abstract int getInventoryStackLimit();
 
     @Override
-    public abstract void markDirty();
-
-    @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
         return true;
     }
@@ -91,4 +88,11 @@ public abstract class TileEntityInventory extends TileEntityBase implements IInv
         return true;
     }
 
+    @Override
+    public void clear() {
+        for (int i = 0; i < this.getSizeInventory(); i++)
+            this.setInventorySlotContents(i, null);
+    }
+
 }
+
