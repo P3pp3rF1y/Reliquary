@@ -92,14 +92,14 @@ public class EntityBlazeShot extends EntityShotBase {
             mop.setFire(40);
             doDamage(mop);
         }
-        spawnHitParticles("flame", 8);
+        spawnHitParticles(8);
         this.setDead();
     }
 
     @Override
-    void spawnHitParticles(String string, int i) {
+    void spawnHitParticles(int i) {
         for (int particles = 0; particles < i; particles++) {
-            worldObj.spawnParticle(string, posX, posY - (string == "portal" ? 1 : 0), posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+            worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
         }
     }
 
@@ -121,26 +121,27 @@ public class EntityBlazeShot extends EntityShotBase {
     }
 
     @Override
-    void doBurstEffect(int sideHit) {
+    void doBurstEffect(EnumFacing sideHit) {
+        //TODO: verify that particles spawn on correct sides
         for (int particles = 0; particles < 40; particles++) {
             switch (sideHit) {
-                case 0:
-                    worldObj.spawnParticle("flame", posX, posY, posZ, smallGauss(0.1D) + motionX / 4, -posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
+                case DOWN:
+                    worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, smallGauss(0.1D) + motionX / 4, -posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
                     break;
-                case 1:
-                    worldObj.spawnParticle("flame", posX, posY, posZ, smallGauss(0.1D) + motionX / 4, posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
+                case UP:
+                    worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, smallGauss(0.1D) + motionX / 4, posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
                     break;
-                case 2:
-                    worldObj.spawnParticle("flame", posX, posY, posZ, smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, -posGauss(0.2D));
+                case NORTH:
+                    worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, -posGauss(0.2D));
                     break;
-                case 3:
-                    worldObj.spawnParticle("flame", posX, posY, posZ, smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, posGauss(0.2D));
+                case SOUTH:
+                    worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, posGauss(0.2D));
                     break;
-                case 4:
-                    worldObj.spawnParticle("flame", posX, posY, posZ, -posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
+                case WEST:
+                    worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, -posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
                     break;
-                case 5:
-                    worldObj.spawnParticle("flame", posX, posY, posZ, posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
+                case EAST:
+                    worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
                     break;
             }
         }

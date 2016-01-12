@@ -200,7 +200,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         float f8 = f3 * f5;
         double d3 = 12.0D;
         Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
-        return world.func_147447_a(vec3, vec31, true, false, false);
+        return world.rayTraceBlocks(vec3, vec31, true, false, false);
     }
 
     @Override

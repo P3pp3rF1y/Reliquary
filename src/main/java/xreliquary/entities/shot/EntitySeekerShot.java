@@ -2,6 +2,8 @@ package xreliquary.entities.shot;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -21,7 +23,7 @@ public class EntitySeekerShot extends EntityShotBase {
     @Override
     void doFlightEffects() {
         if (ticksInAir % 3 == 0)
-            worldObj.spawnParticle("mobSpellAmbient", posX, posY, posZ, 0.0F, gaussian(1.0F), gaussian(1.0F));
+            worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX, posY, posZ, 0.0F, gaussian(1.0F), gaussian(1.0F));
 
         // housed in the base class
         seekTarget();
@@ -29,8 +31,8 @@ public class EntitySeekerShot extends EntityShotBase {
 
     @Override
     void doFiringEffects() {
-        worldObj.spawnParticle("mobSpellAmbient", posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
-        worldObj.spawnParticle("flame", posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+        worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+        worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
     }
 
     @Override
@@ -47,7 +49,7 @@ public class EntitySeekerShot extends EntityShotBase {
     }
 
     @Override
-    void doBurstEffect(int sideHit) {
+    void doBurstEffect(EnumFacing sideHit) {
         // does nothing
     }
 
@@ -56,14 +58,14 @@ public class EntitySeekerShot extends EntityShotBase {
         if (mop != shootingEntity || ticksInAir > 3) {
             doDamage(mop);
         }
-        spawnHitParticles("mobSpellAmbient", 8);
+        spawnHitParticles(8);
         this.setDead();
     }
 
     @Override
-    void spawnHitParticles(String string, int i) {
+    void spawnHitParticles(int i) {
         for (int particles = 0; particles < i; particles++)
-            worldObj.spawnParticle(string, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.1F, 1.0F, 1.0F);
+            worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.1F, 1.0F, 1.0F);
     }
 
     @Override

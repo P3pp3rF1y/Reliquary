@@ -93,7 +93,7 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 
         Vec3 var16 = Vec3.createVectorHelper(posX, posY, posZ);
         Vec3 var2 = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
-        MovingObjectPosition var3 = worldObj.func_147447_a(var16, var2, false, true, false);
+        MovingObjectPosition var3 = worldObj.rayTraceBlocks(var16, var2, false, true, false);
         var16 = Vec3.createVectorHelper(posX, posY, posZ);
         var2 = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
 

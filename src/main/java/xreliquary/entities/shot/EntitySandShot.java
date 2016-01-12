@@ -7,6 +7,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import xreliquary.entities.ConcussiveExplosion;
@@ -26,14 +28,14 @@ public class EntitySandShot extends EntityShotBase {
 
     @Override
     void doFiringEffects() {
-        worldObj.spawnParticle("mobSpellAmbient", posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
-        worldObj.spawnParticle("flame", posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+        worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+        worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
     }
 
     @Override
     void doFlightEffects() {
         if (ticksInAir % 3 == 0)
-            spawnHitParticles("reddust", 1);
+            spawnHitParticles(1);
     }
 
     @Override
@@ -50,8 +52,8 @@ public class EntitySandShot extends EntityShotBase {
     }
 
     @Override
-    void doBurstEffect(int sideHit) {
-        spawnHitParticles("reddust", 8);
+    void doBurstEffect(EnumFacing sideHit) {
+        spawnHitParticles(8);
     }
 
     @Override
@@ -59,14 +61,14 @@ public class EntitySandShot extends EntityShotBase {
         if (mop != shootingEntity || ticksInAir > 3) {
             doDamage(mop);
         }
-        spawnHitParticles("reddust", 8);
+        spawnHitParticles(8);
         this.setDead();
     }
 
     @Override
-    void spawnHitParticles(String string, int i) {
+    void spawnHitParticles(int i) {
         for (int particles = 0; particles < i; particles++) {
-            worldObj.spawnParticle(string, posX, posY - (string == "portal" ? 1 : 0), posZ, 0.7F, 0.7F, 0.3F);
+            worldObj.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, 0.7F, 0.7F, 0.3F);
         }
     }
 

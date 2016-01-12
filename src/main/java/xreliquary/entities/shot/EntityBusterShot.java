@@ -2,6 +2,8 @@ package xreliquary.entities.shot;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import xreliquary.entities.ConcussiveExplosion;
@@ -32,25 +34,25 @@ public class EntityBusterShot extends EntityShotBase {
     }
 
     @Override
-    void doBurstEffect(int sideHit) {
+    void doBurstEffect(EnumFacing sideHit) {
         ConcussiveExplosion.customBusterExplosion(this, shootingEntity, posX, posY, posZ, 4.0F, false, true);
         this.setDead();
     }
 
     @Override
     void doFiringEffects() {
-        worldObj.spawnParticle("mobSpellAmbient", posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
-        worldObj.spawnParticle("flame", posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+        worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+        worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
     }
 
     @Override
     void doFlightEffects() {
         if (ticksInAir % 3 == 0)
-            worldObj.spawnParticle("smoke", posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+            worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
     }
 
     @Override
-    void spawnHitParticles(String string, int i) {
+    void spawnHitParticles(int i) {
         // no need, really.
     }
 

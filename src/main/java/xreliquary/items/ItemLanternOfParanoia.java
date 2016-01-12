@@ -158,7 +158,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
                     Vec3 playerVec = Vec3.createVectorHelper(player.posX + xOff, playerEyeHeight + yOff, player.posZ + zOff);
                     Vec3 rayTraceVector = Vec3.createVectorHelper((float)x + 0.5D + xOff, (float)y + 0.5D + yOff, (float)z + 0.5D + zOff);
 
-                    MovingObjectPosition mop = world.func_147447_a(playerVec, rayTraceVector, false, false, true);
+                    MovingObjectPosition mop = world.rayTraceBlocks(playerVec, rayTraceVector, false, false, true);
 
                     if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
                         Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);

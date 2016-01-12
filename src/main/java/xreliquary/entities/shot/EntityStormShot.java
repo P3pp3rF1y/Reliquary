@@ -4,6 +4,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -22,8 +25,8 @@ public class EntityStormShot extends EntityShotBase {
 
     @Override
     void doFiringEffects() {
-        worldObj.spawnParticle("mobSpellAmbient", posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
-        worldObj.spawnParticle("flame", posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+        worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+        worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
     }
 
     @Override
@@ -40,14 +43,14 @@ public class EntityStormShot extends EntityShotBase {
                 return;
             this.onImpact((EntityLivingBase)mop.entityHit);
         } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-            if (worldObj.canLightningStrikeAt(mop.blockX, mop.blockY, mop.blockZ) && worldObj.getWorldInfo().isRaining() && worldObj.getWorldInfo().isThundering())
-                worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, mop.blockX, mop.blockY, mop.blockZ));
+            if (worldObj.canLightningStrike(mop.getBlockPos()) && worldObj.getWorldInfo().isRaining() && worldObj.getWorldInfo().isThundering())
+                worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, mop.getBlockPos().getX(), mop.getBlockPos().getY(), mop.getBlockPos().getZ()));
             this.groundImpact(mop.sideHit);
         }
     }
 
     @Override
-    void doBurstEffect(int sideHit) {
+    void doBurstEffect(EnumFacing sideHit) {
         // does nothing
     }
 
@@ -55,14 +58,14 @@ public class EntityStormShot extends EntityShotBase {
     void onImpact(EntityLivingBase mop) {
         if (mop != shootingEntity || ticksInAir > 3)
             doDamage(mop);
-        spawnHitParticles("bubble", 18);
+        spawnHitParticles(18);
         this.setDead();
     }
 
     @Override
-    void spawnHitParticles(String string, int i) {
+    void spawnHitParticles(int i) {
         for (int particles = 0; particles < i; particles++)
-            worldObj.spawnParticle(string, posX, posY - (string == "portal" ? 1 : 0), posZ, gaussian(motionX), rand.nextFloat() + motionY, gaussian(motionZ));
+            worldObj.spawnParticle(EnumParticleTypes.WATER_BUBBLE, posX, posY, posZ, gaussian(motionX), rand.nextFloat() + motionY, gaussian(motionZ));
     }
 
     @Override
@@ -73,8 +76,8 @@ public class EntityStormShot extends EntityShotBase {
     @Override
     int getDamageOfShot(EntityLivingBase mop) {
         if (mop instanceof EntityCreeper)
-            ((EntityCreeper) mop).onStruckByLightning(new EntityLightningBolt(worldObj, mop.posX, mop.posY, mop.posZ));
-        if (worldObj.canLightningStrikeAt((int) (mop.posX + 0.5F), (int) (mop.posY + 0.5F), (int) (mop.posZ + 0.5F)) && worldObj.getWorldInfo().isRaining() && worldObj.getWorldInfo().isThundering())
+            (mop).onStruckByLightning(new EntityLightningBolt(worldObj, mop.posX, mop.posY, mop.posZ));
+        if (worldObj.canLightningStrike(new BlockPos((int) (mop.posX + 0.5F), (int) (mop.posY + 0.5F), (int) (mop.posZ + 0.5F))) && worldObj.getWorldInfo().isRaining() && worldObj.getWorldInfo().isThundering())
             worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, (int) (mop.posX + 0.5F), (int) (mop.posY + 0.5F), (int) (mop.posZ + 0.5F)));
         float f = 1F + (worldObj.isRaining() ? 0.5F : 0F) + (worldObj.isThundering() ? 0.5F : 0F);
         return Math.round(9F * f) + d6();

@@ -2,6 +2,8 @@ package xreliquary.entities.shot;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -20,22 +22,22 @@ public class EntityEnderShot extends EntityShotBase {
 
     private void doPortalExplosion() {
         for (int particles = 0; particles < 3; particles++) {
-            worldObj.spawnParticle("portal", posX, posY - 1, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
-            worldObj.spawnParticle("smoke", posX, posY, posZ, 0, 0, 0);
+            worldObj.spawnParticle(EnumParticleTypes.PORTAL, posX, posY - 1, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+            worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, 0, 0, 0);
         }
         this.setDead();
     }
 
     @Override
-    void doBurstEffect(int sideHit) {
+    void doBurstEffect(EnumFacing sideHit) {
         // there aren't any burst effects because ender shots pass through
         // everything.
     }
 
     @Override
     void doFiringEffects() {
-        worldObj.spawnParticle("mobSpellAmbient", posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
-        worldObj.spawnParticle("flame", posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+        worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+        worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
     }
 
     @Override
@@ -51,14 +53,14 @@ public class EntityEnderShot extends EntityShotBase {
     }
 
     @Override
-    protected void groundImpact(int SideHit) {
+    protected void groundImpact(EnumFacing SideHit) {
         //do absolutely nothing. this avoids a death sentence.
     }
 
     @Override
     void doFlightEffects() {
         if (ticksInAir % 3 == 0)
-            worldObj.spawnParticle("portal", posX, posY - 1, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+            worldObj.spawnParticle(EnumParticleTypes.PORTAL, posX, posY - 1, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
 
         // housed in the base class
         seekTarget();
@@ -74,13 +76,13 @@ public class EntityEnderShot extends EntityShotBase {
         if (mop != shootingEntity || ticksInAir > 3) {
             doDamage(mop);
         }
-        spawnHitParticles("witchMagic", 8);
+        spawnHitParticles(8);
     }
 
     @Override
-    void spawnHitParticles(String string, int i) {
+    void spawnHitParticles(int i) {
         for (int particles = 0; particles < i; particles++) {
-            worldObj.spawnParticle(string, posX, posY - (string == "portal" ? 1 : 0), posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+            worldObj.spawnParticle(EnumParticleTypes.SPELL_WITCH, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
         }
     }
 
