@@ -21,7 +21,7 @@ public class ItemToggleable extends ItemBase {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack, int pass) {
+    public boolean hasEffect(ItemStack stack) {
         return this.isEnabled(stack);
     }
 

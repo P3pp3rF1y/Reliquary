@@ -19,8 +19,7 @@ import xreliquary.lib.ClientReference;
 @SideOnly(Side.CLIENT)
 public class RenderShot extends Render<EntityShotBase> {
 
-
-    protected RenderShot(RenderManager renderManager) {
+    public RenderShot(RenderManager renderManager) {
         super(renderManager);
     }
 
