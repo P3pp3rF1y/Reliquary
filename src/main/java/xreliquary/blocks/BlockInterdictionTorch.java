@@ -104,23 +104,18 @@ public class BlockInterdictionTorch extends BlockTorch implements ICustomItemBlo
         double xOffset = (double) ((float) pos.getX() + 0.5F);
         double yOffset = (double) ((float) pos.getY() + 0.7F);
         double zOffset = (double) ((float) pos.getZ() + 0.5F);
-        double verticalModifier = 0.2199999988079071D;
-        double horizontalModifier = 0.27000001072883606D;
+        double verticalModifier = 0.22D;
+        double horizontalModifier = 0.27D;
 
         EnumFacing facing = state.getValue(FACING);
-        if (facing == EnumFacing.EAST ) {
-            world.spawnParticle(EnumParticleTypes.SPELL_MOB, xOffset - horizontalModifier, yOffset + verticalModifier, zOffset, 0.0D, 0.0D, 0.0D);
-            world.spawnParticle(EnumParticleTypes.FLAME, xOffset - horizontalModifier, yOffset + verticalModifier, zOffset, 0.0D, 0.0D, 0.0D);
-        } else if (facing == EnumFacing.WEST) {
-            world.spawnParticle(EnumParticleTypes.SPELL_MOB, xOffset + horizontalModifier, yOffset + verticalModifier, zOffset, 0.0D, 0.0D, 0.0D);
-            world.spawnParticle(EnumParticleTypes.FLAME, xOffset + horizontalModifier, yOffset + verticalModifier, zOffset, 0.0D, 0.0D, 0.0D);
-        } else if (facing == EnumFacing.SOUTH) {
-            world.spawnParticle(EnumParticleTypes.SPELL_MOB, xOffset, yOffset + verticalModifier, zOffset - horizontalModifier, 0.0D, 0.0D, 0.0D);
-            world.spawnParticle(EnumParticleTypes.FLAME, xOffset, yOffset + verticalModifier, zOffset - horizontalModifier, 0.0D, 0.0D, 0.0D);
-        } else if (facing == EnumFacing.NORTH) {
-            world.spawnParticle(EnumParticleTypes.SPELL_MOB, xOffset, yOffset + verticalModifier, zOffset + horizontalModifier, 0.0D, 0.0D, 0.0D);
-            world.spawnParticle(EnumParticleTypes.FLAME, xOffset, yOffset + verticalModifier, zOffset + horizontalModifier, 0.0D, 0.0D, 0.0D);
-        } else {
+        if (facing.getAxis().isHorizontal())
+        {
+            EnumFacing oppositeFacing = facing.getOpposite();
+            world.spawnParticle( EnumParticleTypes.SPELL_MOB, xOffset + horizontalModifier * (double) oppositeFacing.getFrontOffsetX(), yOffset + verticalModifier, zOffset + horizontalModifier * (double) oppositeFacing.getFrontOffsetZ(), 0.0D, 0.0D, 0.0D );
+            world.spawnParticle( EnumParticleTypes.FLAME, xOffset + horizontalModifier * (double) oppositeFacing.getFrontOffsetX(), yOffset + verticalModifier, zOffset + horizontalModifier * (double) oppositeFacing.getFrontOffsetZ(), 0.0D, 0.0D, 0.0D );
+        }
+        else
+        {
             world.spawnParticle(EnumParticleTypes.SPELL_MOB, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
             world.spawnParticle(EnumParticleTypes.FLAME, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
         }

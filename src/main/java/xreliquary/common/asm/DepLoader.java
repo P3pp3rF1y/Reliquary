@@ -43,6 +43,7 @@ import java.util.zip.ZipFile;
  * @author cpw
  * @author ChickenBones
  */
+//TODO: review if this is needed if both libSandstone and toml get included/rewritten into the mod
 public class DepLoader implements IFMLLoadingPlugin, IFMLCallHook {
     private static ByteBuffer downloadBuffer = ByteBuffer.allocateDirect(1 << 23);
     private static final String owner = "Reliquary's DepLoader";

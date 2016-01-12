@@ -351,21 +351,21 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
      *
      * @param sideHit
      */
-    protected void ricochet(int sideHit) {
+    protected void ricochet(EnumFacing sideHit) {
         switch (sideHit) {
 
-            case 0:
-            case 1:
+            case DOWN:
+            case UP:
                 // topHit, bottomHit, reflect Y
                 motionY = motionY * -1;
                 break;
-            case 2:
-            case 3:
+            case WEST:
+            case EAST:
                 // westHit, eastHit, reflect Z
                 motionZ = motionZ * -1;
                 break;
-            case 4:
-            case 5:
+            case SOUTH:
+            case NORTH:
                 // southHit, northHit, reflect X
                 motionX = motionX * -1;
                 break;
@@ -487,7 +487,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
      * @param sideHit is sometimes used when you need particles to fly in a certain
      *                direction.
      */
-    abstract void doBurstEffect(int sideHit);
+    abstract void doBurstEffect(EnumFacing sideHit);
 
     /**
      * The particle/effect window when the gun is initially fired, between
@@ -562,10 +562,10 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
     /**
      * simple overloaded method for the standard doBurstEffect, basically calls
      * the abstracted version wherever it is needed. It just passes sideHit as a
-     * zero, since it doesn't matter.
+     * EnumFacing.UP, since it doesn't matter.
      */
     protected void doBurstEffect() {
-        this.doBurstEffect(0);
+        this.doBurstEffect(EnumFacing.UP);
     }
 
 }

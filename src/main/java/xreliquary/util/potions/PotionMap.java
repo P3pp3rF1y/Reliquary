@@ -59,7 +59,7 @@ public class PotionMap {
         addPotionConfig(Items.bread, hboost(4, 0), satur(0));
         addPotionConfig(Items.cooked_porkchop, fatigue(2, 0), satur(0));
         addPotionConfig(Items.slime_ball, resist(4, 0), fireres(2, 0));
-        addPotionConfig(Items.cooked_fished, satur(0), breath(2, 0));
+        addPotionConfig(Items.cooked_fish, satur(0), breath(2, 0));
         addPotionConfig(Items.dye, Reference.BLUE_DYE_META, haste(4, 0), dboost(4, 0));  //lapis lazuli
         addPotionConfig(Items.dye, Reference.BLACK_DYE_META, blind(2, 0), invis(2, 0)); //ink
         addPotionConfig(Items.bone, weak(2, 0), fatigue(2, 0));

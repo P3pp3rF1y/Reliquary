@@ -5,8 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 public class EntityBlazeShot extends EntityShotBase {
@@ -25,14 +24,14 @@ public class EntityBlazeShot extends EntityShotBase {
     @Override
     void doFlightEffects() {
         if (ticksInAir % 3 == 0 && ticksInAir < 9) {
-            worldObj.spawnParticle("flame", posX, posY, posZ, lowGauss(motionX), lowGauss(motionY), lowGauss(motionZ));
+            worldObj.spawnParticle( EnumParticleTypes.FLAME, posX, posY, posZ, lowGauss(motionX), lowGauss(motionY), lowGauss(motionZ));
         }
     }
 
     @Override
     void doFiringEffects() {
-        worldObj.spawnParticle("mobSpellAmbient", posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
-        worldObj.spawnParticle("flame", posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+        worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+        worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian( motionZ ));
     }
 
     @Override
@@ -53,34 +52,35 @@ public class EntityBlazeShot extends EntityShotBase {
 
             this.groundImpact(mop.sideHit);
 
-            int x = mop.blockX;
-            int y = mop.blockY;
-            int z = mop.blockZ;
+            BlockPos pos = mop.getBlockPos();
+
+            //TODO: make sure that the fire spawns on correct side of the block (may need to reverse these)
+
             switch (mop.sideHit) {
-                case (0):
-                    y--;
+                case DOWN:
+                    pos.add(0,-1,0);
                     break;
-                case (1):
-                    y++;
+                case UP:
+                    pos.add(0,1,0);
                     break;
-                case (2):
-                    z--;
+                case NORTH:
+                    pos.add(0,0,-1);
                     break;
-                case (3):
-                    z++;
+                case SOUTH:
+                    pos.add(0,0,1);
                     break;
-                case (4):
-                    x--;
+                case WEST:
+                    pos.add(-1,0,0);
                     break;
-                case (5):
-                    x++;
+                case EAST:
+                    pos.add(1,0,0);
                     break;
             }
-            if (shootingEntity.canPlayerEdit(x, y, z, mop.sideHit, new ItemStack(Items.flint_and_steel, 1, 0)))
+            if (shootingEntity.canPlayerEdit(pos, mop.sideHit, new ItemStack(Items.flint_and_steel, 1, 0)))
             {
-                if (this.worldObj.isAirBlock(x, y, z))
+                if (this.worldObj.isAirBlock(pos))
                 {
-                    worldObj.setBlock(x, y, z, Blocks.fire);
+                    worldObj.setBlockState( pos, Blocks.fire.getDefaultState() );
                 }
             }
         }
@@ -104,7 +104,7 @@ public class EntityBlazeShot extends EntityShotBase {
     }
 
     @Override
-    protected void groundImpact(int sideHit) {
+    protected void groundImpact(EnumFacing sideHit) {
     }
 
     @Override
