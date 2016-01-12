@@ -3,11 +3,12 @@ package xreliquary.client.render;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 import xreliquary.client.model.ModelHandgun;
 import xreliquary.lib.ClientReference;
 
+//TODO: add in item model for handgun that actually isn't just icon
+/*
 public class ItemRendererHandgun implements IItemRenderer {
 
     protected ModelHandgun handgunModel;
@@ -52,3 +53,4 @@ public class ItemRendererHandgun implements IItemRenderer {
     }
 
 }
+*/
