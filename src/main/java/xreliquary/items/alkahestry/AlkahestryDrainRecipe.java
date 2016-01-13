@@ -86,4 +86,19 @@ public class AlkahestryDrainRecipe implements IRecipe {
         return new ItemStack(returnedItem, 1);
     }
 
+    //TODO: make sure that this works correctly
+    @Override
+    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    {
+        ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
+
+        for (int i = 0; i < aitemstack.length; ++i)
+        {
+            ItemStack itemstack = inv.getStackInSlot(i);
+            aitemstack[i] = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
+        }
+
+        return aitemstack;
+    }
+
 }
