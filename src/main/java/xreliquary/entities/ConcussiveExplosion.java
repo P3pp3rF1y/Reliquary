@@ -1,12 +1,10 @@
 package xreliquary.entities;
 
+import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
@@ -19,7 +17,6 @@ public class ConcussiveExplosion extends Explosion {
     /**
      * whether or not the explosion sets fire to blocks around it
      */
-    public boolean isFlaming = false;
     public boolean field_82755_b = true;
     private int field_77289_h = 16;
     private World worldObj;
@@ -28,19 +25,20 @@ public class ConcussiveExplosion extends Explosion {
     public double explosionZ;
     public Entity exploder;
     public float explosionSize;
-    private Map field_77288_k = new HashMap();
+    private final Map<EntityPlayer, Vec3> playerKnockbackMap;
     private EntityPlayer shootingEntity;
     public boolean hurtsPlayer;
 
-    public ConcussiveExplosion(World par1World, Entity par2Entity, EntityPlayer par3Entity, double par3, double par5, double par7, float par9) {
-        super(par1World, par2Entity, par3, par5, par7, par9);
-        worldObj = par1World;
-        exploder = par2Entity;
+    public ConcussiveExplosion(World world, Entity entity, EntityPlayer par3Entity, double explosionX, double explosionY, double explosionZ, float size, boolean isFlaming, boolean isSmoking) {
+        super(world, entity, explosionX, explosionY, explosionZ, size, isFlaming, isSmoking);
+        worldObj = world;
+        exploder = entity;
         shootingEntity = par3Entity;
-        explosionSize = par9;
-        explosionX = par3;
-        explosionY = par5;
-        explosionZ = par7;
+        explosionSize = size;
+        this.explosionX = explosionX;
+        this.explosionY = explosionY;
+        this.explosionZ = explosionZ;
+        this.playerKnockbackMap = Maps.<EntityPlayer, Vec3>newHashMap();
     }
 
     /**
@@ -52,9 +50,9 @@ public class ConcussiveExplosion extends Explosion {
         int var3;
         int var4;
         int var5;
-        double var15;
-        double var17;
-        double var19;
+        double d5;
+        double d7;
+        double d9;
 
         for (var3 = 0; var3 < field_77289_h; ++var3) {
             for (var4 = 0; var4 < field_77289_h; ++var4) {
@@ -67,9 +65,9 @@ public class ConcussiveExplosion extends Explosion {
                         var6 /= var12;
                         var8 /= var12;
                         var10 /= var12;
-                        var15 = explosionX;
-                        var17 = explosionY;
-                        var19 = explosionZ;
+                        d5 = explosionX;
+                        d7 = explosionY;
+                        d9 = explosionZ;
                     }
                 }
             }
@@ -82,38 +80,38 @@ public class ConcussiveExplosion extends Explosion {
         int var28 = MathHelper.floor_double(explosionY + explosionSize + 1.0D);
         int var7 = MathHelper.floor_double(explosionZ - explosionSize - 1.0D);
         int var29 = MathHelper.floor_double(explosionZ + explosionSize + 1.0D);
-        List var9 = worldObj.getEntitiesWithinAABBExcludingEntity(exploder, AxisAlignedBB.getBoundingBox(var3, var5, var7, var4, var28, var29));
+        List var9 = worldObj.getEntitiesWithinAABBExcludingEntity(exploder, new AxisAlignedBB(var3, var5, var7, var4, var28, var29));
 
-        Vec3 var30 = Vec3.createVectorHelper(explosionX, explosionY, explosionZ);
+        Vec3 var30 = new Vec3(explosionX, explosionY, explosionZ);
 
         for (int var11 = 0; var11 < var9.size(); ++var11) {
-            Entity var31 = (Entity) var9.get(var11);
-            if (!(var31 instanceof EntityLiving)) {
+            Entity entity = (Entity) var9.get(var11);
+            if (!(entity instanceof EntityLiving)) {
                 continue;
             }
-            if (var31 == shootingEntity && !hurtsPlayer) {
+            if (entity == shootingEntity && !hurtsPlayer) {
                 continue;
             }
-            double var13 = var31.getDistance(explosionX, explosionY, explosionZ) / explosionSize;
+            double var13 = entity.getDistance(explosionX, explosionY, explosionZ) / explosionSize;
             if (var13 <= 1.0D) {
-                var15 = var31.posX - explosionX;
-                var17 = var31.posY + var31.getEyeHeight() - explosionY;
-                var19 = var31.posZ - explosionZ;
-                double var33 = MathHelper.sqrt_double(var15 * var15 + var17 * var17 + var19 * var19);
+                d5 = entity.posX - explosionX;
+                d7 = entity.posY + entity.getEyeHeight() - explosionY;
+                d9 = entity.posZ - explosionZ;
+                double var33 = MathHelper.sqrt_double(d5 * d5 + d7 * d7 + d9 * d9);
 
                 if (var33 != 0.0D) {
-                    var15 /= var33;
-                    var17 /= var33;
-                    var19 /= var33;
-                    double var32 = worldObj.getBlockDensity(var30, var31.boundingBox);
-                    double var34 = (1.0D - var13) * var32;
-                    var31.attackEntityFrom(DamageSource.causePlayerDamage(shootingEntity), (int) ((var34 * var34 + var34) * 6.0D * (explosionSize * 2) + 3.0D));
-                    var31.motionX += var15 * var34;
-                    var31.motionY += var17 * var34;
-                    var31.motionZ += var19 * var34;
+                    d5 /= var33;
+                    d7 /= var33;
+                    d9 /= var33;
+                    double var32 = worldObj.getBlockDensity( var30, entity.getEntityBoundingBox() );
+                    double d10 = (1.0D - var13) * var32;
+                    entity.attackEntityFrom(DamageSource.causePlayerDamage(shootingEntity), (int) ((d10 * d10 + d10) * 6.0D * (explosionSize * 2) + 3.0D));
+                    entity.motionX += d5 * d10;
+                    entity.motionY += d7 * d10;
+                    entity.motionZ += d9 * d10;
 
-                    if (var31 instanceof EntityPlayer) {
-                        field_77288_k.put(var31, Vec3.createVectorHelper(var15 * var34, var17 * var34, var19 * var34));
+                    if (entity instanceof EntityPlayer) {
+                        this.playerKnockbackMap.put((EntityPlayer)entity, new Vec3(d5 * d10, d7 * d10, d9 * d10));
                     }
                 }
             }
@@ -130,16 +128,17 @@ public class ConcussiveExplosion extends Explosion {
         worldObj.playSoundEffect(explosionX, explosionY, explosionZ, "random.explode", 4.0F, (1.0F + (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 
         if (explosionSize >= 2.0F && field_82755_b) {
-            worldObj.spawnParticle("hugeexplosion", explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);
+            worldObj.spawnParticle( EnumParticleTypes.EXPLOSION_HUGE, explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);
         } else {
-            worldObj.spawnParticle("largeexplode", explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);
+            worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);
         }
 
     }
 
     @Override
-    public Map func_77277_b() {
-        return field_77288_k;
+    public Map<EntityPlayer, Vec3> getPlayerKnockbackMap()
+    {
+        return this.playerKnockbackMap;
     }
 
     public static void customBusterExplosion(Entity par1Entity, EntityPlayer player, double par2, double par4, double par6, float par8, boolean par9, boolean par10) {
@@ -148,10 +147,8 @@ public class ConcussiveExplosion extends Explosion {
         par1Entity.worldObj.newExplosion(par1Entity, par2, par4, par6, par8, par9, par10);
     }
 
-    public static ConcussiveExplosion customConcussiveExplosion(Entity par1Entity, EntityPlayer player, double par2, double par4, double par6, float par8, boolean par9, boolean par10) {
-        ConcussiveExplosion var11 = new ConcussiveExplosion(par1Entity.worldObj, par1Entity, player, par2, par4, par6, par8);
-        var11.isFlaming = par9;
-        var11.isSmoking = par10;
+    public static ConcussiveExplosion customConcussiveExplosion(Entity entity, EntityPlayer player, double explosionX, double explosionY, double explosionZ, float size, boolean isFlaming, boolean isSmoking) {
+        ConcussiveExplosion var11 = new ConcussiveExplosion(entity.worldObj, entity, player, explosionX, explosionY, explosionZ, size, isFlaming, isSmoking);
         var11.doExplosionA();
         var11.doExplosionB(false);
 

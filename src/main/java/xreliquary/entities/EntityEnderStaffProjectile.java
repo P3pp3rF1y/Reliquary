@@ -1,6 +1,7 @@
 package xreliquary.entities;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityEnderPearl;
@@ -15,7 +16,7 @@ import java.util.List;
 public class EntityEnderStaffProjectile extends EntityThrowable {
     public int ticksInAir;
     public int ticksInGround;
-    public Block inTile;
+    public IBlockState inTile;
     public int xTile;
     public int yTile;
     public int zTile;
@@ -60,17 +61,19 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
         }
 
         if (ticksInAir % 4 == worldObj.rand.nextInt(5)) {
-            worldObj.spawnParticle("portal", posX, posY, posZ, 0.0D, 0.0D, 1.0D);
+            worldObj.spawnParticle(EnumParticleTypes.PORTAL, posX, posY, posZ, 0.0D, 0.0D, 1.0D);
         }
 
         xTile = (int) Math.round(posX);
         yTile = (int) Math.round(posY);
         zTile = (int) Math.round(posZ);
-        inTile = worldObj.getBlock(xTile, yTile, zTile);
+
+        inTile = worldObj.getBlockState( new BlockPos(xTile, yTile, zTile ));
 
         if (inGround) {
-            Block var1 = worldObj.getBlock(xTile, yTile, zTile);
+            IBlockState var1 = worldObj.getBlockState( new BlockPos(xTile, yTile, zTile ));
 
+            //TODO: ?? maybe I am blind but why do we check this when these two get initialized to the same block?
             if (var1 == inTile) {
                 ++ticksInGround;
 
@@ -91,19 +94,19 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
             ++ticksInAir;
         }
 
-        Vec3 var16 = Vec3.createVectorHelper(posX, posY, posZ);
-        Vec3 var2 = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
+        Vec3 var16 = new Vec3(posX, posY, posZ);
+        Vec3 var2 = new Vec3(posX + motionX, posY + motionY, posZ + motionZ);
         MovingObjectPosition var3 = worldObj.rayTraceBlocks(var16, var2, false, true, false);
-        var16 = Vec3.createVectorHelper(posX, posY, posZ);
-        var2 = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
+        var16 = new Vec3(posX, posY, posZ);
+        var2 = new Vec3(posX + motionX, posY + motionY, posZ + motionZ);
 
         if (var3 != null) {
-            var2 = Vec3.createVectorHelper(var3.hitVec.xCoord, var3.hitVec.yCoord, var3.hitVec.zCoord);
+            var2 = new Vec3(var3.hitVec.xCoord, var3.hitVec.yCoord, var3.hitVec.zCoord);
         }
 
         if (!worldObj.isRemote) {
             Entity var4 = null;
-            List var5 = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
+            List var5 = worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord( motionX, motionY, motionZ ).expand(1.0D, 1.0D, 1.0D));
             double var6 = 0.0D;
             EntityLivingBase var8 = this.getThrower();
 
@@ -112,7 +115,7 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 
                 if (var10.canBeCollidedWith() && (var10 != var8 || ticksInAir >= 5)) {
                     float var11 = 0.5F;
-                    AxisAlignedBB var12 = var10.boundingBox.expand(var11, var11, var11);
+                    AxisAlignedBB var12 = var10.getEntityBoundingBox().expand( var11, var11, var11 );
                     MovingObjectPosition var13 = var12.calculateIntercept(var16, var2);
 
                     if (var13 != null) {
@@ -132,8 +135,8 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
         }
 
         if (var3 != null) {
-            if (var3.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlock(var3.blockX, var3.blockY, var3.blockZ) == Blocks.portal) {
-                this.setInPortal();
+            if (var3.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlockState(var3.getBlockPos()).getBlock() == Blocks.portal) {
+                this.setPortal( var3.getBlockPos() );
             } else {
                 this.onImpact(var3);
             }
@@ -189,7 +192,7 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
             if (!mop.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, getThrower()), 0));
         }
         for (int i = 0; i < 32; i++) {
-            worldObj.spawnParticle("portal", posX, posY + rand.nextDouble() * 2D, posZ, rand.nextGaussian(), 0.0D, rand.nextGaussian());
+            worldObj.spawnParticle(EnumParticleTypes.PORTAL, posX, posY + rand.nextDouble() * 2D, posZ, rand.nextGaussian(), 0.0D, rand.nextGaussian());
         }
 
         if (!worldObj.isRemote) {
@@ -203,11 +206,12 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
                 int z = (int) Math.round(posZ);
 
                 if (mop != null) {
-                    int side = mop.sideHit;
+                    EnumFacing side = mop.sideHit;
 
-                    y = mop.blockY + (side == 0 ? -1 : side == 1 ? 1 : 0);
-                    x = mop.blockX + (side == 4 ? -1 : side == 5 ? 1 : 0);
-                    z = mop.blockZ + (side == 2  ? -1 : side == 3 ? 1 : 0);
+                    //TODO: change this to better implementation -probably use vector of opposite EnumFacing
+                    y = mop.getBlockPos().getY() + (side == EnumFacing.DOWN ? -1 : side == EnumFacing.UP ? 1 : 0);
+                    x = mop.getBlockPos().getX() + (side == EnumFacing.WEST ? -1 : side == EnumFacing.EAST ? 1 : 0);
+                    z = mop.getBlockPos().getZ() + (side == EnumFacing.NORTH  ? -1 : side == EnumFacing.SOUTH ? 1 : 0);
                 }
 
                 if (y < 0) {

@@ -108,8 +108,8 @@ public class EntityLyssaHook extends EntityFishHook {
         this.field_146048_h = -1;
         this.field_146050_i = -1;
         this.ignoreFrustumCheck = true;
-        this.field_146042_b = player;
-        this.field_146042_b.fishEntity = this;
+        this.angler = player;
+        this.angler.fishEntity = this;
         this.setSize(0.25F, 0.25F);
         this.setLocationAndAngles(player.posX, player.posY + 1.62D - (double)player.yOffset, player.posZ, player.rotationYaw, player.rotationPitch);
         this.posX -= (double)(MathHelper.cos(this.rotationYaw / 180.0F * (float)Math.PI) * 0.16F);
@@ -152,7 +152,7 @@ public class EntityLyssaHook extends EntityFishHook {
     @SideOnly(Side.CLIENT)
     public boolean isInRangeToRenderDist(double p_70112_1_)
     {
-        double d1 = this.boundingBox.getAverageEdgeLength() * 4.0D;
+        double d1 = this.getEntityBoundingBox().getAverageEdgeLength() * 4.0D;
         d1 *= 128.0D;
         return p_70112_1_ < d1 * d1;
     }
@@ -164,7 +164,7 @@ public class EntityLyssaHook extends EntityFishHook {
     public void onUpdate() {
 
         //pulling items toward it routine
-        List pullingItemsList = this.worldObj.getEntitiesWithinAABB(EntityItem.class, this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(3.0D, 3.0D, 3.0D));
+        List pullingItemsList = this.worldObj.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(3.0D, 3.0D, 3.0D));
 
         Iterator itemIterator = pullingItemsList.iterator();
         while (itemIterator.hasNext()) {
@@ -176,7 +176,7 @@ public class EntityLyssaHook extends EntityFishHook {
             //pulledItems.add(itemEntity.getEntityItem());
             //itemEntity.setDead();
             //} else {
-                Vec3 pullVector = Vec3.createVectorHelper(this.posX - e.posX, this.posY - e.posY, this.posZ - e.posZ).normalize();
+                Vec3 pullVector = new Vec3(this.posX - e.posX, this.posY - e.posY, this.posZ - e.posZ).normalize();
                 e.motionX = pullVector.xCoord * 0.4D;
                 e.motionY = pullVector.yCoord * 0.4D;
                 e.motionZ = pullVector.zCoord * 0.4D;
@@ -200,12 +200,12 @@ public class EntityLyssaHook extends EntityFishHook {
         {
             if (!this.worldObj.isRemote)
             {
-                ItemStack itemstack = this.field_146042_b.getCurrentEquippedItem();
+                ItemStack itemstack = this.angler.getCurrentEquippedItem();
 
-                if (this.field_146042_b.isDead || !this.field_146042_b.isEntityAlive() || itemstack == null || itemstack.getItem() != Reliquary.CONTENT.getItem(Names.rod_of_lyssa) || this.getDistanceSqToEntity(this.field_146042_b) > 4096.0D)
+                if (this.angler.isDead || !this.angler.isEntityAlive() || itemstack == null || itemstack.getItem() != Reliquary.CONTENT.getItem(Names.rod_of_lyssa) || this.getDistanceSqToEntity(this.angler) > 4096.0D)
                 {
                     this.setDead();
-                    this.field_146042_b.fishEntity = null;
+                    this.angler.fishEntity = null;
                     return;
                 }
 
@@ -214,7 +214,7 @@ public class EntityLyssaHook extends EntityFishHook {
                     if (!this.inEntity.isDead)
                     {
                         this.posX = this.inEntity.posX;
-                        this.posY = this.inEntity.boundingBox.minY + (double)this.inEntity.height * 0.8D;
+                        this.posY = this.inEntity.getEntityBoundingBox().minY + (double)this.inEntity.height * 0.8D;
                         this.posZ = this.inEntity.posZ;
                         return;
                     }
@@ -228,19 +228,19 @@ public class EntityLyssaHook extends EntityFishHook {
                 --this.field_146044_a;
             }
 
-            Vec3 vec31 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-            Vec3 vec3 = Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+            Vec3 vec31 = new Vec3(this.posX, this.posY, this.posZ);
+            Vec3 vec3 = new Vec3(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
             MovingObjectPosition movingobjectposition = this.worldObj.rayTraceBlocks(vec31, vec3);
-            vec31 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-            vec3 = Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+            vec31 = new Vec3(this.posX, this.posY, this.posZ);
+            vec3 = new Vec3(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
             if (movingobjectposition != null)
             {
-                vec3 = Vec3.createVectorHelper(movingobjectposition.hitVec.xCoord, movingobjectposition.hitVec.yCoord, movingobjectposition.hitVec.zCoord);
+                vec3 = new Vec3(movingobjectposition.hitVec.xCoord, movingobjectposition.hitVec.yCoord, movingobjectposition.hitVec.zCoord);
             }
 
             Entity entity = null;
-            List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+            List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
             double d0 = 0.0D;
             double d2;
 
@@ -248,10 +248,10 @@ public class EntityLyssaHook extends EntityFishHook {
             {
                 Entity entity1 = (Entity)list.get(i);
 
-                if (entity1.canBeCollidedWith() && (entity1 != this.field_146042_b || this.field_146047_aw >= 5))
+                if (entity1.canBeCollidedWith() && (entity1 != this.angler || this.field_146047_aw >= 5))
                 {
                     float f = 0.3F;
-                    AxisAlignedBB axisalignedbb = entity1.boundingBox.expand((double)f, (double)f, (double)f);
+                    AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand((double)f, (double)f, (double)f);
                     MovingObjectPosition movingobjectposition1 = axisalignedbb.calculateIntercept(vec31, vec3);
 
                     if (movingobjectposition1 != null)
@@ -288,8 +288,8 @@ public class EntityLyssaHook extends EntityFishHook {
                     Iterator iterator = eList.iterator();
                     while (iterator.hasNext()) {
                         Entity e = (Entity)iterator.next();
-                        if (e instanceof EntityLivingBase && !e.isEntityEqual(field_146042_b)) {
-                            if (field_146042_b.isSneaking() || movingobjectposition.entityHit.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase)e), 0.0F))
+                        if (e instanceof EntityLivingBase && !e.isEntityEqual(angler)) {
+                            if (angler.isSneaking() || movingobjectposition.entityHit.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase)e), 0.0F))
                             {
                                 this.inEntity = movingobjectposition.entityHit;
                                 break;
@@ -455,7 +455,7 @@ public class EntityLyssaHook extends EntityFishHook {
                         else
                         {
                             this.field_146040_ay = MathHelper.getRandomIntegerInRange(this.rand, 100, 900);
-                            this.field_146040_ay -= EnchantmentHelper.func_151387_h(this.field_146042_b) * 20 * 5;
+                            this.field_146040_ay -= EnchantmentHelper.func_151387_h(this.angler) * 20 * 5;
                         }
                     }
 
@@ -528,16 +528,16 @@ public class EntityLyssaHook extends EntityFishHook {
 
             if (this.inEntity != null)
             {
-                double d0 = this.field_146042_b.posX - this.posX;
-                double d2 = this.field_146042_b.posY - this.posY;
-                double d4 = this.field_146042_b.posZ - this.posZ;
+                double d0 = this.angler.posX - this.posX;
+                double d2 = this.angler.posY - this.posY;
+                double d4 = this.angler.posZ - this.posZ;
                 double d6 = (double)MathHelper.sqrt_double(d0 * d0 + d2 * d2 + d4 * d4);
-                double d8 = field_146042_b.isSneaking() ? 0.0D : 0.1D;
+                double d8 = angler.isSneaking() ? 0.0D : 0.1D;
                 this.inEntity.motionX += d0 * d8;
                 this.inEntity.motionY += d2 * d8 + (double)MathHelper.sqrt_double(d6) * 0.12D;
                 this.inEntity.motionZ += d4 * d8;
 
-                if (field_146042_b.isSneaking() && this.inEntity instanceof EntityLivingBase) {
+                if (angler.isSneaking() && this.inEntity instanceof EntityLivingBase) {
                     EntityLivingBase livingBase = (EntityLivingBase) this.inEntity;
                     if (!(livingBase instanceof EntityPlayer)) {
                         int slotBeingStolenFrom = worldObj.rand.nextInt(5);
@@ -553,21 +553,21 @@ public class EntityLyssaHook extends EntityFishHook {
                         float failProbabilityFactor;
 
                         if (Reliquary.CONFIG.getBool(Names.rod_of_lyssa, "use_leveled_failure_rate"))
-                            failProbabilityFactor = 1F / ((float)Math.sqrt((double)Math.max(1, Math.min(field_146042_b.experienceLevel, Reliquary.CONFIG.getInt(Names.rod_of_lyssa, "level_cap_for_leveled_formula")))) * 2);
+                            failProbabilityFactor = 1F / ((float)Math.sqrt((double)Math.max(1, Math.min(angler.experienceLevel, Reliquary.CONFIG.getInt(Names.rod_of_lyssa, "level_cap_for_leveled_formula")))) * 2);
                         else
                             failProbabilityFactor = (float)Reliquary.CONFIG.getInt(Names.rod_of_lyssa, "flat_steal_failure_percent_rate") / 100F;
 
                         if (rand.nextFloat() <= failProbabilityFactor || (stolenStack == null && Reliquary.CONFIG.getBool(Names.rod_of_lyssa, "fail_steal_from_vacant_slots"))) {
                             if (Reliquary.CONFIG.getBool(Names.rod_of_lyssa, "anger_on_steal_failure"))
-                                livingBase.attackEntityFrom(DamageSource.causePlayerDamage(this.field_146042_b),0.0F);
+                                livingBase.attackEntityFrom(DamageSource.causePlayerDamage(this.angler),0.0F);
                         }
                         if (stolenStack != null) {
                             int randomItemDamage = worldObj.rand.nextInt(3);
                             stolenStack.damageItem(randomItemDamage, livingBase);
                             EntityItem entityitem = new EntityItem(this.worldObj, this.posX, this.posY, this.posZ, stolenStack);
-                            double d1 = this.field_146042_b.posX - this.posX;
-                            double d3 = this.field_146042_b.posY - this.posY;
-                            double d5 = this.field_146042_b.posZ - this.posZ;
+                            double d1 = this.angler.posX - this.posX;
+                            double d3 = this.angler.posY - this.posY;
+                            double d5 = this.angler.posZ - this.posZ;
                             double d7 = (double) MathHelper.sqrt_double(d1 * d1 + d3 * d3 + d5 * d5);
                             double d9 = 0.1D;
                             entityitem.motionX = d1 * d9;
@@ -584,16 +584,16 @@ public class EntityLyssaHook extends EntityFishHook {
             else if (this.field_146045_ax > 0)
             {
                 EntityItem entityitem = new EntityItem(this.worldObj, this.posX, this.posY, this.posZ, this.func_146033_f());
-                double d1 = this.field_146042_b.posX - this.posX;
-                double d3 = this.field_146042_b.posY - this.posY;
-                double d5 = this.field_146042_b.posZ - this.posZ;
+                double d1 = this.angler.posX - this.posX;
+                double d3 = this.angler.posY - this.posY;
+                double d5 = this.angler.posZ - this.posZ;
                 double d7 = (double)MathHelper.sqrt_double(d1 * d1 + d3 * d3 + d5 * d5);
                 double d9 = 0.1D;
                 entityitem.motionX = d1 * d9;
                 entityitem.motionY = d3 * d9 + (double)MathHelper.sqrt_double(d7) * 0.08D;
                 entityitem.motionZ = d5 * d9;
                 this.worldObj.spawnEntityInWorld(entityitem);
-                this.field_146042_b.worldObj.spawnEntityInWorld(new EntityXPOrb(this.field_146042_b.worldObj, this.field_146042_b.posX, this.field_146042_b.posY + 0.5D, this.field_146042_b.posZ + 0.5D, this.rand.nextInt(6) + 1));
+                this.angler.worldObj.spawnEntityInWorld(new EntityXPOrb(this.angler.worldObj, this.angler.posX, this.angler.posY + 0.5D, this.angler.posZ + 0.5D, this.rand.nextInt(6) + 1));
                 b0 = 1;
             }
 
@@ -605,9 +605,9 @@ public class EntityLyssaHook extends EntityFishHook {
                 if (!(e instanceof EntityItem))
                     continue;
 
-                double d1 = this.field_146042_b.posX - this.posX;
-                double d3 = this.field_146042_b.posY - this.posY;
-                double d5 = this.field_146042_b.posZ - this.posZ;
+                double d1 = this.angler.posX - this.posX;
+                double d3 = this.angler.posY - this.posY;
+                double d5 = this.angler.posZ - this.posZ;
                 double d7 = (double)MathHelper.sqrt_double(d1 * d1 + d3 * d3 + d5 * d5);
                 double d9 = 0.1D;
                 ((EntityItem)e).motionX = d1 * d9;
@@ -616,7 +616,7 @@ public class EntityLyssaHook extends EntityFishHook {
             }
 
             this.setDead();
-            this.field_146042_b.fishEntity = null;
+            this.angler.fishEntity = null;
 
             return b0;
         }
@@ -625,8 +625,8 @@ public class EntityLyssaHook extends EntityFishHook {
     private ItemStack func_146033_f()
     {
         float f = this.worldObj.rand.nextFloat();
-        int i = EnchantmentHelper.func_151386_g(this.field_146042_b);
-        int j = EnchantmentHelper.func_151387_h(this.field_146042_b);
+        int i = EnchantmentHelper.func_151386_g(this.angler);
+        int j = EnchantmentHelper.func_151387_h(this.angler);
         float f1 = 0.1F - (float)i * 0.025F - (float)j * 0.01F;
         float f2 = 0.05F + (float)i * 0.01F - (float)j * 0.01F;
         f1 = MathHelper.clamp_float(f1, 0.0F, 1.0F);
@@ -634,7 +634,7 @@ public class EntityLyssaHook extends EntityFishHook {
 
         if (f < f1)
         {
-            this.field_146042_b.addStat(StatList.field_151183_A, 1);
+            this.angler.addStat(StatList.field_151183_A, 1);
             return ((WeightedRandomFishable)WeightedRandom.getRandomItem(this.rand, garbageList)).func_150708_a(this.rand);
         }
         else
@@ -643,13 +643,13 @@ public class EntityLyssaHook extends EntityFishHook {
 
             if (f < f2)
             {
-                this.field_146042_b.addStat(StatList.field_151184_B, 1);
+                this.angler.addStat(StatList.field_151184_B, 1);
                 return ((WeightedRandomFishable)WeightedRandom.getRandomItem(this.rand, plantList)).func_150708_a(this.rand);
             }
             else
             {
                 float f3 = f - f2;
-                this.field_146042_b.addStat(StatList.fishCaughtStat, 1);
+                this.angler.addStat(StatList.fishCaughtStat, 1);
                 return ((WeightedRandomFishable)WeightedRandom.getRandomItem(this.rand, fishList)).func_150708_a(this.rand);
             }
         }
@@ -662,9 +662,9 @@ public class EntityLyssaHook extends EntityFishHook {
     {
         super.setDead();
 
-        if (this.field_146042_b != null)
+        if (this.angler != null)
         {
-            this.field_146042_b.fishEntity = null;
+            this.angler.fishEntity = null;
         }
     }
 }

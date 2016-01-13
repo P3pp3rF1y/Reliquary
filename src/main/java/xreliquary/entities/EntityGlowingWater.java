@@ -1,5 +1,6 @@
 package xreliquary.entities;
 
+import net.minecraft.util.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -17,9 +18,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import java.util.Iterator;
@@ -53,12 +51,12 @@ public class EntityGlowingWater extends EntityThrowable {
     }
 
     @Override
-    protected float func_70182_d() {
+    protected float getVelocity() {
         return 0.7F;
     }
 
     @Override
-    protected float func_70183_g() {
+    protected float getInaccuracy() {
         return -20.0F;
     }
 
@@ -73,7 +71,7 @@ public class EntityGlowingWater extends EntityThrowable {
     protected void onImpact(MovingObjectPosition mop) {
         if (!worldObj.isRemote) {
             this.spawnParticles();
-            AxisAlignedBB bb = boundingBox.expand(4.0D, 2.0D, 4.0D);
+            AxisAlignedBB bb = this.getEntityBoundingBox().expand( 4.0D, 2.0D, 4.0D );
             List eList = worldObj.getEntitiesWithinAABB(EntityLiving.class, bb);
             Iterator i = eList.iterator();
             while (i.hasNext()) {
@@ -83,7 +81,7 @@ public class EntityGlowingWater extends EntityThrowable {
                 }
             }
 
-            worldObj.playAuxSFX(2002, (int) Math.round(posX), (int) Math.round(posY), (int) Math.round(posZ), 0);
+            worldObj.playAuxSFX(2002, new BlockPos(this), 0);
             this.setDead();
         }
     }
@@ -92,15 +90,14 @@ public class EntityGlowingWater extends EntityThrowable {
         double x = posX;
         double y = posY;
         double z = posZ;
-        String itemBreakIcon = "iconcrack_" + Item.getIdFromItem(Items.potionitem);
+
         for (int particleNum = 0; particleNum < 8; ++particleNum) {
-            worldObj.spawnParticle(itemBreakIcon, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D);
+            worldObj.spawnParticle( EnumParticleTypes.ITEM_CRACK, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, new int[] {Item.getIdFromItem(Items.potionitem)});
         }
 
         float red = 1.0F;
         float green = 1.0F;
         float blue = 0.0F;
-        String nameOfParticle = "spell";
 
         for (int particleNum = 0; particleNum < 100; ++particleNum) {
             double velocityCoefficient = rand.nextDouble() * 4.0D;
@@ -109,7 +106,7 @@ public class EntityGlowingWater extends EntityThrowable {
             double yVel = 0.01D + rand.nextDouble() * 0.5D;
             double zVel = Math.sin(radian) * velocityCoefficient;
             if (worldObj.isRemote) {
-                EntityFX effect = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(nameOfParticle, x + xVel * 0.1D, y + 0.3D, z + zVel * 0.1D, xVel, yVel, zVel);
+                EntityFX effect = Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), x + xVel * 0.1D, y + 0.3D, z + zVel * 0.1D, xVel, yVel, zVel );
                 if (effect != null) {
                     float variance = 0.75F + rand.nextFloat() * 0.25F;
                     effect.setRBGColorF(red * variance, green * variance, blue * variance);
