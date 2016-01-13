@@ -1,40 +1,29 @@
 package xreliquary.event;
 
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import xreliquary.Reliquary;
-import xreliquary.client.model.ModelWitchHat;
 import xreliquary.items.*;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 public class ClientEventHandler {
-    private static RenderItem itemRenderer = new RenderItem();
+    private static RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
     private static int time;
 
     @SubscribeEvent
@@ -72,6 +61,8 @@ public class ClientEventHandler {
         return time;
     }
 
+/*  TODO: fix armor render event if in fact it will still be required after JSONs' definition
+
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onRenderPlayer(RenderPlayerEvent.SetArmorModel event) {
@@ -97,7 +88,7 @@ public class ClientEventHandler {
             event.result = 0;
             return;
         }
-    }
+    }*/
 
     public void handleTomeHUDCheck() {
         Minecraft mc = Minecraft.getMinecraft();
@@ -281,7 +272,7 @@ public class ClientEventHandler {
         float overlayOpacity = 0.75F;
 
         GL11.glPushMatrix();
-        ScaledResolution sr = new ScaledResolution(minecraft, minecraft.displayWidth, minecraft.displayHeight);
+        ScaledResolution sr = new ScaledResolution(minecraft);
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
@@ -326,22 +317,22 @@ public class ClientEventHandler {
             }
         }
 
-        renderItemIntoGUI(minecraft.fontRenderer, hudStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
+        renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), hudStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
 
         String friendlyStaffMode = "";
         if (staffMode.equals("eruption"))
             friendlyStaffMode = "ERUPT";
 
         if (secondaryStack != null && (staffMode.equals("charge"))) {
-            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX, hudOverlayY + 24);
-            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(secondaryStack.stackSize),hudOverlayX + 15, hudOverlayY + 30, color);
+            renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX, hudOverlayY + 24);
+            minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(secondaryStack.stackSize), hudOverlayX + 15, hudOverlayY + 30, color);
         } else if (tertiaryStack != null && (staffMode.equals("eruption") || staffMode.equals("blaze"))) {
-            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), tertiaryStack, hudOverlayX, hudOverlayY + 24);
-            minecraft.fontRenderer.drawStringWithShadow(Integer.toString(tertiaryStack.stackSize),hudOverlayX + 15, hudOverlayY + 30, color);
+            renderItem.renderItemAndEffectIntoGUI(tertiaryStack, hudOverlayX, hudOverlayY + 24);
+            minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(tertiaryStack.stackSize), hudOverlayX + 15, hudOverlayY + 30, color);
             if (staffMode.equals("eruption"))
-                minecraft.fontRenderer.drawStringWithShadow(friendlyStaffMode, hudOverlayX, hudOverlayY + 18, color);
+                minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(friendlyStaffMode, hudOverlayX, hudOverlayY + 18, color);
         } else if (staffMode.equals("flint_and_steel")) {
-            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), new ItemStack(Items.flint_and_steel, 1, 0), hudOverlayX, hudOverlayY + 24);
+            renderItem.renderItemAndEffectIntoGUI(new ItemStack(Items.flint_and_steel, 1, 0), hudOverlayX, hudOverlayY + 24);
         }
 
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -390,7 +381,7 @@ public class ClientEventHandler {
         float overlayOpacity = 0.75F;
 
         GL11.glPushMatrix();
-        ScaledResolution sr = new ScaledResolution(minecraft, minecraft.displayWidth, minecraft.displayHeight);
+        ScaledResolution sr = new ScaledResolution(minecraft);
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
@@ -435,20 +426,20 @@ public class ClientEventHandler {
             }
         }
 
-        renderItemIntoGUI(minecraft.fontRenderer, handgunStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
+        renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), handgunStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
         // if the gun is empty, displays a blinking empty magazine instead.
         if (bulletStack.stackSize == 0) {
             if (getTime() % 32 > 16) {
                 // offsets it a little to the left, it looks silly if you put it
                 // over the gun.
-                renderItemIntoGUI(minecraft.fontRenderer, new ItemStack(Reliquary.CONTENT.getItem(Names.magazine), 1, 0), hudOverlayX - 8, hudOverlayY + 12, overlayOpacity, overlayScale / 2F);
+                renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), new ItemStack(Reliquary.CONTENT.getItem(Names.magazine), 1, 0), hudOverlayX - 8, hudOverlayY + 12, overlayOpacity, overlayScale / 2F);
             }
         } else {
             // renders the number of bullets onto the screen.
             for (int xOffset = 0; xOffset < bulletStack.stackSize; xOffset++) {
                 // xOffset * 6 makes the bullets line up, -16 moves them all to
                 // the left by a bit
-                renderItemIntoGUI(minecraft.fontRenderer, bulletStack, hudOverlayX - 8 - (xOffset * 10), hudOverlayY + 12, 1.0F, overlayScale / 2F);
+                renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), bulletStack, hudOverlayX - 8 - (xOffset * 10), hudOverlayY + 12, 1.0F, overlayScale / 2F);
             }
         }
 
@@ -493,7 +484,7 @@ public class ClientEventHandler {
         float overlayOpacity = 0.75F;
 
         GL11.glPushMatrix();
-        ScaledResolution sr = new ScaledResolution(minecraft, minecraft.displayWidth, minecraft.displayHeight);
+        ScaledResolution sr = new ScaledResolution(minecraft);
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
@@ -538,7 +529,7 @@ public class ClientEventHandler {
             }
         }
 
-        renderItemIntoGUI(minecraft.fontRenderer, hudStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
+        renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), hudStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
 
         boolean skipStackRender = false;
 
@@ -554,27 +545,31 @@ public class ClientEventHandler {
                 staffMode = "PULL";
             else
                 staffMode = "BOLT";
-            minecraft.fontRenderer.drawStringWithShadow(staffMode,hudOverlayX, hudOverlayY + 18, color);
+            minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(staffMode, hudOverlayX, hudOverlayY + 18, color);
         }
 
         if (secondaryStack != null) {
             if (stackSize == 0)
                 stackSize = secondaryStack.stackSize;
-            itemRenderer.renderItemAndEffectIntoGUI(minecraft.fontRenderer, minecraft.getTextureManager(), secondaryStack, hudOverlayX, hudOverlayY + 24);
+            renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX, hudOverlayY + 24);
         }
 
-        minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize),hudOverlayX + 15, hudOverlayY + 30, color);
+        minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(stackSize), hudOverlayX + 15, hudOverlayY + 30, color);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
     }
 
     public static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float opacity, float scale) {
+        //TODO: definitely needs fixing as it likely doesn't render the item properly
+        renderItem.renderItemIntoGUI(itemStack, x, y);
+
+/*
         if (itemStack == null)
             return;
         GL11.glDisable(GL11.GL_LIGHTING);
         if (!(itemStack.getItem() instanceof ItemBlock)) {
-            FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationItemsTexture);
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
         } else {
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
         }
@@ -588,8 +583,10 @@ public class ClientEventHandler {
             drawTexturedQuad(x, y, icon, 16 * scale, 16 * scale, -90);
             GL11.glEnable(GL11.GL_LIGHTING);
         }
+*/
     }
 
+/*
     public static void drawTexturedQuad(int x, int y, IIcon icon, float width, float height, double zLevel) {
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
@@ -599,4 +596,5 @@ public class ClientEventHandler {
         tessellator.addVertexWithUV(x, y, zLevel, icon.getMinU(), icon.getMinV());
         tessellator.draw();
     }
+*/
 }

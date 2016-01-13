@@ -1,5 +1,6 @@
 package xreliquary.event;
 
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -108,7 +109,6 @@ public class CommonEventHandler {
         if (e instanceof EntityZombie && !(e instanceof EntityPigZombie)) {
             if (playerHasItem(p, heartZhu(Reference.ZOMBIE_ZHU_META), false)) {
                 ((EntityZombie) e).setAttackTarget(null);
-                ((EntityZombie) e).setTarget(null);
                 ((EntityZombie) e).setRevengeTarget(null);
             }
         }
@@ -118,7 +118,6 @@ public class CommonEventHandler {
         if (e instanceof EntitySkeleton && ((EntitySkeleton) e).getSkeletonType() != 1) {
             if (playerHasItem(p, heartZhu(Reference.SKELETON_ZHU_META), false)) {
                 ((EntitySkeleton) e).setAttackTarget(null);
-                ((EntitySkeleton) e).setTarget(null);
                 ((EntitySkeleton) e).setRevengeTarget(null);
             }
         }
@@ -128,7 +127,6 @@ public class CommonEventHandler {
         if (e instanceof EntitySkeleton && ((EntitySkeleton) e).getSkeletonType() == 1) {
             if (playerHasItem(p, heartZhu(Reference.WITHER_SKELETON_ZHU_META), false)) {
                 ((EntitySkeleton) e).setAttackTarget(null);
-                ((EntitySkeleton) e).setTarget(null);
                 ((EntitySkeleton) e).setRevengeTarget(null);
             }
         }
@@ -138,7 +136,6 @@ public class CommonEventHandler {
         if (e instanceof EntityCreeper) {
             if (playerHasItem(p, heartZhu(Reference.CREEPER_ZHU_META), false)) {
                 ((EntityCreeper) e).setAttackTarget(null);
-                ((EntityCreeper) e).setTarget(null);
                 ((EntityCreeper) e).setRevengeTarget(null);
             }
         }
@@ -158,10 +155,10 @@ public class CommonEventHandler {
 
             //toggled effect, makes player invisible based on light level (configurable)
             int playerX = MathHelper.floor_double(player.posX);
-            int playerY = MathHelper.floor_double(player.boundingBox.minY);
+            int playerY = MathHelper.floor_double(player.getEntityBoundingBox().minY);
             int playerZ = MathHelper.floor_double(player.posZ);
 
-            if (player.worldObj.getBlockLightValue(playerX, playerY, playerZ) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "max_light_level"))
+            if (player.worldObj.getLightFromNeighbors(player.getPosition()) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "max_light_level"))
                 return;
             if (event.entity instanceof EntityLiving) {
                 ((EntityLiving)event.entity).setAttackTarget(null);
@@ -198,7 +195,7 @@ public class CommonEventHandler {
         if (e.worldObj.rand.nextFloat() <= dropProbability) {
             if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityPlayer && event.source.damageType.equals("player")) {
                 EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, ist);
-                entityitem.delayBeforeCanPickup = 10;
+                entityitem.setPickupDelay(10);
                 event.drops.add(entityitem);
             }
         }
@@ -371,10 +368,9 @@ public class CommonEventHandler {
         double var8 = player.posX;
         double var10 = player.posY;
         double var12 = player.posZ;
-        String var14 = "iconcrack_" + Item.getIdFromItem(Items.potionitem);
         Random var7 = player.worldObj.rand;
         for (int var15 = 0; var15 < 8; ++var15) {
-            player.worldObj.spawnParticle(var14, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+            player.worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, new int[]{Item.getIdFromItem(Items.potionitem)});
         }
 
         // purple, for reals.
@@ -390,7 +386,7 @@ public class CommonEventHandler {
             double var27 = 0.01D + var7.nextDouble() * 0.5D;
             double var29 = Math.sin(var23) * var39;
             if (player.worldObj.isRemote) {
-                EntityFX var31 = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(var19, var8 + var25 * 0.1D, var10 + 0.3D, var12 + var29 * 0.1D, var25, var27, var29);
+                EntityFX var31 = Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), var8 + var25 * 0.1D, var10 + 0.3D, var12 + var29 * 0.1D, var25, var27, var29);
                 if (var31 != null) {
                     float var32 = 0.75F + var7.nextFloat() * 0.25F;
                     var31.setRBGColorF(red * var32, green * var32, blue * var32);
@@ -468,7 +464,7 @@ public class CommonEventHandler {
 
     public void spawnPhoenixResurrectionParticles(EntityPlayer player) {
         for (int particles = 0; particles <= 400; particles++) {
-            player.worldObj.spawnParticle("flame", player.posX, player.posY, player.posZ, player.worldObj.rand.nextGaussian() * 8, player.worldObj.rand.nextGaussian() * 8, player.worldObj.rand.nextGaussian() * 8);
+            player.worldObj.spawnParticle(EnumParticleTypes.FLAME, player.posX, player.posY, player.posZ, player.worldObj.rand.nextGaussian() * 8, player.worldObj.rand.nextGaussian() * 8, player.worldObj.rand.nextGaussian() * 8);
         }
     }
 
