@@ -45,7 +45,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
+        return EnumRarity.EPIC;
     }
 
     public int getRange() { return Reliquary.CONFIG.getInt(Names.lantern_of_paranoia, "placement_scan_radius"); }

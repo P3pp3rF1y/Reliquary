@@ -13,7 +13,8 @@ public class WeightedPotionEffect extends PotionEffect {
     public WeightedPotionEffect(int id, int duration, int amp) {
         //calls with amp of 0 (level 1)
         //potion effects are always ambient, it helps with stupid looking particles.
-        super(id, duration * 300, amp, true);
+        //1.8.9 set the particles to not display
+        super(id, duration * 300, amp, true,false);
         this.durationWeight = duration;
         this.ampWeight = amp;
     }

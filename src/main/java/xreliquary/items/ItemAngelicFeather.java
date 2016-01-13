@@ -35,7 +35,7 @@ public class ItemAngelicFeather extends ItemBase {
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
+        return EnumRarity.EPIC;
     }
 
     // event driven item, does nothing here.

@@ -80,7 +80,7 @@ public class ItemIceRod extends ItemToggleable {
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
+        return EnumRarity.EPIC;
     }
 
     @Override

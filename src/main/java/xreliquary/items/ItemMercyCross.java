@@ -50,7 +50,7 @@ public class ItemMercyCross extends ItemSword {
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
+        return EnumRarity.EPIC;
     }
 
     @Override
