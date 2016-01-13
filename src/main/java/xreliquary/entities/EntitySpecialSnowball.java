@@ -39,7 +39,7 @@ public class EntitySpecialSnowball extends EntitySnowball {
     }
 
     @Override
-    protected float func_70182_d() {
+    protected float getVelocity() {
         return 1.2F;
     }
 
@@ -51,25 +51,25 @@ public class EntitySpecialSnowball extends EntitySnowball {
      * Called when this EntityThrowable hits a block or entity.
      */
     @Override
-    protected void onImpact(MovingObjectPosition objPos) {
-        if (objPos.entityHit != null) {
+    protected void onImpact(MovingObjectPosition mop) {
+        if (mop.entityHit != null) {
             int damage = getSnowballDamage();
-            if (objPos.entityHit.isImmuneToFire())
+            if (mop.entityHit.isImmuneToFire())
                 damage += getSnowballDamageFireImmuneBonus();
-            if (objPos.entityHit instanceof EntityBlaze) {
+            if (mop.entityHit instanceof EntityBlaze) {
                 damage += getSnowballDamageBlazeBonus();
             }
 
-            objPos.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), damage);
+            mop.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), damage);
         }
 
-        if (objPos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlock(objPos.blockX, objPos.blockY + 1, objPos.blockZ) == Blocks.fire) {
-            worldObj.playSoundEffect((double) objPos.blockX + 0.5D, ((double) objPos.blockY + 1) + 0.5D, (double) objPos.blockZ + 0.5D, "random.fizz", 0.5F, (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.8F);
-            worldObj.setBlock(objPos.blockX, objPos.blockY + 1, objPos.blockZ, Blocks.air);
+        if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlockState(mop.getBlockPos()).getBlock() == Blocks.fire) {
+            worldObj.playSoundEffect((double) mop.getBlockPos().getX() + 0.5D, ((double) mop.getBlockPos().getY() + 1) + 0.5D, (double) mop.getBlockPos().getZ() + 0.5D, "random.fizz", 0.5F, (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.8F);
+            worldObj.setBlockState(new BlockPos(mop.getBlockPos().getX(), mop.getBlockPos().getY() + 1, mop.getBlockPos().getZ()), Blocks.air.getDefaultState());
         }
 
         for (int var3 = 0; var3 < 8; ++var3) {
-            worldObj.spawnParticle("snowballpoof", posX, posY, posZ, 0.0D, 0.0D, 0.0D);
+            worldObj.spawnParticle(EnumParticleTypes.SNOWBALL, posX, posY, posZ, 0.0D, 0.0D, 0.0D, new int[0]);
         }
 
         if (!worldObj.isRemote) {
@@ -91,16 +91,17 @@ public class EntitySpecialSnowball extends EntitySnowball {
             --throwableShake;
         }
         if (ticksInAir % 4 == worldObj.rand.nextInt(5)) {
-            worldObj.spawnParticle("reddust", posX, posY, posZ, 5.0D, 5.0D, 1.0D);
+            worldObj.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, 5.0D, 5.0D, 1.0D);
         }
         xTile = (int) Math.round(posX);
         yTile = (int) Math.round(posY);
         zTile = (int) Math.round(posZ);
-        inTile = worldObj.getBlock(xTile, yTile, zTile);
+        inTile = worldObj.getBlockState(new BlockPos(xTile, yTile, zTile)).getBlock();
 
         if (inGround) {
-            Block var1 = worldObj.getBlock(xTile, yTile, zTile);
+            Block var1 = worldObj.getBlockState(new BlockPos(xTile, yTile, zTile)).getBlock();
 
+            //TODO: again this condition which will always result in true????
             if (var1 == inTile) {
                 ++ticksInGround;
 
@@ -121,19 +122,19 @@ public class EntitySpecialSnowball extends EntitySnowball {
             ++ticksInAir;
         }
 
-        Vec3 var16 = Vec3.createVectorHelper(posX, posY, posZ);
-        Vec3 var2 = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
+        Vec3 var16 = new Vec3(posX, posY, posZ);
+        Vec3 var2 = new Vec3(posX + motionX, posY + motionY, posZ + motionZ);
         MovingObjectPosition var3 = worldObj.rayTraceBlocks(var16, var2, false, true, false);
-        var16 = Vec3.createVectorHelper(posX, posY, posZ);
-        var2 = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
+        var16 = new Vec3(posX, posY, posZ);
+        var2 = new Vec3(posX + motionX, posY + motionY, posZ + motionZ);
 
         if (var3 != null) {
-            var2 = Vec3.createVectorHelper(var3.hitVec.xCoord, var3.hitVec.yCoord, var3.hitVec.zCoord);
+            var2 = new Vec3(var3.hitVec.xCoord, var3.hitVec.yCoord, var3.hitVec.zCoord);
         }
 
         if (!worldObj.isRemote) {
             Entity var4 = null;
-            List var5 = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
+            List var5 = worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
             double var6 = 0.0D;
             EntityLivingBase var8 = this.getThrower();
 
@@ -142,7 +143,7 @@ public class EntitySpecialSnowball extends EntitySnowball {
 
                 if (var10.canBeCollidedWith() && (var10 != var8 || ticksInAir >= 5)) {
                     float var11 = 0.1F;
-                    AxisAlignedBB var12 = var10.boundingBox.expand(var11, var11, var11);
+                    AxisAlignedBB var12 = var10.getEntityBoundingBox().expand(var11, var11, var11);
                     MovingObjectPosition var13 = var12.calculateIntercept(var16, var2);
 
                     if (var13 != null) {
@@ -162,8 +163,8 @@ public class EntitySpecialSnowball extends EntitySnowball {
         }
 
         if (var3 != null) {
-            if (var3.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlock(var3.blockX, var3.blockY, var3.blockZ) == Blocks.portal) {
-                this.setInPortal();
+            if (var3.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && worldObj.getBlockState(var3.getBlockPos()).getBlock() == Blocks.portal) {
+                this.setPortal(var3.getBlockPos());
             } else {
                 this.onImpact(var3);
             }
@@ -199,7 +200,7 @@ public class EntitySpecialSnowball extends EntitySnowball {
         if (this.isInWater()) {
             for (int var7 = 0; var7 < 4; ++var7) {
                 float var20 = 0.25F;
-                worldObj.spawnParticle("bubble", posX - motionX * var20, posY - motionY * var20, posZ - motionZ * var20, motionX, motionY, motionZ);
+                worldObj.spawnParticle(EnumParticleTypes.WATER_BUBBLE, posX - motionX * var20, posY - motionY * var20, posZ - motionZ * var20, motionX, motionY, motionZ);
             }
 
             var18 = 0.8F;
