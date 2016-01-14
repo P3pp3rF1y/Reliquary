@@ -13,9 +13,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.ChunkPosition;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
@@ -46,9 +47,9 @@ public class ItemDestructionCatalyst extends ItemToggleable {
     }
 
     @Override
-    public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
-        if (NBTHelper.getInteger("gunpowder", ist) > gunpowderCost() || player.capabilities.isCreativeMode) {
-            doExplosion(world, x, y, z, side, player, ist);
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (NBTHelper.getInteger("gunpowder", stack) > gunpowderCost() || player.capabilities.isCreativeMode) {
+            doExplosion(world, pos, side, player, stack);
         }
         return true;
     }
@@ -86,29 +87,34 @@ public class ItemDestructionCatalyst extends ItemToggleable {
         return Reliquary.CONFIG.getBool(Names.destruction_catalyst, "perfect_cube");
     }
 
-    public void doExplosion(World world, int x, int y, int z, int side, EntityPlayer player, ItemStack ist) {
+    public void doExplosion(World world, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack ist) {
         boolean destroyedSomething = false;
         boolean playOnce = true;
+        //TODO: make sure that the explosion happens on the correct side
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+
         if (!centeredExplosion()) {
-            y = y + (side == 0 ? getExplosionRadius() : side == 1 ? -getExplosionRadius() : 0);
-            z = z + (side == 2 ? getExplosionRadius() : side == 3 ? -getExplosionRadius() : 0);
-            x = x + (side == 4 ? getExplosionRadius() : side == 5 ? -getExplosionRadius() : 0);
+            y = pos.getY() + (side == EnumFacing.DOWN ? getExplosionRadius() : side == EnumFacing.UP ? -getExplosionRadius() : 0);
+            z = pos.getZ() + (side == EnumFacing.NORTH ? getExplosionRadius() : side == EnumFacing.SOUTH ? -getExplosionRadius() : 0);
+            x = pos.getX() + (side == EnumFacing.WEST ? getExplosionRadius() : side == EnumFacing.EAST ? -getExplosionRadius() : 0);
         }
         for (int xD = -getExplosionRadius(); xD <= getExplosionRadius(); xD++) {
             for (int yD = -getExplosionRadius(); yD <= getExplosionRadius(); yD++) {
                 for (int zD = -getExplosionRadius(); zD <= getExplosionRadius(); zD++) {
                     if (!perfectCube()) {
-                        ChunkCoordinates origin = new ChunkCoordinates(x, y, z);
-                        ChunkCoordinates target = new ChunkCoordinates(x + xD, y + yD, z + zD);
-                        double distance = origin.getDistanceSquaredToChunkCoordinates(target);
+                        BlockPos origin = new BlockPos(x, y, z);
+                        BlockPos target = new BlockPos(x + xD, y + yD, z + zD);
+                        double distance = origin.distanceSq( target );
                         if (distance >= getExplosionRadius())
                             continue;
                     }
 
-                    if (isBreakable(ContentHelper.getIdent(world.getBlock(x + xD, y + yD, z + zD)))) {
-                        world.setBlock(x + xD, y + yD, z + zD, Blocks.air);
+                    if (isBreakable(ContentHelper.getIdent(world.getBlockState( new BlockPos(x + xD, y + yD, z + zD )).getBlock()))) {
+                        world.setBlockState( new BlockPos(x + xD, y + yD, z + zD), Blocks.air.getDefaultState() );
                         if (world.rand.nextInt(2) == 0) {
-                            world.spawnParticle("largeexplode", x + xD + (world.rand.nextFloat() - 0.5F), y + yD + (world.rand.nextFloat() - 0.5F), z + zD + (world.rand.nextFloat() - 0.5F), 0.0D, 0.0D, 0.0D);
+                            world.spawnParticle( EnumParticleTypes.EXPLOSION_LARGE, x + xD + (world.rand.nextFloat() - 0.5F), y + yD + (world.rand.nextFloat() - 0.5F), z + zD + (world.rand.nextFloat() - 0.5F), 0.0D, 0.0D, 0.0D);
                         }
                         destroyedSomething = true;
                         if (playOnce) {

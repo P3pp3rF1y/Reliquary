@@ -1,25 +1,17 @@
 package xreliquary.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 
 import java.util.List;
 
 @ContentInit
 public class ItemGunPart extends ItemBase {
-
-    @SideOnly(Side.CLIENT)
-    private IIcon[] icons;
 
     public ItemGunPart() {
         super(Names.gun_part);
@@ -29,6 +21,11 @@ public class ItemGunPart extends ItemBase {
         this.setHasSubtypes(true);
         canRepair = false;
     }
+
+    //TODO: include in JSON model
+/*
+    @SideOnly(Side.CLIENT)
+    private IIcon[] icons;
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -45,6 +42,7 @@ public class ItemGunPart extends ItemBase {
             return icons[meta];
         return icons[0];
     }
+*/
 
     @Override
     public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {

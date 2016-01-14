@@ -1,19 +1,16 @@
 package xreliquary.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 
 @ContentInit
 public class ItemFertilePotion extends ItemBase {
@@ -38,6 +35,8 @@ public class ItemFertilePotion extends ItemBase {
     }
 
 
+    //TODO: include in JSON model
+/*
     @SideOnly(Side.CLIENT)
     private IIcon iconSplashOverlay;
 
@@ -64,6 +63,7 @@ public class ItemFertilePotion extends ItemBase {
             return iconSplashOverlay;
         return this.iconSplash;
     }
+*/
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {

@@ -1,27 +1,21 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.LanguageHelper;
-import net.java.games.input.Component;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
-import lib.enderwizards.sandstone.util.NBTHelper;
 
 import java.util.List;
 
@@ -44,10 +38,13 @@ public class ItemHeroMedallion extends ItemToggleable {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack, int pass) {
+    public boolean hasEffect(ItemStack stack) {
         return stack.getItemDamage() == 1;
     }
 
+    //TODO: include in json model
+
+/*
     @SideOnly(Side.CLIENT)
     private IIcon iconOverlay;
 
@@ -71,6 +68,7 @@ public class ItemHeroMedallion extends ItemToggleable {
         else
             return iconOverlay;
     }
+*/
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List list, boolean par4) {

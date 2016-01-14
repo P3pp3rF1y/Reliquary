@@ -48,11 +48,6 @@ public class ItemAlkahestryTome extends ItemToggleable {
         return stack;
     }
 
-//    @Override
-//    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-//        return world.getTileEntity(x, y, z) instanceof TileEntityAltar;
-//    }
-
     @Override
     public void onUpdate(ItemStack ist, World world, Entity entity, int i, boolean f) {
         if (world.isRemote)
@@ -79,12 +74,6 @@ public class ItemAlkahestryTome extends ItemToggleable {
         } else if(NBTHelper.getInteger("redstone", ist) + 1 <= getRedstoneLimit() && InventoryHelper.consumeItem(Items.glowstone_dust, player)) {
             NBTHelper.setInteger("redstone", ist, NBTHelper.getInteger("redstone", ist) + 1);
         }
-    }
-
-    @Override
-    public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack) {
-        stack = null;
-        return false;
     }
 
     @Override

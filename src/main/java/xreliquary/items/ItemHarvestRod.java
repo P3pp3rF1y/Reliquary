@@ -9,6 +9,7 @@ import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.IGrowable;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -19,7 +20,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import org.lwjgl.input.Keyboard;
@@ -85,16 +88,16 @@ public class ItemHarvestRod extends ItemToggleable {
     }
 
     @Override
-    public boolean onBlockStartBreak(ItemStack ist, int x, int y, int z, EntityPlayer player) {
+    public boolean onBlockStartBreak(ItemStack ist, BlockPos pos, EntityPlayer player) {
         if (player.worldObj.isRemote)
             return false;
 
-        Block block = player.worldObj.getBlock(x, y, z);
+        Block block = player.worldObj.getBlockState(pos).getBlock();
         if (block instanceof IPlantable || block instanceof IGrowable) {
             for (int xOff = -getBreakRadius(); xOff <= getBreakRadius(); xOff++) {
                 for (int yOff = -getBreakRadius(); yOff <= getBreakRadius(); yOff++) {
                     for (int zOff = -getBreakRadius(); zOff <= getBreakRadius(); zOff++) {
-                        doHarvestBlockBreak(ist, x, y, z, player, xOff, yOff, zOff);
+                        doHarvestBlockBreak(ist, pos, player, xOff, yOff, zOff);
                     }
                 }
             }
@@ -103,24 +106,22 @@ public class ItemHarvestRod extends ItemToggleable {
         return true;
     }
 
-    public void doHarvestBlockBreak(ItemStack ist, int x, int y, int z, EntityPlayer player, int xOff, int yOff, int zOff) {
-        x += xOff;
-        y += yOff;
-        z += zOff;
+    public void doHarvestBlockBreak(ItemStack ist, BlockPos pos, EntityPlayer player, int xOff, int yOff, int zOff) {
+        pos.add( xOff, yOff, zOff );
 
-        Block block = player.worldObj.getBlock(x, y, z);
+        IBlockState blockState = player.worldObj.getBlockState( pos );
 
-        if (!(block instanceof IPlantable) && !(block instanceof BlockCrops))
+        if (!(blockState.getBlock() instanceof IPlantable) && !(blockState.getBlock() instanceof BlockCrops))
             return;
-        if (block instanceof BlockFertileLilypad)
+        if (blockState.getBlock() instanceof BlockFertileLilypad)
             return;
 
-        ArrayList<ItemStack> drops = block.getDrops(player.worldObj, x, y, z, player.worldObj.getBlockMetadata(x, y, z),
-                EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, ist));
+        List<ItemStack> drops = blockState.getBlock().getDrops( player.worldObj, pos, blockState,
+                EnchantmentHelper.getEnchantmentLevel( Enchantment.fortune.effectId, ist ) );
         Random rand = new Random();
 
         if (player.worldObj.isRemote) {
-            for (int particles = 0; particles <= 8; particles++)player.worldObj.playAuxSFXAtEntity(player, 2001, x, y, z, Block.getIdFromBlock(block) + (player.worldObj.getBlockMetadata(x, y, z) << 12));
+            for (int particles = 0; particles <= 8; particles++)player.worldObj.playAuxSFXAtEntity(player, 2001, pos, Block.getStateId( blockState ));
         } else {
             for(ItemStack stack : drops)
             {
@@ -128,19 +129,19 @@ public class ItemHarvestRod extends ItemToggleable {
                 double d  = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
                 double d1 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
                 double d2 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-                EntityItem entityitem = new EntityItem(player.worldObj, (double)x + d, (double)y + d1, (double)z + d2, stack);
-                entityitem.delayBeforeCanPickup = 10;
+                EntityItem entityitem = new EntityItem(player.worldObj, (double)pos.getX() + d, (double)pos.getY() + d1, (double)pos.getZ() + d2, stack);
+                entityitem.setPickupDelay(10);
                 player.worldObj.spawnEntityInWorld(entityitem);
             }
 
-            player.worldObj.setBlock(x, y, z, Blocks.air);
-            player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(block)], 1);
+            player.worldObj.setBlockState( pos, Blocks.air.getDefaultState() );
+            player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(blockState.getBlock())], 1);
             player.addExhaustion(0.01F);
         }
     }
 
     @Override
-    public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
+    public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float xOff, float yOff, float zOff) {
         if (NBTHelper.getInteger("bonemeal", ist) >= getBonemealCost()) {
             ItemStack fakeItemStack = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
             ItemDye fakeItemDye = (ItemDye)fakeItemStack.getItem();
@@ -148,7 +149,7 @@ public class ItemHarvestRod extends ItemToggleable {
             boolean usedRod = false;
             for (int repeatedUses = 0; repeatedUses <= getLuckRolls(); repeatedUses++) {
                 if (repeatedUses == 0 || world.rand.nextInt(100) <= getLuckPercent()) {
-                    if (fakeItemDye.onItemUse(fakeItemStack, player, world, x, y, z, side, xOff, yOff, zOff)) {
+                    if (fakeItemDye.onItemUse(fakeItemStack, player, world, pos, side, xOff, yOff, zOff)) {
                         if (!usedRod) usedRod = true;
                         player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
                     }

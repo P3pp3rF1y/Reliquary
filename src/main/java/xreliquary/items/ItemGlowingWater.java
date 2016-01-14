@@ -36,7 +36,7 @@ public class ItemGlowingWater extends ItemBase {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack, int pass) {
+    public boolean hasEffect(ItemStack stack) {
         return true;
     }
 

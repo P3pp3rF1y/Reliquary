@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
@@ -73,7 +74,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
             // always on for now, takes effect only at a configurable light level
 
             int playerX = MathHelper.floor_double(player.posX);
-            int playerY = MathHelper.floor_double(player.boundingBox.minY);
+            int playerY = MathHelper.floor_double(player.getEntityBoundingBox().minY);
             int playerZ = MathHelper.floor_double(player.posZ);
 
             placement: for (int xDiff = -getRange(); xDiff <= getRange(); xDiff++) {
@@ -82,7 +83,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
                         int x = playerX + xDiff;
                         int y = playerY + yDiff;
                         int z = playerZ + zDiff;
-                        if (!player.worldObj.isAirBlock(x, y, z))
+                        if (!player.worldObj.isAirBlock(new BlockPos(x, y, z)))
                             continue;
                         int lightLevel = player.worldObj.getBlockLightValue(x, y, z);
                         if (lightLevel > Reliquary.CONFIG.getInt(Names.lantern_of_paranoia, "min_light_level"))

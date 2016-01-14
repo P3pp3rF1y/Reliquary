@@ -1,24 +1,21 @@
 package xreliquary.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 
 @ContentInit
 public class ItemInfernalTear extends ItemToggleable {
 
+    //TODO: add this to JSON model
+/*
     @Override
     public IIcon getIcon(ItemStack ist, int renderPass) {
         if (!this.isEnabled(ist) || renderPass != 1)
@@ -42,6 +39,7 @@ public class ItemInfernalTear extends ItemToggleable {
         super.registerIcons(iconRegister);
         inactiveSprite = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.infernal_tear_empty);
     }
+*/
 
     public ItemInfernalTear() {
         super(Names.infernal_tear);

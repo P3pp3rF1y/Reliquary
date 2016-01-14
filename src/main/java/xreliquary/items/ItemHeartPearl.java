@@ -1,18 +1,15 @@
 package xreliquary.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 
 import java.util.List;
 
@@ -30,6 +27,9 @@ public class ItemHeartPearl extends ItemBase {
         canRepair = false;
     }
 
+    //TODO: include in json model
+
+/*
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int meta) {
@@ -54,6 +54,7 @@ public class ItemHeartPearl extends ItemBase {
             return this.itemIcon;
         return this.itemIcon;
     }
+*/
 
     @Override
     public String getUnlocalizedName(ItemStack ist) {
