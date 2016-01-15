@@ -50,7 +50,7 @@ public class ItemRodOfLyssa extends ItemBase {
         if (player.fishEntity != null)
         {
             player.swingItem();
-            player.fishEntity.func_146034_e();
+            player.fishEntity.handleHookRetraction();
         }
         else
         {

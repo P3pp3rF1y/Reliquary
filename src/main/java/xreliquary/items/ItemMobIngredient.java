@@ -1,17 +1,12 @@
 package xreliquary.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 
 import java.util.List;
 
@@ -24,8 +19,6 @@ import java.util.List;
  */
 @ContentInit
 public class ItemMobIngredient extends ItemBase {
-
-    private IIcon icons[];
 
     public ItemMobIngredient() {
         super(Names.mob_ingredient);
@@ -48,6 +41,9 @@ public class ItemMobIngredient extends ItemBase {
             par3List.add(new ItemStack(par1, 1, i));
     }
 
+    //TODO: include in JSON model
+/*
+    private IIcon icons[];
 
     @Override
     public IIcon getIconFromDamage(int meta) {
@@ -63,4 +59,5 @@ public class ItemMobIngredient extends ItemBase {
         for (int i = 0; i <= 15; i++)
             icons[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.mob_ingredient + "_" + i);
     }
+*/
 }

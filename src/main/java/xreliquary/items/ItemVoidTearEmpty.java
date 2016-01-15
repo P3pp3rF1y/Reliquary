@@ -9,6 +9,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.lib.Names;
@@ -39,11 +41,11 @@ public class ItemVoidTearEmpty extends ItemBase {
     }
 
     @Override
-    public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+    public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
 
-            if (world.getTileEntity(x, y, z) instanceof IInventory) {
-                IInventory inventory = (IInventory) world.getTileEntity(x, y, z);
+            if (world.getTileEntity(pos) instanceof IInventory) {
+                IInventory inventory = (IInventory) world.getTileEntity(pos);
 
                 ItemStack createdTear = buildTear(ist, player, inventory, false);
                 if (createdTear != null) {

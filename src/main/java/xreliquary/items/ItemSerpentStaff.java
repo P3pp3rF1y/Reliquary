@@ -27,7 +27,7 @@ public class ItemSerpentStaff extends ItemBase {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack, int pass) {
+    public boolean hasEffect(ItemStack stack) {
         return true;
     }
 
@@ -39,7 +39,7 @@ public class ItemSerpentStaff extends ItemBase {
 
     @Override
     public EnumAction getItemUseAction(ItemStack par1ItemStack) {
-        return EnumAction.block;
+        return EnumAction.BLOCK;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
@@ -34,7 +35,7 @@ public class ItemWitherlessRose extends ItemBase {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack stack, int pass) {
+    public boolean hasEffect(ItemStack stack) {
         return true;
     }
 
@@ -49,7 +50,7 @@ public class ItemWitherlessRose extends ItemBase {
             for (int particles = 0; particles < 10; particles++) {
                 double gauss1 = gaussian(world.rand);
                 double gauss2 = gaussian(world.rand);
-                world.spawnParticle("mobSpell", player.posX + gauss1, player.posY + player.height / 2, player.posZ + gauss2, 0.0, 0.0, 1.0);
+                world.spawnParticle(EnumParticleTypes.SPELL_MOB, player.posX + gauss1, player.posY + player.height / 2, player.posZ + gauss2, 0.0, 0.0, 1.0);
             }
         }
     }

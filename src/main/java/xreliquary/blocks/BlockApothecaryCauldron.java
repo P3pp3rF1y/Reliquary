@@ -22,7 +22,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityCauldron;
-import xreliquary.client.render.RenderApothecaryCauldron;
 import xreliquary.lib.Names;
 
 import java.util.List;
@@ -74,12 +73,17 @@ public class BlockApothecaryCauldron extends BlockBase {
         return false;
     }
 
-    /**
+    //TODO: fix with rendering pass
+/*
+    */
+/**
      * The type of render function that is called for this block
-     */
+     *//*
+
     public int getRenderType() {
         return RenderApothecaryCauldron.renderID;
     }
+*/
 
     /**
      * If this block doesn't render as an ordinary block it will return False

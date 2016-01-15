@@ -1,5 +1,15 @@
 package xreliquary;
 
+import lib.enderwizards.sandstone.Sandstone;
+import lib.enderwizards.sandstone.init.Content;
+import lib.enderwizards.sandstone.mod.SandstoneMod;
+import lib.enderwizards.sandstone.mod.config.Config;
+import lib.enderwizards.sandstone.util.WorldDataHandler;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -9,32 +19,20 @@ import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import lib.enderwizards.sandstone.Sandstone;
-import lib.enderwizards.sandstone.init.Content;
-import lib.enderwizards.sandstone.mod.SandstoneMod;
-import lib.enderwizards.sandstone.mod.config.Config;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.modstats.ModstatInfo;
-import org.modstats.Modstats;
 import xreliquary.common.CommonProxy;
 import xreliquary.integration.NEIModIntegration;
 import xreliquary.lib.Reference;
 import xreliquary.network.PacketHandler;
-import lib.enderwizards.sandstone.util.WorldDataHandler;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 import xreliquary.util.potions.PotionMap;
 
 import java.io.File;
 
-@ModstatInfo(prefix = "reliquary")
+//@ModstatInfo(prefix = "reliquary")
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:libsandstone", guiFactory = "xreliquary.client.gui.XRGuiFactory")
 @SandstoneMod(basePackage = "xreliquary")
 public class Reliquary {
@@ -72,7 +70,8 @@ public class Reliquary {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        Modstats.instance().getReporter().registerMod(this);
+        //TODO: put modstats back in when ready
+        //Modstats.instance().getReporter().registerMod(this);
         Sandstone.addModIntegration(new NEIModIntegration());
 
         PROXY.init();
@@ -104,7 +103,7 @@ public class Reliquary {
                         Alkahestry.addKey(new AlkahestRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
                     else
                         Alkahestry.addKey(new AlkahestRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
-                    LOGGER.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + Item.itemRegistry.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item"))) + " from " + message.getSender() + " to registry.");
+                    LOGGER.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + Item.itemRegistry.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem()) + " from " + message.getSender() + " to registry.");
                 } else {
                     LOGGER.log(Level.WARN, "[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");
                 }

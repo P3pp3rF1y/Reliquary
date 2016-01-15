@@ -1,6 +1,9 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
@@ -110,10 +113,10 @@ public class ItemVoidTear extends ItemToggleable {
     }
 
     @Override
-    public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+    public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
-            if (world.getTileEntity(x, y, z) instanceof IInventory) {
-                IInventory inventory = (IInventory) world.getTileEntity(x, y, z);
+            if (world.getTileEntity(pos) instanceof IInventory) {
+                IInventory inventory = (IInventory) world.getTileEntity(pos);
 
                 //enabled == drinking mode, we're going to drain the inventory of items.
                 if (this.isEnabled(ist)) {
@@ -139,7 +142,7 @@ public class ItemVoidTear extends ItemToggleable {
         //something awful happened. We either lost data or this is an invalid tear by some other means. Either way, not great.
         if (NBTHelper.getString("itemID", ist).equals(""))
             return null;
-        return new ItemStack((Item) Item.itemRegistry.getObject(NBTHelper.getString("itemID", ist)), NBTHelper.getInteger("itemQuantity", ist), NBTHelper.getShort("itemMeta", ist));
+        return new ItemStack((Item) Item.itemRegistry.getObject(new ResourceLocation(NBTHelper.getString("itemID", ist))), NBTHelper.getInteger("itemQuantity", ist), NBTHelper.getShort("itemMeta", ist));
     }
 
     protected boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory, int limit) {

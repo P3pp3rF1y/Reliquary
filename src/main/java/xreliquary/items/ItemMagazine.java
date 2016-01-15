@@ -1,20 +1,17 @@
 package xreliquary.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.util.LanguageHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.lib.Colors;
 import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
 
 import java.util.List;
 
@@ -29,6 +26,8 @@ public class ItemMagazine extends ItemBase {
         this.setHasSubtypes(true);
     }
 
+    //TODO: include in JSON model
+/*
     @SideOnly(Side.CLIENT)
     private IIcon iconOverlay;
 
@@ -52,6 +51,7 @@ public class ItemMagazine extends ItemBase {
         else
             return iconOverlay;
     }
+*/
 
     @Override
     @SideOnly(Side.CLIENT)
