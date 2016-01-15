@@ -1,15 +1,25 @@
-*.class
-*.DS_Store
-.DS_STORE
-# Package Files #
-*.war
-*.ear
-/build
-/.gradle
-/minecraft
-*.iml
-*.ipr
-.idea
-out/
-/bin
-/Releases
+# exclude all
+/*
+
+# include important folders
+# need gradle
+!gradle/
+!gradlew
+!gradlew.bat
+!build.gradle
+!build.properties
+
+# include markdowns
+!README.md
+!LICENSE
+!COPYING.txt
+
+# include sourcecode
+!src/
+
+# include git important files
+!.gitmodules
+!.gitignore
+
+# code format to reduce noise in git commits
+!codeformat/

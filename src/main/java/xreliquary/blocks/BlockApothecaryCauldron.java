@@ -3,7 +3,9 @@ package xreliquary.blocks;
 import lib.enderwizards.sandstone.blocks.BlockBase;
 import lib.enderwizards.sandstone.init.ContentInit;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -36,11 +38,31 @@ public class BlockApothecaryCauldron extends BlockBase {
 
     public BlockApothecaryCauldron() {
         super(Material.iron, Names.apothecary_cauldron);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, Integer.valueOf(0)));
         this.setHardness(1.5F);
         this.setResistance(5.0F);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, Integer.valueOf(0)));
     }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, new IProperty[] { LEVEL });
+    }
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState().withProperty(LEVEL, meta);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(LEVEL);
+    }
+
+    @Override
+    public int damageDropped(IBlockState state) {
+        return getMetaFromState(state);
+    }
+
     @Override
     public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collisionEntity) {
         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.3125F, 1.0F);
