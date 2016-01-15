@@ -54,6 +54,7 @@ public class SimpleTomlWriter implements TomlWriter {
 			builder.append("[");
 			for(Object item : ((List) result)) {
 				builder.append(parse(item));
+				builder.append(",");
 			}
 			builder.append("]");
 			return builder.toString();
