@@ -26,6 +26,9 @@ public class ModItems {
     public static final ItemEmperorChalice emperorChalice = new ItemEmperorChalice();
     public static final ItemEnderStaff enderStaff = new ItemEnderStaff();
     public static final ItemFertilePotion fertilePotion = new ItemFertilePotion();
+    public static final ItemFortuneCoin fortuneCoin = new ItemFortuneCoin();
+    public static final ItemGlacialStaff glacialStaff = new ItemGlacialStaff();
+    public static final ItemIceRod iceRod = new ItemIceRod();
 
     public static void init() {
         //TODO: cleanup magic strings
@@ -40,11 +43,13 @@ public class ModItems {
         GameRegistry.registerItem(emperorChalice, Reference.DOMAIN + "emperor_chalice");
         GameRegistry.registerItem(enderStaff, Reference.DOMAIN + "ender_staff");
         GameRegistry.registerItem(fertilePotion, Reference.DOMAIN + "fertile_potion");
+        GameRegistry.registerItem(fortuneCoin, Reference.DOMAIN + "fortune_coin");
+        GameRegistry.registerItem(glacialStaff, Reference.DOMAIN + "glacial_staff");
+        GameRegistry.registerItem(iceRod, Reference.DOMAIN + "ice_rod");
     }
 
     public static void initModels() {
         //TODO: get rid of these magic strings
-        registerItemModel(fertileLilypad, "fertile_lilypad");
         registerItemModel(alkahestryTome, "alkahestry_tome");
         registerItemModel(mercyCross, "mercy_cross");
         registerItemModel(angelheartVial, "angelheart_vial");
@@ -54,6 +59,9 @@ public class ModItems {
         registerItemModel(emperorChalice, "emperor_chalice");
         registerItemModel(enderStaff, "ender_staff");
         registerItemModel(fertilePotion, "fertile_potion");
+        registerItemModel(fortuneCoin, "fortune_coin");
+        registerItemModel(glacialStaff, "glacial_staff");
+        registerItemModel(iceRod, "ice_rod");
 
         for (int i=0; i< 16; i++) {
             registerItemModel(mobIngredient, "mob_ingredient", i, true);

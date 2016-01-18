@@ -6,8 +6,8 @@ tooltip.absorb={{!colors.light_purple}}Shift + Right click to toggle auto-absorb
 tooltip.absorb_active={{!colors.purple}}Automagically absorbs {{item}}{{!colors.purple}}.
 tooltip.absorb_tear={{!colors.purple}}Always leaves a stack of the item in inventory.
 
-item.alkahest_tome.name=Tome of Alkahestry
-item.alkahest_tome.tooltip={{!colors.rose}}Charge: {{redstoneAmount}}/{{redstoneLimit}};Right-click to read.
+item.alkahestry_tome.name=Tome of Alkahestry
+item.alkahestry_tome.tooltip={{!colors.rose}}Charge: {{redstoneAmount}}/{{redstoneLimit}};Right-click to read.
 
 tile.altar_idle.name=Altar of Light
 tile.altar_idle.tooltip=Feed it redstone and;it will grow glowstone.

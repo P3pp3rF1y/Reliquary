@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
@@ -19,12 +20,13 @@ import xreliquary.Reliquary;
 import xreliquary.init.ModBlocks;
 import xreliquary.lib.Names;
 
-public class ItemFertileLilyPad extends ItemColored {
+public class ItemFertileLilyPad extends ItemBlockBase
+{
     //TODO: fix json model link
 
     public ItemFertileLilyPad(Block block)
     {
-        super(block, false);
+        super(block);
     }
 
     /**

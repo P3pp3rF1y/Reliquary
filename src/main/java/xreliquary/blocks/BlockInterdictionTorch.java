@@ -1,15 +1,12 @@
 package xreliquary.blocks;
 
-import lib.enderwizards.sandstone.blocks.ICustomItemBlock;
 import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -21,7 +18,7 @@ import java.util.List;
 import java.util.Random;
 
 @ContentInit
-public class BlockInterdictionTorch extends BlockTorch implements ICustomItemBlock {
+public class BlockInterdictionTorch extends BlockTorch{
 
     public BlockInterdictionTorch() {
         super();
@@ -119,10 +116,4 @@ public class BlockInterdictionTorch extends BlockTorch implements ICustomItemBlo
             world.spawnParticle(EnumParticleTypes.FLAME, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
         }
     }
-
-    @Override
-    public Class<? extends ItemBlock> getCustomItemBlock() {
-        return ItemBlockBase.class;
-    }
-
 }

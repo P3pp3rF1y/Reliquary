@@ -1,8 +1,6 @@
 package xreliquary.blocks;
 
-import lib.enderwizards.sandstone.blocks.ICustomItemBlock;
 import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockLiquid;
@@ -11,22 +9,18 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.items.block.ItemFertileLilypad;
 import xreliquary.lib.Names;
 
 import java.util.List;
@@ -34,7 +28,7 @@ import java.util.Random;
 
 //TODO: verify that newly changing this to inherit from BlockBush doesn't break it
 @ContentInit
-public class BlockFertileLilypad extends BlockBush implements ICustomItemBlock {
+public class BlockFertileLilypad extends BlockBush{
 //TODO: add json models
     public BlockFertileLilypad() {
         float var3 = 0.5F;
@@ -127,8 +121,4 @@ public class BlockFertileLilypad extends BlockBush implements ICustomItemBlock {
         list.add(new ItemStack(item, 1));
     }
 
-    @Override
-    public Class<? extends ItemBlock> getCustomItemBlock() {
-        return ItemFertileLilypad.class;
-    }
 }

@@ -1,14 +1,13 @@
 package lib.enderwizards.sandstone.init;
 
 import com.google.common.reflect.ClassPath;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import lib.enderwizards.sandstone.Sandstone;
-import lib.enderwizards.sandstone.blocks.ICustomItemBlock;
 import lib.enderwizards.sandstone.mod.ModRegistry;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,15 +67,9 @@ public class Content {
                     registeredObjectNames.add(ContentHelper.getIdent(item));
             } else if (obj instanceof Block) {
                 Block block = (Block) obj;
-                if (obj instanceof ICustomItemBlock) {
-                    GameRegistry.registerBlock(block, ((ICustomItemBlock) obj).getCustomItemBlock(), block.getUnlocalizedName().substring(5));
-                    if (!registeredObjectNames.contains(ContentHelper.getIdent(block)))
-                        registeredObjectNames.add(ContentHelper.getIdent(block));
-                } else {
-                    GameRegistry.registerBlock(block, block.getUnlocalizedName().substring(5));
-                    if (!registeredObjectNames.contains(ContentHelper.getIdent(block)))
-                        registeredObjectNames.add(ContentHelper.getIdent(block));
-                }
+                GameRegistry.registerBlock(block, block.getUnlocalizedName().substring(5));
+                if (!registeredObjectNames.contains(ContentHelper.getIdent(block)))
+                    registeredObjectNames.add(ContentHelper.getIdent(block));
             } else {
                 Sandstone.LOGGER.warn("Class '" + objClass.getName() + "' is not a Block or an Item! You shouldn't be calling @ContentInit on this! Ignoring!");
             }

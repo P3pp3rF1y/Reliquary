@@ -1,16 +1,14 @@
 package lib.enderwizards.sandstone.blocks;
 
-import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockBase extends Block implements ICustomItemBlock, ITileEntityProvider {
+public class BlockBase extends Block implements ITileEntityProvider {
 
     protected boolean registerIcon = true;
 
@@ -24,11 +22,6 @@ public class BlockBase extends Block implements ICustomItemBlock, ITileEntityPro
     public String getUnwrappedUnlocalizedName()
     {
         return this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1);
-    }
-
-    @Override
-    public Class<? extends ItemBlock> getCustomItemBlock() {
-        return ItemBlockBase.class;
     }
 
     @Override

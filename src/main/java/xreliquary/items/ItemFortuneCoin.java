@@ -45,33 +45,6 @@ public class ItemFortuneCoin extends ItemBauble {
         return NBTHelper.getBoolean("enabled", stack);
     }
 
-    //TODO: include in JSON model
-/*
-    @SideOnly(Side.CLIENT)
-    private IIcon iconOverlay;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.fortune_coin_overlay);
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack ist, int renderPass) {
-        if (!NBTHelper.getBoolean("enabled", ist) || renderPass != 1)
-            return this.itemIcon;
-        else
-            return iconOverlay;
-    }
-*/
-
     @Override
     public void onUpdate(ItemStack ist, World world, Entity entity, int i, boolean f) {
         if (world.isRemote)
@@ -102,8 +75,7 @@ public class ItemFortuneCoin extends ItemBauble {
             if (!checkForRoom(item.getEntityItem(), player)) {
                 continue;
             }
-            //TODO:make sure that this condition is ok to ommit (as this field is newly encapsulated and can't be read
-            // if (item.delayBeforeCanPickup > 0) {
+
             item.setPickupDelay(0);
             if (player.getDistanceToEntity(item) < 1.5D) {
                 continue;
@@ -130,7 +102,7 @@ public class ItemFortuneCoin extends ItemBauble {
         player.worldObj.spawnParticle( EnumParticleTypes.SPELL_MOB, item.posX + 0.5D + player.worldObj.rand.nextGaussian() / 8, item.posY + 0.2D, item.posZ + 0.5D + player.worldObj.rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
         player.getLookVec();
         double x = player.posX + player.getLookVec().xCoord * 0.2D;
-        double y = player.posY - player.height / 2F;
+        double y = player.posY;
         double z = player.posZ + player.getLookVec().zCoord * 0.2D;
         item.setPosition(x, y, z);
         if (!disabledAudio()) {

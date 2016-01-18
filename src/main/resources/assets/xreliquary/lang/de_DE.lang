@@ -6,8 +6,8 @@ tooltip.absorb={{!colors.light_purple}}Shift-Rechtsklicke, um Auto-Absorption zu
 tooltip.absorb_active={{!colors.purple}}Absorbiert automatisch: {{item}}{{!colors.purple}}.
 tooltip.absorb_tear={{!colors.purple}}Lässt immer einen Stack des Items im Inventar.
 
-item.alkahest_tome.name=Buch der Alkahestrie
-item.alkahest_tome.tooltip={{!colors.rose}}Ladung: {{redstoneAmount}}/{{redstoneLimit}};Shift-rechtsklicke, um Redstone zu absorbieren.;Rechtsklicke zum lesen.
+item.alkahestry_tome.name=Buch der Alkahestrie
+item.alkahestry_tome.tooltip={{!colors.rose}}Ladung: {{redstoneAmount}}/{{redstoneLimit}};Shift-rechtsklicke, um Redstone zu absorbieren.;Rechtsklicke zum lesen.
 
 tile.altar_idle.name=Altar des Lichts
 tile.altar_idle.tooltip=Füttere ihn mit Redstone und;er wird Glowstone produzieren.

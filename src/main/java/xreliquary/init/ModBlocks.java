@@ -1,6 +1,8 @@
 package xreliquary.init;
 
 import lib.enderwizards.sandstone.blocks.BlockBase;
+import lib.enderwizards.sandstone.items.ItemBase;
+import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
@@ -33,13 +35,13 @@ public class ModBlocks {
     public static void init()
     {
         //TODO: refactor to get rid of so many magic strings
-        GameRegistry.registerBlock(apothecaryCauldron, apothecaryCauldron.getUnwrappedUnlocalizedName());
-        GameRegistry.registerBlock(alkahestryAltar, Reference.DOMAIN + "altar_idle");
+        GameRegistry.registerBlock(apothecaryCauldron, ItemBlockBase.class, apothecaryCauldron.getUnwrappedUnlocalizedName());
+        GameRegistry.registerBlock(alkahestryAltar, ItemBlockBase.class,Reference.DOMAIN + "altar_idle");
         GameRegistry.registerBlock(alkahestryAltarActive, Reference.DOMAIN + "altar");
-        GameRegistry.registerBlock(apothecaryMortar,apothecaryMortar.getUnwrappedUnlocalizedName());
+        GameRegistry.registerBlock(apothecaryMortar, ItemBlockBase.class, apothecaryMortar.getUnwrappedUnlocalizedName());
         GameRegistry.registerBlock(fertileLilypad, ItemFertileLilyPad.class, Reference.DOMAIN + "fertile_lilypad");
-        GameRegistry.registerBlock(interdictionTorch, Reference.DOMAIN + "interdiction_torch");
-        GameRegistry.registerBlock(wraithNode, Reference.DOMAIN + "wraith_node");
+        GameRegistry.registerBlock(interdictionTorch, ItemBlockBase.class, Reference.DOMAIN + "interdiction_torch");
+        GameRegistry.registerBlock(wraithNode, ItemBlockBase.class, Reference.DOMAIN + "wraith_node");
     }
 
     //TODO: figure out if this should be pulled to a separate class
@@ -55,6 +57,9 @@ public class ModBlocks {
         registerBlockItemModel(alkahestryAltarActive, "altar");
         registerBlockItemModel(interdictionTorch, "interdiction_torch");
         registerBlockItemModel(wraithNode, "wraith_node");
+
+        registerBlockItemModel(fertileLilypad, "fertile_lilypad");
+
     }
 
     private static void registerBlockItemModel(Block block) {
