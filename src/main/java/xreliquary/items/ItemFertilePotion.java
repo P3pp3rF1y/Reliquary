@@ -34,36 +34,6 @@ public class ItemFertilePotion extends ItemBase {
         return new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
     }
 
-
-    //TODO: include in JSON model
-/*
-    @SideOnly(Side.CLIENT)
-    private IIcon iconSplashOverlay;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon iconSplash;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-        iconSplashOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_splash_overlay);
-        iconSplash = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_splash);
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack itemStack, int renderPass) {
-        if (renderPass == 1)
-            return iconSplashOverlay;
-        return this.iconSplash;
-    }
-*/
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
