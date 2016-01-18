@@ -103,6 +103,8 @@ public class BlockFertileLilypad extends BlockBush{
         }
     }
 
+
+
     @Override
     protected boolean canPlaceBlockOn(Block block) {
         return block == Blocks.water;
@@ -114,6 +116,11 @@ public class BlockFertileLilypad extends BlockBush{
         return pos.getY() >= 0 && pos.getY() < 256
                 && blockBelowState.getBlock().getMaterial() == Material.water
                 && blockBelowState.getValue(BlockLiquid.LEVEL) == 0;
+    }
+
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {
+        return new AxisAlignedBB((double)pos.getX() + this.minX, (double)pos.getY() + this.minY, (double)pos.getZ() + this.minZ, (double)pos.getX() + this.maxX, (double)pos.getY() + this.maxY, (double)pos.getZ() + this.maxZ);
     }
 
     @SideOnly(Side.CLIENT)
