@@ -1,4 +1,4 @@
-package xreliquary.items;
+package xreliquary.items.block;
 
 import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import net.minecraft.block.Block;
