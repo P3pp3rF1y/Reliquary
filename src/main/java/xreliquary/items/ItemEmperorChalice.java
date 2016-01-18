@@ -35,31 +35,6 @@ public class ItemEmperorChalice extends ItemToggleable {
         canRepair = false;
 
     }
-    //TODO: put this in JSON
-/*    @SideOnly(Side.CLIENT)
-    private IIcon iconOverlay;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.emperor_chalice_overlay);
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack itemStack, int renderPass) {
-        //same as infernal, enabled == drink mode.
-        if (this.isEnabled(itemStack) || renderPass != 1)
-            return this.itemIcon;
-        else
-            return iconOverlay;
-    }*/
 
     @Override
     public int getMaxItemUseDuration(ItemStack par1ItemStack) {
@@ -127,12 +102,12 @@ public class ItemEmperorChalice extends ItemToggleable {
                 } else {
                     TileEntity tile = world.getTileEntity(mop.getBlockPos());
                     if (tile instanceof IFluidHandler) {
-                        FluidStack fluid = new FluidStack(FluidRegistry.WATER, 1000);
-                        int amount = ((IFluidHandler) tile).fill(mop.sideHit, fluid, false);
+                            FluidStack fluid = new FluidStack(FluidRegistry.WATER, 1000);
+                            int amount = ((IFluidHandler) tile).fill(mop.sideHit, fluid, false);
 
-                        if (amount > 0) {
-                            ((IFluidHandler) tile).fill(mop.sideHit, fluid, true);
-                        }
+                            if (amount > 0) {
+                                ((IFluidHandler) tile).fill(mop.sideHit, fluid, true);
+                            }
 
                         return ist;
                     }

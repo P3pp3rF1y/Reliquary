@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "normal": [
+      { "model": "xreliquary:fertile_lilypad" },
+      { "model": "xreliquary:fertile_lilypad", "y": 90 },
+      { "model": "xreliquary:fertile_lilypad", "y": 180 },
+      { "model": "xreliquary:fertile_lilypad", "y": 270 }
+    ]
+  }
+}

@@ -40,24 +40,4 @@ public class ItemMobIngredient extends ItemBase {
         for (int i = 0; i <= 15; i++)
             par3List.add(new ItemStack(par1, 1, i));
     }
-
-    //TODO: include in JSON model
-/*
-    private IIcon icons[];
-
-    @Override
-    public IIcon getIconFromDamage(int meta) {
-        if (meta < 16)
-            return icons[meta];
-        return icons[0];
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        icons = new IIcon[16];
-        for (int i = 0; i <= 15; i++)
-            icons[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.mob_ingredient + "_" + i);
-    }
-*/
 }

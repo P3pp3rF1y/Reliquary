@@ -23,6 +23,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xreliquary.common.CommonProxy;
+import xreliquary.init.ModBlocks;
+import xreliquary.init.ModItems;
 import xreliquary.integration.NEIModIntegration;
 import xreliquary.lib.Reference;
 import xreliquary.network.PacketHandler;
@@ -55,10 +57,16 @@ public class Reliquary {
 
         CONTENT = Sandstone.preInit();
 
+        ModBlocks.init();
+        ModBlocks.initTileEntities();
+
+        ModItems.init();
+
         WorldDataHandler.register();
 
         //important that this initializes AFTER items already exist.
-        PotionMap.init();
+        //TODO: add back when testing potions
+        //PotionMap.init();
 
         //important that this initializes before the pre-init phase
         PROXY.initRecipeDisablers();
@@ -86,7 +94,8 @@ public class Reliquary {
         CONFIG.save();
 
         //finally, initialize the potion list, this is done after ensuring configs.
-        PotionMap.initializePotionMappings();
+        //TODO: add back when testing potions
+        //PotionMap.initializePotionMappings();
 
         LOGGER.log(Level.INFO, "Loaded successfully!");
         Sandstone.postInit();

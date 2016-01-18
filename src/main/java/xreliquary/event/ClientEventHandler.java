@@ -554,8 +554,9 @@ public class ClientEventHandler {
             renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX, hudOverlayY + 24);
         }
 
-        minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(stackSize), hudOverlayX + 15, hudOverlayY + 30, color);
+
         GL11.glDisable(GL11.GL_LIGHTING);
+        minecraft.fontRendererObj.drawStringWithShadow(Integer.toString(stackSize), hudOverlayX + 15, hudOverlayY + 30, color);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
     }

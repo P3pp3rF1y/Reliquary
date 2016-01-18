@@ -40,18 +40,24 @@ public class BlockAlkahestryAltar extends BlockContainer {
         }
     }
 
+    //TODO: implement Property instead of this and use 2 variants of the block state
     private final boolean isActive;
 
-    public BlockAlkahestryAltar(boolean par1) {
+    public BlockAlkahestryAltar(boolean isActive) {
         super(Material.rock);
-        isActive = par1;
+        this.isActive = isActive;
 
         this.setHardness(1.5F);
         this.setResistance(5.0F);
 
-        this.setUnlocalizedName(isActive ? Names.altar : Names.altar_idle);
-        this.setLightLevel(isActive ? getAltarActiveLightLevel() : 0.0F);
+        this.setUnlocalizedName(this.isActive ? Names.altar : Names.altar_idle);
+        this.setLightLevel(this.isActive ? getAltarActiveLightLevel() : 0.0F);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
+    }
+
+    @Override
+    public int getRenderType() {
+        return 3;
     }
 
     private float getAltarActiveLightLevel() {
@@ -127,7 +133,6 @@ public class BlockAlkahestryAltar extends BlockContainer {
 
     public static void updateAltarBlockState(boolean active, World world, BlockPos pos) {
         //TODO: replace sandstone logic with proper BlockState handling
-        IBlockState blockState = world.getBlockState(pos);
         TileEntity te = world.getTileEntity(pos);
         if (active) {
             world.setBlockState(pos, Reliquary.CONTENT.getBlock(Names.altar).getDefaultState());

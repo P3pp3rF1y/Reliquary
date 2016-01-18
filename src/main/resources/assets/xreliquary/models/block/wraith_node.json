@@ -1,0 +1,22 @@
+{
+  "ambientocclusion": true,
+  "textures": {
+    "side": "xreliquary:blocks/wraith_node",
+    "top": "xreliquary:blocks/wraith_node_top",
+    "particle": "xreliquary:blocks/wraith_node"
+  },
+  "elements": [
+    {
+      "from": [ 2, 0, 2 ],
+      "to": [ 14, 12, 14 ],
+      "faces": {
+        "north": { "uv": [ 2, 4, 14, 16 ], "texture": "#side", "cullface": "north" },
+        "south": { "uv": [ 2, 4, 14, 16 ], "texture": "#side", "cullface": "south" },
+        "east": { "uv": [ 2, 4, 14, 16 ], "texture": "#side", "cullface": "east"  },
+        "west": { "uv": [ 2, 4, 14, 16 ], "texture": "#side", "cullface": "west" },
+        "up": { "uv": [ 2, 2, 14, 14 ], "texture": "#top", "cullface": "up" },
+        "down": { "uv": [ 2, 2, 14, 14 ], "texture": "#top", "cullface": "down" }
+      }
+    }
+  ]
+}

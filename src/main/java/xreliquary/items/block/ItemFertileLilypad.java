@@ -17,6 +17,7 @@ import xreliquary.Reliquary;
 import xreliquary.lib.Names;
 
 public class ItemFertileLilypad extends ItemBlock {
+    //TODO: review this against the other item created and merge
 
     public ItemFertileLilypad(Block block) {
         super(block);

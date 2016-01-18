@@ -21,6 +21,11 @@ public class BlockBase extends Block implements ICustomItemBlock, ITileEntityPro
         this.setResistance(1.0F);
     }
 
+    public String getUnwrappedUnlocalizedName()
+    {
+        return this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1);
+    }
+
     @Override
     public Class<? extends ItemBlock> getCustomItemBlock() {
         return ItemBlockBase.class;

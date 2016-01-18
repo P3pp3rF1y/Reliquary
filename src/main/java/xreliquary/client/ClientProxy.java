@@ -10,10 +10,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemBlock;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
-import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.client.render.*;
 import xreliquary.common.CommonProxy;
@@ -21,7 +18,8 @@ import xreliquary.entities.*;
 import xreliquary.entities.potion.*;
 import xreliquary.entities.shot.*;
 import xreliquary.event.ClientEventHandler;
-import xreliquary.lib.Names;
+import xreliquary.init.ModBlocks;
+import xreliquary.init.ModItems;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
@@ -29,6 +27,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit() {
         super.preInit();
+
     }
 
     @Override
@@ -38,6 +37,8 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 
         this.registerRenderers();
+        ModBlocks.initModels();
+        ModItems.initModels();
     }
 
 
@@ -55,13 +56,13 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntitySandShot.class, new RenderShot(renderManager));
         RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, new RenderShot(renderManager));
         RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, new RenderThrown(renderManager,0));
-        RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, new RenderThrown(renderManager,2));
-        RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, new RenderThrown(renderManager,11));
+        RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, new RenderThrownAttractionPotion(renderManager,renderItem));
+        RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, new RenderThrownFertilePotion(renderManager, renderItem));
         RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, new RenderThrown(renderManager, 12));
         RenderingRegistry.registerEntityRenderingHandler(EntityKrakenSlime.class, new RenderThrown(renderManager, 13));
         RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, new RenderSnowball(renderManager, Items.snowball, renderItem));
         RenderingRegistry.registerEntityRenderingHandler(EntityEnderStaffProjectile.class, new RenderSnowball(renderManager, Items.ender_pearl, renderItem));
-        RenderingRegistry.registerEntityRenderingHandler(EntityThrownXRPotion.class, new RenderThrownPotion(renderManager));
+        RenderingRegistry.registerEntityRenderingHandler(EntityThrownXRPotion.class, new RenderThrownXRPotion(renderManager, renderItem));
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMortar.class, new RenderApothecaryMortar());
 

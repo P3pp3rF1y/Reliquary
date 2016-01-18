@@ -1,4 +1,8 @@
 {
+    "forge_marker": 1,
+    "defaults": {
+        "transform": "forge:default-block"
+    },
     "variants": {
         "level=0": { "model": "xreliquary:apothecary_cauldron_empty" },
         "level=1": { "model": "xreliquary:apothecary_cauldron_level1" },

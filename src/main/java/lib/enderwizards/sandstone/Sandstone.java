@@ -87,13 +87,13 @@ public class Sandstone {
         Content content = new Content(Loader.instance().activeModContainer().getModId());
         ClassLoader classLoader = Loader.instance().activeModContainer().getMod().getClass().getClassLoader();
         try {
-            content.init(classLoader, smod.basePackage() + "." + smod.itemsLocation());
+            //content.init(classLoader, smod.basePackage() + "." + smod.itemsLocation());
         } catch (Exception e) {
             FMLCommonHandler.instance().raiseException(e, Loader.instance().activeModContainer().getModId() + " failed to initiate items.", true);
         }
 
         try {
-            content.init(classLoader, smod.basePackage() + "." + smod.blocksLocation());
+            //content.init(classLoader, smod.basePackage() + "." + smod.blocksLocation());
         } catch (Exception e) {
             FMLCommonHandler.instance().raiseException(e, Loader.instance().activeModContainer().getModId() + " failed to initiate blocks.", true);
         }

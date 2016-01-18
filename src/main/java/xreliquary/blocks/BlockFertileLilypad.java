@@ -11,6 +11,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -18,6 +19,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
@@ -84,7 +86,7 @@ public class BlockFertileLilypad extends BlockBush implements ICustomItemBlock {
                     double distanceCoefficient = 1D - (distance / tileRange());
 
                     IBlockState cropState = world.getBlockState(new BlockPos(x, y, z));
-                    Block cropBlock = state.getBlock();
+                    Block cropBlock = cropState.getBlock();
 
                     if (cropBlock instanceof IPlantable || cropBlock instanceof IGrowable) {
                         if (!(cropBlock instanceof BlockFertileLilypad)) {
@@ -101,11 +103,6 @@ public class BlockFertileLilypad extends BlockBush implements ICustomItemBlock {
     }
 
     @Override
-    public int getRenderType() {
-        return 23;
-    }
-
-    @Override
     public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
         if (collidingEntity == null || !(collidingEntity instanceof EntityBoat)) {
             super.addCollisionBoxesToList(world, pos, state, mask, list, collidingEntity);
@@ -114,7 +111,7 @@ public class BlockFertileLilypad extends BlockBush implements ICustomItemBlock {
 
     @Override
     protected boolean canPlaceBlockOn(Block block) {
-        return block != null && ContentHelper.areBlocksEqual(block, Blocks.water);
+        return block == Blocks.water;
     }
 
     @Override

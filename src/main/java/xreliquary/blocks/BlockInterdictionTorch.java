@@ -22,7 +22,6 @@ import java.util.Random;
 
 @ContentInit
 public class BlockInterdictionTorch extends BlockTorch implements ICustomItemBlock {
-//TODO: add json models based on torch
 
     public BlockInterdictionTorch() {
         super();

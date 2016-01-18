@@ -19,6 +19,7 @@ import xreliquary.entities.*;
 import xreliquary.entities.potion.*;
 import xreliquary.entities.shot.*;
 import xreliquary.event.CommonEventHandler;
+import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
@@ -35,7 +36,8 @@ public class CommonProxy {
 
     public void preInit() {
         try {
-            XRRecipes.init();
+            //TODO: enable !!!
+            //XRRecipes.init();
             Alkahestry.init();
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,8 +76,8 @@ public class CommonProxy {
 
 
     public void init() {
-        AlkahestryCraftingRecipe.returnedItem = Reliquary.CONTENT.getItem(Names.alkahestry_tome);
-        AlkahestryRedstoneRecipe.returnedItem = Reliquary.CONTENT.getItem(Names.alkahestry_tome);
+        AlkahestryCraftingRecipe.returnedItem = ModItems.alkahestryTome;
+        AlkahestryRedstoneRecipe.returnedItem = ModItems.alkahestryTome;
 
         AlkahestryCraftingRecipe alkahestryCraftingRecipeHandler = new AlkahestryCraftingRecipe();
         AlkahestryDrainRecipe alkahestryDrainRecipeHandler = new AlkahestryDrainRecipe();

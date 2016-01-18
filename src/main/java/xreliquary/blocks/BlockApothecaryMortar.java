@@ -26,6 +26,7 @@ import java.util.Random;
 @ContentInit
 public class BlockApothecaryMortar extends BlockBase {
     //TODO: add mortar icon and then figure out if 3D model can be generated for held item
+    //TODO: fix mortar shadow
 
     public BlockApothecaryMortar() {
         super(Material.rock, Names.apothecary_mortar);

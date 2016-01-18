@@ -27,13 +27,17 @@ import java.util.List;
 
 @ContentInit
 public class ItemAlkahestryTome extends ItemToggleable {
+//TODO: fix item damage indicator
+//TODO: fix crafting recipes
 
     public ItemAlkahestryTome() {
         super(Names.alkahestry_tome);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
         this.canRepair = false;
-        this.hasSubtypes = true;
+        this.hasContainerItem(new ItemStack(Items.redstone));
+        //TODO: remove if tome works
+        //this.hasSubtypes = true;
         this.setContainerItem(this);
     }
 

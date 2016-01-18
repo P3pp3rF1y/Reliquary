@@ -12,6 +12,8 @@ import org.lwjgl.opengl.GL12;
 import xreliquary.lib.Reference;
 
 public class RenderThrown extends Render<Entity> {
+    //TODO: get rid of this class if not needed after all potion rendering is done
+
     private int itemIconIndex;
 
     public RenderThrown( RenderManager renderManager, int par1)
