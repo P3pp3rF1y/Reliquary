@@ -29,6 +29,7 @@ public class ModItems {
     public static final ItemFortuneCoin fortuneCoin = new ItemFortuneCoin();
     public static final ItemGlacialStaff glacialStaff = new ItemGlacialStaff();
     public static final ItemIceRod iceRod = new ItemIceRod();
+    public static final ItemGlowingBread glowingBread = new ItemGlowingBread();
 
     public static void init() {
         //TODO: cleanup magic strings
@@ -46,6 +47,7 @@ public class ModItems {
         GameRegistry.registerItem(fortuneCoin, Reference.DOMAIN + "fortune_coin");
         GameRegistry.registerItem(glacialStaff, Reference.DOMAIN + "glacial_staff");
         GameRegistry.registerItem(iceRod, Reference.DOMAIN + "ice_rod");
+        GameRegistry.registerItem(glowingBread, Reference.DOMAIN + "glowing_bread");
     }
 
     public static void initModels() {
@@ -62,6 +64,7 @@ public class ModItems {
         registerItemModel(fortuneCoin, "fortune_coin");
         registerItemModel(glacialStaff, "glacial_staff");
         registerItemModel(iceRod, "ice_rod");
+        registerItemModel(glowingBread, "glowing_bread");
 
         for (int i=0; i< 16; i++) {
             registerItemModel(mobIngredient, "mob_ingredient", i, true);
