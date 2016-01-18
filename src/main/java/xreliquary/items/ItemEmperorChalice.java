@@ -115,12 +115,12 @@ public class ItemEmperorChalice extends ItemToggleable {
 
                 if (!this.isEnabled(ist)) {
                     //TODO:verify that this vector addition works correctly instead of the old multiple if statement
-                    mop.getBlockPos().add( mop.sideHit.getDirectionVec());
+                    BlockPos waterPlacementPos = mop.getBlockPos().offset(mop.sideHit);
 
-                    if (!player.canPlayerEdit(mop.getBlockPos(), mop.sideHit, ist))
+                    if (!player.canPlayerEdit(waterPlacementPos, mop.sideHit, ist))
                         return ist;
 
-                    if (this.tryPlaceContainedLiquid(world, ist, xOff, yOff, zOff, mop.getBlockPos()))
+                    if (this.tryPlaceContainedLiquid(world, ist, xOff, yOff, zOff, waterPlacementPos))
                         return ist;
 
                 } else {
