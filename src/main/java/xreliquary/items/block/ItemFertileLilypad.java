@@ -1,12 +1,17 @@
 package xreliquary.items.block;
 
+import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemColored;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
@@ -14,12 +19,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
+import xreliquary.init.ModBlocks;
 import xreliquary.lib.Names;
 
-public class ItemFertileLilypad extends ItemBlock {
-    //TODO: review this against the other item created and merge
+public class ItemFertileLilyPad extends ItemBlockBase
+{
+    //TODO: fix json model link
 
-    public ItemFertileLilypad(Block block) {
+    public ItemFertileLilyPad(Block block)
+    {
         super(block);
     }
 
@@ -35,60 +43,79 @@ public class ItemFertileLilypad extends ItemBlock {
         MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
 
         boolean blockPlaced = false;
-        if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
 
-                if (world.isBlockModifiable(player, mop.getBlockPos()) && player.canPlayerEdit(mop.getBlockPos(), mop.sideHit, stack)
-                        && world.getBlockState(mop.getBlockPos()).getBlock().getMaterial() == Material.water
-                        && world.getBlockState(mop.getBlockPos()).getValue(BlockLiquid.LEVEL) == 0 && world.isAirBlock(mop.getBlockPos().add(0,1,0))) {
-                    world.setBlockState(mop.getBlockPos().add(0,1,0), Reliquary.CONTENT.getBlock(Names.lilypad).getDefaultState());
-                    world.scheduleBlockUpdate(mop.getBlockPos().add(0,1,0), Reliquary.CONTENT.getBlock(Names.lilypad), (int)(1360F * ((float) getDelayInSeconds() / 100F)),1);
-
-                    if (!player.capabilities.isCreativeMode) --stack.stackSize;
-                    blockPlaced = true;
-                }
+        if (mop != null) {
+            blockPlaced = TryPlacingLilyPad( stack, world, player, mop );
         }
 
         if (!blockPlaced) {
-            //TODO: make sure that calling this here doesn't break logic when lilypad is not placed due to condition not met above
             return super.onItemUse(stack, player, world, pos, side, hitX, hitY, hitZ);
         }
         return false;
     }
 
+
     /**
-     * Called whenever this item is equipped and the right mouse button is
-     * pressed. Args: itemStack, world, entityPlayer
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      */
-    @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World world, EntityPlayer par3EntityPlayer) {
-        MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, par3EntityPlayer, true);
+    public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn)
+    {
+        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(worldIn, playerIn, true);
 
-        if (mop == null)
-            return par1ItemStack;
-        else {
-            if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                if (!world.isBlockModifiable(par3EntityPlayer, mop.getBlockPos()))
-                    return par1ItemStack;
+        if (movingobjectposition == null)
+        {
+            return itemStackIn;
+        }
+        else
+        {
+            if(!TryPlacingLilyPad( itemStackIn, worldIn, playerIn, movingobjectposition ) )
+                return itemStackIn;
 
-                if (!par3EntityPlayer.canPlayerEdit(mop.getBlockPos(), mop.sideHit, par1ItemStack))
-                    return par1ItemStack;
-
-                if (world.getBlockState(mop.getBlockPos()).getBlock().getMaterial() == Material.water && world.getBlockState(mop.getBlockPos()).getValue(BlockLiquid.LEVEL) == 0 && world.isAirBlock(mop.getBlockPos().add(0,1,0))) {
-                    world.setBlockState(mop.getBlockPos().add(0,1,0), Reliquary.CONTENT.getBlock(Names.lilypad).getDefaultState());
-                    world.scheduleBlockUpdate(mop.getBlockPos().add(0,1,0), Reliquary.CONTENT.getBlock(Names.lilypad), (int)(1200 * (float) getDelayInSeconds()),1);
-
-                    if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                        --par1ItemStack.stackSize;
-                    }
-                }
-            }
-
-            return par1ItemStack;
+            return itemStackIn;
         }
     }
 
-    private int getDelayInSeconds() {
-        return Reliquary.CONFIG.getInt(Names.lilypad, "seconds_between_growth_ticks");
-    }
+    private boolean TryPlacingLilyPad( ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, MovingObjectPosition movingobjectposition )
+    {
+        if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+		{
+			BlockPos blockpos = movingobjectposition.getBlockPos();
 
+			if (!worldIn.isBlockModifiable(playerIn, blockpos))
+			{
+                return true;
+			}
+
+			if (!playerIn.canPlayerEdit(blockpos.offset(movingobjectposition.sideHit), movingobjectposition.sideHit, itemStackIn))
+			{
+                return true;
+			}
+
+			BlockPos blockpos1 = blockpos.up();
+			IBlockState iblockstate = worldIn.getBlockState(blockpos);
+
+			if (iblockstate.getBlock().getMaterial() == Material.water && ((Integer)iblockstate.getValue( BlockLiquid.LEVEL)).intValue() == 0 && worldIn.isAirBlock(blockpos1))
+			{
+				// special case for handling block placement with water lilies
+				net.minecraftforge.common.util.BlockSnapshot blocksnapshot = net.minecraftforge.common.util.BlockSnapshot.getBlockSnapshot(worldIn, blockpos1);
+				worldIn.setBlockState(blockpos1, ModBlocks.fertileLilypad.getDefaultState());
+				if (net.minecraftforge.event.ForgeEventFactory.onPlayerBlockPlace(playerIn, blocksnapshot, EnumFacing.UP).isCanceled())
+				{
+					blocksnapshot.restore(true, false);
+                    return false;
+				}
+
+				int secondsBetweenGrowthTicks = Reliquary.CONFIG.getInt( Names.lilypad, "seconds_between_growth_ticks");
+				worldIn.scheduleBlockUpdate(blockpos1, ModBlocks.fertileLilypad, secondsBetweenGrowthTicks * 20, 1);
+
+
+				if (!playerIn.capabilities.isCreativeMode)
+				{
+					--itemStackIn.stackSize;
+				}
+
+			}
+		}
+        return true;
+    }
 }
