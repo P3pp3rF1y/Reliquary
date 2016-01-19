@@ -55,11 +55,11 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntitySeekerShot.class, new RenderShot(renderManager));
         RenderingRegistry.registerEntityRenderingHandler(EntitySandShot.class, new RenderShot(renderManager));
         RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, new RenderShot(renderManager));
-        RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, new RenderThrown(renderManager,0));
-        RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, new RenderThrownAttractionPotion(renderManager,renderItem));
-        RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, new RenderThrownFertilePotion(renderManager, renderItem));
-        RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, new RenderThrown(renderManager, 12));
-        RenderingRegistry.registerEntityRenderingHandler(EntityKrakenSlime.class, new RenderThrown(renderManager, 13));
+        RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, new RenderThrown<EntityGlowingWater>(renderManager,ModItems.glowingWater, renderItem));
+        RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, new RenderThrown<EntityAttractionPotion>(renderManager, ModItems.attractionPotion, renderItem));
+        RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, new RenderThrown<EntityFertilePotion>(renderManager, ModItems.fertilePotion, renderItem));
+        RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, new RenderThrown<EntityHolyHandGrenade>(renderManager, ModItems.holyHandGrenade, renderItem));
+        RenderingRegistry.registerEntityRenderingHandler(EntityKrakenSlime.class, new RenderThrownKrakenSlime(renderManager));
         RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, new RenderSnowball(renderManager, Items.snowball, renderItem));
         RenderingRegistry.registerEntityRenderingHandler(EntityEnderStaffProjectile.class, new RenderSnowball(renderManager, Items.ender_pearl, renderItem));
         RenderingRegistry.registerEntityRenderingHandler(EntityThrownXRPotion.class, new RenderThrownXRPotion(renderManager, renderItem));

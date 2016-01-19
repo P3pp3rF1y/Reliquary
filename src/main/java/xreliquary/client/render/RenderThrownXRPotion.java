@@ -14,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import xreliquary.entities.potion.EntityThrownPotion;
@@ -23,6 +25,7 @@ import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 import xreliquary.util.potions.PotionEssence;
 
+@SideOnly(Side.CLIENT)
 public class RenderThrownXRPotion extends RenderSnowball<EntityThrownXRPotion> {
     public RenderThrownXRPotion(RenderManager renderManager, RenderItem itemRenderer)
     {

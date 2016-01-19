@@ -1,0 +1,6 @@
+{
+  "parent": "xreliquary:item/default_item",
+  "textures": {
+    "layer0": "xreliquary:items/kraken_shell"
+  }
+}

@@ -30,6 +30,10 @@ public class ModItems {
     public static final ItemGlacialStaff glacialStaff = new ItemGlacialStaff();
     public static final ItemIceRod iceRod = new ItemIceRod();
     public static final ItemGlowingBread glowingBread = new ItemGlowingBread();
+    public static final ItemGlowingWater glowingWater = new ItemGlowingWater();
+    public static final ItemHolyHandGrenade holyHandGrenade = new ItemHolyHandGrenade();
+    public static final ItemKrakenShell krakenShell = new ItemKrakenShell();
+    public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
 
     public static void init() {
         //TODO: cleanup magic strings
@@ -48,6 +52,10 @@ public class ModItems {
         GameRegistry.registerItem(glacialStaff, Reference.DOMAIN + "glacial_staff");
         GameRegistry.registerItem(iceRod, Reference.DOMAIN + "ice_rod");
         GameRegistry.registerItem(glowingBread, Reference.DOMAIN + "glowing_bread");
+        GameRegistry.registerItem(glowingWater, Reference.DOMAIN + "glowing_water");
+        GameRegistry.registerItem(holyHandGrenade, Reference.DOMAIN + "holy_hand_grenade");
+        GameRegistry.registerItem(krakenShell, Reference.DOMAIN + "kraken_shell");
+        GameRegistry.registerItem(serpentStaff, Reference.DOMAIN + "serpent_staff");
     }
 
     public static void initModels() {
@@ -65,6 +73,10 @@ public class ModItems {
         registerItemModel(glacialStaff, "glacial_staff");
         registerItemModel(iceRod, "ice_rod");
         registerItemModel(glowingBread, "glowing_bread");
+        registerItemModel(glowingWater, "glowing_water");
+        registerItemModel(holyHandGrenade, "holy_hand_grenade");
+        registerItemModel(krakenShell, "kraken_shell");
+        registerItemModel(serpentStaff, "serpent_staff");
 
         for (int i=0; i< 16; i++) {
             registerItemModel(mobIngredient, "mob_ingredient", i, true);
