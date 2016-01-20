@@ -34,6 +34,9 @@ public class ModItems {
     public static final ItemHolyHandGrenade holyHandGrenade = new ItemHolyHandGrenade();
     public static final ItemKrakenShell krakenShell = new ItemKrakenShell();
     public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
+    public static final ItemGunPart gunPart = new ItemGunPart();
+    public static final ItemHandgun handgun = new ItemHandgun();
+    public static final ItemMagazine magazine = new ItemMagazine();
 
     public static void init() {
         //TODO: cleanup magic strings
@@ -53,8 +56,14 @@ public class ModItems {
         GameRegistry.registerItem(iceRod, Reference.DOMAIN + "ice_rod");
         GameRegistry.registerItem(glowingBread, Reference.DOMAIN + "glowing_bread");
         GameRegistry.registerItem(glowingWater, Reference.DOMAIN + "glowing_water");
+        GameRegistry.registerItem(gunPart, Reference.DOMAIN + "gun_part");
+        GameRegistry.registerItem(handgun, Reference.DOMAIN + "handgun");
+
         GameRegistry.registerItem(holyHandGrenade, Reference.DOMAIN + "holy_hand_grenade");
+
         GameRegistry.registerItem(krakenShell, Reference.DOMAIN + "kraken_shell");
+        GameRegistry.registerItem(magazine, Reference.DOMAIN + "magazine");
+
         GameRegistry.registerItem(serpentStaff, Reference.DOMAIN + "serpent_staff");
     }
 
@@ -74,6 +83,7 @@ public class ModItems {
         registerItemModel(iceRod, "ice_rod");
         registerItemModel(glowingBread, "glowing_bread");
         registerItemModel(glowingWater, "glowing_water");
+        registerItemModel(handgun, "handgun");
         registerItemModel(holyHandGrenade, "holy_hand_grenade");
         registerItemModel(krakenShell, "kraken_shell");
         registerItemModel(serpentStaff, "serpent_staff");
@@ -82,9 +92,19 @@ public class ModItems {
             registerItemModel(mobIngredient, "mob_ingredient", i, true);
         }
 
+        for (int i=0; i< 3; i++) {
+            registerItemModel(gunPart, "gun_part", i, true);
+        }
+
         registerItemModelForAllVariants(bullet, "bullet", 10, new ItemMeshDefinition() {
             public ModelResourceLocation getModelLocation(ItemStack stack) {
                 return new ModelResourceLocation("xreliquary:bullet", "inventory");
+            }
+        });
+
+        registerItemModelForAllVariants(magazine, "magazine", 10, new ItemMeshDefinition() {
+            public ModelResourceLocation getModelLocation(ItemStack stack) {
+                return new ModelResourceLocation("xreliquary:magazine", "inventory");
             }
         });
 

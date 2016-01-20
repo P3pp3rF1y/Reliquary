@@ -260,6 +260,18 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
         return false;
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean isInRangeToRenderDist(double distance) {
+        double d0 = this.getEntityBoundingBox().getAverageEdgeLength() * 4.0D;
+        if(Double.isNaN(d0)) {
+            d0 = 4.0D;
+        }
+
+        d0 *= 64.0D;
+        return distance < d0 * d0;
+    }
+
     /**
      * If returns false, the item will not inflict any damage against entities.
      */

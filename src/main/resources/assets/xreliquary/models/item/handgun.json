@@ -1,0 +1,19 @@
+{
+  "parent": "builtin/generated",
+  "textures": {
+    "layer0": "xreliquary:items/handgun",
+    "layer1": "xreliquary:items/handgun_overlay"
+  },
+  "display": {
+    "thirdperson": {
+      "rotation": [ -90, 0, 0 ],
+      "translation": [ 0, 1, -3 ],
+      "scale": [ 0.55, 0.55, 0.55 ]
+    },
+    "firstperson": {
+      "rotation": [ 0, -140, 60 ],
+      "translation": [ 0.8, 0.2, 0.08 ],
+      "scale": [ 0.5, 0.5, 0.5 ]
+    }
+  }
+}

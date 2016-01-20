@@ -26,33 +26,6 @@ public class ItemMagazine extends ItemBase {
         this.setHasSubtypes(true);
     }
 
-    //TODO: include in JSON model
-/*
-    @SideOnly(Side.CLIENT)
-    private IIcon iconOverlay;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.magazine_overlay);
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack itemStack, int renderPass) {
-        if (itemStack.getItemDamage() == 0 || renderPass != 1)
-            return this.itemIcon;
-        else
-            return iconOverlay;
-    }
-*/
-
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
