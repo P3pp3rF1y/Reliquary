@@ -11,7 +11,7 @@ Description
 
 The offical repository of Reliquary! That mod, with the magical swag, and a weapon, and stuff.
 
-Originally made by x3n0ph0b3, Reliquary is now developed by both TheMike and x3n0ph0b3.
+Originally made by x3n0ph0b3, Reliquary is now developed by both P3pp3rf1y and x3n0ph0b3.
 
 Building
 =========
