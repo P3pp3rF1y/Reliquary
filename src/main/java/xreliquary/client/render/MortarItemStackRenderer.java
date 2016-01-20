@@ -7,6 +7,8 @@ import net.minecraft.item.ItemStack;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.init.ModBlocks;
 
+//TODO: remove or fix
+
 public class MortarItemStackRenderer extends TileEntityItemStackRenderer {
     private TileEntityMortar mortartRender = new TileEntityMortar();
 
