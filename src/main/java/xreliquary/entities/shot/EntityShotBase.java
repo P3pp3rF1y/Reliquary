@@ -1,6 +1,7 @@
 package xreliquary.entities.shot;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -485,7 +486,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
      *
      * @param mop the MOP data of the tile/misc object being struck
      */
-    abstract void onImpact(MovingObjectPosition mop);
+    protected abstract void onImpact(MovingObjectPosition mop);
 
     /**
      * This is the effect called when the shot reaches the ground and has no

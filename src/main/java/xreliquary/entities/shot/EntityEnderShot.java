@@ -41,7 +41,7 @@ public class EntityEnderShot extends EntityShotBase {
     }
 
     @Override
-    void onImpact(MovingObjectPosition mop) {
+    protected void onImpact(MovingObjectPosition mop) {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
             if (mop.entityHit == shootingEntity)
                 return;
