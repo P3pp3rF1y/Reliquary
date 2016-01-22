@@ -38,6 +38,7 @@ public class ModItems {
     public static final ItemHandgun handgun = new ItemHandgun();
     public static final ItemHarvestRod harvestRod = new ItemHarvestRod();
     public static final ItemMagazine magazine = new ItemMagazine();
+    public static final ItemHeartPearl heartPearl = new ItemHeartPearl();
 
     public static void init() {
         //TODO: cleanup magic strings
@@ -60,6 +61,7 @@ public class ModItems {
         GameRegistry.registerItem(gunPart, Reference.DOMAIN + "gun_part");
         GameRegistry.registerItem(handgun, Reference.DOMAIN + "handgun");
         GameRegistry.registerItem(harvestRod, Reference.DOMAIN + "harvest_rod");
+        GameRegistry.registerItem(heartPearl, Reference.DOMAIN + "heart_pearl");
 
         GameRegistry.registerItem(holyHandGrenade, Reference.DOMAIN + "holy_hand_grenade");
 
@@ -102,6 +104,12 @@ public class ModItems {
         registerItemModelForAllVariants(bullet, "bullet", 10, new ItemMeshDefinition() {
             public ModelResourceLocation getModelLocation(ItemStack stack) {
                 return new ModelResourceLocation("xreliquary:bullet", "inventory");
+            }
+        });
+
+        registerItemModelForAllVariants(heartPearl, "heart_pearl", 4, new ItemMeshDefinition() {
+            public ModelResourceLocation getModelLocation(ItemStack stack) {
+                return new ModelResourceLocation("xreliquary:heart_pearl", "inventory");
             }
         });
 
