@@ -39,36 +39,8 @@ public class ItemHeroMedallion extends ItemToggleable {
     @Override
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack) {
-        return stack.getItemDamage() == 1;
+        return NBTHelper.getBoolean("enabled", stack);
     }
-
-    //TODO: include in json model
-
-/*
-    @SideOnly(Side.CLIENT)
-    private IIcon iconOverlay;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.hero_medallion_overlay);
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack itemStack, int renderPass) {
-        if (itemStack.getItemDamage() == 0 || renderPass != 1)
-            return this.itemIcon;
-        else
-            return iconOverlay;
-    }
-*/
 
     @Override
     public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List list, boolean par4) {

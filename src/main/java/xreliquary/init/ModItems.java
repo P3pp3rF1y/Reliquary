@@ -40,6 +40,7 @@ public class ModItems {
     public static final ItemMagazine magazine = new ItemMagazine();
     public static final ItemHeartPearl heartPearl = new ItemHeartPearl();
     public static final ItemHeartZhu heartZhu = new ItemHeartZhu();
+    public static final ItemHeroMedallion heroMedallion = new ItemHeroMedallion();
 
     public static void init() {
         //TODO: cleanup magic strings
@@ -64,6 +65,7 @@ public class ModItems {
         GameRegistry.registerItem(harvestRod, Reference.DOMAIN + "harvest_rod");
         GameRegistry.registerItem(heartPearl, Reference.DOMAIN + "heart_pearl");
         GameRegistry.registerItem(heartZhu, Reference.DOMAIN + "heart_zhu");
+        GameRegistry.registerItem(heroMedallion, Reference.DOMAIN + "hero_medallion");
 
         GameRegistry.registerItem(holyHandGrenade, Reference.DOMAIN + "holy_hand_grenade");
 
@@ -91,6 +93,7 @@ public class ModItems {
         registerItemModel(glowingWater, "glowing_water");
         registerItemModel(handgun, "handgun");
         registerItemModel(harvestRod, "harvest_rod");
+        registerItemModel(heroMedallion, "hero_medallion");
         registerItemModel(holyHandGrenade, "holy_hand_grenade");
         registerItemModel(krakenShell, "kraken_shell");
         registerItemModel(serpentStaff, "serpent_staff");
