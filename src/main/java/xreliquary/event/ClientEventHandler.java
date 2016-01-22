@@ -146,7 +146,7 @@ public class ClientEventHandler {
         EntityPlayer player = mc.thePlayer;
 
         //returns true for Glacial Staff because it extends IceRod.
-        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemIceRod))
+        if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemIceMagusRod))
             return;
 
         ItemStack iceRodStack = player.getCurrentEquippedItem();

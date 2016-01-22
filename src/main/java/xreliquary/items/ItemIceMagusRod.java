@@ -26,9 +26,9 @@ import xreliquary.lib.Names;
 import java.util.List;
 
 @ContentInit
-public class ItemIceRod extends ItemToggleable {
+public class ItemIceMagusRod extends ItemToggleable {
 
-    public ItemIceRod() {
+    public ItemIceMagusRod() {
         super(Names.ice_magus_rod);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
@@ -45,7 +45,7 @@ public class ItemIceRod extends ItemToggleable {
         LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
-    public ItemIceRod(String langName) {
+    public ItemIceMagusRod(String langName) {
         super(langName);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);

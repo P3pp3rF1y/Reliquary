@@ -35,7 +35,7 @@ public class BlockFertileLilypad extends BlockBush{
         float var4 = 0.015625F;
         this.setTickRandomly(false);
         this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, var4, 0.5F + var3);
-        this.setUnlocalizedName(Names.lilypad);
+        this.setUnlocalizedName(Names.fertile_lilypad);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
     }
 
@@ -51,15 +51,15 @@ public class BlockFertileLilypad extends BlockBush{
     }
 
     private int secondsBetweenGrowthTicks() {
-        return Reliquary.CONFIG.getInt(Names.lilypad, "seconds_between_growth_ticks");
+        return Reliquary.CONFIG.getInt(Names.fertile_lilypad, "seconds_between_growth_ticks");
     }
 
     private int tileRange() {
-        return Reliquary.CONFIG.getInt(Names.lilypad, "tile_range");
+        return Reliquary.CONFIG.getInt(Names.fertile_lilypad, "tile_range");
     }
 
     private int fullPotencyRange() {
-        return Reliquary.CONFIG.getInt(Names.lilypad, "full_potency_range");
+        return Reliquary.CONFIG.getInt(Names.fertile_lilypad, "full_potency_range");
     }
 
     public void growCropsNearby(World world, BlockPos pos, IBlockState state) {

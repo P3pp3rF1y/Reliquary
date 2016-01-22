@@ -20,7 +20,6 @@ import xreliquary.entities.potion.*;
 import xreliquary.entities.shot.*;
 import xreliquary.event.CommonEventHandler;
 import xreliquary.init.ModItems;
-import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
 import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
@@ -279,10 +278,10 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.lantern_of_paranoia, "placement_scan_radius", new ConfigReference(6).setMinimumValue(1).setMaximumValue(15));
         //Reliquary.CONFIG.require(Names.lantern_of_paranoia, "only_place_on_visible_blocks", new ConfigReference(false));
 
-        //lilypad of fertility configs
-        Reliquary.CONFIG.require(Names.lilypad, "seconds_between_growth_ticks", new ConfigReference(47).setMinimumValue(1));
-        Reliquary.CONFIG.require(Names.lilypad, "tile_range", new ConfigReference(4).setMinimumValue(1).setMaximumValue(15));
-        Reliquary.CONFIG.require(Names.lilypad, "full_potency_range", new ConfigReference(1).setMinimumValue(1).setMaximumValue(15));
+        //fertile_lilypad of fertility configs
+        Reliquary.CONFIG.require(Names.fertile_lilypad, "seconds_between_growth_ticks", new ConfigReference(47).setMinimumValue(1));
+        Reliquary.CONFIG.require(Names.fertile_lilypad, "tile_range", new ConfigReference(4).setMinimumValue(1).setMaximumValue(15));
+        Reliquary.CONFIG.require(Names.fertile_lilypad, "full_potency_range", new ConfigReference(1).setMinimumValue(1).setMaximumValue(15));
 
         //midas touchstone configs
         List<String> goldItems = ImmutableList.of();

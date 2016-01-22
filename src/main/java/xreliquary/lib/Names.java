@@ -89,7 +89,7 @@ public class Names {
     // blocks
     public static final String altar_idle = "altar_idle";
     public static final String altar = "altar";
-    public static final String lilypad = "lilypad";
+    public static final String fertile_lilypad = "fertile_lilypad";
     public static final String wraith_node = "wraith_node";
     public static final String interdiction_torch = "interdiction_torch";
     public static final String apothecary_cauldron = "apothecary_cauldron";

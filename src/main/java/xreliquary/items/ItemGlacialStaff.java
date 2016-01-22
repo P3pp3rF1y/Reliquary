@@ -4,19 +4,14 @@ import com.google.common.collect.ImmutableMap;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.LanguageHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockLilyPad;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -25,18 +20,15 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
-import xreliquary.blocks.BlockFertileLilypad;
-import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.lib.Names;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by Xeno on 10/11/2014.
  */
 @ContentInit
-public class ItemGlacialStaff extends ItemIceRod {
+public class ItemGlacialStaff extends ItemIceMagusRod {
     public ItemGlacialStaff() {
         super(Names.glacial_staff);
     }

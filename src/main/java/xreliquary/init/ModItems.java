@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.items.*;
-import xreliquary.items.block.ItemFertileLilyPad;
+import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 public class ModItems {
@@ -37,7 +37,7 @@ public class ModItems {
     public static final ItemHeartPearl heartPearl = new ItemHeartPearl();
     public static final ItemHeartZhu heartZhu = new ItemHeartZhu();
     public static final ItemHeroMedallion heroMedallion = new ItemHeroMedallion();
-    public static final ItemIceRod iceRod = new ItemIceRod();
+    public static final ItemIceMagusRod iceRod = new ItemIceMagusRod();
     public static final ItemInfernalChalice infernalChalice = new ItemInfernalChalice();
     public static final ItemInfernalClaws infernalClaws = new ItemInfernalClaws();
 
@@ -47,92 +47,92 @@ public class ModItems {
 
     public static void init() {
         //TODO: cleanup magic strings
-        GameRegistry.registerItem(alkahestryTome, Reference.DOMAIN + "alkahestry_tome");
-        GameRegistry.registerItem(mobIngredient, Reference.DOMAIN + "mob_ingredient");
-        GameRegistry.registerItem(mercyCross, Reference.DOMAIN + "mercy_cross");
-        GameRegistry.registerItem(angelheartVial, Reference.DOMAIN + "angelheart_vial");
-        GameRegistry.registerItem(angelicFeather, Reference.DOMAIN + "angelic_feather");
-        GameRegistry.registerItem(attractionPotion, Reference.DOMAIN + "attraction_potion");
-        GameRegistry.registerItem(bullet, Reference.DOMAIN + "bullet");
-        GameRegistry.registerItem(destructionCatalyst, Reference.DOMAIN + "destruction_catalyst");
-        GameRegistry.registerItem(emperorChalice, Reference.DOMAIN + "emperor_chalice");
-        GameRegistry.registerItem(enderStaff, Reference.DOMAIN + "ender_staff");
-        GameRegistry.registerItem(fertilePotion, Reference.DOMAIN + "fertile_potion");
-        GameRegistry.registerItem(fortuneCoin, Reference.DOMAIN + "fortune_coin");
-        GameRegistry.registerItem(glacialStaff, Reference.DOMAIN + "glacial_staff");
-        GameRegistry.registerItem(glowingBread, Reference.DOMAIN + "glowing_bread");
-        GameRegistry.registerItem(glowingWater, Reference.DOMAIN + "glowing_water");
-        GameRegistry.registerItem(gunPart, Reference.DOMAIN + "gun_part");
-        GameRegistry.registerItem(handgun, Reference.DOMAIN + "handgun");
-        GameRegistry.registerItem(harvestRod, Reference.DOMAIN + "harvest_rod");
-        GameRegistry.registerItem(heartPearl, Reference.DOMAIN + "heart_pearl");
-        GameRegistry.registerItem(heartZhu, Reference.DOMAIN + "heart_zhu");
-        GameRegistry.registerItem(heroMedallion, Reference.DOMAIN + "hero_medallion");
-        GameRegistry.registerItem(holyHandGrenade, Reference.DOMAIN + "holy_hand_grenade");
-        GameRegistry.registerItem(iceRod, Reference.DOMAIN + "ice_rod");
-        GameRegistry.registerItem(infernalChalice, Reference.DOMAIN + "infernal_chalice");
-        GameRegistry.registerItem(infernalClaws, Reference.DOMAIN + "infernal_claws");
+        GameRegistry.registerItem(alkahestryTome, Reference.DOMAIN + Names.alkahestry_tome);
+        GameRegistry.registerItem(mobIngredient, Reference.DOMAIN + Names.mob_ingredient);
+        GameRegistry.registerItem(mercyCross, Reference.DOMAIN + Names.mercy_cross);
+        GameRegistry.registerItem(angelheartVial, Reference.DOMAIN + Names.angelheart_vial);
+        GameRegistry.registerItem(angelicFeather, Reference.DOMAIN + Names.angelic_feather);
+        GameRegistry.registerItem(attractionPotion, Reference.DOMAIN + Names.attraction_potion);
+        GameRegistry.registerItem(bullet, Reference.DOMAIN + Names.bullet);
+        GameRegistry.registerItem(destructionCatalyst, Reference.DOMAIN + Names.destruction_catalyst);
+        GameRegistry.registerItem(emperorChalice, Reference.DOMAIN + Names.emperor_chalice);
+        GameRegistry.registerItem(enderStaff, Reference.DOMAIN + Names.ender_staff);
+        GameRegistry.registerItem(fertilePotion, Reference.DOMAIN + Names.fertile_potion);
+        GameRegistry.registerItem(fortuneCoin, Reference.DOMAIN + Names.fortune_coin);
+        GameRegistry.registerItem(glacialStaff, Reference.DOMAIN + Names.glacial_staff);
+        GameRegistry.registerItem(glowingBread, Reference.DOMAIN + Names.glowing_bread);
+        GameRegistry.registerItem(glowingWater, Reference.DOMAIN + Names.glowing_water);
+        GameRegistry.registerItem(gunPart, Reference.DOMAIN + Names.gun_part);
+        GameRegistry.registerItem(handgun, Reference.DOMAIN + Names.handgun);
+        GameRegistry.registerItem(harvestRod, Reference.DOMAIN + Names.harvest_rod);
+        GameRegistry.registerItem(heartPearl, Reference.DOMAIN + Names.heart_pearl);
+        GameRegistry.registerItem(heartZhu, Reference.DOMAIN + Names.heart_zhu);
+        GameRegistry.registerItem(heroMedallion, Reference.DOMAIN + Names.hero_medallion);
+        GameRegistry.registerItem(holyHandGrenade, Reference.DOMAIN + Names.holy_hand_grenade);
+        GameRegistry.registerItem(iceRod, Reference.DOMAIN + Names.ice_magus_rod);
+        GameRegistry.registerItem(infernalChalice, Reference.DOMAIN + Names.infernal_chalice);
+        GameRegistry.registerItem(infernalClaws, Reference.DOMAIN + Names.infernal_claws);
 
-        GameRegistry.registerItem(krakenShell, Reference.DOMAIN + "kraken_shell");
-        GameRegistry.registerItem(magazine, Reference.DOMAIN + "magazine");
+        GameRegistry.registerItem(krakenShell, Reference.DOMAIN + Names.kraken_shell);
+        GameRegistry.registerItem(magazine, Reference.DOMAIN + Names.magazine);
 
-        GameRegistry.registerItem(serpentStaff, Reference.DOMAIN + "serpent_staff");
+        GameRegistry.registerItem(serpentStaff, Reference.DOMAIN + Names.serpent_staff);
     }
 
     public static void initModels() {
         //TODO: get rid of these magic strings
-        registerItemModel(alkahestryTome, "alkahestry_tome");
-        registerItemModel(mercyCross, "mercy_cross");
-        registerItemModel(angelheartVial, "angelheart_vial");
-        registerItemModel(angelicFeather, "angelic_feather");
-        registerItemModel(attractionPotion, "attraction_potion");
-        registerItemModel(destructionCatalyst, "destruction_catalyst");
-        registerItemModel(emperorChalice, "emperor_chalice");
-        registerItemModel(enderStaff, "ender_staff");
-        registerItemModel(fertilePotion, "fertile_potion");
-        registerItemModel(fortuneCoin, "fortune_coin");
-        registerItemModel(glacialStaff, "glacial_staff");
-        registerItemModel(glowingBread, "glowing_bread");
-        registerItemModel(glowingWater, "glowing_water");
-        registerItemModel(handgun, "handgun");
-        registerItemModel(harvestRod, "harvest_rod");
-        registerItemModel(heroMedallion, "hero_medallion");
-        registerItemModel(holyHandGrenade, "holy_hand_grenade");
-        registerItemModel(iceRod, "ice_rod");
-        registerItemModel(infernalChalice, "infernal_chalice");
-        registerItemModel(infernalClaws, "infernal_claws");
-        registerItemModel(krakenShell, "kraken_shell");
-        registerItemModel(serpentStaff, "serpent_staff");
+        registerItemModel(alkahestryTome, Names.alkahestry_tome);
+        registerItemModel(mercyCross, Names.mercy_cross);
+        registerItemModel(angelheartVial, Names.angelheart_vial);
+        registerItemModel(angelicFeather, Names.angelic_feather);
+        registerItemModel(attractionPotion, Names.attraction_potion);
+        registerItemModel(destructionCatalyst, Names.destruction_catalyst);
+        registerItemModel(emperorChalice, Names.emperor_chalice);
+        registerItemModel(enderStaff, Names.ender_staff);
+        registerItemModel(fertilePotion, Names.fertile_potion);
+        registerItemModel(fortuneCoin, Names.fortune_coin);
+        registerItemModel(glacialStaff, Names.glacial_staff);
+        registerItemModel(glowingBread, Names.glowing_bread);
+        registerItemModel(glowingWater, Names.glowing_water);
+        registerItemModel(handgun, Names.handgun);
+        registerItemModel(harvestRod, Names.harvest_rod);
+        registerItemModel(heroMedallion, Names.hero_medallion);
+        registerItemModel(holyHandGrenade, Names.holy_hand_grenade);
+        registerItemModel(iceRod, Names.ice_magus_rod);
+        registerItemModel(infernalChalice, Names.infernal_chalice);
+        registerItemModel(infernalClaws, Names.infernal_claws);
+        registerItemModel(krakenShell, Names.kraken_shell);
+        registerItemModel(serpentStaff, Names.serpent_staff);
 
         for (int i=0; i< 16; i++) {
-            registerItemModel(mobIngredient, "mob_ingredient", i, true);
+            registerItemModel(mobIngredient, Names.mob_ingredient, i, true);
         }
 
         for (int i=0; i< 3; i++) {
-            registerItemModel(gunPart, "gun_part", i, true);
+            registerItemModel(gunPart, Names.gun_part, i, true);
         }
 
-        registerItemModelForAllVariants(bullet, "bullet", 10, new ItemMeshDefinition() {
+        registerItemModelForAllVariants(bullet, Names.bullet, 10, new ItemMeshDefinition() {
             public ModelResourceLocation getModelLocation(ItemStack stack) {
-                return new ModelResourceLocation("xreliquary:bullet", "inventory");
+                return new ModelResourceLocation(Reference.DOMAIN + Names.bullet, "inventory");
             }
         });
 
         registerItemModelForAllVariants(heartPearl, "heart_pearl", 4, new ItemMeshDefinition() {
             public ModelResourceLocation getModelLocation(ItemStack stack) {
-                return new ModelResourceLocation("xreliquary:heart_pearl", "inventory");
+                return new ModelResourceLocation(Reference.DOMAIN + Names.heart_pearl, "inventory");
             }
         });
 
         registerItemModelForAllVariants(heartZhu, "heart_zhu", 4, new ItemMeshDefinition() {
             public ModelResourceLocation getModelLocation(ItemStack stack) {
-                return new ModelResourceLocation("xreliquary:heart_zhu", "inventory");
+                return new ModelResourceLocation(Reference.DOMAIN + Names.heart_zhu, "inventory");
             }
         });
 
         registerItemModelForAllVariants(magazine, "magazine", 10, new ItemMeshDefinition() {
             public ModelResourceLocation getModelLocation(ItemStack stack) {
-                return new ModelResourceLocation("xreliquary:magazine", "inventory");
+                return new ModelResourceLocation(Reference.DOMAIN + Names.magazine, "inventory");
             }
         });
 

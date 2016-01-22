@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.blocks.*;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.items.block.ItemFertileLilyPad;
+import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 public class ModBlocks {
@@ -26,12 +27,12 @@ public class ModBlocks {
     {
         //TODO: refactor to get rid of so many magic strings
         GameRegistry.registerBlock(apothecaryCauldron, ItemBlockBase.class, apothecaryCauldron.getUnwrappedUnlocalizedName());
-        GameRegistry.registerBlock(alkahestryAltar, ItemBlockBase.class,Reference.DOMAIN + "altar_idle");
-        GameRegistry.registerBlock(alkahestryAltarActive, Reference.DOMAIN + "altar");
+        GameRegistry.registerBlock(alkahestryAltar, ItemBlockBase.class,Reference.DOMAIN + Names.altar_idle);
+        GameRegistry.registerBlock(alkahestryAltarActive, Reference.DOMAIN + Names.altar);
         GameRegistry.registerBlock(apothecaryMortar, ItemBlockBase.class, apothecaryMortar.getUnwrappedUnlocalizedName());
-        GameRegistry.registerBlock(fertileLilypad, ItemFertileLilyPad.class, Reference.DOMAIN + "fertile_lilypad");
-        GameRegistry.registerBlock(interdictionTorch, ItemBlockBase.class, Reference.DOMAIN + "interdiction_torch");
-        GameRegistry.registerBlock(wraithNode, ItemBlockBase.class, Reference.DOMAIN + "wraith_node");
+        GameRegistry.registerBlock(fertileLilypad, ItemFertileLilyPad.class, Reference.DOMAIN + Names.fertile_lilypad);
+        GameRegistry.registerBlock(interdictionTorch, ItemBlockBase.class, Reference.DOMAIN + Names.interdiction_torch);
+        GameRegistry.registerBlock(wraithNode, ItemBlockBase.class, Reference.DOMAIN + Names.wraith_node);
     }
 
     //TODO: figure out if this should be pulled to a separate class
@@ -43,12 +44,12 @@ public class ModBlocks {
     public static void initModels()
     {
         registerBlockItemModel(apothecaryCauldron);
-        registerBlockItemModel(alkahestryAltar, "altar_idle");
-        registerBlockItemModel(alkahestryAltarActive, "altar");
-        registerBlockItemModel(interdictionTorch, "interdiction_torch");
-        registerBlockItemModel(wraithNode, "wraith_node");
+        registerBlockItemModel(alkahestryAltar, Names.altar_idle);
+        registerBlockItemModel(alkahestryAltarActive, Names.altar);
+        registerBlockItemModel(interdictionTorch, Names.interdiction_torch);
+        registerBlockItemModel(wraithNode, Names.wraith_node);
 
-        registerBlockItemModel(fertileLilypad, "fertile_lilypad");
+        registerBlockItemModel(fertileLilypad, Names.fertile_lilypad);
 
     }
 

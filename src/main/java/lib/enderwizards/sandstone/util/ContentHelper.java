@@ -12,7 +12,7 @@ import net.minecraft.item.Item;
 public class ContentHelper {
 
     /**
-     * Returns a block identifier. Examples of these are 'minecraft:water', 'xreliquary:lilypad', etc. Will return null
+     * Returns a block identifier. Examples of these are 'minecraft:water', 'xreliquary:fertile_lilypad', etc. Will return null
      * if the block itself is null.
      *
      * @param block The block to get the identifier from.
@@ -22,7 +22,7 @@ public class ContentHelper {
     }
 
     /**
-     * Returns a item identifier. Examples of these are 'minecraft:water', 'xreliquary:lilypad', etc. Will return null
+     * Returns a item identifier. Examples of these are 'minecraft:water', 'xreliquary:fertile_lilypad', etc. Will return null
      * if the item itself is null.
      *
      * @param item The item to get the identifier from.

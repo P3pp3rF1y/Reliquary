@@ -133,8 +133,8 @@ public class XRRecipes {
         else
             addRecipe(false, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.altar_idle), 1), "dnd", "olo", "dgd", 'd', Items.glowstone_dust, 'n', enderHeart(), 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'g', creeperGland());
 
-        //lilypad
-        addRecipe(true, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.lilypad), 1), fertileEssence(), fertileEssence(), fertileEssence(), Blocks.waterlily);
+        //fertile_lilypad
+        addRecipe(true, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.fertile_lilypad), 1), fertileEssence(), fertileEssence(), fertileEssence(), Blocks.waterlily);
 
         //wraith node
         addRecipe(true, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.wraith_node), 1), enderHeart(), Items.emerald);

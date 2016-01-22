@@ -6,12 +6,8 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemColored;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
@@ -105,7 +101,7 @@ public class ItemFertileLilyPad extends ItemBlockBase
                     return false;
 				}
 
-				int secondsBetweenGrowthTicks = Reliquary.CONFIG.getInt( Names.lilypad, "seconds_between_growth_ticks");
+				int secondsBetweenGrowthTicks = Reliquary.CONFIG.getInt( Names.fertile_lilypad, "seconds_between_growth_ticks");
 				worldIn.scheduleBlockUpdate(blockpos1, ModBlocks.fertileLilypad, secondsBetweenGrowthTicks * 20, 1);
 
 
