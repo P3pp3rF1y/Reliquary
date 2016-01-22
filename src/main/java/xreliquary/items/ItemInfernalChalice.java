@@ -103,11 +103,12 @@ public class ItemInfernalChalice extends ItemToggleable {
 
                 if (!this.isEnabled(stack)  && NBTHelper.getInteger("fluidStacks", stack) >= 1000) {
                     //TODO: verify this is correct
-                    BlockPos adjustedPos = mop.getBlockPos().add(mop.sideHit.getDirectionVec());
+                    BlockPos adjustedPos = mop.getBlockPos().offset(mop.sideHit);
+
                     if (!player.canPlayerEdit(adjustedPos, mop.sideHit, stack))
                         return stack;
 
-                    if (this.tryPlaceContainedLiquid(world, stack, xOffset, yOffset, zOffset, mop.getBlockPos()) && !player.capabilities.isCreativeMode) {
+                    if (this.tryPlaceContainedLiquid(world, stack, xOffset, yOffset, zOffset, adjustedPos) && !player.capabilities.isCreativeMode) {
                         NBTHelper.setInteger("fluidStacks", stack, NBTHelper.getInteger("fluidStacks", stack) - 1000);
                         return stack;
                     }

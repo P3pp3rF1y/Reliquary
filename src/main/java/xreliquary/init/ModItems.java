@@ -13,7 +13,6 @@ import xreliquary.items.block.ItemFertileLilyPad;
 import xreliquary.lib.Reference;
 
 public class ModItems {
-    public static final ItemFertileLilyPad fertileLilypad = new ItemFertileLilyPad(ModBlocks.fertileLilypad);
     public static final ItemAlkahestryTome alkahestryTome = new ItemAlkahestryTome();
     public static final ItemMobIngredient  mobIngredient = new ItemMobIngredient();
     public static final ItemMercyCross mercyCross = new ItemMercyCross();
@@ -28,12 +27,9 @@ public class ModItems {
     public static final ItemFertilePotion fertilePotion = new ItemFertilePotion();
     public static final ItemFortuneCoin fortuneCoin = new ItemFortuneCoin();
     public static final ItemGlacialStaff glacialStaff = new ItemGlacialStaff();
-    public static final ItemIceRod iceRod = new ItemIceRod();
     public static final ItemGlowingBread glowingBread = new ItemGlowingBread();
     public static final ItemGlowingWater glowingWater = new ItemGlowingWater();
     public static final ItemHolyHandGrenade holyHandGrenade = new ItemHolyHandGrenade();
-    public static final ItemKrakenShell krakenShell = new ItemKrakenShell();
-    public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
     public static final ItemGunPart gunPart = new ItemGunPart();
     public static final ItemHandgun handgun = new ItemHandgun();
     public static final ItemHarvestRod harvestRod = new ItemHarvestRod();
@@ -41,6 +37,12 @@ public class ModItems {
     public static final ItemHeartPearl heartPearl = new ItemHeartPearl();
     public static final ItemHeartZhu heartZhu = new ItemHeartZhu();
     public static final ItemHeroMedallion heroMedallion = new ItemHeroMedallion();
+    public static final ItemIceRod iceRod = new ItemIceRod();
+    public static final ItemInfernalChalice infernalChalice = new ItemInfernalChalice();
+
+    public static final ItemKrakenShell krakenShell = new ItemKrakenShell();
+
+    public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
 
     public static void init() {
         //TODO: cleanup magic strings
@@ -57,7 +59,6 @@ public class ModItems {
         GameRegistry.registerItem(fertilePotion, Reference.DOMAIN + "fertile_potion");
         GameRegistry.registerItem(fortuneCoin, Reference.DOMAIN + "fortune_coin");
         GameRegistry.registerItem(glacialStaff, Reference.DOMAIN + "glacial_staff");
-        GameRegistry.registerItem(iceRod, Reference.DOMAIN + "ice_rod");
         GameRegistry.registerItem(glowingBread, Reference.DOMAIN + "glowing_bread");
         GameRegistry.registerItem(glowingWater, Reference.DOMAIN + "glowing_water");
         GameRegistry.registerItem(gunPart, Reference.DOMAIN + "gun_part");
@@ -66,8 +67,9 @@ public class ModItems {
         GameRegistry.registerItem(heartPearl, Reference.DOMAIN + "heart_pearl");
         GameRegistry.registerItem(heartZhu, Reference.DOMAIN + "heart_zhu");
         GameRegistry.registerItem(heroMedallion, Reference.DOMAIN + "hero_medallion");
-
         GameRegistry.registerItem(holyHandGrenade, Reference.DOMAIN + "holy_hand_grenade");
+        GameRegistry.registerItem(iceRod, Reference.DOMAIN + "ice_rod");
+        GameRegistry.registerItem(infernalChalice, Reference.DOMAIN + "infernal_chalice");
 
         GameRegistry.registerItem(krakenShell, Reference.DOMAIN + "kraken_shell");
         GameRegistry.registerItem(magazine, Reference.DOMAIN + "magazine");
@@ -88,13 +90,14 @@ public class ModItems {
         registerItemModel(fertilePotion, "fertile_potion");
         registerItemModel(fortuneCoin, "fortune_coin");
         registerItemModel(glacialStaff, "glacial_staff");
-        registerItemModel(iceRod, "ice_rod");
         registerItemModel(glowingBread, "glowing_bread");
         registerItemModel(glowingWater, "glowing_water");
         registerItemModel(handgun, "handgun");
         registerItemModel(harvestRod, "harvest_rod");
         registerItemModel(heroMedallion, "hero_medallion");
         registerItemModel(holyHandGrenade, "holy_hand_grenade");
+        registerItemModel(iceRod, "ice_rod");
+        registerItemModel(infernalChalice, "infernal_chalice");
         registerItemModel(krakenShell, "kraken_shell");
         registerItemModel(serpentStaff, "serpent_staff");
 
