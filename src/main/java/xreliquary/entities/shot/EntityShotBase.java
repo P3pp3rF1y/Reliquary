@@ -431,7 +431,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
                 closestTarget = currentTarget;
             }
         }
-        //TODO: verify that using entity height instead of yOffset in 1.7 doesn't mess this up
+        //TODO: verify that using entity height instead of ySize in 1.7 doesn't mess this up
         // these are extremely touchy, tune them lightly.
         if (closestTarget != null && shootingEntity != null) {
             double x = closestTarget.getEntityBoundingBox().minX + closestTarget.getEntityBoundingBox().maxX;
