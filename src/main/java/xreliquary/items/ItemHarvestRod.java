@@ -107,7 +107,7 @@ public class ItemHarvestRod extends ItemToggleable {
     }
 
     public void doHarvestBlockBreak(ItemStack ist, BlockPos pos, EntityPlayer player, int xOff, int yOff, int zOff) {
-        pos.add( xOff, yOff, zOff );
+        pos = pos.add( xOff, yOff, zOff );
 
         IBlockState blockState = player.worldObj.getBlockState( pos );
 

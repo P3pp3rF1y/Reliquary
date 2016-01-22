@@ -36,6 +36,7 @@ public class ModItems {
     public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
     public static final ItemGunPart gunPart = new ItemGunPart();
     public static final ItemHandgun handgun = new ItemHandgun();
+    public static final ItemHarvestRod harvestRod = new ItemHarvestRod();
     public static final ItemMagazine magazine = new ItemMagazine();
 
     public static void init() {
@@ -58,6 +59,7 @@ public class ModItems {
         GameRegistry.registerItem(glowingWater, Reference.DOMAIN + "glowing_water");
         GameRegistry.registerItem(gunPart, Reference.DOMAIN + "gun_part");
         GameRegistry.registerItem(handgun, Reference.DOMAIN + "handgun");
+        GameRegistry.registerItem(harvestRod, Reference.DOMAIN + "harvest_rod");
 
         GameRegistry.registerItem(holyHandGrenade, Reference.DOMAIN + "holy_hand_grenade");
 
@@ -84,6 +86,7 @@ public class ModItems {
         registerItemModel(glowingBread, "glowing_bread");
         registerItemModel(glowingWater, "glowing_water");
         registerItemModel(handgun, "handgun");
+        registerItemModel(harvestRod, "harvest_rod");
         registerItemModel(holyHandGrenade, "holy_hand_grenade");
         registerItemModel(krakenShell, "kraken_shell");
         registerItemModel(serpentStaff, "serpent_staff");
