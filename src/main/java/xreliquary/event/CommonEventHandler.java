@@ -28,6 +28,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import xreliquary.Reliquary;
+import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
@@ -307,7 +308,7 @@ public class CommonEventHandler {
     }
 
     public void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.infernal_claws), false))
+        if (!playerHasItem(player, ModItems.infernalClaws, false))
             return;
         if (!(event.source == DamageSource.inFire) && !(event.source == DamageSource.onFire))
             return;
@@ -321,13 +322,14 @@ public class CommonEventHandler {
     }
 
     public void handleInfernalChaliceCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.infernal_chalice), false))
+        if (!playerHasItem(player, ModItems.infernalChalice, false))
             return;
-        if (event.source != DamageSource.lava)
+        //TODO: figure out if there's some way to know that the fire was caused by lava, otherwise this is the only way to prevent damage from lava - reason being that most of the damage is from fire caused by lava
+        if (event.source != DamageSource.lava && event.source != DamageSource.onFire && event.source != DamageSource.inFire)
             return;
         if (player.getFoodStats().getFoodLevel() <= 0)
             return;
-        if (!(event.source == DamageSource.lava)) {
+        if (event.source == DamageSource.lava || event.source == DamageSource.onFire || event.source == DamageSource.inFire) {
             player.addExhaustion(event.ammount * ((float)Reliquary.CONFIG.getInt(Names.infernal_chalice, "hunger_cost_percent") / 100F));
         }
 

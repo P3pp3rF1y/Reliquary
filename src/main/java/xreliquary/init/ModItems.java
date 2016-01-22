@@ -39,6 +39,7 @@ public class ModItems {
     public static final ItemHeroMedallion heroMedallion = new ItemHeroMedallion();
     public static final ItemIceRod iceRod = new ItemIceRod();
     public static final ItemInfernalChalice infernalChalice = new ItemInfernalChalice();
+    public static final ItemInfernalClaws infernalClaws = new ItemInfernalClaws();
 
     public static final ItemKrakenShell krakenShell = new ItemKrakenShell();
 
@@ -70,6 +71,7 @@ public class ModItems {
         GameRegistry.registerItem(holyHandGrenade, Reference.DOMAIN + "holy_hand_grenade");
         GameRegistry.registerItem(iceRod, Reference.DOMAIN + "ice_rod");
         GameRegistry.registerItem(infernalChalice, Reference.DOMAIN + "infernal_chalice");
+        GameRegistry.registerItem(infernalClaws, Reference.DOMAIN + "infernal_claws");
 
         GameRegistry.registerItem(krakenShell, Reference.DOMAIN + "kraken_shell");
         GameRegistry.registerItem(magazine, Reference.DOMAIN + "magazine");
@@ -98,6 +100,7 @@ public class ModItems {
         registerItemModel(holyHandGrenade, "holy_hand_grenade");
         registerItemModel(iceRod, "ice_rod");
         registerItemModel(infernalChalice, "infernal_chalice");
+        registerItemModel(infernalClaws, "infernal_claws");
         registerItemModel(krakenShell, "kraken_shell");
         registerItemModel(serpentStaff, "serpent_staff");
 
