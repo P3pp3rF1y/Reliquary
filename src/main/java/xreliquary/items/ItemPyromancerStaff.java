@@ -219,8 +219,6 @@ public class ItemPyromancerStaff extends ItemToggleable {
                         doEruptionEffect(player, mop.getBlockPos().getX(), mop.getBlockPos().getY(), mop.getBlockPos().getZ(), 5D);
                     }
                 }
-            } else if (getMode(ist).equals("flint_and_steel")) {
-                this.onItemUse(ist, player, player.worldObj, mop.getBlockPos(), mop.sideHit, (float)player.posX, (float)player.posY, (float)player.posZ);
             }
         }
     }
@@ -228,41 +226,14 @@ public class ItemPyromancerStaff extends ItemToggleable {
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sideHit, float hitX, float hitY, float hitZ)
     {
-        //while enabled only, if disabled, it will do an eruption effect instead.
-        //if (this.isEnabled(ist)) {
-
-
         if (getMode(stack).equals("flint_and_steel")) {
-            if (sideHit == EnumFacing.DOWN) {
-                pos.down();
-            }
-
-            if (sideHit == EnumFacing.UP) {
-                pos.up();
-            }
-
-            if (sideHit == EnumFacing.NORTH) {
-                pos.north();
-            }
-
-            if (sideHit == EnumFacing.SOUTH) {
-                pos.south();
-            }
-
-            if (sideHit == EnumFacing.WEST) {
-                pos.west();
-            }
-
-            if (sideHit == EnumFacing.EAST) {
-                pos.east();
-            }
-
-            if (!player.canPlayerEdit(pos, sideHit, stack)) {
+            BlockPos placeFireAt = pos.offset(sideHit);
+            if (!player.canPlayerEdit(placeFireAt, sideHit, stack)) {
                 return false;
             } else {
-                if (world.isAirBlock(pos)) {
-                    world.playSoundEffect((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F);
-                    world.setBlockState(pos, Blocks.fire.getDefaultState());
+                if (world.isAirBlock(placeFireAt)) {
+                    world.playSoundEffect((double) placeFireAt.getX() + 0.5D, (double) placeFireAt.getY() + 0.5D, (double) placeFireAt.getZ() + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F);
+                    world.setBlockState(placeFireAt, Blocks.fire.getDefaultState());
                 }
                 return false;
             }
