@@ -25,7 +25,6 @@ public class ModBlocks {
 
     public static void init()
     {
-        //TODO: refactor to get rid of so many magic strings
         GameRegistry.registerBlock(apothecaryCauldron, ItemBlockBase.class, apothecaryCauldron.getUnwrappedUnlocalizedName());
         GameRegistry.registerBlock(alkahestryAltar, ItemBlockBase.class,Reference.DOMAIN + Names.altar_idle);
         GameRegistry.registerBlock(alkahestryAltarActive, Reference.DOMAIN + Names.altar);

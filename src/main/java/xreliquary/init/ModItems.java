@@ -42,13 +42,13 @@ public class ModItems {
     public static final ItemInfernalTear infernalTear = new ItemInfernalTear();
     public static final ItemKrakenShell krakenShell = new ItemKrakenShell();
     public static final ItemLanternOfParanoia lanterOfParanoia = new ItemLanternOfParanoia();
-    public static final ItemMagicbane magicbane = new ItemMagicbane();
     public static final ItemMagazine magazine = new ItemMagazine();
+    public static final ItemMagicbane magicbane = new ItemMagicbane();
+    public static final ItemMidasTouchstone midasTouchstone = new ItemMidasTouchstone();
 
     public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
 
     public static void init() {
-        //TODO: cleanup magic strings
         GameRegistry.registerItem(alkahestryTome, Reference.DOMAIN + Names.alkahestry_tome);
         GameRegistry.registerItem(mobIngredient, Reference.DOMAIN + Names.mob_ingredient);
         GameRegistry.registerItem(mercyCross, Reference.DOMAIN + Names.mercy_cross);
@@ -79,12 +79,12 @@ public class ModItems {
         GameRegistry.registerItem(lanterOfParanoia, Reference.DOMAIN + Names.lantern_of_paranoia);
         GameRegistry.registerItem(magazine, Reference.DOMAIN + Names.magazine);
         GameRegistry.registerItem(magicbane, Reference.DOMAIN + Names.magicbane);
+        GameRegistry.registerItem(midasTouchstone, Reference.DOMAIN + Names.midas_touchstone);
 
         GameRegistry.registerItem(serpentStaff, Reference.DOMAIN + Names.serpent_staff);
     }
 
     public static void initModels() {
-        //TODO: get rid of these magic strings
         registerItemModel(alkahestryTome, Names.alkahestry_tome);
         registerItemModel(mercyCross, Names.mercy_cross);
         registerItemModel(angelheartVial, Names.angelheart_vial);
@@ -109,6 +109,7 @@ public class ModItems {
         registerItemModel(krakenShell, Names.kraken_shell);
         registerItemModel(lanterOfParanoia, Names.lantern_of_paranoia);
         registerItemModel(magicbane, Names.magicbane);
+        registerItemModel(midasTouchstone, Names.midas_touchstone);
         registerItemModel(serpentStaff, Names.serpent_staff);
         ModelBakery.registerItemVariants(infernalTear, ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR));
 

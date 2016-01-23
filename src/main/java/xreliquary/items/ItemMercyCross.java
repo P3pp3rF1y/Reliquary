@@ -34,17 +34,6 @@ public class ItemMercyCross extends ItemSword {
         this.setUnlocalizedName(Names.mercy_cross);
     }
 
-    //TODO: include in JSON model
-
-/*
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-
-        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1));
-    }
-*/
-
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
