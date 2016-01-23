@@ -222,7 +222,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
             }
         }
     }
-    //ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ
+
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing sideHit, float hitX, float hitY, float hitZ)
     {
