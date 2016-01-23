@@ -39,15 +39,6 @@ public class ItemMagicbane extends ItemSword {
         return EnumRarity.EPIC;
     }
 
-    //TODO: include in JSON model
-/*
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        itemIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1));
-    }
-*/
-
     @Override
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack) {

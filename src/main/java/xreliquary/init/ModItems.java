@@ -33,7 +33,6 @@ public class ModItems {
     public static final ItemGunPart gunPart = new ItemGunPart();
     public static final ItemHandgun handgun = new ItemHandgun();
     public static final ItemHarvestRod harvestRod = new ItemHarvestRod();
-    public static final ItemMagazine magazine = new ItemMagazine();
     public static final ItemHeartPearl heartPearl = new ItemHeartPearl();
     public static final ItemHeartZhu heartZhu = new ItemHeartZhu();
     public static final ItemHeroMedallion heroMedallion = new ItemHeroMedallion();
@@ -43,6 +42,8 @@ public class ModItems {
     public static final ItemInfernalTear infernalTear = new ItemInfernalTear();
     public static final ItemKrakenShell krakenShell = new ItemKrakenShell();
     public static final ItemLanternOfParanoia lanterOfParanoia = new ItemLanternOfParanoia();
+    public static final ItemMagicbane magicbane = new ItemMagicbane();
+    public static final ItemMagazine magazine = new ItemMagazine();
 
     public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
 
@@ -77,6 +78,7 @@ public class ModItems {
         GameRegistry.registerItem(krakenShell, Reference.DOMAIN + Names.kraken_shell);
         GameRegistry.registerItem(lanterOfParanoia, Reference.DOMAIN + Names.lantern_of_paranoia);
         GameRegistry.registerItem(magazine, Reference.DOMAIN + Names.magazine);
+        GameRegistry.registerItem(magicbane, Reference.DOMAIN + Names.magicbane);
 
         GameRegistry.registerItem(serpentStaff, Reference.DOMAIN + Names.serpent_staff);
     }
@@ -106,6 +108,7 @@ public class ModItems {
         registerItemModel(infernalTear, Names.infernal_tear_empty);
         registerItemModel(krakenShell, Names.kraken_shell);
         registerItemModel(lanterOfParanoia, Names.lantern_of_paranoia);
+        registerItemModel(magicbane, Names.magicbane);
         registerItemModel(serpentStaff, Names.serpent_staff);
         ModelBakery.registerItemVariants(infernalTear, ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR));
 
