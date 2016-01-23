@@ -40,8 +40,9 @@ public class ModItems {
     public static final ItemIceMagusRod iceRod = new ItemIceMagusRod();
     public static final ItemInfernalChalice infernalChalice = new ItemInfernalChalice();
     public static final ItemInfernalClaws infernalClaws = new ItemInfernalClaws();
-
+    public static final ItemInfernalTear infernalTear = new ItemInfernalTear();
     public static final ItemKrakenShell krakenShell = new ItemKrakenShell();
+    public static final ItemLanternOfParanoia lanterOfParanoia = new ItemLanternOfParanoia();
 
     public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
 
@@ -72,8 +73,9 @@ public class ModItems {
         GameRegistry.registerItem(iceRod, Reference.DOMAIN + Names.ice_magus_rod);
         GameRegistry.registerItem(infernalChalice, Reference.DOMAIN + Names.infernal_chalice);
         GameRegistry.registerItem(infernalClaws, Reference.DOMAIN + Names.infernal_claws);
-
+        GameRegistry.registerItem(infernalTear, Reference.DOMAIN + Names.infernal_tear);
         GameRegistry.registerItem(krakenShell, Reference.DOMAIN + Names.kraken_shell);
+        GameRegistry.registerItem(lanterOfParanoia, Reference.DOMAIN + Names.lantern_of_paranoia);
         GameRegistry.registerItem(magazine, Reference.DOMAIN + Names.magazine);
 
         GameRegistry.registerItem(serpentStaff, Reference.DOMAIN + Names.serpent_staff);
@@ -101,8 +103,11 @@ public class ModItems {
         registerItemModel(iceRod, Names.ice_magus_rod);
         registerItemModel(infernalChalice, Names.infernal_chalice);
         registerItemModel(infernalClaws, Names.infernal_claws);
+        registerItemModel(infernalTear, Names.infernal_tear_empty);
         registerItemModel(krakenShell, Names.kraken_shell);
+        registerItemModel(lanterOfParanoia, Names.lantern_of_paranoia);
         registerItemModel(serpentStaff, Names.serpent_staff);
+        ModelBakery.registerItemVariants(infernalTear, ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR));
 
         for (int i=0; i< 16; i++) {
             registerItemModel(mobIngredient, Names.mob_ingredient, i, true);
