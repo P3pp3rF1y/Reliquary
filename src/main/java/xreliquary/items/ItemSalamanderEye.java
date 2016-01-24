@@ -53,28 +53,6 @@ public class ItemSalamanderEye extends ItemBase {
         return true;
     }
 
-    //TODO: include in JSON model
-
-/*
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack itemStack, int renderPass) {
-        return this.itemIcon;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-*/
-
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
         // handleEyeEffect(ist);

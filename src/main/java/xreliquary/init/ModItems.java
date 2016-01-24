@@ -49,6 +49,7 @@ public class ModItems {
     public static final ItemPyromancerStaff pyromancerStaff = new ItemPyromancerStaff();
     public static final ItemRendingGale rendingGale = new ItemRendingGale();
     public static final ItemRodOfLyssa rodOfLyssa = new ItemRodOfLyssa();
+    public static final ItemSalamanderEye salamanderEye = new ItemSalamanderEye();
 
     public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
 
@@ -88,6 +89,7 @@ public class ModItems {
         GameRegistry.registerItem(pyromancerStaff, Reference.DOMAIN + Names.pyromancer_staff);
         GameRegistry.registerItem(rendingGale, Reference.DOMAIN + Names.rending_gale);
         GameRegistry.registerItem(rodOfLyssa, Reference.DOMAIN + Names.rod_of_lyssa);
+        GameRegistry.registerItem(salamanderEye, Reference.DOMAIN + Names.salamander_eye);
 
         GameRegistry.registerItem(serpentStaff, Reference.DOMAIN + Names.serpent_staff);
     }
@@ -120,6 +122,7 @@ public class ModItems {
         registerItemModel(phoenixDown, Names.phoenix_down);
         registerItemModel(pyromancerStaff, Names.pyromancer_staff);
         registerItemModel(rendingGale, Names.rending_gale);
+        registerItemModel(salamanderEye, Names.salamander_eye);
         registerItemModel(serpentStaff, Names.serpent_staff);
 
         registerItemModel(infernalTear, Names.infernal_tear_empty);
