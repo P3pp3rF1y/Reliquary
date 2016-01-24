@@ -50,8 +50,8 @@ public class ModItems {
     public static final ItemRendingGale rendingGale = new ItemRendingGale();
     public static final ItemRodOfLyssa rodOfLyssa = new ItemRodOfLyssa();
     public static final ItemSalamanderEye salamanderEye = new ItemSalamanderEye();
-
     public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
+    public static final ItemShearsOfWinter shearsOfWinter = new ItemShearsOfWinter();
 
     public static void init() {
         GameRegistry.registerItem(alkahestryTome, Reference.DOMAIN + Names.alkahestry_tome);
@@ -90,8 +90,8 @@ public class ModItems {
         GameRegistry.registerItem(rendingGale, Reference.DOMAIN + Names.rending_gale);
         GameRegistry.registerItem(rodOfLyssa, Reference.DOMAIN + Names.rod_of_lyssa);
         GameRegistry.registerItem(salamanderEye, Reference.DOMAIN + Names.salamander_eye);
-
         GameRegistry.registerItem(serpentStaff, Reference.DOMAIN + Names.serpent_staff);
+        GameRegistry.registerItem(shearsOfWinter, Reference.DOMAIN + Names.shears_of_winter);
     }
 
     public static void initModels() {
@@ -124,6 +124,7 @@ public class ModItems {
         registerItemModel(rendingGale, Names.rending_gale);
         registerItemModel(salamanderEye, Names.salamander_eye);
         registerItemModel(serpentStaff, Names.serpent_staff);
+        registerItemModel(shearsOfWinter, Names.shears_of_winter);
 
         registerItemModel(infernalTear, Names.infernal_tear_empty);
         ModelBakery.registerItemVariants(infernalTear, ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR));
