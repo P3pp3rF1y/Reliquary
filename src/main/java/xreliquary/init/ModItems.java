@@ -47,6 +47,7 @@ public class ModItems {
     public static final ItemMidasTouchstone midasTouchstone = new ItemMidasTouchstone();
     public static final ItemPhoenixDown phoenixDown = new ItemPhoenixDown();
     public static final ItemPyromancerStaff pyromancerStaff = new ItemPyromancerStaff();
+    public static final ItemRendingGale rendingGale = new ItemRendingGale();
 
     public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
 
@@ -84,6 +85,7 @@ public class ModItems {
         GameRegistry.registerItem(midasTouchstone, Reference.DOMAIN + Names.midas_touchstone);
         GameRegistry.registerItem(phoenixDown, Reference.DOMAIN + Names.phoenix_down);
         GameRegistry.registerItem(pyromancerStaff, Reference.DOMAIN + Names.pyromancer_staff);
+        GameRegistry.registerItem(rendingGale, Reference.DOMAIN + Names.rending_gale);
 
         GameRegistry.registerItem(serpentStaff, Reference.DOMAIN + Names.serpent_staff);
     }
@@ -116,6 +118,7 @@ public class ModItems {
         registerItemModel(midasTouchstone, Names.midas_touchstone);
         registerItemModel(phoenixDown, Names.phoenix_down);
         registerItemModel(pyromancerStaff, Names.pyromancer_staff);
+        registerItemModel(rendingGale, Names.rending_gale);
         registerItemModel(serpentStaff, Names.serpent_staff);
         ModelBakery.registerItemVariants(infernalTear, ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR));
 

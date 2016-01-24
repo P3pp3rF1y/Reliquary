@@ -339,6 +339,7 @@ public class ItemRendingGale extends ItemToggleable {
             //spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
 
         } else if (getMode(ist).equals("bolt")) {
+
             MovingObjectPosition mop = this.getCycloneBlockTarget(player.worldObj, player);
 
             if (mop != null) {

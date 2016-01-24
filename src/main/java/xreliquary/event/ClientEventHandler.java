@@ -28,21 +28,25 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus || mc.getRenderManager().getFontRenderer() == null)
+            return;
+
         handleTickIncrement(event);
-        handleHandgunHUDCheck();
-        handleSojournerHUDCheck();
-        handleTomeHUDCheck();
-        handleDestructionCatalystHUDCheck();
-        handleEnderStaffHUDCheck();
+        handleHandgunHUDCheck(mc);
+        handleSojournerHUDCheck(mc);
+        handleTomeHUDCheck(mc);
+        handleDestructionCatalystHUDCheck(mc);
+        handleEnderStaffHUDCheck(mc);
         //handles glacial staff as well
-        handleIceMagusRodHUDCheck();
-        handleVoidTearHUDCheck();
-        handleMidasTouchstoneHUDCheck();
-        handleHarvestRodHUDCheck();
-        handleInfernalChaliceHUDCheck();
-        handleHeroMedallionHUDCheck();
-        handlePyromancerStaffHUDCheck();
-        handleRendingGaleHUDCheck();
+        handleIceMagusRodHUDCheck(mc);
+        handleVoidTearHUDCheck(mc);
+        handleMidasTouchstoneHUDCheck(mc);
+        handleHarvestRodHUDCheck(mc);
+        handleInfernalChaliceHUDCheck(mc);
+        handleHeroMedallionHUDCheck(mc);
+        handlePyromancerStaffHUDCheck(mc);
+        handleRendingGaleHUDCheck(mc);
     }
 
     public void handleTickIncrement(TickEvent.RenderTickEvent event) {
@@ -90,10 +94,7 @@ public class ClientEventHandler {
         }
     }*/
 
-    public void handleTomeHUDCheck() {
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
+    public void handleTomeHUDCheck(Minecraft mc) {
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemAlkahestryTome))
@@ -104,10 +105,7 @@ public class ClientEventHandler {
         renderStandardTwoItemHUD(mc, player, tomeStack, redstoneStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.alkahestry_tome), 0, 0);
     }
 
-    public void handleDestructionCatalystHUDCheck(){
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
+    public void handleDestructionCatalystHUDCheck(Minecraft mc){
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemDestructionCatalyst))
@@ -118,10 +116,7 @@ public class ClientEventHandler {
         renderStandardTwoItemHUD(mc, player, destructionCatalystStack, gunpowderStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.destruction_catalyst), 0, 0);
     }
 
-    public void handleEnderStaffHUDCheck(){
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
+    public void handleEnderStaffHUDCheck(Minecraft mc){
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemEnderStaff))
@@ -139,10 +134,7 @@ public class ClientEventHandler {
         renderStandardTwoItemHUD(mc, player, enderStaffStack, displayItemStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.ender_staff), 0, 0);
     }
 
-    public void handleIceMagusRodHUDCheck(){
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
+    public void handleIceMagusRodHUDCheck(Minecraft mc){
         EntityPlayer player = mc.thePlayer;
 
         //returns true for Glacial Staff because it extends IceRod.
@@ -156,10 +148,7 @@ public class ClientEventHandler {
         renderStandardTwoItemHUD(mc, player, iceRodStack, snowballStack, Reliquary.CONFIG.getInt(Names.hud_positions, hudSelector), 0, NBTHelper.getInteger("snowballs", iceRodStack));
     }
 
-    public void handleVoidTearHUDCheck(){
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
+    public void handleVoidTearHUDCheck(Minecraft mc){
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemVoidTear))
@@ -171,10 +160,7 @@ public class ClientEventHandler {
         renderStandardTwoItemHUD(mc, player, voidTearStack, containedItemStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.void_tear), 0, 0);
     }
 
-    public void handleMidasTouchstoneHUDCheck(){
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
+    public void handleMidasTouchstoneHUDCheck(Minecraft mc){
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemMidasTouchstone))
@@ -185,10 +171,7 @@ public class ClientEventHandler {
         renderStandardTwoItemHUD(mc, player, midasTouchstoneStack, glowstoneStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.midas_touchstone), 0, 0);
     }
 
-    public void handleHarvestRodHUDCheck(){
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
+    public void handleHarvestRodHUDCheck(Minecraft mc){
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHarvestRod))
@@ -199,10 +182,7 @@ public class ClientEventHandler {
         renderStandardTwoItemHUD(mc, player, harvestRodStack, bonemealStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.harvest_rod), 0, 0);
     }
 
-    public void handleInfernalChaliceHUDCheck(){
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
+    public void handleInfernalChaliceHUDCheck(Minecraft mc){
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemInfernalChalice))
@@ -213,10 +193,7 @@ public class ClientEventHandler {
         renderStandardTwoItemHUD(mc, player, infernalChaliceStack, lavaStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.infernal_chalice), Colors.get(Colors.BLOOD_RED_COLOR), lavaStack.stackSize / 1000);
     }
 
-    public void handleHeroMedallionHUDCheck(){
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
+    public void handleHeroMedallionHUDCheck(Minecraft mc){
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHeroMedallion))
@@ -227,10 +204,7 @@ public class ClientEventHandler {
         renderStandardTwoItemHUD(mc, player, heroMedallionStack, null, Reliquary.CONFIG.getInt(Names.hud_positions, Names.rending_gale), Colors.get(Colors.GREEN), experience);
     }
 
-    public void handlePyromancerStaffHUDCheck(){
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
+    public void handlePyromancerStaffHUDCheck(Minecraft mc){
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemPyromancerStaff))
@@ -340,10 +314,7 @@ public class ClientEventHandler {
         GL11.glPopMatrix();
     }
 
-    public void handleRendingGaleHUDCheck(){
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
+    public void handleRendingGaleHUDCheck(Minecraft mc){
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemRendingGale))
@@ -360,11 +331,8 @@ public class ClientEventHandler {
         renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Reliquary.CONFIG.getInt(Names.hud_positions, Names.rending_gale), 0, Math.max(charge,0));
     }
 
-    public void handleHandgunHUDCheck() {
+    public void handleHandgunHUDCheck(Minecraft mc) {
         // handles rendering the hud for the handgun, WIP
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHandgun))
@@ -448,11 +416,8 @@ public class ClientEventHandler {
         GL11.glPopMatrix();
     }
 
-    public void handleSojournerHUDCheck() {
+    public void handleSojournerHUDCheck(Minecraft mc) {
         // handles rendering the hud for the sojourner's staff so we don't have to use chat messages, because annoying.
-        Minecraft mc = Minecraft.getMinecraft();
-        if (!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
-            return;
         EntityPlayer player = mc.thePlayer;
 
         if (player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemSojournerStaff))
