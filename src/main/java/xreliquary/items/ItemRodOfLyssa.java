@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
@@ -9,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityLyssaHook;
+import xreliquary.init.ItemModels;
 import xreliquary.lib.Names;
 
 /**
@@ -42,6 +44,14 @@ public class ItemRodOfLyssa extends ItemBase {
         return true;
     }
 
+    @Override
+    public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) {
+        if (player.fishEntity != null) {
+            return ItemModels.getInstance().getModel(ItemModels.ROD_OF_LYSSA_CAST);
+        }
+        return ItemModels.getInstance().getModel(ItemModels.ROD_OF_LYSSA);
+    }
+
     /**
      * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      */
@@ -66,4 +76,5 @@ public class ItemRodOfLyssa extends ItemBase {
 
         return ist;
     }
+
 }
