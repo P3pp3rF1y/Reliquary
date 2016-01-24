@@ -355,30 +355,31 @@ public class ItemSojournerStaff extends ItemToggleable {
             return false;
 
         Block blockTargetted = world.getBlockState(pos).getBlock();
+        BlockPos placeBlockAt = pos;
 
         if (ContentHelper.areBlocksEqual(blockTargetted, Blocks.snow)) {
             side = EnumFacing.UP;
         } else if (!ContentHelper.areBlocksEqual(blockTargetted, Blocks.vine) && !ContentHelper.areBlocksEqual(blockTargetted, Blocks.tallgrass) && !ContentHelper.areBlocksEqual(blockTargetted, Blocks.deadbush) && (blockTargetted == null || !blockTargetted.isReplaceable(world, pos))) {
-            pos.add(side.getDirectionVec());
+            placeBlockAt = pos.offset(side);
         }
 
-        if (blockAttemptingPlacement.canPlaceBlockAt(world, pos)) {
-            if (world.canBlockBePlaced(blockAttemptingPlacement, pos, false, side, player, ist)) {
+        if (blockAttemptingPlacement.canPlaceBlockAt(world, placeBlockAt)) {
+            if (world.canBlockBePlaced(blockAttemptingPlacement, placeBlockAt, false, side, player, ist)) {
                 if (!player.capabilities.isCreativeMode) {
                     int cost = 1;
-                    int distance = (int) player.getDistance(pos.getX(), pos.getY(), pos.getZ());
+                    int distance = (int) player.getDistance(placeBlockAt.getX(), placeBlockAt.getY(), placeBlockAt.getZ());
                     for (; distance > Reliquary.CONFIG.getInt(Names.sojourner_staff, "tile_per_cost_multiplier"); distance -= Reliquary.CONFIG.getInt(Names.sojourner_staff, "tile_per_cost_multiplier")) {
                         cost++;
                     }
                     if (!removeItemFromInternalStorage(ist, Item.getItemFromBlock(blockAttemptingPlacement), cost))
                         return false;
                 }
-                IBlockState torchBlockState = attemptSide(world, pos, side, blockAttemptingPlacement, player);
-                if (placeBlockAt(ist, player, world, pos, torchBlockState)) {
-                    blockAttemptingPlacement.onBlockAdded(world, pos, torchBlockState);
+                IBlockState torchBlockState = attemptSide(world, placeBlockAt, side, blockAttemptingPlacement, player);
+                if (placeBlockAt(ist, player, world, placeBlockAt, torchBlockState)) {
+                    blockAttemptingPlacement.onBlockAdded(world, placeBlockAt, torchBlockState);
                     double gauss = 0.5D + world.rand.nextFloat() / 2;
-                    world.spawnParticle(EnumParticleTypes.SPELL_MOB, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, gauss, gauss, 0.0F);
-                    world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, blockAttemptingPlacement.stepSound.getStepSound(), (blockAttemptingPlacement.stepSound.getVolume() + 1.0F) / 2.0F, blockAttemptingPlacement.stepSound.getFrequency() * 0.8F);
+                    world.spawnParticle(EnumParticleTypes.SPELL_MOB, placeBlockAt.getX() + 0.5D, placeBlockAt.getY() + 0.5D, placeBlockAt.getZ() + 0.5D, gauss, gauss, 0.0F);
+                    world.playSoundEffect(placeBlockAt.getX() + 0.5F, placeBlockAt.getY() + 0.5F, placeBlockAt.getZ() + 0.5F, blockAttemptingPlacement.stepSound.getStepSound(), (blockAttemptingPlacement.stepSound.getVolume() + 1.0F) / 2.0F, blockAttemptingPlacement.stepSound.getFrequency() * 0.8F);
                 }
             }
         }
