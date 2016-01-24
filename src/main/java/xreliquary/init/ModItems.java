@@ -54,6 +54,8 @@ public class ModItems {
     public static final ItemShearsOfWinter shearsOfWinter = new ItemShearsOfWinter();
     public static final ItemSojournerStaff sojournerStaff = new ItemSojournerStaff();
     public static final ItemTwilightCloak twilightCloak = new ItemTwilightCloak();
+    public static final ItemVoidTearEmpty emptyVoidTear = new ItemVoidTearEmpty();
+    public static final ItemVoidTear filledVoidTear = new ItemVoidTear();
 
     public static void init() {
         GameRegistry.registerItem(alkahestryTome, Reference.DOMAIN + Names.alkahestry_tome);
@@ -96,6 +98,8 @@ public class ModItems {
         GameRegistry.registerItem(shearsOfWinter, Reference.DOMAIN + Names.shears_of_winter);
         GameRegistry.registerItem(sojournerStaff, Reference.DOMAIN + Names.sojourner_staff);
         GameRegistry.registerItem(twilightCloak, Reference.DOMAIN + Names.twilight_cloak);
+        GameRegistry.registerItem(emptyVoidTear, Reference.DOMAIN + Names.void_tear_empty);
+        GameRegistry.registerItem(filledVoidTear, Reference.DOMAIN + Names.void_tear);
     }
 
     public static void initModels() {
@@ -132,8 +136,12 @@ public class ModItems {
         registerItemModel(sojournerStaff, Names.sojourner_staff);
         registerItemModel(twilightCloak, Names.twilight_cloak);
 
+        registerItemModel(emptyVoidTear, Names.void_tear_empty);
+        registerItemModel(filledVoidTear, Names.void_tear);
+
         registerItemModel(infernalTear, Names.infernal_tear_empty);
         ModelBakery.registerItemVariants(infernalTear, ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR));
+
 
         registerItemModel(rodOfLyssa, Names.rod_of_lyssa);
         ModelBakery.registerItemVariants(rodOfLyssa, ItemModels.getInstance().getModel(ItemModels.ROD_OF_LYSSA_CAST));

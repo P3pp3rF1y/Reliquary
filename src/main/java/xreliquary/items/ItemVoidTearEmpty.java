@@ -13,6 +13,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.init.ModItems;
 import xreliquary.lib.Names;
 
 @ContentInit
@@ -76,15 +77,18 @@ public class ItemVoidTearEmpty extends ItemBase {
         ItemStack target = InventoryHelper.getTargetItem(ist, inventory, false);
         if(target == null)
             return null;
-        ItemStack filledTear = new ItemStack(Reliquary.CONTENT.getItem(Names.void_tear), 1, 0);
+        ItemStack filledTear = new ItemStack(ModItems.filledVoidTear, 1, 0);
 
         NBTHelper.setString("itemID", filledTear, ContentHelper.getIdent(target.getItem()));
-        NBTHelper.setShort("itemMeta", filledTear, (short) target.getItemDamage());
 
         int quantity = InventoryHelper.getItemQuantity(target, inventory);
         if (isPlayerInventory) {
-            InventoryHelper.consumeItem(target, player, target.getMaxStackSize(), quantity - target.getMaxStackSize());
-            quantity = quantity - target.getMaxStackSize();
+            if ((quantity - target.getMaxStackSize()) > 0) {
+                InventoryHelper.consumeItem(target, player, target.getMaxStackSize(), quantity - target.getMaxStackSize());
+                quantity = quantity - target.getMaxStackSize();
+            } else {
+                quantity = 0;
+            }
         } else {
             InventoryHelper.removeItem(target, inventory, quantity);
         }

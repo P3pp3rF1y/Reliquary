@@ -28,7 +28,7 @@ public class InventoryHelper {
             }
             if (inventory.getStackInSlot(slot).isItemEqual(stack)) {
                 while (quantity > 0 && inventory.getStackInSlot(slot) != null) {
-                    inventory.setInventorySlotContents(slot, inventory.decrStackSize(slot, 1));
+                    inventory.decrStackSize(slot, 1);
                     quantity--;
                 }
             }

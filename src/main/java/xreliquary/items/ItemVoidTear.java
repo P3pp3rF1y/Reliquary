@@ -20,6 +20,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
+import xreliquary.init.ModItems;
 import xreliquary.lib.Names;
 
 import java.util.List;
@@ -60,11 +61,11 @@ public class ItemVoidTear extends ItemToggleable {
             if (this.attemptToEmptyIntoInventory(ist, player, player.inventory, player.inventory.mainInventory.length)) {
                 player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
                 NBTHelper.resetTag(ist);
-                return new ItemStack(Reliquary.CONTENT.getItem(Names.void_tear_empty), 1, 0);
+                return new ItemStack(ModItems.emptyVoidTear, 1, 0);
             }
         }
-        //hack. forces the client to re-evaluate the inventory due to the itemstack changing.
-        ist.setItemDamage(ist.getItemDamage() == 0 ? 1 : 0);
+
+        player.inventoryContainer.detectAndSendChanges();
         return ist;
     }
 
@@ -125,7 +126,7 @@ public class ItemVoidTear extends ItemToggleable {
                     //disabled == placement mode, try and stuff the tear's contents into the inventory
                     if (this.attemptToEmptyIntoInventory(ist, player, inventory, 0)) {
                         NBTHelper.resetTag(ist);
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Reliquary.CONTENT.getItem(Names.void_tear_empty), 1, 0));
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(ModItems.emptyVoidTear, 1, 0));
                     }
                 }
                 return true;
@@ -142,7 +143,7 @@ public class ItemVoidTear extends ItemToggleable {
         //something awful happened. We either lost data or this is an invalid tear by some other means. Either way, not great.
         if (NBTHelper.getString("itemID", ist).equals(""))
             return null;
-        return new ItemStack((Item) Item.itemRegistry.getObject(new ResourceLocation(NBTHelper.getString("itemID", ist))), NBTHelper.getInteger("itemQuantity", ist), NBTHelper.getShort("itemMeta", ist));
+        return new ItemStack((Item) Item.itemRegistry.getObject(new ResourceLocation(NBTHelper.getString("itemID", ist))), NBTHelper.getInteger("itemQuantity", ist));
     }
 
     protected boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory, int limit) {
