@@ -155,10 +155,6 @@ public class CommonEventHandler {
                 return;
 
             //toggled effect, makes player invisible based on light level (configurable)
-            int playerX = MathHelper.floor_double(player.posX);
-            int playerY = MathHelper.floor_double(player.getEntityBoundingBox().minY);
-            int playerZ = MathHelper.floor_double(player.posZ);
-
             if (player.worldObj.getLightFromNeighbors(player.getPosition()) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "max_light_level"))
                 return;
             if (event.entity instanceof EntityLiving) {
