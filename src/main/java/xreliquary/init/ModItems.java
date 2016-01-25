@@ -60,6 +60,7 @@ public class ModItems {
     public static final ItemVoidTearEmpty emptyVoidTear = new ItemVoidTearEmpty();
     public static final ItemVoidTear filledVoidTear = new ItemVoidTear();
     public static final ItemWitchHat witchHat = new ItemWitchHat();
+    public static final ItemWitherlessRose witherlessRose = new ItemWitherlessRose();
 
     public static void init() {
         GameRegistry.registerItem(alkahestryTome, Reference.DOMAIN + Names.alkahestry_tome);
@@ -105,6 +106,7 @@ public class ModItems {
         GameRegistry.registerItem(emptyVoidTear, Reference.DOMAIN + Names.void_tear_empty);
         GameRegistry.registerItem(filledVoidTear, Reference.DOMAIN + Names.void_tear);
         GameRegistry.registerItem(witchHat, Reference.DOMAIN + Names.witch_hat);
+        GameRegistry.registerItem(witherlessRose, Reference.DOMAIN + Names.witherless_rose);
     }
 
     public static void initModels() {
@@ -145,6 +147,7 @@ public class ModItems {
         registerItemModel(filledVoidTear, Names.void_tear);
 
         registerItemModel(witchHat, Names.witch_hat);
+        registerItemModel(witherlessRose, Names.witherless_rose);
 
         registerItemModel(infernalTear, Names.infernal_tear_empty);
         ModelBakery.registerItemVariants(infernalTear, ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR));
