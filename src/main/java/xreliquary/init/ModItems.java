@@ -5,14 +5,17 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.items.*;
 import xreliquary.lib.Names;
 import xreliquary.lib.Reference;
 
 public class ModItems {
+
     public static final ItemAlkahestryTome alkahestryTome = new ItemAlkahestryTome();
     public static final ItemMobIngredient  mobIngredient = new ItemMobIngredient();
     public static final ItemMercyCross mercyCross = new ItemMercyCross();
@@ -56,6 +59,7 @@ public class ModItems {
     public static final ItemTwilightCloak twilightCloak = new ItemTwilightCloak();
     public static final ItemVoidTearEmpty emptyVoidTear = new ItemVoidTearEmpty();
     public static final ItemVoidTear filledVoidTear = new ItemVoidTear();
+    public static final ItemWitchHat witchHat = new ItemWitchHat();
 
     public static void init() {
         GameRegistry.registerItem(alkahestryTome, Reference.DOMAIN + Names.alkahestry_tome);
@@ -100,6 +104,7 @@ public class ModItems {
         GameRegistry.registerItem(twilightCloak, Reference.DOMAIN + Names.twilight_cloak);
         GameRegistry.registerItem(emptyVoidTear, Reference.DOMAIN + Names.void_tear_empty);
         GameRegistry.registerItem(filledVoidTear, Reference.DOMAIN + Names.void_tear);
+        GameRegistry.registerItem(witchHat, Reference.DOMAIN + Names.witch_hat);
     }
 
     public static void initModels() {
@@ -138,6 +143,8 @@ public class ModItems {
 
         registerItemModel(emptyVoidTear, Names.void_tear_empty);
         registerItemModel(filledVoidTear, Names.void_tear);
+
+        registerItemModel(witchHat, Names.witch_hat);
 
         registerItemModel(infernalTear, Names.infernal_tear_empty);
         ModelBakery.registerItemVariants(infernalTear, ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR));
