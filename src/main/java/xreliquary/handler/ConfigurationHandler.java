@@ -25,8 +25,6 @@ public class ConfigurationHandler
 {
 	public static Configuration configuration;
 
-	private final static String CATEGORY_HUD = "hud_positions";
-
 	public static void init(File configFile)
 	{
 		if (configuration == null)
@@ -38,13 +36,33 @@ public class ConfigurationHandler
 
 	private static void loadConfiguration()
 	{
-		Settings.HudPositions.sojournerStaff = configuration.getInt(Names.sojourner_staff, Names.hud_positions, 3, 1, 4, getTranslatedComment(Names.hud_positions, Names.sojourner_staff) , getLabelLangRef( Names.hud_positions, Names.sojourner_staff ));
+		//HUD positions
+		Settings.HudPositions.sojournerStaff = getInt(Names.sojourner_staff, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.handgun = getInt(Names.handgun, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.alkahestryTome = getInt(Names.alkahestry_tome, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.destructionCatalyst = getInt(Names.destruction_catalyst, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.elsewhereFlask = getInt(Names.elsewhere_flask, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.enderStaff = getInt(Names.ender_staff, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.iceMagnusRod = getInt(Names.ice_magus_rod, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.glacialStaff = getInt(Names.glacial_staff, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.voidTear = getInt(Names.void_tear, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.midasTouchstone = getInt(Names.midas_touchstone, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.harvestRod = getInt(Names.harvest_rod, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.infernalChalice = getInt(Names.infernal_chalice, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.heroMedallion = getInt(Names.hero_medallion, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.pyromanceStaff = getInt(Names.pyromancer_staff, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.rendingGale = getInt(Names.rending_gale, Names.hud_positions, 3, 1, 4);
 
 		if (configuration.hasChanged())
 		{
 			configuration.save();
 		}
 	}
+
+	private static int getInt(String name, String category, int defaultValue, int minValue, int maxValue) {
+		return configuration.getInt(name, Names.hud_positions, defaultValue, minValue, maxValue, getTranslatedComment(category, name) , getLabelLangRef(category, name));
+	}
+
 
 	private static String getTranslatedComment(String category, String config) {
 		return StatCollector.translateToLocal(category + "." + config + ".comment");
@@ -69,21 +87,6 @@ public class ConfigurationHandler
 	int cleanIntMax = 2000000000;
 
 	//global HUD positions
-	Reliquary.CONFIG.require(Names.hud_positions, Names.sojourner_staff, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.handgun, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.alkahestry_tome, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.destruction_catalyst, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.elsewhere_flask, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.ender_staff, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.ice_magus_rod, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.glacial_staff, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.void_tear, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.midas_touchstone, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.harvest_rod, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.infernal_chalice, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.hero_medallion, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.pyromancer_staff, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
-	Reliquary.CONFIG.require(Names.hud_positions, Names.rending_gale, new ConfigReference(3).setMinimumValue(1).setMaximumValue(4));
 
 	//easy mode recipes
 	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.fortune_coin, new ConfigReference(false));
