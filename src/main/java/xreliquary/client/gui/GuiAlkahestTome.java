@@ -6,10 +6,8 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Reference;
 
 public class GuiAlkahestTome extends GuiBase {
 

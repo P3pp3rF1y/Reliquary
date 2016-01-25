@@ -16,7 +16,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 import lib.enderwizards.sandstone.util.NBTHelper;
 
 import java.util.List;

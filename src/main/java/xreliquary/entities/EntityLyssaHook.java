@@ -22,7 +22,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 import java.util.Arrays;
 import java.util.Iterator;

@@ -1,8 +1,7 @@
 package xreliquary.network;
 
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Reference;
 
 /**
  * Created by Xeno on 9/21/2014.

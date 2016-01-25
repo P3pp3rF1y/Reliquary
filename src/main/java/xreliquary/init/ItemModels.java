@@ -1,10 +1,8 @@
 package xreliquary.init;
 
-import com.sun.javafx.sg.prism.NGShape;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 import java.util.ArrayList;
 

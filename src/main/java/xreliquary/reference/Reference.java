@@ -1,4 +1,4 @@
-package xreliquary.lib;
+package xreliquary.reference;
 
 public class Reference {
     // class for all the mod related constants

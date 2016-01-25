@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 public class AlkahestryRedstoneRecipe implements IRecipe {
 

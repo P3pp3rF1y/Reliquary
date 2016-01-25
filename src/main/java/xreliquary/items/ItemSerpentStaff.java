@@ -12,7 +12,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityKrakenSlime;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 @ContentInit
 public class ItemSerpentStaff extends ItemBase {

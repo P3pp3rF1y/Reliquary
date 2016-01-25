@@ -9,8 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityGlowingWater;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+
 
 @ContentInit
 public class ItemGlowingWater extends ItemBase {

@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityHolyHandGrenade;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 @ContentInit
 public class ItemHolyHandGrenade extends ItemBase {

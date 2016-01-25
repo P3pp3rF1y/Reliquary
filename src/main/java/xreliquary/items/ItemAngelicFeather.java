@@ -12,7 +12,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 /**
  * Created by Xeno on 5/15/14.

@@ -24,7 +24,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 import java.util.ArrayList;
 import java.util.Iterator;

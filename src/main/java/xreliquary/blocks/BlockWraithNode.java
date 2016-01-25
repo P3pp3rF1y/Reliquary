@@ -4,7 +4,7 @@ import lib.enderwizards.sandstone.init.ContentInit;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 @ContentInit
 public class BlockWraithNode extends Block {

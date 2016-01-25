@@ -24,7 +24,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityCauldron;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 import java.util.List;
 import java.util.Random;

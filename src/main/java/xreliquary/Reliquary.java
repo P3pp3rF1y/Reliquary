@@ -26,11 +26,10 @@ import xreliquary.common.CommonProxy;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.integration.NEIModIntegration;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Reference;
 import xreliquary.network.PacketHandler;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
-import xreliquary.util.potions.PotionMap;
 
 import java.io.File;
 

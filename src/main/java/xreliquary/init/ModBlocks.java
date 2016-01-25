@@ -10,8 +10,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.blocks.*;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.items.block.ItemFertileLilyPad;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 public class ModBlocks {
 

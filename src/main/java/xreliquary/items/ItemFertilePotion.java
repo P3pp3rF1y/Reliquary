@@ -9,8 +9,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.entities.potion.EntityFertilePotion;
-import xreliquary.lib.Colors;
-import xreliquary.lib.Names;
+import xreliquary.reference.Colors;
+import xreliquary.reference.Names;
 
 @ContentInit
 public class ItemFertilePotion extends ItemBase {

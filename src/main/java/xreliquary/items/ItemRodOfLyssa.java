@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityLyssaHook;
 import xreliquary.init.ItemModels;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 /**
  * Created by Xeno on 10/11/2014.

@@ -18,9 +18,9 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import xreliquary.Reliquary;
 import xreliquary.items.*;
-import xreliquary.lib.Colors;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Colors;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 public class ClientEventHandler {
     private static RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();

@@ -14,14 +14,12 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.blocks.tile.TileEntityAltar;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 import java.util.List;
 

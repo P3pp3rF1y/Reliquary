@@ -1,4 +1,4 @@
-package xreliquary.lib;
+package xreliquary.reference;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

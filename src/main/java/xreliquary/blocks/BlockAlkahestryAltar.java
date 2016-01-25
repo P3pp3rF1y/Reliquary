@@ -4,8 +4,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.BlockContainer;
@@ -19,8 +17,7 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.items.ItemAlkahestryTome;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
 
 import java.util.Random;
 

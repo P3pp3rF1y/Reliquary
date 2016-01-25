@@ -22,7 +22,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.lib.Reference;
 
 import java.util.List;
 

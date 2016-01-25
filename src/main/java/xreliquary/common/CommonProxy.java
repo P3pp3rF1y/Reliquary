@@ -24,7 +24,7 @@ import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
 import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
 import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 import xreliquary.util.alkahestry.Alkahestry;
 
 import java.util.ArrayList;
@@ -43,6 +43,7 @@ public class CommonProxy {
             FMLCommonHandler.instance().raiseException(e, "Reliquary failed to initiate recipies.", true);
         }
 
+        //TODO: figure out what this commented out section is for / is it just old code to be removed?
 //        try {
 //            Potion[] potionTypes = null;
 //

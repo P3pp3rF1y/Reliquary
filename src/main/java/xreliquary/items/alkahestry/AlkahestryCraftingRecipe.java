@@ -11,9 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
-import xreliquary.Reliquary;
 import xreliquary.items.ItemAlkahestryTome;
-import xreliquary.lib.Names;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 

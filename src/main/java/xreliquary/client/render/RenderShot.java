@@ -3,18 +3,14 @@ package xreliquary.client.render;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import xreliquary.entities.shot.EntityShotBase;
-import xreliquary.lib.ClientReference;
+
 
 @SideOnly(Side.CLIENT)
 public class RenderShot<T extends EntityShotBase> extends Render<T> {

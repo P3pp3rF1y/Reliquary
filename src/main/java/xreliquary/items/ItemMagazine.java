@@ -10,8 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.lib.Colors;
-import xreliquary.lib.Names;
+import xreliquary.reference.Colors;
+import xreliquary.reference.Names;
 
 import java.util.List;
 

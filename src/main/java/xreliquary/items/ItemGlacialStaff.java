@@ -20,7 +20,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 import java.util.List;
 

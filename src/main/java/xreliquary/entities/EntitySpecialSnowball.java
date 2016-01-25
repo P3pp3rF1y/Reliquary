@@ -9,8 +9,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.items.ItemGlacialStaff;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package xreliquary.lib;
+package xreliquary.reference;
 
 public class Colors {
 

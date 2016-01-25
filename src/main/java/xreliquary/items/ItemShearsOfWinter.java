@@ -22,10 +22,8 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;

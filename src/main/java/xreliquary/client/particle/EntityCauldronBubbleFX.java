@@ -14,10 +14,8 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 /**
  * Created by Xeno on 11/9/2014.

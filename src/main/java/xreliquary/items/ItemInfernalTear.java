@@ -11,8 +11,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.init.ItemModels;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 

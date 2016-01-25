@@ -1,6 +1,5 @@
 package xreliquary.util.potions;
 
-import lib.enderwizards.sandstone.init.Content;
 import lib.enderwizards.sandstone.mod.config.ConfigReference;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.init.Items;
@@ -10,8 +9,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import xreliquary.Reliquary;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemPotionEssence;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 import java.util.*;
 

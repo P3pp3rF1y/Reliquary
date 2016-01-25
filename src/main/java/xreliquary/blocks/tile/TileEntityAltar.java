@@ -3,10 +3,9 @@ package xreliquary.blocks.tile;
 import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
 import xreliquary.Reliquary;
 import xreliquary.blocks.BlockAlkahestryAltar;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 public class TileEntityAltar extends TileEntityBase {
     private int cycleTime;

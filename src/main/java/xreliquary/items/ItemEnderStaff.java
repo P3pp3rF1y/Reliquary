@@ -10,7 +10,6 @@ import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import lib.enderwizards.sandstone.util.LanguageHelper;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,7 +21,7 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityEnderStaffProjectile;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 import lib.enderwizards.sandstone.util.NBTHelper;
 
 import java.util.List;

@@ -1,7 +1,6 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import ibxm.Player;
 import net.minecraft.block.state.IBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -24,7 +23,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 import lib.enderwizards.sandstone.util.NBTHelper;
 
 import java.util.ArrayList;

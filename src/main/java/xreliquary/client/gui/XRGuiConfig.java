@@ -3,7 +3,7 @@ package xreliquary.client.gui;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import xreliquary.Reliquary;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Reference;
 
 public class XRGuiConfig extends GuiConfig {
 

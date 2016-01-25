@@ -22,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -30,8 +29,8 @@ import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 

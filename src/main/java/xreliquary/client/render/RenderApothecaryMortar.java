@@ -2,17 +2,14 @@ package xreliquary.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.client.model.ModelMortar;
-import xreliquary.lib.ClientReference;
+import xreliquary.reference.ClientReference;
 
 public class RenderApothecaryMortar extends TileEntitySpecialRenderer<TileEntityMortar> {
 

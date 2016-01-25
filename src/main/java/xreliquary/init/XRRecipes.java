@@ -12,8 +12,8 @@ import xreliquary.Reliquary;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
 import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
 import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 public class XRRecipes {
 

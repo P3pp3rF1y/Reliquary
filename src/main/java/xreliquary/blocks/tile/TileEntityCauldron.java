@@ -9,7 +9,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockCauldron;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -22,8 +21,8 @@ import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.client.particle.EntityCauldronBubbleFX;
 import xreliquary.client.particle.EntityCauldronSteamFX;
 import xreliquary.items.ItemPotionEssence;
-import xreliquary.lib.Colors;
-import xreliquary.lib.Names;
+import xreliquary.reference.Colors;
+import xreliquary.reference.Names;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.ArrayList;

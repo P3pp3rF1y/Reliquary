@@ -1,13 +1,10 @@
 package xreliquary.entities.potion;
 
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,7 +15,6 @@ import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import xreliquary.lib.Colors;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.Iterator;

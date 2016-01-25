@@ -25,8 +25,8 @@ import xreliquary.Reliquary;
 import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.entities.potion.EntityThrownXRPotion;
-import xreliquary.lib.Colors;
-import xreliquary.lib.Names;
+import xreliquary.reference.Colors;
+import xreliquary.reference.Names;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.Iterator;

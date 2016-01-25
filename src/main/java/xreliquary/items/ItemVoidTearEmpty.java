@@ -14,7 +14,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 @ContentInit
 public class ItemVoidTearEmpty extends ItemBase {

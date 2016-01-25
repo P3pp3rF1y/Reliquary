@@ -1,7 +1,6 @@
 package xreliquary.entities.shot;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -12,9 +11,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.lib.ClientReference;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.ClientReference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 import java.util.Iterator;
 import java.util.List;

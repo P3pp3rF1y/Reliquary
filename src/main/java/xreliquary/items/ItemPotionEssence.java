@@ -15,8 +15,8 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import xreliquary.lib.Colors;
-import xreliquary.lib.Names;
+import xreliquary.reference.Colors;
+import xreliquary.reference.Names;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.Iterator;

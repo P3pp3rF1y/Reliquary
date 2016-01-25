@@ -18,7 +18,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityMortar;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 import java.util.List;
 import java.util.Random;

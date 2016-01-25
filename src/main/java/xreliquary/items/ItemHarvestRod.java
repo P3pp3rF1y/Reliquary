@@ -28,10 +28,9 @@ import net.minecraftforge.common.IPlantable;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.blocks.BlockFertileLilypad;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
