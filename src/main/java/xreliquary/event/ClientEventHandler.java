@@ -65,35 +65,6 @@ public class ClientEventHandler {
         return time;
     }
 
-/*  TODO: fix armor render event if in fact it will still be required after JSONs' definition
-
-    @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public void onRenderPlayer(RenderPlayerEvent.SetArmorModel event) {
-        if (event.entityPlayer != null && event.stack != null && event.stack.getItem() == Reliquary.CONTENT.getItem(Names.witch_hat)) {
-            Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("minecraft:textures/entity/witch.png"));
-            ModelBiped model = event.renderer.modelArmor;
-            model.bipedHead.showModel = false;
-            model.bipedHeadwear.showModel = false;
-            model.bipedBody.showModel = false;
-            model.bipedRightArm.showModel = false;
-            model.bipedLeftArm.showModel = false;
-            model.bipedRightLeg.showModel = false;
-            model.bipedLeftLeg.showModel = false;
-            model = ModelWitchHat.self;
-            event.renderer.setRenderPassModel(model);
-            model.onGround = event.renderer.modelBipedMain.onGround;
-            model.isRiding = event.entityPlayer.isRiding();
-            model.isChild = event.renderer.modelBipedMain.isChild;
-
-            event.result = 1;
-            return;
-        } else if (event.stack != null && event.stack.getItem() == Reliquary.CONTENT.getItem(Names.witch_hat)) {
-            event.result = 0;
-            return;
-        }
-    }*/
-
     public void handleTomeHUDCheck(Minecraft mc) {
         EntityPlayer player = mc.thePlayer;
 
