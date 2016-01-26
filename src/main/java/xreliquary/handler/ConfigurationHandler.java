@@ -2,6 +2,7 @@ package xreliquary.handler;
 
 
 import com.google.common.collect.ImmutableList;
+import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
 import lib.enderwizards.sandstone.mod.config.ConfigReference;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -19,6 +20,7 @@ import xreliquary.reference.Settings;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,11 +43,186 @@ public class ConfigurationHandler
 		loadHudPositions();
 		loadEasyModeSettings();
 		loadMobDropProbabilities();
+		loadBlockAndItemSettings();
 
 		if (configuration.hasChanged())
 		{
 			configuration.save();
 		}
+	}
+
+	private static void loadBlockAndItemSettings() {
+		int itemCap = 9999;
+		int cleanShortMax = 30000;
+		int cleanIntMax = 2000000000;
+
+		//alkahestry tome configs
+		Settings.AlkahestryTome.redstoneLimit = getInt("redstone_limit", Names.alkahestry_tome, 250, 0, itemCap);
+
+		//altar configs
+		Settings.Altar.redstoneCost = getInt("redstone_cost", Names.altar, 3, 0, 10);
+		Settings.Altar.timeInMinutes = getInt("time_in_minutes", Names.altar, 20, 0, 60);
+		Settings.Altar.maximumTimeVarianceInMinutes = getInt("maximum_time_variance_in_minutes", Names.altar, 5, 0, 15);
+		Settings.Altar.outputLightLevelWhileActive = getInt("output_light_level_while_active", Names.altar, 16, 16, 0);
+
+		//angelic feather configs
+		Settings.AngelicFeather.hungerCostPercent = getInt("hunger_cost_percent", Names.angelic_feather, 50, 0, 100);
+		Settings.AngelicFeather.leapingPotency = getInt("leaping_potency", Names.angelic_feather, 1, 0, 5);
+
+		//angelheart vial configs
+		Settings.AngelHeartVial.healPercentageOfMaxLife = getInt("heal_percentage_of_max_life", Names.angelheart_vial, 25, 0, 100);
+		Settings.AngelHeartVial.removeNegativeStatus = getBoolean("remove_negative_status", Names.angelheart_vial, true);
+
+		//apothecary cauldron configs
+		List<String> heatSources = ImmutableList.of();
+		Settings.ApothecaryCauldron.redstoneLimit = getInt("redstone_limit", Names.apothecary_cauldron, 5, 0, 100);
+		Settings.ApothecaryCauldron.cookTime = getInt("cook_time", Names.apothecary_cauldron, 160, 20, 32000);
+		Settings.ApothecaryCauldron.heatSources = getStringList("heat_sources", Names.apothecary_cauldron, heatSources);
+
+		//destruction catalyst configs
+		Settings.DestructionCatalyst.mundaneBlocks = getStringList("mundane_blocks", Names.destruction_catalyst, new ArrayList<String>(ItemDestructionCatalyst.ids));
+		Settings.DestructionCatalyst.gunpowderCost = getInt("gunpowder_cost", Names.destruction_catalyst, 3, 0, 10);
+		Settings.DestructionCatalyst.gunpowderWorth = getInt("gunpowder_worth", Names.destruction_catalyst, 1, 0, 3);
+		Settings.DestructionCatalyst.gunpowderLimit = getInt("gunpowder_limit", Names.destruction_catalyst, 250, 0, itemCap);
+		Settings.DestructionCatalyst.explosionRadius = getInt("explosion_radius", Names.destruction_catalyst, 1, 1, 5);
+		Settings.DestructionCatalyst.centeredExplosion = getBoolean("centered_explosion", Names.destruction_catalyst, false);
+		Settings.DestructionCatalyst.perfectCube = getBoolean("perfect_cube", Names.destruction_catalyst, true);
+
+		//emperor's chalice configs
+		Settings.EmperorChalice.hungerSatiationMultiplier = getInt("hunger_satiation_multiplier", Names.emperor_chalice, 4, 0, 10);
+
+		//ender staff configs
+		Settings.EnderStaff.enderPearlCastCost = getInt("ender_pearl_cast_cost", Names.ender_staff, 1, 0, 3);
+		Settings.EnderStaff.enderPearlNodeWarpCost = getInt("ender_pearl_node_warp_cost",Names.ender_staff,  1, 0, 3);
+		Settings.EnderStaff.enderPearlWorth = getInt("ender_pearl_worth", Names.ender_staff, 1, 0, 10);
+		Settings.EnderStaff.enderPearlLimit = getInt("ender_pearl_limit", Names.ender_staff, 250, 0, itemCap);
+		Settings.EnderStaff.nodeWarpCastTime = getInt("node_warp_cast_time", Names.ender_staff, 60, 10, 120);
+
+		//fortune coin configs
+		Settings.FortuneCoin.disableAudio = getBoolean("disable_audio", Names.fortune_coin, false);
+		Settings.FortuneCoin.standardPullDistance = getInt("standard_pull_distance", Names.fortune_coin, 5, 3, 10);
+		Settings.FortuneCoin.longRangePullDistance = getInt("long_range_pull_distance", Names.fortune_coin, 15, 9, 30);
+
+		//glacial staff configs
+		Settings.GlacialStaff.snowballLimit = getInt("snowball_limit", Names.glacial_staff, 250, 0, itemCap);
+		Settings.GlacialStaff.snowballCost = getInt("snowball_cost", Names.glacial_staff, 1, 0, 3);
+		Settings.GlacialStaff.snowballWorth = getInt("snowball_worth", Names.glacial_staff, 1, 0, 3);
+		Settings.GlacialStaff.snowballDamage = getInt("snowball_damage", Names.glacial_staff, 3, 0, 6);
+		Settings.GlacialStaff.snowballDamageBonusFireImmune = getInt("snowball_damage_bonus_fire_immune", Names.glacial_staff, 3, 0, 6);
+		Settings.GlacialStaff.snowballDamageBonusBlaze = getInt("snowball_damage_bonus_blaze", Names.glacial_staff, 6, 0, 12);
+
+		//harvest rod configs
+		Settings.HarvestRod.bonemealLimit = getInt("bonemeal_limit", Names.harvest_rod, 250, 0, itemCap);
+		Settings.HarvestRod.bonemealCost = getInt("bonemeal_cost", Names.harvest_rod, 1, 0, 3);
+		Settings.HarvestRod.bonemealWorth = getInt("bonemeal_worth", Names.harvest_rod, 1, 0, 3);
+		Settings.HarvestRod.bonemealLuckPercentChance = getInt("bonemeal_luck_percent_chance", Names.harvest_rod, 33, 1, 100);
+		Settings.HarvestRod.bonemealLuckRolls = getInt("bonemeal_luck_rolls", Names.harvest_rod, 2, 0, 7);
+		Settings.HarvestRod.harvestBreakRadius = getInt("harvest_break_radius", Names.harvest_rod, 2, 0, 5);
+
+		//hero's medallion config
+		Settings.HeroMedallion.experienceLevelMaximum = getInt("experience_level_maximum", Names.hero_medallion, 30, 0, 60);
+		Settings.HeroMedallion.experienceLevelMinimum = getInt("experience_level_minimum", Names.hero_medallion, 0, 0, 30);
+		Settings.HeroMedallion.experienceLimit =getInt("experience_limit", Names.hero_medallion, cleanIntMax, 0, cleanIntMax);
+
+		//ice rod configs
+		Settings.IceMagusRod.snowballLimit = getInt("snowball_limit", Names.ice_magus_rod, 250, 0, itemCap);
+		Settings.IceMagusRod.snowballCost = getInt("snowball_cost", Names.ice_magus_rod, 1, 0, 3);
+		Settings.IceMagusRod.snowballWorth = getInt("snowball_worth", Names.ice_magus_rod, 1, 0, 3);
+		Settings.IceMagusRod.snowballDamage = getInt("snowball_damage", Names.ice_magus_rod, 2, 0, 4);
+		Settings.IceMagusRod.snowballDamageBonusFireImmune = getInt("snowball_damage_bonus_fire_immune", Names.ice_magus_rod, 2, 0, 4);
+		Settings.IceMagusRod.snowballDamageBonusBlaze = getInt("snowball_damage_bonus_blaze", Names.ice_magus_rod, 4, 0, 8);
+
+		//infernal claws configs
+		Settings.InfernalClaws.hungerCostPercent = getInt("hunger_cost_percent", Names.infernal_claws, 10, 0, 30);
+
+		//infernal chalice configs
+		Settings.InfernalChalice.hungerCostPercent = getInt("hunger_cost_percent", Names.infernal_chalice, 5, 0, 10);
+		Settings.InfernalChalice.fluidLimit = getInt("fluid_limit", Names.infernal_chalice, 500000, 0, cleanIntMax);
+
+		//interdiction torch configs
+		//see post init for entity configs
+		Settings.InterdictionTorch.pushRadius = getInt("push_radius", Names.interdiction_torch, 5, 1, 15);
+		Settings.InterdictionTorch.canPushProjectiles = getBoolean("can_push_projectiles", Names.interdiction_torch, false);
+		Settings.InterdictionTorch.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.interdiction_torch, ImmutableList.of());
+		Settings.InterdictionTorch.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.interdiction_torch, ImmutableList.of());
+
+		//kraken shell configs
+		Settings.KrakenShell.hungerCostPercent = getInt("hunger_cost_percent", Names.kraken_shell, 25, 0, 50);
+
+		//lantern of paranoia configs
+		Settings.LanternOfParanoia.minLightLevel = getInt("min_light_level", Names.lantern_of_paranoia, 8, 0, 15);
+		Settings.LanternOfParanoia.placementScanRadius = getInt("placement_scan_radius", Names.lantern_of_paranoia, 6, 1, 15);
+		//Reliquary.CONFIG.require("only_place_on_visible_blocks", Names.lantern_of_paranoia, false);
+
+		//fertile_lilypad of fertility configs
+		Settings.FertileLilypad.secondsBetweenGrowthTicks = getInt("seconds_between_growth_ticks", Names.fertile_lilypad, 47, 1, 150);
+		Settings.FertileLilypad.tileRange = getInt("tile_range", Names.fertile_lilypad, 4, 1, 15);
+		Settings.FertileLilypad.fullPotencyRange = getInt("full_potency_range", Names.fertile_lilypad, 1, 1, 15);
+
+		//midas touchstone configs
+		List<String> goldItems = ImmutableList.of();
+		Settings.MidasTouchstone.goldItems = getStringList("gold_items", Names.midas_touchstone, goldItems);
+		Settings.MidasTouchstone.ticksBetweenRepairTicks = getInt("ticks_between_repair_ticks", Names.midas_touchstone, 4, 1, cleanShortMax);
+		Settings.MidasTouchstone.glowstoneCost = getInt("glowstone_cost", Names.midas_touchstone, 1, 0, 3);
+		Settings.MidasTouchstone.glowstoneWorth = getInt("glowstone_worth", Names.midas_touchstone, 4, 0, 12);
+		Settings.MidasTouchstone.glowstoneLimit = getInt("glowstone_limit", Names.midas_touchstone, 250, 0, itemCap);
+
+		//phoenix down configs
+		Settings.PhoenixDown.hungerCostPercent = getInt("hunger_cost_percent", Names.phoenix_down, 25, 0, 50);
+		Settings.PhoenixDown.leapingPotency = getInt("leaping_potency", Names.phoenix_down, 1, 0, 5);
+		Settings.PhoenixDown.healPercentageOfMaxLife = getInt("heal_percentage_of_max_life", Names.phoenix_down, 100, 0, 100);
+		Settings.PhoenixDown.removeNegativeStatus = getBoolean("remove_negative_status", Names.phoenix_down, true);
+		Settings.PhoenixDown.giveTemporaryDamageResistance = getBoolean("give_temporary_damage_resistance", Names.phoenix_down, true);
+		Settings.PhoenixDown.giveTemporaryRegeneration = getBoolean("give_temporary_regeneration", Names.phoenix_down, true);
+		Settings.PhoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou = getBoolean("give_temporary_fire_resistance_if_fire_damage_killed_you", Names.phoenix_down, true);
+		Settings.PhoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou = getBoolean("give_temporary_water_breathing_if_drowning_killed_you", Names.phoenix_down, true);
+
+		//pyromancer staff configs
+		Settings.PyromancerStaff.hungerCostPercent = getInt("hunger_cost_percent", Names.pyromancer_staff, 5, 0, 10);
+		Settings.PyromancerStaff.fireChargeLimit = getInt("fire_charge_limit", Names.pyromancer_staff, 250, 0, itemCap);
+		Settings.PyromancerStaff.fireChargeCost = getInt("fire_charge_cost", Names.pyromancer_staff, 1, 0, 3);
+		Settings.PyromancerStaff.fireChargeWorth = getInt("fire_charge_worth", Names.pyromancer_staff, 1, 0, 3);
+		Settings.PyromancerStaff.ghastAbsorbWorth = getInt("ghast_absorb_worth", Names.pyromancer_staff, 1, 0, 3);
+		Settings.PyromancerStaff.blazePowderLimit = getInt("blaze_powder_limit", Names.pyromancer_staff, 250, 0, itemCap);
+		Settings.PyromancerStaff.blazePowderCost = getInt("blaze_powder_cost", Names.pyromancer_staff, 1, 0, 3);
+		Settings.PyromancerStaff.blazePowderWorth = getInt("blaze_powder_worth", Names.pyromancer_staff, 1, 0, 3);
+		Settings.PyromancerStaff.blazeAbsorbWorth = getInt("blaze_absorb_worth", Names.pyromancer_staff, 1, 0, 3);
+
+		//rending gale configs
+		Settings.RendingGale.chargeLimit = getInt("charge_limit", Names.rending_gale, cleanShortMax, 0, cleanIntMax);
+		Settings.RendingGale.castChargeCost = getInt("cast_charge_cost", Names.rending_gale, 1, 0, 3);
+		Settings.RendingGale.boltChargeCost = getInt("bolt_charge_cost", Names.rending_gale, 100, 0, 250);
+		Settings.RendingGale.chargeFeatherWorth = getInt("charge_feather_worth", Names.rending_gale, 100, 1, 250);
+		Settings.RendingGale.blockTargetRange = getInt("block_target_range", Names.rending_gale, 12, 5, 15);
+		Settings.RendingGale.pushPullRadius = getInt("push_pull_radius", Names.rending_gale, 10, 1, 20);
+		Settings.RendingGale.canPushProjectiles = getBoolean("can_push_projectiles", Names.rending_gale, false);
+		Settings.RendingGale.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.rending_gale, ImmutableList.of());
+		Settings.RendingGale.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.rending_gale, ImmutableList.of());
+
+		//rod of lyssa configs
+		Settings.RodOfLyssa.useLeveledFailureRate = getBoolean("use_leveled_failure_rate", Names.rod_of_lyssa, true);
+		Settings.RodOfLyssa.levelCapForLeveledFormula = getInt("level_cap_for_leveled_formula", Names.rod_of_lyssa, 100, 1, 900);
+		Settings.RodOfLyssa.flatStealFailurePercentRate = getInt("flat_steal_failure_percent_rate", Names.rod_of_lyssa, 10, 0, 100);
+		Settings.RodOfLyssa.stealFromVacantSlots = getBoolean("steal_from_vacant_slots", Names.rod_of_lyssa, true);
+		Settings.RodOfLyssa.failStealFromVacantSlots = getBoolean("fail_steal_from_vacant_slots", Names.rod_of_lyssa, false);
+		Settings.RodOfLyssa.angerOnStealFailure = getBoolean("anger_on_steal_failure", Names.rod_of_lyssa, true);
+
+		Settings.SeekerShot.entitiesThatCanBeHunted = getStringList("entities_that_can_be_hunted", Names.seeker_shot, ImmutableList.of());
+
+		//sojourners staff configs
+		List<String> torches = ImmutableList.of();
+		Settings.SojournerStaff.torches = getStringList("torches", Names.sojourner_staff, torches);
+		Settings.SojournerStaff.maxCapacityPerItemType = getInt("max_capacity_per_item_type", Names.sojourner_staff, 1500, 1, itemCap);
+		Settings.SojournerStaff.maxRange = getInt("max_range", Names.sojourner_staff, 30, 1, 30);
+		Settings.SojournerStaff.tilePerCostMultiplier = getInt("tile_per_cost_multiplier", Names.sojourner_staff, 6, 6, 30);
+
+		//twilight cloak configs
+		Settings.TwilightCloak.maxLightLevel = getInt("max_light_level", Names.twilight_cloak, 4, 0, 15);
+		//Reliquary.CONFIG.require(Names.twilight_cloak, "only_works_at_night", false);
+
+		//void tear configs
+		Settings.VoidTear.itemLimit = getInt("item_limit", Names.void_tear, 2000000000, 0, cleanIntMax);
+		Settings.VoidTear.absorbWhenCreated = getBoolean("absorb_when_created", Names.void_tear, true);
 	}
 
 	private static void loadMobDropProbabilities()
@@ -143,6 +320,10 @@ public class ConfigurationHandler
 		Settings.HudPositions.rendingGale = getInt(Names.rending_gale, Names.hud_positions, 3, 1, 4);
 	}
 
+	private static List<String> getStringList(String name, String category, List<String> defaultValue) {
+		return Arrays.asList(configuration.getStringList(name, Names.hud_positions, defaultValue.toArray(new String[defaultValue.size()]), getTranslatedComment(category, name), new String[]{}, getLabelLangRef(category, name)));
+	}
+
 	private static boolean getBoolean(String name, String category, boolean defaultValue) {
 		return configuration.getBoolean( name, Names.hud_positions, defaultValue, getTranslatedComment( category, name ), getLabelLangRef( category, name));
 	}
@@ -170,176 +351,8 @@ public class ConfigurationHandler
 	}
 
 /*
-	int itemCap = 9999;
-	int cleanShortMax = 30000;
-	int cleanIntMax = 2000000000;
-
-	//global HUD positions
-
-	//easy mode recipes
 
 
-	//alkahestry tome configs
-	Reliquary.CONFIG.require(Names.alkahestry_tome, "redstone_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
-
-	//altar configs
-	Reliquary.CONFIG.require(Names.altar, "redstone_cost", new ConfigReference(3).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.altar, "time_in_minutes", new ConfigReference(20).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.altar, "maximum_time_variance_in_minutes", new ConfigReference(5).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.altar, "output_light_level_while_active", new ConfigReference(16).setMaximumValue(16).setMinimumValue(0));
-
-	//angelic feather configs
-	Reliquary.CONFIG.require(Names.angelic_feather, "hunger_cost_percent", new ConfigReference(50).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.angelic_feather, "leaping_potency", new ConfigReference(1).setMinimumValue(0).setMaximumValue(5));
-
-	//angelheart vial configs
-	Reliquary.CONFIG.require(Names.angelheart_vial, "heal_percentage_of_max_life", new ConfigReference(25));
-	Reliquary.CONFIG.require(Names.angelheart_vial, "remove_negative_status", new ConfigReference(true));
-
-	//apothecary cauldron configs
-	List<String> heatSources = ImmutableList.of();
-	Reliquary.CONFIG.require(Names.apothecary_cauldron, "redstone_limit", new ConfigReference(5).setMinimumValue(0).setMaximumValue(100));
-	Reliquary.CONFIG.require(Names.apothecary_cauldron, "cook_time", new ConfigReference(160).setMinimumValue(20).setMaximumValue(32000));
-	Reliquary.CONFIG.require(Names.apothecary_cauldron, "heat_sources", new ConfigReference(heatSources));
-
-	//destruction catalyst configs
-	Reliquary.CONFIG.require(Names.destruction_catalyst, "mundane_blocks", new ConfigReference(new ArrayList<String>(ItemDestructionCatalyst.ids)));
-	Reliquary.CONFIG.require(Names.destruction_catalyst, "gunpowder_cost", new ConfigReference(3).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.destruction_catalyst, "gunpowder_worth", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.destruction_catalyst, "gunpowder_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
-	Reliquary.CONFIG.require(Names.destruction_catalyst, "explosion_radius", new ConfigReference(1).setMinimumValue(1).setMaximumValue(5));
-	Reliquary.CONFIG.require(Names.destruction_catalyst, "centered_explosion", new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.destruction_catalyst, "perfect_cube", new ConfigReference(true));
-
-	//emperor's chalice configs
-	Reliquary.CONFIG.require(Names.emperor_chalice, "hunger_satiation_multiplier", new ConfigReference(4).setMinimumValue(0));
-
-	//ender staff configs
-	Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_cast_cost", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_node_warp_cost", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_worth", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.ender_staff, "ender_pearl_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
-	Reliquary.CONFIG.require(Names.ender_staff, "node_warp_cast_time", new ConfigReference(60).setMinimumValue(10));
-
-	//fortune coin configs
-	Reliquary.CONFIG.require(Names.fortune_coin, "disable_audio", new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.fortune_coin, "standard_pull_distance", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.fortune_coin, "long_range_pull_distance", new ConfigReference(15));
-
-	//glacial staff configs
-	Reliquary.CONFIG.require(Names.glacial_staff, "snowball_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
-	Reliquary.CONFIG.require(Names.glacial_staff, "snowball_cost", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.glacial_staff, "snowball_worth", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.glacial_staff, "snowball_damage", new ConfigReference(3).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.glacial_staff, "snowball_damage_bonus_fire_immune", new ConfigReference(3).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.glacial_staff, "snowball_damage_bonus_blaze", new ConfigReference(6).setMinimumValue(0));
-
-	//harvest rod configs
-	Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
-	Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_cost", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_worth", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_luck_percent_chance", new ConfigReference(33).setMinimumValue(1).setMaximumValue(100));
-	Reliquary.CONFIG.require(Names.harvest_rod, "bonemeal_luck_rolls", new ConfigReference(2).setMinimumValue(0).setMaximumValue(7));
-	Reliquary.CONFIG.require(Names.harvest_rod, "harvest_break_radius", new ConfigReference(2).setMinimumValue(0).setMaximumValue(5));
-
-	//hero's medallion config
-	Reliquary.CONFIG.require(Names.hero_medallion, "experience_level_maximum", new ConfigReference(30).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.hero_medallion, "experience_level_minimum", new ConfigReference(0).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.hero_medallion, "experience_limit", new ConfigReference(cleanIntMax).setMinimumValue(0).setMaximumValue(cleanIntMax));
-
-	//ice rod configs
-	Reliquary.CONFIG.require(Names.ice_magus_rod, "snowball_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
-	Reliquary.CONFIG.require(Names.ice_magus_rod, "snowball_cost", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.ice_magus_rod, "snowball_worth", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.ice_magus_rod, "snowball_damage", new ConfigReference(2).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.ice_magus_rod, "snowball_damage_bonus_fire_immune", new ConfigReference(2).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.ice_magus_rod, "snowball_damage_bonus_blaze", new ConfigReference(4).setMinimumValue(0));
-
-	//infernal claws configs
-	Reliquary.CONFIG.require(Names.infernal_claws, "hunger_cost_percent", new ConfigReference(10).setMinimumValue(0));
-
-	//infernal chalice configs
-	Reliquary.CONFIG.require(Names.infernal_chalice, "hunger_cost_percent", new ConfigReference(5).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.infernal_chalice, "fluid_limit", new ConfigReference(500000).setMinimumValue(0).setMaximumValue(cleanIntMax));
-
-	//interdiction torch configs
-	//see post init for entity configs
-	Reliquary.CONFIG.require(Names.interdiction_torch, "push_radius", new ConfigReference(5).setMinimumValue(1).setMaximumValue(15));
-	Reliquary.CONFIG.require(Names.interdiction_torch, "can_push_projectiles", new ConfigReference(false));
-
-	//kraken shell configs
-	Reliquary.CONFIG.require(Names.kraken_shell, "hunger_cost_percent", new ConfigReference(25).setMinimumValue(0));
-
-	//lantern of paranoia configs
-	Reliquary.CONFIG.require(Names.lantern_of_paranoia, "min_light_level", new ConfigReference(8).setMinimumValue(0).setMaximumValue(15));
-	Reliquary.CONFIG.require(Names.lantern_of_paranoia, "placement_scan_radius", new ConfigReference(6).setMinimumValue(1).setMaximumValue(15));
-	//Reliquary.CONFIG.require(Names.lantern_of_paranoia, "only_place_on_visible_blocks", new ConfigReference(false));
-
-	//fertile_lilypad of fertility configs
-	Reliquary.CONFIG.require(Names.fertile_lilypad, "seconds_between_growth_ticks", new ConfigReference(47).setMinimumValue(1));
-	Reliquary.CONFIG.require(Names.fertile_lilypad, "tile_range", new ConfigReference(4).setMinimumValue(1).setMaximumValue(15));
-	Reliquary.CONFIG.require(Names.fertile_lilypad, "full_potency_range", new ConfigReference(1).setMinimumValue(1).setMaximumValue(15));
-
-	//midas touchstone configs
-	List<String> goldItems = ImmutableList.of();
-	Reliquary.CONFIG.require(Names.midas_touchstone, "gold_items", new ConfigReference(goldItems));
-	Reliquary.CONFIG.require(Names.midas_touchstone, "ticks_between_repair_ticks", new ConfigReference(4).setMinimumValue(1).setMaximumValue(cleanShortMax));
-	Reliquary.CONFIG.require(Names.midas_touchstone, "glowstone_cost", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.midas_touchstone, "glowstone_worth", new ConfigReference(4).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.midas_touchstone, "glowstone_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
-
-	//phoenix down configs
-	Reliquary.CONFIG.require(Names.phoenix_down, "hunger_cost_percent", new ConfigReference(25).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.phoenix_down, "leaping_potency", new ConfigReference(1).setMinimumValue(0).setMaximumValue(5));
-	Reliquary.CONFIG.require(Names.phoenix_down, "heal_percentage_of_max_life", new ConfigReference(100));
-	Reliquary.CONFIG.require(Names.phoenix_down, "remove_negative_status", new ConfigReference(true));
-	Reliquary.CONFIG.require(Names.phoenix_down, "give_temporary_damage_resistance", new ConfigReference(true));
-	Reliquary.CONFIG.require(Names.phoenix_down, "give_temporary_regeneration", new ConfigReference(true));
-	Reliquary.CONFIG.require(Names.phoenix_down, "give_temporary_fire_resistance_if_fire_damage_killed_you", new ConfigReference(true));
-	Reliquary.CONFIG.require(Names.phoenix_down, "give_temporary_water_breathing_if_drowning_killed_you", new ConfigReference(true));
-
-	//pyromancer staff configs
-	Reliquary.CONFIG.require(Names.pyromancer_staff, "hunger_cost_percent", new ConfigReference(5).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.pyromancer_staff, "fire_charge_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
-	Reliquary.CONFIG.require(Names.pyromancer_staff, "fire_charge_cost", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.pyromancer_staff, "fire_charge_worth", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.pyromancer_staff, "ghast_absorb_worth", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_powder_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));
-	Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_powder_cost", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_powder_worth", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.pyromancer_staff, "blaze_absorb_worth", new ConfigReference(1).setMinimumValue(0));
-
-	//rending gale configs
-	Reliquary.CONFIG.require(Names.rending_gale, "charge_limit", new ConfigReference(cleanShortMax).setMinimumValue(0).setMaximumValue(cleanIntMax));
-	Reliquary.CONFIG.require(Names.rending_gale, "cast_charge_cost", new ConfigReference(1).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.rending_gale, "bolt_charge_cost", new ConfigReference(100).setMinimumValue(0));
-	Reliquary.CONFIG.require(Names.rending_gale, "charge_feather_worth", new ConfigReference(100).setMinimumValue(1));
-	Reliquary.CONFIG.require(Names.rending_gale, "block_target_range", new ConfigReference(12).setMaximumValue(15));
-	Reliquary.CONFIG.require(Names.rending_gale, "push_pull_radius", new ConfigReference(10).setMinimumValue(1));
-	Reliquary.CONFIG.require(Names.rending_gale, "can_push_projectiles", new ConfigReference(false));
-
-	//rod of lyssa configs
-	Reliquary.CONFIG.require(Names.rod_of_lyssa, "use_leveled_failure_rate", new ConfigReference(true));
-	Reliquary.CONFIG.require(Names.rod_of_lyssa, "level_cap_for_leveled_formula", new ConfigReference(100).setMinimumValue(1).setMaximumValue(900));
-	Reliquary.CONFIG.require(Names.rod_of_lyssa, "flat_steal_failure_percent_rate", new ConfigReference(10).setMinimumValue(0).setMaximumValue(100));
-	Reliquary.CONFIG.require(Names.rod_of_lyssa, "steal_from_vacant_slots", new ConfigReference(true));
-	Reliquary.CONFIG.require(Names.rod_of_lyssa, "fail_steal_from_vacant_slots", new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.rod_of_lyssa, "anger_on_steal_failure", new ConfigReference(true));
-
-	//sojourners staff configs
-	List<String> torches = ImmutableList.of();
-	Reliquary.CONFIG.require(Names.sojourner_staff, "torches", new ConfigReference(torches));
-	Reliquary.CONFIG.require(Names.sojourner_staff, "max_capacity_per_item_type", new ConfigReference(1500).setMinimumValue(1).setMaximumValue(itemCap));
-	Reliquary.CONFIG.require(Names.sojourner_staff, "max_range", new ConfigReference(30).setMinimumValue(1).setMaximumValue(30));
-	Reliquary.CONFIG.require(Names.sojourner_staff, "tile_per_cost_multiplier", new ConfigReference(6).setMinimumValue(6).setMaximumValue(30));
-
-	//twilight cloak configs
-	Reliquary.CONFIG.require(Names.twilight_cloak, "max_light_level", new ConfigReference(4).setMinimumValue(0).setMaximumValue(15));
-	//Reliquary.CONFIG.require(Names.twilight_cloak, "only_works_at_night", new ConfigReference(false));
-
-	//void tear configs
-	Reliquary.CONFIG.require(Names.void_tear, "item_limit", new ConfigReference(2000000000).setMinimumValue(0).setMaximumValue(cleanIntMax));
-	Reliquary.CONFIG.require(Names.void_tear, "absorb_when_created", new ConfigReference(true));
 	public void postInit() {
 		List<String> entityNames = new ArrayList<String>();
 		for (Object o : EntityList.stringToClassMapping.values()) {
@@ -359,10 +372,10 @@ public class ConfigurationHandler
 		Reliquary.CONFIG.require(Names.interdiction_torch, "entities_that_can_be_pushed", new ConfigReference(entityNames));
 		Reliquary.CONFIG.require(Names.interdiction_torch, "projectiles_that_can_be_pushed", new ConfigReference(projectileNames));
 
-		Reliquary.CONFIG.require(Names.rending_gale, "entities_that_can_be_pushed", new ConfigReference(entityNames));
-		Reliquary.CONFIG.require(Names.rending_gale, "projectiles_that_can_be_pushed", new ConfigReference(projectileNames));
+		Reliquary.CONFIG.require("entities_that_can_be_pushed", Names.rending_gale, new ConfigReference(entityNames));
+		Reliquary.CONFIG.require("projectiles_that_can_be_pushed", Names.rending_gale, new ConfigReference(projectileNames));
 
-		Reliquary.CONFIG.require(Names.seeker_shot, "entities_that_can_be_hunted", new ConfigReference(entityNames));
+		Reliquary.CONFIG.require(Names.seeker_shot, "entities_that_can_be_hunted", entityNames));
 
 	}
 */
