@@ -2,17 +2,10 @@ package xreliquary.handler;
 
 
 import com.google.common.collect.ImmutableList;
-import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
-import lib.enderwizards.sandstone.mod.config.ConfigReference;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import xreliquary.Reliquary;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
