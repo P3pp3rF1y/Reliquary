@@ -57,7 +57,6 @@ public class Reliquary {
         CONTENT = Sandstone.preInit();
 
         ModBlocks.init();
-        ModBlocks.initTileEntities();
 
         ModItems.init();
 

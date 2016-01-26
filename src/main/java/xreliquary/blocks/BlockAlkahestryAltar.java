@@ -96,7 +96,6 @@ public class BlockAlkahestryAltar extends BlockContainer {
                 return true;
             world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, "random.fizz", 0.3F, 0.5F + 0.5F * altar.getRedstoneCount() + (float) (world.rand.nextGaussian() / 8));
             for (int particles = world.rand.nextInt(3); particles < 3 + altar.getRedstoneCount() * 4 + altar.getRedstoneCount(); particles++) {
-                //TODO: verify particle
                 world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + 0.5D + world.rand.nextGaussian() / 5, pos.getY() + 1.2D, pos.getZ() + 0.5D + world.rand.nextGaussian() / 5, 1D, 0D, 0D);
             }
             if (world.isRemote)
@@ -106,7 +105,6 @@ public class BlockAlkahestryAltar extends BlockContainer {
         } else if (player.getCurrentEquippedItem().getItem() instanceof ItemAlkahestryTome && NBTHelper.getInteger("redstone", player.getCurrentEquippedItem()) >  0) {
             world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, "random.fizz", 0.3F, 0.5F + 0.5F * altar.getRedstoneCount() + (float) (world.rand.nextGaussian() / 8));
             for (int particles = world.rand.nextInt(3); particles < 3 + altar.getRedstoneCount() * 4 + altar.getRedstoneCount(); particles++) {
-                //TODO: verify particle
                 world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + 0.5D + world.rand.nextGaussian() / 5, pos.getY() + 1.2D, pos.getZ() + 0.5D + world.rand.nextGaussian() / 5, 1D, 0D, 0D);
             }
             if (world.isRemote)
@@ -130,7 +128,7 @@ public class BlockAlkahestryAltar extends BlockContainer {
 
     public static void updateAltarBlockState(boolean active, World world, BlockPos pos) {
         //TODO: replace sandstone logic with proper BlockState handling
-        TileEntity te = world.getTileEntity(pos);
+        //TileEntity te = world.getTileEntity(pos);
         if (active) {
             world.setBlockState(pos, Reliquary.CONTENT.getBlock(Names.altar).getDefaultState());
         } else {
@@ -139,15 +137,17 @@ public class BlockAlkahestryAltar extends BlockContainer {
 
         //TODO: delete once tested that this is not needed anymore - setBlockState above takes care of this
         //world.setBlockMetadataWithNotify(x, y, z, meta, 3);
+/*
         if (te != null) {
             te.validate();
             world.setTileEntity(pos, te);
         }
+*/
     }
 
     @Override
     public TileEntity createNewTileEntity(World var1, int dunnoWhatThisIs) {
-        return new TileEntityAltar();
+        return new TileEntityAltar(this.isActive);
     }
 
 }

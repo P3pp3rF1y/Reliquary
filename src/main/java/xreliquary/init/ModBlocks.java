@@ -8,6 +8,8 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.blocks.*;
+import xreliquary.blocks.tile.TileEntityAltar;
+import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.items.block.ItemFertileLilyPad;
 import xreliquary.reference.Names;
@@ -36,8 +38,9 @@ public class ModBlocks {
 
     //TODO: figure out if this should be pulled to a separate class
     public static void initTileEntities() {
-        GameRegistry.registerTileEntity(TileEntityMortar.class, apothecaryMortar +"_tile");
-
+        GameRegistry.registerTileEntity(TileEntityAltar.class, Reference.MOD_ID + "." + "reliquaryAltar");
+        GameRegistry.registerTileEntity(TileEntityMortar.class, Reference.MOD_ID + "." + "apothecaryMortar");
+        GameRegistry.registerTileEntity(TileEntityCauldron.class, Reference.MOD_ID + "." + "reliquaryCauldron");
     }
 
     public static void initModels()

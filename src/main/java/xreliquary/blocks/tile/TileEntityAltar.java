@@ -3,31 +3,37 @@ package xreliquary.blocks.tile;
 import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ITickable;
 import xreliquary.Reliquary;
 import xreliquary.blocks.BlockAlkahestryAltar;
 import xreliquary.reference.Names;
 
-public class TileEntityAltar extends TileEntityBase {
+public class TileEntityAltar extends TileEntityBase
+{
     private int cycleTime;
     private boolean isActive;
     private int redstoneCount;
 
-    public TileEntityAltar() {
+    public TileEntityAltar(boolean isActive) {
         cycleTime = 0;
         redstoneCount = 0;
-        isActive = false;
+        this.isActive = isActive;
+
+        if (this.isActive) {
+            startCycle();
+        }
     }
 
     @Override
     public void update() {
+        if (this.worldObj.isRemote)
+            return;
         if (!isActive)
             return;
         int worldTime = (int) (worldObj.getWorldTime() % 24000);
         if (worldTime >= 12000)
             return;
         if (!worldObj.canSeeSky(getPos().add(0,1,0)))
-            return;
-        if (worldObj.isRemote)
             return;
         if (cycleTime > 0) {
             cycleTime--;
@@ -43,9 +49,7 @@ public class TileEntityAltar extends TileEntityBase {
         int defaultCycleTime = Reliquary.CONFIG.getInt(Names.altar, "time_in_minutes") * 60 * 20;
         int maximumVariance = Reliquary.CONFIG.getInt(Names.altar, "maximum_time_variance_in_minutes") * 60 * 20;
         cycleTime = (int) (defaultCycleTime + (double)maximumVariance * worldObj.rand.nextGaussian());
-        isActive = true;
         redstoneCount = 0;
-        BlockAlkahestryAltar.updateAltarBlockState(isActive(), worldObj, getPos());
     }
 
     @Override
@@ -65,9 +69,10 @@ public class TileEntityAltar extends TileEntityBase {
     }
 
     public void addRedstone() {
+        //TODO:move this logic into the block itself and use blockstate for redstone
         redstoneCount++;
         if (redstoneCount >= getRedstoneCost()) {
-            this.startCycle();
+            BlockAlkahestryAltar.updateAltarBlockState( isActive(), worldObj, getPos() );
         }
     }
 

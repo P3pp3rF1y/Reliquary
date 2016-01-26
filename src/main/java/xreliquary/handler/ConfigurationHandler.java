@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -18,6 +19,7 @@ import xreliquary.reference.Settings;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -36,8 +38,95 @@ public class ConfigurationHandler
 
 	private static void loadConfiguration()
 	{
-		//HUD positions
-		Settings.HudPositions.sojournerStaff = getInt(Names.sojourner_staff, Names.hud_positions, 3, 1, 4);
+		loadHudPositions();
+		loadEasyModeSettings();
+		loadMobDropProbabilities();
+
+		if (configuration.hasChanged())
+		{
+			configuration.save();
+		}
+	}
+
+	private static void loadMobDropProbabilities()
+	{
+		HashMap<String, Integer> drops = new HashMap<>(  );
+
+		drops.put(Names.zombie_heart + "_base", getInt(Names.zombie_heart + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.zombie_heart + "_base", getInt(Names.zombie_heart + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.zombie_heart + "_looting", getInt(Names.zombie_heart + "_looting", Names.mob_drop_probability, 5, 0, 100));
+		drops.put(Names.pigman_heart + "_base", getInt(Names.pigman_heart + "_base", Names.mob_drop_probability, 15, 0, 100));
+		drops.put(Names.pigman_heart + "_looting", getInt(Names.pigman_heart + "_looting", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.rib_bone + "_base", getInt(Names.rib_bone + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.rib_bone + "_looting", getInt(Names.rib_bone + "_looting", Names.mob_drop_probability, 5, 0, 100));
+		drops.put(Names.withered_rib + "_base", getInt(Names.withered_rib + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.withered_rib + "_looting", getInt(Names.withered_rib + "_looting", Names.mob_drop_probability, 5, 0, 100));
+		drops.put(Names.spider_fangs + "_base", getInt(Names.spider_fangs + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.spider_fangs + "_looting", getInt(Names.spider_fangs + "_looting", Names.mob_drop_probability, 5, 0, 100));
+		drops.put(Names.cave_spider_fangs + "_base", getInt(Names.cave_spider_fangs + "_base", Names.mob_drop_probability, 15, 0, 100));
+		drops.put(Names.cave_spider_fangs + "_looting", getInt(Names.cave_spider_fangs + "_looting", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.blaze_molten_core + "_base", getInt(Names.blaze_molten_core + "_base", Names.mob_drop_probability, 15, 0, 100));
+		drops.put(Names.blaze_molten_core + "_looting", getInt(Names.blaze_molten_core + "_looting", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.magma_cube_molten_core + "_base", getInt(Names.magma_cube_molten_core + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.magma_cube_molten_core + "_looting", getInt(Names.magma_cube_molten_core + "_looting", Names.mob_drop_probability, 5, 0, 100));
+		drops.put(Names.frozen_core + "_base", getInt(Names.frozen_core + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.frozen_core + "_looting", getInt(Names.frozen_core + "_looting", Names.mob_drop_probability, 5, 0, 100));
+		drops.put(Names.eye_of_the_storm + "_base", getInt(Names.eye_of_the_storm + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.eye_of_the_storm + "_looting", getInt(Names.eye_of_the_storm + "_looting", Names.mob_drop_probability, 5, 0, 100));
+		drops.put(Names.bat_wing + "_base", getInt(Names.bat_wing + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.bat_wing + "_looting", getInt(Names.bat_wing + "_looting", Names.mob_drop_probability, 5, 0, 100));
+		drops.put(Names.creeper_gland + "_base", getInt(Names.creeper_gland + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.creeper_gland + "_looting", getInt(Names.creeper_gland + "_looting", Names.mob_drop_probability, 5, 0, 100));
+		drops.put(Names.ghast_gland + "_base", getInt(Names.ghast_gland + "_base", Names.mob_drop_probability, 15, 0, 100));
+		drops.put(Names.ghast_gland + "_looting", getInt(Names.ghast_gland + "_looting", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.witch_hat + "_base", getInt(Names.witch_hat + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.witch_hat + "_looting", getInt(Names.witch_hat + "_looting", Names.mob_drop_probability, 5, 0, 100));
+		drops.put(Names.squid_beak + "_base", getInt(Names.squid_beak + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.squid_beak + "_looting", getInt(Names.squid_beak + "_looting", Names.mob_drop_probability, 5, 0, 100));
+		drops.put(Names.slime_pearl + "_base", getInt(Names.slime_pearl + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.slime_pearl + "_looting", getInt(Names.slime_pearl + "_looting", Names.mob_drop_probability, 5, 0, 100));
+		drops.put(Names.ender_heart + "_base", getInt(Names.ender_heart + "_base", Names.mob_drop_probability, 10, 0, 100));
+		drops.put(Names.ender_heart + "_looting", getInt(Names.ender_heart + "_looting", Names.mob_drop_probability, 5, 0, 100));
+
+		Settings.mobDropProbabilities = drops;
+	}
+
+	private static void loadEasyModeSettings()
+	{
+		boolean easyModeDefault = true;
+
+		Settings.EasyModeRecipes.fortuneCoin = getBoolean( Names.fortune_coin, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.altar = getBoolean(Names.altar, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.infernalChalice = getBoolean(Names.infernal_chalice, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.enderStaff = getBoolean(Names.ender_staff, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.salamanderEye = getBoolean(Names.salamander_eye, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.rodOfLyssa = getBoolean(Names.rod_of_lyssa, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.serpentStaff = getBoolean(Names.serpent_staff, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.rendingGale = getBoolean(Names.rending_gale, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.pyromancerStaff = getBoolean(Names.pyromancer_staff, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.magicBane = getBoolean(Names.magicbane, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.lanternOfParanoia = getBoolean(Names.lantern_of_paranoia, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.alkahestryTome = getBoolean(Names.alkahestry_tome, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.wraithNode = getBoolean(Names.wraith_node, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.glacialStaff = getBoolean(Names.glacial_staff, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.sojournerStaff = getBoolean(Names.sojourner_staff, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.krakenShell = getBoolean(Names.kraken_shell, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.angelicFeather = getBoolean(Names.angelic_feather, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.emperorChalice = getBoolean(Names.emperor_chalice, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.heroMedallion = getBoolean(Names.hero_medallion, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.iceMagnusRod = getBoolean(Names.ice_magus_rod, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.infernalClaws = getBoolean(Names.infernal_claws, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.destructionCatalyst = getBoolean(Names.destruction_catalyst, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.interdictionTorch = getBoolean(Names.interdiction_torch, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.voidTear = getBoolean(Names.void_tear, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.infernalTear = getBoolean(Names.infernal_tear, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.fertileEssence = getBoolean(Names.fertile_essence, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.seekerShot = getBoolean(Names.seeker_shot, Names.easy_mode_recipes, easyModeDefault);
+	}
+
+	private static void loadHudPositions()
+	{
+		Settings.HudPositions.sojournerStaff = getInt( Names.sojourner_staff, Names.hud_positions, 3, 1, 4);
 		Settings.HudPositions.handgun = getInt(Names.handgun, Names.hud_positions, 3, 1, 4);
 		Settings.HudPositions.alkahestryTome = getInt(Names.alkahestry_tome, Names.hud_positions, 3, 1, 4);
 		Settings.HudPositions.destructionCatalyst = getInt(Names.destruction_catalyst, Names.hud_positions, 3, 1, 4);
@@ -52,11 +141,10 @@ public class ConfigurationHandler
 		Settings.HudPositions.heroMedallion = getInt(Names.hero_medallion, Names.hud_positions, 3, 1, 4);
 		Settings.HudPositions.pyromanceStaff = getInt(Names.pyromancer_staff, Names.hud_positions, 3, 1, 4);
 		Settings.HudPositions.rendingGale = getInt(Names.rending_gale, Names.hud_positions, 3, 1, 4);
+	}
 
-		if (configuration.hasChanged())
-		{
-			configuration.save();
-		}
+	private static boolean getBoolean(String name, String category, boolean defaultValue) {
+		return configuration.getBoolean( name, Names.hud_positions, defaultValue, getTranslatedComment( category, name ), getLabelLangRef( category, name));
 	}
 
 	private static int getInt(String name, String category, int defaultValue, int minValue, int maxValue) {
@@ -89,69 +177,7 @@ public class ConfigurationHandler
 	//global HUD positions
 
 	//easy mode recipes
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.fortune_coin, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.altar, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.infernal_chalice, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.ender_staff, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.salamander_eye, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.rod_of_lyssa, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.serpent_staff, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.rending_gale, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.pyromancer_staff, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.magicbane, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.lantern_of_paranoia, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.alkahestry_tome, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.wraith_node, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.glacial_staff, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.sojourner_staff, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.kraken_shell, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.angelic_feather, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.emperor_chalice, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.hero_medallion, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.ice_magus_rod, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.infernal_claws, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.destruction_catalyst, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.interdiction_torch, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.void_tear, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.infernal_tear, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.fertile_essence, new ConfigReference(false));
-	Reliquary.CONFIG.require(Names.easy_mode_recipes, Names.seeker_shot, new ConfigReference(false));
 
-	//mob drop addition probabilities
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.zombie_heart + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.zombie_heart + "_looting", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.pigman_heart + "_base", new ConfigReference(15));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.pigman_heart + "_looting", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.rib_bone + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.rib_bone + "_looting", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.withered_rib + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.withered_rib + "_looting", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.spider_fangs + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.spider_fangs + "_looting", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.cave_spider_fangs + "_base", new ConfigReference(15));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.cave_spider_fangs + "_looting", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.blaze_molten_core + "_base", new ConfigReference(15));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.blaze_molten_core + "_looting", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.magma_cube_molten_core + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.magma_cube_molten_core + "_looting", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.frozen_core + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.frozen_core + "_looting", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.eye_of_the_storm + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.eye_of_the_storm + "_looting", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.bat_wing + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.bat_wing + "_looting", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.creeper_gland + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.creeper_gland + "_looting", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.ghast_gland + "_base", new ConfigReference(15));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.ghast_gland + "_looting", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.witch_hat + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.witch_hat + "_looting", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.squid_beak + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.squid_beak + "_looting", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.slime_pearl + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.slime_pearl+ "_looting", new ConfigReference(5));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.ender_heart + "_base", new ConfigReference(10));
-	Reliquary.CONFIG.require(Names.mob_drop_probability, Names.ender_heart + "_looting", new ConfigReference(5));
 
 	//alkahestry tome configs
 	Reliquary.CONFIG.require(Names.alkahestry_tome, "redstone_limit", new ConfigReference(250).setMinimumValue(0).setMaximumValue(itemCap));

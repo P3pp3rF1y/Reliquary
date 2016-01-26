@@ -19,6 +19,7 @@ import xreliquary.entities.*;
 import xreliquary.entities.potion.*;
 import xreliquary.entities.shot.*;
 import xreliquary.event.CommonEventHandler;
+import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
@@ -38,6 +39,8 @@ public class CommonProxy {
             //TODO: enable !!!
             //XRRecipes.init();
             Alkahestry.init();
+
+            ModBlocks.initTileEntities();
         } catch (Exception e) {
             e.printStackTrace();
             FMLCommonHandler.instance().raiseException(e, "Reliquary failed to initiate recipies.", true);
@@ -93,7 +96,6 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
 
         this.registerEntities();
-        this.registerTileEntities();
     }
 
     public void initOptions() {
@@ -377,12 +379,6 @@ public class CommonProxy {
         for (int i = 0; i < Reliquary.CONTENT.registeredObjectNames.size(); i++) {
             Reliquary.CONFIG.require(Names.recipe_enabled, Reliquary.CONTENT.registeredObjectNames.get(i).replace(':', '_'), new ConfigReference(true));
         }
-    }
-
-    public void registerTileEntities() {
-        GameRegistry.registerTileEntity(TileEntityAltar.class, "reliquaryAltar");
-        GameRegistry.registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
-        GameRegistry.registerTileEntity(TileEntityCauldron.class, "reliquaryCauldron");
     }
 
     public void registerEntities() {
