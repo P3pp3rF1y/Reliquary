@@ -14,14 +14,9 @@ public class TileEntityAltar extends TileEntityBase
     private boolean isActive;
     private int redstoneCount;
 
-    public TileEntityAltar(boolean isActive) {
+    public TileEntityAltar() {
         cycleTime = 0;
         redstoneCount = 0;
-        this.isActive = isActive;
-
-        if (this.isActive) {
-            startCycle();
-        }
     }
 
     @Override
@@ -50,6 +45,7 @@ public class TileEntityAltar extends TileEntityBase
         int maximumVariance = Reliquary.CONFIG.getInt(Names.altar, "maximum_time_variance_in_minutes") * 60 * 20;
         cycleTime = (int) (defaultCycleTime + (double)maximumVariance * worldObj.rand.nextGaussian());
         redstoneCount = 0;
+        isActive = true;
     }
 
     @Override
@@ -72,7 +68,7 @@ public class TileEntityAltar extends TileEntityBase
         //TODO:move this logic into the block itself and use blockstate for redstone
         redstoneCount++;
         if (redstoneCount >= getRedstoneCost()) {
-            BlockAlkahestryAltar.updateAltarBlockState( isActive(), worldObj, getPos() );
+            BlockAlkahestryAltar.updateAltarBlockState( true, worldObj, getPos() );
         }
     }
 

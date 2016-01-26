@@ -128,26 +128,21 @@ public class BlockAlkahestryAltar extends BlockContainer {
 
     public static void updateAltarBlockState(boolean active, World world, BlockPos pos) {
         //TODO: replace sandstone logic with proper BlockState handling
-        //TileEntity te = world.getTileEntity(pos);
         if (active) {
             world.setBlockState(pos, Reliquary.CONTENT.getBlock(Names.altar).getDefaultState());
+
+            TileEntityAltar te = (TileEntityAltar) world.getTileEntity(pos);
+            if (te != null) {
+                te.startCycle();
+            }
         } else {
             world.setBlockState(pos, Reliquary.CONTENT.getBlock(Names.altar_idle).getDefaultState());
         }
-
-        //TODO: delete once tested that this is not needed anymore - setBlockState above takes care of this
-        //world.setBlockMetadataWithNotify(x, y, z, meta, 3);
-/*
-        if (te != null) {
-            te.validate();
-            world.setTileEntity(pos, te);
-        }
-*/
     }
 
     @Override
     public TileEntity createNewTileEntity(World var1, int dunnoWhatThisIs) {
-        return new TileEntityAltar(this.isActive);
+        return new TileEntityAltar();
     }
 
 }
