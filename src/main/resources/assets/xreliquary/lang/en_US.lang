@@ -123,7 +123,7 @@ item.kraken_shell.tooltip=Absorbs drowning damage;at the expense of hunger.
 item.lantern_of_paranoia.name={{!colors.yellow}}Lantern Of Paranoia
 item.lantern_of_paranoia.tooltip=Places torches in unlit;areas automatically.;Shift + Right-Click to activate.
 
-tile.lilypad.name=Lilypad of Fertility
+tile.fertile_lilypad.name=Lilypad of Fertility
 
 item.magicbane.name=Magicbane
 item.magicbane.tooltip=Increases its strength;with each enchantment.

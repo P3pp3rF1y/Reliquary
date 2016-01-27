@@ -23,7 +23,9 @@ import java.util.*;
 public class PotionMap {
     private static List<PotionIngredient> ingredientsMap = new ArrayList<PotionIngredient>();
 
-    public static void init() {
+    //TODO enable with potion fix
+/*
+    public static void init) {
         //initialize the potion mapping. This is powered mainly through config file.
         //TIER ONE INGREDIENTS, these are always 0 potency and have minimal durations (3 for positive, 1 for negative or super-positive)
         addPotionConfig(Items.sugar, speed(3, 0), haste(3, 0));
@@ -113,6 +115,7 @@ public class PotionMap {
             Reliquary.CONFIG.require(Names.potion_ingredient, key, new ConfigReference(value));
         }
     }
+*/
 
     //include name helpers to quickly return the "proper" minecraft names for each effect, duration and potency
     //heal, saturation and harm are speshul, they don't need a duration.
@@ -163,6 +166,8 @@ public class PotionMap {
         configList.put(ContentHelper.getIdent(ist.getItem()).replace(':', '_') + (ist.getItemDamage() == 0 ? "" : "_" + ist.getItemDamage()), ingredientEffects);
     }
 
+//TODO enable with potion fix
+/*
 
     public static void initializePotionMappings() {
         //_ replaces : in identity names. the last _ should always denote a meta value that separates this from another item, if possible.
@@ -198,6 +203,7 @@ public class PotionMap {
             ingredientsMap.add(ingredient);
         }
     }
+*/
 
     public static List<PotionIngredient> getIngredients() {
         return ingredientsMap;

@@ -102,6 +102,8 @@ public class XRRecipes {
 
     public static void init() {
         // tome and alkahestry recipes
+        //TODO enable with Alkahestry Tome fix
+/*
         GameRegistry.addRecipe(new AlkahestryDrainRecipe());
         GameRegistry.addRecipe(new AlkahestryRedstoneRecipe());
         GameRegistry.addRecipe(new AlkahestryCraftingRecipe());
@@ -109,22 +111,29 @@ public class XRRecipes {
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_redstone", AlkahestryRedstoneRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_drain", AlkahestryDrainRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_redstone");
+*/
 
         //misc recipes
         //frozen cores to make packed ice.
         addRecipe(true, true, new ItemStack(Blocks.packed_ice, 1, 0), Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, frozenCore());
 
+        //TODO enable with potion making fixes
+/*
         //apothecary mortar recipe
         addRecipe(false, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.apothecary_mortar), 1, 0), "gng", "ngn", "nnn", 'n', Blocks.quartz_block, 'g', creeperGland());
 
         //apothecary cauldron recipe
         addRecipe(false, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.apothecary_cauldron), 1, 0), "gng", "ici", "nmn", 'g', creeperGland(), 'n', enderHeart(), 'i', infernalClaw(), 'c', Items.cauldron, 'm', moltenCore());
+*/
 
+        //TODO enable with Alkahestry Tome fixes
+/*
         //alkahestry tome
         if (Settings.EasyModeRecipes.alkahestryTome)
             addRecipe(true, false, new ItemStack(getItem(Names.alkahestry_tome), 1, 0), Items.book, getItem(Names.witch_hat), moltenCore(), witherSkull());
         else
             addRecipe(true, false, new ItemStack(getItem(Names.alkahestry_tome), 1, 0), moltenCore(), getItem(Names.witch_hat), stormEye(), creeperGland(), Items.book, slimePearl(), spiderFangs(), witherSkull(), enderHeart());
+*/
 
         //glowstone altar
         if (Settings.EasyModeRecipes.altar)
@@ -329,12 +338,16 @@ public class XRRecipes {
         else
             addRecipe(false, false, emptyVoidTear(), "lel", "pgp", "lnl", 'l', lapis(), 'e', Items.ender_pearl, 'p', slimePearl(), 'g', Items.ghast_tear, 'n', enderHeart());
 
+        //TODO enable with infernal tear fix
+
+/*
         // infernal tear
         if (Settings.EasyModeRecipes.infernalTear)
             addRecipe(true, false, new ItemStack(getItem(Names.infernal_tear), 1, 0), emptyVoidTear(), getItem(Names.witch_hat), moltenCore(), infernalClaw());
         else
             addRecipe(false, false, new ItemStack(getItem(Names.infernal_tear), 1, 0), "php", "mtm", "pcp", 'p', Items.blaze_powder, 'h', getItem(Names.witch_hat), 'm', moltenCore(), 't', emptyVoidTear(), 'c', infernalClaw());
-        
+*/
+
         // angelic feather
         if (Settings.EasyModeRecipes.angelicFeather)
             addRecipe(true, false, new ItemStack(getItem(Names.angelic_feather), 1), Items.feather, enderHeart(), batWing(), fertileEssence());

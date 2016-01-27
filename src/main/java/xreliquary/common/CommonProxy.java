@@ -22,6 +22,7 @@ import xreliquary.event.CommonEventHandler;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
+import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
 import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
@@ -37,8 +38,7 @@ public class CommonProxy {
 
     public void preInit() {
         try {
-            //TODO: enable !!!
-            //XRRecipes.init();
+            XRRecipes.init();
             Alkahestry.init();
 
             ModBlocks.initTileEntities();
