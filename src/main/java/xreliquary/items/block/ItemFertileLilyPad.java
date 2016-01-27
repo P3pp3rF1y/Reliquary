@@ -17,6 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 public class ItemFertileLilyPad extends ItemBlockBase
 {
@@ -101,7 +102,7 @@ public class ItemFertileLilyPad extends ItemBlockBase
                     return false;
 				}
 
-				int secondsBetweenGrowthTicks = Reliquary.CONFIG.getInt( Names.fertile_lilypad, "seconds_between_growth_ticks");
+				int secondsBetweenGrowthTicks = Settings.FertileLilypad.secondsBetweenGrowthTicks;
 				worldIn.scheduleBlockUpdate(blockpos1, ModBlocks.fertileLilypad, secondsBetweenGrowthTicks * 20, 1);
 
 

@@ -16,6 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 
@@ -53,11 +54,11 @@ public class ItemHeroMedallion extends ItemToggleable {
     }
 
     private int getExperienceMinimum() {
-        return Reliquary.CONFIG.getInt(Names.hero_medallion, "experience_level_minimum");
+        return Settings.HeroMedallion.experienceLevelMinimum;
     }
 
     private int getExperienceMaximum() {
-        return Reliquary.CONFIG.getInt(Names.hero_medallion, "experience_level_maximum");
+        return Settings.HeroMedallion.experienceLevelMaximum;
     }
 
     // this drains experience beyond level specified in configs

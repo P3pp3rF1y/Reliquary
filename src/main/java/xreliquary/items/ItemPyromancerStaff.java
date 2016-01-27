@@ -25,6 +25,7 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -409,28 +410,28 @@ public class ItemPyromancerStaff extends ItemToggleable {
     }
 
     private int getFireChargeWorth() {
-        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "fire_charge_worth");
+        return Settings.PyromancerStaff.fireChargeWorth;
     }
     private int getFireChargeCost() {
-        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "fire_charge_cost");
+        return Settings.PyromancerStaff.fireChargeCost;
     }
     private int getFireChargeLimit() {
-        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "fire_charge_limit");
+        return Settings.PyromancerStaff.fireChargeLimit;
     }
     private int getBlazePowderWorth() {
-        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "blaze_powder_worth");
+        return Settings.PyromancerStaff.blazePowderWorth;
     }
     private int getBlazePowderCost() {
-        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "blaze_powder_cost");
+        return Settings.PyromancerStaff.blazePowderCost;
     }
     private int getBlazePowderLimit() {
-        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "blaze_powder_limit");
+        return Settings.PyromancerStaff.blazePowderLimit;
     }
     private int getBlazeAbsorbWorth() {
-        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "blaze_absorb_worth");
+        return Settings.PyromancerStaff.blazeAbsorbWorth;
     }
     private int getGhastAbsorbWorth() {
-        return Reliquary.CONFIG.getInt(Names.pyromancer_staff, "ghast_absorb_worth");
+        return Settings.PyromancerStaff.ghastAbsorbWorth;
     }
 
 

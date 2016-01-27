@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 @ContentInit
 public class ItemVoidTearEmpty extends ItemBase {
@@ -94,7 +95,7 @@ public class ItemVoidTearEmpty extends ItemBase {
         }
         NBTHelper.setInteger("itemQuantity", filledTear, quantity);
         //configurable auto-drain when created.
-        NBTHelper.setBoolean("enabled", filledTear, Reliquary.CONFIG.getBool(Names.void_tear, "absorb_when_created"));
+        NBTHelper.setBoolean("enabled", filledTear, Settings.VoidTear.absorbWhenCreated);
 
         return filledTear;
     }

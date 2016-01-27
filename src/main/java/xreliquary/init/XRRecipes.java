@@ -77,7 +77,8 @@ public class XRRecipes {
     //if any component of the item is in the recipe disabler list, it will ALSO block the recipe automatically.
     //override disabler forces the recipe to evaluate anyway. This occurs for items that don't fall into XR scope, and thus shouldn't be evaluated.
     public static void addRecipe(boolean isShapeless, boolean overrideDisabler, ItemStack result, Object... params) {
-        if (!overrideDisabler) {
+        //TODO: figure out if we need disabling recipes vs this done by modpack devs with minetweaker or such
+/*        if (!overrideDisabler) {
             boolean enabled = Reliquary.CONFIG.getGroup(Names.recipe_enabled).containsKey(ContentHelper.getIdent(result.getItem()).replace(':', '_')) && Reliquary.CONFIG.getBool(Names.recipe_enabled, ContentHelper.getIdent(result.getItem()).replace(':', '_'));
             if (!enabled) return;
             for (Object obj : params) {
@@ -94,13 +95,9 @@ public class XRRecipes {
                 enabled = enabled && Reliquary.CONFIG.getBool(Names.recipe_enabled, unlocalizedName);
             }
             if (!enabled) return;
-        }
+        }*/
         if (!isShapeless) GameRegistry.addRecipe(result, params);
             else GameRegistry.addShapelessRecipe(result, params);
-    }
-
-    private static boolean isEasyMode(String s) {
-        return Reliquary.CONFIG.getBool(Names.easy_mode_recipes, s);
     }
 
     public static void init() {

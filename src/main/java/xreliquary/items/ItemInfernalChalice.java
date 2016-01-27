@@ -19,6 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class ItemInfernalChalice extends ItemToggleable {
         this.formatTooltip(ImmutableMap.of("amount", amount), ist, list);
     }
 
-    protected int fluidLimit() { return Reliquary.CONFIG.getInt(Names.infernal_chalice, "fluid_limit"); }
+    protected int fluidLimit() { return Settings.InfernalChalice.fluidLimit; }
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {

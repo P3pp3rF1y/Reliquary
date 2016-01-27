@@ -46,17 +46,12 @@ public class Reliquary {
     public static CommonProxy PROXY;
 
     public static Content CONTENT;
-    public static Config CONFIG;
     public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID(), Reference.MOD_ID);
     public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ConfigurationHandler.init( event.getSuggestedConfigurationFile() );
-        //TODO cleanup commented out config code
-        //CONFIG = Config.toml(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".cfg"));
-
-        //PROXY.initOptions();
 
         CONTENT = Sandstone.preInit();
 

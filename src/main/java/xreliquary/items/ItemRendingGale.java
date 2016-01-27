@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.Iterator;
 import java.util.List;
@@ -48,13 +49,13 @@ public class ItemRendingGale extends ItemToggleable {
         LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
-    private static int getChargeLimit() { return Reliquary.CONFIG.getInt(Names.rending_gale, "charge_limit"); }
-    public static int getChargeCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "cast_charge_cost"); }
-    private static int getFeathersWorth() { return Reliquary.CONFIG.getInt(Names.rending_gale, "charge_feather_worth"); }
-    private static int getBoltChargeCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "bolt_charge_cost"); }
-    private static int getBoltTargetRange() { return Reliquary.CONFIG.getInt(Names.rending_gale, "block_target_range"); }
-    private static int getRadialPushRadius() { return Reliquary.CONFIG.getInt(Names.rending_gale, "push_pull_radius"); }
-    private static boolean canPushProjectiles() { return Reliquary.CONFIG.getBool(Names.rending_gale, "can_push_projectiles"); }
+    private static int getChargeLimit() { return Settings.RendingGale.chargeLimit; }
+    public static int getChargeCost() { return Settings.RendingGale.castChargeCost; }
+    private static int getFeathersWorth() { return Settings.RendingGale.chargeFeatherWorth; }
+    private static int getBoltChargeCost() { return Settings.RendingGale.boltChargeCost; }
+    private static int getBoltTargetRange() { return Settings.RendingGale.blockTargetRange; }
+    private static int getRadialPushRadius() { return Settings.RendingGale.pushPullRadius; }
+    private static boolean canPushProjectiles() { return Settings.RendingGale.canPushProjectiles; }
 
     @Override
     public boolean isFull3D(){ return true; }
@@ -384,8 +385,8 @@ public class ItemRendingGale extends ItemToggleable {
         double upperZ = player.posZ + getRadialPushRadius();
 
 
-        List<String> entitiesThatCanBePushed = (List<String>) Reliquary.CONFIG.get(Names.rending_gale, "entities_that_can_be_pushed");
-        List<String> projectilesThatCanBePushed = (List<String>) Reliquary.CONFIG.get(Names.rending_gale, "projectiles_that_can_be_pushed");
+        List<String> entitiesThatCanBePushed = Settings.RendingGale.entitiesThatCanBePushed;
+        List<String> projectilesThatCanBePushed = Settings.RendingGale.projectilesThatCanBePushed;
 
         List eList = player.worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 

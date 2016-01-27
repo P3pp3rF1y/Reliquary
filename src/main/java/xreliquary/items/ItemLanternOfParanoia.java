@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
         return EnumRarity.EPIC;
     }
 
-    public int getRange() { return Reliquary.CONFIG.getInt(Names.lantern_of_paranoia, "placement_scan_radius"); }
+    public int getRange() { return Settings.LanternOfParanoia.placementScanRadius; }
     // event driven item, does nothing here.
 
     // minor jump buff
@@ -84,7 +85,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
                         if (!player.worldObj.isAirBlock(new BlockPos(x, y, z)))
                             continue;
                         int lightLevel = player.worldObj.getLightFromNeighbors(new BlockPos(x, y, z));
-                        if (lightLevel > Reliquary.CONFIG.getInt(Names.lantern_of_paranoia, "min_light_level"))
+                        if (lightLevel > Settings.LanternOfParanoia.minLightLevel)
                             continue;
                         if (tryToPlaceTorchAround(stack, x, y, z, player, world))
                             break placement;

@@ -15,6 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 @ContentInit
 public class ItemTwilightCloak extends ItemToggleable {
@@ -45,7 +46,7 @@ public class ItemTwilightCloak extends ItemToggleable {
         int playerY = MathHelper.floor_double(player.getEntityBoundingBox().minY);
         int playerZ = MathHelper.floor_double(player.posZ);
 
-        if (player.worldObj.getLightFromNeighbors(new BlockPos(playerX, playerY, playerZ)) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "max_light_level"))
+        if (player.worldObj.getLightFromNeighbors(new BlockPos(playerX, playerY, playerZ)) > Settings.TwilightCloak.maxLightLevel)
             return;
 
 //        if (Reliquary.CONFIG.getBool(Names.twilight_cloak, "only_works_at_night")) {

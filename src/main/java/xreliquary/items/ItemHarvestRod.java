@@ -30,6 +30,7 @@ import xreliquary.Reliquary;
 import xreliquary.blocks.BlockFertileLilypad;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 import java.util.Random;
@@ -59,12 +60,12 @@ public class ItemHarvestRod extends ItemToggleable {
     @Override
     public boolean isFull3D(){ return true; }
 
-    public int getBonemealLimit() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_limit"); }
-    public int getBonemealWorth() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_worth"); }
-    public int getBonemealCost() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_cost"); }
-    public int getLuckRolls() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_luck_rolls"); }
-    public int getLuckPercent() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "bonemeal_luck_percent_chance"); }
-    public int getBreakRadius() { return Reliquary.CONFIG.getInt(Names.harvest_rod, "harvest_break_radius"); }
+    public int getBonemealLimit() { return Settings.HarvestRod.bonemealLimit; }
+    public int getBonemealWorth() { return Settings.HarvestRod.bonemealWorth; }
+    public int getBonemealCost() { return Settings.HarvestRod.bonemealCost; }
+    public int getLuckRolls() { return Settings.HarvestRod.bonemealLuckRolls; }
+    public int getLuckPercent() { return Settings.HarvestRod.bonemealLuckPercentChance; }
+    public int getBreakRadius() { return Settings.HarvestRod.harvestBreakRadius; }
 
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {

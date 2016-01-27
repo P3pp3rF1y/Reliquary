@@ -25,9 +25,11 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import lib.enderwizards.sandstone.util.NBTHelper;
+import xreliquary.reference.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @ContentInit
 public class ItemSojournerStaff extends ItemToggleable {
@@ -74,7 +76,7 @@ public class ItemSojournerStaff extends ItemToggleable {
     }
 
     private void scanForMatchingTorchesToFillInternalStorage(ItemStack ist, EntityPlayer player) {
-        List<String> torches = (List<String>) Reliquary.CONFIG.get(Names.sojourner_staff, "torches");
+        List<String> torches = Settings.SojournerStaff.torches;
         List<Item> items = new ArrayList<Item>();
 
         //default to always work with vanilla torches
@@ -275,7 +277,7 @@ public class ItemSojournerStaff extends ItemToggleable {
     }
 
     private int getTorchItemMaxCapacity() {
-        return Reliquary.CONFIG.getInt(Names.sojourner_staff, "max_capacity_per_item_type");
+        return Settings.SojournerStaff.maxCapacityPerItemType;
     }
 
     public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost) {
@@ -367,7 +369,7 @@ public class ItemSojournerStaff extends ItemToggleable {
                 if (!player.capabilities.isCreativeMode) {
                     int cost = 1;
                     int distance = (int) player.getDistance(placeBlockAt.getX(), placeBlockAt.getY(), placeBlockAt.getZ());
-                    for (; distance > Reliquary.CONFIG.getInt(Names.sojourner_staff, "tile_per_cost_multiplier"); distance -= Reliquary.CONFIG.getInt(Names.sojourner_staff, "tile_per_cost_multiplier")) {
+                    for (; distance > Settings.SojournerStaff.tilePerCostMultiplier; distance -= Settings.SojournerStaff.tilePerCostMultiplier) {
                         cost++;
                     }
                     if (!removeItemFromInternalStorage(ist, Item.getItemFromBlock(blockAttemptingPlacement), cost))
@@ -406,7 +408,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         float f6 = MathHelper.sin(-f1 * 0.017453292F);
         float f7 = f4 * f5;
         float f8 = f3 * f5;
-        double d3 = Reliquary.CONFIG.getInt(Names.sojourner_staff, "max_range");
+        double d3 = Settings.SojournerStaff.maxRange;
         Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
         return world.rayTraceBlocks(vec3, vec31, true, false, false);
     }

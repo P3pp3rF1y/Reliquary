@@ -22,6 +22,7 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class ItemVoidTear extends ItemToggleable {
             EntityPlayer player = (EntityPlayer) entity;
 
             ItemStack contents = this.getContainedItem(stack);
-            if (contents.stackSize < Reliquary.CONFIG.getInt(Names.void_tear, "item_limit") && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize())) {
+            if (contents.stackSize < Settings.VoidTear.itemLimit && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize())) {
                 //doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
                 if (!player.capabilities.isCreativeMode)
                     this.onAbsorb(stack, player);
@@ -176,7 +177,7 @@ public class ItemVoidTear extends ItemToggleable {
         int quantity = NBTHelper.getInteger("itemQuantity", ist);
 
         boolean foundItem = false;
-        while (quantity < Reliquary.CONFIG.getInt(Names.void_tear, "item_limit")) {
+        while (quantity < Settings.VoidTear.itemLimit) {
             if (!tryToRemoveFromInventory(contents, inventory, limit)) {
                 break;
             }

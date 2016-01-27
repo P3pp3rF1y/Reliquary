@@ -20,6 +20,7 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntitySpecialSnowball;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 
@@ -50,9 +51,9 @@ public class ItemIceMagusRod extends ItemToggleable {
         canRepair = false;
     }
 
-    public int getSnowballCap() { return Reliquary.CONFIG.getInt(this instanceof ItemGlacialStaff ? Names.glacial_staff : Names.ice_magus_rod, "snowball_limit"); }
-    public int getSnowballCost() { return Reliquary.CONFIG.getInt(this instanceof ItemGlacialStaff ? Names.glacial_staff : Names.ice_magus_rod, "snowball_cost"); }
-    public int getSnowballWorth() { return Reliquary.CONFIG.getInt(this instanceof ItemGlacialStaff ? Names.glacial_staff : Names.ice_magus_rod, "snowball_worth"); }
+    public int getSnowballCap() { return this instanceof ItemGlacialStaff ? Settings.GlacialStaff.snowballLimit : Settings.IceMagusRod.snowballLimit; }
+    public int getSnowballCost() { return this instanceof ItemGlacialStaff ? Settings.GlacialStaff.snowballCost : Settings.IceMagusRod.snowballCost; }
+    public int getSnowballWorth() { return this instanceof ItemGlacialStaff ? Settings.GlacialStaff.snowballWorth : Settings.IceMagusRod.snowballWorth; }
 
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
