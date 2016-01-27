@@ -18,6 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.Iterator;
 import java.util.List;
@@ -143,11 +144,11 @@ public class ItemFortuneCoin extends ItemBauble {
     }
 
     public double getLongRangePullDistance() {
-        return (double)Reliquary.CONFIG.getInt(Names.fortune_coin, "long_range_pull_distance");
+        return (double)Settings.FortuneCoin.longRangePullDistance;
     }
 
     public double getStandardPullDistance() {
-        return (double)Reliquary.CONFIG.getInt(Names.fortune_coin, "standard_pull_distance");
+        return (double)Settings.FortuneCoin.standardPullDistance ;
     }
 
     @Override
@@ -184,6 +185,6 @@ public class ItemFortuneCoin extends ItemBauble {
     }
 
     private boolean disabledAudio() {
-        return Reliquary.CONFIG.getBool(Names.fortune_coin, "disable_audio");
+        return Settings.FortuneCoin.disableAudio;
     }
 }

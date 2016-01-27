@@ -10,6 +10,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 
@@ -42,9 +43,9 @@ public class EntitySpecialSnowball extends EntitySnowball {
         return 1.2F;
     }
 
-    public int getSnowballDamage() { return Reliquary.CONFIG.getInt(fromGlacialStaff ? Names.glacial_staff : Names.ice_magus_rod, "snowball_damage"); }
-    public int getSnowballDamageFireImmuneBonus() { return Reliquary.CONFIG.getInt(fromGlacialStaff ? Names.glacial_staff : Names.ice_magus_rod, "snowball_damage_bonus_fire_immune"); }
-    public int getSnowballDamageBlazeBonus() { return Reliquary.CONFIG.getInt(fromGlacialStaff ? Names.glacial_staff : Names.ice_magus_rod, "snowball_damage_bonus_blaze"); }
+    public int getSnowballDamage() { return fromGlacialStaff ? Settings.GlacialStaff.snowballDamage : Settings.IceMagusRod.snowballDamage; }
+    public int getSnowballDamageFireImmuneBonus() { return fromGlacialStaff ? Settings.GlacialStaff.snowballDamageBonusFireImmune : Settings.IceMagusRod.snowballDamageBonusFireImmune; }
+    public int getSnowballDamageBlazeBonus() { return fromGlacialStaff ? Settings.GlacialStaff.snowballDamageBonusBlaze : Settings.IceMagusRod.snowballDamageBonusBlaze; }
 
     /**
      * Called when this EntityThrowable hits a block or entity.

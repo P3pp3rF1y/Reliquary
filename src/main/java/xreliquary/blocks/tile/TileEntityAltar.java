@@ -7,6 +7,8 @@ import net.minecraft.util.ITickable;
 import xreliquary.Reliquary;
 import xreliquary.blocks.BlockAlkahestryAltar;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
+
 
 public class TileEntityAltar extends TileEntityBase
 {
@@ -41,8 +43,8 @@ public class TileEntityAltar extends TileEntityBase
 
     public void startCycle() {
         //grabs the cycle time from the configs
-        int defaultCycleTime = Reliquary.CONFIG.getInt(Names.altar, "time_in_minutes") * 60 * 20;
-        int maximumVariance = Reliquary.CONFIG.getInt(Names.altar, "maximum_time_variance_in_minutes") * 60 * 20;
+        int defaultCycleTime = Settings.Altar.timeInMinutes * 60 * 20;
+        int maximumVariance = Settings.Altar.maximumTimeVarianceInMinutes * 60 * 20;
         cycleTime = (int) (defaultCycleTime + (double)maximumVariance * worldObj.rand.nextGaussian());
         redstoneCount = 0;
         isActive = true;
@@ -72,7 +74,7 @@ public class TileEntityAltar extends TileEntityBase
         }
     }
 
-    public static int getRedstoneCost() { return Reliquary.CONFIG.getInt(Names.altar, "redstone_cost"); }
+    public static int getRedstoneCost() { return Settings.Altar.redstoneCost; }
 
     public int getRedstoneCount() {
         return redstoneCount;

@@ -14,7 +14,7 @@ public class Settings
 		public static int destructionCatalyst;
 		public static int elsewhereFlask;
 		public static int enderStaff;
-		public static int iceMagnusRod;
+		public static int iceMagusRod;
 		public static int glacialStaff;
 		public static int voidTear;
 		public static int midasTouchstone;
@@ -47,7 +47,7 @@ public class Settings
 		public static boolean angelicFeather;
 		public static boolean emperorChalice;
 		public static boolean heroMedallion;
-		public static boolean iceMagnusRod;
+		public static boolean iceMagusRod;
 		public static boolean infernalClaws;
 		public static boolean destructionCatalyst;
 		public static boolean interdictionTorch;

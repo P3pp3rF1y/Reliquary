@@ -18,6 +18,7 @@ import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.Random;
 
@@ -58,7 +59,7 @@ public class BlockAlkahestryAltar extends BlockContainer {
     }
 
     private float getAltarActiveLightLevel() {
-        return (float)Reliquary.CONFIG.getInt(Names.altar, "output_light_level_while_active") / 16F;
+        return (float) Settings.Altar.outputLightLevelWhileActive / 16F;
     }
 
     @Override

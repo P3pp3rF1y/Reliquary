@@ -11,6 +11,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
+
 
 public class AlkahestryRedstoneRecipe implements IRecipe {
 
@@ -49,7 +51,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
                 }
             }
         }
-        return tome != null && valid == 1 && NBTHelper.getInteger("redstone", tome) + amount <= Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstone_limit");
+        return tome != null && valid == 1 && NBTHelper.getInteger("redstone", tome) + amount <= Settings.AlkahestryTome.redstoneLimit;
     }
 
     @Override

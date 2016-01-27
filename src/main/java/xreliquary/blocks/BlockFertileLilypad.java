@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 import java.util.Random;
@@ -51,15 +52,15 @@ public class BlockFertileLilypad extends BlockBush{
     }
 
     private int secondsBetweenGrowthTicks() {
-        return Reliquary.CONFIG.getInt(Names.fertile_lilypad, "seconds_between_growth_ticks");
+        return Settings.FertileLilypad.secondsBetweenGrowthTicks;
     }
 
     private int tileRange() {
-        return Reliquary.CONFIG.getInt(Names.fertile_lilypad, "tile_range");
+        return Settings.FertileLilypad.tileRange;
     }
 
     private int fullPotencyRange() {
-        return Reliquary.CONFIG.getInt(Names.fertile_lilypad, "full_potency_range");
+        return Settings.FertileLilypad.fullPotencyRange;
     }
 
     public void growCropsNearby(World world, BlockPos pos, IBlockState state) {

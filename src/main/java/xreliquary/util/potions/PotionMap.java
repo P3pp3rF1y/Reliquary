@@ -5,6 +5,7 @@ import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.commons.lang3.math.NumberUtils;
 import xreliquary.Reliquary;
 import xreliquary.init.XRRecipes;

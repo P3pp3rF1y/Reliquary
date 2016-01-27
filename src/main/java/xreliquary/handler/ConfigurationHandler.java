@@ -2,8 +2,12 @@ package xreliquary.handler;
 
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.items.ItemDestructionCatalyst;
@@ -12,10 +16,7 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 public class ConfigurationHandler
@@ -37,11 +38,40 @@ public class ConfigurationHandler
 		loadEasyModeSettings();
 		loadMobDropProbabilities();
 		loadBlockAndItemSettings();
+	}
+
+	public static void postInit() {
+		List<String> entityNames = new ArrayList<String>();
+		for (Object o : EntityList.stringToClassMapping.values()) {
+			Class c = (Class)o;
+			if (EntityLiving.class.isAssignableFrom(c)) {
+				entityNames.add( EntityList.classToStringMapping.get(o) );
+			}
+		}
+		List<String> projectileNames = new ArrayList<String>();
+		for (Object o : EntityList.stringToClassMapping.values()) {
+			Class c = (Class)o;
+			if (IProjectile.class.isAssignableFrom(c)) {
+				projectileNames.add( EntityList.classToStringMapping.get(o) );
+			}
+		}
+
+		Settings.InterdictionTorch.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.interdiction_torch, entityNames );
+		Settings.InterdictionTorch.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.interdiction_torch, projectileNames);
+
+		Settings.RendingGale.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.rending_gale, entityNames );
+		Settings.RendingGale.projectilesThatCanBePushed = getStringList( "projectiles_that_can_be_pushed", Names.rending_gale, projectileNames );
+
+		Settings.SeekerShot.entitiesThatCanBeHunted = getStringList( "entities_that_can_be_hunted", Names.seeker_shot, entityNames);
 
 		if (configuration.hasChanged())
 		{
 			configuration.save();
 		}
+	}
+
+	public static Set<Map.Entry<String, Property>>  getPotionConfigs() {
+		return configuration.getCategory(Names.potion_ingredient).entrySet();
 	}
 
 	private static void loadBlockAndItemSettings() {
@@ -136,8 +166,9 @@ public class ConfigurationHandler
 		//see post init for entity configs
 		Settings.InterdictionTorch.pushRadius = getInt("push_radius", Names.interdiction_torch, 5, 1, 15);
 		Settings.InterdictionTorch.canPushProjectiles = getBoolean("can_push_projectiles", Names.interdiction_torch, false);
-		Settings.InterdictionTorch.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.interdiction_torch, ImmutableList.of());
-		Settings.InterdictionTorch.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.interdiction_torch, ImmutableList.of());
+		//TODO: verify that these configs are properly displayed in config screen
+		//Settings.InterdictionTorch.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.interdiction_torch, ImmutableList.of());
+		//Settings.InterdictionTorch.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.interdiction_torch, ImmutableList.of());
 
 		//kraken shell configs
 		Settings.KrakenShell.hungerCostPercent = getInt("hunger_cost_percent", Names.kraken_shell, 25, 0, 50);
@@ -189,8 +220,8 @@ public class ConfigurationHandler
 		Settings.RendingGale.blockTargetRange = getInt("block_target_range", Names.rending_gale, 12, 5, 15);
 		Settings.RendingGale.pushPullRadius = getInt("push_pull_radius", Names.rending_gale, 10, 1, 20);
 		Settings.RendingGale.canPushProjectiles = getBoolean("can_push_projectiles", Names.rending_gale, false);
-		Settings.RendingGale.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.rending_gale, ImmutableList.of());
-		Settings.RendingGale.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.rending_gale, ImmutableList.of());
+		//Settings.RendingGale.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.rending_gale, ImmutableList.of());
+		//Settings.RendingGale.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.rending_gale, ImmutableList.of());
 
 		//rod of lyssa configs
 		Settings.RodOfLyssa.useLeveledFailureRate = getBoolean("use_leveled_failure_rate", Names.rod_of_lyssa, true);
@@ -200,7 +231,7 @@ public class ConfigurationHandler
 		Settings.RodOfLyssa.failStealFromVacantSlots = getBoolean("fail_steal_from_vacant_slots", Names.rod_of_lyssa, false);
 		Settings.RodOfLyssa.angerOnStealFailure = getBoolean("anger_on_steal_failure", Names.rod_of_lyssa, true);
 
-		Settings.SeekerShot.entitiesThatCanBeHunted = getStringList("entities_that_can_be_hunted", Names.seeker_shot, ImmutableList.of());
+		//Settings.SeekerShot.entitiesThatCanBeHunted = getStringList("entities_that_can_be_hunted", Names.seeker_shot, ImmutableList.of());
 
 		//sojourners staff configs
 		List<String> torches = ImmutableList.of();
@@ -284,7 +315,7 @@ public class ConfigurationHandler
 		Settings.EasyModeRecipes.angelicFeather = getBoolean(Names.angelic_feather, Names.easy_mode_recipes, easyModeDefault);
 		Settings.EasyModeRecipes.emperorChalice = getBoolean(Names.emperor_chalice, Names.easy_mode_recipes, easyModeDefault);
 		Settings.EasyModeRecipes.heroMedallion = getBoolean(Names.hero_medallion, Names.easy_mode_recipes, easyModeDefault);
-		Settings.EasyModeRecipes.iceMagnusRod = getBoolean(Names.ice_magus_rod, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.iceMagusRod = getBoolean(Names.ice_magus_rod, Names.easy_mode_recipes, easyModeDefault);
 		Settings.EasyModeRecipes.infernalClaws = getBoolean(Names.infernal_claws, Names.easy_mode_recipes, easyModeDefault);
 		Settings.EasyModeRecipes.destructionCatalyst = getBoolean(Names.destruction_catalyst, Names.easy_mode_recipes, easyModeDefault);
 		Settings.EasyModeRecipes.interdictionTorch = getBoolean(Names.interdiction_torch, Names.easy_mode_recipes, easyModeDefault);
@@ -302,7 +333,7 @@ public class ConfigurationHandler
 		Settings.HudPositions.destructionCatalyst = getInt(Names.destruction_catalyst, Names.hud_positions, 3, 1, 4);
 		Settings.HudPositions.elsewhereFlask = getInt(Names.elsewhere_flask, Names.hud_positions, 3, 1, 4);
 		Settings.HudPositions.enderStaff = getInt(Names.ender_staff, Names.hud_positions, 3, 1, 4);
-		Settings.HudPositions.iceMagnusRod = getInt(Names.ice_magus_rod, Names.hud_positions, 3, 1, 4);
+		Settings.HudPositions.iceMagusRod = getInt(Names.ice_magus_rod, Names.hud_positions, 3, 1, 4);
 		Settings.HudPositions.glacialStaff = getInt(Names.glacial_staff, Names.hud_positions, 3, 1, 4);
 		Settings.HudPositions.voidTear = getInt(Names.void_tear, Names.hud_positions, 3, 1, 4);
 		Settings.HudPositions.midasTouchstone = getInt(Names.midas_touchstone, Names.hud_positions, 3, 1, 4);
@@ -340,37 +371,7 @@ public class ConfigurationHandler
 		if (event.modID.equalsIgnoreCase( Reference.MOD_ID))
 		{
 			loadConfiguration();
+			postInit();
 		}
 	}
-
-/*
-
-
-	public void postInit() {
-		List<String> entityNames = new ArrayList<String>();
-		for (Object o : EntityList.stringToClassMapping.values()) {
-			Class c = (Class)o;
-			if (EntityLiving.class.isAssignableFrom(c)) {
-				entityNames.add((String)EntityList.classToStringMapping.get(o));
-			}
-		}
-		List<String> projectileNames = new ArrayList<String>();
-		for (Object o : EntityList.stringToClassMapping.values()) {
-			Class c = (Class)o;
-			if (IProjectile.class.isAssignableFrom(c)) {
-				projectileNames.add((String)EntityList.classToStringMapping.get(o));
-			}
-		}
-
-		Reliquary.CONFIG.require(Names.interdiction_torch, "entities_that_can_be_pushed", new ConfigReference(entityNames));
-		Reliquary.CONFIG.require(Names.interdiction_torch, "projectiles_that_can_be_pushed", new ConfigReference(projectileNames));
-
-		Reliquary.CONFIG.require("entities_that_can_be_pushed", Names.rending_gale, new ConfigReference(entityNames));
-		Reliquary.CONFIG.require("projectiles_that_can_be_pushed", Names.rending_gale, new ConfigReference(projectileNames));
-
-		Reliquary.CONFIG.require(Names.seeker_shot, "entities_that_can_be_hunted", entityNames));
-
-	}
-*/
-
 }

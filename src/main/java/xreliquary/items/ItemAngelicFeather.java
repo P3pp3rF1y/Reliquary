@@ -13,6 +13,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
+
 
 /**
  * Created by Xeno on 5/15/14.
@@ -43,7 +45,7 @@ public class ItemAngelicFeather extends ItemBase {
     // minor jump buff
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
-        int potency = Reliquary.CONFIG.getInt(this instanceof ItemPhoenixDown ? Names.phoenix_down : Names.angelic_feather, "leaping_potency");
+        int potency = this instanceof ItemPhoenixDown ? Settings.PhoenixDown.leapingPotency : Settings.AngelicFeather.leapingPotency;
         if (potency == 0) return;
         potency -= 1;
         if (e instanceof EntityPlayer) {

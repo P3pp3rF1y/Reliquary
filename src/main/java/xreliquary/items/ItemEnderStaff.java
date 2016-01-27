@@ -23,6 +23,7 @@ import xreliquary.Reliquary;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.reference.Names;
 import lib.enderwizards.sandstone.util.NBTHelper;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 
@@ -49,15 +50,15 @@ public class ItemEnderStaff extends ItemToggleable {
     }
 
     private int getEnderStaffPearlCost() {
-        return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_cast_cost");
+        return Settings.EnderStaff.enderPearlCastCost;
     }
-    private int getEnderStaffNodeWarpCost() { return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_node_warp_cost"); }
+    private int getEnderStaffNodeWarpCost() { return Settings.EnderStaff.enderPearlNodeWarpCost; }
     private int getEnderPearlWorth() {
-        return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_worth");
+        return Settings.EnderStaff.enderPearlWorth;
     }
-    private int getEnderPearlLimit() {        return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_limit");    }
+    private int getEnderPearlLimit() { return Settings.EnderStaff.enderPearlLimit; }
     private int getNodeWarpCastTime() {
-        return Reliquary.CONFIG.getInt(Names.ender_staff, "node_warp_cast_time");
+        return Settings.EnderStaff.nodeWarpCastTime;
     }
 
 

@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 
@@ -76,15 +77,15 @@ public class ItemDestructionCatalyst extends ItemToggleable {
     }
 
     public int getExplosionRadius() {
-        return Reliquary.CONFIG.getInt(Names.destruction_catalyst, "explosion_radius");
+        return Settings.DestructionCatalyst.explosionRadius;
     }
 
     public boolean centeredExplosion() {
-        return Reliquary.CONFIG.getBool(Names.destruction_catalyst, "centered_explosion");
+        return Settings.DestructionCatalyst.centeredExplosion;
     }
 
     public boolean perfectCube() {
-        return Reliquary.CONFIG.getBool(Names.destruction_catalyst, "perfect_cube");
+        return Settings.DestructionCatalyst.perfectCube;
     }
 
     public void doExplosion(World world, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack ist) {
@@ -131,10 +132,10 @@ public class ItemDestructionCatalyst extends ItemToggleable {
     }
 
     public boolean isBreakable(String id) {
-        return ((List<String>) Reliquary.CONFIG.get(Names.destruction_catalyst, "mundane_blocks")).indexOf(id) != -1;
+        return Settings.DestructionCatalyst.mundaneBlocks.indexOf(id) != -1;
     }
 
-    private int gunpowderCost() {return Reliquary.CONFIG.getInt(Names.destruction_catalyst, "gunpowder_cost"); }
-    private int gunpowderWorth() {return Reliquary.CONFIG.getInt(Names.destruction_catalyst, "gunpowder_worth"); }
-    private int gunpowderLimit() { return Reliquary.CONFIG.getInt(Names.destruction_catalyst, "gunpowder_limit"); }
+    private int gunpowderCost() {return Settings.DestructionCatalyst.gunpowderCost; }
+    private int gunpowderWorth() {return Settings.DestructionCatalyst.gunpowderWorth; }
+    private int gunpowderLimit() { return Settings.DestructionCatalyst.gunpowderLimit; }
 }

@@ -19,6 +19,7 @@ import xreliquary.entities.*;
 import xreliquary.entities.potion.*;
 import xreliquary.entities.shot.*;
 import xreliquary.event.CommonEventHandler;
+import xreliquary.handler.ConfigurationHandler;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemDestructionCatalyst;
@@ -88,6 +89,7 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.register(alkahestryCraftingRecipeHandler);
         MinecraftForge.EVENT_BUS.register(alkahestryDrainRecipeHandler);
 
+        FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
         FMLCommonHandler.instance().bus().register(alkahestryCraftingRecipeHandler);
         FMLCommonHandler.instance().bus().register(alkahestryDrainRecipeHandler);
 
@@ -98,6 +100,8 @@ public class CommonProxy {
         this.registerEntities();
     }
 
+    //TODO: remove when done with config changes
+/*
     public void initOptions() {
         int itemCap = 9999;
         int cleanShortMax = 30000;
@@ -347,8 +351,11 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.void_tear, "item_limit", new ConfigReference(2000000000).setMinimumValue(0).setMaximumValue(cleanIntMax));
         Reliquary.CONFIG.require(Names.void_tear, "absorb_when_created", new ConfigReference(true));
     }
+*/
 
     public void postInit() {
+        //TODO remove commented out config code
+        /*
         List<String> entityNames = new ArrayList<String>();
         for (Object o : EntityList.stringToClassMapping.values()) {
             Class c = (Class)o;
@@ -371,15 +378,19 @@ public class CommonProxy {
         Reliquary.CONFIG.require(Names.rending_gale, "projectiles_that_can_be_pushed", new ConfigReference(projectileNames));
 
         Reliquary.CONFIG.require(Names.seeker_shot, "entities_that_can_be_hunted", new ConfigReference(entityNames));
+*/
 
     }
 
+    //TODO: figure out if we need recipe disablers (guess looking at the 1.7 modpacks should give us some idea)
+/*
     public void initRecipeDisablers() {
         //recipe disablers
         for (int i = 0; i < Reliquary.CONTENT.registeredObjectNames.size(); i++) {
             Reliquary.CONFIG.require(Names.recipe_enabled, Reliquary.CONTENT.registeredObjectNames.get(i).replace(':', '_'), new ConfigReference(true));
         }
     }
+*/
 
     public void registerEntities() {
         EntityRegistry.registerModEntity(EntityHolyHandGrenade.class, "entityHGrenade", 0, Reliquary.INSTANCE, 128, 5, true);

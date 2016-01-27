@@ -23,6 +23,7 @@ import xreliquary.client.particle.EntityCauldronSteamFX;
 import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.ArrayList;
@@ -242,12 +243,12 @@ public class TileEntityCauldron extends TileEntityBase {
     }
 
     public int getRedstoneAmpLimit() {
-        return Reliquary.CONFIG.getInt(Names.apothecary_cauldron, "redstone_limit");
+        return Settings.ApothecaryCauldron.redstoneLimit;
     }
 
     public List<Block> getHeatSources() {
         List<Block> heatSources = new ArrayList<Block>();
-        List<String> heatSourceBlockNames = (List<String>) Reliquary.CONFIG.get(Names.apothecary_cauldron, "heat_sources");
+        List<String> heatSourceBlockNames = Settings.ApothecaryCauldron.heatSources;
 
         for (String blockName : heatSourceBlockNames) {
             if (!heatSources.contains(Reliquary.CONTENT.getBlock(blockName)))
@@ -261,6 +262,6 @@ public class TileEntityCauldron extends TileEntityBase {
     }
 
     public int getCookTime() {
-        return Reliquary.CONFIG.getInt(Names.apothecary_cauldron, "cook_time");
+        return Settings.ApothecaryCauldron.cookTime;
     }
 }

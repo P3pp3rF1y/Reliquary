@@ -13,6 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 import java.util.Random;
@@ -42,10 +43,10 @@ public class BlockInterdictionTorch extends BlockTorch{
         world.scheduleBlockUpdate(pos, this, tickRate(), 1);
         if (world.isRemote)
             return;
-        int radius = Reliquary.CONFIG.getInt(Names.interdiction_torch, "push_radius");
+        int radius = Settings.InterdictionTorch.pushRadius;
 
-        List<String> entitiesThatCanBePushed = (List<String>) Reliquary.CONFIG.get(Names.interdiction_torch, "entities_that_can_be_pushed");
-        List<String> projectilesThatCanBePushed = (List<String>) Reliquary.CONFIG.get(Names.interdiction_torch, "projectiles_that_can_be_pushed");
+        List<String> entitiesThatCanBePushed = Settings.InterdictionTorch.entitiesThatCanBePushed;
+        List<String> projectilesThatCanBePushed = Settings.InterdictionTorch.projectilesThatCanBePushed;
 
 
         List<Entity> entities = (List<Entity>) world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius, pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius));
@@ -55,7 +56,7 @@ public class BlockInterdictionTorch extends BlockTorch{
                 continue;
             Class entityClass = entity.getClass();
             String entityName = (String)EntityList.classToStringMapping.get(entityClass);
-            if (entitiesThatCanBePushed.contains(entityName) || (projectilesThatCanBePushed.contains(entityName) && Reliquary.CONFIG.getBool(Names.interdiction_torch, "can_push_projectiles"))) {
+            if (entitiesThatCanBePushed.contains(entityName) || (projectilesThatCanBePushed.contains(entityName) && Settings.InterdictionTorch.canPushProjectiles)) {
                 double distance = entity.getDistance((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
                 if (distance >= radius || distance == 0)
                     continue;

@@ -20,6 +20,7 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 
@@ -104,6 +105,6 @@ public class ItemAlkahestryTome extends ItemToggleable {
     }
 
     private int getRedstoneLimit() {
-        return Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstone_limit");
+        return Settings.AlkahestryTome.redstoneLimit;
     }
 }

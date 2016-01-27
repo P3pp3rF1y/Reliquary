@@ -14,6 +14,7 @@ import xreliquary.Reliquary;
 import xreliquary.reference.ClientReference;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 
 import java.util.Iterator;
 import java.util.List;
@@ -413,7 +414,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
      */
     protected void seekTarget() {
         Entity closestTarget = null;
-        List<String> entitiesThatCanBeHunted = (List<String>) Reliquary.CONFIG.get(Names.seeker_shot, "entities_that_can_be_hunted");
+        List<String> entitiesThatCanBeHunted = Settings.SeekerShot.entitiesThatCanBeHunted;
         List targetsList = worldObj.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5));
         Iterator iTarget = targetsList.iterator();
         double closestDistance = Double.MAX_VALUE;

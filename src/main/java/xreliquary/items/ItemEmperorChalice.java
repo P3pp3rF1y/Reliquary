@@ -22,6 +22,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
+
 
 @ContentInit
 public class ItemEmperorChalice extends ItemToggleable {
@@ -58,7 +60,7 @@ public class ItemEmperorChalice extends ItemToggleable {
         if (world.isRemote)
             return stack;
 
-        int multiplier = (Integer) Reliquary.CONFIG.get(Names.emperor_chalice, "hunger_satiation_multiplier");
+        int multiplier = Settings.EmperorChalice.hungerSatiationMultiplier;
         player.getFoodStats().addStats(1, (float) (multiplier / 2));
         player.attackEntityFrom(DamageSource.drown, multiplier);
         return stack;

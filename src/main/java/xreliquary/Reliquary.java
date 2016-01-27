@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xreliquary.common.CommonProxy;
+import xreliquary.handler.ConfigurationHandler;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.integration.NEIModIntegration;
@@ -51,8 +52,11 @@ public class Reliquary {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        CONFIG = Config.toml(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".cfg"));
-        PROXY.initOptions();
+        ConfigurationHandler.init( event.getSuggestedConfigurationFile() );
+        //TODO cleanup commented out config code
+        //CONFIG = Config.toml(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".cfg"));
+
+        //PROXY.initOptions();
 
         CONTENT = Sandstone.preInit();
 
@@ -62,12 +66,32 @@ public class Reliquary {
 
         WorldDataHandler.register();
 
+        //TODO: add colors when removing libSandstone
+/*        *//* Unicode colors that you can use in the tooltips/names lang files.
+         * Use by calling {{!name}}, with name being the name being colors.color. *//*
+        LanguageHelper.globals.put("colors.black", "\u00A70");
+        LanguageHelper.globals.put("colors.navy", "\u00A71");
+        LanguageHelper.globals.put("colors.green", "\u00A72");
+        LanguageHelper.globals.put("colors.blue", "\u00A73");
+        LanguageHelper.globals.put("colors.red", "\u00A74");
+        LanguageHelper.globals.put("colors.purple", "\u00A75");
+        LanguageHelper.globals.put("colors.gold", "\u00A76");
+        LanguageHelper.globals.put("colors.light_gray", "\u00A77");
+        LanguageHelper.globals.put("colors.gray", "\u00A78");
+        LanguageHelper.globals.put("colors.dark_purple", "\u00A79");
+        LanguageHelper.globals.put("colors.light_green", "\u00A7a");
+        LanguageHelper.globals.put("colors.light_blue", "\u00A7b");
+        LanguageHelper.globals.put("colors.rose", "\u00A7c");
+        LanguageHelper.globals.put("colors.light_purple", "\u00A7d");
+        LanguageHelper.globals.put("colors.yellow", "\u00A7e");
+        LanguageHelper.globals.put("colors.white", "\u00A7f");
+        LanguageHelper.globals.put("colors.reset", EnumChatFormatting.RESET.toString());*/
         //important that this initializes AFTER items already exist.
         //TODO: add back when testing potions
         //PotionMap.init();
 
         //important that this initializes before the pre-init phase
-        PROXY.initRecipeDisablers();
+        //PROXY.initRecipeDisablers();
 
         PROXY.preInit();
         PacketHandler.init();
@@ -87,9 +111,10 @@ public class Reliquary {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         PROXY.postInit();
+        ConfigurationHandler.postInit();
 
         //and finally save the file changes. post init is the last stage of configuration, it does an entity scan, hopefully it's cross-mod compatible.
-        CONFIG.save();
+        //CONFIG.save();
 
         //finally, initialize the potion list, this is done after ensuring configs.
         //TODO: add back when testing potions
