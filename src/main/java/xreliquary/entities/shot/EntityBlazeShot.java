@@ -52,35 +52,13 @@ public class EntityBlazeShot extends EntityShotBase {
 
             this.groundImpact(mop.sideHit);
 
-            BlockPos pos = mop.getBlockPos();
+            BlockPos fireSpawnPos = mop.getBlockPos().offset( mop.sideHit );
 
-            //TODO: make sure that the fire spawns on correct side of the block (may need to reverse these)
-
-            switch (mop.sideHit) {
-                case DOWN:
-                    pos.add(0,-1,0);
-                    break;
-                case UP:
-                    pos.add(0,1,0);
-                    break;
-                case NORTH:
-                    pos.add(0,0,-1);
-                    break;
-                case SOUTH:
-                    pos.add(0,0,1);
-                    break;
-                case WEST:
-                    pos.add(-1,0,0);
-                    break;
-                case EAST:
-                    pos.add(1,0,0);
-                    break;
-            }
-            if (shootingEntity.canPlayerEdit(pos, mop.sideHit, new ItemStack(Items.flint_and_steel, 1, 0)))
+            if (shootingEntity.canPlayerEdit(fireSpawnPos, mop.sideHit, new ItemStack(Items.flint_and_steel, 1, 0)))
             {
-                if (this.worldObj.isAirBlock(pos))
+                if (this.worldObj.isAirBlock(fireSpawnPos))
                 {
-                    worldObj.setBlockState( pos, Blocks.fire.getDefaultState() );
+                    worldObj.setBlockState( fireSpawnPos, Blocks.fire.getDefaultState() );
                 }
             }
         }

@@ -208,10 +208,16 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
                 if (mop != null) {
                     EnumFacing side = mop.sideHit;
 
-                    //TODO: change this to better implementation -probably use vector of opposite EnumFacing
-                    y = mop.getBlockPos().getY() + (side == EnumFacing.DOWN ? -1 : side == EnumFacing.UP ? 1 : 0);
-                    x = mop.getBlockPos().getX() + (side == EnumFacing.WEST ? -1 : side == EnumFacing.EAST ? 1 : 0);
-                    z = mop.getBlockPos().getZ() + (side == EnumFacing.NORTH  ? -1 : side == EnumFacing.SOUTH ? 1 : 0);
+                    BlockPos pos;
+                    if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
+                        pos = mop.entityHit.getPosition();
+                    } else {
+                        pos = mop.getBlockPos().offset(side);
+                    }
+
+                    y =  pos.getY();
+                    x = pos.getX();
+                    z = pos.getZ();
                 }
 
                 if (y < 0) {
@@ -220,7 +226,7 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
                 }
 
                 getThrower().playSound("mob.endermen.portal", 1.0f, 1.0f);
-                getThrower().setPositionAndUpdate(x + 0.5F, y + 0.5F, z + 0.5F);
+                getThrower().setPositionAndUpdate( x + 0.5F, y + 0.5F, z + 0.5F );
             }
             this.setDead();
         }
