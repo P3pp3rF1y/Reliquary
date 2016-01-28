@@ -345,24 +345,24 @@ public class ConfigurationHandler
 	}
 
 	private static List<String> getStringList(String name, String category, List<String> defaultValue) {
-		return Arrays.asList(configuration.getStringList(name, Names.hud_positions, defaultValue.toArray(new String[defaultValue.size()]), getTranslatedComment(category, name), new String[]{}, getLabelLangRef(category, name)));
+		return Arrays.asList(configuration.getStringList(name, category, defaultValue.toArray(new String[defaultValue.size()]), getTranslatedComment(category, name), new String[]{}, getLabelLangRef(category, name)));
 	}
 
 	private static boolean getBoolean(String name, String category, boolean defaultValue) {
-		return configuration.getBoolean( name, Names.hud_positions, defaultValue, getTranslatedComment( category, name ), getLabelLangRef( category, name));
+		return configuration.getBoolean( name, category, defaultValue, getTranslatedComment( category, name ), getLabelLangRef( category, name));
 	}
 
 	private static int getInt(String name, String category, int defaultValue, int minValue, int maxValue) {
-		return configuration.getInt(name, Names.hud_positions, defaultValue, minValue, maxValue, getTranslatedComment(category, name) , getLabelLangRef(category, name));
+		return configuration.getInt(name, category, defaultValue, minValue, maxValue, getTranslatedComment(category, name) , getLabelLangRef(category, name));
 	}
 
 
 	private static String getTranslatedComment(String category, String config) {
-		return StatCollector.translateToLocal(category + "." + config + ".comment");
+		return StatCollector.translateToLocal("config." + category + "." + config + ".comment");
 	}
 
 	private static String getLabelLangRef(String category, String config) {
-		return category + "." + config + ".label";
+		return "config." + category + "." + config + ".label";
 	}
 
 	@SubscribeEvent

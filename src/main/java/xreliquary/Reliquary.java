@@ -3,7 +3,6 @@ package xreliquary;
 import lib.enderwizards.sandstone.Sandstone;
 import lib.enderwizards.sandstone.init.Content;
 import lib.enderwizards.sandstone.mod.SandstoneMod;
-import lib.enderwizards.sandstone.mod.config.Config;
 import lib.enderwizards.sandstone.util.WorldDataHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -35,7 +34,7 @@ import xreliquary.util.alkahestry.Alkahestry;
 import java.io.File;
 
 //@ModstatInfo(prefix = "reliquary")
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:libsandstone", guiFactory = "xreliquary.client.gui.XRGuiFactory")
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS)
 @SandstoneMod(basePackage = "xreliquary")
 public class Reliquary {
 
@@ -59,7 +58,7 @@ public class Reliquary {
 
         ModItems.init();
 
-        WorldDataHandler.register();
+        PROXY.preInit();
 
         //TODO: add colors when removing libSandstone
 /*        *//* Unicode colors that you can use in the tooltips/names lang files.
@@ -88,7 +87,6 @@ public class Reliquary {
         //important that this initializes before the pre-init phase
         //PROXY.initRecipeDisablers();
 
-        PROXY.preInit();
         PacketHandler.init();
 
     }
@@ -97,7 +95,6 @@ public class Reliquary {
     public void init(FMLInitializationEvent event) {
         //TODO: put modstats back in when ready
         //Modstats.instance().getReporter().registerMod(this);
-        Sandstone.addModIntegration(new NEIModIntegration());
 
         PROXY.init();
         MinecraftForge.EVENT_BUS.register(this);
@@ -116,7 +113,6 @@ public class Reliquary {
         //PotionMap.initializePotionMappings();
 
         LOGGER.log(Level.INFO, "Loaded successfully!");
-        Sandstone.postInit();
 
     }
 
