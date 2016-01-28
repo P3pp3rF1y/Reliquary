@@ -2,11 +2,12 @@ package xreliquary.reference;
 
 public class Reference {
     // class for all the mod related constants
-    public static final String VERSION = "1.3";
+    public static final String VERSION = "@MOD_VERSION@";
 
     public static final String MOD_ID = "xreliquary";
     public static final String DOMAIN = MOD_ID.toLowerCase() + ":";
     public static final String MOD_NAME = "Reliquary";
+    public static final String GUI_FACTORY_CLASS = "xreliquary.client.gui.GuiFactory";
 
     public static final String CLIENT_PROXY = "xreliquary.client.ClientProxy";
     public static final String COMMON_PROXY = "xreliquary.common.CommonProxy";

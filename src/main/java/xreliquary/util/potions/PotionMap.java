@@ -1,6 +1,5 @@
 package xreliquary.util.potions;
 
-import lib.enderwizards.sandstone.mod.config.ConfigReference;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;

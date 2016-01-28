@@ -1,37 +1,25 @@
 package xreliquary.common;
 
-import com.google.common.collect.ImmutableList;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import lib.enderwizards.sandstone.mod.config.ConfigReference;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.IProjectile;
-import net.minecraftforge.common.MinecraftForge;
 import xreliquary.Reliquary;
-import xreliquary.blocks.tile.TileEntityAltar;
-import xreliquary.blocks.tile.TileEntityCauldron;
-import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.entities.*;
-import xreliquary.entities.potion.*;
+import xreliquary.entities.potion.EntityAttractionPotion;
+import xreliquary.entities.potion.EntityFertilePotion;
+import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.entities.shot.*;
 import xreliquary.event.CommonEventHandler;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
-import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
 import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
 import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
-import xreliquary.reference.Names;
 import xreliquary.util.alkahestry.Alkahestry;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CommonProxy {
 
