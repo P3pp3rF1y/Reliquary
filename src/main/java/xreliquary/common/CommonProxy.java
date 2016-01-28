@@ -77,12 +77,12 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.register(alkahestryCraftingRecipeHandler);
         MinecraftForge.EVENT_BUS.register(alkahestryDrainRecipeHandler);
 
-        FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
-        FMLCommonHandler.instance().bus().register(alkahestryCraftingRecipeHandler);
-        FMLCommonHandler.instance().bus().register(alkahestryDrainRecipeHandler);
+        MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
+        MinecraftForge.EVENT_BUS.register(alkahestryCraftingRecipeHandler);
+        MinecraftForge.EVENT_BUS.register(alkahestryDrainRecipeHandler);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
-        FMLCommonHandler.instance().bus().register(new CommonEventHandler());
+        MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
         MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
 
         this.registerEntities();
@@ -124,4 +124,6 @@ public class CommonProxy {
         EntityRegistry.registerModEntity(EntityEnderStaffProjectile.class, "entityEnderStaffProjectile", 23, Reliquary.INSTANCE, 128, 5, true);
     }
 
+    public void initColors() {
+    }
 }

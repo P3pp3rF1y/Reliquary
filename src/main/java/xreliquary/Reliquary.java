@@ -52,6 +52,8 @@ public class Reliquary {
     public void preInit(FMLPreInitializationEvent event) {
         ConfigurationHandler.init( event.getSuggestedConfigurationFile() );
 
+        PROXY.initColors();
+
         CONTENT = Sandstone.preInit();
 
         ModBlocks.init();
@@ -60,26 +62,6 @@ public class Reliquary {
 
         PROXY.preInit();
 
-        //TODO: add colors when removing libSandstone
-/*        *//* Unicode colors that you can use in the tooltips/names lang files.
-         * Use by calling {{!name}}, with name being the name being colors.color. *//*
-        LanguageHelper.globals.put("colors.black", "\u00A70");
-        LanguageHelper.globals.put("colors.navy", "\u00A71");
-        LanguageHelper.globals.put("colors.green", "\u00A72");
-        LanguageHelper.globals.put("colors.blue", "\u00A73");
-        LanguageHelper.globals.put("colors.red", "\u00A74");
-        LanguageHelper.globals.put("colors.purple", "\u00A75");
-        LanguageHelper.globals.put("colors.gold", "\u00A76");
-        LanguageHelper.globals.put("colors.light_gray", "\u00A77");
-        LanguageHelper.globals.put("colors.gray", "\u00A78");
-        LanguageHelper.globals.put("colors.dark_purple", "\u00A79");
-        LanguageHelper.globals.put("colors.light_green", "\u00A7a");
-        LanguageHelper.globals.put("colors.light_blue", "\u00A7b");
-        LanguageHelper.globals.put("colors.rose", "\u00A7c");
-        LanguageHelper.globals.put("colors.light_purple", "\u00A7d");
-        LanguageHelper.globals.put("colors.yellow", "\u00A7e");
-        LanguageHelper.globals.put("colors.white", "\u00A7f");
-        LanguageHelper.globals.put("colors.reset", EnumChatFormatting.RESET.toString());*/
         //important that this initializes AFTER items already exist.
         //TODO: add back when testing potions
         //PotionMap.init();
