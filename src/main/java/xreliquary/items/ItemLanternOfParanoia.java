@@ -69,9 +69,6 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 
             //TODO this is where we'll be placing our algorithm for darkness detection and placing torches!
 
-            //TODO ACTUALLY make this configurable
-            // always on for now, takes effect only at a configurable light level
-
             int playerX = MathHelper.floor_double(player.posX);
             int playerY = MathHelper.floor_double(player.getEntityBoundingBox().minY);
             int playerZ = MathHelper.floor_double(player.posZ);

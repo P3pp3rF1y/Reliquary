@@ -22,28 +22,6 @@ public class ItemGunPart extends ItemBase {
         canRepair = false;
     }
 
-    //TODO: include in JSON model
-/*
-    @SideOnly(Side.CLIENT)
-    private IIcon[] icons;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        icons = new IIcon[3];
-        for (int i = 0; i < 3; i++) {
-            icons[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.gun_part + "_" + i);
-        }
-    }
-
-    @Override
-    public IIcon getIconFromDamage(int meta) {
-        if (meta < 3)
-            return icons[meta];
-        return icons[0];
-    }
-*/
-
     @Override
     public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
         par3List.add(new ItemStack(par1, 1, 0));

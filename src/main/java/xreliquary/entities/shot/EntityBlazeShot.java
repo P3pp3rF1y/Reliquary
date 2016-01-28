@@ -100,7 +100,6 @@ public class EntityBlazeShot extends EntityShotBase {
 
     @Override
     void doBurstEffect(EnumFacing sideHit) {
-        //TODO: verify that particles spawn on correct sides
         for (int particles = 0; particles < 40; particles++) {
             switch (sideHit) {
                 case DOWN:

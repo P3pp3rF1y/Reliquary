@@ -34,8 +34,6 @@ public class ItemAttractionPotion extends ItemBase {
         return new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
     }
 
-    //TODO: make sure to include correct splash overlay
-
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {

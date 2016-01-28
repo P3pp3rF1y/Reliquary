@@ -36,7 +36,6 @@ public class ModBlocks {
         GameRegistry.registerBlock(wraithNode, ItemBlockBase.class, Reference.DOMAIN + Names.wraith_node);
     }
 
-    //TODO: figure out if this should be pulled to a separate class
     public static void initTileEntities() {
         GameRegistry.registerTileEntity(TileEntityAltar.class, Reference.MOD_ID + "." + "reliquaryAltar");
         GameRegistry.registerTileEntity(TileEntityMortar.class, Reference.MOD_ID + "." + "apothecaryMortar");

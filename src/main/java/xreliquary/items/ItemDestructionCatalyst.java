@@ -91,7 +91,6 @@ public class ItemDestructionCatalyst extends ItemToggleable {
     public void doExplosion(World world, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack ist) {
         boolean destroyedSomething = false;
         boolean playOnce = true;
-        //TODO: make sure that the explosion happens on the correct side
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();

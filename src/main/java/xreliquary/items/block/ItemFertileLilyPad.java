@@ -21,8 +21,6 @@ import xreliquary.reference.Settings;
 
 public class ItemFertileLilyPad extends ItemBlockBase
 {
-    //TODO: fix json model link
-
     public ItemFertileLilyPad(Block block)
     {
         super(block);

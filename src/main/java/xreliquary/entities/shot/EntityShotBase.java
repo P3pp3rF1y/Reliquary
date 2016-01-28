@@ -382,7 +382,6 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
             this.doBurstEffect(sideHit);
             scheduledForDeath = true;
             for (int particles = 0; particles < 4; particles++) {
-                //TODO: verify particles spawning in correct places
                 switch (sideHit) {
                     case DOWN:
                         worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, gaussian(0.1D), -gaussian(0.1D), gaussian(0.1D));

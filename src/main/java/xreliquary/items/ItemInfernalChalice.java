@@ -103,7 +103,6 @@ public class ItemInfernalChalice extends ItemToggleable {
                 }
 
                 if (!this.isEnabled(stack)  && NBTHelper.getInteger("fluidStacks", stack) >= 1000) {
-                    //TODO: verify this is correct
                     BlockPos adjustedPos = mop.getBlockPos().offset(mop.sideHit);
 
                     if (!player.canPlayerEdit(adjustedPos, mop.sideHit, stack))
