@@ -144,7 +144,7 @@ public class ItemVoidTear extends ItemToggleable {
         //something awful happened. We either lost data or this is an invalid tear by some other means. Either way, not great.
         if (NBTHelper.getString("itemID", ist).equals(""))
             return null;
-        return new ItemStack((Item) Item.itemRegistry.getObject(new ResourceLocation(NBTHelper.getString("itemID", ist))), NBTHelper.getInteger("itemQuantity", ist));
+        return new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(NBTHelper.getString("itemID", ist))), NBTHelper.getInteger("itemQuantity", ist));
     }
 
     protected boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory, int limit) {

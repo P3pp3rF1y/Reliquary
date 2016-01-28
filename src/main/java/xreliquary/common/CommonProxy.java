@@ -23,7 +23,7 @@ import xreliquary.util.alkahestry.Alkahestry;
 
 public class CommonProxy {
 
-
+//TODO: rewrite proxy to the EE style so that it has area specific method names rather than generic preInit/init/postInit
     public void preInit() {
         try {
             XRRecipes.init();

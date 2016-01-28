@@ -8,9 +8,6 @@ import xreliquary.reference.Names;
 
 @ContentInit
 public class BlockWraithNode extends Block {
-//TODO: add json models
-
-
     public BlockWraithNode() {
         super(Material.rock);
         this.setBlockBounds(0.125F, 0F, 0.125F, 0.875F, 0.750F, 0.875F);

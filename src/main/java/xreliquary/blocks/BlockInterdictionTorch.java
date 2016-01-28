@@ -51,7 +51,6 @@ public class BlockInterdictionTorch extends BlockTorch{
 
         List<Entity> entities = (List<Entity>) world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius, pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius));
         for (Entity entity : entities) {
-            // TODO: Add a blacklist via config option.
             if (entity instanceof EntityPlayer)
                 continue;
             Class entityClass = entity.getClass();

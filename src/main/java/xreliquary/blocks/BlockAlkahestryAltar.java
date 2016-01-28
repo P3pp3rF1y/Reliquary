@@ -78,7 +78,6 @@ public class BlockAlkahestryAltar extends BlockContainer {
             return;
         if (rand.nextInt(3) != 0)
             return;
-        //TODO: verify particle
         world.spawnParticle( EnumParticleTypes.SPELL_MOB, pos.getX() + 0.5D + rand.nextGaussian() / 8, pos.getY() + 1.1D, pos.getZ() + 0.5D + rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
     }
 

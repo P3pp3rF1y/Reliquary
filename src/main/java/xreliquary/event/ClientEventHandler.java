@@ -469,8 +469,6 @@ public class ClientEventHandler {
 
         renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), hudStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
 
-        boolean skipStackRender = false;
-
         //special item conditions are handled on a per-item-type basis:
         if (hudStack.getItem() instanceof ItemRendingGale) {
             ItemRendingGale staffItem = (ItemRendingGale)hudStack.getItem();
@@ -492,7 +490,6 @@ public class ClientEventHandler {
             renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX, hudOverlayY + 24);
         }
 
-
         GL11.glDisable(GL11.GL_LIGHTING);
         minecraft.fontRendererObj.drawStringWithShadow(Integer.toString(stackSize), hudOverlayX + 15, hudOverlayY + 30, color);
         GL11.glPopMatrix();
@@ -500,40 +497,6 @@ public class ClientEventHandler {
     }
 
     public static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float opacity, float scale) {
-        //TODO: definitely needs fixing as it likely doesn't render the item properly
         renderItem.renderItemIntoGUI(itemStack, x, y);
-
-/*
-        if (itemStack == null)
-            return;
-        GL11.glDisable(GL11.GL_LIGHTING);
-        if (!(itemStack.getItem() instanceof ItemBlock)) {
-            FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-        } else {
-            FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-        }
-        for (int passes = 0; passes < itemStack.getItem().getRenderPasses(itemStack.getItemDamage()); passes++) {
-            int overlayColour = itemStack.getItem().getColorFromItemStack(itemStack, passes);
-            IIcon icon = itemStack.getItem().getIcon(itemStack, passes);
-            float red = (overlayColour >> 16 & 255) / 255.0F;
-            float green = (overlayColour >> 8 & 255) / 255.0F;
-            float blue = (overlayColour & 255) / 255.0F;
-            GL11.glColor4f(red, green, blue, opacity);
-            drawTexturedQuad(x, y, icon, 16 * scale, 16 * scale, -90);
-            GL11.glEnable(GL11.GL_LIGHTING);
-        }
-*/
     }
-
-/*
-    public static void drawTexturedQuad(int x, int y, IIcon icon, float width, float height, double zLevel) {
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(x, y + height, zLevel, icon.getMinU(), icon.getMaxV());
-        tessellator.addVertexWithUV(x + width, y + height, zLevel, icon.getMaxU(), icon.getMaxV());
-        tessellator.addVertexWithUV(x + width, y, zLevel, icon.getMaxU(), icon.getMinV());
-        tessellator.addVertexWithUV(x, y, zLevel, icon.getMinU(), icon.getMinV());
-        tessellator.draw();
-    }
-*/
 }

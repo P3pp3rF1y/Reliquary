@@ -27,10 +27,8 @@ import xreliquary.reference.Settings;
 import java.util.List;
 import java.util.Random;
 
-//TODO: verify that newly changing this to inherit from BlockBush doesn't break it
 @ContentInit
 public class BlockFertileLilypad extends BlockBush{
-//TODO: add json models
     public BlockFertileLilypad() {
         float var3 = 0.5F;
         float var4 = 0.015625F;
@@ -86,7 +84,6 @@ public class BlockFertileLilypad extends BlockBush{
                     if (cropBlock instanceof IPlantable || cropBlock instanceof IGrowable) {
                         if (!(cropBlock instanceof BlockFertileLilypad)) {
                             //it schedules the next tick.
-                            //TODO:verify that we're setting block update priority correctly
                             world.scheduleBlockUpdate(new BlockPos(x, y, z), cropBlock, (int) (distanceCoefficient * (float) secondsBetweenGrowthTicks() * 20F), 1);
                             cropBlock.updateTick(world, new BlockPos(x, y, z), cropState, world.rand);
                         }

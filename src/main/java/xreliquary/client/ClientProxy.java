@@ -28,7 +28,6 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit() {
         super.preInit();
-
     }
 
     @Override
@@ -47,7 +46,7 @@ public class ClientProxy extends CommonProxy {
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         //TODO:replace deprecated call
-        RenderingRegistry.registerEntityRenderingHandler( EntityBlazeShot.class, new RenderShot<EntityBlazeShot>(renderManager) );
+        RenderingRegistry.registerEntityRenderingHandler(EntityBlazeShot.class, new RenderShot<EntityBlazeShot>(renderManager) );
         RenderingRegistry.registerEntityRenderingHandler(EntityBusterShot.class, new RenderShot<EntityBusterShot>(renderManager));
         RenderingRegistry.registerEntityRenderingHandler(EntityConcussiveShot.class, new RenderShot<EntityConcussiveShot>(renderManager));
         RenderingRegistry.registerEntityRenderingHandler(EntityEnderShot.class, new RenderShot<EntityEnderShot>(renderManager));
@@ -66,10 +65,6 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityThrownXRPotion.class, new RenderThrownXRPotion(renderManager, renderItem));
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMortar.class, new RenderApothecaryMortar());
-
-        //TODO: add rendering for these custom items
-        // MinecraftForgeClient.registerItemRenderer(ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_mortar)), new ItemRendererApothecaryMortar());
-        // MinecraftForgeClient.registerItemRenderer(Reliquary.CONTENT.getItem(Names.handgun), new ItemRendererHandgun());
     }
 
 }
