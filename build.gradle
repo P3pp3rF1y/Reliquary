@@ -27,6 +27,10 @@ configFile.withReader {
 // We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
 apply plugin: 'net.minecraftforge.gradle.forge'
 
+plugins {
+    id "com.jfrog.bintray" version "1.5"
+}
+
 group = 'xreliquary' // Your main package.
 version = "${config.mod_version}.${getBuildNumber()}"
 archivesBaseName = 'Reliquary'
@@ -64,10 +68,31 @@ processResources
     }
 }
 
-
 def getBuildNumber() {
     if (System.getenv("DRONE_BUILD_NUMBER") != null) {
         return "${System.getenv("DRONE_BUILD_NUMBER")}"
     }
     return "UNSTABLE"
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+
+    fileSpec {
+        from 'build/libs'
+        into '.'
+    }
+
+    pkg {
+        version {
+            name='${project.version}'
+            released = new Date()
+        }
+        repo = 'maven'
+        name = 'Reliquary'
+        licenses = ['GPL-3.0']
+        vcsUrl = 'https://github.com/P3pp3rF1y/Reliquary.git'
+    }
+
 }
