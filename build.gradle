@@ -90,7 +90,7 @@ bintray {
 
     pkg {
         version {
-            name="${project.version}"
+            name="${config.mod_version}"
             released = new Date()
         }
         repo = 'maven'
