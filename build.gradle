@@ -81,7 +81,7 @@ bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
 
-    fileSpec {
+    copySpec {
         from 'build/libs' {
             exclude '*sources.jar'
         }
