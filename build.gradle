@@ -35,7 +35,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 
 group = 'xreliquary' // Your main package.
-version = "${config.mod_version}.${getBuildNumber()}"
+version = "${config.mod_version}.${getBuildNumber()}${getStable()}"
 archivesBaseName = 'Reliquary'
 
 sourceCompatibility = 1.8
@@ -75,7 +75,14 @@ def getBuildNumber() {
     if (System.getenv("DRONE_BUILD_NUMBER") != null) {
         return "${System.getenv("DRONE_BUILD_NUMBER")}"
     }
-    return "UNSTABLE"
+    return ""
+}
+
+def getStable() {
+    if (System.getenv("DRONE_BRANCH") != "master") {
+        return "unstable"
+    }
+    return ""
 }
 
 bintray {
@@ -100,3 +107,4 @@ bintray {
     }
 
 }
+
