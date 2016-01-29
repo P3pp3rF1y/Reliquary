@@ -88,13 +88,12 @@ def getStable() {
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
-
+    publish = true
     filesSpec {
         from 'build/libs'
         into '.'
         exclude '*sources.jar'
     }
-
     pkg {
         version {
             name="${config.mod_version}"
