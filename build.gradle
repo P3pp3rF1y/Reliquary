@@ -15,6 +15,11 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
+
+plugins {
+    id "com.jfrog.bintray" version "1.5"
+}
+
 // External properties
 ext.configFile = file "build.properties"
 configFile.withReader {
@@ -27,9 +32,6 @@ configFile.withReader {
 // We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-plugins {
-    id "com.jfrog.bintray" version "1.5"
-}
 
 group = 'xreliquary' // Your main package.
 version = "${config.mod_version}.${getBuildNumber()}"
@@ -80,7 +82,9 @@ bintray {
     key = System.getenv('BINTRAY_KEY')
 
     fileSpec {
-        from 'build/libs'
+        from 'build/libs' {
+            exclude '*sources.jar'
+        }
         into '.'
     }
 
