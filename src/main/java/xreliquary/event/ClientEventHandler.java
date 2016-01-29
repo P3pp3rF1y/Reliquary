@@ -469,6 +469,8 @@ public class ClientEventHandler {
 
         renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), hudStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
 
+        //TODO add rending gale modes translations
+
         //special item conditions are handled on a per-item-type basis:
         if (hudStack.getItem() instanceof ItemRendingGale) {
             ItemRendingGale staffItem = (ItemRendingGale)hudStack.getItem();

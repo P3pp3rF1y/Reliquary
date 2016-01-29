@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -77,6 +78,7 @@ public class ConfigurationHandler
 
 		//alkahestry tome configs
 		Settings.AlkahestryTome.redstoneLimit = getInt("redstone_limit", Names.item_and_block_settings + "." + Names.alkahestry_tome, 250, 0, itemCap);
+		//setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome, false);
 
 		//altar configs
 		Settings.Altar.redstoneCost = getInt("redstone_cost", Names.item_and_block_settings + "." + Names.altar, 3, 0, 10);
@@ -338,6 +340,8 @@ public class ConfigurationHandler
 		Settings.HudPositions.heroMedallion = getInt(Names.hero_medallion, Names.hud_positions, 3, 1, 4);
 		Settings.HudPositions.pyromanceStaff = getInt(Names.pyromancer_staff, Names.hud_positions, 3, 1, 4);
 		Settings.HudPositions.rendingGale = getInt(Names.rending_gale, Names.hud_positions, 3, 1, 4);
+
+		setCategoryTranslations(Names.hud_positions, true);
 	}
 
 	private static List<String> getStringList(String name, String category, List<String> defaultValue) {
@@ -360,6 +364,16 @@ public class ConfigurationHandler
 	private static String getLabelLangRef(String category, String config) {
 		return "config." + category + "." + config + ".label";
 	}
+
+	private static void setCategoryTranslations(String categoryName, boolean setComment) {
+		ConfigCategory category = configuration.getCategory(categoryName);
+
+		category.setLanguageKey("config." + categoryName + ".label");
+		if (setComment) {
+			category.setComment( StatCollector.translateToLocal("config." + categoryName + ".comment"));
+		}
+	}
+
 
 	@SubscribeEvent
 	public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
