@@ -24,23 +24,16 @@ public class ModGuiConfig extends GuiConfig
 
 	private static List<IConfigElement> getConfigElements() {
 		ArrayList<IConfigElement> elements = new ArrayList<>(  );
-		elements.add(categoryElement( Names.easy_mode_recipes, Names.easy_mode_recipes));
-		elements.add(categoryElement( Names.hud_positions, Names.hud_positions));
-		elements.add( new ConfigElement( ConfigurationHandler.configuration.getCategory( Names.mob_drop_probability ) ));
-		elements.add( new ConfigElement( ConfigurationHandler.configuration.getCategory( Names.alkahestry_tome ) ));
-		elements.add( new DummyConfigElement( "Test element", "", ConfigGuiType.STRING, "test" ));
+		elements.add(getCategory(Names.easy_mode_recipes));
+		elements.add(getCategory(Names.item_and_block_settings));
+		elements.add(getCategory(Names.hud_positions));
+		elements.add(getCategory(Names.mob_drop_probability));
 
 		return elements;
 	}
 
-	/** Creates a button linking to another screen where all options of the category are available */
-	private static IConfigElement categoryElement(String category, String name) {
-		return new DummyConfigElement.DummyCategoryElement(name, getLabelLangRef(category),
-				new ConfigElement(ConfigurationHandler.configuration.getCategory(category)).getChildElements());
-	}
-
-	private static String getLabelLangRef(String category) {
-		return "config." + category + ".label";
+	private static ConfigElement getCategory(String category) {
+		return new ConfigElement( ConfigurationHandler.configuration.getCategory( category ));
 	}
 
 }

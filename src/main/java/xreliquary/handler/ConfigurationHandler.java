@@ -56,22 +56,18 @@ public class ConfigurationHandler
 			}
 		}
 
-		Settings.InterdictionTorch.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.interdiction_torch, entityNames );
-		Settings.InterdictionTorch.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.interdiction_torch, projectileNames);
+		Settings.InterdictionTorch.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.item_and_block_settings + "." + Names.interdiction_torch, entityNames );
+		Settings.InterdictionTorch.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.item_and_block_settings + "." + Names.interdiction_torch, projectileNames);
 
-		Settings.RendingGale.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.rending_gale, entityNames );
-		Settings.RendingGale.projectilesThatCanBePushed = getStringList( "projectiles_that_can_be_pushed", Names.rending_gale, projectileNames );
+		Settings.RendingGale.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.item_and_block_settings + "." + Names.rending_gale, entityNames );
+		Settings.RendingGale.projectilesThatCanBePushed = getStringList( "projectiles_that_can_be_pushed", Names.item_and_block_settings + "." + Names.rending_gale, projectileNames );
 
-		Settings.SeekerShot.entitiesThatCanBeHunted = getStringList( "entities_that_can_be_hunted", Names.seeker_shot, entityNames);
+		Settings.SeekerShot.entitiesThatCanBeHunted = getStringList( "entities_that_can_be_hunted", Names.item_and_block_settings + "." + Names.seeker_shot, entityNames);
 
 		if (configuration.hasChanged())
 		{
 			configuration.save();
 		}
-	}
-
-	public static Set<Map.Entry<String, Property>>  getPotionConfigs() {
-		return configuration.getCategory(Names.potion_ingredient).entrySet();
 	}
 
 	private static void loadBlockAndItemSettings() {
@@ -80,173 +76,173 @@ public class ConfigurationHandler
 		int cleanIntMax = 2000000000;
 
 		//alkahestry tome configs
-		Settings.AlkahestryTome.redstoneLimit = getInt("redstone_limit", Names.alkahestry_tome, 250, 0, itemCap);
+		Settings.AlkahestryTome.redstoneLimit = getInt("redstone_limit", Names.item_and_block_settings + "." + Names.alkahestry_tome, 250, 0, itemCap);
 
 		//altar configs
-		Settings.Altar.redstoneCost = getInt("redstone_cost", Names.altar, 3, 0, 10);
-		Settings.Altar.timeInMinutes = getInt("time_in_minutes", Names.altar, 20, 0, 60);
-		Settings.Altar.maximumTimeVarianceInMinutes = getInt("maximum_time_variance_in_minutes", Names.altar, 5, 0, 15);
-		Settings.Altar.outputLightLevelWhileActive = getInt("output_light_level_while_active", Names.altar, 16, 16, 0);
+		Settings.Altar.redstoneCost = getInt("redstone_cost", Names.item_and_block_settings + "." + Names.altar, 3, 0, 10);
+		Settings.Altar.timeInMinutes = getInt("time_in_minutes", Names.item_and_block_settings + "." + Names.altar, 20, 0, 60);
+		Settings.Altar.maximumTimeVarianceInMinutes = getInt("maximum_time_variance_in_minutes", Names.item_and_block_settings + "." + Names.altar, 5, 0, 15);
+		Settings.Altar.outputLightLevelWhileActive = getInt("output_light_level_while_active", Names.item_and_block_settings + "." + Names.altar, 16, 16, 0);
 
 		//angelic feather configs
-		Settings.AngelicFeather.hungerCostPercent = getInt("hunger_cost_percent", Names.angelic_feather, 50, 0, 100);
-		Settings.AngelicFeather.leapingPotency = getInt("leaping_potency", Names.angelic_feather, 1, 0, 5);
+		Settings.AngelicFeather.hungerCostPercent = getInt("hunger_cost_percent", Names.item_and_block_settings + "." + Names.angelic_feather, 50, 0, 100);
+		Settings.AngelicFeather.leapingPotency = getInt("leaping_potency", Names.item_and_block_settings + "." + Names.angelic_feather, 1, 0, 5);
 
 		//angelheart vial configs
-		Settings.AngelHeartVial.healPercentageOfMaxLife = getInt("heal_percentage_of_max_life", Names.angelheart_vial, 25, 0, 100);
-		Settings.AngelHeartVial.removeNegativeStatus = getBoolean("remove_negative_status", Names.angelheart_vial, true);
+		Settings.AngelHeartVial.healPercentageOfMaxLife = getInt("heal_percentage_of_max_life", Names.item_and_block_settings + "." + Names.angelheart_vial, 25, 0, 100);
+		Settings.AngelHeartVial.removeNegativeStatus = getBoolean("remove_negative_status", Names.item_and_block_settings + "." + Names.angelheart_vial, true);
 
 		//apothecary cauldron configs
 		List<String> heatSources = ImmutableList.of();
-		Settings.ApothecaryCauldron.redstoneLimit = getInt("redstone_limit", Names.apothecary_cauldron, 5, 0, 100);
-		Settings.ApothecaryCauldron.cookTime = getInt("cook_time", Names.apothecary_cauldron, 160, 20, 32000);
-		Settings.ApothecaryCauldron.heatSources = getStringList("heat_sources", Names.apothecary_cauldron, heatSources);
+		Settings.ApothecaryCauldron.redstoneLimit = getInt("redstone_limit", Names.item_and_block_settings + "." + Names.apothecary_cauldron, 5, 0, 100);
+		Settings.ApothecaryCauldron.cookTime = getInt("cook_time", Names.item_and_block_settings + "." + Names.apothecary_cauldron, 160, 20, 32000);
+		Settings.ApothecaryCauldron.heatSources = getStringList("heat_sources", Names.item_and_block_settings + "." + Names.apothecary_cauldron, heatSources);
 
 		//destruction catalyst configs
-		Settings.DestructionCatalyst.mundaneBlocks = getStringList("mundane_blocks", Names.destruction_catalyst, new ArrayList<String>(ItemDestructionCatalyst.ids));
-		Settings.DestructionCatalyst.gunpowderCost = getInt("gunpowder_cost", Names.destruction_catalyst, 3, 0, 10);
-		Settings.DestructionCatalyst.gunpowderWorth = getInt("gunpowder_worth", Names.destruction_catalyst, 1, 0, 3);
-		Settings.DestructionCatalyst.gunpowderLimit = getInt("gunpowder_limit", Names.destruction_catalyst, 250, 0, itemCap);
-		Settings.DestructionCatalyst.explosionRadius = getInt("explosion_radius", Names.destruction_catalyst, 1, 1, 5);
-		Settings.DestructionCatalyst.centeredExplosion = getBoolean("centered_explosion", Names.destruction_catalyst, false);
-		Settings.DestructionCatalyst.perfectCube = getBoolean("perfect_cube", Names.destruction_catalyst, true);
+		Settings.DestructionCatalyst.mundaneBlocks = getStringList("mundane_blocks", Names.item_and_block_settings + "." + Names.destruction_catalyst, new ArrayList<String>(ItemDestructionCatalyst.ids));
+		Settings.DestructionCatalyst.gunpowderCost = getInt("gunpowder_cost", Names.item_and_block_settings + "." + Names.destruction_catalyst, 3, 0, 10);
+		Settings.DestructionCatalyst.gunpowderWorth = getInt("gunpowder_worth", Names.item_and_block_settings + "." + Names.destruction_catalyst, 1, 0, 3);
+		Settings.DestructionCatalyst.gunpowderLimit = getInt("gunpowder_limit", Names.item_and_block_settings + "." + Names.destruction_catalyst, 250, 0, itemCap);
+		Settings.DestructionCatalyst.explosionRadius = getInt("explosion_radius", Names.item_and_block_settings + "." + Names.destruction_catalyst, 1, 1, 5);
+		Settings.DestructionCatalyst.centeredExplosion = getBoolean("centered_explosion", Names.item_and_block_settings + "." + Names.destruction_catalyst, false);
+		Settings.DestructionCatalyst.perfectCube = getBoolean("perfect_cube", Names.item_and_block_settings + "." + Names.destruction_catalyst, true);
 
 		//emperor's chalice configs
-		Settings.EmperorChalice.hungerSatiationMultiplier = getInt("hunger_satiation_multiplier", Names.emperor_chalice, 4, 0, 10);
+		Settings.EmperorChalice.hungerSatiationMultiplier = getInt("hunger_satiation_multiplier", Names.item_and_block_settings + "." + Names.emperor_chalice, 4, 0, 10);
 
 		//ender staff configs
-		Settings.EnderStaff.enderPearlCastCost = getInt("ender_pearl_cast_cost", Names.ender_staff, 1, 0, 3);
-		Settings.EnderStaff.enderPearlNodeWarpCost = getInt("ender_pearl_node_warp_cost",Names.ender_staff,  1, 0, 3);
-		Settings.EnderStaff.enderPearlWorth = getInt("ender_pearl_worth", Names.ender_staff, 1, 0, 10);
-		Settings.EnderStaff.enderPearlLimit = getInt("ender_pearl_limit", Names.ender_staff, 250, 0, itemCap);
-		Settings.EnderStaff.nodeWarpCastTime = getInt("node_warp_cast_time", Names.ender_staff, 60, 10, 120);
+		Settings.EnderStaff.enderPearlCastCost = getInt("ender_pearl_cast_cost", Names.item_and_block_settings + "." + Names.ender_staff, 1, 0, 3);
+		Settings.EnderStaff.enderPearlNodeWarpCost = getInt("ender_pearl_node_warp_cost",Names.item_and_block_settings + "." + Names.ender_staff,  1, 0, 3);
+		Settings.EnderStaff.enderPearlWorth = getInt("ender_pearl_worth", Names.item_and_block_settings + "." + Names.ender_staff, 1, 0, 10);
+		Settings.EnderStaff.enderPearlLimit = getInt("ender_pearl_limit", Names.item_and_block_settings + "." + Names.ender_staff, 250, 0, itemCap);
+		Settings.EnderStaff.nodeWarpCastTime = getInt("node_warp_cast_time", Names.item_and_block_settings + "." + Names.ender_staff, 60, 10, 120);
 
 		//fortune coin configs
-		Settings.FortuneCoin.disableAudio = getBoolean("disable_audio", Names.fortune_coin, false);
-		Settings.FortuneCoin.standardPullDistance = getInt("standard_pull_distance", Names.fortune_coin, 5, 3, 10);
-		Settings.FortuneCoin.longRangePullDistance = getInt("long_range_pull_distance", Names.fortune_coin, 15, 9, 30);
+		Settings.FortuneCoin.disableAudio = getBoolean("disable_audio", Names.item_and_block_settings + "." + Names.fortune_coin, false);
+		Settings.FortuneCoin.standardPullDistance = getInt("standard_pull_distance", Names.item_and_block_settings + "." + Names.fortune_coin, 5, 3, 10);
+		Settings.FortuneCoin.longRangePullDistance = getInt("long_range_pull_distance", Names.item_and_block_settings + "." + Names.fortune_coin, 15, 9, 30);
 
 		//glacial staff configs
-		Settings.GlacialStaff.snowballLimit = getInt("snowball_limit", Names.glacial_staff, 250, 0, itemCap);
-		Settings.GlacialStaff.snowballCost = getInt("snowball_cost", Names.glacial_staff, 1, 0, 3);
-		Settings.GlacialStaff.snowballWorth = getInt("snowball_worth", Names.glacial_staff, 1, 0, 3);
-		Settings.GlacialStaff.snowballDamage = getInt("snowball_damage", Names.glacial_staff, 3, 0, 6);
-		Settings.GlacialStaff.snowballDamageBonusFireImmune = getInt("snowball_damage_bonus_fire_immune", Names.glacial_staff, 3, 0, 6);
-		Settings.GlacialStaff.snowballDamageBonusBlaze = getInt("snowball_damage_bonus_blaze", Names.glacial_staff, 6, 0, 12);
+		Settings.GlacialStaff.snowballLimit = getInt("snowball_limit", Names.item_and_block_settings + "." + Names.glacial_staff, 250, 0, itemCap);
+		Settings.GlacialStaff.snowballCost = getInt("snowball_cost", Names.item_and_block_settings + "." + Names.glacial_staff, 1, 0, 3);
+		Settings.GlacialStaff.snowballWorth = getInt("snowball_worth", Names.item_and_block_settings + "." + Names.glacial_staff, 1, 0, 3);
+		Settings.GlacialStaff.snowballDamage = getInt("snowball_damage", Names.item_and_block_settings + "." + Names.glacial_staff, 3, 0, 6);
+		Settings.GlacialStaff.snowballDamageBonusFireImmune = getInt("snowball_damage_bonus_fire_immune", Names.item_and_block_settings + "." + Names.glacial_staff, 3, 0, 6);
+		Settings.GlacialStaff.snowballDamageBonusBlaze = getInt("snowball_damage_bonus_blaze", Names.item_and_block_settings + "." + Names.glacial_staff, 6, 0, 12);
 
 		//harvest rod configs
-		Settings.HarvestRod.bonemealLimit = getInt("bonemeal_limit", Names.harvest_rod, 250, 0, itemCap);
-		Settings.HarvestRod.bonemealCost = getInt("bonemeal_cost", Names.harvest_rod, 1, 0, 3);
-		Settings.HarvestRod.bonemealWorth = getInt("bonemeal_worth", Names.harvest_rod, 1, 0, 3);
-		Settings.HarvestRod.bonemealLuckPercentChance = getInt("bonemeal_luck_percent_chance", Names.harvest_rod, 33, 1, 100);
-		Settings.HarvestRod.bonemealLuckRolls = getInt("bonemeal_luck_rolls", Names.harvest_rod, 2, 0, 7);
-		Settings.HarvestRod.harvestBreakRadius = getInt("harvest_break_radius", Names.harvest_rod, 2, 0, 5);
+		Settings.HarvestRod.bonemealLimit = getInt("bonemeal_limit", Names.item_and_block_settings + "." + Names.harvest_rod, 250, 0, itemCap);
+		Settings.HarvestRod.bonemealCost = getInt("bonemeal_cost", Names.item_and_block_settings + "." + Names.harvest_rod, 1, 0, 3);
+		Settings.HarvestRod.bonemealWorth = getInt("bonemeal_worth", Names.item_and_block_settings + "." + Names.harvest_rod, 1, 0, 3);
+		Settings.HarvestRod.bonemealLuckPercentChance = getInt("bonemeal_luck_percent_chance", Names.item_and_block_settings + "." + Names.harvest_rod, 33, 1, 100);
+		Settings.HarvestRod.bonemealLuckRolls = getInt("bonemeal_luck_rolls", Names.item_and_block_settings + "." + Names.harvest_rod, 2, 0, 7);
+		Settings.HarvestRod.harvestBreakRadius = getInt("harvest_break_radius", Names.item_and_block_settings + "." + Names.harvest_rod, 2, 0, 5);
 
 		//hero's medallion config
-		Settings.HeroMedallion.experienceLevelMaximum = getInt("experience_level_maximum", Names.hero_medallion, 30, 0, 60);
-		Settings.HeroMedallion.experienceLevelMinimum = getInt("experience_level_minimum", Names.hero_medallion, 0, 0, 30);
-		Settings.HeroMedallion.experienceLimit =getInt("experience_limit", Names.hero_medallion, cleanIntMax, 0, cleanIntMax);
+		Settings.HeroMedallion.experienceLevelMaximum = getInt("experience_level_maximum", Names.item_and_block_settings + "." + Names.hero_medallion, 30, 0, 60);
+		Settings.HeroMedallion.experienceLevelMinimum = getInt("experience_level_minimum", Names.item_and_block_settings + "." + Names.hero_medallion, 0, 0, 30);
+		Settings.HeroMedallion.experienceLimit =getInt("experience_limit", Names.item_and_block_settings + "." + Names.hero_medallion, cleanIntMax, 0, cleanIntMax);
 
 		//ice rod configs
-		Settings.IceMagusRod.snowballLimit = getInt("snowball_limit", Names.ice_magus_rod, 250, 0, itemCap);
-		Settings.IceMagusRod.snowballCost = getInt("snowball_cost", Names.ice_magus_rod, 1, 0, 3);
-		Settings.IceMagusRod.snowballWorth = getInt("snowball_worth", Names.ice_magus_rod, 1, 0, 3);
-		Settings.IceMagusRod.snowballDamage = getInt("snowball_damage", Names.ice_magus_rod, 2, 0, 4);
-		Settings.IceMagusRod.snowballDamageBonusFireImmune = getInt("snowball_damage_bonus_fire_immune", Names.ice_magus_rod, 2, 0, 4);
-		Settings.IceMagusRod.snowballDamageBonusBlaze = getInt("snowball_damage_bonus_blaze", Names.ice_magus_rod, 4, 0, 8);
+		Settings.IceMagusRod.snowballLimit = getInt("snowball_limit", Names.item_and_block_settings + "." + Names.ice_magus_rod, 250, 0, itemCap);
+		Settings.IceMagusRod.snowballCost = getInt("snowball_cost", Names.item_and_block_settings + "." + Names.ice_magus_rod, 1, 0, 3);
+		Settings.IceMagusRod.snowballWorth = getInt("snowball_worth", Names.item_and_block_settings + "." + Names.ice_magus_rod, 1, 0, 3);
+		Settings.IceMagusRod.snowballDamage = getInt("snowball_damage", Names.item_and_block_settings + "." + Names.ice_magus_rod, 2, 0, 4);
+		Settings.IceMagusRod.snowballDamageBonusFireImmune = getInt("snowball_damage_bonus_fire_immune", Names.item_and_block_settings + "." + Names.ice_magus_rod, 2, 0, 4);
+		Settings.IceMagusRod.snowballDamageBonusBlaze = getInt("snowball_damage_bonus_blaze", Names.item_and_block_settings + "." + Names.ice_magus_rod, 4, 0, 8);
 
 		//infernal claws configs
-		Settings.InfernalClaws.hungerCostPercent = getInt("hunger_cost_percent", Names.infernal_claws, 10, 0, 30);
+		Settings.InfernalClaws.hungerCostPercent = getInt("hunger_cost_percent", Names.item_and_block_settings + "." + Names.infernal_claws, 10, 0, 30);
 
 		//infernal chalice configs
-		Settings.InfernalChalice.hungerCostPercent = getInt("hunger_cost_percent", Names.infernal_chalice, 5, 0, 10);
-		Settings.InfernalChalice.fluidLimit = getInt("fluid_limit", Names.infernal_chalice, 500000, 0, cleanIntMax);
+		Settings.InfernalChalice.hungerCostPercent = getInt("hunger_cost_percent", Names.item_and_block_settings + "." + Names.infernal_chalice, 5, 0, 10);
+		Settings.InfernalChalice.fluidLimit = getInt("fluid_limit", Names.item_and_block_settings + "." + Names.infernal_chalice, 500000, 0, cleanIntMax);
 
 		//interdiction torch configs
 		//see post init for entity configs
-		Settings.InterdictionTorch.pushRadius = getInt("push_radius", Names.interdiction_torch, 5, 1, 15);
-		Settings.InterdictionTorch.canPushProjectiles = getBoolean("can_push_projectiles", Names.interdiction_torch, false);
+		Settings.InterdictionTorch.pushRadius = getInt("push_radius", Names.item_and_block_settings + "." + Names.interdiction_torch, 5, 1, 15);
+		Settings.InterdictionTorch.canPushProjectiles = getBoolean("can_push_projectiles", Names.item_and_block_settings + "." + Names.interdiction_torch, false);
 		//TODO: verify that these configs are properly displayed in config screen
-		//Settings.InterdictionTorch.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.interdiction_torch, ImmutableList.of());
-		//Settings.InterdictionTorch.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.interdiction_torch, ImmutableList.of());
+		//Settings.InterdictionTorch.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.item_and_block_settings + "." + Names.interdiction_torch, ImmutableList.of());
+		//Settings.InterdictionTorch.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.item_and_block_settings + "." + Names.interdiction_torch, ImmutableList.of());
 
 		//kraken shell configs
-		Settings.KrakenShell.hungerCostPercent = getInt("hunger_cost_percent", Names.kraken_shell, 25, 0, 50);
+		Settings.KrakenShell.hungerCostPercent = getInt("hunger_cost_percent", Names.item_and_block_settings + "." + Names.kraken_shell, 25, 0, 50);
 
 		//lantern of paranoia configs
-		Settings.LanternOfParanoia.minLightLevel = getInt("min_light_level", Names.lantern_of_paranoia, 8, 0, 15);
-		Settings.LanternOfParanoia.placementScanRadius = getInt("placement_scan_radius", Names.lantern_of_paranoia, 6, 1, 15);
-		//Reliquary.CONFIG.require("only_place_on_visible_blocks", Names.lantern_of_paranoia, false);
+		Settings.LanternOfParanoia.minLightLevel = getInt("min_light_level", Names.item_and_block_settings + "." + Names.lantern_of_paranoia, 8, 0, 15);
+		Settings.LanternOfParanoia.placementScanRadius = getInt("placement_scan_radius", Names.item_and_block_settings + "." + Names.lantern_of_paranoia, 6, 1, 15);
+		//Reliquary.CONFIG.require("only_place_on_visible_blocks", Names.item_and_block_settings + "." + Names.lantern_of_paranoia, false);
 
 		//fertile_lilypad of fertility configs
-		Settings.FertileLilypad.secondsBetweenGrowthTicks = getInt("seconds_between_growth_ticks", Names.fertile_lilypad, 47, 1, 150);
-		Settings.FertileLilypad.tileRange = getInt("tile_range", Names.fertile_lilypad, 4, 1, 15);
-		Settings.FertileLilypad.fullPotencyRange = getInt("full_potency_range", Names.fertile_lilypad, 1, 1, 15);
+		Settings.FertileLilypad.secondsBetweenGrowthTicks = getInt("seconds_between_growth_ticks", Names.item_and_block_settings + "." + Names.fertile_lilypad, 47, 1, 150);
+		Settings.FertileLilypad.tileRange = getInt("tile_range", Names.item_and_block_settings + "." + Names.fertile_lilypad, 4, 1, 15);
+		Settings.FertileLilypad.fullPotencyRange = getInt("full_potency_range", Names.item_and_block_settings + "." + Names.fertile_lilypad, 1, 1, 15);
 
 		//midas touchstone configs
 		List<String> goldItems = ImmutableList.of();
-		Settings.MidasTouchstone.goldItems = getStringList("gold_items", Names.midas_touchstone, goldItems);
-		Settings.MidasTouchstone.ticksBetweenRepairTicks = getInt("ticks_between_repair_ticks", Names.midas_touchstone, 4, 1, cleanShortMax);
-		Settings.MidasTouchstone.glowstoneCost = getInt("glowstone_cost", Names.midas_touchstone, 1, 0, 3);
-		Settings.MidasTouchstone.glowstoneWorth = getInt("glowstone_worth", Names.midas_touchstone, 4, 0, 12);
-		Settings.MidasTouchstone.glowstoneLimit = getInt("glowstone_limit", Names.midas_touchstone, 250, 0, itemCap);
+		Settings.MidasTouchstone.goldItems = getStringList("gold_items", Names.item_and_block_settings + "." + Names.midas_touchstone, goldItems);
+		Settings.MidasTouchstone.ticksBetweenRepairTicks = getInt("ticks_between_repair_ticks", Names.item_and_block_settings + "." + Names.midas_touchstone, 4, 1, cleanShortMax);
+		Settings.MidasTouchstone.glowstoneCost = getInt("glowstone_cost", Names.item_and_block_settings + "." + Names.midas_touchstone, 1, 0, 3);
+		Settings.MidasTouchstone.glowstoneWorth = getInt("glowstone_worth", Names.item_and_block_settings + "." + Names.midas_touchstone, 4, 0, 12);
+		Settings.MidasTouchstone.glowstoneLimit = getInt("glowstone_limit", Names.item_and_block_settings + "." + Names.midas_touchstone, 250, 0, itemCap);
 
 		//phoenix down configs
-		Settings.PhoenixDown.hungerCostPercent = getInt("hunger_cost_percent", Names.phoenix_down, 25, 0, 50);
-		Settings.PhoenixDown.leapingPotency = getInt("leaping_potency", Names.phoenix_down, 1, 0, 5);
-		Settings.PhoenixDown.healPercentageOfMaxLife = getInt("heal_percentage_of_max_life", Names.phoenix_down, 100, 0, 100);
-		Settings.PhoenixDown.removeNegativeStatus = getBoolean("remove_negative_status", Names.phoenix_down, true);
-		Settings.PhoenixDown.giveTemporaryDamageResistance = getBoolean("give_temporary_damage_resistance", Names.phoenix_down, true);
-		Settings.PhoenixDown.giveTemporaryRegeneration = getBoolean("give_temporary_regeneration", Names.phoenix_down, true);
-		Settings.PhoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou = getBoolean("give_temporary_fire_resistance_if_fire_damage_killed_you", Names.phoenix_down, true);
-		Settings.PhoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou = getBoolean("give_temporary_water_breathing_if_drowning_killed_you", Names.phoenix_down, true);
+		Settings.PhoenixDown.hungerCostPercent = getInt("hunger_cost_percent", Names.item_and_block_settings + "." + Names.phoenix_down, 25, 0, 50);
+		Settings.PhoenixDown.leapingPotency = getInt("leaping_potency", Names.item_and_block_settings + "." + Names.phoenix_down, 1, 0, 5);
+		Settings.PhoenixDown.healPercentageOfMaxLife = getInt("heal_percentage_of_max_life", Names.item_and_block_settings + "." + Names.phoenix_down, 100, 0, 100);
+		Settings.PhoenixDown.removeNegativeStatus = getBoolean("remove_negative_status", Names.item_and_block_settings + "." + Names.phoenix_down, true);
+		Settings.PhoenixDown.giveTemporaryDamageResistance = getBoolean("give_temporary_damage_resistance", Names.item_and_block_settings + "." + Names.phoenix_down, true);
+		Settings.PhoenixDown.giveTemporaryRegeneration = getBoolean("give_temporary_regeneration", Names.item_and_block_settings + "." + Names.phoenix_down, true);
+		Settings.PhoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou = getBoolean("give_temporary_fire_resistance_if_fire_damage_killed_you", Names.item_and_block_settings + "." + Names.phoenix_down, true);
+		Settings.PhoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou = getBoolean("give_temporary_water_breathing_if_drowning_killed_you", Names.item_and_block_settings + "." + Names.phoenix_down, true);
 
 		//pyromancer staff configs
-		Settings.PyromancerStaff.hungerCostPercent = getInt("hunger_cost_percent", Names.pyromancer_staff, 5, 0, 10);
-		Settings.PyromancerStaff.fireChargeLimit = getInt("fire_charge_limit", Names.pyromancer_staff, 250, 0, itemCap);
-		Settings.PyromancerStaff.fireChargeCost = getInt("fire_charge_cost", Names.pyromancer_staff, 1, 0, 3);
-		Settings.PyromancerStaff.fireChargeWorth = getInt("fire_charge_worth", Names.pyromancer_staff, 1, 0, 3);
-		Settings.PyromancerStaff.ghastAbsorbWorth = getInt("ghast_absorb_worth", Names.pyromancer_staff, 1, 0, 3);
-		Settings.PyromancerStaff.blazePowderLimit = getInt("blaze_powder_limit", Names.pyromancer_staff, 250, 0, itemCap);
-		Settings.PyromancerStaff.blazePowderCost = getInt("blaze_powder_cost", Names.pyromancer_staff, 1, 0, 3);
-		Settings.PyromancerStaff.blazePowderWorth = getInt("blaze_powder_worth", Names.pyromancer_staff, 1, 0, 3);
-		Settings.PyromancerStaff.blazeAbsorbWorth = getInt("blaze_absorb_worth", Names.pyromancer_staff, 1, 0, 3);
+		Settings.PyromancerStaff.hungerCostPercent = getInt("hunger_cost_percent", Names.item_and_block_settings + "." + Names.pyromancer_staff, 5, 0, 10);
+		Settings.PyromancerStaff.fireChargeLimit = getInt("fire_charge_limit", Names.item_and_block_settings + "." + Names.pyromancer_staff, 250, 0, itemCap);
+		Settings.PyromancerStaff.fireChargeCost = getInt("fire_charge_cost", Names.item_and_block_settings + "." + Names.pyromancer_staff, 1, 0, 3);
+		Settings.PyromancerStaff.fireChargeWorth = getInt("fire_charge_worth", Names.item_and_block_settings + "." + Names.pyromancer_staff, 1, 0, 3);
+		Settings.PyromancerStaff.ghastAbsorbWorth = getInt("ghast_absorb_worth", Names.item_and_block_settings + "." + Names.pyromancer_staff, 1, 0, 3);
+		Settings.PyromancerStaff.blazePowderLimit = getInt("blaze_powder_limit", Names.item_and_block_settings + "." + Names.pyromancer_staff, 250, 0, itemCap);
+		Settings.PyromancerStaff.blazePowderCost = getInt("blaze_powder_cost", Names.item_and_block_settings + "." + Names.pyromancer_staff, 1, 0, 3);
+		Settings.PyromancerStaff.blazePowderWorth = getInt("blaze_powder_worth", Names.item_and_block_settings + "." + Names.pyromancer_staff, 1, 0, 3);
+		Settings.PyromancerStaff.blazeAbsorbWorth = getInt("blaze_absorb_worth", Names.item_and_block_settings + "." + Names.pyromancer_staff, 1, 0, 3);
 
 		//rending gale configs
-		Settings.RendingGale.chargeLimit = getInt("charge_limit", Names.rending_gale, cleanShortMax, 0, cleanIntMax);
-		Settings.RendingGale.castChargeCost = getInt("cast_charge_cost", Names.rending_gale, 1, 0, 3);
-		Settings.RendingGale.boltChargeCost = getInt("bolt_charge_cost", Names.rending_gale, 100, 0, 250);
-		Settings.RendingGale.chargeFeatherWorth = getInt("charge_feather_worth", Names.rending_gale, 100, 1, 250);
-		Settings.RendingGale.blockTargetRange = getInt("block_target_range", Names.rending_gale, 12, 5, 15);
-		Settings.RendingGale.pushPullRadius = getInt("push_pull_radius", Names.rending_gale, 10, 1, 20);
-		Settings.RendingGale.canPushProjectiles = getBoolean("can_push_projectiles", Names.rending_gale, false);
-		//Settings.RendingGale.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.rending_gale, ImmutableList.of());
-		//Settings.RendingGale.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.rending_gale, ImmutableList.of());
+		Settings.RendingGale.chargeLimit = getInt("charge_limit", Names.item_and_block_settings + "." + Names.rending_gale, cleanShortMax, 0, cleanIntMax);
+		Settings.RendingGale.castChargeCost = getInt("cast_charge_cost", Names.item_and_block_settings + "." + Names.rending_gale, 1, 0, 3);
+		Settings.RendingGale.boltChargeCost = getInt("bolt_charge_cost", Names.item_and_block_settings + "." + Names.rending_gale, 100, 0, 250);
+		Settings.RendingGale.chargeFeatherWorth = getInt("charge_feather_worth", Names.item_and_block_settings + "." + Names.rending_gale, 100, 1, 250);
+		Settings.RendingGale.blockTargetRange = getInt("block_target_range", Names.item_and_block_settings + "." + Names.rending_gale, 12, 5, 15);
+		Settings.RendingGale.pushPullRadius = getInt("push_pull_radius", Names.item_and_block_settings + "." + Names.rending_gale, 10, 1, 20);
+		Settings.RendingGale.canPushProjectiles = getBoolean("can_push_projectiles", Names.item_and_block_settings + "." + Names.rending_gale, false);
+		//Settings.RendingGale.entitiesThatCanBePushed = getStringList("entities_that_can_be_pushed", Names.item_and_block_settings + "." + Names.rending_gale, ImmutableList.of());
+		//Settings.RendingGale.projectilesThatCanBePushed = getStringList("projectiles_that_can_be_pushed", Names.item_and_block_settings + "." + Names.rending_gale, ImmutableList.of());
 
 		//rod of lyssa configs
-		Settings.RodOfLyssa.useLeveledFailureRate = getBoolean("use_leveled_failure_rate", Names.rod_of_lyssa, true);
-		Settings.RodOfLyssa.levelCapForLeveledFormula = getInt("level_cap_for_leveled_formula", Names.rod_of_lyssa, 100, 1, 900);
-		Settings.RodOfLyssa.flatStealFailurePercentRate = getInt("flat_steal_failure_percent_rate", Names.rod_of_lyssa, 10, 0, 100);
-		Settings.RodOfLyssa.stealFromVacantSlots = getBoolean("steal_from_vacant_slots", Names.rod_of_lyssa, true);
-		Settings.RodOfLyssa.failStealFromVacantSlots = getBoolean("fail_steal_from_vacant_slots", Names.rod_of_lyssa, false);
-		Settings.RodOfLyssa.angerOnStealFailure = getBoolean("anger_on_steal_failure", Names.rod_of_lyssa, true);
+		Settings.RodOfLyssa.useLeveledFailureRate = getBoolean("use_leveled_failure_rate", Names.item_and_block_settings + "." + Names.rod_of_lyssa, true);
+		Settings.RodOfLyssa.levelCapForLeveledFormula = getInt("level_cap_for_leveled_formula", Names.item_and_block_settings + "." + Names.rod_of_lyssa, 100, 1, 900);
+		Settings.RodOfLyssa.flatStealFailurePercentRate = getInt("flat_steal_failure_percent_rate", Names.item_and_block_settings + "." + Names.rod_of_lyssa, 10, 0, 100);
+		Settings.RodOfLyssa.stealFromVacantSlots = getBoolean("steal_from_vacant_slots", Names.item_and_block_settings + "." + Names.rod_of_lyssa, true);
+		Settings.RodOfLyssa.failStealFromVacantSlots = getBoolean("fail_steal_from_vacant_slots", Names.item_and_block_settings + "." + Names.rod_of_lyssa, false);
+		Settings.RodOfLyssa.angerOnStealFailure = getBoolean("anger_on_steal_failure", Names.item_and_block_settings + "." + Names.rod_of_lyssa, true);
 
-		//Settings.SeekerShot.entitiesThatCanBeHunted = getStringList("entities_that_can_be_hunted", Names.seeker_shot, ImmutableList.of());
+		//Settings.SeekerShot.entitiesThatCanBeHunted = getStringList("entities_that_can_be_hunted", Names.item_and_block_settings + "." + Names.seeker_shot, ImmutableList.of());
 
 		//sojourners staff configs
 		List<String> torches = ImmutableList.of();
-		Settings.SojournerStaff.torches = getStringList("torches", Names.sojourner_staff, torches);
-		Settings.SojournerStaff.maxCapacityPerItemType = getInt("max_capacity_per_item_type", Names.sojourner_staff, 1500, 1, itemCap);
-		Settings.SojournerStaff.maxRange = getInt("max_range", Names.sojourner_staff, 30, 1, 30);
-		Settings.SojournerStaff.tilePerCostMultiplier = getInt("tile_per_cost_multiplier", Names.sojourner_staff, 6, 6, 30);
+		Settings.SojournerStaff.torches = getStringList("torches", Names.item_and_block_settings + "." + Names.sojourner_staff, torches);
+		Settings.SojournerStaff.maxCapacityPerItemType = getInt("max_capacity_per_item_type", Names.item_and_block_settings + "." + Names.sojourner_staff, 1500, 1, itemCap);
+		Settings.SojournerStaff.maxRange = getInt("max_range", Names.item_and_block_settings + "." + Names.sojourner_staff, 30, 1, 30);
+		Settings.SojournerStaff.tilePerCostMultiplier = getInt("tile_per_cost_multiplier", Names.item_and_block_settings + "." + Names.sojourner_staff, 6, 6, 30);
 
 		//twilight cloak configs
-		Settings.TwilightCloak.maxLightLevel = getInt("max_light_level", Names.twilight_cloak, 4, 0, 15);
-		//Reliquary.CONFIG.require(Names.twilight_cloak, "only_works_at_night", false);
+		Settings.TwilightCloak.maxLightLevel = getInt("max_light_level", Names.item_and_block_settings + "." + Names.twilight_cloak, 4, 0, 15);
+		//Reliquary.CONFIG.require(Names.item_and_block_settings + "." + Names.twilight_cloak, "only_works_at_night", false);
 
 		//void tear configs
-		Settings.VoidTear.itemLimit = getInt("item_limit", Names.void_tear, 2000000000, 0, cleanIntMax);
-		Settings.VoidTear.absorbWhenCreated = getBoolean("absorb_when_created", Names.void_tear, true);
+		Settings.VoidTear.itemLimit = getInt("item_limit", Names.item_and_block_settings + "." + Names.void_tear, 2000000000, 0, cleanIntMax);
+		Settings.VoidTear.absorbWhenCreated = getBoolean("absorb_when_created", Names.item_and_block_settings + "." + Names.void_tear, true);
 	}
 
 	private static void loadMobDropProbabilities()
@@ -349,7 +345,7 @@ public class ConfigurationHandler
 	}
 
 	private static boolean getBoolean(String name, String category, boolean defaultValue) {
-		return configuration.getBoolean( name, category, defaultValue, getTranslatedComment( category, name ), getLabelLangRef( category, name));
+		return configuration.getBoolean(name, category, defaultValue, getTranslatedComment(category, name), getLabelLangRef( category, name));
 	}
 
 	private static int getInt(String name, String category, int defaultValue, int minValue, int maxValue) {
