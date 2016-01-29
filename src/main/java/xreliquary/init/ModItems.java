@@ -7,6 +7,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.items.*;
 import xreliquary.reference.Names;
@@ -107,7 +108,7 @@ public class ModItems {
         GameRegistry.registerItem(witherlessRose, Reference.DOMAIN + Names.witherless_rose);
     }
 
-    public static void initModels() {
+    public static void registerItemModels() {
         registerItemModel(alkahestryTome, Names.alkahestry_tome);
         registerItemModel(mercyCross, Names.mercy_cross);
         registerItemModel(angelheartVial, Names.angelheart_vial);
@@ -150,7 +151,6 @@ public class ModItems {
         registerItemModel(infernalTear, Names.infernal_tear_empty);
         ModelBakery.registerItemVariants(infernalTear, ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR));
 
-
         registerItemModel(rodOfLyssa, Names.rod_of_lyssa);
         ModelBakery.registerItemVariants(rodOfLyssa, ItemModels.getInstance().getModel(ItemModels.ROD_OF_LYSSA_CAST));
 
@@ -188,26 +188,25 @@ public class ModItems {
 
     }
     private static void registerItemModelForAllVariants(Item item, String resourceName, int numberOfVariants, ItemMeshDefinition itemMeshDefinition) {
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, itemMeshDefinition);
 
+        resourceName = Reference.DOMAIN + resourceName;
+
+        ModelBakery.registerItemVariants(item, new ResourceLocation(resourceName));
+
+        ModelLoader.setCustomMeshDefinition( item, itemMeshDefinition);
+
+        //Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, itemMeshDefinition);
     }
     private static void registerItemModel(Item item, String resourceName) {
         registerItemModel(item, resourceName, 0, false);
     }
     private static void registerItemModel(Item item, String resourceName, int meta, boolean hasSubTypes){
-        //TODO: figure out what is the best way to register item models
-
         if (hasSubTypes) {
             resourceName = resourceName + "_" + meta;
         }
 
         resourceName = Reference.DOMAIN + resourceName;
 
-        ModelBakery.registerItemVariants(item, new ResourceLocation(resourceName));
-
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher()
-                .register(item, meta, new ModelResourceLocation(resourceName, "inventory"));
+        ModelLoader.setCustomModelResourceLocation(item, meta,  new ModelResourceLocation(resourceName, "inventory"));
     }
-
-
 }

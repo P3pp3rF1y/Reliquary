@@ -24,6 +24,7 @@ public class ItemInfernalTear extends ItemToggleable {
         super(Names.infernal_tear);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
+        canRepair = false;
     }
 
     @Override

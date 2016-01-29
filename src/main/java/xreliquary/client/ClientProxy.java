@@ -4,7 +4,6 @@ import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -24,12 +23,16 @@ import xreliquary.event.ClientEventHandler;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 
+//TODO refactor proxy so that it has functionally named methods that get called from main mod class
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
     @Override
     public void preInit() {
         super.preInit();
+
+        ModItems.registerItemModels();
+        ModBlocks.registerItemBlockModels();
     }
 
     @Override
@@ -39,10 +42,7 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 
         this.registerRenderers();
-        ModBlocks.initModels();
-        ModItems.initModels();
     }
-
 
     public void registerRenderers() {
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();

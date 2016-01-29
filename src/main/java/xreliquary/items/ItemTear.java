@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 
 import java.util.List;
@@ -46,9 +47,10 @@ public class ItemTear extends ItemToggleable {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+        if (!Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+            return;
         this.formatTooltip(null, stack, list);
 
-        NBTTagCompound tag = stack.getTagCompound();
         if (this.isEnabled(stack) || this.getStackFromTear(stack) == null) {
             list.add(LanguageHelper.getLocalization("tooltip.tear_empty"));
         } else {
@@ -56,8 +58,8 @@ public class ItemTear extends ItemToggleable {
             String itemName = contents.getDisplayName();
             String holds = itemName;
 
-            if(tag.hasKey("itemQuantity")) {
-                LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", itemName, "amount", String.valueOf(tag.getShort("itemQuantity"))), stack, list);
+            if(NBTHelper.hasKey("itemQuantity", stack)) {
+                LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", itemName, "amount", String.valueOf(NBTHelper.getShort("itemQuantity", stack))), stack, list);
             } else {
                 LanguageHelper.formatTooltip("tooltip.tear", ImmutableMap.of("item", itemName), stack, list);
             }
@@ -185,10 +187,10 @@ public class ItemTear extends ItemToggleable {
     }
 
     public ItemStack getStackFromTear(ItemStack tear) {
-        NBTTagCompound tag = tear.getTagCompound();
-        if(tag == null)
+        //something awful happened. We either lost data or this is an invalid tear by some other means. Either way, not great.
+        if (NBTHelper.getString("itemID", tear).equals(""))
             return null;
-        return new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(tag.getString("itemID"))), 1, tag.getShort("itemMeta"));
+        return new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(NBTHelper.getString("itemID", tear))), NBTHelper.getInteger( "itemQuantity", tear ));
     }
 
     protected boolean shouldEmpty(ItemStack stack, EntityPlayer player) {

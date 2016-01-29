@@ -72,6 +72,11 @@ public class NBTHelper {
         return ist.getTagCompound();
     }
 
+    public static boolean hasKey(String s, ItemStack stack) {
+        NBTTagCompound tag = getTag(stack);
+        return tag.hasKey(s);
+    }
+
     public static void setTag(ItemStack ist, NBTTagCompound nbt) {
         //UUID tagUUID = getUUID(ist);
         //WorldDataHandler.<ItemData>get(ItemData.class).setTag(tagUUID, nbt);

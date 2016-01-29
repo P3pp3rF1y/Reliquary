@@ -111,8 +111,8 @@ item.infernal_chalice.tooltip=Protects you from lava damage.;{{!colors.red}}Hold
 item.infernal_claws.name={{!colors.red}}Infernal Claws
 item.infernal_claws.tooltip=Absorbs fire damage at;the expense of hunger.
 
-item.infernal_tear.name={{!colors.red}}Infernal Tear
-item.infernal_tear.tooltip=Burns items into experience.;Shift + Right-Click to activate.
+item.infernal_tear.name={{!colors.red}}Infernal Tear WIP
+item.infernal_tear.tooltip=Doesn't work in this version.;Only used as crafting ingredient;Burns items into experience.;Shift + Right-Click to activate.
 
 tile.interdiction_torch.name={{!colors.yellow}}Interdiction Torch
 tile.interdiction_torch.tooltip=Repels creatures and projectiles.
