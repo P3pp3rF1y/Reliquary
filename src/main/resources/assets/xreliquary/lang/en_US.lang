@@ -208,3 +208,6 @@ item.witherless_rose.name=Witherless Rose
 item.witherless_rose.tooltip=With the Nether Stars enchanting this rose;the holder is protected from Withering.
 
 tile.wraith_node.name=Wraith Node
+
+config.hud_positions.sojourner_staff.comment=Position of Sojouner Staff HUD
+config.hud_positions.sojourner_staff.label=Sojouner Staff
