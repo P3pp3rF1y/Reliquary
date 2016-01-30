@@ -2,6 +2,7 @@ package xreliquary.client.gui;
 
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.fml.client.config.ConfigGuiType;
 import net.minecraftforge.fml.client.config.DummyConfigElement;
@@ -19,7 +20,7 @@ public class ModGuiConfig extends GuiConfig
 {
 	public ModGuiConfig(GuiScreen guiScreen)
 	{
-		super(guiScreen, getConfigElements(), Reference.MOD_ID, false, false, GuiConfig.getAbridgedConfigPath(ConfigurationHandler.configuration.toString()));
+		super(guiScreen, getConfigElements(), Reference.MOD_ID, false, false, StatCollector.translateToLocal("config.title1"));
 	}
 
 	private static List<IConfigElement> getConfigElements() {

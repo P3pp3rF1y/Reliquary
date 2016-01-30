@@ -238,7 +238,7 @@ public class ClientEventHandler {
         int hudOverlayX = 0;
         int hudOverlayY = 0;
 
-        switch (Settings.HudPositions.pyromanceStaff) {
+        switch (Settings.HudPositions.pyromancerStaff) {
             case 0: {
                 hudOverlayX = 0;
                 hudOverlayY = 0;

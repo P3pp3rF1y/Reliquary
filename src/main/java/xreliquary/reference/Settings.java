@@ -21,7 +21,7 @@ public class Settings
 		public static int harvestRod;
 		public static int infernalChalice;
 		public static int heroMedallion;
-		public static int pyromanceStaff;
+		public static int pyromancerStaff;
 		public static int rendingGale;
 	}
 
