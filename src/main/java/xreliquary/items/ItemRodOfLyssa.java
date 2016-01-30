@@ -1,7 +1,8 @@
 package xreliquary.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,7 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityLyssaHook;
-import xreliquary.lib.Names;
+import xreliquary.init.ItemModels;
+import xreliquary.reference.Names;
 
 /**
  * Created by Xeno on 10/11/2014.
@@ -42,6 +44,14 @@ public class ItemRodOfLyssa extends ItemBase {
         return true;
     }
 
+    @Override
+    public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) {
+        if (player.fishEntity != null) {
+            return ItemModels.getInstance().getModel(ItemModels.ROD_OF_LYSSA_CAST);
+        }
+        return ItemModels.getInstance().getModel(ItemModels.ROD_OF_LYSSA);
+    }
+
     /**
      * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      */
@@ -50,7 +60,7 @@ public class ItemRodOfLyssa extends ItemBase {
         if (player.fishEntity != null)
         {
             player.swingItem();
-            player.fishEntity.func_146034_e();
+            player.fishEntity.handleHookRetraction();
         }
         else
         {
@@ -66,4 +76,5 @@ public class ItemRodOfLyssa extends ItemBase {
 
         return ist;
     }
+
 }

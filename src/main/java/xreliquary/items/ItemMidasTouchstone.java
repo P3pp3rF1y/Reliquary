@@ -1,8 +1,8 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
@@ -16,8 +16,9 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 import lib.enderwizards.sandstone.util.NBTHelper;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
+        return EnumRarity.EPIC;
     }
 
     @Override
@@ -83,7 +84,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 
     private void doRepairAndDamageTouchstone(ItemStack ist, EntityPlayer player) {
         //list of customizable items added through configs that can be repaired by the touchstone.
-        List<String> goldItems = (List<String>) Reliquary.CONFIG.get(Names.midas_touchstone, "gold_items");
+        List<String> goldItems = (List<String>) Settings.MidasTouchstone.goldItems;
 
         for (int slot = 0; slot < player.inventory.armorInventory.length; slot++) {
             if (player.inventory.armorInventory[slot] == null) {
@@ -158,12 +159,12 @@ public class ItemMidasTouchstone extends ItemToggleable {
     }
 
     private int getGlowStoneCost() {
-        return Reliquary.CONFIG.getInt(Names.midas_touchstone, "glowstone_cost");
+        return Settings.MidasTouchstone.glowstoneCost;
     }
 
     private int getGlowStoneWorth() {
-        return Reliquary.CONFIG.getInt(Names.midas_touchstone, "glowstone_worth");
+        return Settings.MidasTouchstone.glowstoneWorth;
     }
 
-    private int getGlowstoneLimit() { return Reliquary.CONFIG.getInt(Names.midas_touchstone, "glowstone_limit"); }
+    private int getGlowstoneLimit() { return Settings.MidasTouchstone.glowstoneLimit; }
 }

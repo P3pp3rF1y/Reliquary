@@ -1,8 +1,8 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
@@ -14,26 +14,29 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.blocks.tile.TileEntityAltar;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 
 @ContentInit
 public class ItemAlkahestryTome extends ItemToggleable {
+//TODO: fix item damage indicator
+//TODO: fix crafting recipes
 
     public ItemAlkahestryTome() {
         super(Names.alkahestry_tome);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
         this.canRepair = false;
-        this.hasSubtypes = true;
+        this.hasContainerItem(new ItemStack(Items.redstone));
+        //TODO: remove if tome works
+        //this.hasSubtypes = true;
         this.setContainerItem(this);
     }
 
@@ -47,11 +50,6 @@ public class ItemAlkahestryTome extends ItemToggleable {
         player.openGui(Reliquary.INSTANCE, 0, world, (int) player.posX, (int) player.posY, (int) player.posZ);
         return stack;
     }
-
-//    @Override
-//    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-//        return world.getTileEntity(x, y, z) instanceof TileEntityAltar;
-//    }
 
     @Override
     public void onUpdate(ItemStack ist, World world, Entity entity, int i, boolean f) {
@@ -82,12 +80,6 @@ public class ItemAlkahestryTome extends ItemToggleable {
     }
 
     @Override
-    public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack) {
-        stack = null;
-        return false;
-    }
-
-    @Override
     public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List list, boolean par4) {
         if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
             return;
@@ -101,7 +93,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
+        return EnumRarity.EPIC;
     }
 
     @Override
@@ -113,6 +105,6 @@ public class ItemAlkahestryTome extends ItemToggleable {
     }
 
     private int getRedstoneLimit() {
-        return Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstone_limit");
+        return Settings.AlkahestryTome.redstoneLimit;
     }
 }

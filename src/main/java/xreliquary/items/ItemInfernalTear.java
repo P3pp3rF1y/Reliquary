@@ -1,52 +1,30 @@
 package xreliquary.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.init.ItemModels;
+import xreliquary.reference.Names;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 
+//TODO: likely extend ItemTear, has logic from before refactoring that removed all logic here
+
 @ContentInit
 public class ItemInfernalTear extends ItemToggleable {
-
-    @Override
-    public IIcon getIcon(ItemStack ist, int renderPass) {
-        if (!this.isEnabled(ist) || renderPass != 1)
-            return inactiveSprite;
-        else
-            return this.itemIcon;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @SideOnly(Side.CLIENT)
-    private IIcon inactiveSprite;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-        inactiveSprite = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.infernal_tear_empty);
-    }
 
     public ItemInfernalTear() {
         super(Names.infernal_tear);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
+        canRepair = false;
     }
 
     @Override
@@ -64,5 +42,14 @@ public class ItemInfernalTear extends ItemToggleable {
                 player.addExperience((int) (Math.round(((1d / (double) recipe.cost) / (double) recipe.yield) * 150)));
             }
         }
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int ticksRemaining) {
+        if (isEnabled(stack)) {
+            return ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR);
+        }
+        return ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR_EMPTY);
     }
 }

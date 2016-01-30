@@ -1,10 +1,8 @@
 package xreliquary.items;
 
 import baubles.api.BaubleType;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -14,12 +12,13 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
-import lib.enderwizards.sandstone.util.NBTHelper;
+import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.Iterator;
 import java.util.List;
@@ -38,37 +37,13 @@ public class ItemFortuneCoin extends ItemBauble {
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
+        return EnumRarity.EPIC;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack ist, int pass) {
-        return NBTHelper.getBoolean("enabled", ist);
-    }
-
-    @SideOnly(Side.CLIENT)
-    private IIcon iconOverlay;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-        iconOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.fortune_coin_overlay);
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack ist, int renderPass) {
-        if (!NBTHelper.getBoolean("enabled", ist) || renderPass != 1)
-            return this.itemIcon;
-        else
-            return iconOverlay;
+    public boolean hasEffect(ItemStack stack) {
+        return NBTHelper.getBoolean("enabled", stack);
     }
 
     @Override
@@ -94,23 +69,22 @@ public class ItemFortuneCoin extends ItemBauble {
     }
 
     private void scanForEntitiesInRange(World world, EntityPlayer player, double d) {
-        List iList = world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(player.posX - d, player.posY - d, player.posZ - d, player.posX + d, player.posY + d, player.posZ + d));
+        List iList = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(player.posX - d, player.posY - d, player.posZ - d, player.posX + d, player.posY + d, player.posZ + d));
         Iterator iterator = iList.iterator();
         while (iterator.hasNext()) {
             EntityItem item = (EntityItem) iterator.next();
             if (!checkForRoom(item.getEntityItem(), player)) {
                 continue;
             }
-            if (item.delayBeforeCanPickup > 0) {
-                item.delayBeforeCanPickup = 0;
-            }
+
+            item.setPickupDelay(0);
             if (player.getDistanceToEntity(item) < 1.5D) {
                 continue;
             }
             teleportEntityToPlayer(item, player);
             break;
         }
-        List iList2 = world.getEntitiesWithinAABB(EntityXPOrb.class, AxisAlignedBB.getBoundingBox(player.posX - d, player.posY - d, player.posZ - d, player.posX + d, player.posY + d, player.posZ + d));
+        List iList2 = world.getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(player.posX - d, player.posY - d, player.posZ - d, player.posX + d, player.posY + d, player.posZ + d));
         Iterator iterator2 = iList2.iterator();
         while (iterator2.hasNext()) {
             EntityXPOrb item = (EntityXPOrb) iterator2.next();
@@ -126,10 +100,10 @@ public class ItemFortuneCoin extends ItemBauble {
     }
 
     private void teleportEntityToPlayer(Entity item, EntityPlayer player) {
-        player.worldObj.spawnParticle("mobSpell", item.posX + 0.5D + player.worldObj.rand.nextGaussian() / 8, item.posY + 0.2D, item.posZ + 0.5D + player.worldObj.rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
+        player.worldObj.spawnParticle( EnumParticleTypes.SPELL_MOB, item.posX + 0.5D + player.worldObj.rand.nextGaussian() / 8, item.posY + 0.2D, item.posZ + 0.5D + player.worldObj.rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
         player.getLookVec();
         double x = player.posX + player.getLookVec().xCoord * 0.2D;
-        double y = player.posY - player.height / 2F;
+        double y = player.posY;
         double z = player.posZ + player.getLookVec().zCoord * 0.2D;
         item.setPosition(x, y, z);
         if (!disabledAudio()) {
@@ -170,11 +144,11 @@ public class ItemFortuneCoin extends ItemBauble {
     }
 
     public double getLongRangePullDistance() {
-        return (double)Reliquary.CONFIG.getInt(Names.fortune_coin, "long_range_pull_distance");
+        return (double)Settings.FortuneCoin.longRangePullDistance;
     }
 
     public double getStandardPullDistance() {
-        return (double)Reliquary.CONFIG.getInt(Names.fortune_coin, "standard_pull_distance");
+        return (double)Settings.FortuneCoin.standardPullDistance ;
     }
 
     @Override
@@ -184,7 +158,7 @@ public class ItemFortuneCoin extends ItemBauble {
 
     @Override
     public EnumAction getItemUseAction(ItemStack stack) {
-        return EnumAction.block;
+        return EnumAction.BLOCK;
     }
 
     @Override
@@ -211,6 +185,6 @@ public class ItemFortuneCoin extends ItemBauble {
     }
 
     private boolean disabledAudio() {
-        return Reliquary.CONFIG.getBool(Names.fortune_coin, "disable_audio");
+        return Settings.FortuneCoin.disableAudio;
     }
 }

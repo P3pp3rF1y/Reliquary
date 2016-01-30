@@ -1,8 +1,11 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.InventoryHelper;
@@ -17,7 +20,9 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.init.ModItems;
+import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 
@@ -34,8 +39,7 @@ public class ItemVoidTear extends ItemToggleable {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-            return;
+
         this.formatTooltip(null, stack, list);
 
         ItemStack contents = this.getContainedItem(stack);
@@ -57,11 +61,11 @@ public class ItemVoidTear extends ItemToggleable {
             if (this.attemptToEmptyIntoInventory(ist, player, player.inventory, player.inventory.mainInventory.length)) {
                 player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
                 NBTHelper.resetTag(ist);
-                return new ItemStack(Reliquary.CONTENT.getItem(Names.void_tear_empty), 1, 0);
+                return new ItemStack(ModItems.emptyVoidTear, 1, 0);
             }
         }
-        //hack. forces the client to re-evaluate the inventory due to the itemstack changing.
-        ist.setItemDamage(ist.getItemDamage() == 0 ? 1 : 0);
+
+        player.inventoryContainer.detectAndSendChanges();
         return ist;
     }
 
@@ -74,7 +78,7 @@ public class ItemVoidTear extends ItemToggleable {
             EntityPlayer player = (EntityPlayer) entity;
 
             ItemStack contents = this.getContainedItem(stack);
-            if (contents.stackSize < Reliquary.CONFIG.getInt(Names.void_tear, "item_limit") && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize())) {
+            if (contents.stackSize < Settings.VoidTear.itemLimit && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize())) {
                 //doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
                 if (!player.capabilities.isCreativeMode)
                     this.onAbsorb(stack, player);
@@ -110,10 +114,10 @@ public class ItemVoidTear extends ItemToggleable {
     }
 
     @Override
-    public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+    public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
-            if (world.getTileEntity(x, y, z) instanceof IInventory) {
-                IInventory inventory = (IInventory) world.getTileEntity(x, y, z);
+            if (world.getTileEntity(pos) instanceof IInventory) {
+                IInventory inventory = (IInventory) world.getTileEntity(pos);
 
                 //enabled == drinking mode, we're going to drain the inventory of items.
                 if (this.isEnabled(ist)) {
@@ -122,7 +126,7 @@ public class ItemVoidTear extends ItemToggleable {
                     //disabled == placement mode, try and stuff the tear's contents into the inventory
                     if (this.attemptToEmptyIntoInventory(ist, player, inventory, 0)) {
                         NBTHelper.resetTag(ist);
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Reliquary.CONTENT.getItem(Names.void_tear_empty), 1, 0));
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(ModItems.emptyVoidTear, 1, 0));
                     }
                 }
                 return true;
@@ -139,7 +143,7 @@ public class ItemVoidTear extends ItemToggleable {
         //something awful happened. We either lost data or this is an invalid tear by some other means. Either way, not great.
         if (NBTHelper.getString("itemID", ist).equals(""))
             return null;
-        return new ItemStack((Item) Item.itemRegistry.getObject(NBTHelper.getString("itemID", ist)), NBTHelper.getInteger("itemQuantity", ist), NBTHelper.getShort("itemMeta", ist));
+        return new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(NBTHelper.getString("itemID", ist))), NBTHelper.getInteger("itemQuantity", ist));
     }
 
     protected boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory, int limit) {
@@ -172,7 +176,7 @@ public class ItemVoidTear extends ItemToggleable {
         int quantity = NBTHelper.getInteger("itemQuantity", ist);
 
         boolean foundItem = false;
-        while (quantity < Reliquary.CONFIG.getInt(Names.void_tear, "item_limit")) {
+        while (quantity < Settings.VoidTear.itemLimit) {
             if (!tryToRemoveFromInventory(contents, inventory, limit)) {
                 break;
             }

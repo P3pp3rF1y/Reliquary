@@ -1,25 +1,21 @@
 package xreliquary.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.items.ItemToggleable;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.event.ClientEventHandler;
-import xreliquary.lib.Colors;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 @ContentInit
 public class ItemTwilightCloak extends ItemToggleable {
@@ -34,7 +30,7 @@ public class ItemTwilightCloak extends ItemToggleable {
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
+        return EnumRarity.EPIC;
     }
 
     @Override
@@ -47,10 +43,10 @@ public class ItemTwilightCloak extends ItemToggleable {
 
         //toggled effect, makes player invisible based on light level (configurable)
         int playerX = MathHelper.floor_double(player.posX);
-        int playerY = MathHelper.floor_double(player.boundingBox.minY);
+        int playerY = MathHelper.floor_double(player.getEntityBoundingBox().minY);
         int playerZ = MathHelper.floor_double(player.posZ);
 
-        if (player.worldObj.getBlockLightValue(playerX, playerY, playerZ) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "max_light_level"))
+        if (player.worldObj.getLightFromNeighbors(new BlockPos(playerX, playerY, playerZ)) > Settings.TwilightCloak.maxLightLevel)
             return;
 
 //        if (Reliquary.CONFIG.getBool(Names.twilight_cloak, "only_works_at_night")) {
@@ -61,7 +57,7 @@ public class ItemTwilightCloak extends ItemToggleable {
 
         //checks if the effect would do anything. Literally all this does is make the player invisible. It doesn't interfere with mob AI.
         //for that, we're attempting to use an event handler.
-        PotionEffect quickInvisibility = new PotionEffect(Potion.invisibility.id, 2, 0, false);
+        PotionEffect quickInvisibility = new PotionEffect(Potion.invisibility.id, 2, 0, false, false);
         player.addPotionEffect(quickInvisibility);
     }
 }

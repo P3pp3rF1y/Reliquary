@@ -1,18 +1,15 @@
 package xreliquary.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.lib.Colors;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Colors;
+import xreliquary.reference.Names;
 
 import java.util.List;
 
@@ -30,32 +27,7 @@ public class ItemHeartPearl extends ItemBase {
         canRepair = false;
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int meta) {
-        return itemIcon;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register) {
-        this.itemIcon = register.registerIcon(Reference.MOD_ID + ":" + "heart_pearl");
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack itemStack, int renderPass) {
-        if (renderPass == 1)
-            return this.itemIcon;
-        return this.itemIcon;
-    }
-
-    @Override
+   @Override
     public String getUnlocalizedName(ItemStack ist) {
         return "item.heart_pearl_" + ist.getItemDamage();
     }
@@ -69,9 +41,7 @@ public class ItemHeartPearl extends ItemBase {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-        if (renderPass == 1)
-            return getColor(itemStack);
-        return Integer.parseInt(Colors.PURE,16);
+        return getColor(itemStack);
     }
 
     public int getColor(ItemStack itemStack) {

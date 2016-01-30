@@ -1,8 +1,9 @@
 package xreliquary.event;
 
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.client.Minecraft;
@@ -21,15 +22,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import xreliquary.Reliquary;
+import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 
@@ -108,7 +110,6 @@ public class CommonEventHandler {
         if (e instanceof EntityZombie && !(e instanceof EntityPigZombie)) {
             if (playerHasItem(p, heartZhu(Reference.ZOMBIE_ZHU_META), false)) {
                 ((EntityZombie) e).setAttackTarget(null);
-                ((EntityZombie) e).setTarget(null);
                 ((EntityZombie) e).setRevengeTarget(null);
             }
         }
@@ -118,7 +119,6 @@ public class CommonEventHandler {
         if (e instanceof EntitySkeleton && ((EntitySkeleton) e).getSkeletonType() != 1) {
             if (playerHasItem(p, heartZhu(Reference.SKELETON_ZHU_META), false)) {
                 ((EntitySkeleton) e).setAttackTarget(null);
-                ((EntitySkeleton) e).setTarget(null);
                 ((EntitySkeleton) e).setRevengeTarget(null);
             }
         }
@@ -128,7 +128,6 @@ public class CommonEventHandler {
         if (e instanceof EntitySkeleton && ((EntitySkeleton) e).getSkeletonType() == 1) {
             if (playerHasItem(p, heartZhu(Reference.WITHER_SKELETON_ZHU_META), false)) {
                 ((EntitySkeleton) e).setAttackTarget(null);
-                ((EntitySkeleton) e).setTarget(null);
                 ((EntitySkeleton) e).setRevengeTarget(null);
             }
         }
@@ -138,7 +137,6 @@ public class CommonEventHandler {
         if (e instanceof EntityCreeper) {
             if (playerHasItem(p, heartZhu(Reference.CREEPER_ZHU_META), false)) {
                 ((EntityCreeper) e).setAttackTarget(null);
-                ((EntityCreeper) e).setTarget(null);
                 ((EntityCreeper) e).setRevengeTarget(null);
             }
         }
@@ -157,22 +155,11 @@ public class CommonEventHandler {
                 return;
 
             //toggled effect, makes player invisible based on light level (configurable)
-            int playerX = MathHelper.floor_double(player.posX);
-            int playerY = MathHelper.floor_double(player.boundingBox.minY);
-            int playerZ = MathHelper.floor_double(player.posZ);
-
-            if (player.worldObj.getBlockLightValue(playerX, playerY, playerZ) > Reliquary.CONFIG.getInt(Names.twilight_cloak, "max_light_level"))
+            if (player.worldObj.getLightFromNeighbors(player.getPosition()) > Settings.TwilightCloak.maxLightLevel)
                 return;
             if (event.entity instanceof EntityLiving) {
                 ((EntityLiving)event.entity).setAttackTarget(null);
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.modID.equals(Reference.MOD_ID)) {
-            Reliquary.CONFIG.save();
         }
     }
 
@@ -198,18 +185,18 @@ public class CommonEventHandler {
         if (e.worldObj.rand.nextFloat() <= dropProbability) {
             if (event.source.getEntity() != null && event.source.getEntity() instanceof EntityPlayer && event.source.damageType.equals("player")) {
                 EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, ist);
-                entityitem.delayBeforeCanPickup = 10;
+                entityitem.setPickupDelay(10);
                 event.drops.add(entityitem);
             }
         }
     }
 
     public float getBaseDrop(String s) {
-        return (float)Reliquary.CONFIG.getInt(Names.mob_drop_probability, s + "_base") * 0.01F;
+        return (float)Settings.mobDropProbabilities.get(s + "_base") * 0.01F;
     }
 
     public float getLootingDrop(String s) {
-        return (float)Reliquary.CONFIG.getInt(Names.mob_drop_probability, s + "_looting") * 0.01F;
+        return (float)Settings.mobDropProbabilities.get(s + "_looting") * 0.01F;
     }
 
     private ItemStack ingredient(int meta) {
@@ -310,7 +297,7 @@ public class CommonEventHandler {
     }
 
     public void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.infernal_claws), false))
+        if (!playerHasItem(player, ModItems.infernalClaws, false))
             return;
         if (!(event.source == DamageSource.inFire) && !(event.source == DamageSource.onFire))
             return;
@@ -319,19 +306,20 @@ public class CommonEventHandler {
 
         // trades all fire damage for exhaustion (which causes the hunger bar to
         // be depleted).
-        player.addExhaustion(event.ammount * ((float) Reliquary.CONFIG.getInt(Names.infernal_claws, "hunger_cost_percent") / 100F));
+        player.addExhaustion(event.ammount * ((float)Settings.InfernalClaws.hungerCostPercent / 100F));
         event.setCanceled(true);
     }
 
     public void handleInfernalChaliceCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.infernal_chalice), false))
+        if (!playerHasItem(player, ModItems.infernalChalice, false))
             return;
-        if (event.source != DamageSource.lava)
+        //TODO: figure out if there's some way to know that the fire was caused by lava, otherwise this is the only way to prevent damage from lava - reason being that most of the damage is from fire caused by lava
+        if (event.source != DamageSource.lava && event.source != DamageSource.onFire && event.source != DamageSource.inFire)
             return;
         if (player.getFoodStats().getFoodLevel() <= 0)
             return;
-        if (!(event.source == DamageSource.lava)) {
-            player.addExhaustion(event.ammount * ((float)Reliquary.CONFIG.getInt(Names.infernal_chalice, "hunger_cost_percent") / 100F));
+        if (event.source == DamageSource.lava || event.source == DamageSource.onFire || event.source == DamageSource.inFire) {
+            player.addExhaustion(event.ammount * ((float)Settings.InfernalChalice.hungerCostPercent / 100F));
         }
 
         event.setCanceled(true);
@@ -357,11 +345,11 @@ public class CommonEventHandler {
         player.worldObj.playSoundEffect(player.posX + 0.5D, player.posY + 0.5D, player.posZ + 0.5D, "dig.glass", 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
 
         // gives the player a few hearts, sparing them from death.
-        float amountHealed = player.getMaxHealth() * (float)Reliquary.CONFIG.getInt(Names.angelheart_vial, "heal_percentage_of_max_life") / 100F;
+        float amountHealed = player.getMaxHealth() * (float)Settings.AngelHeartVial.healPercentageOfMaxLife / 100F;
         player.setHealth(amountHealed);
 
         // if the player had any negative status effects [vanilla only for now], remove them:
-        if (Reliquary.CONFIG.getBool(Names.angelheart_vial, "remove_negative_status"))
+        if (Settings.AngelHeartVial.removeNegativeStatus)
             removeNegativeStatusEffects(player);
 
         event.setCanceled(true);
@@ -371,10 +359,9 @@ public class CommonEventHandler {
         double var8 = player.posX;
         double var10 = player.posY;
         double var12 = player.posZ;
-        String var14 = "iconcrack_" + Item.getIdFromItem(Items.potionitem);
         Random var7 = player.worldObj.rand;
         for (int var15 = 0; var15 < 8; ++var15) {
-            player.worldObj.spawnParticle(var14, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+            player.worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, new int[]{Item.getIdFromItem(Items.potionitem)});
         }
 
         // purple, for reals.
@@ -390,7 +377,7 @@ public class CommonEventHandler {
             double var27 = 0.01D + var7.nextDouble() * 0.5D;
             double var29 = Math.sin(var23) * var39;
             if (player.worldObj.isRemote) {
-                EntityFX var31 = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(var19, var8 + var25 * 0.1D, var10 + 0.3D, var12 + var29 * 0.1D, var25, var27, var29);
+                EntityFX var31 = Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), var8 + var25 * 0.1D, var10 + 0.3D, var12 + var29 * 0.1D, var25, var27, var29);
                 if (var31 != null) {
                     float var32 = 0.75F + var7.nextFloat() * 0.25F;
                     var31.setRBGColorF(red * var32, green * var32, blue * var32);
@@ -423,7 +410,7 @@ public class CommonEventHandler {
             if (player.getFoodStats().getFoodLevel() <= 0)
                 return;
 
-            float hungerDamage = event.ammount * ((float)Reliquary.CONFIG.getInt(Names.phoenix_down, "hunger_cost_percent") / 100F);
+            float hungerDamage = event.ammount * ((float)Settings.PhoenixDown.hungerCostPercent / 100F);
             player.addExhaustion(hungerDamage);
             player.getFoodStats().onUpdate(player);
 
@@ -436,27 +423,27 @@ public class CommonEventHandler {
             revertPhoenixDownToAngelicFeather(player);
 
             // gives the player a few hearts, sparing them from death.
-            float amountHealed = player.getMaxHealth() * (float)Reliquary.CONFIG.getInt(Names.phoenix_down, "heal_percentage_of_max_life") / 100F;
+            float amountHealed = player.getMaxHealth() * (float)Settings.PhoenixDown.healPercentageOfMaxLife / 100F;
             player.setHealth(amountHealed);
 
             // if the player had any negative status effects [vanilla only for now], remove them:
-            if (Reliquary.CONFIG.getBool(Names.phoenix_down, "remove_negative_status"))
+            if (Settings.PhoenixDown.removeNegativeStatus)
                 removeNegativeStatusEffects(player);
 
             // added bonus, has some extra effects when drowning or dying to lava
-            if (event.source == DamageSource.lava && Reliquary.CONFIG.getBool(Names.phoenix_down, "give_temporary_fire_resistance_if_fire_damage_killed_you"))
+            if (event.source == DamageSource.lava && Settings.PhoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou)
                 player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 200, 0));
-            if (event.source == DamageSource.drown && Reliquary.CONFIG.getBool(Names.phoenix_down, "give_temporary_water_breathing_if_drowning_killed_you")) {
+            if (event.source == DamageSource.drown && Settings.PhoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou) {
                 player.setAir(10);
                 player.addPotionEffect(new PotionEffect(Potion.waterBreathing.id, 200, 0));
             }
 
             // give the player temporary resistance to other damages.
-            if (Reliquary.CONFIG.getBool(Names.phoenix_down, "give_temporary_damage_resistance"))
+            if (Settings.PhoenixDown.giveTemporaryDamageResistance)
                 player.addPotionEffect(new PotionEffect(Potion.resistance.id, 200, 1));
 
             // give the player temporary regeneration.
-            if (Reliquary.CONFIG.getBool(Names.phoenix_down, "give_temporary_regeneration"))
+            if (Settings.PhoenixDown.giveTemporaryRegeneration)
                 player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 200, 1));
 
             // particles, lots of them
@@ -468,7 +455,7 @@ public class CommonEventHandler {
 
     public void spawnPhoenixResurrectionParticles(EntityPlayer player) {
         for (int particles = 0; particles <= 400; particles++) {
-            player.worldObj.spawnParticle("flame", player.posX, player.posY, player.posZ, player.worldObj.rand.nextGaussian() * 8, player.worldObj.rand.nextGaussian() * 8, player.worldObj.rand.nextGaussian() * 8);
+            player.worldObj.spawnParticle(EnumParticleTypes.FLAME, player.posX, player.posY, player.posZ, player.worldObj.rand.nextGaussian() * 8, player.worldObj.rand.nextGaussian() * 8, player.worldObj.rand.nextGaussian() * 8);
         }
     }
 
@@ -481,7 +468,7 @@ public class CommonEventHandler {
             return;
 
         if (player.fallDistance > 0.0F) {
-            float hungerDamage = event.ammount * ((float)Reliquary.CONFIG.getInt(Names.angelic_feather, "hunger_cost_percent") / 100F);
+            float hungerDamage = event.ammount * ((float)Settings.AngelicFeather.hungerCostPercent / 100F);
             player.addExhaustion(hungerDamage);
             player.getFoodStats().onUpdate(player);
         }
@@ -496,7 +483,7 @@ public class CommonEventHandler {
 
         // player absorbs drowning damage in exchange for hunger, at a relatively low rate.
         if (event.source == DamageSource.drown) {
-            float hungerDamage = event.ammount * ((float)Reliquary.CONFIG.getInt(Names.kraken_shell, "hunger_cost_percent") / 100F);
+            float hungerDamage = event.ammount * ((float)Settings.KrakenShell.hungerCostPercent / 100F);
             player.addExhaustion(hungerDamage);
             event.setCanceled(true);
         }

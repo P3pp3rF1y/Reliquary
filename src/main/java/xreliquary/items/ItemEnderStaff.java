@@ -1,14 +1,15 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import lib.enderwizards.sandstone.util.LanguageHelper;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,14 +17,13 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityEnderStaffProjectile;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 import lib.enderwizards.sandstone.util.NBTHelper;
+import xreliquary.reference.Settings;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class ItemEnderStaff extends ItemToggleable {
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
+        return EnumRarity.EPIC;
     }
 
 
@@ -50,20 +50,20 @@ public class ItemEnderStaff extends ItemToggleable {
     }
 
     private int getEnderStaffPearlCost() {
-        return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_cast_cost");
+        return Settings.EnderStaff.enderPearlCastCost;
     }
-    private int getEnderStaffNodeWarpCost() { return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_node_warp_cost"); }
+    private int getEnderStaffNodeWarpCost() { return Settings.EnderStaff.enderPearlNodeWarpCost; }
     private int getEnderPearlWorth() {
-        return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_worth");
+        return Settings.EnderStaff.enderPearlWorth;
     }
-    private int getEnderPearlLimit() {        return Reliquary.CONFIG.getInt(Names.ender_staff, "ender_pearl_limit");    }
+    private int getEnderPearlLimit() { return Settings.EnderStaff.enderPearlLimit; }
     private int getNodeWarpCastTime() {
-        return Reliquary.CONFIG.getInt(Names.ender_staff, "node_warp_cast_time");
+        return Settings.EnderStaff.nodeWarpCastTime;
     }
 
 
     @Override
-    public float getDigSpeed(ItemStack ist, Block block, int meta) {
+    public float getDigSpeed(ItemStack ist, IBlockState blockState) {
         //temporarily sets the item damage to 1, this prevents it from being rapid fired due to swing animations during an attempt to break blocks, hopefully.
         if (ist.getItemDamage() == 0)
             ist.setItemDamage(1);
@@ -130,7 +130,7 @@ public class ItemEnderStaff extends ItemToggleable {
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int unadjustedCount) {
         for (int particles = 0; particles < 2; particles++) {
-            player.worldObj.spawnParticle("portal", player.posX, player.posY, player.posZ, player.worldObj.rand.nextGaussian(), player.worldObj.rand.nextGaussian(), player.worldObj.rand.nextGaussian());
+            player.worldObj.spawnParticle( EnumParticleTypes.PORTAL, player.posX, player.posY, player.posZ, player.worldObj.rand.nextGaussian(), player.worldObj.rand.nextGaussian(), player.worldObj.rand.nextGaussian());
         }
         if (unadjustedCount == 1) {
             doWraithNodeWarpCheck(ist, player.worldObj, player);
@@ -139,7 +139,7 @@ public class ItemEnderStaff extends ItemToggleable {
 
     @Override
     public EnumAction getItemUseAction(ItemStack ist) {
-        return EnumAction.block;
+        return EnumAction.BLOCK;
     }
 
     @Override
@@ -169,39 +169,37 @@ public class ItemEnderStaff extends ItemToggleable {
         return super.onItemRightClick(ist, world, player);
     }
 
-    private ItemStack doWraithNodeWarpCheck(ItemStack ist, World world, EntityPlayer player) {
-        //if (getCooldown(ist) > 0)
-        //    return ist;
-        if (NBTHelper.getInteger("ender_pearls", ist) < getEnderStaffNodeWarpCost())
-            return ist;
+    private ItemStack doWraithNodeWarpCheck(ItemStack stack, World world, EntityPlayer player) {
+        if (NBTHelper.getInteger("ender_pearls", stack) < getEnderStaffNodeWarpCost())
+            return stack;
 
-        if (ist.getTagCompound() != null && ist.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(player))) {
+        if (stack.getTagCompound() != null && stack.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(player))) {
             if (!world.isRemote) {
-                player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "Out of range!"));
+                player.addChatComponentMessage( new ChatComponentText( EnumChatFormatting.DARK_RED + "Out of range!" ) );
             }
-        } else if (ist.getTagCompound() != null && ContentHelper.areBlocksEqual(world.getBlock(ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player))), Reliquary.CONTENT.getBlock(Names.wraith_node))) {
-            if (canTeleport(world, ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
-                teleportPlayer(world, ist.getTagCompound().getInteger("nodeX" + getWorld(player)), ist.getTagCompound().getInteger("nodeY" + getWorld(player)), ist.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
+        } else if (stack.getTagCompound() != null && ContentHelper.areBlocksEqual(world.getBlockState(new BlockPos(stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))).getBlock(), Reliquary.CONTENT.getBlock(Names.wraith_node))) {
+            if (canTeleport(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
+                teleportPlayer(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
                 //setCooldown(ist);
-                NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffNodeWarpCost());
+                NBTHelper.setInteger("ender_pearls", stack, NBTHelper.getInteger("ender_pearls", stack) - getEnderStaffNodeWarpCost());
             }
-        } else if (ist.getTagCompound() != null && ist.getTagCompound().hasKey("dimensionID")) {
-            ist.getTagCompound().removeTag("dimensionID");
-            ist.getTagCompound().removeTag("nodeX");
-            ist.getTagCompound().removeTag("nodeY");
-            ist.getTagCompound().removeTag("nodeZ");
-            ist.getTagCompound().removeTag("cooldown");
+        } else if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("dimensionID")) {
+            stack.getTagCompound().removeTag("dimensionID");
+            stack.getTagCompound().removeTag("nodeX");
+            stack.getTagCompound().removeTag("nodeY");
+            stack.getTagCompound().removeTag("nodeZ");
+            stack.getTagCompound().removeTag("cooldown");
             if (!world.isRemote) {
                 player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "Node dosen't exist!"));
             } else {
-                player.playSound("mob.endermen.death", 1.0f, 1.0f);
+                player.playSound( "mob.endermen.death", 1.0f, 1.0f );
             }
         }
-        return ist;
+        return stack;
     }
 
     private boolean canTeleport(World world, int x, int y, int z) {
-        if (!world.isAirBlock(x, y + 1, z) || !world.isAirBlock(x, y + 2, z))
+        if (!world.isAirBlock(new BlockPos(x, y + 1, z)) || !world.isAirBlock(new BlockPos(x, y + 2, z)))
             return false;
         return true;
     }
@@ -210,7 +208,7 @@ public class ItemEnderStaff extends ItemToggleable {
         player.setPositionAndUpdate(x + 0.5, y + 0.875, z + 0.5);
         player.playSound("mob.endermen.portal", 1.0f, 1.0f);
         for (int particles = 0; particles < 2; particles++) {
-            world.spawnParticle("portal", player.posX, player.posY, player.posZ, world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
+            world.spawnParticle(EnumParticleTypes.PORTAL, player.posX, player.posY, player.posZ, world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
         }
         return;
     }
@@ -235,16 +233,15 @@ public class ItemEnderStaff extends ItemToggleable {
             LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.GREEN + Items.ender_pearl.getItemStackDisplayName(new ItemStack(Items.ender_pearl))), ist, list);
         LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
-
     @Override
-    public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
+    public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
         // if right clicking on a wraith node, bind the eye to that wraith node.
-        if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && ContentHelper.areBlocksEqual(world.getBlock(x, y, z), Reliquary.CONTENT.getBlock(Names.wraith_node))) {
-            setWraithNode(ist, x, y, z, Integer.valueOf(getWorld(player)), player);
+        if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && ContentHelper.areBlocksEqual(world.getBlockState(pos).getBlock(), Reliquary.CONTENT.getBlock(Names.wraith_node))) {
+            setWraithNode(ist, pos, Integer.valueOf(getWorld(player)), player);
 
             player.playSound("mob.endermen.portal", 1.0f, 1.0f);
             for (int particles = 0; particles < 12; particles++) {
-                world.spawnParticle("portal", x + world.rand.nextDouble(), y + world.rand.nextDouble(), z + world.rand.nextDouble(), world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
+                world.spawnParticle(EnumParticleTypes.PORTAL, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
             }
             //setCooldown(ist);
             return true;
@@ -254,14 +251,14 @@ public class ItemEnderStaff extends ItemToggleable {
         }
     }
 
-    public void setWraithNode(ItemStack eye, int x, int y, int z, int dimensionID, EntityPlayer player) {
-        NBTHelper.setInteger("nodeX" + getWorld(player), eye, x);
-        NBTHelper.setInteger("nodeY" + getWorld(player), eye, y);
-        NBTHelper.setInteger("nodeZ" + getWorld(player), eye, z);
+    public void setWraithNode(ItemStack eye, BlockPos pos, int dimensionID, EntityPlayer player) {
+        NBTHelper.setInteger("nodeX" + getWorld(player), eye, pos.getX());
+        NBTHelper.setInteger("nodeY" + getWorld(player), eye, pos.getY());
+        NBTHelper.setInteger("nodeZ" + getWorld(player), eye, pos.getZ());
         NBTHelper.setInteger("dimensionID", eye, dimensionID);
     }
 
     public String getWorld(EntityPlayer player) {
-        return Integer.valueOf(player.worldObj.provider.dimensionId).toString();
+        return Integer.valueOf(player.worldObj.provider.getDimensionId()).toString();
     }
 }

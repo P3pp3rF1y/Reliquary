@@ -1,7 +1,9 @@
 package xreliquary.entities.potion;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -43,7 +45,7 @@ public class EntityFertilePotion extends EntityThrownPotion {
             for (int yD = -2; yD <= 1; yD++) {
                 for (int zD = -1; zD <= 1; zD++) {
                     if (this.getThrower() instanceof EntityPlayer) {
-                        Items.dye.onItemUse(new ItemStack(Items.dye, 1, 15), (EntityPlayer) this.getThrower(), worldObj, x + xD, y + yD, z + zD, 1, 0F, 0F, 0F);
+                        Items.dye.onItemUse(new ItemStack(Items.dye, 1, 15), (EntityPlayer) this.getThrower(), worldObj, new BlockPos(x + xD, y + yD, z + zD), EnumFacing.UP, 0F, 0F, 0F);
                     }
                 }
             }

@@ -1,7 +1,7 @@
 package xreliquary.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.Entity;
@@ -12,7 +12,9 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
+
 
 /**
  * Created by Xeno on 5/15/14.
@@ -35,7 +37,7 @@ public class ItemAngelicFeather extends ItemBase {
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
+        return EnumRarity.EPIC;
     }
 
     // event driven item, does nothing here.
@@ -43,12 +45,12 @@ public class ItemAngelicFeather extends ItemBase {
     // minor jump buff
     @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
-        int potency = Reliquary.CONFIG.getInt(this instanceof ItemPhoenixDown ? Names.phoenix_down : Names.angelic_feather, "leaping_potency");
+        int potency = this instanceof ItemPhoenixDown ? Settings.PhoenixDown.leapingPotency : Settings.AngelicFeather.leapingPotency;
         if (potency == 0) return;
         potency -= 1;
         if (e instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) e;
-            player.addPotionEffect(new PotionEffect(Potion.jump.id, 2, potency, true));
+            player.addPotionEffect(new PotionEffect(Potion.jump.id, 2, potency, true,false));
         }
     }
 }

@@ -1,13 +1,9 @@
 package xreliquary.items;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.util.NBTHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
@@ -19,21 +15,20 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.entities.potion.EntityThrownXRPotion;
-import xreliquary.lib.Colors;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Colors;
+import xreliquary.reference.Names;
 import xreliquary.util.potions.PotionEssence;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +69,7 @@ public class ItemXRPotion extends ItemBase {
                     PotionEffect potioneffect = (PotionEffect)iterator1.next();
                     String s1 = StatCollector.translateToLocal(potioneffect.getEffectName()).trim();
                     Potion potion = Potion.potionTypes[potioneffect.getPotionID()];
-                    Map map = potion.func_111186_k();
+                    Map<IAttribute, AttributeModifier> map = potion.getAttributeModifierMap();
 
                     if (map != null && map.size() > 0)
                     {
@@ -84,7 +79,7 @@ public class ItemXRPotion extends ItemBase {
                         {
                             Map.Entry entry = (Map.Entry)iterator.next();
                             AttributeModifier attributemodifier = (AttributeModifier)entry.getValue();
-                            AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.func_111183_a(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
+                            AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.getAttributeModifierAmount(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
                             hashmultimap.put(((IAttribute)entry.getKey()).getAttributeUnlocalizedName(), attributemodifier1);
                         }
                     }
@@ -139,12 +134,12 @@ public class ItemXRPotion extends ItemBase {
 
                     if (d0 > 0.0D)
                     {
-                        list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.getOperation(), new Object[]{ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String) entry1.getKey())}));
+                        list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.getOperation(), new Object[]{ItemStack.DECIMALFORMAT.format(d1), StatCollector.translateToLocal("attribute.name." + (String) entry1.getKey())}));
                     }
                     else if (d0 < 0.0D)
                     {
                         d1 *= -1.0D;
-                        list.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.getOperation(), new Object[]{ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String) entry1.getKey())}));
+                        list.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.getOperation(), new Object[]{ItemStack.DECIMALFORMAT.format(d1), StatCollector.translateToLocal("attribute.name." + (String) entry1.getKey())}));
                     }
                 }
             }
@@ -152,7 +147,7 @@ public class ItemXRPotion extends ItemBase {
     }
 
     @Override
-    public ItemStack onEaten(ItemStack ist, World world, EntityPlayer player) {
+    public ItemStack onItemUseFinish(ItemStack ist, World world, EntityPlayer player) {
         if (!player.capabilities.isCreativeMode) {
             --ist.stackSize;
         }
@@ -171,6 +166,8 @@ public class ItemXRPotion extends ItemBase {
         return ist;
     }
 
+    //TODO: include in JSON model
+/*
     @SideOnly(Side.CLIENT)
     private static IIcon iconBaseOverlay;
 
@@ -195,10 +192,6 @@ public class ItemXRPotion extends ItemBase {
         iconSplashOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_splash_overlay);
     }
 
-    public boolean getSplash(ItemStack ist) {
-        return NBTHelper.getBoolean("splash", ist);
-    }
-
     @Override
     public IIcon getIcon(ItemStack ist, int renderPass) {
         PotionEssence essence = new PotionEssence(ist.getTagCompound());
@@ -216,6 +209,12 @@ public class ItemXRPotion extends ItemBase {
                 return iconSplash;
         }
     }
+*/
+
+    public boolean getSplash(ItemStack ist) {
+        return NBTHelper.getBoolean("splash", ist);
+    }
+
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -248,8 +247,8 @@ public class ItemXRPotion extends ItemBase {
     @Override
     public EnumAction getItemUseAction(ItemStack ist) {
         if (!getSplash(ist) && new PotionEssence(ist.getTagCompound()).getEffects().size() > 0)
-            return EnumAction.drink;
-        return EnumAction.none;
+            return EnumAction.DRINK;
+        return EnumAction.NONE;
     }
 
     /**
@@ -271,11 +270,8 @@ public class ItemXRPotion extends ItemBase {
                     return ist;
                 else {
                     if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                        int blockX = mop.blockX;
-                        int blockY = mop.blockY;
-                        int blockZ = mop.blockZ;
-                        if (world.getBlock(blockX, blockY, blockZ) instanceof BlockApothecaryCauldron) {
-                            TileEntityCauldron cauldronTile = (TileEntityCauldron)world.getTileEntity(blockX, blockY, blockZ);
+                        if (world.getBlockState(mop.getBlockPos()).getBlock() instanceof BlockApothecaryCauldron) {
+                            TileEntityCauldron cauldronTile = (TileEntityCauldron)world.getTileEntity(mop.getBlockPos());
                             NBTTagCompound potionTag = cauldronTile.removeContainedPotion();
                             ItemStack newPotion = new ItemStack(this, 1, 0);
                             newPotion.setTagCompound(potionTag);

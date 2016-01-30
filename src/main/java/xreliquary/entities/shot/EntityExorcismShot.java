@@ -3,6 +3,8 @@ package xreliquary.entities.shot;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -23,18 +25,18 @@ public class EntityExorcismShot extends EntityShotBase {
     void doFlightEffects() {
         if (ticksInAir % 3 == 0) {
             double gauss = gaussian(1.0F);
-            worldObj.spawnParticle("mobSpell", posX, posY, posZ, gauss, gauss, 0.0F);
+            worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB, posX, posY, posZ, gauss, gauss, 0.0F);
         }
     }
 
     @Override
     void doFiringEffects() {
-        worldObj.spawnParticle("mobSpellAmbient", posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
-        worldObj.spawnParticle("flame", posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+        worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+        worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
     }
 
     @Override
-    void onImpact(MovingObjectPosition mop) {
+    protected void onImpact(MovingObjectPosition mop) {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
             if (mop.entityHit == shootingEntity)
                 return;
@@ -47,7 +49,7 @@ public class EntityExorcismShot extends EntityShotBase {
     }
 
     @Override
-    void doBurstEffect(int sideHit) {
+    void doBurstEffect(EnumFacing sideHit) {
         // none really.
     }
 
@@ -59,14 +61,14 @@ public class EntityExorcismShot extends EntityShotBase {
         // unfortunately this isn't a traditional call of spawnHitParticles or
         // we could factor out the whole method. "mobSpellAmbient" is a weird
         // particle.
-        spawnHitParticles("mobSpellAmbient", 8);
+        spawnHitParticles(8);
         this.setDead();
     }
 
     @Override
-    void spawnHitParticles(String string, int i) {
+    void spawnHitParticles(int i) {
         for (int particles = 0; particles < i; particles++)
-            worldObj.spawnParticle(string, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), posGauss(1.0F), posGauss(1.0F), 0.0F);
+            worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), posGauss(1.0F), posGauss(1.0F), 0.0F);
     }
 
     private boolean isUndead(EntityLivingBase e) {

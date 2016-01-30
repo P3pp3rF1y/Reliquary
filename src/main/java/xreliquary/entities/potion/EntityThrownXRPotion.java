@@ -1,12 +1,10 @@
 package xreliquary.entities.potion;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +15,6 @@ import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import xreliquary.lib.Colors;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.Iterator;
@@ -44,13 +41,6 @@ public class EntityThrownXRPotion extends EntityThrowable
         this.essence = new PotionEssence(ist.getTagCompound());
         setEntityColor(getColor());
     }
-
-//    @SideOnly(Side.CLIENT)
-//    public EntityThrownXRPotion(World p_i1791_1_, double p_i1791_2_, double p_i1791_4_, double p_i1791_6_, int p_i1791_8_)
-//    {
-//        this(p_i1791_1_, p_i1791_2_, p_i1791_4_, p_i1791_6_, new ItemStack(Items.potionitem, 1, 0));
-//        setEntityColor(getColor());
-//    }
 
     public EntityThrownXRPotion(World p_i1792_1_, double p_i1792_2_, double p_i1792_4_, double p_i1792_6_, ItemStack ist)
     {
@@ -108,7 +98,7 @@ public class EntityThrownXRPotion extends EntityThrowable
 
             if (list != null && !list.isEmpty())
             {
-                AxisAlignedBB axisalignedbb = this.boundingBox.expand(4.0D, 2.0D, 4.0D);
+                AxisAlignedBB axisalignedbb = this.getEntityBoundingBox().expand( 4.0D, 2.0D, 4.0D );
                 List list1 = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
                 if (list1 != null && !list1.isEmpty())
@@ -138,7 +128,7 @@ public class EntityThrownXRPotion extends EntityThrowable
 
                                 if (Potion.potionTypes[i].isInstant())
                                 {
-                                    Potion.potionTypes[i].affectEntity(this.getThrower(), entitylivingbase, potioneffect.getAmplifier(), d1);
+                                    Potion.potionTypes[i].affectEntity(this, this.getThrower(), entitylivingbase, potioneffect.getAmplifier(), d1);
                                 }
                                 else
                                 {
@@ -167,10 +157,9 @@ public class EntityThrownXRPotion extends EntityThrowable
     // most of these are the same in every potion, the only thing that isn't is
     // the coloration of the particles.
     protected void spawnParticles() {
-        String var14 = "iconcrack_" + Item.getIdFromItem(Items.potionitem);
         Random var7 = rand;
         for (int var15 = 0; var15 < 8; ++var15) {
-            worldObj.spawnParticle(var14, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+            worldObj.spawnParticle( EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
         }
 
         int color = getColor();
@@ -188,7 +177,7 @@ public class EntityThrownXRPotion extends EntityThrowable
             double var27 = 0.01D + var7.nextDouble() * 0.5D;
             double var29 = Math.sin(var23) * var39;
             if (worldObj.isRemote) {
-                EntityFX var31 = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(var19, this.posX + var25 * 0.1D, this.posY + 0.3D, this.posZ + var29 * 0.1D, var25, var27, var29);
+                EntityFX var31 = Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), this.posX + var25 * 0.1D, this.posY + 0.3D, this.posZ + var29 * 0.1D, var25, var27, var29 );
                 if (var31 != null) {
                     float var32 = 0.75F + var7.nextFloat() * 0.25F;
                     var31.setRBGColorF(red * var32, green * var32, blue * var32);

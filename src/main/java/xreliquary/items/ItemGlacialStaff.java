@@ -4,18 +4,14 @@ import com.google.common.collect.ImmutableMap;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.util.LanguageHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockLilyPad;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -24,18 +20,15 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
-import xreliquary.blocks.BlockFertileLilypad;
-import xreliquary.entities.EntityEnderStaffProjectile;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by Xeno on 10/11/2014.
  */
 @ContentInit
-public class ItemGlacialStaff extends ItemIceRod {
+public class ItemGlacialStaff extends ItemIceMagusRod {
     public ItemGlacialStaff() {
         super(Names.glacial_staff);
     }
@@ -87,7 +80,7 @@ public class ItemGlacialStaff extends ItemIceRod {
             return;
 
         int x = MathHelper.floor_double(player.posX);
-        int y = MathHelper.floor_double(player.boundingBox.minY) - 1;
+        int y = MathHelper.floor_double(player.getEntityBoundingBox().minY) - 1;
         int z = MathHelper.floor_double(player.posZ);
 
         if (this.isEnabled(ist)) {
@@ -114,32 +107,31 @@ public class ItemGlacialStaff extends ItemIceRod {
     public void doFreezeCheck(ItemStack ist, int x, int y, int z, World world, int xOff, int zOff) {
         x += xOff;
         z += zOff;
-        Block block = world.getBlock(x, y, z);
-        if (block.getMaterial() == Material.water  && world.getBlockMetadata(x, y, z) == 0 && world.isAirBlock(x, y + 1, z)) {
+        IBlockState blockState = world.getBlockState(new BlockPos(x, y, z));
+        if (blockState.getBlock().getMaterial() == Material.water  && blockState.getValue( Blocks.water.LEVEL) == 0 && world.isAirBlock(new BlockPos(x, y + 1, z))) {
             addFrozenBlockToList(ist, x, y, z);
-            world.setBlock(x, y, z, Blocks.packed_ice);
+            world.setBlockState( new BlockPos( x, y, z ), Blocks.packed_ice.getDefaultState() );
 
             float red = 0.75F;
             float green = 0.75F;
             float blue = 1.0F;
-            String nameOfParticle = "reddust";
 
             for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
                 if (world.isRemote) {
                     float xVel = world.rand.nextFloat();
                     float yVel = world.rand.nextFloat() + 0.5F;
                     float zVel = world.rand.nextFloat();
-                    Minecraft.getMinecraft().renderGlobal.doSpawnParticle(nameOfParticle, x + xVel, y + yVel, z + zVel, red, green, blue);
+                    Minecraft.getMinecraft().effectRenderer.spawnEffectParticle( EnumParticleTypes.REDSTONE.getParticleID(), x + xVel, y + yVel, z + zVel, red, green, blue );
                 }
             }
-        } else if (block.getMaterial() == Material.lava && world.getBlockMetadata(x, y, z) == 0) {
+        } else if (blockState.getBlock().getMaterial() == Material.lava && blockState.getValue(Blocks.lava.LEVEL) == 0) {
             addFrozenBlockToList(ist, x, y, z);
-            world.setBlock(x, y, z, Blocks.obsidian);
+            world.setBlockState( new BlockPos( x, y, z ), Blocks.obsidian.getDefaultState() );
             for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
                 float xVel = world.rand.nextFloat();
                 float yVel = world.rand.nextFloat() + 0.5F;
                 float zVel = world.rand.nextFloat();
-                world.spawnParticle(world.rand.nextInt(3) == 0 ? "largesmoke" : "smoke", x + xVel, y + yVel, z + zVel, 0.0D, 0.2D, 0.0D);
+                world.spawnParticle(world.rand.nextInt(3) == 0 ? EnumParticleTypes.SMOKE_LARGE : EnumParticleTypes.SMOKE_NORMAL, x + xVel, y + yVel, z + zVel, 0.0D, 0.2D, 0.0D);
 
             }
 
@@ -150,33 +142,32 @@ public class ItemGlacialStaff extends ItemIceRod {
         x += xOff;
         y += yOff;
         z += zOff;
-        Block block = world.getBlock(x, y, z);
-        if (block == Blocks.packed_ice) {
+        IBlockState blockState = world.getBlockState(new BlockPos(x, y, z));
+        if (blockState == Blocks.packed_ice) {
             if (removeFrozenBlockFromList(ist, x, y, z)) {
-                world.setBlock(x, y, z, Blocks.water);
+                world.setBlockState( new BlockPos( x, y, z ), Blocks.water.getDefaultState() );
                 for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
                     float xVel = world.rand.nextFloat();
                     float yVel = world.rand.nextFloat() + 0.5F;
                     float zVel = world.rand.nextFloat();
-                    world.spawnParticle(world.rand.nextInt(3) == 0 ? "largesmoke" : "smoke", x + xVel, y + yVel, z + zVel, 0.0D, 0.2D, 0.0D);
+                    world.spawnParticle(world.rand.nextInt(3) == 0 ? EnumParticleTypes.SMOKE_LARGE : EnumParticleTypes.SMOKE_NORMAL, x + xVel, y + yVel, z + zVel, 0.0D, 0.2D, 0.0D);
 
                 }
             }
-        } else if (block == Blocks.obsidian) {
+        } else if (blockState == Blocks.obsidian) {
             if (removeFrozenBlockFromList(ist, x, y, z)) {
-                world.setBlock(x, y, z, Blocks.lava);
+                world.setBlockState( new BlockPos( x, y, z ), Blocks.lava.getDefaultState() );
 
                 float red = 1.0F;
                 float green = 0.0F;
                 float blue = 0.0F;
-                String nameOfParticle = "reddust";
 
                 for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
                     if (world.isRemote) {
                         float xVel = world.rand.nextFloat();
                         float yVel = world.rand.nextFloat() + 0.5F;
                         float zVel = world.rand.nextFloat();
-                        Minecraft.getMinecraft().renderGlobal.doSpawnParticle(nameOfParticle, x + xVel, y + yVel, z + zVel, red, green, blue);
+                        Minecraft.getMinecraft().effectRenderer.spawnEffectParticle( EnumParticleTypes.REDSTONE.getParticleID(), x + xVel, y + yVel, z + zVel, red, green, blue );
                     }
                 }
             }

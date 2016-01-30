@@ -9,9 +9,13 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.init.ModItems;
+import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 @ContentInit
 public class ItemVoidTearEmpty extends ItemBase {
@@ -39,11 +43,11 @@ public class ItemVoidTearEmpty extends ItemBase {
     }
 
     @Override
-    public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+    public boolean onItemUseFirst(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
 
-            if (world.getTileEntity(x, y, z) instanceof IInventory) {
-                IInventory inventory = (IInventory) world.getTileEntity(x, y, z);
+            if (world.getTileEntity(pos) instanceof IInventory) {
+                IInventory inventory = (IInventory) world.getTileEntity(pos);
 
                 ItemStack createdTear = buildTear(ist, player, inventory, false);
                 if (createdTear != null) {
@@ -74,21 +78,24 @@ public class ItemVoidTearEmpty extends ItemBase {
         ItemStack target = InventoryHelper.getTargetItem(ist, inventory, false);
         if(target == null)
             return null;
-        ItemStack filledTear = new ItemStack(Reliquary.CONTENT.getItem(Names.void_tear), 1, 0);
+        ItemStack filledTear = new ItemStack(ModItems.filledVoidTear, 1, 0);
 
         NBTHelper.setString("itemID", filledTear, ContentHelper.getIdent(target.getItem()));
-        NBTHelper.setShort("itemMeta", filledTear, (short) target.getItemDamage());
 
         int quantity = InventoryHelper.getItemQuantity(target, inventory);
         if (isPlayerInventory) {
-            InventoryHelper.consumeItem(target, player, target.getMaxStackSize(), quantity - target.getMaxStackSize());
-            quantity = quantity - target.getMaxStackSize();
+            if ((quantity - target.getMaxStackSize()) > 0) {
+                InventoryHelper.consumeItem(target, player, target.getMaxStackSize(), quantity - target.getMaxStackSize());
+                quantity = quantity - target.getMaxStackSize();
+            } else {
+                quantity = 0;
+            }
         } else {
             InventoryHelper.removeItem(target, inventory, quantity);
         }
         NBTHelper.setInteger("itemQuantity", filledTear, quantity);
         //configurable auto-drain when created.
-        NBTHelper.setBoolean("enabled", filledTear, Reliquary.CONFIG.getBool(Names.void_tear, "absorb_when_created"));
+        NBTHelper.setBoolean("enabled", filledTear, Settings.VoidTear.absorbWhenCreated);
 
         return filledTear;
     }

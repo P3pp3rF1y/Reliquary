@@ -1,7 +1,8 @@
 package xreliquary.entities;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.util.MovingObjectPosition;
@@ -39,12 +40,12 @@ public class EntityHolyHandGrenade extends EntityThrowable {
     }
 
     @Override
-    protected float func_70182_d() {
+    protected float getVelocity() {
         return 0.9F;
     }
 
     @Override
-    protected float func_70183_g() {
+    protected float getInaccuracy() {
         return -20.0F;
     }
 
@@ -53,7 +54,7 @@ public class EntityHolyHandGrenade extends EntityThrowable {
         super.onUpdate();
         if (count == 2) {
             for (int particles = 0; particles < rand.nextInt(2) + 1; particles++) {
-                worldObj.spawnParticle("mobSpell", posX + worldObj.rand.nextDouble(), posY + worldObj.rand.nextDouble(), posZ + worldObj.rand.nextDouble(), 0D, 0D, 0D);
+                worldObj.spawnParticle( EnumParticleTypes.SPELL_MOB, posX + worldObj.rand.nextDouble(), posY + worldObj.rand.nextDouble(), posZ + worldObj.rand.nextDouble(), 0D, 0D, 0D);
             }
             count = 0;
         } else {

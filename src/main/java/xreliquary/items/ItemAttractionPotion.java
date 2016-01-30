@@ -1,20 +1,16 @@
 package xreliquary.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.entities.potion.*;
-import xreliquary.lib.Colors;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.entities.potion.EntityAttractionPotion;
+import xreliquary.reference.Colors;
+import xreliquary.reference.Names;
 
 @ContentInit
 public class ItemAttractionPotion extends ItemBase {
@@ -36,33 +32,6 @@ public class ItemAttractionPotion extends ItemBase {
     @Override
     public ItemStack getContainerItem(ItemStack ist) {
         return new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
-    }
-
-    @SideOnly(Side.CLIENT)
-    private IIcon iconSplashOverlay;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon iconSplash;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-        iconSplashOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_splash_overlay);
-        iconSplash = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_splash);
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack itemStack, int renderPass) {
-        if (renderPass == 1)
-            return iconSplashOverlay;
-        return this.iconSplash;
     }
 
     @Override

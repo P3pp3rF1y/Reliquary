@@ -1,17 +1,12 @@
-Reliquary [![Build Status](https://drone.io/github.com/TrainerGuy22/Reliquary/status.png)](https://drone.io/github.com/TrainerGuy22/Reliquary/latest)
+Reliquary [![Build Status](https://drone.io/github.com/P3pp3rF1y/Reliquary/status.png)](https://drone.io/github.com/P3pp3rF1y/Reliquary/latest)
 =========
-
-Updating - Important!
-=========
-
-If you're using our drone.io to update the mod, don't forget to delete libSandstone.jar. No need to redownload, the mod does that automatically.
 
 Description
 =========
 
 The offical repository of Reliquary! That mod, with the magical swag, and a weapon, and stuff.
 
-Originally made by x3n0ph0b3, Reliquary is now developed by both TheMike and x3n0ph0b3.
+Originally made by x3n0ph0b3 and TheMike, Reliquary is now maintained by P3pp3rF1y.
 
 Building
 =========
@@ -21,7 +16,7 @@ We use ForgeGradle. There are instructions inside the 'build.gradle' file in thi
 Versioning
 =========
 
-Every major version increase means a Minecraft version increase. 1.1.x is for 1.6.4. 1.2.x will be for Minecraft 1.7. 1.3 will be for Minecraft 1.8. And so on. 
+Every major version increase means a Minecraft version increase. 1.1.x is for 1.6.4. 1.2.x is for Minecraft 1.7. 1.3 will be for Minecraft 1.8. And so on. 
 
 Licence
 =========

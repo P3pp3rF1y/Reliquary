@@ -10,7 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
+
 
 public class AlkahestryRedstoneRecipe implements IRecipe {
 
@@ -49,7 +51,7 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
                 }
             }
         }
-        return tome != null && valid == 1 && NBTHelper.getInteger("redstone", tome) + amount <= Reliquary.CONFIG.getInt(Names.alkahestry_tome, "redstone_limit");
+        return tome != null && valid == 1 && NBTHelper.getInteger("redstone", tome) + amount <= Settings.AlkahestryTome.redstoneLimit;
     }
 
     @Override
@@ -83,4 +85,18 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
         return new ItemStack(returnedItem, 1);
     }
 
+    //TODO: make sure that this works correctly
+    @Override
+    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    {
+        ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
+
+        for (int i = 0; i < aitemstack.length; ++i)
+        {
+            ItemStack itemstack = inv.getStackInSlot(i);
+            aitemstack[i] = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
+        }
+
+        return aitemstack;
+    }
 }

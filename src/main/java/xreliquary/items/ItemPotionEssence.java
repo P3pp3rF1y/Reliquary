@@ -1,24 +1,22 @@
 package xreliquary.items;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import xreliquary.lib.Colors;
-import xreliquary.lib.Names;
+import xreliquary.reference.Colors;
+import xreliquary.reference.Names;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.Iterator;
@@ -45,12 +43,6 @@ public class ItemPotionEssence extends ItemBase {
             return Integer.parseInt(Colors.PURE, 16);
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
     public int getColor(ItemStack itemStack) {
         //basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
         return PotionHelper.calcPotionLiquidColor(new PotionEssence(itemStack.getTagCompound()).getEffects());
@@ -74,7 +66,7 @@ public class ItemPotionEssence extends ItemBase {
                     PotionEffect potioneffect = (PotionEffect)iterator1.next();
                     String s1 = StatCollector.translateToLocal(potioneffect.getEffectName()).trim();
                     Potion potion = Potion.potionTypes[potioneffect.getPotionID()];
-                    Map map = potion.func_111186_k();
+                    Map<IAttribute, AttributeModifier> map = potion.getAttributeModifierMap();
 
                     if (map != null && map.size() > 0)
                     {
@@ -84,7 +76,7 @@ public class ItemPotionEssence extends ItemBase {
                         {
                             Map.Entry entry = (Map.Entry)iterator.next();
                             AttributeModifier attributemodifier = (AttributeModifier)entry.getValue();
-                            AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.func_111183_a(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
+                            AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.getAttributeModifierAmount(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
                             hashmultimap.put(((IAttribute)entry.getKey()).getAttributeUnlocalizedName(), attributemodifier1);
                         }
                     }
@@ -139,12 +131,12 @@ public class ItemPotionEssence extends ItemBase {
 
                     if (d0 > 0.0D)
                     {
-                        list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.getOperation(), new Object[]{ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String) entry1.getKey())}));
+                        list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.getOperation(), new Object[]{ItemStack.DECIMALFORMAT.format(d1), StatCollector.translateToLocal("attribute.name." + (String) entry1.getKey())}));
                     }
                     else if (d0 < 0.0D)
                     {
                         d1 *= -1.0D;
-                        list.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.getOperation(), new Object[]{ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String) entry1.getKey())}));
+                        list.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.getOperation(), new Object[]{ItemStack.DECIMALFORMAT.format(d1), StatCollector.translateToLocal("attribute.name." + (String) entry1.getKey())}));
                     }
                 }
             }

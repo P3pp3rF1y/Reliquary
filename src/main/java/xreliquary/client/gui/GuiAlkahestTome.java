@@ -6,9 +6,8 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import xreliquary.Reliquary;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.init.ModItems;
+import xreliquary.reference.Reference;
 
 public class GuiAlkahestTome extends GuiBase {
 
@@ -31,7 +30,7 @@ public class GuiAlkahestTome extends GuiBase {
         this.drawTexturedModalRect(((this.width - 16) / 2) + 19, ((this.height - 179) / 2) + 148, 0, 180, 10, 10);
         this.drawTexturedModalRect(((this.width - 16) / 2) - 14, ((this.height - 179) / 2) + 148, 10, 180, 10, 10);
 
-        this.drawItemStack(new ItemStack(Reliquary.CONTENT.getItem(Names.alkahestry_tome)), (this.width - 16) / 2, ((this.height - 179) / 2) + 145);
+        this.drawItemStack(new ItemStack(ModItems.alkahestryTome), (this.width - 16) / 2, ((this.height - 179) / 2) + 145);
         this.drawItemStack(new ItemStack(Items.redstone), ((this.width - 16) / 2) - 32, ((this.height - 179) / 2) + 145);
         this.drawItemStack(new ItemStack(Blocks.redstone_block), ((this.width - 16) / 2) + 32, ((this.height - 179) / 2) + 145);
     }

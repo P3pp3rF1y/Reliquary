@@ -1,57 +1,52 @@
 package xreliquary.client.render;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import xreliquary.entities.shot.EntityShotBase;
-import xreliquary.lib.ClientReference;
+
 
 @SideOnly(Side.CLIENT)
-public class RenderShot extends Render {
-    public void doRenderShot(EntityShotBase entityShot, double par2, double par4, double par6, float par8, float par9) {
+public class RenderShot<T extends EntityShotBase> extends Render<T> {
+
+    public RenderShot(RenderManager renderManager) {
+        super(renderManager);
+    }
+
+    public void doRenderShot(T entityShot, double x, double y, double z, float entityYaw, float partialTicks) {
+        GlStateManager.pushMatrix();
         this.bindEntityTexture(entityShot);
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float) par2, (float) par4, (float) par6);
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glScalef(0.1F, 0.1F, 0.1F);
-        Tessellator var12 = Tessellator.instance;
-        GL11.glRotatef(180.0F - renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(-renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-        var12.startDrawingQuads();
-        var12.setNormal(0.0F, 1.0F, 0.0F);
-        var12.addVertexWithUV(-0.5F, -0.25F, 0.0D, 0, 1);
-        var12.addVertexWithUV(0.5F, -0.25F, 0.0D, 1, 1);
-        var12.addVertexWithUV(0.5F, 0.75F, 0.0D, 1, 0);
-        var12.addVertexWithUV(-0.5F, 0.75F, 0.0D, 0, 0);
-        var12.draw();
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        GL11.glPopMatrix();
-    }
-
-    /**
-     * Actually renders the given argument. This is a synthetic bridge method,
-     * always casting down its argument and then handing it off to a worker
-     * function which does the actual work. In all probabilty, the class Render
-     * is generic (Render<T extends Entity) and this method has signature public
-     * void doRender(T entity, double d, double d1, double d2, float f, float
-     * f1). But JAD is pre 1.5 so doesn't do that.
-     */
-    @Override
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.doRenderShot((EntityShotBase) par1Entity, par2, par4, par6, par8, par9);
+        GlStateManager.translate((float) x, (float) y, (float) z);
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.scale(0.1F, 0.1F, 0.1F);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        GlStateManager.rotate(180.0F - renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
+        worldrenderer.pos(-0.5F, -0.25F, 0.0D).tex(0, 1).normal(0.0F, 1.0F, 0.0F).endVertex();
+        worldrenderer.pos(0.5F, -0.25F, 0.0D).tex(1, 1).normal(0.0F, 1.0F, 0.0F).endVertex();
+        worldrenderer.pos(0.5F, 0.75F, 0.0D).tex(1, 0).normal(0.0F, 1.0F, 0.0F).endVertex();
+        worldrenderer.pos(-0.5F, 0.75F, 0.0D).tex(0, 0).normal(0.0F, 1.0F, 0.0F).endVertex();
+        tessellator.draw();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.popMatrix();
+        super.doRender(entityShot, x, y, z, entityYaw, partialTicks);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Entity entity) {
-        if (entity instanceof EntityShotBase) {
-            EntityShotBase shot = (EntityShotBase) entity;
-            return shot.getShotTexture();
-        }
-        return ClientReference.NEUTRAL;
+    public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks) {
+        this.doRenderShot(entity, x, y, z, entityYaw, partialTicks);
+    }
+
+    @Override
+    protected ResourceLocation getEntityTexture(T entityShot) {
+        return entityShot.getShotTexture();
     }
 }

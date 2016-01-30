@@ -1,17 +1,12 @@
 package xreliquary.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
 
 import java.util.List;
 
@@ -24,8 +19,6 @@ import java.util.List;
  */
 @ContentInit
 public class ItemMobIngredient extends ItemBase {
-
-    private IIcon icons[];
 
     public ItemMobIngredient() {
         super(Names.mob_ingredient);
@@ -46,21 +39,5 @@ public class ItemMobIngredient extends ItemBase {
     public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
         for (int i = 0; i <= 15; i++)
             par3List.add(new ItemStack(par1, 1, i));
-    }
-
-
-    @Override
-    public IIcon getIconFromDamage(int meta) {
-        if (meta < 16)
-            return icons[meta];
-        return icons[0];
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        icons = new IIcon[16];
-        for (int i = 0; i <= 15; i++)
-            icons[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.mob_ingredient + "_" + i);
     }
 }

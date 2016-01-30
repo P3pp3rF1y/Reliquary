@@ -1,8 +1,7 @@
 package xreliquary.network;
 
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
-import xreliquary.lib.Reference;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import xreliquary.reference.Reference;
 
 /**
  * Created by Xeno on 9/21/2014.

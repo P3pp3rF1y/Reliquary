@@ -1,41 +1,40 @@
 package xreliquary;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import lib.enderwizards.sandstone.Sandstone;
 import lib.enderwizards.sandstone.init.Content;
 import lib.enderwizards.sandstone.mod.SandstoneMod;
-import lib.enderwizards.sandstone.mod.config.Config;
+import lib.enderwizards.sandstone.util.WorldDataHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.modstats.ModstatInfo;
-import org.modstats.Modstats;
 import xreliquary.common.CommonProxy;
+import xreliquary.handler.ConfigurationHandler;
+import xreliquary.init.ModBlocks;
+import xreliquary.init.ModItems;
 import xreliquary.integration.NEIModIntegration;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Reference;
 import xreliquary.network.PacketHandler;
-import lib.enderwizards.sandstone.util.WorldDataHandler;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
-import xreliquary.util.potions.PotionMap;
 
 import java.io.File;
 
-@ModstatInfo(prefix = "reliquary")
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:libsandstone", guiFactory = "xreliquary.client.gui.XRGuiFactory")
+//@ModstatInfo(prefix = "reliquary")
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS)
 @SandstoneMod(basePackage = "xreliquary")
 public class Reliquary {
 
@@ -46,34 +45,38 @@ public class Reliquary {
     public static CommonProxy PROXY;
 
     public static Content CONTENT;
-    public static Config CONFIG;
     public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID(), Reference.MOD_ID);
     public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        CONFIG = Config.toml(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".cfg"));
-        PROXY.initOptions();
+        ConfigurationHandler.init( event.getSuggestedConfigurationFile() );
+
+        PROXY.initColors();
 
         CONTENT = Sandstone.preInit();
 
-        WorldDataHandler.register();
+        ModBlocks.init();
 
-        //important that this initializes AFTER items already exist.
-        PotionMap.init();
-
-        //important that this initializes before the pre-init phase
-        PROXY.initRecipeDisablers();
+        ModItems.init();
 
         PROXY.preInit();
+
+        //important that this initializes AFTER items already exist.
+        //TODO: add back when testing potions
+        //PotionMap.init();
+
+        //important that this initializes before the pre-init phase
+        //PROXY.initRecipeDisablers();
+
         PacketHandler.init();
 
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        Modstats.instance().getReporter().registerMod(this);
-        Sandstone.addModIntegration(new NEIModIntegration());
+        //TODO: put modstats back in when ready
+        //Modstats.instance().getReporter().registerMod(this);
 
         PROXY.init();
         MinecraftForge.EVENT_BUS.register(this);
@@ -82,15 +85,16 @@ public class Reliquary {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         PROXY.postInit();
+        ConfigurationHandler.postInit();
 
         //and finally save the file changes. post init is the last stage of configuration, it does an entity scan, hopefully it's cross-mod compatible.
-        CONFIG.save();
+        //CONFIG.save();
 
         //finally, initialize the potion list, this is done after ensuring configs.
-        PotionMap.initializePotionMappings();
+        //TODO: add back when testing potions
+        //PotionMap.initializePotionMappings();
 
         LOGGER.log(Level.INFO, "Loaded successfully!");
-        Sandstone.postInit();
 
     }
 
@@ -104,7 +108,7 @@ public class Reliquary {
                         Alkahestry.addKey(new AlkahestRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
                     else
                         Alkahestry.addKey(new AlkahestRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
-                    LOGGER.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + Item.itemRegistry.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item"))) + " from " + message.getSender() + " to registry.");
+                    LOGGER.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + Item.itemRegistry.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem()) + " from " + message.getSender() + " to registry.");
                 } else {
                     LOGGER.log(Level.WARN, "[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");
                 }

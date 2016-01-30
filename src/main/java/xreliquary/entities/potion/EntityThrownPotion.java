@@ -1,7 +1,8 @@
 package xreliquary.entities.potion;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.EntityLivingBase;
@@ -47,12 +48,12 @@ public abstract class EntityThrownPotion extends EntityThrowable {
     }
 
     @Override
-    protected float func_70182_d() {
+    protected float getVelocity() {
         return 0.7F;
     }
 
     @Override
-    protected float func_70183_g() {
+    protected float getInaccuracy() {
         return -20.0F;
     }
 
@@ -74,7 +75,7 @@ public abstract class EntityThrownPotion extends EntityThrowable {
         this.doGroundSplashEffect();
         if (!this.hasLivingEntityEffect())
             return;
-        AxisAlignedBB bb = boundingBox.expand(4.0D, 2.0D, 4.0D);
+        AxisAlignedBB bb = this.getEntityBoundingBox().expand( 4.0D, 2.0D, 4.0D );
         List eList = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, bb);
         Iterator i = eList.iterator();
         while (i.hasNext()) {
@@ -90,10 +91,10 @@ public abstract class EntityThrownPotion extends EntityThrowable {
     // most of these are the same in every potion, the only thing that isn't is
     // the coloration of the particles.
     protected void spawnParticles() {
-        String var14 = "iconcrack_" + Item.getIdFromItem(Items.potionitem);
+        //TODO: fix the variable names
         Random var7 = rand;
         for (int var15 = 0; var15 < 8; ++var15) {
-            worldObj.spawnParticle(var14, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+            worldObj.spawnParticle( EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
         }
 
         String var19 = "spell";
@@ -105,7 +106,7 @@ public abstract class EntityThrownPotion extends EntityThrowable {
             double var27 = 0.01D + var7.nextDouble() * 0.5D;
             double var29 = Math.sin(var23) * var39;
             if (worldObj.isRemote) {
-                EntityFX var31 = Minecraft.getMinecraft().renderGlobal.doSpawnParticle(var19, this.posX + var25 * 0.1D, this.posY + 0.3D, this.posZ + var29 * 0.1D, var25, var27, var29);
+                EntityFX var31 = Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), this.posX + var25 * 0.1D, this.posY + 0.3D, this.posZ + var29 * 0.1D, var25, var27, var29, new int[0]);
                 if (var31 != null) {
                     float var32 = 0.75F + var7.nextFloat() * 0.25F;
                     var31.setRBGColorF(this.getRed() * var32, this.getGreen() * var32, this.getBlue() * var32);

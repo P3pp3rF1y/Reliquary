@@ -1,7 +1,10 @@
 package xreliquary.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.blocks.BlockBase;
 import lib.enderwizards.sandstone.init.ContentInit;
 import net.minecraft.block.material.Material;
@@ -15,13 +18,15 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityMortar;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 
 import java.util.List;
 import java.util.Random;
 
 @ContentInit
 public class BlockApothecaryMortar extends BlockBase {
+    //TODO: add mortar icon and then figure out if 3D model can be generated for held item
+    //TODO: fix mortar shadow
 
     public BlockApothecaryMortar() {
         super(Material.rock, Names.apothecary_mortar);
@@ -30,39 +35,38 @@ public class BlockApothecaryMortar extends BlockBase {
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.3125F, 0.75F);
     }
-
     @Override
-    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List cbList, Entity collisionEntity) {
+    public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState state, AxisAlignedBB mask, List list, Entity collidingEntity) {
         this.setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.3125F, 0.75F);
-        super.addCollisionBoxesToList(world, x, y, z, aabb, cbList, collisionEntity);
+
+        super.addCollisionBoxesToList(world, pos, state, mask, list, collidingEntity);
         this.setBlockBoundsForItemRender();
     }
 
+    @Override
     public void setBlockBoundsForItemRender() {
         this.setBlockBounds(0.25F, 0F, 0.25F, 0.75F, 0.3F, 0.75F);
     }
-
+    @Override
     public boolean isOpaqueCube() {
         return false;
     }
-
+    @Override
     public int getRenderType() {
         return -1;
     }
 
-    public boolean renderAsNormalBlock() {
-        return false;
-    }
-
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metaMaybe, float playerX, float playerY, float playerZ) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float xOff, float yOff, float zOff) {
+        TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity == null || !(tileEntity instanceof TileEntityMortar))
             return false;
         TileEntityMortar mortar = (TileEntityMortar) tileEntity;
         ItemStack heldItem = player.getCurrentEquippedItem();
         if (heldItem == null) {
             mortar.usePestle();
-            world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, this.stepSound.getStepResourcePath(), (this.stepSound.getVolume() + 1.0F) / 2.0F, this.stepSound.getPitch() * 0.8F);
+            //TODO:verify that SoundType getFrequency replaces getPitch
+            world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, this.stepSound.getStepSound(), (this.stepSound.getVolume() + 1.0F) / 2.0F, this.stepSound.getFrequency() * 0.8F);
             player.swingItem();
             return false;
         }
@@ -84,11 +88,15 @@ public class BlockApothecaryMortar extends BlockBase {
             mortar.usePestle();
             return false;
         }
+        else {
+            //TODO: make sure to optimize markDirty calls
+            mortar.markDirty();
+        }
         return true;
     }
 
     @Override
-    public Item getItemDropped(int someInt, Random unusedRandom, int fortuneEnchantLevelIThink) {
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         // this might destroy the universe
         return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_mortar));
     }

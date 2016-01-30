@@ -6,8 +6,8 @@ tooltip.absorb={{!colors.light_purple}}按住shift右击切换是否自动吸引
 tooltip.absorb_active={{!colors.purple}}将自动吸引{{item}}{{!colors.purple}}.
 tooltip.absorb_tear={{!colors.purple}}总会在物品栏中保留一组物品.
 
-item.alkahest_tome.name=万能溶剂之经
-item.alkahest_tome.tooltip={{!colors.rose}}充能: {{redstoneAmount}}/{{redstoneLimit}};Shift右击吸收红石.;右击阅读.
+item.alkahestry_tome.name=万能溶剂之经
+item.alkahestry_tome.tooltip={{!colors.rose}}充能: {{redstoneAmount}}/{{redstoneLimit}};Shift右击吸收红石.;右击阅读.
 
 tile.altar_idle.name=光明祭坛
 tile.altar_idle.tooltip=喂之以红石;报我以荧光.

@@ -1,20 +1,7 @@
-/*
-
-ForgeGradle building for Reliquary! This script is meant to be a easy way to build the mod, as well as example for implementing ForgeGradle in your own mods.
-
-How to use:
-
-(from a Terminal or Command Prompt)
-1. './gradlew setupCIWorkspace'
-2. './gradlew build'
-3. Enjoy!
-
-*/
-
 // This simple grabs the latest 'forge' plugin, or ForgeGradle, from Forge's servers.
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
@@ -25,39 +12,56 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1+"
     }
 }
 
-sourceCompatiblity = 1.6
-targetCompatiblity = 1.7
+plugins {
+    id "com.jfrog.bintray" version "1.5"
+}
+
+// External properties
+ext.configFile = file "build.properties"
+configFile.withReader {
+    // Load config.  It shall from now be referenced as simply config or project.config
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+}
 
 // We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
-apply plugin: 'forge'
+apply plugin: 'net.minecraftforge.gradle.forge'
+
 
 group = 'xreliquary' // Your main package.
-version = "1.2"
+version = "${config.mod_version}.${getBuildNumber()}${getStable()}"
 archivesBaseName = 'Reliquary'
 
-minecraft {
-	version = "1.7.10-10.13.0.1180"
-}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
-jar {
-    manifest {
-        attributes("FMLCorePlugin": "xreliquary.common.asm.DepLoader", "FMLCorePluginContainsFMLMod": "true")
-    }
+minecraft {
+	version = config.minecraft_version + "-" + config.forge_version
+    mappings = config.mappings
+    runDir = "run"
+    replaceIn "reference/Reference.java"
+    replace "@MOD_VERSION@", "${project.version}"
 }
 
 processResources
 {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "project_version", project.version
+    inputs.property "minecraft_version", config.minecraft_version
+
     // Replace stuff in mcmod.info and in .lang files, nothing else.
     from(sourceSets.main.resources.srcDirs) {
         include '**/*.lang'
         include 'mcmod.info'
 
         // Replace version and mcversion.
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'project_version':project.version, 'minecraft_version':config.minecraft_version
     }
 
     // Copy everything else that wasn't replaced.
@@ -66,3 +70,40 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+def getBuildNumber() {
+    if (System.getenv("DRONE_BUILD_NUMBER") != null) {
+        return "${System.getenv("DRONE_BUILD_NUMBER")}"
+    }
+    return ""
+}
+
+def getStable() {
+    if (System.getenv("DRONE_BRANCH") != "master") {
+        return "unstable"
+    }
+    return ""
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publish = true
+    filesSpec {
+        from 'build/libs'
+        into '.'
+        exclude '*sources.jar'
+    }
+    pkg {
+        version {
+            name="${config.mod_version}"
+            released = new Date()
+        }
+        repo = 'maven'
+        name = 'Reliquary'
+        licenses = ['GPL-3.0']
+        vcsUrl = 'https://github.com/P3pp3rF1y/Reliquary.git'
+    }
+
+}
+

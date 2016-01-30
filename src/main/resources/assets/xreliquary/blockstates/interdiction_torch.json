@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "facing=up": { "model": "xreliquary:normal_interdiction_torch" },
+    "facing=east": { "model": "xreliquary:normal_interdiction_torch_wall" },
+    "facing=south": { "model": "xreliquary:normal_interdiction_torch_wall", "y": 90 },
+    "facing=west": { "model": "xreliquary:normal_interdiction_torch_wall", "y": 180 },
+    "facing=north": { "model": "xreliquary:normal_interdiction_torch_wall", "y": 270 }
+  }
+}

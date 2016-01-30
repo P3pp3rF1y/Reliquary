@@ -1,8 +1,9 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.state.IBlockState;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemToggleable;
 import lib.enderwizards.sandstone.util.ContentHelper;
@@ -22,11 +23,13 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
 import lib.enderwizards.sandstone.util.NBTHelper;
+import xreliquary.reference.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @ContentInit
 public class ItemSojournerStaff extends ItemToggleable {
@@ -41,7 +44,7 @@ public class ItemSojournerStaff extends ItemToggleable {
     @Override
     @SideOnly(Side.CLIENT)
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumRarity.epic;
+        return EnumRarity.EPIC;
     }
 
     @Override
@@ -73,7 +76,7 @@ public class ItemSojournerStaff extends ItemToggleable {
     }
 
     private void scanForMatchingTorchesToFillInternalStorage(ItemStack ist, EntityPlayer player) {
-        List<String> torches = (List<String>) Reliquary.CONFIG.get(Names.sojourner_staff, "torches");
+        List<String> torches = Settings.SojournerStaff.torches;
         List<Item> items = new ArrayList<Item>();
 
         //default to always work with vanilla torches
@@ -274,7 +277,7 @@ public class ItemSojournerStaff extends ItemToggleable {
     }
 
     private int getTorchItemMaxCapacity() {
-        return Reliquary.CONFIG.getInt(Names.sojourner_staff, "max_capacity_per_item_type");
+        return Settings.SojournerStaff.maxCapacityPerItemType;
     }
 
     public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost) {
@@ -336,13 +339,13 @@ public class ItemSojournerStaff extends ItemToggleable {
 
 
     @Override
-    public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, int x, int y, int z, int side, float xOff, float yOff, float zOff) {
+    public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float xOff, float yOff, float zOff) {
         if (player.isSwingInProgress)
             return false;
         player.swingItem();
         if (world.isRemote)
             return false;
-        if (!player.canPlayerEdit(x, y, z, side, ist))
+        if (!player.canPlayerEdit(pos, side, ist))
             return false;
         if (player.isSneaking())
             return false;
@@ -352,40 +355,40 @@ public class ItemSojournerStaff extends ItemToggleable {
         if (blockAttemptingPlacement == null)
             return false;
 
-        Block blockTargetted = world.getBlock(x, y, z);
+        Block blockTargetted = world.getBlockState(pos).getBlock();
+        BlockPos placeBlockAt = pos;
 
         if (ContentHelper.areBlocksEqual(blockTargetted, Blocks.snow)) {
-            side = 1;
-        } else if (!ContentHelper.areBlocksEqual(blockTargetted, Blocks.vine) && !ContentHelper.areBlocksEqual(blockTargetted, Blocks.tallgrass) && !ContentHelper.areBlocksEqual(blockTargetted, Blocks.deadbush) && (blockTargetted == null || !blockTargetted.isReplaceable(world, x, y, z))) {
-            x += side == 4 ? -1 : side == 5 ? 1 : 0;
-            y += side == 0 ? -1 : side == 1 ? 1 : 0;
-            z += side == 2 ? -1 : side == 3 ? 1 : 0;
+            side = EnumFacing.UP;
+        } else if (!ContentHelper.areBlocksEqual(blockTargetted, Blocks.vine) && !ContentHelper.areBlocksEqual(blockTargetted, Blocks.tallgrass) && !ContentHelper.areBlocksEqual(blockTargetted, Blocks.deadbush) && (blockTargetted == null || !blockTargetted.isReplaceable(world, pos))) {
+            placeBlockAt = pos.offset(side);
         }
 
-        if (blockAttemptingPlacement.canPlaceBlockAt(world, x, y, z)) {
-            if (world.canPlaceEntityOnSide(blockAttemptingPlacement, x, y, z, false, side, player, ist)) {
+        if (blockAttemptingPlacement.canPlaceBlockAt(world, placeBlockAt)) {
+            if (world.canBlockBePlaced(blockAttemptingPlacement, placeBlockAt, false, side, player, ist)) {
                 if (!player.capabilities.isCreativeMode) {
                     int cost = 1;
-                    int distance = (int) player.getDistance(x, y, z);
-                    for (; distance > Reliquary.CONFIG.getInt(Names.sojourner_staff, "tile_per_cost_multiplier"); distance -= Reliquary.CONFIG.getInt(Names.sojourner_staff, "tile_per_cost_multiplier")) {
+                    int distance = (int) player.getDistance(placeBlockAt.getX(), placeBlockAt.getY(), placeBlockAt.getZ());
+                    for (; distance > Settings.SojournerStaff.tilePerCostMultiplier; distance -= Settings.SojournerStaff.tilePerCostMultiplier) {
                         cost++;
                     }
                     if (!removeItemFromInternalStorage(ist, Item.getItemFromBlock(blockAttemptingPlacement), cost))
                         return false;
                 }
-                if (placeBlockAt(ist, player, world, x, y, z, side, xOff, yOff, zOff, attemptSide(world, x, y, z, side, blockAttemptingPlacement), blockAttemptingPlacement)) {
-                    blockAttemptingPlacement.onBlockAdded(world, x, y, z);
+                IBlockState torchBlockState = attemptSide(world, placeBlockAt, side, blockAttemptingPlacement, player);
+                if (placeBlockAt(ist, player, world, placeBlockAt, torchBlockState)) {
+                    blockAttemptingPlacement.onBlockAdded(world, placeBlockAt, torchBlockState);
                     double gauss = 0.5D + world.rand.nextFloat() / 2;
-                    world.spawnParticle("mobSpell", x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);
-                    world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, blockAttemptingPlacement.stepSound.getStepResourcePath(), (blockAttemptingPlacement.stepSound.getVolume() + 1.0F) / 2.0F, blockAttemptingPlacement.stepSound.getPitch() * 0.8F);
+                    world.spawnParticle(EnumParticleTypes.SPELL_MOB, placeBlockAt.getX() + 0.5D, placeBlockAt.getY() + 0.5D, placeBlockAt.getZ() + 0.5D, gauss, gauss, 0.0F);
+                    world.playSoundEffect(placeBlockAt.getX() + 0.5F, placeBlockAt.getY() + 0.5F, placeBlockAt.getZ() + 0.5F, blockAttemptingPlacement.stepSound.getStepSound(), (blockAttemptingPlacement.stepSound.getVolume() + 1.0F) / 2.0F, blockAttemptingPlacement.stepSound.getFrequency() * 0.8F);
                 }
             }
         }
         return true;
     }
 
-    private int attemptSide(World world, int x, int y, int z, int side, Block block) {
-        return block.onBlockPlaced(world, x, y, z, side, x, y, z, 0);
+    private IBlockState attemptSide(World world, BlockPos pos, EnumFacing side, Block block, EntityPlayer player) {
+        return block.onBlockPlaced(world, pos, side, pos.getX(), pos.getY(), pos.getZ(), 0, player);
     }
 
 
@@ -398,16 +401,16 @@ public class ItemSojournerStaff extends ItemToggleable {
         double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double)f;
         double d1 = player.prevPosY + (player.posY - player.prevPosY) * (double)f + (double)(world.isRemote ? player.getEyeHeight() - player.getDefaultEyeHeight() : player.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
         double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double)f;
-        Vec3 vec3 = Vec3.createVectorHelper(d0, d1, d2);
+        Vec3 vec3 = new Vec3(d0, d1, d2);
         float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
         float f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
         float f5 = -MathHelper.cos(-f1 * 0.017453292F);
         float f6 = MathHelper.sin(-f1 * 0.017453292F);
         float f7 = f4 * f5;
         float f8 = f3 * f5;
-        double d3 = Reliquary.CONFIG.getInt(Names.sojourner_staff, "max_range");
+        double d3 = Settings.SojournerStaff.maxRange;
         Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
-        return world.func_147447_a(vec3, vec31, true, false, false);
+        return world.rayTraceBlocks(vec3, vec31, true, false, false);
     }
 
     @Override
@@ -416,10 +419,10 @@ public class ItemSojournerStaff extends ItemToggleable {
         if (!player.isSneaking()) {
             MovingObjectPosition mop = this.getBlockTarget(world, player);
             if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                float xOff = (float) (mop.blockX - player.posX);
-                float yOff = (float) (mop.blockY - player.posY);
-                float zOff = (float) (mop.blockZ - player.posZ);
-                this.onItemUse(ist, player, world, mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, xOff, yOff, zOff);
+                float xOff = (float) (mop.getBlockPos().getX() - player.posX);
+                float yOff = (float) (mop.getBlockPos().getY() - player.posY);
+                float zOff = (float) (mop.getBlockPos().getZ() - player.posZ);
+                this.onItemUse(ist, player, world, mop.getBlockPos(), mop.sideHit, xOff, yOff, zOff);
             }
         }
         return super.onItemRightClick(ist, world, player);
@@ -432,9 +435,9 @@ public class ItemSojournerStaff extends ItemToggleable {
         float pitchOff = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * movementCoefficient;
         float yawOff = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * movementCoefficient;
         double xOff = player.prevPosX + (player.posX - player.prevPosX) * movementCoefficient;
-        double yOff = player.prevPosY + (player.posY - player.prevPosY) * movementCoefficient + 1.62D - player.yOffset;
+        double yOff = player.prevPosY + (player.posY - player.prevPosY) * movementCoefficient + player.getEyeHeight();
         double zOff = player.prevPosZ + (player.posZ - player.prevPosZ) * movementCoefficient;
-        Vec3 playerVector = Vec3.createVectorHelper(xOff, yOff, zOff);
+        Vec3 playerVector = new Vec3(xOff, yOff, zOff);
         float cosTraceYaw = MathHelper.cos(-yawOff * 0.017453292F - (float) Math.PI);
         float sinTraceYaw = MathHelper.sin(-yawOff * 0.017453292F - (float) Math.PI);
         float cosTracePitch = -MathHelper.cos(-pitchOff * 0.017453292F);
@@ -451,13 +454,15 @@ public class ItemSojournerStaff extends ItemToggleable {
         return true;
     }
 
-    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata, Block block) {
-        if (!world.setBlock(x, y, z, block, metadata, 3))
+    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos,IBlockState torchBlockState) {
+        if (!world.setBlockState(pos, torchBlockState, 3))
             return false;
-        if (ContentHelper.areBlocksEqual(world.getBlock(x, y, z), block)) {
-            block.onNeighborBlockChange(world, x, y, z, world.getBlock(x, y, z));
-            block.onBlockPlacedBy(world, x, y, z, player, stack);
+
+        if (ContentHelper.areBlocksEqual(torchBlockState.getBlock(), Blocks.torch)) {
+            Blocks.torch.onNeighborBlockChange(world, pos, torchBlockState, torchBlockState.getBlock());
+            Blocks.torch.onBlockPlacedBy(world, pos, torchBlockState, player, stack);
         }
+
         return true;
     }
 }

@@ -1,7 +1,9 @@
 package xreliquary.blocks.tile;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.IChatComponent;
 import lib.enderwizards.sandstone.blocks.tile.TileEntityInventory;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,10 +13,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.potion.PotionEffect;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
 import xreliquary.util.potions.PotionMap;
@@ -47,8 +48,9 @@ public class TileEntityMortar extends TileEntityInventory {
         super.onDataPacket(net, packet);
     }
 
+    //TODO: change code so that it's not part of tickable tiles
     @Override
-    public void updateEntity() {
+    public void update() {
         // do stuff on tick? I don't think we need this to tick.
     }
 
@@ -91,8 +93,8 @@ public class TileEntityMortar extends TileEntityInventory {
 
         tag.setTag("Items", items);
 
-        if (this.hasCustomInventoryName()) {
-            tag.setString("CustomName", this.getInventoryName());
+        if (this.hasCustomName()) {
+            tag.setString("CustomName", this.getName());
         }
     }
 
@@ -125,7 +127,7 @@ public class TileEntityMortar extends TileEntityInventory {
                     if (this.getStackInSlot(clearSlot) == null)
                         continue;
                     if (!this.worldObj.isRemote) {
-                        EntityItem itemEntity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, this.getStackInSlot(clearSlot).copy());
+                        EntityItem itemEntity = new EntityItem(worldObj,this.getPos().getX() + 0.5D, this.getPos().getY() + 0.5D, this.getPos().getZ() + 0.5D, this.getStackInSlot(clearSlot).copy());
                         worldObj.spawnEntityInWorld(itemEntity);
                     }
                     this.setInventorySlotContents(clearSlot, null);
@@ -141,24 +143,15 @@ public class TileEntityMortar extends TileEntityInventory {
                 resultItem.setTagCompound(resultEssence.writeToNBT());
 
 
-                EntityItem itemEntity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, resultItem);
+                EntityItem itemEntity = new EntityItem(worldObj, this.getPos().getX() + 0.5D, this.getPos().getY() + 0.5D, this.getPos().getZ() + 0.5D, resultItem);
                 worldObj.spawnEntityInWorld(itemEntity);
             }
+            markDirty();
         }
     }
 
     public void spawnPestleParticles() {
-        worldObj.spawnParticle("smoke", xCoord + 0.5D, yCoord + 0.15D, zCoord + 0.5D, 0.0D, 0.1D, 0.0D);
-    }
-
-    @Override
-    public String getInventoryName() {
-        return customInventoryName;
-    }
-
-    @Override
-    public boolean hasCustomInventoryName() {
-        return customInventoryName != null;
+        worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.getPos().getX() + 0.5D, this.getPos().getY() + 0.15D, this.getPos().getZ() + 0.5D, 0.0D, 0.1D, 0.0D);
     }
 
     @Override
@@ -168,15 +161,15 @@ public class TileEntityMortar extends TileEntityInventory {
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer var1) {
-        return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && var1.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D) <= 64.0D;
+        return this.worldObj.getTileEntity(this.getPos()) == this && var1.getDistanceSq((double) this.getPos().getX() + 0.5D, (double) this.getPos().getY() + 0.5D, (double) this.getPos().getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
-    public void openInventory() {
+    public void openInventory(EntityPlayer player) {
     }
 
     @Override
-    public void closeInventory() {
+    public void closeInventory(EntityPlayer player) {
     }
 
     @Override
@@ -192,5 +185,34 @@ public class TileEntityMortar extends TileEntityInventory {
                 return false;
         }
         return slot <= 3 && (XRPotionHelper.isItemIngredient(ist) || XRPotionHelper.isItemEssence(ist));
+    }
+
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) {
+    }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public String getName() {
+        return this.hasCustomName() ? this.customInventoryName : "container.tile_entity_mortar";
+    }
+
+    @Override
+    public boolean hasCustomName() {
+        return customInventoryName != null;
+    }
+
+    @Override
+    public IChatComponent getDisplayName() {
+        return this.hasCustomName() ? new ChatComponentText(this.getName()) : new ChatComponentTranslation(this.getName());
     }
 }

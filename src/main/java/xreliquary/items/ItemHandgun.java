@@ -1,22 +1,20 @@
 package xreliquary.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.entities.shot.*;
-import xreliquary.lib.Colors;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
-import lib.enderwizards.sandstone.util.NBTHelper;
+import xreliquary.reference.Colors;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 @ContentInit
 public class ItemHandgun extends ItemBase {
@@ -32,17 +30,6 @@ public class ItemHandgun extends ItemBase {
     @Override
     public boolean getShareTag() {
         return false;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack itemStack, int renderPass) {
-        return this.itemIcon;
     }
 
     @Override
@@ -133,7 +120,7 @@ public class ItemHandgun extends ItemBase {
 
     @Override
     public EnumAction getItemUseAction(ItemStack ist) {
-        return EnumAction.block;
+        return EnumAction.BLOCK;
     }
 
     @Override

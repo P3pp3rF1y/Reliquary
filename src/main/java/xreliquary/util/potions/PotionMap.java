@@ -1,17 +1,16 @@
 package xreliquary.util.potions;
 
-import lib.enderwizards.sandstone.init.Content;
-import lib.enderwizards.sandstone.mod.config.ConfigReference;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.commons.lang3.math.NumberUtils;
 import xreliquary.Reliquary;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemPotionEssence;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 import java.util.*;
 
@@ -23,7 +22,9 @@ import java.util.*;
 public class PotionMap {
     private static List<PotionIngredient> ingredientsMap = new ArrayList<PotionIngredient>();
 
-    public static void init() {
+    //TODO enable with potion fix
+/*
+    public static void init) {
         //initialize the potion mapping. This is powered mainly through config file.
         //TIER ONE INGREDIENTS, these are always 0 potency and have minimal durations (3 for positive, 1 for negative or super-positive)
         addPotionConfig(Items.sugar, speed(3, 0), haste(3, 0));
@@ -59,7 +60,7 @@ public class PotionMap {
         addPotionConfig(Items.bread, hboost(4, 0), satur(0));
         addPotionConfig(Items.cooked_porkchop, fatigue(2, 0), satur(0));
         addPotionConfig(Items.slime_ball, resist(4, 0), fireres(2, 0));
-        addPotionConfig(Items.cooked_fished, satur(0), breath(2, 0));
+        addPotionConfig(Items.cooked_fish, satur(0), breath(2, 0));
         addPotionConfig(Items.dye, Reference.BLUE_DYE_META, haste(4, 0), dboost(4, 0));  //lapis lazuli
         addPotionConfig(Items.dye, Reference.BLACK_DYE_META, blind(2, 0), invis(2, 0)); //ink
         addPotionConfig(Items.bone, weak(2, 0), fatigue(2, 0));
@@ -113,6 +114,7 @@ public class PotionMap {
             Reliquary.CONFIG.require(Names.potion_ingredient, key, new ConfigReference(value));
         }
     }
+*/
 
     //include name helpers to quickly return the "proper" minecraft names for each effect, duration and potency
     //heal, saturation and harm are speshul, they don't need a duration.
@@ -163,6 +165,8 @@ public class PotionMap {
         configList.put(ContentHelper.getIdent(ist.getItem()).replace(':', '_') + (ist.getItemDamage() == 0 ? "" : "_" + ist.getItemDamage()), ingredientEffects);
     }
 
+//TODO enable with potion fix
+/*
 
     public static void initializePotionMappings() {
         //_ replaces : in identity names. the last _ should always denote a meta value that separates this from another item, if possible.
@@ -198,6 +202,7 @@ public class PotionMap {
             ingredientsMap.add(ingredient);
         }
     }
+*/
 
     public static List<PotionIngredient> getIngredients() {
         return ingredientsMap;

@@ -19,7 +19,8 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
+import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import java.util.Iterator;
 import java.util.List;
@@ -48,13 +49,13 @@ public class ItemRendingGale extends ItemToggleable {
         LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
-    private static int getChargeLimit() { return Reliquary.CONFIG.getInt(Names.rending_gale, "charge_limit"); }
-    public static int getChargeCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "cast_charge_cost"); }
-    private static int getFeathersWorth() { return Reliquary.CONFIG.getInt(Names.rending_gale, "charge_feather_worth"); }
-    private static int getBoltChargeCost() { return Reliquary.CONFIG.getInt(Names.rending_gale, "bolt_charge_cost"); }
-    private static int getBoltTargetRange() { return Reliquary.CONFIG.getInt(Names.rending_gale, "block_target_range"); }
-    private static int getRadialPushRadius() { return Reliquary.CONFIG.getInt(Names.rending_gale, "push_pull_radius"); }
-    private static boolean canPushProjectiles() { return Reliquary.CONFIG.getBool(Names.rending_gale, "can_push_projectiles"); }
+    private static int getChargeLimit() { return Settings.RendingGale.chargeLimit; }
+    public static int getChargeCost() { return Settings.RendingGale.castChargeCost; }
+    private static int getFeathersWorth() { return Settings.RendingGale.chargeFeatherWorth; }
+    private static int getBoltChargeCost() { return Settings.RendingGale.boltChargeCost; }
+    private static int getBoltTargetRange() { return Settings.RendingGale.blockTargetRange; }
+    private static int getRadialPushRadius() { return Settings.RendingGale.pushPullRadius; }
+    private static boolean canPushProjectiles() { return Settings.RendingGale.canPushProjectiles; }
 
     @Override
     public boolean isFull3D(){ return true; }
@@ -72,21 +73,21 @@ public class ItemRendingGale extends ItemToggleable {
         double z = lookVec.zCoord;
 
         //you're gonna clip into something, we're trying to prevent that.
-        if (isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, y, z))) {
+        if (isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, y, z))) {
             if (Math.abs(x) > Math.abs(y) && Math.abs(x) > Math.abs(z)) {
-                if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D))) {
+                if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D))) {
                     // x is fine
                     if (Math.abs(z) > Math.abs(y)) {
-                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z))) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z))) {
                             //z is fine
                             y = 0D;
-                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D)))
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D)))
                             z = 0D;
                     } else {
-                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D))) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D))) {
                             //y is fine
                             z = 0D;
-                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z)))
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z)))
                             y = 0D;
                     }
                 } else {
@@ -94,87 +95,87 @@ public class ItemRendingGale extends ItemToggleable {
                     x = 0D;
                     //and also do the standard y/z checks
                     if (Math.abs(z) > Math.abs(y)) {
-                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z))) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z))) {
                             //z is fine
                             y = 0D;
-                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D)))
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D)))
                             z = 0D;
                     } else {
-                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D))) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D))) {
                             //y is fine
                             z = 0D;
-                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z)))
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z)))
                             y = 0D;
                     }
                 }
             } else if (Math.abs(z) > Math.abs(x) && Math.abs(z) > Math.abs(y)) {
-                if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z))) {
+                if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z))) {
                     //z is fine
                     if (Math.abs(x) > Math.abs(y)) {
-                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D))) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D))) {
                             //x is fine
                             y = 0D;
-                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D)))
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D)))
                             x = 0D;
                     } else {
-                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D))) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D))) {
                             //y is fine
                             x = 0D;
-                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D)))
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D)))
                             y = 0D;
                     }
                 } else {
                     //z is not fine
                     z = 0D;
                     if (Math.abs(x) > Math.abs(y)) {
-                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D))) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D))) {
                             //x is fine
                             y = 0D;
-                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D)))
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D)))
                             x = 0D;
                     } else {
-                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D))) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D))) {
                             //y is fine
                             x = 0D;
-                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D)))
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D)))
                             y = 0D;
                     }
                 }
             } else if (Math.abs(y) > Math.abs(x) && Math.abs(y) > Math.abs(z)) {
-                if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, y, 0D))) {
+                if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D))) {
                     //y is fine
                     if (Math.abs(x) > Math.abs(z)) {
-                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D))) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D))) {
                             //x is fine
                             z = 0D;
-                        } else  if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z)))
+                        } else  if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z)))
                             x = 0D;
                     } else {
-                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D))) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D))) {
                             //x is fine
                             z = 0D;
-                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z)))
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z)))
                             x = 0D;
                     }
                 } else {
                     //y is not fine
                     y = 0D;
                     if (Math.abs(x) > Math.abs(z)) {
-                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D))) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D))) {
                             //x is fine
                             z = 0D;
-                        } else  if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z)))
+                        } else  if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z)))
                             x = 0D;
                     } else {
-                        if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(0D, 0D, z))) {
+                        if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z))) {
                             //x is fine
                             x = 0D;
-                        } else if (!isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, 0D, 0D)))
+                        } else if (!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D)))
                             z = 0D;
                     }
                 }
             }
-            if (isAABBInAnythingButAir(player.worldObj, player.boundingBox.getOffsetBoundingBox(x, y, z))) {
+            if (isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, y, z))) {
                 //we still failed, give up.
                 return;
             }
@@ -208,7 +209,7 @@ public class ItemRendingGale extends ItemToggleable {
             {
                 for (int zOff = minZ; zOff < maxZ; ++zOff)
                 {
-                    Block block = worldObj.getBlock(xOff, yOff, zOff);
+                    Block block = worldObj.getBlockState(new BlockPos(xOff, yOff, zOff)).getBlock();
 
                     if (block.getMaterial() != Material.air && block.getMaterial() != Material.water && block.getMaterial() != Material.lava &&
                             block.getMaterial() != Material.fire && block.getMaterial() != Material.vine && block.getMaterial() != Material.plants && block.getMaterial() != Material.circuits)
@@ -284,7 +285,7 @@ public class ItemRendingGale extends ItemToggleable {
 
     @Override
     public EnumAction getItemUseAction(ItemStack ist) {
-        return EnumAction.block;
+        return EnumAction.BLOCK;
     }
 
     @Override
@@ -304,7 +305,7 @@ public class ItemRendingGale extends ItemToggleable {
         double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double)f;
         double d1 = player.prevPosY + (player.posY - player.prevPosY) * (double)f + (double)(world.isRemote ? player.getEyeHeight() - player.getDefaultEyeHeight() : player.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
         double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double)f;
-        Vec3 vec3 = Vec3.createVectorHelper(d0, d1, d2);
+        Vec3 vec3 = new Vec3(d0, d1, d2);
         float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
         float f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
         float f5 = -MathHelper.cos(-f1 * 0.017453292F);
@@ -313,7 +314,7 @@ public class ItemRendingGale extends ItemToggleable {
         float f8 = f3 * f5;
         double d3 = (double) getBoltTargetRange();
         Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
-        return world.func_147447_a(vec3, vec31, true, false, false);
+        return world.rayTraceBlocks(vec3, vec31, true, false, false);
     }
 
     @Override
@@ -339,18 +340,19 @@ public class ItemRendingGale extends ItemToggleable {
             //spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
 
         } else if (getMode(ist).equals("bolt")) {
+
             MovingObjectPosition mop = this.getCycloneBlockTarget(player.worldObj, player);
 
             if (mop != null) {
                 if (count % 8 == 0) {
-                    int attemptedY = mop.blockY;
-                    if (!player.worldObj.canLightningStrikeAt(mop.blockX, mop.blockY, mop.blockZ)) {
+                    int attemptedY = mop.getBlockPos().getY();
+                    if (!player.worldObj.canLightningStrike(mop.getBlockPos())) {
                         attemptedY++;
                     }
-                    if (player.worldObj.canLightningStrikeAt(mop.blockX, attemptedY, mop.blockZ)) {
+                    if (player.worldObj.canLightningStrike(new BlockPos(mop.getBlockPos().getX(), attemptedY, mop.getBlockPos().getZ()))) {
                         if (NBTHelper.getInteger("feathers", ist) >= getBoltChargeCost()) {
                             NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getBoltChargeCost());
-                            player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, (double) mop.blockX, (double) mop.blockY, (double) mop.blockZ));
+                            player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, (double) mop.getBlockPos().getX(), (double) mop.getBlockPos().getY(), (double) mop.getBlockPos().getZ()));
                         }
                     }
                 }
@@ -383,10 +385,10 @@ public class ItemRendingGale extends ItemToggleable {
         double upperZ = player.posZ + getRadialPushRadius();
 
 
-        List<String> entitiesThatCanBePushed = (List<String>) Reliquary.CONFIG.get(Names.rending_gale, "entities_that_can_be_pushed");
-        List<String> projectilesThatCanBePushed = (List<String>) Reliquary.CONFIG.get(Names.rending_gale, "projectiles_that_can_be_pushed");
+        List<String> entitiesThatCanBePushed = Settings.RendingGale.entitiesThatCanBePushed;
+        List<String> projectilesThatCanBePushed = Settings.RendingGale.projectilesThatCanBePushed;
 
-        List eList = player.worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
+        List eList = player.worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 
         Iterator iterator = eList.iterator();
         while (iterator.hasNext()) {
@@ -402,9 +404,9 @@ public class ItemRendingGale extends ItemToggleable {
                     continue;
                 Vec3 pushVector;
                 if (pull) {
-                    pushVector = Vec3.createVectorHelper(player.posX - e.posX, player.posY - e.posY, player.posZ - e.posZ);
+                    pushVector = new Vec3(player.posX - e.posX, player.posY - e.posY, player.posZ - e.posZ);
                 } else {
-                    pushVector = Vec3.createVectorHelper(e.posX - player.posX, e.posY - player.posY, e.posZ - player.posZ);
+                    pushVector = new Vec3(e.posX - player.posX, e.posY - player.posY, e.posZ - player.posZ);
                 }
                 pushVector = pushVector.normalize();
                 e.moveEntity(0.0D, 0.2D, 0.0D);
@@ -420,7 +422,7 @@ public class ItemRendingGale extends ItemToggleable {
             float randY = 10F * (itemRand.nextFloat() - 0.5F);
             float randZ = 10F * (itemRand.nextFloat() - 0.5F);
 
-            world.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, x + randX, y + randY, z + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5);
+            world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX, y + randY, z + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5, Block.getStateId(Blocks.snow_layer.getStateFromMeta(0)));
         }
     }
 
@@ -438,7 +440,7 @@ public class ItemRendingGale extends ItemToggleable {
                 motZ *= -1F;
             }
 
-            player.worldObj.spawnParticle("blockdust_" + Block.getIdFromBlock(Blocks.snow_layer) + "_" + 0, player.posX + randX, (player.posY + player.getEyeHeight()) - (player.height / 2), player.posZ + randZ, motX, 0.0D, motZ);
+            player.worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, player.posX + randX, (player.posY + player.getEyeHeight()) - (player.height / 2), player.posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.snow_layer.getStateFromMeta(0)));
         }
 
     }

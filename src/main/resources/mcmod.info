@@ -3,21 +3,18 @@
   "modid": "xreliquary",
   "name": "Reliquary",
   "description": "Two words: magical swag. Oh, and a gun.",
-  "version": "${version}",
-  "mcversion": "1.2.DEV",
+  "version": "${project_version}",
+  "mcversion": "${minecraft_version}",
   "url": "",
   "updateUrl": "",
   "authorList": [
     "x3n0ph0b3",
-    "TheMike"],
-  "credits": "Originally made by x3n0ph0b3, now maintained by TheMike.",
+    "TheMike",
+    "P3pp3rF1y"],
+  "credits": "Originally made by x3n0ph0b3 and TheMike, now maintained by P3pp3rF1y.",
   "logoFile": "/mods/xreliquary/textures/logo/xrlogo.png",
   "screenshots": [
   ],
-  "parent": "",
-  "requiredMods": [ "libsandstone@[1.0.0,)" ],
-  "dependencies": [ "libsandstone@[1.0.0,)" ],
-  "dependants": [  ],
-  "useDependencyInformation": "true"
+  "parent": ""
 }
 ]

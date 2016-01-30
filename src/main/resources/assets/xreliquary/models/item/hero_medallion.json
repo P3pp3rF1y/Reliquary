@@ -1,0 +1,8 @@
+{
+  "parent": "xreliquary:item/default_item",
+  "textures": {
+    "layer0": "xreliquary:items/hero_medallion",
+    "layer1": "xreliquary:items/hero_medallion_overlay"
+
+  }
+}

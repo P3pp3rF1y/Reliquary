@@ -1,25 +1,17 @@
 package xreliquary.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import xreliquary.Reliquary;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
 
 import java.util.List;
 
 @ContentInit
 public class ItemGunPart extends ItemBase {
-
-    @SideOnly(Side.CLIENT)
-    private IIcon[] icons;
 
     public ItemGunPart() {
         super(Names.gun_part);
@@ -28,22 +20,6 @@ public class ItemGunPart extends ItemBase {
         this.setMaxStackSize(4);
         this.setHasSubtypes(true);
         canRepair = false;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        icons = new IIcon[3];
-        for (int i = 0; i < 3; i++) {
-            icons[i] = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.gun_part + "_" + i);
-        }
-    }
-
-    @Override
-    public IIcon getIconFromDamage(int meta) {
-        if (meta < 3)
-            return icons[meta];
-        return icons[0];
     }
 
     @Override

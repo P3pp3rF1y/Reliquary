@@ -1,7 +1,10 @@
 package xreliquary.client.particle;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -11,10 +14,8 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import xreliquary.lib.Names;
-import xreliquary.lib.Reference;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 /**
  * Created by Xeno on 11/9/2014.
@@ -47,7 +48,7 @@ public class EntityCauldronBubbleFX extends EntityFX {
     }
 
     @Override
-    public void renderParticle(Tessellator tess, float subTick, float rotX, float rotZ, float rotY_Z, float rotX_Y, float rotX_Z) {
+    public void renderParticle(WorldRenderer worldRenderer, Entity entity, float subTick, float rotX, float rotZ, float rotY_Z, float rotX_Y, float rotX_Z) {
         float uMin = (float)this.particleTextureIndexX / 1F; // 1 is number of textures on the sheet (X)
         float uMax = uMin + 1F; // always 1 / number of textures X
         float vMin = (float)this.particleTextureIndexY / 4F; // same, on Y (4)
@@ -59,6 +60,7 @@ public class EntityCauldronBubbleFX extends EntityFX {
         float z = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * subTick - interpPosZ);
 
 
+        //TODO: look into whether this needs to be changed to this.theRenderEngine.bindTexture as it is in EntityLargeExplodeFX
         Minecraft.getMinecraft().getTextureManager().bindTexture(bubbleTexture);
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -72,13 +74,13 @@ public class EntityCauldronBubbleFX extends EntityFX {
         int k = i / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
 
-        tess.startDrawingQuads();
-        tess.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
-        tess.addVertexWithUV(x - rotX * scale - rotX_Y * scale, y - rotZ * scale, z - rotY_Z * scale - rotX_Z * scale, uMax, vMax);
-        tess.addVertexWithUV(x - rotX * scale + rotX_Y * scale, y + rotZ * scale, z - rotY_Z * scale + rotX_Z * scale, uMax, vMin);
-        tess.addVertexWithUV(x + rotX * scale + rotX_Y * scale, y + rotZ * scale, z + rotY_Z * scale + rotX_Z * scale, uMin, vMin);
-        tess.addVertexWithUV(x + rotX * scale - rotX_Y * scale, y - rotZ * scale, z + rotY_Z * scale - rotX_Z * scale, uMin, vMax);
-        tess.draw();
+        //TODO: verify that the vertex format is correct for this particle
+        worldRenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        worldRenderer.pos(x - rotX * scale - rotX_Y * scale, y - rotZ * scale, z - rotY_Z * scale - rotX_Z * scale).tex(uMax, vMax).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
+        worldRenderer.pos(x - rotX * scale + rotX_Y * scale, y + rotZ * scale, z - rotY_Z * scale + rotX_Z * scale).tex(uMax, vMin).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
+        worldRenderer.pos(x + rotX * scale + rotX_Y * scale, y + rotZ * scale, z + rotY_Z * scale + rotX_Z * scale).tex(uMin, vMin).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
+        worldRenderer.pos(x + rotX * scale - rotX_Y * scale, y - rotZ * scale, z + rotY_Z * scale - rotX_Z * scale).tex(uMin, vMax).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
+        Tessellator.getInstance().draw();
 
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glDepthMask(true);
