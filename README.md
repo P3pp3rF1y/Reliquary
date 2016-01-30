@@ -1,4 +1,4 @@
-Reliquary [![Build Status](https://drone.io/github.com/TrainerGuy22/Reliquary/status.png)](https://drone.io/github.com/TrainerGuy22/Reliquary/latest)
+Reliquary [![Build Status](https://drone.io/github.com/P3pp3rF1y/Reliquary/status.png)](https://drone.io/github.com/P3pp3rF1y/Reliquary/latest)
 =========
 
 Description
