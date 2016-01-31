@@ -83,7 +83,6 @@ public class CommonProxy {
 
         NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
         MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
-        MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
 
         this.registerEntities();
     }
