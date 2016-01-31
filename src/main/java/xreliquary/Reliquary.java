@@ -25,7 +25,6 @@ import xreliquary.common.CommonProxy;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
-import xreliquary.integration.NEIModIntegration;
 import xreliquary.reference.Reference;
 import xreliquary.network.PacketHandler;
 import xreliquary.util.alkahestry.AlkahestRecipe;
