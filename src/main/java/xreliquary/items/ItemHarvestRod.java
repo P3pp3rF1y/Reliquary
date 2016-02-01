@@ -57,9 +57,6 @@ public class ItemHarvestRod extends ItemToggleable {
         LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
-    @Override
-    public boolean isFull3D(){ return true; }
-
     public int getBonemealLimit() { return Settings.HarvestRod.bonemealLimit; }
     public int getBonemealWorth() { return Settings.HarvestRod.bonemealWorth; }
     public int getBonemealCost() { return Settings.HarvestRod.bonemealCost; }

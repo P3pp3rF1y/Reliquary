@@ -34,9 +34,6 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
     }
 
     @Override
-    public boolean isFull3D(){ return true; }
-
-    @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         return super.onItemRightClick(ist, world, player);
     }

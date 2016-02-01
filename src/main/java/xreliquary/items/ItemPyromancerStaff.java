@@ -44,9 +44,6 @@ public class ItemPyromancerStaff extends ItemToggleable {
     }
 
     @Override
-    public boolean isFull3D(){ return true; }
-
-    @Override
     public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
         if (!(e instanceof EntityPlayer))
             return;

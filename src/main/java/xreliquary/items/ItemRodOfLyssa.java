@@ -25,14 +25,6 @@ public class ItemRodOfLyssa extends ItemBase {
         this.setMaxStackSize(1);
         canRepair = false;
     }
-    /**
-     * Returns True is the item is renderer in full 3D when hold.
-     */
-    @SideOnly(Side.CLIENT)
-    public boolean isFull3D()
-    {
-        return true;
-    }
 
     /**
      * Returns true if this item should be rotated by 180 degrees around the Y axis when being held in an entities

@@ -57,9 +57,6 @@ public class ItemRendingGale extends ItemToggleable {
     private static int getRadialPushRadius() { return Settings.RendingGale.pushPullRadius; }
     private static boolean canPushProjectiles() { return Settings.RendingGale.canPushProjectiles; }
 
-    @Override
-    public boolean isFull3D(){ return true; }
-
     public void attemptFlight(EntityLivingBase entityLiving) {
         if (!(entityLiving instanceof EntityPlayer))
             return;
