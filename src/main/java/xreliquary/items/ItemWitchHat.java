@@ -40,6 +40,7 @@ public class ItemWitchHat extends ItemArmor {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel( EntityLivingBase entityLiving, ItemStack stack, int slotID )
     {
         return ModelWitchHat.self;

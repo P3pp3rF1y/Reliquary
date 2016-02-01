@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.init.ItemModels;
+import xreliquary.client.ItemModelLocations;
 import xreliquary.reference.Names;
 import xreliquary.util.alkahestry.AlkahestRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
@@ -48,8 +48,8 @@ public class ItemInfernalTear extends ItemToggleable {
     @SideOnly(Side.CLIENT)
     public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int ticksRemaining) {
         if (isEnabled(stack)) {
-            return ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR);
+            return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR);
         }
-        return ItemModels.getInstance().getModel(ItemModels.INFERNAL_TEAR_EMPTY);
+        return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR_EMPTY);
     }
 }

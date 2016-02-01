@@ -14,6 +14,8 @@ import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.init.Items;
 import net.minecraftforge.common.MinecraftForge;
 import xreliquary.blocks.tile.TileEntityMortar;
+import xreliquary.client.init.ItemBlockModels;
+import xreliquary.client.init.ItemModels;
 import xreliquary.client.render.*;
 import xreliquary.common.CommonProxy;
 import xreliquary.entities.*;
@@ -31,8 +33,8 @@ public class ClientProxy extends CommonProxy {
     public void preInit() {
         super.preInit();
 
-        ModItems.registerItemModels();
-        ModBlocks.registerItemBlockModels();
+        ItemModels.registerItemModels();
+        ItemBlockModels.registerItemBlockModels();
     }
 
     @Override
