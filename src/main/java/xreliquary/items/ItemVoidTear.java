@@ -44,6 +44,9 @@ public class ItemVoidTear extends ItemToggleable {
 
         ItemStack contents = this.getContainedItem(stack);
 
+        if (contents == null)
+            return;
+
         if(this.isEnabled(stack)) {
             LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.YELLOW + contents.getDisplayName()), stack, list);
             list.add(LanguageHelper.getLocalization("tooltip.absorb_tear"));
