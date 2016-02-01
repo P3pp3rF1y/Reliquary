@@ -67,19 +67,9 @@ public class ItemMidasTouchstone extends ItemToggleable {
             }
         }
 
-        if (getCooldown(ist) == 0) {
+        if (world.getWorldTime() % 4 == 0) {
             doRepairAndDamageTouchstone(ist, player);
-        } else {
-            decrementCooldown(ist);
         }
-    }
-
-    private void decrementCooldown(ItemStack ist) {
-        NBTHelper.setShort("cooldown", ist, NBTHelper.getShort("cooldown", ist) - 1);
-    }
-
-    private int getCooldown(ItemStack ist) {
-        return NBTHelper.getShort("cooldown", ist);
     }
 
     private void doRepairAndDamageTouchstone(ItemStack ist, EntityPlayer player) {
@@ -143,11 +133,6 @@ public class ItemMidasTouchstone extends ItemToggleable {
                 }
             }
         }
-        setCooldown(ist);
-    }
-
-    private void setCooldown(ItemStack ist) {
-        NBTHelper.setShort("cooldown", ist, 4);
     }
 
     private boolean decrementTouchStoneCharge(ItemStack ist) {
