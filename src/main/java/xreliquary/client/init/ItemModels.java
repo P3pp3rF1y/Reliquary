@@ -1,5 +1,6 @@
 package xreliquary.client.init;
 
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -9,6 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import xreliquary.client.ItemModelLocations;
 import xreliquary.init.ModItems;
+import xreliquary.items.ItemInfernalTear;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
@@ -53,8 +55,6 @@ public class ItemModels {
         registerItemModel(ModItems.witchHat, Names.witch_hat);
         registerItemModel(ModItems.witherlessRose, Names.witherless_rose);
 
-        registerItemModel(ModItems.infernalTear, Names.infernal_tear_empty);
-        ModelBakery.registerItemVariants(ModItems.infernalTear, ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR));
 
         registerItemModel(ModItems.rodOfLyssa, Names.rod_of_lyssa);
         ModelBakery.registerItemVariants(ModItems.rodOfLyssa, ItemModelLocations.getInstance().getModel(ItemModelLocations.ROD_OF_LYSSA_CAST));
@@ -84,6 +84,17 @@ public class ItemModels {
                 return new ModelResourceLocation(Reference.DOMAIN + Names.heart_zhu, "inventory");
             }
         });
+
+        registerItemModelForAllVariants(ModItems.infernalTear, Names.infernal_tear_empty, 2, new ItemMeshDefinition() {
+            @Override
+            public ModelResourceLocation getModelLocation(ItemStack stack) {
+                if (ModItems.infernalTear.getStackFromTear(stack) != null) {
+                    return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR);
+                }
+                return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR_EMPTY);
+            }
+        });
+        ModelBakery.registerItemVariants(ModItems.infernalTear, ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR));
 
         registerItemModelForAllVariants(ModItems.magazine, "magazine", 10, new ItemMeshDefinition() {
             public ModelResourceLocation getModelLocation(ItemStack stack) {

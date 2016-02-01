@@ -111,8 +111,10 @@ item.infernal_chalice.tooltip=Protects you from lava damage.;{{!colors.red}}Hold
 item.infernal_claws.name={{!colors.red}}Infernal Claws
 item.infernal_claws.tooltip=Absorbs fire damage at;the expense of hunger.
 
-item.infernal_tear.name={{!colors.red}}Infernal Tear WIP
-item.infernal_tear.tooltip=Doesn't work in this version.;Only used as crafting ingredient;Burns items into experience.;Shift + Right-Click to activate.
+item.infernal_tear.name={{!colors.red}}Infernal Tear
+item.infernal_tear.tooltip=Burns items into experience.
+tooltip.infernal_tear.absorb_unset=Right-Click to remove item association
+tooltip.infernal_tear.tear_empty=Right-click to capture whatever item you have the most of;that infernal tear can burn.
 
 tile.interdiction_torch.name={{!colors.yellow}}Interdiction Torch
 tile.interdiction_torch.tooltip=Repels creatures and projectiles.
@@ -390,6 +392,10 @@ config.item_and_block_settings.infernal_chalice.hunger_cost_percent.label=Hunger
 config.item_and_block_settings.infernal_chalice.hunger_cost_percent.comment=Percent hunger used to heal player per 1 damage that would be taken otherwise.
 config.item_and_block_settings.infernal_chalice.fluid_limit.label=Fluid limit
 config.item_and_block_settings.infernal_chalice.fluid_limit.comment=Millibuckets of lava that the chalice can hold
+config.item_and_block_settings.infernal_tear.label=Infernal Tear
+config.item_and_block_settings.infernal_tear.comment=Infernal Tear settings
+config.item_and_block_settings.infernal_tear.absorb_when_created.label=Absorb when created
+config.item_and_block_settings.infernal_tear.absorb_when_created.comment=Whether the infernal tear starts absorbing immediately after it is set to item type
 config.item_and_block_settings.interdiction_torch.label=Interdiction Torch
 config.item_and_block_settings.interdiction_torch.comment=Interdiction Torch settings
 config.item_and_block_settings.interdiction_torch.push_radius.label=Push radius

@@ -250,4 +250,8 @@ public class Settings
 	public static class SeekerShot {
 		public static List<String> entitiesThatCanBeHunted;
 	}
+
+	public static class InfernalTear {
+		public static boolean absorbWhenCreated;
+	}
 }

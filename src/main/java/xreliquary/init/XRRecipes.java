@@ -332,15 +332,11 @@ public class XRRecipes {
         else
             addRecipe(false, false, emptyVoidTear(), "lel", "pgp", "lnl", 'l', lapis(), 'e', Items.ender_pearl, 'p', slimePearl(), 'g', Items.ghast_tear, 'n', enderHeart());
 
-        //TODO enable with infernal tear fix
-
-/*
         // infernal tear
         if (Settings.EasyModeRecipes.infernalTear)
             addRecipe(true, false, new ItemStack(getItem(Names.infernal_tear), 1, 0), emptyVoidTear(), getItem(Names.witch_hat), moltenCore(), infernalClaw());
         else
             addRecipe(false, false, new ItemStack(getItem(Names.infernal_tear), 1, 0), "php", "mtm", "pcp", 'p', Items.blaze_powder, 'h', getItem(Names.witch_hat), 'm', moltenCore(), 't', emptyVoidTear(), 'c', infernalClaw());
-*/
 
         // angelic feather
         if (Settings.EasyModeRecipes.angelicFeather)

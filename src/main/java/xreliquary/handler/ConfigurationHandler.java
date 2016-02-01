@@ -175,6 +175,9 @@ public class ConfigurationHandler
 		Settings.InfernalChalice.fluidLimit = getInt("fluid_limit", Names.item_and_block_settings + "." + Names.infernal_chalice, 500000, 0, cleanIntMax);
 		setCategoryTranslations(Names.item_and_block_settings + "." + Names.infernal_chalice, true);
 
+		//infernal tear
+		Settings.InfernalTear.absorbWhenCreated = getBoolean("absorb_when_created", Names.item_and_block_settings + "." + Names.infernal_tear, false);
+
 		//interdiction torch configs
 		//see post init for entity configs
 		Settings.InterdictionTorch.pushRadius = getInt("push_radius", Names.item_and_block_settings + "." + Names.interdiction_torch, 5, 1, 15);
