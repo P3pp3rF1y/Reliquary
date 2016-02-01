@@ -5,6 +5,8 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 public class ModelHandgun extends ModelBase {
+
+    //TODO: remove
     // fields
     public ModelRenderer Bottom;
     public ModelRenderer Gunmain;
