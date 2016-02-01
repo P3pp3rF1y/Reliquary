@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
@@ -65,13 +66,16 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
                     tome = stack.copy();
                 } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.redstone_block))) {
                     amount += 9;
-                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone))) {
+                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.glowstone))) {
+                    amount += 4;
+                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone)) || ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.glowstone_dust))) {
                     amount++;
                 }
             }
         }
 
         NBTHelper.setInteger("redstone", tome, NBTHelper.getInteger("redstone", tome) + amount);
+        tome.setItemDamage(tome.getMaxDamage() - NBTHelper.getInteger("redstone", tome));
         return tome;
     }
 
@@ -85,7 +89,6 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
         return new ItemStack(returnedItem, 1);
     }
 
-    //TODO: make sure that this works correctly
     @Override
     public ItemStack[] getRemainingItems(InventoryCrafting inv)
     {
@@ -94,7 +97,13 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
         for (int i = 0; i < aitemstack.length; ++i)
         {
             ItemStack itemstack = inv.getStackInSlot(i);
-            aitemstack[i] = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
+            ItemStack remainingStack = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
+
+            if (remainingStack != null && remainingStack.getItem() instanceof ItemAlkahestryTome) {
+                remainingStack = null;
+            }
+
+            aitemstack[i] = remainingStack;
         }
 
         return aitemstack;

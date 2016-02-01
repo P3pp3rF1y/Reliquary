@@ -102,8 +102,6 @@ public class XRRecipes {
 
     public static void init() {
         // tome and alkahestry recipes
-        //TODO enable with Alkahestry Tome fix
-/*
         GameRegistry.addRecipe(new AlkahestryDrainRecipe());
         GameRegistry.addRecipe(new AlkahestryRedstoneRecipe());
         GameRegistry.addRecipe(new AlkahestryCraftingRecipe());
@@ -111,7 +109,6 @@ public class XRRecipes {
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_redstone", AlkahestryRedstoneRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_drain", AlkahestryDrainRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_redstone");
-*/
 
         //misc recipes
         //frozen cores to make packed ice.
@@ -126,14 +123,11 @@ public class XRRecipes {
         addRecipe(false, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.apothecary_cauldron), 1, 0), "gng", "ici", "nmn", 'g', creeperGland(), 'n', enderHeart(), 'i', infernalClaw(), 'c', Items.cauldron, 'm', moltenCore());
 */
 
-        //TODO enable with Alkahestry Tome fixes
-/*
         //alkahestry tome
         if (Settings.EasyModeRecipes.alkahestryTome)
-            addRecipe(true, false, new ItemStack(getItem(Names.alkahestry_tome), 1, 0), Items.book, getItem(Names.witch_hat), moltenCore(), witherSkull());
+            addRecipe(true, false, new ItemStack(getItem(Names.alkahestry_tome), 1, getItem(Names.alkahestry_tome).getMaxDamage()), Items.book, getItem(Names.witch_hat), moltenCore(), witherSkull());
         else
-            addRecipe(true, false, new ItemStack(getItem(Names.alkahestry_tome), 1, 0), moltenCore(), getItem(Names.witch_hat), stormEye(), creeperGland(), Items.book, slimePearl(), spiderFangs(), witherSkull(), enderHeart());
-*/
+            addRecipe(true, false, new ItemStack(getItem(Names.alkahestry_tome), 1, getItem(Names.alkahestry_tome).getMaxDamage()), moltenCore(), getItem(Names.witch_hat), stormEye(), creeperGland(), Items.book, slimePearl(), spiderFangs(), witherSkull(), enderHeart());
 
         //glowstone altar
         if (Settings.EasyModeRecipes.altar)

@@ -1,6 +1,8 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import lib.enderwizards.sandstone.init.ContentInit;
@@ -18,6 +20,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -33,10 +36,9 @@ public class ItemAlkahestryTome extends ItemToggleable {
         super(Names.alkahestry_tome);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(1);
+        this.setMaxDamage(getRedstoneLimit() + 1); //to always display damage bar
         this.canRepair = false;
-        this.hasContainerItem(new ItemStack(Items.redstone));
-        //TODO: remove if tome works
-        //this.hasSubtypes = true;
+        this.hasSubtypes = false;
         this.setContainerItem(this);
     }
 
@@ -77,6 +79,8 @@ public class ItemAlkahestryTome extends ItemToggleable {
         } else if(NBTHelper.getInteger("redstone", ist) + 1 <= getRedstoneLimit() && InventoryHelper.consumeItem(Items.glowstone_dust, player)) {
             NBTHelper.setInteger("redstone", ist, NBTHelper.getInteger("redstone", ist) + 1);
         }
+
+        ist.setItemDamage(ist.getMaxDamage() - NBTHelper.getInteger("redstone", ist));
     }
 
     @Override
@@ -97,6 +101,14 @@ public class ItemAlkahestryTome extends ItemToggleable {
     }
 
     @Override
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+
+        ItemStack stack = new ItemStack(ModItems.alkahestryTome);
+        stack.setItemDamage(ModItems.alkahestryTome.getMaxDamage());
+        subItems.add(stack);
+    }
+
+    @Override
     public ItemStack getContainerItem(ItemStack stack) {
         ItemStack copy = stack.copy();
 
@@ -104,7 +116,8 @@ public class ItemAlkahestryTome extends ItemToggleable {
         return copy;
     }
 
-    private int getRedstoneLimit() {
+    private static int getRedstoneLimit() {
         return Settings.AlkahestryTome.redstoneLimit;
     }
+
 }

@@ -78,6 +78,7 @@ public class ConfigurationHandler
 
 		//alkahestry tome configs
 		Settings.AlkahestryTome.redstoneLimit = getInt("redstone_limit", Names.item_and_block_settings + "." + Names.alkahestry_tome, 250, 0, itemCap);
+		configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome).get("redstone_limit").setRequiresMcRestart(true);
 		setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome, true);
 
 		//altar configs

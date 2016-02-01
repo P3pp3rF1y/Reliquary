@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.items.*;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 
 public class ModItems {
 
@@ -194,12 +195,12 @@ public class ModItems {
         ModelBakery.registerItemVariants(item, new ResourceLocation(resourceName));
 
         ModelLoader.setCustomMeshDefinition( item, itemMeshDefinition);
-
-        //Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, itemMeshDefinition);
     }
+
     private static void registerItemModel(Item item, String resourceName) {
         registerItemModel(item, resourceName, 0, false);
     }
+
     private static void registerItemModel(Item item, String resourceName, int meta, boolean hasSubTypes){
         if (hasSubTypes) {
             resourceName = resourceName + "_" + meta;

@@ -547,35 +547,4 @@ public class CommonEventHandler {
             }
         }
     }
-
-    @SubscribeEvent
-    public void onCraftingAlkahest(PlayerEvent.ItemCraftedEvent event) {
-        boolean isCharging = false;
-        int tome = 9;
-        AlkahestRecipe recipe = null;
-        for (int count = 0; count < event.craftMatrix.getSizeInventory(); count++) {
-            ItemStack stack = event.craftMatrix.getStackInSlot(count);
-            if (stack != null) {
-                if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Reliquary.CONTENT.getItem(Names.alkahestry_tome)))) {
-                    tome = count;
-                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone)) || ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.redstone_block))) {
-                    isCharging = true;
-                } else {
-                    if (Alkahestry.getDictionaryKey(stack) == null) {
-                        recipe = Alkahestry.getRegistry().get(ContentHelper.getIdent(stack.getItem()));
-                    } else {
-                        recipe = Alkahestry.getDictionaryKey(stack);
-                    }
-                }
-            }
-        }
-        if (tome != 9 && isCharging) {
-            event.craftMatrix.setInventorySlotContents(tome, null);
-        } else if (tome != 9 && !isCharging && recipe != null) {
-            ItemStack temp = event.craftMatrix.getStackInSlot(tome);
-            temp.setItemDamage(temp.getItemDamage() + recipe.cost);
-            event.craftMatrix.setInventorySlotContents(tome, temp);
-        }
-    }
-
 }

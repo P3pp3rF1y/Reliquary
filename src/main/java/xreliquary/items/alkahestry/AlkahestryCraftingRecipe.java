@@ -99,25 +99,6 @@ public class AlkahestryCraftingRecipe implements IRecipe {
         return returned.cost;
     }
 
-
-    @SubscribeEvent
-    public void onItemCraftedEvent(PlayerEvent.ItemCraftedEvent event)
-    {
-        if (event.crafting == null)
-            return;
-        if (event.crafting.getItem() == Items.redstone)
-            return;
-        for (int i = 0; i < event.craftMatrix.getSizeInventory(); ++i) {
-            ItemStack stack = event.craftMatrix.getStackInSlot(i);
-            if (stack == null)
-                continue;
-            if (stack.getItem() instanceof ItemAlkahestryTome) {
-                NBTHelper.setInteger("redstone", event.craftMatrix.getStackInSlot(i), NBTHelper.getInteger("redstone", event.craftMatrix.getStackInSlot(i)) - getCraftingResultCost(event.craftMatrix));
-            }
-        }
-
-    }
-
     @Override
     public int getRecipeSize() {
         return 9;
@@ -128,7 +109,6 @@ public class AlkahestryCraftingRecipe implements IRecipe {
         return new ItemStack(returnedItem, 1);
     }
 
-    //TODO: make sure that this works correctly
     @Override
     public ItemStack[] getRemainingItems(InventoryCrafting inv)
     {
@@ -137,7 +117,13 @@ public class AlkahestryCraftingRecipe implements IRecipe {
         for (int i = 0; i < aitemstack.length; ++i)
         {
             ItemStack itemstack = inv.getStackInSlot(i);
-            aitemstack[i] = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
+            ItemStack remainingStack = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
+
+            if (remainingStack != null && remainingStack.getItem() instanceof ItemAlkahestryTome) {
+                NBTHelper.setInteger("redstone", remainingStack, NBTHelper.getInteger("redstone", remainingStack) - getCraftingResultCost(inv));
+                remainingStack.setItemDamage(remainingStack.getMaxDamage() - NBTHelper.getInteger("redstone", remainingStack));
+            }
+            aitemstack[i] = remainingStack;
         }
 
         return aitemstack;
