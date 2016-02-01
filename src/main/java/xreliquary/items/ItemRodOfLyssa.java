@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityLyssaHook;
-import xreliquary.init.ItemModels;
+import xreliquary.client.ItemModelLocations;
 import xreliquary.reference.Names;
 
 /**
@@ -45,11 +45,12 @@ public class ItemRodOfLyssa extends ItemBase {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) {
         if (player.fishEntity != null) {
-            return ItemModels.getInstance().getModel(ItemModels.ROD_OF_LYSSA_CAST);
+            return ItemModelLocations.getInstance().getModel(ItemModelLocations.ROD_OF_LYSSA_CAST);
         }
-        return ItemModels.getInstance().getModel(ItemModels.ROD_OF_LYSSA);
+        return ItemModelLocations.getInstance().getModel(ItemModelLocations.ROD_OF_LYSSA);
     }
 
     /**

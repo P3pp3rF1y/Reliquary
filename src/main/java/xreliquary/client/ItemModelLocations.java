@@ -1,4 +1,4 @@
-package xreliquary.init;
+package xreliquary.client;
 
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import xreliquary.reference.Names;
@@ -6,12 +6,12 @@ import xreliquary.reference.Reference;
 
 import java.util.ArrayList;
 
-public class ItemModels {
-    private static ItemModels instance;
+public class ItemModelLocations {
+    private static ItemModelLocations instance;
 
-    public static ItemModels getInstance() {
+    public static ItemModelLocations getInstance() {
         if (instance == null) {
-            instance = new ItemModels();
+            instance = new ItemModelLocations();
         }
 
         return instance;
@@ -24,7 +24,7 @@ public class ItemModels {
     public static int ROD_OF_LYSSA = 2;
     public static int ROD_OF_LYSSA_CAST = 3;
 
-    private ItemModels() {
+    private ItemModelLocations() {
         models.add(new ModelResourceLocation(Reference.DOMAIN + Names.infernal_tear, "inventory"));
         models.add(new ModelResourceLocation(Reference.DOMAIN + Names.infernal_tear_empty, "inventory"));
         models.add(new ModelResourceLocation(Reference.DOMAIN + Names.rod_of_lyssa, "inventory"));

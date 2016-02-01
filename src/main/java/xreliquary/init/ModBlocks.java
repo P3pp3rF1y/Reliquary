@@ -1,14 +1,11 @@
 package xreliquary.init;
 
-import lib.enderwizards.sandstone.blocks.BlockBase;
 import lib.enderwizards.sandstone.items.block.ItemBlockBase;
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import xreliquary.blocks.*;
+import xreliquary.blocks.BlockAlkahestryAltar;
+import xreliquary.blocks.BlockFertileLilypad;
+import xreliquary.blocks.BlockInterdictionTorch;
+import xreliquary.blocks.BlockWraithNode;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.blocks.tile.TileEntityMortar;
@@ -42,25 +39,4 @@ public class ModBlocks {
         GameRegistry.registerTileEntity(TileEntityMortar.class, Reference.MOD_ID + "." + "apothecaryMortar");
         GameRegistry.registerTileEntity(TileEntityCauldron.class, Reference.MOD_ID + "." + "reliquaryCauldron");
     }
-
-    public static void registerItemBlockModels()
-    {
-        //registerBlockItemModel(apothecaryCauldron);
-        registerBlockItemModel(alkahestryAltar, Names.altar_idle);
-        registerBlockItemModel(alkahestryAltarActive, Names.altar);
-        registerBlockItemModel(interdictionTorch, Names.interdiction_torch);
-        registerBlockItemModel(wraithNode, Names.wraith_node);
-
-        registerBlockItemModel(fertileLilypad, Names.fertile_lilypad);
-
-    }
-
-    private static void registerBlockItemModel(Block block) {
-        //TODO: replace substring(5) of unlocalized name with more proper base block implementation
-        registerBlockItemModel(block, block.getUnlocalizedName().substring(5));
-    }
-    private static void registerBlockItemModel(Block block, String resourceName){
-        ModelLoader.setCustomModelResourceLocation( Item.getItemFromBlock(block), 0, new ModelResourceLocation(Reference.DOMAIN + resourceName, "inventory"));
-    }
-
 }
