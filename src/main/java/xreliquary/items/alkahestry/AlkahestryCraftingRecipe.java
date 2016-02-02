@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import xreliquary.init.ModItems;
 import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Settings;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
@@ -15,7 +16,8 @@ import xreliquary.util.alkahestry.Alkahestry;
 
 public class AlkahestryCraftingRecipe implements IRecipe {
 
-    public static Item returnedItem;
+    //TODO figure out if I can get rid of this
+    public static Item returnedItem = ModItems.alkahestryTome;
 
     @Override
     public boolean matches(InventoryCrafting inv, World world) {

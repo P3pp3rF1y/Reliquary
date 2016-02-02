@@ -66,18 +66,7 @@ public class CommonProxy {
 
 
     public void init() {
-        AlkahestryCraftingRecipe.returnedItem = ModItems.alkahestryTome;
-        AlkahestryChargingRecipe.returnedItem = ModItems.alkahestryTome;
-
-        AlkahestryCraftingRecipe alkahestryCraftingRecipeHandler = new AlkahestryCraftingRecipe();
-        AlkahestryDrainRecipe alkahestryDrainRecipeHandler = new AlkahestryDrainRecipe();
-
-        MinecraftForge.EVENT_BUS.register(alkahestryCraftingRecipeHandler);
-        MinecraftForge.EVENT_BUS.register(alkahestryDrainRecipeHandler);
-
         MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
-        MinecraftForge.EVENT_BUS.register(alkahestryCraftingRecipeHandler);
-        MinecraftForge.EVENT_BUS.register(alkahestryDrainRecipeHandler);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
         MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
