@@ -1,11 +1,9 @@
 package xreliquary.event;
 
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
@@ -15,7 +13,6 @@ import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -32,8 +29,6 @@ import xreliquary.init.XRRecipes;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
-import xreliquary.util.alkahestry.AlkahestRecipe;
-import xreliquary.util.alkahestry.Alkahestry;
 
 import java.util.Random;
 

@@ -74,8 +74,9 @@ public class ClientEventHandler {
             return;
 
         ItemStack tomeStack = player.getCurrentEquippedItem();
-        ItemStack redstoneStack = new ItemStack(Items.redstone, NBTHelper.getInteger("redstone", tomeStack), 0);
-        renderStandardTwoItemHUD(mc, player, tomeStack, redstoneStack, Settings.HudPositions.alkahestryTome, 0, 0);
+        ItemStack chargeStack = Settings.AlkahestryTome.baseItem.copy();
+        chargeStack.stackSize = NBTHelper.getInteger("charge", tomeStack);
+        renderStandardTwoItemHUD(mc, player, tomeStack, chargeStack, Settings.HudPositions.alkahestryTome, 0, 0);
     }
 
     public void handleDestructionCatalystHUDCheck(Minecraft mc){

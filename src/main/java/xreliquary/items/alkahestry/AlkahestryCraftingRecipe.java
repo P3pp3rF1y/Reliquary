@@ -1,10 +1,7 @@
 package xreliquary.items.alkahestry;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -12,7 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xreliquary.items.ItemAlkahestryTome;
-import xreliquary.util.alkahestry.AlkahestRecipe;
+import xreliquary.reference.Settings;
+import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 
 public class AlkahestryCraftingRecipe implements IRecipe {
@@ -40,12 +38,12 @@ public class AlkahestryCraftingRecipe implements IRecipe {
             }
         }
         if (tome != null && valid == 1 && itemStack != null) {
-            AlkahestRecipe recipe = null;
+            AlkahestCraftRecipe recipe = null;
             if (Alkahestry.getDictionaryKey(itemStack) == null)
-                recipe = Alkahestry.getRegistry().get(ContentHelper.getIdent(itemStack.getItem()));
+                recipe = Settings.AlkahestryTome.craftingRecipes.get(ContentHelper.getIdent(itemStack.getItem()));
             else
                 recipe = Alkahestry.getDictionaryKey(itemStack);
-            return recipe != null && (NBTHelper.getInteger("redstone", tome) - recipe.cost >= 0);
+            return recipe != null && (NBTHelper.getInteger("charge", tome) - recipe.cost >= 0);
         } else {
             return false;
         }
@@ -53,7 +51,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv) {
-        AlkahestRecipe returned = null;
+        AlkahestCraftRecipe returned = null;
         ItemStack dictStack = null;
         ItemStack tome = null;
         for (int count = 0; count < inv.getSizeInventory(); count++) {
@@ -64,7 +62,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
                 }
                 if (!(ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(returnedItem)))) {
                     if (Alkahestry.getDictionaryKey(stack) == null)
-                        returned = Alkahestry.getRegistry().get(ContentHelper.getIdent(stack.getItem()));
+                        returned = Settings.AlkahestryTome.craftingRecipes.get(ContentHelper.getIdent(stack.getItem()));
                     else {
                         returned = Alkahestry.getDictionaryKey(stack);
                         dictStack = stack;
@@ -81,13 +79,13 @@ public class AlkahestryCraftingRecipe implements IRecipe {
     }
 
     public int getCraftingResultCost(IInventory inv) {
-        AlkahestRecipe returned = null;
+        AlkahestCraftRecipe returned = null;
         for (int count = 0; count < inv.getSizeInventory(); count++) {
             ItemStack stack = inv.getStackInSlot(count);
             if (stack != null) {
                 if (!(ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(returnedItem)))) {
                     if (Alkahestry.getDictionaryKey(stack) == null)
-                        returned = Alkahestry.getRegistry().get(ContentHelper.getIdent(stack.getItem()));
+                        returned = Settings.AlkahestryTome.craftingRecipes.get(ContentHelper.getIdent(stack.getItem()));
                     else {
                         returned = Alkahestry.getDictionaryKey(stack);
                     }
@@ -120,8 +118,8 @@ public class AlkahestryCraftingRecipe implements IRecipe {
             ItemStack remainingStack = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
 
             if (remainingStack != null && remainingStack.getItem() instanceof ItemAlkahestryTome) {
-                NBTHelper.setInteger("redstone", remainingStack, NBTHelper.getInteger("redstone", remainingStack) - getCraftingResultCost(inv));
-                remainingStack.setItemDamage(remainingStack.getMaxDamage() - NBTHelper.getInteger("redstone", remainingStack));
+                NBTHelper.setInteger("charge", remainingStack, NBTHelper.getInteger("charge", remainingStack) - getCraftingResultCost(inv));
+                remainingStack.setItemDamage(remainingStack.getMaxDamage() - NBTHelper.getInteger("charge", remainingStack));
             }
             aitemstack[i] = remainingStack;
         }

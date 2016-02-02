@@ -3,7 +3,6 @@ package xreliquary;
 import lib.enderwizards.sandstone.Sandstone;
 import lib.enderwizards.sandstone.init.Content;
 import lib.enderwizards.sandstone.mod.SandstoneMod;
-import lib.enderwizards.sandstone.util.WorldDataHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -27,10 +26,8 @@ import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 import xreliquary.network.PacketHandler;
-import xreliquary.util.alkahestry.AlkahestRecipe;
-import xreliquary.util.alkahestry.Alkahestry;
-
-import java.io.File;
+import xreliquary.reference.Settings;
+import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
 //@ModstatInfo(prefix = "reliquary")
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS)
@@ -104,9 +101,9 @@ public class Reliquary {
                 NBTTagCompound tag = message.getNBTValue();
                 if (tag != null && ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")) != null && tag.hasKey("yield") && tag.hasKey("cost")) {
                     if (tag.hasKey("dictionaryName"))
-                        Alkahestry.addKey(new AlkahestRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
+                        Settings.AlkahestryTome.craftingRecipes.put("OreDictionary:" + tag.getString("dictionaryName"),new AlkahestCraftRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
                     else
-                        Alkahestry.addKey(new AlkahestRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
+                        Settings.AlkahestryTome.craftingRecipes.put(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem().getRegistryName(), new AlkahestCraftRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
                     LOGGER.log(Level.INFO, "[IMC] Added AlkahestRecipe ID: " + Item.itemRegistry.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem()) + " from " + message.getSender() + " to registry.");
                 } else {
                     LOGGER.log(Level.WARN, "[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");

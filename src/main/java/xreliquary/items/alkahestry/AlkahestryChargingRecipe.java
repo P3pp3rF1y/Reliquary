@@ -1,6 +1,7 @@
 package xreliquary.items.alkahestry;
 
 import lib.enderwizards.sandstone.util.ContentHelper;
+import lib.enderwizards.sandstone.util.InventoryHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -9,13 +10,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
-import xreliquary.Reliquary;
 import xreliquary.items.ItemAlkahestryTome;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.alkahestry.AlkahestChargeRecipe;
+
+import java.util.Map;
 
 
-public class AlkahestryRedstoneRecipe implements IRecipe {
+public class AlkahestryChargingRecipe implements IRecipe {
 
     public static Item returnedItem;
 
@@ -31,28 +33,26 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
             if (stack != null) {
                 if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(returnedItem))) {
                     tome = stack.copy();
-                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone))) {
-                    if (valid == 0)
-                        valid = 1;
-                    amount++;
-                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.redstone_block))) {
-                    if (valid == 0)
-                        valid = 1;
-                    amount += 9;
-                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.glowstone_dust))) {
-                    if (valid == 0)
-                        valid = 1;
-                    amount++;
-                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.glowstone))) {
-                    if (valid == 0)
-                        valid = 1;
-                    amount += 4;
                 } else {
-                    valid = 2;
+                    boolean isChargingItem = false;
+                    for (Map.Entry<String, AlkahestChargeRecipe> entry : Settings.AlkahestryTome.chargingRecipes.entrySet()) {
+                        AlkahestChargeRecipe recipe = entry.getValue();
+                        if (stack.getItem() == recipe.item.getItem() && stack.getMetadata() == recipe.item.getMetadata()) {
+                            if (valid == 0)
+                                valid = 1;
+                            amount += recipe.charge;
+                            isChargingItem = true;
+                            break;
+                        }
+                    }
+
+                    if (!isChargingItem) {
+                        valid = 2;
+                    }
                 }
             }
         }
-        return tome != null && valid == 1 && NBTHelper.getInteger("redstone", tome) + amount <= Settings.AlkahestryTome.redstoneLimit;
+        return tome != null && valid == 1 && NBTHelper.getInteger("charge", tome) + amount <= Settings.AlkahestryTome.chargeLimit;
     }
 
     @Override
@@ -64,18 +64,21 @@ public class AlkahestryRedstoneRecipe implements IRecipe {
             if (stack != null) {
                 if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(returnedItem))) {
                     tome = stack.copy();
-                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.redstone_block))) {
-                    amount += 9;
-                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Blocks.glowstone))) {
-                    amount += 4;
-                } else if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.redstone)) || ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(Items.glowstone_dust))) {
-                    amount++;
+                }
+                else {
+                    for (Map.Entry<String, AlkahestChargeRecipe> entry : Settings.AlkahestryTome.chargingRecipes.entrySet()) {
+                        AlkahestChargeRecipe recipe = entry.getValue();
+                        if (stack.getItem() == recipe.item.getItem() && stack.getMetadata() == recipe.item.getMetadata()) {
+                            amount += recipe.charge;
+                            break;
+                        }
+                    }
                 }
             }
         }
 
-        NBTHelper.setInteger("redstone", tome, NBTHelper.getInteger("redstone", tome) + amount);
-        tome.setItemDamage(tome.getMaxDamage() - NBTHelper.getInteger("redstone", tome));
+        NBTHelper.setInteger("charge", tome, NBTHelper.getInteger("charge", tome) + amount);
+        tome.setItemDamage(tome.getMaxDamage() - NBTHelper.getInteger("charge", tome));
         return tome;
     }
 

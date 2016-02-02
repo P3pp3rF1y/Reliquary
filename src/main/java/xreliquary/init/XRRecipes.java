@@ -1,8 +1,6 @@
 package xreliquary.init;
 
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -11,7 +9,7 @@ import net.minecraftforge.oredict.RecipeSorter;
 import xreliquary.Reliquary;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
 import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
-import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
+import xreliquary.items.alkahestry.AlkahestryChargingRecipe;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -103,12 +101,12 @@ public class XRRecipes {
     public static void init() {
         // tome and alkahestry recipes
         GameRegistry.addRecipe(new AlkahestryDrainRecipe());
-        GameRegistry.addRecipe(new AlkahestryRedstoneRecipe());
+        GameRegistry.addRecipe(new AlkahestryChargingRecipe());
         GameRegistry.addRecipe(new AlkahestryCraftingRecipe());
 
         RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
-        RecipeSorter.register(Reference.MOD_ID + ":alkahest_redstone", AlkahestryRedstoneRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
-        RecipeSorter.register(Reference.MOD_ID + ":alkahest_drain", AlkahestryDrainRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_redstone");
+        RecipeSorter.register(Reference.MOD_ID + ":alkahest_charge", AlkahestryChargingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
+        RecipeSorter.register(Reference.MOD_ID + ":alkahest_drain", AlkahestryDrainRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_charge");
 
         //misc recipes
         //frozen cores to make packed ice.

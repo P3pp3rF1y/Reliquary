@@ -1,6 +1,12 @@
 package xreliquary.reference;
 
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import xreliquary.util.alkahestry.AlkahestChargeRecipe;
+import xreliquary.util.alkahestry.AlkahestCraftRecipe;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +67,11 @@ public class Settings
 	public static Map<String, Integer> mobDropProbabilities;
 
 	public static class AlkahestryTome {
-		public static int redstoneLimit;
+		public static int chargeLimit;
+		public static Map<String, AlkahestCraftRecipe> craftingRecipes =  new HashMap<>();
+		public static Map<String, AlkahestChargeRecipe> chargingRecipes =  new HashMap<>();
+		public static ItemStack baseItem;
+		public static int baseItemWorth;
 	}
 
 	public static class Altar {

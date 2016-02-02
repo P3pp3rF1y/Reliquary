@@ -7,7 +7,6 @@ import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.InventoryHelper;
 import lib.enderwizards.sandstone.util.LanguageHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,20 +15,16 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.client.ItemModelLocations;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
-import xreliquary.util.alkahestry.AlkahestRecipe;
-import xreliquary.util.alkahestry.Alkahestry;
+import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
 import java.util.List;
 
@@ -53,8 +48,8 @@ public class ItemInfernalTear extends ItemToggleable {
         EntityPlayer player = (EntityPlayer)e;
         String ident = ist.getTagCompound().getString("itemID");
 
-        if (Alkahestry.getRegistry().containsKey(ident)) {
-            AlkahestRecipe recipe = Alkahestry.getRegistry().get(ident);
+        if (Settings.AlkahestryTome.craftingRecipes.containsKey(ident)) {
+            AlkahestCraftRecipe recipe = Settings.AlkahestryTome.craftingRecipes.get(ident);
             // You need above Cobblestone level to get XP.
             if (recipe.yield != 32 && recipe.cost != 4) {
                 if(InventoryHelper.consumeItem(this.getStackFromTear(ist), player)) {
@@ -175,7 +170,7 @@ public class ItemInfernalTear extends ItemToggleable {
             if (stack.getTagCompound() != null) {
                 continue;
             }
-            if (!Alkahestry.getRegistry().containsKey(ContentHelper.getIdent(stack.getItem()))) {
+            if (!Settings.AlkahestryTome.craftingRecipes.containsKey(ContentHelper.getIdent(stack.getItem()))) {
                 continue;
             }
             if (InventoryHelper.getItemQuantity(stack, inventory) > itemQuantity) {

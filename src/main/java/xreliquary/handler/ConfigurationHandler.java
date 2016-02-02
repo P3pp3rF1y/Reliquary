@@ -2,18 +2,28 @@ package xreliquary.handler;
 
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.alkahestry.AlkahestChargeRecipe;
+import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
 import java.io.File;
 import java.util.*;
@@ -21,6 +31,12 @@ import java.util.*;
 
 public class ConfigurationHandler
 {
+	private static final int TOME_COST_LOW_TIER = 4;
+	private static final int TOME_COST_MIDDLE_TIER = 8;
+	private static final int TOME_COST_HIGH_TIER = 32;
+	private static final int TOME_COST_UBER_TIER = 64;
+
+
 	public static Configuration configuration;
 
 	public static void init(File configFile)
@@ -65,10 +81,179 @@ public class ConfigurationHandler
 		Settings.SeekerShot.entitiesThatCanBeHunted = getStringList( "entities_that_can_be_hunted", Names.item_and_block_settings + "." + Names.seeker_shot, entityNames);
 		setCategoryTranslations(Names.item_and_block_settings + "." + Names.seeker_shot, true);
 
+		//loading here to allow for recipes with items from other mods
+		// probably could be done earlier, but what do I know about when mods are loading stuff
+		loadAlkahestCraftingRecipes();
+		loadAlkahestChargingRecipes();
+		loadAlkahestBaseItem();
+
 		if (configuration.hasChanged())
 		{
 			configuration.save();
 		}
+	}
+
+	private static void loadAlkahestBaseItem() {
+		String registryName = getString("base_item", Names.item_and_block_settings + "." + Names.alkahestry_tome, Items.redstone.getRegistryName());
+		int meta = getInt("base_item_meta", Names.item_and_block_settings + "." + Names.alkahestry_tome, 0, 0, 16);
+		String[] splitName = registryName.split(":");
+		ItemStack stack = getItemStackFromNameMeta(splitName[0], splitName[1], meta);
+		Settings.AlkahestryTome.baseItem = stack;
+
+		Settings.AlkahestryTome.baseItemWorth = getInt("base_item_worth", Names.item_and_block_settings + "." + Names.alkahestry_tome, 1, 1, 1000);
+	}
+
+	private static void loadAlkahestChargingRecipes() {
+		ConfigCategory category = configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.charging_recipes);
+
+		if (category.isEmpty()) {
+			addDefaultAlkahestChargingRecipes(category);
+		}
+
+		loadAlkahestChargingRecipesIntoSettings(category);
+
+		setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.charging_recipes, true);
+	}
+
+	private static void loadAlkahestChargingRecipesIntoSettings(ConfigCategory category) {
+		Settings.AlkahestryTome.chargingRecipes.clear();
+
+		for(Map.Entry<String, Property> entry: category.getValues().entrySet()) {
+			String[] nameParts =entry.getKey().split(":");
+			int[] values = entry.getValue().getIntList();
+
+			String modId = nameParts[0];
+			String name = nameParts[1];
+			int meta = values[0];
+			int charge = values[1];
+
+			ItemStack stack = getItemStackFromNameMeta(modId, name, meta);
+
+			if (stack != null) {
+				Settings.AlkahestryTome.chargingRecipes.put(entry.getKey(), new AlkahestChargeRecipe(stack, charge));
+			}
+		}
+	}
+
+	private static void addDefaultAlkahestChargingRecipes(ConfigCategory category) {
+		addConfigAlkahestChargingRecipe(category, Blocks.redstone_block.getRegistryName(), 0, 9);
+		addConfigAlkahestChargingRecipe(category, Items.redstone.getRegistryName(), 0, 1);
+		addConfigAlkahestChargingRecipe(category, Blocks.glowstone.getRegistryName(), 0, 4);
+		addConfigAlkahestChargingRecipe(category, Items.glowstone_dust.getRegistryName(), 0, 1);
+	}
+
+	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item, Integer meta, Integer charge) {
+		Property prop = new Property(item,new String[]{meta.toString(), charge.toString()}, Property.Type.INTEGER);
+
+		category.put(item, prop);
+	}
+
+	private static void loadAlkahestCraftingRecipes() {
+		ConfigCategory category = configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.crafting_recipes);
+
+		if (category.isEmpty()) {
+			addDefaultAlkahestCraftingRecipes(category);
+		}
+
+		loadAlkahestCraftingRecipesIntoSettings(category);
+
+		setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.crafting_recipes, true);
+	}
+
+	private static void loadAlkahestCraftingRecipesIntoSettings(ConfigCategory category) {
+		Settings.AlkahestryTome.craftingRecipes.clear();
+
+		for(Map.Entry<String, Property> entry: category.getValues().entrySet()) {
+			String[] nameParts =entry.getKey().split(":");
+			int[] values = entry.getValue().getIntList();
+
+			String modId = nameParts[0];
+			String name = nameParts[1];
+			int meta = values[0];
+			int yield = values[1];
+			int cost = values[2];
+
+
+			if (modId.toLowerCase().equals("oredictionary")) {
+				Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(name, yield, cost));
+			} else {
+				ItemStack stack = getItemStackFromNameMeta(modId, name, meta);
+
+				if (stack != null) {
+					Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(stack, yield, cost));
+				}
+			}
+		}
+	}
+
+	private static ItemStack getItemStackFromNameMeta(String modId, String name, int meta) {
+		ItemStack stack = null;
+		Item item = GameRegistry.findItem(modId, name);
+
+		if (item != null && item != GameData.getItemRegistry().getDefaultValue()) {
+            stack = new ItemStack(item, 1, meta);
+        } else {
+            Block block = GameRegistry.findBlock(modId, name);
+            if (block != null && block != GameData.getBlockRegistry().getDefaultValue()) {
+                stack = new ItemStack(item, 1, meta);
+            }
+        }
+		return stack;
+	}
+
+	private static void addDefaultAlkahestCraftingRecipes(ConfigCategory category) {
+
+		addConfigAlkahestCraftingRecipe(category, Blocks.dirt.getRegistryName(), 0, 32, TOME_COST_LOW_TIER);
+
+		addConfigAlkahestCraftingRecipe(category, Blocks.cobblestone.getRegistryName(), 0, 32, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.sand.getRegistryName(), 0, 32, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.gravel.getRegistryName(), 0, 16, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.sandstone.getRegistryName(), 0, 8, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.clay.getRegistryName(), 0, 2, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.netherrack.getRegistryName(), 0, 8, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.coal.getRegistryName(), 1, 4, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.dye.getRegistryName(), 4, 1, TOME_COST_LOW_TIER);
+
+		addConfigAlkahestCraftingRecipe(category, Blocks.obsidian.getRegistryName(), 0, 4, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.soul_sand.getRegistryName(), 0, 8, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.nether_brick.getRegistryName(), 0, 4, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.end_stone.getRegistryName(), 0, 16, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.coal.getRegistryName(), 0, 4, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.gunpowder.getRegistryName(), 0, 2, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.flint.getRegistryName(), 0, 8, TOME_COST_MIDDLE_TIER);
+
+		//high tier
+		addConfigAlkahestCraftingRecipe(category, Items.gold_ingot.getRegistryName(), 0, 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.iron_ingot.getRegistryName(), 0, 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.emerald.getRegistryName(), 0, 1, TOME_COST_HIGH_TIER);
+
+		// I guess mods should start following the new naming convention.
+		// *shrugs*
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("tin_ingot"), 0, 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("silver_ingot"), 0, 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("copper_ingot"), 0, 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("steel_ingot"), 0, 1, TOME_COST_HIGH_TIER);
+
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("ingotTin"), 0, 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("ingotSilver"), 0, 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("ingotCopper"), 0, 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("ingotSteel"), 0, 1, TOME_COST_HIGH_TIER);
+
+		addConfigAlkahestCraftingRecipe(category, Items.diamond.getRegistryName(), 0, 1, TOME_COST_UBER_TIER);
+
+		//above uber
+		addConfigAlkahestCraftingRecipe(category, Items.nether_star.getRegistryName(), 0, 1, TOME_COST_UBER_TIER * 2);
+	}
+
+	private static String oreDictionary(String name) {
+		return "OreDictionary:" + name;
+	}
+
+	private static void addConfigAlkahestCraftingRecipe(ConfigCategory category, String item, Integer meta, Integer yield, Integer cost) {
+
+		Property prop = new Property(item,new String[]{meta.toString(), yield.toString(), cost.toString()}, Property.Type.INTEGER);
+
+		category.put(item, prop);
 	}
 
 	private static void loadBlockAndItemSettings() {
@@ -77,8 +262,8 @@ public class ConfigurationHandler
 		int cleanIntMax = 2000000000;
 
 		//alkahestry tome configs
-		Settings.AlkahestryTome.redstoneLimit = getInt("redstone_limit", Names.item_and_block_settings + "." + Names.alkahestry_tome, 250, 0, itemCap);
-		configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome).get("redstone_limit").setRequiresMcRestart(true);
+		Settings.AlkahestryTome.chargeLimit = getInt("charge_limit", Names.item_and_block_settings + "." + Names.alkahestry_tome, 250, 0, itemCap);
+		configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome).get("charge_limit").setRequiresMcRestart(true);
 		setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome, true);
 
 		//altar configs
@@ -381,6 +566,9 @@ public class ConfigurationHandler
 		return configuration.getInt(name, category, defaultValue, minValue, maxValue, getTranslatedComment(category, name) , getLabelLangRef(category, name));
 	}
 
+	private static String getString(String name, String category, String defaultValue) {
+		return configuration.getString(name, category, defaultValue, getTranslatedComment(category, name), getLabelLangRef(category, name));
+	}
 
 	private static String getTranslatedComment(String category, String config) {
 		return StatCollector.translateToLocal("config." + category + "." + config + ".comment");
