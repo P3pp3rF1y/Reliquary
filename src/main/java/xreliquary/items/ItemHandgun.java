@@ -28,11 +28,6 @@ public class ItemHandgun extends ItemBase {
     }
 
     @Override
-    public boolean getShareTag() {
-        return false;
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
         return Integer.parseInt(Colors.PURE, 16);
@@ -58,27 +53,43 @@ public class ItemHandgun extends ItemBase {
         NBTHelper.setShort("lastFiredShot", ist, i);
     }
 
-    public int getCooldown(ItemStack ist) { return NBTHelper.getShort("cooldownTime", ist); }
+    public boolean isInCooldown(ItemStack ist) {return NBTHelper.getBoolean("inCooldown", ist);}
 
-    public void setCooldown(ItemStack ist, int i) { NBTHelper.setShort("cooldownTime", ist, i); }
+    public void setInCooldown(ItemStack ist, boolean inCooldown) {NBTHelper.setBoolean("inCooldown", ist, inCooldown);}
+
+    public long getCooldown(ItemStack ist) { return NBTHelper.getLong("cooldownTime", ist); }
+
+    public void setCooldown(ItemStack ist, long i) {
+        NBTHelper.setLong("cooldownTime", ist, i);
+    }
 
     @Override
     public void onUpdate(ItemStack ist, World worldObj, Entity e, int i, boolean flag) {
         if (!worldObj.isRemote) {
-            if (getCooldown(ist) > 0) {
-                setCooldown(ist, getCooldown(ist) - 1);
+            if (isInCooldown(ist) && isCooldownOver(worldObj, ist)
+                        || !isValidCooldownTime(worldObj, ist)) {
+                setInCooldown(ist, false);
             }
         }
     }
 
+    private boolean isCooldownOver(World worldObj, ItemStack ist) {
+        return getCooldown(ist) < worldObj.getWorldTime() && worldObj.getWorldTime() - getCooldown(ist) < 12000;
+    }
+
+    private boolean isValidCooldownTime(World worldObj, ItemStack ist) {
+        return Math.min(Math.abs(worldObj.getWorldTime() - getCooldown(ist)), Math.abs(worldObj.getWorldTime() - 23999 - getCooldown(ist))) <= getMaxItemUseDuration(ist);
+    }
+
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World worldObj, EntityPlayer player) {
-        if (getCooldown(ist) <= 0) {
+        if (!isInCooldown(ist)) {
             if (!(getBulletCount(ist) > 0) && !(getBulletType(ist) > 0)) {
                 player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
             } else {
                 if (!worldObj.isRemote) {
-                    setCooldown(ist, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM));
+                    setCooldown(ist, worldObj.getWorldTime() + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM));
+                    setInCooldown(ist, true);
 
                     fireBullet(ist, worldObj, player);
                 }
@@ -89,21 +100,25 @@ public class ItemHandgun extends ItemBase {
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int unadjustedCount) {
+        if (player.worldObj.isRemote)
+            return;
+
         int maxUseOffset = getItemUseDuration() - getPlayerReloadDelay(player);
         int actualCount = unadjustedCount - maxUseOffset;
         actualCount -= 1;
         //you can't reload if you don't have any full mags left, so the rest of the method doesn't fire at all.
         if (!hasFilledMagazine(player)) {
             //arbitrary "feels good" cooldown for after the reload - this one just plays so you can't "fail" at reloading too fast.
-            setCooldown(ist, 12);
-
+            setCooldown(ist, player.worldObj.getWorldTime() + 12);
+            setInCooldown(ist, true);
             player.stopUsingItem();
             return;
         }
 
         if (actualCount == 0) {
             //arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
-            setCooldown(ist, 12);
+            setCooldown(ist, player.worldObj.getWorldTime() + 12);
+            setInCooldown(ist, true);
             setBulletType(ist, getMagazineTypeAndRemoveOne(player));
             if (getBulletType(ist) != 0) {
                 player.swingItem();

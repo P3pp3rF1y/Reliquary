@@ -30,7 +30,7 @@ public class CommonProxy {
             ModBlocks.initTileEntities();
         } catch (Exception e) {
             e.printStackTrace();
-            FMLCommonHandler.instance().raiseException(e, "Reliquary failed to initiate recipies.", true);
+            FMLCommonHandler.instance().raiseException(e, "Reliquary failed to initiate recipes.", true);
         }
 
         //TODO: figure out what this commented out section is for / is it just old code to be removed?
