@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -58,12 +59,12 @@ public class Reliquary {
 
         PROXY.preInit();
 
-        //important that this initializes AFTER items already exist.
-        //TODO: add back when testing potions
-        //PotionMap.init();
-
         //important that this initializes before the pre-init phase
         //PROXY.initRecipeDisablers();
+
+
+        //TODO figure out a better way to handle this if possible
+        ConfigurationHandler.loadPotionMap();
 
         PacketHandler.init();
 

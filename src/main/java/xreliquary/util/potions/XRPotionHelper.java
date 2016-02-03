@@ -3,6 +3,7 @@ package xreliquary.util.potions;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import xreliquary.items.ItemPotionEssence;
+import xreliquary.reference.Settings;
 
 /**
  * Created by Xeno on 11/8/2014.
@@ -15,8 +16,8 @@ public class XRPotionHelper {
     }
 
     public static boolean isItemIngredient(ItemStack ist) {
-        for (PotionIngredient ingredient : PotionMap.getIngredients()) {
-            if (ingredient.itemName.equals(ist.getItem().getUnlocalizedNameInefficiently(ist))) {
+        for (PotionIngredient ingredient : Settings.potionMap) {
+            if (ingredient.item.getItem().getRegistryName().equals(ist.getItem().getRegistryName()) && ingredient.item.getMetadata() == ist.getMetadata()) {
                 return true;
             }
         }
@@ -31,5 +32,15 @@ public class XRPotionHelper {
                 return potion.getId();
         }
         return 0;
+    }
+    public static PotionIngredient getIngredient(ItemStack ist) {
+        if (ist.getItem() instanceof ItemPotionEssence) {
+            return new PotionEssence(ist.getTagCompound());
+        }
+        for (PotionIngredient ingredient : Settings.potionMap) {
+            if (ingredient.item.getItem().getRegistryName().equals(ist.getItem().getRegistryName()) && ingredient.item.getMetadata() == ist.getMetadata())
+                return ingredient;
+        }
+        return null;
     }
 }

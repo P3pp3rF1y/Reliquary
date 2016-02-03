@@ -22,4 +22,7 @@ public class BlockWraithNode extends Block {
         return false;
     }
 
+    @Override
+    public boolean isFullCube() { return false; }
+
 }

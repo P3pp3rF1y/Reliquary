@@ -11,7 +11,7 @@ import java.util.List;
 
 public class PotionIngredient {
 
-    public String itemName;
+    public ItemStack item;
     public List<PotionEffect> effects = new ArrayList<PotionEffect>();
 
     /*
@@ -26,7 +26,7 @@ public class PotionIngredient {
     }
 
     public PotionIngredient(ItemStack ist) {
-        this.itemName = ist.getItem().getUnlocalizedNameInefficiently(ist);
+        this.item = ist;
     }
 
     public PotionIngredient addEffect(int id, int durationWeight, int ampWeight) {

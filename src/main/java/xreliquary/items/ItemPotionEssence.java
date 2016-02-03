@@ -37,10 +37,7 @@ public class ItemPotionEssence extends ItemBase {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack ist, int renderPass) {
-        if (renderPass == 1)
-            return getColor(ist);
-        else
-            return Integer.parseInt(Colors.PURE, 16);
+        return getColor(ist);
     }
 
     public int getColor(ItemStack itemStack) {
@@ -50,8 +47,6 @@ public class ItemPotionEssence extends ItemBase {
 
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean flag) {
-        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-            return;
         PotionEssence essence = new PotionEssence(ist.getTagCompound());
         if (essence.getEffects().size() > 0) {
             HashMultimap hashmultimap = HashMultimap.create();

@@ -1,6 +1,9 @@
 package xreliquary.blocks;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
@@ -51,9 +54,30 @@ public class BlockApothecaryMortar extends BlockBase {
     public boolean isOpaqueCube() {
         return false;
     }
+
+    @Override
+    public boolean isFullCube() {
+        return false;
+    }
     @Override
     public int getRenderType() {
         return -1;
+    }
+
+    //TODO move to inventory helper
+    private void tryRemovingLastStack(IInventory inventory, World worldObj, BlockPos pos) {
+        for (int i = inventory.getSizeInventory() - 1; i>=0; i--) {
+            ItemStack stack = inventory.getStackInSlot(i);
+            if (stack != null) {
+                inventory.setInventorySlotContents(i, null);
+                if (worldObj.isRemote)
+                    return;
+                inventory.markDirty();
+                EntityItem itemEntity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
+                worldObj.spawnEntityInWorld(itemEntity);
+                break;
+            }
+        }
     }
 
     @Override
@@ -64,10 +88,16 @@ public class BlockApothecaryMortar extends BlockBase {
         TileEntityMortar mortar = (TileEntityMortar) tileEntity;
         ItemStack heldItem = player.getCurrentEquippedItem();
         if (heldItem == null) {
-            mortar.usePestle();
-            //TODO:verify that SoundType getFrequency replaces getPitch
+            if ( player.isSneaking()) {
+                tryRemovingLastStack(mortar, world, mortar.getPos());
+                return true;
+            }
+            boolean done = mortar.usePestle();
             world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, this.stepSound.getStepSound(), (this.stepSound.getVolume() + 1.0F) / 2.0F, this.stepSound.getFrequency() * 0.8F);
             player.swingItem();
+            if (done) {
+                return true;
+            }
             return false;
         }
         ItemStack[] mortarItems = mortar.getItemStacks();
@@ -86,6 +116,7 @@ public class BlockApothecaryMortar extends BlockBase {
         }
         if (!putItemInSlot) {
             mortar.usePestle();
+            world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, this.stepSound.getStepSound(), (this.stepSound.getVolume() + 1.0F) / 2.0F, this.stepSound.getFrequency() * 0.8F);
             return false;
         }
         else {
@@ -104,6 +135,18 @@ public class BlockApothecaryMortar extends BlockBase {
     @SideOnly(Side.CLIENT)
     public Item getItem(World world, int x, int y, int z) {
         return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_mortar));
+    }
+
+    @Override
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+        TileEntity tileentity = world.getTileEntity(pos);
+
+        if (tileentity instanceof TileEntityMortar)
+        {
+            InventoryHelper.dropInventoryItems(world, pos, (TileEntityMortar) tileentity);
+        }
+
+        super.breakBlock(world, pos, state);
     }
 
     @Override

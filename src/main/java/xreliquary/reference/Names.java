@@ -105,6 +105,7 @@ public class Names {
     public static final String item_and_block_settings = "item_and_block_settings";
     public static final String crafting_recipes = "crafting_recipes";
     public static final String charging_recipes = "charging_recipes";
+    public static final String potion_map = "potion_map";
 
     //these are for items, like above, didn't want to magic string them. I will use them eventually.
 //    public static final String snowball_mode = "snowballs";

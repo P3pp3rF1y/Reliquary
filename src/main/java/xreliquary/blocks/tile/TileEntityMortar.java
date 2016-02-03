@@ -14,11 +14,11 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import xreliquary.Reliquary;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
-import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
 import java.util.ArrayList;
@@ -104,14 +104,14 @@ public class TileEntityMortar extends TileEntityInventory {
     }
 
     // increases the "pestleUsed" counter, checks to see if it is at its limit
-    public void usePestle() {
+    public boolean usePestle() {
         int itemCount = 0;
         List<PotionIngredient> potionIngredients = new ArrayList<PotionIngredient>();
         for (ItemStack item : this.getItemStacks()) {
             if (item == null)
                 continue;
             ++itemCount;
-            potionIngredients.add(PotionMap.getIngredient(item));
+            potionIngredients.add(XRPotionHelper.getIngredient(item));
         }
         if (itemCount > 1) {
             pestleUsedCounter++;
@@ -138,8 +138,8 @@ public class TileEntityMortar extends TileEntityInventory {
                 }
                 pestleUsedCounter = 0;
                 if (worldObj.isRemote)
-                    return;
-                ItemStack resultItem = new ItemStack(Reliquary.CONTENT.getItem(Names.potion_essence), 1, 0);
+                    return true;
+                ItemStack resultItem = new ItemStack(ModItems.potionEssence, 1, 0);
                 resultItem.setTagCompound(resultEssence.writeToNBT());
 
 
@@ -147,7 +147,9 @@ public class TileEntityMortar extends TileEntityInventory {
                 worldObj.spawnEntityInWorld(itemEntity);
             }
             markDirty();
+            return true;
         }
+        return false;
     }
 
     public void spawnPestleParticles() {

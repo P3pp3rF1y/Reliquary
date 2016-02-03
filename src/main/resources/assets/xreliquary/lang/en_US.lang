@@ -656,3 +656,5 @@ config.easy_mode_recipes.fertile_essence.label=Fertile Essence
 config.easy_mode_recipes.fertile_essence.comment=Easy mode recipe for Fertile Essence
 config.easy_mode_recipes.seeker_shot.label=Seeker Shot
 config.easy_mode_recipes.seeker_shot.comment=Easy mode recipe for Seeker Shot
+config.potion_map.label=Potion ingredients
+config.potion_map.comment=List of potion ingredients and their passive effects
