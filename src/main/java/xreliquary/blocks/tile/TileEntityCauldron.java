@@ -20,6 +20,7 @@ import xreliquary.Reliquary;
 import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.client.particle.EntityCauldronBubbleFX;
 import xreliquary.client.particle.EntityCauldronSteamFX;
+import xreliquary.init.ModBlocks;
 import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
@@ -41,7 +42,7 @@ public class TileEntityCauldron extends TileEntityBase {
     public TileEntityCauldron() {
     }
 
-    /* TODO: add additional rendering code
+    /* TODO: add additional rendering code to render the color of liquid likely baked model needed here
                 TileEntityCauldron cauldron = (TileEntityCauldron)world.getTileEntity(x, y, z);
                 int color = getColor(cauldron.potionEssence);
                 tessellator.setColorOpaque_I(color);
@@ -187,8 +188,7 @@ public class TileEntityCauldron extends TileEntityBase {
         IBlockState cauldronState = worldObj.getBlockState(this.getPos());
         if (!hasNetherwart || potionEssence == null || cauldronState.getValue(BlockApothecaryCauldron.LEVEL) <= 0)
             return null;
-        BlockApothecaryCauldron cauldron = (BlockApothecaryCauldron)worldObj.getBlockState(this.getPos());
-        cauldron.setLiquidLevel(worldObj, this.getPos(), cauldronState, cauldronState.getValue(BlockApothecaryCauldron.LEVEL) - 1);
+        ModBlocks.apothecaryCauldron.setLiquidLevel(worldObj, this.getPos(), cauldronState, cauldronState.getValue(BlockApothecaryCauldron.LEVEL) - 1);
         NBTTagCompound tag = getFinishedPotion();
 
         if (cauldronState.getValue(BlockApothecaryCauldron.LEVEL) <= 0) {

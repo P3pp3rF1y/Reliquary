@@ -13,7 +13,7 @@ import xreliquary.reference.Reference;
 
 public class ModBlocks {
 
-    //public static final BlockBase apothecaryCauldron = new BlockApothecaryCauldron();
+    public static final BlockApothecaryCauldron apothecaryCauldron = new BlockApothecaryCauldron();
     public static final BlockAlkahestryAltar alkahestryAltar = new BlockAlkahestryAltar(false);
     public static final BlockAlkahestryAltar alkahestryAltarActive = new BlockAlkahestryAltar(true);
     public static final BlockBase apothecaryMortar = new BlockApothecaryMortar();
@@ -23,7 +23,7 @@ public class ModBlocks {
 
     public static void init()
     {
-        //GameRegistry.registerBlock(apothecaryCauldron, ItemBlockBase.class, apothecaryCauldron.getUnwrappedUnlocalizedName());
+        GameRegistry.registerBlock(apothecaryCauldron, ItemBlockBase.class, apothecaryCauldron.getUnwrappedUnlocalizedName());
         GameRegistry.registerBlock(alkahestryAltar, ItemBlockBase.class,Reference.DOMAIN + Names.altar_idle);
         GameRegistry.registerBlock(alkahestryAltarActive, Reference.DOMAIN + Names.altar);
         GameRegistry.registerBlock(apothecaryMortar, ItemBlockBase.class, apothecaryMortar.getUnwrappedUnlocalizedName());

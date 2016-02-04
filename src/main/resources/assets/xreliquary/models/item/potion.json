@@ -1,0 +1,7 @@
+{
+  "parent": "xreliquary:item/default_item",
+  "textures": {
+    "layer0": "xreliquary:items/potion",
+    "layer1": "xreliquary:items/potion_overlay"
+  }
+}

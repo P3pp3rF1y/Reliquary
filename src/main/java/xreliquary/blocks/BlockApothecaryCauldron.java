@@ -32,8 +32,6 @@ import java.util.Random;
 @ContentInit
 public class BlockApothecaryCauldron extends BlockBase {
 
-    //TODO: add icon in xreliquary:items/apothecary_cauldron
-
     public static final PropertyInteger LEVEL = PropertyInteger.create("level", 0, 3);
 
     public BlockApothecaryCauldron() {
@@ -91,9 +89,13 @@ public class BlockApothecaryCauldron extends BlockBase {
      * or not to render the shared face of two adjacent blocks and also whether
      * the player can attach torches, redstone wire, etc to this block.
      */
+    @Override
     public boolean isOpaqueCube() {
         return false;
     }
+
+    @Override
+    public boolean isFullCube() {return false;}
 
     //TODO: fix with rendering pass
 /*
@@ -106,14 +108,6 @@ public class BlockApothecaryCauldron extends BlockBase {
         return RenderApothecaryCauldron.renderID;
     }
 */
-
-    /**
-     * If this block doesn't render as an ordinary block it will return False
-     * (examples: signs, buttons, stairs, etc)
-     */
-    public boolean renderAsNormalBlock() {
-        return false;
-    }
 
     /**
      * Triggered whenever an entity collides with this block (enters into the
@@ -245,14 +239,6 @@ public class BlockApothecaryCauldron extends BlockBase {
     }
 
     /**
-     * Gets an item for the block being called on. Args: world, x, y, z
-     */
-    @SideOnly(Side.CLIENT)
-    public Item getItem(World world, int x, int y, int z) {
-        return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_cauldron));
-    }
-
-    /**
      * If this returns true, then comparators facing away from this block will
      * use the value from getComparatorInputOverride instead of the actual
      * redstone signal strength.
@@ -268,12 +254,6 @@ public class BlockApothecaryCauldron extends BlockBase {
      */
     public int getComparatorInputOverride(World world ,BlockPos pos) {
         return world.getBlockState(pos).getValue(LEVEL);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static float getRenderLiquidLevel(int liquidMeta) {
-        int j = MathHelper.clamp_int(liquidMeta, 0, 3);
-        return (float) (6 + 3 * j) / 16.0F;
     }
 
     @Override

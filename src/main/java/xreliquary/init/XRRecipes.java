@@ -112,11 +112,8 @@ public class XRRecipes {
         //apothecary mortar recipe
         addRecipe(false, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.apothecary_mortar), 1, 0), "gng", "ngn", "nnn", 'n', Blocks.quartz_block, 'g', creeperGland());
 
-        //TODO enable with potion making fixes
-/*
         //apothecary cauldron recipe
         addRecipe(false, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.apothecary_cauldron), 1, 0), "gng", "ici", "nmn", 'g', creeperGland(), 'n', enderHeart(), 'i', infernalClaw(), 'c', Items.cauldron, 'm', moltenCore());
-*/
 
         //alkahestry tome
         if (Settings.EasyModeRecipes.alkahestryTome)
@@ -390,12 +387,9 @@ public class XRRecipes {
         addRecipe(true, false, nianZhu(Reference.CREEPER_ZHU_META), Items.string, heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META));
 
 		/* potions and splash potions */
-//
-        //TODO:fix with potion fixes
-/*
+
         // empty vial
-        addRecipe(false, false, new ItemStack(ModItems.potion), 1, 0), "g g", "g g", " g ", 'g', Blocks.glass_pane);
-*/
+        addRecipe(false, false, new ItemStack(ModItems.potion, 1, 0), "g g", "g g", " g ", 'g', Blocks.glass_pane);
 
         //non-standard potion list.
 

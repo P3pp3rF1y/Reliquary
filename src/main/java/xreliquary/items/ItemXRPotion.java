@@ -53,8 +53,6 @@ public class ItemXRPotion extends ItemBase {
     }
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean flag) {
-        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-            return;
         PotionEssence essence = new PotionEssence(ist.getTagCompound());
         if (essence.getEffects().size() > 0) {
             HashMultimap hashmultimap = HashMultimap.create();
@@ -166,55 +164,9 @@ public class ItemXRPotion extends ItemBase {
         return ist;
     }
 
-    //TODO: include in JSON model
-/*
-    @SideOnly(Side.CLIENT)
-    private static IIcon iconBaseOverlay;
-
-    @SideOnly(Side.CLIENT)
-    public static IIcon iconSplash;
-
-    @SideOnly(Side.CLIENT)
-    public static IIcon iconSplashOverlay;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-        iconBaseOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_overlay);
-        iconSplash = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_splash);
-        iconSplashOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_splash_overlay);
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack ist, int renderPass) {
-        PotionEssence essence = new PotionEssence(ist.getTagCompound());
-        boolean hasEffect = essence.getEffects().size() > 0;
-
-        if (!getSplash(ist)) {
-            if (renderPass == 1 && hasEffect)
-                return iconBaseOverlay;
-            else
-                return this.itemIcon;
-        } else {
-            if (renderPass == 1)
-                return iconSplashOverlay;
-            else
-                return iconSplash;
-        }
-    }
-*/
-
     public boolean getSplash(ItemStack ist) {
         return NBTHelper.getBoolean("splash", ist);
     }
-
 
     @Override
     @SideOnly(Side.CLIENT)

@@ -52,6 +52,7 @@ public class ModItems {
     public static final ItemVoidTear filledVoidTear = new ItemVoidTear();
     public static final ItemWitchHat witchHat = new ItemWitchHat();
     public static final ItemWitherlessRose witherlessRose = new ItemWitherlessRose();
+    public static final ItemXRPotion potion = new ItemXRPotion();
 
     public static void init() {
         GameRegistry.registerItem(alkahestryTome, Reference.DOMAIN + Names.alkahestry_tome);
@@ -99,5 +100,6 @@ public class ModItems {
         GameRegistry.registerItem(filledVoidTear, Reference.DOMAIN + Names.void_tear);
         GameRegistry.registerItem(witchHat, Reference.DOMAIN + Names.witch_hat);
         GameRegistry.registerItem(witherlessRose, Reference.DOMAIN + Names.witherless_rose);
+        GameRegistry.registerItem(potion, Reference.DOMAIN + Names.potion);
     }
 }

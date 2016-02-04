@@ -100,6 +100,17 @@ public class ItemModels {
         });
         ModelBakery.registerItemVariants(ModItems.infernalTear, ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR));
 
+        registerItemModelForAllVariants(ModItems.potion, Names.potion, new ItemMeshDefinition() {
+            @Override
+            public ModelResourceLocation getModelLocation(ItemStack stack) {
+                if (ModItems.potion.getSplash(stack)) {
+                    return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_SPLASH);
+                }
+                return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION);
+            }
+        });
+        ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_SPLASH));
+
         registerItemModelForAllVariants(ModItems.magazine, Names.magazine, new ItemMeshDefinition() {
             public ModelResourceLocation getModelLocation(ItemStack stack) {
                 return new ModelResourceLocation(Reference.DOMAIN + Names.magazine, "inventory");
