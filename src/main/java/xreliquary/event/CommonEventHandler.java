@@ -1,6 +1,7 @@
 package xreliquary.event;
 
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import lib.enderwizards.sandstone.items.ItemToggleable;
@@ -59,6 +60,8 @@ public class CommonEventHandler {
         //doPacifiedDebuffCheck(event);
         doHeartZhuCheck(event);
     }
+
+//TODO figure out if this needs to be added for serpent staff
 //
 //    @SubscribeEvent
 //    public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
@@ -274,7 +277,7 @@ public class CommonEventHandler {
             handleEventDropListAddition(e, event, getBaseDrop(Names.frozen_core), getLootingDrop(Names.frozen_core), ingredient(Reference.FROZEN_INGREDIENT_META));
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void beforePlayerHurt(LivingAttackEvent event) {
         Entity entity = event.entity;
         if (entity == null || !(entity instanceof EntityPlayer))
