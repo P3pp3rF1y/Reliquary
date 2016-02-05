@@ -1,9 +1,17 @@
 package xreliquary.blocks.tile;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MathHelper;
+import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -21,6 +29,7 @@ import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.client.particle.EntityCauldronBubbleFX;
 import xreliquary.client.particle.EntityCauldronSteamFX;
 import xreliquary.init.ModBlocks;
+import xreliquary.init.ModItems;
 import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
@@ -38,6 +47,7 @@ public class TileEntityCauldron extends TileEntityBase {
     public boolean hasGunpowder = false;
     public boolean hasNetherwart = false;
     public int cookTime = 0;
+    private int liquidLevel = 0;
 
     public TileEntityCauldron() {
     }
@@ -51,7 +61,7 @@ public class TileEntityCauldron extends TileEntityBase {
     @Override
     public void update() {
         //Item addition gets handled by the block's onEntityCollided method.
-        if (getHeatSources().contains(worldObj.getBlockState(getPos().add(0,-1,0)).getBlock()) && worldObj.getBlockState(getPos()).getValue(BlockApothecaryCauldron.LEVEL) > 0) {
+        if (getHeatSources().contains(worldObj.getBlockState(getPos().add(0,-1,0)).getBlock()) && liquidLevel > 0) {
             if (potionEssence != null) {
                 if(cookTime < getCookTime())
                     cookTime++;
@@ -98,8 +108,6 @@ public class TileEntityCauldron extends TileEntityBase {
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(steam);
     }
     private float getRenderLiquidLevel() {
-        int liquidLevel = worldObj.getBlockState(this.getPos()).getValue(BlockApothecaryCauldron.LEVEL);
-
         int j = MathHelper.clamp_int(liquidLevel, 0, 3);
         return (float)(6 + 3 * j) / 16.0F;
     }
@@ -159,6 +167,7 @@ public class TileEntityCauldron extends TileEntityBase {
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
+        this.liquidLevel = tag.getShort("liquidLevel");
         this.hasGlowstone = tag.getBoolean("hasGlowstone");
         this.hasNetherwart = tag.getBoolean("hasNetherwart");
         this.hasGunpowder = tag.getBoolean("hasGunpowder");
@@ -172,6 +181,7 @@ public class TileEntityCauldron extends TileEntityBase {
     @Override
     public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
+        tag.setInteger( "liquidLevel", liquidLevel );
         tag.setInteger("cookTime", cookTime);
         tag.setInteger("redstoneCount", redstoneCount);
         tag.setBoolean("hasGlowstone", hasGlowstone);
@@ -184,15 +194,14 @@ public class TileEntityCauldron extends TileEntityBase {
         return hasNetherwart && potionEssence != null && this.cookTime >= getCookTime();
     }
 
-    public NBTTagCompound removeContainedPotion() {
-        IBlockState cauldronState = worldObj.getBlockState(this.getPos());
-        if (!hasNetherwart || potionEssence == null || cauldronState.getValue(BlockApothecaryCauldron.LEVEL) <= 0)
+    public NBTTagCompound removeContainedPotion(World world) {
+        if (!hasNetherwart || potionEssence == null || liquidLevel <= 0)
             return null;
-        ModBlocks.apothecaryCauldron.setLiquidLevel(worldObj, this.getPos(), cauldronState, cauldronState.getValue(BlockApothecaryCauldron.LEVEL) - 1);
-        cauldronState = worldObj.getBlockState(this.getPos());
+        liquidLevel--;
+        world.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
         NBTTagCompound tag = getFinishedPotion();
 
-        if (cauldronState.getValue(BlockApothecaryCauldron.LEVEL) <= 0) {
+        if (liquidLevel <= 0) {
             clearAllFields();
         }
         return tag;
@@ -218,7 +227,7 @@ public class TileEntityCauldron extends TileEntityBase {
     }
 
     public boolean isItemValidForInput(ItemStack ist) {
-        if (worldObj.getBlockState(this.getPos()).getValue(BlockApothecaryCauldron.LEVEL) < 3)
+        if (liquidLevel < 3)
             return false;
         return ((ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null)
                 || (ist.getItem() == Items.gunpowder && !this.hasGunpowder)
@@ -264,5 +273,109 @@ public class TileEntityCauldron extends TileEntityBase {
 
     public int getCookTime() {
         return Settings.ApothecaryCauldron.cookTime;
+    }
+
+    public void handleCollidingEntity( World world, BlockPos pos, Entity collidingEntity)
+    {
+        //TODO: verify that entityBoundingBox is the correct one to use here
+
+        int l = 3;
+        float f = (float) pos.getY() + (6.0F + (float) (3 * l)) / 16.0F;
+        if (collidingEntity.getEntityBoundingBox().minY <= (double) f) {
+
+            if (collidingEntity.isBurning() && l > 0) {
+                collidingEntity.extinguish();
+                //this.setLiquidLevel(world, x, y, z, l - 1);
+            }
+            if (collidingEntity instanceof EntityLivingBase ) {
+                if (this.potionEssence == null)
+                    return;
+                for (PotionEffect effect : this.potionEssence.getEffects()) {
+                    Potion potion = Potion.potionTypes[effect.getPotionID()];
+                    if (potion.isInstant() && world.getWorldTime() % 20 != 0)
+                        continue;
+                    PotionEffect reducedEffect = new PotionEffect(effect.getPotionID(), potion.isInstant() ? 1 : effect.getDuration() / 20, Math.max(0, effect.getAmplifier() - 1));
+                    ((EntityLivingBase) collidingEntity).addPotionEffect(reducedEffect);
+                }
+                if (this.cookTime > 0 && world.getWorldTime() % 20 != 0) {
+                    collidingEntity.attackEntityFrom( DamageSource.inFire, 1.0F);
+                }
+            }
+
+
+            if (collidingEntity instanceof EntityItem ) {
+                ItemStack item = ((EntityItem) collidingEntity).getEntityItem();
+                while (this.isItemValidForInput(item)) {
+
+                    this.addItem(item);
+                    if (--item.stackSize < 1)
+                        collidingEntity.setDead();
+                }
+            }
+
+        }
+    }
+
+    public IExtendedBlockState writeExtendedBlockState( IExtendedBlockState extendedState )
+    {
+        return extendedState.withProperty( BlockApothecaryCauldron.LEVEL, liquidLevel)
+                .withProperty( BlockApothecaryCauldron.COLOR, potionEssence == null ? Integer.parseInt(Colors.PURE, 16) : getColor(potionEssence));
+    }
+
+    public int getLiquidLevel()
+    {
+        return liquidLevel;
+    }
+
+    public void fillWithRain(World world)
+    {
+        if (liquidLevel < 3  && !finishedCooking()) {
+            liquidLevel++;
+            world.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
+        }
+    }
+
+    public boolean handleBlockActivation(World world, EntityPlayer player){
+        ItemStack itemStack = player.inventory.getCurrentItem();
+
+        if (itemStack.getItem() == Items.water_bucket) {
+            if (liquidLevel < 3 && !finishedCooking()) {
+                if (!player.capabilities.isCreativeMode) {
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket));
+                }
+
+                liquidLevel = 3;
+                world.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
+                cookTime = 0;
+            }
+
+            return true;
+        } else {
+            if (itemStack.getItem() == ModItems.potion && (itemStack.getTagCompound() == null || !itemStack.getTagCompound().getBoolean("hasPotion"))) {
+                if (liquidLevel > 0) {
+
+                    if (finishedCooking()) {
+                        ItemStack potion = new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
+                        potion.setTagCompound( removeContainedPotion( world ) );
+
+                        --itemStack.stackSize;
+
+                        if (itemStack.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, potion);
+                        } else if (!player.inventory.addItemStackToInventory(potion)) {
+                            world.spawnEntityInWorld(new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
+                        }
+                    }
+                }
+            } else if (isItemValidForInput(itemStack)) {
+                addItem( itemStack );
+
+                --itemStack.stackSize;
+                if (itemStack.stackSize <= 0)
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+            }
+            return false;
+        }
+
     }
 }

@@ -23,10 +23,10 @@ public class ModBlocks {
 
     public static void init()
     {
-        GameRegistry.registerBlock(apothecaryCauldron, ItemBlockBase.class, apothecaryCauldron.getUnwrappedUnlocalizedName());
+        GameRegistry.registerBlock(apothecaryCauldron, ItemBlockBase.class, Reference.DOMAIN + Names.apothecary_cauldron);
         GameRegistry.registerBlock(alkahestryAltar, ItemBlockBase.class,Reference.DOMAIN + Names.altar_idle);
         GameRegistry.registerBlock(alkahestryAltarActive, Reference.DOMAIN + Names.altar);
-        GameRegistry.registerBlock(apothecaryMortar, ItemBlockBase.class, apothecaryMortar.getUnwrappedUnlocalizedName());
+        GameRegistry.registerBlock(apothecaryMortar, ItemBlockBase.class, Reference.DOMAIN + Names.apothecary_mortar);
         GameRegistry.registerBlock(fertileLilypad, ItemFertileLilyPad.class, Reference.DOMAIN + Names.fertile_lilypad);
         GameRegistry.registerBlock(interdictionTorch, ItemBlockBase.class, Reference.DOMAIN + Names.interdiction_torch);
         GameRegistry.registerBlock(wraithNode, ItemBlockBase.class, Reference.DOMAIN + Names.wraith_node);

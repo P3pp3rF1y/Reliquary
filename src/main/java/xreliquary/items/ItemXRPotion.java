@@ -224,7 +224,7 @@ public class ItemXRPotion extends ItemBase {
                     if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
                         if (world.getBlockState(mop.getBlockPos()).getBlock() instanceof BlockApothecaryCauldron) {
                             TileEntityCauldron cauldronTile = (TileEntityCauldron)world.getTileEntity(mop.getBlockPos());
-                            NBTTagCompound potionTag = cauldronTile.removeContainedPotion();
+                            NBTTagCompound potionTag = cauldronTile.removeContainedPotion(world);
                             ItemStack newPotion = new ItemStack(this, 1, 0);
                             newPotion.setTagCompound(potionTag);
 

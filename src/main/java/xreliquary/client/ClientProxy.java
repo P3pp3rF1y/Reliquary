@@ -38,10 +38,12 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void init() {
+    public void init()
+    {
         super.init();
-        FMLCommonHandler.instance().bus().register(new ClientEventHandler());
-        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+        FMLCommonHandler.instance().bus().register( new ClientEventHandler() );
+        MinecraftForge.EVENT_BUS.register( new ClientEventHandler() );
+        //MinecraftForge.EVENT_BUS.register( new ModelBakeEventHandler() );
 
         this.registerRenderers();
     }

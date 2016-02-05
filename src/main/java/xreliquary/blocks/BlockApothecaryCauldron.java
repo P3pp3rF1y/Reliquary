@@ -19,11 +19,16 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.common.property.Properties;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityCauldron;
+import xreliquary.init.ModItems;
+import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 
 import java.util.List;
@@ -32,11 +37,17 @@ import java.util.Random;
 @ContentInit
 public class BlockApothecaryCauldron extends BlockBase {
 
-    public static final PropertyInteger LEVEL = PropertyInteger.create("level", 0, 3);
+    public static final IUnlistedProperty<?>[] PROPERTIES = new IUnlistedProperty[2];
+    public static final IUnlistedProperty<Integer> LEVEL;
+    public static final IUnlistedProperty<Integer> COLOR;
+
+    static {
+        PROPERTIES[0] = LEVEL = new Properties.PropertyAdapter<>( PropertyInteger.create( "level", 0, 3 ));
+        PROPERTIES[1] = COLOR = new UnlistedPropertyColor();
+    }
 
     public BlockApothecaryCauldron() {
         super(Material.iron, Names.apothecary_cauldron);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, Integer.valueOf(0)));
         this.setHardness(1.5F);
         this.setResistance(5.0F);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
@@ -44,16 +55,7 @@ public class BlockApothecaryCauldron extends BlockBase {
 
     @Override
     protected BlockState createBlockState() {
-        return new BlockState(this, new IProperty[] { LEVEL });
-    }
-    @Override
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(LEVEL, meta);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(LEVEL);
+        return new ExtendedBlockState(this, new IProperty[0], PROPERTIES);
     }
 
     @Override
@@ -97,62 +99,17 @@ public class BlockApothecaryCauldron extends BlockBase {
     @Override
     public boolean isFullCube() {return false;}
 
-    //TODO: fix with rendering pass
-/*
-    */
-/**
-     * The type of render function that is called for this block
-     *//*
-
-    public int getRenderType() {
-        return RenderApothecaryCauldron.renderID;
-    }
-*/
-
     /**
      * Triggered whenever an entity collides with this block (enters into the
      * block). Args: world, x, y, z, entity
      */
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity collidingEntity) {
-        int l = state.getValue(LEVEL);
-        float f = (float) pos.getY() + (6.0F + (float) (3 * l)) / 16.0F;
-
-        TileEntityCauldron cauldron = (TileEntityCauldron)world.getTileEntity(pos);
-        //TODO: verify that entityBoundingBox is the correct one to use here
-        if (!world.isRemote && collidingEntity.getEntityBoundingBox().minY <= (double) f) {
-            if (collidingEntity.isBurning() && l > 0) {
-                collidingEntity.extinguish();
-                //this.setLiquidLevel(world, x, y, z, l - 1);
-            }
-            if (collidingEntity instanceof EntityLivingBase) {
-                if (cauldron == null || cauldron.potionEssence == null)
-                    return;
-                for (PotionEffect effect : cauldron.potionEssence.getEffects()) {
-                    Potion potion = Potion.potionTypes[effect.getPotionID()];
-                    if (potion.isInstant() && world.getWorldTime() % 20 != 0)
-                        continue;
-                    PotionEffect reducedEffect = new PotionEffect(effect.getPotionID(), potion.isInstant() ? 1 : effect.getDuration() / 20, Math.max(0, effect.getAmplifier() - 1));
-                    ((EntityLivingBase) collidingEntity).addPotionEffect(reducedEffect);
-                }
-                if (cauldron.cookTime > 0 && world.getWorldTime() % 20 != 0) {
-                    collidingEntity.attackEntityFrom(DamageSource.inFire, 1.0F);
-                }
-            }
-        
-
-            if (collidingEntity instanceof EntityItem) {
-                ItemStack item = ((EntityItem) collidingEntity).getEntityItem();
-                while (cauldron.isItemValidForInput(item)) {
-                    
-                    cauldron.addItem(item);
-                    if (--item.stackSize < 1)
-                        collidingEntity.setDead();
-                }
-            }
+        if (!world.isRemote) {
+            TileEntityCauldron cauldron = (TileEntityCauldron)world.getTileEntity(pos);
+            if (cauldron != null)
+                cauldron.handleCollidingEntity( world, pos, collidingEntity );
         }
     }
-
-
 
     /**
      * Called upon block activation (right click on the block.)
@@ -162,69 +119,24 @@ public class BlockApothecaryCauldron extends BlockBase {
             return true;
         } else {
             ItemStack itemstack = player.inventory.getCurrentItem();
-            TileEntityCauldron cauldron = (TileEntityCauldron)world.getTileEntity(pos);
-
             if (itemstack == null) {
                 return true;
             } else {
-                int liquidLevel = state.getValue(LEVEL);
+                TileEntityCauldron cauldron = (TileEntityCauldron)world.getTileEntity(pos);
 
-                if (itemstack.getItem() == Items.water_bucket) {
-                    if (liquidLevel < 3) {
-                        if (!player.capabilities.isCreativeMode) {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket));
-                        }
-
-                        this.setLiquidLevel(world, pos, state, 3);
-                        cauldron.cookTime = 0;
-                    }
-
-                    return true;
-                } else {
-                    if (itemstack.getItem() == Reliquary.CONTENT.getItem(Names.potion) && (itemstack.getTagCompound() == null || !itemstack.getTagCompound().getBoolean("hasPotion"))) {
-                        if (liquidLevel > 0) {
-
-                            if (cauldron.finishedCooking()) {
-                                ItemStack potion = new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
-                                potion.setTagCompound(cauldron.removeContainedPotion());
-
-                                --itemstack.stackSize;
-
-                                if (itemstack.stackSize <= 0) {
-                                    player.inventory.setInventorySlotContents(player.inventory.currentItem, potion);
-                                } else if (!player.inventory.addItemStackToInventory(potion)) {
-                                    world.spawnEntityInWorld(new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
-                                }
-                            }
-                        }
-                    } else if (cauldron.isItemValidForInput(itemstack)) {
-                        cauldron.addItem(itemstack);
-
-                        --itemstack.stackSize;
-                        if (itemstack.stackSize <= 0)
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-                    }
-                    return false;
-                }
+                if (cauldron != null)
+                    return cauldron.handleBlockActivation(world, player );
             }
         }
-    }
-
-    // does stuff with the metadata
-    public void setLiquidLevel(World world, BlockPos pos, IBlockState state, int fluidLevel) {
-        world.setBlockState(pos, state.withProperty(LEVEL, Integer.valueOf(MathHelper.clamp_int(fluidLevel, 0, 3))), 2);
-        // no clue what this is
-        world.updateComparatorOutputLevel(pos, this);
+        return true;
     }
 
     @Override
     public void fillWithRain(World world, BlockPos pos) {
-        //TODO: verify that this is what we want to do when there's potion inside cauldron
         if (world.rand.nextInt(20) == 1) {
-            IBlockState blockState = world.getBlockState(pos);
-
-            if (blockState.getValue(LEVEL) < 3) {
-                world.setBlockState(pos, blockState.cycleProperty(LEVEL), 2);
+            TileEntityCauldron cauldron = (TileEntityCauldron)world.getTileEntity(pos);
+            if (cauldron != null) {
+                cauldron.fillWithRain(world);
             }
         }
     }
@@ -250,7 +162,11 @@ public class BlockApothecaryCauldron extends BlockBase {
      * comparator.
      */
     public int getComparatorInputOverride(World world ,BlockPos pos) {
-        return world.getBlockState(pos).getValue(LEVEL);
+        TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
+        if (cauldron != null) {
+            return cauldron.getLiquidLevel();
+        }
+        return 0;
     }
 
     @Override
@@ -261,5 +177,17 @@ public class BlockApothecaryCauldron extends BlockBase {
     @Override
     public boolean hasTileEntity(IBlockState state) {
         return true;
+    }
+
+    @Override
+    public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos ) {
+        if (state instanceof IExtendedBlockState) {
+            IExtendedBlockState extendedState = (IExtendedBlockState) state;
+
+            TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
+
+            return cauldron.writeExtendedBlockState( extendedState );
+        }
+        return super.getExtendedState(state, world, pos);
     }
 }
