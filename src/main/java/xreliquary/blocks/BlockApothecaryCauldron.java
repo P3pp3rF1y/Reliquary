@@ -195,9 +195,6 @@ public class BlockApothecaryCauldron extends BlockBase {
                                 } else if (!player.inventory.addItemStackToInventory(potion)) {
                                     world.spawnEntityInWorld(new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
                                 }
-
-                                this.setLiquidLevel(world, pos, state, liquidLevel - 1);
-
                             }
                         }
                     } else if (cauldron.isItemValidForInput(itemstack)) {

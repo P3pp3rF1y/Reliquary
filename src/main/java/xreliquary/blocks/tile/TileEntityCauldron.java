@@ -63,7 +63,7 @@ public class TileEntityCauldron extends TileEntityBase {
                 if (hasGlowstone) spawnGlowstoneParticles();
                 if (hasNetherwart) {
                     spawnNetherwartParticles();
-                    if (potionEssence != null) {
+                    if (finishedCooking()) {
                         spawnFinishedParticles();
                     }
                 }
@@ -189,6 +189,7 @@ public class TileEntityCauldron extends TileEntityBase {
         if (!hasNetherwart || potionEssence == null || cauldronState.getValue(BlockApothecaryCauldron.LEVEL) <= 0)
             return null;
         ModBlocks.apothecaryCauldron.setLiquidLevel(worldObj, this.getPos(), cauldronState, cauldronState.getValue(BlockApothecaryCauldron.LEVEL) - 1);
+        cauldronState = worldObj.getBlockState(this.getPos());
         NBTTagCompound tag = getFinishedPotion();
 
         if (cauldronState.getValue(BlockApothecaryCauldron.LEVEL) <= 0) {
