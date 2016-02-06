@@ -1,6 +1,7 @@
 package xreliquary.blocks.tile;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -11,7 +12,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MathHelper;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -25,7 +25,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionHelper;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.client.particle.EntityCauldronBubbleFX;
 import xreliquary.client.particle.EntityCauldronSteamFX;
 import xreliquary.init.ModBlocks;
@@ -61,7 +60,7 @@ public class TileEntityCauldron extends TileEntityBase {
     @Override
     public void update() {
         //Item addition gets handled by the block's onEntityCollided method.
-        if (getHeatSources().contains(worldObj.getBlockState(getPos().add(0,-1,0)).getBlock()) && liquidLevel > 0) {
+        if (getHeatSources().contains(worldObj.getBlockState(getPos().add(0,-1,0)).getBlock()) && getLiquidLevel() > 0) {
             if (potionEssence != null) {
                 if(cookTime < getCookTime())
                     cookTime++;
@@ -95,20 +94,20 @@ public class TileEntityCauldron extends TileEntityBase {
         float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
 
 
-        int color = potionEssence == null ? Integer.parseInt(Colors.PURE, 16) : getColor(potionEssence);
+        int color = getColor(potionEssence);
 
         float red = (((color >> 16) & 255) / 256F);
         float green = (((color >> 8) & 255) / 256F);
         float blue = (((color >> 0) & 255) / 256F);
 
-        EntityCauldronBubbleFX bubble = new EntityCauldronBubbleFX(worldObj, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0D, 0D, 0D, red, green, blue);
+        EntityCauldronBubbleFX bubble = new EntityCauldronBubbleFX(Minecraft.getMinecraft().getTextureManager(), worldObj, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0D, 0D, 0D, red, green, blue);
         EntityCauldronSteamFX steam = new EntityCauldronSteamFX(worldObj, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0D, 0.05D + 0.02F * getRenderLiquidLevel(), 0D, red, green, blue);
         FMLClientHandler.instance().getClient().effectRenderer.addEffect(bubble);
         if (worldObj.rand.nextInt(6) == 0)
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(steam);
     }
     private float getRenderLiquidLevel() {
-        int j = MathHelper.clamp_int(liquidLevel, 0, 3);
+        int j = MathHelper.clamp_int(getLiquidLevel(), 0, 3);
         return (float)(6 + 3 * j) / 16.0F;
     }
 
@@ -167,7 +166,7 @@ public class TileEntityCauldron extends TileEntityBase {
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-        this.liquidLevel = tag.getShort("liquidLevel");
+        this.setLiquidLevel(tag.getShort("liquidLevel"));
         this.hasGlowstone = tag.getBoolean("hasGlowstone");
         this.hasNetherwart = tag.getBoolean("hasNetherwart");
         this.hasGunpowder = tag.getBoolean("hasGunpowder");
@@ -181,7 +180,7 @@ public class TileEntityCauldron extends TileEntityBase {
     @Override
     public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
-        tag.setInteger( "liquidLevel", liquidLevel );
+        tag.setInteger( "liquidLevel", getLiquidLevel());
         tag.setInteger("cookTime", cookTime);
         tag.setInteger("redstoneCount", redstoneCount);
         tag.setBoolean("hasGlowstone", hasGlowstone);
@@ -195,13 +194,12 @@ public class TileEntityCauldron extends TileEntityBase {
     }
 
     public NBTTagCompound removeContainedPotion(World world) {
-        if (!hasNetherwart || potionEssence == null || liquidLevel <= 0)
+        if (!hasNetherwart || potionEssence == null || getLiquidLevel() <= 0)
             return null;
-        liquidLevel--;
-        world.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
+        setLiquidLevel(getLiquidLevel() - 1);
         NBTTagCompound tag = getFinishedPotion();
 
-        if (liquidLevel <= 0) {
+        if (getLiquidLevel() <= 0) {
             clearAllFields();
         }
         return tag;
@@ -227,7 +225,7 @@ public class TileEntityCauldron extends TileEntityBase {
     }
 
     public boolean isItemValidForInput(ItemStack ist) {
-        if (liquidLevel < 3)
+        if (getLiquidLevel() < 3)
             return false;
         return ((ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null)
                 || (ist.getItem() == Items.gunpowder && !this.hasGunpowder)
@@ -316,10 +314,8 @@ public class TileEntityCauldron extends TileEntityBase {
         }
     }
 
-    public IExtendedBlockState writeExtendedBlockState( IExtendedBlockState extendedState )
-    {
-        return extendedState.withProperty( BlockApothecaryCauldron.LEVEL, liquidLevel)
-                .withProperty( BlockApothecaryCauldron.COLOR, potionEssence == null ? Integer.parseInt(Colors.PURE, 16) : getColor(potionEssence));
+    public int getColorMultiplier() {
+        return PotionHelper.calcPotionLiquidColor(potionEssence == null ? new ArrayList<PotionEffect>() : potionEssence.getEffects());
     }
 
     public int getLiquidLevel()
@@ -329,9 +325,8 @@ public class TileEntityCauldron extends TileEntityBase {
 
     public void fillWithRain(World world)
     {
-        if (liquidLevel < 3  && !finishedCooking()) {
-            liquidLevel++;
-            world.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
+        if (getLiquidLevel() < 3  && !finishedCooking()) {
+            setLiquidLevel(getLiquidLevel() + 1);
         }
     }
 
@@ -339,20 +334,19 @@ public class TileEntityCauldron extends TileEntityBase {
         ItemStack itemStack = player.inventory.getCurrentItem();
 
         if (itemStack.getItem() == Items.water_bucket) {
-            if (liquidLevel < 3 && !finishedCooking()) {
+            if (getLiquidLevel() < 3 && !finishedCooking()) {
                 if (!player.capabilities.isCreativeMode) {
                     player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket));
                 }
 
-                liquidLevel = 3;
-                world.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
+                setLiquidLevel(3);
                 cookTime = 0;
             }
 
             return true;
         } else {
             if (itemStack.getItem() == ModItems.potion && (itemStack.getTagCompound() == null || !itemStack.getTagCompound().getBoolean("hasPotion"))) {
-                if (liquidLevel > 0) {
+                if (getLiquidLevel() > 0) {
 
                     if (finishedCooking()) {
                         ItemStack potion = new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
@@ -377,5 +371,16 @@ public class TileEntityCauldron extends TileEntityBase {
             return false;
         }
 
+    }
+
+    public void setLiquidLevel(int liquidLevel) {
+        this.liquidLevel = liquidLevel;
+        if (this.worldObj != null) {
+            IBlockState blockState = this.worldObj.getBlockState(this.getPos());
+            blockState = blockState.withProperty(ModBlocks.apothecaryCauldron.LEVEL, liquidLevel);
+            this.worldObj.setBlockState(this.getPos(),blockState);
+            this.worldObj.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
+            this.worldObj.markBlockForUpdate(this.getPos());
+        }
     }
 }

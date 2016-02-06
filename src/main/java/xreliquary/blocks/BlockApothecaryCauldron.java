@@ -21,9 +21,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityCauldron;
@@ -37,25 +34,29 @@ import java.util.Random;
 @ContentInit
 public class BlockApothecaryCauldron extends BlockBase {
 
-    public static final IUnlistedProperty<?>[] PROPERTIES = new IUnlistedProperty[2];
-    public static final IUnlistedProperty<Integer> LEVEL;
-    public static final IUnlistedProperty<Integer> COLOR;
-
-    static {
-        PROPERTIES[0] = LEVEL = new Properties.PropertyAdapter<>( PropertyInteger.create( "level", 0, 3 ));
-        PROPERTIES[1] = COLOR = new UnlistedPropertyColor();
-    }
+    public static final PropertyInteger LEVEL = PropertyInteger.create("level", 0, 3);
 
     public BlockApothecaryCauldron() {
         super(Material.iron, Names.apothecary_cauldron);
         this.setHardness(1.5F);
         this.setResistance(5.0F);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, Integer.valueOf(0)));
     }
 
     @Override
     protected BlockState createBlockState() {
-        return new ExtendedBlockState(this, new IProperty[0], PROPERTIES);
+        return new BlockState(this, new IProperty[]{LEVEL});
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState().withProperty(LEVEL, meta);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(LEVEL);
     }
 
     @Override
@@ -132,6 +133,16 @@ public class BlockApothecaryCauldron extends BlockBase {
     }
 
     @Override
+    public int colorMultiplier(IBlockAccess worldIn, BlockPos pos, int renderPass) {
+        TileEntityCauldron cauldron = (TileEntityCauldron) worldIn.getTileEntity(pos);
+        if (cauldron != null) {
+            return cauldron.getColorMultiplier();
+        }
+
+        return super.colorMultiplier(worldIn, pos, renderPass);
+    }
+
+    @Override
     public void fillWithRain(World world, BlockPos pos) {
         if (world.rand.nextInt(20) == 1) {
             TileEntityCauldron cauldron = (TileEntityCauldron)world.getTileEntity(pos);
@@ -177,17 +188,5 @@ public class BlockApothecaryCauldron extends BlockBase {
     @Override
     public boolean hasTileEntity(IBlockState state) {
         return true;
-    }
-
-    @Override
-    public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos ) {
-        if (state instanceof IExtendedBlockState) {
-            IExtendedBlockState extendedState = (IExtendedBlockState) state;
-
-            TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
-
-            return cauldron.writeExtendedBlockState( extendedState );
-        }
-        return super.getExtendedState(state, world, pos);
     }
 }

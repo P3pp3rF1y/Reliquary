@@ -38,6 +38,7 @@ import java.util.Map;
  */
 @ContentInit
 public class ItemXRPotion extends ItemBase {
+
     public ItemXRPotion() {
         super(Names.potion);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
@@ -171,16 +172,22 @@ public class ItemXRPotion extends ItemBase {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack ist, int renderPass) {
-        PotionEssence essence = new PotionEssence(ist.getTagCompound());
-        boolean hasEffect = essence.getEffects().size() > 0;
-        if (renderPass == 1 && hasEffect)
+        if (renderPass == 1)
             return getColor(ist);
         else
             return Integer.parseInt(Colors.PURE, 16);
     }
 
     public int getColor(ItemStack itemStack) {
-        //basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
+        //used when rendering as thrown entity
+        if (NBTHelper.getInteger("renderColor", itemStack) > 0)
+            return NBTHelper.getInteger("renderColor", itemStack);
+
+        PotionEssence essence = new PotionEssence(itemStack.getTagCompound());
+        boolean hasEffect = essence.getEffects().size() > 0;
+        if (!hasEffect)
+            return Integer.parseInt(Colors.PURE, 16);
+
         return PotionHelper.calcPotionLiquidColor(new PotionEssence(itemStack.getTagCompound()).getEffects());
     }
 

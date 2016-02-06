@@ -1,5 +1,6 @@
 package xreliquary.client.render;
 
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSnowball;
@@ -14,14 +15,14 @@ import xreliquary.init.ModItems;
 public class RenderThrownXRPotion extends RenderSnowball<EntityThrownXRPotion> {
     public RenderThrownXRPotion(RenderManager renderManager, RenderItem itemRenderer)
     {
-        super( renderManager, ModItems.potionEssence, itemRenderer );
+        super( renderManager, ModItems.potion, itemRenderer );
     }
 
     public ItemStack func_177082_d(EntityThrownXRPotion entityIn)
     {
         ItemStack potion = new ItemStack(this.field_177084_a, 1);
-        potion.readFromNBT(entityIn.getNBTTagCompound());
-
+        NBTHelper.setBoolean("splash", potion, true);
+        NBTHelper.setInteger("renderColor", potion, entityIn.getRenderColor());
         return potion;
     }
 
