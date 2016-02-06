@@ -380,7 +380,6 @@ public class TileEntityCauldron extends TileEntityBase {
             blockState = blockState.withProperty(ModBlocks.apothecaryCauldron.LEVEL, liquidLevel);
             this.worldObj.setBlockState(this.getPos(),blockState);
             this.worldObj.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
-            this.worldObj.markBlockForUpdate(this.getPos());
         }
     }
 }
