@@ -144,4 +144,7 @@ public class Reference {
     public static final String POISON = "poison";
     public static final String WITHER = "wither";
     public static final String BLIND = "blindness";
+
+    public static final String JEI_CATEGORY_ALKAHESTRY_CRAFTING = DOMAIN + "alkahestryCrafting";
+    public static final String JEI_CATEGORY_ALKAHESTRY_CHARGING = DOMAIN + "alkahestryCharging";
 }

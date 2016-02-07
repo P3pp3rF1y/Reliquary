@@ -21,6 +21,13 @@ plugins {
     id "com.jfrog.bintray" version "1.5"
 }
 
+repositories {
+    maven { url "http://dvs1.progwml6.com/files/maven" }
+}
+
+// We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
+apply plugin: 'net.minecraftforge.gradle.forge'
+
 // External properties
 ext.configFile = file "build.properties"
 configFile.withReader {
@@ -30,16 +37,15 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
-// We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
-apply plugin: 'net.minecraftforge.gradle.forge'
 
 
 group = 'xreliquary' // Your main package.
 version = "${config.mod_version}.${getBuildNumber()}${getStable()}"
 archivesBaseName = 'Reliquary'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+dependencies {
+    deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
+}
 
 minecraft {
 	version = config.minecraft_version + "-" + config.forge_version

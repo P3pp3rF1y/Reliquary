@@ -658,3 +658,6 @@ config.easy_mode_recipes.seeker_shot.label=Seeker Shot
 config.easy_mode_recipes.seeker_shot.comment=Easy mode recipe for Seeker Shot
 config.potion_map.label=Potion ingredients
 config.potion_map.comment=List of potion ingredients and their passive effects
+
+jei.reliquary.recipe.alkahest_crafting=Alkahestry Tome Crafting
+jei.reliquary.recipe.alkahest_charging=Alkahestry Tome Charging
