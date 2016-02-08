@@ -23,7 +23,7 @@ public class AlkahestryChargingRecipeCategory implements IRecipeCategory {
     @Nonnull
     private final IDrawable background = ReliquaryPlugin.jeiHelper.getGuiHelper().createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/alkahest_charging.png"), 0, 0, 95, 36);
     @Nonnull
-    private final String localizedName = StatCollector.translateToLocal("jei.reliquary.recipe.alkahest_charging");
+    private final String localizedName = StatCollector.translateToLocal("jei.recipe.alkahest_charging");
 
     @Nonnull
     @Override

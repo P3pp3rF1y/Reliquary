@@ -25,7 +25,7 @@ public class AlkahestryCraftingRecipeCategory implements IRecipeCategory {
     @Nonnull
     private final IDrawable background = ReliquaryPlugin.jeiHelper.getGuiHelper().createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/alkahest_crafting.png"), 0, 0, 95, 76);
     @Nonnull
-    private final String localizedName = StatCollector.translateToLocal("jei.reliquary.recipe.alkahest_crafting");
+    private final String localizedName = StatCollector.translateToLocal("jei.recipe.alkahest_crafting");
 
     @Nonnull
     @Override
