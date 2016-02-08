@@ -43,6 +43,9 @@ group = 'xreliquary' // Your main package.
 version = "${config.mod_version}.${getBuildNumber()}${getStable()}"
 archivesBaseName = 'Reliquary'
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 dependencies {
     deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
 }
