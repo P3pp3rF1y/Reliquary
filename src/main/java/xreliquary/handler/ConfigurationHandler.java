@@ -2,6 +2,7 @@ package xreliquary.handler;
 
 
 import com.google.common.collect.ImmutableList;
+import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -10,6 +11,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -23,8 +25,10 @@ import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.LogHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
+import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
 import xreliquary.util.potions.XRPotionHelper;
 
@@ -69,7 +73,127 @@ public class ConfigurationHandler
 
 		loadPotionMapIntoSettings(category);
 
+		LogHelper.debug("Starting calculation of potion combinations");
+		loadPotionCombinations();
+		List<PotionEssence> unique = getUniquePotionIdCombinations();
+		LogHelper.debug("Done with potion combinations");
+
 		setCategoryTranslations(Names.potion_map, true);
+	}
+
+	private static void loadPotionCombinations() {
+		Settings.potionCombinations.clear();
+
+		for(PotionIngredient ingredient1 : Settings.potionMap) {
+			for(PotionIngredient ingredient2 : Settings.potionMap) {
+				if (ingredient1.item.getItem() != ingredient2.item.getItem()) {
+					PotionEssence twoEssence = new PotionEssence(new PotionIngredient[] {ingredient1, ingredient2});
+					if (twoEssence.effects.size()>0) {
+						addPotionCombination(twoEssence);
+/*
+						for(PotionIngredient ingredient3 : Settings.potionMap) {
+							if(ingredient3.item.getItem() != ingredient1.item.getItem() && ingredient3.item.getItem() != ingredient2.item.getItem()) {
+								PotionEssence threeEssence = new PotionEssence(new PotionIngredient[]{ingredient1, ingredient2, ingredient3});
+								if (!effectsEqual(threeEssence.effects, twoEssence.effects)) {
+									addPotionCombination(threeEssence);
+								}
+							}
+						}
+*/
+					}
+				}
+			}
+		}
+	}
+
+	private static List<PotionEssence> getUniquePotionIdCombinations() {
+		ArrayList<PotionEssence> unique = new ArrayList<>();
+
+		for (PotionEssence essence : Settings.potionCombinations) {
+			boolean found = false;
+			for(PotionEssence included : unique) {
+				if (potionIdsEqual(essence.effects, included.effects)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				unique.add(essence);
+		}
+		return unique;
+	}
+
+	private static boolean potionIdsEqual(List<PotionEffect> a, List<PotionEffect> b) {
+
+		if (a.size() != b.size())
+			return false;
+
+		for(PotionEffect effectA : a) {
+			boolean found = false;
+			for(PotionEffect effectB:b) {
+				if(effectA.getPotionID() == effectB.getPotionID()) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				return false;
+		}
+		return true;
+	}
+
+	private static void addPotionCombination(PotionEssence newEssence) {
+/*
+		for (PotionEssence essence: Settings.potionCombinations) {
+			if(effectsEqual(essence.effects, newEssence.effects)) {
+				return;
+			}
+		}
+*/
+		for (PotionEssence essence: Settings.potionCombinations) {
+			if(ingredientsEqual(essence.ingredients, newEssence.ingredients)) {
+				return;
+			}
+		}
+		Settings.potionCombinations.add(newEssence);
+	}
+
+	private static boolean ingredientsEqual(List<PotionIngredient> a, List<PotionIngredient> b) {
+		if (a.size() != b.size())
+			return false;
+		for (PotionIngredient ingredientA:a) {
+			boolean found = false;
+			for(PotionIngredient ingredientB:b) {
+				if(ingredientA.item.getItem() == ingredientB.item.getItem()
+						&& ingredientA.item.getMetadata() == ingredientB.item.getMetadata()) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				return false;
+		}
+		return true;
+	}
+
+	private static boolean effectsEqual(List<PotionEffect> a, List<PotionEffect> b) {
+		if(a.size() != b.size())
+			return false;
+
+		for (PotionEffect effectA:a) {
+			boolean found = false;
+			for(PotionEffect effectB:b) {
+				if(effectA.getPotionID() == effectB.getPotionID()
+						&& effectA.getDuration() == effectB.getDuration()
+						&& effectA.getAmplifier() == effectB.getAmplifier()) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				return false;
+		}
+		return true;
 	}
 
 	private static void loadPotionMapIntoSettings(ConfigCategory category) {

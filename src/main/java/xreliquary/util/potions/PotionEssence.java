@@ -17,6 +17,8 @@ public class PotionEssence extends PotionIngredient {
 
     public static int MAX_DURATION = 30000;
 
+    public List<PotionIngredient> ingredients = new ArrayList<>();
+
     public PotionEssence(NBTTagCompound tag) {
         if (tag == null)
             return;
@@ -30,6 +32,8 @@ public class PotionEssence extends PotionIngredient {
 
     //this handles the actual combining of two or more ingredients, including other essences.
     public PotionEssence(PotionIngredient... ingredients) {
+
+
 
         //helper list to store what we have, altogether
         List<Integer> potionEffectCounterList = new ArrayList<Integer>();
@@ -48,6 +52,7 @@ public class PotionEssence extends PotionIngredient {
                 else
                     potionEffectCounterList.add(effect.getPotionID());
             }
+            this.ingredients.add(ingredient);
         }
 
         //iterate again, this time checking for potions we're sure we need, add them to the merged effects list.

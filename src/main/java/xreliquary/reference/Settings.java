@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
+import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Map;
 public class Settings
 {
 	public static List<PotionIngredient> potionMap = new ArrayList<>();
+	public static List<PotionEssence> potionCombinations = new ArrayList<>();
 
 	public static class HudPositions {
 		public static int sojournerStaff;
