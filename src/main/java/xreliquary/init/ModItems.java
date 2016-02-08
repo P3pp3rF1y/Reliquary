@@ -1,9 +1,12 @@
 package xreliquary.init;
 
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
 import xreliquary.items.*;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+
 
 public class ModItems {
 
@@ -55,51 +58,57 @@ public class ModItems {
     public static final ItemXRPotion potion = new ItemXRPotion();
 
     public static void init() {
-        GameRegistry.registerItem(alkahestryTome, Reference.DOMAIN + Names.alkahestry_tome);
-        GameRegistry.registerItem(mobIngredient, Reference.DOMAIN + Names.mob_ingredient);
-        GameRegistry.registerItem(mercyCross, Reference.DOMAIN + Names.mercy_cross);
-        GameRegistry.registerItem(angelheartVial, Reference.DOMAIN + Names.angelheart_vial);
-        GameRegistry.registerItem(angelicFeather, Reference.DOMAIN + Names.angelic_feather);
-        GameRegistry.registerItem(attractionPotion, Reference.DOMAIN + Names.attraction_potion);
-        GameRegistry.registerItem(bullet, Reference.DOMAIN + Names.bullet);
-        GameRegistry.registerItem(destructionCatalyst, Reference.DOMAIN + Names.destruction_catalyst);
-        GameRegistry.registerItem(emperorChalice, Reference.DOMAIN + Names.emperor_chalice);
-        GameRegistry.registerItem(enderStaff, Reference.DOMAIN + Names.ender_staff);
-        GameRegistry.registerItem(fertilePotion, Reference.DOMAIN + Names.fertile_potion);
-        GameRegistry.registerItem(fortuneCoin, Reference.DOMAIN + Names.fortune_coin);
-        GameRegistry.registerItem(glacialStaff, Reference.DOMAIN + Names.glacial_staff);
-        GameRegistry.registerItem(glowingBread, Reference.DOMAIN + Names.glowing_bread);
-        GameRegistry.registerItem(glowingWater, Reference.DOMAIN + Names.glowing_water);
-        GameRegistry.registerItem(gunPart, Reference.DOMAIN + Names.gun_part);
-        GameRegistry.registerItem(handgun, Reference.DOMAIN + Names.handgun);
-        GameRegistry.registerItem(harvestRod, Reference.DOMAIN + Names.harvest_rod);
-        GameRegistry.registerItem(heartPearl, Reference.DOMAIN + Names.heart_pearl);
-        GameRegistry.registerItem(heartZhu, Reference.DOMAIN + Names.heart_zhu);
-        GameRegistry.registerItem(heroMedallion, Reference.DOMAIN + Names.hero_medallion);
-        GameRegistry.registerItem(holyHandGrenade, Reference.DOMAIN + Names.holy_hand_grenade);
-        GameRegistry.registerItem(iceMagusRod, Reference.DOMAIN + Names.ice_magus_rod);
-        GameRegistry.registerItem(infernalChalice, Reference.DOMAIN + Names.infernal_chalice);
-        GameRegistry.registerItem(infernalClaws, Reference.DOMAIN + Names.infernal_claws);
-        GameRegistry.registerItem(infernalTear, Reference.DOMAIN + Names.infernal_tear);
-        GameRegistry.registerItem(krakenShell, Reference.DOMAIN + Names.kraken_shell);
-        GameRegistry.registerItem(lanternOfParanoia, Reference.DOMAIN + Names.lantern_of_paranoia);
-        GameRegistry.registerItem(magazine, Reference.DOMAIN + Names.magazine);
-        GameRegistry.registerItem(magicbane, Reference.DOMAIN + Names.magicbane);
-        GameRegistry.registerItem(midasTouchstone, Reference.DOMAIN + Names.midas_touchstone);
-        GameRegistry.registerItem(potionEssence, Reference.DOMAIN + Names.potion_essence);
-        GameRegistry.registerItem(phoenixDown, Reference.DOMAIN + Names.phoenix_down);
-        GameRegistry.registerItem(pyromancerStaff, Reference.DOMAIN + Names.pyromancer_staff);
-        GameRegistry.registerItem(rendingGale, Reference.DOMAIN + Names.rending_gale);
-        GameRegistry.registerItem(rodOfLyssa, Reference.DOMAIN + Names.rod_of_lyssa);
-        GameRegistry.registerItem(salamanderEye, Reference.DOMAIN + Names.salamander_eye);
-        GameRegistry.registerItem(serpentStaff, Reference.DOMAIN + Names.serpent_staff);
-        GameRegistry.registerItem(shearsOfWinter, Reference.DOMAIN + Names.shears_of_winter);
-        GameRegistry.registerItem(sojournerStaff, Reference.DOMAIN + Names.sojourner_staff);
-        GameRegistry.registerItem(twilightCloak, Reference.DOMAIN + Names.twilight_cloak);
-        GameRegistry.registerItem(emptyVoidTear, Reference.DOMAIN + Names.void_tear_empty);
-        GameRegistry.registerItem(filledVoidTear, Reference.DOMAIN + Names.void_tear);
-        GameRegistry.registerItem(witchHat, Reference.DOMAIN + Names.witch_hat);
-        GameRegistry.registerItem(witherlessRose, Reference.DOMAIN + Names.witherless_rose);
-        GameRegistry.registerItem(potion, Reference.DOMAIN + Names.potion);
+        registerItem(alkahestryTome, Names.alkahestry_tome);
+        registerItem(mobIngredient, Names.mob_ingredient);
+        registerItem(mercyCross, Names.mercy_cross);
+        registerItem(angelheartVial, Names.angelheart_vial);
+        registerItem(angelicFeather, Names.angelic_feather);
+        registerItem(attractionPotion, Names.attraction_potion);
+        registerItem(bullet, Names.bullet);
+        registerItem(destructionCatalyst, Names.destruction_catalyst);
+        registerItem(emperorChalice, Names.emperor_chalice);
+        registerItem(enderStaff, Names.ender_staff);
+        registerItem(fertilePotion, Names.fertile_potion);
+        registerItem(fortuneCoin, Names.fortune_coin);
+        registerItem(glacialStaff, Names.glacial_staff);
+        registerItem(glowingBread, Names.glowing_bread);
+        registerItem(glowingWater, Names.glowing_water);
+        registerItem(gunPart, Names.gun_part);
+        registerItem(handgun, Names.handgun);
+        registerItem(harvestRod, Names.harvest_rod);
+        registerItem(heartPearl, Names.heart_pearl);
+        registerItem(heartZhu, Names.heart_zhu);
+        registerItem(heroMedallion, Names.hero_medallion);
+        registerItem(holyHandGrenade, Names.holy_hand_grenade);
+        registerItem(iceMagusRod, Names.ice_magus_rod);
+        registerItem(infernalChalice, Names.infernal_chalice);
+        registerItem(infernalClaws, Names.infernal_claws);
+        registerItem(infernalTear, Names.infernal_tear);
+        registerItem(krakenShell, Names.kraken_shell);
+        registerItem(lanternOfParanoia, Names.lantern_of_paranoia);
+        registerItem(magazine, Names.magazine);
+        registerItem(magicbane, Names.magicbane);
+        registerItem(midasTouchstone, Names.midas_touchstone);
+        registerItem(potionEssence, Names.potion_essence);
+        registerItem(phoenixDown, Names.phoenix_down);
+        registerItem(pyromancerStaff, Names.pyromancer_staff);
+        registerItem(rendingGale, Names.rending_gale);
+        registerItem(rodOfLyssa, Names.rod_of_lyssa);
+        registerItem(salamanderEye, Names.salamander_eye);
+        registerItem(serpentStaff, Names.serpent_staff);
+        registerItem(shearsOfWinter, Names.shears_of_winter);
+        registerItem(sojournerStaff, Names.sojourner_staff);
+        registerItem(twilightCloak, Names.twilight_cloak);
+        registerItem(emptyVoidTear, Names.void_tear_empty);
+        registerItem(filledVoidTear, Names.void_tear);
+        registerItem(witchHat, Names.witch_hat);
+        registerItem(witherlessRose, Names.witherless_rose);
+        registerItem(potion, Names.potion);
     }
+
+    private static void registerItem(Item item, String name) {
+        GameRegistry.registerItem(item, Reference.DOMAIN + name);
+        JEIDescriptionRegistry.register(item, name);
+    }
+
 }
