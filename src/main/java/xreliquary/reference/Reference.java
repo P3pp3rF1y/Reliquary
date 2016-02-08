@@ -147,4 +147,5 @@ public class Reference {
 
     public static final String JEI_CATEGORY_ALKAHESTRY_CRAFTING = DOMAIN + "alkahestryCrafting";
     public static final String JEI_CATEGORY_ALKAHESTRY_CHARGING = DOMAIN + "alkahestryCharging";
+    public static final String JEI_CATEGORY_MORTAR = "mortar";
 }
