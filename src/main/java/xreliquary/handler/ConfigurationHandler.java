@@ -2,7 +2,6 @@ package xreliquary.handler;
 
 
 import com.google.common.collect.ImmutableList;
-import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
