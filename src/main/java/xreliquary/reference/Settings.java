@@ -3,6 +3,7 @@ package xreliquary.reference;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 import xreliquary.util.potions.PotionEssence;
@@ -18,6 +19,7 @@ public class Settings
 {
 	public static List<PotionIngredient> potionMap = new ArrayList<>();
 	public static List<PotionEssence> potionCombinations = new ArrayList<>();
+	public static List<PotionEssence> uniquePotions = new ArrayList<>();
 
 	public static class HudPositions {
 		public static int sojournerStaff;

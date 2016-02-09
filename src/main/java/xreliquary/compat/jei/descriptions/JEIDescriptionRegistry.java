@@ -24,9 +24,9 @@ public class JEIDescriptionRegistry
 	}
 
 	@Optional.Method(modid= Compatibility.MOD_ID.JEI)
-	public static void register(Item item, String name) {
+	public static void register(Item item, String name, boolean registerSubItems) {
 		if (item.getCreativeTab() != null) {
-			if (item.getHasSubtypes()) {
+			if (registerSubItems && item.getHasSubtypes()) {
 				ArrayList<ItemStack> subItems = new ArrayList<>();
 				item.getSubItems(item, item.getCreativeTab(), subItems);
 

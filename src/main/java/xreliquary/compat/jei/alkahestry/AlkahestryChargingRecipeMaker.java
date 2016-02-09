@@ -42,5 +42,4 @@ public class AlkahestryChargingRecipeMaker {
 
         return recipes;
     }
-
 }

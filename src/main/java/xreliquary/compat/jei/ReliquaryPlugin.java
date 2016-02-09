@@ -5,6 +5,9 @@ import net.minecraft.item.ItemStack;
 import xreliquary.compat.jei.alkahestry.*;
 import xreliquary.compat.jei.descriptions.DescriptionEntry;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
+import xreliquary.compat.jei.potions.MortarRecipeCategory;
+import xreliquary.compat.jei.potions.MortarRecipeHandler;
+import xreliquary.compat.jei.potions.MortarRecipeMaker;
 import xreliquary.init.ModItems;
 
 @JEIPlugin
@@ -17,12 +20,15 @@ public class ReliquaryPlugin implements IModPlugin {
     {
         registry.addRecipeCategories(new AlkahestryCraftingRecipeCategory());
         registry.addRecipeCategories(new AlkahestryChargingRecipeCategory());
+        registry.addRecipeCategories(new MortarRecipeCategory());
 
         registry.addRecipeHandlers(new AlkahestryCraftingRecipeHandler());
         registry.addRecipeHandlers(new AlkahestryChargingRecipeHandler());
+        registry.addRecipeHandlers(new MortarRecipeHandler());
 
         registry.addRecipes(AlkahestryCraftingRecipeMaker.getRecipes());
         registry.addRecipes(AlkahestryChargingRecipeMaker.getRecipes());
+        registry.addRecipes(MortarRecipeMaker.getRecipes());
 
         for(DescriptionEntry entry : JEIDescriptionRegistry.entrySet())
             registry.addDescription(entry.itemStack(), entry.langKey());

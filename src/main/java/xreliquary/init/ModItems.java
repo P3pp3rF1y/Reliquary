@@ -89,7 +89,7 @@ public class ModItems {
         registerItem(magazine, Names.magazine);
         registerItem(magicbane, Names.magicbane);
         registerItem(midasTouchstone, Names.midas_touchstone);
-        registerItem(potionEssence, Names.potion_essence);
+        registerItem(potionEssence, Names.potion_essence, false);
         registerItem(phoenixDown, Names.phoenix_down);
         registerItem(pyromancerStaff, Names.pyromancer_staff);
         registerItem(rendingGale, Names.rending_gale);
@@ -104,12 +104,14 @@ public class ModItems {
         registerItem(witchHat, Names.witch_hat);
         registerItem(witherlessRose, Names.witherless_rose);
         registerItem(potion, Names.potion);
-
     }
 
     private static void registerItem(Item item, String name) {
+        registerItem(item, name, true);
+    }
+    private static void registerItem(Item item, String name, boolean registerSubItemsInJEI) {
         GameRegistry.registerItem(item, Reference.DOMAIN + name);
-        JEIDescriptionRegistry.register(item, name);
+        JEIDescriptionRegistry.register(item, name, registerSubItemsInJEI);
     }
 
 }
