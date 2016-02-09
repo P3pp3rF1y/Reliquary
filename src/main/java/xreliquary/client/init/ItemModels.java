@@ -53,6 +53,9 @@ public class ItemModels {
         registerItemModel(ModItems.witchHat, Names.witch_hat);
         registerItemModel(ModItems.witherlessRose, Names.witherless_rose);
 
+        //TODO temporary, remove in alpha2
+        registerItemModel(ModItems.potion, Names.potion);
+
         registerItemModel(ModItems.infernalTear, Names.infernal_tear_empty);
         ModelBakery.registerItemVariants(ModItems.infernalTear, ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR));
 
