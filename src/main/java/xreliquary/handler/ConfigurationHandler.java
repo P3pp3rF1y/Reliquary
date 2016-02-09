@@ -20,6 +20,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.reference.Names;

@@ -45,6 +45,6 @@ public class ModBlocks {
 
     private static void registerBlock(Block block, Class<? extends ItemBlock> itemclass, String name) {
         GameRegistry.registerBlock(block, itemclass, Reference.DOMAIN + name);
-        JEIDescriptionRegistry.register(Item.getItemFromBlock(block), name, true);
+        JEIDescriptionRegistry.register(Item.getItemFromBlock(block), name);
     }
 }

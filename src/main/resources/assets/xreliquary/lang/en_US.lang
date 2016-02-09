@@ -661,3 +661,5 @@ config.potion_map.comment=List of potion ingredients and their passive effects
 
 jei.recipe.alkahest_crafting=Alkahestry Tome Crafting
 jei.recipe.alkahest_charging=Alkahestry Tome Charging
+jei.recipe.mortar=Apothecary Mortar
+jei.recipe.cauldron=Apothecary Cauldron

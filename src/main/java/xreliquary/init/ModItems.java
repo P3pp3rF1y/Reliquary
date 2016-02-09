@@ -1,11 +1,15 @@
 package xreliquary.init;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
 import xreliquary.items.*;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ModItems {
@@ -106,12 +110,19 @@ public class ModItems {
         registerItem(potion, Names.potion);
     }
 
+    public static void initPotionsJEI() {
+        List<ItemStack> subItems = new ArrayList<>();
+        potionEssence.getSubItems(potionEssence, potionEssence.getCreativeTab(), subItems);
+        JEIDescriptionRegistry.register(subItems, Names.potion_essence);
+    }
+
     private static void registerItem(Item item, String name) {
         registerItem(item, name, true);
     }
-    private static void registerItem(Item item, String name, boolean registerSubItemsInJEI) {
+    private static void registerItem(Item item, String name, boolean registerInJEI) {
         GameRegistry.registerItem(item, Reference.DOMAIN + name);
-        JEIDescriptionRegistry.register(item, name, registerSubItemsInJEI);
+        if (registerInJEI)
+            JEIDescriptionRegistry.register(item, name);
     }
 
 }

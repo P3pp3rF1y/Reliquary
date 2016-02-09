@@ -4,13 +4,16 @@ import com.google.common.collect.HashMultimap;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.util.NBTHelper;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
@@ -25,10 +28,13 @@ import xreliquary.Reliquary;
 import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.entities.potion.EntityThrownXRPotion;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +49,9 @@ public class ItemXRPotion extends ItemBase {
         super(Names.potion);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(64);
+        this.setHasSubtypes(true);
     }
+
 
     // returns an empty vial when used in crafting recipes, unless it's one of
     // the base potion types.
@@ -197,6 +205,23 @@ public class ItemXRPotion extends ItemBase {
     @Override
     public int getMaxItemUseDuration(ItemStack par1ItemStack) {
         return 16;
+    }
+
+    @Override
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+        List<ItemStack> splashPotions = new ArrayList<>();
+        for(PotionEssence essence : Settings.uniquePotions) {
+            ItemStack potion = new ItemStack(ModItems.potion, 1);
+            potion.setTagCompound(essence.writeToNBT());
+            NBTHelper.setBoolean("hasPotion", potion, true);
+
+            ItemStack splashPotion = potion.copy();
+            NBTHelper.setBoolean("splash", splashPotion, true);
+
+            subItems.add(potion);
+            splashPotions.add(splashPotion);
+        }
+        subItems.addAll(splashPotions);
     }
 
     /**

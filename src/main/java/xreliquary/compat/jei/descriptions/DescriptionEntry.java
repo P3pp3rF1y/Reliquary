@@ -2,14 +2,16 @@ package xreliquary.compat.jei.descriptions;
 
 import net.minecraft.item.ItemStack;
 
+import java.util.List;
+
 public class DescriptionEntry
 {
 	private final String lang;
-	private final ItemStack ist;
+	private final List<ItemStack> itemStacks;
 
-	public DescriptionEntry(ItemStack itemStack, String langKey) {
+	public DescriptionEntry(List<ItemStack> itemStack, String langKey) {
 
-		this.ist = itemStack;
+		this.itemStacks = itemStack;
 		this.lang = langKey;
 	}
 
@@ -18,8 +20,8 @@ public class DescriptionEntry
 		return lang;
 	}
 
-	public ItemStack itemStack()
+	public List<ItemStack>  itemStacks()
 	{
-		return ist;
+		return itemStacks;
 	}
 }
