@@ -104,6 +104,7 @@ public class ModItems {
         registerItem(witchHat, Names.witch_hat);
         registerItem(witherlessRose, Names.witherless_rose);
         registerItem(potion, Names.potion);
+
     }
 
     private static void registerItem(Item item, String name) {
