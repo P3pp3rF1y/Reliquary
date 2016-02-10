@@ -1,5 +1,6 @@
 package xreliquary.init;
 
+import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -7,6 +8,8 @@ import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
 import xreliquary.items.*;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
+import xreliquary.util.potions.PotionEssence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,6 +117,22 @@ public class ModItems {
         List<ItemStack> subItems = new ArrayList<>();
         potionEssence.getSubItems(potionEssence, potionEssence.getCreativeTab(), subItems);
         JEIDescriptionRegistry.register(subItems, Names.potion_essence);
+
+        List<ItemStack> potions = new ArrayList<>();
+        List<ItemStack> splashPotions = new ArrayList<>();
+
+        for (PotionEssence essence : Settings.uniquePotions) {
+            ItemStack potion = new ItemStack(ModItems.potion, 1);
+            potion.setTagCompound(essence.writeToNBT());
+            NBTHelper.setBoolean("hasPotion", potion, true);
+            potions.add(potion);
+
+            ItemStack splashPotion = potion.copy();
+            NBTHelper.setBoolean("splash", splashPotion, true);
+            splashPotions.add(splashPotion);
+        }
+        JEIDescriptionRegistry.register(potions, Names.potion);
+        JEIDescriptionRegistry.register(splashPotions, Names.potion_splash);
     }
 
     private static void registerItem(Item item, String name) {
