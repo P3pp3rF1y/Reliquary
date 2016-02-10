@@ -5,7 +5,10 @@ import net.minecraft.item.ItemStack;
 import xreliquary.compat.jei.alkahestry.*;
 import xreliquary.compat.jei.descriptions.DescriptionEntry;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
-import xreliquary.compat.jei.potions.*;
+import xreliquary.compat.jei.mortar.MortarRecipeCategory;
+import xreliquary.compat.jei.mortar.MortarRecipeHandler;
+import xreliquary.compat.jei.mortar.MortarRecipeMaker;
+import xreliquary.compat.jei.cauldron.*;
 import xreliquary.init.ModItems;
 
 @JEIPlugin
@@ -20,16 +23,19 @@ public class ReliquaryPlugin implements IModPlugin {
         registry.addRecipeCategories(new AlkahestryChargingRecipeCategory());
         registry.addRecipeCategories(new MortarRecipeCategory());
         registry.addRecipeCategories(new CauldronRecipeCategory());
+        registry.addRecipeCategories(new CauldronSplashRecipeCategory());
 
         registry.addRecipeHandlers(new AlkahestryCraftingRecipeHandler());
         registry.addRecipeHandlers(new AlkahestryChargingRecipeHandler());
         registry.addRecipeHandlers(new MortarRecipeHandler());
         registry.addRecipeHandlers(new CauldronRecipeHandler());
+        registry.addRecipeHandlers(new CauldronSplashRecipeHandler());
 
         registry.addRecipes(AlkahestryCraftingRecipeMaker.getRecipes());
         registry.addRecipes(AlkahestryChargingRecipeMaker.getRecipes());
         registry.addRecipes(MortarRecipeMaker.getRecipes());
         registry.addRecipes(CauldronRecipeMaker.getRecipes());
+        registry.addRecipes(CauldronSplashRecipeMaker.getRecipes());
 
         for(DescriptionEntry entry : JEIDescriptionRegistry.entrySet())
             registry.addDescription(entry.itemStacks(), entry.langKey());

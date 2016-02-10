@@ -1,4 +1,4 @@
-package xreliquary.compat.jei.potions;
+package xreliquary.compat.jei.cauldron;
 
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;

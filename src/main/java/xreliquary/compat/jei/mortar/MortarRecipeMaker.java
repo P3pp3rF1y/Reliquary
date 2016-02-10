@@ -1,19 +1,15 @@
-package xreliquary.compat.jei.potions;
+package xreliquary.compat.jei.mortar;
 
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
-import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeJEI;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
-import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 public class MortarRecipeMaker {
     @Nonnull

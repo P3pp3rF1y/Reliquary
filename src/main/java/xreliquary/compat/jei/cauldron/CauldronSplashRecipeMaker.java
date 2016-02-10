@@ -1,20 +1,21 @@
-package xreliquary.compat.jei.potions;
+package xreliquary.compat.jei.cauldron;
 
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.item.ItemStack;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
-import xreliquary.util.potions.PotionIngredient;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CauldronRecipeMaker {
+
+public class CauldronSplashRecipeMaker
+{
     @Nonnull
-    public static List<CauldronRecipeJEI> getRecipes() {
-        ArrayList<CauldronRecipeJEI> recipes = new ArrayList<>();
+    public static List<CauldronSplashRecipeJEI> getRecipes() {
+        ArrayList<CauldronSplashRecipeJEI> recipes = new ArrayList<>();
 
         for(PotionEssence essence : Settings.uniquePotions) {
 
@@ -24,9 +25,9 @@ public class CauldronRecipeMaker {
             ItemStack output = new ItemStack(ModItems.potion);
             output.setTagCompound(essence.writeToNBT());
             NBTHelper.setBoolean("hasPotion", output, true);
+            NBTHelper.setBoolean("splash", output, true);
 
-
-            recipes.add(new CauldronRecipeJEI(input, output));
+            recipes.add(new CauldronSplashRecipeJEI(input, output));
         }
 
         return recipes;

@@ -1,4 +1,4 @@
-package xreliquary.compat.jei.potions;
+package xreliquary.compat.jei.mortar;
 
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -9,12 +9,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import xreliquary.compat.jei.ReliquaryPlugin;
-import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeJEI;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Reference;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
 
 
 public class MortarRecipeCategory implements IRecipeCategory {

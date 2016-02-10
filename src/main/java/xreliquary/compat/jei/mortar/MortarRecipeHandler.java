@@ -1,8 +1,7 @@
-package xreliquary.compat.jei.potions;
+package xreliquary.compat.jei.mortar;
 
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeJEI;
 import xreliquary.reference.Reference;
 
 import javax.annotation.Nonnull;

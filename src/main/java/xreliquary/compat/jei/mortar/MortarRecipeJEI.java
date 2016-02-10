@@ -1,4 +1,4 @@
-package xreliquary.compat.jei.potions;
+package xreliquary.compat.jei.mortar;
 
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;

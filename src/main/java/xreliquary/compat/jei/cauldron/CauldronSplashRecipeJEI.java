@@ -1,4 +1,4 @@
-package xreliquary.compat.jei.potions;
+package xreliquary.compat.jei.cauldron;
 
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class CauldronRecipeJEI extends BlankRecipeWrapper {
+public class CauldronSplashRecipeJEI extends BlankRecipeWrapper {
     @Nonnull
     private final ItemStack input;
 
@@ -16,7 +16,7 @@ public class CauldronRecipeJEI extends BlankRecipeWrapper {
     private final ItemStack output;
 
     @SuppressWarnings("unchecked")
-    public CauldronRecipeJEI(@Nonnull ItemStack input, @Nonnull ItemStack output)
+    public CauldronSplashRecipeJEI(@Nonnull ItemStack input, @Nonnull ItemStack output)
     {
         this.input = input;
         this.output = output;
