@@ -21,10 +21,6 @@ plugins {
     id "com.jfrog.bintray" version "1.5"
 }
 
-repositories {
-    maven { url "http://dvs1.progwml6.com/files/maven" }
-}
-
 // We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
 apply plugin: 'net.minecraftforge.gradle.forge'
 
@@ -37,6 +33,16 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
+repositories {
+    maven { url "http://dvs1.progwml6.com/files/maven" }
+    ivy {
+        name "JustEnoughResources"
+        artifactPattern "http://addons-origin.cursecdn.com/files/${config.jer_cf}/[module]-[revision].[ext]"
+    }
+
+}
+
+
 
 
 group = 'xreliquary' // Your main package.
@@ -48,6 +54,7 @@ targetCompatibility = 1.8
 
 dependencies {
     deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
+    deobfCompile name:'JustEnoughResources', version: config.jer_version, ext: 'jar'
 }
 
 minecraft {
