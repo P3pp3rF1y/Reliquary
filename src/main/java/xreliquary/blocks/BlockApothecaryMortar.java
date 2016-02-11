@@ -61,7 +61,7 @@ public class BlockApothecaryMortar extends BlockBase {
     }
     @Override
     public int getRenderType() {
-        return -1;
+        return 2;
     }
 
     //TODO move to inventory helper
