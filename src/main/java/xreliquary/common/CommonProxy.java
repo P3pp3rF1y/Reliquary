@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import xreliquary.Reliquary;
 import xreliquary.common.gui.GUIHandler;
+import xreliquary.compat.CompatibilityLoader;
 import xreliquary.entities.*;
 import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.entities.potion.EntityFertilePotion;
@@ -14,11 +15,8 @@ import xreliquary.entities.shot.*;
 import xreliquary.event.CommonEventHandler;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.init.ModBlocks;
-import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
-import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
-import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
-import xreliquary.items.alkahestry.AlkahestryChargingRecipe;
+
 
 public class CommonProxy {
 
@@ -70,6 +68,7 @@ public class CommonProxy {
 
         NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
         MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
+        MinecraftForge.EVENT_BUS.register(new CompatibilityLoader());
 
         this.registerEntities();
     }

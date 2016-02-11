@@ -3,6 +3,8 @@ package xreliquary.compat.jei.descriptions;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 
@@ -23,12 +25,10 @@ public class JEIDescriptionRegistry
 		return descriptionEntries;
 	}
 
-	@Optional.Method(modid= Compatibility.MOD_ID.JEI)
 	public static void register(List<ItemStack> itemStacks, String name) {
 		registry.put(Names.jei_description_prefix + name, itemStacks);
 	}
 
-	@Optional.Method(modid= Compatibility.MOD_ID.JEI)
 	public static void register(Item item, String name) {
 		if (item.getCreativeTab() != null) {
 			if (item.getHasSubtypes()) {

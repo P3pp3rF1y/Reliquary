@@ -1,30 +1,38 @@
 package xreliquary;
 
+import jeresources.api.conditionals.Conditional;
 import lib.enderwizards.sandstone.Sandstone;
 import lib.enderwizards.sandstone.init.Content;
 import lib.enderwizards.sandstone.mod.SandstoneMod;
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xreliquary.common.CommonProxy;
+import xreliquary.compat.jer.JERCompat;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Settings;
@@ -43,6 +51,8 @@ public class Reliquary {
 
     public static Content CONTENT;
     public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID(), Reference.MOD_ID);
+
+    //TODO consolidate logging into one logger
     public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
     @EventHandler
@@ -96,6 +106,8 @@ public class Reliquary {
         LOGGER.log(Level.INFO, "Loaded successfully!");
 
     }
+
+    private static boolean JERLoaded = false;
 
     @EventHandler
     public void onMessage(IMCEvent event) {

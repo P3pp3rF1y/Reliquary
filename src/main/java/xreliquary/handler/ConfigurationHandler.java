@@ -11,7 +11,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -20,7 +19,6 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.reference.Names;
@@ -784,7 +782,7 @@ public class ConfigurationHandler
 		drops.put(Names.ender_heart + "_base", getInt(Names.ender_heart + "_base", Names.mob_drop_probability, 10, 0, 100));
 		drops.put(Names.ender_heart + "_looting", getInt(Names.ender_heart + "_looting", Names.mob_drop_probability, 5, 0, 100));
 
-		Settings.mobDropProbabilities = drops;
+		Settings.MobDrops.mobDropProbabilities = drops;
 		setCategoryTranslations(Names.mob_drop_probability, true);
 	}
 

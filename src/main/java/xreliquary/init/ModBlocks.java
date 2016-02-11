@@ -6,13 +6,17 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.blocks.*;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
 import xreliquary.items.block.ItemFertileLilyPad;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
@@ -45,6 +49,12 @@ public class ModBlocks {
 
     private static void registerBlock(Block block, Class<? extends ItemBlock> itemclass, String name) {
         GameRegistry.registerBlock(block, itemclass, Reference.DOMAIN + name);
+        registerJEI(block, name);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Optional.Method(modid= Compatibility.MOD_ID.JEI)
+    private static void registerJEI(Block block, String name) {
         JEIDescriptionRegistry.register(Item.getItemFromBlock(block), name);
     }
 }

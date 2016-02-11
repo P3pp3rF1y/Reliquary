@@ -71,8 +71,17 @@ public class Settings
 		public static boolean seekerShot;
 	}
 
+	public static class MobDrops {
+		public static Map<String, Integer> mobDropProbabilities;
 
-	public static Map<String, Integer> mobDropProbabilities;
+		public static float getBaseDrop(String s) {
+			return (float) mobDropProbabilities.get(s + "_base") * 0.01F;
+		}
+
+		public static float getLootingDrop(String s) {
+			return (float) mobDropProbabilities.get(s + "_looting") * 0.01F;
+		}
+	}
 
 	public static class AlkahestryTome {
 		public static int chargeLimit;

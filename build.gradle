@@ -54,7 +54,7 @@ targetCompatibility = 1.8
 
 dependencies {
     deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
-    deobfCompile name:'JustEnoughResources', version: config.jer_version, ext: 'jar'
+    compile name:'JustEnoughResources', version: config.jer_version, ext: 'jar'
 }
 
 minecraft {
