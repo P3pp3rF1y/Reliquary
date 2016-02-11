@@ -58,10 +58,10 @@ public class CauldronSplashRecipeCategory implements IRecipeCategory {
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper) {
-        recipeLayout.getItemStacks().init(INPUT_SLOT, true, 0, 0);
-        recipeLayout.getItemStacks().init(OUTPUT_SLOT, false, 90, 0);
-        recipeLayout.getItemStacks().init(CAULDRON_SLOT, false, 45, 0);
-        recipeLayout.getItemStacks().init(GUNPOWDER_SLOT, false, 44, 34);
+        recipeLayout.getItemStacks().init(INPUT_SLOT, true, 0, 33);
+        recipeLayout.getItemStacks().init(OUTPUT_SLOT, false, 90, 33);
+        recipeLayout.getItemStacks().init(CAULDRON_SLOT, false, 44, 33);
+        recipeLayout.getItemStacks().init(GUNPOWDER_SLOT, false, 44, 0);
 
         if (recipeWrapper instanceof CauldronSplashRecipeJEI)
         {
