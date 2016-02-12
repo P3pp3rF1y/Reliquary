@@ -83,6 +83,7 @@ public class EntityBlazeShot extends EntityShotBase {
 
     @Override
     protected void groundImpact(EnumFacing sideHit) {
+        this.setDead();
     }
 
     @Override
