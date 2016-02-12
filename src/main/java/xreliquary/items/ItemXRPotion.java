@@ -162,7 +162,7 @@ public class ItemXRPotion extends ItemBase {
             for (PotionEffect effect : new PotionEssence(ist.getTagCompound()).getEffects()) {
                 if (effect == null)
                     continue;
-                player.addPotionEffect(effect);
+                player.addPotionEffect(new PotionEffect(effect.getPotionID(), effect.getDuration(), effect.getAmplifier(), false, false));
             }
         }
         if (!player.capabilities.isCreativeMode) {
