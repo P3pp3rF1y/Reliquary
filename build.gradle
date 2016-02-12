@@ -39,7 +39,10 @@ repositories {
         name "JustEnoughResources"
         artifactPattern "http://addons-origin.cursecdn.com/files/${config.jer_cf}/[module]-[revision].[ext]"
     }
-
+    ivy {
+        name "Baubles"
+        artifactPattern "http://addons-origin.cursecdn.com/files/${config.baubles_cf}/[module]-[revision].[ext]"
+    }
 }
 
 
@@ -55,6 +58,7 @@ targetCompatibility = 1.8
 dependencies {
     deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
     compile name:'JustEnoughResources', version: config.jer_version, ext: 'jar'
+    compile name:'Baubles', version: config.baubles_version, ext: 'jar'
 }
 
 minecraft {
