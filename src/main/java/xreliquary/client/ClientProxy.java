@@ -1,13 +1,18 @@
 package xreliquary.client;
 
 import lib.enderwizards.sandstone.util.LanguageHelper;
+import lib.enderwizards.sandstone.util.NBTHelper;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.entity.RenderSnowball;
@@ -18,16 +23,61 @@ import xreliquary.client.init.ItemBlockModels;
 import xreliquary.client.init.ItemModels;
 import xreliquary.client.render.*;
 import xreliquary.common.CommonProxy;
+import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
 import xreliquary.entities.*;
 import xreliquary.entities.potion.*;
 import xreliquary.entities.shot.*;
 import xreliquary.event.ClientEventHandler;
-import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
+import xreliquary.reference.Compatibility;
+import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
+import xreliquary.util.potions.PotionEssence;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //TODO refactor proxy so that it has functionally named methods that get called from main mod class
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
+
+    @Override
+    public void registerJEI(Block block, String name) {
+        if (Loader.isModLoaded(Compatibility.MOD_ID.JEI))
+            JEIDescriptionRegistry.register(Item.getItemFromBlock(block), name);
+    }
+
+    @Override
+    public void initPotionsJEI() {
+        if (!Loader.isModLoaded(Compatibility.MOD_ID.JEI))
+            return;
+
+        List<ItemStack> subItems = new ArrayList<>();
+        ModItems.potionEssence.getSubItems(ModItems.potionEssence, ModItems.potionEssence.getCreativeTab(), subItems);
+        JEIDescriptionRegistry.register(subItems, Names.potion_essence);
+
+        List<ItemStack> potions = new ArrayList<>();
+        List<ItemStack> splashPotions = new ArrayList<>();
+
+        for (PotionEssence essence : Settings.uniquePotions) {
+            ItemStack potion = new ItemStack(ModItems.potion, 1);
+            potion.setTagCompound(essence.writeToNBT());
+            NBTHelper.setBoolean("hasPotion", potion, true);
+            potions.add(potion);
+
+            ItemStack splashPotion = potion.copy();
+            NBTHelper.setBoolean("splash", splashPotion, true);
+            splashPotions.add(splashPotion);
+        }
+        JEIDescriptionRegistry.register(potions, Names.potion);
+        JEIDescriptionRegistry.register(splashPotions, Names.potion_splash);
+    }
+
+    @Override
+    public void registerJEI(Item item, String name) {
+        if (Loader.isModLoaded(Compatibility.MOD_ID.JEI))
+            JEIDescriptionRegistry.register(item, name);
+    }
 
     @Override
     public void preInit() {
@@ -35,6 +85,7 @@ public class ClientProxy extends CommonProxy {
 
         ItemModels.registerItemModels();
         ItemBlockModels.registerItemBlockModels();
+
     }
 
     @Override

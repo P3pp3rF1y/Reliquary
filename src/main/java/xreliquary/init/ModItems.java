@@ -1,23 +1,12 @@
 package xreliquary.init;
 
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
+import xreliquary.Reliquary;
+import xreliquary.client.ClientProxy;
 import xreliquary.items.*;
-import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
-import xreliquary.reference.Settings;
-import xreliquary.util.potions.PotionEssence;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class ModItems {
@@ -118,45 +107,14 @@ public class ModItems {
         registerItem(potion, Names.potion);
     }
 
-    @SideOnly(Side.CLIENT)
-    public static void initPotionsJEI() {
-        if (!Loader.isModLoaded(Compatibility.MOD_ID.JEI))
-            return;
-
-        List<ItemStack> subItems = new ArrayList<>();
-        potionEssence.getSubItems(potionEssence, potionEssence.getCreativeTab(), subItems);
-        JEIDescriptionRegistry.register(subItems, Names.potion_essence);
-
-        List<ItemStack> potions = new ArrayList<>();
-        List<ItemStack> splashPotions = new ArrayList<>();
-
-        for (PotionEssence essence : Settings.uniquePotions) {
-            ItemStack potion = new ItemStack(ModItems.potion, 1);
-            potion.setTagCompound(essence.writeToNBT());
-            NBTHelper.setBoolean("hasPotion", potion, true);
-            potions.add(potion);
-
-            ItemStack splashPotion = potion.copy();
-            NBTHelper.setBoolean("splash", splashPotion, true);
-            splashPotions.add(splashPotion);
-        }
-        JEIDescriptionRegistry.register(potions, Names.potion);
-        JEIDescriptionRegistry.register(splashPotions, Names.potion_splash);
-    }
-
     private static void registerItem(Item item, String name) {
         registerItem(item, name, true);
     }
+
     private static void registerItem(Item item, String name, boolean registerInJEI) {
         GameRegistry.registerItem(item, Reference.DOMAIN + name);
         if (registerInJEI)
-            registerJEI(item, name);
-    }
-
-    @SideOnly(Side.CLIENT)
-    private static void registerJEI(Item item, String name) {
-        if (Loader.isModLoaded(Compatibility.MOD_ID.JEI))
-            JEIDescriptionRegistry.register(item, name);
+            Reliquary.PROXY.registerJEI(item, name);
     }
 
 }

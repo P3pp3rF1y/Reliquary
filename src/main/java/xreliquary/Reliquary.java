@@ -77,7 +77,7 @@ public class Reliquary {
         //TODO figure out a better way to handle this if possible
         ConfigurationHandler.loadPotionMap();
 
-        ModItems.initPotionsJEI();
+        PROXY.initPotionsJEI();
 
         PacketHandler.init();
 

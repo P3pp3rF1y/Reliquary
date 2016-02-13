@@ -3,23 +3,15 @@ package xreliquary.init;
 import lib.enderwizards.sandstone.blocks.BlockBase;
 import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.common.network.handshake.FMLHandshakeMessage;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import xreliquary.Reliquary;
 import xreliquary.blocks.*;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.blocks.tile.TileEntityMortar;
-import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
+import xreliquary.client.ClientProxy;
 import xreliquary.items.block.ItemFertileLilyPad;
-import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
@@ -52,12 +44,7 @@ public class ModBlocks {
 
     private static void registerBlock(Block block, Class<? extends ItemBlock> itemclass, String name) {
         GameRegistry.registerBlock(block, itemclass, Reference.DOMAIN + name);
-        registerJEI(block, name);
+        Reliquary.PROXY.registerJEI(block, name);
     }
 
-    @SideOnly(Side.CLIENT)
-    private static void registerJEI(Block block, String name) {
-        if (Loader.isModLoaded(Compatibility.MOD_ID.JEI))
-            JEIDescriptionRegistry.register(Item.getItemFromBlock(block), name);
-    }
 }

@@ -1,5 +1,7 @@
 package xreliquary.common;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -110,5 +112,14 @@ public class CommonProxy {
     }
 
     public void initColors() {
+    }
+
+    public void registerJEI(Item item, String name) {
+    }
+
+    public void registerJEI(Block block, String name) {
+    }
+
+    public void initPotionsJEI() {
     }
 }
