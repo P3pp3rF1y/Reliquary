@@ -131,9 +131,9 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
                     }
                 }
             }
-            spawnParticles();
             this.setDead();
         }
+        spawnParticles();
     }
 
     public int getColor() {
@@ -145,30 +145,32 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
     // the coloration of the particles.
     protected void spawnParticles() {
         Random var7 = rand;
-        for (int var15 = 0; var15 < 8; ++var15) {
-            worldObj.spawnParticle( EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
-        }
+        if (!worldObj.isRemote){
+            for (int var15 = 0; var15 < 8; ++var15) {
+                worldObj.spawnParticle( EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
+            }
+            worldObj.playSoundAtEntity(this, "dig.glass", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+        } else {
+            int color = getColor();
 
-        int color = getColor();
+            float red = (((color >> 16) & 255) / 256F);
+            float green = (((color >> 8) & 255) / 256F);
+            float blue = (((color >> 0) & 255) / 256F);
 
-        float red = (((color >> 16) & 255) / 256F);
-        float green = (((color >> 8) & 255) / 256F);
-        float blue = (((color >> 0) & 255) / 256F);
-
-        for (int var20 = 0; var20 < 100; ++var20) {
-            double var39 = var7.nextDouble() * 4.0D;
-            double var23 = var7.nextDouble() * Math.PI * 2.0D;
-            double var25 = Math.cos(var23) * var39;
-            double var27 = 0.01D + var7.nextDouble() * 0.5D;
-            double var29 = Math.sin(var23) * var39;
-            EntityFX var31 = spawnEntityFX(Minecraft.getMinecraft(), EnumParticleTypes.SPELL.getParticleID(), EnumParticleTypes.SPELL.getShouldIgnoreRange(), this.posX + var25 * 0.1D, this.posY + 0.3D, this.posZ + var29 * 0.1D, var25, var27, var29, new int[0]);
-            if (var31 != null) {
-                float var32 = 0.75F + var7.nextFloat() * 0.25F;
-                var31.setRBGColorF(red * var32, green * var32, blue * var32);
-                var31.multiplyVelocity((float) var39);
+            for (int var20 = 0; var20 < 100; ++var20) {
+                double var39 = var7.nextDouble() * 4.0D;
+                double var23 = var7.nextDouble() * Math.PI * 2.0D;
+                double var25 = Math.cos(var23) * var39;
+                double var27 = 0.01D + var7.nextDouble() * 0.5D;
+                double var29 = Math.sin(var23) * var39;
+                EntityFX var31 = spawnEntityFX(Minecraft.getMinecraft(), EnumParticleTypes.SPELL.getParticleID(), EnumParticleTypes.SPELL.getShouldIgnoreRange(), this.posX + var25 * 0.1D, this.posY + 0.3D, this.posZ + var29 * 0.1D, var25, var27, var29, new int[0]);
+                if (var31 != null) {
+                    float var32 = 0.75F + var7.nextFloat() * 0.25F;
+                    var31.setRBGColorF(red * var32, green * var32, blue * var32);
+                    var31.multiplyVelocity((float) var39);
+                }
             }
         }
-        worldObj.playSoundAtEntity(this, "dig.glass", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
     }
 
     private EntityFX spawnEntityFX(Minecraft mc, int p_174974_1_, boolean ignoreRange, double p_174974_3_, double p_174974_5_, double p_174974_7_, double p_174974_9_, double p_174974_11_, double p_174974_13_, int... p_174974_15_)
