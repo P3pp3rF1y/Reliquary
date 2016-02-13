@@ -37,7 +37,6 @@ public class ItemAlkahestryTome extends ItemToggleable {
         this.setMaxStackSize(1);
         this.setMaxDamage(getChargeLimit() + 1); //to always display damage bar
         this.canRepair = false;
-        this.hasSubtypes = false;
         this.setContainerItem(this);
     }
 
