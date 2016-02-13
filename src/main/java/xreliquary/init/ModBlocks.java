@@ -6,7 +6,10 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.network.handshake.FMLHandshakeMessage;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -53,8 +56,8 @@ public class ModBlocks {
     }
 
     @SideOnly(Side.CLIENT)
-    @Optional.Method(modid= Compatibility.MOD_ID.JEI)
     private static void registerJEI(Block block, String name) {
-        JEIDescriptionRegistry.register(Item.getItemFromBlock(block), name);
+        if (Loader.isModLoaded(Compatibility.MOD_ID.JEI))
+            JEIDescriptionRegistry.register(Item.getItemFromBlock(block), name);
     }
 }

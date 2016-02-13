@@ -3,6 +3,7 @@ package xreliquary.init;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -118,8 +119,10 @@ public class ModItems {
     }
 
     @SideOnly(Side.CLIENT)
-    @Optional.Method(modid= Compatibility.MOD_ID.JEI)
     public static void initPotionsJEI() {
+        if (!Loader.isModLoaded(Compatibility.MOD_ID.JEI))
+            return;
+
         List<ItemStack> subItems = new ArrayList<>();
         potionEssence.getSubItems(potionEssence, potionEssence.getCreativeTab(), subItems);
         JEIDescriptionRegistry.register(subItems, Names.potion_essence);
@@ -151,9 +154,9 @@ public class ModItems {
     }
 
     @SideOnly(Side.CLIENT)
-    @Optional.Method(modid= Compatibility.MOD_ID.JEI)
     private static void registerJEI(Item item, String name) {
-        JEIDescriptionRegistry.register(item, name);
+        if (Loader.isModLoaded(Compatibility.MOD_ID.JEI))
+            JEIDescriptionRegistry.register(item, name);
     }
 
 }

@@ -14,9 +14,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
@@ -175,6 +177,7 @@ public class ItemFortuneCoin extends ItemBauble {
     }
 
     @Override
+    @Optional.Method(modid = Compatibility.MOD_ID.Baubles)
     public BaubleType getBaubleType(ItemStack stack) {
         return BaubleType.AMULET;
     }

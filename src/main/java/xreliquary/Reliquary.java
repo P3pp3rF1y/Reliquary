@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -28,6 +29,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xreliquary.common.CommonProxy;
+import xreliquary.compat.CompatibilityLoader;
 import xreliquary.compat.jer.JERCompat;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.init.ModBlocks;
@@ -72,7 +74,6 @@ public class Reliquary {
         //important that this initializes before the pre-init phase
         //PROXY.initRecipeDisablers();
 
-
         //TODO figure out a better way to handle this if possible
         ConfigurationHandler.loadPotionMap();
 
@@ -106,8 +107,6 @@ public class Reliquary {
         LOGGER.log(Level.INFO, "Loaded successfully!");
 
     }
-
-    private static boolean JERLoaded = false;
 
     @EventHandler
     public void onMessage(IMCEvent event) {

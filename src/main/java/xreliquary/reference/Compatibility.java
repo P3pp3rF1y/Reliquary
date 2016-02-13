@@ -6,5 +6,6 @@ public class Compatibility
 	public static class MOD_ID {
 		public static final String JEI = "JEI";
 		public static final String JER = "jeresources";
+		public static final String Baubles = "Baubles";
 	}
 }

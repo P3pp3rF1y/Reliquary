@@ -3,6 +3,7 @@ package xreliquary.compat;
 
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -13,23 +14,21 @@ import xreliquary.reference.Compatibility;
 
 public class CompatibilityLoader
 {
-	private static boolean JERLoaded = false;
+	private static boolean JERDataLoaded = false;
 
 	@SubscribeEvent
 	public void worldLoad(WorldEvent.Load event) {
-		registerJER(event.world);
+		if (Loader.isModLoaded(Compatibility.MOD_ID.JER))
+			registerJER(event.world);
 	}
-
-
 
 	@SideOnly(Side.CLIENT)
-	@Optional.Method(modid = Compatibility.MOD_ID.JER)
 	private void registerJER(World world) {
-		if (!JERLoaded)
+		if (!JERDataLoaded)
 			JERCompat.register(world);
-		JERLoaded = true;
+		JERDataLoaded = true;
 	}
 
 
-
+ 
 }
