@@ -209,6 +209,8 @@ public class ItemXRPotion extends ItemBase {
 
     @Override
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+        subItems.add(new ItemStack(ModItems.potion)); //just an empty one
+
         List<ItemStack> splashPotions = new ArrayList<>();
         for(PotionEssence essence : Settings.uniquePotions) {
             ItemStack potion = new ItemStack(ModItems.potion, 1);
