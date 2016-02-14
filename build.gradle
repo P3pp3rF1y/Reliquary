@@ -21,6 +21,9 @@ plugins {
     id "com.jfrog.bintray" version "1.5"
 }
 
+// We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
+apply plugin: 'net.minecraftforge.gradle.forge'
+
 // External properties
 ext.configFile = file "build.properties"
 configFile.withReader {
@@ -30,8 +33,19 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
-// We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
-apply plugin: 'net.minecraftforge.gradle.forge'
+repositories {
+    maven { url "http://dvs1.progwml6.com/files/maven" }
+    ivy {
+        name "JustEnoughResources"
+        artifactPattern "http://addons-origin.cursecdn.com/files/${config.jer_cf}/[module]-[revision].[ext]"
+    }
+    ivy {
+        name "Baubles"
+        artifactPattern "http://addons-origin.cursecdn.com/files/${config.baubles_cf}/[module]-[revision].[ext]"
+    }
+}
+
+
 
 
 group = 'xreliquary' // Your main package.
@@ -40,6 +54,12 @@ archivesBaseName = 'Reliquary'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+dependencies {
+    deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
+    compile name:'JustEnoughResources', version: config.jer_version, ext: 'jar'
+    compile name:'Baubles', version: config.baubles_version, ext: 'jar'
+}
 
 minecraft {
 	version = config.minecraft_version + "-" + config.forge_version

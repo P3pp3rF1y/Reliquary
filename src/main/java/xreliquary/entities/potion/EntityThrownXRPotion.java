@@ -1,5 +1,8 @@
 package xreliquary.entities.potion;
 
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
@@ -15,6 +18,7 @@ import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.Iterator;
@@ -24,51 +28,33 @@ import java.util.Random;
 /**
  * Created by Xeno on 11/9/2014.
  */
-public class EntityThrownXRPotion extends EntityThrowable
+public class EntityThrownXRPotion extends EntityThrowable implements IEntityAdditionalSpawnData
 {
-
     public EntityThrownXRPotion(World world)
     {
         super(world);
     }
 
+    private int renderColor;
     public PotionEssence essence = null;
-    //public int color = Integer.parseInt(Colors.PURE, 16);
 
-    public EntityThrownXRPotion(World world, EntityLivingBase elb, ItemStack ist)
-    {
+    public EntityThrownXRPotion(World world, EntityLivingBase elb, ItemStack ist) {
         super(world, elb);
         this.essence = new PotionEssence(ist.getTagCompound());
-        setEntityColor(getColor());
+        setRenderColor(getColor());
     }
 
     public EntityThrownXRPotion(World p_i1792_1_, double p_i1792_2_, double p_i1792_4_, double p_i1792_6_, ItemStack ist)
     {
         super(p_i1792_1_, p_i1792_2_, p_i1792_4_, p_i1792_6_);
         this.essence = new PotionEssence(ist.getTagCompound());
-        setEntityColor(getColor());
-    }
-
-    @Override
-    protected void entityInit() {
-        super.entityInit();
-        this.getDataWatcher().addObjectByDataType(11, 2);
-    }
-
-    public int getEntityColor() {
-        int color = this.getDataWatcher().getWatchableObjectInt(11);
-        return color;
-    }
-
-    public void setEntityColor(int c)
-    {
-        this.getDataWatcher().updateObject(11, c);
-        this.getDataWatcher().setObjectWatched(11);
+        setRenderColor(getColor());
     }
 
     /**
      * Gets the amount of gravity to apply to the thrown entity with each tick.
      */
+    @Override
     protected float getGravityVelocity()
     {
         return 0.04F;
@@ -76,12 +62,14 @@ public class EntityThrownXRPotion extends EntityThrowable
 
     //no clue what these do
 
-    protected float func_70182_d()
+    @Override
+    protected float getVelocity()
     {
         return 0.5F;
     }
 
-    protected float func_70183_g()
+    @Override
+    protected float getInaccuracy()
     {
         return -20.0F;
     }
@@ -91,7 +79,6 @@ public class EntityThrownXRPotion extends EntityThrowable
      */
     protected void onImpact(MovingObjectPosition mop)
     {
-        spawnParticles();
         if (!this.worldObj.isRemote)
         {
             List list = essence.getEffects();
@@ -144,40 +131,39 @@ public class EntityThrownXRPotion extends EntityThrowable
                     }
                 }
             }
-
             this.setDead();
         }
+        spawnParticles();
     }
 
     public int getColor() {
         //basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
-        return essence == null ? getEntityColor() : PotionHelper.calcPotionLiquidColor(essence.getEffects());
+        return essence == null ? getRenderColor() : PotionHelper.calcPotionLiquidColor(essence.getEffects());
     }
 
     // most of these are the same in every potion, the only thing that isn't is
     // the coloration of the particles.
     protected void spawnParticles() {
         Random var7 = rand;
-        for (int var15 = 0; var15 < 8; ++var15) {
-            worldObj.spawnParticle( EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
-        }
+        if (!worldObj.isRemote){
+            for (int var15 = 0; var15 < 8; ++var15) {
+                worldObj.spawnParticle( EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
+            }
+            worldObj.playSoundAtEntity(this, "dig.glass", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+        } else {
+            int color = getColor();
 
-        int color = getColor();
+            float red = (((color >> 16) & 255) / 256F);
+            float green = (((color >> 8) & 255) / 256F);
+            float blue = (((color >> 0) & 255) / 256F);
 
-        float red = (((color >> 16) & 255) / 256F);
-        float green = (((color >> 8) & 255) / 256F);
-        float blue = (((color >> 0) & 255) / 256F);
-
-        String var19 = "spell";
-
-        for (int var20 = 0; var20 < 100; ++var20) {
-            double var39 = var7.nextDouble() * 4.0D;
-            double var23 = var7.nextDouble() * Math.PI * 2.0D;
-            double var25 = Math.cos(var23) * var39;
-            double var27 = 0.01D + var7.nextDouble() * 0.5D;
-            double var29 = Math.sin(var23) * var39;
-            if (worldObj.isRemote) {
-                EntityFX var31 = Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), this.posX + var25 * 0.1D, this.posY + 0.3D, this.posZ + var29 * 0.1D, var25, var27, var29 );
+            for (int var20 = 0; var20 < 100; ++var20) {
+                double var39 = var7.nextDouble() * 4.0D;
+                double var23 = var7.nextDouble() * Math.PI * 2.0D;
+                double var25 = Math.cos(var23) * var39;
+                double var27 = 0.01D + var7.nextDouble() * 0.5D;
+                double var29 = Math.sin(var23) * var39;
+                EntityFX var31 = spawnEntityFX(Minecraft.getMinecraft(), EnumParticleTypes.SPELL.getParticleID(), EnumParticleTypes.SPELL.getShouldIgnoreRange(), this.posX + var25 * 0.1D, this.posY + 0.3D, this.posZ + var29 * 0.1D, var25, var27, var29, new int[0]);
                 if (var31 != null) {
                     float var32 = 0.75F + var7.nextFloat() * 0.25F;
                     var31.setRBGColorF(red * var32, green * var32, blue * var32);
@@ -185,10 +171,38 @@ public class EntityThrownXRPotion extends EntityThrowable
                 }
             }
         }
-
-        worldObj.playSoundEffect(posX + 0.5D, posY + 0.5D, posZ + 0.5D, "dig.glass", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
     }
 
+    private EntityFX spawnEntityFX(Minecraft mc, int p_174974_1_, boolean ignoreRange, double p_174974_3_, double p_174974_5_, double p_174974_7_, double p_174974_9_, double p_174974_11_, double p_174974_13_, int... p_174974_15_)
+    {
+        if (mc != null && mc.getRenderViewEntity() != null && mc.effectRenderer != null)
+        {
+            int i = mc.gameSettings.particleSetting;
+
+            if (i == 1 && worldObj.rand.nextInt(3) == 0)
+            {
+                i = 2;
+            }
+
+            double d0 = mc.getRenderViewEntity().posX - p_174974_3_;
+            double d1 = mc.getRenderViewEntity().posY - p_174974_5_;
+            double d2 = mc.getRenderViewEntity().posZ - p_174974_7_;
+
+            if (ignoreRange)
+            {
+                return mc.effectRenderer.spawnEffectParticle(p_174974_1_, p_174974_3_, p_174974_5_, p_174974_7_, p_174974_9_, p_174974_11_, p_174974_13_, p_174974_15_);
+            }
+            else
+            {
+                double d3 = 16.0D;
+                return d0 * d0 + d1 * d1 + d2 * d2 > 256.0D ? null : (i > 1 ? null : mc.effectRenderer.spawnEffectParticle(p_174974_1_, p_174974_3_, p_174974_5_, p_174974_7_, p_174974_9_, p_174974_11_, p_174974_13_, p_174974_15_));
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
@@ -196,7 +210,7 @@ public class EntityThrownXRPotion extends EntityThrowable
     {
         super.readEntityFromNBT(tag);
         this.essence = new PotionEssence(tag);
-        setEntityColor(tag.getInteger("color"));
+        setRenderColor(tag.getInteger("color"));
         if (this.essence.getEffects().size() == 0)
             this.setDead();
     }
@@ -208,7 +222,27 @@ public class EntityThrownXRPotion extends EntityThrowable
     {
         super.writeEntityToNBT(tag);
         tag.setTag("potion", essence == null ? new NBTTagCompound() : essence.writeToNBT());
-        tag.setInteger("color", getEntityColor());
+        tag.setInteger("color", getRenderColor());
+    }
+
+    public int getRenderColor() {
+        return renderColor;
+    }
+
+    private static final int COLOR = 1;
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer) {
+        buffer.writeInt(renderColor);
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf additionalData) {
+        setRenderColor(additionalData.readInt());
+    }
+
+    public void setRenderColor(int renderColor) {
+        this.renderColor = renderColor;
     }
 }
 

@@ -2,18 +2,34 @@ package xreliquary.handler;
 
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.LogHelper;
+import xreliquary.util.alkahestry.AlkahestChargeRecipe;
+import xreliquary.util.alkahestry.AlkahestCraftRecipe;
+import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionIngredient;
+import xreliquary.util.potions.XRPotionHelper;
 
 import java.io.File;
 import java.util.*;
@@ -21,6 +37,13 @@ import java.util.*;
 
 public class ConfigurationHandler
 {
+	//TODO: extract individual config parts into separate classes eg. /config/PotionMapConfig
+	private static final int TOME_COST_LOW_TIER = 4;
+	private static final int TOME_COST_MIDDLE_TIER = 8;
+	private static final int TOME_COST_HIGH_TIER = 32;
+	private static final int TOME_COST_UBER_TIER = 64;
+
+
 	public static Configuration configuration;
 
 	public static void init(File configFile)
@@ -38,6 +61,280 @@ public class ConfigurationHandler
 		loadEasyModeSettings();
 		loadMobDropProbabilities();
 		loadBlockAndItemSettings();
+	}
+
+	public static void loadPotionMap() {
+		ConfigCategory category = configuration.getCategory(Names.potion_map);
+
+		if (category.isEmpty()) {
+			addDefaultPotionMap(category);
+		}
+
+		loadPotionMapIntoSettings(category);
+
+		LogHelper.debug("Starting calculation of potion combinations");
+		loadPotionCombinations();
+		loadUniquePotions();
+		LogHelper.debug("Done with potion combinations");
+
+		setCategoryTranslations(Names.potion_map, true);
+	}
+
+	private static void loadUniquePotions() {
+		Settings.uniquePotions.clear();
+
+		for (PotionEssence essence : Settings.potionCombinations) {
+			boolean found = false;
+			for (PotionEssence uniqueEssence : Settings.uniquePotions) {
+				if (effectsEqual(essence.effects, uniqueEssence.effects)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				Settings.uniquePotions.add(essence);
+		}
+
+		Settings.uniquePotions.sort(new Comparator<PotionEssence>() {
+			@Override
+			public int compare(PotionEssence o1, PotionEssence o2) {
+				int ret = StatCollector.translateToLocal(o1.effects.get(0).getEffectName()).trim().compareTo(StatCollector.translateToLocal(o2.effects.get(0).getEffectName()).trim());
+
+				if (ret == 0)
+					ret = Integer.compare(o1.effects.get(0).getAmplifier(), o2.effects.get(0).getAmplifier());
+
+				return ret;
+			}
+		});
+	}
+
+	private static void loadPotionCombinations() {
+		Settings.potionCombinations.clear();
+
+		//only working with two ingredient essences here, also doing just one effect ones
+		// as well as just adding a subset of it with unique potion ids
+		for(PotionIngredient ingredient1 : Settings.potionMap) {
+			for(PotionIngredient ingredient2 : Settings.potionMap) {
+				if (ingredient1.item.getItem() != ingredient2.item.getItem() || ingredient1.item.getMetadata() != ingredient2.item.getMetadata()) {
+					PotionEssence twoEssence = new PotionEssence(new PotionIngredient[] {ingredient1, ingredient2});
+					if (twoEssence.effects.size() == 1) {
+						addPotionCombination(twoEssence);
+					}
+				}
+			}
+		}
+	}
+
+	private static void addPotionCombination(PotionEssence newEssence) {
+		for (PotionEssence essence: Settings.potionCombinations) {
+			//exactly same ingredients in a different order are not to be added here
+			if(ingredientsEqual(essence.ingredients, newEssence.ingredients)) {
+				return;
+			}
+			//the same effect potion id with different duration is not supposed to be added here
+			if(effectsEqual(essence.effects, newEssence.effects, false, true)
+					&& !effectsEqual(essence.effects, newEssence.effects)) {
+				return;
+			}
+		}
+
+		Settings.potionCombinations.add(newEssence);
+	}
+
+	private static boolean ingredientsEqual(List<PotionIngredient> a, List<PotionIngredient> b) {
+		if (a.size() != b.size())
+			return false;
+		for (PotionIngredient ingredientA:a) {
+			boolean found = false;
+			for(PotionIngredient ingredientB:b) {
+				if(ingredientA.item.getItem() == ingredientB.item.getItem()
+						&& ingredientA.item.getMetadata() == ingredientB.item.getMetadata()) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				return false;
+		}
+		return true;
+	}
+
+	private static boolean effectsEqual(List<PotionEffect> a, List<PotionEffect> b) {
+		return effectsEqual(a, b, true, true);
+	}
+
+	private static boolean effectsEqual(List<PotionEffect> a, List<PotionEffect> b, boolean compareDuration, boolean comparePotency) {
+		if(a.size() != b.size())
+			return false;
+
+		for (PotionEffect effectA:a) {
+			boolean found = false;
+			for(PotionEffect effectB:b) {
+				if(effectA.getPotionID() == effectB.getPotionID()
+						&& (!compareDuration || effectA.getDuration() == effectB.getDuration())
+						&& (!comparePotency || effectA.getAmplifier() == effectB.getAmplifier())) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				return false;
+		}
+		return true;
+	}
+
+	private static void loadPotionMapIntoSettings(ConfigCategory category) {
+		Settings.potionMap.clear();
+
+		for(Map.Entry<String, Property> entry: category.getValues().entrySet()) {
+			String[] nameParts = entry.getKey().split("\\|");
+			String[] effects = entry.getValue().getStringList();
+
+			String modId = nameParts[0].split(":")[0];
+			String name = nameParts[0].split(":")[1];
+			int meta = Integer.parseInt(nameParts[1]);
+
+			ItemStack stack = getItemStackFromNameMeta(modId, name, meta);
+
+			if (stack != null) {
+				PotionIngredient ingredient = new PotionIngredient(stack);
+				for (int i=0; i<effects.length; i++) {
+					String[] effectValues = effects[i].split("\\|");
+					int potionId = XRPotionHelper.getPotionIdByName(effectValues[0]);
+					if (potionId > 0) {
+						short durationWeight = Short.parseShort(effectValues[1]);
+						short ampWeight = Short.parseShort(effectValues[2]);
+						ingredient.addEffect(potionId, durationWeight, ampWeight);
+					}
+				}
+				if (ingredient.effects.size() > 0) {
+					Settings.potionMap.add(ingredient);
+				}
+			}
+		}
+	}
+
+	private static void addDefaultPotionMap(ConfigCategory category) {
+		//TIER ONE INGREDIENTS, these are always 0 potency and have minimal durations (3 for positive, 1 for negative or super-positive)
+		addPotionConfig(category, Items.sugar, speed(3, 0), haste(3, 0));
+		addPotionConfig(category, Items.apple,heal(0), hboost(3, 0));
+		addPotionConfig(category, Items.coal, blind(1, 0), absorb(3, 0));
+		addPotionConfig(category, Items.coal, 1, invis(1, 0), wither(0, 0));
+		addPotionConfig(category, Items.feather, jump(3, 0), weak(1, 0));
+		addPotionConfig(category, Items.wheat_seeds, harm(0), hboost(3, 0));
+		addPotionConfig(category, Items.wheat,heal(0), hboost(3, 0));
+		addPotionConfig(category, Items.flint, harm(0), dboost(3, 0));
+		addPotionConfig(category, Items.porkchop,slow(1, 0), fatigue(1, 0));
+		addPotionConfig(category, Items.leather,resist(3, 0), absorb(3, 0));
+		addPotionConfig(category, Items.clay_ball,slow(1, 0), hboost(3, 0));
+		addPotionConfig(category, Items.egg,absorb(3, 0), regen(0, 0));
+		addPotionConfig(category, Items.dye, Reference.RED_DYE_META, heal(0), hboost(3, 0)); //rose red
+		addPotionConfig(category, Items.dye, Reference.YELLOW_DYE_META,jump(3, 0), weak(1, 0)); //dandellion yellow
+		addPotionConfig(category, Items.dye, Reference.GREEN_DYE_META,resist(3, 0), absorb(3, 0)); //cactus green
+		addPotionConfig(category, Items.dye, Reference.WHITE_DYE_META, weak(1, 0), fatigue(1, 0)); //bone meal
+		addPotionConfig(category, Items.pumpkin_seeds,invis(1, 0), fireres(1,0));
+		addPotionConfig(category, Items.beef,slow(1,0), satur(0));
+		addPotionConfig(category, Items.chicken,nausea(1, 0), poison(1, 0));
+		addPotionConfig(category, Items.rotten_flesh,nausea(1, 0), hunger(1, 0), wither(0, 0));
+		addPotionConfig(category, Items.gold_nugget, dboost(0, 0), haste(0, 0));
+		addPotionConfig(category, Items.carrot,vision(3, 0), hboost(3, 0));
+		addPotionConfig(category, Items.potato,hboost(3, 0), satur(0));
+		addPotionConfig(category, Items.fish, satur(0), breath(1, 0));
+
+		//TIER TWO INGREDIENTS, one of the effects of each will always be a one, slightly increased duration vs. TIER ONE
+		addPotionConfig(category, Items.spider_eye, vision(4, 0), poison(2, 0));
+		addPotionConfig(category, Items.blaze_powder, dboost(4, 0), harm(0));
+		addPotionConfig(category, Items.iron_ingot, resist(4, 0), slow(2, 0));
+		addPotionConfig(category, Items.string, slow(2, 0), fatigue(2, 0));
+		addPotionConfig(category, Items.bread, hboost(4, 0), satur(0));
+		addPotionConfig(category, Items.cooked_porkchop, fatigue(2, 0), satur(0));
+		addPotionConfig(category, Items.slime_ball, resist(4, 0), fireres(2, 0));
+		addPotionConfig(category, Items.cooked_fish, satur(0), breath(2, 0));
+		addPotionConfig(category, Items.dye, Reference.BLUE_DYE_META, haste(4, 0), dboost(4, 0));  //lapis lazuli
+		addPotionConfig(category, Items.dye, Reference.BLACK_DYE_META, blind(2, 0), invis(2, 0)); //ink
+		addPotionConfig(category, Items.bone, weak(2, 0), fatigue(2, 0));
+		addPotionConfig(category, Items.cookie, heal(0), satur(0));
+		addPotionConfig(category, Items.melon, heal(0), speed(4, 0));
+		addPotionConfig(category, Items.cooked_beef, resist(4, 0), satur(0));
+		addPotionConfig(category, Items.cooked_chicken, jump(4, 0), satur(0));
+		addPotionConfig(category, Items.baked_potato, satur(0), regen(1, 0));
+		addPotionConfig(category, Items.poisonous_potato, poison(2, 0), wither(1, 0));
+		addPotionConfig(category, Items.quartz, harm(0), dboost(4, 0));
+		addPotionConfig(category, XRRecipes.zombieHeart(), nausea(2, 0), hunger(2, 0), wither(1, 0));
+		addPotionConfig(category, XRRecipes.squidBeak(), hunger(2, 0), breath(2, 0));
+
+		//TIER THREE INGREDIENTS, these are closer to vanilla durations, carry many effects or a slightly increased duration. Some/most are combos.
+		addPotionConfig(category, Items.pumpkin_pie, invis(1, 0), fireres(1, 0), speed(3, 0), haste(3, 0), absorb(3, 0), regen(0, 0)); //combination of ingredients, strong.
+		addPotionConfig(category, Items.magma_cream, dboost(4, 0), harm(0), resist(4, 0), fireres(2, 0)); //also a combo, strong.
+		addPotionConfig(category, Items.speckled_melon, dboost(3, 0), haste(3, 0), heal(0), speed(4, 0)); //combo
+		addPotionConfig(category, Items.ghast_tear, regen(3, 0), absorb(5, 0));
+		addPotionConfig(category, Items.fermented_spider_eye, vision(4, 0), poison(2, 0), speed(3, 0), haste(3, 0)); //combo
+		addPotionConfig(category, Items.golden_carrot, dboost(3, 0), haste(3, 0), hboost(3, 0), vision(3, 0)); //combo
+		addPotionConfig(category, Items.gold_ingot, dboost(4, 0), haste(4, 0)); //combo
+		addPotionConfig(category, XRRecipes.ribBone(), weak(3, 0), fatigue(3, 0));
+		addPotionConfig(category, Items.ender_pearl, invis(5, 0), speed(5, 0));
+		addPotionConfig(category, Items.blaze_rod, dboost(8, 0), harm(0));
+		addPotionConfig(category, Items.fire_charge, dboost(4, 0), harm(0), blind(1, 0), absorb(3, 0)); //combo
+		addPotionConfig(category, XRRecipes.creeperGland(), regen(3, 0), hboost(5, 0));
+		addPotionConfig(category, XRRecipes.spiderFangs(), poison(3, 0), weak(3, 0));
+		addPotionConfig(category, XRRecipes.slimePearl(), resist(5, 0), absorb(5, 0));
+		addPotionConfig(category, XRRecipes.shellFragment(), absorb(5, 0), breath(5, 0));
+		addPotionConfig(category, XRRecipes.batWing(), jump(5, 0), weak(3, 0));
+
+		//TIER FOUR INGREDIENTS, these carry multiple one-potency effects and have the most duration for any given effect.
+		addPotionConfig(category, Items.diamond, resist(6, 1), absorb(6, 1), fireres(6, 0));
+		addPotionConfig(category, XRRecipes.witherRib(), wither(2, 1), weak(3, 1), slow(3, 1), fatigue(3, 1));
+		addPotionConfig(category, Items.ender_eye, dboost(6, 1), invis(6, 0), speed(6, 1), harm(1));
+		addPotionConfig(category, Items.emerald, haste(6, 1), speed(6, 1), hboost(6, 1));
+		addPotionConfig(category, Items.nether_star, hboost(24, 1), regen(24, 1), absorb(24, 1)); //nether star is holy stonk
+		addPotionConfig(category, XRRecipes.moltenCore(), dboost(6, 1), fireres(6, 0), harm(1));
+		addPotionConfig(category, XRRecipes.stormEye(), haste(24, 1), speed(24, 1), jump(24, 1), harm(1));
+		addPotionConfig(category, XRRecipes.fertileEssence(), hboost(8, 1), regen(3, 1), heal(1), satur(1), weak(9, 1), fatigue(9, 1));
+		addPotionConfig(category, XRRecipes.frozenCore(), absorb(6, 1), slow(3, 1), fatigue(3, 1), harm(1), fireres(6, 0));
+		addPotionConfig(category, XRRecipes.enderHeart(), vision(6, 0), invis(6, 0), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
+		addPotionConfig(category, XRRecipes.infernalClaw(), harm(1), resist(6, 1), fireres(6, 0), dboost(6, 1), satur(1), heal(1));
+	}
+
+	public static String harm(int potency) { return effectString(Reference.HARM, Integer.toString(0),Integer.toString(potency)); }
+	public static String heal(int potency) { return effectString(Reference.HEAL, Integer.toString(0),Integer.toString(potency)); }
+	public static String satur(int potency) { return effectString(Reference.SATURATION, Integer.toString(0),Integer.toString(potency)); }
+	public static String invis(int duration, int potency) { return effectString(Reference.INVIS, Integer.toString(duration), Integer.toString(potency)); }
+	public static String absorb(int duration, int potency) { return effectString(Reference.ABSORB, Integer.toString(duration),Integer.toString(potency)); }
+	public static String hboost(int duration, int potency) { return effectString(Reference.HBOOST, Integer.toString(duration),Integer.toString(potency)); }
+	public static String dboost(int duration, int potency) { return effectString(Reference.DBOOST, Integer.toString(duration),Integer.toString(potency)); }
+	public static String speed(int duration, int potency) { return effectString(Reference.SPEED, Integer.toString(duration),Integer.toString(potency)); }
+	public static String haste(int duration, int potency) { return effectString(Reference.HASTE, Integer.toString(duration),Integer.toString(potency)); }
+	public static String slow(int duration, int potency) { return effectString(Reference.SLOW, Integer.toString(duration),Integer.toString(potency)); }
+	public static String fatigue(int duration, int potency) { return effectString(Reference.FATIGUE, Integer.toString(duration),Integer.toString(potency)); }
+	public static String breath(int duration, int potency) { return effectString(Reference.BREATH, Integer.toString(duration),Integer.toString(potency)); }
+	public static String vision(int duration, int potency) { return effectString(Reference.VISION, Integer.toString(duration),Integer.toString(potency)); }
+	public static String resist(int duration, int potency) { return effectString(Reference.RESIST, Integer.toString(duration),Integer.toString(potency)); }
+	public static String fireres(int duration, int potency) { return effectString(Reference.FRESIST, Integer.toString(duration),Integer.toString(potency)); }
+	public static String weak(int duration, int potency) { return effectString(Reference.WEAK, Integer.toString(duration),Integer.toString(potency)); }
+	public static String jump(int duration, int potency) { return effectString(Reference.JUMP, Integer.toString(duration),Integer.toString(potency)); }
+	public static String nausea(int duration, int potency) { return effectString(Reference.NAUSEA, Integer.toString(duration),Integer.toString(potency)); }
+	public static String hunger(int duration, int potency) { return effectString(Reference.HUNGER, Integer.toString(duration),Integer.toString(potency)); }
+	public static String regen(int duration, int potency) { return effectString(Reference.REGEN, Integer.toString(duration),Integer.toString(potency)); }
+	public static String poison(int duration, int potency) { return effectString(Reference.POISON, Integer.toString(duration),Integer.toString(potency)); }
+	public static String wither(int duration, int potency) { return effectString(Reference.WITHER, Integer.toString(duration),Integer.toString(potency)); }
+	public static String blind(int duration, int potency) { return effectString(Reference.BLIND, Integer.toString(duration), Integer.toString(potency)); }
+
+	public static String effectString(String name, String duration, String potency) {
+		return name + "|" + duration + "|" + potency;
+	}
+
+	private static void addPotionConfig(ConfigCategory category, ItemStack ingredient, String... effects ) {
+		addPotionConfig(category, ingredient.getItem(), ingredient.getMetadata(), effects);
+	}
+
+	private static void addPotionConfig(ConfigCategory category, Item ingredient, String... effects ) {
+		addPotionConfig(category, ingredient, 0, effects);
+	}
+
+	private static void addPotionConfig(ConfigCategory category, Item ingredient, int meta, String... effects ) {
+		Property prop = new Property(String.format("%s|%d", ingredient.getRegistryName(), meta),effects, Property.Type.STRING);
+
+		category.put(prop.getName(), prop);
 	}
 
 	public static void postInit() {
@@ -65,10 +362,186 @@ public class ConfigurationHandler
 		Settings.SeekerShot.entitiesThatCanBeHunted = getStringList( "entities_that_can_be_hunted", Names.item_and_block_settings + "." + Names.seeker_shot, entityNames);
 		setCategoryTranslations(Names.item_and_block_settings + "." + Names.seeker_shot, true);
 
+		//loading here to allow for recipes with items from other mods
+		// probably could be done earlier, but what do I know about when mods are loading stuff
+		loadAlkahestCraftingRecipes();
+		loadAlkahestChargingRecipes();
+		loadAlkahestBaseItem();
+
 		if (configuration.hasChanged())
 		{
 			configuration.save();
 		}
+	}
+
+	private static void loadAlkahestBaseItem() {
+		String registryName = getString("base_item", Names.item_and_block_settings + "." + Names.alkahestry_tome, Items.redstone.getRegistryName());
+		int meta = getInt("base_item_meta", Names.item_and_block_settings + "." + Names.alkahestry_tome, 0, 0, 16);
+		String[] splitName = registryName.split(":");
+		ItemStack stack = getItemStackFromNameMeta(splitName[0], splitName[1], meta);
+		Settings.AlkahestryTome.baseItem = stack;
+
+		Settings.AlkahestryTome.baseItemWorth = getInt("base_item_worth", Names.item_and_block_settings + "." + Names.alkahestry_tome, 1, 1, 1000);
+	}
+
+	private static void loadAlkahestChargingRecipes() {
+		ConfigCategory category = configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.charging_recipes);
+
+		if (category.isEmpty()) {
+			addDefaultAlkahestChargingRecipes(category);
+		}
+
+		loadAlkahestChargingRecipesIntoSettings(category);
+
+		setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.charging_recipes, true);
+	}
+
+	private static void loadAlkahestChargingRecipesIntoSettings(ConfigCategory category) {
+		Settings.AlkahestryTome.chargingRecipes.clear();
+
+		for(Map.Entry<String, Property> entry: category.getValues().entrySet()) {
+			String[] nameParts =entry.getKey().split(":");
+			int[] values = entry.getValue().getIntList();
+
+			String modId = nameParts[0];
+			String name = nameParts[1];
+			int meta = values[0];
+			int charge = values[1];
+
+			ItemStack stack = getItemStackFromNameMeta(modId, name, meta);
+
+			if (stack != null) {
+				Settings.AlkahestryTome.chargingRecipes.put(entry.getKey(), new AlkahestChargeRecipe(stack, charge));
+			}
+		}
+	}
+
+	private static void addDefaultAlkahestChargingRecipes(ConfigCategory category) {
+		addConfigAlkahestChargingRecipe(category, Blocks.redstone_block.getRegistryName(), 9);
+		addConfigAlkahestChargingRecipe(category, Items.redstone.getRegistryName(), 1);
+		addConfigAlkahestChargingRecipe(category, Blocks.glowstone.getRegistryName(), 4);
+		addConfigAlkahestChargingRecipe(category, Items.glowstone_dust.getRegistryName(), 1);
+	}
+
+	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item, Integer charge) {
+		addConfigAlkahestChargingRecipe(category, item, 0, charge);
+	}
+	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item, Integer meta, Integer charge) {
+		Property prop = new Property(item,new String[]{meta.toString(), charge.toString()}, Property.Type.INTEGER);
+
+		category.put(item, prop);
+	}
+
+	private static void loadAlkahestCraftingRecipes() {
+		ConfigCategory category = configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.crafting_recipes);
+
+		if (category.isEmpty()) {
+			addDefaultAlkahestCraftingRecipes(category);
+		}
+
+		loadAlkahestCraftingRecipesIntoSettings(category);
+
+		setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.crafting_recipes, true);
+	}
+
+	private static void loadAlkahestCraftingRecipesIntoSettings(ConfigCategory category) {
+		Settings.AlkahestryTome.craftingRecipes.clear();
+
+		for(Map.Entry<String, Property> entry: category.getValues().entrySet()) {
+			String[] nameParts =entry.getKey().split(":");
+			int[] values = entry.getValue().getIntList();
+
+			String modId = nameParts[0];
+			String name = nameParts[1];
+			int meta = values[0];
+			int yield = values[1];
+			int cost = values[2];
+
+
+			if (modId.toLowerCase().equals("oredictionary")) {
+				Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(name, yield, cost));
+			} else {
+				ItemStack stack = getItemStackFromNameMeta(modId, name, meta);
+
+				if (stack != null) {
+					Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(stack, yield, cost));
+				}
+			}
+		}
+	}
+
+	//TODO: refactor out into stack helper or such
+	private static ItemStack getItemStackFromNameMeta(String modId, String name, int meta) {
+		ItemStack stack = null;
+		Item item = GameRegistry.findItem(modId, name);
+
+		if (item != null && item != GameData.getItemRegistry().getDefaultValue()) {
+            stack = new ItemStack(item, 1, meta);
+        } else {
+            Block block = GameRegistry.findBlock(modId, name);
+            if (block != null && block != GameData.getBlockRegistry().getDefaultValue()) {
+                stack = new ItemStack(item, 1, meta);
+            }
+        }
+		return stack;
+	}
+
+	private static void addDefaultAlkahestCraftingRecipes(ConfigCategory category) {
+
+		addConfigAlkahestCraftingRecipe(category, Blocks.dirt.getRegistryName(), 32, TOME_COST_LOW_TIER);
+
+		addConfigAlkahestCraftingRecipe(category, Blocks.cobblestone.getRegistryName(), 32, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.sand.getRegistryName(), 32, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.gravel.getRegistryName(), 16, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.sandstone.getRegistryName(), 8, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.clay.getRegistryName(), 2, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.netherrack.getRegistryName(), 8, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.coal.getRegistryName(), 1, 4, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.dye.getRegistryName(), 4, 1, TOME_COST_LOW_TIER);
+
+		addConfigAlkahestCraftingRecipe(category, Blocks.obsidian.getRegistryName(), 4, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.soul_sand.getRegistryName(), 8, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.nether_brick.getRegistryName(), 4, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.end_stone.getRegistryName(), 16, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.coal.getRegistryName(), 4, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.gunpowder.getRegistryName(), 2, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.flint.getRegistryName(), 8, TOME_COST_MIDDLE_TIER);
+
+		//high tier
+		addConfigAlkahestCraftingRecipe(category, Items.gold_ingot.getRegistryName(), 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.iron_ingot.getRegistryName(), 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.emerald.getRegistryName(), 1, TOME_COST_HIGH_TIER);
+
+		// I guess mods should start following the new naming convention.
+		// *shrugs*
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("tin_ingot"), 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("silver_ingot"), 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("copper_ingot"), 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("steel_ingot"), 1, TOME_COST_HIGH_TIER);
+
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("ingotTin"), 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("ingotSilver"), 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("ingotCopper"), 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, oreDictionary("ingotSteel"), 1, TOME_COST_HIGH_TIER);
+
+		addConfigAlkahestCraftingRecipe(category, Items.diamond.getRegistryName(), 1, TOME_COST_UBER_TIER);
+
+		//above uber
+		addConfigAlkahestCraftingRecipe(category, Items.nether_star.getRegistryName(), 1, TOME_COST_UBER_TIER * 2);
+	}
+
+	private static String oreDictionary(String name) {
+		return "OreDictionary:" + name;
+	}
+
+	private static void addConfigAlkahestCraftingRecipe(ConfigCategory category, String item, Integer yield, Integer cost) {
+		addConfigAlkahestCraftingRecipe(category, item, 0, yield,cost);
+	}
+	private static void addConfigAlkahestCraftingRecipe(ConfigCategory category, String item, Integer meta, Integer yield, Integer cost) {
+
+		Property prop = new Property(item,new String[]{meta.toString(), yield.toString(), cost.toString()}, Property.Type.INTEGER);
+
+		category.put(item, prop);
 	}
 
 	private static void loadBlockAndItemSettings() {
@@ -77,7 +550,8 @@ public class ConfigurationHandler
 		int cleanIntMax = 2000000000;
 
 		//alkahestry tome configs
-		Settings.AlkahestryTome.redstoneLimit = getInt("redstone_limit", Names.item_and_block_settings + "." + Names.alkahestry_tome, 250, 0, itemCap);
+		Settings.AlkahestryTome.chargeLimit = getInt("charge_limit", Names.item_and_block_settings + "." + Names.alkahestry_tome, 250, 0, itemCap);
+		configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome).get("charge_limit").setRequiresMcRestart(true);
 		setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome, true);
 
 		//altar configs
@@ -173,6 +647,9 @@ public class ConfigurationHandler
 		Settings.InfernalChalice.hungerCostPercent = getInt("hunger_cost_percent", Names.item_and_block_settings + "." + Names.infernal_chalice, 5, 0, 10);
 		Settings.InfernalChalice.fluidLimit = getInt("fluid_limit", Names.item_and_block_settings + "." + Names.infernal_chalice, 500000, 0, cleanIntMax);
 		setCategoryTranslations(Names.item_and_block_settings + "." + Names.infernal_chalice, true);
+
+		//infernal tear
+		Settings.InfernalTear.absorbWhenCreated = getBoolean("absorb_when_created", Names.item_and_block_settings + "." + Names.infernal_tear, false);
 
 		//interdiction torch configs
 		//see post init for entity configs
@@ -305,7 +782,7 @@ public class ConfigurationHandler
 		drops.put(Names.ender_heart + "_base", getInt(Names.ender_heart + "_base", Names.mob_drop_probability, 10, 0, 100));
 		drops.put(Names.ender_heart + "_looting", getInt(Names.ender_heart + "_looting", Names.mob_drop_probability, 5, 0, 100));
 
-		Settings.mobDropProbabilities = drops;
+		Settings.MobDrops.mobDropProbabilities = drops;
 		setCategoryTranslations(Names.mob_drop_probability, true);
 	}
 
@@ -365,6 +842,7 @@ public class ConfigurationHandler
 		setCategoryTranslations(Names.hud_positions, true);
 	}
 
+	//TODO refactor all of these out into configuration helper
 	private static List<String> getStringList(String name, String category, List<String> defaultValue) {
 		return Arrays.asList(configuration.getStringList(name, category, defaultValue.toArray(new String[defaultValue.size()]), getTranslatedComment(category, name), new String[]{}, getLabelLangRef(category, name)));
 	}
@@ -377,6 +855,9 @@ public class ConfigurationHandler
 		return configuration.getInt(name, category, defaultValue, minValue, maxValue, getTranslatedComment(category, name) , getLabelLangRef(category, name));
 	}
 
+	private static String getString(String name, String category, String defaultValue) {
+		return configuration.getString(name, category, defaultValue, getTranslatedComment(category, name), getLabelLangRef(category, name));
+	}
 
 	private static String getTranslatedComment(String category, String config) {
 		return StatCollector.translateToLocal("config." + category + "." + config + ".comment");

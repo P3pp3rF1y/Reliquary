@@ -16,7 +16,6 @@ public class ItemToggleable extends ItemBase {
 
     public ItemToggleable(String langName) {
         super(langName);
-        this.hasSubtypes = true;
     }
 
     @Override

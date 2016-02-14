@@ -4,13 +4,16 @@ import com.google.common.collect.HashMultimap;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
 import lib.enderwizards.sandstone.util.NBTHelper;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
@@ -25,10 +28,13 @@ import xreliquary.Reliquary;
 import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.entities.potion.EntityThrownXRPotion;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,11 +44,14 @@ import java.util.Map;
  */
 @ContentInit
 public class ItemXRPotion extends ItemBase {
+
     public ItemXRPotion() {
         super(Names.potion);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setMaxStackSize(64);
+        this.setHasSubtypes(true);
     }
+
 
     // returns an empty vial when used in crafting recipes, unless it's one of
     // the base potion types.
@@ -53,8 +62,6 @@ public class ItemXRPotion extends ItemBase {
     }
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean flag) {
-        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-            return;
         PotionEssence essence = new PotionEssence(ist.getTagCompound());
         if (essence.getEffects().size() > 0) {
             HashMultimap hashmultimap = HashMultimap.create();
@@ -155,7 +162,7 @@ public class ItemXRPotion extends ItemBase {
             for (PotionEffect effect : new PotionEssence(ist.getTagCompound()).getEffects()) {
                 if (effect == null)
                     continue;
-                player.addPotionEffect(effect);
+                player.addPotionEffect(new PotionEffect(effect.getPotionID(), effect.getDuration(), effect.getAmplifier(), false, false));
             }
         }
         if (!player.capabilities.isCreativeMode) {
@@ -166,69 +173,29 @@ public class ItemXRPotion extends ItemBase {
         return ist;
     }
 
-    //TODO: include in JSON model
-/*
-    @SideOnly(Side.CLIENT)
-    private static IIcon iconBaseOverlay;
-
-    @SideOnly(Side.CLIENT)
-    public static IIcon iconSplash;
-
-    @SideOnly(Side.CLIENT)
-    public static IIcon iconSplashOverlay;
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        super.registerIcons(iconRegister);
-        iconBaseOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_overlay);
-        iconSplash = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_splash);
-        iconSplashOverlay = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + Names.potion_splash_overlay);
-    }
-
-    @Override
-    public IIcon getIcon(ItemStack ist, int renderPass) {
-        PotionEssence essence = new PotionEssence(ist.getTagCompound());
-        boolean hasEffect = essence.getEffects().size() > 0;
-
-        if (!getSplash(ist)) {
-            if (renderPass == 1 && hasEffect)
-                return iconBaseOverlay;
-            else
-                return this.itemIcon;
-        } else {
-            if (renderPass == 1)
-                return iconSplashOverlay;
-            else
-                return iconSplash;
-        }
-    }
-*/
-
     public boolean getSplash(ItemStack ist) {
         return NBTHelper.getBoolean("splash", ist);
     }
 
-
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack ist, int renderPass) {
-        PotionEssence essence = new PotionEssence(ist.getTagCompound());
-        boolean hasEffect = essence.getEffects().size() > 0;
-        if (renderPass == 1 && hasEffect)
+        if (renderPass == 1)
             return getColor(ist);
         else
             return Integer.parseInt(Colors.PURE, 16);
     }
 
     public int getColor(ItemStack itemStack) {
-        //basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
+        //used when rendering as thrown entity
+        if (NBTHelper.getInteger("renderColor", itemStack) > 0)
+            return NBTHelper.getInteger("renderColor", itemStack);
+
+        PotionEssence essence = new PotionEssence(itemStack.getTagCompound());
+        boolean hasEffect = essence.getEffects().size() > 0;
+        if (!hasEffect)
+            return Integer.parseInt(Colors.PURE, 16);
+
         return PotionHelper.calcPotionLiquidColor(new PotionEssence(itemStack.getTagCompound()).getEffects());
     }
 
@@ -238,6 +205,25 @@ public class ItemXRPotion extends ItemBase {
     @Override
     public int getMaxItemUseDuration(ItemStack par1ItemStack) {
         return 16;
+    }
+
+    @Override
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+        subItems.add(new ItemStack(ModItems.potion)); //just an empty one
+
+        List<ItemStack> splashPotions = new ArrayList<>();
+        for(PotionEssence essence : Settings.uniquePotions) {
+            ItemStack potion = new ItemStack(ModItems.potion, 1);
+            potion.setTagCompound(essence.writeToNBT());
+            NBTHelper.setBoolean("hasPotion", potion, true);
+
+            ItemStack splashPotion = potion.copy();
+            NBTHelper.setBoolean("splash", splashPotion, true);
+
+            subItems.add(potion);
+            splashPotions.add(splashPotion);
+        }
+        subItems.addAll(splashPotions);
     }
 
     /**
@@ -272,7 +258,7 @@ public class ItemXRPotion extends ItemBase {
                     if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
                         if (world.getBlockState(mop.getBlockPos()).getBlock() instanceof BlockApothecaryCauldron) {
                             TileEntityCauldron cauldronTile = (TileEntityCauldron)world.getTileEntity(mop.getBlockPos());
-                            NBTTagCompound potionTag = cauldronTile.removeContainedPotion();
+                            NBTTagCompound potionTag = cauldronTile.removeContainedPotion(world);
                             ItemStack newPotion = new ItemStack(this, 1, 0);
                             newPotion.setTagCompound(potionTag);
 

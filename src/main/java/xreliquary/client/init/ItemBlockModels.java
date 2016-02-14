@@ -11,12 +11,12 @@ import xreliquary.reference.Reference;
 public class ItemBlockModels {
     public static void registerItemBlockModels()
     {
-        //registerBlockItemModel(apothecaryCauldron);
+        registerBlockItemModel(ModBlocks.apothecaryCauldron, Names.apothecary_cauldron);
+        registerBlockItemModel(ModBlocks.apothecaryMortar, Names.apothecary_mortar);
         registerBlockItemModel(ModBlocks.alkahestryAltar, Names.altar_idle);
         registerBlockItemModel(ModBlocks.alkahestryAltarActive, Names.altar);
         registerBlockItemModel(ModBlocks.interdictionTorch, Names.interdiction_torch);
         registerBlockItemModel(ModBlocks.wraithNode, Names.wraith_node);
-
         registerBlockItemModel(ModBlocks.fertileLilypad, Names.fertile_lilypad);
 
     }

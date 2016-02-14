@@ -1,11 +1,14 @@
 package xreliquary.common;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import xreliquary.Reliquary;
 import xreliquary.common.gui.GUIHandler;
+import xreliquary.compat.CompatibilityLoader;
 import xreliquary.entities.*;
 import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.entities.potion.EntityFertilePotion;
@@ -14,12 +17,8 @@ import xreliquary.entities.shot.*;
 import xreliquary.event.CommonEventHandler;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.init.ModBlocks;
-import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
-import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
-import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
-import xreliquary.items.alkahestry.AlkahestryRedstoneRecipe;
-import xreliquary.util.alkahestry.Alkahestry;
+
 
 public class CommonProxy {
 
@@ -27,12 +26,11 @@ public class CommonProxy {
     public void preInit() {
         try {
             XRRecipes.init();
-            Alkahestry.init();
 
             ModBlocks.initTileEntities();
         } catch (Exception e) {
             e.printStackTrace();
-            FMLCommonHandler.instance().raiseException(e, "Reliquary failed to initiate recipies.", true);
+            FMLCommonHandler.instance().raiseException(e, "Reliquary failed to initiate recipes.", true);
         }
 
         //TODO: figure out what this commented out section is for / is it just old code to be removed?
@@ -68,22 +66,11 @@ public class CommonProxy {
 
 
     public void init() {
-        AlkahestryCraftingRecipe.returnedItem = ModItems.alkahestryTome;
-        AlkahestryRedstoneRecipe.returnedItem = ModItems.alkahestryTome;
-
-        AlkahestryCraftingRecipe alkahestryCraftingRecipeHandler = new AlkahestryCraftingRecipe();
-        AlkahestryDrainRecipe alkahestryDrainRecipeHandler = new AlkahestryDrainRecipe();
-
-        MinecraftForge.EVENT_BUS.register(alkahestryCraftingRecipeHandler);
-        MinecraftForge.EVENT_BUS.register(alkahestryDrainRecipeHandler);
-
         MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
-        MinecraftForge.EVENT_BUS.register(alkahestryCraftingRecipeHandler);
-        MinecraftForge.EVENT_BUS.register(alkahestryDrainRecipeHandler);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
         MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
-        MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
+        MinecraftForge.EVENT_BUS.register(new CompatibilityLoader());
 
         this.registerEntities();
     }
@@ -117,13 +104,22 @@ public class CommonProxy {
         EntityRegistry.registerModEntity(EntitySandShot.class, "entitySandShot", 10, Reliquary.INSTANCE, 128, 5, true);
         EntityRegistry.registerModEntity(EntityStormShot.class, "entityStormShot", 11, Reliquary.INSTANCE, 128, 5, true);
         EntityRegistry.registerModEntity(EntityAttractionPotion.class, "entitySplashAphrodite", 12, Reliquary.INSTANCE, 128, 5, true);
-        EntityRegistry.registerModEntity(EntityThrownXRPotion.class, "entityThrownPotion", 13, Reliquary.INSTANCE, 128, 5, true);
-        EntityRegistry.instance().lookupModSpawn(EntityThrownXRPotion.class,false).setCustomSpawning(null, false);
+        EntityRegistry.registerModEntity(EntityThrownXRPotion.class, "entityThrownXRPotion", 13, Reliquary.INSTANCE, 128, 5, true);
+        //EntityRegistry.instance().lookupModSpawn(EntityThrownXRPotion.class,false).setCustomSpawning(null, false);
         EntityRegistry.registerModEntity(EntityFertilePotion.class, "entitySplashFertility", 21, Reliquary.INSTANCE, 128, 5, true);
         EntityRegistry.registerModEntity(EntityKrakenSlime.class, "entityKSlime", 22, Reliquary.INSTANCE, 128, 5, true);
         EntityRegistry.registerModEntity(EntityEnderStaffProjectile.class, "entityEnderStaffProjectile", 23, Reliquary.INSTANCE, 128, 5, true);
     }
 
     public void initColors() {
+    }
+
+    public void registerJEI(Item item, String name) {
+    }
+
+    public void registerJEI(Block block, String name) {
+    }
+
+    public void initPotionsJEI() {
     }
 }

@@ -155,7 +155,7 @@
         {   "from": [ 2, 15, 2 ],
             "to": [ 14, 15, 14 ],
             "faces": {
-                "up": { "uv": [ 2, 2, 14, 14 ], "texture": "#water" }
+                "up": { "uv": [ 2, 2, 14, 14 ], "texture": "#water", "tintindex": 1 }
             }
         }
     ]

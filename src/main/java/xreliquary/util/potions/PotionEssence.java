@@ -16,6 +16,9 @@ import java.util.*;
 public class PotionEssence extends PotionIngredient {
 
     public static int MAX_DURATION = 30000;
+    public static int MAX_AMPLIFIER = 4;
+
+    public List<PotionIngredient> ingredients = new ArrayList<>();
 
     public PotionEssence(NBTTagCompound tag) {
         if (tag == null)
@@ -32,55 +35,66 @@ public class PotionEssence extends PotionIngredient {
     public PotionEssence(PotionIngredient... ingredients) {
 
         //helper list to store what we have, altogether
-        List<Integer> potionEffectCounterList = new ArrayList<Integer>();
+        Map<Integer, List<PotionEffect>> potionEffectCounterList = new HashMap<Integer, List<PotionEffect>>();
 
         //actual list to store what we have two or more of, these are the actual final effects
         List<Integer> potionEffectList = new ArrayList<Integer>();
 
-        //finally, the merged effects list, this is the result of all the combining we do at the end.
-        HashMap<Integer, Duo<Integer, Integer>> mergedPotionEffects = new HashMap<Integer, Duo<Integer, Integer>>();
-
         //add each effect to the counter list. if it appears twice, add it to the potionEffectList too.
         for (PotionIngredient ingredient : ingredients) {
             for (PotionEffect effect : ingredient.getEffects()) {
-                if (potionEffectCounterList.contains(effect.getPotionID()))
+                if (potionEffectCounterList.keySet().contains(effect.getPotionID())){
                     potionEffectList.add(effect.getPotionID());
-                else
-                    potionEffectCounterList.add(effect.getPotionID());
-            }
-        }
-
-        //iterate again, this time checking for potions we're sure we need, add them to the merged effects list.
-        for (PotionIngredient ingredient : ingredients) {
-            for (PotionEffect effect : ingredient.getEffects()) {
-                if (potionEffectList.contains(effect.getPotionID())) {
-                    //if the effect list contains it already, merge them together
-                    if (mergedPotionEffects.containsKey(effect.getPotionID())) {
-                        int duration =  Math.min(MAX_DURATION,Potion.potionTypes[effect.getPotionID()].isInstant() ? 1 : mergedPotionEffects.get(effect.getPotionID()).one);
-                        //0 duration potion means we have two useless ingredients. This is planned for things like wither combinations of T1 ingredients sucking hard.
-                        if (duration == 0)
-                            continue;
-                        int amp = mergedPotionEffects.get(effect.getPotionID()).two;
-                        Duo<Integer, Integer> newWeight = new Duo<Integer, Integer>((int)(((float)duration + (float)effect.getDuration()) / 1.2F), Math.min(4, amp + effect.getAmplifier()));
-                        //remove existing, replace with awesome (or less awesome) one.
-                        mergedPotionEffects.remove(effect.getPotionID());
-                        mergedPotionEffects.put(effect.getPotionID(), newWeight);
-                    } else {
-                        //just add it to the list for the first time
-                        mergedPotionEffects.put(effect.getPotionID(), new Duo<Integer, Integer>(effect.getDuration(), effect.getAmplifier()));
-                    }
+                    potionEffectCounterList.get(effect.getPotionID()).add(effect);
+                } else {
+                    ArrayList<PotionEffect> effects = new ArrayList<>();
+                    effects.add(effect);
+                    potionEffectCounterList.put(effect.getPotionID(), effects);
                 }
             }
+            this.ingredients.add(ingredient);
         }
 
-        //iterate over the effects in the map and actually add them to this essence, in a cleaned up/merged list.
-        Iterator i = mergedPotionEffects.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry<Integer, Duo<Integer, Integer>> pair = (Map.Entry<Integer, Duo<Integer, Integer>>)i.next();
-            //the effect is added. If the end result of this contains nothing, it means the items are invalid for mixing.
-            //this is important in cases where the grinder is full of incompatible ingredients. Rather than mix them, we simply return them to the player.
-            effects.add(new PotionEffect(pair.getKey(), Potion.potionTypes[pair.getKey()].isInstant() ? 1 : pair.getValue().one, pair.getValue().two));
+        //iterate through common effects
+        for(Integer potionID : potionEffectList) {
+            List<PotionEffect> effects = potionEffectCounterList.get(potionID);
+
+            int duration = getCombinedDuration(effects);
+            int amplifier = getCombinedAmplifier(effects);
+
+            if (duration == 0)
+                continue;
+
+            this.effects.add(new PotionEffect(potionID, duration, amplifier));
         }
+    }
+
+    private int getCombinedAmplifier(List<PotionEffect> effects) {
+        int amplifier = 0;
+        for(PotionEffect effect:effects) {
+            amplifier += effect.getAmplifier();
+        }
+
+        return Math.min(amplifier, MAX_AMPLIFIER);
+    }
+
+    private int getCombinedDuration(List<PotionEffect> effects) {
+        int count = 0;
+        int duration = 0;
+        for(PotionEffect effect : effects) {
+            if (Potion.potionTypes[effect.getPotionID()].isInstant())
+                return 1;
+
+            count++;
+
+            duration += effect.getDuration();
+        }
+
+        duration = (int) (duration / 1.2);
+        if(count == 3)
+            duration = (int) (duration / 1.1);
+
+        return Math.min(duration, MAX_DURATION);
     }
 
     public NBTTagCompound writeToNBT() {

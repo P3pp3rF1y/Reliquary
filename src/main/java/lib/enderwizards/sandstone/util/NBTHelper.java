@@ -28,6 +28,17 @@ public class NBTHelper {
         setTag(ist, tagCompound);
     }
 
+    public static long getLong(String s, ItemStack ist) {
+        NBTTagCompound tagCompound = getTag(ist);
+        return tagCompound.getLong(s);
+    }
+
+    public static void setLong(String s, ItemStack ist, long i) {
+        NBTTagCompound tagCompound = getTag(ist);
+        tagCompound.setLong(s, i);
+        setTag(ist, tagCompound);
+    }
+
     public static boolean getBoolean(String s, ItemStack ist) {
         NBTTagCompound tagCompound = getTag(ist);
         return tagCompound.getBoolean(s);

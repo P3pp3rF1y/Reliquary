@@ -3,9 +3,11 @@ package xreliquary.items;
 import com.google.common.collect.HashMultimap;
 import lib.enderwizards.sandstone.init.ContentInit;
 import lib.enderwizards.sandstone.items.ItemBase;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -15,8 +17,11 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
+import xreliquary.Reliquary;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.Iterator;
@@ -32,15 +37,25 @@ public class ItemPotionEssence extends ItemBase {
     public ItemPotionEssence() {
         super(Names.potion_essence);
         this.setMaxStackSize(64);
+        this.setHasSubtypes(true);
+        this.setCreativeTab(Reliquary.CREATIVE_TAB);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack ist, int renderPass) {
-        if (renderPass == 1)
-            return getColor(ist);
-        else
-            return Integer.parseInt(Colors.PURE, 16);
+        return getColor(ist);
+    }
+
+    @Override
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+
+        for(PotionEssence essence : Settings.uniquePotions) {
+            ItemStack essenceItem = new ItemStack(ModItems.potionEssence, 1);
+            essenceItem.setTagCompound(essence.writeToNBT());
+
+            subItems.add(essenceItem);
+        }
     }
 
     public int getColor(ItemStack itemStack) {
@@ -50,8 +65,6 @@ public class ItemPotionEssence extends ItemBase {
 
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean flag) {
-        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-            return;
         PotionEssence essence = new PotionEssence(ist.getTagCompound());
         if (essence.getEffects().size() > 0) {
             HashMultimap hashmultimap = HashMultimap.create();

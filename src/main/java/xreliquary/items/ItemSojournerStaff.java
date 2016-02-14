@@ -449,11 +449,6 @@ public class ItemSojournerStaff extends ItemToggleable {
         return world.rayTraceBlocks(playerVector, rayTraceVector, weirdBucketBoolean);
     }
 
-    @Override
-    public boolean isFull3D() {
-        return true;
-    }
-
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos,IBlockState torchBlockState) {
         if (!world.setBlockState(pos, torchBlockState, 3))
             return false;

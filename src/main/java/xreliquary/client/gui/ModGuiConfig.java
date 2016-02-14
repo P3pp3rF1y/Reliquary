@@ -29,6 +29,7 @@ public class ModGuiConfig extends GuiConfig
 		elements.add(getCategory(Names.item_and_block_settings));
 		elements.add(getCategory(Names.hud_positions));
 		elements.add(getCategory(Names.mob_drop_probability));
+		elements.add(getCategory(Names.potion_map));
 
 		return elements;
 	}

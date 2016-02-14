@@ -1,3 +1,29 @@
 {
-  "parent": "builtin/entity"
+    "parent": "xreliquary:block/apothecary_mortar",
+    "display": {
+        "gui": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 5, 0 ],
+            "scale": [ 1.7, 1.7, 1.7 ]
+        },
+        "ground": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 2, 2, 2 ]
+        },
+        "thirdperson": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 3, 0 ],
+            "scale": [ 1.7, 1.7, 1.7 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 2, 2, 2 ]
+        },"firstperson": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ -2, 5, 0 ],
+            "scale": [ 1.3, 1.3, 1.3 ]
+        }
+    }
 }

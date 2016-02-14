@@ -1,5 +1,5 @@
 {
-  "parent": "xreliquary:item/default_item",
+  "parent": "xreliquary:item/default_weapon_item",
   "textures": {
     "layer0": "xreliquary:items/ender_staff"
   }

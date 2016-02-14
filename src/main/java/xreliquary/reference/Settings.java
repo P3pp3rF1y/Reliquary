@@ -1,12 +1,26 @@
 package xreliquary.reference;
 
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import xreliquary.util.alkahestry.AlkahestChargeRecipe;
+import xreliquary.util.alkahestry.AlkahestCraftRecipe;
+import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionIngredient;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 public class Settings
 {
+	public static List<PotionIngredient> potionMap = new ArrayList<>();
+	public static List<PotionEssence> potionCombinations = new ArrayList<>();
+	public static List<PotionEssence> uniquePotions = new ArrayList<>();
+
 	public static class HudPositions {
 		public static int sojournerStaff;
 		public static int handgun;
@@ -57,11 +71,24 @@ public class Settings
 		public static boolean seekerShot;
 	}
 
+	public static class MobDrops {
+		public static Map<String, Integer> mobDropProbabilities;
 
-	public static Map<String, Integer> mobDropProbabilities;
+		public static float getBaseDrop(String s) {
+			return (float) mobDropProbabilities.get(s + "_base") * 0.01F;
+		}
+
+		public static float getLootingDrop(String s) {
+			return (float) mobDropProbabilities.get(s + "_looting") * 0.01F;
+		}
+	}
 
 	public static class AlkahestryTome {
-		public static int redstoneLimit;
+		public static int chargeLimit;
+		public static Map<String, AlkahestCraftRecipe> craftingRecipes =  new HashMap<>();
+		public static Map<String, AlkahestChargeRecipe> chargingRecipes =  new HashMap<>();
+		public static ItemStack baseItem;
+		public static int baseItemWorth;
 	}
 
 	public static class Altar {
@@ -249,5 +276,9 @@ public class Settings
 
 	public static class SeekerShot {
 		public static List<String> entitiesThatCanBeHunted;
+	}
+
+	public static class InfernalTear {
+		public static boolean absorbWhenCreated;
 	}
 }

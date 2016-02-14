@@ -43,12 +43,6 @@ public class ItemEnderStaff extends ItemToggleable {
         return EnumRarity.EPIC;
     }
 
-
-    @Override
-    public boolean isFull3D() {
-        return true;
-    }
-
     private int getEnderStaffPearlCost() {
         return Settings.EnderStaff.enderPearlCastCost;
     }
