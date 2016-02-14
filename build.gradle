@@ -77,7 +77,6 @@ processResources
 
     // Replace stuff in mcmod.info and in .lang files, nothing else.
     from(sourceSets.main.resources.srcDirs) {
-        include '**/*.lang'
         include 'mcmod.info'
 
         // Replace version and mcversion.
@@ -86,7 +85,6 @@ processResources
 
     // Copy everything else that wasn't replaced.
     from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.lang'
         exclude 'mcmod.info'
     }
 }
