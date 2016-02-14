@@ -4,6 +4,7 @@ import jeresources.api.IJERAPI;
 import jeresources.api.JERPlugin;
 import jeresources.api.conditionals.Conditional;
 import jeresources.api.conditionals.LightLevel;
+import jeresources.api.conditionals.WatchableData;
 import jeresources.api.drop.DropItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.*;
@@ -35,19 +36,19 @@ public class JERCompat
 		registerMobDrop(EntitySpider.class, XRRecipes.ingredient(Reference.SPIDER_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.spider_fangs), Conditional.playerKill);
 
 		//Cave Spider
-		registerMobDrop(EntityCaveSpider.class, XRRecipes.ingredient(Reference.SPIDER_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.cave_spider_fangs), Conditional.playerKill);
+		//registerMobDrop(EntityCaveSpider.class, XRRecipes.ingredient(Reference.SPIDER_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.cave_spider_fangs), Conditional.playerKill);
 
 		//Skeleton
-		registerMobDrop(EntitySkeleton.class, XRRecipes.ingredient(Reference.SKELETON_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.rib_bone), Conditional.playerKill);
+		registerMobDrop(EntitySkeleton.class, WatchableData.REGULAR_SKELETON, XRRecipes.ingredient(Reference.SKELETON_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.rib_bone), Conditional.playerKill);
 
 		//Wither Skeleton
-		registerMobDrop(EntitySkeleton.class, XRRecipes.ingredient(Reference.WITHER_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.withered_rib), Conditional.playerKill);
+		registerMobDrop(EntitySkeleton.class, WatchableData.WITHER_SKELETON, XRRecipes.ingredient(Reference.WITHER_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.withered_rib), Conditional.playerKill);
 
 		//Zombie
 		registerMobDrop(EntityZombie.class, XRRecipes.ingredient(Reference.ZOMBIE_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.zombie_heart), Conditional.playerKill);
 
 		//Zombie Pigman
-		registerMobDrop(EntityPigZombie.class, XRRecipes.ingredient(Reference.ZOMBIE_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.pigman_heart), Conditional.playerKill);
+		//registerMobDrop(EntityPigZombie.class, XRRecipes.ingredient(Reference.ZOMBIE_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.pigman_heart), Conditional.playerKill);
 
 		//Slime
 		registerMobDrop(EntitySlime.class, XRRecipes.ingredient(Reference.SLIME_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.slime_pearl), Conditional.playerKill);
@@ -81,9 +82,12 @@ public class JERCompat
 		registerMobDrop(EntitySnowman.class, XRRecipes.ingredient(Reference.FROZEN_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.frozen_core), Conditional.playerKill);
 	}
 
-	private static void registerMobDrop(Class<? extends EntityLivingBase> entity, ItemStack drop, float chance, Conditional... conditionals){
+	private static void registerMobDrop(Class<? extends EntityLivingBase> entity, WatchableData watchableData, ItemStack drop, float chance, Conditional... conditionals){
 		DropItem dropItem = new DropItem(drop, 1, 1, chance, conditionals);
-		api.getMobRegistry().registerDrops(entity, dropItem);
+		api.getMobRegistry().registerDrops(entity, watchableData, dropItem);
+	}
+	private static void registerMobDrop(Class<? extends EntityLivingBase> entity, ItemStack drop, float chance, Conditional... conditionals){
+		registerMobDrop(entity, WatchableData.EMPTY, drop, chance, conditionals);
 	}
 
 
