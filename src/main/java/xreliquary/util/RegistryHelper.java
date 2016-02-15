@@ -14,11 +14,16 @@ public class RegistryHelper
 		return GameData.getItemRegistry().getObject(new ResourceLocation(registryName));
 	}
 
-	public static String getItemName(Item item) {
+	public static String getItemRegistryName(Item item) {
 		return GameData.getItemRegistry().getNameForObject(item).toString();
 	}
 
 	public static Block getBlockFromName(String registryName) {
 		return GameData.getBlockRegistry().getObject(new ResourceLocation(registryName));
 	}
+
+	public static String getBlockRegistryName(Block block) {
+		return GameData.getBlockRegistry().getNameForObject(block).toString();
+	}
+
 }

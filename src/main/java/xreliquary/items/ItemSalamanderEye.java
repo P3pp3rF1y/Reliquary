@@ -19,6 +19,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.util.RegistryHelper;
 
 import java.util.Iterator;
 import java.util.List;
@@ -77,7 +78,7 @@ public class ItemSalamanderEye extends ItemBase {
         for (int xOff = -3; xOff <= 3; xOff++) {
             for (int yOff = -3; yOff <= 3; yOff++) {
                 for (int zOff = -3; zOff <= 3; zOff++)
-                    if (ContentHelper.getIdent(player.worldObj.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock()).equals(ContentHelper.getIdent(Blocks.fire))) {
+                    if (RegistryHelper.getBlockRegistryName(player.worldObj.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock()).equals( RegistryHelper.getBlockRegistryName(Blocks.fire))) {
                         player.worldObj.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.air.getDefaultState());
                         player.worldObj.playSoundEffect(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, "random.fizz", 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F);
                     }

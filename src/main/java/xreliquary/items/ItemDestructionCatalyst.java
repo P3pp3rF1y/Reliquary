@@ -22,6 +22,7 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 
 import java.util.List;
 
@@ -111,7 +112,7 @@ public class ItemDestructionCatalyst extends ItemToggleable {
                             continue;
                     }
 
-                    if (isBreakable(ContentHelper.getIdent(world.getBlockState( new BlockPos(x + xD, y + yD, z + zD )).getBlock()))) {
+                    if (isBreakable(RegistryHelper.getBlockRegistryName(world.getBlockState( new BlockPos(x + xD, y + yD, z + zD )).getBlock()))) {
                         world.setBlockState( new BlockPos(x + xD, y + yD, z + zD), Blocks.air.getDefaultState() );
                         if (world.rand.nextInt(2) == 0) {
                             world.spawnParticle( EnumParticleTypes.EXPLOSION_LARGE, x + xD + (world.rand.nextFloat() - 0.5F), y + yD + (world.rand.nextFloat() - 0.5F), z + zD + (world.rand.nextFloat() - 0.5F), 0.0D, 0.0D, 0.0D);

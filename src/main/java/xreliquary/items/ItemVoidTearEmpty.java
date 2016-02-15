@@ -16,6 +16,8 @@ import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
+
 
 @ContentInit
 public class ItemVoidTearEmpty extends ItemBase {
@@ -80,7 +82,8 @@ public class ItemVoidTearEmpty extends ItemBase {
             return null;
         ItemStack filledTear = new ItemStack(ModItems.filledVoidTear, 1, 0);
 
-        NBTHelper.setString("itemID", filledTear, ContentHelper.getIdent(target.getItem()));
+        NBTHelper.setString("itemID", filledTear,
+                RegistryHelper.getItemRegistryName(target.getItem()));
 
         int quantity = InventoryHelper.getItemQuantity(target, inventory);
         if (isPlayerInventory) {

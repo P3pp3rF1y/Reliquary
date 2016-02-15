@@ -322,7 +322,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         {
             NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
             String itemName = tagItemData.getString("Name");
-            if (itemName.equals(RegistryHelper.getItemName(item))) {
+            if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
                 tagItemData.setInteger("Quantity", quantity + quantityIncrease);
                 added = true;
@@ -330,7 +330,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         }
         if (!added) {
             NBTTagCompound newTagData = new NBTTagCompound();
-            newTagData.setString("Name", RegistryHelper.getItemName(item));
+            newTagData.setString("Name", RegistryHelper.getItemRegistryName(item));
             newTagData.setInteger("Quantity", quantityIncrease);
             tagList.appendTag(newTagData);
         }
@@ -352,7 +352,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
             {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                if (itemName.equals(RegistryHelper.getItemName(item))) {
+                if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
                     if (!simulate)
                         tagItemData.setInteger("Quantity", quantity - cost);
@@ -379,7 +379,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         {
             NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
             String itemName = tagItemData.getString("Name");
-            if (itemName.equals(RegistryHelper.getItemName(item))) {
+            if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
                 return quantity >= cost;
             }
@@ -398,7 +398,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
             {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                if (itemName.equals(RegistryHelper.getItemName(item))) {
+                if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
                     return quantity >= quantityLimit;
                 }
@@ -443,7 +443,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         for (int xOff = -3; xOff <= 3; xOff++) {
             for (int yOff = -3; yOff <= 3; yOff++) {
                 for (int zOff = -3; zOff <= 3; zOff++)
-                    if (ContentHelper.getIdent(player.worldObj.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock()).equals(ContentHelper.getIdent(Blocks.fire))) {
+                    if ( RegistryHelper.getBlockRegistryName(player.worldObj.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock()).equals( RegistryHelper.getBlockRegistryName(Blocks.fire))) {
                         player.worldObj.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.air.getDefaultState());
                         player.worldObj.playSoundEffect(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, "random.fizz", 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F);
                     }

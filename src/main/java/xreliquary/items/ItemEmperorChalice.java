@@ -23,6 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 
 
 @ContentInit
@@ -125,8 +126,8 @@ public class ItemEmperorChalice extends ItemToggleable {
                         return ist;
 
                 } else {
-                    String ident = ContentHelper.getIdent(world.getBlockState(mop.getBlockPos()).getBlock());
-                    if ((ident.equals(ContentHelper.getIdent(Blocks.flowing_water)) || ident.equals(ContentHelper.getIdent(Blocks.water))) && world.getBlockState(mop.getBlockPos()).getValue(Blocks.water.LEVEL) == 0) {
+                    String ident =  RegistryHelper.getBlockRegistryName(world.getBlockState(mop.getBlockPos()).getBlock());
+                    if ((ident.equals( RegistryHelper.getBlockRegistryName(Blocks.flowing_water)) || ident.equals( RegistryHelper.getBlockRegistryName(Blocks.water))) && world.getBlockState(mop.getBlockPos()).getValue(Blocks.water.LEVEL) == 0) {
                         world.setBlockState( mop.getBlockPos(), Blocks.air.getDefaultState() );
 
                         return ist;

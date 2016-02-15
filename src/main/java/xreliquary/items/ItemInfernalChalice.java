@@ -20,6 +20,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 
 import java.util.List;
 
@@ -95,8 +96,8 @@ public class ItemInfernalChalice extends ItemToggleable {
                     }
                 }
 
-                String ident = ContentHelper.getIdent(world.getBlockState(mop.getBlockPos()).getBlock());
-                if (this.isEnabled(stack) && (ident.equals(ContentHelper.getIdent(Blocks.flowing_lava)) || ident.equals(ContentHelper.getIdent(Blocks.lava))) && world.getBlockState(mop.getBlockPos()).getValue(Blocks.lava.LEVEL) == 0) {
+                String ident =  RegistryHelper.getBlockRegistryName(world.getBlockState(mop.getBlockPos()).getBlock());
+                if (this.isEnabled(stack) && (ident.equals( RegistryHelper.getBlockRegistryName(Blocks.flowing_lava)) || ident.equals( RegistryHelper.getBlockRegistryName(Blocks.lava))) && world.getBlockState(mop.getBlockPos()).getValue(Blocks.lava.LEVEL) == 0) {
                     world.setBlockState( mop.getBlockPos(), Blocks.air.getDefaultState() );
                     NBTHelper.setInteger("fluidStacks", stack, NBTHelper.getInteger("fluidStacks", stack) + 1000);
                     return stack;

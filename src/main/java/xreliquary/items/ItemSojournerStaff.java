@@ -111,7 +111,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         {
             NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
             String itemName = tagItemData.getString("Name");
-            if (itemName.equals(RegistryHelper.getItemName(item))) {
+            if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
                 tagItemData.setInteger("Quantity", quantity + 1);
                 added = true;
@@ -119,7 +119,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         }
         if (!added) {
             NBTTagCompound newTagData = new NBTTagCompound();
-            newTagData.setString("Name", RegistryHelper.getItemName(item));
+            newTagData.setString("Name", RegistryHelper.getItemRegistryName(item));
             newTagData.setInteger("Quantity", 1);
             tagList.appendTag(newTagData);
         }
@@ -144,7 +144,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         {
             NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
             String itemName = tagItemData.getString("Name");
-            if (itemName.equals(RegistryHelper.getItemName(item))) {
+            if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
                 return quantity >= cost;
             }
@@ -162,7 +162,7 @@ public class ItemSojournerStaff extends ItemToggleable {
             {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                if (itemName.equals(RegistryHelper.getItemName(item))) {
+                if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
                     return quantity >= getTorchItemMaxCapacity();
                 }
@@ -293,7 +293,7 @@ public class ItemSojournerStaff extends ItemToggleable {
             {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                if (itemName.equals(RegistryHelper.getItemName(item))) {
+                if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
                     tagItemData.setInteger("Quantity", quantity - cost);
                 }

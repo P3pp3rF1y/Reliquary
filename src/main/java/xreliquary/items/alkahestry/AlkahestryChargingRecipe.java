@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 
 import java.util.Map;
@@ -33,7 +34,7 @@ public class AlkahestryChargingRecipe implements IRecipe {
         for (int count = 0; count < inv.getSizeInventory(); count++) {
             ItemStack stack = inv.getStackInSlot(count);
             if (stack != null) {
-                if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(returnedItem))) {
+                if ( RegistryHelper.getItemRegistryName(stack.getItem()).equals( RegistryHelper.getItemRegistryName(returnedItem))) {
                     tome = stack.copy();
                 } else {
                     boolean isChargingItem = false;
@@ -64,7 +65,7 @@ public class AlkahestryChargingRecipe implements IRecipe {
         for (int count = 0; count < inv.getSizeInventory(); count++) {
             ItemStack stack = inv.getStackInSlot(count);
             if (stack != null) {
-                if (ContentHelper.getIdent(stack.getItem()).equals(ContentHelper.getIdent(returnedItem))) {
+                if ( RegistryHelper.getItemRegistryName(stack.getItem()).equals( RegistryHelper.getItemRegistryName(returnedItem))) {
                     tome = stack.copy();
                 }
                 else {

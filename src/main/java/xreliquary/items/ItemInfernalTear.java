@@ -24,6 +24,7 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
 import java.util.List;
@@ -137,7 +138,7 @@ public class ItemInfernalTear extends ItemToggleable {
         ItemStack target = getTargetAlkahestItem(stack, inventory);
         if(target == null)
             return null;
-        NBTHelper.setString("itemID", tear, ContentHelper.getIdent(target.getItem()));
+        NBTHelper.setString("itemID", tear,  RegistryHelper.getItemRegistryName(target.getItem()));
 
         if(Settings.InfernalTear.absorbWhenCreated)
             NBTHelper.setBoolean("enabled", stack, true);
@@ -170,7 +171,7 @@ public class ItemInfernalTear extends ItemToggleable {
             if (stack.getTagCompound() != null) {
                 continue;
             }
-            if (!Settings.AlkahestryTome.craftingRecipes.containsKey(ContentHelper.getIdent(stack.getItem()))) {
+            if (!Settings.AlkahestryTome.craftingRecipes.containsKey(RegistryHelper.getItemRegistryName(stack.getItem()))) {
                 continue;
             }
             if (InventoryHelper.getItemQuantity(stack, inventory) > itemQuantity) {

@@ -69,16 +69,16 @@ public class XRRecipes {
     public static void addRecipe(boolean isShapeless, boolean overrideDisabler, ItemStack result, Object... params) {
         //TODO: figure out if we need disabling recipes vs this done by modpack devs with minetweaker or such
 /*        if (!overrideDisabler) {
-            boolean enabled = Reliquary.CONFIG.getGroup(Names.recipe_enabled).containsKey(ContentHelper.getIdent(result.getItem()).replace(':', '_')) && Reliquary.CONFIG.getBool(Names.recipe_enabled, ContentHelper.getIdent(result.getItem()).replace(':', '_'));
+            boolean enabled = Reliquary.CONFIG.getGroup(Names.recipe_enabled).containsKey( RegistryHelper.getBlockRegistryName(result.getItem()).replace(':', '_')) && Reliquary.CONFIG.getBool(Names.recipe_enabled,  RegistryHelper.getItemRegistryName(result.getItem()).replace(':', '_'));
             if (!enabled) return;
             for (Object obj : params) {
                 String unlocalizedName = null;
                 if (obj instanceof Block) {
-                    unlocalizedName = ContentHelper.getIdent((Block) obj);
+                    unlocalizedName =  RegistryHelper.getBlockRegistryName((Block) obj);
                 } else if (obj instanceof Item) {
-                    unlocalizedName = ContentHelper.getIdent((Item) obj);
+                    unlocalizedName =  RegistryHelper.getItemRegistryName((Item) obj);
                 } else if (obj instanceof ItemStack) {
-                    unlocalizedName = ContentHelper.getIdent(((IktemStack) obj).getItem());
+                    unlocalizedName =  RegistryHelper.getItemRegistryName(((IktemStack) obj).getItem());
                 }
                 if (unlocalizedName == null || !Reliquary.CONFIG.getKeys(Names.recipe_enabled).contains(unlocalizedName.replace(Reference.MOD_ID + "_", Reference.MOD_ID + ":")))
                     continue;
