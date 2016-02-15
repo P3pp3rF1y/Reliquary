@@ -35,9 +35,6 @@ public class JERCompat
 		//Spider
 		registerMobDrop(EntitySpider.class, XRRecipes.ingredient(Reference.SPIDER_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.spider_fangs), Conditional.playerKill);
 
-		//Cave Spider
-		//registerMobDrop(EntityCaveSpider.class, XRRecipes.ingredient(Reference.SPIDER_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.cave_spider_fangs), Conditional.playerKill);
-
 		//Skeleton
 		registerMobDrop(EntitySkeleton.class, WatchableData.REGULAR_SKELETON, XRRecipes.ingredient(Reference.SKELETON_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.rib_bone), Conditional.playerKill);
 
@@ -46,9 +43,6 @@ public class JERCompat
 
 		//Zombie
 		registerMobDrop(EntityZombie.class, XRRecipes.ingredient(Reference.ZOMBIE_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.zombie_heart), Conditional.playerKill);
-
-		//Zombie Pigman
-		//registerMobDrop(EntityPigZombie.class, XRRecipes.ingredient(Reference.ZOMBIE_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.pigman_heart), Conditional.playerKill);
 
 		//Slime
 		registerMobDrop(EntitySlime.class, XRRecipes.ingredient(Reference.SLIME_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.slime_pearl), Conditional.playerKill);
