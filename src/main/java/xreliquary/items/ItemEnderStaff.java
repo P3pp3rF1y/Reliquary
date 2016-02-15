@@ -147,12 +147,13 @@ public class ItemEnderStaff extends ItemToggleable {
                 if (player.isSwingInProgress)
                     return ist;
                 player.swingItem();
-                if (NBTHelper.getInteger("ender_pearls", ist) < getEnderStaffPearlCost())
+                if (NBTHelper.getInteger("ender_pearls", ist) < getEnderStaffPearlCost() && !player.capabilities.isCreativeMode)
                     return ist;
                 player.worldObj.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
                 if  (!player.worldObj.isRemote) {
                     player.worldObj.spawnEntityInWorld(new EntityEnderStaffProjectile(player.worldObj, player, !getMode(ist).equals("long_cast")));
-                    NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffPearlCost());
+                    if (!player.capabilities.isCreativeMode)
+                        NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffPearlCost());
                 }
                 //setCooldown(ist);
             } else {
@@ -163,7 +164,7 @@ public class ItemEnderStaff extends ItemToggleable {
     }
 
     private ItemStack doWraithNodeWarpCheck(ItemStack stack, World world, EntityPlayer player) {
-        if (NBTHelper.getInteger("ender_pearls", stack) < getEnderStaffNodeWarpCost())
+        if (NBTHelper.getInteger("ender_pearls", stack) < getEnderStaffNodeWarpCost() && !player.capabilities.isCreativeMode)
             return stack;
 
         if (stack.getTagCompound() != null && stack.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(player))) {
@@ -174,7 +175,8 @@ public class ItemEnderStaff extends ItemToggleable {
             if (canTeleport(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
                 teleportPlayer(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
                 //setCooldown(ist);
-                NBTHelper.setInteger("ender_pearls", stack, NBTHelper.getInteger("ender_pearls", stack) - getEnderStaffNodeWarpCost());
+                if (!player.capabilities.isCreativeMode)
+                    NBTHelper.setInteger("ender_pearls", stack, NBTHelper.getInteger("ender_pearls", stack) - getEnderStaffNodeWarpCost());
             }
         } else if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("dimensionID")) {
             stack.getTagCompound().removeTag("dimensionID");
