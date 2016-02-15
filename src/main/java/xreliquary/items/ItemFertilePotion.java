@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.entities.potion.EntityFertilePotion;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 
@@ -30,7 +31,7 @@ public class ItemFertilePotion extends ItemBase {
 
     @Override
     public ItemStack getContainerItem(ItemStack ist) {
-        return new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
+        return new ItemStack(ModItems.potion, 1, 0);
     }
 
     @Override

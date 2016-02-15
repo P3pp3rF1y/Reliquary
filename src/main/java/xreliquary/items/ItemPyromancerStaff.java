@@ -26,6 +26,7 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -70,7 +71,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
             for (int i = 0; i < tagList.tagCount(); ++i) {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                Item containedItem = Reliquary.CONTENT.getItem(itemName);
+                Item containedItem = RegistryHelper.getItemFromName(itemName);
                 int quantity = tagItemData.getInteger("Quantity");
 
                 if (containedItem == Items.blaze_powder) {
@@ -321,7 +322,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         {
             NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
             String itemName = tagItemData.getString("Name");
-            if (itemName.equals(ContentHelper.getIdent(item))) {
+            if (itemName.equals(RegistryHelper.getItemName(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
                 tagItemData.setInteger("Quantity", quantity + quantityIncrease);
                 added = true;
@@ -329,7 +330,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         }
         if (!added) {
             NBTTagCompound newTagData = new NBTTagCompound();
-            newTagData.setString("Name", ContentHelper.getIdent(item));
+            newTagData.setString("Name", RegistryHelper.getItemName(item));
             newTagData.setInteger("Quantity", quantityIncrease);
             tagList.appendTag(newTagData);
         }
@@ -351,7 +352,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
             {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                if (itemName.equals(ContentHelper.getIdent(item))) {
+                if (itemName.equals(RegistryHelper.getItemName(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
                     if (!simulate)
                         tagItemData.setInteger("Quantity", quantity - cost);
@@ -378,7 +379,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         {
             NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
             String itemName = tagItemData.getString("Name");
-            if (itemName.equals(ContentHelper.getIdent(item))) {
+            if (itemName.equals(RegistryHelper.getItemName(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
                 return quantity >= cost;
             }
@@ -397,7 +398,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
             {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                if (itemName.equals(ContentHelper.getIdent(item))) {
+                if (itemName.equals(RegistryHelper.getItemName(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
                     return quantity >= quantityLimit;
                 }

@@ -17,11 +17,14 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import xreliquary.Reliquary;
+import xreliquary.init.ModBlocks;
+import xreliquary.init.ModItems;
 import xreliquary.items.*;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 
 
 public class ClientEventHandler {
@@ -101,7 +104,7 @@ public class ClientEventHandler {
         String staffMode = enderStaffItem.getMode(enderStaffStack);
         ItemStack displayItemStack = new ItemStack(Items.ender_pearl, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
         if (staffMode.equals("node_warp")) {
-            displayItemStack = new ItemStack(Reliquary.CONTENT.getBlock(Names.wraith_node), NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
+            displayItemStack = new ItemStack(ModBlocks.wraithNode, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
         } else if (staffMode.equals("long_cast")) {
             displayItemStack = new ItemStack(Items.ender_eye, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
         }
@@ -195,7 +198,7 @@ public class ClientEventHandler {
             for (int i = 0; i < tagList.tagCount(); ++i) {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                Item containedItem = Reliquary.CONTENT.getItem(itemName);
+                Item containedItem = RegistryHelper.getItemFromName(itemName);
                 int quantity = tagItemData.getInteger("Quantity");
 
                 if (containedItem == Items.blaze_powder) {
@@ -314,7 +317,7 @@ public class ClientEventHandler {
 
         ItemStack handgunStack = player.getCurrentEquippedItem();
         ItemHandgun handgunItem = (ItemHandgun) handgunStack.getItem();
-        ItemStack bulletStack = new ItemStack(Reliquary.CONTENT.getItem(Names.bullet), handgunItem.getBulletCount(handgunStack), handgunItem.getBulletType(handgunStack));
+        ItemStack bulletStack = new ItemStack(ModItems.bullet, handgunItem.getBulletCount(handgunStack), handgunItem.getBulletType(handgunStack));
         renderHandgunHUD(mc, player, handgunStack, bulletStack);
     }
 
@@ -374,7 +377,7 @@ public class ClientEventHandler {
             if (getTime() % 32 > 16) {
                 // offsets it a little to the left, it looks silly if you put it
                 // over the gun.
-                renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), new ItemStack(Reliquary.CONTENT.getItem(Names.magazine), 1, 0), hudOverlayX - 8, hudOverlayY + 12, overlayOpacity, overlayScale / 2F);
+                renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), new ItemStack(ModItems.magazine, 1, 0), hudOverlayX - 8, hudOverlayY + 12, overlayOpacity, overlayScale / 2F);
             }
         } else {
             // renders the number of bullets onto the screen.
@@ -403,7 +406,7 @@ public class ClientEventHandler {
         int amountOfItem = sojournerItem.getTorchCount(sojournerStack);
         Item placementItem = null;
         if (placementItemName != null)
-            placementItem = Reliquary.CONTENT.getItem(placementItemName);
+            placementItem = RegistryHelper.getItemFromName(placementItemName);
 
         ItemStack placementStack = null;
         if (placementItem != null) {

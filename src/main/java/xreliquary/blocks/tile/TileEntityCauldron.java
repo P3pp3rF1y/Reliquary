@@ -1,6 +1,7 @@
 package xreliquary.blocks.tile;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.pattern.BlockHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -33,6 +34,7 @@ import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.ArrayList;
@@ -259,8 +261,8 @@ public class TileEntityCauldron extends TileEntityBase {
         List<String> heatSourceBlockNames = Settings.ApothecaryCauldron.heatSources;
 
         for (String blockName : heatSourceBlockNames) {
-            if (!heatSources.contains(Reliquary.CONTENT.getBlock(blockName)))
-                heatSources.add(Reliquary.CONTENT.getBlock(blockName));
+            if (!heatSources.contains(RegistryHelper.getBlockFromName(blockName)))
+                heatSources.add(RegistryHelper.getBlockFromName(blockName));
         }
         //defaults that can't be removed.
         heatSources.add(Blocks.lava);
@@ -349,7 +351,7 @@ public class TileEntityCauldron extends TileEntityBase {
                 if (getLiquidLevel() > 0) {
 
                     if (finishedCooking()) {
-                        ItemStack potion = new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
+                        ItemStack potion = new ItemStack(ModItems.potion, 1, 0);
                         potion.setTagCompound( removeContainedPotion( world ) );
 
                         --itemStack.stackSize;

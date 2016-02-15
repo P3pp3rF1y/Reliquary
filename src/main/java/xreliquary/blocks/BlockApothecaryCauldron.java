@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.Properties;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityCauldron;
+import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
@@ -155,7 +156,7 @@ public class BlockApothecaryCauldron extends BlockBase {
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         // this might destroy the universe
-        return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_cauldron));
+        return ItemBlock.getItemFromBlock(ModBlocks.apothecaryCauldron);
     }
 
     /**

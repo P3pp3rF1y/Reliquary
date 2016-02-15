@@ -26,10 +26,11 @@ import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 
 @ContentInit
 public class ItemSojournerStaff extends ItemToggleable {
@@ -84,8 +85,8 @@ public class ItemSojournerStaff extends ItemToggleable {
         items.add(vanillaTorch.getItem());
 
         for (String torch : torches) {
-            if (!items.contains(Reliquary.CONTENT.getItem(torch)))
-                items.add(Reliquary.CONTENT.getItem(torch));
+            if (!items.contains(RegistryHelper.getItemFromName(torch)))
+                items.add(RegistryHelper.getItemFromName(torch));
         }
 
         for (Item item : items) {
@@ -110,7 +111,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         {
             NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
             String itemName = tagItemData.getString("Name");
-            if (itemName.equals(ContentHelper.getIdent(item))) {
+            if (itemName.equals(RegistryHelper.getItemName(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
                 tagItemData.setInteger("Quantity", quantity + 1);
                 added = true;
@@ -118,7 +119,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         }
         if (!added) {
             NBTTagCompound newTagData = new NBTTagCompound();
-            newTagData.setString("Name", ContentHelper.getIdent(item));
+            newTagData.setString("Name", RegistryHelper.getItemName(item));
             newTagData.setInteger("Quantity", 1);
             tagList.appendTag(newTagData);
         }
@@ -143,7 +144,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         {
             NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
             String itemName = tagItemData.getString("Name");
-            if (itemName.equals(ContentHelper.getIdent(item))) {
+            if (itemName.equals(RegistryHelper.getItemName(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
                 return quantity >= cost;
             }
@@ -161,7 +162,7 @@ public class ItemSojournerStaff extends ItemToggleable {
             {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                if (itemName.equals(ContentHelper.getIdent(item))) {
+                if (itemName.equals(RegistryHelper.getItemName(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
                     return quantity >= getTorchItemMaxCapacity();
                 }
@@ -292,7 +293,7 @@ public class ItemSojournerStaff extends ItemToggleable {
             {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                if (itemName.equals(ContentHelper.getIdent(item))) {
+                if (itemName.equals(RegistryHelper.getItemName(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
                     tagItemData.setInteger("Quantity", quantity - cost);
                 }
@@ -319,13 +320,13 @@ public class ItemSojournerStaff extends ItemToggleable {
             for (int i = 0; i < tagList.tagCount(); ++i) {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                Item containedItem = Reliquary.CONTENT.getItem(itemName);
+                Item containedItem = RegistryHelper.getItemFromName(itemName);
                 int quantity = tagItemData.getInteger("Quantity");
                 phrase = String.format("%s%s", phrase.equals("Nothing.") ? "" : String.format("%s;", phrase), new ItemStack(containedItem, 1, 0).getDisplayName() + ": " + quantity);
             }
 
             //add "currently placing: blah blah blah" to the tooltip.
-            Item placingItem = Reliquary.CONTENT.getItem(getTorchPlacementMode(ist));
+            Item placingItem = RegistryHelper.getItemFromName(getTorchPlacementMode(ist));
 
             if (placingItem != null) {
                 placing = new ItemStack(placingItem, 1, 0).getDisplayName();

@@ -40,7 +40,7 @@ public class CommonEventHandler {
         // Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
         if (event.player.getGameProfile().getName() == "Drullkus") {
             if (!event.player.getEntityData().hasKey("gift")) {
-                if (event.player.inventory.addItemStackToInventory(new ItemStack(Reliquary.CONTENT.getItem(Names.witch_hat)))) {
+                if (event.player.inventory.addItemStackToInventory(new ItemStack(ModItems.witchHat))) {
                     event.player.getEntityData().setBoolean("gift", true);
                 }
             }
@@ -149,7 +149,7 @@ public class CommonEventHandler {
             if (!(entityLiving.getAttackTarget() instanceof EntityPlayer))
                 return;
             EntityPlayer player = (EntityPlayer)entityLiving.getAttackTarget();
-            if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.twilight_cloak), true))
+            if (!playerHasItem(player, ModItems.twilightCloak, true))
                 return;
 
             //toggled effect, makes player invisible based on light level (configurable)
@@ -200,7 +200,7 @@ public class CommonEventHandler {
 
     public void handleWitchDropsCheck(Entity e, LivingDropsEvent event) {
         if (e instanceof EntityWitch)
-            handleEventDropListAddition(e, event, Settings.MobDrops.getBaseDrop(Names.witch_hat), Settings.MobDrops.getLootingDrop(Names.witch_hat), new ItemStack(Reliquary.CONTENT.getItem(Names.witch_hat), 1, 0));
+            handleEventDropListAddition(e, event, Settings.MobDrops.getBaseDrop(Names.witch_hat), Settings.MobDrops.getLootingDrop(Names.witch_hat), new ItemStack(ModItems.witchHat, 1, 0));
     }
 
     public void handleSpiderOrCaveSpiderDropsCheck(Entity e, LivingDropsEvent event) {
@@ -322,10 +322,10 @@ public class CommonEventHandler {
         // indentation shallow.
         if (player.getHealth() > Math.round(event.ammount))
             return;
-        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.angelheart_vial), false))
+        if (!playerHasItem(player, ModItems.angelheartVial, false))
             return;
 
-        decreaseItemByOne(player, Reliquary.CONTENT.getItem(Names.angelheart_vial));
+        decreaseItemByOne(player, ModItems.angelheartVial);
 
         // player should see a vial "shatter" effect and hear the glass break to
         // let them know they lost a vial.
@@ -392,7 +392,7 @@ public class CommonEventHandler {
     }
 
     public void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.phoenix_down), false))
+        if (!playerHasItem(player, ModItems.phoenixDown, false))
             return;
         if (player.getHealth() > Math.round(event.ammount)) {
             if (!(event.source == DamageSource.fall))
@@ -450,7 +450,7 @@ public class CommonEventHandler {
     }
 
     public void handleAngelicFeatherCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.angelic_feather), false))
+        if (!playerHasItem(player, ModItems.angelicFeather, false))
             return;
         if (!(event.source == DamageSource.fall))
             return;
@@ -466,7 +466,7 @@ public class CommonEventHandler {
     }
 
     public void handleKrakenEyeCheck(EntityPlayer player, LivingAttackEvent event) {
-        if (!playerHasItem(player, Reliquary.CONTENT.getItem(Names.kraken_shell), false))
+        if (!playerHasItem(player, ModItems.krakenShell, false))
             return;
         if (player.getFoodStats().getFoodLevel() <= 0)
             return;
@@ -483,8 +483,8 @@ public class CommonEventHandler {
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
             if (player.inventory.mainInventory[slot] == null)
                 continue;
-            if (player.inventory.mainInventory[slot].getItem() == Reliquary.CONTENT.getItem(Names.phoenix_down)) {
-                player.inventory.mainInventory[slot] = new ItemStack(Reliquary.CONTENT.getItem(Names.angelic_feather));
+            if (player.inventory.mainInventory[slot].getItem() == ModItems.phoenixDown) {
+                player.inventory.mainInventory[slot] = new ItemStack(ModItems.angelicFeather);
                 return;
             }
         }

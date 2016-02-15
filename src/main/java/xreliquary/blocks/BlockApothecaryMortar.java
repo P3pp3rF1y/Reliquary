@@ -21,6 +21,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityMortar;
+import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 
 import java.util.List;
@@ -129,12 +130,12 @@ public class BlockApothecaryMortar extends BlockBase {
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         // this might destroy the universe
-        return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_mortar));
+        return ItemBlock.getItemFromBlock(ModBlocks.apothecaryMortar);
     }
 
     @SideOnly(Side.CLIENT)
     public Item getItem(World world, int x, int y, int z) {
-        return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_mortar));
+        return ItemBlock.getItemFromBlock(ModBlocks.apothecaryMortar);
     }
 
     @Override

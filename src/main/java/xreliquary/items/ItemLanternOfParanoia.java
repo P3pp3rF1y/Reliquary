@@ -18,6 +18,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
@@ -124,7 +125,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 //    }
 //
     private boolean findAndDrainSojournersStaff(EntityPlayer player) {
-        Item staffItem = Reliquary.CONTENT.getItem(Names.sojourner_staff);
+        Item staffItem = ModItems.sojournerStaff;
         if (player.capabilities.isCreativeMode)
             return true;
         for (int slot = 0; slot < player.inventory.getSizeInventory(); slot++) {

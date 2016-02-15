@@ -1,23 +1,18 @@
 package xreliquary.init;
 
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
-import xreliquary.Reliquary;
+import xreliquary.items.alkahestry.AlkahestryChargingRecipe;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
 import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
-import xreliquary.items.alkahestry.AlkahestryChargingRecipe;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
 
 public class XRRecipes {
-
-    //TODO replace emptyVoidTear() with ModItems.emptyVoidTear
 
     public static ItemStack emptyVoidTear() { return new ItemStack(ModItems.emptyVoidTear, 1, 0); }
 
@@ -83,7 +78,7 @@ public class XRRecipes {
                 } else if (obj instanceof Item) {
                     unlocalizedName = ContentHelper.getIdent((Item) obj);
                 } else if (obj instanceof ItemStack) {
-                    unlocalizedName = ContentHelper.getIdent(((ItemStack) obj).getItem());
+                    unlocalizedName = ContentHelper.getIdent(((IktemStack) obj).getItem());
                 }
                 if (unlocalizedName == null || !Reliquary.CONFIG.getKeys(Names.recipe_enabled).contains(unlocalizedName.replace(Reference.MOD_ID + "_", Reference.MOD_ID + ":")))
                     continue;
@@ -110,10 +105,10 @@ public class XRRecipes {
         addRecipe(true, true, new ItemStack(Blocks.packed_ice, 1, 0), Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, frozenCore());
 
         //apothecary mortar recipe
-        addRecipe(false, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.apothecary_mortar), 1, 0), "gng", "ngn", "nnn", 'n', Blocks.quartz_block, 'g', creeperGland());
+        addRecipe(false, false, new ItemStack(ModBlocks.apothecaryMortar, 1, 0), "gng", "ngn", "nnn", 'n', Blocks.quartz_block, 'g', creeperGland());
 
         //apothecary cauldron recipe
-        addRecipe(false, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.apothecary_cauldron), 1, 0), "gng", "ici", "nmn", 'g', creeperGland(), 'n', enderHeart(), 'i', infernalClaw(), 'c', Items.cauldron, 'm', moltenCore());
+        addRecipe(false, false, new ItemStack(ModBlocks.apothecaryCauldron, 1, 0), "gng", "ici", "nmn", 'g', creeperGland(), 'n', enderHeart(), 'i', infernalClaw(), 'c', Items.cauldron, 'm', moltenCore());
 
         //alkahestry tome
         if (Settings.EasyModeRecipes.alkahestryTome)
@@ -123,15 +118,15 @@ public class XRRecipes {
 
         //glowstone altar
         if (Settings.EasyModeRecipes.altar)
-            addRecipe(true, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.altar_idle), 1), Blocks.obsidian, Blocks.redstone_lamp, enderHeart(), creeperGland());
+            addRecipe(true, false, new ItemStack(ModBlocks.alkahestryAltar, 1), Blocks.obsidian, Blocks.redstone_lamp, enderHeart(), creeperGland());
         else
-            addRecipe(false, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.altar_idle), 1), "dnd", "olo", "dgd", 'd', Items.glowstone_dust, 'n', enderHeart(), 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'g', creeperGland());
+            addRecipe(false, false, new ItemStack(ModBlocks.alkahestryAltar, 1), "dnd", "olo", "dgd", 'd', Items.glowstone_dust, 'n', enderHeart(), 'o', Blocks.obsidian, 'l', Blocks.redstone_lamp, 'g', creeperGland());
 
         //fertile_lilypad
-        addRecipe(true, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.fertile_lilypad), 1), fertileEssence(), fertileEssence(), fertileEssence(), Blocks.waterlily);
+        addRecipe(true, false, new ItemStack(ModBlocks.fertileLilypad, 1), fertileEssence(), fertileEssence(), fertileEssence(), Blocks.waterlily);
 
         //wraith node
-        addRecipe(true, false, new ItemStack(Reliquary.CONTENT.getBlock(Names.wraith_node), 1), enderHeart(), Items.emerald);
+        addRecipe(true, false, new ItemStack(ModBlocks.wraithNode, 1), enderHeart(), Items.emerald);
 
         //interdiction torch
         if (Settings.EasyModeRecipes.interdictionTorch)
@@ -232,7 +227,7 @@ public class XRRecipes {
         if (Settings.EasyModeRecipes.lanternOfParanoia)
             addRecipe(false, false, new ItemStack(ModItems.lanternOfParanoia, 1), "isi", "gmg", " i ", 'i', Items.iron_ingot, 's', slimePearl(),  'g', Blocks.glass, 'm', moltenCore());
         else
-            addRecipe(false, false, new ItemStack(ModItems.lanternOfParanoia, 1), "imi", "gtg", "ili", 'i', Items.iron_ingot, 'm', moltenCore(), 'g', Blocks.glass, 't', Reliquary.CONTENT.getBlock(Names.interdiction_torch), 'l', creeperGland());
+            addRecipe(false, false, new ItemStack(ModItems.lanternOfParanoia, 1), "imi", "gtg", "ili", 'i', Items.iron_ingot, 'm', moltenCore(), 'g', Blocks.glass, 't', ModBlocks.interdictionTorch, 'l', creeperGland());
 
         // midas touchstone
         addRecipe(true, false, new ItemStack(ModItems.midasTouchstone, 1, 0), Blocks.anvil, Blocks.gold_block, Blocks.gold_block, moltenCore(), moltenCore(), moltenCore(), creeperGland(), creeperGland(), emptyVoidTear());

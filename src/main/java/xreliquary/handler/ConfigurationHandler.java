@@ -2,7 +2,6 @@ package xreliquary.handler;
 
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Block;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
@@ -17,14 +16,13 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
+import xreliquary.util.StackHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 import xreliquary.util.potions.PotionEssence;
@@ -194,7 +192,7 @@ public class ConfigurationHandler
 			String name = nameParts[0].split(":")[1];
 			int meta = Integer.parseInt(nameParts[1]);
 
-			ItemStack stack = getItemStackFromNameMeta(modId, name, meta);
+			ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
 
 			if (stack != null) {
 				PotionIngredient ingredient = new PotionIngredient(stack);
@@ -378,7 +376,7 @@ public class ConfigurationHandler
 		String registryName = getString("base_item", Names.item_and_block_settings + "." + Names.alkahestry_tome, Items.redstone.getRegistryName());
 		int meta = getInt("base_item_meta", Names.item_and_block_settings + "." + Names.alkahestry_tome, 0, 0, 16);
 		String[] splitName = registryName.split(":");
-		ItemStack stack = getItemStackFromNameMeta(splitName[0], splitName[1], meta);
+		ItemStack stack = StackHelper.getItemStackFromNameMeta(splitName[0], splitName[1], meta);
 		Settings.AlkahestryTome.baseItem = stack;
 
 		Settings.AlkahestryTome.baseItemWorth = getInt("base_item_worth", Names.item_and_block_settings + "." + Names.alkahestry_tome, 1, 1, 1000);
@@ -408,7 +406,7 @@ public class ConfigurationHandler
 			int meta = values[0];
 			int charge = values[1];
 
-			ItemStack stack = getItemStackFromNameMeta(modId, name, meta);
+			ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
 
 			if (stack != null) {
 				Settings.AlkahestryTome.chargingRecipes.put(entry.getKey(), new AlkahestChargeRecipe(stack, charge));
@@ -461,29 +459,13 @@ public class ConfigurationHandler
 			if (modId.toLowerCase().equals("oredictionary")) {
 				Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(name, yield, cost));
 			} else {
-				ItemStack stack = getItemStackFromNameMeta(modId, name, meta);
+				ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
 
 				if (stack != null) {
 					Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(stack, yield, cost));
 				}
 			}
 		}
-	}
-
-	//TODO: refactor out into stack helper or such
-	private static ItemStack getItemStackFromNameMeta(String modId, String name, int meta) {
-		ItemStack stack = null;
-		Item item = GameRegistry.findItem(modId, name);
-
-		if (item != null && item != GameData.getItemRegistry().getDefaultValue()) {
-            stack = new ItemStack(item, 1, meta);
-        } else {
-            Block block = GameRegistry.findBlock(modId, name);
-            if (block != null && block != GameData.getBlockRegistry().getDefaultValue()) {
-                stack = new ItemStack(item, 1, meta);
-            }
-        }
-		return stack;
 	}
 
 	private static void addDefaultAlkahestCraftingRecipes(ConfigCategory category) {
