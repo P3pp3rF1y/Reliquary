@@ -1,5 +1,6 @@
 package xreliquary.entities;
 
+
 import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -8,7 +9,6 @@ import net.minecraft.util.*;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

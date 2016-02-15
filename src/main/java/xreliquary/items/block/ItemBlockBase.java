@@ -1,14 +1,15 @@
-package lib.enderwizards.sandstone.items.block;
+package xreliquary.items.block;
+
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
+import xreliquary.util.LanguageHelper;
 
 import java.util.List;
 
@@ -62,9 +63,5 @@ public class ItemBlockBase extends ItemBlock {
 
     protected boolean showTooltipsAlways() {
         return this.showTooltipsAlways;
-    }
-
-    protected void showTooltipsAlways(boolean b) {
-        this.showTooltipsAlways = b;
     }
 }

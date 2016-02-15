@@ -1,8 +1,8 @@
-package lib.enderwizards.sandstone.util;
+package xreliquary.util;
+
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 public class NBTHelper {
 
@@ -64,48 +64,18 @@ public class NBTHelper {
         setTag(ist, tagCompound);
     }
 
-//    public static UUID getUUID(ItemStack ist) {
-//        if (ist.getTagCompound() == null) ist.setTagCompound(new NBTTagCompound());
-//        String stringUUID = ist.getTagCompound().getString("UUID");
-//        if (stringUUID.equals("")) {
-//            UUID newUUID = UUID.randomUUID();
-//            stringUUID = newUUID.toString();
-//            ist.getTagCompound().setString("UUID", stringUUID);
-//        }
-//        return UUID.fromString(ist.getTagCompound().getString("UUID"));
-//    }
-
     public static NBTTagCompound getTag(ItemStack ist) {
-        //UUID tagUUID = getUUID(ist);
         if (ist.getTagCompound() == null)
             resetTag(ist);
-        //WorldDataHandler.<ItemData>get(ItemData.class).getTag(tagUUID);
         return ist.getTagCompound();
     }
 
-    public static boolean hasKey(String s, ItemStack stack) {
-        NBTTagCompound tag = getTag(stack);
-        return tag.hasKey(s);
-    }
-
     public static void setTag(ItemStack ist, NBTTagCompound nbt) {
-        //UUID tagUUID = getUUID(ist);
-        //WorldDataHandler.<ItemData>get(ItemData.class).setTag(tagUUID, nbt);
         ist.setTagCompound(nbt);
     }
 
     public static void resetTag(ItemStack ist) {
-//        UUID tagUUID = getUUID(ist);
-//        WorldDataHandler.<ItemData>get(ItemData.class).resetTag(tagUUID);
         setTag(ist, new NBTTagCompound());
     }
 
-    public NBTTagList getTagList(String s, ItemStack ist) {
-        //default for me, I'm usually getting a list of tag compounds.
-        return getTagList(s, ist, 10);
-    }
-
-    public NBTTagList getTagList(String s, ItemStack ist, int type) {
-        return getTag(ist).getTagList(s, type);
-    }
 }

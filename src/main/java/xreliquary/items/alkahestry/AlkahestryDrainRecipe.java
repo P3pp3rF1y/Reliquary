@@ -1,7 +1,6 @@
 package xreliquary.items.alkahestry;
 
-import lib.enderwizards.sandstone.util.NBTHelper;
-import net.minecraft.init.Items;
+
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -9,6 +8,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Settings;
+import xreliquary.util.NBTHelper;
 
 public class AlkahestryDrainRecipe implements IRecipe {
 

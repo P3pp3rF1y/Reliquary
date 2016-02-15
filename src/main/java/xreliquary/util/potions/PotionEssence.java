@@ -1,13 +1,16 @@
 package xreliquary.util.potions;
 
-import lib.enderwizards.sandstone.util.misc.Duo;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * PotionEssence, the helper class for well, potion essences. Abstracts away

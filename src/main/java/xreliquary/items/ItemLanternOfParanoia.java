@@ -1,8 +1,6 @@
 package xreliquary.items;
 
 
-import lib.enderwizards.sandstone.util.ContentHelper;
-import lib.enderwizards.sandstone.util.InventoryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -20,6 +18,8 @@ import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.RegistryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -230,7 +230,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
         if (!world.setBlockState(pos, torchBlockState, 3))
             return false;
 
-        if (ContentHelper.areBlocksEqual(torchBlockState.getBlock(), Blocks.torch)) {
+        if (RegistryHelper.blocksEqual(torchBlockState.getBlock(), Blocks.torch)) {
             Blocks.torch.onNeighborBlockChange(world, pos, torchBlockState, torchBlockState.getBlock());
             Blocks.torch.onBlockPlacedBy(world, pos, torchBlockState, player, stack);
         }

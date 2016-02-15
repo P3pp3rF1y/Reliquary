@@ -1,6 +1,6 @@
 package xreliquary.blocks;
 
-import lib.enderwizards.sandstone.init.ContentInit;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockLiquid;

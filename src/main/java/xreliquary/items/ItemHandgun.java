@@ -1,6 +1,6 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.util.NBTHelper;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -14,6 +14,7 @@ import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.util.NBTHelper;
 
 public class ItemHandgun extends ItemBase {
 

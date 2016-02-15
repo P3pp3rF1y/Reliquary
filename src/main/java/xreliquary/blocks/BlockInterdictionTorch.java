@@ -1,6 +1,6 @@
 package xreliquary.blocks;
 
-import lib.enderwizards.sandstone.init.ContentInit;
+
 import net.minecraft.block.BlockTorch;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;

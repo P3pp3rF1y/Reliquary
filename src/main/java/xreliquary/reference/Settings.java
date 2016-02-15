@@ -1,9 +1,7 @@
 package xreliquary.reference;
 
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 import xreliquary.util.potions.PotionEssence;

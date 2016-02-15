@@ -1,14 +1,15 @@
 package xreliquary.compat.jei;
 
+
 import mezz.jei.api.*;
 import net.minecraft.item.ItemStack;
 import xreliquary.compat.jei.alkahestry.*;
+import xreliquary.compat.jei.cauldron.*;
 import xreliquary.compat.jei.descriptions.DescriptionEntry;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
 import xreliquary.compat.jei.mortar.MortarRecipeCategory;
 import xreliquary.compat.jei.mortar.MortarRecipeHandler;
 import xreliquary.compat.jei.mortar.MortarRecipeMaker;
-import xreliquary.compat.jei.cauldron.*;
 import xreliquary.init.ModItems;
 
 @JEIPlugin

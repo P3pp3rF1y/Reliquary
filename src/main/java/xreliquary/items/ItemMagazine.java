@@ -1,6 +1,6 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.util.LanguageHelper;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -10,6 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
+import xreliquary.util.LanguageHelper;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
-package lib.enderwizards.sandstone.blocks.tile;
+package xreliquary.blocks.tile;
+
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import xreliquary.blocks.tile.TileEntityBase;
 
 
 public abstract class TileEntityInventory extends TileEntityBase implements IInventory {

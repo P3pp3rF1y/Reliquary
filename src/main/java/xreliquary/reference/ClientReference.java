@@ -1,8 +1,9 @@
 package xreliquary.reference;
 
+
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraft.util.ResourceLocation;
 
 public class ClientReference {
 

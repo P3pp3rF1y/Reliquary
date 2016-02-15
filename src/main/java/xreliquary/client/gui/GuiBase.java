@@ -1,12 +1,13 @@
-package lib.enderwizards.sandstone.client.gui;
+package xreliquary.client.gui;
 
-import lib.enderwizards.sandstone.util.LanguageHelper;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
+import xreliquary.util.LanguageHelper;
 
 /**
  * A helper class for GUIs. Handles String parsing and positioning, and easily drawing ItemStacks.

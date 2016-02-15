@@ -2,10 +2,6 @@ package xreliquary.items;
 
 
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.LanguageHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -25,6 +21,9 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
 import java.util.ArrayList;
@@ -357,9 +356,9 @@ public class ItemSojournerStaff extends ItemToggleable {
         Block blockTargetted = world.getBlockState(pos).getBlock();
         BlockPos placeBlockAt = pos;
 
-        if (ContentHelper.areBlocksEqual(blockTargetted, Blocks.snow)) {
+        if (RegistryHelper.blocksEqual(blockTargetted, Blocks.snow)) {
             side = EnumFacing.UP;
-        } else if (!ContentHelper.areBlocksEqual(blockTargetted, Blocks.vine) && !ContentHelper.areBlocksEqual(blockTargetted, Blocks.tallgrass) && !ContentHelper.areBlocksEqual(blockTargetted, Blocks.deadbush) && (blockTargetted == null || !blockTargetted.isReplaceable(world, pos))) {
+        } else if (!RegistryHelper.blocksEqual(blockTargetted, Blocks.vine) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.tallgrass) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.deadbush) && (blockTargetted == null || !blockTargetted.isReplaceable(world, pos))) {
             placeBlockAt = pos.offset(side);
         }
 
@@ -452,7 +451,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         if (!world.setBlockState(pos, torchBlockState, 3))
             return false;
 
-        if (ContentHelper.areBlocksEqual(torchBlockState.getBlock(), Blocks.torch)) {
+        if (RegistryHelper.blocksEqual(torchBlockState.getBlock(), Blocks.torch)) {
             Blocks.torch.onNeighborBlockChange(world, pos, torchBlockState, torchBlockState.getBlock());
             Blocks.torch.onBlockPlacedBy(world, pos, torchBlockState, player, stack);
         }

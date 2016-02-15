@@ -1,9 +1,10 @@
 package xreliquary.compat.jei.cauldron;
 
-import lib.enderwizards.sandstone.util.NBTHelper;
+
 import net.minecraft.item.ItemStack;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
+import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
 
 import javax.annotation.Nonnull;

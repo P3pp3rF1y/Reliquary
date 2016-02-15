@@ -2,10 +2,6 @@ package xreliquary.items;
 
 
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.LanguageHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,6 +20,10 @@ import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
+import xreliquary.util.RegistryHelper;
 
 import java.util.List;
 
@@ -170,7 +170,7 @@ public class ItemEnderStaff extends ItemToggleable {
             if (!world.isRemote) {
                 player.addChatComponentMessage( new ChatComponentText( EnumChatFormatting.DARK_RED + "Out of range!" ) );
             }
-        } else if (stack.getTagCompound() != null && ContentHelper.areBlocksEqual(world.getBlockState(new BlockPos(stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))).getBlock(), ModBlocks.wraithNode)) {
+        } else if (stack.getTagCompound() != null && RegistryHelper.blocksEqual(world.getBlockState(new BlockPos(stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))).getBlock(), ModBlocks.wraithNode)) {
             if (canTeleport(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
                 teleportPlayer(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
                 //setCooldown(ist);
@@ -229,7 +229,7 @@ public class ItemEnderStaff extends ItemToggleable {
     @Override
     public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
         // if right clicking on a wraith node, bind the eye to that wraith node.
-        if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && ContentHelper.areBlocksEqual(world.getBlockState(pos).getBlock(), ModBlocks.wraithNode)) {
+        if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && RegistryHelper.blocksEqual(world.getBlockState(pos).getBlock(), ModBlocks.wraithNode)) {
             setWraithNode(ist, pos, Integer.valueOf(getWorld(player)), player);
 
             player.playSound("mob.endermen.portal", 1.0f, 1.0f);

@@ -1,6 +1,6 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.init.ContentInit;
+
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 

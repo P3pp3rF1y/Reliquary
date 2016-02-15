@@ -1,8 +1,7 @@
 package xreliquary.items;
 
+
 import baubles.api.BaubleType;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -21,6 +20,7 @@ import xreliquary.Reliquary;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.NBTHelper;
 
 import java.util.Iterator;
 import java.util.List;
