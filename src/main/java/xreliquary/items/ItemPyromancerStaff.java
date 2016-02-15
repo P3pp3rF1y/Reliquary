@@ -142,7 +142,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
                 player.swingItem();
                 Vec3 lookVec = player.getLookVec();
                 //blaze fireball!
-                if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
+                if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote, player)) {
                     player.worldObj.playAuxSFXAtEntity(player, 1009, new BlockPos((int)player.posX, (int)player.posY, (int)player.posZ), 0);
                     EntitySmallFireball fireball = new EntitySmallFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
                     fireball.accelerationX = lookVec.xCoord;
@@ -160,7 +160,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
                 player.swingItem();
                 Vec3 lookVec = player.getLookVec();
                 //ghast fireball!
-                if (removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost(), player.worldObj.isRemote)) {
+                if (removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost(), player.worldObj.isRemote, player)) {
                     player.worldObj.playAuxSFXAtEntity(player, 1008, new BlockPos((int)player.posX, (int)player.posY, (int)player.posZ), 0);
                     EntityLargeFireball fireball = new EntityLargeFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
                     fireball.accelerationX = lookVec.xCoord;
@@ -211,7 +211,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
                 doEruptionAuxEffects(player, mop.getBlockPos().getX(), mop.getBlockPos().getY(), mop.getBlockPos().getZ(), 5D);
                 if (count % 10 == 0) {
-                    if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
+                    if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote, player)) {
                         doEruptionEffect(player, mop.getBlockPos().getX(), mop.getBlockPos().getY(), mop.getBlockPos().getZ(), 5D);
                     }
                 }
@@ -337,7 +337,9 @@ public class ItemPyromancerStaff extends ItemToggleable {
         NBTHelper.setTag(ist, tagCompound);
     }
 
-    public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, boolean simulate) {
+    public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, boolean simulate, EntityPlayer player) {
+        if (player.capabilities.isCreativeMode)
+            return true;
         if (hasItemInInternalStorage(ist, item, cost)) {
             NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 
@@ -460,7 +462,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
                         addItemToInternalStorage(ist, Items.fire_charge, true);
                     player.worldObj.playSoundEffect(fireball.posX, fireball.posY, fireball.posZ, "random.fizz", 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F);
                 }
-                    fireball.setDead();
+                fireball.setDead();
             }
         }
         List blazeFireballs = player.worldObj.getEntitiesWithinAABB(EntitySmallFireball.class, new AxisAlignedBB(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));

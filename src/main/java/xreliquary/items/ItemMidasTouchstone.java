@@ -88,7 +88,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
             if (player.inventory.armorInventory[slot].getItemDamage() <= 0) {
                 continue;
             }
-            if (decrementTouchStoneCharge(ist)) {
+            if (decrementTouchStoneCharge(ist, player)) {
                 player.inventory.armorInventory[slot].setItemDamage(player.inventory.armorInventory[slot].getItemDamage() - 1);
             }
         }
@@ -104,7 +104,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
                 if (player.inventory.mainInventory[slot].getItemDamage() <= 0) {
                     continue;
                 }
-                if (decrementTouchStoneCharge(ist)) {
+                if (decrementTouchStoneCharge(ist, player)) {
                     player.inventory.mainInventory[slot].setItemDamage(player.inventory.mainInventory[slot].getItemDamage() - 1);
                 }
             } else if (player.inventory.mainInventory[slot].getItem() instanceof ItemTool) {
@@ -115,7 +115,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
                 if (player.inventory.mainInventory[slot].getItemDamage() <= 0) {
                     continue;
                 }
-                if (decrementTouchStoneCharge(ist)) {
+                if (decrementTouchStoneCharge(ist, player)) {
                     player.inventory.mainInventory[slot].setItemDamage(player.inventory.mainInventory[slot].getItemDamage() - 1);
                 }
             } else {
@@ -126,16 +126,17 @@ public class ItemMidasTouchstone extends ItemToggleable {
                 if (player.inventory.mainInventory[slot].getItemDamage() <= 0 || !item.isDamageable()) {
                     continue;
                 }
-                if (decrementTouchStoneCharge(ist)) {
+                if (decrementTouchStoneCharge(ist, player)) {
                     player.inventory.mainInventory[slot].setItemDamage(player.inventory.mainInventory[slot].getItemDamage() - 1);
                 }
             }
         }
     }
 
-    private boolean decrementTouchStoneCharge(ItemStack ist) {
-        if (NBTHelper.getInteger("glowstone", ist) - getGlowStoneCost() >= 0) {
-            NBTHelper.setInteger("glowstone", ist, NBTHelper.getInteger("glowstone", ist) - getGlowStoneCost());
+    private boolean decrementTouchStoneCharge(ItemStack ist, EntityPlayer player) {
+        if (NBTHelper.getInteger("glowstone", ist) - getGlowStoneCost() >= 0 || player.capabilities.isCreativeMode) {
+            if (!player.capabilities.isCreativeMode)
+                NBTHelper.setInteger("glowstone", ist, NBTHelper.getInteger("glowstone", ist) - getGlowStoneCost());
             return true;
         }
         return false;

@@ -278,7 +278,9 @@ public class ItemSojournerStaff extends ItemToggleable {
         return Settings.SojournerStaff.maxCapacityPerItemType;
     }
 
-    public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost) {
+    public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, EntityPlayer player) {
+        if (player.capabilities.isCreativeMode)
+            return true;
         if (hasItemInInternalStorage(ist, item, cost)) {
             NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 
@@ -370,7 +372,7 @@ public class ItemSojournerStaff extends ItemToggleable {
                     for (; distance > Settings.SojournerStaff.tilePerCostMultiplier; distance -= Settings.SojournerStaff.tilePerCostMultiplier) {
                         cost++;
                     }
-                    if (!removeItemFromInternalStorage(ist, Item.getItemFromBlock(blockAttemptingPlacement), cost))
+                    if (!removeItemFromInternalStorage(ist, Item.getItemFromBlock(blockAttemptingPlacement), cost, player))
                         return false;
                 }
                 IBlockState torchBlockState = attemptSide(world, placeBlockAt, side, blockAttemptingPlacement, player);

@@ -132,7 +132,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
             if (!(staffItem == player.inventory.getStackInSlot(slot).getItem()))
                 continue;
             Item torch = ItemBlock.getItemFromBlock(Blocks.torch);
-            if (((ItemSojournerStaff)staffItem).removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch, 1))
+            if (((ItemSojournerStaff)staffItem).removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch, 1, player))
                 return true;
         }
         return false;
