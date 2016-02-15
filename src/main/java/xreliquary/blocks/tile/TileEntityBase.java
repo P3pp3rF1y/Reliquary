@@ -1,4 +1,4 @@
-package lib.enderwizards.sandstone.blocks.tile;
+package xreliquary.blocks.tile;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;

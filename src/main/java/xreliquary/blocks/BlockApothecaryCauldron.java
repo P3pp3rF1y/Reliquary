@@ -1,32 +1,25 @@
 package xreliquary.blocks;
 
-import lib.enderwizards.sandstone.blocks.BlockBase;
-import lib.enderwizards.sandstone.init.ContentInit;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.Properties;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.init.ModBlocks;
-import xreliquary.init.ModItems;
-import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 
 import java.util.List;

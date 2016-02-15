@@ -1,8 +1,5 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;

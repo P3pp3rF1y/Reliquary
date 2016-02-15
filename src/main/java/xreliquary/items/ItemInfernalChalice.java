@@ -1,9 +1,6 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.ContentHelper;
 import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;

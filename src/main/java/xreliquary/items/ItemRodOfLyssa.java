@@ -1,16 +1,15 @@
 package xreliquary.items;
 
+
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.entities.EntityLyssaHook;
 import xreliquary.client.ItemModelLocations;
+import xreliquary.entities.EntityLyssaHook;
 import xreliquary.reference.Names;
 
 /**

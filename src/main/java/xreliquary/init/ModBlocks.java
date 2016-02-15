@@ -1,6 +1,6 @@
 package xreliquary.init;
 
-import lib.enderwizards.sandstone.blocks.BlockBase;
+
 import lib.enderwizards.sandstone.items.block.ItemBlockBase;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
@@ -10,7 +10,6 @@ import xreliquary.blocks.*;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.blocks.tile.TileEntityMortar;
-import xreliquary.client.ClientProxy;
 import xreliquary.items.block.ItemFertileLilyPad;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;

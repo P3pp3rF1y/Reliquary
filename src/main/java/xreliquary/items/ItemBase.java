@@ -1,7 +1,7 @@
-package lib.enderwizards.sandstone.items;
+package xreliquary.items;
+
 
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.mod.ModRegistry;
 import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

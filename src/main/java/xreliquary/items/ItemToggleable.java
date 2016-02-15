@@ -1,18 +1,16 @@
-package lib.enderwizards.sandstone.items;
+package xreliquary.items;
 
+
+import lib.enderwizards.sandstone.util.NBTHelper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.util.NBTHelper;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 
-import java.util.List;
 
-public class ItemToggleable extends ItemBase {
+public class ItemToggleable extends ItemBase
+{
 
     public ItemToggleable(String langName) {
         super(langName);

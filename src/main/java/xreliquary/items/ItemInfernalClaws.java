@@ -1,10 +1,9 @@
 package xreliquary.items;
 
+
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
-import net.minecraft.item.ItemStack;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 
