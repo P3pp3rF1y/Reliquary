@@ -137,7 +137,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
     @Override
     public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float xOff, float yOff, float zOff) {
-        if (NBTHelper.getInteger("bonemeal", ist) >= getBonemealCost()) {
+        if (NBTHelper.getInteger("bonemeal", ist) >= getBonemealCost() || player.capabilities.isCreativeMode) {
             ItemStack fakeItemStack = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
             ItemDye fakeItemDye = (ItemDye)fakeItemStack.getItem();
 
@@ -151,7 +151,7 @@ public class ItemHarvestRod extends ItemToggleable {
                 }
             }
 
-            if (usedRod)
+            if (usedRod && !player.capabilities.isCreativeMode)
                 NBTHelper.setInteger("bonemeal", ist, NBTHelper.getInteger("bonemeal", ist) - getBonemealCost());
         }
 

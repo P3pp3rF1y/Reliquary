@@ -65,10 +65,11 @@ public class ItemIceMagusRod extends ItemToggleable {
             return ist;
         player.swingItem();
         if (!player.isSneaking()) {
-            if (NBTHelper.getInteger("snowballs", ist) >= getSnowballCost()) {
+            if (NBTHelper.getInteger("snowballs", ist) >= getSnowballCost() || player.capabilities.isCreativeMode) {
                 world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
                 world.spawnEntityInWorld(new EntitySpecialSnowball(world, player, this instanceof ItemGlacialStaff));
-                NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
+                if (!player.capabilities.isCreativeMode)
+                    NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
             }
         }
         return super.onItemRightClick(ist, world, player);

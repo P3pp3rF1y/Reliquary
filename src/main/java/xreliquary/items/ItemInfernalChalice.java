@@ -100,7 +100,7 @@ public class ItemInfernalChalice extends ItemToggleable {
                     return stack;
                 }
 
-                if (!this.isEnabled(stack)  && NBTHelper.getInteger("fluidStacks", stack) >= 1000) {
+                if (!this.isEnabled(stack)  && (NBTHelper.getInteger("fluidStacks", stack) >= 1000 || player.capabilities.isCreativeMode)) {
                     BlockPos adjustedPos = mop.getBlockPos().offset(mop.sideHit);
 
                     if (!player.canPlayerEdit(adjustedPos, mop.sideHit, stack))
