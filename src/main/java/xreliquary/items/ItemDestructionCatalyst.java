@@ -123,7 +123,7 @@ public class ItemDestructionCatalyst extends ItemToggleable {
                 }
             }
         }
-        if (destroyedSomething) {
+        if (destroyedSomething && !player.capabilities.isCreativeMode) {
             NBTHelper.setInteger("gunpowder", ist, NBTHelper.getInteger("gunpowder", ist) - gunpowderCost());
         }
     }
