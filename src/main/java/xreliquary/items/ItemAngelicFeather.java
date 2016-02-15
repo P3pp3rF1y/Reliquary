@@ -19,7 +19,6 @@ import xreliquary.reference.Settings;
 /**
  * Created by Xeno on 5/15/14.
  */
-@ContentInit
 public class ItemAngelicFeather extends ItemBase {
 
     public ItemAngelicFeather() {

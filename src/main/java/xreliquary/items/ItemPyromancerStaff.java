@@ -35,7 +35,6 @@ import java.util.List;
 /**
  * Created by Xeno on 10/11/2014.
  */
-@ContentInit
 public class ItemPyromancerStaff extends ItemToggleable {
     public ItemPyromancerStaff() {
         super(Names.pyromancer_staff);

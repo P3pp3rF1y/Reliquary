@@ -13,7 +13,6 @@ import xreliquary.reference.Names;
 
 import java.util.List;
 
-@ContentInit
 public class ItemBullet extends ItemBase {
 
     // 0 = Empty, 1 = Neutral, 2 = Exorcism, 3 = Blaze

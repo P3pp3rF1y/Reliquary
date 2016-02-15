@@ -28,7 +28,6 @@ import xreliquary.reference.Settings;
 
 import java.util.List;
 
-@ContentInit
 public class ItemEnderStaff extends ItemToggleable {
 
     public ItemEnderStaff() {

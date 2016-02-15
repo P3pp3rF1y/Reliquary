@@ -26,7 +26,6 @@ import xreliquary.reference.Settings;
 import xreliquary.util.RegistryHelper;
 
 
-@ContentInit
 public class ItemEmperorChalice extends ItemToggleable {
 
     public ItemEmperorChalice()

@@ -23,7 +23,6 @@ import xreliquary.util.RegistryHelper;
 
 import java.util.List;
 
-@ContentInit
 public class ItemMidasTouchstone extends ItemToggleable {
 
     public ItemMidasTouchstone() {

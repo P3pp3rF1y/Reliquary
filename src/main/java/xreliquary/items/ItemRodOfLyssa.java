@@ -16,7 +16,6 @@ import xreliquary.reference.Names;
 /**
  * Created by Xeno on 10/11/2014.
  */
-@ContentInit
 public class ItemRodOfLyssa extends ItemBase {
     public ItemRodOfLyssa() {
         super(Names.rod_of_lyssa);

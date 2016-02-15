@@ -42,7 +42,6 @@ import java.util.Map;
 /**
  * Created by Xeno on 11/9/2014.
  */
-@ContentInit
 public class ItemXRPotion extends ItemBase {
 
     public ItemXRPotion() {

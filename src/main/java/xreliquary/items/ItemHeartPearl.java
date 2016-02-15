@@ -16,7 +16,6 @@ import java.util.List;
 /**
  * Created by Xeno on 10/11/2014.
  */
-@ContentInit
 public class ItemHeartPearl extends ItemBase {
     public ItemHeartPearl() {
         super(Names.heart_pearl);

@@ -32,7 +32,6 @@ import xreliquary.reference.Names;
 import java.util.List;
 import java.util.Random;
 
-@ContentInit
 public class BlockApothecaryCauldron extends BlockBase {
 
     public static final PropertyInteger LEVEL = PropertyInteger.create("level", 0, 3);

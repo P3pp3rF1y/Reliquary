@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 
-@ContentInit
 public class ItemInfernalClaws extends ItemBase {
 
     public ItemInfernalClaws() {

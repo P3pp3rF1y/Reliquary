@@ -31,7 +31,6 @@ import java.util.Map;
 /**
  * Created by Xeno on 11/8/2014.
  */
-@ContentInit
 public class ItemPotionEssence extends ItemBase {
 
     public ItemPotionEssence() {

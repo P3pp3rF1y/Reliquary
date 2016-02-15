@@ -25,7 +25,6 @@ import xreliquary.reference.Settings;
 import java.util.Iterator;
 import java.util.List;
 
-@ContentInit
 public class ItemFortuneCoin extends ItemBauble {
 
     public ItemFortuneCoin() {

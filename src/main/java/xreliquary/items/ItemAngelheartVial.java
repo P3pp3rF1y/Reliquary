@@ -10,7 +10,6 @@ import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 
 
-@ContentInit
 public class ItemAngelheartVial extends ItemBase {
 
     public ItemAngelheartVial() {

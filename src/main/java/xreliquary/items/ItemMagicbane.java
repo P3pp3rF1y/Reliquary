@@ -21,7 +21,6 @@ import xreliquary.reference.Names;
 
 import java.util.List;
 
-@ContentInit
 public class ItemMagicbane extends ItemSword {
 
     public ItemMagicbane() {

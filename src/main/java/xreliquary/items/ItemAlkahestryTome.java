@@ -29,7 +29,6 @@ import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import java.util.List;
 import java.util.Map;
 
-@ContentInit
 public class ItemAlkahestryTome extends ItemToggleable {
     public ItemAlkahestryTome() {
         super(Names.alkahestry_tome);

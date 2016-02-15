@@ -16,7 +16,6 @@ import xreliquary.reference.Names;
 
 import java.util.Random;
 
-@ContentInit
 public class ItemWitherlessRose extends ItemBase {
 
     public ItemWitherlessRose() {

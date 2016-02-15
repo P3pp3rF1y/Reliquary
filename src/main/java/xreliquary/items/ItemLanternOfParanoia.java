@@ -28,7 +28,6 @@ import java.util.List;
 /**
  * Created by Xeno on 5/15/14.
  */
-@ContentInit
 public class ItemLanternOfParanoia extends ItemToggleable {
 
     public ItemLanternOfParanoia() {

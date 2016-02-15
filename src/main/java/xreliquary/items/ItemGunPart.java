@@ -10,7 +10,6 @@ import xreliquary.reference.Names;
 
 import java.util.List;
 
-@ContentInit
 public class ItemGunPart extends ItemBase {
 
     public ItemGunPart() {

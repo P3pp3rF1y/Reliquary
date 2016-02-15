@@ -13,7 +13,6 @@ import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 
 
-@ContentInit
 public class ItemGlowingWater extends ItemBase {
 
     public ItemGlowingWater() {

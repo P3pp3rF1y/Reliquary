@@ -12,7 +12,6 @@ import xreliquary.reference.Names;
 
 import java.util.List;
 
-// @ContentInit
 public class ItemElsewhereFlask extends ItemBase {
 
     public ItemElsewhereFlask() {

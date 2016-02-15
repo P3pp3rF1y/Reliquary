@@ -38,7 +38,6 @@ import java.util.Random;
 /**
  * Created by Xeno on 10/11/2014.
  */
-@ContentInit
 public class ItemHarvestRod extends ItemToggleable {
     public ItemHarvestRod() {
         super(Names.harvest_rod);

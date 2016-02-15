@@ -13,7 +13,6 @@ import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 
-@ContentInit
 public class ItemAttractionPotion extends ItemBase {
 
     public ItemAttractionPotion() {

@@ -29,7 +29,6 @@ import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
 import java.util.List;
 
-@ContentInit
 public class ItemInfernalTear extends ItemToggleable {
 
     public ItemInfernalTear() {

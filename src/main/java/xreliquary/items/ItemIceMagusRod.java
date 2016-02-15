@@ -24,7 +24,6 @@ import xreliquary.reference.Settings;
 
 import java.util.List;
 
-@ContentInit
 public class ItemIceMagusRod extends ItemToggleable {
 
     public ItemIceMagusRod() {

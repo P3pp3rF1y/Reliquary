@@ -26,7 +26,6 @@ import xreliquary.reference.Settings;
 
 import java.util.List;
 
-@ContentInit
 public class ItemVoidTear extends ItemToggleable {
 
     public ItemVoidTear() {

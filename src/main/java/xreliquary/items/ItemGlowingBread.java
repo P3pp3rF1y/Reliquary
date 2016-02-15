@@ -12,7 +12,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 
-@ContentInit
 public class ItemGlowingBread extends ItemFood {
 
     public ItemGlowingBread() {

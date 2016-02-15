@@ -24,7 +24,6 @@ import xreliquary.util.RegistryHelper;
 import java.util.Iterator;
 import java.util.List;
 
-@ContentInit
 public class ItemSalamanderEye extends ItemBase {
 
     public ItemSalamanderEye() {

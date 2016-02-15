@@ -14,7 +14,6 @@ import xreliquary.Reliquary;
 import xreliquary.entities.EntityKrakenSlime;
 import xreliquary.reference.Names;
 
-@ContentInit
 public class ItemSerpentStaff extends ItemBase {
 
     public ItemSerpentStaff() {

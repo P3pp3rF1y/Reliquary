@@ -18,7 +18,6 @@ import xreliquary.reference.Settings;
 import java.util.List;
 import java.util.Random;
 
-@ContentInit
 public class BlockInterdictionTorch extends BlockTorch{
 
     public BlockInterdictionTorch() {

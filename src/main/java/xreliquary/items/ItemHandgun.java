@@ -17,7 +17,6 @@ import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
-@ContentInit
 public class ItemHandgun extends ItemBase {
 
     public ItemHandgun() {

@@ -17,7 +17,6 @@ import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
-@ContentInit
 public class ItemTwilightCloak extends ItemToggleable {
 
     public ItemTwilightCloak() {

@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@ContentInit
 public class ItemSojournerStaff extends ItemToggleable {
 
     public ItemSojournerStaff() {

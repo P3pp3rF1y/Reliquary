@@ -16,7 +16,6 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
 
-@ContentInit
 public class ItemWitchHat extends ItemArmor {
 
     public static final ItemArmor.ArmorMaterial hatMaterial = EnumHelper.addArmorMaterial( "hat_material", Reference.DOMAIN + Names.witch_hat, 0, new int[] { 0, 0, 0, 0 }, 0 );

@@ -6,7 +6,6 @@ import net.minecraft.block.material.Material;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 
-@ContentInit
 public class BlockWraithNode extends Block {
     public BlockWraithNode() {
         super(Material.rock);

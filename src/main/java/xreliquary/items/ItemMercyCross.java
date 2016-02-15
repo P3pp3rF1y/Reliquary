@@ -22,7 +22,6 @@ import xreliquary.reference.Names;
 
 import java.util.List;
 
-@ContentInit
 public class ItemMercyCross extends ItemSword {
 
     public ItemMercyCross() {

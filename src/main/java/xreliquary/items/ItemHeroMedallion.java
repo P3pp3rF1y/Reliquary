@@ -20,7 +20,6 @@ import xreliquary.reference.Settings;
 
 import java.util.List;
 
-@ContentInit
 public class ItemHeroMedallion extends ItemToggleable {
 
     public ItemHeroMedallion() {

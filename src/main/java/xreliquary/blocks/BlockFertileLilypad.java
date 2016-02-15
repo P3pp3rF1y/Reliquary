@@ -27,7 +27,6 @@ import xreliquary.reference.Settings;
 import java.util.List;
 import java.util.Random;
 
-@ContentInit
 public class BlockFertileLilypad extends BlockBush{
     public BlockFertileLilypad() {
         float var3 = 0.5F;

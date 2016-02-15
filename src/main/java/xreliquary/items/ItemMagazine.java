@@ -15,7 +15,6 @@ import xreliquary.reference.Names;
 
 import java.util.List;
 
-@ContentInit
 public class ItemMagazine extends ItemBase {
 
     public ItemMagazine() {

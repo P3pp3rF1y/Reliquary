@@ -13,7 +13,6 @@ import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 
-@ContentInit
 public class ItemKrakenShell extends ItemBase {
 
     public ItemKrakenShell() {

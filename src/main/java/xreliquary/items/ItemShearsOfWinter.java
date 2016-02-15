@@ -31,7 +31,6 @@ import java.util.Random;
 /**
  * Created by Xeno on 10/11/2014.
  */
-@ContentInit
 public class ItemShearsOfWinter extends ItemBase {
     public ItemShearsOfWinter() {
         super(Names.shears_of_winter);

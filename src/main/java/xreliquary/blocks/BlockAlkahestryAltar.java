@@ -25,14 +25,12 @@ import java.util.Random;
 
 public class BlockAlkahestryAltar extends BlockContainer {
 
-    @ContentInit
     static public class BlockActiveAlkahestryAltar extends BlockAlkahestryAltar {
         public BlockActiveAlkahestryAltar() {
             super(true);
         }
     }
 
-    @ContentInit
     static public class BlockIdleAlkahestryAltar extends BlockAlkahestryAltar {
         public BlockIdleAlkahestryAltar() {
             super(false);

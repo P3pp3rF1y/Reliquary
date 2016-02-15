@@ -19,7 +19,6 @@ import xreliquary.reference.Settings;
 import xreliquary.util.RegistryHelper;
 
 
-@ContentInit
 public class ItemVoidTearEmpty extends ItemBase {
     public ItemVoidTearEmpty() {
         super(Names.void_tear_empty);

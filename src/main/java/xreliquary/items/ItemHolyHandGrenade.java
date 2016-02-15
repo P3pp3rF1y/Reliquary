@@ -12,7 +12,6 @@ import xreliquary.Reliquary;
 import xreliquary.entities.EntityHolyHandGrenade;
 import xreliquary.reference.Names;
 
-@ContentInit
 public class ItemHolyHandGrenade extends ItemBase {
 
     public ItemHolyHandGrenade() {
