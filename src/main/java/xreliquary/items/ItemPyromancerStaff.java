@@ -231,7 +231,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
                     world.playSoundEffect((double) placeFireAt.getX() + 0.5D, (double) placeFireAt.getY() + 0.5D, (double) placeFireAt.getZ() + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F);
                     world.setBlockState(placeFireAt, Blocks.fire.getDefaultState());
                 }
-                return false;
+                return true;
             }
         }
         return false;
