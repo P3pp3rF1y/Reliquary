@@ -14,7 +14,7 @@ import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.entities.shot.*;
-import xreliquary.event.CommonEventHandler;
+import xreliquary.handler.CommonEventHandler;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.XRRecipes;

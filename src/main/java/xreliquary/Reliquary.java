@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import xreliquary.common.CommonProxy;
 import xreliquary.handler.ConfigurationHandler;
+import xreliquary.handler.config.PotionConfiguration;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.network.PacketHandler;
@@ -52,7 +53,7 @@ public class Reliquary {
         //PROXY.initRecipeDisablers();
 
         //TODO figure out a better way to handle this if possible
-        ConfigurationHandler.loadPotionMap();
+        PotionConfiguration.loadPotionMap();
 
         PROXY.initPotionsJEI();
 

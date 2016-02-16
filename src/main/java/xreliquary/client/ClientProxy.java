@@ -28,7 +28,7 @@ import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.entities.shot.*;
-import xreliquary.event.ClientEventHandler;
+import xreliquary.handler.ClientEventHandler;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;

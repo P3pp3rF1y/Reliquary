@@ -1,4 +1,4 @@
-package xreliquary.event;
+package xreliquary.handler;
 
 
 import net.minecraft.client.Minecraft;
