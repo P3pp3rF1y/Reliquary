@@ -24,24 +24,15 @@ plugins {
 // We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-// External properties
-ext.configFile = file "build.properties"
-configFile.withReader {
-    // Load config.  It shall from now be referenced as simply config or project.config
-    def prop = new Properties()
-    prop.load(it)
-    project.ext.config = new ConfigSlurper().parse prop
-}
-
 repositories {
     maven { url "http://dvs1.progwml6.com/files/maven" }
     ivy {
         name "JustEnoughResources"
-        artifactPattern "http://addons-origin.cursecdn.com/files/${config.jer_cf}/[module]-[revision].[ext]"
+        artifactPattern "http://addons-origin.cursecdn.com/files/${jer_cf}/[module]-[revision].[ext]"
     }
     ivy {
         name "Baubles"
-        artifactPattern "http://addons-origin.cursecdn.com/files/${config.baubles_cf}/[module]-[revision].[ext]"
+        artifactPattern "http://addons-origin.cursecdn.com/files/${baubles_cf}/[module]-[revision].[ext]"
     }
 }
 
@@ -49,21 +40,21 @@ repositories {
 
 
 group = 'xreliquary' // Your main package.
-version = "${config.mod_version}.${getBuildNumber()}${getStable()}"
+version = "${mod_version}.${getBuildNumber()}${getStable()}"
 archivesBaseName = 'Reliquary'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
-    compile name:'JustEnoughResources', version: config.jer_version, ext: 'jar'
-    compile name:'Baubles', version: config.baubles_version, ext: 'jar'
+    deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
+    compile name:'JustEnoughResources', version: jer_version, ext: 'jar'
+    compile name:'Baubles', version: baubles_version, ext: 'jar'
 }
 
 minecraft {
-	version = config.minecraft_version + "-" + config.forge_version
-    mappings = config.mappings
+	version = minecraft_version + "-" + forge_version
+    mappings = mcp_mappings
     runDir = "run"
     replaceIn "reference/Reference.java"
     replace "@MOD_VERSION@", "${project.version}"
@@ -73,14 +64,14 @@ processResources
 {
     // this will ensure that this task is redone when the versions change.
     inputs.property "project_version", project.version
-    inputs.property "minecraft_version", config.minecraft_version
+    inputs.property "minecraft_version", minecraft_version
 
     // Replace stuff in mcmod.info and in .lang files, nothing else.
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
 
         // Replace version and mcversion.
-        expand 'project_version':project.version, 'minecraft_version':config.minecraft_version
+        expand 'project_version':project.version, 'minecraft_version':minecraft_version
     }
 
     // Copy everything else that wasn't replaced.
@@ -114,7 +105,7 @@ bintray {
     }
     pkg {
         version {
-            name="${config.mod_version}"
+            name="${mod_version}"
             released = new Date()
         }
         repo = 'maven'
