@@ -15,6 +15,7 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
 import xreliquary.util.StackHelper;
+import xreliquary.util.potions.EffectComparator;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
 import xreliquary.util.potions.XRPotionHelper;
@@ -44,27 +45,34 @@ public class PotionConfiguration
 	}
 
 	private static void loadUniquePotions() {
-		Settings.uniquePotions.clear();
+		Settings.Potions.uniquePotions.clear();
 
-		for (PotionEssence essence : Settings.potionCombinations) {
+		for (PotionEssence essence : Settings.Potions.potionCombinations) {
 			boolean found = false;
-			for (PotionEssence uniqueEssence : Settings.uniquePotions) {
+			for (PotionEssence uniqueEssence : Settings.Potions.uniquePotions) {
 				if (effectsEqual(essence.effects, uniqueEssence.effects)) {
 					found = true;
 					break;
 				}
 			}
 			if (!found)
-				Settings.uniquePotions.add(essence);
+				Settings.Potions.uniquePotions.add(essence);
 		}
 
-		Settings.uniquePotions.sort(new Comparator<PotionEssence>() {
+		Settings.Potions.uniquePotions.sort(new Comparator<PotionEssence>() {
 			@Override
 			public int compare(PotionEssence o1, PotionEssence o2) {
-				int ret = StatCollector.translateToLocal(o1.effects.get(0).getEffectName()).trim().compareTo(StatCollector.translateToLocal(o2.effects.get(0).getEffectName()).trim());
+
+				int ret=0;
+
+				for (int i=0;i<Math.min(o1.effects.size(), o2.effects.size());i++) {
+					ret = new EffectComparator().compare(o1.effects.get(i), o2.effects.get(i));
+					if (ret != 0)
+						break;
+				}
 
 				if (ret == 0)
-					ret = Integer.compare(o1.effects.get(0).getAmplifier(), o2.effects.get(0).getAmplifier());
+					ret = Integer.compare(o1.effects.size(), o2.effects.size());
 
 				return ret;
 			}
@@ -72,16 +80,28 @@ public class PotionConfiguration
 	}
 
 	private static void loadPotionCombinations() {
-		Settings.potionCombinations.clear();
+		Settings.Potions.potionCombinations.clear();
 
-		//only working with two ingredient essences here, also doing just one effect ones
-		// as well as just adding a subset of it with unique potion ids
-		for(PotionIngredient ingredient1 : Settings.potionMap) {
-			for(PotionIngredient ingredient2 : Settings.potionMap) {
+		//multiple effect potions and potions made of 3 ingredients are turned on by config option
+		for(PotionIngredient ingredient1 : Settings.Potions.potionMap) {
+			for(PotionIngredient ingredient2 : Settings.Potions.potionMap) {
 				if (ingredient1.item.getItem() != ingredient2.item.getItem() || ingredient1.item.getMetadata() != ingredient2.item.getMetadata()) {
 					PotionEssence twoEssence = new PotionEssence(new PotionIngredient[] {ingredient1, ingredient2});
-					if (twoEssence.effects.size() == 1) {
+					if (twoEssence.effects.size() > 0 && twoEssence.effects.size() <= Settings.Potions.maxEffectCount) {
 						addPotionCombination(twoEssence);
+
+						if (Settings.Potions.threeIngredients) {
+							for(PotionIngredient ingredient3 : Settings.Potions.potionMap) {
+								if ((ingredient3.item.getItem() != ingredient1.item.getItem() || ingredient3.item.getMetadata() != ingredient1.item.getMetadata())
+										&& (ingredient3.item.getItem() != ingredient2.item.getItem() || ingredient3.item.getMetadata() != ingredient2.item.getMetadata())) {
+									PotionEssence threeEssence = new PotionEssence(new PotionIngredient [] {ingredient1, ingredient2, ingredient3});
+
+									if (!effectsEqual(twoEssence.effects, threeEssence.effects)) {
+										addPotionCombination(threeEssence);
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -89,19 +109,19 @@ public class PotionConfiguration
 	}
 
 	private static void addPotionCombination(PotionEssence newEssence) {
-		for (PotionEssence essence: Settings.potionCombinations) {
+		for (PotionEssence essence: Settings.Potions.potionCombinations) {
 			//exactly same ingredients in a different order are not to be added here
 			if(ingredientsEqual(essence.ingredients, newEssence.ingredients)) {
 				return;
 			}
-			//the same effect potion id with different duration is not supposed to be added here
-			if(effectsEqual(essence.effects, newEssence.effects, false, true)
+			//the same effect potion id with different duration is turned on by config option
+			if(effectsEqual(essence.effects, newEssence.effects, Settings.Potions.differentDurations, true)
 					&& !effectsEqual(essence.effects, newEssence.effects)) {
 				return;
 			}
 		}
 
-		Settings.potionCombinations.add(newEssence);
+		Settings.Potions.potionCombinations.add(newEssence);
 	}
 
 	private static boolean ingredientsEqual(List<PotionIngredient> a, List<PotionIngredient> b) {
@@ -147,7 +167,7 @@ public class PotionConfiguration
 	}
 
 	private static void loadPotionMapIntoSettings(ConfigCategory category) {
-		Settings.potionMap.clear();
+		Settings.Potions.potionMap.clear();
 
 		for(Map.Entry<String, Property> entry: category.getValues().entrySet()) {
 			String[] nameParts = entry.getKey().split("\\|");
@@ -171,7 +191,7 @@ public class PotionConfiguration
 					}
 				}
 				if (ingredient.effects.size() > 0) {
-					Settings.potionMap.add(ingredient);
+					Settings.Potions.potionMap.add(ingredient);
 				}
 			}
 		}

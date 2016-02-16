@@ -6,11 +6,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.StatCollector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 
 /**
  * PotionEssence, the helper class for well, potion essences. Abstracts away
@@ -47,7 +46,8 @@ public class PotionEssence extends PotionIngredient {
         for (PotionIngredient ingredient : ingredients) {
             for (PotionEffect effect : ingredient.getEffects()) {
                 if (potionEffectCounterList.keySet().contains(effect.getPotionID())){
-                    potionEffectList.add(effect.getPotionID());
+                    if (!potionEffectList.contains(effect.getPotionID()))
+                        potionEffectList.add(effect.getPotionID());
                     potionEffectCounterList.get(effect.getPotionID()).add(effect);
                 } else {
                     ArrayList<PotionEffect> effects = new ArrayList<>();
@@ -70,6 +70,7 @@ public class PotionEssence extends PotionIngredient {
 
             this.effects.add(new PotionEffect(potionID, duration, amplifier));
         }
+        this.effects.sort(new EffectComparator());
     }
 
     private int getCombinedAmplifier(List<PotionEffect> effects) {

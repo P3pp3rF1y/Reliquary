@@ -16,7 +16,7 @@ public class CauldronRecipeMaker {
     public static List<CauldronRecipeJEI> getRecipes() {
         ArrayList<CauldronRecipeJEI> recipes = new ArrayList<>();
 
-        for(PotionEssence essence : Settings.uniquePotions) {
+        for(PotionEssence essence : Settings.Potions.uniquePotions) {
 
             ItemStack input = new ItemStack(ModItems.potionEssence, 1);
             input.setTagCompound(essence.writeToNBT());

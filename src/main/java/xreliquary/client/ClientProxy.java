@@ -62,7 +62,7 @@ public class ClientProxy extends CommonProxy {
         List<ItemStack> potions = new ArrayList<>();
         List<ItemStack> splashPotions = new ArrayList<>();
 
-        for (PotionEssence essence : Settings.uniquePotions) {
+        for (PotionEssence essence : Settings.Potions.uniquePotions) {
             ItemStack potion = new ItemStack(ModItems.potion, 1);
             potion.setTagCompound(essence.writeToNBT());
             NBTHelper.setBoolean("hasPotion", potion, true);

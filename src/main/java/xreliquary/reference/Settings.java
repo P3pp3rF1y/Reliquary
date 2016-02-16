@@ -15,9 +15,15 @@ import java.util.Map;
 
 public class Settings
 {
-	public static List<PotionIngredient> potionMap = new ArrayList<>();
-	public static List<PotionEssence> potionCombinations = new ArrayList<>();
-	public static List<PotionEssence> uniquePotions = new ArrayList<>();
+	public static class Potions {
+		public static int maxEffectCount;
+		public static boolean threeIngredients;
+		public static boolean differentDurations;
+		public static List<PotionIngredient> potionMap = new ArrayList<>();
+		public static List<PotionEssence> potionCombinations = new ArrayList<>();
+		public static List<PotionEssence> uniquePotions = new ArrayList<>();
+	}
+
 
 	public static class HudPositions {
 		public static int sojournerStaff;

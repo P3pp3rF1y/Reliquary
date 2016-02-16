@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
+import net.minecraftforge.common.config.Configuration;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.reference.Names;
@@ -240,5 +241,11 @@ public class BlockItemConfiguration
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.void_tear, true);
 
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings, true);
+
+		//potions
+		Settings.Potions.maxEffectCount = ConfigurationHandler.getInt(Names.max_effect_count, Names.item_and_block_settings + "." + Names.potions, 1, 1, 6);
+		Settings.Potions.threeIngredients = ConfigurationHandler.getBoolean(Names.three_ingredients, Names.item_and_block_settings + "." + Names.potions, false);
+		Settings.Potions.differentDurations = ConfigurationHandler.getBoolean(Names.different_durations, Names.item_and_block_settings + "." + Names.potions, false);
+		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.potions, true);
 	}
 }

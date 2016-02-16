@@ -45,7 +45,7 @@ public class ItemPotionEssence extends ItemBase {
     @Override
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
-        for(PotionEssence essence : Settings.uniquePotions) {
+        for(PotionEssence essence : Settings.Potions.uniquePotions) {
             ItemStack essenceItem = new ItemStack(ModItems.potionEssence, 1);
             essenceItem.setTagCompound(essence.writeToNBT());
 

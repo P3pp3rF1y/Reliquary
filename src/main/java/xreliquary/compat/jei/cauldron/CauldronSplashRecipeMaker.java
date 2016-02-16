@@ -18,7 +18,7 @@ public class CauldronSplashRecipeMaker
     public static List<CauldronSplashRecipeJEI> getRecipes() {
         ArrayList<CauldronSplashRecipeJEI> recipes = new ArrayList<>();
 
-        for(PotionEssence essence : Settings.uniquePotions) {
+        for(PotionEssence essence : Settings.Potions.uniquePotions) {
 
             ItemStack input = new ItemStack(ModItems.potionEssence, 1);
             input.setTagCompound(essence.writeToNBT());
