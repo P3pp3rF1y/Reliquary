@@ -21,6 +21,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -331,10 +335,14 @@ public class TileEntityCauldron extends TileEntityBase {
     public boolean handleBlockActivation(World world, EntityPlayer player){
         ItemStack itemStack = player.inventory.getCurrentItem();
 
-        if (itemStack.getItem() == Items.water_bucket) {
+        if (itemStack.getItem() == Items.water_bucket || (itemStack.getItem() instanceof IFluidContainerItem && ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack).equals(new FluidStack(FluidRegistry.WATER, 1000)))) {
             if (getLiquidLevel() < 3 && !finishedCooking()) {
                 if (!player.capabilities.isCreativeMode) {
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket));
+                    if (itemStack.getItem() == Items.water_bucket) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket));
+                    } else {
+                        ((IFluidContainerItem) itemStack.getItem()).drain(itemStack, 1000, true);
+                    }
                 }
 
                 setLiquidLevel(3);

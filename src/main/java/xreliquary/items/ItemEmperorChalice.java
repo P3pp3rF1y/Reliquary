@@ -14,16 +14,18 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
 
-public class ItemEmperorChalice extends ItemToggleable {
+public class ItemEmperorChalice extends ItemToggleable implements IFluidContainerItem {
 
     public ItemEmperorChalice()
     {
@@ -154,5 +156,42 @@ public class ItemEmperorChalice extends ItemToggleable {
 
             return true;
         }
+    }
+
+    @Override
+    public FluidStack getFluid(ItemStack container)
+    {
+        if (this.isEnabled(container))
+            return null;
+
+        return new FluidStack(FluidRegistry.WATER, 1000);
+    }
+
+    @Override
+    public int getCapacity(ItemStack container)
+    {
+        return 1000;
+    }
+
+    @Override
+    public int fill(ItemStack container, FluidStack resource, boolean doFill)
+    {
+        if (!this.isEnabled(container) || resource == null) {
+            return 0;
+        }
+
+        if (!resource.isFluidEqual(new FluidStack(FluidRegistry.WATER, 1000)))
+            return 0;
+
+        return 1000;
+    }
+
+    @Override
+    public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
+    {
+        if(this.isEnabled(container))
+            return new FluidStack(FluidRegistry.WATER, 1000);
+
+        return null;
     }
 }

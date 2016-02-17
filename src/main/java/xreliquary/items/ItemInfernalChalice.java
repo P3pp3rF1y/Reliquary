@@ -143,12 +143,17 @@ public class ItemInfernalChalice extends ItemToggleable implements IFluidContain
     @Override
     public FluidStack getFluid(ItemStack container)
     {
+        if (this.isEnabled(container))
+            return null;
         return new FluidStack(FluidRegistry.LAVA, NBTHelper.getInteger("fluidStacks", container));
     }
 
     @Override
     public int getCapacity(ItemStack container)
     {
+        if (this.isEnabled(container))
+            return fluidLimit() - NBTHelper.getInteger("fluidStacks", container);
+
         return fluidLimit();
     }
 
@@ -183,7 +188,7 @@ public class ItemInfernalChalice extends ItemToggleable implements IFluidContain
         FluidStack stack = new FluidStack(FluidRegistry.LAVA, Math.min(NBTHelper.getInteger("fluidStacks", container), maxDrain));
 
         if (doDrain) {
-            NBTHelper.setInteger("fluidStacks", container, stack.amount);
+            NBTHelper.setInteger("fluidStacks", container, NBTHelper.getInteger("fluidStacks", container) - stack.amount);
         }
 
         return stack;
