@@ -62,8 +62,7 @@ public class JERCompat
 		//Charged Creeper
 		DropItem eyeOfTheStorm = new DropItem(XRRecipes.ingredient(Reference.STORM_INGREDIENT_META), 1, 1, Settings.MobDrops.getBaseDrop(Names.eye_of_the_storm), Conditional.playerKill);
 		EntityCreeper chargedCreeper = new EntityCreeper(world);
-		chargedCreeper.onStruckByLightning(null);
-		chargedCreeper.extinguish();
+		chargedCreeper.getDataWatcher().updateObject(17, Byte.valueOf((byte)1));
 		api.getMobRegistry().register(chargedCreeper, LightLevel.hostile, 5, eyeOfTheStorm);
 
 		//Enderman
