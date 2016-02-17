@@ -41,7 +41,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
 //@ModstatInfo(prefix = "reliquary")
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS, dependencies = Reference.DEPENDENCIES)
 @SandstoneMod(basePackage = "xreliquary")
 public class Reliquary {
 
