@@ -13,6 +13,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
@@ -25,7 +26,8 @@ import java.util.List;
 /**
  * Created by Xeno on 10/11/2014.
  */
-public class ItemInfernalChalice extends ItemToggleable {
+public class ItemInfernalChalice extends ItemToggleable implements IFluidContainerItem
+{
     public ItemInfernalChalice() {
         super(Names.infernal_chalice);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
@@ -137,5 +139,53 @@ public class ItemInfernalChalice extends ItemToggleable {
         }
         if (player == null)
             return;
+    }
+    @Override
+    public FluidStack getFluid(ItemStack container)
+    {
+        return new FluidStack(FluidRegistry.LAVA, NBTHelper.getInteger("fluidStacks", container));
+    }
+
+    @Override
+    public int getCapacity(ItemStack container)
+    {
+        return fluidLimit();
+    }
+
+    @Override
+    public int fill(ItemStack container, FluidStack resource, boolean doFill)
+    {
+        if (!this.isEnabled(container) || resource == null) {
+            return 0;
+        }
+
+        if (!resource.isFluidEqual(new FluidStack(FluidRegistry.LAVA, 1000)))
+            return 0;
+
+        int toFill = Math.min(fluidLimit() - NBTHelper.getInteger("fluidStacks", container), resource.amount);
+
+        if (doFill) {
+            int fluidLevel = NBTHelper.getInteger("fluidStacks", container);
+            fluidLevel += toFill;
+            NBTHelper.setInteger("fluidStacks", container, fluidLevel);
+        }
+
+        return toFill;
+    }
+
+    @Override
+    public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
+    {
+        if (this.isEnabled(container)) {
+            return null;
+        }
+
+        FluidStack stack = new FluidStack(FluidRegistry.LAVA, Math.min(NBTHelper.getInteger("fluidStacks", container), maxDrain));
+
+        if (doDrain) {
+            NBTHelper.setInteger("fluidStacks", container, stack.amount);
+        }
+
+        return stack;
     }
 }
