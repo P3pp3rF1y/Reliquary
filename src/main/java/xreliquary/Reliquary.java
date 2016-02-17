@@ -26,7 +26,7 @@ import xreliquary.util.LogHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
 //@ModstatInfo(prefix = "reliquary")
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS, dependencies = Reference.DEPENDENCIES)
 public class Reliquary {
 
     @Instance(Reference.MOD_ID)
