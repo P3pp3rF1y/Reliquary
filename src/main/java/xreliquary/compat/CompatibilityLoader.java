@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.compat.jer.JERCompat;
+import xreliquary.compat.thaumcraft.TCCompat;
 import xreliquary.reference.Compatibility;
 
 
@@ -28,6 +29,9 @@ public class CompatibilityLoader
 		JERDataLoaded = true;
 	}
 
-
+	public static void registerTCAspects() {
+		if (Loader.isModLoaded(Compatibility.MOD_ID.THAUMCRAFT))
+		TCCompat.register();
+	}
  
 }

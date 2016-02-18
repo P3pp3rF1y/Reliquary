@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import xreliquary.common.CommonProxy;
+import xreliquary.compat.CompatibilityLoader;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.handler.config.PotionConfiguration;
 import xreliquary.init.ModBlocks;
@@ -78,6 +79,8 @@ public class Reliquary {
 
         //and finally save the file changes. post init is the last stage of configuration, it does an entity scan, hopefully it's cross-mod compatible.
         //CONFIG.save();
+
+        CompatibilityLoader.registerTCAspects();
 
         LogHelper.info("Loaded successfully!");
     }

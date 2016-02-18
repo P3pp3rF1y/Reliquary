@@ -34,6 +34,10 @@ repositories {
         name "Baubles"
         artifactPattern "http://addons-origin.cursecdn.com/files/${baubles_cf}/[module]-[revision].[ext]"
     }
+    ivy {
+        name "Thaumcraft"
+        artifactPattern "http://addons-origin.cursecdn.com/files/${thaumcraft_cf}/[module]-[revision].[ext]"
+    }
 }
 
 
@@ -50,6 +54,7 @@ dependencies {
     deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
     compile name:'JustEnoughResources', version: jer_version, ext: 'jar'
     compile name:'Baubles', version: baubles_version, ext: 'jar'
+    compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
 }
 
 minecraft {
