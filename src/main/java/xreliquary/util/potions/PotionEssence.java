@@ -19,6 +19,8 @@ public class PotionEssence extends PotionIngredient {
 
     public static int MAX_DURATION = 30000;
     public static int MAX_AMPLIFIER = 4;
+    public static double REDSTONE_MULTIPLIER = 2.85;
+    public static double GLOWSTONE_MULTIPLIER = 0.55;
 
     public List<PotionIngredient> ingredients = new ArrayList<>();
 
@@ -99,6 +101,28 @@ public class PotionEssence extends PotionIngredient {
             duration = (int) (duration / 1.1);
 
         return Math.min(duration, MAX_DURATION);
+    }
+
+    public void addRedstone() {
+        List<PotionEffect> newEffects = new ArrayList<>();
+
+        for(PotionEffect effect : this.effects) {
+            PotionEffect newEffect = new PotionEffect(effect.getPotionID(), new Double(effect.getDuration() * REDSTONE_MULTIPLIER).intValue(), effect.getAmplifier(), effect.getIsAmbient(), effect.getIsShowParticles());
+            newEffects.add(newEffect);
+        }
+
+        this.effects = newEffects;
+    }
+
+    public void addGlowstone() {
+        List<PotionEffect> newEffects = new ArrayList<>();
+
+        for(PotionEffect effect : this.effects) {
+            int newAmplifier = effect.getAmplifier() == 4 ? effect.getAmplifier() : effect.getAmplifier() + 1;
+
+            PotionEffect newEffect = new PotionEffect(effect.getPotionID(), new Double(effect.getDuration() * GLOWSTONE_MULTIPLIER).intValue(), newAmplifier, effect.getIsAmbient(), effect.getIsShowParticles());
+            newEffects.add(newEffect);
+        }
     }
 
     public NBTTagCompound writeToNBT() {

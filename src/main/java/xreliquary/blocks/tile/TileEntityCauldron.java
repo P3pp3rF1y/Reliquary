@@ -208,6 +208,12 @@ public class TileEntityCauldron extends TileEntityBase {
     }
 
     public NBTTagCompound getFinishedPotion() {
+
+        //apply redstone and glowstone
+        if (this.hasGlowstone)
+            potionEssence.addGlowstone();
+
+
         NBTTagCompound tag = potionEssence.writeToNBT();
         NBTTagList effectsList = tag.getTagList("effects",10);
         NBTTagCompound newTag = new NBTTagCompound();
