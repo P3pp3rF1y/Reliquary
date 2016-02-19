@@ -19,10 +19,12 @@ public class PotionEssence extends PotionIngredient {
 
     public static int MAX_DURATION = 30000;
     public static int MAX_AMPLIFIER = 4;
-    public static double REDSTONE_MULTIPLIER = 2.85;
-    public static double GLOWSTONE_MULTIPLIER = 0.55;
 
     public List<PotionIngredient> ingredients = new ArrayList<>();
+
+    private int redstoneCount = 0;
+    private int glowstoneCount = 0;
+    private NBTTagCompound preAugmentationNBT = null;
 
     public PotionEssence(NBTTagCompound tag) {
         if (tag == null)
@@ -33,7 +35,6 @@ public class PotionEssence extends PotionIngredient {
             effects.add(new PotionEffect(effect.getInteger("id"), effect.getInteger("duration"), effect.getInteger("potency")));
         }
     }
-
 
     //this handles the actual combining of two or more ingredients, including other essences.
     public PotionEssence(PotionIngredient... ingredients) {
@@ -103,26 +104,47 @@ public class PotionEssence extends PotionIngredient {
         return Math.min(duration, MAX_DURATION);
     }
 
-    public void addRedstone() {
+    public void addRedstone(int redstoneLevel) {
+        updatePreAugmentationNBT();
         List<PotionEffect> newEffects = new ArrayList<>();
 
+        int effectCnt = this.effects.size();
+        double multiplier = (((double)(8 + effectCnt))/((double)(3 + effectCnt)) - (1.0/((double)(3 + effectCnt)) * (((double)redstoneLevel) - 1.0)));
+
         for(PotionEffect effect : this.effects) {
-            PotionEffect newEffect = new PotionEffect(effect.getPotionID(), new Double(effect.getDuration() * REDSTONE_MULTIPLIER).intValue(), effect.getAmplifier(), effect.getIsAmbient(), effect.getIsShowParticles());
+            int newDuration =  new Double((double) effect.getDuration() * multiplier).intValue();
+            newDuration = Math.min(newDuration, MAX_DURATION * 2);
+
+            PotionEffect newEffect = new PotionEffect(effect.getPotionID(), newDuration, effect.getAmplifier(), effect.getIsAmbient(), effect.getIsShowParticles());
             newEffects.add(newEffect);
         }
 
         this.effects = newEffects;
+        redstoneCount++;
     }
 
-    public void addGlowstone() {
+    private void updatePreAugmentationNBT()
+    {
+        if (this.preAugmentationNBT == null)
+            this.preAugmentationNBT = this.writeToNBT();
+    }
+
+    public void addGlowstone(int glowstoneLevel) {
+        updatePreAugmentationNBT();
         List<PotionEffect> newEffects = new ArrayList<>();
 
-        for(PotionEffect effect : this.effects) {
-            int newAmplifier = effect.getAmplifier() == 4 ? effect.getAmplifier() : effect.getAmplifier() + 1;
+        int effectCnt = this.effects.size();
+        double multiplier = ((((double)(11+effectCnt))/((double)(6+effectCnt))-(1.0/((double)(6+effectCnt))*((double)glowstoneLevel))- 1.0));
 
-            PotionEffect newEffect = new PotionEffect(effect.getPotionID(), new Double(effect.getDuration() * GLOWSTONE_MULTIPLIER).intValue(), newAmplifier, effect.getIsAmbient(), effect.getIsShowParticles());
+        for(PotionEffect effect : this.effects) {
+            int newAmplifier = Math.min(effect.getAmplifier() + 1, MAX_AMPLIFIER + 1);
+
+            PotionEffect newEffect = new PotionEffect(effect.getPotionID(), new Double(effect.getDuration() * multiplier).intValue(), newAmplifier, effect.getIsAmbient(), effect.getIsShowParticles());
             newEffects.add(newEffect);
         }
+
+        this.effects = newEffects;
+        glowstoneCount++;
     }
 
     public NBTTagCompound writeToNBT() {
@@ -147,4 +169,18 @@ public class PotionEssence extends PotionIngredient {
         }
     }
 
+    public int getRedstoneCount()
+    {
+        return redstoneCount;
+    }
+
+    public int getGlowstoneCount()
+    {
+        return glowstoneCount;
+    }
+
+    public NBTTagCompound getPreAugmentationNBT() {
+        updatePreAugmentationNBT();
+        return preAugmentationNBT;
+    }
 }

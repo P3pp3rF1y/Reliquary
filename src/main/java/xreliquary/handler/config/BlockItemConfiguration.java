@@ -73,7 +73,8 @@ public class BlockItemConfiguration
 
 		//apothecary cauldron configs
 		List<String> heatSources = ImmutableList.of();
-		Settings.ApothecaryCauldron.redstoneLimit = ConfigurationHandler.getInt("redstone_limit", Names.item_and_block_settings + "." + Names.apothecary_cauldron, 5, 0, 100);
+		Settings.ApothecaryCauldron.redstoneLimit = ConfigurationHandler.getInt("redstone_limit", Names.item_and_block_settings + "." + Names.apothecary_cauldron, 5, 0, 5);
+		Settings.ApothecaryCauldron.glowstoneLimit = ConfigurationHandler.getInt("glowstone_limit", Names.item_and_block_settings + "." + Names.apothecary_cauldron, 4, 0, 4);
 		Settings.ApothecaryCauldron.cookTime = ConfigurationHandler.getInt("cook_time", Names.item_and_block_settings + "." + Names.apothecary_cauldron, 160, 20, 32000);
 		Settings.ApothecaryCauldron.heatSources = ConfigurationHandler.getStringList("heat_sources", Names.item_and_block_settings + "." + Names.apothecary_cauldron, heatSources);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.apothecary_cauldron, true);
@@ -246,6 +247,7 @@ public class BlockItemConfiguration
 		Settings.Potions.maxEffectCount = ConfigurationHandler.getInt(Names.max_effect_count, Names.item_and_block_settings + "." + Names.potions, 1, 1, 6);
 		Settings.Potions.threeIngredients = ConfigurationHandler.getBoolean(Names.three_ingredients, Names.item_and_block_settings + "." + Names.potions, false);
 		Settings.Potions.differentDurations = ConfigurationHandler.getBoolean(Names.different_durations, Names.item_and_block_settings + "." + Names.potions, false);
+		Settings.Potions.redstoneAndGlowstone = ConfigurationHandler.getBoolean(Names.redstone_and_glowstone, Names.item_and_block_settings + "." + Names.potions, false);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.potions, true);
 	}
 }

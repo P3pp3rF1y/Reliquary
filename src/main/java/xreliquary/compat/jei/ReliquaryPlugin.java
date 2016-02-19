@@ -24,19 +24,16 @@ public class ReliquaryPlugin implements IModPlugin {
         registry.addRecipeCategories(new AlkahestryChargingRecipeCategory());
         registry.addRecipeCategories(new MortarRecipeCategory());
         registry.addRecipeCategories(new CauldronRecipeCategory());
-        registry.addRecipeCategories(new CauldronSplashRecipeCategory());
 
         registry.addRecipeHandlers(new AlkahestryCraftingRecipeHandler());
         registry.addRecipeHandlers(new AlkahestryChargingRecipeHandler());
         registry.addRecipeHandlers(new MortarRecipeHandler());
         registry.addRecipeHandlers(new CauldronRecipeHandler());
-        registry.addRecipeHandlers(new CauldronSplashRecipeHandler());
 
         registry.addRecipes(AlkahestryCraftingRecipeMaker.getRecipes());
         registry.addRecipes(AlkahestryChargingRecipeMaker.getRecipes());
         registry.addRecipes(MortarRecipeMaker.getRecipes());
         registry.addRecipes(CauldronRecipeMaker.getRecipes());
-        registry.addRecipes(CauldronSplashRecipeMaker.getRecipes());
 
         for(DescriptionEntry entry : JEIDescriptionRegistry.entrySet())
             registry.addDescription(entry.itemStacks(), entry.langKey());

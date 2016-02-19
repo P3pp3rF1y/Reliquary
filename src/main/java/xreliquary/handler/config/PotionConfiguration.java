@@ -5,7 +5,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Property;
 import xreliquary.handler.ConfigurationHandler;
@@ -14,11 +13,9 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
+import xreliquary.util.NBTHelper;
 import xreliquary.util.StackHelper;
-import xreliquary.util.potions.EffectComparator;
-import xreliquary.util.potions.PotionEssence;
-import xreliquary.util.potions.PotionIngredient;
-import xreliquary.util.potions.XRPotionHelper;
+import xreliquary.util.potions.*;
 
 import java.util.Comparator;
 import java.util.List;
@@ -45,38 +42,46 @@ public class PotionConfiguration
 	}
 
 	private static void loadUniquePotions() {
+		Settings.Potions.uniquePotionEssences.clear();
 		Settings.Potions.uniquePotions.clear();
 
 		for (PotionEssence essence : Settings.Potions.potionCombinations) {
 			boolean found = false;
-			for (PotionEssence uniqueEssence : Settings.Potions.uniquePotions) {
+			for (PotionEssence uniqueEssence : Settings.Potions.uniquePotionEssences) {
 				if (effectsEqual(essence.effects, uniqueEssence.effects)) {
 					found = true;
 					break;
 				}
 			}
-			if (!found)
-				Settings.Potions.uniquePotions.add(essence);
+			if (!found) {
+				Settings.Potions.uniquePotionEssences.add(essence);
+				addUniquePotions(essence);
+			}
 		}
 
-		Settings.Potions.uniquePotions.sort(new Comparator<PotionEssence>() {
-			@Override
-			public int compare(PotionEssence o1, PotionEssence o2) {
+		Settings.Potions.uniquePotionEssences.sort(new PotionEssenceComparator());
+		Settings.Potions.uniquePotions.sort(new PotionEssenceComparator());
+	}
 
-				int ret=0;
+	private static void addUniquePotions(PotionEssence essence)
+	{
+		Settings.Potions.uniquePotions.add(essence);
 
-				for (int i=0;i<Math.min(o1.effects.size(), o2.effects.size());i++) {
-					ret = new EffectComparator().compare(o1.effects.get(i), o2.effects.get(i));
-					if (ret != 0)
-						break;
-				}
+		if (Settings.Potions.redstoneAndGlowstone) {
+			PotionEssence redstone = new PotionEssence(essence.writeToNBT());
+			redstone.addRedstone(1);
+			Settings.Potions.uniquePotions.add(redstone);
 
-				if (ret == 0)
-					ret = Integer.compare(o1.effects.size(), o2.effects.size());
+			PotionEssence glowstone = new PotionEssence(essence.writeToNBT());
+			glowstone.addGlowstone(1);
+			Settings.Potions.uniquePotions.add(glowstone);
 
-				return ret;
-			}
-		});
+			PotionEssence redstoneGlowstone = new PotionEssence(essence.writeToNBT());
+			redstoneGlowstone.addRedstone(1);
+			redstoneGlowstone.addGlowstone(1);
+			Settings.Potions.uniquePotions.add(redstoneGlowstone);
+		}
+
 	}
 
 	private static void loadPotionCombinations() {
