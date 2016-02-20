@@ -166,7 +166,7 @@ public class XRRecipes {
         // sand
         addRecipe(true, false, bullet(8, 8), Blocks.sandstone, Items.gold_nugget, Items.gold_nugget, Items.gunpowder);
         // storm
-        addRecipe(true, false, bullet(8, 9), stormEye(), Items.gold_nugget, Items.gold_nugget, Items.gunpowder);
+        addRecipe(true, false, bullet(8, 9), creeperGland(), creeperGland(), Items.gold_nugget, Items.gold_nugget, Items.gunpowder);
         // frozen shot TODO
         // venom shot TODO
         // fertile shot TODO
