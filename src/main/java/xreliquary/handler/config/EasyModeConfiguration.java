@@ -23,7 +23,7 @@ public class EasyModeConfiguration
 		Settings.EasyModeRecipes.pyromancerStaff = ConfigurationHandler.getBoolean(Names.pyromancer_staff, Names.easy_mode_recipes, easyModeDefault);
 		Settings.EasyModeRecipes.magicBane = ConfigurationHandler.getBoolean(Names.magicbane, Names.easy_mode_recipes, easyModeDefault);
 		Settings.EasyModeRecipes.lanternOfParanoia = ConfigurationHandler.getBoolean(Names.lantern_of_paranoia, Names.easy_mode_recipes, easyModeDefault);
-		Settings.EasyModeRecipes.alkahestryTome = ConfigurationHandler.getBoolean(Names.alkahestry_tome, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.alkahestryTome = ConfigurationHandler.getBoolean(Names.alkahestry_tome, Names.easy_mode_recipes, false);
 		Settings.EasyModeRecipes.wraithNode = ConfigurationHandler.getBoolean(Names.wraith_node, Names.easy_mode_recipes, easyModeDefault);
 		Settings.EasyModeRecipes.glacialStaff = ConfigurationHandler.getBoolean(Names.glacial_staff, Names.easy_mode_recipes, easyModeDefault);
 		Settings.EasyModeRecipes.sojournerStaff = ConfigurationHandler.getBoolean(Names.sojourner_staff, Names.easy_mode_recipes, easyModeDefault);

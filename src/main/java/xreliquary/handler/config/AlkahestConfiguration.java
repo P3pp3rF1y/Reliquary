@@ -161,7 +161,7 @@ public class AlkahestConfiguration
 		addConfigAlkahestCraftingRecipe(category, Items.diamond.getRegistryName(), 1, TOME_COST_UBER_TIER);
 
 		//above uber
-		addConfigAlkahestCraftingRecipe(category, Items.nether_star.getRegistryName(), 1, TOME_COST_UBER_TIER * 2);
+		addConfigAlkahestCraftingRecipe(category, Items.nether_star.getRegistryName(), 1, TOME_COST_UBER_TIER * 4);
 	}
 
 	private static String oreDictionary(String name) {
