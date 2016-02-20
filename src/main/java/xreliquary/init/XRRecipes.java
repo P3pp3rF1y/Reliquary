@@ -343,11 +343,6 @@ public class XRRecipes {
         else
             addRecipe(false, false, new ItemStack(ModItems.infernalClaws, 1), "ccc", "cpc", "mlm", 'c', infernalClaw(), 'p', slimePearl(), 'm', moltenCore(), 'l', Items.leather);
 
-        // squid beak, wither rib & rib bone to bonemeal
-        addRecipe(true, true, new ItemStack(Items.dye, 2, Reference.WHITE_DYE_META), squidBeak());
-        addRecipe(true, true, new ItemStack(Items.dye, 6, Reference.WHITE_DYE_META), ribBone());
-        addRecipe(true, true, new ItemStack(Items.dye, 8, Reference.WHITE_DYE_META), witherRib());
-
         // kraken shell fragment
         addRecipe(true, false, shellFragment(), squidBeak(), squidBeak(), squidBeak(), slimePearl());
 
@@ -399,6 +394,33 @@ public class XRRecipes {
 
         // fertility
         addRecipe(false, false, new ItemStack(ModItems.fertilePotion, 5), "gbg", "gfg", "cgy", 'g', Blocks.glass_pane, 'b', Items.water_bucket, 'f', fertileEssence(), 'c', new ItemStack(Items.dye, 1, Reference.GREEN_DYE_META), 'y', new ItemStack(Items.dye, 1, Reference.YELLOW_DYE_META));
+
+        addMobDropUncraftingRecipes();
+    }
+
+    private static void addMobDropUncraftingRecipes() {
+
+        addRecipe(true, false, new ItemStack(Items.bone, 5), ribBone());
+
+        addRecipe(true, false, new ItemStack(Items.skull, 1,1), witherRib(), witherRib(), witherRib(), new ItemStack(Items.skull));
+
+        addRecipe(true, false, new ItemStack(Items.ender_pearl, 3), enderHeart());
+
+        addRecipe(true, false, new ItemStack(Items.dye, 6), squidBeak());
+
+        addRecipe(true, false, new ItemStack(Items.string, 6), spiderFangs());
+
+        addRecipe(true, false, new ItemStack(Items.gunpowder, 6), creeperGland());
+
+        addRecipe(true, false, new ItemStack(Items.slime_ball, 6), slimePearl());
+
+        addRecipe(true, false, new ItemStack(Items.rotten_flesh, 6), zombieHeart());
+
+        addRecipe(true, false, new ItemStack(Items.magma_cream, 3), moltenCore());
+
+        addRecipe(true, false, new ItemStack(Items.gunpowder, 10), stormEye());
+
+        addRecipe(true, false, new ItemStack(Items.snowball, 5), frozenCore());
     }
 
 }
