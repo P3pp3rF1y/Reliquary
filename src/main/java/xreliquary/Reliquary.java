@@ -19,6 +19,7 @@ import xreliquary.compat.CompatibilityLoader;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.handler.config.PotionConfiguration;
 import xreliquary.init.ModBlocks;
+import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Reference;
@@ -47,6 +48,8 @@ public class Reliquary {
         ModBlocks.init();
 
         ModItems.init();
+
+        ModFluids.init();
 
         PROXY.preInit();
 
