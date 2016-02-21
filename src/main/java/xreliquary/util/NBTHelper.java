@@ -2,6 +2,7 @@ package xreliquary.util;
 
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class NBTHelper {
@@ -78,4 +79,14 @@ public class NBTHelper {
         setTag(ist, new NBTTagCompound());
     }
 
+    public static void setTagCompound(String s, ItemStack ist, NBTTagCompound tc) {
+        NBTTagCompound tagCompound = getTag(ist);
+        tagCompound.setTag(s, tc);
+        setTag(ist, tagCompound);
+    }
+
+    public static NBTTagCompound getTagCompound(String s, ItemStack ist) {
+        NBTTagCompound tagCompound = getTag(ist);
+        return tagCompound.getCompoundTag(s);
+    }
 }

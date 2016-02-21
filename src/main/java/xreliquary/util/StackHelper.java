@@ -33,4 +33,8 @@ public class StackHelper
         }
 		return stack;
 	}
+
+	public static boolean isItemAndNbtEqual(ItemStack ist1, ItemStack ist2) {
+        return ist1.isItemEqual(ist2) && (ist1.getTagCompound() == null || ist1.getTagCompound().equals(ist2.getTagCompound()));
+    }
 }

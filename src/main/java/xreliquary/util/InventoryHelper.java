@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class InventoryHelper {
             if (ist == null) {
                 continue;
             }
-            if (inventory.getStackInSlot(slot).isItemEqual(stack)) {
+            if (StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), stack)) {
                 while (quantity > 0 && inventory.getStackInSlot(slot) != null) {
                     inventory.decrStackSize(slot, 1);
                     quantity--;
@@ -40,13 +41,10 @@ public class InventoryHelper {
             if (stack == null) {
                 continue;
             }
-            if (self.isItemEqual(stack)) {
+            if (StackHelper.isItemAndNbtEqual(self, stack)) {
                 continue;
             }
             if (stack.getMaxStackSize() == 1) {
-                continue;
-            }
-            if (stack.getTagCompound() != null) {
                 continue;
             }
             if (getItemQuantity(stack, inventory) > itemQuantity) {
@@ -73,7 +71,7 @@ public class InventoryHelper {
             if (newStack == null) {
                 continue;
             }
-            if (stack.isItemEqual(newStack)) {
+            if (StackHelper.isItemAndNbtEqual(stack, newStack)) {
                 itemQuantity += newStack.stackSize;
             }
         }
@@ -106,7 +104,7 @@ public class InventoryHelper {
 
             ItemStack slotStack = player.inventory.mainInventory[slot];
             for (Object stack : itemList) {
-                if ((stack instanceof ItemStack && slotStack.isItemEqual((ItemStack) stack)) ||
+                if ((stack instanceof ItemStack && StackHelper.isItemAndNbtEqual(slotStack, (ItemStack) stack)) ||
                         (stack instanceof Block && RegistryHelper.itemsEqual(Item.getItemFromBlock((Block) stack), slotStack.getItem()) ||
                                 (stack instanceof Item && RegistryHelper.itemsEqual((Item) stack, slotStack.getItem())))) {
                     itemCount += player.inventory.mainInventory[slot].stackSize;

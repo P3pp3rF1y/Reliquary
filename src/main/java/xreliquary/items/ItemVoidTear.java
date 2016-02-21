@@ -20,6 +20,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.StackHelper;
 
 import java.util.List;
 
@@ -77,10 +78,13 @@ public class ItemVoidTear extends ItemToggleable {
             EntityPlayer player = (EntityPlayer) entity;
 
             ItemStack contents = this.getContainedItem(stack);
-            if (contents.stackSize < Settings.VoidTear.itemLimit && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize())) {
+
+            int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
+
+            if (contents.stackSize < Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
                 //doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
                 if (!player.capabilities.isCreativeMode)
-                    this.onAbsorb(stack, player);
+                    NBTHelper.setInteger("itemQuantity", stack, NBTHelper.getInteger("itemQuantity", stack) + itemQuantity - contents.getMaxStackSize());
             }
 
             attemptToReplenishSingleStack(player, stack);
@@ -96,18 +100,32 @@ public class ItemVoidTear extends ItemToggleable {
             if (stackFound == null) {
                 continue;
             }
-            if (stackFound.isItemEqual(getContainedItem(ist))) {
+            if (StackHelper.isItemAndNbtEqual(stackFound, getContainedItem(ist))) {
                 if (preferredSlot == -1) preferredSlot = slot;
                 stackCount += 1;
             }
         }
+
+        //use first empty slot for new stack if there's no stack to restock
+        if(preferredSlot == -1) {
+            preferredSlot = player.inventory.getFirstEmptyStack();
+            if (preferredSlot > -1)
+                stackCount = 1;
+        }
+
         if (stackCount == 1 && preferredSlot != -1) {
             ItemStack stackToIncrease = player.inventory.getStackInSlot(preferredSlot);
-            if (stackToIncrease == null)
+            if (stackToIncrease == null) {
+                ItemStack newStack = getContainedItem(ist).copy();
+                newStack.stackSize = Math.min(newStack.getMaxStackSize(), getContainedItem(ist).stackSize - 1);
+                player.inventory.setInventorySlotContents(preferredSlot, newStack);
                 return;
-            while (stackToIncrease.stackSize < stackToIncrease.getMaxStackSize() && getContainedItem(ist).stackSize > 1) {
-                stackToIncrease.stackSize++;
-                NBTHelper.setInteger("itemQuantity", ist, NBTHelper.getInteger("itemQuantity", ist) - 1);
+            }
+
+            if (stackToIncrease.stackSize < stackToIncrease.getMaxStackSize()) {
+                int quantityToDecrease = Math.min(stackToIncrease.getMaxStackSize() - stackToIncrease.stackSize, getContainedItem(ist).stackSize - 1);
+                stackToIncrease.stackSize += quantityToDecrease;
+                NBTHelper.setInteger("itemQuantity", ist, NBTHelper.getInteger("itemQuantity", ist) - quantityToDecrease);
             }
         }
     }
@@ -134,15 +152,21 @@ public class ItemVoidTear extends ItemToggleable {
         return false;
     }
 
-    protected void onAbsorb(ItemStack ist, EntityPlayer player) {
-        NBTHelper.setInteger("itemQuantity", ist, NBTHelper.getInteger("itemQuantity", ist) + 1);
-    }
-
     public ItemStack getContainedItem(ItemStack ist) {
         //something awful happened. We either lost data or this is an invalid tear by some other means. Either way, not great.
-        if (NBTHelper.getString("itemID", ist).equals(""))
+        if (NBTHelper.getString("itemID", ist).equals("") && (NBTHelper.getTagCompound("item", ist) == null || NBTHelper.getTagCompound("item", ist).hasNoTags()))
             return null;
-        return new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(NBTHelper.getString("itemID", ist))), NBTHelper.getInteger("itemQuantity", ist));
+
+        //backwards compatibility
+        //TODO remove later
+        if (!NBTHelper.getString("itemID", ist).equals("")) {
+            return new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(NBTHelper.getString("itemID", ist))), NBTHelper.getInteger("itemQuantity", ist));
+        }
+
+        ItemStack stackToReturn = ItemStack.loadItemStackFromNBT(NBTHelper.getTagCompound("item", ist));
+        stackToReturn.stackSize = NBTHelper.getInteger("itemQuantity", ist);
+
+        return stackToReturn;
     }
 
     protected boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory, int limit) {
@@ -192,17 +216,24 @@ public class ItemVoidTear extends ItemToggleable {
             if (inventory.getStackInSlot(slot) == null) {
                 continue;
             }
-            if (inventory.getStackInSlot(slot).isItemEqual(contents)) {
+            if (StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
                 if (inventory.getStackInSlot(slot).stackSize == inventory.getStackInSlot(slot).getMaxStackSize()) {
                     continue;
                 }
-                inventory.setInventorySlotContents(slot,new ItemStack(contents.getItem(), inventory.getStackInSlot(slot).stackSize + 1, contents.getItemDamage()));
+
+                inventory.getStackInSlot(slot).stackSize++;
+                //ItemStack newContents = inventory.getStackInSlot(slot).copy();
+                //newContents.stackSize++;
+
+                //inventory.setInventorySlotContents(slot, newContents);
+
                 return true;
             }
         }
         for (int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
             if (inventory.getStackInSlot(slot) == null) {
-                inventory.setInventorySlotContents(slot, new ItemStack(contents.getItem(), contents.stackSize, contents.getItemDamage()));
+                ItemStack newContents = contents.copy();
+                inventory.setInventorySlotContents(slot, newContents);
                 return true;
             }
         }
@@ -214,11 +245,12 @@ public class ItemVoidTear extends ItemToggleable {
             if (inventory.getStackInSlot(slot) == null) {
                 continue;
             }
-            if (inventory.getStackInSlot(slot).isItemEqual(contents)) {
+            if (StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
                 inventory.decrStackSize(slot, 1);
                 return true;
             }
         }
         return false;
     }
+
 }

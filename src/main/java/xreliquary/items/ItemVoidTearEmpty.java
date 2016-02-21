@@ -5,6 +5,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -79,8 +80,7 @@ public class ItemVoidTearEmpty extends ItemBase {
             return null;
         ItemStack filledTear = new ItemStack(ModItems.filledVoidTear, 1, 0);
 
-        NBTHelper.setString("itemID", filledTear,
-                RegistryHelper.getItemRegistryName(target.getItem()));
+        NBTHelper.setTagCompound("item", filledTear, target.writeToNBT(new NBTTagCompound()));
 
         int quantity = InventoryHelper.getItemQuantity(target, inventory);
         if (isPlayerInventory) {
