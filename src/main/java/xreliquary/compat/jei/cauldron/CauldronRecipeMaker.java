@@ -39,7 +39,10 @@ public class CauldronRecipeMaker {
             inputs.add(new ItemStack(Items.nether_wart));
             splashInputs.add(new ItemStack(Items.nether_wart));
 
-            ItemStack output = new ItemStack(ModItems.potion);
+            inputs.add(new ItemStack(ModItems.potion, 3));
+            splashInputs.add(new ItemStack(ModItems.potion, 3));
+
+            ItemStack output = new ItemStack(ModItems.potion, 3);
             output.setTagCompound(essence.writeToNBT());
             NBTHelper.setBoolean("hasPotion", output, true);
 
