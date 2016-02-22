@@ -2,11 +2,13 @@ package xreliquary.items;
 
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.block.BlockChest;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
@@ -136,7 +138,11 @@ public class ItemVoidTear extends ItemToggleable {
             if (world.getTileEntity(pos) instanceof IInventory) {
                 IInventory inventory = (IInventory) world.getTileEntity(pos);
 
-                //enabled == drinking mode, we're going to drain the inventory of items.
+                if (inventory instanceof TileEntityChest && world.getBlockState(pos).getBlock() instanceof BlockChest)
+                {
+                    inventory = ((BlockChest) world.getBlockState(pos).getBlock()).getLockableContainer(world, pos);
+                }
+
                 if (this.isEnabled(ist)) {
                     this.drainInventory(ist, player, inventory);
                 } else {
@@ -220,13 +226,7 @@ public class ItemVoidTear extends ItemToggleable {
                 if (inventory.getStackInSlot(slot).stackSize == inventory.getStackInSlot(slot).getMaxStackSize()) {
                     continue;
                 }
-
                 inventory.getStackInSlot(slot).stackSize++;
-                //ItemStack newContents = inventory.getStackInSlot(slot).copy();
-                //newContents.stackSize++;
-
-                //inventory.setInventorySlotContents(slot, newContents);
-
                 return true;
             }
         }

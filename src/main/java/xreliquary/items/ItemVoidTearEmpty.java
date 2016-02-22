@@ -1,11 +1,13 @@
 package xreliquary.items;
 
 
+import net.minecraft.block.BlockChest;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -48,6 +50,11 @@ public class ItemVoidTearEmpty extends ItemBase {
 
             if (world.getTileEntity(pos) instanceof IInventory) {
                 IInventory inventory = (IInventory) world.getTileEntity(pos);
+
+                if (inventory instanceof TileEntityChest && world.getBlockState(pos).getBlock() instanceof BlockChest)
+                {
+                    inventory = ((BlockChest) world.getBlockState(pos).getBlock()).getLockableContainer(world, pos);
+                }
 
                 ItemStack createdTear = buildTear(ist, player, inventory, false);
                 if (createdTear != null) {
