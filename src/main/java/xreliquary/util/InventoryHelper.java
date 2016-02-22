@@ -127,4 +127,52 @@ public class InventoryHelper {
         }
         return false;
     }
+
+    public static int tryToRemoveFromInventory(ItemStack contents, IInventory inventory, int maxToRemove) {
+        int numberRemoved = 0;
+
+        for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+            if (inventory.getStackInSlot(slot) == null) {
+                continue;
+            }
+            //storage drawers compatibility loop
+            while (inventory.getStackInSlot(slot) != null && StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents) && maxToRemove > numberRemoved) {
+                numberRemoved += Math.min(maxToRemove - numberRemoved, inventory.getStackInSlot(slot).stackSize);
+                inventory.decrStackSize(slot, Math.min(maxToRemove, inventory.getStackInSlot(slot).stackSize));
+            }
+
+            if (numberRemoved >= maxToRemove)
+                return numberRemoved;
+        }
+        return numberRemoved;
+    }
+
+    public static int tryToAddToInventory(ItemStack contents, IInventory inventory, int limit, int maxToAdd) {
+        int numberAdded = 0;
+
+        for (int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
+            if (inventory.getStackInSlot(slot) == null) {
+                //loop because of storage drawers like inventories
+                while (inventory.getStackInSlot(slot) == null && maxToAdd > numberAdded) {
+                    ItemStack newContents = contents.copy();
+                    int stackAddition = Math.min(newContents.getMaxStackSize(), maxToAdd - numberAdded);
+                    newContents.stackSize = stackAddition;
+                    inventory.setInventorySlotContents(slot, newContents);
+                    numberAdded += stackAddition;
+                }
+            } else if (StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
+                if (inventory.getStackInSlot(slot).stackSize == inventory.getStackInSlot(slot).getMaxStackSize()) {
+                    continue;
+                }
+                ItemStack slotStack = inventory.getStackInSlot(slot);
+                int stackAddition = Math.min(slotStack.getMaxStackSize() - slotStack.stackSize, maxToAdd - numberAdded);
+                slotStack.stackSize += stackAddition;
+                numberAdded += stackAddition;
+            }
+            if (numberAdded >= maxToAdd)
+                return numberAdded;
+
+        }
+        return numberAdded;
+    }
 }

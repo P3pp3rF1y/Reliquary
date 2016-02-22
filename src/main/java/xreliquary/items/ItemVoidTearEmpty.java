@@ -98,7 +98,7 @@ public class ItemVoidTearEmpty extends ItemBase {
                 quantity = 0;
             }
         } else {
-            InventoryHelper.removeItem(target, inventory, quantity);
+            quantity = InventoryHelper.tryToRemoveFromInventory(target, inventory, Settings.VoidTear.itemLimit);
         }
         NBTHelper.setInteger("itemQuantity", filledTear, quantity);
         //configurable auto-drain when created.
