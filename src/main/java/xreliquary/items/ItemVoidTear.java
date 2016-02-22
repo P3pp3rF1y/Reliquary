@@ -9,10 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -53,10 +50,20 @@ public class ItemVoidTear extends ItemToggleable {
         LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(contents.stackSize)), stack, list);
     }
 
-
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (!world.isRemote) {
+
+            if (NBTHelper.getInteger("itemQuantity", ist) == 0)
+                return new ItemStack(ModItems.emptyVoidTear, 1, 0);
+
+            MovingObjectPosition movingObjectPosition = this.getMovingObjectPositionFromPlayer(world, player, false);
+
+            //not enabling void tear if player tried to deposit everything into inventory but there wasn't enough space
+            if (movingObjectPosition != null && movingObjectPosition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
+                    && world.getTileEntity(movingObjectPosition.getBlockPos()) instanceof IInventory
+                    && player.isSneaking())
+                return ist;
 
             if (player.isSneaking())
                 return super.onItemRightClick(ist, world, player);
@@ -143,14 +150,12 @@ public class ItemVoidTear extends ItemToggleable {
                     inventory = ((BlockChest) world.getBlockState(pos).getBlock()).getLockableContainer(world, pos);
                 }
 
+                //enabled == drinking mode, we're going to drain the inventory of items.
                 if (this.isEnabled(ist)) {
                     this.drainInventory(ist, player, inventory);
                 } else {
                     //disabled == placement mode, try and stuff the tear's contents into the inventory
-                    if (this.attemptToEmptyIntoInventory(ist, player, inventory, 0)) {
-                        NBTHelper.resetTag(ist);
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(ModItems.emptyVoidTear, 1, 0));
-                    }
+                    this.attemptToEmptyIntoInventory(ist, player, inventory, 0);
                 }
                 return true;
             }
@@ -180,77 +185,76 @@ public class ItemVoidTear extends ItemToggleable {
         contents.stackSize = 1;
 
         int quantity = NBTHelper.getInteger("itemQuantity", ist);
-        int minQuantity = quantity - contents.getMaxStackSize();
+        int maxNumberToEmpty = player.isSneaking() ? quantity : Math.min(contents.getMaxStackSize(), quantity);
 
-        while (quantity > Math.max(0, minQuantity)) {
-            if (!tryToAddToInventory(contents, inventory, limit)) {
-                break;
-            }
-            quantity--;
-        }
+        quantity -= tryToAddToInventory(contents, inventory, limit, maxNumberToEmpty);
 
+        NBTHelper.setInteger("itemQuantity", ist, quantity);
         if (quantity == 0) {
             player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
             return true;
         } else {
             player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
-            NBTHelper.setInteger("itemQuantity", ist, quantity);
             return false;
         }
     }
 
     protected void drainInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
         ItemStack contents = this.getContainedItem(ist);
-        int limit = 0;
         int quantity = NBTHelper.getInteger("itemQuantity", ist);
 
-        boolean foundItem = false;
-        while (quantity < Settings.VoidTear.itemLimit) {
-            if (!tryToRemoveFromInventory(contents, inventory, limit)) {
-                break;
-            }
-            quantity++;
-            if (!foundItem) foundItem = true;
-        }
-        if (foundItem) player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+        int quantityDrained = tryToRemoveFromInventory(contents, inventory, Settings.VoidTear.itemLimit - quantity);
 
-        NBTHelper.setInteger("itemQuantity", ist, quantity);
+        if (!(quantityDrained > 0))
+            return;
+
+        player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+
+        NBTHelper.setInteger("itemQuantity", ist, quantity + quantityDrained);
     }
 
-    public boolean tryToAddToInventory(ItemStack contents, IInventory inventory, int limit) {
-        for (int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
-            if (inventory.getStackInSlot(slot) == null) {
-                continue;
-            }
-            if (StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
-                if (inventory.getStackInSlot(slot).stackSize == inventory.getStackInSlot(slot).getMaxStackSize()) {
-                    continue;
-                }
-                inventory.getStackInSlot(slot).stackSize++;
-                return true;
-            }
-        }
+    public int tryToAddToInventory(ItemStack contents, IInventory inventory, int limit, int maxToAdd) {
+        int numberAdded = 0;
+
         for (int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
             if (inventory.getStackInSlot(slot) == null) {
                 ItemStack newContents = contents.copy();
+                int stackAddition = Math.min(newContents.getMaxStackSize(), maxToAdd - numberAdded);
+                newContents.stackSize = stackAddition;
                 inventory.setInventorySlotContents(slot, newContents);
-                return true;
+                numberAdded += stackAddition;
+            } else if (StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
+                if (inventory.getStackInSlot(slot).stackSize == inventory.getStackInSlot(slot).getMaxStackSize()) {
+                    continue;
+                }
+                ItemStack slotStack = inventory.getStackInSlot(slot);
+                int stackAddition = Math.min(slotStack.getMaxStackSize() - slotStack.stackSize, maxToAdd - numberAdded);
+                slotStack.stackSize += stackAddition;
+                numberAdded += stackAddition;
             }
+            if (numberAdded >= maxToAdd)
+                return numberAdded;
+
         }
-        return false;
+        return numberAdded;
     }
 
-    public boolean tryToRemoveFromInventory(ItemStack contents, IInventory inventory, int limit) {
-        for (int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
+    public int tryToRemoveFromInventory(ItemStack contents, IInventory inventory, int maxToRemove) {
+        int numberRemoved = 0;
+
+        for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
             if (inventory.getStackInSlot(slot) == null) {
                 continue;
             }
             if (StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
-                inventory.decrStackSize(slot, 1);
-                return true;
+                numberRemoved += Math.min(maxToRemove - numberRemoved, inventory.getStackInSlot(slot).stackSize);
+                inventory.decrStackSize(slot, Math.min(maxToRemove, inventory.getStackInSlot(slot).stackSize));
             }
+
+            if (numberRemoved >= maxToRemove)
+                return numberRemoved;
         }
-        return false;
+        return numberRemoved;
     }
 
 }
