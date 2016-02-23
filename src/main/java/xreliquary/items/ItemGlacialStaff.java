@@ -139,7 +139,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
         y += yOff;
         z += zOff;
         IBlockState blockState = world.getBlockState(new BlockPos(x, y, z));
-        if (blockState == Blocks.packed_ice) {
+        if (blockState == Blocks.packed_ice.getDefaultState()) {
             if (removeFrozenBlockFromList(ist, x, y, z)) {
                 world.setBlockState( new BlockPos( x, y, z ), Blocks.water.getDefaultState() );
                 for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
@@ -150,7 +150,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 
                 }
             }
-        } else if (blockState == Blocks.obsidian) {
+        } else if (blockState == Blocks.obsidian.getDefaultState()) {
             if (removeFrozenBlockFromList(ist, x, y, z)) {
                 world.setBlockState( new BlockPos( x, y, z ), Blocks.lava.getDefaultState() );
 
