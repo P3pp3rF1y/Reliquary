@@ -1,9 +1,9 @@
 package xreliquary.init;
 
+
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.Reliquary;
-import xreliquary.client.ClientProxy;
 import xreliquary.items.*;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;

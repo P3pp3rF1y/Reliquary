@@ -1,11 +1,7 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.LanguageHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.IGrowable;
@@ -31,6 +27,9 @@ import xreliquary.blocks.BlockFertileLilypad;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
 
 import java.util.List;
 import java.util.Random;
@@ -38,7 +37,6 @@ import java.util.Random;
 /**
  * Created by Xeno on 10/11/2014.
  */
-@ContentInit
 public class ItemHarvestRod extends ItemToggleable {
     public ItemHarvestRod() {
         super(Names.harvest_rod);
@@ -139,7 +137,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
     @Override
     public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float xOff, float yOff, float zOff) {
-        if (NBTHelper.getInteger("bonemeal", ist) >= getBonemealCost()) {
+        if (NBTHelper.getInteger("bonemeal", ist) >= getBonemealCost() || player.capabilities.isCreativeMode) {
             ItemStack fakeItemStack = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
             ItemDye fakeItemDye = (ItemDye)fakeItemStack.getItem();
 
@@ -153,7 +151,7 @@ public class ItemHarvestRod extends ItemToggleable {
                 }
             }
 
-            if (usedRod)
+            if (usedRod && !player.capabilities.isCreativeMode)
                 NBTHelper.setInteger("bonemeal", ist, NBTHelper.getInteger("bonemeal", ist) - getBonemealCost());
         }
 

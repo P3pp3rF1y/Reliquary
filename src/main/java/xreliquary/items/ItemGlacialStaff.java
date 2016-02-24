@@ -1,9 +1,7 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.util.LanguageHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -21,13 +19,14 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.reference.Names;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
 
 import java.util.List;
 
 /**
  * Created by Xeno on 10/11/2014.
  */
-@ContentInit
 public class ItemGlacialStaff extends ItemIceMagusRod {
     public ItemGlacialStaff() {
         super(Names.glacial_staff);
@@ -140,7 +139,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
         y += yOff;
         z += zOff;
         IBlockState blockState = world.getBlockState(new BlockPos(x, y, z));
-        if (blockState == Blocks.packed_ice) {
+        if (blockState == Blocks.packed_ice.getDefaultState()) {
             if (removeFrozenBlockFromList(ist, x, y, z)) {
                 world.setBlockState( new BlockPos( x, y, z ), Blocks.water.getDefaultState() );
                 for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
@@ -151,7 +150,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 
                 }
             }
-        } else if (blockState == Blocks.obsidian) {
+        } else if (blockState == Blocks.obsidian.getDefaultState()) {
             if (removeFrozenBlockFromList(ist, x, y, z)) {
                 world.setBlockState( new BlockPos( x, y, z ), Blocks.lava.getDefaultState() );
 

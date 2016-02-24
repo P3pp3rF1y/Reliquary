@@ -107,6 +107,11 @@ public class Names {
     public static final String charging_recipes = "charging_recipes";
     public static final String potion_map = "potion_map";
     public static final String jei_description_prefix = "jei.descriptions.";
+    public static final String max_effect_count = "max_effect_count";
+    public static final String three_ingredients = "three_ingredients";
+    public static final String potions = "potions";
+    public static final String different_durations = "different_durations";
+    public static final String redstone_and_glowstone = "redstone_and_glowstone";
 
     //these are for items, like above, didn't want to magic string them. I will use them eventually.
 //    public static final String snowball_mode = "snowballs";

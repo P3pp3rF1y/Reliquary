@@ -1,8 +1,5 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.ContentHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -17,16 +14,18 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.NBTHelper;
+import xreliquary.util.RegistryHelper;
 
 
-@ContentInit
-public class ItemEmperorChalice extends ItemToggleable {
+public class ItemEmperorChalice extends ItemToggleable implements IFluidContainerItem {
 
     public ItemEmperorChalice()
     {
@@ -125,8 +124,8 @@ public class ItemEmperorChalice extends ItemToggleable {
                         return ist;
 
                 } else {
-                    String ident = ContentHelper.getIdent(world.getBlockState(mop.getBlockPos()).getBlock());
-                    if ((ident.equals(ContentHelper.getIdent(Blocks.flowing_water)) || ident.equals(ContentHelper.getIdent(Blocks.water))) && world.getBlockState(mop.getBlockPos()).getValue(Blocks.water.LEVEL) == 0) {
+                    String ident =  RegistryHelper.getBlockRegistryName(world.getBlockState(mop.getBlockPos()).getBlock());
+                    if ((ident.equals( RegistryHelper.getBlockRegistryName(Blocks.flowing_water)) || ident.equals( RegistryHelper.getBlockRegistryName(Blocks.water))) && world.getBlockState(mop.getBlockPos()).getValue(Blocks.water.LEVEL) == 0) {
                         world.setBlockState( mop.getBlockPos(), Blocks.air.getDefaultState() );
 
                         return ist;
@@ -157,5 +156,42 @@ public class ItemEmperorChalice extends ItemToggleable {
 
             return true;
         }
+    }
+
+    @Override
+    public FluidStack getFluid(ItemStack container)
+    {
+        if (this.isEnabled(container))
+            return null;
+
+        return new FluidStack(FluidRegistry.WATER, 1000);
+    }
+
+    @Override
+    public int getCapacity(ItemStack container)
+    {
+        return 1000;
+    }
+
+    @Override
+    public int fill(ItemStack container, FluidStack resource, boolean doFill)
+    {
+        if (!this.isEnabled(container) || resource == null) {
+            return 0;
+        }
+
+        if (!resource.isFluidEqual(new FluidStack(FluidRegistry.WATER, 1000)))
+            return 0;
+
+        return 1000;
+    }
+
+    @Override
+    public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
+    {
+        if(this.isEnabled(container))
+            return new FluidStack(FluidRegistry.WATER, 1000);
+
+        return null;
     }
 }

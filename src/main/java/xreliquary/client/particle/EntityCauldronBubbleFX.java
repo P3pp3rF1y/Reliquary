@@ -1,21 +1,18 @@
 package xreliquary.client.particle;
 
+
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-
-import org.lwjgl.opengl.GL11;
-
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
@@ -50,7 +47,6 @@ public class EntityCauldronBubbleFX extends EntityFX {
 
     @Override
     public void renderParticle(WorldRenderer worldRenderer, Entity entity, float subTick, float rotX, float rotZ, float rotY_Z, float rotX_Y, float rotX_Z) {
-        //TODO: look into whether this needs to be changed to this.theRenderEngine.bindTexture as it is in EntityLargeExplodeFX
         this.theRenderEngine.bindTexture(bubbleTexture);
         float uMin = (float)this.particleTextureIndexX / 1F; // 1 is number of textures on the sheet (X)
         float uMax = uMin + 1F; // always 1 / number of textures X
@@ -70,7 +66,6 @@ public class EntityCauldronBubbleFX extends EntityFX {
         int k = i / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
 
-        //TODO: verify that the vertex format is correct for this particle
         worldRenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
         worldRenderer.pos(x - rotX * scale - rotX_Y * scale, y - rotZ * scale, z - rotY_Z * scale - rotX_Z * scale).tex(uMax, vMax).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).endVertex(); //.lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
         worldRenderer.pos(x - rotX * scale + rotX_Y * scale, y + rotZ * scale, z - rotY_Z * scale + rotX_Z * scale).tex(uMax, vMin).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).endVertex(); //.lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();

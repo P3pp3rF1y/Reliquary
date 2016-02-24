@@ -1,7 +1,5 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,7 +14,6 @@ import java.util.List;
 /**
  * Created by Xeno on 10/11/2014.
  */
-@ContentInit
 public class ItemHeartZhu extends ItemBase {
     public ItemHeartZhu() {
         super(Names.heart_zhu);

@@ -1,14 +1,13 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
+
+import net.minecraft.block.BlockChest;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -16,8 +15,11 @@ import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.NBTHelper;
+import xreliquary.util.RegistryHelper;
 
-@ContentInit
+
 public class ItemVoidTearEmpty extends ItemBase {
     public ItemVoidTearEmpty() {
         super(Names.void_tear_empty);
@@ -48,6 +50,11 @@ public class ItemVoidTearEmpty extends ItemBase {
 
             if (world.getTileEntity(pos) instanceof IInventory) {
                 IInventory inventory = (IInventory) world.getTileEntity(pos);
+
+                if (inventory instanceof TileEntityChest && world.getBlockState(pos).getBlock() instanceof BlockChest)
+                {
+                    inventory = ((BlockChest) world.getBlockState(pos).getBlock()).getLockableContainer(world, pos);
+                }
 
                 ItemStack createdTear = buildTear(ist, player, inventory, false);
                 if (createdTear != null) {
@@ -80,7 +87,7 @@ public class ItemVoidTearEmpty extends ItemBase {
             return null;
         ItemStack filledTear = new ItemStack(ModItems.filledVoidTear, 1, 0);
 
-        NBTHelper.setString("itemID", filledTear, ContentHelper.getIdent(target.getItem()));
+        NBTHelper.setTagCompound("item", filledTear, target.writeToNBT(new NBTTagCompound()));
 
         int quantity = InventoryHelper.getItemQuantity(target, inventory);
         if (isPlayerInventory) {
@@ -91,7 +98,7 @@ public class ItemVoidTearEmpty extends ItemBase {
                 quantity = 0;
             }
         } else {
-            InventoryHelper.removeItem(target, inventory, quantity);
+            quantity = InventoryHelper.tryToRemoveFromInventory(target, inventory, Settings.VoidTear.itemLimit);
         }
         NBTHelper.setInteger("itemQuantity", filledTear, quantity);
         //configurable auto-drain when created.

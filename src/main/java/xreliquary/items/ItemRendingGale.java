@@ -1,14 +1,12 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.LanguageHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -21,6 +19,9 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
 
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +29,6 @@ import java.util.List;
 /**
  * Created by Xeno on 10/11/2014.
  */
-@ContentInit
 public class ItemRendingGale extends ItemToggleable {
     public ItemRendingGale() {
         super(Names.rending_gale);
@@ -316,13 +316,14 @@ public class ItemRendingGale extends ItemToggleable {
 
     @Override
     public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
-        if (NBTHelper.getInteger("feathers", ist) < getChargeCost())
+        if (NBTHelper.getInteger("feathers", ist) < getChargeCost() && !player.capabilities.isCreativeMode)
             return;
         count -= 1;
         count = getMaxItemUseDuration(ist) - count;
-        if (count == getMaxItemUseDuration(ist) || (getMaxItemUseDuration(ist) - count) * getChargeCost() >= NBTHelper.getInteger("feathers", ist)) {
+        if (count == getMaxItemUseDuration(ist) || ((getMaxItemUseDuration(ist) - count) * getChargeCost() >= NBTHelper.getInteger("feathers", ist) && !player.capabilities.isCreativeMode)) {
             int chargeUsed = count * getChargeCost();
-            NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - chargeUsed);
+            if (!player.capabilities.isCreativeMode)
+                NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - chargeUsed);
             player.stopUsingItem();
         }
 
@@ -347,8 +348,9 @@ public class ItemRendingGale extends ItemToggleable {
                         attemptedY++;
                     }
                     if (player.worldObj.canLightningStrike(new BlockPos(mop.getBlockPos().getX(), attemptedY, mop.getBlockPos().getZ()))) {
-                        if (NBTHelper.getInteger("feathers", ist) >= getBoltChargeCost()) {
-                            NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getBoltChargeCost());
+                        if (NBTHelper.getInteger("feathers", ist) >= getBoltChargeCost() || player.capabilities.isCreativeMode) {
+                            if (!player.capabilities.isCreativeMode)
+                                NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - getBoltChargeCost());
                             player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, (double) mop.getBlockPos().getX(), (double) mop.getBlockPos().getY(), (double) mop.getBlockPos().getZ()));
                         }
                     }
@@ -365,7 +367,8 @@ public class ItemRendingGale extends ItemToggleable {
         //count starts at 64 instead of 63, so it needs to account for its first used tick.
         count -= 1;
         int chargeUsed = (getMaxItemUseDuration(ist) - count) * getChargeCost();
-        NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - Math.min(chargeUsed, NBTHelper.getInteger("feathers", ist)));
+        if (!player.capabilities.isCreativeMode)
+            NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - Math.min(chargeUsed, NBTHelper.getInteger("feathers", ist)));
     }
 
     public void doRadialPush(EntityPlayer player, boolean pull) {

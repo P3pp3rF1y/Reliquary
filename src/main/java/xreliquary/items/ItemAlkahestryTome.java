@@ -1,35 +1,32 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.LanguageHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 
 import java.util.List;
 import java.util.Map;
 
-@ContentInit
 public class ItemAlkahestryTome extends ItemToggleable {
     public ItemAlkahestryTome() {
         super(Names.alkahestry_tome);

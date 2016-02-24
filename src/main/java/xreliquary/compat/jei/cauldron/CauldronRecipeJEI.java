@@ -10,22 +10,22 @@ import java.util.List;
 
 public class CauldronRecipeJEI extends BlankRecipeWrapper {
     @Nonnull
-    private final ItemStack input;
+    private final List<ItemStack> inputs;
 
     @Nonnull
     private final ItemStack output;
 
     @SuppressWarnings("unchecked")
-    public CauldronRecipeJEI(@Nonnull ItemStack input, @Nonnull ItemStack output)
+    public CauldronRecipeJEI(@Nonnull List<ItemStack> inputs, @Nonnull ItemStack output)
     {
-        this.input = input;
+        this.inputs = inputs;
         this.output = output;
     }
 
     @Override
     public List getInputs()
     {
-        return Collections.singletonList(input);
+        return inputs;
     }
 
     @Override

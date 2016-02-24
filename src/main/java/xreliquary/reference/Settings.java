@@ -1,9 +1,7 @@
 package xreliquary.reference;
 
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 import xreliquary.util.potions.PotionEssence;
@@ -17,9 +15,17 @@ import java.util.Map;
 
 public class Settings
 {
-	public static List<PotionIngredient> potionMap = new ArrayList<>();
-	public static List<PotionEssence> potionCombinations = new ArrayList<>();
-	public static List<PotionEssence> uniquePotions = new ArrayList<>();
+	public static class Potions {
+		public static int maxEffectCount;
+		public static boolean threeIngredients;
+		public static boolean differentDurations;
+		public static boolean redstoneAndGlowstone;
+		public static List<PotionIngredient> potionMap = new ArrayList<>();
+		public static List<PotionEssence> potionCombinations = new ArrayList<>();
+		public static List<PotionEssence> uniquePotionEssences = new ArrayList<>();
+		public static List<PotionEssence> uniquePotions = new ArrayList<>();
+	}
+
 
 	public static class HudPositions {
 		public static int sojournerStaff;
@@ -112,6 +118,7 @@ public class Settings
 		public static int redstoneLimit;
 		public static int cookTime;
 		public static List<String> heatSources;
+		public static int glowstoneLimit;
 	}
 
 	public static class DestructionCatalyst {

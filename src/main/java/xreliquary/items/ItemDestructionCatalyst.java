@@ -1,13 +1,8 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.LanguageHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -22,10 +17,13 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
+import xreliquary.util.RegistryHelper;
 
 import java.util.List;
 
-@ContentInit
 public class ItemDestructionCatalyst extends ItemToggleable {
 
     public static List<String> ids = ImmutableList.of("minecraft:dirt", "minecraft:grass", "minecraft:gravel", "minecraft:cobblestone", "minecraft:stone", "minecraft:sand", "minecraft:sandstone", "minecraft:snow", "minecraft:soul_sand", "minecraft:netherrack", "minecraft:end_stone");
@@ -111,7 +109,7 @@ public class ItemDestructionCatalyst extends ItemToggleable {
                             continue;
                     }
 
-                    if (isBreakable(ContentHelper.getIdent(world.getBlockState( new BlockPos(x + xD, y + yD, z + zD )).getBlock()))) {
+                    if (isBreakable(RegistryHelper.getBlockRegistryName(world.getBlockState( new BlockPos(x + xD, y + yD, z + zD )).getBlock()))) {
                         world.setBlockState( new BlockPos(x + xD, y + yD, z + zD), Blocks.air.getDefaultState() );
                         if (world.rand.nextInt(2) == 0) {
                             world.spawnParticle( EnumParticleTypes.EXPLOSION_LARGE, x + xD + (world.rand.nextFloat() - 0.5F), y + yD + (world.rand.nextFloat() - 0.5F), z + zD + (world.rand.nextFloat() - 0.5F), 0.0D, 0.0D, 0.0D);
@@ -125,7 +123,7 @@ public class ItemDestructionCatalyst extends ItemToggleable {
                 }
             }
         }
-        if (destroyedSomething) {
+        if (destroyedSomething && !player.capabilities.isCreativeMode) {
             NBTHelper.setInteger("gunpowder", ist, NBTHelper.getInteger("gunpowder", ist) - gunpowderCost());
         }
     }

@@ -1,8 +1,6 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
-import lib.enderwizards.sandstone.util.NBTHelper;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -12,11 +10,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.entities.shot.*;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.util.NBTHelper;
 
-@ContentInit
 public class ItemHandgun extends ItemBase {
 
     public ItemHandgun() {
@@ -176,14 +175,14 @@ public class ItemHandgun extends ItemBase {
     }
 
     private void spawnEmptyMagazine(EntityPlayer player) {
-        if (!player.inventory.addItemStackToInventory(new ItemStack(Reliquary.CONTENT.getItem(Names.magazine), 1, 0))) {
-            player.entityDropItem(new ItemStack(Reliquary.CONTENT.getItem(Names.magazine), 1, 0), 0.1F);
+        if (!player.inventory.addItemStackToInventory(new ItemStack(ModItems.magazine, 1, 0))) {
+            player.entityDropItem(new ItemStack(ModItems.magazine, 1, 0), 0.1F);
         }
     }
 
     private void spawnCasing(EntityPlayer player) {
-        if (!player.inventory.addItemStackToInventory(new ItemStack(Reliquary.CONTENT.getItem(Names.bullet), 1, 0))) {
-            player.entityDropItem(new ItemStack(Reliquary.CONTENT.getItem(Names.bullet), 1, 0), 0.1F);
+        if (!player.inventory.addItemStackToInventory(new ItemStack(ModItems.bullet, 1, 0))) {
+            player.entityDropItem(new ItemStack(ModItems.bullet, 1, 0), 0.1F);
         }
     }
 
@@ -192,7 +191,7 @@ public class ItemHandgun extends ItemBase {
             if (ist == null) {
                 continue;
             }
-            if (ist.getItem() == Reliquary.CONTENT.getItem(Names.magazine) && ist.getItemDamage() != 0)
+            if (ist.getItem() == ModItems.magazine && ist.getItemDamage() != 0)
                 return true;
         }
         return false;
@@ -204,7 +203,7 @@ public class ItemHandgun extends ItemBase {
             if (player.inventory.mainInventory[slot] == null) {
                 continue;
             }
-            if (player.inventory.mainInventory[slot].getItem() == Reliquary.CONTENT.getItem(Names.magazine) && player.inventory.mainInventory[slot].getItemDamage() != 0) {
+            if (player.inventory.mainInventory[slot].getItem() == ModItems.magazine && player.inventory.mainInventory[slot].getItemDamage() != 0) {
                 bulletFound = player.inventory.mainInventory[slot].getItemDamage();
                 player.inventory.decrStackSize(slot, 1);
                 return bulletFound;

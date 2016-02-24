@@ -1,37 +1,30 @@
 package xreliquary.blocks;
 
-import lib.enderwizards.sandstone.blocks.BlockBase;
-import lib.enderwizards.sandstone.init.ContentInit;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.Properties;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityCauldron;
-import xreliquary.init.ModItems;
-import xreliquary.reference.Colors;
+import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 
 import java.util.List;
 import java.util.Random;
 
-@ContentInit
 public class BlockApothecaryCauldron extends BlockBase {
 
     public static final PropertyInteger LEVEL = PropertyInteger.create("level", 0, 3);
@@ -155,7 +148,7 @@ public class BlockApothecaryCauldron extends BlockBase {
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         // this might destroy the universe
-        return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.apothecary_cauldron));
+        return ItemBlock.getItemFromBlock(ModBlocks.apothecaryCauldron);
     }
 
     /**

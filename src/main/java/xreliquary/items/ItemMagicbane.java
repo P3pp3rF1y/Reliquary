@@ -1,7 +1,6 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.util.LanguageHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,10 +17,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.util.LanguageHelper;
 
 import java.util.List;
 
-@ContentInit
 public class ItemMagicbane extends ItemSword {
 
     public ItemMagicbane() {

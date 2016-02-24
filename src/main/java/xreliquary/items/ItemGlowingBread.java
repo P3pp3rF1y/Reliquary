@@ -1,6 +1,6 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.init.ContentInit;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
@@ -12,7 +12,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 
-@ContentInit
 public class ItemGlowingBread extends ItemFood {
 
     public ItemGlowingBread() {

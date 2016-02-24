@@ -1,28 +1,26 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.ImmutableMap;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
+import xreliquary.util.RegistryHelper;
 
 import java.util.List;
 
-@ContentInit
 public class ItemMidasTouchstone extends ItemToggleable {
 
     public ItemMidasTouchstone() {
@@ -84,13 +82,13 @@ public class ItemMidasTouchstone extends ItemToggleable {
                 continue;
             }
             ItemArmor armor = (ItemArmor) player.inventory.armorInventory[slot].getItem();
-            if (armor.getArmorMaterial() != ItemArmor.ArmorMaterial.GOLD && !goldItems.contains(ContentHelper.getIdent(armor))) {
+            if (armor.getArmorMaterial() != ItemArmor.ArmorMaterial.GOLD && !goldItems.contains( RegistryHelper.getItemRegistryName(armor))) {
                 continue;
             }
             if (player.inventory.armorInventory[slot].getItemDamage() <= 0) {
                 continue;
             }
-            if (decrementTouchStoneCharge(ist)) {
+            if (decrementTouchStoneCharge(ist, player)) {
                 player.inventory.armorInventory[slot].setItemDamage(player.inventory.armorInventory[slot].getItemDamage() - 1);
             }
         }
@@ -100,44 +98,45 @@ public class ItemMidasTouchstone extends ItemToggleable {
             }
             if (player.inventory.mainInventory[slot].getItem() instanceof ItemSword) {
                 ItemSword sword = (ItemSword) player.inventory.mainInventory[slot].getItem();
-                if (sword.getToolMaterialName() != ItemSword.ToolMaterial.GOLD.name() && !goldItems.contains(ContentHelper.getIdent(sword))) {
+                if (sword.getToolMaterialName() != ItemSword.ToolMaterial.GOLD.name() && !goldItems.contains( RegistryHelper.getItemRegistryName(sword))) {
                     continue;
                 }
                 if (player.inventory.mainInventory[slot].getItemDamage() <= 0) {
                     continue;
                 }
-                if (decrementTouchStoneCharge(ist)) {
+                if (decrementTouchStoneCharge(ist, player)) {
                     player.inventory.mainInventory[slot].setItemDamage(player.inventory.mainInventory[slot].getItemDamage() - 1);
                 }
             } else if (player.inventory.mainInventory[slot].getItem() instanceof ItemTool) {
                 ItemTool tool = (ItemTool) player.inventory.mainInventory[slot].getItem();
-                if (tool.getToolMaterialName() != ItemSword.ToolMaterial.GOLD.name()  && !goldItems.contains(ContentHelper.getIdent(tool))) {
+                if (tool.getToolMaterialName() != ItemSword.ToolMaterial.GOLD.name()  && !goldItems.contains( RegistryHelper.getItemRegistryName(tool))) {
                     continue;
                 }
                 if (player.inventory.mainInventory[slot].getItemDamage() <= 0) {
                     continue;
                 }
-                if (decrementTouchStoneCharge(ist)) {
+                if (decrementTouchStoneCharge(ist, player)) {
                     player.inventory.mainInventory[slot].setItemDamage(player.inventory.mainInventory[slot].getItemDamage() - 1);
                 }
             } else {
                 Item item = player.inventory.mainInventory[slot].getItem();
-                if (!goldItems.contains(ContentHelper.getIdent(item))) {
+                if (!goldItems.contains(RegistryHelper.getItemRegistryName(item))) {
                     continue;
                 }
                 if (player.inventory.mainInventory[slot].getItemDamage() <= 0 || !item.isDamageable()) {
                     continue;
                 }
-                if (decrementTouchStoneCharge(ist)) {
+                if (decrementTouchStoneCharge(ist, player)) {
                     player.inventory.mainInventory[slot].setItemDamage(player.inventory.mainInventory[slot].getItemDamage() - 1);
                 }
             }
         }
     }
 
-    private boolean decrementTouchStoneCharge(ItemStack ist) {
-        if (NBTHelper.getInteger("glowstone", ist) - getGlowStoneCost() >= 0) {
-            NBTHelper.setInteger("glowstone", ist, NBTHelper.getInteger("glowstone", ist) - getGlowStoneCost());
+    private boolean decrementTouchStoneCharge(ItemStack ist, EntityPlayer player) {
+        if (NBTHelper.getInteger("glowstone", ist) - getGlowStoneCost() >= 0 || player.capabilities.isCreativeMode) {
+            if (!player.capabilities.isCreativeMode)
+                NBTHelper.setInteger("glowstone", ist, NBTHelper.getInteger("glowstone", ist) - getGlowStoneCost());
             return true;
         }
         return false;

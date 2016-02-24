@@ -1,32 +1,28 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.LanguageHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
+import net.minecraft.block.BlockChest;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
-import org.lwjgl.input.Keyboard;
-import xreliquary.Reliquary;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
+import xreliquary.util.StackHelper;
 
 import java.util.List;
 
-@ContentInit
 public class ItemVoidTear extends ItemToggleable {
 
     public ItemVoidTear() {
@@ -51,13 +47,23 @@ public class ItemVoidTear extends ItemToggleable {
             LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.YELLOW + contents.getDisplayName()), stack, list);
             list.add(LanguageHelper.getLocalization("tooltip.absorb_tear"));
         }
-        LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(contents.stackSize)), stack, list);
+        LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(NBTHelper.getInteger("itemQuantity", stack))), stack, list);
     }
-
 
     @Override
     public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
         if (!world.isRemote) {
+
+            if (NBTHelper.getInteger("itemQuantity", ist) == 0)
+                return new ItemStack(ModItems.emptyVoidTear, 1, 0);
+
+            MovingObjectPosition movingObjectPosition = this.getMovingObjectPositionFromPlayer(world, player, false);
+
+            //not enabling void tear if player tried to deposit everything into inventory but there wasn't enough space
+            if (movingObjectPosition != null && movingObjectPosition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
+                    && world.getTileEntity(movingObjectPosition.getBlockPos()) instanceof IInventory
+                    && player.isSneaking())
+                return ist;
 
             if (player.isSneaking())
                 return super.onItemRightClick(ist, world, player);
@@ -81,10 +87,13 @@ public class ItemVoidTear extends ItemToggleable {
             EntityPlayer player = (EntityPlayer) entity;
 
             ItemStack contents = this.getContainedItem(stack);
-            if (contents.stackSize < Settings.VoidTear.itemLimit && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize())) {
+
+            int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
+
+            if (NBTHelper.getInteger("itemQuantity", stack) < Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
                 //doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
                 if (!player.capabilities.isCreativeMode)
-                    this.onAbsorb(stack, player);
+                    NBTHelper.setInteger("itemQuantity", stack, NBTHelper.getInteger("itemQuantity", stack) + itemQuantity - contents.getMaxStackSize());
             }
 
             attemptToReplenishSingleStack(player, stack);
@@ -100,18 +109,32 @@ public class ItemVoidTear extends ItemToggleable {
             if (stackFound == null) {
                 continue;
             }
-            if (stackFound.isItemEqual(getContainedItem(ist))) {
+            if (StackHelper.isItemAndNbtEqual(stackFound, getContainedItem(ist))) {
                 if (preferredSlot == -1) preferredSlot = slot;
                 stackCount += 1;
             }
         }
-        if (stackCount == 1 && preferredSlot != -1) {
+
+        //use first empty slot for new stack if there's no stack to restock
+        if(preferredSlot == -1) {
+            preferredSlot = player.inventory.getFirstEmptyStack();
+            if (preferredSlot > -1)
+                stackCount = 1;
+        }
+
+        if (stackCount == 1 && preferredSlot != -1 && NBTHelper.getInteger("itemQuantity", ist) > 1) {
             ItemStack stackToIncrease = player.inventory.getStackInSlot(preferredSlot);
-            if (stackToIncrease == null)
+            if (stackToIncrease == null) {
+                ItemStack newStack = getContainedItem(ist).copy();
+                newStack.stackSize = Math.min(newStack.getMaxStackSize(), NBTHelper.getInteger("itemQuantity", ist) - 1);
+                player.inventory.setInventorySlotContents(preferredSlot, newStack);
                 return;
-            while (stackToIncrease.stackSize < stackToIncrease.getMaxStackSize() && getContainedItem(ist).stackSize > 1) {
-                stackToIncrease.stackSize++;
-                NBTHelper.setInteger("itemQuantity", ist, NBTHelper.getInteger("itemQuantity", ist) - 1);
+            }
+
+            if (stackToIncrease.stackSize < stackToIncrease.getMaxStackSize()) {
+                int quantityToDecrease = Math.min(stackToIncrease.getMaxStackSize() - stackToIncrease.stackSize, NBTHelper.getInteger("itemQuantity", ist) - 1);
+                stackToIncrease.stackSize += quantityToDecrease;
+                NBTHelper.setInteger("itemQuantity", ist, NBTHelper.getInteger("itemQuantity", ist) - quantityToDecrease);
             }
         }
     }
@@ -122,13 +145,18 @@ public class ItemVoidTear extends ItemToggleable {
             if (world.getTileEntity(pos) instanceof IInventory) {
                 IInventory inventory = (IInventory) world.getTileEntity(pos);
 
+                if (inventory instanceof TileEntityChest && world.getBlockState(pos).getBlock() instanceof BlockChest)
+                {
+                    inventory = ((BlockChest) world.getBlockState(pos).getBlock()).getLockableContainer(world, pos);
+                }
+
                 //enabled == drinking mode, we're going to drain the inventory of items.
                 if (this.isEnabled(ist)) {
                     this.drainInventory(ist, player, inventory);
                 } else {
                     //disabled == placement mode, try and stuff the tear's contents into the inventory
-                    if (this.attemptToEmptyIntoInventory(ist, player, inventory, 0)) {
-                        NBTHelper.resetTag(ist);
+                    this.attemptToEmptyIntoInventory(ist, player, inventory, 0);
+                    if (!player.isSneaking() && !(NBTHelper.getInteger("itemQuantity", ist) > 0)) {
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(ModItems.emptyVoidTear, 1, 0));
                     }
                 }
@@ -138,15 +166,21 @@ public class ItemVoidTear extends ItemToggleable {
         return false;
     }
 
-    protected void onAbsorb(ItemStack ist, EntityPlayer player) {
-        NBTHelper.setInteger("itemQuantity", ist, NBTHelper.getInteger("itemQuantity", ist) + 1);
-    }
-
     public ItemStack getContainedItem(ItemStack ist) {
         //something awful happened. We either lost data or this is an invalid tear by some other means. Either way, not great.
-        if (NBTHelper.getString("itemID", ist).equals(""))
+        if (NBTHelper.getString("itemID", ist).equals("") && (NBTHelper.getTagCompound("item", ist) == null || NBTHelper.getTagCompound("item", ist).hasNoTags()))
             return null;
-        return new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(NBTHelper.getString("itemID", ist))), NBTHelper.getInteger("itemQuantity", ist));
+
+        //backwards compatibility
+        //TODO remove later
+        if (!NBTHelper.getString("itemID", ist).equals("")) {
+            return new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(NBTHelper.getString("itemID", ist))), NBTHelper.getInteger("itemQuantity", ist));
+        }
+
+        ItemStack stackToReturn = ItemStack.loadItemStackFromNBT(NBTHelper.getTagCompound("item", ist));
+        stackToReturn.stackSize = NBTHelper.getInteger("itemQuantity", ist);
+
+        return stackToReturn;
     }
 
     protected boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory, int limit) {
@@ -154,75 +188,32 @@ public class ItemVoidTear extends ItemToggleable {
         contents.stackSize = 1;
 
         int quantity = NBTHelper.getInteger("itemQuantity", ist);
-        int minQuantity = quantity - contents.getMaxStackSize();
+        int maxNumberToEmpty = player.isSneaking() ? quantity : Math.min(contents.getMaxStackSize(), quantity);
 
-        while (quantity > Math.max(0, minQuantity)) {
-            if (!tryToAddToInventory(contents, inventory, limit)) {
-                break;
-            }
-            quantity--;
-        }
+        quantity -= InventoryHelper.tryToAddToInventory(contents, inventory, limit, maxNumberToEmpty);
 
+        NBTHelper.setInteger("itemQuantity", ist, quantity);
         if (quantity == 0) {
             player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
             return true;
         } else {
             player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
-            NBTHelper.setInteger("itemQuantity", ist, quantity);
             return false;
         }
     }
 
     protected void drainInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
         ItemStack contents = this.getContainedItem(ist);
-        int limit = 0;
         int quantity = NBTHelper.getInteger("itemQuantity", ist);
 
-        boolean foundItem = false;
-        while (quantity < Settings.VoidTear.itemLimit) {
-            if (!tryToRemoveFromInventory(contents, inventory, limit)) {
-                break;
-            }
-            quantity++;
-            if (!foundItem) foundItem = true;
-        }
-        if (foundItem) player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+        int quantityDrained = InventoryHelper.tryToRemoveFromInventory(contents, inventory, Settings.VoidTear.itemLimit - quantity);
 
-        NBTHelper.setInteger("itemQuantity", ist, quantity);
+        if (!(quantityDrained > 0))
+            return;
+
+        player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+
+        NBTHelper.setInteger("itemQuantity", ist, quantity + quantityDrained);
     }
 
-    public boolean tryToAddToInventory(ItemStack contents, IInventory inventory, int limit) {
-        for (int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
-            if (inventory.getStackInSlot(slot) == null) {
-                continue;
-            }
-            if (inventory.getStackInSlot(slot).isItemEqual(contents)) {
-                if (inventory.getStackInSlot(slot).stackSize == inventory.getStackInSlot(slot).getMaxStackSize()) {
-                    continue;
-                }
-                inventory.setInventorySlotContents(slot,new ItemStack(contents.getItem(), inventory.getStackInSlot(slot).stackSize + 1, contents.getItemDamage()));
-                return true;
-            }
-        }
-        for (int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
-            if (inventory.getStackInSlot(slot) == null) {
-                inventory.setInventorySlotContents(slot, new ItemStack(contents.getItem(), contents.stackSize, contents.getItemDamage()));
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean tryToRemoveFromInventory(ItemStack contents, IInventory inventory, int limit) {
-        for (int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
-            if (inventory.getStackInSlot(slot) == null) {
-                continue;
-            }
-            if (inventory.getStackInSlot(slot).isItemEqual(contents)) {
-                inventory.decrStackSize(slot, 1);
-                return true;
-            }
-        }
-        return false;
-    }
 }

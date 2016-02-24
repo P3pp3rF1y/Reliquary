@@ -1,23 +1,22 @@
 package xreliquary.client;
 
-import lib.enderwizards.sandstone.util.LanguageHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderSnowball;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.entity.RenderSnowball;
-import net.minecraft.init.Items;
-import net.minecraftforge.common.MinecraftForge;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.client.init.ItemBlockModels;
 import xreliquary.client.init.ItemModels;
@@ -25,13 +24,17 @@ import xreliquary.client.render.*;
 import xreliquary.common.CommonProxy;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
 import xreliquary.entities.*;
-import xreliquary.entities.potion.*;
+import xreliquary.entities.potion.EntityAttractionPotion;
+import xreliquary.entities.potion.EntityFertilePotion;
+import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.entities.shot.*;
-import xreliquary.event.ClientEventHandler;
+import xreliquary.handler.ClientEventHandler;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.ArrayList;
@@ -59,7 +62,7 @@ public class ClientProxy extends CommonProxy {
         List<ItemStack> potions = new ArrayList<>();
         List<ItemStack> splashPotions = new ArrayList<>();
 
-        for (PotionEssence essence : Settings.uniquePotions) {
+        for (PotionEssence essence : Settings.Potions.uniquePotions) {
             ItemStack potion = new ItemStack(ModItems.potion, 1);
             potion.setTagCompound(essence.writeToNBT());
             NBTHelper.setBoolean("hasPotion", potion, true);

@@ -1,5 +1,6 @@
 package xreliquary.entities;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -8,8 +9,6 @@ import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
-import xreliquary.Reliquary;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
 import java.util.List;

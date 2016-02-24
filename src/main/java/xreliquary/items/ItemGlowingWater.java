@@ -1,18 +1,17 @@
 package xreliquary.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityGlowingWater;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 
 
-@ContentInit
 public class ItemGlowingWater extends ItemBase {
 
     public ItemGlowingWater() {
@@ -25,7 +24,7 @@ public class ItemGlowingWater extends ItemBase {
 
     @Override
     public ItemStack getContainerItem(ItemStack ist) {
-        return new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
+        return new ItemStack(ModItems.potion, 1, 0);
     }
 
     // returns an empty vial when used in crafting recipes.

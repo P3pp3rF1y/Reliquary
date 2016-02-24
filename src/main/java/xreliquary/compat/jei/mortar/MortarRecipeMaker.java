@@ -16,7 +16,7 @@ public class MortarRecipeMaker {
     public static List<MortarRecipeJEI> getRecipes() {
         ArrayList<MortarRecipeJEI> recipes = new ArrayList<>();
 
-        for(PotionEssence essence : Settings.potionCombinations) {
+        for(PotionEssence essence : Settings.Potions.potionCombinations) {
 
             List<ItemStack> inputs = new ArrayList<>();
 

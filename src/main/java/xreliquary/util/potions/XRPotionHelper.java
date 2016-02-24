@@ -16,7 +16,7 @@ public class XRPotionHelper {
     }
 
     public static boolean isItemIngredient(ItemStack ist) {
-        for (PotionIngredient ingredient : Settings.potionMap) {
+        for (PotionIngredient ingredient : Settings.Potions.potionMap) {
             if (ingredient.item.getItem().getRegistryName().equals(ist.getItem().getRegistryName()) && ingredient.item.getMetadata() == ist.getMetadata()) {
                 return true;
             }
@@ -37,7 +37,7 @@ public class XRPotionHelper {
         if (ist.getItem() instanceof ItemPotionEssence) {
             return new PotionEssence(ist.getTagCompound());
         }
-        for (PotionIngredient ingredient : Settings.potionMap) {
+        for (PotionIngredient ingredient : Settings.Potions.potionMap) {
             if (ingredient.item.getItem().getRegistryName().equals(ist.getItem().getRegistryName()) && ingredient.item.getMetadata() == ist.getMetadata())
                 return ingredient;
         }

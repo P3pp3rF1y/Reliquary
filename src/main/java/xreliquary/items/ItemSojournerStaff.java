@@ -1,15 +1,9 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.state.IBlockState;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,17 +15,21 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
+import xreliquary.util.RegistryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-@ContentInit
+
 public class ItemSojournerStaff extends ItemToggleable {
 
     public ItemSojournerStaff() {
@@ -84,8 +82,8 @@ public class ItemSojournerStaff extends ItemToggleable {
         items.add(vanillaTorch.getItem());
 
         for (String torch : torches) {
-            if (!items.contains(Reliquary.CONTENT.getItem(torch)))
-                items.add(Reliquary.CONTENT.getItem(torch));
+            if (!items.contains(RegistryHelper.getItemFromName(torch)))
+                items.add(RegistryHelper.getItemFromName(torch));
         }
 
         for (Item item : items) {
@@ -110,7 +108,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         {
             NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
             String itemName = tagItemData.getString("Name");
-            if (itemName.equals(ContentHelper.getIdent(item))) {
+            if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
                 tagItemData.setInteger("Quantity", quantity + 1);
                 added = true;
@@ -118,7 +116,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         }
         if (!added) {
             NBTTagCompound newTagData = new NBTTagCompound();
-            newTagData.setString("Name", ContentHelper.getIdent(item));
+            newTagData.setString("Name", RegistryHelper.getItemRegistryName(item));
             newTagData.setInteger("Quantity", 1);
             tagList.appendTag(newTagData);
         }
@@ -143,7 +141,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         {
             NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
             String itemName = tagItemData.getString("Name");
-            if (itemName.equals(ContentHelper.getIdent(item))) {
+            if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
                 return quantity >= cost;
             }
@@ -161,7 +159,7 @@ public class ItemSojournerStaff extends ItemToggleable {
             {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                if (itemName.equals(ContentHelper.getIdent(item))) {
+                if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
                     return quantity >= getTorchItemMaxCapacity();
                 }
@@ -280,7 +278,9 @@ public class ItemSojournerStaff extends ItemToggleable {
         return Settings.SojournerStaff.maxCapacityPerItemType;
     }
 
-    public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost) {
+    public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, EntityPlayer player) {
+        if (player.capabilities.isCreativeMode)
+            return true;
         if (hasItemInInternalStorage(ist, item, cost)) {
             NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 
@@ -292,7 +292,7 @@ public class ItemSojournerStaff extends ItemToggleable {
             {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                if (itemName.equals(ContentHelper.getIdent(item))) {
+                if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
                     tagItemData.setInteger("Quantity", quantity - cost);
                 }
@@ -319,13 +319,13 @@ public class ItemSojournerStaff extends ItemToggleable {
             for (int i = 0; i < tagList.tagCount(); ++i) {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                Item containedItem = Reliquary.CONTENT.getItem(itemName);
+                Item containedItem = RegistryHelper.getItemFromName(itemName);
                 int quantity = tagItemData.getInteger("Quantity");
                 phrase = String.format("%s%s", phrase.equals("Nothing.") ? "" : String.format("%s;", phrase), new ItemStack(containedItem, 1, 0).getDisplayName() + ": " + quantity);
             }
 
             //add "currently placing: blah blah blah" to the tooltip.
-            Item placingItem = Reliquary.CONTENT.getItem(getTorchPlacementMode(ist));
+            Item placingItem = RegistryHelper.getItemFromName(getTorchPlacementMode(ist));
 
             if (placingItem != null) {
                 placing = new ItemStack(placingItem, 1, 0).getDisplayName();
@@ -358,9 +358,9 @@ public class ItemSojournerStaff extends ItemToggleable {
         Block blockTargetted = world.getBlockState(pos).getBlock();
         BlockPos placeBlockAt = pos;
 
-        if (ContentHelper.areBlocksEqual(blockTargetted, Blocks.snow)) {
+        if (RegistryHelper.blocksEqual(blockTargetted, Blocks.snow)) {
             side = EnumFacing.UP;
-        } else if (!ContentHelper.areBlocksEqual(blockTargetted, Blocks.vine) && !ContentHelper.areBlocksEqual(blockTargetted, Blocks.tallgrass) && !ContentHelper.areBlocksEqual(blockTargetted, Blocks.deadbush) && (blockTargetted == null || !blockTargetted.isReplaceable(world, pos))) {
+        } else if (!RegistryHelper.blocksEqual(blockTargetted, Blocks.vine) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.tallgrass) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.deadbush) && (blockTargetted == null || !blockTargetted.isReplaceable(world, pos))) {
             placeBlockAt = pos.offset(side);
         }
 
@@ -372,7 +372,7 @@ public class ItemSojournerStaff extends ItemToggleable {
                     for (; distance > Settings.SojournerStaff.tilePerCostMultiplier; distance -= Settings.SojournerStaff.tilePerCostMultiplier) {
                         cost++;
                     }
-                    if (!removeItemFromInternalStorage(ist, Item.getItemFromBlock(blockAttemptingPlacement), cost))
+                    if (!removeItemFromInternalStorage(ist, Item.getItemFromBlock(blockAttemptingPlacement), cost, player))
                         return false;
                 }
                 IBlockState torchBlockState = attemptSide(world, placeBlockAt, side, blockAttemptingPlacement, player);
@@ -453,7 +453,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         if (!world.setBlockState(pos, torchBlockState, 3))
             return false;
 
-        if (ContentHelper.areBlocksEqual(torchBlockState.getBlock(), Blocks.torch)) {
+        if (RegistryHelper.blocksEqual(torchBlockState.getBlock(), Blocks.torch)) {
             Blocks.torch.onNeighborBlockChange(world, pos, torchBlockState, torchBlockState.getBlock());
             Blocks.torch.onBlockPlacedBy(world, pos, torchBlockState, player, stack);
         }

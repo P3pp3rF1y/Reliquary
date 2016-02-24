@@ -1,8 +1,6 @@
 package xreliquary.items;
 
 import com.google.common.collect.HashMultimap;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
@@ -16,10 +14,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
@@ -31,7 +27,6 @@ import java.util.Map;
 /**
  * Created by Xeno on 11/8/2014.
  */
-@ContentInit
 public class ItemPotionEssence extends ItemBase {
 
     public ItemPotionEssence() {
@@ -50,7 +45,7 @@ public class ItemPotionEssence extends ItemBase {
     @Override
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
-        for(PotionEssence essence : Settings.uniquePotions) {
+        for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
             ItemStack essenceItem = new ItemStack(ModItems.potionEssence, 1);
             essenceItem.setTagCompound(essence.writeToNBT());
 

@@ -1,12 +1,8 @@
 package xreliquary.blocks.tile;
 
-import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ITickable;
-import xreliquary.Reliquary;
 import xreliquary.blocks.BlockAlkahestryAltar;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
 

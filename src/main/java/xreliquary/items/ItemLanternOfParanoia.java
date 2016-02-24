@@ -1,14 +1,8 @@
 package xreliquary.items;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.*;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import lib.enderwizards.sandstone.util.InventoryHelper;
+
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -16,10 +10,16 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.RegistryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * Created by Xeno on 5/15/14.
  */
-@ContentInit
 public class ItemLanternOfParanoia extends ItemToggleable {
 
     public ItemLanternOfParanoia() {
@@ -124,7 +123,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 //    }
 //
     private boolean findAndDrainSojournersStaff(EntityPlayer player) {
-        Item staffItem = Reliquary.CONTENT.getItem(Names.sojourner_staff);
+        Item staffItem = ModItems.sojournerStaff;
         if (player.capabilities.isCreativeMode)
             return true;
         for (int slot = 0; slot < player.inventory.getSizeInventory(); slot++) {
@@ -133,7 +132,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
             if (!(staffItem == player.inventory.getStackInSlot(slot).getItem()))
                 continue;
             Item torch = ItemBlock.getItemFromBlock(Blocks.torch);
-            if (((ItemSojournerStaff)staffItem).removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch, 1))
+            if (((ItemSojournerStaff)staffItem).removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch, 1, player))
                 return true;
         }
         return false;
@@ -231,7 +230,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
         if (!world.setBlockState(pos, torchBlockState, 3))
             return false;
 
-        if (ContentHelper.areBlocksEqual(torchBlockState.getBlock(), Blocks.torch)) {
+        if (RegistryHelper.blocksEqual(torchBlockState.getBlock(), Blocks.torch)) {
             Blocks.torch.onNeighborBlockChange(world, pos, torchBlockState, torchBlockState.getBlock());
             Blocks.torch.onBlockPlacedBy(world, pos, torchBlockState, player, stack);
         }

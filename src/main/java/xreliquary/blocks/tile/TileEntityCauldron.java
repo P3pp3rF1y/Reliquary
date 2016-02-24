@@ -1,38 +1,40 @@
 package xreliquary.blocks.tile;
 
+
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.blocks.tile.TileEntityBase;
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import xreliquary.Reliquary;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.client.particle.EntityCauldronBubbleFX;
 import xreliquary.client.particle.EntityCauldronSteamFX;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemPotionEssence;
-import xreliquary.reference.Colors;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ public class TileEntityCauldron extends TileEntityBase {
 
     public int redstoneCount = 0;
     public PotionEssence potionEssence = null;
-    public boolean hasGlowstone = false;
+    public int glowstoneCount = 0;
     public boolean hasGunpowder = false;
     public boolean hasNetherwart = false;
     public int cookTime = 0;
@@ -50,12 +52,6 @@ public class TileEntityCauldron extends TileEntityBase {
 
     public TileEntityCauldron() {
     }
-
-    /* TODO: add additional rendering code to render the color of liquid likely baked model needed here
-                TileEntityCauldron cauldron = (TileEntityCauldron)world.getTileEntity(x, y, z);
-                int color = getColor(cauldron.potionEssence);
-                tessellator.setColorOpaque_I(color);
-    */
 
     @Override
     public void update() {
@@ -69,7 +65,7 @@ public class TileEntityCauldron extends TileEntityBase {
                 for (int particleCount = 0; particleCount <= 2; ++particleCount)
                     spawnBoilingParticles();
                 if (hasGunpowder) spawnGunpowderParticles();
-                if (hasGlowstone) spawnGlowstoneParticles();
+                if (glowstoneCount > 0) spawnGlowstoneParticles();
                 if (hasNetherwart) {
                     spawnNetherwartParticles();
                     if (finishedCooking()) {
@@ -113,7 +109,7 @@ public class TileEntityCauldron extends TileEntityBase {
 
     public int getColor(PotionEssence essence) {
         //basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
-        return  PotionHelper.calcPotionLiquidColor(essence.getEffects());
+        return  PotionHelper.calcPotionLiquidColor(essence == null ? null :essence.getEffects());
     }
 
     @SideOnly(Side.CLIENT)
@@ -167,7 +163,7 @@ public class TileEntityCauldron extends TileEntityBase {
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
         this.setLiquidLevel(tag.getShort("liquidLevel"));
-        this.hasGlowstone = tag.getBoolean("hasGlowstone");
+        this.glowstoneCount = tag.getInteger("glowstoneCount");
         this.hasNetherwart = tag.getBoolean("hasNetherwart");
         this.hasGunpowder = tag.getBoolean("hasGunpowder");
         this.redstoneCount = tag.getInteger("redstoneCount");
@@ -183,7 +179,7 @@ public class TileEntityCauldron extends TileEntityBase {
         tag.setInteger( "liquidLevel", getLiquidLevel());
         tag.setInteger("cookTime", cookTime);
         tag.setInteger("redstoneCount", redstoneCount);
-        tag.setBoolean("hasGlowstone", hasGlowstone);
+        tag.setInteger("glowstoneCount", glowstoneCount);
         tag.setBoolean("hasGunpowder", hasGunpowder);
         tag.setBoolean("hasNetherwart", hasNetherwart);
         tag.setTag("potionEssence", potionEssence == null ? new NBTTagCompound() : potionEssence.writeToNBT());
@@ -196,6 +192,7 @@ public class TileEntityCauldron extends TileEntityBase {
     public NBTTagCompound removeContainedPotion(World world) {
         if (!hasNetherwart || potionEssence == null || getLiquidLevel() <= 0)
             return null;
+
         setLiquidLevel(getLiquidLevel() - 1);
         NBTTagCompound tag = getFinishedPotion();
 
@@ -217,7 +214,7 @@ public class TileEntityCauldron extends TileEntityBase {
 
     public void clearAllFields() {
         this.cookTime = 0;
-        this.hasGlowstone = false;
+        this.glowstoneCount = 0;
         this.hasGunpowder = false;
         this.hasNetherwart = false;
         this.redstoneCount = 0;
@@ -229,8 +226,8 @@ public class TileEntityCauldron extends TileEntityBase {
             return false;
         return ((ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null)
                 || (ist.getItem() == Items.gunpowder && !this.hasGunpowder)
-                || (ist.getItem() == Items.glowstone_dust && !this.hasGlowstone)
-                || (ist.getItem() == Items.redstone && this.redstoneCount <= getRedstoneAmpLimit())
+                || (ist.getItem() == Items.glowstone_dust && this.glowstoneCount < getGlowstoneAmpLimit())
+                || (ist.getItem() == Items.redstone && this.redstoneCount < getRedstoneAmpLimit())
                 || (ist.getItem() == Items.nether_wart && !this.hasNetherwart));
     }
 
@@ -240,14 +237,21 @@ public class TileEntityCauldron extends TileEntityBase {
         } else if (ist.getItem() == Items.gunpowder) {
             this.hasGunpowder = true;
         } else if (ist.getItem() == Items.glowstone_dust) {
-            this.hasGlowstone = true;
+            ++this.glowstoneCount;
+            potionEssence.addGlowstone(this.glowstoneCount);
         } else if (ist.getItem() == Items.redstone) {
             ++this.redstoneCount;
+            potionEssence.addRedstone(this.redstoneCount);
         } else if (ist.getItem() == Items.nether_wart) {
             this.hasNetherwart = true;
         }
 
         worldObj.markBlockForUpdate(this.getPos());
+    }
+
+    public int getGlowstoneAmpLimit()
+    {
+        return Settings.ApothecaryCauldron.glowstoneLimit;
     }
 
     public int getRedstoneAmpLimit() {
@@ -259,8 +263,8 @@ public class TileEntityCauldron extends TileEntityBase {
         List<String> heatSourceBlockNames = Settings.ApothecaryCauldron.heatSources;
 
         for (String blockName : heatSourceBlockNames) {
-            if (!heatSources.contains(Reliquary.CONTENT.getBlock(blockName)))
-                heatSources.add(Reliquary.CONTENT.getBlock(blockName));
+            if (!heatSources.contains(RegistryHelper.getBlockFromName(blockName)))
+                heatSources.add(RegistryHelper.getBlockFromName(blockName));
         }
         //defaults that can't be removed.
         heatSources.add(Blocks.lava);
@@ -275,8 +279,6 @@ public class TileEntityCauldron extends TileEntityBase {
 
     public void handleCollidingEntity( World world, BlockPos pos, Entity collidingEntity)
     {
-        //TODO: verify that entityBoundingBox is the correct one to use here
-
         int l = 3;
         float f = (float) pos.getY() + (6.0F + (float) (3 * l)) / 16.0F;
         if (collidingEntity.getEntityBoundingBox().minY <= (double) f) {
@@ -333,10 +335,14 @@ public class TileEntityCauldron extends TileEntityBase {
     public boolean handleBlockActivation(World world, EntityPlayer player){
         ItemStack itemStack = player.inventory.getCurrentItem();
 
-        if (itemStack.getItem() == Items.water_bucket) {
+        if (itemStack.getItem() == Items.water_bucket || (itemStack.getItem() instanceof IFluidContainerItem && ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack).equals(new FluidStack(FluidRegistry.WATER, 1000)))) {
             if (getLiquidLevel() < 3 && !finishedCooking()) {
                 if (!player.capabilities.isCreativeMode) {
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket));
+                    if (itemStack.getItem() == Items.water_bucket) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket));
+                    } else {
+                        ((IFluidContainerItem) itemStack.getItem()).drain(itemStack, 1000, true);
+                    }
                 }
 
                 setLiquidLevel(3);
@@ -349,7 +355,7 @@ public class TileEntityCauldron extends TileEntityBase {
                 if (getLiquidLevel() > 0) {
 
                     if (finishedCooking()) {
-                        ItemStack potion = new ItemStack(Reliquary.CONTENT.getItem(Names.potion), 1, 0);
+                        ItemStack potion = new ItemStack(ModItems.potion, 1, 0);
                         potion.setTagCompound( removeContainedPotion( world ) );
 
                         --itemStack.stackSize;
@@ -368,9 +374,8 @@ public class TileEntityCauldron extends TileEntityBase {
                 if (itemStack.stackSize <= 0)
                     player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
             }
-            return false;
+            return true;
         }
-
     }
 
     public void setLiquidLevel(int liquidLevel) {

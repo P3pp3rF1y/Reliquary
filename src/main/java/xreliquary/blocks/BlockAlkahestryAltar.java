@@ -1,37 +1,36 @@
 package xreliquary.blocks;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.util.NBTHelper;
+
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityAltar;
+import xreliquary.init.ModBlocks;
 import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.NBTHelper;
 
 import java.util.Random;
 
 public class BlockAlkahestryAltar extends BlockContainer {
 
-    @ContentInit
     static public class BlockActiveAlkahestryAltar extends BlockAlkahestryAltar {
         public BlockActiveAlkahestryAltar() {
             super(true);
         }
     }
 
-    @ContentInit
     static public class BlockIdleAlkahestryAltar extends BlockAlkahestryAltar {
         public BlockIdleAlkahestryAltar() {
             super(false);
@@ -64,7 +63,7 @@ public class BlockAlkahestryAltar extends BlockContainer {
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return ItemBlock.getItemFromBlock(Reliquary.CONTENT.getBlock(Names.altar_idle));
+        return ItemBlock.getItemFromBlock(ModBlocks.alkahestryAltar);
     }
 
     @Override
@@ -129,14 +128,14 @@ public class BlockAlkahestryAltar extends BlockContainer {
     public static void updateAltarBlockState(boolean active, World world, BlockPos pos) {
         //TODO: replace sandstone logic with proper BlockState handling
         if (active) {
-            world.setBlockState(pos, Reliquary.CONTENT.getBlock(Names.altar).getDefaultState());
+            world.setBlockState(pos, ModBlocks.alkahestryAltarActive.getDefaultState());
 
             TileEntityAltar te = (TileEntityAltar) world.getTileEntity(pos);
             if (te != null) {
                 te.startCycle();
             }
         } else {
-            world.setBlockState(pos, Reliquary.CONTENT.getBlock(Names.altar_idle).getDefaultState());
+            world.setBlockState(pos, ModBlocks.alkahestryAltar.getDefaultState());
         }
     }
 

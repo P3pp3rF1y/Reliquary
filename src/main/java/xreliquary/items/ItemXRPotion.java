@@ -1,9 +1,7 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.HashMultimap;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -13,7 +11,6 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
@@ -23,7 +20,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.blocks.tile.TileEntityCauldron;
@@ -32,6 +28,7 @@ import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.ArrayList;
@@ -42,7 +39,6 @@ import java.util.Map;
 /**
  * Created by Xeno on 11/9/2014.
  */
-@ContentInit
 public class ItemXRPotion extends ItemBase {
 
     public ItemXRPotion() {
@@ -212,7 +208,7 @@ public class ItemXRPotion extends ItemBase {
         subItems.add(new ItemStack(ModItems.potion)); //just an empty one
 
         List<ItemStack> splashPotions = new ArrayList<>();
-        for(PotionEssence essence : Settings.uniquePotions) {
+        for(PotionEssence essence : Settings.Potions.uniquePotions) {
             ItemStack potion = new ItemStack(ModItems.potion, 1);
             potion.setTagCompound(essence.writeToNBT());
             NBTHelper.setBoolean("hasPotion", potion, true);

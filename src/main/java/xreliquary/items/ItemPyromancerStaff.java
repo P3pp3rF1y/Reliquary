@@ -1,12 +1,7 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.LanguageHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,6 +21,10 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
+import xreliquary.util.RegistryHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,7 +33,6 @@ import java.util.List;
 /**
  * Created by Xeno on 10/11/2014.
  */
-@ContentInit
 public class ItemPyromancerStaff extends ItemToggleable {
     public ItemPyromancerStaff() {
         super(Names.pyromancer_staff);
@@ -70,7 +68,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
             for (int i = 0; i < tagList.tagCount(); ++i) {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                Item containedItem = Reliquary.CONTENT.getItem(itemName);
+                Item containedItem = RegistryHelper.getItemFromName(itemName);
                 int quantity = tagItemData.getInteger("Quantity");
 
                 if (containedItem == Items.blaze_powder) {
@@ -144,7 +142,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
                 player.swingItem();
                 Vec3 lookVec = player.getLookVec();
                 //blaze fireball!
-                if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
+                if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote, player)) {
                     player.worldObj.playAuxSFXAtEntity(player, 1009, new BlockPos((int)player.posX, (int)player.posY, (int)player.posZ), 0);
                     EntitySmallFireball fireball = new EntitySmallFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
                     fireball.accelerationX = lookVec.xCoord;
@@ -162,7 +160,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
                 player.swingItem();
                 Vec3 lookVec = player.getLookVec();
                 //ghast fireball!
-                if (removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost(), player.worldObj.isRemote)) {
+                if (removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost(), player.worldObj.isRemote, player)) {
                     player.worldObj.playAuxSFXAtEntity(player, 1008, new BlockPos((int)player.posX, (int)player.posY, (int)player.posZ), 0);
                     EntityLargeFireball fireball = new EntityLargeFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
                     fireball.accelerationX = lookVec.xCoord;
@@ -213,7 +211,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
                 doEruptionAuxEffects(player, mop.getBlockPos().getX(), mop.getBlockPos().getY(), mop.getBlockPos().getZ(), 5D);
                 if (count % 10 == 0) {
-                    if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote)) {
+                    if (removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote, player)) {
                         doEruptionEffect(player, mop.getBlockPos().getX(), mop.getBlockPos().getY(), mop.getBlockPos().getZ(), 5D);
                     }
                 }
@@ -233,7 +231,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
                     world.playSoundEffect((double) placeFireAt.getX() + 0.5D, (double) placeFireAt.getY() + 0.5D, (double) placeFireAt.getZ() + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F);
                     world.setBlockState(placeFireAt, Blocks.fire.getDefaultState());
                 }
-                return false;
+                return true;
             }
         }
         return false;
@@ -321,7 +319,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         {
             NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
             String itemName = tagItemData.getString("Name");
-            if (itemName.equals(ContentHelper.getIdent(item))) {
+            if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
                 tagItemData.setInteger("Quantity", quantity + quantityIncrease);
                 added = true;
@@ -329,7 +327,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         }
         if (!added) {
             NBTTagCompound newTagData = new NBTTagCompound();
-            newTagData.setString("Name", ContentHelper.getIdent(item));
+            newTagData.setString("Name", RegistryHelper.getItemRegistryName(item));
             newTagData.setInteger("Quantity", quantityIncrease);
             tagList.appendTag(newTagData);
         }
@@ -339,7 +337,9 @@ public class ItemPyromancerStaff extends ItemToggleable {
         NBTHelper.setTag(ist, tagCompound);
     }
 
-    public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, boolean simulate) {
+    public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, boolean simulate, EntityPlayer player) {
+        if (player.capabilities.isCreativeMode)
+            return true;
         if (hasItemInInternalStorage(ist, item, cost)) {
             NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 
@@ -351,7 +351,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
             {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                if (itemName.equals(ContentHelper.getIdent(item))) {
+                if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
                     if (!simulate)
                         tagItemData.setInteger("Quantity", quantity - cost);
@@ -378,7 +378,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         {
             NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
             String itemName = tagItemData.getString("Name");
-            if (itemName.equals(ContentHelper.getIdent(item))) {
+            if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                 int quantity = tagItemData.getInteger("Quantity");
                 return quantity >= cost;
             }
@@ -397,7 +397,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
             {
                 NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
                 String itemName = tagItemData.getString("Name");
-                if (itemName.equals(ContentHelper.getIdent(item))) {
+                if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
                     int quantity = tagItemData.getInteger("Quantity");
                     return quantity >= quantityLimit;
                 }
@@ -442,7 +442,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
         for (int xOff = -3; xOff <= 3; xOff++) {
             for (int yOff = -3; yOff <= 3; yOff++) {
                 for (int zOff = -3; zOff <= 3; zOff++)
-                    if (ContentHelper.getIdent(player.worldObj.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock()).equals(ContentHelper.getIdent(Blocks.fire))) {
+                    if ( RegistryHelper.getBlockRegistryName(player.worldObj.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock()).equals( RegistryHelper.getBlockRegistryName(Blocks.fire))) {
                         player.worldObj.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.air.getDefaultState());
                         player.worldObj.playSoundEffect(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, "random.fizz", 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F);
                     }
@@ -462,7 +462,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
                         addItemToInternalStorage(ist, Items.fire_charge, true);
                     player.worldObj.playSoundEffect(fireball.posX, fireball.posY, fireball.posZ, "random.fizz", 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F);
                 }
-                    fireball.setDead();
+                fireball.setDead();
             }
         }
         List blazeFireballs = player.worldObj.getEntitiesWithinAABB(EntitySmallFireball.class, new AxisAlignedBB(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));

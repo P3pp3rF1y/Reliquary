@@ -1,10 +1,7 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.LanguageHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -17,10 +14,11 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
 
 import java.util.List;
 
-@ContentInit
 public class ItemHeroMedallion extends ItemToggleable {
 
     public ItemHeroMedallion() {
@@ -70,15 +68,17 @@ public class ItemHeroMedallion extends ItemToggleable {
             EntityPlayer player = (EntityPlayer) e;
             // in order to make this stop at a specific level, we will need to do
             // a preemptive check for a specific level.
-            for (int levelLoop = 0; levelLoop <= Math.sqrt(player.experienceLevel); ++levelLoop) {
-                if ((player.experienceLevel > getExperienceMinimum() || player.experience > 0F) && getExperience(ist) < Integer.MAX_VALUE) {
-                    decreasePlayerExperience(player);
+            for (int levelLoop = 0; levelLoop <= Math.sqrt(!player.capabilities.isCreativeMode ? player.experienceLevel : 30); ++levelLoop) {
+                if ((player.experienceLevel > getExperienceMinimum() || player.experience > 0F || player.capabilities.isCreativeMode) && getExperience(ist) < Integer.MAX_VALUE) {
+                    if (!player.capabilities.isCreativeMode)
+                        decreasePlayerExperience(player);
                     increaseMedallionExperience(ist);
                 }
             }
         }
     }
 
+    //TODO look into this comment
     // I'm not 100% this is needed. You may be able to avoid this whole call by
     // using the method in the player class, might be worth testing
     // (player.addExperience(-1)?)
@@ -126,9 +126,10 @@ public class ItemHeroMedallion extends ItemToggleable {
             //turn it on/off.
 
         int playerLevel = player.experienceLevel;
-        while (player.experienceLevel < getExperienceMaximum() && playerLevel == player.experienceLevel && getExperience(ist) > 0) {
+        while (player.experienceLevel < getExperienceMaximum() && playerLevel == player.experienceLevel && (getExperience(ist) > 0 || player.capabilities.isCreativeMode)) {
             increasePlayerExperience(player);
-            decreaseMedallionExperience(ist);
+            if (!player.capabilities.isCreativeMode)
+                decreaseMedallionExperience(ist);
         }
         return ist;
     }

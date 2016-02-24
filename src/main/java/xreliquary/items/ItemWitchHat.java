@@ -1,7 +1,6 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.util.LanguageHelper;
+
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,9 +13,9 @@ import xreliquary.Reliquary;
 import xreliquary.client.model.ModelWitchHat;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.util.LanguageHelper;
 
 
-@ContentInit
 public class ItemWitchHat extends ItemArmor {
 
     public static final ItemArmor.ArmorMaterial hatMaterial = EnumHelper.addArmorMaterial( "hat_material", Reference.DOMAIN + Names.witch_hat, 0, new int[] { 0, 0, 0, 0 }, 0 );

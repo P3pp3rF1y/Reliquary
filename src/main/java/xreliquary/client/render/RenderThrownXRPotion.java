@@ -1,6 +1,6 @@
 package xreliquary.client.render;
 
-import lib.enderwizards.sandstone.util.NBTHelper;
+
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSnowball;
@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.init.ModItems;
+import xreliquary.util.NBTHelper;
 
 
 @SideOnly(Side.CLIENT)

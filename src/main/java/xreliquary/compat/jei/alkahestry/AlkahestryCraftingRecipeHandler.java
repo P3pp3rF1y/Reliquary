@@ -1,9 +1,9 @@
 package xreliquary.compat.jei.alkahestry;
 
+
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import xreliquary.reference.Reference;
-import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
 import javax.annotation.Nonnull;
 

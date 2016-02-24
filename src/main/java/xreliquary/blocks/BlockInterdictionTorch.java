@@ -1,6 +1,6 @@
 package xreliquary.blocks;
 
-import lib.enderwizards.sandstone.init.ContentInit;
+
 import net.minecraft.block.BlockTorch;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -18,7 +18,6 @@ import xreliquary.reference.Settings;
 import java.util.List;
 import java.util.Random;
 
-@ContentInit
 public class BlockInterdictionTorch extends BlockTorch{
 
     public BlockInterdictionTorch() {

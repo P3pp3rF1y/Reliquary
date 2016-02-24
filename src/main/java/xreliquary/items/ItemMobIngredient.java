@@ -1,7 +1,5 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +15,6 @@ import java.util.List;
  * they're not all technically mob drops. It was mostly just a way for me to clean up our items folder,
  * and make the creative tabs better organized.
  */
-@ContentInit
 public class ItemMobIngredient extends ItemBase {
 
     public ItemMobIngredient() {

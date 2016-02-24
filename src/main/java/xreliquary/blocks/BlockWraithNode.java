@@ -1,12 +1,11 @@
 package xreliquary.blocks;
 
-import lib.enderwizards.sandstone.init.ContentInit;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 
-@ContentInit
 public class BlockWraithNode extends Block {
     public BlockWraithNode() {
         super(Material.rock);

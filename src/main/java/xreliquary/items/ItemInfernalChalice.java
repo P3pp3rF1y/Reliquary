@@ -1,10 +1,7 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.ImmutableMap;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,18 +13,21 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.NBTHelper;
+import xreliquary.util.RegistryHelper;
 
 import java.util.List;
 
 /**
  * Created by Xeno on 10/11/2014.
  */
-@ContentInit
-public class ItemInfernalChalice extends ItemToggleable {
+public class ItemInfernalChalice extends ItemToggleable implements IFluidContainerItem
+{
     public ItemInfernalChalice() {
         super(Names.infernal_chalice);
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
@@ -95,14 +95,14 @@ public class ItemInfernalChalice extends ItemToggleable {
                     }
                 }
 
-                String ident = ContentHelper.getIdent(world.getBlockState(mop.getBlockPos()).getBlock());
-                if (this.isEnabled(stack) && (ident.equals(ContentHelper.getIdent(Blocks.flowing_lava)) || ident.equals(ContentHelper.getIdent(Blocks.lava))) && world.getBlockState(mop.getBlockPos()).getValue(Blocks.lava.LEVEL) == 0) {
+                String ident =  RegistryHelper.getBlockRegistryName(world.getBlockState(mop.getBlockPos()).getBlock());
+                if (this.isEnabled(stack) && (ident.equals( RegistryHelper.getBlockRegistryName(Blocks.flowing_lava)) || ident.equals( RegistryHelper.getBlockRegistryName(Blocks.lava))) && world.getBlockState(mop.getBlockPos()).getValue(Blocks.lava.LEVEL) == 0) {
                     world.setBlockState( mop.getBlockPos(), Blocks.air.getDefaultState() );
                     NBTHelper.setInteger("fluidStacks", stack, NBTHelper.getInteger("fluidStacks", stack) + 1000);
                     return stack;
                 }
 
-                if (!this.isEnabled(stack)  && NBTHelper.getInteger("fluidStacks", stack) >= 1000) {
+                if (!this.isEnabled(stack)  && (NBTHelper.getInteger("fluidStacks", stack) >= 1000 || player.capabilities.isCreativeMode)) {
                     BlockPos adjustedPos = mop.getBlockPos().offset(mop.sideHit);
 
                     if (!player.canPlayerEdit(adjustedPos, mop.sideHit, stack))
@@ -139,5 +139,58 @@ public class ItemInfernalChalice extends ItemToggleable {
         }
         if (player == null)
             return;
+    }
+    @Override
+    public FluidStack getFluid(ItemStack container)
+    {
+        if (this.isEnabled(container))
+            return null;
+        return new FluidStack(FluidRegistry.LAVA, NBTHelper.getInteger("fluidStacks", container));
+    }
+
+    @Override
+    public int getCapacity(ItemStack container)
+    {
+        if (this.isEnabled(container))
+            return fluidLimit() - NBTHelper.getInteger("fluidStacks", container);
+
+        return fluidLimit();
+    }
+
+    @Override
+    public int fill(ItemStack container, FluidStack resource, boolean doFill)
+    {
+        if (!this.isEnabled(container) || resource == null) {
+            return 0;
+        }
+
+        if (!resource.isFluidEqual(new FluidStack(FluidRegistry.LAVA, 1000)))
+            return 0;
+
+        int toFill = Math.min(fluidLimit() - NBTHelper.getInteger("fluidStacks", container), resource.amount);
+
+        if (doFill) {
+            int fluidLevel = NBTHelper.getInteger("fluidStacks", container);
+            fluidLevel += toFill;
+            NBTHelper.setInteger("fluidStacks", container, fluidLevel);
+        }
+
+        return toFill;
+    }
+
+    @Override
+    public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
+    {
+        if (this.isEnabled(container)) {
+            return null;
+        }
+
+        FluidStack stack = new FluidStack(FluidRegistry.LAVA, Math.min(NBTHelper.getInteger("fluidStacks", container), maxDrain));
+
+        if (doDrain) {
+            NBTHelper.setInteger("fluidStacks", container, NBTHelper.getInteger("fluidStacks", container) - stack.amount);
+        }
+
+        return stack;
     }
 }

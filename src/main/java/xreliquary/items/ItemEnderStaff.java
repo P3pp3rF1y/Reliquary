@@ -1,15 +1,8 @@
 package xreliquary.items;
 
+
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.*;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemToggleable;
-import lib.enderwizards.sandstone.util.ContentHelper;
-import lib.enderwizards.sandstone.util.InventoryHelper;
-import lib.enderwizards.sandstone.util.LanguageHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,17 +10,23 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityEnderStaffProjectile;
+import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
-import lib.enderwizards.sandstone.util.NBTHelper;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
+import xreliquary.util.RegistryHelper;
 
 import java.util.List;
 
-@ContentInit
 public class ItemEnderStaff extends ItemToggleable {
 
     public ItemEnderStaff() {
@@ -148,12 +147,13 @@ public class ItemEnderStaff extends ItemToggleable {
                 if (player.isSwingInProgress)
                     return ist;
                 player.swingItem();
-                if (NBTHelper.getInteger("ender_pearls", ist) < getEnderStaffPearlCost())
+                if (NBTHelper.getInteger("ender_pearls", ist) < getEnderStaffPearlCost() && !player.capabilities.isCreativeMode)
                     return ist;
                 player.worldObj.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
                 if  (!player.worldObj.isRemote) {
                     player.worldObj.spawnEntityInWorld(new EntityEnderStaffProjectile(player.worldObj, player, !getMode(ist).equals("long_cast")));
-                    NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffPearlCost());
+                    if (!player.capabilities.isCreativeMode)
+                        NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffPearlCost());
                 }
                 //setCooldown(ist);
             } else {
@@ -164,18 +164,19 @@ public class ItemEnderStaff extends ItemToggleable {
     }
 
     private ItemStack doWraithNodeWarpCheck(ItemStack stack, World world, EntityPlayer player) {
-        if (NBTHelper.getInteger("ender_pearls", stack) < getEnderStaffNodeWarpCost())
+        if (NBTHelper.getInteger("ender_pearls", stack) < getEnderStaffNodeWarpCost() && !player.capabilities.isCreativeMode)
             return stack;
 
         if (stack.getTagCompound() != null && stack.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(player))) {
             if (!world.isRemote) {
                 player.addChatComponentMessage( new ChatComponentText( EnumChatFormatting.DARK_RED + "Out of range!" ) );
             }
-        } else if (stack.getTagCompound() != null && ContentHelper.areBlocksEqual(world.getBlockState(new BlockPos(stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))).getBlock(), Reliquary.CONTENT.getBlock(Names.wraith_node))) {
+        } else if (stack.getTagCompound() != null && RegistryHelper.blocksEqual(world.getBlockState(new BlockPos(stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))).getBlock(), ModBlocks.wraithNode)) {
             if (canTeleport(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
                 teleportPlayer(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
                 //setCooldown(ist);
-                NBTHelper.setInteger("ender_pearls", stack, NBTHelper.getInteger("ender_pearls", stack) - getEnderStaffNodeWarpCost());
+                if (!player.capabilities.isCreativeMode)
+                    NBTHelper.setInteger("ender_pearls", stack, NBTHelper.getInteger("ender_pearls", stack) - getEnderStaffNodeWarpCost());
             }
         } else if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("dimensionID")) {
             stack.getTagCompound().removeTag("dimensionID");
@@ -230,7 +231,7 @@ public class ItemEnderStaff extends ItemToggleable {
     @Override
     public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
         // if right clicking on a wraith node, bind the eye to that wraith node.
-        if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && ContentHelper.areBlocksEqual(world.getBlockState(pos).getBlock(), Reliquary.CONTENT.getBlock(Names.wraith_node))) {
+        if ((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && RegistryHelper.blocksEqual(world.getBlockState(pos).getBlock(), ModBlocks.wraithNode)) {
             setWraithNode(ist, pos, Integer.valueOf(getWorld(player)), player);
 
             player.playSound("mob.endermen.portal", 1.0f, 1.0f);

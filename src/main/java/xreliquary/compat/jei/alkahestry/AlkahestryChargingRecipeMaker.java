@@ -1,12 +1,12 @@
 package xreliquary.compat.jei.alkahestry;
 
-import lib.enderwizards.sandstone.util.NBTHelper;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
+import xreliquary.util.NBTHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
-import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

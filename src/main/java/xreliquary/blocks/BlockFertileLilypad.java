@@ -1,6 +1,6 @@
 package xreliquary.blocks;
 
-import lib.enderwizards.sandstone.init.ContentInit;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockLiquid;
@@ -27,7 +27,6 @@ import xreliquary.reference.Settings;
 import java.util.List;
 import java.util.Random;
 
-@ContentInit
 public class BlockFertileLilypad extends BlockBush{
     public BlockFertileLilypad() {
         float var3 = 0.5F;

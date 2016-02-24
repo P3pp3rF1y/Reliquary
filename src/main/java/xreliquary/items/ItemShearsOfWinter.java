@@ -1,7 +1,6 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.Enchantment;
@@ -18,7 +17,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatList;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import xreliquary.Reliquary;
@@ -31,7 +33,6 @@ import java.util.Random;
 /**
  * Created by Xeno on 10/11/2014.
  */
-@ContentInit
 public class ItemShearsOfWinter extends ItemBase {
     public ItemShearsOfWinter() {
         super(Names.shears_of_winter);

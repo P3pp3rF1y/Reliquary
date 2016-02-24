@@ -1,7 +1,5 @@
 package xreliquary.items;
 
-import lib.enderwizards.sandstone.init.ContentInit;
-import lib.enderwizards.sandstone.items.ItemBase;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,7 +8,6 @@ import xreliquary.reference.Names;
 
 import java.util.List;
 
-@ContentInit
 public class ItemGunPart extends ItemBase {
 
     public ItemGunPart() {

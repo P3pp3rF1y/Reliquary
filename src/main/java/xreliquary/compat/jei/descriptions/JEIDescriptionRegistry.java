@@ -1,11 +1,8 @@
 package xreliquary.compat.jei.descriptions;
 
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 
 import java.util.*;
