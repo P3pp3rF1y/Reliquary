@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.items.ItemDestructionCatalyst;
@@ -248,6 +249,8 @@ public class BlockItemConfiguration
 		Settings.Potions.threeIngredients = ConfigurationHandler.getBoolean(Names.three_ingredients, Names.item_and_block_settings + "." + Names.potions, false);
 		Settings.Potions.differentDurations = ConfigurationHandler.getBoolean(Names.different_durations, Names.item_and_block_settings + "." + Names.potions, false);
 		Settings.Potions.redstoneAndGlowstone = ConfigurationHandler.getBoolean(Names.redstone_and_glowstone, Names.item_and_block_settings + "." + Names.potions, false);
+		ConfigCategory potionCategory = ConfigurationHandler.configuration.getCategory(Names.item_and_block_settings + "." + Names.potions);
+		potionCategory.setRequiresMcRestart(true);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.potions, true);
 	}
 }
