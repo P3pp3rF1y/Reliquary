@@ -14,6 +14,8 @@ import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import xreliquary.command.CommandGenLootChest;
 import xreliquary.common.CommonProxy;
 import xreliquary.compat.CompatibilityLoader;
 import xreliquary.handler.ConfigurationHandler;
@@ -21,6 +23,7 @@ import xreliquary.handler.config.PotionConfiguration;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
+import xreliquary.init.ModLoot;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -51,6 +54,8 @@ public class Reliquary {
 
         ModFluids.init();
 
+        ModLoot.init();
+
         PROXY.preInit();
 
         //important that this initializes before the pre-init phase
@@ -80,9 +85,6 @@ public class Reliquary {
 
         ConfigurationHandler.postInit();
 
-        //and finally save the file changes. post init is the last stage of configuration, it does an entity scan, hopefully it's cross-mod compatible.
-        //CONFIG.save();
-
         CompatibilityLoader.registerTCAspects();
 
         LogHelper.info("Loaded successfully!");
@@ -106,4 +108,9 @@ public class Reliquary {
         }
     }
 
+    @EventHandler
+    public void serverLoad(FMLServerStartingEvent event)
+    {
+        //event.registerServerCommand(new CommandGenLootChest());
+    }
 }

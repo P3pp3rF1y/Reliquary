@@ -15,6 +15,8 @@ import java.util.Map;
 
 public class Settings
 {
+	public static boolean chestLootEnabled;
+
 	public static class Potions {
 		public static int maxEffectCount;
 		public static boolean threeIngredients;

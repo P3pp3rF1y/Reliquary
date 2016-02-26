@@ -7,7 +7,9 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.handler.config.*;
+import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 
 import java.io.File;
 import java.util.*;
@@ -33,6 +35,9 @@ public class ConfigurationHandler
 		EasyModeConfiguration.loadEasyModeSettings();
 		MobDropConfiguration.loadMobDropProbabilities();
 		BlockItemConfiguration.loadBlockAndItemSettings();
+
+		Settings.chestLootEnabled = getBoolean(Names.chest_loot_enabled, "general", true);
+		configuration.getCategory("general").get(Names.chest_loot_enabled).setRequiresMcRestart(true);
 	}
 
 	public static void postInit() {
