@@ -38,7 +38,6 @@ repositories {
         name "Thaumcraft"
         artifactPattern "http://addons-origin.cursecdn.com/files/${thaumcraft_cf}/[module]-[revision].[ext]"
     }
-    maven { url 'http://tehnut.info/maven/' }
 }
 
 
@@ -56,7 +55,6 @@ dependencies {
     compile name:'JustEnoughResources', version: jer_version, ext: 'jar'
     compile name:'Baubles', version: baubles_version, ext: 'jar'
     compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
-    compile "info.amerifrance.guideapi:Guide-API:${guideapi_version}:deobf"
 }
 
 minecraft {
