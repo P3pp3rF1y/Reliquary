@@ -12,18 +12,34 @@ import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import xreliquary.compat.ICompat;
 import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
 
-public class JERCompat
+public class JERCompat implements ICompat
 {
+	private static boolean JERDataLoaded = false;
+
+	@Override
+	public void loadCompatibility(InitializationPhase phase, World world) {
+		if (phase == InitializationPhase.WORLD_LOAD && !JERDataLoaded) {
+			register(world);
+			JERDataLoaded = true;
+		}
+	}
+
+	@Override
+	public String getModId() {
+		return Compatibility.MOD_ID.JER;
+	}
+
 	@JERPlugin
 	public static IJERAPI api;
-
 	public static void register(World world)
 	{
 		//Squid
@@ -75,14 +91,13 @@ public class JERCompat
 		registerMobDrop(EntitySnowman.class, XRRecipes.ingredient(Reference.FROZEN_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.frozen_core), Conditional.playerKill);
 	}
 
+
 	private static void registerMobDrop(Class<? extends EntityLivingBase> entity, WatchableData watchableData, ItemStack drop, float chance, Conditional... conditionals){
 		DropItem dropItem = new DropItem(drop, 1, 1, chance, conditionals);
 		api.getMobRegistry().registerDrops(entity, watchableData, dropItem);
 	}
+
 	private static void registerMobDrop(Class<? extends EntityLivingBase> entity, ItemStack drop, float chance, Conditional... conditionals){
 		registerMobDrop(entity, WatchableData.EMPTY, drop, chance, conditionals);
 	}
-
-
-
 }

@@ -15,15 +15,11 @@ import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import xreliquary.command.CommandGenLootChest;
 import xreliquary.common.CommonProxy;
-import xreliquary.compat.CompatibilityLoader;
+import xreliquary.compat.ICompat;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.handler.config.PotionConfiguration;
-import xreliquary.init.ModBlocks;
-import xreliquary.init.ModFluids;
-import xreliquary.init.ModItems;
-import xreliquary.init.ModLoot;
+import xreliquary.init.*;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -68,6 +64,8 @@ public class Reliquary {
 
         PacketHandler.init();
 
+        ModCompat.registerModCompat();
+        ModCompat.loadCompat(ICompat.InitializationPhase.PRE_INIT, null);
     }
 
     @EventHandler
@@ -77,6 +75,8 @@ public class Reliquary {
 
         PROXY.init();
         MinecraftForge.EVENT_BUS.register(this);
+
+        ModCompat.loadCompat(ICompat.InitializationPhase.INIT, null);
     }
 
     @EventHandler
@@ -85,8 +85,7 @@ public class Reliquary {
 
         ConfigurationHandler.postInit();
 
-        CompatibilityLoader.registerTCAspects();
-
+        ModCompat.loadCompat(ICompat.InitializationPhase.POST_INIT, null);
         LogHelper.info("Loaded successfully!");
     }
 

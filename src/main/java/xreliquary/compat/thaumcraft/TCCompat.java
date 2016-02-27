@@ -1,14 +1,28 @@
 package xreliquary.compat.thaumcraft;
 
 
+import net.minecraft.world.World;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
+import xreliquary.compat.ICompat;
 import xreliquary.init.XRRecipes;
+import xreliquary.reference.Compatibility;
 
 
-public class TCCompat
+public class TCCompat implements ICompat
 {
+	@Override
+	public void loadCompatibility(InitializationPhase phase, World world) {
+		if(phase == InitializationPhase.POST_INIT)
+			register();
+	}
+
+	@Override
+	public String getModId() {
+		return Compatibility.MOD_ID.THAUMCRAFT;
+	}
+
 	public static void register() {
 		ThaumcraftApi.registerObjectTag(XRRecipes.ribBone(), new AspectList().add(Aspect.DEATH, 4).add(Aspect.LIFE, 3).add(Aspect.UNDEAD, 1));
 		ThaumcraftApi.registerObjectTag(XRRecipes.witherRib(), new AspectList().add(Aspect.DEATH, 6).add(Aspect.LIFE, 4).add(Aspect.UNDEAD, 1));
