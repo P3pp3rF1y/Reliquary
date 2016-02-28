@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class PotionEssence extends PotionIngredient {
 
-    public static int MAX_DURATION = 30000;
+    public static int MAX_DURATION = 36000;
     public static int MAX_AMPLIFIER = 4;
 
     public List<PotionIngredient> ingredients = new ArrayList<>();
