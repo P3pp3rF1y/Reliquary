@@ -780,3 +780,6 @@ jei.descriptions.wraith_node=Right-click it with the Ender Staff and it will bin
 
 waila.xreliquary.mortar.ingredient=Ingredient #%s: %s
 waila.xreliquary.mortar.result=Resulting potion effects:
+waila.xreliquary.cauldron.missing_netherwart=Missing Nether Wart
+waila.xreliquary.cauldron.splash=Splash potion
+waila.xreliquary.cauldron.potion=Potion
