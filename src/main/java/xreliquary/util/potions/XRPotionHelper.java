@@ -11,6 +11,7 @@ import net.minecraft.util.StatCollector;
 import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Settings;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,17 @@ public class XRPotionHelper {
                 return ingredient;
         }
         return null;
+    }
+
+    private static int[] nonAugmentableEffects = new int[] {Potion.blindness.getId(), Potion.confusion.getId(), Potion.invisibility.getId(), Potion.nightVision.getId(), Potion.waterBreathing.getId()};
+
+    public static boolean isAugmentablePotionEffect(PotionEffect effect) {
+        for(int i=0;i<nonAugmentableEffects.length; i++) {
+            if (nonAugmentableEffects[i] == effect.getPotionID())
+                return false;
+        }
+
+        return true;
     }
 
     public static void addPotionInfo(PotionEssence essence, List list) {

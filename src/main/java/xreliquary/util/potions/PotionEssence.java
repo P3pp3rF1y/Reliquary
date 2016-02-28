@@ -139,7 +139,10 @@ public class PotionEssence extends PotionIngredient {
         double multiplier = ((((double)(11+effectCnt))/((double)(6+effectCnt))-(1.0/((double)(6+effectCnt))*((double)glowstoneLevel))- 1.0));
 
         for(PotionEffect effect : this.effects) {
-            int newAmplifier = Math.min(effect.getAmplifier() + 1, MAX_AMPLIFIER + 1);
+            int newAmplifier = effect.getAmplifier();
+
+            if (XRPotionHelper.isAugmentablePotionEffect(effect))
+                newAmplifier = Math.min(effect.getAmplifier() + 1, MAX_AMPLIFIER + 1);
 
             PotionEffect newEffect = new PotionEffect(effect.getPotionID(), new Double(effect.getDuration() * multiplier).intValue(), newAmplifier, effect.getIsAmbient(), effect.getIsShowParticles());
             newEffects.add(newEffect);
