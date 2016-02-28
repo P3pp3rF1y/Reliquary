@@ -783,3 +783,6 @@ waila.xreliquary.mortar.result=Resulting potion effects:
 waila.xreliquary.cauldron.missing_netherwart=Missing Nether Wart
 waila.xreliquary.cauldron.splash=Splash potion
 waila.xreliquary.cauldron.potion=Potion
+waila.xreliquary.altar.inactive=Inactive
+waila.xreliquary.altar.active=Active
+waila.xreliquary.altar.time_remaining=Time remaining: %s

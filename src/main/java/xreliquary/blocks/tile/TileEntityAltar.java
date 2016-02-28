@@ -30,6 +30,8 @@ public class TileEntityAltar extends TileEntityBase
             return;
         if (cycleTime > 0) {
             cycleTime--;
+            if (cycleTime % 20 == 0)
+                worldObj.markBlockForUpdate(this.pos);
         } else {
             isActive = false;
             worldObj.setBlockState(getPos().add(0,1,0),Blocks.glowstone.getDefaultState());
@@ -63,11 +65,12 @@ public class TileEntityAltar extends TileEntityBase
     }
 
     public void addRedstone() {
-        //TODO:move this logic into the block itself and use blockstate for redstone
         redstoneCount++;
         if (redstoneCount >= getRedstoneCost()) {
             BlockAlkahestryAltar.updateAltarBlockState( true, worldObj, getPos() );
         }
+
+        worldObj.markBlockForUpdate(this.pos);
     }
 
     public static int getRedstoneCost() { return Settings.Altar.redstoneCost; }
@@ -78,5 +81,9 @@ public class TileEntityAltar extends TileEntityBase
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public int getCycleTime() {
+        return cycleTime;
     }
 }
