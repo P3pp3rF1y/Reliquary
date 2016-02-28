@@ -777,3 +777,6 @@ jei.descriptions.void_tear_empty=Right clicking makes the crystal absorb whateve
 jei.descriptions.witch_hat=Dropped by witches. Allows you to craft the Tome of Aklahestry. Also you can wear it if you want to look like a leprechaun.
 jei.descriptions.witherless_rose=While this is in your inventory, you are immune to the wither ailment.
 jei.descriptions.wraith_node=Right-click it with the Ender Staff and it will bind your Ender Staff to it, allowing you to return there at will for a price of Ender Pearls.\n\nNote that it will not work across different dimensions.
+
+waila.xreliquary.mortar.ingredient=Ingredient #%s: %s
+waila.xreliquary.mortar.result=Resulting potion effects:

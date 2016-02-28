@@ -8,5 +8,6 @@ public class Compatibility
 		public static final String JER = "jeresources";
 		public static final String Baubles = "Baubles";
 		public static final String THAUMCRAFT = "Thaumcraft";
+		public static final String WAILA = "Waila";
 	}
 }

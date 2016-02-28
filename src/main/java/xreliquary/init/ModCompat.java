@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.compat.ICompat;
 import xreliquary.compat.jer.JERCompat;
 import xreliquary.compat.thaumcraft.TCCompat;
+import xreliquary.compat.waila.WailaCompat;
 import xreliquary.reference.Compatibility;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class ModCompat {
     {
         compats.add(new JERCompat());
         compats.add(new TCCompat());
+        compats.add(new WailaCompat());
     }
 
     public static void loadCompat(ICompat.InitializationPhase phase, World world)
