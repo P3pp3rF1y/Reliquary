@@ -49,15 +49,15 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
         StringBuilder ingredients = new StringBuilder();
         if (cauldron.redstoneCount > 0){
             ingredients.append(cauldron.redstoneCount);
-            ingredients.append("x ");
-            ingredients.append(Items.redstone.getItemStackDisplayName(new ItemStack(Items.redstone)));
+            ingredients.append("x");
+            ingredients.append(new ItemStack(Items.redstone).getDisplayName());
             ingredients.append(" ");
         }
 
         if (cauldron.glowstoneCount > 0){
             ingredients.append(cauldron.glowstoneCount);
-            ingredients.append("x ");
-            ingredients.append(Items.glowstone_dust.getItemStackDisplayName(new ItemStack(Items.glowstone_dust)));
+            ingredients.append("x");
+            ingredients.append(new ItemStack(Items.glowstone_dust).getDisplayName());
         }
 
         currenttip.add(ingredients.toString());

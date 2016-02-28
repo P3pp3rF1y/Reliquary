@@ -48,15 +48,14 @@ public class DataProviderMortar extends CachedBodyDataProvider {
         if(ingredients[0] == null)
             return currenttip;
 
-        currenttip.add(String.format(StatCollector.translateToLocal("waila.xreliquary.mortar.ingredient"), 1, ingredients[0].getDisplayName()));
+        String ingredient1 = ingredients[0].getDisplayName();
+        String ingredient2 = ingredients[1] == null ? "" : ", " + ingredients[1].getDisplayName();
+        String ingredient3 = ingredients[2] == null ? "" : ", " + ingredients[2].getDisplayName();
+
+        currenttip.add(ingredient1 + ingredient2 + ingredient3);
 
         if(ingredients[1] == null)
             return currenttip;
-
-        currenttip.add(String.format(StatCollector.translateToLocal("waila.xreliquary.mortar.ingredient"), 2, ingredients[1].getDisplayName()));
-
-        if(ingredients[2] != null)
-            currenttip.add(String.format(StatCollector.translateToLocal("waila.xreliquary.mortar.ingredient"), 3, ingredients[2].getDisplayName()));
 
         List<PotionIngredient> potionIngredients = new ArrayList<PotionIngredient>();
         potionIngredients.add(XRPotionHelper.getIngredient(ingredients[0]));

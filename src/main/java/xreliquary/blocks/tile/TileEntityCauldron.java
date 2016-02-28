@@ -13,6 +13,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
@@ -223,6 +225,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
         this.redstoneCount = 0;
         this.potionEssence = null;
         this.dataChanged = true;
+        worldObj.markBlockForUpdate(this.getPos());
     }
 
     public boolean isItemValidForInput(ItemStack ist) {
@@ -250,7 +253,6 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
             this.hasNetherwart = true;
         }
 
-        this.dataChanged = true;
         worldObj.markBlockForUpdate(this.getPos());
     }
 
@@ -398,5 +400,11 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
         boolean ret = this.dataChanged;
         this.dataChanged = false;
         return ret;
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        super.onDataPacket(net, packet);
+        this.dataChanged = true;
     }
 }
