@@ -3,6 +3,8 @@ package xreliquary.compat.waila;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.blocks.BlockApothecaryMortar;
+import xreliquary.compat.waila.provider.DataProviderCauldron;
+import xreliquary.compat.waila.provider.DataProviderMortar;
 
 public class WailaCallbackHandler {
     public static void callbackRegister(IWailaRegistrar registrar) {

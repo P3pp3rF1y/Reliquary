@@ -13,6 +13,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.IChatComponent;
+import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 import xreliquary.util.potions.PotionEssence;
@@ -22,18 +23,20 @@ import xreliquary.util.potions.XRPotionHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityMortar extends TileEntityInventory {
+public class TileEntityMortar extends TileEntityInventory implements IWailaDataChangeIndicator {
 
     // counts the number of times the player has right clicked the block
     // arbitrarily setting the number of times the player needs to grind the
     // materials to five.
     private int pestleUsedCounter;
     private String customInventoryName;
+    private boolean dataChanged;
 
     public TileEntityMortar() {
         //inventory size
         super(3);
         pestleUsedCounter = 0;
+        dataChanged = true;
     }
 
     @Override
@@ -155,6 +158,12 @@ public class TileEntityMortar extends TileEntityInventory {
     }
 
     @Override
+    public void setInventorySlotContents(int slot, ItemStack stack) {
+        super.setInventorySlotContents(slot, stack);
+        this.dataChanged = true;
+    }
+
+    @Override
     public int getInventoryStackLimit() {
         return 1;
     }
@@ -214,5 +223,12 @@ public class TileEntityMortar extends TileEntityInventory {
     @Override
     public IChatComponent getDisplayName() {
         return this.hasCustomName() ? new ChatComponentText(this.getName()) : new ChatComponentTranslation(this.getName());
+    }
+
+    @Override
+    public boolean getDataChanged() {
+        boolean ret = this.dataChanged;
+        this.dataChanged = false;
+        return ret;
     }
 }

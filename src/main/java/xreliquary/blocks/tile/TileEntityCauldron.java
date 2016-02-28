@@ -30,6 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.client.particle.EntityCauldronBubbleFX;
 import xreliquary.client.particle.EntityCauldronSteamFX;
+import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemPotionEssence;
@@ -40,7 +41,7 @@ import xreliquary.util.potions.PotionEssence;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityCauldron extends TileEntityBase {
+public class TileEntityCauldron extends TileEntityBase implements IWailaDataChangeIndicator {
 
     public int redstoneCount = 0;
     public PotionEssence potionEssence = null;
@@ -49,8 +50,10 @@ public class TileEntityCauldron extends TileEntityBase {
     public boolean hasNetherwart = false;
     public int cookTime = 0;
     private int liquidLevel = 0;
+    private boolean dataChanged;
 
     public TileEntityCauldron() {
+        dataChanged = true;
     }
 
     @Override
@@ -219,6 +222,7 @@ public class TileEntityCauldron extends TileEntityBase {
         this.hasNetherwart = false;
         this.redstoneCount = 0;
         this.potionEssence = null;
+        this.dataChanged = true;
     }
 
     public boolean isItemValidForInput(ItemStack ist) {
@@ -246,6 +250,7 @@ public class TileEntityCauldron extends TileEntityBase {
             this.hasNetherwart = true;
         }
 
+        this.dataChanged = true;
         worldObj.markBlockForUpdate(this.getPos());
     }
 
@@ -386,5 +391,12 @@ public class TileEntityCauldron extends TileEntityBase {
             this.worldObj.setBlockState(this.getPos(),blockState);
             this.worldObj.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
         }
+    }
+
+    @Override
+    public boolean getDataChanged() {
+        boolean ret = this.dataChanged;
+        this.dataChanged = false;
+        return ret;
     }
 }

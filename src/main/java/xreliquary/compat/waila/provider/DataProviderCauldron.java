@@ -1,4 +1,4 @@
-package xreliquary.compat.waila;
+package xreliquary.compat.waila.provider;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class DataProviderCauldron implements IWailaDataProvider {
+public class DataProviderCauldron extends CachedBodyDataProvider {
     @Override
     public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
         return new ItemStack(ModBlocks.apothecaryCauldron);
@@ -34,7 +34,7 @@ public class DataProviderCauldron implements IWailaDataProvider {
     }
 
     @Override
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+    public List<String> getWailaBodyToCache(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         if (! (accessor.getBlock() instanceof BlockApothecaryCauldron && accessor.getTileEntity() instanceof TileEntityCauldron))
             return currenttip;
 
