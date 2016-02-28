@@ -113,6 +113,7 @@ public class Names {
     public static final String different_durations = "different_durations";
     public static final String redstone_and_glowstone = "redstone_and_glowstone";
     public static final String chest_loot_enabled = "chest_loot_enabled";
+    public static final String waila_shift_for_info = "waila_shift_for_info";
 
     //these are for items, like above, didn't want to magic string them. I will use them eventually.
 //    public static final String snowball_mode = "snowballs";

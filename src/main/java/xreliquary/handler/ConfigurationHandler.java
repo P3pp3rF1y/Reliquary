@@ -38,6 +38,7 @@ public class ConfigurationHandler
 
 		Settings.chestLootEnabled = getBoolean(Names.chest_loot_enabled, "general", true);
 		configuration.getCategory("general").get(Names.chest_loot_enabled).setRequiresMcRestart(true);
+		Settings.wailaShiftForInfo = getBoolean(Names.waila_shift_for_info, "general", false);
 	}
 
 	public static void postInit() {

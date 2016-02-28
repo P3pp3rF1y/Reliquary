@@ -14,6 +14,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import xreliquary.blocks.BlockAlkahestryAltar;
 import xreliquary.blocks.tile.TileEntityAltar;
+import xreliquary.reference.Settings;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -31,6 +32,11 @@ public class DataProviderAltar implements IWailaDataProvider {
 
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        if (Settings.wailaShiftForInfo && !accessor.getPlayer().isSneaking()) {
+            currenttip.add(ChatFormatting.ITALIC + StatCollector.translateToLocal("waila.xreliquary.shift_for_more") + ChatFormatting.RESET);
+            return currenttip;
+        }
+
         if (! (accessor.getBlock() instanceof BlockAlkahestryAltar && accessor.getTileEntity() instanceof TileEntityAltar))
             return currenttip;
 
