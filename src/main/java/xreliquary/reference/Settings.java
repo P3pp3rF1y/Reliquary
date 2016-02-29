@@ -17,6 +17,8 @@ public class Settings
 {
 	public static boolean chestLootEnabled;
 	public static boolean wailaShiftForInfo;
+	public static boolean dropCraftingRecipesEnabled;
+
 
 	public static class Potions {
 		public static int maxEffectCount;

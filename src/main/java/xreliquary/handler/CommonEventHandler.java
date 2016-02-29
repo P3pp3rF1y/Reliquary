@@ -190,7 +190,7 @@ public class CommonEventHandler {
     }
 
     private ItemStack ingredient(int meta) {
-        return XRRecipes.ingredient(meta);
+        return XRRecipes.ingredient(1, meta);
     }
 
     public void handleSquidDropsCheck(Entity e, LivingDropsEvent event) {

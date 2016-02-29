@@ -13,11 +13,9 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
-import xreliquary.util.NBTHelper;
 import xreliquary.util.StackHelper;
 import xreliquary.util.potions.*;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -248,8 +246,8 @@ public class PotionConfiguration
 		addPotionConfig(category, Items.baked_potato, satur(0), regen(1, 0));
 		addPotionConfig(category, Items.poisonous_potato, poison(2, 0), wither(1, 0));
 		addPotionConfig(category, Items.quartz, harm(0), dboost(4, 0));
-		addPotionConfig(category, XRRecipes.zombieHeart(), nausea(2, 0), hunger(2, 0), wither(1, 0));
-		addPotionConfig(category, XRRecipes.squidBeak(), hunger(2, 0), breath(2, 0));
+		addPotionConfig(category, XRRecipes.ZOMBIE_HEART, nausea(2, 0), hunger(2, 0), wither(1, 0));
+		addPotionConfig(category, XRRecipes.SQUID_BEAK, hunger(2, 0), breath(2, 0));
 
 		//TIER THREE INGREDIENTS, these are closer to vanilla durations, carry many effects or a slightly increased duration. Some/most are combos.
 		addPotionConfig(category, Items.pumpkin_pie, invis(1, 0), fireres(1, 0), speed(3, 0), haste(3, 0), absorb(3, 0), regen(0, 0)); //combination of ingredients, strong.
@@ -259,28 +257,28 @@ public class PotionConfiguration
 		addPotionConfig(category, Items.fermented_spider_eye, vision(4, 0), poison(2, 0), speed(3, 0), haste(3, 0)); //combo
 		addPotionConfig(category, Items.golden_carrot, dboost(3, 0), haste(3, 0), hboost(3, 0), vision(3, 0)); //combo
 		addPotionConfig(category, Items.gold_ingot, dboost(4, 0), haste(4, 0)); //combo
-		addPotionConfig(category, XRRecipes.ribBone(), weak(3, 0), fatigue(3, 0));
+		addPotionConfig(category, XRRecipes.RIB_BONE, weak(3, 0), fatigue(3, 0));
 		addPotionConfig(category, Items.ender_pearl, invis(5, 0), speed(5, 0));
 		addPotionConfig(category, Items.blaze_rod, dboost(8, 0), harm(0));
 		addPotionConfig(category, Items.fire_charge, dboost(4, 0), harm(0), blind(1, 0), absorb(3, 0)); //combo
-		addPotionConfig(category, XRRecipes.creeperGland(), regen(3, 0), hboost(5, 0));
-		addPotionConfig(category, XRRecipes.spiderFangs(), poison(3, 0), weak(3, 0));
-		addPotionConfig(category, XRRecipes.slimePearl(), resist(5, 0), absorb(5, 0));
-		addPotionConfig(category, XRRecipes.shellFragment(), absorb(5, 0), breath(5, 0));
-		addPotionConfig(category, XRRecipes.batWing(), jump(5, 0), weak(3, 0));
+		addPotionConfig(category, XRRecipes.CREEPER_GLAND, regen(3, 0), hboost(5, 0));
+		addPotionConfig(category, XRRecipes.CHELICERAE, poison(3, 0), weak(3, 0));
+		addPotionConfig(category, XRRecipes.SLIME_PEARL, resist(5, 0), absorb(5, 0));
+		addPotionConfig(category, XRRecipes.SHELL_FRAGMENT, absorb(5, 0), breath(5, 0));
+		addPotionConfig(category, XRRecipes.BAT_WING, jump(5, 0), weak(3, 0));
 
 		//TIER FOUR INGREDIENTS, these carry multiple one-potency effects and have the most duration for any given effect.
 		addPotionConfig(category, Items.diamond, resist(6, 1), absorb(6, 1), fireres(6, 0));
-		addPotionConfig(category, XRRecipes.witherRib(), wither(2, 1), weak(3, 1), slow(3, 1), fatigue(3, 1));
+		addPotionConfig(category, XRRecipes.WITHER_RIB, wither(2, 1), weak(3, 1), slow(3, 1), fatigue(3, 1));
 		addPotionConfig(category, Items.ender_eye, dboost(6, 1), invis(6, 0), speed(6, 1), harm(1));
 		addPotionConfig(category, Items.emerald, haste(6, 1), speed(6, 1), hboost(6, 1));
 		addPotionConfig(category, Items.nether_star, hboost(24, 1), regen(24, 1), absorb(24, 1)); //nether star is holy stonk
-		addPotionConfig(category, XRRecipes.moltenCore(), dboost(6, 1), fireres(6, 0), harm(1));
-		addPotionConfig(category, XRRecipes.stormEye(), haste(24, 1), speed(24, 1), jump(24, 1), harm(1));
-		addPotionConfig(category, XRRecipes.fertileEssence(), hboost(8, 1), regen(3, 1), heal(1), satur(1), weak(9, 1), fatigue(9, 1));
-		addPotionConfig(category, XRRecipes.frozenCore(), absorb(6, 1), slow(3, 1), fatigue(3, 1), harm(1), fireres(6, 0));
-		addPotionConfig(category, XRRecipes.enderHeart(), vision(6, 0), invis(6, 0), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
-		addPotionConfig(category, XRRecipes.infernalClaw(), harm(1), resist(6, 1), fireres(6, 0), dboost(6, 1), satur(1), heal(1));
+		addPotionConfig(category, XRRecipes.MOLTEN_CORE, dboost(6, 1), fireres(6, 0), harm(1));
+		addPotionConfig(category, XRRecipes.STORM_EYE, haste(24, 1), speed(24, 1), jump(24, 1), harm(1));
+		addPotionConfig(category, XRRecipes.FERTILE_ESSENCE, hboost(8, 1), regen(3, 1), heal(1), satur(1), weak(9, 1), fatigue(9, 1));
+		addPotionConfig(category, XRRecipes.FROZEN_CORE, absorb(6, 1), slow(3, 1), fatigue(3, 1), harm(1), fireres(6, 0));
+		addPotionConfig(category, XRRecipes.NEBULOUS_HEART, vision(6, 0), invis(6, 0), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
+		addPotionConfig(category, XRRecipes.INFERNAL_CLAW, harm(1), resist(6, 1), fireres(6, 0), dboost(6, 1), satur(1), heal(1));
 	}
 
 	public static String harm(int potency) { return effectString(Reference.HARM, Integer.toString(0),Integer.toString(potency)); }

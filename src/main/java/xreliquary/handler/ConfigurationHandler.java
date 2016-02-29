@@ -39,6 +39,8 @@ public class ConfigurationHandler
 		Settings.chestLootEnabled = getBoolean(Names.chest_loot_enabled, "general", true);
 		configuration.getCategory("general").get(Names.chest_loot_enabled).setRequiresMcRestart(true);
 		Settings.wailaShiftForInfo = getBoolean(Names.waila_shift_for_info, "general", false);
+		Settings.dropCraftingRecipesEnabled = getBoolean(Names.mob_drop_crafting_recipes_enabled, "general", false);
+		configuration.getCategory("general").get(Names.mob_drop_crafting_recipes_enabled).setRequiresMcRestart(true);
 	}
 
 	public static void postInit() {
