@@ -41,6 +41,8 @@ public class ConfigurationHandler
 		Settings.wailaShiftForInfo = getBoolean(Names.waila_shift_for_info, "general", false);
 		Settings.dropCraftingRecipesEnabled = getBoolean(Names.mob_drop_crafting_recipes_enabled, "general", false);
 		configuration.getCategory("general").get(Names.mob_drop_crafting_recipes_enabled).setRequiresMcRestart(true);
+		Settings.mobDropsEnabled = getBoolean(Names.mob_drops_enabled, "general", true);
+		configuration.getCategory("general").get(Names.mob_drops_enabled).setRequiresMcRestart(true);
 	}
 
 	public static void postInit() {

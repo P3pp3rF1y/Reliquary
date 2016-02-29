@@ -27,7 +27,7 @@ public class JERCompat implements ICompat
 
 	@Override
 	public void loadCompatibility(InitializationPhase phase, World world) {
-		if (phase == InitializationPhase.WORLD_LOAD && !JERDataLoaded) {
+		if (Settings.mobDropsEnabled && phase == InitializationPhase.WORLD_LOAD && !JERDataLoaded) {
 			register(world);
 			JERDataLoaded = true;
 		}

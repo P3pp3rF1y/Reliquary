@@ -163,6 +163,9 @@ public class CommonEventHandler {
 
     @SubscribeEvent
     public void onLivingDrops(LivingDropsEvent event) {
+        if(!Settings.mobDropsEnabled)
+            return;
+
         Entity e = event.entity;
         handleSquidDropsCheck(e, event);
         handleWitchDropsCheck(e, event);

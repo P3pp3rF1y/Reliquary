@@ -115,6 +115,7 @@ public class Names {
     public static final String chest_loot_enabled = "chest_loot_enabled";
     public static final String waila_shift_for_info = "waila_shift_for_info";
     public static final String mob_drop_crafting_recipes_enabled = "mob_drop_crafting_recipes_enabled";
+    public static final String mob_drops_enabled = "mob_drops_enabled";
 
     //these are for items, like above, didn't want to magic string them. I will use them eventually.
 //    public static final String snowball_mode = "snowballs";

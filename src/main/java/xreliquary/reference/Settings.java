@@ -18,6 +18,7 @@ public class Settings
 	public static boolean chestLootEnabled;
 	public static boolean wailaShiftForInfo;
 	public static boolean dropCraftingRecipesEnabled;
+	public static boolean mobDropsEnabled;
 
 
 	public static class Potions {
