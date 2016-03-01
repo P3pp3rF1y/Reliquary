@@ -3,6 +3,7 @@ package xreliquary.init;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.Reliquary;
 import xreliquary.blocks.*;
@@ -13,6 +14,7 @@ import xreliquary.items.block.ItemBlockBase;
 import xreliquary.items.block.ItemFertileLilyPad;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 
 public class ModBlocks {
 
@@ -36,12 +38,22 @@ public class ModBlocks {
     }
 
     public static void initTileEntities() {
-        GameRegistry.registerTileEntity(TileEntityAltar.class, Reference.MOD_ID + "." + "reliquaryAltar");
-        GameRegistry.registerTileEntity(TileEntityMortar.class, Reference.MOD_ID + "." + "apothecaryMortar");
-        GameRegistry.registerTileEntity(TileEntityCauldron.class, Reference.MOD_ID + "." + "reliquaryCauldron");
+        registerTileEntity(TileEntityAltar.class, "reliquaryAltar");
+        registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
+        registerTileEntity(TileEntityCauldron.class, "reliquaryCauldron");
+    }
+
+    private static void registerTileEntity(Class clazz, String name) {
+        if (Settings.disabledItemsBlocks.contains(name))
+            return;
+
+        GameRegistry.registerTileEntity(clazz, Reference.MOD_ID + "." + name);
     }
 
     private static void registerBlock(Block block, Class<? extends ItemBlock> itemclass, String name) {
+        if (Settings.disabledItemsBlocks.contains(name))
+            return;
+
         GameRegistry.registerBlock(block, itemclass, Reference.DOMAIN + name);
         Reliquary.PROXY.registerJEI(block, name);
     }

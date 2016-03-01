@@ -1,8 +1,11 @@
 package xreliquary.init;
 
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import xreliquary.items.alkahestry.AlkahestryChargingRecipe;
@@ -11,6 +14,8 @@ import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
+import java.util.Arrays;
+
 
 public class XRRecipes {
 
@@ -18,25 +23,29 @@ public class XRRecipes {
     //if any component of the item is in the recipe disabler list, it will ALSO block the recipe automatically.
     //override disabler forces the recipe to evaluate anyway. This occurs for items that don't fall into XR scope, and thus shouldn't be evaluated.
     public static void addRecipe(boolean isShapeless, boolean overrideDisabler, ItemStack result, Object... params) {
-        //TODO: figure out if we need disabling recipes vs this done by modpack devs with minetweaker or such
-/*        if (!overrideDisabler) {
-            boolean enabled = Reliquary.CONFIG.getGroup(Names.recipe_enabled).containsKey( RegistryHelper.getBlockRegistryName(result.getItem()).replace(':', '_')) && Reliquary.CONFIG.getBool(Names.recipe_enabled,  RegistryHelper.getItemRegistryName(result.getItem()).replace(':', '_'));
-            if (!enabled) return;
-            for (Object obj : params) {
-                String unlocalizedName = null;
-                if (obj instanceof Block) {
-                    unlocalizedName =  RegistryHelper.getBlockRegistryName((Block) obj);
-                } else if (obj instanceof Item) {
-                    unlocalizedName =  RegistryHelper.getItemRegistryName((Item) obj);
-                } else if (obj instanceof ItemStack) {
-                    unlocalizedName =  RegistryHelper.getItemRegistryName(((IktemStack) obj).getItem());
-                }
-                if (unlocalizedName == null || !Reliquary.CONFIG.getKeys(Names.recipe_enabled).contains(unlocalizedName.replace(Reference.MOD_ID + "_", Reference.MOD_ID + ":")))
-                    continue;
-                enabled = enabled && Reliquary.CONFIG.getBool(Names.recipe_enabled, unlocalizedName);
+        //TODO remove overrideDisabler - people should know what they're doing when disabling blocks and items
+        if (result.getItem() == null || result.getItem().getRegistryName() == null || Arrays.asList(params).contains(null))
+            return;
+
+        ResourceLocation rl = new ResourceLocation(result.getItem().getRegistryName());
+        if (Settings.disabledItemsBlocks.contains(rl.getResourcePath()))
+            return;
+
+        for(Object o : params) {
+            if (!(o instanceof Block || o instanceof Item || o instanceof ItemStack))
+                continue;
+
+            if (o instanceof Block) {
+                rl = new ResourceLocation(((Block) o).getRegistryName());
+            } else if (o instanceof Item && ((Item) o).getRegistryName() != null) {
+                rl = new ResourceLocation(((Item) o).getRegistryName());
+            } else if (o instanceof ItemStack) {
+                rl = new ResourceLocation(((ItemStack) o).getItem().getRegistryName());
             }
-            if (!enabled) return;
-        }*/
+            if (Settings.disabledItemsBlocks.contains(rl.getResourcePath()))
+                return;
+        }
+
         if (!isShapeless) GameRegistry.addRecipe(result, params);
             else GameRegistry.addShapelessRecipe(result, params);
     }

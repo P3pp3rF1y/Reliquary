@@ -7,6 +7,7 @@ import xreliquary.Reliquary;
 import xreliquary.items.*;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 
 
 public class ModItems {
@@ -112,6 +113,10 @@ public class ModItems {
     }
 
     private static void registerItem(Item item, String name, boolean registerInJEI) {
+
+        if (Settings.disabledItemsBlocks.contains(name))
+            return;
+
         GameRegistry.registerItem(item, Reference.DOMAIN + name);
         if (registerInJEI)
             Reliquary.PROXY.registerJEI(item, name);

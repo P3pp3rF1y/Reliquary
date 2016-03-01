@@ -43,6 +43,8 @@ public class ConfigurationHandler
 		configuration.getCategory("general").get(Names.mob_drop_crafting_recipes_enabled).setRequiresMcRestart(true);
 		Settings.mobDropsEnabled = getBoolean(Names.mob_drops_enabled, "general", true);
 		configuration.getCategory("general").get(Names.mob_drops_enabled).setRequiresMcRestart(true);
+		Settings.disabledItemsBlocks = ConfigurationHandler.getStringList(Names.disabled_items_blocks, "general", Collections.EMPTY_LIST );
+		configuration.getCategory("general").get(Names.disabled_items_blocks).setRequiresMcRestart(true);
 	}
 
 	public static void postInit() {

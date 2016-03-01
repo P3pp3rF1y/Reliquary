@@ -7,6 +7,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 
 public class ItemBlockModels {
     public static void registerItemBlockModels()
@@ -22,6 +23,9 @@ public class ItemBlockModels {
     }
 
     private static void registerBlockItemModel(Block block, String resourceName){
+        if (Settings.disabledItemsBlocks.contains(resourceName))
+            return;
+
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(Reference.DOMAIN + resourceName, "inventory"));
     }
 
