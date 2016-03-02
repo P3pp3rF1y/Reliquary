@@ -13,6 +13,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
@@ -26,13 +28,18 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import thaumcraft.api.blocks.BlocksTC;
+import thaumcraft.common.blocks.basic.BlockNitor;
 import xreliquary.client.particle.EntityCauldronBubbleFX;
 import xreliquary.client.particle.EntityCauldronSteamFX;
+import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemPotionEssence;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Settings;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.PotionEssence;
@@ -40,7 +47,7 @@ import xreliquary.util.potions.PotionEssence;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityCauldron extends TileEntityBase {
+public class TileEntityCauldron extends TileEntityBase implements IWailaDataChangeIndicator {
 
     public int redstoneCount = 0;
     public PotionEssence potionEssence = null;
@@ -49,8 +56,10 @@ public class TileEntityCauldron extends TileEntityBase {
     public boolean hasNetherwart = false;
     public int cookTime = 0;
     private int liquidLevel = 0;
+    private boolean dataChanged;
 
     public TileEntityCauldron() {
+        dataChanged = true;
     }
 
     @Override
@@ -219,6 +228,8 @@ public class TileEntityCauldron extends TileEntityBase {
         this.hasNetherwart = false;
         this.redstoneCount = 0;
         this.potionEssence = null;
+        this.dataChanged = true;
+        worldObj.markBlockForUpdate(this.getPos());
     }
 
     public boolean isItemValidForInput(ItemStack ist) {
@@ -270,6 +281,8 @@ public class TileEntityCauldron extends TileEntityBase {
         heatSources.add(Blocks.lava);
         heatSources.add(Blocks.flowing_lava);
         heatSources.add(Blocks.fire);
+        if (Loader.isModLoaded(Compatibility.MOD_ID.THAUMCRAFT))
+            heatSources.add(BlocksTC.nitor);
         return heatSources;
     }
 
@@ -386,5 +399,18 @@ public class TileEntityCauldron extends TileEntityBase {
             this.worldObj.setBlockState(this.getPos(),blockState);
             this.worldObj.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
         }
+    }
+
+    @Override
+    public boolean getDataChanged() {
+        boolean ret = this.dataChanged;
+        this.dataChanged = false;
+        return ret;
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        super.onDataPacket(net, packet);
+        this.dataChanged = true;
     }
 }

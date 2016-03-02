@@ -15,6 +15,13 @@ import java.util.Map;
 
 public class Settings
 {
+	public static boolean chestLootEnabled;
+	public static boolean wailaShiftForInfo;
+	public static boolean dropCraftingRecipesEnabled;
+	public static boolean mobDropsEnabled;
+	public static List<String> disabledItemsBlocks;
+
+
 	public static class Potions {
 		public static int maxEffectCount;
 		public static boolean threeIngredients;

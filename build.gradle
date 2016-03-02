@@ -26,6 +26,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 repositories {
     maven { url "http://dvs1.progwml6.com/files/maven" }
+    maven {	url "http://mobiusstrip.eu/maven" }
     ivy {
         name "JustEnoughResources"
         artifactPattern "http://addons-origin.cursecdn.com/files/${jer_cf}/[module]-[revision].[ext]"
@@ -52,6 +53,7 @@ targetCompatibility = 1.8
 
 dependencies {
     deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
+    compile "mcp.mobius.waila:Waila:${waila_version}:dev"
     compile name:'JustEnoughResources', version: jer_version, ext: 'jar'
     compile name:'Baubles', version: baubles_version, ext: 'jar'
     compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'

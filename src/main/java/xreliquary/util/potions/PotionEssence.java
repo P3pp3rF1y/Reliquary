@@ -6,9 +6,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.StatCollector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -17,7 +19,7 @@ import java.util.*;
  */
 public class PotionEssence extends PotionIngredient {
 
-    public static int MAX_DURATION = 30000;
+    public static int MAX_DURATION = 36000;
     public static int MAX_AMPLIFIER = 4;
 
     public List<PotionIngredient> ingredients = new ArrayList<>();
@@ -137,7 +139,10 @@ public class PotionEssence extends PotionIngredient {
         double multiplier = ((((double)(11+effectCnt))/((double)(6+effectCnt))-(1.0/((double)(6+effectCnt))*((double)glowstoneLevel))- 1.0));
 
         for(PotionEffect effect : this.effects) {
-            int newAmplifier = Math.min(effect.getAmplifier() + 1, MAX_AMPLIFIER + 1);
+            int newAmplifier = effect.getAmplifier();
+
+            if (XRPotionHelper.isAugmentablePotionEffect(effect))
+                newAmplifier = Math.min(effect.getAmplifier() + 1, MAX_AMPLIFIER + 1);
 
             PotionEffect newEffect = new PotionEffect(effect.getPotionID(), new Double(effect.getDuration() * multiplier).intValue(), newAmplifier, effect.getIsAmbient(), effect.getIsShowParticles());
             newEffects.add(newEffect);

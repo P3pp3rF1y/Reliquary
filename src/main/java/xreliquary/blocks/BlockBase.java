@@ -10,18 +10,11 @@ import net.minecraft.world.World;
 
 public class BlockBase extends Block implements ITileEntityProvider {
 
-    protected boolean registerIcon = true;
-
     public BlockBase(Material material, String langName) {
         super(material);
         this.setUnlocalizedName(langName);
         this.setHardness(1.0F);
         this.setResistance(1.0F);
-    }
-
-    public String getUnwrappedUnlocalizedName()
-    {
-        return this.getUnlocalizedName().substring(this.getUnlocalizedName().indexOf(".") + 1);
     }
 
     @Override

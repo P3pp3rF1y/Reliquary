@@ -7,7 +7,9 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.handler.config.*;
+import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 
 import java.io.File;
 import java.util.*;
@@ -33,6 +35,16 @@ public class ConfigurationHandler
 		EasyModeConfiguration.loadEasyModeSettings();
 		MobDropConfiguration.loadMobDropProbabilities();
 		BlockItemConfiguration.loadBlockAndItemSettings();
+
+		Settings.chestLootEnabled = getBoolean(Names.chest_loot_enabled, "general", true);
+		configuration.getCategory("general").get(Names.chest_loot_enabled).setRequiresMcRestart(true);
+		Settings.wailaShiftForInfo = getBoolean(Names.waila_shift_for_info, "general", false);
+		Settings.dropCraftingRecipesEnabled = getBoolean(Names.mob_drop_crafting_recipes_enabled, "general", false);
+		configuration.getCategory("general").get(Names.mob_drop_crafting_recipes_enabled).setRequiresMcRestart(true);
+		Settings.mobDropsEnabled = getBoolean(Names.mob_drops_enabled, "general", true);
+		configuration.getCategory("general").get(Names.mob_drops_enabled).setRequiresMcRestart(true);
+		Settings.disabledItemsBlocks = ConfigurationHandler.getStringList(Names.disabled_items_blocks, "general", Collections.EMPTY_LIST );
+		configuration.getCategory("general").get(Names.disabled_items_blocks).setRequiresMcRestart(true);
 	}
 
 	public static void postInit() {

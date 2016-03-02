@@ -163,6 +163,9 @@ public class CommonEventHandler {
 
     @SubscribeEvent
     public void onLivingDrops(LivingDropsEvent event) {
+        if(!Settings.mobDropsEnabled)
+            return;
+
         Entity e = event.entity;
         handleSquidDropsCheck(e, event);
         handleWitchDropsCheck(e, event);
@@ -190,7 +193,7 @@ public class CommonEventHandler {
     }
 
     private ItemStack ingredient(int meta) {
-        return XRRecipes.ingredient(meta);
+        return XRRecipes.ingredient(1, meta);
     }
 
     public void handleSquidDropsCheck(Entity e, LivingDropsEvent event) {
