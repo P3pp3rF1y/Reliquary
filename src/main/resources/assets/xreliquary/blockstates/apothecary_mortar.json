@@ -4,6 +4,10 @@
         "transform": "forge:default-block"
     },
     "variants": {
-        "normal": { "model": "xreliquary:apothecary_mortar" }
+        "normal": { "model": "xreliquary:apothecary_mortar" },
+        "facing=north": { "model": "xreliquary:apothecary_mortar" },
+        "facing=south": { "model": "xreliquary:apothecary_mortar", "y": 180 },
+        "facing=west":  { "model": "xreliquary:apothecary_mortar", "y": 270 },
+        "facing=east":  { "model": "xreliquary:apothecary_mortar", "y": 90 }
     }
 }
