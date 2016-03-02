@@ -1,8 +1,4 @@
 {
-    "forge_marker": 1,
-    "defaults": {
-        "transform": "forge:default-block"
-    },
     "variants": {
         "normal": { "model": "xreliquary:apothecary_mortar" },
         "facing=north": { "model": "xreliquary:apothecary_mortar" },

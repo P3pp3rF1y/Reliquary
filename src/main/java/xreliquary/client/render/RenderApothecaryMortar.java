@@ -1,6 +1,5 @@
 package xreliquary.client.render;
 
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -22,7 +21,7 @@ public class RenderApothecaryMortar extends TileEntitySpecialRenderer<TileEntity
     @Override
     public void renderTileEntityAt(TileEntityMortar tile, double x, double y, double z, float var8, int i) {
         if (tile instanceof TileEntityMortar) {
-            EnumFacing facing = EnumFacing.getFront(tile.getBlockMetadata());
+            EnumFacing facing = EnumFacing.getHorizontal(tile.getBlockMetadata());
             GlStateManager.pushMatrix();
             GlStateManager.disableCull();
             GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);

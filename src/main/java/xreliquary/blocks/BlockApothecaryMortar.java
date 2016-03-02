@@ -1,6 +1,5 @@
 package xreliquary.blocks;
 
-
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
@@ -41,6 +40,7 @@ public class BlockApothecaryMortar extends BlockBase {
         this.setCreativeTab(Reliquary.CREATIVE_TAB);
         this.setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.3125F, 0.75F);
     }
+
     @Override
     public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState state, AxisAlignedBB mask, List list, Entity collidingEntity) {
         this.setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.3125F, 0.75F);
@@ -53,6 +53,7 @@ public class BlockApothecaryMortar extends BlockBase {
     public void setBlockBoundsForItemRender() {
         this.setBlockBounds(0.25F, 0F, 0.25F, 0.75F, 0.3F, 0.75F);
     }
+
     @Override
     public boolean isOpaqueCube() {
         return false;
@@ -60,32 +61,25 @@ public class BlockApothecaryMortar extends BlockBase {
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        EnumFacing enumfacing = EnumFacing.NORTH;
-        if (meta > -1) {
-            enumfacing = EnumFacing.getFront(meta);
-
-            if (enumfacing.getAxis() == EnumFacing.Axis.Y)
-            {
-                enumfacing = EnumFacing.NORTH;
-            }
-        }
+        EnumFacing enumfacing = EnumFacing.getHorizontal(meta);
 
         return this.getDefaultState().withProperty(FACING, enumfacing);
     }
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        return state.getValue(FACING).getIndex();
+        return state.getValue(FACING).getHorizontalIndex();
     }
 
-    protected BlockState createBlockState()
-    {
-        return new BlockState(this, new IProperty[] {FACING});
+    protected BlockState createBlockState() {
+        return new BlockState(this, FACING);
     }
+
     @Override
     public boolean isFullCube() {
         return false;
     }
+
     @Override
     public int getRenderType() {
         return 2;
@@ -93,7 +87,7 @@ public class BlockApothecaryMortar extends BlockBase {
 
     //TODO move to inventory helper
     private void tryRemovingLastStack(IInventory inventory, World worldObj, BlockPos pos) {
-        for (int i = inventory.getSizeInventory() - 1; i>=0; i--) {
+        for (int i = inventory.getSizeInventory() - 1; i >= 0; i--) {
             ItemStack stack = inventory.getStackInSlot(i);
             if (stack != null) {
                 inventory.setInventorySlotContents(i, null);
@@ -115,7 +109,7 @@ public class BlockApothecaryMortar extends BlockBase {
         TileEntityMortar mortar = (TileEntityMortar) tileEntity;
         ItemStack heldItem = player.getCurrentEquippedItem();
         if (heldItem == null) {
-            if ( player.isSneaking()) {
+            if (player.isSneaking()) {
                 tryRemovingLastStack(mortar, world, mortar.getPos());
                 return true;
             }
@@ -145,8 +139,7 @@ public class BlockApothecaryMortar extends BlockBase {
             mortar.usePestle();
             world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, this.stepSound.getStepSound(), (this.stepSound.getVolume() + 1.0F) / 2.0F, this.stepSound.getFrequency() * 0.8F);
             return false;
-        }
-        else {
+        } else {
             //TODO: make sure to optimize markDirty calls
             mortar.markDirty();
         }
@@ -173,8 +166,7 @@ public class BlockApothecaryMortar extends BlockBase {
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         TileEntity tileentity = world.getTileEntity(pos);
 
-        if (tileentity instanceof TileEntityMortar)
-        {
+        if (tileentity instanceof TileEntityMortar) {
             InventoryHelper.dropInventoryItems(world, pos, (TileEntityMortar) tileentity);
         }
 
