@@ -60,11 +60,14 @@ public class BlockApothecaryMortar extends BlockBase {
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        EnumFacing enumfacing = EnumFacing.getFront(meta);
+        EnumFacing enumfacing = EnumFacing.NORTH;
+        if (meta > -1) {
+            enumfacing = EnumFacing.getFront(meta);
 
-        if (enumfacing.getAxis() == EnumFacing.Axis.Y)
-        {
-            enumfacing = EnumFacing.NORTH;
+            if (enumfacing.getAxis() == EnumFacing.Axis.Y)
+            {
+                enumfacing = EnumFacing.NORTH;
+            }
         }
 
         return this.getDefaultState().withProperty(FACING, enumfacing);
