@@ -1,5 +1,6 @@
 package xreliquary.blocks;
 
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
@@ -29,7 +30,7 @@ import xreliquary.reference.Names;
 import java.util.List;
 import java.util.Random;
 
-public class BlockApothecaryMortar extends BlockBase {
+public class BlockApothecaryMortar extends BlockBase implements ITileEntityProvider {
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     public BlockApothecaryMortar() {
