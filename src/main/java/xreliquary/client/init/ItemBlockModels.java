@@ -19,6 +19,7 @@ public class ItemBlockModels {
         registerBlockItemModel(ModBlocks.interdictionTorch, Names.interdiction_torch);
         registerBlockItemModel(ModBlocks.wraithNode, Names.wraith_node);
         registerBlockItemModel(ModBlocks.fertileLilypad, Names.fertile_lilypad);
+        registerBlockItemModel(ModBlocks.pedestal, Names.pedestal);
 
     }
 

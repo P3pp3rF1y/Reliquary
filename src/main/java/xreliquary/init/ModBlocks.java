@@ -10,6 +10,7 @@ import xreliquary.blocks.*;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.blocks.tile.TileEntityMortar;
+import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.items.block.ItemBlockBase;
 import xreliquary.items.block.ItemFertileLilyPad;
 import xreliquary.reference.Names;
@@ -25,6 +26,7 @@ public class ModBlocks {
     public static final BlockFertileLilypad fertileLilypad = new BlockFertileLilypad();
     public static final BlockInterdictionTorch interdictionTorch = new BlockInterdictionTorch();
     public static final BlockWraithNode wraithNode = new BlockWraithNode();
+    public static final BlockPedestal pedestal = new BlockPedestal();
 
     public static void init()
     {
@@ -35,12 +37,14 @@ public class ModBlocks {
         registerBlock(fertileLilypad, ItemFertileLilyPad.class, Names.fertile_lilypad);
         registerBlock(interdictionTorch, ItemBlockBase.class, Names.interdiction_torch);
         registerBlock(wraithNode, ItemBlockBase.class, Names.wraith_node);
+        registerBlock(pedestal, ItemBlockBase.class, Names.pedestal);
     }
 
     public static void initTileEntities() {
         registerTileEntity(TileEntityAltar.class, "reliquaryAltar");
         registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
         registerTileEntity(TileEntityCauldron.class, "reliquaryCauldron");
+        registerTileEntity(TileEntityPedestal.class, "reliquaryPedestal");
     }
 
     private static void registerTileEntity(Class clazz, String name) {
