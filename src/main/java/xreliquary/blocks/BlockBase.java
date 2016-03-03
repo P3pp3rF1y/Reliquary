@@ -8,7 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockBase extends Block implements ITileEntityProvider {
+public class BlockBase extends Block {
 
     public BlockBase(Material material, String langName) {
         super(material);
@@ -16,17 +16,4 @@ public class BlockBase extends Block implements ITileEntityProvider {
         this.setHardness(1.0F);
         this.setResistance(1.0F);
     }
-
-    @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        super.breakBlock(world, pos, state);
-        if (world.getTileEntity(pos) != null)
-            world.removeTileEntity(pos);
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World world, int meta) {
-        return null;
-    }
-
 }

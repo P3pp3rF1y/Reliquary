@@ -1,6 +1,7 @@
 package xreliquary.blocks;
 
 
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
@@ -25,7 +26,7 @@ import xreliquary.reference.Names;
 import java.util.List;
 import java.util.Random;
 
-public class BlockApothecaryCauldron extends BlockBase {
+public class BlockApothecaryCauldron extends BlockBase implements ITileEntityProvider {
 
     public static final PropertyInteger LEVEL = PropertyInteger.create("level", 0, 3);
 
