@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.blocks.tile.TileEntityMortar;
+import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.client.init.ItemBlockModels;
 import xreliquary.client.init.ItemModels;
 import xreliquary.client.render.*;
@@ -125,6 +126,7 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityThrownXRPotion.class, new RenderThrownXRPotion(renderManager, renderItem));
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMortar.class, new RenderApothecaryMortar());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPedestal.class, new TileEntityPedestalRenderer());
     }
 
     @Override
