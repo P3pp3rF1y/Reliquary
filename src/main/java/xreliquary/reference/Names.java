@@ -96,6 +96,7 @@ public class Names {
     public static final String apothecary_mortar = "apothecary_mortar";
     public static final String cauldron_water = "cauldron_water";
     public static final String cauldron_bubble = "cauldron_bubble";
+    public static final String pedestal = "pedestal";
 
     //these are for configs, they're just the names of things I didn't want to magic string.
     public static final String recipe_enabled = "recipe_enabled";
