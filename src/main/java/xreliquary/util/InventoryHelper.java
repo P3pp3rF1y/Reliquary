@@ -2,11 +2,14 @@ package xreliquary.util;
 
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,5 +177,33 @@ public class InventoryHelper {
 
         }
         return numberAdded;
+    }
+
+    public static void tryRemovingLastStack(IInventory inventory, World worldObj, BlockPos pos) {
+        for (int i = inventory.getSizeInventory() - 1; i >= 0; i--) {
+            ItemStack stack = inventory.getStackInSlot(i);
+            if (stack != null) {
+                inventory.setInventorySlotContents(i, null);
+                if (worldObj.isRemote)
+                    return;
+                inventory.markDirty();
+                EntityItem itemEntity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
+                worldObj.spawnEntityInWorld(itemEntity);
+                break;
+            }
+        }
+    }
+
+    public static boolean tryAddingPlayerCurrentItem(EntityPlayer player, IInventory inventory) {
+        if(inventory.getStackInSlot(0) != null)
+            return false;
+
+        inventory.setInventorySlotContents(0, player.getCurrentEquippedItem().copy());
+
+        player.getCurrentEquippedItem().stackSize--;
+
+        if(player.getCurrentEquippedItem().stackSize == 0)
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+        return true;
     }
 }

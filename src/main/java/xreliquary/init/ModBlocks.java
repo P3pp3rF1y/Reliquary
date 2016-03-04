@@ -3,7 +3,6 @@ package xreliquary.init;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.Reliquary;
 import xreliquary.blocks.*;
