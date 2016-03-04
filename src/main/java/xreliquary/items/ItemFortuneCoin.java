@@ -11,12 +11,15 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
+import xreliquary.api.IPedestal;
+import xreliquary.api.IPedestalActionItem;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -25,7 +28,7 @@ import xreliquary.util.NBTHelper;
 import java.util.Iterator;
 import java.util.List;
 
-public class ItemFortuneCoin extends ItemBauble {
+public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 
     public ItemFortuneCoin() {
         super(Names.fortune_coin);
@@ -188,5 +191,22 @@ public class ItemFortuneCoin extends ItemBauble {
 
     private boolean disabledAudio() {
         return Settings.FortuneCoin.disableAudio;
+    }
+
+    @Override
+    public void update(IPedestal pedestal) {
+        BlockPos pos = pedestal.getPos();
+        double d = getStandardPullDistance();
+        List<EntityItem> entities = pedestal.getWorld().getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
+
+        for (EntityItem entityItem : entities) {
+            int numberAdded = pedestal.addToConnectedInventory(entityItem.getEntityItem());
+            if (numberAdded > 0) {
+                entityItem.getEntityItem().stackSize = entityItem.getEntityItem().stackSize - numberAdded;
+
+                if (entityItem.getEntityItem().stackSize <= 0)
+                entityItem.setDead();
+            }
+        }
     }
 }

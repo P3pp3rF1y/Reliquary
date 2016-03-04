@@ -1,13 +1,14 @@
 package xreliquary.blocks.tile;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IChatComponent;
+import xreliquary.api.IPedestal;
 
-public class TileEntityPedestal extends TileEntityInventory {
+public class TileEntityPedestal extends TileEntityInventory implements IPedestal {
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
@@ -17,11 +18,11 @@ public class TileEntityPedestal extends TileEntityInventory {
 
 		this.inventory = new ItemStack[this.getSizeInventory()];
 
-		for (int i = 0; i < items.tagCount(); ++i) {
+		for(int i = 0; i < items.tagCount(); ++i) {
 			NBTTagCompound item = items.getCompoundTagAt(i);
 			byte b0 = item.getByte("Slot");
 
-			if (b0 >= 0 && b0 < this.inventory.length) {
+			if(b0 >= 0 && b0 < this.inventory.length) {
 				this.inventory[b0] = ItemStack.loadItemStackFromNBT(item);
 			}
 		}
@@ -33,8 +34,8 @@ public class TileEntityPedestal extends TileEntityInventory {
 
 		NBTTagList items = new NBTTagList();
 
-		for (int i = 0; i < this.inventory.length; ++i) {
-			if (this.inventory[i] != null) {
+		for(int i = 0; i < this.inventory.length; ++i) {
+			if(this.inventory[i] != null) {
 				NBTTagCompound item = new NBTTagCompound();
 				this.inventory[i].writeToNBT(item);
 				item.setByte("Slot", (byte) i);
@@ -96,5 +97,10 @@ public class TileEntityPedestal extends TileEntityInventory {
 	@Override
 	public IChatComponent getDisplayName() {
 		return null;
+	}
+
+	@Override
+	public int addToConnectedInventory(ItemStack stack) {
+		return 0;
 	}
 }
