@@ -9,4 +9,5 @@ public interface IPedestal {
 	World getWorld();
 	BlockPos getPos();
 	int addToConnectedInventory(ItemStack stack);
+	void setActionCoolDown(int coolDownTicks);
 }

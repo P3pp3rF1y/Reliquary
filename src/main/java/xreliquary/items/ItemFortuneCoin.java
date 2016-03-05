@@ -47,6 +47,10 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
     @Override
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack) {
+        return isEnabled(stack);
+    }
+
+    private boolean isEnabled(ItemStack stack) {
         return NBTHelper.getBoolean("enabled", stack);
     }
 
@@ -61,7 +65,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
                 }
                 NBTHelper.setShort("soundTimer", ist, NBTHelper.getShort("soundTimer", ist) - 1);
             }
-        if (!NBTHelper.getBoolean("enabled", ist))
+        if (!isEnabled(ist))
             return;
         EntityPlayer player = null;
         if (entity instanceof EntityPlayer) {
@@ -171,7 +175,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
             if (!disabledAudio()) {
                 NBTHelper.setShort("soundTimer", ist, 6);
             }
-            NBTHelper.setBoolean("enabled", ist, !NBTHelper.getBoolean("enabled", ist));
+            NBTHelper.setBoolean("enabled", ist, !isEnabled(ist));
         } else {
             player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
         }
@@ -194,18 +198,25 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
     }
 
     @Override
-    public void update(IPedestal pedestal) {
-        BlockPos pos = pedestal.getPos();
-        double d = getStandardPullDistance();
-        List<EntityItem> entities = pedestal.getWorld().getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
+    public void update(ItemStack stack, IPedestal pedestal) {
+        if (pedestal.getWorld().isRemote)
+            return;
 
-        for (EntityItem entityItem : entities) {
-            int numberAdded = pedestal.addToConnectedInventory(entityItem.getEntityItem());
-            if (numberAdded > 0) {
-                entityItem.getEntityItem().stackSize = entityItem.getEntityItem().stackSize - numberAdded;
+        if (isEnabled(stack)) {
+            BlockPos pos = pedestal.getPos();
+            double d = getStandardPullDistance();
+            List<EntityItem> entities = pedestal.getWorld().getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
 
-                if (entityItem.getEntityItem().stackSize <= 0)
-                entityItem.setDead();
+            for (EntityItem entityItem : entities) {
+                int numberAdded = pedestal.addToConnectedInventory(entityItem.getEntityItem().copy());
+                if (numberAdded > 0) {
+                    entityItem.getEntityItem().stackSize = entityItem.getEntityItem().stackSize - numberAdded;
+
+                    if (entityItem.getEntityItem().stackSize <= 0)
+                        entityItem.setDead();
+                } else {
+                    pedestal.setActionCoolDown(20);
+                }
             }
         }
     }

@@ -107,9 +107,7 @@ public class InventoryHelper {
 
             ItemStack slotStack = player.inventory.mainInventory[slot];
             for (Object stack : itemList) {
-                if ((stack instanceof ItemStack && StackHelper.isItemAndNbtEqual(slotStack, (ItemStack) stack)) ||
-                        (stack instanceof Block && RegistryHelper.itemsEqual(Item.getItemFromBlock((Block) stack), slotStack.getItem()) ||
-                                (stack instanceof Item && RegistryHelper.itemsEqual((Item) stack, slotStack.getItem())))) {
+                if ((stack instanceof ItemStack && StackHelper.isItemAndNbtEqual(slotStack, (ItemStack) stack)) || (stack instanceof Block && RegistryHelper.itemsEqual(Item.getItemFromBlock((Block) stack), slotStack.getItem()) || (stack instanceof Item && RegistryHelper.itemsEqual((Item) stack, slotStack.getItem())))) {
                     itemCount += player.inventory.mainInventory[slot].stackSize;
                     suggestedSlots.add(slot);
                 }
@@ -173,9 +171,11 @@ public class InventoryHelper {
                 numberAdded += stackAddition;
             }
             if (numberAdded >= maxToAdd)
-                return numberAdded;
-
+                break;
         }
+        if (numberAdded > 0)
+            inventory.markDirty();
+
         return numberAdded;
     }
 
@@ -195,14 +195,14 @@ public class InventoryHelper {
     }
 
     public static boolean tryAddingPlayerCurrentItem(EntityPlayer player, IInventory inventory) {
-        if(inventory.getStackInSlot(0) != null)
+        if (inventory.getStackInSlot(0) != null)
             return false;
 
         inventory.setInventorySlotContents(0, player.getCurrentEquippedItem().copy());
 
         player.getCurrentEquippedItem().stackSize--;
 
-        if(player.getCurrentEquippedItem().stackSize == 0)
+        if (player.getCurrentEquippedItem().stackSize == 0)
             player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
         return true;
     }
