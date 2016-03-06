@@ -1,11 +1,15 @@
 package xreliquary.blocks.tile;
 
+import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.*;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.*;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
@@ -15,6 +19,7 @@ import xreliquary.util.InventoryHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class TileEntityPedestal extends TileEntityInventory implements IPedestal, IFluidHandler {
 
@@ -23,7 +28,8 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	private int currentItemIndex;
 	private List<ItemStack> actionItems = new ArrayList<>();
 	private List<ItemStack> fluidContainers = new ArrayList<>();
-
+	private FakePlayer fakePlayer = null;
+	private static final String FAKE_PLAYER_USERNAME = "reliquary_pedestal_fake_player";
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
@@ -197,6 +203,19 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	@Override
 	public void setActionCoolDown(int coolDownTicks) {
 		actionCooldowns[currentItemIndex] = coolDownTicks;
+	}
+
+	@Override
+	public FakePlayer getFakePlayer() {
+		if (this.worldObj.isRemote)
+			return null;
+
+		if (fakePlayer == null) {
+			WorldServer world = (WorldServer) worldObj;
+			fakePlayer = FakePlayerFactory.get(world, new GameProfile(UUID.nameUUIDFromBytes(FAKE_PLAYER_USERNAME.getBytes()), FAKE_PLAYER_USERNAME));
+		}
+
+		return fakePlayer;
 	}
 
 	public List<IInventory> getAdjacentInventories() {
