@@ -30,6 +30,7 @@ import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.entities.shot.*;
 import xreliquary.handler.ClientEventHandler;
+import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
@@ -98,6 +99,7 @@ public class ClientProxy extends CommonProxy {
         super.init();
         FMLCommonHandler.instance().bus().register( new ClientEventHandler() );
         MinecraftForge.EVENT_BUS.register( new ClientEventHandler() );
+        MinecraftForge.EVENT_BUS.register( new ModFluids());
         //MinecraftForge.EVENT_BUS.register( new ModelBakeEventHandler() );
 
         this.registerRenderers();

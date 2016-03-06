@@ -86,6 +86,9 @@ public class Reliquary {
         ConfigurationHandler.postInit();
 
         ModCompat.loadCompat(ICompat.InitializationPhase.POST_INIT, null);
+
+        ModFluids.postInit();
+
         LogHelper.info("Loaded successfully!");
     }
 

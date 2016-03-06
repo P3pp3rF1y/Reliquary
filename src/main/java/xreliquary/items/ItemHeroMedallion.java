@@ -8,18 +8,22 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
+import xreliquary.init.ModFluids;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.XpHelper;
 
 import java.util.List;
 
-public class ItemHeroMedallion extends ItemToggleable {
+public class ItemHeroMedallion extends ItemToggleable implements IFluidContainerItem {
 
     public ItemHeroMedallion() {
         super(Names.hero_medallion);
@@ -46,7 +50,7 @@ public class ItemHeroMedallion extends ItemToggleable {
         if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
             return;
         this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getInteger("experience", ist))), ist, list);
-        if(this.isEnabled(ist))
+        if (this.isEnabled(ist))
             LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.GREEN + "XP"), ist, list);
         LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
@@ -123,7 +127,7 @@ public class ItemHeroMedallion extends ItemToggleable {
             return ist;
         if (player.isSneaking())
             return super.onItemRightClick(ist, world, player);
-            //turn it on/off.
+        //turn it on/off.
 
         int playerLevel = player.experienceLevel;
         while (player.experienceLevel < getExperienceMaximum() && playerLevel == player.experienceLevel && (getExperience(ist) > 0 || player.capabilities.isCreativeMode)) {
@@ -132,5 +136,38 @@ public class ItemHeroMedallion extends ItemToggleable {
                 decreaseMedallionExperience(ist);
         }
         return ist;
+    }
+
+    @Override
+    public FluidStack getFluid(ItemStack container) {
+        return new FluidStack(ModFluids.fluidXpJuice, XpHelper.experienceToLiquid(getExperience(container)));
+    }
+
+    @Override
+    public int getCapacity(ItemStack container) {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public int fill(ItemStack container, FluidStack resource, boolean doFill) {
+        if (resource.getFluid() != ModFluids.fluidXpJuice)
+            return 0;
+
+        if (doFill) {
+            setExperience(container, getExperience(container) + XpHelper.liquidToExperience(resource.amount));
+        }
+
+        return resource.amount;
+    }
+
+    @Override
+    public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) {
+        int experienceToRemove = Math.min(XpHelper.liquidToExperience(maxDrain), getExperience(container));
+
+        if (doDrain) {
+            setExperience(container, getExperience(container) - experienceToRemove);
+        }
+
+        return new FluidStack(ModFluids.fluidXpJuice, XpHelper.experienceToLiquid(experienceToRemove));
     }
 }

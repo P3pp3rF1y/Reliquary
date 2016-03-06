@@ -14,16 +14,19 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
+import xreliquary.init.ModFluids;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.XpHelper;
 
 import java.util.Iterator;
 import java.util.List;
@@ -205,8 +208,8 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
         if (isEnabled(stack)) {
             BlockPos pos = pedestal.getPos();
             double d = getStandardPullDistance();
-            List<EntityItem> entities = pedestal.getWorld().getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
 
+            List<EntityItem> entities = pedestal.getWorld().getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
             for (EntityItem entityItem : entities) {
                 int numberAdded = pedestal.addToConnectedInventory(entityItem.getEntityItem().copy());
                 if (numberAdded > 0) {
@@ -214,6 +217,22 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 
                     if (entityItem.getEntityItem().stackSize <= 0)
                         entityItem.setDead();
+                } else {
+                    pedestal.setActionCoolDown(20);
+                }
+            }
+
+            List<EntityXPOrb> XPOrbs = pedestal.getWorld().getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
+            for (EntityXPOrb xpOrb : XPOrbs) {
+                int amountToTransfer = XpHelper.experienceToLiquid(xpOrb.xpValue);
+                int amountAdded = pedestal.addToConnectedTank(new FluidStack(ModFluids.fluidXpJuice, amountToTransfer));
+
+                if (amountAdded > 0) {
+                    xpOrb.setDead();
+
+                    if (amountToTransfer > amountAdded) {
+                        pedestal.getWorld().spawnEntityInWorld(new EntityXPOrb(pedestal.getWorld(), pedestal.getPos().getX(), pedestal.getPos().getY(), pedestal.getPos().getZ(), XpHelper.liquidToExperience(amountToTransfer - amountAdded)));
+                    }
                 } else {
                     pedestal.setActionCoolDown(20);
                 }

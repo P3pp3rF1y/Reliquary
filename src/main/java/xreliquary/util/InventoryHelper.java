@@ -156,17 +156,17 @@ public class InventoryHelper {
                 //loop because of storage drawers like inventories
                 while (inventory.getStackInSlot(slot) == null && maxToAdd > numberAdded) {
                     ItemStack newContents = contents.copy();
-                    int stackAddition = Math.min(newContents.getMaxStackSize(), maxToAdd - numberAdded);
+                    int stackAddition = Math.min(Math.min(newContents.getMaxStackSize(), inventory.getInventoryStackLimit()), maxToAdd - numberAdded);
                     newContents.stackSize = stackAddition;
                     inventory.setInventorySlotContents(slot, newContents);
                     numberAdded += stackAddition;
                 }
             } else if (StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
-                if (inventory.getStackInSlot(slot).stackSize == inventory.getStackInSlot(slot).getMaxStackSize()) {
+                if (inventory.getStackInSlot(slot).stackSize == Math.min(inventory.getStackInSlot(slot).getMaxStackSize(), inventory.getInventoryStackLimit())) {
                     continue;
                 }
                 ItemStack slotStack = inventory.getStackInSlot(slot);
-                int stackAddition = Math.min(slotStack.getMaxStackSize() - slotStack.stackSize, maxToAdd - numberAdded);
+                int stackAddition = Math.min(Math.min(slotStack.getMaxStackSize(), inventory.getInventoryStackLimit()) - slotStack.stackSize, maxToAdd - numberAdded);
                 slotStack.stackSize += stackAddition;
                 numberAdded += stackAddition;
             }
@@ -204,6 +204,8 @@ public class InventoryHelper {
 
         if (player.getCurrentEquippedItem().stackSize == 0)
             player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+
+        player.inventory.markDirty();
         return true;
     }
 }
