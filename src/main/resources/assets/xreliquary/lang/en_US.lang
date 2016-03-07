@@ -684,7 +684,10 @@ config.item_and_block_settings.potions.redstone_and_glowstone.label=Redstone and
 config.item_and_block_settings.potions.redstone_and_glowstone.comment=Whether potions augmented with Redstone and Glowstone appear in creative tabs / JEI
 config.item_and_block_settings.potions.different_durations.label=Different durations
 config.item_and_block_settings.potions.different_durations.comment=Whether potions with the same effect combination, but different duration appear in creative tabs / JEI
-
+config.item_and_block_settings.pedestal.label=Pedestal
+config.item_and_block_settings.pedestal.comment=Pedestal related settings
+config.item_and_block_settings.pedestal.melee_wrapper_range.label=Melee wrapper range
+config.item_and_block_settings.pedestal.melee_wrapper_range.comment=Range of the melee weapons in which these will attack when in pedestal
 
 jei.recipe.alkahest_crafting=Alkahestry Tome Crafting
 jei.recipe.alkahest_charging=Alkahestry Tome Charging

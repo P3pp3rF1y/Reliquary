@@ -118,6 +118,7 @@ public class Names {
     public static final String mob_drop_crafting_recipes_enabled = "mob_drop_crafting_recipes_enabled";
     public static final String mob_drops_enabled = "mob_drops_enabled";
     public static final String disabled_items_blocks = "disabled_items_blocks";
+    public static final String melee_wrapper_range = "melee_wrapper_range";
 
     //these are for items, like above, didn't want to magic string them. I will use them eventually.
 //    public static final String snowball_mode = "snowballs";

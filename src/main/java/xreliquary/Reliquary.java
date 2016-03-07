@@ -3,6 +3,7 @@ package xreliquary;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -25,6 +26,8 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
+import xreliquary.util.pedestal.PedestalMeleeWeaponWrapper;
+import xreliquary.util.pedestal.PedestalRegistry;
 
 //@ModstatInfo(prefix = "reliquary")
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS, dependencies = Reference.DEPENDENCIES)
@@ -88,6 +91,9 @@ public class Reliquary {
         ModCompat.loadCompat(ICompat.InitializationPhase.POST_INIT, null);
 
         ModFluids.postInit();
+
+        PedestalRegistry.registerItemWrapper(ItemSword.class, new PedestalMeleeWeaponWrapper());
+
 
         LogHelper.info("Loaded successfully!");
     }

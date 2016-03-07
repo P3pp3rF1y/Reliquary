@@ -295,4 +295,8 @@ public class Settings
 	public static class InfernalTear {
 		public static boolean absorbWhenCreated;
 	}
+
+	public static class Pedestal {
+		public static int meleeWrapperRange;
+	}
 }

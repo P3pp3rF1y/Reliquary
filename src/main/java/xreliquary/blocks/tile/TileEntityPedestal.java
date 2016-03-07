@@ -6,20 +6,22 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.*;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.*;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
+import xreliquary.api.IPedestalActionItemWrapper;
+import xreliquary.entities.EntityXRFakePlayer;
 import xreliquary.init.ModFluids;
 import xreliquary.util.InventoryHelper;
+import xreliquary.util.pedestal.PedestalRegistry;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class TileEntityPedestal extends TileEntityInventory implements IPedestal, IFluidHandler {
 
@@ -27,9 +29,10 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	private int[] actionCooldowns;
 	private int currentItemIndex;
 	private List<ItemStack> actionItems = new ArrayList<>();
+	private Map<Integer, IPedestalActionItemWrapper> itemWrappers = new HashMap<>();
 	private List<ItemStack> fluidContainers = new ArrayList<>();
 	private FakePlayer fakePlayer = null;
-	private static final String FAKE_PLAYER_USERNAME = "reliquary_pedestal_fake_player";
+
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
@@ -82,14 +85,22 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		tickable = false;
 		actionItems.clear();
 		fluidContainers.clear();
+		itemWrappers.clear();
 
-		for(ItemStack item : inventory) {
+		for(int i = 0; i < inventory.length; i++) {
+			ItemStack item = inventory[i];
 			if(item == null)
 				continue;
 
 			if(item.getItem() instanceof IPedestalActionItem) {
 				tickable = true;
 				actionItems.add(item);
+			} else {
+				IPedestalActionItemWrapper wrapper = PedestalRegistry.getItemWrapper(item);
+				if(wrapper != null) {
+					tickable = true;
+					itemWrappers.put(i, wrapper);
+				}
 			}
 
 			if(item.getItem() instanceof IFluidContainerItem) {
@@ -98,7 +109,7 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 				// maybe it's not an issue as the method description in interface says it's not fluid sensitive
 			}
 		}
-		actionCooldowns = new int[actionItems.size()];
+		actionCooldowns = new int[actionItems.size() + itemWrappers.size()];
 		Arrays.fill(actionCooldowns, 0);
 	}
 
@@ -134,17 +145,26 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 
 	@Override
 	public void update() {
-		if(tickable) {
+		if(tickable && !worldObj.isRemote) {
 			for(currentItemIndex = 0; currentItemIndex < actionItems.size(); currentItemIndex++) {
 				if(actionCooldowns[currentItemIndex] > 0) {
 					actionCooldowns[currentItemIndex]--;
-				}
-				else {
+				} else {
 					ItemStack item = actionItems.get(currentItemIndex);
 					IPedestalActionItem actionItem = (IPedestalActionItem) item.getItem();
 					actionItem.update(item, this);
 				}
 			}
+
+			for(int itemIndex : itemWrappers.keySet()) {
+				if(actionCooldowns[currentItemIndex] > 0) {
+					actionCooldowns[currentItemIndex]--;
+				} else
+					itemWrappers.get(itemIndex).update(inventory[itemIndex], this);
+
+				currentItemIndex++;
+			}
+
 		}
 	}
 
@@ -186,7 +206,7 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		FluidStack copy = fluidStack.copy();
 
 		for(IFluidHandler tank : adjacentTanks) {
-			if (tank.canFill(EnumFacing.UP, ModFluids.fluidXpJuice)) {
+			if(tank.canFill(EnumFacing.UP, ModFluids.fluidXpJuice)) {
 				fluidFilled += tank.fill(EnumFacing.UP, copy, true);
 
 				if(fluidFilled >= fluidStack.amount) {
@@ -207,12 +227,12 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 
 	@Override
 	public FakePlayer getFakePlayer() {
-		if (this.worldObj.isRemote)
+		if(this.worldObj.isRemote)
 			return null;
 
-		if (fakePlayer == null) {
+		if(fakePlayer == null) {
 			WorldServer world = (WorldServer) worldObj;
-			fakePlayer = FakePlayerFactory.get(world, new GameProfile(UUID.nameUUIDFromBytes(FAKE_PLAYER_USERNAME.getBytes()), FAKE_PLAYER_USERNAME));
+			fakePlayer = new EntityXRFakePlayer(world);
 		}
 
 		return fakePlayer;
@@ -226,23 +246,29 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 
 		List<IInventory> adjacentInventories = new ArrayList<>();
 
-		IInventory inventory = (IInventory) worldObj.getTileEntity(south);
+		IInventory inventory = getInventoryAtPos(south);
 		if(inventory != null)
 			adjacentInventories.add(inventory);
 
-		inventory = (IInventory) worldObj.getTileEntity(north);
+		inventory = getInventoryAtPos(north);
 		if(inventory != null)
 			adjacentInventories.add(inventory);
 
-		inventory = (IInventory) worldObj.getTileEntity(east);
+		inventory = getInventoryAtPos(east);
 		if(inventory != null)
 			adjacentInventories.add(inventory);
 
-		inventory = (IInventory) worldObj.getTileEntity(west);
+		inventory = getInventoryAtPos(west);
 		if(inventory != null)
 			adjacentInventories.add(inventory);
 
 		return adjacentInventories;
+	}
+
+	private IInventory getInventoryAtPos(BlockPos pos) {
+		if (worldObj.getTileEntity(pos) instanceof IInventory)
+			return (IInventory) worldObj.getTileEntity(pos);
+		return null;
 	}
 
 	public List<IFluidHandler> getAdjacentTanks() {
@@ -253,23 +279,29 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 
 		List<IFluidHandler> adjacentTanks = new ArrayList<>();
 
-		IFluidHandler tank = (IFluidHandler) worldObj.getTileEntity(south);
+		IFluidHandler tank = getTankAtPos(south);
 		if(tank != null)
 			adjacentTanks.add(tank);
 
-		tank = (IFluidHandler) worldObj.getTileEntity(north);
+		tank = getTankAtPos(north);
 		if(tank != null)
 			adjacentTanks.add(tank);
 
-		tank = (IFluidHandler) worldObj.getTileEntity(east);
+		tank = getTankAtPos(east);
 		if(tank != null)
 			adjacentTanks.add(tank);
 
-		tank = (IFluidHandler) worldObj.getTileEntity(west);
+		tank = getTankAtPos(west);
 		if(tank != null)
 			adjacentTanks.add(tank);
 
 		return adjacentTanks;
+	}
+
+	private IFluidHandler getTankAtPos(BlockPos pos) {
+		if (worldObj.getTileEntity(pos) instanceof IFluidHandler)
+			return (IFluidHandler) worldObj.getTileEntity(pos);
+		return null;
 	}
 
 	@Override
