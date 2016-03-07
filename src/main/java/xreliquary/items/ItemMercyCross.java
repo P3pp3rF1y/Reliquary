@@ -87,7 +87,8 @@ public class ItemMercyCross extends ItemSword {
 
     @Override
     public boolean hitEntity(ItemStack stack, EntityLivingBase monster, EntityLivingBase player) {
-        int dmg = isUndead(monster) ? 12 : 6;
+        super.hitEntity(stack, monster, player);
+		int dmg = isUndead(monster) ? 12 : 6;
         if (player instanceof EntityPlayer) {
             monster.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) player), dmg);
         }
