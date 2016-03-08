@@ -6,8 +6,6 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
 import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Configuration;
-import thaumcraft.common.config.Config;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.reference.Names;
@@ -255,6 +253,7 @@ public class BlockItemConfiguration
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.potions, true);
 
 		Settings.Pedestal.meleeWrapperRange = ConfigurationHandler.getInt(Names.melee_wrapper_range, Names.item_and_block_settings + "." + Names.pedestal, 5, 1, 10);
+		Settings.Pedestal.meleeWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.melee_wrapper_cooldown, Names.item_and_block_settings + "." + Names.pedestal, 5, 1, 500);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.pedestal, true);
 
 	}

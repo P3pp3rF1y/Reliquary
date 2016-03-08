@@ -18,11 +18,13 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 	private byte cooldownAfterSwing;
 
 	public PedestalMeleeWeaponWrapper() {
-		this((byte)6, (byte)5);
+		this((byte) 6, Settings.Pedestal.meleeWrapperCooldown);
 	}
+
 	public PedestalMeleeWeaponWrapper(byte swingDuration) {
-		this(swingDuration, (byte)5);
+		this(swingDuration, (byte) 5);
 	}
+
 	public PedestalMeleeWeaponWrapper(byte swingDuration, byte cooldownAfterSwing) {
 		this.swingDuration = swingDuration;
 		this.cooldownAfterSwing = cooldownAfterSwing;
@@ -32,7 +34,6 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 	public void update(ItemStack stack, IPedestal pedestal) {
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
 
-		//TODO add cooldown
 		if(!fakePlayer.isUsingItem()) {
 			BlockPos pos = pedestal.getPos();
 			int meleeRange = Settings.Pedestal.meleeWrapperRange;
@@ -47,10 +48,13 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 			EntityLiving entityToAttack = entities.get(pedestal.getWorld().rand.nextInt(entities.size()));
 
 			//don't want players to use this to kill bosses
-			if (entityToAttack instanceof IBossDisplayData)
+			if(entityToAttack instanceof IBossDisplayData)
 				return;
 
+			//set position so that entities get knocked back away from the altar
 			fakePlayer.setPosition(pos.getX(), 0, pos.getZ());
+
+			//set sword and update attributes
 			fakePlayer.setCurrentItemOrArmor(0, stack);
 			fakePlayer.onUpdate();
 
@@ -58,7 +62,8 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 
 			pedestal.setActionCoolDown(swingDuration + cooldownAfterSwing);
 
-			if (stack.stackSize == 0)
+			//destroy the item when it gets used up
+			if(stack.stackSize == 0)
 				pedestal.destroyCurrentItem();
 
 		}
