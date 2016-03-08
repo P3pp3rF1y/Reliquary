@@ -16,4 +16,5 @@ public interface IPedestal {
 	void setActionCoolDown(int coolDownTicks);
 	FakePlayer getFakePlayer();
 	void destroyCurrentItem();
+	void replaceCurrentItem(ItemStack stack);
 }

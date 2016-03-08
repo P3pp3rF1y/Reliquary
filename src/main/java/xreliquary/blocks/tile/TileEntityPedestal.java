@@ -232,6 +232,11 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		this.setInventorySlotContents(currentItemIndex, null);
 	}
 
+	@Override
+	public void replaceCurrentItem(ItemStack stack) {
+		this.setInventorySlotContents(currentItemIndex, stack);
+	}
+
 	public List<IInventory> getAdjacentInventories() {
 		BlockPos south = this.getPos().add(EnumFacing.SOUTH.getDirectionVec());
 		BlockPos north = this.getPos().add(EnumFacing.NORTH.getDirectionVec());

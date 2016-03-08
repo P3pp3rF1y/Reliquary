@@ -2,6 +2,7 @@ package xreliquary;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,6 +33,7 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
+import xreliquary.util.pedestal.PedestalBucketWrapper;
 import xreliquary.util.pedestal.PedestalMeleeWeaponWrapper;
 import xreliquary.util.pedestal.PedestalRegistry;
 
@@ -99,11 +101,13 @@ public class Reliquary {
         ModFluids.postInit();
 
         PedestalRegistry.registerItemWrapper(ItemSword.class, new PedestalMeleeWeaponWrapper());
+        PedestalRegistry.registerItemWrapper(ItemBucket.class, new PedestalBucketWrapper());
         if (Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
             PedestalRegistry.registerItemWrapper(Cleaver.class, new PedestalMeleeWeaponWrapper((byte)10));
             PedestalRegistry.registerItemWrapper(BroadSword.class, new PedestalMeleeWeaponWrapper());
-            PedestalRegistry.registerItemWrapper(BattleAxe.class, new PedestalMeleeWeaponWrapper());
-            PedestalRegistry.registerItemWrapper(Scythe.class, new PedestalMeleeWeaponWrapper());
+            //not implemented currently in TiCon
+            //PedestalRegistry.registerItemWrapper(BattleAxe.class, new PedestalMeleeWeaponWrapper());
+            //PedestalRegistry.registerItemWrapper(Scythe.class, new PedestalMeleeWeaponWrapper());
         }
 
         LogHelper.info("Loaded successfully!");

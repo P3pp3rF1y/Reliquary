@@ -299,5 +299,7 @@ public class Settings
 	public static class Pedestal {
 		public static int meleeWrapperRange;
 		public static byte meleeWrapperCooldown;
+		public static int bucketWrapperRange;
+		public static byte bucketWrapperCooldown;
 	}
 }

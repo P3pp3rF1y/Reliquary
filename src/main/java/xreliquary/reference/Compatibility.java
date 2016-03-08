@@ -10,5 +10,7 @@ public class Compatibility
 		public static final String THAUMCRAFT = "Thaumcraft";
 		public static final String WAILA = "Waila";
 		public static final String TINKERS_CONSTRUCT = "tconstruct";
+		public static final String OPEN_BLOCKS = "OpenBlocks";
+		public static final String ENDERIO = "EnderIO";
 	}
 }
