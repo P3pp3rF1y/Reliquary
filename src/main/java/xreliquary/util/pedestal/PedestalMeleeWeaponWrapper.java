@@ -1,6 +1,5 @@
 package xreliquary.util.pedestal;
 
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.item.ItemStack;
@@ -14,6 +13,20 @@ import xreliquary.reference.Settings;
 import java.util.List;
 
 public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
+
+	private byte swingDuration;
+	private byte cooldownAfterSwing;
+
+	public PedestalMeleeWeaponWrapper() {
+		this((byte)6, (byte)5);
+	}
+	public PedestalMeleeWeaponWrapper(byte swingDuration) {
+		this(swingDuration, (byte)5);
+	}
+	public PedestalMeleeWeaponWrapper(byte swingDuration, byte cooldownAfterSwing) {
+		this.swingDuration = swingDuration;
+		this.cooldownAfterSwing = cooldownAfterSwing;
+	}
 
 	@Override
 	public void update(ItemStack stack, IPedestal pedestal) {
@@ -37,10 +50,13 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 			if (entityToAttack instanceof IBossDisplayData)
 				return;
 
+			fakePlayer.setPosition(pos.getX(), 0, pos.getZ());
 			fakePlayer.setCurrentItemOrArmor(0, stack);
 			fakePlayer.onUpdate();
 
 			fakePlayer.attackTargetEntityWithCurrentItem(entityToAttack);
+
+			pedestal.setActionCoolDown(swingDuration + cooldownAfterSwing);
 
 			if (stack.stackSize == 0)
 				pedestal.destroyCurrentItem();

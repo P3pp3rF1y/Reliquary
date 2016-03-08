@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import slimeknights.tconstruct.tools.item.BattleAxe;
 import slimeknights.tconstruct.tools.item.BroadSword;
+import slimeknights.tconstruct.tools.item.Cleaver;
 import slimeknights.tconstruct.tools.item.Scythe;
 import xreliquary.common.CommonProxy;
 import xreliquary.compat.ICompat;
@@ -99,10 +100,10 @@ public class Reliquary {
 
         PedestalRegistry.registerItemWrapper(ItemSword.class, new PedestalMeleeWeaponWrapper());
         if (Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
+            PedestalRegistry.registerItemWrapper(Cleaver.class, new PedestalMeleeWeaponWrapper((byte)10));
             PedestalRegistry.registerItemWrapper(BroadSword.class, new PedestalMeleeWeaponWrapper());
             PedestalRegistry.registerItemWrapper(BattleAxe.class, new PedestalMeleeWeaponWrapper());
             PedestalRegistry.registerItemWrapper(Scythe.class, new PedestalMeleeWeaponWrapper());
-
         }
 
         LogHelper.info("Loaded successfully!");
