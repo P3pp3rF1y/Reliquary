@@ -689,7 +689,7 @@ config.item_and_block_settings.pedestal.comment=Pedestal related settings
 config.item_and_block_settings.pedestal.melee_wrapper_range.label=Melee wrapper range
 config.item_and_block_settings.pedestal.melee_wrapper_range.comment=Range of the melee weapons in which these will attack when in pedestal
 config.item_and_block_settings.pedestal.melee_wrapper_cooldown.label=Melee wrapper cooldown
-config.item_and_block_settings.pedestal.melee_wrapper_cooldown.label=How long it takes after a melee weapon swing before it can swing again
+config.item_and_block_settings.pedestal.melee_wrapper_cooldown.comment=How long it takes after a melee weapon swing before it can swing again
 
 jei.recipe.alkahest_crafting=Alkahestry Tome Crafting
 jei.recipe.alkahest_charging=Alkahestry Tome Charging
