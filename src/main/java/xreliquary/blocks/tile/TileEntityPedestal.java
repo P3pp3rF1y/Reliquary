@@ -1,6 +1,5 @@
 package xreliquary.blocks.tile;
 
-import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -11,15 +10,14 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.*;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
 import xreliquary.api.IPedestalActionItemWrapper;
-import xreliquary.entities.EntityXRFakePlayer;
 import xreliquary.init.ModFluids;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.pedestal.PedestalRegistry;
+import xreliquary.util.XRFakePlayerFactory;
 
 import java.util.*;
 
@@ -28,7 +26,7 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	private boolean tickable = false;
 	private int[] actionCooldowns;
 	private int currentItemIndex;
-	private List<ItemStack> actionItems = new ArrayList<>();
+	private Map<Integer, IPedestalActionItem> actionItems = new HashMap<>();
 	private Map<Integer, IPedestalActionItemWrapper> itemWrappers = new HashMap<>();
 	private List<ItemStack> fluidContainers = new ArrayList<>();
 	private FakePlayer fakePlayer = null;
@@ -83,9 +81,9 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 
 	private void updateSpecialItems() {
 		tickable = false;
-		actionItems.clear();
 		fluidContainers.clear();
 		itemWrappers.clear();
+		actionItems.clear();
 
 		for(int i = 0; i < inventory.length; i++) {
 			ItemStack item = inventory[i];
@@ -94,7 +92,7 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 
 			if(item.getItem() instanceof IPedestalActionItem) {
 				tickable = true;
-				actionItems.add(item);
+				actionItems.put(i, (IPedestalActionItem) item.getItem());
 			} else {
 				IPedestalActionItemWrapper wrapper = PedestalRegistry.getItemWrapper(item);
 				if(wrapper != null) {
@@ -109,7 +107,7 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 				// maybe it's not an issue as the method description in interface says it's not fluid sensitive
 			}
 		}
-		actionCooldowns = new int[actionItems.size() + itemWrappers.size()];
+		actionCooldowns = new int[inventory.length];
 		Arrays.fill(actionCooldowns, 0);
 	}
 
@@ -146,25 +144,19 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	@Override
 	public void update() {
 		if(tickable && !worldObj.isRemote) {
-			for(currentItemIndex = 0; currentItemIndex < actionItems.size(); currentItemIndex++) {
+			for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
 				if(actionCooldowns[currentItemIndex] > 0) {
 					actionCooldowns[currentItemIndex]--;
 				} else {
-					ItemStack item = actionItems.get(currentItemIndex);
-					IPedestalActionItem actionItem = (IPedestalActionItem) item.getItem();
-					actionItem.update(item, this);
+					ItemStack item = inventory[currentItemIndex];
+
+					if (actionItems.containsKey(currentItemIndex)) {
+						actionItems.get(currentItemIndex).update(item, this);
+					} else if (itemWrappers.containsKey(currentItemIndex)) {
+						itemWrappers.get(currentItemIndex).update(inventory[currentItemIndex], this);
+					}
 				}
 			}
-
-			for(int itemIndex : itemWrappers.keySet()) {
-				if(actionCooldowns[currentItemIndex] > 0) {
-					actionCooldowns[currentItemIndex]--;
-				} else
-					itemWrappers.get(itemIndex).update(inventory[itemIndex], this);
-
-				currentItemIndex++;
-			}
-
 		}
 	}
 
@@ -230,12 +222,14 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		if(this.worldObj.isRemote)
 			return null;
 
-		if(fakePlayer == null) {
-			WorldServer world = (WorldServer) worldObj;
-			fakePlayer = new EntityXRFakePlayer(world);
-		}
+		WorldServer world = (WorldServer) worldObj;
 
-		return fakePlayer;
+		return XRFakePlayerFactory.get(world);
+	}
+
+	@Override
+	public void destroyCurrentItem() {
+		this.setInventorySlotContents(currentItemIndex, null);
 	}
 
 	public List<IInventory> getAdjacentInventories() {

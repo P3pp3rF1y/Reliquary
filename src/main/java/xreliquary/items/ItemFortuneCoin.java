@@ -186,7 +186,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
     }
 
     @Override
-    @Optional.Method(modid = Compatibility.MOD_ID.Baubles)
+    @Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
     public BaubleType getBaubleType(ItemStack stack) {
         return BaubleType.AMULET;
     }

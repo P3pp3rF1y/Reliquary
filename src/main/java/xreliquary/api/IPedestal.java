@@ -15,4 +15,5 @@ public interface IPedestal {
 	int addToConnectedTank(FluidStack fluidStack);
 	void setActionCoolDown(int coolDownTicks);
 	FakePlayer getFakePlayer();
+	void destroyCurrentItem();
 }
