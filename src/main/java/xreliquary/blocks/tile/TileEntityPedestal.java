@@ -198,7 +198,7 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		FluidStack copy = fluidStack.copy();
 
 		for(IFluidHandler tank : adjacentTanks) {
-			if(tank.canFill(EnumFacing.UP, ModFluids.fluidXpJuice)) {
+			if(tank.canFill(EnumFacing.UP, fluidStack.getFluid())) {
 				fluidFilled += tank.fill(EnumFacing.UP, copy, true);
 
 				if(fluidFilled >= fluidStack.amount) {

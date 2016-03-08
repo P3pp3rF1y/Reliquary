@@ -27,14 +27,14 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		List<EntityCow> entities = pedestal.getWorld().getEntitiesWithinAABB(EntityCow.class, new AxisAlignedBB(pos.getX() - meleeRange, pos.getY() - meleeRange, pos.getZ() - meleeRange, pos.getX() + meleeRange, pos.getY() + meleeRange, pos.getZ() + meleeRange));
 
 		if(entities.size() == 0) {
-			pedestal.setActionCoolDown(40);
+			pedestal.setActionCoolDown(80);
 			return;
 		}
 
 		EntityCow cow = entities.get(pedestal.getWorld().rand.nextInt(entities.size()));
 
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
-		fakePlayer.setCurrentItemOrArmor(0, stack);
+		fakePlayer.setCurrentItemOrArmor(0, new ItemStack(Items.bucket));
 
 		cow.interact(fakePlayer);
 

@@ -255,7 +255,7 @@ public class BlockItemConfiguration
 		Settings.Pedestal.meleeWrapperRange = ConfigurationHandler.getInt(Names.melee_wrapper_range, Names.item_and_block_settings + "." + Names.pedestal, 5, 1, 10);
 		Settings.Pedestal.meleeWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.melee_wrapper_cooldown, Names.item_and_block_settings + "." + Names.pedestal, 5, 1, 200);
 		Settings.Pedestal.bucketWrapperRange = (byte) ConfigurationHandler.getInt(Names.bucket_wrapper_range, Names.item_and_block_settings + "." + Names.pedestal, 4, 1, 10);
-		Settings.Pedestal.bucketWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.bucket_wrapper_cooldown, Names.item_and_block_settings + "." + Names.pedestal, 10, 1, 200);
+		Settings.Pedestal.bucketWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.bucket_wrapper_cooldown, Names.item_and_block_settings + "." + Names.pedestal, 40, 1, 200);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.pedestal, true);
 
 	}

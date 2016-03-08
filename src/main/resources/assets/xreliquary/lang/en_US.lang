@@ -692,8 +692,8 @@ config.item_and_block_settings.pedestal.melee_wrapper_cooldown.label=Melee wrapp
 config.item_and_block_settings.pedestal.melee_wrapper_cooldown.comment=How long it takes after a melee weapon swing before it can swing again
 config.item_and_block_settings.pedestal.bucket_wrapper_range.label=Bucket wrapper range
 config.item_and_block_settings.pedestal.bucket_wrapper_range.comment=Range at which bucket will pickup liquid blocks or milk cows
-config.item_and_block_settings.pedestal.melee_wrapper_cooldown.label=Bucket wrapper cooldown
-config.item_and_block_settings.pedestal.melee_wrapper_cooldown.comment=How long it takes in between bucket actions
+config.item_and_block_settings.pedestal.bucket_wrapper_cooldown.label=Bucket wrapper cooldown
+config.item_and_block_settings.pedestal.bucket_wrapper_cooldown.comment=How long it takes in between bucket actions
 
 jei.recipe.alkahest_crafting=Alkahestry Tome Crafting
 jei.recipe.alkahest_charging=Alkahestry Tome Charging
