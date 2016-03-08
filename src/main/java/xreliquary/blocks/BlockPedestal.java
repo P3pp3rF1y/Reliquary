@@ -45,8 +45,7 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 		if (player.getCurrentEquippedItem() == null) {
 			if (player.isSneaking()) {
 				ItemStack copy = pedestal.getStackInSlot(0);
-				if (!player.inventory.addItemStackToInventory(copy))
-					player.dropPlayerItemWithRandomChoice(copy, false);
+				player.setCurrentItemOrArmor(0, copy);
 				pedestal.setInventorySlotContents(0, null);
 				return true;
 			}
