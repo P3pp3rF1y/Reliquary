@@ -76,7 +76,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 					IBlockState blockState = world.getBlockState(currentBlockPos);
 					Fluid fluid = FluidRegistry.lookupFluidForBlock(blockState.getBlock());
 
-					if(fluid != null && canDrainBlock(world, pos, blockState.getBlock(), blockState, fluid) && (fluid == currentFluid || queueToDrain.isEmpty())) {
+					if(fluid != null && canDrainBlock(world, currentBlockPos, blockState.getBlock(), blockState, fluid) && (fluid == currentFluid || queueToDrain.isEmpty())) {
 						if(queueToDrain.isEmpty())
 							currentFluid = fluid;
 
