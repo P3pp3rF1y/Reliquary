@@ -100,11 +100,11 @@ public class Reliquary {
 
         ModFluids.postInit();
 
-        PedestalRegistry.registerItemWrapper(ItemSword.class, new PedestalMeleeWeaponWrapper());
-        PedestalRegistry.registerItemWrapper(ItemBucket.class, new PedestalBucketWrapper());
+        PedestalRegistry.registerItemWrapper(ItemSword.class, PedestalMeleeWeaponWrapper.class);
+        PedestalRegistry.registerItemWrapper(ItemBucket.class, PedestalBucketWrapper.class);
         if (Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
-            PedestalRegistry.registerItemWrapper(Cleaver.class, new PedestalMeleeWeaponWrapper((byte)10));
-            PedestalRegistry.registerItemWrapper(BroadSword.class, new PedestalMeleeWeaponWrapper());
+            PedestalRegistry.registerItemWrapper(Cleaver.class, PedestalMeleeWeaponWrapper.Slow.class);
+            PedestalRegistry.registerItemWrapper(BroadSword.class, PedestalMeleeWeaponWrapper.class);
             //not implemented currently in TiCon
             //PedestalRegistry.registerItemWrapper(BattleAxe.class, new PedestalMeleeWeaponWrapper());
             //PedestalRegistry.registerItemWrapper(Scythe.class, new PedestalMeleeWeaponWrapper());

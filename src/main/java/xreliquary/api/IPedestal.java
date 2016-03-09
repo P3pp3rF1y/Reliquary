@@ -12,7 +12,8 @@ public interface IPedestal {
 	World getWorld();
 	BlockPos getPos();
 	int addToConnectedInventory(ItemStack stack);
-	int addToConnectedTank(FluidStack fluidStack);
+	int fillConnectedTank(FluidStack fluidStack, boolean doFill);
+	int fillConnectedTank(FluidStack fluidStack);
 	void setActionCoolDown(int coolDownTicks);
 	FakePlayer getFakePlayer();
 	void destroyCurrentItem();

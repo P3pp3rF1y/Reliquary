@@ -14,6 +14,11 @@ import java.util.List;
 
 public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 
+	public class Slow extends PedestalMeleeWeaponWrapper {
+		public Slow() {
+			super((byte)10);
+		}
+	}
 	private byte swingDuration;
 	private byte cooldownAfterSwing;
 

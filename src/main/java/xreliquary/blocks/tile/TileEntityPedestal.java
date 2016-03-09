@@ -191,15 +191,15 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	}
 
 	@Override
-	public int addToConnectedTank(FluidStack fluidStack) {
+	public int fillConnectedTank(FluidStack fluidStack, boolean doFill) {
 		List<IFluidHandler> adjacentTanks = getAdjacentTanks();
 
 		int fluidFilled = 0;
 		FluidStack copy = fluidStack.copy();
 
 		for(IFluidHandler tank : adjacentTanks) {
-			if(tank.canFill(EnumFacing.UP, fluidStack.getFluid())) {
-				fluidFilled += tank.fill(EnumFacing.UP, copy, true);
+			if(tank.fill(EnumFacing.UP, copy, false) == copy.amount) {
+				fluidFilled += tank.fill(EnumFacing.UP, copy, doFill);
 
 				if(fluidFilled >= fluidStack.amount) {
 					break;
@@ -210,6 +210,11 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		}
 
 		return fluidFilled;
+	}
+
+	@Override
+	public int fillConnectedTank(FluidStack fluidStack) {
+		return fillConnectedTank(fluidStack, true);
 	}
 
 	@Override
@@ -356,8 +361,9 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		if(fluidContainers.size() == 0)
 			return false;
 
-		if(getContainerFluid(fluidContainers.get(0)) == fluid) {
-			return true; //TODO check for free capacity of handlers?
+		for (ItemStack container : fluidContainers) {
+			if(((IFluidContainerItem)container.getItem()).fill(container, new FluidStack(fluid, 1), false) == 1)
+				return true;
 		}
 
 		return false;
@@ -368,8 +374,9 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		if(fluidContainers.size() == 0)
 			return false;
 
-		if(getContainerFluid(fluidContainers.get(0)) == fluid) {
-			return true; //TODO check for free capacity of handlers?
+		for (ItemStack container : fluidContainers) {
+			if(((IFluidContainerItem)container.getItem()).drain(container, 1, false) == new FluidStack(fluid, 1))
+				return true;
 		}
 
 		return false;

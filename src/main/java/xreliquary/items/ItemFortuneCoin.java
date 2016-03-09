@@ -225,7 +225,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
             List<EntityXPOrb> XPOrbs = pedestal.getWorld().getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
             for (EntityXPOrb xpOrb : XPOrbs) {
                 int amountToTransfer = XpHelper.experienceToLiquid(xpOrb.xpValue);
-                int amountAdded = pedestal.addToConnectedTank(new FluidStack(ModFluids.fluidXpJuice, amountToTransfer));
+                int amountAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.fluidXpJuice, amountToTransfer));
 
                 if (amountAdded > 0) {
                     xpOrb.setDead();
