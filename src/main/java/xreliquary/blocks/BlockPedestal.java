@@ -18,6 +18,7 @@ import xreliquary.util.InventoryHelper;
 public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 	public BlockPedestal() {
 		super(Material.rock, Names.pedestal);
+		this.setBlockBounds(0.125F, 0F, 0.125F, 0.875F, 0.6875F, 0.875F);
 		this.setUnlocalizedName(Names.pedestal);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
@@ -25,10 +26,6 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new TileEntityPedestal();
-	}
-
-	public void setBlockBoundsForItemRender() {
-		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	@Override
