@@ -18,9 +18,9 @@ public class TileEntityPedestalRenderer extends TileEntitySpecialRenderer<TileEn
 			item.getEntityItem().stackSize = 1;
 			item.hoverStart = 0.0F;
 			GlStateManager.pushMatrix();
-			float yDiff = MathHelper.sin((te.getWorld().getWorldTime() + partialTicks) / 10.0F) * 0.1F + 0.1F;
+			float yDiff = MathHelper.sin((System.currentTimeMillis() % 86400000) / 1000F) * 0.1F + 0.1F;
 			GlStateManager.translate((float) x + 0.5F, (float) y + 0.65F + yDiff, (float) z + 0.5F);
-			float f3 = ((te.getWorld().getWorldTime() + partialTicks) / 20.0F) * (180F / (float)Math.PI);
+			float f3 = ((System.currentTimeMillis() % 86400000) / 2000F) * (180F / (float)Math.PI);
 			GlStateManager.rotate(f3, 0.0F, 1.0F, 0.0F);
 			GlStateManager.scale(0.75d, 0.75d, 0.75d);
 			Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(item, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
