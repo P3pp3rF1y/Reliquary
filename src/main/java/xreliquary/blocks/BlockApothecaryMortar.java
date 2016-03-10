@@ -1,15 +1,13 @@
 package xreliquary.blocks;
 
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -29,7 +27,7 @@ import xreliquary.reference.Names;
 import java.util.List;
 import java.util.Random;
 
-public class BlockApothecaryMortar extends BlockBase {
+public class BlockApothecaryMortar extends BlockBase implements ITileEntityProvider {
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     public BlockApothecaryMortar() {
@@ -85,22 +83,6 @@ public class BlockApothecaryMortar extends BlockBase {
         return 2;
     }
 
-    //TODO move to inventory helper
-    private void tryRemovingLastStack(IInventory inventory, World worldObj, BlockPos pos) {
-        for (int i = inventory.getSizeInventory() - 1; i >= 0; i--) {
-            ItemStack stack = inventory.getStackInSlot(i);
-            if (stack != null) {
-                inventory.setInventorySlotContents(i, null);
-                if (worldObj.isRemote)
-                    return;
-                inventory.markDirty();
-                EntityItem itemEntity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
-                worldObj.spawnEntityInWorld(itemEntity);
-                break;
-            }
-        }
-    }
-
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float xOff, float yOff, float zOff) {
         TileEntity tileEntity = world.getTileEntity(pos);
@@ -110,7 +92,7 @@ public class BlockApothecaryMortar extends BlockBase {
         ItemStack heldItem = player.getCurrentEquippedItem();
         if (heldItem == null) {
             if (player.isSneaking()) {
-                tryRemovingLastStack(mortar, world, mortar.getPos());
+                xreliquary.util.InventoryHelper.tryRemovingLastStack(mortar, world, mortar.getPos());
                 return true;
             }
             boolean done = mortar.usePestle();

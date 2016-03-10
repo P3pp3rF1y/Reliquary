@@ -96,6 +96,7 @@ public class Names {
     public static final String apothecary_mortar = "apothecary_mortar";
     public static final String cauldron_water = "cauldron_water";
     public static final String cauldron_bubble = "cauldron_bubble";
+    public static final String pedestal = "pedestal";
 
     //these are for configs, they're just the names of things I didn't want to magic string.
     public static final String recipe_enabled = "recipe_enabled";
@@ -117,6 +118,10 @@ public class Names {
     public static final String mob_drop_crafting_recipes_enabled = "mob_drop_crafting_recipes_enabled";
     public static final String mob_drops_enabled = "mob_drops_enabled";
     public static final String disabled_items_blocks = "disabled_items_blocks";
+    public static final String melee_wrapper_range = "melee_wrapper_range";
+    public static final String melee_wrapper_cooldown = "melee_wrapper_cooldown";
+    public static final String bucket_wrapper_range = "bucket_wrapper_range";
+    public static final String bucket_wrapper_cooldown = "bucket_wrapper_cooldown";
 
     //these are for items, like above, didn't want to magic string them. I will use them eventually.
 //    public static final String snowball_mode = "snowballs";

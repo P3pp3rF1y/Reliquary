@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.blocks.tile.TileEntityMortar;
+import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.client.init.ItemBlockModels;
 import xreliquary.client.init.ItemModels;
 import xreliquary.client.render.*;
@@ -29,6 +30,7 @@ import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.entities.shot.*;
 import xreliquary.handler.ClientEventHandler;
+import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
@@ -97,6 +99,7 @@ public class ClientProxy extends CommonProxy {
         super.init();
         FMLCommonHandler.instance().bus().register( new ClientEventHandler() );
         MinecraftForge.EVENT_BUS.register( new ClientEventHandler() );
+        MinecraftForge.EVENT_BUS.register( new ModFluids());
         //MinecraftForge.EVENT_BUS.register( new ModelBakeEventHandler() );
 
         this.registerRenderers();
@@ -125,6 +128,7 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityThrownXRPotion.class, new RenderThrownXRPotion(renderManager, renderItem));
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMortar.class, new RenderApothecaryMortar());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPedestal.class, new TileEntityPedestalRenderer());
     }
 
     @Override

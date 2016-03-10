@@ -2,11 +2,14 @@ package xreliquary.util;
 
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,9 +107,7 @@ public class InventoryHelper {
 
             ItemStack slotStack = player.inventory.mainInventory[slot];
             for (Object stack : itemList) {
-                if ((stack instanceof ItemStack && StackHelper.isItemAndNbtEqual(slotStack, (ItemStack) stack)) ||
-                        (stack instanceof Block && RegistryHelper.itemsEqual(Item.getItemFromBlock((Block) stack), slotStack.getItem()) ||
-                                (stack instanceof Item && RegistryHelper.itemsEqual((Item) stack, slotStack.getItem())))) {
+                if ((stack instanceof ItemStack && StackHelper.isItemAndNbtEqual(slotStack, (ItemStack) stack)) || (stack instanceof Block && RegistryHelper.itemsEqual(Item.getItemFromBlock((Block) stack), slotStack.getItem()) || (stack instanceof Item && RegistryHelper.itemsEqual((Item) stack, slotStack.getItem())))) {
                     itemCount += player.inventory.mainInventory[slot].stackSize;
                     suggestedSlots.add(slot);
                 }
@@ -155,24 +156,56 @@ public class InventoryHelper {
                 //loop because of storage drawers like inventories
                 while (inventory.getStackInSlot(slot) == null && maxToAdd > numberAdded) {
                     ItemStack newContents = contents.copy();
-                    int stackAddition = Math.min(newContents.getMaxStackSize(), maxToAdd - numberAdded);
+                    int stackAddition = Math.min(Math.min(newContents.getMaxStackSize(), inventory.getInventoryStackLimit()), maxToAdd - numberAdded);
                     newContents.stackSize = stackAddition;
                     inventory.setInventorySlotContents(slot, newContents);
                     numberAdded += stackAddition;
                 }
             } else if (StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
-                if (inventory.getStackInSlot(slot).stackSize == inventory.getStackInSlot(slot).getMaxStackSize()) {
+                if (inventory.getStackInSlot(slot).stackSize == Math.min(inventory.getStackInSlot(slot).getMaxStackSize(), inventory.getInventoryStackLimit())) {
                     continue;
                 }
                 ItemStack slotStack = inventory.getStackInSlot(slot);
-                int stackAddition = Math.min(slotStack.getMaxStackSize() - slotStack.stackSize, maxToAdd - numberAdded);
+                int stackAddition = Math.min(Math.min(slotStack.getMaxStackSize(), inventory.getInventoryStackLimit()) - slotStack.stackSize, maxToAdd - numberAdded);
                 slotStack.stackSize += stackAddition;
                 numberAdded += stackAddition;
             }
             if (numberAdded >= maxToAdd)
-                return numberAdded;
-
+                break;
         }
+        if (numberAdded > 0)
+            inventory.markDirty();
+
         return numberAdded;
+    }
+
+    public static void tryRemovingLastStack(IInventory inventory, World worldObj, BlockPos pos) {
+        for (int i = inventory.getSizeInventory() - 1; i >= 0; i--) {
+            ItemStack stack = inventory.getStackInSlot(i);
+            if (stack != null) {
+                inventory.setInventorySlotContents(i, null);
+                if (worldObj.isRemote)
+                    return;
+                inventory.markDirty();
+                EntityItem itemEntity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
+                worldObj.spawnEntityInWorld(itemEntity);
+                break;
+            }
+        }
+    }
+
+    public static boolean tryAddingPlayerCurrentItem(EntityPlayer player, IInventory inventory) {
+        if (inventory.getStackInSlot(0) != null)
+            return false;
+
+        inventory.setInventorySlotContents(0, player.getCurrentEquippedItem().copy());
+
+        player.getCurrentEquippedItem().stackSize--;
+
+        if (player.getCurrentEquippedItem().stackSize == 0)
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+
+        player.inventory.markDirty();
+        return true;
     }
 }

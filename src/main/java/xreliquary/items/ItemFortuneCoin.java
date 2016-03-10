@@ -11,21 +11,27 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
+import xreliquary.api.IPedestal;
+import xreliquary.api.IPedestalActionItem;
+import xreliquary.init.ModFluids;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.XpHelper;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class ItemFortuneCoin extends ItemBauble {
+public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 
     public ItemFortuneCoin() {
         super(Names.fortune_coin);
@@ -44,6 +50,10 @@ public class ItemFortuneCoin extends ItemBauble {
     @Override
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack) {
+        return isEnabled(stack);
+    }
+
+    private boolean isEnabled(ItemStack stack) {
         return NBTHelper.getBoolean("enabled", stack);
     }
 
@@ -58,7 +68,7 @@ public class ItemFortuneCoin extends ItemBauble {
                 }
                 NBTHelper.setShort("soundTimer", ist, NBTHelper.getShort("soundTimer", ist) - 1);
             }
-        if (!NBTHelper.getBoolean("enabled", ist))
+        if (!isEnabled(ist))
             return;
         EntityPlayer player = null;
         if (entity instanceof EntityPlayer) {
@@ -168,7 +178,7 @@ public class ItemFortuneCoin extends ItemBauble {
             if (!disabledAudio()) {
                 NBTHelper.setShort("soundTimer", ist, 6);
             }
-            NBTHelper.setBoolean("enabled", ist, !NBTHelper.getBoolean("enabled", ist));
+            NBTHelper.setBoolean("enabled", ist, !isEnabled(ist));
         } else {
             player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
         }
@@ -176,7 +186,7 @@ public class ItemFortuneCoin extends ItemBauble {
     }
 
     @Override
-    @Optional.Method(modid = Compatibility.MOD_ID.Baubles)
+    @Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
     public BaubleType getBaubleType(ItemStack stack) {
         return BaubleType.AMULET;
     }
@@ -188,5 +198,46 @@ public class ItemFortuneCoin extends ItemBauble {
 
     private boolean disabledAudio() {
         return Settings.FortuneCoin.disableAudio;
+    }
+
+    @Override
+    public void update(ItemStack stack, IPedestal pedestal) {
+        World world = pedestal.getTheWorld();
+        if (world.isRemote)
+            return;
+
+        if (isEnabled(stack)) {
+            BlockPos pos = pedestal.getBlockPos();
+            double d = getStandardPullDistance();
+
+            List<EntityItem> entities = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
+            for (EntityItem entityItem : entities) {
+                int numberAdded = pedestal.addToConnectedInventory(entityItem.getEntityItem().copy());
+                if (numberAdded > 0) {
+                    entityItem.getEntityItem().stackSize = entityItem.getEntityItem().stackSize - numberAdded;
+
+                    if (entityItem.getEntityItem().stackSize <= 0)
+                        entityItem.setDead();
+                } else {
+                    pedestal.setActionCoolDown(20);
+                }
+            }
+
+            List<EntityXPOrb> XPOrbs = world.getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
+            for (EntityXPOrb xpOrb : XPOrbs) {
+                int amountToTransfer = XpHelper.experienceToLiquid(xpOrb.xpValue);
+                int amountAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.fluidXpJuice, amountToTransfer));
+
+                if (amountAdded > 0) {
+                    xpOrb.setDead();
+
+                    if (amountToTransfer > amountAdded) {
+                        world.spawnEntityInWorld(new EntityXPOrb(world, pos.getX(), pos.getY(), pos.getZ(), XpHelper.liquidToExperience(amountToTransfer - amountAdded)));
+                    }
+                } else {
+                    pedestal.setActionCoolDown(20);
+                }
+            }
+        }
     }
 }
