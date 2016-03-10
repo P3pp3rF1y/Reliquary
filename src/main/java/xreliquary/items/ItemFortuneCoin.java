@@ -202,14 +202,15 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 
     @Override
     public void update(ItemStack stack, IPedestal pedestal) {
-        if (pedestal.getWorld().isRemote)
+        World world = pedestal.getTheWorld();
+        if (world.isRemote)
             return;
 
         if (isEnabled(stack)) {
-            BlockPos pos = pedestal.getPos();
+            BlockPos pos = pedestal.getBlockPos();
             double d = getStandardPullDistance();
 
-            List<EntityItem> entities = pedestal.getWorld().getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
+            List<EntityItem> entities = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
             for (EntityItem entityItem : entities) {
                 int numberAdded = pedestal.addToConnectedInventory(entityItem.getEntityItem().copy());
                 if (numberAdded > 0) {
@@ -222,7 +223,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
                 }
             }
 
-            List<EntityXPOrb> XPOrbs = pedestal.getWorld().getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
+            List<EntityXPOrb> XPOrbs = world.getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
             for (EntityXPOrb xpOrb : XPOrbs) {
                 int amountToTransfer = XpHelper.experienceToLiquid(xpOrb.xpValue);
                 int amountAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.fluidXpJuice, amountToTransfer));
@@ -231,7 +232,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
                     xpOrb.setDead();
 
                     if (amountToTransfer > amountAdded) {
-                        pedestal.getWorld().spawnEntityInWorld(new EntityXPOrb(pedestal.getWorld(), pedestal.getPos().getX(), pedestal.getPos().getY(), pedestal.getPos().getZ(), XpHelper.liquidToExperience(amountToTransfer - amountAdded)));
+                        world.spawnEntityInWorld(new EntityXPOrb(world, pos.getX(), pos.getY(), pos.getZ(), XpHelper.liquidToExperience(amountToTransfer - amountAdded)));
                     }
                 } else {
                     pedestal.setActionCoolDown(20);

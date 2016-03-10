@@ -9,8 +9,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public interface IPedestal {
-	World getWorld();
-	BlockPos getPos();
+	World getTheWorld();
+	BlockPos getBlockPos();
 	int addToConnectedInventory(ItemStack stack);
 	int fillConnectedTank(FluidStack fluidStack, boolean doFill);
 	int fillConnectedTank(FluidStack fluidStack);

@@ -28,7 +28,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void update(ItemStack stack, IPedestal pedestal) {
-		BlockPos pos = pedestal.getPos();
+		BlockPos pos = pedestal.getBlockPos();
 		int bucketRange = Settings.Pedestal.bucketWrapperRange;
 
 		if(!milkCows(pedestal, pos, bucketRange)) {
@@ -42,23 +42,24 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private boolean drainLiquid(IPedestal pedestal, BlockPos pos, int bucketRange) {
+		World world = pedestal.getTheWorld();
 		if(queueToDrain.isEmpty()) {
-			updateQueueToDrain(pedestal.getWorld(), pos, bucketRange);
+			updateQueueToDrain(world, pos, bucketRange);
 		}
 
 		if(queueToDrain.isEmpty())
 			return false;
 
 		BlockPos blockToDrain = queueToDrain.get(0);
-		IBlockState blockState = pedestal.getWorld().getBlockState(blockToDrain);
+		IBlockState blockState = world.getBlockState(blockToDrain);
 		Fluid fluid = FluidRegistry.lookupFluidForBlock(blockState.getBlock());
 		if (fluid != null) {
-			FluidStack fluidStack = drainBlock(pedestal.getWorld(), blockToDrain, blockState.getBlock(), blockState, fluid, false);
+			FluidStack fluidStack = drainBlock(world, blockToDrain, blockState.getBlock(), blockState, fluid, false);
 			if (fluidStack != null) {
 				if((pedestal.fillConnectedTank(fluidStack, false) != fluidStack.amount))
 					return false;
 
-				drainBlock(pedestal.getWorld(), blockToDrain, blockState.getBlock(), blockState, fluid, true);
+				drainBlock(world, blockToDrain, blockState.getBlock(), blockState, fluid, true);
 				pedestal.fillConnectedTank(fluidStack);
 			}
 		}
@@ -113,13 +114,14 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private boolean milkCows(IPedestal pedestal, BlockPos pos, int bucketRange) {
-		List<EntityCow> entities = pedestal.getWorld().getEntitiesWithinAABB(EntityCow.class, new AxisAlignedBB(pos.getX() - bucketRange, pos.getY() - bucketRange, pos.getZ() - bucketRange, pos.getX() + bucketRange, pos.getY() + bucketRange, pos.getZ() + bucketRange));
+		World world = pedestal.getTheWorld();
+		List<EntityCow> entities = world.getEntitiesWithinAABB(EntityCow.class, new AxisAlignedBB(pos.getX() - bucketRange, pos.getY() - bucketRange, pos.getZ() - bucketRange, pos.getX() + bucketRange, pos.getY() + bucketRange, pos.getZ() + bucketRange));
 
 		if(entities.size() == 0) {
 			return false;
 		}
 
-		EntityCow cow = entities.get(pedestal.getWorld().rand.nextInt(entities.size()));
+		EntityCow cow = entities.get(world.rand.nextInt(entities.size()));
 
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
 		fakePlayer.setCurrentItemOrArmor(0, new ItemStack(Items.bucket));

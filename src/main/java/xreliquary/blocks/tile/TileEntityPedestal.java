@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.*;
@@ -173,6 +174,16 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	@Override
 	public IChatComponent getDisplayName() {
 		return null;
+	}
+
+	@Override
+	public World getTheWorld() {
+		return getWorld();
+	}
+
+	@Override
+	public BlockPos getBlockPos() {
+		return getPos();
 	}
 
 	@Override
