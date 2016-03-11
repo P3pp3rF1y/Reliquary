@@ -301,5 +301,7 @@ public class Settings
 		public static byte meleeWrapperCooldown;
 		public static int bucketWrapperRange;
 		public static byte bucketWrapperCooldown;
+		public static int shearsWrapperRange;
+		public static byte shearsWrapperCooldown;
 	}
 }

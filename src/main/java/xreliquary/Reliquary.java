@@ -1,10 +1,7 @@
 package xreliquary;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBucket;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -36,6 +33,7 @@ import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 import xreliquary.util.pedestal.PedestalBucketWrapper;
 import xreliquary.util.pedestal.PedestalMeleeWeaponWrapper;
 import xreliquary.util.pedestal.PedestalRegistry;
+import xreliquary.util.pedestal.PedestalShearsWrapper;
 
 //@ModstatInfo(prefix = "reliquary")
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS, dependencies = Reference.DEPENDENCIES)
@@ -102,6 +100,7 @@ public class Reliquary {
 
         PedestalRegistry.registerItemWrapper(ItemSword.class, PedestalMeleeWeaponWrapper.class);
         PedestalRegistry.registerItemWrapper(ItemBucket.class, PedestalBucketWrapper.class);
+        PedestalRegistry.registerItemWrapper(ItemShears.class, PedestalShearsWrapper.class);
         if (Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
             PedestalRegistry.registerItemWrapper(Cleaver.class, PedestalMeleeWeaponWrapper.Slow.class);
             PedestalRegistry.registerItemWrapper(BroadSword.class, PedestalMeleeWeaponWrapper.class);

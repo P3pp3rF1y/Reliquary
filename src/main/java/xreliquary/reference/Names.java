@@ -122,6 +122,8 @@ public class Names {
     public static final String melee_wrapper_cooldown = "melee_wrapper_cooldown";
     public static final String bucket_wrapper_range = "bucket_wrapper_range";
     public static final String bucket_wrapper_cooldown = "bucket_wrapper_cooldown";
+    public static final String shears_wrapper_range = "shears_wrapper_range";
+    public static final String shears_wrapper_cooldown = "shears_wrapper_cooldown";
 
     //these are for items, like above, didn't want to magic string them. I will use them eventually.
 //    public static final String snowball_mode = "snowballs";
