@@ -126,8 +126,10 @@ public class ItemVoidTear extends ItemToggleable {
             ItemStack stackToIncrease = player.inventory.getStackInSlot(preferredSlot);
             if (stackToIncrease == null) {
                 ItemStack newStack = getContainedItem(ist).copy();
-                newStack.stackSize = Math.min(newStack.getMaxStackSize(), NBTHelper.getInteger("itemQuantity", ist) - 1);
+                int quantityToDecrease = Math.min(newStack.getMaxStackSize(), NBTHelper.getInteger("itemQuantity", ist) - 1);
+                newStack.stackSize = quantityToDecrease;
                 player.inventory.setInventorySlotContents(preferredSlot, newStack);
+                NBTHelper.setInteger("itemQuantity", ist, NBTHelper.getInteger("itemQuantity", ist) - quantityToDecrease);
                 return;
             }
 
