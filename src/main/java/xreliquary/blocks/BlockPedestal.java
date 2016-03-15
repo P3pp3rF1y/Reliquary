@@ -44,7 +44,7 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 				ItemStack copy = pedestal.getStackInSlot(0);
 				player.setCurrentItemOrArmor(0, copy);
 				pedestal.setInventorySlotContents(0, null);
-				return true;
+				return false;
 			}
 			else {
 				return false;
