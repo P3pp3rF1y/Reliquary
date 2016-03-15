@@ -11,9 +11,11 @@ import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.S39PacketPlayerAbilities;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -559,28 +561,33 @@ public class CommonEventHandler {
 
 	@SubscribeEvent
 	public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
+		if (event.entityLiving.worldObj.isRemote)
+			return;
+
 		if (event.entityLiving.isPotionActive(ModPotions.potionFlight.getId())) {
 			if (event.entityLiving instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) event.entityLiving;
-				playersFlightStatus.put(player.getUniqueID(), true);
+				playersFlightStatus.put(player.getGameProfile().getId(), true);
 				player.capabilities.allowFlying = true;
 				player.fallDistance = 0;
+				((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S39PacketPlayerAbilities(player.capabilities));
 			}
 		} else {
 			if (event.entityLiving instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) event.entityLiving;
 
-				if(!playersFlightStatus.containsKey(player.getUniqueID())) {
-					playersFlightStatus.put(player.getUniqueID(), false);
+				if(!playersFlightStatus.containsKey(player.getGameProfile().getId())) {
+					playersFlightStatus.put(player.getGameProfile().getId(), false);
 				}
 
-				if (playersFlightStatus.get(player.getUniqueID())) {
+				if (playersFlightStatus.get(player.getGameProfile().getId())) {
 
-					playersFlightStatus.put(player.getUniqueID(), false);
+					playersFlightStatus.put(player.getGameProfile().getId(), false);
 
 					if (!player.capabilities.isCreativeMode) {
 						player.capabilities.allowFlying = false;
 						player.capabilities.isFlying = false;
+						((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S39PacketPlayerAbilities(player.capabilities));
 					}
 				}
 			}
