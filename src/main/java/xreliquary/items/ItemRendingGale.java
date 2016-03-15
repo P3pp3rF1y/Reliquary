@@ -7,7 +7,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -17,8 +16,6 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.api.IPedestal;
-import xreliquary.api.IPedestalActionItem;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -348,9 +345,9 @@ public class ItemRendingGale extends ItemToggleable {
 			attemptFlight(player);
 			spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
 		} else if(getMode(ist).equals("push")) {
-			doRadialPush(player, false);
+			doRadialPush(player.worldObj, player.posX, player.posY, player.posZ, player, false);
 		} else if(getMode(ist).equals("pull")) {
-			doRadialPush(player, true);
+			doRadialPush(player.worldObj, player.posX, player.posY, player.posZ, player, true);
 			//doPushEffect(player, player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
 			//spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
 
@@ -388,31 +385,31 @@ public class ItemRendingGale extends ItemToggleable {
 			NBTHelper.setInteger("feathers", ist, NBTHelper.getInteger("feathers", ist) - Math.min(chargeUsed, NBTHelper.getInteger("feathers", ist)));
 	}
 
-	public void doRadialPush(EntityPlayer player, boolean pull) {
+	public void doRadialPush(World worldObj, double posX, double posY, double posZ, EntityPlayer player, boolean pull) {
 		//push effect free at the moment, if you restore cost, remember to change this to NBTHelper.getInteger("feathers", ist)
-		spawnRadialHurricaneParticles(player, pull);
-		if(player.worldObj.isRemote)
+		spawnRadialHurricaneParticles(worldObj, posX, posY, posZ, player, pull);
+		if(worldObj.isRemote)
 			return;
 
-		double lowerX = player.posX - getRadialPushRadius();
-		double lowerY = player.posY - (double) getRadialPushRadius() / 5D;
-		double lowerZ = player.posZ - getRadialPushRadius();
-		double upperX = player.posX + getRadialPushRadius();
-		double upperY = player.posY + (double) getRadialPushRadius() / 2D;
-		double upperZ = player.posZ + getRadialPushRadius();
+		double lowerX = posX - getRadialPushRadius();
+		double lowerY = posY - (double) getRadialPushRadius() / 5D;
+		double lowerZ = posZ - getRadialPushRadius();
+		double upperX = posX + getRadialPushRadius();
+		double upperY = posY + (double) getRadialPushRadius() / 2D;
+		double upperZ = posZ + getRadialPushRadius();
 
 		List<String> entitiesThatCanBePushed = Settings.RendingGale.entitiesThatCanBePushed;
 		List<String> projectilesThatCanBePushed = Settings.RendingGale.projectilesThatCanBePushed;
 
-		List eList = player.worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
+		List eList = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 
 		Iterator iterator = eList.iterator();
 		while(iterator.hasNext()) {
 			Entity e = (Entity) iterator.next();
 			Class entityClass = e.getClass();
-			String entityName = (String) EntityList.classToStringMapping.get(entityClass);
+			String entityName = EntityList.classToStringMapping.get(entityClass);
 			if(entitiesThatCanBePushed.contains(entityName) || (!pull && canPushProjectiles() && projectilesThatCanBePushed.contains(entityName))) {
-				double distance = player.getDistanceToEntity(e);
+				double distance = getDistanceToEntity(posX, posY, posZ, e);
 				if(distance >= getRadialPushRadius())
 					continue;
 
@@ -420,15 +417,22 @@ public class ItemRendingGale extends ItemToggleable {
 					continue;
 				Vec3 pushVector;
 				if(pull) {
-					pushVector = new Vec3(player.posX - e.posX, player.posY - e.posY, player.posZ - e.posZ);
+					pushVector = new Vec3(posX - e.posX, posY - e.posY, posZ - e.posZ);
 				} else {
-					pushVector = new Vec3(e.posX - player.posX, e.posY - player.posY, e.posZ - player.posZ);
+					pushVector = new Vec3(e.posX - posX, e.posY - posY, e.posZ - posZ);
 				}
 				pushVector = pushVector.normalize();
 				e.moveEntity(0.0D, 0.2D, 0.0D);
 				e.moveEntity(pushVector.xCoord, Math.min(pushVector.yCoord, 0.1D) * 1.5D, pushVector.zCoord);
 			}
 		}
+	}
+
+	private float getDistanceToEntity(double posX, double posY, double posZ, Entity entityIn) {
+		float f = (float) (posX - entityIn.posX);
+		float f1 = (float) (posY - entityIn.posY);
+		float f2 = (float) (posZ - entityIn.posZ);
+		return MathHelper.sqrt_float(f * f + f1 * f1 + f2 * f2);
 	}
 
 	public void spawnFlightParticles(World world, double x, double y, double z, Vec3 lookVector) {
@@ -442,11 +446,11 @@ public class ItemRendingGale extends ItemToggleable {
 		}
 	}
 
-	public void spawnRadialHurricaneParticles(EntityPlayer player, boolean pull) {
+	public void spawnRadialHurricaneParticles(World worldObj, double posX, double posY, double posZ, EntityPlayer player, boolean pull) {
 		//spawn a whole mess of particles every tick.
 		for(int i = 0; i < 3; ++i) {
-			float randX = player.worldObj.rand.nextFloat() - 0.5F;
-			float randZ = player.worldObj.rand.nextFloat() - 0.5F;
+			float randX = worldObj.rand.nextFloat() - 0.5F;
+			float randZ = worldObj.rand.nextFloat() - 0.5F;
 			float motX = randX * 10F;
 			float motZ = randZ * 10F;
 			if(pull) {
@@ -456,7 +460,9 @@ public class ItemRendingGale extends ItemToggleable {
 				motZ *= -1F;
 			}
 
-			player.worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, player.posX + randX, (player.posY + player.getEyeHeight()) - (player.height / 2), player.posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.snow_layer.getStateFromMeta(0)));
+			double posYAdjusted = player == null ? posY : (posY + player.getEyeHeight()) - (player.height / 2);
+
+			worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.snow_layer.getStateFromMeta(0)));
 		}
 	}
 }
