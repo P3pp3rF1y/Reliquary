@@ -224,7 +224,7 @@ public class ItemRendingGale extends ItemToggleable {
 					Block block = worldObj.getBlockState(new BlockPos(xOff, yOff, zOff)).getBlock();
 
 					if(block.getMaterial() != Material.air && block.getMaterial() != Material.water && block.getMaterial() != Material.lava &&
-							block.getMaterial() != Material.fire && block.getMaterial() != Material.vine && block.getMaterial() != Material.plants && block.getMaterial() != Material.circuits) {
+							block.getMaterial() != Material.fire && block.getMaterial() != Material.vine && block.getMaterial() != Material.plants && block.getMaterial() != Material.circuits && block != Blocks.snow_layer) {
 						return true;
 					}
 				}
