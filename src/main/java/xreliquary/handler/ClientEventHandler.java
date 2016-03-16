@@ -338,22 +338,19 @@ public class ClientEventHandler {
 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 		GL11.glEnable(GL11.GL_LIGHTING);
 
-		int hudOverlayX = 0;
-		int hudOverlayY = 0;
+		int hudOverlayX = 8;
+		int hudOverlayY = 8;
+		boolean leftSide = Settings.HudPositions.handgun == 0 || Settings.HudPositions.handgun == 2;
 
 		switch(Settings.HudPositions.handgun) {
 			case 0: {
-				hudOverlayX = 0;
-				hudOverlayY = 0;
 				break;
 			}
 			case 1: {
 				hudOverlayX = (int) (sr.getScaledWidth() - 16 * overlayScale);
-				hudOverlayY = 0;
 				break;
 			}
 			case 2: {
-				hudOverlayX = 0;
 				hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
 				break;
 			}
@@ -373,14 +370,15 @@ public class ClientEventHandler {
 			if(getTime() % 32 > 16) {
 				// offsets it a little to the left, it looks silly if you put it
 				// over the gun.
-				renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), new ItemStack(ModItems.magazine, 1, 0), hudOverlayX - 8, hudOverlayY + 12, overlayOpacity, overlayScale / 2F);
+				renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), new ItemStack(ModItems.magazine, 1, 0), hudOverlayX - (leftSide ? 0 : 8), hudOverlayY + 12, overlayOpacity, overlayScale / 2F);
 			}
 		} else {
 			// renders the number of bullets onto the screen.
 			for(int xOffset = 0; xOffset < bulletStack.stackSize; xOffset++) {
 				// xOffset * 6 makes the bullets line up, -16 moves them all to
 				// the left by a bit
-				renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), bulletStack, hudOverlayX - 8 - (xOffset * 10), hudOverlayY + 12, 1.0F, overlayScale / 2F);
+
+				renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), bulletStack, hudOverlayX - (leftSide ? 0 : 8) -1 * (leftSide ? -1 : 1) * (xOffset * 10), hudOverlayY + 12, 1.0F, overlayScale / 2F);
 			}
 		}
 
