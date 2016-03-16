@@ -235,28 +235,22 @@ public class ClientEventHandler {
 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 		GL11.glEnable(GL11.GL_LIGHTING);
 
-		int hudOverlayX = 0;
-		int hudOverlayY = 0;
+		int hudOverlayX = 8;
+		int hudOverlayY = 8;
 
+		boolean leftSide = Settings.HudPositions.pyromancerStaff == 0 || Settings.HudPositions.pyromancerStaff == 2;
 		switch(Settings.HudPositions.pyromancerStaff) {
-			case 0: {
-				hudOverlayX = 0;
-				hudOverlayY = 0;
-				break;
-			}
 			case 1: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 16 * overlayScale);
-				hudOverlayY = 0;
+				hudOverlayX = (int) (sr.getScaledWidth() - 8);
 				break;
 			}
 			case 2: {
-				hudOverlayX = 0;
-				hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
+				hudOverlayY = (int) (sr.getScaledHeight() - 18 * overlayScale);
 				break;
 			}
 			case 3: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 16 * overlayScale);
-				hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
+				hudOverlayX = (int) (sr.getScaledWidth() - 8);
+				hudOverlayY = (int) (sr.getScaledHeight() - 18 * overlayScale);
 				break;
 			}
 			default: {
@@ -264,22 +258,22 @@ public class ClientEventHandler {
 			}
 		}
 
-		renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), hudStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
+		renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), hudStack, hudOverlayX - (leftSide ? 0 : 15), hudOverlayY, overlayOpacity, overlayScale);
 
 		String friendlyStaffMode = "";
 		if(staffMode.equals("eruption"))
 			friendlyStaffMode = "ERUPT";
 
 		if(secondaryStack != null && (staffMode.equals("charge"))) {
-			renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX, hudOverlayY + 24);
-			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(secondaryStack.stackSize), hudOverlayX + 15, hudOverlayY + 30, color);
+			renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX + (leftSide ? 0 : - (16 + (Integer.toString(secondaryStack.stackSize).length() * 6))), hudOverlayY + 24);
+			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(secondaryStack.stackSize), hudOverlayX + (leftSide ? 16 : - (Integer.toString(secondaryStack.stackSize).length() * 6)), hudOverlayY + 30, color);
 		} else if(tertiaryStack != null && (staffMode.equals("eruption") || staffMode.equals("blaze"))) {
-			renderItem.renderItemAndEffectIntoGUI(tertiaryStack, hudOverlayX, hudOverlayY + 24);
-			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(tertiaryStack.stackSize), hudOverlayX + 15, hudOverlayY + 30, color);
+			renderItem.renderItemAndEffectIntoGUI(tertiaryStack, hudOverlayX + (leftSide ? 0 : - (16 + (Integer.toString(tertiaryStack.stackSize).length() * 6))), hudOverlayY + 24);
+			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(tertiaryStack.stackSize), hudOverlayX + (leftSide ? 16 : - (Integer.toString(tertiaryStack.stackSize).length() * 6)), hudOverlayY + 30, color);
 			if(staffMode.equals("eruption"))
-				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(friendlyStaffMode, hudOverlayX, hudOverlayY + 18, color);
+				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(friendlyStaffMode, hudOverlayX - (leftSide ? 0 : (friendlyStaffMode.length() * 6)), hudOverlayY + 18, color);
 		} else if(staffMode.equals("flint_and_steel")) {
-			renderItem.renderItemAndEffectIntoGUI(new ItemStack(Items.flint_and_steel, 1, 0), hudOverlayX, hudOverlayY + 24);
+			renderItem.renderItemAndEffectIntoGUI(new ItemStack(Items.flint_and_steel, 1, 0), hudOverlayX - (leftSide ? 0 : 15), hudOverlayY + 24);
 		}
 
 		GL11.glDisable(GL11.GL_LIGHTING);
@@ -378,7 +372,7 @@ public class ClientEventHandler {
 				// xOffset * 6 makes the bullets line up, -16 moves them all to
 				// the left by a bit
 
-				renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), bulletStack, hudOverlayX - (leftSide ? 0 : 8) -1 * (leftSide ? -1 : 1) * (xOffset * 10), hudOverlayY + 12, 1.0F, overlayScale / 2F);
+				renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), bulletStack, hudOverlayX - (leftSide ? 0 : 8) - 1 * (leftSide ? -1 : 1) * (xOffset * 10), hudOverlayY + 12, 1.0F, overlayScale / 2F);
 			}
 		}
 
@@ -485,7 +479,7 @@ public class ClientEventHandler {
 		}
 
 		GL11.glDisable(GL11.GL_LIGHTING);
-		minecraft.fontRendererObj.drawStringWithShadow(Integer.toString(stackSize), hudOverlayX - (leftSide ? 0 :(Integer.toString(stackSize).length() * 6)), hudOverlayY + 29, color);
+		minecraft.fontRendererObj.drawStringWithShadow(Integer.toString(stackSize), hudOverlayX - (leftSide ? 0 : (Integer.toString(stackSize).length() * 6)), hudOverlayY + 29, color);
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();
 	}
