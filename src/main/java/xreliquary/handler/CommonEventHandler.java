@@ -11,9 +11,11 @@ import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.S39PacketPlayerAbilities;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -29,6 +31,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import xreliquary.init.ModItems;
+import xreliquary.init.ModPotions;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemToggleable;
 import xreliquary.reference.Names;
@@ -36,9 +39,14 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.XRFakePlayerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 public class CommonEventHandler {
+
+	private Map<UUID, Boolean> playersFlightStatus = new HashMap<>();
 
 	@SubscribeEvent
 	public void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
@@ -549,5 +557,40 @@ public class CommonEventHandler {
 	public void onDimensionUnload(WorldEvent.Unload event) {
 		if(event.world instanceof WorldServer)
 			XRFakePlayerFactory.unloadWorld((WorldServer) event.world);
+	}
+
+	@SubscribeEvent
+	public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
+		if (event.entityLiving.worldObj.isRemote)
+			return;
+
+		if (event.entityLiving.isPotionActive(ModPotions.potionFlight.getId())) {
+			if (event.entityLiving instanceof EntityPlayer) {
+				EntityPlayer player = (EntityPlayer) event.entityLiving;
+				playersFlightStatus.put(player.getGameProfile().getId(), true);
+				player.capabilities.allowFlying = true;
+				player.fallDistance = 0;
+				((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S39PacketPlayerAbilities(player.capabilities));
+			}
+		} else {
+			if (event.entityLiving instanceof EntityPlayer) {
+				EntityPlayer player = (EntityPlayer) event.entityLiving;
+
+				if(!playersFlightStatus.containsKey(player.getGameProfile().getId())) {
+					playersFlightStatus.put(player.getGameProfile().getId(), false);
+				}
+
+				if (playersFlightStatus.get(player.getGameProfile().getId())) {
+
+					playersFlightStatus.put(player.getGameProfile().getId(), false);
+
+					if (!player.capabilities.isCreativeMode) {
+						player.capabilities.allowFlying = false;
+						player.capabilities.isFlying = false;
+						((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S39PacketPlayerAbilities(player.capabilities));
+					}
+				}
+			}
+		}
 	}
 }

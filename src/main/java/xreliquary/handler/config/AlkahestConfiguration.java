@@ -1,6 +1,5 @@
 package xreliquary.handler.config;
 
-
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -15,9 +14,7 @@ import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
 import java.util.Map;
 
-
-public class AlkahestConfiguration
-{
+public class AlkahestConfiguration {
 	private static final int TOME_COST_LOW_TIER = 4;
 	private static final int TOME_COST_MIDDLE_TIER = 8;
 	private static final int TOME_COST_HIGH_TIER = 32;
@@ -36,7 +33,7 @@ public class AlkahestConfiguration
 	public static void loadAlkahestChargingRecipes() {
 		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.charging_recipes);
 
-		if (category.isEmpty()) {
+		if(category.isEmpty()) {
 			addDefaultAlkahestChargingRecipes(category);
 		}
 
@@ -48,8 +45,8 @@ public class AlkahestConfiguration
 	private static void loadAlkahestChargingRecipesIntoSettings(ConfigCategory category) {
 		Settings.AlkahestryTome.chargingRecipes.clear();
 
-		for(Map.Entry<String, Property> entry: category.getValues().entrySet()) {
-			String[] nameParts =entry.getKey().split(":");
+		for(Map.Entry<String, Property> entry : category.getValues().entrySet()) {
+			String[] nameParts = entry.getKey().split(":");
 			int[] values = entry.getValue().getIntList();
 
 			String modId = nameParts[0];
@@ -59,7 +56,7 @@ public class AlkahestConfiguration
 
 			ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
 
-			if (stack != null) {
+			if(stack != null) {
 				Settings.AlkahestryTome.chargingRecipes.put(entry.getKey(), new AlkahestChargeRecipe(stack, charge));
 			}
 		}
@@ -77,7 +74,7 @@ public class AlkahestConfiguration
 	}
 
 	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item, Integer meta, Integer charge) {
-		Property prop = new Property(item,new String[]{meta.toString(), charge.toString()}, Property.Type.INTEGER);
+		Property prop = new Property(item, new String[] {meta.toString(), charge.toString()}, Property.Type.INTEGER);
 
 		category.put(item, prop);
 	}
@@ -85,7 +82,7 @@ public class AlkahestConfiguration
 	public static void loadAlkahestCraftingRecipes() {
 		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.crafting_recipes);
 
-		if (category.isEmpty()) {
+		if(category.isEmpty()) {
 			addDefaultAlkahestCraftingRecipes(category);
 		}
 
@@ -97,8 +94,8 @@ public class AlkahestConfiguration
 	private static void loadAlkahestCraftingRecipesIntoSettings(ConfigCategory category) {
 		Settings.AlkahestryTome.craftingRecipes.clear();
 
-		for(Map.Entry<String, Property> entry: category.getValues().entrySet()) {
-			String[] nameParts =entry.getKey().split(":");
+		for(Map.Entry<String, Property> entry : category.getValues().entrySet()) {
+			String[] nameParts = entry.getKey().split(":");
 			int[] values = entry.getValue().getIntList();
 
 			String modId = nameParts[0];
@@ -107,14 +104,15 @@ public class AlkahestConfiguration
 			int yield = values[1];
 			int cost = values[2];
 
-
-			if (modId.toLowerCase().equals("oredictionary")) {
+			if(modId.toLowerCase().equals("oredictionary")) {
 				Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(name, yield, cost));
 			} else {
 				ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
 
-				if (stack != null) {
-					Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(stack, yield, cost));
+				String key = entry.getKey() + (stack.getItem().getHasSubtypes() ? "|" + meta : "");
+
+				if(stack != null) {
+					Settings.AlkahestryTome.craftingRecipes.put(key, new AlkahestCraftRecipe(stack, yield, cost));
 				}
 			}
 		}
@@ -169,12 +167,12 @@ public class AlkahestConfiguration
 	}
 
 	private static void addConfigAlkahestCraftingRecipe(ConfigCategory category, String item, Integer yield, Integer cost) {
-		addConfigAlkahestCraftingRecipe(category, item, 0, yield,cost);
+		addConfigAlkahestCraftingRecipe(category, item, 0, yield, cost);
 	}
 
 	private static void addConfigAlkahestCraftingRecipe(ConfigCategory category, String item, Integer meta, Integer yield, Integer cost) {
 
-		Property prop = new Property(item,new String[]{meta.toString(), yield.toString(), cost.toString()}, Property.Type.INTEGER);
+		Property prop = new Property(item, new String[] {meta.toString(), yield.toString(), cost.toString()}, Property.Type.INTEGER);
 
 		category.put(item, prop);
 	}

@@ -1,0 +1,101 @@
+package xreliquary.util.pedestal;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.IShearable;
+import net.minecraftforge.common.util.FakePlayer;
+import xreliquary.api.IPedestal;
+import xreliquary.api.IPedestalActionItemWrapper;
+import xreliquary.reference.Settings;
+
+import java.util.ArrayDeque;
+import java.util.List;
+import java.util.Queue;
+
+public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
+	private boolean isShearingBlock = false;
+	private BlockPos blockPosBeingSheared;
+	private Queue<BlockPos> blockQueue = new ArrayDeque<>();
+
+	@Override
+	public void update(ItemStack stack, IPedestal pedestal) {
+		World world = pedestal.getTheWorld();
+		BlockPos pos = pedestal.getBlockPos();
+		FakePlayer fakePlayer = pedestal.getFakePlayer();
+		int shearsRange = Settings.Pedestal.shearsWrapperRange;
+
+		if(!shearAnimals(stack, world, fakePlayer, pos, shearsRange)) {
+			if (!shearBlocks(stack, world, pedestal, fakePlayer, pos, shearsRange)) {
+				pedestal.setActionCoolDown(100);
+				return;
+			}
+		}
+
+		if (stack.stackSize == 0)
+			pedestal.destroyCurrentItem();
+
+		if(!isShearingBlock) {
+			pedestal.setActionCoolDown(Settings.Pedestal.shearsWrapperCooldown);
+		}
+	}
+
+	private boolean shearBlocks(ItemStack stack, World world, IPedestal pedestal, FakePlayer fakePlayer,  BlockPos pos, int shearsRange) {
+		if (!isShearingBlock) {
+			if (blockQueue.isEmpty()) {
+				updateQueue(stack, world, pos, shearsRange);
+				if (blockQueue.isEmpty()) {
+					return false;
+				}
+			}
+
+			blockPosBeingSheared = blockQueue.remove();
+			IBlockState blockState = world.getBlockState(blockPosBeingSheared);
+			if (blockState.getBlock() instanceof IShearable && ((IShearable) blockState.getBlock()).isShearable(stack,world, blockPosBeingSheared)) {
+				float hardness = blockState.getBlock().getBlockHardness(world, blockPosBeingSheared);
+				float digSpeed = stack.getItem().getDigSpeed(stack, blockState);
+
+				pedestal.setActionCoolDown((int)((hardness * 1.5f * 20f)/digSpeed));
+				isShearingBlock = true;
+			}
+		} else {
+			stack.getItem().onBlockStartBreak(stack, blockPosBeingSheared, fakePlayer);
+			IBlockState blockState = world.getBlockState(blockPosBeingSheared);
+			world.setBlockToAir(blockPosBeingSheared);
+			world.playAuxSFX(2001, blockPosBeingSheared, Block.getStateId(blockState));
+
+			isShearingBlock = false;
+		}
+		return true;
+	}
+
+	private void updateQueue(ItemStack stack, World world, BlockPos pos, int shearsRange) {
+		for(int y = pos.getY() - shearsRange; y <= pos.getY() + shearsRange; y++) {
+			for(int x = pos.getX() - shearsRange; x <= pos.getX() + shearsRange; x++) {
+				for(int z = pos.getZ() - shearsRange; z <= pos.getZ() + shearsRange; z++) {
+					BlockPos currentBlockPos = new BlockPos(x, y, z);
+					IBlockState blockState = world.getBlockState(currentBlockPos);
+					if (blockState.getBlock() instanceof IShearable && ((IShearable) blockState.getBlock()).isShearable(stack,world, currentBlockPos)) {
+						blockQueue.add(currentBlockPos);
+					}
+				}
+			}
+		}
+	}
+	private boolean shearAnimals(ItemStack stack, World world, FakePlayer fakePlayer,  BlockPos pos, int shearsRange) {
+		List<EntityAnimal> entities = world.getEntitiesWithinAABB(EntityAnimal.class, new AxisAlignedBB(pos.getX() - shearsRange, pos.getY() - shearsRange, pos.getZ() - shearsRange, pos.getX() + shearsRange, pos.getY() + shearsRange, pos.getZ() + shearsRange));
+
+		for (EntityAnimal animal : entities) {
+			if (animal instanceof IShearable && ((IShearable) animal).isShearable(stack, world, animal.getPosition()) ) {
+				fakePlayer.setCurrentItemOrArmor(0, stack);
+				fakePlayer.interactWith(animal);
+				return true;
+			}
+		}
+		return false;
+	}
+}

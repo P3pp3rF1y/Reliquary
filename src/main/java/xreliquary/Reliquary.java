@@ -1,10 +1,7 @@
 package xreliquary;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBucket;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -18,122 +15,122 @@ import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import slimeknights.tconstruct.tools.item.BattleAxe;
 import slimeknights.tconstruct.tools.item.BroadSword;
 import slimeknights.tconstruct.tools.item.Cleaver;
-import slimeknights.tconstruct.tools.item.Scythe;
 import xreliquary.common.CommonProxy;
 import xreliquary.compat.ICompat;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.handler.config.PotionConfiguration;
 import xreliquary.init.*;
+import xreliquary.items.ItemRendingGale;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
-import xreliquary.util.pedestal.PedestalBucketWrapper;
-import xreliquary.util.pedestal.PedestalMeleeWeaponWrapper;
-import xreliquary.util.pedestal.PedestalRegistry;
+import xreliquary.util.pedestal.*;
 
 //@ModstatInfo(prefix = "reliquary")
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS, dependencies = Reference.DEPENDENCIES)
 public class Reliquary {
 
-    @Instance(Reference.MOD_ID)
-    public static Reliquary INSTANCE;
+	@Instance(Reference.MOD_ID)
+	public static Reliquary INSTANCE;
 
-    @SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
-    public static CommonProxy PROXY;
+	@SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
+	public static CommonProxy PROXY;
 
-    public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID(), Reference.MOD_ID);
+	public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID(), Reference.MOD_ID);
 
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        ConfigurationHandler.init( event.getSuggestedConfigurationFile() );
+	@EventHandler
+	public void preInit(FMLPreInitializationEvent event) {
+		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
 
-        PROXY.initColors();
+		PROXY.initColors();
 
-        ModBlocks.init();
+		ModBlocks.init();
 
-        ModItems.init();
+		ModItems.init();
 
-        ModFluids.init();
+		ModFluids.init();
 
-        ModLoot.init();
+		ModLoot.init();
 
-        PROXY.preInit();
+		ModPotions.init();
 
-        //important that this initializes before the pre-init phase
-        //PROXY.initRecipeDisablers();
+		PROXY.preInit();
 
-        //TODO figure out a better way to handle this if possible
-        PotionConfiguration.loadPotionMap();
+		//important that this initializes before the pre-init phase
+		//PROXY.initRecipeDisablers();
 
-        PROXY.initPotionsJEI();
+		//TODO figure out a better way to handle this if possible
+		PotionConfiguration.loadPotionMap();
 
-        PacketHandler.init();
+		PROXY.initPotionsJEI();
 
-        ModCompat.registerModCompat();
-        ModCompat.loadCompat(ICompat.InitializationPhase.PRE_INIT, null);
-    }
+		PacketHandler.init();
 
-    @EventHandler
-    public void init(FMLInitializationEvent event) {
-        //TODO: put modstats back in when ready
-        //Modstats.instance().getReporter().registerMod(this);
+		ModCompat.registerModCompat();
+		ModCompat.loadCompat(ICompat.InitializationPhase.PRE_INIT, null);
+	}
 
-        PROXY.init();
-        MinecraftForge.EVENT_BUS.register(this);
+	@EventHandler
+	public void init(FMLInitializationEvent event) {
+		//TODO: put modstats back in when ready
+		//Modstats.instance().getReporter().registerMod(this);
 
-        ModCompat.loadCompat(ICompat.InitializationPhase.INIT, null);
-    }
+		PROXY.init();
+		MinecraftForge.EVENT_BUS.register(this);
 
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        PROXY.postInit();
+		ModCompat.loadCompat(ICompat.InitializationPhase.INIT, null);
+	}
 
-        ConfigurationHandler.postInit();
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent event) {
+		PROXY.postInit();
 
-        ModCompat.loadCompat(ICompat.InitializationPhase.POST_INIT, null);
+		ConfigurationHandler.postInit();
 
-        ModFluids.postInit();
+		ModCompat.loadCompat(ICompat.InitializationPhase.POST_INIT, null);
 
-        PedestalRegistry.registerItemWrapper(ItemSword.class, PedestalMeleeWeaponWrapper.class);
-        PedestalRegistry.registerItemWrapper(ItemBucket.class, PedestalBucketWrapper.class);
-        if (Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
-            PedestalRegistry.registerItemWrapper(Cleaver.class, PedestalMeleeWeaponWrapper.Slow.class);
-            PedestalRegistry.registerItemWrapper(BroadSword.class, PedestalMeleeWeaponWrapper.class);
-            //not implemented currently in TiCon
-            //PedestalRegistry.registerItemWrapper(BattleAxe.class, new PedestalMeleeWeaponWrapper());
-            //PedestalRegistry.registerItemWrapper(Scythe.class, new PedestalMeleeWeaponWrapper());
-        }
+		ModFluids.postInit();
 
-        LogHelper.info("Loaded successfully!");
-    }
+		PedestalRegistry.registerItemWrapper(ItemSword.class, PedestalMeleeWeaponWrapper.class);
+		PedestalRegistry.registerItemWrapper(ItemBucket.class, PedestalBucketWrapper.class);
+		PedestalRegistry.registerItemWrapper(ItemShears.class, PedestalShearsWrapper.class);
+		PedestalRegistry.registerItemWrapper(ItemRendingGale.class, PedestalRendingGaleWrapper.class);
+		if(Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
+			PedestalRegistry.registerItemWrapper(Cleaver.class, PedestalMeleeWeaponWrapper.Slow.class);
+			PedestalRegistry.registerItemWrapper(BroadSword.class, PedestalMeleeWeaponWrapper.class);
+			//not implemented currently in TiCon
+			//PedestalRegistry.registerItemWrapper(BattleAxe.class, new PedestalMeleeWeaponWrapper());
+			//PedestalRegistry.registerItemWrapper(Scythe.class, new PedestalMeleeWeaponWrapper());
+		}
 
-    @EventHandler
-    public void onMessage(IMCEvent event) {
-        for (IMCMessage message : event.getMessages()) {
-            if (message.key.equals("Alkahest")) {
-                NBTTagCompound tag = message.getNBTValue();
-                if (tag != null && ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")) != null && tag.hasKey("yield") && tag.hasKey("cost")) {
-                    if (tag.hasKey("dictionaryName"))
-                        Settings.AlkahestryTome.craftingRecipes.put("OreDictionary:" + tag.getString("dictionaryName"),new AlkahestCraftRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
-                    else
-                        Settings.AlkahestryTome.craftingRecipes.put(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem().getRegistryName(), new AlkahestCraftRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
-                    LogHelper.info("[IMC] Added AlkahestRecipe ID: " + Item.itemRegistry.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem()) + " from " + message.getSender() + " to registry.");
-                } else {
-                    LogHelper.warn("[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");
-                }
-            }
-        }
-    }
+		LogHelper.info("Loaded successfully!");
+	}
 
-    @EventHandler
-    public void serverLoad(FMLServerStartingEvent event)
-    {
-        //event.registerServerCommand(new CommandGenLootChest());
-    }
+	@EventHandler
+	public void onMessage(IMCEvent event) {
+		for(IMCMessage message : event.getMessages()) {
+			if(message.key.equals("Alkahest")) {
+				NBTTagCompound tag = message.getNBTValue();
+				if(tag != null && ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")) != null && tag.hasKey("yield") && tag.hasKey("cost")) {
+					if(tag.hasKey("dictionaryName"))
+						Settings.AlkahestryTome.craftingRecipes.put("OreDictionary:" + tag.getString("dictionaryName"), new AlkahestCraftRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
+					else
+						Settings.AlkahestryTome.craftingRecipes.put(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem().getRegistryName(), new AlkahestCraftRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
+					LogHelper.info("[IMC] Added AlkahestRecipe ID: " + Item.itemRegistry.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem()) + " from " + message.getSender() + " to registry.");
+				} else {
+					LogHelper.warn("[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void serverLoad(FMLServerStartingEvent event) {
+		//event.registerServerCommand(new CommandGenLootChest());
+	}
 }

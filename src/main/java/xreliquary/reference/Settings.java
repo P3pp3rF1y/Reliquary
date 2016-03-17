@@ -31,6 +31,7 @@ public class Settings
 		public static List<PotionEssence> potionCombinations = new ArrayList<>();
 		public static List<PotionEssence> uniquePotionEssences = new ArrayList<>();
 		public static List<PotionEssence> uniquePotions = new ArrayList<>();
+		public static int flightPotionID;
 	}
 
 
@@ -261,6 +262,8 @@ public class Settings
 		public static boolean canPushProjectiles;
 		public static List<String> entitiesThatCanBePushed;
 		public static List<String> projectilesThatCanBePushed;
+		public static int pedestalFlightRange;
+		public static int pedestalCostPerSecond;
 	}
 
 	public static class RodOfLyssa {
@@ -301,5 +304,7 @@ public class Settings
 		public static byte meleeWrapperCooldown;
 		public static int bucketWrapperRange;
 		public static byte bucketWrapperCooldown;
+		public static int shearsWrapperRange;
+		public static byte shearsWrapperCooldown;
 	}
 }
