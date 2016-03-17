@@ -214,7 +214,7 @@ public class BlockItemConfiguration
 		Settings.RendingGale.blockTargetRange = ConfigurationHandler.getInt("block_target_range", Names.item_and_block_settings + "." + Names.rending_gale, 12, 5, 15);
 		Settings.RendingGale.pushPullRadius = ConfigurationHandler.getInt("push_pull_radius", Names.item_and_block_settings + "." + Names.rending_gale, 10, 1, 20);
 		Settings.RendingGale.canPushProjectiles = ConfigurationHandler.getBoolean("can_push_projectiles", Names.item_and_block_settings + "." + Names.rending_gale, false);
-		Settings.RendingGale.pedestalFlightRange = ConfigurationHandler.getInt("pedestal_flight_range", Names.item_and_block_settings + "." + Names.rending_gale, 40, 10, 100);
+		Settings.RendingGale.pedestalFlightRange = ConfigurationHandler.getInt("pedestal_flight_range", Names.item_and_block_settings + "." + Names.rending_gale, 30, 10, 100);
 		Settings.RendingGale.pedestalCostPerSecond = ConfigurationHandler.getInt("pedestal_cost_per_second", Names.item_and_block_settings + "." + Names.rending_gale, 5, 1, 20);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.rending_gale, true);
 
@@ -260,7 +260,7 @@ public class BlockItemConfiguration
 		Settings.Pedestal.bucketWrapperRange = ConfigurationHandler.getInt(Names.bucket_wrapper_range, Names.item_and_block_settings + "." + Names.pedestal, 4, 1, 10);
 		Settings.Pedestal.bucketWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.bucket_wrapper_cooldown, Names.item_and_block_settings + "." + Names.pedestal, 40, 1, 200);
 		Settings.Pedestal.shearsWrapperRange = ConfigurationHandler.getInt(Names.shears_wrapper_range, Names.item_and_block_settings + "." + Names.pedestal, 4, 1, 200);
-		Settings.Pedestal.shearsWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.shears_wrapper_cooldown, Names.item_and_block_settings + "." + Names.pedestal, 5, 1, 200);
+		Settings.Pedestal.shearsWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.shears_wrapper_cooldown, Names.item_and_block_settings + "." + Names.pedestal, 10, 1, 200);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.pedestal, true);
 
 	}
