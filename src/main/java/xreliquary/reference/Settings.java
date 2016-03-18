@@ -160,13 +160,14 @@ public class Settings {
 	}
 
 	public static class HarvestRod {
-		public static int bonemealLimit;
-		public static int bonemealCost;
-		public static int bonemealWorth;
-		public static int bonemealLuckPercentChance;
-		public static int bonemealLuckRolls;
+		public static int boneMealLimit;
+		public static int boneMealCost;
+		public static int boneMealWorth;
+		public static int boneMealLuckPercentChance;
+		public static int boneMealLuckRolls;
 		public static int harvestBreakRadius;
 		public static int bonemealAOECooldown;
+		public static int maxCapacityPerPlantable;
 	}
 
 	public static class HeroMedallion {

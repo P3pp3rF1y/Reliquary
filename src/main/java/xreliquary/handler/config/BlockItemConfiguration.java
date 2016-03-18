@@ -113,13 +113,14 @@ public class BlockItemConfiguration {
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.glacial_staff, true);
 
 		//harvest rod configs
-		Settings.HarvestRod.bonemealLimit = ConfigurationHandler.getInt("bonemeal_limit", Names.item_and_block_settings + "." + Names.harvest_rod, 250, 0, itemCap);
-		Settings.HarvestRod.bonemealCost = ConfigurationHandler.getInt("bonemeal_cost", Names.item_and_block_settings + "." + Names.harvest_rod, 1, 0, 3);
-		Settings.HarvestRod.bonemealWorth = ConfigurationHandler.getInt("bonemeal_worth", Names.item_and_block_settings + "." + Names.harvest_rod, 1, 0, 3);
-		Settings.HarvestRod.bonemealLuckPercentChance = ConfigurationHandler.getInt("bonemeal_luck_percent_chance", Names.item_and_block_settings + "." + Names.harvest_rod, 33, 1, 100);
-		Settings.HarvestRod.bonemealLuckRolls = ConfigurationHandler.getInt("bonemeal_luck_rolls", Names.item_and_block_settings + "." + Names.harvest_rod, 2, 0, 7);
+		Settings.HarvestRod.boneMealLimit = ConfigurationHandler.getInt("bonemeal_limit", Names.item_and_block_settings + "." + Names.harvest_rod, 250, 0, itemCap);
+		Settings.HarvestRod.boneMealCost = ConfigurationHandler.getInt("bonemeal_cost", Names.item_and_block_settings + "." + Names.harvest_rod, 1, 0, 3);
+		Settings.HarvestRod.boneMealWorth = ConfigurationHandler.getInt("bonemeal_worth", Names.item_and_block_settings + "." + Names.harvest_rod, 1, 0, 3);
+		Settings.HarvestRod.boneMealLuckPercentChance = ConfigurationHandler.getInt("bonemeal_luck_percent_chance", Names.item_and_block_settings + "." + Names.harvest_rod, 33, 1, 100);
+		Settings.HarvestRod.boneMealLuckRolls = ConfigurationHandler.getInt("bonemeal_luck_rolls", Names.item_and_block_settings + "." + Names.harvest_rod, 2, 0, 7);
 		Settings.HarvestRod.harvestBreakRadius = ConfigurationHandler.getInt("harvest_break_radius", Names.item_and_block_settings + "." + Names.harvest_rod, 2, 0, 5);
 		Settings.HarvestRod.bonemealAOECooldown = ConfigurationHandler.getInt("bonemeal_aoe_cooldown", Names.item_and_block_settings + "." + Names.harvest_rod, 3, 1, 20);
+		Settings.HarvestRod.maxCapacityPerPlantable = ConfigurationHandler.getInt("max_capacity_per_plantable", Names.item_and_block_settings + "." + Names.harvest_rod, 250, 0, itemCap);
 
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.harvest_rod, true);
 

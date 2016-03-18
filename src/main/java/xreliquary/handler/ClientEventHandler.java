@@ -152,8 +152,16 @@ public class ClientEventHandler {
 			return;
 
 		ItemStack harvestRodStack = player.getCurrentEquippedItem();
-		ItemStack bonemealStack = new ItemStack(Items.dye, NBTHelper.getInteger("bonemeal", harvestRodStack), Reference.WHITE_DYE_META);
-		renderStandardTwoItemHUD(mc, player, harvestRodStack, bonemealStack, Settings.HudPositions.harvestRod, 0, 0);
+
+		ItemStack secondaryStack;
+		if (ModItems.harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.PLANTABLE_MODE)) {
+			secondaryStack = ModItems.harvestRod.getInventoryItems(harvestRodStack).get(ModItems.harvestRod.getCurrentPlantableIndex(harvestRodStack)).copy();
+			secondaryStack.stackSize = ModItems.harvestRod.getItemQuantity(harvestRodStack, ModItems.harvestRod.getCurrentPlantableIndex(harvestRodStack));
+		} else {
+			secondaryStack = new ItemStack(Items.dye, NBTHelper.getInteger("bonemeal", harvestRodStack), Reference.WHITE_DYE_META);
+		}
+
+		renderStandardTwoItemHUD(mc, player, harvestRodStack, secondaryStack, Settings.HudPositions.harvestRod, 0, 0);
 	}
 
 	public void handleInfernalChaliceHUDCheck(Minecraft mc) {

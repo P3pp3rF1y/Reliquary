@@ -8,12 +8,15 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.stats.StatList;
@@ -32,7 +35,9 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.StackHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -44,6 +49,11 @@ public class ItemHarvestRod extends ItemToggleable {
 	public static final String CROP_LOCATIONS_NBT_TAG = "crop_locations";
 	public static final String COOLDOWN_NBT_TAG = "cooldown";
 	public static final String AOE_INITIAL_BLOCK_NBT_TAG = "aoe_initial_block";
+	public static final String BONE_MEAL_MODE = "bone_meal";
+	public static final String PLANTABLE_MODE = "plantable";
+	public static final String MODE_NBT_TAG = "mode";
+	public static final String PLANTABLE_INDEX_NBT_TAG = "plantable_index";
+	public static final String PLANTABLE_QUANTITIES_NBT_TAG = "plantable_quantities";
 
 	public ItemHarvestRod() {
 		super(Names.harvest_rod);
@@ -63,23 +73,23 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	public int getBonemealLimit() {
-		return Settings.HarvestRod.bonemealLimit;
+		return Settings.HarvestRod.boneMealLimit;
 	}
 
 	public int getBonemealWorth() {
-		return Settings.HarvestRod.bonemealWorth;
+		return Settings.HarvestRod.boneMealWorth;
 	}
 
 	public int getBonemealCost() {
-		return Settings.HarvestRod.bonemealCost;
+		return Settings.HarvestRod.boneMealCost;
 	}
 
 	public int getLuckRolls() {
-		return Settings.HarvestRod.bonemealLuckRolls;
+		return Settings.HarvestRod.boneMealLuckRolls;
 	}
 
 	public int getLuckPercent() {
-		return Settings.HarvestRod.bonemealLuckPercentChance;
+		return Settings.HarvestRod.boneMealLuckPercentChance;
 	}
 
 	public int getBreakRadius() {
@@ -103,7 +113,52 @@ public class ItemHarvestRod extends ItemToggleable {
 					setBoneMealCount(ist, getBoneMealCount(ist) + getBonemealWorth());
 				}
 			}
+
+			consumePlantables(ist, player);
 		}
+	}
+
+	private void consumePlantables(ItemStack harvestRod, EntityPlayer player) {
+		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+			ItemStack currentStack = player.inventory.mainInventory[slot];
+			if(currentStack == null) {
+				continue;
+			}
+			if(currentStack.getItem() instanceof IPlantable && addItemToInventory(currentStack, harvestRod, player)) {
+				break;
+			}
+		}
+	}
+
+	private boolean addItemToInventory(ItemStack stack, ItemStack harvestRod, EntityPlayer player) {
+		NBTTagList itemsList = harvestRod.getTagCompound().getTagList("Items", 10);
+		boolean addedToExistingStack = false;
+		for(byte i = 0; i < itemsList.tagCount(); ++i) {
+			NBTTagCompound item = itemsList.getCompoundTagAt(i);
+			ItemStack currentStack = ItemStack.loadItemStackFromNBT(item);
+			if(StackHelper.isItemAndNbtEqual(stack, currentStack)) {
+				int itemQuantity = getItemQuantity(harvestRod, i);
+				if(itemQuantity < Settings.HarvestRod.maxCapacityPerPlantable && InventoryHelper.consumeItem(stack, player, 0, 1)) {
+					setItemQuantity(harvestRod, i, ++itemQuantity);
+					itemsList.set(i, currentStack.serializeNBT());
+
+					addedToExistingStack = true;
+				} else {
+					return false;
+				}
+			}
+		}
+		if(!addedToExistingStack && InventoryHelper.consumeItem(stack, player, 0, 1)) {
+			ItemStack newStack = stack.copy();
+			setItemQuantity(harvestRod, (byte) itemsList.tagCount(), 1);
+			itemsList.appendTag(newStack.serializeNBT());
+		} else {
+			return false;
+		}
+
+		harvestRod.getTagCompound().setTag("Items", itemsList);
+
+		return true;
 	}
 
 	@Override
@@ -233,6 +288,17 @@ public class ItemHarvestRod extends ItemToggleable {
 		}
 	}
 
+	@Override
+	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
+		if(entityLiving.worldObj.isRemote)
+			return false;
+		if(entityLiving.isSneaking()) {
+			cycleMode(stack);
+			return true;
+		}
+		return false;
+	}
+
 	private void setCoolDown(ItemStack stack, World world) {
 		NBTHelper.setLong(COOLDOWN_NBT_TAG, stack, world.getWorldTime() + Settings.HarvestRod.bonemealAOECooldown);
 	}
@@ -294,5 +360,84 @@ public class ItemHarvestRod extends ItemToggleable {
 
 	private void saveNBTCropLocations(ItemStack stack, NBTTagList cropLocationsList) {
 		stack.getTagCompound().setTag(CROP_LOCATIONS_NBT_TAG, cropLocationsList);
+	}
+
+	private void cycleMode(ItemStack stack) {
+		String currentMode = getMode(stack);
+		List<ItemStack> items = getInventoryItems(stack);
+		switch(currentMode) {
+			case BONE_MEAL_MODE:
+				if(items.size() > 0) {
+					setMode(stack, PLANTABLE_MODE);
+					setCurrentPlantableIndex(stack, (byte) 0);
+				}
+				break;
+			case PLANTABLE_MODE:
+				if(items.size() > getCurrentPlantableIndex(stack) + 1) {
+					setCurrentPlantableIndex(stack, (byte) (getCurrentPlantableIndex(stack) + 1));
+				} else {
+					setMode(stack, BONE_MEAL_MODE);
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+	public byte getCurrentPlantableIndex(ItemStack stack) {
+		return stack.getTagCompound().getByte(PLANTABLE_INDEX_NBT_TAG);
+	}
+
+	private void setCurrentPlantableIndex(ItemStack stack, byte index) {
+		stack.getTagCompound().setByte(PLANTABLE_INDEX_NBT_TAG, index);
+	}
+
+	private void setMode(ItemStack stack, String mode) {
+		NBTHelper.setString(MODE_NBT_TAG, stack, mode);
+	}
+
+	public String getMode(ItemStack stack) {
+		String mode = NBTHelper.getString(MODE_NBT_TAG, stack);
+
+		return mode.equals("") ? BONE_MEAL_MODE : mode;
+	}
+
+	public List<ItemStack> getInventoryItems(ItemStack stack) {
+		NBTTagList itemsList = stack.getTagCompound().getTagList("Items", 10);
+		ArrayList<ItemStack> items = new ArrayList<>();
+
+		for(int i = 0; i < itemsList.tagCount(); ++i) {
+			NBTTagCompound item = itemsList.getCompoundTagAt(i);
+			byte slotIndex = item.getByte("Slot");
+			if(slotIndex >= 0) {
+				items.add(ItemStack.loadItemStackFromNBT(item));
+			}
+		}
+		return items;
+	}
+
+	public int getItemQuantity(ItemStack stack, byte itemIndex) {
+		NBTTagList plantableQuantities = stack.getTagCompound().getTagList(PLANTABLE_QUANTITIES_NBT_TAG, 3);
+
+		if(plantableQuantities.hasNoTags() || plantableQuantities.tagCount() <= itemIndex)
+			return 0;
+
+		return ((NBTTagInt) plantableQuantities.get(itemIndex)).getInt();
+	}
+
+	private void setItemQuantity(ItemStack stack, byte itemIndex, int quantity) {
+		NBTTagList plantableQuantities = stack.getTagCompound().getTagList(PLANTABLE_QUANTITIES_NBT_TAG, 3);
+
+		byte currentSize = (byte) plantableQuantities.tagCount();
+
+		while (currentSize <= itemIndex) {
+			plantableQuantities.appendTag(new NBTTagInt(0));
+
+			currentSize++;
+		}
+
+		plantableQuantities.set(itemIndex, new NBTTagInt(quantity));
+
+		stack.getTagCompound().setTag(PLANTABLE_QUANTITIES_NBT_TAG, plantableQuantities);
 	}
 }
