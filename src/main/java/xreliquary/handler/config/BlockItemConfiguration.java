@@ -1,6 +1,5 @@
 package xreliquary.handler.config;
 
-
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -14,33 +13,30 @@ import xreliquary.reference.Settings;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class BlockItemConfiguration
-{
-	public static void loadEntitiesSettings()
-	{
+public class BlockItemConfiguration {
+	public static void loadEntitiesSettings() {
 		List<String> entityNames = new ArrayList<String>();
-		for (Object o : EntityList.stringToClassMapping.values()) {
-			Class c = (Class)o;
-			if (EntityLiving.class.isAssignableFrom(c)) {
-				entityNames.add( EntityList.classToStringMapping.get(o) );
+		for(Object o : EntityList.stringToClassMapping.values()) {
+			Class c = (Class) o;
+			if(EntityLiving.class.isAssignableFrom(c)) {
+				entityNames.add(EntityList.classToStringMapping.get(o));
 			}
 		}
 		List<String> projectileNames = new ArrayList<String>();
-		for (Object o : EntityList.stringToClassMapping.values()) {
-			Class c = (Class)o;
-			if (IProjectile.class.isAssignableFrom(c)) {
-				projectileNames.add( EntityList.classToStringMapping.get(o) );
+		for(Object o : EntityList.stringToClassMapping.values()) {
+			Class c = (Class) o;
+			if(IProjectile.class.isAssignableFrom(c)) {
+				projectileNames.add(EntityList.classToStringMapping.get(o));
 			}
 		}
 
-		Settings.InterdictionTorch.entitiesThatCanBePushed = ConfigurationHandler.getStringList("entities_that_can_be_pushed", Names.item_and_block_settings + "." + Names.interdiction_torch, entityNames );
+		Settings.InterdictionTorch.entitiesThatCanBePushed = ConfigurationHandler.getStringList("entities_that_can_be_pushed", Names.item_and_block_settings + "." + Names.interdiction_torch, entityNames);
 		Settings.InterdictionTorch.projectilesThatCanBePushed = ConfigurationHandler.getStringList("projectiles_that_can_be_pushed", Names.item_and_block_settings + "." + Names.interdiction_torch, projectileNames);
 
-		Settings.RendingGale.entitiesThatCanBePushed = ConfigurationHandler.getStringList("entities_that_can_be_pushed", Names.item_and_block_settings + "." + Names.rending_gale, entityNames );
-		Settings.RendingGale.projectilesThatCanBePushed = ConfigurationHandler.getStringList( "projectiles_that_can_be_pushed", Names.item_and_block_settings + "." + Names.rending_gale, projectileNames );
+		Settings.RendingGale.entitiesThatCanBePushed = ConfigurationHandler.getStringList("entities_that_can_be_pushed", Names.item_and_block_settings + "." + Names.rending_gale, entityNames);
+		Settings.RendingGale.projectilesThatCanBePushed = ConfigurationHandler.getStringList("projectiles_that_can_be_pushed", Names.item_and_block_settings + "." + Names.rending_gale, projectileNames);
 
-		Settings.SeekerShot.entitiesThatCanBeHunted = ConfigurationHandler.getStringList( "entities_that_can_be_hunted", Names.item_and_block_settings + "." + Names.seeker_shot, entityNames);
+		Settings.SeekerShot.entitiesThatCanBeHunted = ConfigurationHandler.getStringList("entities_that_can_be_hunted", Names.item_and_block_settings + "." + Names.seeker_shot, entityNames);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.seeker_shot, true);
 	}
 
@@ -95,7 +91,7 @@ public class BlockItemConfiguration
 
 		//ender staff configs
 		Settings.EnderStaff.enderPearlCastCost = ConfigurationHandler.getInt("ender_pearl_cast_cost", Names.item_and_block_settings + "." + Names.ender_staff, 1, 0, 3);
-		Settings.EnderStaff.enderPearlNodeWarpCost = ConfigurationHandler.getInt("ender_pearl_node_warp_cost",Names.item_and_block_settings + "." + Names.ender_staff,  1, 0, 3);
+		Settings.EnderStaff.enderPearlNodeWarpCost = ConfigurationHandler.getInt("ender_pearl_node_warp_cost", Names.item_and_block_settings + "." + Names.ender_staff, 1, 0, 3);
 		Settings.EnderStaff.enderPearlWorth = ConfigurationHandler.getInt("ender_pearl_worth", Names.item_and_block_settings + "." + Names.ender_staff, 1, 0, 10);
 		Settings.EnderStaff.enderPearlLimit = ConfigurationHandler.getInt("ender_pearl_limit", Names.item_and_block_settings + "." + Names.ender_staff, 250, 0, itemCap);
 		Settings.EnderStaff.nodeWarpCastTime = ConfigurationHandler.getInt("node_warp_cast_time", Names.item_and_block_settings + "." + Names.ender_staff, 60, 10, 120);
@@ -123,6 +119,8 @@ public class BlockItemConfiguration
 		Settings.HarvestRod.bonemealLuckPercentChance = ConfigurationHandler.getInt("bonemeal_luck_percent_chance", Names.item_and_block_settings + "." + Names.harvest_rod, 33, 1, 100);
 		Settings.HarvestRod.bonemealLuckRolls = ConfigurationHandler.getInt("bonemeal_luck_rolls", Names.item_and_block_settings + "." + Names.harvest_rod, 2, 0, 7);
 		Settings.HarvestRod.harvestBreakRadius = ConfigurationHandler.getInt("harvest_break_radius", Names.item_and_block_settings + "." + Names.harvest_rod, 2, 0, 5);
+		Settings.HarvestRod.bonemealAOECooldown = ConfigurationHandler.getInt("bonemeal_aoe_cooldown", Names.item_and_block_settings + "." + Names.harvest_rod, 3, 1, 20);
+
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.harvest_rod, true);
 
 		//hero's medallion config

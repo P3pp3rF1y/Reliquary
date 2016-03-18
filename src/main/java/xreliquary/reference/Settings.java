@@ -1,6 +1,5 @@
 package xreliquary.reference;
 
-
 import net.minecraft.item.ItemStack;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
@@ -12,15 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-public class Settings
-{
+public class Settings {
 	public static boolean chestLootEnabled;
 	public static boolean wailaShiftForInfo;
 	public static boolean dropCraftingRecipesEnabled;
 	public static boolean mobDropsEnabled;
 	public static List<String> disabledItemsBlocks;
-
 
 	public static class Potions {
 		public static int maxEffectCount;
@@ -33,7 +29,6 @@ public class Settings
 		public static List<PotionEssence> uniquePotions = new ArrayList<>();
 		public static int flightPotionID;
 	}
-
 
 	public static class HudPositions {
 		public static int sojournerStaff;
@@ -53,9 +48,7 @@ public class Settings
 		public static int rendingGale;
 	}
 
-
-	public static class EasyModeRecipes
-	{
+	public static class EasyModeRecipes {
 		public static boolean fortuneCoin;
 		public static boolean altar;
 		public static boolean infernalChalice;
@@ -99,8 +92,8 @@ public class Settings
 
 	public static class AlkahestryTome {
 		public static int chargeLimit;
-		public static Map<String, AlkahestCraftRecipe> craftingRecipes =  new HashMap<>();
-		public static Map<String, AlkahestChargeRecipe> chargingRecipes =  new HashMap<>();
+		public static Map<String, AlkahestCraftRecipe> craftingRecipes = new HashMap<>();
+		public static Map<String, AlkahestChargeRecipe> chargingRecipes = new HashMap<>();
 		public static ItemStack baseItem;
 		public static int baseItemWorth;
 	}
@@ -173,6 +166,7 @@ public class Settings
 		public static int bonemealLuckPercentChance;
 		public static int bonemealLuckRolls;
 		public static int harvestBreakRadius;
+		public static int bonemealAOECooldown;
 	}
 
 	public static class HeroMedallion {

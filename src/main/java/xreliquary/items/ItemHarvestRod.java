@@ -14,10 +14,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import org.lwjgl.input.Keyboard;
@@ -37,6 +40,11 @@ import java.util.Random;
  * Created by Xeno on 10/11/2014.
  */
 public class ItemHarvestRod extends ItemToggleable {
+
+	public static final String CROP_LOCATIONS_NBT_TAG = "crop_locations";
+	public static final String COOLDOWN_NBT_TAG = "cooldown";
+	public static final String AOE_INITIAL_BLOCK_NBT_TAG = "aoe_initial_block";
+
 	public ItemHarvestRod() {
 		super(Names.harvest_rod);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
@@ -150,23 +158,14 @@ public class ItemHarvestRod extends ItemToggleable {
 		}
 	}
 
-	@Override
-	public boolean onItemUse(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float xOff, float yOff, float zOff) {
-		if(getBoneMealCount(ist) >= getBonemealCost() || player.capabilities.isCreativeMode) {
-			boneMealBlock(ist, player, world, pos, side, xOff, yOff, zOff);
-		}
-
-		return true;
-	}
-
-	private void boneMealBlock(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float xOff, float yOff, float zOff) {
+	private void boneMealBlock(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
 		ItemStack fakeItemStack = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
 		ItemDye fakeItemDye = (ItemDye) fakeItemStack.getItem();
 
 		boolean usedRod = false;
 		for(int repeatedUses = 0; repeatedUses <= getLuckRolls(); repeatedUses++) {
 			if(repeatedUses == 0 || world.rand.nextInt(100) <= getLuckPercent()) {
-				if(fakeItemDye.onItemUse(fakeItemStack, player, world, pos, side, xOff, yOff, zOff)) {
+				if(fakeItemDye.onItemUse(fakeItemStack, player, world, pos, side, 0, 0, 0)) {
 					if(!usedRod)
 						usedRod = true;
 					player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
@@ -188,31 +187,112 @@ public class ItemHarvestRod extends ItemToggleable {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		player.setItemInUse(stack, getMaxItemUseDuration(stack));
-		return stack;
+		ItemStack returnedStack = super.onItemRightClick(stack, world, player);
+		player.setItemInUse(returnedStack, getMaxItemUseDuration(stack));
+		return returnedStack;
 	}
 
 	@Override
 	public int getMaxItemUseDuration(ItemStack stack) {
-		return Integer.MAX_VALUE;
+		return 64;
+	}
+
+	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int timeLeft) {
+		if(player.worldObj.isRemote)
+			return;
+
+		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+		if(mop != null) {
+			BlockPos pos = mop.getBlockPos();
+			if(getBoneMealCount(stack) >= getBonemealCost() || player.capabilities.isCreativeMode) {
+				boneMealBlock(stack, player, world, pos, EnumFacing.UP);
+			}
+		}
 	}
 
 	@Override
 	public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
-		int range = getBreakRadius(); //TODO rename to harvest rod radius
+		if(player.worldObj.isRemote)
+			return;
 
-		BlockPos pos = this.getMovingObjectPositionFromPlayer(player.worldObj, player, false).getBlockPos();
+		if(isCoolDownOver(stack, player.worldObj) && (getBoneMealCount(stack) >= getBonemealCost() || player.capabilities.isCreativeMode)) {
+			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+			if(mop != null) {
+				BlockPos pos = mop.getBlockPos();
+				int range = getBreakRadius(); //TODO rename to harvest rod radius
+				World world = player.worldObj;
 
-		int randomX = pos.getX() - range + player.worldObj.rand.nextInt(range*2 + 1);
+				BlockPos blockToBoneMeal = getNextBlockToBoneMeal(stack, range, pos, world);
 
-		for(int xOff = -getBreakRadius(); xOff <= getBreakRadius(); xOff++) {
-			for(int yOff = -getBreakRadius(); yOff <= getBreakRadius(); yOff++) {
-				for(int zOff = -getBreakRadius(); zOff <= getBreakRadius(); zOff++) {
-					doHarvestBlockBreak(ist, pos, player, xOff, yOff, zOff);
+				if(blockToBoneMeal != null)
+					boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP);
+
+				setCoolDown(stack, world);
+			}
+		}
+	}
+
+	private void setCoolDown(ItemStack stack, World world) {
+		NBTHelper.setLong(COOLDOWN_NBT_TAG, stack, world.getWorldTime() + Settings.HarvestRod.bonemealAOECooldown);
+	}
+
+	private boolean isCoolDownOver(ItemStack stack, World world) {
+		if(NBTHelper.getLong(COOLDOWN_NBT_TAG, stack) <= world.getWorldTime())
+			return true;
+
+		if(NBTHelper.getLong(COOLDOWN_NBT_TAG, stack) - world.getWorldTime() > 2 * Settings.HarvestRod.bonemealAOECooldown)
+			return true;
+
+		return false;
+	}
+
+	private BlockPos getNextBlockToBoneMeal(ItemStack stack, int range, BlockPos pos, World world) {
+		NBTTagList cropLocationsList = getNBTCropLocations(stack);
+		if(cropLocationsList.hasNoTags() || NBTHelper.getLong(AOE_INITIAL_BLOCK_NBT_TAG, stack) != pos.toLong()) {
+			updateGrowableQueue(stack, range, pos, world);
+
+			cropLocationsList = getNBTCropLocations(stack);
+
+			NBTHelper.setLong(AOE_INITIAL_BLOCK_NBT_TAG, stack, pos.toLong());
+		}
+
+		if(cropLocationsList.hasNoTags())
+			return null;
+
+		int nextLocationIndex = world.rand.nextInt(cropLocationsList.tagCount());
+
+		NBTTagLong nextLocation = (NBTTagLong) cropLocationsList.removeTag(nextLocationIndex);
+
+		saveNBTCropLocations(stack, cropLocationsList);
+
+		return BlockPos.fromLong(nextLocation.getLong());
+	}
+
+	private NBTTagList getNBTCropLocations(ItemStack stack) {
+		return stack.getTagCompound().getTagList(CROP_LOCATIONS_NBT_TAG, 4);
+	}
+
+	private void updateGrowableQueue(ItemStack stack, int range, BlockPos pos, World world) {
+
+		NBTTagList cropLocationsList = new NBTTagList();
+
+		for(int x = pos.getX() - range; x <= pos.getX() + range; x++) {
+			for(int y = pos.getY() - range; y <= pos.getY() + range; y++) {
+				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
+					BlockPos currentPos = new BlockPos(x, y, z);
+					IBlockState blockState = world.getBlockState(currentPos);
+					if(blockState.getBlock() instanceof IGrowable) {
+						NBTTagLong location = new NBTTagLong(currentPos.toLong());
+						cropLocationsList.appendTag(location);
+					}
 				}
 			}
 		}
+		saveNBTCropLocations(stack, cropLocationsList);
+	}
 
-
+	private void saveNBTCropLocations(ItemStack stack, NBTTagList cropLocationsList) {
+		stack.getTagCompound().setTag(CROP_LOCATIONS_NBT_TAG, cropLocationsList);
 	}
 }
