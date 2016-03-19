@@ -154,11 +154,18 @@ public class ClientEventHandler {
 		ItemStack harvestRodStack = player.getCurrentEquippedItem();
 
 		ItemStack secondaryStack;
-		if (ModItems.harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.PLANTABLE_MODE)) {
-			secondaryStack = ModItems.harvestRod.getInventoryItems(harvestRodStack).get(ModItems.harvestRod.getCurrentPlantableIndex(harvestRodStack)).copy();
-			secondaryStack.stackSize = ModItems.harvestRod.getItemQuantity(harvestRodStack, ModItems.harvestRod.getCurrentPlantableIndex(harvestRodStack));
+		ItemHarvestRod harvestRod = ModItems.harvestRod;
+		if (harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.PLANTABLE_MODE)) {
+			secondaryStack = harvestRod.getInventoryItems(harvestRodStack).get(harvestRod.getCurrentPlantableIndex(harvestRodStack)).copy();
+			secondaryStack.stackSize = harvestRod.getItemQuantity(harvestRodStack, harvestRod.getCurrentPlantableIndex(harvestRodStack));
 		} else {
-			secondaryStack = new ItemStack(Items.dye, NBTHelper.getInteger("bonemeal", harvestRodStack), Reference.WHITE_DYE_META);
+			int boneMealCount = harvestRod.getBoneMealCount(harvestRodStack);
+
+			if(player.isUsingItem()) {
+				boneMealCount -= harvestRod.getBonemealCost() * harvestRod.getTimesBoneMealUsed(harvestRodStack, player.getItemInUseCount());
+			}
+
+			secondaryStack = new ItemStack(Items.dye, boneMealCount, Reference.WHITE_DYE_META);
 		}
 
 		renderStandardTwoItemHUD(mc, player, harvestRodStack, secondaryStack, Settings.HudPositions.harvestRod, 0, 0);

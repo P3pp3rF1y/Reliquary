@@ -13,6 +13,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,6 +39,7 @@ import xreliquary.util.NBTHelper;
 import xreliquary.util.StackHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -54,6 +56,7 @@ public class ItemHarvestRod extends ItemToggleable {
 	public static final String MODE_NBT_TAG = "mode";
 	public static final String PLANTABLE_INDEX_NBT_TAG = "plantable_index";
 	public static final String PLANTABLE_QUANTITIES_NBT_TAG = "plantable_quantities";
+	private static final int AOE_START_COOLDOWN = 10;
 
 	public ItemHarvestRod() {
 		super(Names.harvest_rod);
@@ -70,6 +73,11 @@ public class ItemHarvestRod extends ItemToggleable {
 		if(this.isEnabled(ist))
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.WHITE + Items.dye.getItemStackDisplayName(new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META))), ist, list);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
+	}
+
+	@Override
+	public EnumAction getItemUseAction(ItemStack ist) {
+		return EnumAction.BLOCK;
 	}
 
 	public int getBonemealLimit() {
@@ -214,6 +222,10 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	private void boneMealBlock(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
+		boneMealBlock(ist, player, world, pos, side, true);
+	}
+
+	private void boneMealBlock(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, boolean updateCharge) {
 		ItemStack fakeItemStack = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
 		ItemDye fakeItemDye = (ItemDye) fakeItemStack.getItem();
 
@@ -228,11 +240,11 @@ public class ItemHarvestRod extends ItemToggleable {
 			}
 		}
 
-		if(usedRod && !player.capabilities.isCreativeMode)
+		if(updateCharge && usedRod && !player.capabilities.isCreativeMode)
 			setBoneMealCount(ist, getBoneMealCount(ist) - getBonemealCost());
 	}
 
-	private int getBoneMealCount(ItemStack ist) {
+	public int getBoneMealCount(ItemStack ist) {
 		return NBTHelper.getInteger("bonemeal", ist);
 	}
 
@@ -242,14 +254,19 @@ public class ItemHarvestRod extends ItemToggleable {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		ItemStack returnedStack = super.onItemRightClick(stack, world, player);
-		player.setItemInUse(returnedStack, getMaxItemUseDuration(stack));
-		return returnedStack;
+		if(player.isSneaking())
+			return super.onItemRightClick(stack, world, player);
+
+		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+		if(mop != null) {
+			player.setItemInUse(stack, getMaxItemUseDuration(stack));
+		}
+		return stack;
 	}
 
 	@Override
 	public int getMaxItemUseDuration(ItemStack stack) {
-		return 64;
+		return 300;
 	}
 
 	@Override
@@ -257,13 +274,20 @@ public class ItemHarvestRod extends ItemToggleable {
 		if(player.worldObj.isRemote)
 			return;
 
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+		if(!player.capabilities.isCreativeMode)
+			setBoneMealCount(stack, Math.max(0, getBoneMealCount(stack) - getBonemealCost() * getTimesBoneMealUsed(stack, timeLeft)));
+
+		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+
 		if(mop != null) {
 			BlockPos pos = mop.getBlockPos();
 			if(getBoneMealCount(stack) >= getBonemealCost() || player.capabilities.isCreativeMode) {
 				boneMealBlock(stack, player, world, pos, EnumFacing.UP);
+				return;
 			}
 		}
+
+		return;
 	}
 
 	@Override
@@ -271,21 +295,27 @@ public class ItemHarvestRod extends ItemToggleable {
 		if(player.worldObj.isRemote)
 			return;
 
-		if(isCoolDownOver(stack, player.worldObj) && (getBoneMealCount(stack) >= getBonemealCost() || player.capabilities.isCreativeMode)) {
-			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
-			if(mop != null) {
-				BlockPos pos = mop.getBlockPos();
-				int range = getBreakRadius(); //TODO rename to harvest rod radius
-				World world = player.worldObj;
+		if(isCoolDownOver(stack, count)) {
+			if(getBoneMealCount(stack) >= (getBonemealCost() * getTimesBoneMealUsed(stack, count)) || player.capabilities.isCreativeMode) {
+				MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+				if(mop != null) {
+					World world = player.worldObj;
 
-				BlockPos blockToBoneMeal = getNextBlockToBoneMeal(stack, range, pos, world);
+					BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, mop.getBlockPos(), Settings.HarvestRod.harvestBreakRadius);
 
-				if(blockToBoneMeal != null)
-					boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP);
-
-				setCoolDown(stack, world);
+					if(blockToBoneMeal != null)
+						boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP, false);
+				}
+			} else {
+				player.stopUsingItem();
 			}
 		}
+	}
+
+	public int getTimesBoneMealUsed(ItemStack stack, int count) {
+		if(getMaxItemUseDuration(stack) - count < AOE_START_COOLDOWN)
+			return 0;
+		return (getMaxItemUseDuration(stack) - (count + AOE_START_COOLDOWN)) / Settings.HarvestRod.bonemealAOECooldown;
 	}
 
 	@Override
@@ -299,67 +329,23 @@ public class ItemHarvestRod extends ItemToggleable {
 		return false;
 	}
 
-	private void setCoolDown(ItemStack stack, World world) {
-		NBTHelper.setLong(COOLDOWN_NBT_TAG, stack, world.getWorldTime() + Settings.HarvestRod.bonemealAOECooldown);
+	private boolean isCoolDownOver(ItemStack stack, int count) {
+		return getMaxItemUseDuration(stack) - count >= AOE_START_COOLDOWN && (getMaxItemUseDuration(stack) - count) % Settings.HarvestRod.bonemealAOECooldown == 0;
 	}
 
-	private boolean isCoolDownOver(ItemStack stack, World world) {
-		if(NBTHelper.getLong(COOLDOWN_NBT_TAG, stack) <= world.getWorldTime())
-			return true;
-
-		if(NBTHelper.getLong(COOLDOWN_NBT_TAG, stack) - world.getWorldTime() > 2 * Settings.HarvestRod.bonemealAOECooldown)
-			return true;
-
-		return false;
-	}
-
-	private BlockPos getNextBlockToBoneMeal(ItemStack stack, int range, BlockPos pos, World world) {
-		NBTTagList cropLocationsList = getNBTCropLocations(stack);
-		if(cropLocationsList.hasNoTags() || NBTHelper.getLong(AOE_INITIAL_BLOCK_NBT_TAG, stack) != pos.toLong()) {
-			updateGrowableQueue(stack, range, pos, world);
-
-			cropLocationsList = getNBTCropLocations(stack);
-
-			NBTHelper.setLong(AOE_INITIAL_BLOCK_NBT_TAG, stack, pos.toLong());
-		}
-
-		if(cropLocationsList.hasNoTags())
-			return null;
-
-		int nextLocationIndex = world.rand.nextInt(cropLocationsList.tagCount());
-
-		NBTTagLong nextLocation = (NBTTagLong) cropLocationsList.removeTag(nextLocationIndex);
-
-		saveNBTCropLocations(stack, cropLocationsList);
-
-		return BlockPos.fromLong(nextLocation.getLong());
-	}
-
-	private NBTTagList getNBTCropLocations(ItemStack stack) {
-		return stack.getTagCompound().getTagList(CROP_LOCATIONS_NBT_TAG, 4);
-	}
-
-	private void updateGrowableQueue(ItemStack stack, int range, BlockPos pos, World world) {
-
-		NBTTagList cropLocationsList = new NBTTagList();
-
+	private BlockPos getNextBlockToBoneMeal(World world, BlockPos pos, int range) {
 		for(int x = pos.getX() - range; x <= pos.getX() + range; x++) {
 			for(int y = pos.getY() - range; y <= pos.getY() + range; y++) {
 				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
 					BlockPos currentPos = new BlockPos(x, y, z);
 					IBlockState blockState = world.getBlockState(currentPos);
-					if(blockState.getBlock() instanceof IGrowable) {
-						NBTTagLong location = new NBTTagLong(currentPos.toLong());
-						cropLocationsList.appendTag(location);
+					if(blockState.getBlock() instanceof IGrowable && ((IGrowable) blockState.getBlock()).canGrow(world, currentPos, blockState, world.isRemote)) {
+						return currentPos;
 					}
 				}
 			}
 		}
-		saveNBTCropLocations(stack, cropLocationsList);
-	}
-
-	private void saveNBTCropLocations(ItemStack stack, NBTTagList cropLocationsList) {
-		stack.getTagCompound().setTag(CROP_LOCATIONS_NBT_TAG, cropLocationsList);
+		return null;
 	}
 
 	private void cycleMode(ItemStack stack) {
@@ -430,7 +416,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
 		byte currentSize = (byte) plantableQuantities.tagCount();
 
-		while (currentSize <= itemIndex) {
+		while(currentSize <= itemIndex) {
 			plantableQuantities.appendTag(new NBTTagInt(0));
 
 			currentSize++;
