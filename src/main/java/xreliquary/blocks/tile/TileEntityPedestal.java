@@ -1,13 +1,14 @@
 package xreliquary.blocks.tile;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
@@ -15,10 +16,9 @@ import net.minecraftforge.fluids.*;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
 import xreliquary.api.IPedestalActionItemWrapper;
-import xreliquary.init.ModFluids;
 import xreliquary.util.InventoryHelper;
-import xreliquary.util.pedestal.PedestalRegistry;
 import xreliquary.util.XRFakePlayerFactory;
+import xreliquary.util.pedestal.PedestalRegistry;
 
 import java.util.*;
 
@@ -77,7 +77,8 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	public void setInventorySlotContents(int slot, ItemStack stack) {
 		super.setInventorySlotContents(slot, stack);
 		updateSpecialItems();
-		worldObj.markBlockForUpdate(getPos());
+		IBlockState blockState = worldObj.getBlockState(getPos());
+		worldObj.notifyBlockUpdate(getPos(), blockState, blockState, 3);
 	}
 
 	private void updateSpecialItems() {
@@ -151,9 +152,9 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 				} else {
 					ItemStack item = inventory[currentItemIndex];
 
-					if (actionItems.containsKey(currentItemIndex)) {
+					if(actionItems.containsKey(currentItemIndex)) {
 						actionItems.get(currentItemIndex).update(item, this);
-					} else if (itemWrappers.containsKey(currentItemIndex)) {
+					} else if(itemWrappers.containsKey(currentItemIndex)) {
 						itemWrappers.get(currentItemIndex).update(inventory[currentItemIndex], this);
 					}
 				}
@@ -172,7 +173,7 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	}
 
 	@Override
-	public IChatComponent getDisplayName() {
+	public ITextComponent getDisplayName() {
 		return null;
 	}
 
@@ -281,7 +282,7 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	}
 
 	private IInventory getInventoryAtPos(BlockPos pos) {
-		if (worldObj.getTileEntity(pos) instanceof IInventory)
+		if(worldObj.getTileEntity(pos) instanceof IInventory)
 			return (IInventory) worldObj.getTileEntity(pos);
 		return null;
 	}
@@ -314,7 +315,7 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	}
 
 	private IFluidHandler getTankAtPos(BlockPos pos) {
-		if (worldObj.getTileEntity(pos) instanceof IFluidHandler)
+		if(worldObj.getTileEntity(pos) instanceof IFluidHandler)
 			return (IFluidHandler) worldObj.getTileEntity(pos);
 		return null;
 	}
@@ -372,8 +373,8 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		if(fluidContainers.size() == 0)
 			return false;
 
-		for (ItemStack container : fluidContainers) {
-			if(((IFluidContainerItem)container.getItem()).fill(container, new FluidStack(fluid, 1), false) == 1)
+		for(ItemStack container : fluidContainers) {
+			if(((IFluidContainerItem) container.getItem()).fill(container, new FluidStack(fluid, 1), false) == 1)
 				return true;
 		}
 
@@ -385,8 +386,8 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		if(fluidContainers.size() == 0)
 			return false;
 
-		for (ItemStack container : fluidContainers) {
-			if(((IFluidContainerItem)container.getItem()).drain(container, 1, false) == new FluidStack(fluid, 1))
+		for(ItemStack container : fluidContainers) {
+			if(((IFluidContainerItem) container.getItem()).drain(container, 1, false) == new FluidStack(fluid, 1))
 				return true;
 		}
 

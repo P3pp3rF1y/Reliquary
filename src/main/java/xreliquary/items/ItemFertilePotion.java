@@ -13,43 +13,46 @@ import xreliquary.reference.Names;
 
 public class ItemFertilePotion extends ItemBase {
 
-    public ItemFertilePotion() {
-        super(Names.fertile_potion);
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setMaxDamage(0);
-        this.setMaxStackSize(64);
-        canRepair = false;
-    }
+	public ItemFertilePotion() {
+		super(Names.fertile_potion);
+		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+		this.setMaxDamage(0);
+		this.setMaxStackSize(64);
+		canRepair = false;
+	}
 
-    @Override
-    public boolean hasContainerItem(ItemStack ist) {
-        return true;
-    }
+	@Override
+	public boolean hasContainerItem(ItemStack ist) {
+		return true;
+	}
 
-    @Override
-    public ItemStack getContainerItem(ItemStack ist) {
-        return new ItemStack(ModItems.potion, 1, 0);
-    }
+	@Override
+	public ItemStack getContainerItem(ItemStack ist) {
+		return new ItemStack(ModItems.potion, 1, 0);
+	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-        if (renderPass == 1)
-            return Integer.parseInt(Colors.FERTILIZER_COLOR, 16);
-        else
-            return Integer.parseInt(Colors.PURE, 16);
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
+		if(renderPass == 1)
+			return Integer.parseInt(Colors.FERTILIZER_COLOR, 16);
+		else
+			return Integer.parseInt(Colors.PURE, 16);
+	}
 
-   @Override
-    public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
-        if (world.isRemote)
-            return ist;
-        if (!player.capabilities.isCreativeMode) {
-            --ist.stackSize;
-        }
-        world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-        world.spawnEntityInWorld(new EntityFertilePotion(world, player));
-        return ist;
-    }
+	@Override
+	public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+		if(world.isRemote)
+			return ist;
+		if(!player.capabilities.isCreativeMode) {
+			--ist.stackSize;
+		}
+		world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+
+		EntityFertilePotion fertilePotion = new EntityFertilePotion(world, player)
+		fertilePotion.func_184538_a(player, player.rotationPitch, player.rotationYaw, -20.0F, -0.7F, 1.0F);
+		world.spawnEntityInWorld(fertilePotion);
+		return ist;
+	}
 
 }

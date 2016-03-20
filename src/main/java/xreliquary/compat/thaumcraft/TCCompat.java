@@ -1,3 +1,4 @@
+/*
 package xreliquary.compat.thaumcraft;
 
 
@@ -38,3 +39,4 @@ public class TCCompat implements ICompat
 		ThaumcraftApi.registerObjectTag(XRRecipes.SQUID_BEAK, new AspectList().add(Aspect.BEAST, 9));
 	}
 }
+*/

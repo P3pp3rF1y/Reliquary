@@ -1,3 +1,4 @@
+/*
 package xreliquary.compat.waila;
 
 import net.minecraft.world.World;
@@ -17,3 +18,4 @@ public class WailaCompat implements ICompat {
         return Compatibility.MOD_ID.WAILA;
     }
 }
+*/

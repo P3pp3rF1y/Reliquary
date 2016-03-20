@@ -8,26 +8,26 @@ import javax.annotation.Nonnull;
 
 public class AlkahestryChargingRecipeHandler implements IRecipeHandler<AlkahestryChargingRecipeJEI> {
 
-    @Nonnull
-    @Override
-    public Class<AlkahestryChargingRecipeJEI> getRecipeClass() {
-        return AlkahestryChargingRecipeJEI.class;
-    }
+	@Nonnull
+	@Override
+	public Class<AlkahestryChargingRecipeJEI> getRecipeClass() {
+		return AlkahestryChargingRecipeJEI.class;
+	}
 
-    @Nonnull
-    @Override
-    public String getRecipeCategoryUid() {
-        return Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING;
-    }
+	@Nonnull
+	@Override
+	public String getRecipeCategoryUid() {
+		return Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING;
+	}
 
-    @Nonnull
-    @Override
-    public IRecipeWrapper getRecipeWrapper(@Nonnull AlkahestryChargingRecipeJEI recipe) {
-        return recipe;
-    }
+	@Nonnull
+	@Override
+	public IRecipeWrapper getRecipeWrapper(@Nonnull AlkahestryChargingRecipeJEI recipe) {
+		return recipe;
+	}
 
-    @Override
-    public boolean isRecipeValid(@Nonnull AlkahestryChargingRecipeJEI recipe) {
-        return recipe.getInputs().size() > 0 && recipe.getOutputs().size() > 0;
-    }
+	@Override
+	public boolean isRecipeValid(@Nonnull AlkahestryChargingRecipeJEI recipe) {
+		return recipe.getInputs().size() > 0 && recipe.getOutputs().size() > 0;
+	}
 }

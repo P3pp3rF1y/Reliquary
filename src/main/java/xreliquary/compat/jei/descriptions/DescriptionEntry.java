@@ -4,8 +4,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-public class DescriptionEntry
-{
+public class DescriptionEntry {
 	private final String lang;
 	private final List<ItemStack> itemStacks;
 
@@ -15,13 +14,11 @@ public class DescriptionEntry
 		this.lang = langKey;
 	}
 
-	public String langKey()
-	{
+	public String langKey() {
 		return lang;
 	}
 
-	public List<ItemStack>  itemStacks()
-	{
+	public List<ItemStack> itemStacks() {
 		return itemStacks;
 	}
 }

@@ -1,3 +1,4 @@
+/*
 package xreliquary.compat.jer;
 
 import jeresources.api.IJERAPI;
@@ -101,3 +102,4 @@ public class JERCompat implements ICompat
 		registerMobDrop(entity, WatchableData.EMPTY, drop, chance, conditionals);
 	}
 }
+*/
