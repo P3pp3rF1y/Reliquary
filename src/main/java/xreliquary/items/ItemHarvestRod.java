@@ -3,6 +3,7 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
+import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
@@ -19,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
@@ -39,7 +39,6 @@ import xreliquary.util.NBTHelper;
 import xreliquary.util.StackHelper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -145,9 +144,9 @@ public class ItemHarvestRod extends ItemToggleable {
 			NBTTagCompound item = itemsList.getCompoundTagAt(i);
 			ItemStack currentStack = ItemStack.loadItemStackFromNBT(item);
 			if(StackHelper.isItemAndNbtEqual(stack, currentStack)) {
-				int itemQuantity = getItemQuantity(harvestRod, i);
+				int itemQuantity = getPlantableQuantity(harvestRod, i);
 				if(itemQuantity < Settings.HarvestRod.maxCapacityPerPlantable && InventoryHelper.consumeItem(stack, player, 0, 1)) {
-					setItemQuantity(harvestRod, i, ++itemQuantity);
+					setPlantableQuantity(harvestRod, i, ++itemQuantity);
 					itemsList.set(i, currentStack.serializeNBT());
 
 					addedToExistingStack = true;
@@ -158,7 +157,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		}
 		if(!addedToExistingStack && InventoryHelper.consumeItem(stack, player, 0, 1)) {
 			ItemStack newStack = stack.copy();
-			setItemQuantity(harvestRod, (byte) itemsList.tagCount(), 1);
+			setPlantableQuantity(harvestRod, (byte) itemsList.tagCount(), 1);
 			itemsList.appendTag(newStack.serializeNBT());
 		} else {
 			return false;
@@ -174,18 +173,21 @@ public class ItemHarvestRod extends ItemToggleable {
 		if(player.worldObj.isRemote)
 			return false;
 
+		boolean brokenBlock = false;
+
 		Block block = player.worldObj.getBlockState(pos).getBlock();
 		if(block instanceof IPlantable || block instanceof IGrowable) {
 			for(int xOff = -getBreakRadius(); xOff <= getBreakRadius(); xOff++) {
 				for(int yOff = -getBreakRadius(); yOff <= getBreakRadius(); yOff++) {
 					for(int zOff = -getBreakRadius(); zOff <= getBreakRadius(); zOff++) {
 						doHarvestBlockBreak(ist, pos, player, xOff, yOff, zOff);
+						brokenBlock = true;
 					}
 				}
 			}
 		}
 
-		return true;
+		return brokenBlock;
 	}
 
 	public void doHarvestBlockBreak(ItemStack ist, BlockPos pos, EntityPlayer player, int xOff, int yOff, int zOff) {
@@ -257,10 +259,8 @@ public class ItemHarvestRod extends ItemToggleable {
 		if(player.isSneaking())
 			return super.onItemRightClick(stack, world, player);
 
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
-		if(mop != null) {
-			player.setItemInUse(stack, getMaxItemUseDuration(stack));
-		}
+		player.setItemInUse(stack, getMaxItemUseDuration(stack));
+
 		return stack;
 	}
 
@@ -274,20 +274,49 @@ public class ItemHarvestRod extends ItemToggleable {
 		if(player.worldObj.isRemote)
 			return;
 
-		if(!player.capabilities.isCreativeMode)
-			setBoneMealCount(stack, Math.max(0, getBoneMealCount(stack) - getBonemealCost() * getTimesBoneMealUsed(stack, timeLeft)));
+		if(!player.capabilities.isCreativeMode) {
+			if(getMode(stack) == BONE_MEAL_MODE)
+				setBoneMealCount(stack, Math.max(0, getBoneMealCount(stack) - getBonemealCost() * getTimesItemUsed(stack, timeLeft)));
+			else if(getMode(stack) == PLANTABLE_MODE) {
+				setPlantableQuantity(stack, getCurrentPlantableIndex(stack), getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) - getTimesItemUsed(stack, timeLeft));
+			}
+		}
 
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
 
 		if(mop != null) {
 			BlockPos pos = mop.getBlockPos();
-			if(getBoneMealCount(stack) >= getBonemealCost() || player.capabilities.isCreativeMode) {
-				boneMealBlock(stack, player, world, pos, EnumFacing.UP);
-				return;
+			IBlockState blockState = world.getBlockState(pos);
+
+			if(getMode(stack) == BONE_MEAL_MODE) {
+				if(getBoneMealCount(stack) >= getBonemealCost() || player.capabilities.isCreativeMode) {
+					boneMealBlock(stack, player, world, pos, EnumFacing.UP);
+					return;
+				}
+			} else if(getMode(stack) == PLANTABLE_MODE) {
+				if(getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) > 0 || player.capabilities.isCreativeMode) {
+					plantItem(stack, player, pos);
+				}
 			}
 		}
+	}
 
-		return;
+	private void plantItem(ItemStack stack, EntityPlayer player, BlockPos pos) {
+		plantItem(stack, player, pos, true);
+	}
+
+	private void plantItem(ItemStack stack, EntityPlayer player, BlockPos pos, boolean updateCharge) {
+		byte idx = getCurrentPlantableIndex(stack);
+		ItemStack fakePlantableStack = getPlantableItems(stack).get(idx).copy();
+		fakePlantableStack.stackSize = 1;
+
+		if(fakePlantableStack.onItemUse(player, player.worldObj, pos, EnumFacing.UP, 0, 0, 0)) {
+			player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+
+			if (updateCharge && !player.capabilities.isCreativeMode) {
+				setPlantableQuantity(stack, idx, getPlantableQuantity(stack, idx) - 1);
+			}
+		}
 	}
 
 	@Override
@@ -296,23 +325,60 @@ public class ItemHarvestRod extends ItemToggleable {
 			return;
 
 		if(isCoolDownOver(stack, count)) {
-			if(getBoneMealCount(stack) >= (getBonemealCost() * getTimesBoneMealUsed(stack, count)) || player.capabilities.isCreativeMode) {
-				MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
-				if(mop != null) {
-					World world = player.worldObj;
+			switch(getMode(stack)) {
+				case BONE_MEAL_MODE:
+					if(getBoneMealCount(stack) >= (getBonemealCost() * getTimesItemUsed(stack, count)) || player.capabilities.isCreativeMode) {
+						MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+						if(mop != null) {
+							World world = player.worldObj;
 
-					BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, mop.getBlockPos(), Settings.HarvestRod.harvestBreakRadius);
+							BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, mop.getBlockPos(), Settings.HarvestRod.harvestBreakRadius);
 
-					if(blockToBoneMeal != null)
-						boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP, false);
-				}
-			} else {
-				player.stopUsingItem();
+							if(blockToBoneMeal != null)
+								boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP, false);
+
+							return;
+						}
+					}
+					break;
+				case PLANTABLE_MODE:
+					if(getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) >= getTimesItemUsed(stack, count) || player.capabilities.isCreativeMode) {
+						MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+						if(mop != null) {
+							World world = player.worldObj;
+
+							BlockPos blockToPlantOn = getNextBlockToPlantOn(world, mop.getBlockPos(), Settings.HarvestRod.harvestBreakRadius, (IPlantable) getPlantableItems(stack).get(getCurrentPlantableIndex(stack)).getItem());
+
+							if(blockToPlantOn != null)
+								plantItem(stack, player, blockToPlantOn, false);
+
+							return;
+						}
+					}
+					break;
+				default:
+					break;
 			}
+			player.stopUsingItem();
 		}
 	}
 
-	public int getTimesBoneMealUsed(ItemStack stack, int count) {
+	private BlockPos getNextBlockToPlantOn(World world, BlockPos pos, int range, IPlantable plantable) {
+		for(int x = pos.getX() - range; x <= pos.getX() + range; x++) {
+			for(int y = pos.getY() - range; y <= pos.getY() + range; y++) {
+				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
+					BlockPos currentPos = new BlockPos(x, y, z);
+					IBlockState blockState = world.getBlockState(currentPos);
+					if(blockState.getBlock().canSustainPlant(world, pos, EnumFacing.UP, plantable) && world.isAirBlock(currentPos.up())) {
+						return currentPos;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public int getTimesItemUsed(ItemStack stack, int count) {
 		if(getMaxItemUseDuration(stack) - count < AOE_START_COOLDOWN)
 			return 0;
 		return (getMaxItemUseDuration(stack) - (count + AOE_START_COOLDOWN)) / Settings.HarvestRod.bonemealAOECooldown;
@@ -350,7 +416,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
 	private void cycleMode(ItemStack stack) {
 		String currentMode = getMode(stack);
-		List<ItemStack> items = getInventoryItems(stack);
+		List<ItemStack> items = getPlantableItems(stack);
 		switch(currentMode) {
 			case BONE_MEAL_MODE:
 				if(items.size() > 0) {
@@ -388,7 +454,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		return mode.equals("") ? BONE_MEAL_MODE : mode;
 	}
 
-	public List<ItemStack> getInventoryItems(ItemStack stack) {
+	public List<ItemStack> getPlantableItems(ItemStack stack) {
 		NBTTagList itemsList = stack.getTagCompound().getTagList("Items", 10);
 		ArrayList<ItemStack> items = new ArrayList<>();
 
@@ -402,7 +468,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		return items;
 	}
 
-	public int getItemQuantity(ItemStack stack, byte itemIndex) {
+	public int getPlantableQuantity(ItemStack stack, byte itemIndex) {
 		NBTTagList plantableQuantities = stack.getTagCompound().getTagList(PLANTABLE_QUANTITIES_NBT_TAG, 3);
 
 		if(plantableQuantities.hasNoTags() || plantableQuantities.tagCount() <= itemIndex)
@@ -411,7 +477,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		return ((NBTTagInt) plantableQuantities.get(itemIndex)).getInt();
 	}
 
-	private void setItemQuantity(ItemStack stack, byte itemIndex, int quantity) {
+	private void setPlantableQuantity(ItemStack stack, byte itemIndex, int quantity) {
 		NBTTagList plantableQuantities = stack.getTagCompound().getTagList(PLANTABLE_QUANTITIES_NBT_TAG, 3);
 
 		byte currentSize = (byte) plantableQuantities.tagCount();
