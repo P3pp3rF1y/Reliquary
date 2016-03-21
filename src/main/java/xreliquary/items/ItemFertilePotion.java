@@ -50,7 +50,7 @@ public class ItemFertilePotion extends ItemBase {
 		world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
 		EntityFertilePotion fertilePotion = new EntityFertilePotion(world, player)
-		fertilePotion.func_184538_a(player, player.rotationPitch, player.rotationYaw, -20.0F, -0.7F, 1.0F);
+		fertilePotion.func_184538_a(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
 		world.spawnEntityInWorld(fertilePotion);
 		return ist;
 	}

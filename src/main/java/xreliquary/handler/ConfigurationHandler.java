@@ -1,7 +1,6 @@
 package xreliquary.handler;
 
-
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -12,25 +11,22 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-
-public class ConfigurationHandler
-{
+public class ConfigurationHandler {
 
 	public static Configuration configuration;
 
-	public static void init(File configFile)
-	{
-		if (configuration == null)
-		{
+	public static void init(File configFile) {
+		if(configuration == null) {
 			configuration = new Configuration(configFile, true);
 			loadConfiguration();
 		}
 	}
 
-	private static void loadConfiguration()
-	{
+	private static void loadConfiguration() {
 		HudConfiguration.loadHudPositions();
 		EasyModeConfiguration.loadEasyModeSettings();
 		MobDropConfiguration.loadMobDropProbabilities();
@@ -43,7 +39,7 @@ public class ConfigurationHandler
 		configuration.getCategory("general").get(Names.mob_drop_crafting_recipes_enabled).setRequiresMcRestart(true);
 		Settings.mobDropsEnabled = getBoolean(Names.mob_drops_enabled, "general", true);
 		configuration.getCategory("general").get(Names.mob_drops_enabled).setRequiresMcRestart(true);
-		Settings.disabledItemsBlocks = ConfigurationHandler.getStringList(Names.disabled_items_blocks, "general", Collections.EMPTY_LIST );
+		Settings.disabledItemsBlocks = ConfigurationHandler.getStringList(Names.disabled_items_blocks, "general", Collections.EMPTY_LIST);
 		configuration.getCategory("general").get(Names.disabled_items_blocks).setRequiresMcRestart(true);
 	}
 
@@ -57,22 +53,21 @@ public class ConfigurationHandler
 		AlkahestConfiguration.loadAlkahestChargingRecipes();
 		AlkahestConfiguration.loadAlkahestBaseItem();
 
-		if (configuration.hasChanged())
-		{
+		if(configuration.hasChanged()) {
 			configuration.save();
 		}
 	}
 
 	public static List<String> getStringList(String name, String category, List<String> defaultValue) {
-		return Arrays.asList(configuration.getStringList(name, category, defaultValue.toArray(new String[defaultValue.size()]), getTranslatedComment(category, name), new String[]{}, getLabelLangRef(category, name)));
+		return Arrays.asList(configuration.getStringList(name, category, defaultValue.toArray(new String[defaultValue.size()]), getTranslatedComment(category, name), new String[] {}, getLabelLangRef(category, name)));
 	}
 
 	public static boolean getBoolean(String name, String category, boolean defaultValue) {
-		return configuration.getBoolean(name, category, defaultValue, getTranslatedComment(category, name), getLabelLangRef( category, name));
+		return configuration.getBoolean(name, category, defaultValue, getTranslatedComment(category, name), getLabelLangRef(category, name));
 	}
 
 	public static int getInt(String name, String category, int defaultValue, int minValue, int maxValue) {
-		return configuration.getInt(name, category, defaultValue, minValue, maxValue, getTranslatedComment(category, name) , getLabelLangRef(category, name));
+		return configuration.getInt(name, category, defaultValue, minValue, maxValue, getTranslatedComment(category, name), getLabelLangRef(category, name));
 	}
 
 	public static String getString(String name, String category, String defaultValue) {
@@ -80,7 +75,7 @@ public class ConfigurationHandler
 	}
 
 	public static String getTranslatedComment(String category, String config) {
-		return StatCollector.translateToLocal("config." + category + "." + config + ".comment");
+		return I18n.translateToLocal("config." + category + "." + config + ".comment");
 	}
 
 	public static String getLabelLangRef(String category, String config) {
@@ -91,16 +86,14 @@ public class ConfigurationHandler
 		ConfigCategory category = configuration.getCategory(categoryName);
 
 		category.setLanguageKey("config." + categoryName + ".label");
-		if (setComment) {
-			category.setComment( StatCollector.translateToLocal("config." + categoryName + ".comment"));
+		if(setComment) {
+			category.setComment(I18n.translateToLocal("config." + categoryName + ".comment"));
 		}
 	}
 
 	@SubscribeEvent
-	public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
-	{
-		if (event.modID.equalsIgnoreCase( Reference.MOD_ID))
-		{
+	public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
+		if(event.modID.equalsIgnoreCase(Reference.MOD_ID)) {
 			loadConfiguration();
 			postInit();
 		}

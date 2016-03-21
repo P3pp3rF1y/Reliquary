@@ -1,6 +1,5 @@
 package xreliquary.handler.config;
 
-
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,18 +13,19 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
 import xreliquary.util.StackHelper;
-import xreliquary.util.potions.*;
+import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionEssenceComparator;
+import xreliquary.util.potions.PotionIngredient;
+import xreliquary.util.potions.XRPotionHelper;
 
 import java.util.List;
 import java.util.Map;
 
-
-public class PotionConfiguration
-{
+public class PotionConfiguration {
 	public static void loadPotionMap() {
 		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.potion_map);
 
-		if (category.isEmpty()) {
+		if(category.isEmpty()) {
 			addDefaultPotionMap(category);
 		}
 
@@ -43,15 +43,15 @@ public class PotionConfiguration
 		Settings.Potions.uniquePotionEssences.clear();
 		Settings.Potions.uniquePotions.clear();
 
-		for (PotionEssence essence : Settings.Potions.potionCombinations) {
+		for(PotionEssence essence : Settings.Potions.potionCombinations) {
 			boolean found = false;
-			for (PotionEssence uniqueEssence : Settings.Potions.uniquePotionEssences) {
-				if (effectsEqual(essence.effects, uniqueEssence.effects)) {
+			for(PotionEssence uniqueEssence : Settings.Potions.uniquePotionEssences) {
+				if(effectsEqual(essence.effects, uniqueEssence.effects)) {
 					found = true;
 					break;
 				}
 			}
-			if (!found) {
+			if(!found) {
 				Settings.Potions.uniquePotionEssences.add(essence);
 				addUniquePotions(essence);
 			}
@@ -61,11 +61,10 @@ public class PotionConfiguration
 		Settings.Potions.uniquePotions.sort(new PotionEssenceComparator());
 	}
 
-	private static void addUniquePotions(PotionEssence essence)
-	{
+	private static void addUniquePotions(PotionEssence essence) {
 		Settings.Potions.uniquePotions.add(essence);
 
-		if (Settings.Potions.redstoneAndGlowstone) {
+		if(Settings.Potions.redstoneAndGlowstone) {
 			PotionEssence redstone = new PotionEssence(essence.writeToNBT());
 			redstone.addRedstone(1);
 			Settings.Potions.uniquePotions.add(redstone);
@@ -88,18 +87,17 @@ public class PotionConfiguration
 		//multiple effect potions and potions made of 3 ingredients are turned on by config option
 		for(PotionIngredient ingredient1 : Settings.Potions.potionMap) {
 			for(PotionIngredient ingredient2 : Settings.Potions.potionMap) {
-				if (ingredient1.item.getItem() != ingredient2.item.getItem() || ingredient1.item.getMetadata() != ingredient2.item.getMetadata()) {
+				if(ingredient1.item.getItem() != ingredient2.item.getItem() || ingredient1.item.getMetadata() != ingredient2.item.getMetadata()) {
 					PotionEssence twoEssence = new PotionEssence(new PotionIngredient[] {ingredient1, ingredient2});
-					if (twoEssence.effects.size() > 0 && twoEssence.effects.size() <= Settings.Potions.maxEffectCount) {
+					if(twoEssence.effects.size() > 0 && twoEssence.effects.size() <= Settings.Potions.maxEffectCount) {
 						addPotionCombination(twoEssence);
 
-						if (Settings.Potions.threeIngredients) {
+						if(Settings.Potions.threeIngredients) {
 							for(PotionIngredient ingredient3 : Settings.Potions.potionMap) {
-								if ((ingredient3.item.getItem() != ingredient1.item.getItem() || ingredient3.item.getMetadata() != ingredient1.item.getMetadata())
-										&& (ingredient3.item.getItem() != ingredient2.item.getItem() || ingredient3.item.getMetadata() != ingredient2.item.getMetadata())) {
-									PotionEssence threeEssence = new PotionEssence(new PotionIngredient [] {ingredient1, ingredient2, ingredient3});
+								if((ingredient3.item.getItem() != ingredient1.item.getItem() || ingredient3.item.getMetadata() != ingredient1.item.getMetadata()) && (ingredient3.item.getItem() != ingredient2.item.getItem() || ingredient3.item.getMetadata() != ingredient2.item.getMetadata())) {
+									PotionEssence threeEssence = new PotionEssence(new PotionIngredient[] {ingredient1, ingredient2, ingredient3});
 
-									if (!effectsEqual(twoEssence.effects, threeEssence.effects)) {
+									if(!effectsEqual(twoEssence.effects, threeEssence.effects)) {
 										addPotionCombination(threeEssence);
 									}
 								}
@@ -112,14 +110,13 @@ public class PotionConfiguration
 	}
 
 	private static void addPotionCombination(PotionEssence newEssence) {
-		for (PotionEssence essence: Settings.Potions.potionCombinations) {
+		for(PotionEssence essence : Settings.Potions.potionCombinations) {
 			//exactly same ingredients in a different order are not to be added here
 			if(ingredientsEqual(essence.ingredients, newEssence.ingredients)) {
 				return;
 			}
 			//the same effect potion id with different duration is turned on by config option
-			if(effectsEqual(essence.effects, newEssence.effects, Settings.Potions.differentDurations, true)
-					&& !effectsEqual(essence.effects, newEssence.effects)) {
+			if(effectsEqual(essence.effects, newEssence.effects, Settings.Potions.differentDurations, true) && !effectsEqual(essence.effects, newEssence.effects)) {
 				return;
 			}
 		}
@@ -128,18 +125,17 @@ public class PotionConfiguration
 	}
 
 	private static boolean ingredientsEqual(List<PotionIngredient> a, List<PotionIngredient> b) {
-		if (a.size() != b.size())
+		if(a.size() != b.size())
 			return false;
-		for (PotionIngredient ingredientA:a) {
+		for(PotionIngredient ingredientA : a) {
 			boolean found = false;
-			for(PotionIngredient ingredientB:b) {
-				if(ingredientA.item.getItem() == ingredientB.item.getItem()
-						&& ingredientA.item.getMetadata() == ingredientB.item.getMetadata()) {
+			for(PotionIngredient ingredientB : b) {
+				if(ingredientA.item.getItem() == ingredientB.item.getItem() && ingredientA.item.getMetadata() == ingredientB.item.getMetadata()) {
 					found = true;
 					break;
 				}
 			}
-			if (!found)
+			if(!found)
 				return false;
 		}
 		return true;
@@ -153,17 +149,15 @@ public class PotionConfiguration
 		if(a.size() != b.size())
 			return false;
 
-		for (PotionEffect effectA:a) {
+		for(PotionEffect effectA : a) {
 			boolean found = false;
-			for(PotionEffect effectB:b) {
-				if(effectA.getPotionID() == effectB.getPotionID()
-						&& (!compareDuration || effectA.getDuration() == effectB.getDuration())
-						&& (!comparePotency || effectA.getAmplifier() == effectB.getAmplifier())) {
+			for(PotionEffect effectB : b) {//TODO verify that getEffectName comparison is the same as getPotionId previously
+				if(effectA.getEffectName().equals(effectB.getEffectName()) && (!compareDuration || effectA.getDuration() == effectB.getDuration()) && (!comparePotency || effectA.getAmplifier() == effectB.getAmplifier())) {
 					found = true;
 					break;
 				}
 			}
-			if (!found)
+			if(!found)
 				return false;
 		}
 		return true;
@@ -172,7 +166,7 @@ public class PotionConfiguration
 	private static void loadPotionMapIntoSettings(ConfigCategory category) {
 		Settings.Potions.potionMap.clear();
 
-		for(Map.Entry<String, Property> entry: category.getValues().entrySet()) {
+		for(Map.Entry<String, Property> entry : category.getValues().entrySet()) {
 			String[] nameParts = entry.getKey().split("\\|");
 			String[] effects = entry.getValue().getStringList();
 
@@ -182,18 +176,18 @@ public class PotionConfiguration
 
 			ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
 
-			if (stack != null) {
+			if(stack != null) {
 				PotionIngredient ingredient = new PotionIngredient(stack);
-				for (int i=0; i<effects.length; i++) {
+				for(int i = 0; i < effects.length; i++) {
 					String[] effectValues = effects[i].split("\\|");
 					int potionId = XRPotionHelper.getPotionIdByName(effectValues[0]);
-					if (potionId > 0) {
+					if(potionId > 0) {
 						short durationWeight = Short.parseShort(effectValues[1]);
 						short ampWeight = Short.parseShort(effectValues[2]);
 						ingredient.addEffect(potionId, durationWeight, ampWeight);
 					}
 				}
-				if (ingredient.effects.size() > 0) {
+				if(ingredient.effects.size() > 0) {
 					Settings.Potions.potionMap.add(ingredient);
 				}
 			}
@@ -203,28 +197,28 @@ public class PotionConfiguration
 	private static void addDefaultPotionMap(ConfigCategory category) {
 		//TIER ONE INGREDIENTS, these are always 0 potency and have minimal durations (3 for positive, 1 for negative or super-positive)
 		addPotionConfig(category, Items.sugar, speed(3, 0), haste(3, 0));
-		addPotionConfig(category, Items.apple,heal(0), hboost(3, 0));
+		addPotionConfig(category, Items.apple, heal(0), hboost(3, 0));
 		addPotionConfig(category, Items.coal, blind(1, 0), absorb(3, 0));
 		addPotionConfig(category, Items.coal, 1, invis(1, 0), wither(0, 0));
 		addPotionConfig(category, Items.feather, jump(3, 0), weak(1, 0));
 		addPotionConfig(category, Items.wheat_seeds, harm(0), hboost(3, 0));
-		addPotionConfig(category, Items.wheat,heal(0), hboost(3, 0));
+		addPotionConfig(category, Items.wheat, heal(0), hboost(3, 0));
 		addPotionConfig(category, Items.flint, harm(0), dboost(3, 0));
-		addPotionConfig(category, Items.porkchop,slow(1, 0), fatigue(1, 0));
-		addPotionConfig(category, Items.leather,resist(3, 0), absorb(3, 0));
-		addPotionConfig(category, Items.clay_ball,slow(1, 0), hboost(3, 0));
-		addPotionConfig(category, Items.egg,absorb(3, 0), regen(0, 0));
+		addPotionConfig(category, Items.porkchop, slow(1, 0), fatigue(1, 0));
+		addPotionConfig(category, Items.leather, resist(3, 0), absorb(3, 0));
+		addPotionConfig(category, Items.clay_ball, slow(1, 0), hboost(3, 0));
+		addPotionConfig(category, Items.egg, absorb(3, 0), regen(0, 0));
 		addPotionConfig(category, Items.dye, Reference.RED_DYE_META, heal(0), hboost(3, 0)); //rose red
-		addPotionConfig(category, Items.dye, Reference.YELLOW_DYE_META,jump(3, 0), weak(1, 0)); //dandellion yellow
-		addPotionConfig(category, Items.dye, Reference.GREEN_DYE_META,resist(3, 0), absorb(3, 0)); //cactus green
+		addPotionConfig(category, Items.dye, Reference.YELLOW_DYE_META, jump(3, 0), weak(1, 0)); //dandellion yellow
+		addPotionConfig(category, Items.dye, Reference.GREEN_DYE_META, resist(3, 0), absorb(3, 0)); //cactus green
 		addPotionConfig(category, Items.dye, Reference.WHITE_DYE_META, weak(1, 0), fatigue(1, 0)); //bone meal
-		addPotionConfig(category, Items.pumpkin_seeds,invis(1, 0), fireres(1,0));
-		addPotionConfig(category, Items.beef,slow(1,0), satur(0));
-		addPotionConfig(category, Items.chicken,nausea(1, 0), poison(1, 0));
-		addPotionConfig(category, Items.rotten_flesh,nausea(1, 0), hunger(1, 0), wither(0, 0));
+		addPotionConfig(category, Items.pumpkin_seeds, invis(1, 0), fireres(1, 0));
+		addPotionConfig(category, Items.beef, slow(1, 0), satur(0));
+		addPotionConfig(category, Items.chicken, nausea(1, 0), poison(1, 0));
+		addPotionConfig(category, Items.rotten_flesh, nausea(1, 0), hunger(1, 0), wither(0, 0));
 		addPotionConfig(category, Items.gold_nugget, dboost(0, 0), haste(0, 0));
-		addPotionConfig(category, Items.carrot,vision(3, 0), hboost(3, 0));
-		addPotionConfig(category, Items.potato,hboost(3, 0), satur(0));
+		addPotionConfig(category, Items.carrot, vision(3, 0), hboost(3, 0));
+		addPotionConfig(category, Items.potato, hboost(3, 0), satur(0));
 		addPotionConfig(category, Items.fish, satur(0), breath(1, 0));
 
 		//TIER TWO INGREDIENTS, one of the effects of each will always be a one, slightly increased duration vs. TIER ONE
@@ -281,66 +275,112 @@ public class PotionConfiguration
 		addPotionConfig(category, XRRecipes.INFERNAL_CLAW, harm(1), resist(6, 1), fireres(6, 0), dboost(6, 1), satur(1), heal(1));
 	}
 
-	public static String harm(int potency) { return effectString(Reference.HARM, Integer.toString(0),Integer.toString(potency)); }
+	public static String harm(int potency) {
+		return effectString(Reference.HARM, Integer.toString(0), Integer.toString(potency));
+	}
 
-	public static String heal(int potency) { return effectString(Reference.HEAL, Integer.toString(0),Integer.toString(potency)); }
+	public static String heal(int potency) {
+		return effectString(Reference.HEAL, Integer.toString(0), Integer.toString(potency));
+	}
 
-	public static String satur(int potency) { return effectString(Reference.SATURATION, Integer.toString(0),Integer.toString(potency)); }
+	public static String satur(int potency) {
+		return effectString(Reference.SATURATION, Integer.toString(0), Integer.toString(potency));
+	}
 
-	public static String invis(int duration, int potency) { return effectString(Reference.INVIS, Integer.toString(duration), Integer.toString(potency)); }
+	public static String invis(int duration, int potency) {
+		return effectString(Reference.INVIS, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String absorb(int duration, int potency) { return effectString(Reference.ABSORB, Integer.toString(duration),Integer.toString(potency)); }
+	public static String absorb(int duration, int potency) {
+		return effectString(Reference.ABSORB, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String hboost(int duration, int potency) { return effectString(Reference.HBOOST, Integer.toString(duration),Integer.toString(potency)); }
+	public static String hboost(int duration, int potency) {
+		return effectString(Reference.HBOOST, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String dboost(int duration, int potency) { return effectString(Reference.DBOOST, Integer.toString(duration),Integer.toString(potency)); }
+	public static String dboost(int duration, int potency) {
+		return effectString(Reference.DBOOST, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String speed(int duration, int potency) { return effectString(Reference.SPEED, Integer.toString(duration),Integer.toString(potency)); }
+	public static String speed(int duration, int potency) {
+		return effectString(Reference.SPEED, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String haste(int duration, int potency) { return effectString(Reference.HASTE, Integer.toString(duration),Integer.toString(potency)); }
+	public static String haste(int duration, int potency) {
+		return effectString(Reference.HASTE, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String slow(int duration, int potency) { return effectString(Reference.SLOW, Integer.toString(duration),Integer.toString(potency)); }
+	public static String slow(int duration, int potency) {
+		return effectString(Reference.SLOW, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String fatigue(int duration, int potency) { return effectString(Reference.FATIGUE, Integer.toString(duration),Integer.toString(potency)); }
+	public static String fatigue(int duration, int potency) {
+		return effectString(Reference.FATIGUE, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String breath(int duration, int potency) { return effectString(Reference.BREATH, Integer.toString(duration),Integer.toString(potency)); }
+	public static String breath(int duration, int potency) {
+		return effectString(Reference.BREATH, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String vision(int duration, int potency) { return effectString(Reference.VISION, Integer.toString(duration),Integer.toString(potency)); }
+	public static String vision(int duration, int potency) {
+		return effectString(Reference.VISION, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String resist(int duration, int potency) { return effectString(Reference.RESIST, Integer.toString(duration),Integer.toString(potency)); }
+	public static String resist(int duration, int potency) {
+		return effectString(Reference.RESIST, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String fireres(int duration, int potency) { return effectString(Reference.FRESIST, Integer.toString(duration),Integer.toString(potency)); }
+	public static String fireres(int duration, int potency) {
+		return effectString(Reference.FRESIST, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String weak(int duration, int potency) { return effectString(Reference.WEAK, Integer.toString(duration),Integer.toString(potency)); }
+	public static String weak(int duration, int potency) {
+		return effectString(Reference.WEAK, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String jump(int duration, int potency) { return effectString(Reference.JUMP, Integer.toString(duration),Integer.toString(potency)); }
+	public static String jump(int duration, int potency) {
+		return effectString(Reference.JUMP, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String nausea(int duration, int potency) { return effectString(Reference.NAUSEA, Integer.toString(duration),Integer.toString(potency)); }
+	public static String nausea(int duration, int potency) {
+		return effectString(Reference.NAUSEA, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String hunger(int duration, int potency) { return effectString(Reference.HUNGER, Integer.toString(duration),Integer.toString(potency)); }
+	public static String hunger(int duration, int potency) {
+		return effectString(Reference.HUNGER, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String regen(int duration, int potency) { return effectString(Reference.REGEN, Integer.toString(duration),Integer.toString(potency)); }
+	public static String regen(int duration, int potency) {
+		return effectString(Reference.REGEN, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String poison(int duration, int potency) { return effectString(Reference.POISON, Integer.toString(duration),Integer.toString(potency)); }
+	public static String poison(int duration, int potency) {
+		return effectString(Reference.POISON, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String wither(int duration, int potency) { return effectString(Reference.WITHER, Integer.toString(duration),Integer.toString(potency)); }
+	public static String wither(int duration, int potency) {
+		return effectString(Reference.WITHER, Integer.toString(duration), Integer.toString(potency));
+	}
 
-	public static String blind(int duration, int potency) { return effectString(Reference.BLIND, Integer.toString(duration), Integer.toString(potency)); }
+	public static String blind(int duration, int potency) {
+		return effectString(Reference.BLIND, Integer.toString(duration), Integer.toString(potency));
+	}
 
 	public static String effectString(String name, String duration, String potency) {
 		return name + "|" + duration + "|" + potency;
 	}
 
-	private static void addPotionConfig(ConfigCategory category, ItemStack ingredient, String... effects ) {
+	private static void addPotionConfig(ConfigCategory category, ItemStack ingredient, String... effects) {
 		addPotionConfig(category, ingredient.getItem(), ingredient.getMetadata(), effects);
 	}
 
-	private static void addPotionConfig(ConfigCategory category, Item ingredient, String... effects ) {
+	private static void addPotionConfig(ConfigCategory category, Item ingredient, String... effects) {
 		addPotionConfig(category, ingredient, 0, effects);
 	}
 
-	private static void addPotionConfig(ConfigCategory category, Item ingredient, int meta, String... effects ) {
-		Property prop = new Property(String.format("%s|%d", ingredient.getRegistryName(), meta),effects, Property.Type.STRING);
+	private static void addPotionConfig(ConfigCategory category, Item ingredient, int meta, String... effects) {
+		Property prop = new Property(String.format("%s|%d", ingredient.getRegistryName(), meta), effects, Property.Type.STRING);
 
 		category.put(prop.getName(), prop);
 	}

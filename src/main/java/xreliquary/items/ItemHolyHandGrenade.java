@@ -42,7 +42,9 @@ public class ItemHolyHandGrenade extends ItemBase {
         }
 
         par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-        par2World.spawnEntityInWorld(new EntityHolyHandGrenade(par2World, par3EntityPlayer));
+        EntityHolyHandGrenade grenade = new EntityHolyHandGrenade(par2World, par3EntityPlayer);
+        grenade.func_184538_a(par3EntityPlayer, par3EntityPlayer.rotationPitch, par3EntityPlayer.rotationYaw, -20.0F, 0.9F, 1.0F);
+        par2World.spawnEntityInWorld(grenade);
 
         return par1ItemStack;
     }

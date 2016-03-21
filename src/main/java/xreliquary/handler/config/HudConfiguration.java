@@ -1,16 +1,12 @@
 package xreliquary.handler.config;
 
-
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
-
-public class HudConfiguration
-{
-	public static void loadHudPositions()
-	{
-		Settings.HudPositions.sojournerStaff = ConfigurationHandler.getInt( Names.sojourner_staff, Names.hud_positions, 3, 0, 3);
+public class HudConfiguration {
+	public static void loadHudPositions() {
+		Settings.HudPositions.sojournerStaff = ConfigurationHandler.getInt(Names.sojourner_staff, Names.hud_positions, 3, 0, 3);
 		Settings.HudPositions.handgun = ConfigurationHandler.getInt(Names.handgun, Names.hud_positions, 3, 0, 3);
 		Settings.HudPositions.alkahestryTome = ConfigurationHandler.getInt(Names.alkahestry_tome, Names.hud_positions, 3, 0, 3);
 		Settings.HudPositions.destructionCatalyst = ConfigurationHandler.getInt(Names.destruction_catalyst, Names.hud_positions, 3, 0, 3);

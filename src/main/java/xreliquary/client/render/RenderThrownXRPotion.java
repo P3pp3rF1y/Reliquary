@@ -16,7 +16,7 @@ public class RenderThrownXRPotion extends RenderSnowball<EntityThrownXRPotion> {
 		super(renderManager, ModItems.potion, itemRenderer);
 	}
 
-	public ItemStack func_177082_d(EntityThrownXRPotion entityIn) {
+	public ItemStack getPotion(EntityThrownXRPotion entityIn) {
 		ItemStack potion = new ItemStack(this.field_177084_a, 1);
 		NBTHelper.setBoolean("splash", potion, true);
 		NBTHelper.setInteger("renderColor", potion, entityIn.getRenderColor());

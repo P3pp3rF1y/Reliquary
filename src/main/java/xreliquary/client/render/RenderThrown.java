@@ -15,7 +15,8 @@ public class RenderThrown<T extends Entity> extends RenderSnowball<T> {
 		super(renderManager, item, itemRenderer);
 	}
 
-	public ItemStack func_177082_d(T entityIn) {
+	@Override
+	public ItemStack getPotion(T entityIn) {
 		ItemStack entity = new ItemStack(this.field_177084_a, 1);
 
 		return entity;

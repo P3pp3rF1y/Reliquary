@@ -9,8 +9,12 @@ import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -44,16 +48,6 @@ public class EntityGlowingWater extends EntityThrowable {
         return 0.03F;
     }
 
-    @Override
-    protected float getVelocity() {
-        return 0.7F;
-    }
-
-    @Override
-    protected float getInaccuracy() {
-        return -20.0F;
-    }
-
     private boolean isUndead(EntityLivingBase e) {
         return e.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
     }
@@ -62,7 +56,7 @@ public class EntityGlowingWater extends EntityThrowable {
      * Called when this EntityThrowable hits a block or entity.
      */
     @Override
-    protected void onImpact(MovingObjectPosition mop) {
+    protected void onImpact(RayTraceResult result) {
         if (!worldObj.isRemote) {
             this.spawnParticles();
             AxisAlignedBB bb = this.getEntityBoundingBox().expand( 4.0D, 2.0D, 4.0D );
@@ -109,6 +103,6 @@ public class EntityGlowingWater extends EntityThrowable {
             }
         }
 
-        worldObj.playSoundEffect(posX + 0.5D, posY + 0.5D, posZ + 0.5D, "dig.glass", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+        worldObj.playSound(null, getPosition(), SoundEvents.block_glass_break, SoundCategory.NEUTRAL, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
     }
 }

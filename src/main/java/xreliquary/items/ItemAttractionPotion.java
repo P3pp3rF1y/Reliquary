@@ -48,8 +48,8 @@ public class ItemAttractionPotion extends ItemBase {
 			--ist.stackSize;
 		}
 		world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-		EntityAttractionPotion attractionPotion = new EntityAttractionPotion(world, player)
-		attractionPotion.func_184538_a(player, player.rotationPitch, player.rotationYaw, -20.0F, -0.7F, 1.0F);
+		EntityAttractionPotion attractionPotion = new EntityAttractionPotion(world, player);
+		attractionPotion.func_184538_a(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
 		world.spawnEntityInWorld(attractionPotion);
 		return ist;
 	}

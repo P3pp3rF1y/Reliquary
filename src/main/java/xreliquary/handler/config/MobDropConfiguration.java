@@ -1,18 +1,14 @@
 package xreliquary.handler.config;
 
-
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
 import java.util.HashMap;
 
-
-public class MobDropConfiguration
-{
-	public static void loadMobDropProbabilities()
-	{
-		HashMap<String, Integer> drops = new HashMap<>(  );
+public class MobDropConfiguration {
+	public static void loadMobDropProbabilities() {
+		HashMap<String, Integer> drops = new HashMap<>();
 
 		drops.put(Names.zombie_heart + "_base", ConfigurationHandler.getInt(Names.zombie_heart + "_base", Names.mob_drop_probability, 10, 0, 100));
 		drops.put(Names.zombie_heart + "_looting", ConfigurationHandler.getInt(Names.zombie_heart + "_looting", Names.mob_drop_probability, 5, 0, 100));

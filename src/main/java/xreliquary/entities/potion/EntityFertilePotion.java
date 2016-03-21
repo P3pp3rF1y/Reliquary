@@ -4,8 +4,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -45,7 +46,7 @@ public class EntityFertilePotion extends EntityThrownPotion {
 			for(int yD = -2; yD <= 1; yD++) {
 				for(int zD = -1; zD <= 1; zD++) {
 					if(this.getThrower() instanceof EntityPlayer) {
-						Items.dye.onItemUse(new ItemStack(Items.dye, 1, 15), (EntityPlayer) this.getThrower(), worldObj, new BlockPos(x + xD, y + yD, z + zD), EnumFacing.UP, 0F, 0F, 0F);
+						Items.dye.onItemUse(new ItemStack(Items.dye, 1, 15), (EntityPlayer) this.getThrower(), worldObj, new BlockPos(x + xD, y + yD, z + zD), EnumHand.MAIN_HAND, EnumFacing.UP, 0F, 0F, 0F);
 					}
 				}
 			}

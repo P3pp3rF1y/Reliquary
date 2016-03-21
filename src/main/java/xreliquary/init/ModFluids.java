@@ -32,12 +32,11 @@ public class ModFluids {
 			FluidRegistry.registerFluid(fluidXpJuice);
 
 			//TODO figure out if there needs to a bucket added here as well
-		}
-		else {
+		} else {
 			LogHelper.info("XP Juice registration left to Open Blocks / Ender IO.");
 		}
 
-		if (!Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT) && !FluidRegistry.isFluidRegistered(MILK_FLUID_NAME)) {
+		if(!Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT) && !FluidRegistry.isFluidRegistered(MILK_FLUID_NAME)) {
 			milk = new Fluid(MILK_FLUID_NAME, new ResourceLocation(Reference.MOD_ID, "fluids/milk_still"), new ResourceLocation(Reference.MOD_ID, "fluids/milk_flowing")).setTemperature(320);
 			FluidRegistry.registerFluid(milk);
 
@@ -54,7 +53,7 @@ public class ModFluids {
 			}
 		}
 
-		if (milk == null) {
+		if(milk == null) {
 			milk = FluidRegistry.getFluid(MILK_FLUID_NAME);
 		}
 	}

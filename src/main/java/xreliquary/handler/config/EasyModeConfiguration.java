@@ -1,18 +1,14 @@
 package xreliquary.handler.config;
 
-
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
-
-public class EasyModeConfiguration
-{
-	public static void loadEasyModeSettings()
-	{
+public class EasyModeConfiguration {
+	public static void loadEasyModeSettings() {
 		boolean easyModeDefault = true;
 
-		Settings.EasyModeRecipes.fortuneCoin = ConfigurationHandler.getBoolean( Names.fortune_coin, Names.easy_mode_recipes, easyModeDefault);
+		Settings.EasyModeRecipes.fortuneCoin = ConfigurationHandler.getBoolean(Names.fortune_coin, Names.easy_mode_recipes, easyModeDefault);
 		Settings.EasyModeRecipes.altar = ConfigurationHandler.getBoolean(Names.altar, Names.easy_mode_recipes, easyModeDefault);
 		Settings.EasyModeRecipes.infernalChalice = ConfigurationHandler.getBoolean(Names.infernal_chalice, Names.easy_mode_recipes, easyModeDefault);
 		Settings.EasyModeRecipes.enderStaff = ConfigurationHandler.getBoolean(Names.ender_staff, Names.easy_mode_recipes, easyModeDefault);

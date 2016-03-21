@@ -50,7 +50,7 @@ public class ItemGlowingWater extends ItemBase {
         par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
         EntityGlowingWater glowingWater = new EntityGlowingWater(par2World, par3EntityPlayer)
-        glowingWater.func_184538_a(par3EntityPlayer, par3EntityPlayer.rotationPitch, par3EntityPlayer.rotationYaw, -20.0F, -0.7F, 1.0F);
+        glowingWater.func_184538_a(par3EntityPlayer, par3EntityPlayer.rotationPitch, par3EntityPlayer.rotationYaw, -20.0F, 0.7F, 1.0F);
         par2World.spawnEntityInWorld(glowingWater);
 
         return par1ItemStack;

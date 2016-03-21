@@ -11,7 +11,6 @@ import net.minecraft.item.Item;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -48,16 +47,6 @@ public abstract class EntityThrownPotion extends EntityThrowable {
 	@Override
 	protected float getGravityVelocity() {
 		return 0.07F;
-	}
-
-	@Override
-	protected float getVelocity() {
-		return 0.7F;
-	}
-
-	@Override
-	protected float getInaccuracy() {
-		return -20.0F;
 	}
 
 	/**

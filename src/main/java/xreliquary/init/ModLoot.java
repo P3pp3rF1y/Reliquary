@@ -1,13 +1,20 @@
 package xreliquary.init;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.ChestGenHooks;
 import xreliquary.reference.Settings;
 
 public class ModLoot {
 	public static void init() {
 		if(Settings.chestLootEnabled) {
+
+
+			LootTable table = LootTableList.CHESTS_ABANDONED_MINESHAFT;
+
 			String c = ChestGenHooks.MINESHAFT_CORRIDOR;
 			ChestGenHooks.addItem(c, new WeightedRandomChestContent(XRRecipes.RIB_BONE, 1, 2, 10));
 			ChestGenHooks.addItem(c, new WeightedRandomChestContent(XRRecipes.SLIME_PEARL, 1, 3, 8));

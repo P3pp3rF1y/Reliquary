@@ -4,13 +4,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
@@ -40,7 +41,7 @@ public class ClientEventHandler {
 		handleTomeHUDCheck(mc);
 		handleDestructionCatalystHUDCheck(mc);
 		handleEnderStaffHUDCheck(mc);
-		//handles glacial staff as well
+		handleGlacialStaffHUDCheck(mc);
 		handleIceMagusRodHUDCheck(mc);
 		handleVoidTearHUDCheck(mc);
 		handleMidasTouchstoneHUDCheck(mc);
@@ -67,13 +68,37 @@ public class ClientEventHandler {
 		return time;
 	}
 
+	private EnumHand getHandHoldingCorrectItem(EntityPlayer player, Item item) {
+		if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == item) {
+			return EnumHand.MAIN_HAND;
+		}
+
+		if(player.getHeldItemOffhand() != null && player.getHeldItemOffhand().getItem() == item) {
+			return EnumHand.OFF_HAND;
+		}
+		return null;
+	}
+
+	private ItemStack getCorrectItemFromEitherHand(EntityPlayer player, Item item) {
+		if(player == null)
+			return null;
+
+		EnumHand itemInHand = getHandHoldingCorrectItem(player, item);
+
+		if (itemInHand == null)
+			return null;
+
+		return player.getHeldItem(itemInHand);
+	}
+
 	public void handleTomeHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemAlkahestryTome))
+		ItemStack tomeStack = getCorrectItemFromEitherHand(player, ModItems.alkahestryTome);
+
+		if(tomeStack == null)
 			return;
 
-		ItemStack tomeStack = player.getCurrentEquippedItem();
 		ItemStack chargeStack = Settings.AlkahestryTome.baseItem.copy();
 		chargeStack.stackSize = NBTHelper.getInteger("charge", tomeStack);
 		renderStandardTwoItemHUD(mc, player, tomeStack, chargeStack, Settings.HudPositions.alkahestryTome, 0, 0);
@@ -82,10 +107,11 @@ public class ClientEventHandler {
 	public void handleDestructionCatalystHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemDestructionCatalyst))
+		ItemStack destructionCatalystStack = getCorrectItemFromEitherHand(player, ModItems.destructionCatalyst);
+
+		if(destructionCatalystStack == null)
 			return;
 
-		ItemStack destructionCatalystStack = player.getCurrentEquippedItem();
 		ItemStack gunpowderStack = new ItemStack(Items.gunpowder, NBTHelper.getInteger("gunpowder", destructionCatalystStack), 0);
 		renderStandardTwoItemHUD(mc, player, destructionCatalystStack, gunpowderStack, Settings.HudPositions.destructionCatalyst, 0, 0);
 	}
@@ -93,10 +119,11 @@ public class ClientEventHandler {
 	public void handleEnderStaffHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemEnderStaff))
+		ItemStack enderStaffStack = getCorrectItemFromEitherHand(player, ModItems.enderStaff);
+
+		if(enderStaffStack == null)
 			return;
 
-		ItemStack enderStaffStack = player.getCurrentEquippedItem();
 		ItemEnderStaff enderStaffItem = (ItemEnderStaff) enderStaffStack.getItem();
 		String staffMode = enderStaffItem.getMode(enderStaffStack);
 		ItemStack displayItemStack = new ItemStack(Items.ender_pearl, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
@@ -111,24 +138,39 @@ public class ClientEventHandler {
 	public void handleIceMagusRodHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
-		//returns true for Glacial Staff because it extends IceRod.
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemIceMagusRod))
+		ItemStack iceRodStack = getCorrectItemFromEitherHand(player, ModItems.iceMagusRod);
+
+		if(iceRodStack == null)
 			return;
 
-		ItemStack iceRodStack = player.getCurrentEquippedItem();
 		ItemStack snowballStack = new ItemStack(Items.snowball, NBTHelper.getInteger("snowballs", iceRodStack), 0);
 		//still allows for differing HUD positions, like a baws.
-		int hudPosition = (player.getCurrentEquippedItem().getItem() instanceof ItemGlacialStaff) ? Settings.HudPositions.glacialStaff : Settings.HudPositions.iceMagusRod;
+		int hudPosition = Settings.HudPositions.iceMagusRod;
 		renderStandardTwoItemHUD(mc, player, iceRodStack, snowballStack, hudPosition, 0, NBTHelper.getInteger("snowballs", iceRodStack));
+	}
+
+	public void handleGlacialStaffHUDCheck(Minecraft mc) {
+		EntityPlayer player = mc.thePlayer;
+
+		ItemStack glacialStaff = getCorrectItemFromEitherHand(player, ModItems.glacialStaff);
+
+		if(glacialStaff == null)
+			return;
+
+		ItemStack snowballStack = new ItemStack(Items.snowball, NBTHelper.getInteger("snowballs", glacialStaff), 0);
+		//still allows for differing HUD positions, like a baws.
+		int hudPosition = Settings.HudPositions.glacialStaff;
+		renderStandardTwoItemHUD(mc, player, glacialStaff, snowballStack, hudPosition, 0, NBTHelper.getInteger("snowballs", glacialStaff));
 	}
 
 	public void handleVoidTearHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemVoidTear))
+		ItemStack voidTearStack = getCorrectItemFromEitherHand(player, ModItems.filledVoidTear);
+
+		if(voidTearStack == null)
 			return;
 
-		ItemStack voidTearStack = player.getCurrentEquippedItem();
 		ItemVoidTear voidTearItem = (ItemVoidTear) voidTearStack.getItem();
 		ItemStack containedItemStack = voidTearItem.getContainedItem(voidTearStack);
 		renderStandardTwoItemHUD(mc, player, voidTearStack, containedItemStack, Settings.HudPositions.voidTear, 0, 0);
@@ -137,10 +179,11 @@ public class ClientEventHandler {
 	public void handleMidasTouchstoneHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemMidasTouchstone))
+		ItemStack midasTouchstoneStack = getCorrectItemFromEitherHand(player, ModItems.midasTouchstone);
+
+		if(midasTouchstoneStack == null)
 			return;
 
-		ItemStack midasTouchstoneStack = player.getCurrentEquippedItem();
 		ItemStack glowstoneStack = new ItemStack(Items.glowstone_dust, NBTHelper.getInteger("glowstone", midasTouchstoneStack), 0);
 		renderStandardTwoItemHUD(mc, player, midasTouchstoneStack, glowstoneStack, Settings.HudPositions.midasTouchstone, 0, 0);
 	}
@@ -148,18 +191,18 @@ public class ClientEventHandler {
 	public void handleHarvestRodHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHarvestRod))
-			return;
+		ItemStack harvestRodStack = getCorrectItemFromEitherHand(player, ModItems.midasTouchstone);
 
-		ItemStack harvestRodStack = player.getCurrentEquippedItem();
+		if(harvestRodStack == null)
+			return;
 
 		ItemStack secondaryStack;
 		ItemHarvestRod harvestRod = ModItems.harvestRod;
-		if (harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.PLANTABLE_MODE)) {
+		if(harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.PLANTABLE_MODE)) {
 			secondaryStack = harvestRod.getPlantableItems(harvestRodStack).get(harvestRod.getCurrentPlantableIndex(harvestRodStack)).copy();
 			int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableIndex(harvestRodStack));
 
-			if(player.isUsingItem()) {
+			if(player.isHandActive() && getHandHoldingCorrectItem(player, ModItems.harvestRod) == player.getActiveHand()) {
 				plantableCount -= harvestRod.getTimesItemUsed(harvestRodStack, player.getItemInUseCount());
 			}
 
@@ -167,7 +210,7 @@ public class ClientEventHandler {
 		} else {
 			int boneMealCount = harvestRod.getBoneMealCount(harvestRodStack);
 
-			if(player.isUsingItem()) {
+			if(player.isHandActive() && getHandHoldingCorrectItem(player, ModItems.harvestRod) == player.getActiveHand()) {
 				boneMealCount -= harvestRod.getBonemealCost() * harvestRod.getTimesItemUsed(harvestRodStack, player.getItemInUseCount());
 			}
 
@@ -180,10 +223,11 @@ public class ClientEventHandler {
 	public void handleInfernalChaliceHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemInfernalChalice))
+		ItemStack infernalChaliceStack = getCorrectItemFromEitherHand(player, ModItems.infernalChalice);
+
+		if (infernalChaliceStack == null)
 			return;
 
-		ItemStack infernalChaliceStack = player.getCurrentEquippedItem();
 		ItemStack lavaStack = new ItemStack(Items.lava_bucket, NBTHelper.getInteger("fluidStacks", infernalChaliceStack), 0);
 		renderStandardTwoItemHUD(mc, player, infernalChaliceStack, lavaStack, Settings.HudPositions.infernalChalice, Colors.get(Colors.BLOOD_RED_COLOR), lavaStack.stackSize / 1000);
 	}
@@ -191,10 +235,11 @@ public class ClientEventHandler {
 	public void handleHeroMedallionHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHeroMedallion))
+		ItemStack heroMedallionStack = getCorrectItemFromEitherHand(player, ModItems.heroMedallion);
+
+		if (heroMedallionStack == null)
 			return;
 
-		ItemStack heroMedallionStack = player.getCurrentEquippedItem();
 		int experience = NBTHelper.getInteger("experience", heroMedallionStack);
 		renderStandardTwoItemHUD(mc, player, heroMedallionStack, null, Settings.HudPositions.heroMedallion, Colors.get(Colors.GREEN), experience);
 	}
@@ -202,10 +247,10 @@ public class ClientEventHandler {
 	public void handlePyromancerStaffHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemPyromancerStaff))
-			return;
+		ItemStack pyromancerStaffStack = getCorrectItemFromEitherHand(player, ModItems.pyromancerStaff);
 
-		ItemStack pyromancerStaffStack = player.getCurrentEquippedItem();
+		if (pyromancerStaffStack == null)
+			return;
 
 		int charge = 0;
 		int blaze = 0;
@@ -286,11 +331,11 @@ public class ClientEventHandler {
 			friendlyStaffMode = "ERUPT";
 
 		if(secondaryStack != null && (staffMode.equals("charge"))) {
-			renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX + (leftSide ? 0 : - (16 + (Integer.toString(secondaryStack.stackSize).length() * 6))), hudOverlayY + 24);
-			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(secondaryStack.stackSize), hudOverlayX + (leftSide ? 16 : - (Integer.toString(secondaryStack.stackSize).length() * 6)), hudOverlayY + 30, color);
+			renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(secondaryStack.stackSize).length() * 6))), hudOverlayY + 24);
+			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(secondaryStack.stackSize), hudOverlayX + (leftSide ? 16 : -(Integer.toString(secondaryStack.stackSize).length() * 6)), hudOverlayY + 30, color);
 		} else if(tertiaryStack != null && (staffMode.equals("eruption") || staffMode.equals("blaze"))) {
-			renderItem.renderItemAndEffectIntoGUI(tertiaryStack, hudOverlayX + (leftSide ? 0 : - (16 + (Integer.toString(tertiaryStack.stackSize).length() * 6))), hudOverlayY + 24);
-			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(tertiaryStack.stackSize), hudOverlayX + (leftSide ? 16 : - (Integer.toString(tertiaryStack.stackSize).length() * 6)), hudOverlayY + 30, color);
+			renderItem.renderItemAndEffectIntoGUI(tertiaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(tertiaryStack.stackSize).length() * 6))), hudOverlayY + 24);
+			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(tertiaryStack.stackSize), hudOverlayX + (leftSide ? 16 : -(Integer.toString(tertiaryStack.stackSize).length() * 6)), hudOverlayY + 30, color);
 			if(staffMode.equals("eruption"))
 				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(friendlyStaffMode, hudOverlayX - (leftSide ? 0 : (friendlyStaffMode.length() * 6)), hudOverlayY + 18, color);
 		} else if(staffMode.equals("flint_and_steel")) {
@@ -305,13 +350,14 @@ public class ClientEventHandler {
 	public void handleRendingGaleHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemRendingGale))
+		ItemStack rendingGaleStack = getCorrectItemFromEitherHand(player, ModItems.rendingGale);
+
+		if (rendingGaleStack == null)
 			return;
 
-		ItemStack rendingGaleStack = player.getCurrentEquippedItem();
 		ItemStack featherStack = new ItemStack(Items.feather, NBTHelper.getInteger("feathers", rendingGaleStack), 0);
 		int charge = featherStack.stackSize;
-		if(player.isUsingItem()) {
+		if(player.isHandActive() && getHandHoldingCorrectItem(player, ModItems.rendingGale) == player.getActiveHand()) {
 			int count = rendingGaleStack.getItem().getMaxItemUseDuration(rendingGaleStack) - (player.getItemInUseCount() - 1);
 			charge -= (count * ItemRendingGale.getChargeCost());
 		}
@@ -323,10 +369,11 @@ public class ClientEventHandler {
 		// handles rendering the hud for the handgun, WIP
 		EntityPlayer player = mc.thePlayer;
 
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHandgun))
+		ItemStack handgunStack = getCorrectItemFromEitherHand(player, ModItems.handgun);
+
+		if (handgunStack == null)
 			return;
 
-		ItemStack handgunStack = player.getCurrentEquippedItem();
 		ItemHandgun handgunItem = (ItemHandgun) handgunStack.getItem();
 		ItemStack bulletStack = new ItemStack(ModItems.bullet, handgunItem.getBulletCount(handgunStack), handgunItem.getBulletType(handgunStack));
 		renderHandgunHUD(mc, player, handgunStack, bulletStack);
@@ -406,9 +453,11 @@ public class ClientEventHandler {
 		// handles rendering the hud for the sojourner's staff so we don't have to use chat messages, because annoying.
 		EntityPlayer player = mc.thePlayer;
 
-		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemSojournerStaff))
+		ItemStack sojournerStack = getCorrectItemFromEitherHand(player, ModItems.sojournerStaff);
+
+		if (sojournerStack == null)
 			return;
-		ItemStack sojournerStack = player.getCurrentEquippedItem();
+
 		ItemSojournerStaff sojournerItem = (ItemSojournerStaff) sojournerStack.getItem();
 		String placementItemName = sojournerItem.getTorchPlacementMode(sojournerStack);
 		//for use with font renderer, hopefully.

@@ -357,7 +357,7 @@ public class XRRecipes {
 		addRecipe(false, false, new ItemStack(ModItems.fertilePotion, 5), "gbg", "gfg", "cgy", 'g', Blocks.glass_pane, 'b', Items.water_bucket, 'f', FERTILE_ESSENCE, 'c', new ItemStack(Items.dye, 1, Reference.GREEN_DYE_META), 'y', new ItemStack(Items.dye, 1, Reference.YELLOW_DYE_META));
 
 		//pedestal
-		addRecipe(false, false, new ItemStack(ModBlocks.pedestal),"dqd", " q ", "dqd", 'd', Items.diamond, 'q', Blocks.quartz_block);
+		addRecipe(false, false, new ItemStack(ModBlocks.pedestal), "dqd", " q ", "dqd", 'd', Items.diamond, 'q', Blocks.quartz_block);
 
 		addMobDropUncraftingRecipes();
 

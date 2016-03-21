@@ -4,8 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.EntityBat;
@@ -13,19 +11,20 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.S39PacketPlayerAbilities;
-import net.minecraft.potion.Potion;
+import net.minecraft.network.play.server.SPacketPlayerAbilities;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -347,7 +346,7 @@ public class CommonEventHandler {
 		spawnAngelheartVialParticles(player);
 
 		// play some glass breaking effects at the player location
-		player.worldObj.playSoundEffect(player.posX + 0.5D, player.posY + 0.5D, player.posZ + 0.5D, "dig.glass", 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		player.worldObj.playSound(null, player.getPosition(), SoundEvents.block_glass_break, SoundCategory.NEUTRAL, 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
 
 		// gives the player a few hearts, sparing them from death.
 		float amountHealed = player.getMaxHealth() * (float) Settings.AngelHeartVial.healPercentageOfMaxLife / 100F;
@@ -391,19 +390,19 @@ public class CommonEventHandler {
 			}
 		}
 
-		player.worldObj.playSoundEffect(player.posX + 0.5D, player.posY + 0.5D, player.posZ + 0.5D, "random.glass", 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		player.worldObj.playSound(null, player.getPosition(), SoundEvents.block_glass_break, SoundCategory.NEUTRAL, 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
 
 	}
 
 	public void removeNegativeStatusEffects(EntityPlayer player) {
-		player.removePotionEffect(Potion.wither.id);
-		player.removePotionEffect(Potion.hunger.id);
-		player.removePotionEffect(Potion.poison.id);
-		player.removePotionEffect(Potion.confusion.id);
-		player.removePotionEffect(Potion.digSlowdown.id);
-		player.removePotionEffect(Potion.moveSlowdown.id);
-		player.removePotionEffect(Potion.blindness.id);
-		player.removePotionEffect(Potion.weakness.id);
+		player.removePotionEffect(MobEffects.wither);
+		player.removePotionEffect(MobEffects.hunger);
+		player.removePotionEffect(MobEffects.poison);
+		player.removePotionEffect(MobEffects.confusion);
+		player.removePotionEffect(MobEffects.digSlowdown);
+		player.removePotionEffect(MobEffects.moveSlowdown);
+		player.removePotionEffect(MobEffects.blindness);
+		player.removePotionEffect(MobEffects.weakness);
 	}
 
 	public void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
@@ -437,19 +436,19 @@ public class CommonEventHandler {
 
 			// added bonus, has some extra effects when drowning or dying to lava
 			if(event.source == DamageSource.lava && Settings.PhoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou)
-				player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 200, 0));
+				player.addPotionEffect(new PotionEffect(MobEffects.fireResistance, 200, 0));
 			if(event.source == DamageSource.drown && Settings.PhoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou) {
 				player.setAir(10);
-				player.addPotionEffect(new PotionEffect(Potion.waterBreathing.id, 200, 0));
+				player.addPotionEffect(new PotionEffect(MobEffects.waterBreathing, 200, 0));
 			}
 
 			// give the player temporary resistance to other damages.
 			if(Settings.PhoenixDown.giveTemporaryDamageResistance)
-				player.addPotionEffect(new PotionEffect(Potion.resistance.id, 200, 1));
+				player.addPotionEffect(new PotionEffect(MobEffects.resistance, 200, 1));
 
 			// give the player temporary regeneration.
 			if(Settings.PhoenixDown.giveTemporaryRegeneration)
-				player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 200, 1));
+				player.addPotionEffect(new PotionEffect(MobEffects.regeneration, 200, 1));
 
 			// particles, lots of them
 			spawnPhoenixResurrectionParticles(player);
@@ -561,33 +560,33 @@ public class CommonEventHandler {
 
 	@SubscribeEvent
 	public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
-		if (event.entityLiving.worldObj.isRemote)
+		if(event.entityLiving.worldObj.isRemote)
 			return;
 
-		if (event.entityLiving.isPotionActive(ModPotions.potionFlight.getId())) {
-			if (event.entityLiving instanceof EntityPlayer) {
+		if(event.entityLiving.isPotionActive(ModPotions.potionFlight)) {
+			if(event.entityLiving instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) event.entityLiving;
 				playersFlightStatus.put(player.getGameProfile().getId(), true);
 				player.capabilities.allowFlying = true;
 				player.fallDistance = 0;
-				((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S39PacketPlayerAbilities(player.capabilities));
+				((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketPlayerAbilities(player.capabilities));
 			}
 		} else {
-			if (event.entityLiving instanceof EntityPlayer) {
+			if(event.entityLiving instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) event.entityLiving;
 
 				if(!playersFlightStatus.containsKey(player.getGameProfile().getId())) {
 					playersFlightStatus.put(player.getGameProfile().getId(), false);
 				}
 
-				if (playersFlightStatus.get(player.getGameProfile().getId())) {
+				if(playersFlightStatus.get(player.getGameProfile().getId())) {
 
 					playersFlightStatus.put(player.getGameProfile().getId(), false);
 
-					if (!player.capabilities.isCreativeMode) {
+					if(!player.capabilities.isCreativeMode) {
 						player.capabilities.allowFlying = false;
 						player.capabilities.isFlying = false;
-						((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S39PacketPlayerAbilities(player.capabilities));
+						((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketPlayerAbilities(player.capabilities));
 					}
 				}
 			}
