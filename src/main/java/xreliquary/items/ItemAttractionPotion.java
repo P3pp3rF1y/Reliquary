@@ -1,14 +1,16 @@
 package xreliquary.items;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 
 public class ItemAttractionPotion extends ItemBase {
@@ -32,26 +34,17 @@ public class ItemAttractionPotion extends ItemBase {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-		if(renderPass == 1)
-			return Integer.parseInt(Colors.APHRODITE_COLOR, 16);
-		else
-			return Integer.parseInt(Colors.PURE, 16);
-	}
-
-	@Override
-	public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
 		if(world.isRemote)
-			return ist;
+			return new ActionResult<>(EnumActionResult.PASS, ist);
 		if(!player.capabilities.isCreativeMode) {
 			--ist.stackSize;
 		}
-		world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+		world.playSound(null, player.getPosition(), SoundEvents.block_dispenser_launch, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 		EntityAttractionPotion attractionPotion = new EntityAttractionPotion(world, player);
 		attractionPotion.func_184538_a(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
 		world.spawnEntityInWorld(attractionPotion);
-		return ist;
+		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 	}
 
 }

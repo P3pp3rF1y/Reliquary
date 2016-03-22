@@ -16,9 +16,6 @@ import xreliquary.util.alkahestry.Alkahestry;
 
 public class AlkahestryCraftingRecipe implements IRecipe {
 
-	//TODO figure out if I can get rid of this
-	public static Item returnedItem = ModItems.alkahestryTome;
-
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) {
 		ItemStack tome = null;
@@ -27,9 +24,9 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(stack != null) {
-				if(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(returnedItem))) {
+				if(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome))) {
 					tome = stack.copy();
-				} else if(!RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(returnedItem))) {
+				} else if(!RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome))) {
 					if(valid == 0) {
 						valid = 1;
 						itemStack = stack;
@@ -63,7 +60,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 				if(stack.getItem() instanceof ItemAlkahestryTome) {
 					tome = stack;
 				}
-				if(!(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(returnedItem)))) {
+				if(!(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome)))) {
 					if(Alkahestry.getDictionaryKey(stack) == null) {
 						String key = RegistryHelper.getItemRegistryName(stack.getItem()) + (stack.getItem().getHasSubtypes() ? "|" + stack.getMetadata() : "");
 						returned = Settings.AlkahestryTome.craftingRecipes.get(key);
@@ -87,7 +84,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(stack != null) {
-				if(!(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(returnedItem)))) {
+				if(!(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome)))) {
 					if(Alkahestry.getDictionaryKey(stack) == null) {
 						String key = RegistryHelper.getItemRegistryName(stack.getItem()) + (stack.getItem().getHasSubtypes() ? "|" + stack.getMetadata() : "");
 						returned = Settings.AlkahestryTome.craftingRecipes.get(key);
@@ -109,7 +106,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 
 	@Override
 	public ItemStack getRecipeOutput() {
-		return new ItemStack(returnedItem, 1);
+		return new ItemStack(ModItems.alkahestryTome, 1);
 	}
 
 	@Override

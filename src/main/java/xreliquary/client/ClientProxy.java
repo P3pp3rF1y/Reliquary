@@ -21,6 +21,7 @@ import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.client.init.ItemBlockModels;
 import xreliquary.client.init.ItemModels;
 import xreliquary.client.init.ModBlockColors;
+import xreliquary.client.init.ModItemColors;
 import xreliquary.client.render.*;
 import xreliquary.common.CommonProxy;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
@@ -32,6 +33,7 @@ import xreliquary.entities.shot.*;
 import xreliquary.handler.ClientEventHandler;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
+import xreliquary.init.ModSounds;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -88,8 +90,9 @@ public class ClientProxy extends CommonProxy {
 	public void preInit() {
 		super.preInit();
 
-		ItemModels.registerItemModels();
 		ItemBlockModels.registerItemBlockModels();
+		ItemModels.registerItemModels();
+		ModItemColors.init();
 		ModBlockColors.init();
 	}
 

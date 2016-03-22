@@ -1,21 +1,18 @@
 package xreliquary.items;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Optional;
 import xreliquary.reference.Compatibility;
 
-@Optional.Interface(iface="baubles.api.IBauble", modid= Compatibility.MOD_ID.BAUBLES, striprefs=true)
-public abstract class ItemBauble extends ItemBase implements IBauble {
+@Optional.Interface(iface = "baubles.api.IBauble", modid = Compatibility.MOD_ID.BAUBLES, striprefs = true)
+public abstract class ItemBauble extends ItemBase /*implements IBauble*/ {
 
-    public ItemBauble(String langName) {
-        super(langName);
-    }
+	public ItemBauble(String langName) {
+		super(langName);
+	}
 
-    @Override
-    @Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
+	//TODO put back when baubles are ported over to 1.9
+/*    @Override
+	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
     public abstract BaubleType getBaubleType(ItemStack stack);
 
     @Override
@@ -46,5 +43,5 @@ public abstract class ItemBauble extends ItemBase implements IBauble {
     @Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
     public boolean canUnequip(ItemStack stack, EntityLivingBase player) {
         return true;
-    }
+    }*/
 }
