@@ -5,7 +5,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
@@ -50,7 +53,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IFluidContainer
 			return;
 		this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getInteger("experience", ist))), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.GREEN + "XP"), ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + "XP"), ist, list);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
 	}
 
@@ -121,11 +124,11 @@ public class ItemHeroMedallion extends ItemToggleable implements IFluidContainer
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
 		if(world.isRemote)
-			return ist;
+			return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 		if(player.isSneaking())
-			return super.onItemRightClick(ist, world, player);
+			return super.onItemRightClick(ist, world, player, hand);
 		//turn it on/off.
 
 		int playerLevel = player.experienceLevel;
@@ -134,7 +137,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IFluidContainer
 			if(!player.capabilities.isCreativeMode)
 				decreaseMedallionExperience(ist);
 		}
-		return ist;
+		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 	}
 
 	@Override

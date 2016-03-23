@@ -17,24 +17,23 @@ import java.util.List;
  */
 public class ItemMobIngredient extends ItemBase {
 
-    public ItemMobIngredient() {
-        super(Names.mob_ingredient);
-        this.setCreativeTab(Reliquary.CREATIVE_TAB);
-        this.setMaxDamage(0);
-        this.setMaxStackSize(64);
-        canRepair = false;
-        this.setHasSubtypes(true);
-    }
+	public ItemMobIngredient() {
+		super(Names.mob_ingredient);
+		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+		this.setMaxDamage(0);
+		this.setMaxStackSize(64);
+		canRepair = false;
+		this.setHasSubtypes(true);
+	}
 
+	@Override
+	public String getUnlocalizedName(ItemStack ist) {
+		return "item.mob_ingredient_" + ist.getItemDamage();
+	}
 
-    @Override
-    public String getUnlocalizedName(ItemStack ist) {
-        return "item.mob_ingredient_" + ist.getItemDamage();
-    }
-
-    @Override
-    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        for (int i = 0; i <= 15; i++)
-            par3List.add(new ItemStack(par1, 1, i));
-    }
+	@Override
+	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+		for(int i = 0; i <= 15; i++)
+			par3List.add(new ItemStack(par1, 1, i));
+	}
 }

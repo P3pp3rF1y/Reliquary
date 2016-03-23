@@ -3,17 +3,17 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
-import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
@@ -21,10 +21,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.stats.StatList;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import org.lwjgl.input.Keyboard;
@@ -47,9 +47,6 @@ import java.util.Random;
  */
 public class ItemHarvestRod extends ItemToggleable {
 
-	public static final String CROP_LOCATIONS_NBT_TAG = "crop_locations";
-	public static final String COOLDOWN_NBT_TAG = "cooldown";
-	public static final String AOE_INITIAL_BLOCK_NBT_TAG = "aoe_initial_block";
 	public static final String BONE_MEAL_MODE = "bone_meal";
 	public static final String PLANTABLE_MODE = "plantable";
 	public static final String MODE_NBT_TAG = "mode";
@@ -70,7 +67,7 @@ public class ItemHarvestRod extends ItemToggleable {
 			return;
 		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(getBoneMealCount(ist))), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.WHITE + Items.dye.getItemStackDisplayName(new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META))), ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.WHITE + Items.dye.getItemStackDisplayName(new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META))), ist, list);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
 	}
 
@@ -200,7 +197,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		if(blockState.getBlock() instanceof BlockFertileLilypad)
 			return;
 
-		List<ItemStack> drops = blockState.getBlock().getDrops(player.worldObj, pos, blockState, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, ist));
+		List<ItemStack> drops = blockState.getBlock().getDrops(player.worldObj, pos, blockState, EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, ist));
 		Random rand = new Random();
 
 		if(player.worldObj.isRemote) {
@@ -218,7 +215,7 @@ public class ItemHarvestRod extends ItemToggleable {
 			}
 
 			player.worldObj.setBlockState(pos, Blocks.air.getDefaultState());
-			player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(blockState.getBlock())], 1);
+			player.addStat(StatList.func_188055_a(blockState.getBlock()));
 			player.addExhaustion(0.01F);
 		}
 	}
@@ -234,10 +231,10 @@ public class ItemHarvestRod extends ItemToggleable {
 		boolean usedRod = false;
 		for(int repeatedUses = 0; repeatedUses <= getLuckRolls(); repeatedUses++) {
 			if(repeatedUses == 0 || world.rand.nextInt(100) <= getLuckPercent()) {
-				if(fakeItemDye.onItemUse(fakeItemStack, player, world, pos, side, 0, 0, 0)) {
+				if(fakeItemDye.onItemUse(fakeItemStack, player, world, pos, EnumHand.MAIN_HAND, side, 0, 0, 0) == EnumActionResult.SUCCESS) {
 					if(!usedRod)
 						usedRod = true;
-					player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+					player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_experience_orb_touch, SoundCategory.NEUTRAL, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
 				}
 			}
 		}
@@ -255,13 +252,13 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 		if(player.isSneaking())
-			return super.onItemRightClick(stack, world, player);
+			return super.onItemRightClick(stack, world, player, hand);
 
-		player.setItemInUse(stack, getMaxItemUseDuration(stack));
+		player.setActiveHand(hand);
 
-		return stack;
+		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
@@ -270,9 +267,11 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int timeLeft) {
-		if(player.worldObj.isRemote)
+	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase entity, int timeLeft) {
+		if(entity.worldObj.isRemote || !(entity instanceof EntityPlayer))
 			return;
+
+		EntityPlayer player = (EntityPlayer) entity;
 
 		if(!player.capabilities.isCreativeMode) {
 			if(getMode(stack) == BONE_MEAL_MODE)
@@ -282,10 +281,10 @@ public class ItemHarvestRod extends ItemToggleable {
 			}
 		}
 
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+		RayTraceResult result = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
 
-		if(mop != null) {
-			BlockPos pos = mop.getBlockPos();
+		if(result != null) {
+			BlockPos pos = result.getBlockPos();
 			IBlockState blockState = world.getBlockState(pos);
 
 			if(getMode(stack) == BONE_MEAL_MODE) {
@@ -310,29 +309,31 @@ public class ItemHarvestRod extends ItemToggleable {
 		ItemStack fakePlantableStack = getPlantableItems(stack).get(idx).copy();
 		fakePlantableStack.stackSize = 1;
 
-		if(fakePlantableStack.onItemUse(player, player.worldObj, pos, EnumFacing.UP, 0, 0, 0)) {
-			player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+		if(fakePlantableStack.onItemUse(player, player.worldObj, pos, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0) == EnumActionResult.SUCCESS) {
+			player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_experience_orb_touch, SoundCategory.NEUTRAL, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
 
-			if (updateCharge && !player.capabilities.isCreativeMode) {
+			if(updateCharge && !player.capabilities.isCreativeMode) {
 				setPlantableQuantity(stack, idx, getPlantableQuantity(stack, idx) - 1);
 			}
 		}
 	}
 
 	@Override
-	public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
-		if(player.worldObj.isRemote)
+	public void onUsingTick(ItemStack stack, EntityLivingBase entity, int count) {
+		if(entity.worldObj.isRemote || !(entity instanceof EntityPlayer))
 			return;
+
+		EntityPlayer player = (EntityPlayer) entity;
 
 		if(isCoolDownOver(stack, count)) {
 			switch(getMode(stack)) {
 				case BONE_MEAL_MODE:
 					if(getBoneMealCount(stack) >= (getBonemealCost() * getTimesItemUsed(stack, count)) || player.capabilities.isCreativeMode) {
-						MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
-						if(mop != null) {
+						RayTraceResult result = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+						if(result != null) {
 							World world = player.worldObj;
 
-							BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, mop.getBlockPos(), Settings.HarvestRod.harvestBreakRadius);
+							BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, result.getBlockPos(), Settings.HarvestRod.harvestBreakRadius);
 
 							if(blockToBoneMeal != null)
 								boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP, false);
@@ -343,11 +344,11 @@ public class ItemHarvestRod extends ItemToggleable {
 					break;
 				case PLANTABLE_MODE:
 					if(getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) >= getTimesItemUsed(stack, count) || player.capabilities.isCreativeMode) {
-						MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
-						if(mop != null) {
+						RayTraceResult result = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+						if(result != null) {
 							World world = player.worldObj;
 
-							BlockPos blockToPlantOn = getNextBlockToPlantOn(world, mop.getBlockPos(), Settings.HarvestRod.harvestBreakRadius, (IPlantable) getPlantableItems(stack).get(getCurrentPlantableIndex(stack)).getItem());
+							BlockPos blockToPlantOn = getNextBlockToPlantOn(world, result.getBlockPos(), Settings.HarvestRod.harvestBreakRadius, (IPlantable) getPlantableItems(stack).get(getCurrentPlantableIndex(stack)).getItem());
 
 							if(blockToPlantOn != null)
 								plantItem(stack, player, blockToPlantOn, false);
@@ -359,7 +360,7 @@ public class ItemHarvestRod extends ItemToggleable {
 				default:
 					break;
 			}
-			player.stopUsingItem();
+			player.stopActiveHand();
 		}
 	}
 
@@ -369,7 +370,7 @@ public class ItemHarvestRod extends ItemToggleable {
 				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
 					BlockPos currentPos = new BlockPos(x, y, z);
 					IBlockState blockState = world.getBlockState(currentPos);
-					if(blockState.getBlock().canSustainPlant(world, pos, EnumFacing.UP, plantable) && world.isAirBlock(currentPos.up())) {
+					if(blockState.getBlock().canSustainPlant(blockState, world, pos, EnumFacing.UP, plantable) && world.isAirBlock(currentPos.up())) {
 						return currentPos;
 					}
 				}

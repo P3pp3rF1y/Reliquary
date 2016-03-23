@@ -2,7 +2,12 @@ package xreliquary.items;
 
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,19 +45,19 @@ public class ItemGlowingWater extends ItemBase {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (par2World.isRemote)
-            return par1ItemStack;
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            --par1ItemStack.stackSize;
+    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+        if (world.isRemote)
+            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        if (!player.capabilities.isCreativeMode) {
+            --stack.stackSize;
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        world.playSound(null, player.getPosition(), SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
-        EntityGlowingWater glowingWater = new EntityGlowingWater(par2World, par3EntityPlayer)
-        glowingWater.func_184538_a(par3EntityPlayer, par3EntityPlayer.rotationPitch, par3EntityPlayer.rotationYaw, -20.0F, 0.7F, 1.0F);
-        par2World.spawnEntityInWorld(glowingWater);
+        EntityGlowingWater glowingWater = new EntityGlowingWater(world, player);
+        glowingWater.func_184538_a(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
+        world.spawnEntityInWorld(glowingWater);
 
-        return par1ItemStack;
+        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 }

@@ -4,6 +4,7 @@ package xreliquary.items;
 import net.minecraft.block.BlockChest;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,12 +30,12 @@ public class ItemVoidTearEmpty extends ItemBase {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
         if (!world.isRemote) {
             ItemStack createdTear = buildTear(ist, player, player.inventory, true);
             if (createdTear != null) {
                 --ist.stackSize;
-                player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+                player.worldObj.playSound(player, SoundEvents.entity_experience_orb_touch, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
                 if (ist.stackSize == 0)
                     return createdTear;
                 else
@@ -59,7 +60,7 @@ public class ItemVoidTearEmpty extends ItemBase {
                 ItemStack createdTear = buildTear(ist, player, inventory, false);
                 if (createdTear != null) {
                     --ist.stackSize;
-                    player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+                    player.worldObj.playSound(player, SoundEvents.entity_experience_orb_touch, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
                     if (ist.stackSize == 0)
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, createdTear);
                     else

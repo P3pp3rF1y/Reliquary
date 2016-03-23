@@ -45,7 +45,7 @@ public class ItemSerpentStaff extends ItemBase {
         if (player.worldObj.isRemote || count % 3 != 0)
             return;
 
-        player.worldObj.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        player.worldObj.playSound(player, SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
         player.worldObj.spawnEntityInWorld(new EntityKrakenSlime(player.worldObj, player));
         item.damageItem(1, player);
     }

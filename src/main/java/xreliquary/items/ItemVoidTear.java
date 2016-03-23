@@ -44,23 +44,23 @@ public class ItemVoidTear extends ItemToggleable {
             return;
 
         if(this.isEnabled(stack)) {
-            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.YELLOW + contents.getDisplayName()), stack, list);
+            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName()), stack, list);
             list.add(LanguageHelper.getLocalization("tooltip.absorb_tear"));
         }
         LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(NBTHelper.getInteger("itemQuantity", stack))), stack, list);
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
         if (!world.isRemote) {
 
             if (NBTHelper.getInteger("itemQuantity", ist) == 0)
                 return new ItemStack(ModItems.emptyVoidTear, 1, 0);
 
-            MovingObjectPosition movingObjectPosition = this.getMovingObjectPositionFromPlayer(world, player, false);
+            RayTraceResult movingObjectPosition = this.getMovingObjectPositionFromPlayer(world, player, false);
 
             //not enabling void tear if player tried to deposit everything into inventory but there wasn't enough space
-            if (movingObjectPosition != null && movingObjectPosition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
+            if (movingObjectPosition != null && movingObjectPosition.typeOfHit == RayTraceResult.MovingObjectType.BLOCK
                     && world.getTileEntity(movingObjectPosition.getBlockPos()) instanceof IInventory
                     && player.isSneaking())
                 return ist;
@@ -68,7 +68,7 @@ public class ItemVoidTear extends ItemToggleable {
             if (player.isSneaking())
                 return super.onItemRightClick(ist, world, player);
             if (this.attemptToEmptyIntoInventory(ist, player, player.inventory, player.inventory.mainInventory.length)) {
-                player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+                player.worldObj.playSound(player, SoundEvents.entity_experience_orb_touch, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
                 NBTHelper.resetTag(ist);
                 return new ItemStack(ModItems.emptyVoidTear, 1, 0);
             }
@@ -196,10 +196,10 @@ public class ItemVoidTear extends ItemToggleable {
 
         NBTHelper.setInteger("itemQuantity", ist, quantity);
         if (quantity == 0) {
-            player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
+            player.worldObj.playSound(player, SoundEvents.entity_experience_orb_touch, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
             return true;
         } else {
-            player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+            player.worldObj.playSound(player, SoundEvents.entity_experience_orb_touch, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
             return false;
         }
     }
@@ -213,7 +213,7 @@ public class ItemVoidTear extends ItemToggleable {
         if (!(quantityDrained > 0))
             return;
 
-        player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+        player.worldObj.playSound(player, SoundEvents.entity_experience_orb_touch, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
 
         NBTHelper.setInteger("itemQuantity", ist, quantity + quantityDrained);
     }

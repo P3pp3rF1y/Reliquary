@@ -9,8 +9,11 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -45,7 +48,7 @@ public class ItemInfernalTear extends ItemToggleable {
 		EntityPlayer player = (EntityPlayer) e;
 		String ident = ist.getTagCompound().getString("itemID");
 
-		if (ident.isEmpty()) {
+		if(ident.isEmpty()) {
 			NBTTagCompound tag = ist.getTagCompound();
 			tag.removeTag("itemID");
 			tag.removeTag("enabled");
@@ -57,7 +60,7 @@ public class ItemInfernalTear extends ItemToggleable {
 			// You need above Cobblestone level to get XP.
 			if(!(recipe.yield == 32 && recipe.cost == 4)) {
 				if(InventoryHelper.consumeItem(this.getStackFromTear(ist), player)) {
-					player.addExperience((int) (Math.ceil((((double) recipe.cost) / (double) recipe.yield)/256d * 500d)));
+					player.addExperience((int) (Math.ceil((((double) recipe.cost) / (double) recipe.yield) / 256d * 500d)));
 				}
 			}
 		}
@@ -80,7 +83,7 @@ public class ItemInfernalTear extends ItemToggleable {
 			LanguageHelper.formatTooltip("tooltip.tear", ImmutableMap.of("item", itemName), stack, list);
 
 			if(this.isEnabled(stack)) {
-				LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.YELLOW + holds), stack, list);
+				LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + holds), stack, list);
 			}
 			list.add(LanguageHelper.getLocalization("tooltip.absorb"));
 			list.add(LanguageHelper.getLocalization("tooltip.infernal_tear.absorb_unset"));
@@ -94,7 +97,7 @@ public class ItemInfernalTear extends ItemToggleable {
 
 		String[] nameParts = NBTHelper.getString("itemID", tear).split("\\|");
 		ItemStack stack;
-		if (nameParts.length > 1)
+		if(nameParts.length > 1)
 			stack = new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(nameParts[0])), 1, Integer.parseInt(nameParts[1]));
 		else
 			stack = new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(nameParts[0])));
@@ -109,37 +112,39 @@ public class ItemInfernalTear extends ItemToggleable {
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		ItemStack newStack = super.onItemRightClick(stack, world, player);
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+		ActionResult<ItemStack> actionResult = super.onItemRightClick(stack, world, player, hand);
 		if(player.isSneaking() && !this.isEnabled(stack))
-			return newStack;
+			return actionResult;
+
+		ItemStack itemStack = actionResult.getResult();
 
 		//empty the tear if player is not sneaking and the tear is not empty
-		NBTTagCompound tag = newStack.getTagCompound();
-		if(!player.isSneaking() && getStackFromTear(newStack) != null) {
+		NBTTagCompound tag = itemStack.getTagCompound();
+		if(!player.isSneaking() && getStackFromTear(itemStack) != null) {
 			tag.removeTag("itemID");
 			tag.removeTag("enabled");
 
-			return newStack;
+			return actionResult;
 		}
 
 		//nothing more to do with a filled tear here
-		if(getStackFromTear(newStack) != null) {
-			return newStack;
+		if(getStackFromTear(itemStack) != null) {
+			return actionResult;
 		}
 
 		//if user is sneaking or just enabled the tear, let's fill it
-		if(player.isSneaking() || !this.isEnabled(newStack)) {
-			ItemStack returnStack = this.buildTear(newStack, player, player.inventory);
+		if(player.isSneaking() || !this.isEnabled(itemStack)) {
+			ItemStack returnStack = this.buildTear(itemStack, player, player.inventory);
 			if(returnStack != null)
-				return returnStack;
+				return new ActionResult<>(EnumActionResult.SUCCESS, returnStack);
 		}
 
 		//by this time the tear is still empty and there wasn't anything to put in it
 		// so let's disable it if it got enabled
-		if(this.isEnabled(newStack))
-			this.toggleEnabled(newStack);
-		return newStack;
+		if(this.isEnabled(itemStack))
+			this.toggleEnabled(itemStack);
+		return actionResult;
 	}
 
 	private ItemStack buildTear(ItemStack stack, EntityPlayer player, IInventory inventory) {

@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.*;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -333,7 +334,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         }
         this.formatTooltip(ImmutableMap.of("phrase", phrase, "placing", placing), ist, list);
         if(this.isEnabled(ist))
-            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.YELLOW + getItemStackDisplayName(new ItemStack(Blocks.torch))), ist, list);
+            LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + getItemStackDisplayName(new ItemStack(Blocks.torch))), ist, list);
         LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
     }
 
@@ -394,14 +395,14 @@ public class ItemSojournerStaff extends ItemToggleable {
 
 
     //a longer ranged version of "getMovingObjectPositionFromPlayer" basically
-    public MovingObjectPosition getBlockTarget(World world, EntityPlayer player) {
+    public RayTraceResult getBlockTarget(World world, EntityPlayer player) {
         float f = 1.0F;
         float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
         float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
         double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double)f;
         double d1 = player.prevPosY + (player.posY - player.prevPosY) * (double)f + (double)(world.isRemote ? player.getEyeHeight() - player.getDefaultEyeHeight() : player.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
         double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double)f;
-        Vec3 vec3 = new Vec3(d0, d1, d2);
+        Vec3d vec3 = new Vec3d(d0, d1, d2);
         float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
         float f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
         float f5 = -MathHelper.cos(-f1 * 0.017453292F);
@@ -409,16 +410,16 @@ public class ItemSojournerStaff extends ItemToggleable {
         float f7 = f4 * f5;
         float f8 = f3 * f5;
         double d3 = Settings.SojournerStaff.maxRange;
-        Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
+        Vec3d vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
         return world.rayTraceBlocks(vec3, vec31, true, false, false);
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
         //calls onItemUse so all of the functionality we'd normally have to do preventative checks on gets handled there.
         if (!player.isSneaking()) {
-            MovingObjectPosition mop = this.getBlockTarget(world, player);
-            if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            RayTraceResult mop = this.getBlockTarget(world, player);
+            if (mop != null && mop.typeOfHit == RayTraceResult.MovingObjectType.BLOCK) {
                 float xOff = (float) (mop.getBlockPos().getX() - player.posX);
                 float yOff = (float) (mop.getBlockPos().getY() - player.posY);
                 float zOff = (float) (mop.getBlockPos().getZ() - player.posZ);
@@ -430,14 +431,14 @@ public class ItemSojournerStaff extends ItemToggleable {
 
     //I named the vars in this method weird crap cos I have no idea what they do. This was stolen from the bucket code, I think.
     @Override
-    protected MovingObjectPosition getMovingObjectPositionFromPlayer(World world, EntityPlayer player, boolean weirdBucketBoolean) {
+    protected RayTraceResult getMovingObjectPositionFromPlayer(World world, EntityPlayer player, boolean weirdBucketBoolean) {
         float movementCoefficient = 1.0F;
         float pitchOff = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * movementCoefficient;
         float yawOff = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * movementCoefficient;
         double xOff = player.prevPosX + (player.posX - player.prevPosX) * movementCoefficient;
         double yOff = player.prevPosY + (player.posY - player.prevPosY) * movementCoefficient + player.getEyeHeight();
         double zOff = player.prevPosZ + (player.posZ - player.prevPosZ) * movementCoefficient;
-        Vec3 playerVector = new Vec3(xOff, yOff, zOff);
+        Vec3d playerVector = new Vec3d(xOff, yOff, zOff);
         float cosTraceYaw = MathHelper.cos(-yawOff * 0.017453292F - (float) Math.PI);
         float sinTraceYaw = MathHelper.sin(-yawOff * 0.017453292F - (float) Math.PI);
         float cosTracePitch = -MathHelper.cos(-pitchOff * 0.017453292F);
@@ -445,7 +446,7 @@ public class ItemSojournerStaff extends ItemToggleable {
         float pythagoraStuff = sinTraceYaw * cosTracePitch;
         float pythagoraStuff2 = cosTraceYaw * cosTracePitch;
         double distCoeff = 32.0D;
-        Vec3 rayTraceVector = playerVector.addVector(pythagoraStuff * distCoeff, sinTracePitch * distCoeff, pythagoraStuff2 * distCoeff);
+        Vec3d rayTraceVector = playerVector.addVector(pythagoraStuff * distCoeff, sinTracePitch * distCoeff, pythagoraStuff2 * distCoeff);
         return world.rayTraceBlocks(playerVector, rayTraceVector, weirdBucketBoolean);
     }
 

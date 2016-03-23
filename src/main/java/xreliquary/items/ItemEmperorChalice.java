@@ -1,16 +1,18 @@
 package xreliquary.items;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fml.relauncher.Side;
@@ -48,9 +50,14 @@ public class ItemEmperorChalice extends ItemToggleable implements IFluidContaine
 	}
 
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World world, EntityPlayer player) {
+	public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase entityLiving) {
 		if(world.isRemote)
 			return stack;
+
+		if(!(entityLiving instanceof EntityPlayer))
+			return stack;
+
+		EntityPlayer player = (EntityPlayer) entityLiving;
 
 		int multiplier = Settings.EmperorChalice.hungerSatiationMultiplier;
 		player.getFoodStats().addStats(1, (float) (multiplier / 2));
@@ -59,86 +66,90 @@ public class ItemEmperorChalice extends ItemToggleable implements IFluidContaine
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
 		if(player.isSneaking())
-			return super.onItemRightClick(ist, world, player);
+			return super.onItemRightClick(ist, world, player, hand);
 		float coeff = 1.0F;
 		double xOff = player.prevPosX + (player.posX - player.prevPosX) * coeff;
 		double yOff = player.prevPosY + (player.posY - player.prevPosY) * coeff + player.getEyeHeight();
 		double zOff = player.prevPosZ + (player.posZ - player.prevPosZ) * coeff;
 		boolean isInDrainMode = this.isEnabled(ist);
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, isInDrainMode);
+		RayTraceResult result = this.getMovingObjectPositionFromPlayer(world, player, isInDrainMode);
 
-		if(mop == null) {
+		if(result == null) {
 			if(!this.isEnabled(ist)) {
-				player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
+				player.setActiveHand(hand);
 			}
-			return ist;
+			return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 		} else {
 
-			if(mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+			if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
 
-				if(!world.isBlockModifiable(player, mop.getBlockPos()))
-					return ist;
+				if(!world.isBlockModifiable(player, result.getBlockPos()))
+					return new ActionResult<>(EnumActionResult.FAIL, ist);
 
-				if(!player.canPlayerEdit(mop.getBlockPos(), mop.sideHit, ist))
-					return ist;
+				if(!player.canPlayerEdit(result.getBlockPos(), result.sideHit, ist))
+					return new ActionResult<>(EnumActionResult.FAIL, ist);
+				;
 
 				if(this.isEnabled(ist)) {
-					TileEntity tile = world.getTileEntity(mop.getBlockPos());
+					TileEntity tile = world.getTileEntity(result.getBlockPos());
 					if(tile instanceof IFluidHandler) {
 						//it's got infinite water.. it just drains water, nothing more.
 						FluidStack fluid = new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-						((IFluidHandler) tile).drain(mop.sideHit, fluid, true);
+						((IFluidHandler) tile).drain(result.sideHit, fluid, true);
 
-						return ist;
+						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 					}
 				} else {
-					TileEntity tile = world.getTileEntity(mop.getBlockPos());
+					TileEntity tile = world.getTileEntity(result.getBlockPos());
 					if(tile instanceof IFluidHandler) {
 						FluidStack fluid = new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-						int amount = ((IFluidHandler) tile).fill(mop.sideHit, fluid, false);
+						int amount = ((IFluidHandler) tile).fill(result.sideHit, fluid, false);
 
 						if(amount > 0) {
-							((IFluidHandler) tile).fill(mop.sideHit, fluid, true);
+							((IFluidHandler) tile).fill(result.sideHit, fluid, true);
 						}
 
-						return ist;
+						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 					}
 				}
 
 				if(!this.isEnabled(ist)) {
-					BlockPos waterPlacementPos = mop.getBlockPos().offset(mop.sideHit);
+					BlockPos waterPlacementPos = result.getBlockPos().offset(result.sideHit);
 
-					if(!player.canPlayerEdit(waterPlacementPos, mop.sideHit, ist))
-						return ist;
+					if(!player.canPlayerEdit(waterPlacementPos, result.sideHit, ist))
+						return new ActionResult<>(EnumActionResult.FAIL, ist);
+					;
 
 					if(this.tryPlaceContainedLiquid(world, ist, xOff, yOff, zOff, waterPlacementPos))
-						return ist;
+						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 
 				} else {
-					String ident = RegistryHelper.getBlockRegistryName(world.getBlockState(mop.getBlockPos()).getBlock());
-					if((ident.equals(RegistryHelper.getBlockRegistryName(Blocks.flowing_water)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.water))) && world.getBlockState(mop.getBlockPos()).getValue(Blocks.water.LEVEL) == 0) {
-						world.setBlockState(mop.getBlockPos(), Blocks.air.getDefaultState());
+					String ident = RegistryHelper.getBlockRegistryName(world.getBlockState(result.getBlockPos()).getBlock());
+					if((ident.equals(RegistryHelper.getBlockRegistryName(Blocks.flowing_water)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.water))) && world.getBlockState(result.getBlockPos()).getValue(Blocks.water.LEVEL) == 0) {
+						world.setBlockState(result.getBlockPos(), Blocks.air.getDefaultState());
 
-						return ist;
+						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 					}
 				}
 			}
 
-			return ist;
+			return new ActionResult<>(EnumActionResult.PASS, ist);
 		}
 	}
 
 	public boolean tryPlaceContainedLiquid(World world, ItemStack stack, double posX, double posY, double posZ, BlockPos pos) {
-		Material material = world.getBlockState(pos).getBlock().getMaterial();
+		IBlockState blockState = world.getBlockState(pos);
+		Material material = blockState.getBlock().getMaterial(blockState);
+
 		if(this.isEnabled(stack))
 			return false;
 		if(!world.isAirBlock(pos) && material.isSolid())
 			return false;
 		else {
 			if(world.provider.doesWaterVaporize()) {
-				world.playSoundEffect(posX + 0.5D, posY + 0.5D, posZ + 0.5D, "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+				world.playSound(null, pos, SoundEvents.block_lava_extinguish, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
 				for(int var11 = 0; var11 < 8; ++var11) {
 					world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);

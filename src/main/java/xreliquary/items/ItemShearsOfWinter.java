@@ -20,7 +20,7 @@ import net.minecraft.stats.StatList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import xreliquary.Reliquary;
@@ -148,17 +148,17 @@ public class ItemShearsOfWinter extends ItemBase {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
         player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
         return ist;
     }
 
     @Override
-    public void onUsingTick(ItemStack ist, EntityPlayer player, int count) {
+    public void onUsingTick(ItemStack ist, EntityLivingBase player, int count) {
         //start the blizzard after a short delay, this prevents some abuse.
         if (getMaxItemUseDuration(ist) - count <= 5)
             return;
-        Vec3 lookVector = player.getLookVec();
+        Vec3d lookVector = player.getLookVec();
         spawnBlizzardParticles(lookVector, player);
 
         doEntityShearableCheck(ist, player, lookVector);
@@ -169,7 +169,7 @@ public class ItemShearsOfWinter extends ItemBase {
 
     }
 
-    public void doPositiveXCheck(ItemStack ist, EntityPlayer player, Vec3 lookVector) {
+    public void doPositiveXCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
         boolean firedOnce = false;
 
         for (int x = 0; x < (int)(lookVector.xCoord * 10D); x++) {
@@ -190,7 +190,7 @@ public class ItemShearsOfWinter extends ItemBase {
         }
     }
 
-    public void doNegativeXCheck(ItemStack ist, EntityPlayer player, Vec3 lookVector) {
+    public void doNegativeXCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
         boolean firedOnce = false;
 
         for (int x = 0; x > (int)(lookVector.xCoord * 10D); x--) {
@@ -211,7 +211,7 @@ public class ItemShearsOfWinter extends ItemBase {
         }
     }
 
-    public void doPositiveYCheck(ItemStack ist, EntityPlayer player, Vec3 lookVector, int x) {
+    public void doPositiveYCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x) {
         boolean firedOnce = false;
 
         for (int y = 0; y < (int)(lookVector.yCoord * 10D); y++) {
@@ -232,7 +232,7 @@ public class ItemShearsOfWinter extends ItemBase {
         }
     }
 
-    public void doNegativeYCheck(ItemStack ist, EntityPlayer player, Vec3 lookVector, int x) {
+    public void doNegativeYCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x) {
         boolean firedOnce = false;
 
         for (int y = 0; y > (int)(lookVector.yCoord * 10D); y--) {
@@ -253,7 +253,7 @@ public class ItemShearsOfWinter extends ItemBase {
         }
     }
 
-    public void doPositiveZCheck(ItemStack ist, EntityPlayer player, Vec3 lookVector, int x, int y) {
+    public void doPositiveZCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x, int y) {
         boolean firedOnce = false;
 
         for (int z = 0; z < (int)(lookVector.zCoord * 10D); z++) {
@@ -267,7 +267,7 @@ public class ItemShearsOfWinter extends ItemBase {
         }
     }
 
-    public void doNegativeZCheck(ItemStack ist, EntityPlayer player, Vec3 lookVector, int x, int y) {
+    public void doNegativeZCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x, int y) {
         boolean firedOnce = false;
 
         for (int z = 0; z > (int)(lookVector.zCoord * 10D); z--) {
@@ -329,7 +329,7 @@ public class ItemShearsOfWinter extends ItemBase {
         }
     }
 
-    public void doEntityShearableCheck(ItemStack ist, EntityPlayer player, Vec3 lookVector) {
+    public void doEntityShearableCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
         if (player.worldObj.isRemote)
             return;
         double lowerX = Math.min(player.posX, player.posX + lookVector.xCoord * 10D);
@@ -372,7 +372,7 @@ public class ItemShearsOfWinter extends ItemBase {
         }
     }
 
-    public void spawnBlizzardParticles(Vec3 lookVector, EntityPlayer player) {
+    public void spawnBlizzardParticles(Vec3d lookVector, EntityPlayer player) {
         //spawn a whole mess of particles every tick.
         for (int i = 0; i < 16; ++i) {
             float randX = 10F * (player.worldObj.rand.nextFloat() - 0.5F);

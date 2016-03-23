@@ -5,9 +5,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -37,7 +42,7 @@ public class ItemIceMagusRod extends ItemToggleable {
 			return;
 		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("snowballs", ist))), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", EnumChatFormatting.BLUE + Items.snowball.getItemStackDisplayName(new ItemStack(Items.snowball))), ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.snowball.getItemStackDisplayName(new ItemStack(Items.snowball))), ist, list);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
 	}
 
@@ -66,14 +71,14 @@ public class ItemIceMagusRod extends ItemToggleable {
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
 		//acts as a cooldown.
 		if(player.isSwingInProgress)
-			return ist;
-		player.swingItem();
+			return new ActionResult<>(EnumActionResult.PASS, ist);
+		player.swingArm(hand);
 		if(!player.isSneaking()) {
 			if(NBTHelper.getInteger("snowballs", ist) >= getSnowballCost() || player.capabilities.isCreativeMode) {
-				world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+				world.playSound(null, player.getPosition(), SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 				EntitySpecialSnowball snowball = new EntitySpecialSnowball(world, player, this instanceof ItemGlacialStaff);
 				snowball.func_184538_a(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.2F, 1.0F);
 				world.spawnEntityInWorld(snowball);
@@ -81,7 +86,7 @@ public class ItemIceMagusRod extends ItemToggleable {
 					NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
 			}
 		}
-		return super.onItemRightClick(ist, world, player);
+		return super.onItemRightClick(ist, world, player, hand);
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -144,19 +143,19 @@ public class ItemXRPotion extends ItemBase {
 	 */
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack ist, World world, EntityPlayer player) {
+	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
 		PotionEssence essence = new PotionEssence(ist.getTagCompound());
 		if(!getSplash(ist)) {
 			if(essence.getEffects().size() > 0) {
 				player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
 				return ist;
 			} else {
-				MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+				RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, true);
 
 				if(mop == null)
 					return ist;
 				else {
-					if(mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+					if(mop.typeOfHit == RayTraceResult.MovingObjectType.BLOCK) {
 						if(world.getBlockState(mop.getBlockPos()).getBlock() instanceof BlockApothecaryCauldron) {
 							TileEntityCauldron cauldronTile = (TileEntityCauldron) world.getTileEntity(mop.getBlockPos());
 							NBTTagCompound potionTag = cauldronTile.removeContainedPotion(world);
@@ -185,7 +184,7 @@ public class ItemXRPotion extends ItemBase {
 			if(!player.capabilities.isCreativeMode) {
 				--ist.stackSize;
 			}
-			world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			world.playSound(player, SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 			world.spawnEntityInWorld(e);
 		}
 		return ist;

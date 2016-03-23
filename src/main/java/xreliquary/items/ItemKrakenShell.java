@@ -3,6 +3,7 @@ package xreliquary.items;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -35,9 +36,9 @@ public class ItemKrakenShell extends ItemBase {
         if (e instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) e;
             if (player.isInWater()) {
-                player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 2, 0, true, false));
-                player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 2, 0, true, false));
-                player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 2, 0, true, false));
+                player.addPotionEffect(new PotionEffect(MobEffects.digSpeed, 2, 0, true, false));
+                player.addPotionEffect(new PotionEffect(MobEffects.moveSpeed, 2, 0, true, false));
+                player.addPotionEffect(new PotionEffect(MobEffects.nightVision, 2, 0, true, false));
             }
         }
     }

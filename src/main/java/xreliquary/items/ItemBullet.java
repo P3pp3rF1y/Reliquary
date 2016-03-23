@@ -48,11 +48,6 @@ public class ItemBullet extends ItemBase {
 		return Integer.parseInt(Colors.PURE, 16);
 	}
 
-	// public boolean hasColor(ItemStack itemStack) {
-	//
-	// return itemStack.getItemDamage() != 0;
-	// }
-
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
 		return "item." + Names.bullet + "_" + ist.getItemDamage();
