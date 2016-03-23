@@ -1,17 +1,15 @@
 package xreliquary.items;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.client.ItemModelLocations;
 import xreliquary.entities.EntityLyssaHook;
 import xreliquary.reference.Names;
 
@@ -25,6 +23,12 @@ public class ItemRodOfLyssa extends ItemBase {
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		canRepair = false;
+		this.addPropertyOverride(new ResourceLocation("cast"), new IItemPropertyGetter() {
+			@SideOnly(Side.CLIENT)
+			public float apply(ItemStack stack, World worldIn, EntityLivingBase entityIn) {
+				return entityIn == null ? 0.0F : (entityIn.getHeldItemMainhand() == stack && entityIn instanceof EntityPlayer && ((EntityPlayer) entityIn).fishEntity != null ? 1.0F : 0.0F);
+			}
+		});
 	}
 
 	/**
@@ -36,33 +40,24 @@ public class ItemRodOfLyssa extends ItemBase {
 		return true;
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) {
-		if(player.fishEntity != null) {
-			return ItemModelLocations.getInstance().getModel(ItemModelLocations.ROD_OF_LYSSA_CAST);
-		}
-		return ItemModelLocations.getInstance().getModel(ItemModelLocations.ROD_OF_LYSSA);
-	}
-
 	/**
 	 * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
 	 */
 	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
 		if(player.fishEntity != null) {
-			player.swingItem();
+			player.swingArm(hand);
 			player.fishEntity.handleHookRetraction();
 		} else {
-			world.playSound(player, SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			world.playSound(null, player.getPosition(), SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
 			if(!world.isRemote) {
 				world.spawnEntityInWorld(new EntityLyssaHook(world, player));
 			}
 
-			player.swingItem();
+			player.swingArm(hand);
 		}
 
-		return ist;
+		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 	}
 
 }

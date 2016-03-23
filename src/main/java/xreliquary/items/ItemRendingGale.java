@@ -243,14 +243,11 @@ public class ItemRendingGale extends ItemToggleable {
 
 	@Override
 	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
-		EntityPlayer player = null;
-		if(e instanceof EntityPlayer) {
-			player = (EntityPlayer) e;
-		}
-		if(player == null)
+		if(world.isRemote || !(e instanceof EntityPlayer))
 			return;
-		if(world.isRemote)
-			return;
+
+		EntityPlayer player = (EntityPlayer) e;
+
 		if(this.isEnabled(ist)) {
 			if(NBTHelper.getInteger("feathers", ist) + getFeathersWorth() <= getChargeLimit()) {
 				if(InventoryHelper.consumeItem(new ItemStack(Items.feather), player)) {

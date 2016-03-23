@@ -1,14 +1,19 @@
 package xreliquary.items;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionHelper;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -17,7 +22,6 @@ import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
@@ -54,7 +58,12 @@ public class ItemXRPotion extends ItemBase {
 	}
 
 	@Override
-	public ItemStack onItemUseFinish(ItemStack ist, World world, EntityPlayer player) {
+	public ItemStack onItemUseFinish(ItemStack ist, World world, EntityLivingBase entity) {
+		if(!(entity instanceof EntityPlayer))
+			return ist;
+
+		EntityPlayer player = (EntityPlayer) entity;
+
 		if(!player.capabilities.isCreativeMode) {
 			--ist.stackSize;
 		}
@@ -62,7 +71,7 @@ public class ItemXRPotion extends ItemBase {
 			for(PotionEffect effect : new PotionEssence(ist.getTagCompound()).getEffects()) {
 				if(effect == null)
 					continue;
-				player.addPotionEffect(new PotionEffect(effect.getPotionID(), effect.getDuration(), effect.getAmplifier(), false, false));
+				player.addPotionEffect(new PotionEffect(effect.getPotion(), effect.getDuration(), effect.getAmplifier(), false, false));
 			}
 		}
 		if(!player.capabilities.isCreativeMode) {
@@ -75,28 +84,6 @@ public class ItemXRPotion extends ItemBase {
 
 	public boolean getSplash(ItemStack ist) {
 		return NBTHelper.getBoolean("splash", ist);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getColorFromItemStack(ItemStack ist, int renderPass) {
-		if(renderPass == 1)
-			return getColor(ist);
-		else
-			return Integer.parseInt(Colors.PURE, 16);
-	}
-
-	public int getColor(ItemStack itemStack) {
-		//used when rendering as thrown entity
-		if(NBTHelper.getInteger("renderColor", itemStack) > 0)
-			return NBTHelper.getInteger("renderColor", itemStack);
-
-		PotionEssence essence = new PotionEssence(itemStack.getTagCompound());
-		boolean hasEffect = essence.getEffects().size() > 0;
-		if(!hasEffect)
-			return Integer.parseInt(Colors.PURE, 16);
-
-		return PotionHelper.calcPotionLiquidColor(new PotionEssence(itemStack.getTagCompound()).getEffects());
 	}
 
 	/**
@@ -147,27 +134,28 @@ public class ItemXRPotion extends ItemBase {
 		PotionEssence essence = new PotionEssence(ist.getTagCompound());
 		if(!getSplash(ist)) {
 			if(essence.getEffects().size() > 0) {
-				player.setItemInUse(ist, this.getMaxItemUseDuration(ist));
-				return ist;
+				player.setActiveHand(hand);
+				return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 			} else {
-				RayTraceResult mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+				RayTraceResult rayTraceResult = this.getMovingObjectPositionFromPlayer(world, player, true);
 
-				if(mop == null)
-					return ist;
+				if(rayTraceResult == null)
+					return new ActionResult<>(EnumActionResult.PASS, ist);
 				else {
-					if(mop.typeOfHit == RayTraceResult.MovingObjectType.BLOCK) {
-						if(world.getBlockState(mop.getBlockPos()).getBlock() instanceof BlockApothecaryCauldron) {
-							TileEntityCauldron cauldronTile = (TileEntityCauldron) world.getTileEntity(mop.getBlockPos());
+					if(rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
+						if(world.getBlockState(rayTraceResult.getBlockPos()).getBlock() instanceof BlockApothecaryCauldron) {
+							TileEntityCauldron cauldronTile = (TileEntityCauldron) world.getTileEntity(rayTraceResult.getBlockPos());
 							NBTTagCompound potionTag = cauldronTile.removeContainedPotion(world);
 							ItemStack newPotion = new ItemStack(this, 1, 0);
 							newPotion.setTagCompound(potionTag);
 
 							if(--ist.stackSize <= 0) {
-								return newPotion;
+								return new ActionResult<>(EnumActionResult.SUCCESS, newPotion);
 							}
 
 							if(!player.inventory.addItemStackToInventory(newPotion)) {
 								player.entityDropItem(newPotion, 0.1F);
+								return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 							}
 						}
 					}
@@ -175,18 +163,16 @@ public class ItemXRPotion extends ItemBase {
 			}
 		} else {
 			if(world.isRemote)
-				return ist;
+				return new ActionResult<>(EnumActionResult.PASS, ist);
 			EntityThrownXRPotion e = new EntityThrownXRPotion(world, player, ist);
-			if(e == null)
-				return ist;
 			e.func_184538_a(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.5F, 1.0F);
 
 			if(!player.capabilities.isCreativeMode) {
 				--ist.stackSize;
 			}
-			world.playSound(player, SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			world.playSound(null, player.getPosition(), SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 			world.spawnEntityInWorld(e);
 		}
-		return ist;
+		return new ActionResult<>(EnumActionResult.PASS, ist);
 	}
 }

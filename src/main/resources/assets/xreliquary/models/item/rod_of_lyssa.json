@@ -3,6 +3,14 @@
   "textures": {
     "layer0": "xreliquary:items/rod_of_lyssa"
   },
+  "overrides": [
+    {
+      "predicate": {
+        "cast": 1
+      },
+      "model": "xreliquary:items/rod_of_lyssa_cast"
+    }
+  ],
   "display": {
     "thirdperson": {
       "rotation": [ 180, 90, -35 ],

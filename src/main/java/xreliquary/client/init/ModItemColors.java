@@ -5,10 +5,10 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionHelper;
 import net.minecraft.potion.PotionUtils;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
+import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
 
 public class ModItemColors {
@@ -18,7 +18,7 @@ public class ModItemColors {
 		itemColors.registerItemColorHandler(new IItemColor() {
 			@Override
 			public int getColorFromItemstack(ItemStack stack, int tintIndex) {
-				if (tintIndex == 1)
+				if(tintIndex == 1)
 					return ModItems.bullet.getColor(stack);
 				else
 					return Integer.parseInt(Colors.PURE, 16);
@@ -30,7 +30,7 @@ public class ModItemColors {
 			@Override
 			public int getColorFromItemstack(ItemStack stack, int tintIndex) {
 				int meta = stack.getItemDamage();
-				switch (meta) {
+				switch(meta) {
 					case 0:
 						return Integer.parseInt(Colors.ZOMBIE_HEART_ZHU_COLOR, 16);
 					case 1:
@@ -46,10 +46,10 @@ public class ModItemColors {
 		itemColors.registerItemColorHandler(new IItemColor() {
 			@Override
 			public int getColorFromItemstack(ItemStack stack, int tintIndex) {
-				if (stack.getItemDamage() == 0 || tintIndex != 1)
+				if(stack.getItemDamage() == 0 || tintIndex != 1)
 					return Integer.parseInt(Colors.DARKER, 16);
 				else {
-					switch (stack.getItemDamage()) {
+					switch(stack.getItemDamage()) {
 						case 1:
 							return Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16);
 						case 2:
@@ -80,5 +80,24 @@ public class ModItemColors {
 				return PotionUtils.getPotionColorFromEffectList(new PotionEssence(stack.getTagCompound()).getEffects());
 			}
 		}, ModItems.potionEssence);
+		itemColors.registerItemColorHandler(new IItemColor() {
+			@Override
+			public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+				if(tintIndex == 1) {
+
+					//used when rendering as thrown entity
+					if(NBTHelper.getInteger("renderColor", stack) > 0)
+						return NBTHelper.getInteger("renderColor", stack);
+
+					PotionEssence essence = new PotionEssence(stack.getTagCompound());
+					boolean hasEffect = essence.getEffects().size() > 0;
+					if(!hasEffect)
+						return Integer.parseInt(Colors.PURE, 16);
+
+					return PotionUtils.getPotionColorFromEffectList(new PotionEssence(stack.getTagCompound()).getEffects());
+				} else
+					return Integer.parseInt(Colors.PURE, 16);
+			}
+		}, new Item[] {ModItems.potion});
 	}
 }
