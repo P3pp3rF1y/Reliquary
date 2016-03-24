@@ -144,7 +144,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 				Vec3d lookVec = player.getLookVec();
 				//blaze fireball!
 				if(removeItemFromInternalStorage(ist, Items.blaze_powder, getBlazePowderCost(), player.worldObj.isRemote, player)) {
-					player.worldObj.playAuxSFXAtEntity(player, 1009, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
+					player.worldObj.playAuxSFXAtEntity(player, 1018, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
 					EntitySmallFireball fireball = new EntitySmallFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
 					fireball.accelerationX = lookVec.xCoord;
 					fireball.accelerationY = lookVec.yCoord;
@@ -162,7 +162,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 				Vec3d lookVec = player.getLookVec();
 				//ghast fireball!
 				if(removeItemFromInternalStorage(ist, Items.fire_charge, getFireChargeCost(), player.worldObj.isRemote, player)) {
-					player.worldObj.playAuxSFXAtEntity(player, 1008, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
+					player.worldObj.playAuxSFXAtEntity(player, 1016, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
 					EntityLargeFireball fireball = new EntityLargeFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
 					fireball.accelerationX = lookVec.xCoord;
 					fireball.accelerationY = lookVec.yCoord;
