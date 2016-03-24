@@ -1,10 +1,10 @@
 package xreliquary.util.pedestal;
 
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import xreliquary.api.IPedestal;
@@ -17,9 +17,10 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 
 	public class Slow extends PedestalMeleeWeaponWrapper {
 		public Slow() {
-			super((byte)10);
+			super((byte) 10);
 		}
 	}
+
 	private byte swingDuration;
 	private byte cooldownAfterSwing;
 
@@ -40,7 +41,7 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 	public void update(ItemStack stack, IPedestal pedestal) {
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
 
-		if(!fakePlayer.isUsingItem()) {
+		if(!fakePlayer.isHandActive()) {
 			World world = pedestal.getTheWorld();
 			BlockPos pos = pedestal.getBlockPos();
 			int meleeRange = Settings.Pedestal.meleeWrapperRange;
@@ -55,14 +56,14 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 			EntityLiving entityToAttack = entities.get(world.rand.nextInt(entities.size()));
 
 			//don't want players to use this to kill bosses
-			if(entityToAttack instanceof IBossDisplayData)
+			if(!entityToAttack.isNonBoss())
 				return;
 
 			//set position so that entities get knocked back away from the altar
 			fakePlayer.setPosition(pos.getX(), 0, pos.getZ());
 
 			//set sword and update attributes
-			fakePlayer.setCurrentItemOrArmor(0, stack);
+			fakePlayer.setHeldItem(EnumHand.MAIN_HAND, stack);
 			fakePlayer.onUpdate();
 
 			fakePlayer.attackTargetEntityWithCurrentItem(entityToAttack);

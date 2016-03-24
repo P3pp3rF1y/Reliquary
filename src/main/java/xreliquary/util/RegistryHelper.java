@@ -1,14 +1,11 @@
 package xreliquary.util;
 
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameData;
 
-
-public class RegistryHelper
-{
+public class RegistryHelper {
 	public static Item getItemFromName(String registryName) {
 		return GameData.getItemRegistry().getObject(new ResourceLocation(registryName));
 	}

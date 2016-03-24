@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -192,15 +193,16 @@ public class InventoryHelper {
 		}
 	}
 
-	public static boolean tryAddingPlayerCurrentItem(EntityPlayer player, IInventory inventory) {
+	public static boolean tryAddingPlayerCurrentItem(EntityPlayer player, IInventory inventory, EnumHand hand) {
 		if(inventory.getStackInSlot(0) != null)
 			return false;
 
-		inventory.setInventorySlotContents(0, player.getCurrentEquippedItem().copy());
+		//TODO make sure that adding items to pedestal works correctly
+		inventory.setInventorySlotContents(0, player.inventory.getCurrentItem().copy());
 
-		player.getCurrentEquippedItem().stackSize--;
+		player.inventory.getCurrentItem().stackSize--;
 
-		if(player.getCurrentEquippedItem().stackSize == 0)
+		if(player.inventory.getCurrentItem().stackSize == 0)
 			player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
 
 		player.inventory.markDirty();

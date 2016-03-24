@@ -8,6 +8,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -37,14 +40,14 @@ public class ItemAlkahestryTome extends ItemToggleable {
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		ItemStack newStack = super.onItemRightClick(stack, world, player);
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+		ItemStack newStack = super.onItemRightClick(stack, world, player, hand).getResult();
 		if(player.isSneaking())
-			return newStack;
+			return new ActionResult<>(EnumActionResult.SUCCESS, newStack);
 
 		player.playSound(ModSounds.book, 1.0f, 1.0f);
 		player.openGui(Reliquary.INSTANCE, 0, world, (int) player.posX, (int) player.posY, (int) player.posZ);
-		return stack;
+		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override

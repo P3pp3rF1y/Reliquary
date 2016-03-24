@@ -18,12 +18,12 @@ public class PedestalRegistry {
 	}
 
 	public static IPedestalActionItemWrapper getItemWrapper(ItemStack item) {
-		for (Class<? extends Item> itemClass : INSTANCE.itemWrappers.keySet()) {
-			if (itemClass.isInstance(item.getItem()))
+		for(Class<? extends Item> itemClass : INSTANCE.itemWrappers.keySet()) {
+			if(itemClass.isInstance(item.getItem()))
 				try {
 					return INSTANCE.itemWrappers.get(itemClass).newInstance();
 				}
-				catch(InstantiationException|IllegalAccessException e) {
+				catch(InstantiationException | IllegalAccessException e) {
 					LogHelper.error("Error instantiating pedestal action item wrapper for " + itemClass.getName());
 				}
 		}

@@ -53,7 +53,7 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 				return false;
 			}
 		} else {
-			return InventoryHelper.tryAddingPlayerCurrentItem(player, pedestal);
+			return InventoryHelper.tryAddingPlayerCurrentItem(player, pedestal, EnumHand.MAIN_HAND);
 		}
 	}
 

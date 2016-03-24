@@ -7,13 +7,13 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import xreliquary.reference.Reference;
-import xreliquary.reference.Settings;
 
 public class PotionFlight extends Potion {
 	private ResourceLocation icon = new ResourceLocation(Reference.MOD_ID, "textures/gui/flight_effect.png");
 
 	public PotionFlight() {
-		super(new ResourceLocation(Reference.DOMAIN + "potions/flight"), false, 0);
+		super(/*new ResourceLocation(Reference.DOMAIN + "potions/flight"), //TODO see if this needs to get back*/ false, 0);
+		this.setPotionName("flight");
 	}
 
 	@Override

@@ -92,13 +92,13 @@ public class ClientProxy extends CommonProxy {
 
 		ItemBlockModels.registerItemBlockModels();
 		ItemModels.registerItemModels();
-		ModItemColors.init();
-		ModBlockColors.init();
 	}
 
 	@Override
 	public void init() {
 		super.init();
+		ModItemColors.init();
+		ModBlockColors.init();
 		FMLCommonHandler.instance().bus().register(new ClientEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ModFluids());

@@ -2,14 +2,13 @@ package xreliquary.util.pedestal;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.*;
@@ -53,9 +52,9 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		BlockPos blockToDrain = queueToDrain.get(0);
 		IBlockState blockState = world.getBlockState(blockToDrain);
 		Fluid fluid = FluidRegistry.lookupFluidForBlock(blockState.getBlock());
-		if (fluid != null) {
+		if(fluid != null) {
 			FluidStack fluidStack = drainBlock(world, blockToDrain, blockState.getBlock(), blockState, fluid, false);
-			if (fluidStack != null) {
+			if(fluidStack != null) {
 				if((pedestal.fillConnectedTank(fluidStack, false) != fluidStack.amount))
 					return false;
 
@@ -99,7 +98,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 				return null;
 			}
 			return fluidBlock.drain(world, pos, doDrain);
-		} else if (block instanceof BlockLiquid) {
+		} else if(block instanceof BlockLiquid) {
 			int level = blockState.getValue(BlockLiquid.LEVEL);
 			if(level != 0) {
 				return null;
@@ -124,11 +123,13 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		EntityCow cow = entities.get(world.rand.nextInt(entities.size()));
 
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
-		fakePlayer.setCurrentItemOrArmor(0, new ItemStack(Items.bucket));
+		ItemStack bucketStack = new ItemStack(Items.bucket);
+		fakePlayer.setHeldItem(EnumHand.MAIN_HAND, bucketStack);
 
-		cow.interact(fakePlayer);
+		cow.processInteract(fakePlayer, EnumHand.MAIN_HAND, bucketStack);
 
-		if(fakePlayer.getCurrentEquippedItem().getItem() == Items.milk_bucket) {
+		//TODO: verify that milk bucket still works
+		if(fakePlayer.getHeldItem(EnumHand.MAIN_HAND).getItem() == Items.milk_bucket) {
 			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.milk, FluidContainerRegistry.BUCKET_VOLUME));
 			if(fluidAdded == 0) {
 				pedestal.replaceCurrentItem(new ItemStack(Items.milk_bucket));
