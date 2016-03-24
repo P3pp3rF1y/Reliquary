@@ -48,7 +48,7 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 				ItemStack copy = pedestal.getStackInSlot(0);
 				player.setItemStackToSlot(hand == EnumHand.MAIN_HAND ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, copy);
 				pedestal.setInventorySlotContents(0, null);
-				return false;
+				return true;
 			} else {
 				return false;
 			}
