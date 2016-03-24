@@ -16,14 +16,14 @@ import xreliquary.init.ModItems;
 @JEIPlugin
 public class ReliquaryPlugin implements IModPlugin {
 
-	public static IJeiHelpers jeiHelper;
-
 	@Override
 	public void register(IModRegistry registry) {
-		registry.addRecipeCategories(new AlkahestryCraftingRecipeCategory());
-		registry.addRecipeCategories(new AlkahestryChargingRecipeCategory());
-		registry.addRecipeCategories(new MortarRecipeCategory());
-		registry.addRecipeCategories(new CauldronRecipeCategory());
+		IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
+
+		registry.addRecipeCategories(new AlkahestryCraftingRecipeCategory(guiHelper));
+		registry.addRecipeCategories(new AlkahestryChargingRecipeCategory(guiHelper));
+		registry.addRecipeCategories(new MortarRecipeCategory(guiHelper));
+		registry.addRecipeCategories(new CauldronRecipeCategory(guiHelper));
 
 		registry.addRecipeHandlers(new AlkahestryCraftingRecipeHandler());
 		registry.addRecipeHandlers(new AlkahestryChargingRecipeHandler());
@@ -39,7 +39,7 @@ public class ReliquaryPlugin implements IModPlugin {
 			registry.addDescription(entry.itemStacks(), entry.langKey());
 
 		//blacklist filled void tear
-		jeiHelper.getItemBlacklist().addItemToBlacklist(new ItemStack(ModItems.filledVoidTear));
+		registry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(new ItemStack(ModItems.filledVoidTear));
 	}
 
 	@Override

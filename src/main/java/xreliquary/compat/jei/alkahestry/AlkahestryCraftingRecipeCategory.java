@@ -1,5 +1,6 @@
 package xreliquary.compat.jei.alkahestry;
 
+import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.IRecipeCategory;
@@ -22,9 +23,14 @@ public class AlkahestryCraftingRecipeCategory implements IRecipeCategory {
 	private static final int TOME_OUTPUT_SLOT = 3;
 
 	@Nonnull
-	private final IDrawable background = ReliquaryPlugin.jeiHelper.getGuiHelper().createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/alkahest_crafting.png"), 0, 0, 95, 76);
+	private final IDrawable background;
 	@Nonnull
-	private final String localizedName = I18n.translateToLocal("jei.recipe.alkahest_crafting");
+	private final String localizedName;
+
+	public AlkahestryCraftingRecipeCategory(IGuiHelper guiHelper) {
+		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/alkahest_crafting.png"), 0, 0, 95, 76);
+		localizedName = I18n.translateToLocal("jei.recipe.alkahest_crafting");
+	}
 
 	@Nonnull
 	@Override

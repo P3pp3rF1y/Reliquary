@@ -1,5 +1,6 @@
 package xreliquary.compat.jei.mortar;
 
+import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.IRecipeCategory;
@@ -23,9 +24,14 @@ public class MortarRecipeCategory implements IRecipeCategory {
 	private static final int MORTAR_SLOT = 4;
 
 	@Nonnull
-	private final IDrawable background = ReliquaryPlugin.jeiHelper.getGuiHelper().createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/mortar.png"), 0, 0, 79, 51);
+	private final IDrawable background;
 	@Nonnull
-	private final String localizedName = I18n.translateToLocal("jei.recipe.mortar");
+	private final String localizedName;
+
+	public MortarRecipeCategory(IGuiHelper guiHelper) {
+		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/mortar.png"), 0, 0, 79, 51);
+		localizedName = I18n.translateToLocal("jei.recipe.mortar");
+	}
 
 	@Nonnull
 	@Override
