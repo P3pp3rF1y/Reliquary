@@ -220,7 +220,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 					double gauss = 0.5D + world.rand.nextFloat() / 2;
 					world.spawnParticle(EnumParticleTypes.SPELL_MOB, x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);
 					SoundType torchSoundType = Blocks.torch.getStepSound();
-					world.playSound(x + 0.5F, y + 0.5F, z + 0.5F, torchSoundType.getStepSound(), SoundCategory.BLOCKS, (torchSoundType.getVolume() + 1.0F) / 2.0F, torchSoundType.getPitch() * 0.8F, false);
+					world.playSound(null, new BlockPos(x, y, z), torchSoundType.getStepSound(), SoundCategory.BLOCKS, (torchSoundType.getVolume() + 1.0F) / 2.0F, torchSoundType.getPitch() * 0.8F);
 					return true;
 				}
 			}
