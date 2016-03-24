@@ -115,7 +115,7 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 						}
 						destroyedSomething = true;
 						if(playOnce) {
-							world.playSound(x, y, z, SoundEvents.entity_tnt_primed, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
+							world.playSound(x, y, z, SoundEvents.entity_generic_explode, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
 							playOnce = false;
 						}
 					}
