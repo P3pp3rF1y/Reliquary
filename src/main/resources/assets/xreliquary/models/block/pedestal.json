@@ -1,4 +1,5 @@
 {
+    "parent": "block/block",
     "textures": {
         "particle": "blocks/quartz_block_bottom",
         "0": "blocks/quartz_block_bottom",
