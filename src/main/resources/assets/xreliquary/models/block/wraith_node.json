@@ -1,4 +1,5 @@
 {
+  "parent":"block/block",
   "ambientocclusion": true,
   "textures": {
     "side": "xreliquary:blocks/wraith_node",
