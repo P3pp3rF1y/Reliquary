@@ -1,4 +1,5 @@
 {
+    "parent": "block/block",
     "textures": {
         "particle" : "xreliquary:blocks/apothecary_mortar",
         "0": "xreliquary:models/apothecary_mortar"

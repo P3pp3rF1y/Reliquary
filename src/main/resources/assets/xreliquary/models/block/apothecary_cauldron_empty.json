@@ -1,4 +1,5 @@
 {
+    "parent":"block/block",
     "ambientocclusion": false,
     "textures": {
         "particle": "xreliquary:blocks/apothecary_cauldron_side",
