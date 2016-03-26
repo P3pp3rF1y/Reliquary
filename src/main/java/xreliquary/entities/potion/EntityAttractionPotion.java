@@ -7,6 +7,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xreliquary.reference.Colors;
 
 public class EntityAttractionPotion extends EntityThrownPotion {
 	public EntityAttractionPotion(World par1World) {
@@ -53,17 +54,8 @@ public class EntityAttractionPotion extends EntityThrownPotion {
 	}
 
 	@Override
-	float getRed() {
-		return 1F;
+	int getColor() {
+		return Colors.get(Colors.RED);
 	}
 
-	@Override
-	float getGreen() {
-		return 0;
-	}
-
-	@Override
-	float getBlue() {
-		return 0;
-	}
 }

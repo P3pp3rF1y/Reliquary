@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xreliquary.reference.Colors;
 
 public class EntityFertilePotion extends EntityThrownPotion {
 	public EntityFertilePotion(World par1World) {
@@ -60,17 +61,7 @@ public class EntityFertilePotion extends EntityThrownPotion {
 	}
 
 	@Override
-	float getRed() {
-		return 1F;
-	}
-
-	@Override
-	float getGreen() {
-		return 0F;
-	}
-
-	@Override
-	float getBlue() {
-		return 0F;
+	int getColor() {
+		return Colors.get(Colors.LIGHT_GRAY);
 	}
 }

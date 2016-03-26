@@ -12,9 +12,13 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.BossInfo;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xreliquary.network.PacketFXThrownPotionImpact;
+import xreliquary.network.PacketHandler;
 
 import java.util.Iterator;
 import java.util.List;
@@ -83,31 +87,17 @@ public abstract class EntityThrownPotion extends EntityThrowable {
 	// most of these are the same in every potion, the only thing that isn't is
 	// the coloration of the particles.
 	protected void spawnParticles() {
-		//TODO: fix the variable names
-		Random var7 = rand;
-		for(int var15 = 0; var15 < 8; ++var15) {
-			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
+		Random rand = this.rand;
+		for(int i = 0; i < 8; ++i) {
+			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
 		}
 
-		String var19 = "spell";
-
-		for(int var20 = 0; var20 < 100; ++var20) {
-			double var39 = var7.nextDouble() * 4.0D;
-			double var23 = var7.nextDouble() * Math.PI * 2.0D;
-			double var25 = Math.cos(var23) * var39;
-			double var27 = 0.01D + var7.nextDouble() * 0.5D;
-			double var29 = Math.sin(var23) * var39;
-			if(worldObj.isRemote) {
-				EntityFX var31 = Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), this.posX + var25 * 0.1D, this.posY + 0.3D, this.posZ + var29 * 0.1D, var25, var27, var29, new int[0]);
-				if(var31 != null) {
-					float var32 = 0.75F + var7.nextFloat() * 0.25F;
-					var31.setRBGColorF(this.getRed() * var32, this.getGreen() * var32, this.getBlue() * var32);
-					var31.multiplyVelocity((float) var39);
-				}
-			}
-		}
+		if (worldObj.isRemote)
+			return;
 
 		worldObj.playSound(null, getPosition(), SoundType.GLASS.getBreakSound(), SoundCategory.BLOCKS, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+
+		PacketHandler.networkWrapper.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), this.posX, this.posY, this.posZ), new NetworkRegistry.TargetPoint(this.dimension, this.posX, this.posY, this.posZ, 32.0D));
 	}
 
 	// this gets called inside the on-impact method on EVERY living entity
@@ -116,9 +106,5 @@ public abstract class EntityThrownPotion extends EntityThrowable {
 
 	// these are just the getters for the particle coloration. They're all the
 	// same particle style, so it's really just a matter of coloration.
-	abstract float getRed();
-
-	abstract float getGreen();
-
-	abstract float getBlue();
+	abstract int getColor();
 }

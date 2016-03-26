@@ -10,6 +10,8 @@ public class Colors {
 	public static final String PURE = "FFFFFF";
 	public static final String BRIGHT_GREEN = "00FF00";
 	public static final String GREEN = "009900";
+	public static final String RED = "CC3024";
+	public static final String LIGHT_GRAY = "C9C9C9";
 	public static final String DARK_GREEN = "006600";
 	public static final String SHADED = "CCCCCC";
 	public static final String DARK = "999999";

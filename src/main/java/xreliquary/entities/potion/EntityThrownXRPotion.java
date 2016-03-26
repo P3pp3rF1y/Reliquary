@@ -110,10 +110,10 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	// the coloration of the particles.
 	protected void spawnParticles() {
 		Random var7 = rand;
+		for(int var15 = 0; var15 < 8; ++var15) {
+			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
+		}
 		if(!worldObj.isRemote) {
-			for(int var15 = 0; var15 < 8; ++var15) {
-				worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
-			}
 			worldObj.playSound(null, this.getPosition(), SoundEvents.block_glass_break, SoundCategory.BLOCKS, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			PacketHandler.networkWrapper.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), this.posX, this.posY, this.posZ), new NetworkRegistry.TargetPoint(this.dimension, this.posX, this.posY, this.posZ, 32.0D));
 		}
