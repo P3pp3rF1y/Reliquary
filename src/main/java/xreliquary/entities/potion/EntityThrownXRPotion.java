@@ -109,14 +109,16 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	// most of these are the same in every potion, the only thing that isn't is
 	// the coloration of the particles.
 	protected void spawnParticles() {
+		if (worldObj.isRemote)
+			return;
+
 		Random var7 = rand;
 		for(int var15 = 0; var15 < 8; ++var15) {
 			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
 		}
-		if(!worldObj.isRemote) {
-			worldObj.playSound(null, this.getPosition(), SoundEvents.block_glass_break, SoundCategory.BLOCKS, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
-			PacketHandler.networkWrapper.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), this.posX, this.posY, this.posZ), new NetworkRegistry.TargetPoint(this.dimension, this.posX, this.posY, this.posZ, 32.0D));
-		}
+
+		worldObj.playSound(null, this.getPosition(), SoundEvents.block_glass_break, SoundCategory.BLOCKS, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		PacketHandler.networkWrapper.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), this.posX, this.posY, this.posZ), new NetworkRegistry.TargetPoint(this.dimension, this.posX, this.posY, this.posZ, 32.0D));
 	}
 
 	public void readEntityFromNBT(NBTTagCompound tag) {

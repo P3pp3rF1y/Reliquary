@@ -16,8 +16,13 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xreliquary.init.ModItems;
+import xreliquary.network.PacketFXThrownPotionImpact;
+import xreliquary.network.PacketHandler;
+import xreliquary.reference.Colors;
 
 import java.util.Iterator;
 import java.util.List;
@@ -80,29 +85,11 @@ public class EntityGlowingWater extends EntityThrowable {
         double z = posZ;
 
         for (int particleNum = 0; particleNum < 8; ++particleNum) {
-            worldObj.spawnParticle( EnumParticleTypes.ITEM_CRACK, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, new int[] {Item.getIdFromItem(Items.potionitem)});
-        }
-
-        float red = 1.0F;
-        float green = 1.0F;
-        float blue = 0.0F;
-
-        for (int particleNum = 0; particleNum < 100; ++particleNum) {
-            double velocityCoefficient = rand.nextDouble() * 4.0D;
-            double radian = rand.nextDouble() * Math.PI * 2.0D;
-            double xVel = Math.cos(radian) * velocityCoefficient;
-            double yVel = 0.01D + rand.nextDouble() * 0.5D;
-            double zVel = Math.sin(radian) * velocityCoefficient;
-            if (worldObj.isRemote) {
-                EntityFX effect = Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), x + xVel * 0.1D, y + 0.3D, z + zVel * 0.1D, xVel, yVel, zVel );
-                if (effect != null) {
-                    float variance = 0.75F + rand.nextFloat() * 0.25F;
-                    effect.setRBGColorF(red * variance, green * variance, blue * variance);
-                    effect.multiplyVelocity((float) velocityCoefficient);
-                }
-            }
+            worldObj.spawnParticle( EnumParticleTypes.ITEM_CRACK, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, new int[] {Item.getIdFromItem(ModItems.glowingWater)});
         }
 
         worldObj.playSound(null, getPosition(), SoundEvents.block_glass_break, SoundCategory.NEUTRAL, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+        PacketHandler.networkWrapper.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), this.posX, this.posY, this.posZ), new NetworkRegistry.TargetPoint(this.dimension, this.posX, this.posY, this.posZ, 32.0D));
+
     }
 }

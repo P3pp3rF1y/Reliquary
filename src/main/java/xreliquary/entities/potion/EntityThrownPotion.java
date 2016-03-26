@@ -87,13 +87,13 @@ public abstract class EntityThrownPotion extends EntityThrowable {
 	// most of these are the same in every potion, the only thing that isn't is
 	// the coloration of the particles.
 	protected void spawnParticles() {
+		if (worldObj.isRemote)
+			return;
+
 		Random rand = this.rand;
 		for(int i = 0; i < 8; ++i) {
 			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
 		}
-
-		if (worldObj.isRemote)
-			return;
 
 		worldObj.playSound(null, getPosition(), SoundType.GLASS.getBreakSound(), SoundCategory.BLOCKS, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 
