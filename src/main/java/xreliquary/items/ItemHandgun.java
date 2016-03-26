@@ -65,9 +65,16 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	@Override
+	public EnumAction getItemUseAction(ItemStack stack) {
+		if (getBulletCount(stack)> 0)
+			return EnumAction.NONE;
+		else
+			return EnumAction.BLOCK;
+	}
+	@Override
 	public void onUpdate(ItemStack ist, World worldObj, Entity e, int i, boolean flag) {
 		if(!worldObj.isRemote) {
-			if(isInCooldown(ist) && isCooldownOver(worldObj, ist) || !isValidCooldownTime(worldObj, ist)) {
+			if(isInCooldown(ist) && (isCooldownOver(worldObj, ist) || !isValidCooldownTime(worldObj, ist))) {
 				setInCooldown(ist, false);
 			}
 		}
@@ -108,41 +115,49 @@ public class ItemHandgun extends ItemBase {
 		int maxUseOffset = getItemUseDuration() - getPlayerReloadDelay(player);
 		int actualCount = unadjustedCount - maxUseOffset;
 		actualCount -= 1;
+
 		//you can't reload if you don't have any full mags left, so the rest of the method doesn't fire at all.
-		if(!hasFilledMagazine(player)) {
-			//arbitrary "feels good" cooldown for after the reload - this one just plays so you can't "fail" at reloading too fast.
-			setCooldown(ist, player.worldObj.getWorldTime() + 12);
-			setInCooldown(ist, true);
+		if(!hasFilledMagazine(player) || actualCount == 0) {
 			player.stopActiveHand();
 			return;
 		}
-
-		if(actualCount == 0) {
-			//arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
-			setCooldown(ist, player.worldObj.getWorldTime() + 12);
-			setInCooldown(ist, true);
-			setBulletType(ist, getMagazineTypeAndRemoveOne(player));
-			if(getBulletType(ist) != 0) {
-				player.swingArm(player.getActiveHand());
-				this.spawnEmptyMagazine(player);
-				setBulletCount(ist, 8);
-				player.worldObj.playSound(null, player.getPosition(), ModSounds.xload, SoundCategory.PLAYERS, 0.25F, 1.0F);
-			}
-			if(getBulletCount(ist) == 0) {
-				setBulletType(ist, 0);
-			}
-			player.stopActiveHand();
-		}
-	}
-
-	@Override
-	public EnumAction getItemUseAction(ItemStack ist) {
-		return EnumAction.BLOCK;
 	}
 
 	@Override
 	public int getMaxItemUseDuration(ItemStack par1ItemStack) {
 		return this.getItemUseDuration();
+	}
+
+	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft) {
+		if (!(entityLiving instanceof EntityPlayer))
+			return;
+
+		EntityPlayer player = (EntityPlayer) entityLiving;
+
+		if(!hasFilledMagazine(player)) {
+			//arbitrary "feels good" cooldown for after the reload - this one just plays so you can't "fail" at reloading too fast.
+			setCooldown(stack, player.worldObj.getWorldTime() + 12);
+			setInCooldown(stack, true);
+			return;
+		}
+
+		int maxUseOffset = getItemUseDuration() - getPlayerReloadDelay(player);
+		int actualCount = timeLeft - maxUseOffset;
+
+		//arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
+		setCooldown(stack, player.worldObj.getWorldTime() + 12);
+		setInCooldown(stack, true);
+		setBulletType(stack, getMagazineTypeAndRemoveOne(player));
+		if(getBulletType(stack) != 0) {
+			player.swingArm(player.getActiveHand());
+			this.spawnEmptyMagazine(player);
+			setBulletCount(stack, 8);
+			player.worldObj.playSound(null, player.getPosition(), ModSounds.xload, SoundCategory.PLAYERS, 0.25F, 1.0F);
+		}
+		if(getBulletCount(stack) == 0) {
+			setBulletType(stack, 0);
+		}
 	}
 
 	private int getItemUseDuration() {
