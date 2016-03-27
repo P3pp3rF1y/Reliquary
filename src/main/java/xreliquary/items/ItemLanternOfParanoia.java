@@ -164,7 +164,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 
 					if(rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
 						IBlockState blockState = world.getBlockState(rayTraceResult.getBlockPos());
-						if(blockState.getBlock().getCollisionBoundingBox(blockState, world, rayTraceResult.getBlockPos()) != null) {
+						if(blockState.getBlock().getBoundingBox(blockState, world, rayTraceResult.getBlockPos()) != null) {
 							if(blockState.getBlock().canCollideCheck(blockState, false))
 								return false;
 						}

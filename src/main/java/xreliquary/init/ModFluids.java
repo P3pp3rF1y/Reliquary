@@ -62,8 +62,8 @@ public class ModFluids {
 	@SubscribeEvent
 	public void onIconLoad(TextureStitchEvent.Pre event) {
 		if(fluidXpJuice != null) {
-			event.map.registerSprite(fluidXpJuice.getStill());
-			event.map.registerSprite(fluidXpJuice.getFlowing());
+			event.getMap().registerSprite(fluidXpJuice.getStill());
+			event.getMap().registerSprite(fluidXpJuice.getFlowing());
 		}
 	}
 }

@@ -25,7 +25,7 @@ public class ModCompat {
 
 	@SubscribeEvent
 	public void worldLoad(WorldEvent.Load event) {
-		loadCompat(ICompat.InitializationPhase.WORLD_LOAD, event.world);
+		loadCompat(ICompat.InitializationPhase.WORLD_LOAD, event.getWorld());
 	}
 
 }
