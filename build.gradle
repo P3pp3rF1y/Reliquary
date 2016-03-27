@@ -102,7 +102,7 @@ def getBuildNumber() {
 }
 
 def getStable() {
-    if (System.getenv("DRONE_BRANCH") != "master" || System.getenv("DRONE_BRANCH") != "1.9") {
+    if (System.getenv("DRONE_BRANCH") != "master" && System.getenv("DRONE_BRANCH") != "1.9") {
         return "unstable"
     }
     return ""
