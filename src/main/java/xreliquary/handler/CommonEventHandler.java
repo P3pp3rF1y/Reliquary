@@ -86,29 +86,29 @@ public class CommonEventHandler {
 	//    }
 
 	public void doHeartZhuCheck(LivingSetAttackTargetEvent event) {
-		if(event.target == null)
+		if(event.getTarget() == null)
 			return;
-		if(!(event.target instanceof EntityPlayer))
+		if(!(event.getTarget() instanceof EntityPlayer))
 			return;
-		EntityPlayer player = (EntityPlayer) event.target;
-		doZombieZhuCheck(event.entity, player);
-		doSkeletonZhuCheck(event.entity, player);
-		doWitherSkeletonZhuCheck(event.entity, player);
-		doCreeperZhuCheck(event.entity, player);
+		EntityPlayer player = (EntityPlayer) event.getTarget();
+		doZombieZhuCheck(event.getEntity(), player);
+		doSkeletonZhuCheck(event.getEntity(), player);
+		doWitherSkeletonZhuCheck(event.getEntity(), player);
+		doCreeperZhuCheck(event.getEntity(), player);
 	}
 
 	public void doHeartZhuCheck(LivingEvent event) {
-		if(event.entity instanceof EntityLiving) {
-			EntityLiving entityLiving = ((EntityLiving) event.entity);
+		if(event.getEntity() instanceof EntityLiving) {
+			EntityLiving entityLiving = ((EntityLiving) event.getEntity());
 			if(entityLiving.getAttackTarget() == null)
 				return;
 			if(!(entityLiving.getAttackTarget() instanceof EntityPlayer))
 				return;
 			EntityPlayer player = (EntityPlayer) entityLiving.getAttackTarget();
-			doZombieZhuCheck(event.entity, player);
-			doSkeletonZhuCheck(event.entity, player);
-			doWitherSkeletonZhuCheck(event.entity, player);
-			doCreeperZhuCheck(event.entity, player);
+			doZombieZhuCheck(event.getEntity(), player);
+			doSkeletonZhuCheck(event.getEntity(), player);
+			doWitherSkeletonZhuCheck(event.getEntity(), player);
+			doCreeperZhuCheck(event.getEntity(), player);
 		}
 	}
 
@@ -153,8 +153,8 @@ public class CommonEventHandler {
 	}
 
 	public void doTwilightCloakCheck(LivingEvent event) {
-		if(event.entity instanceof EntityLiving) {
-			EntityLiving entityLiving = ((EntityLiving) event.entity);
+		if(event.getEntity() instanceof EntityLiving) {
+			EntityLiving entityLiving = ((EntityLiving) event.getEntity());
 			if(entityLiving.getAttackTarget() == null)
 				return;
 			if(!(entityLiving.getAttackTarget() instanceof EntityPlayer))
@@ -166,8 +166,8 @@ public class CommonEventHandler {
 			//toggled effect, makes player invisible based on light level (configurable)
 			if(player.worldObj.getLightFromNeighbors(player.getPosition()) > Settings.TwilightCloak.maxLightLevel)
 				return;
-			if(event.entity instanceof EntityLiving) {
-				((EntityLiving) event.entity).setAttackTarget(null);
+			if(event.getEntity() instanceof EntityLiving) {
+				((EntityLiving) event.getEntity()).setAttackTarget(null);
 			}
 		}
 	}
@@ -177,7 +177,7 @@ public class CommonEventHandler {
 		if(!Settings.mobDropsEnabled)
 			return;
 
-		Entity e = event.entity;
+		Entity e = event.getEntity();
 		handleSquidDropsCheck(e, event);
 		handleWitchDropsCheck(e, event);
 		handleSpiderOrCaveSpiderDropsCheck(e, event);
@@ -193,12 +193,12 @@ public class CommonEventHandler {
 	}
 
 	public void handleEventDropListAddition(Entity e, LivingDropsEvent event, float probabilityBase, float lootingProbabilityIncrement, ItemStack ist) {
-		float dropProbability = probabilityBase + (lootingProbabilityIncrement * (float) event.lootingLevel);
+		float dropProbability = probabilityBase + (lootingProbabilityIncrement * (float) event.getLootingLevel());
 		if(e.worldObj.rand.nextFloat() <= dropProbability) {
-			if(event.source.getEntity() != null && event.source.getEntity() instanceof EntityPlayer && event.source.damageType.equals("player")) {
-				EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, ist);
+			if(event.getSource().getEntity() != null && event.getSource().getEntity() instanceof EntityPlayer && event.getSource().damageType.equals("player")) {
+				EntityItem entityitem = new EntityItem(event.getEntityLiving().worldObj, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, ist);
 				entityitem.setPickupDelay(10);
-				event.drops.add(entityitem);
+				event.getDrops().add(entityitem);
 			}
 		}
 	}
@@ -285,7 +285,7 @@ public class CommonEventHandler {
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void beforePlayerHurt(LivingAttackEvent event) {
-		Entity entity = event.entity;
+		Entity entity = event.getEntity();
 		if(entity == null || !(entity instanceof EntityPlayer))
 			return;
 		EntityPlayer player = (EntityPlayer) entity;
@@ -303,14 +303,14 @@ public class CommonEventHandler {
 	public void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!playerHasItem(player, ModItems.infernalClaws, false))
 			return;
-		if(!(event.source == DamageSource.inFire) && !(event.source == DamageSource.onFire))
+		if(!(event.getSource() == DamageSource.inFire) && !(event.getSource() == DamageSource.onFire))
 			return;
 		if(player.getFoodStats().getFoodLevel() <= 0)
 			return;
 
 		// trades all fire damage for exhaustion (which causes the hunger bar to
 		// be depleted).
-		player.addExhaustion(event.ammount * ((float) Settings.InfernalClaws.hungerCostPercent / 100F));
+		player.addExhaustion(event.getAmount() * ((float) Settings.InfernalClaws.hungerCostPercent / 100F));
 		event.setCanceled(true);
 	}
 
@@ -318,12 +318,12 @@ public class CommonEventHandler {
 		if(!playerHasItem(player, ModItems.infernalChalice, false))
 			return;
 		//TODO: figure out if there's some way to know that the fire was caused by lava, otherwise this is the only way to prevent damage from lava - reason being that most of the damage is from fire caused by lava
-		if(event.source != DamageSource.lava && event.source != DamageSource.onFire && event.source != DamageSource.inFire)
+		if(event.getSource() != DamageSource.lava && event.getSource() != DamageSource.onFire && event.getSource() != DamageSource.inFire)
 			return;
 		if(player.getFoodStats().getFoodLevel() <= 0)
 			return;
-		if(event.source == DamageSource.lava || event.source == DamageSource.onFire || event.source == DamageSource.inFire) {
-			player.addExhaustion(event.ammount * ((float) Settings.InfernalChalice.hungerCostPercent / 100F));
+		if(event.getSource() == DamageSource.lava || event.getSource() == DamageSource.onFire || event.getSource() == DamageSource.inFire) {
+			player.addExhaustion(event.getAmount() * ((float) Settings.InfernalChalice.hungerCostPercent / 100F));
 		}
 
 		event.setCanceled(true);
@@ -334,7 +334,7 @@ public class CommonEventHandler {
 		// fraction matters for determining death
 		// Rounding would be worst case. I'm doing an early abort to keep my
 		// indentation shallow.
-		if(player.getHealth() > Math.round(event.ammount))
+		if(player.getHealth() > Math.round(event.getAmount()))
 			return;
 		if(!playerHasItem(player, ModItems.angelheartVial, false))
 			return;
@@ -408,13 +408,13 @@ public class CommonEventHandler {
 	public void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!playerHasItem(player, ModItems.phoenixDown, false))
 			return;
-		if(player.getHealth() > Math.round(event.ammount)) {
-			if(!(event.source == DamageSource.fall))
+		if(player.getHealth() > Math.round(event.getAmount())) {
+			if(!(event.getSource() == DamageSource.fall))
 				return;
 			if(player.getFoodStats().getFoodLevel() <= 0)
 				return;
 
-			float hungerDamage = event.ammount * ((float) Settings.PhoenixDown.hungerCostPercent / 100F);
+			float hungerDamage = event.getAmount() * ((float) Settings.PhoenixDown.hungerCostPercent / 100F);
 			player.addExhaustion(hungerDamage);
 			player.getFoodStats().onUpdate(player);
 
@@ -435,9 +435,9 @@ public class CommonEventHandler {
 				removeNegativeStatusEffects(player);
 
 			// added bonus, has some extra effects when drowning or dying to lava
-			if(event.source == DamageSource.lava && Settings.PhoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou)
+			if(event.getSource() == DamageSource.lava && Settings.PhoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou)
 				player.addPotionEffect(new PotionEffect(MobEffects.fireResistance, 200, 0));
-			if(event.source == DamageSource.drown && Settings.PhoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou) {
+			if(event.getSource() == DamageSource.drown && Settings.PhoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou) {
 				player.setAir(10);
 				player.addPotionEffect(new PotionEffect(MobEffects.waterBreathing, 200, 0));
 			}
@@ -466,13 +466,13 @@ public class CommonEventHandler {
 	public void handleAngelicFeatherCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!playerHasItem(player, ModItems.angelicFeather, false))
 			return;
-		if(!(event.source == DamageSource.fall))
+		if(!(event.getSource() == DamageSource.fall))
 			return;
 		if(player.getFoodStats().getFoodLevel() <= 0)
 			return;
 
 		if(player.fallDistance > 0.0F) {
-			float hungerDamage = event.ammount * ((float) Settings.AngelicFeather.hungerCostPercent / 100F);
+			float hungerDamage = event.getAmount() * ((float) Settings.AngelicFeather.hungerCostPercent / 100F);
 			player.addExhaustion(hungerDamage);
 			player.getFoodStats().onUpdate(player);
 		}
@@ -486,8 +486,8 @@ public class CommonEventHandler {
 			return;
 
 		// player absorbs drowning damage in exchange for hunger, at a relatively low rate.
-		if(event.source == DamageSource.drown) {
-			float hungerDamage = event.ammount * ((float) Settings.KrakenShell.hungerCostPercent / 100F);
+		if(event.getSource() == DamageSource.drown) {
+			float hungerDamage = event.getAmount() * ((float) Settings.KrakenShell.hungerCostPercent / 100F);
 			player.addExhaustion(hungerDamage);
 			event.setCanceled(true);
 		}
@@ -554,26 +554,26 @@ public class CommonEventHandler {
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onDimensionUnload(WorldEvent.Unload event) {
-		if(event.world instanceof WorldServer)
-			XRFakePlayerFactory.unloadWorld((WorldServer) event.world);
+		if(event.getWorld() instanceof WorldServer)
+			XRFakePlayerFactory.unloadWorld((WorldServer) event.getWorld());
 	}
 
 	@SubscribeEvent
 	public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
-		if(event.entityLiving.worldObj.isRemote)
+		if(event.getEntityLiving().worldObj.isRemote)
 			return;
 
-		if(event.entityLiving.isPotionActive(ModPotions.potionFlight)) {
-			if(event.entityLiving instanceof EntityPlayer) {
-				EntityPlayer player = (EntityPlayer) event.entityLiving;
+		if(event.getEntityLiving().isPotionActive(ModPotions.potionFlight)) {
+			if(event.getEntityLiving() instanceof EntityPlayer) {
+				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 				playersFlightStatus.put(player.getGameProfile().getId(), true);
 				player.capabilities.allowFlying = true;
 				player.fallDistance = 0;
 				((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketPlayerAbilities(player.capabilities));
 			}
 		} else {
-			if(event.entityLiving instanceof EntityPlayer) {
-				EntityPlayer player = (EntityPlayer) event.entityLiving;
+			if(event.getEntityLiving() instanceof EntityPlayer) {
+				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 
 				if(!playersFlightStatus.containsKey(player.getGameProfile().getId())) {
 					playersFlightStatus.put(player.getGameProfile().getId(), false);

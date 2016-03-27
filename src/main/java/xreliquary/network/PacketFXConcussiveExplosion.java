@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.entities.ConcussiveExplosion;
 
 public class PacketFXConcussiveExplosion implements IMessage, IMessageHandler<PacketFXConcussiveExplosion, IMessage> {
@@ -40,6 +42,7 @@ public class PacketFXConcussiveExplosion implements IMessage, IMessageHandler<Pa
 		buf.writeDouble(this.posZ);
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IMessage onMessage(PacketFXConcussiveExplosion message, MessageContext ctx) {
 		ConcussiveExplosion explosion = new ConcussiveExplosion(Minecraft.getMinecraft().theWorld, null, null, message.posX, message.posY, message.posZ, message.size, false, true);
