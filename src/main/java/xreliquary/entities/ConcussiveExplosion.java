@@ -14,6 +14,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import xreliquary.network.PacketFXConcussiveExplosion;
+import xreliquary.network.PacketFXThrownPotionImpact;
+import xreliquary.network.PacketHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -156,6 +160,8 @@ public class ConcussiveExplosion extends Explosion {
 		ConcussiveExplosion var11 = new ConcussiveExplosion(entity.worldObj, entity, player, explosionX, explosionY, explosionZ, size, isFlaming, isSmoking);
 		var11.doExplosionA();
 		var11.doExplosionB(false);
+
+		PacketHandler.networkWrapper.sendToAllAround(new PacketFXConcussiveExplosion(size, explosionX, explosionY, explosionZ), new NetworkRegistry.TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, 96.0D));
 
 		return var11;
 	}

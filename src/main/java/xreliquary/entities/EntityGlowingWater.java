@@ -1,17 +1,15 @@
 package xreliquary.entities;
 
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -28,68 +26,68 @@ import java.util.Iterator;
 import java.util.List;
 
 public class EntityGlowingWater extends EntityThrowable {
-    public EntityGlowingWater(World par1World) {
-        super(par1World);
-    }
+	public EntityGlowingWater(World par1World) {
+		super(par1World);
+	}
 
-    public EntityGlowingWater(World par1World, EntityPlayer par2EntityPlayer) {
-        super(par1World, par2EntityPlayer);
-    }
+	public EntityGlowingWater(World par1World, EntityPlayer par2EntityPlayer) {
+		super(par1World, par2EntityPlayer);
+	}
 
-    @SideOnly(Side.CLIENT)
-    public EntityGlowingWater(World par1World, double par2, double par4, double par6, int par8) {
-        this(par1World, par2, par4, par6);
-    }
+	@SideOnly(Side.CLIENT)
+	public EntityGlowingWater(World par1World, double par2, double par4, double par6, int par8) {
+		this(par1World, par2, par4, par6);
+	}
 
-    public EntityGlowingWater(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
-    }
+	public EntityGlowingWater(World par1World, double par2, double par4, double par6) {
+		super(par1World, par2, par4, par6);
+	}
 
-    /**
-     * Gets the amount of gravity to apply to the thrown entity with each tick.
-     */
-    @Override
-    protected float getGravityVelocity() {
-        return 0.03F;
-    }
+	/**
+	 * Gets the amount of gravity to apply to the thrown entity with each tick.
+	 */
+	@Override
+	protected float getGravityVelocity() {
+		return 0.03F;
+	}
 
-    private boolean isUndead(EntityLivingBase e) {
-        return e.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
-    }
+	private boolean isUndead(EntityLivingBase e) {
+		return e.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
+	}
 
-    /**
-     * Called when this EntityThrowable hits a block or entity.
-     */
-    @Override
-    protected void onImpact(RayTraceResult result) {
-        if (!worldObj.isRemote) {
-            this.spawnParticles();
-            AxisAlignedBB bb = this.getEntityBoundingBox().expand( 4.0D, 2.0D, 4.0D );
-            List eList = worldObj.getEntitiesWithinAABB(EntityLiving.class, bb);
-            Iterator i = eList.iterator();
-            while (i.hasNext()) {
-                EntityLiving e = (EntityLiving) i.next();
-                if (isUndead(e) && this.getThrower() != null && this.getThrower() instanceof EntityPlayer) {
-                    e.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) this.getThrower()), 18 + rand.nextInt(17));
-                }
-            }
+	/**
+	 * Called when this EntityThrowable hits a block or entity.
+	 */
+	@Override
+	protected void onImpact(RayTraceResult result) {
+		if(!worldObj.isRemote) {
+			this.spawnParticles();
+			AxisAlignedBB bb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
+			List eList = worldObj.getEntitiesWithinAABB(EntityLiving.class, bb);
+			Iterator i = eList.iterator();
+			while(i.hasNext()) {
+				EntityLiving e = (EntityLiving) i.next();
+				if(isUndead(e) && this.getThrower() != null && this.getThrower() instanceof EntityPlayer) {
+					e.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) this.getThrower()), 18 + rand.nextInt(17));
+				}
+			}
 
-            worldObj.playAuxSFX(2002, new BlockPos(this), 0);
-            this.setDead();
-        }
-    }
+			worldObj.playAuxSFX(2002, new BlockPos(this), 0);
+			this.setDead();
+		}
+	}
 
-    private void spawnParticles() {
-        double x = posX;
-        double y = posY;
-        double z = posZ;
+	private void spawnParticles() {
+		double x = posX;
+		double y = posY;
+		double z = posZ;
 
-        for (int particleNum = 0; particleNum < 8; ++particleNum) {
-            worldObj.spawnParticle( EnumParticleTypes.ITEM_CRACK, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, new int[] {Item.getIdFromItem(ModItems.glowingWater)});
-        }
+		for(int particleNum = 0; particleNum < 8; ++particleNum) {
+			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, new int[] {Item.getIdFromItem(ModItems.glowingWater)});
+		}
 
-        worldObj.playSound(null, getPosition(), SoundEvents.block_glass_break, SoundCategory.NEUTRAL, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
-        PacketHandler.networkWrapper.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), this.posX, this.posY, this.posZ), new NetworkRegistry.TargetPoint(this.dimension, this.posX, this.posY, this.posZ, 32.0D));
+		worldObj.playSound(null, getPosition(), SoundEvents.block_glass_break, SoundCategory.NEUTRAL, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		PacketHandler.networkWrapper.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), this.posX, this.posY, this.posZ), new NetworkRegistry.TargetPoint(this.dimension, this.posX, this.posY, this.posZ, 32.0D));
 
-    }
+	}
 }

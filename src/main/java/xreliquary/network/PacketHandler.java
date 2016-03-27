@@ -17,5 +17,7 @@ public class PacketHandler {
 
 		int idx = 0;
 		networkWrapper.registerMessage(PacketFXThrownPotionImpact.class, PacketFXThrownPotionImpact.class, idx, Side.CLIENT);
+		idx++;
+		networkWrapper.registerMessage(PacketFXConcussiveExplosion.class, PacketFXConcussiveExplosion.class, idx, Side.CLIENT);
 	}
 }
