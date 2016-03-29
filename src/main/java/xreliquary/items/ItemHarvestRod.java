@@ -3,7 +3,6 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
-import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
@@ -131,13 +130,13 @@ public class ItemHarvestRod extends ItemToggleable {
 			if(currentStack == null) {
 				continue;
 			}
-			if(currentStack.getItem() instanceof IPlantable && addItemToInventory(currentStack, harvestRod, player)) {
+			if(currentStack.getItem() instanceof IPlantable && addPlantableToInventory(currentStack, harvestRod, player)) {
 				break;
 			}
 		}
 	}
 
-	private boolean addItemToInventory(ItemStack stack, ItemStack harvestRod, EntityPlayer player) {
+	private boolean addPlantableToInventory(ItemStack stack, ItemStack harvestRod, EntityPlayer player) {
 		NBTTagList itemsList = harvestRod.getTagCompound().getTagList("Items", 10);
 		boolean addedToExistingStack = false;
 		for(byte i = 0; i < itemsList.tagCount(); ++i) {
@@ -166,6 +165,18 @@ public class ItemHarvestRod extends ItemToggleable {
 		harvestRod.getTagCompound().setTag("Items", itemsList);
 
 		return true;
+	}
+
+	private void removePlantableFromInventory(ItemStack harvestRod, byte idx) {
+		NBTTagCompound tagCompound = harvestRod.getTagCompound();
+
+		NBTTagList itemsList = tagCompound.getTagList("Items", 10);
+		itemsList.removeTag(idx);
+		harvestRod.getTagCompound().setTag("Items", itemsList);
+
+		NBTTagList quantities = tagCompound.getTagList(PLANTABLE_QUANTITIES_NBT_TAG, 3);
+		quantities.removeTag(idx);
+		harvestRod.getTagCompound().setTag(PLANTABLE_QUANTITIES_NBT_TAG, quantities);
 	}
 
 	@Override
@@ -274,17 +285,17 @@ public class ItemHarvestRod extends ItemToggleable {
 		if(player.worldObj.isRemote)
 			return;
 
-		if(!player.capabilities.isCreativeMode) {
-			if(getMode(stack) == BONE_MEAL_MODE)
-				setBoneMealCount(stack, Math.max(0, getBoneMealCount(stack) - getBonemealCost() * getTimesItemUsed(stack, timeLeft)));
-			else if(getMode(stack) == PLANTABLE_MODE) {
-				setPlantableQuantity(stack, getCurrentPlantableIndex(stack), getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) - getTimesItemUsed(stack, timeLeft));
-			}
-		}
-
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
 
 		if(mop != null) {
+			if(!player.capabilities.isCreativeMode) {
+				if(getMode(stack) == BONE_MEAL_MODE)
+					setBoneMealCount(stack, Math.max(0, getBoneMealCount(stack) - getBonemealCost() * getTimesItemUsed(stack, timeLeft)));
+				else if(getMode(stack) == PLANTABLE_MODE) {
+					setPlantableQuantity(stack, getCurrentPlantableIndex(stack), getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) - getTimesItemUsed(stack, timeLeft));
+				}
+			}
+
 			BlockPos pos = mop.getBlockPos();
 			IBlockState blockState = world.getBlockState(pos);
 
@@ -298,6 +309,30 @@ public class ItemHarvestRod extends ItemToggleable {
 					plantItem(stack, player, pos);
 				}
 			}
+		} else {
+			removeStackFromCurrent(stack, player);
+		}
+	}
+
+	private void removeStackFromCurrent(ItemStack stack, EntityPlayer player) {
+		if(getMode(stack) == BONE_MEAL_MODE) {
+			ItemStack boneMealStack = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
+			int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), getBoneMealCount(stack));
+			int numberAdded = InventoryHelper.tryToAddToInventory(boneMealStack, player.inventory, 0, numberToAdd);
+			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded);
+		} else if(getMode(stack) == PLANTABLE_MODE) {
+			byte idx = getCurrentPlantableIndex(stack);
+			ItemStack plantableStack = getPlantableItems(stack).get(idx);
+			int numberToAdd = Math.min(plantableStack.getMaxStackSize(), getPlantableQuantity(stack, idx));
+			int numberAdded = InventoryHelper.tryToAddToInventory(plantableStack, player.inventory, 0, numberToAdd);
+			setPlantableQuantity(stack, idx, getPlantableQuantity(stack, idx) - numberAdded);
+			if (getPlantableQuantity(stack, idx) <= 0) {
+				removePlantableFromInventory(stack, idx);
+				if (getPlantableItems(stack).size() > idx)
+					setCurrentPlantableIndex(stack, (byte) (idx - 1));
+				cycleMode(stack);
+			}
+
 		}
 	}
 
@@ -313,7 +348,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		if(fakePlantableStack.onItemUse(player, player.worldObj, pos, EnumFacing.UP, 0, 0, 0)) {
 			player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
 
-			if (updateCharge && !player.capabilities.isCreativeMode) {
+			if(updateCharge && !player.capabilities.isCreativeMode) {
 				setPlantableQuantity(stack, idx, getPlantableQuantity(stack, idx) - 1);
 			}
 		}
