@@ -49,7 +49,7 @@ repositories {
 
 
 group = 'xreliquary' // Your main package.
-version = "${mod_version}.${getBuildNumber()}${getStable()}"
+version = "${minecraft_version}-${mod_version}.${getBuildNumber()}${getStable()}"
 archivesBaseName = 'Reliquary'
 
 sourceCompatibility = 1.8

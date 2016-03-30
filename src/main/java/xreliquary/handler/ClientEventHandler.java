@@ -18,6 +18,7 @@ import org.lwjgl.opengl.GL12;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.*;
+import xreliquary.items.util.HarvestRodPlayerProps;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -147,13 +148,37 @@ public class ClientEventHandler {
 
 	public void handleHarvestRodHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
+		HarvestRodPlayerProps props = HarvestRodPlayerProps.get(player);
 
 		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHarvestRod))
 			return;
 
 		ItemStack harvestRodStack = player.getCurrentEquippedItem();
-		ItemStack bonemealStack = new ItemStack(Items.dye, NBTHelper.getInteger("bonemeal", harvestRodStack), Reference.WHITE_DYE_META);
-		renderStandardTwoItemHUD(mc, player, harvestRodStack, bonemealStack, Settings.HudPositions.harvestRod, 0, 0);
+
+		ItemStack secondaryStack;
+		ItemHarvestRod harvestRod = ModItems.harvestRod;
+		if (harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.PLANTABLE_MODE)) {
+			secondaryStack = harvestRod.getPlantableItems(harvestRodStack).get(harvestRod.getCurrentPlantableIndex(harvestRodStack)).copy();
+			int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableIndex(harvestRodStack));
+
+			if(player.isUsingItem()) {
+				plantableCount -= props.getTimesUsed();
+			}
+
+			secondaryStack.stackSize = plantableCount;
+		} else if (harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.BONE_MEAL_MODE)) {
+			int boneMealCount = harvestRod.getBoneMealCount(harvestRodStack);
+
+			if(player.isUsingItem()) {
+				boneMealCount -= props.getTimesUsed();
+			}
+
+			secondaryStack = new ItemStack(Items.dye, boneMealCount, Reference.WHITE_DYE_META);
+		} else {
+			secondaryStack = new ItemStack(Items.wooden_hoe);
+		}
+
+		renderStandardTwoItemHUD(mc, player, harvestRodStack, secondaryStack, Settings.HudPositions.harvestRod, 0, 0);
 	}
 
 	public void handleInfernalChaliceHUDCheck(Minecraft mc) {
