@@ -459,12 +459,24 @@ public class ItemHarvestRod extends ItemToggleable {
 	private void fillQueueToPlant(World world, HarvestRodPlayerProps props, BlockPos pos, int range, IPlantable plantable) {
 		props.setStartBlockPos(pos);
 		props.clearBlockQueue();
+
+		boolean checkerboard = false;
+		boolean bothOddOrEven = false;
+
+		if(plantable == Items.pumpkin_seeds || plantable == Items.melon_seeds) {
+			checkerboard = true;
+			boolean xEven = pos.getX() % 2 == 0;
+			boolean zEven = pos.getZ() % 2 == 0;
+			bothOddOrEven = xEven == zEven;
+		}
+
 		for(int x = pos.getX() - range; x <= pos.getX() + range; x++) {
 			for(int y = pos.getY() - range; y <= pos.getY() + range; y++) {
 				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
 					BlockPos currentPos = new BlockPos(x, y, z);
 					IBlockState blockState = world.getBlockState(currentPos);
-					if(blockState.getBlock().canSustainPlant(world, pos, EnumFacing.UP, plantable) && world.isAirBlock(currentPos.up())) {
+					if((!checkerboard || (bothOddOrEven == ((currentPos.getX() % 2 == 0) == (currentPos.getZ() % 2 == 0)))) &&
+							blockState.getBlock().canSustainPlant(world, pos, EnumFacing.UP, plantable) && world.isAirBlock(currentPos.up())) {
 						props.addBlockToQueue(currentPos);
 					}
 				}
