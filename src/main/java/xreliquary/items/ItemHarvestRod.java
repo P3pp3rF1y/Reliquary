@@ -530,6 +530,8 @@ public class ItemHarvestRod extends ItemToggleable {
 				if(items.size() > 0) {
 					setMode(stack, PLANTABLE_MODE);
 					setCurrentPlantableIndex(stack, (byte) 0);
+				} else {
+					setMode(stack, HOE_MODE);
 				}
 				break;
 			case PLANTABLE_MODE:
