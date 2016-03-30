@@ -99,7 +99,7 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	public int getBreakRadius() {
-		return Settings.HarvestRod.harvestBreakRadius;
+		return Settings.HarvestRod.AOERadius;
 	}
 
 	@Override
@@ -384,7 +384,7 @@ public class ItemHarvestRod extends ItemToggleable {
 				switch(getMode(stack)) {
 					case BONE_MEAL_MODE:
 						if(getBoneMealCount(stack) >= (getBonemealCost() * props.getTimesUsed() + 1) || player.capabilities.isCreativeMode) {
-							BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, props, mop.getBlockPos(), Settings.HarvestRod.harvestBreakRadius);
+							BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, props, mop.getBlockPos(), Settings.HarvestRod.AOERadius);
 
 							if(blockToBoneMeal != null) {
 								if(boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP, false)) {
@@ -396,7 +396,7 @@ public class ItemHarvestRod extends ItemToggleable {
 						break;
 					case PLANTABLE_MODE:
 						if(getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) >= props.getTimesUsed() + 1 || player.capabilities.isCreativeMode) {
-							BlockPos blockToPlantOn = getNextBlockToPlantOn(world, props, mop.getBlockPos(), Settings.HarvestRod.harvestBreakRadius, (IPlantable) getPlantableItems(stack).get(getCurrentPlantableIndex(stack)).getItem());
+							BlockPos blockToPlantOn = getNextBlockToPlantOn(world, props, mop.getBlockPos(), Settings.HarvestRod.AOERadius, (IPlantable) getPlantableItems(stack).get(getCurrentPlantableIndex(stack)).getItem());
 
 							if(blockToPlantOn != null) {
 								if(plantItem(stack, player, blockToPlantOn, false)) {
@@ -408,7 +408,7 @@ public class ItemHarvestRod extends ItemToggleable {
 						break;
 					case HOE_MODE:
 						ItemStack fakeHoe = new ItemStack(Items.wooden_hoe);
-						BlockPos blockToHoe = getNextBlockToHoe(world, props, mop.getBlockPos(), Settings.HarvestRod.harvestBreakRadius);
+						BlockPos blockToHoe = getNextBlockToHoe(world, props, mop.getBlockPos(), Settings.HarvestRod.AOERadius);
 						if(blockToHoe != null) {
 							Items.wooden_hoe.onItemUse(fakeHoe, player, world, blockToHoe, EnumFacing.UP, 0, 0, 0);
 							return;
@@ -484,7 +484,7 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	private boolean isCoolDownOver(ItemStack stack, int count) {
-		return getMaxItemUseDuration(stack) - count >= AOE_START_COOLDOWN && (getMaxItemUseDuration(stack) - count) % Settings.HarvestRod.bonemealAOECooldown == 0;
+		return getMaxItemUseDuration(stack) - count >= AOE_START_COOLDOWN && (getMaxItemUseDuration(stack) - count) % Settings.HarvestRod.AOECooldown == 0;
 	}
 
 	private BlockPos getNextBlockToBoneMeal(World world, HarvestRodPlayerProps props, BlockPos pos, int range) {
