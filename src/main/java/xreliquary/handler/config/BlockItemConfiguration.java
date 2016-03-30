@@ -46,7 +46,7 @@ public class BlockItemConfiguration {
 		int cleanIntMax = 2000000000;
 
 		//alkahestry tome configs
-		Settings.AlkahestryTome.chargeLimit = ConfigurationHandler.getInt("charge_limit", Names.item_and_block_settings + "." + Names.alkahestry_tome, 250, 0, itemCap);
+		Settings.AlkahestryTome.chargeLimit = ConfigurationHandler.getInt("charge_limit", Names.item_and_block_settings + "." + Names.alkahestry_tome, 1000, 0, itemCap);
 		ConfigurationHandler.configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome).get("charge_limit").setRequiresMcRestart(true);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome, true);
 
@@ -125,7 +125,7 @@ public class BlockItemConfiguration {
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.harvest_rod, true);
 
 		//hero's medallion config
-		Settings.HeroMedallion.experienceLevelMaximum = ConfigurationHandler.getInt("experience_level_maximum", Names.item_and_block_settings + "." + Names.hero_medallion, 30, 0, 60);
+		Settings.HeroMedallion.experienceLevelMaximum = ConfigurationHandler.getInt("experience_level_maximum", Names.item_and_block_settings + "." + Names.hero_medallion, 200, 0, 1000);
 		Settings.HeroMedallion.experienceLevelMinimum = ConfigurationHandler.getInt("experience_level_minimum", Names.item_and_block_settings + "." + Names.hero_medallion, 0, 0, 30);
 		Settings.HeroMedallion.experienceLimit = ConfigurationHandler.getInt("experience_limit", Names.item_and_block_settings + "." + Names.hero_medallion, cleanIntMax, 0, cleanIntMax);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.hero_medallion, true);
