@@ -18,6 +18,7 @@ import org.lwjgl.opengl.GL12;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.*;
+import xreliquary.items.util.HarvestRodPlayerProps;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -147,6 +148,7 @@ public class ClientEventHandler {
 
 	public void handleHarvestRodHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
+		HarvestRodPlayerProps props = HarvestRodPlayerProps.get(player);
 
 		if(player == null || player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemHarvestRod))
 			return;
@@ -160,18 +162,20 @@ public class ClientEventHandler {
 			int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableIndex(harvestRodStack));
 
 			if(player.isUsingItem()) {
-				plantableCount -= harvestRod.getTimesItemUsed(harvestRodStack, player.getItemInUseCount());
+				plantableCount -= props.getTimesUsed();
 			}
 
 			secondaryStack.stackSize = plantableCount;
-		} else {
+		} else if (harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.BONE_MEAL_MODE)) {
 			int boneMealCount = harvestRod.getBoneMealCount(harvestRodStack);
 
 			if(player.isUsingItem()) {
-				boneMealCount -= harvestRod.getBonemealCost() * harvestRod.getTimesItemUsed(harvestRodStack, player.getItemInUseCount());
+				boneMealCount -= props.getTimesUsed();
 			}
 
 			secondaryStack = new ItemStack(Items.dye, boneMealCount, Reference.WHITE_DYE_META);
+		} else {
+			secondaryStack = new ItemStack(Items.wooden_hoe);
 		}
 
 		renderStandardTwoItemHUD(mc, player, harvestRodStack, secondaryStack, Settings.HudPositions.harvestRod, 0, 0);
