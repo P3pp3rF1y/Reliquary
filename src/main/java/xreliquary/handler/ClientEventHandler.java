@@ -17,8 +17,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import xreliquary.init.ModBlocks;
+import xreliquary.init.ModCapabilities;
 import xreliquary.init.ModItems;
 import xreliquary.items.*;
+import xreliquary.items.util.IHarvestRodCache;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -85,7 +87,7 @@ public class ClientEventHandler {
 
 		EnumHand itemInHand = getHandHoldingCorrectItem(player, item);
 
-		if (itemInHand == null)
+		if(itemInHand == null)
 			return null;
 
 		return player.getHeldItem(itemInHand);
@@ -191,10 +193,12 @@ public class ClientEventHandler {
 	public void handleHarvestRodHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
-		ItemStack harvestRodStack = getCorrectItemFromEitherHand(player, ModItems.midasTouchstone);
+		ItemStack harvestRodStack = getCorrectItemFromEitherHand(player, ModItems.harvestRod);
 
 		if(harvestRodStack == null)
 			return;
+
+		IHarvestRodCache cache = harvestRodStack.getCapability(ModCapabilities.HARVEST_ROD_CACHE, null);
 
 		ItemStack secondaryStack;
 		ItemHarvestRod harvestRod = ModItems.harvestRod;
@@ -202,19 +206,21 @@ public class ClientEventHandler {
 			secondaryStack = harvestRod.getPlantableItems(harvestRodStack).get(harvestRod.getCurrentPlantableIndex(harvestRodStack)).copy();
 			int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableIndex(harvestRodStack));
 
-			if(player.isHandActive() && getHandHoldingCorrectItem(player, ModItems.harvestRod) == player.getActiveHand()) {
-				plantableCount -= harvestRod.getTimesItemUsed(harvestRodStack, player.getItemInUseCount());
+			if(cache != null && player.isHandActive()) {
+				plantableCount -= cache.getTimesUsed();
 			}
 
 			secondaryStack.stackSize = plantableCount;
-		} else {
+		} else if(harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.BONE_MEAL_MODE)) {
 			int boneMealCount = harvestRod.getBoneMealCount(harvestRodStack);
 
-			if(player.isHandActive() && getHandHoldingCorrectItem(player, ModItems.harvestRod) == player.getActiveHand()) {
-				boneMealCount -= harvestRod.getBonemealCost() * harvestRod.getTimesItemUsed(harvestRodStack, player.getItemInUseCount());
+			if(cache != null && player.isHandActive()) {
+				boneMealCount -= cache.getTimesUsed();
 			}
 
 			secondaryStack = new ItemStack(Items.dye, boneMealCount, Reference.WHITE_DYE_META);
+		} else {
+			secondaryStack = new ItemStack(Items.wooden_hoe);
 		}
 
 		renderStandardTwoItemHUD(mc, player, harvestRodStack, secondaryStack, Settings.HudPositions.harvestRod, 0, 0);
@@ -225,7 +231,7 @@ public class ClientEventHandler {
 
 		ItemStack infernalChaliceStack = getCorrectItemFromEitherHand(player, ModItems.infernalChalice);
 
-		if (infernalChaliceStack == null)
+		if(infernalChaliceStack == null)
 			return;
 
 		ItemStack lavaStack = new ItemStack(Items.lava_bucket, NBTHelper.getInteger("fluidStacks", infernalChaliceStack), 0);
@@ -237,7 +243,7 @@ public class ClientEventHandler {
 
 		ItemStack heroMedallionStack = getCorrectItemFromEitherHand(player, ModItems.heroMedallion);
 
-		if (heroMedallionStack == null)
+		if(heroMedallionStack == null)
 			return;
 
 		int experience = NBTHelper.getInteger("experience", heroMedallionStack);
@@ -249,7 +255,7 @@ public class ClientEventHandler {
 
 		ItemStack pyromancerStaffStack = getCorrectItemFromEitherHand(player, ModItems.pyromancerStaff);
 
-		if (pyromancerStaffStack == null)
+		if(pyromancerStaffStack == null)
 			return;
 
 		int charge = 0;
@@ -352,7 +358,7 @@ public class ClientEventHandler {
 
 		ItemStack rendingGaleStack = getCorrectItemFromEitherHand(player, ModItems.rendingGale);
 
-		if (rendingGaleStack == null)
+		if(rendingGaleStack == null)
 			return;
 
 		ItemStack featherStack = new ItemStack(Items.feather, NBTHelper.getInteger("feathers", rendingGaleStack), 0);
@@ -371,7 +377,7 @@ public class ClientEventHandler {
 
 		ItemStack handgunStack = getCorrectItemFromEitherHand(player, ModItems.handgun);
 
-		if (handgunStack == null)
+		if(handgunStack == null)
 			return;
 
 		ItemHandgun handgunItem = (ItemHandgun) handgunStack.getItem();
@@ -455,7 +461,7 @@ public class ClientEventHandler {
 
 		ItemStack sojournerStack = getCorrectItemFromEitherHand(player, ModItems.sojournerStaff);
 
-		if (sojournerStack == null)
+		if(sojournerStack == null)
 			return;
 
 		ItemSojournerStaff sojournerItem = (ItemSojournerStaff) sojournerStack.getItem();

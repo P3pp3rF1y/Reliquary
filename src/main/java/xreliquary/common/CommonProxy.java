@@ -16,6 +16,7 @@ import xreliquary.entities.shot.*;
 import xreliquary.handler.CommonEventHandler;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.init.ModBlocks;
+import xreliquary.init.ModCapabilities;
 import xreliquary.init.ModCompat;
 import xreliquary.init.XRRecipes;
 
@@ -36,10 +37,10 @@ public class CommonProxy {
 
 	public void init() {
 		MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
-
 		NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
 		MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ModCompat());
+		MinecraftForge.EVENT_BUS.register(new ModCapabilities());
 
 		this.registerEntities();
 	}

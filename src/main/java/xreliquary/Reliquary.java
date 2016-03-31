@@ -57,10 +57,9 @@ public class Reliquary {
 
 		ModPotions.init();
 
-		PROXY.preInit();
+		ModCapabilities.init();
 
-		//important that this initializes before the pre-init phase
-		//PROXY.initRecipeDisablers();
+		PROXY.preInit();
 
 		//TODO figure out a better way to handle this if possible
 		PotionConfiguration.loadPotionMap();
