@@ -88,7 +88,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 									int j = (int) (d1 * (double) potioneffect.getDuration() + 0.5D);
 
 									if(j > 20) {
-										entitylivingbase.addPotionEffect(new PotionEffect(potioneffect.getPotion(), j, potioneffect.getAmplifier())); //TODO do I really need a new instance of PotionEffect??
+										entitylivingbase.addPotionEffect(new PotionEffect(potioneffect.getPotion(), j, potioneffect.getAmplifier(), false, false));
 									}
 								}
 							}
