@@ -139,16 +139,20 @@ public class ItemShearsOfWinter extends ItemBase {
 
 	@Override
 	public void onUsingTick(ItemStack ist, EntityLivingBase entity, int count) {
-		if(entity.worldObj.isRemote || !(entity instanceof EntityPlayer))
+		//start the blizzard after a short delay, this prevents some abuse.
+		if(getMaxItemUseDuration(ist) - count <= 5)
+			return;
+
+		if(!(entity instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		//start the blizzard after a short delay, this prevents some abuse.
-		if(getMaxItemUseDuration(ist) - count <= 5)
-			return;
 		Vec3d lookVector = player.getLookVec();
 		spawnBlizzardParticles(lookVector, player);
+
+		if(entity.worldObj.isRemote)
+			return;
 
 		doEntityShearableCheck(ist, player, lookVector);
 		if(lookVector.xCoord > 0)

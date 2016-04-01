@@ -46,7 +46,7 @@ public class BlockItemConfiguration {
 		int cleanIntMax = 2000000000;
 
 		//alkahestry tome configs
-		Settings.AlkahestryTome.chargeLimit = ConfigurationHandler.getInt("charge_limit", Names.item_and_block_settings + "." + Names.alkahestry_tome, 250, 0, itemCap);
+		Settings.AlkahestryTome.chargeLimit = ConfigurationHandler.getInt("charge_limit", Names.item_and_block_settings + "." + Names.alkahestry_tome, 1000, 0, itemCap);
 		ConfigurationHandler.configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome).get("charge_limit").setRequiresMcRestart(true);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome, true);
 
@@ -118,14 +118,14 @@ public class BlockItemConfiguration {
 		Settings.HarvestRod.boneMealWorth = ConfigurationHandler.getInt("bonemeal_worth", Names.item_and_block_settings + "." + Names.harvest_rod, 1, 0, 3);
 		Settings.HarvestRod.boneMealLuckPercentChance = ConfigurationHandler.getInt("bonemeal_luck_percent_chance", Names.item_and_block_settings + "." + Names.harvest_rod, 33, 1, 100);
 		Settings.HarvestRod.boneMealLuckRolls = ConfigurationHandler.getInt("bonemeal_luck_rolls", Names.item_and_block_settings + "." + Names.harvest_rod, 2, 0, 7);
-		Settings.HarvestRod.harvestBreakRadius = ConfigurationHandler.getInt("harvest_break_radius", Names.item_and_block_settings + "." + Names.harvest_rod, 2, 0, 5);
-		Settings.HarvestRod.bonemealAOECooldown = ConfigurationHandler.getInt("bonemeal_aoe_cooldown", Names.item_and_block_settings + "." + Names.harvest_rod, 3, 1, 20);
+		Settings.HarvestRod.AOERadius = ConfigurationHandler.getInt("aoe_radius", Names.item_and_block_settings + "." + Names.harvest_rod, 2, 0, 5);
+		Settings.HarvestRod.AOECooldown = ConfigurationHandler.getInt("aoe_cooldown", Names.item_and_block_settings + "." + Names.harvest_rod, 3, 1, 20);
 		Settings.HarvestRod.maxCapacityPerPlantable = ConfigurationHandler.getInt("max_capacity_per_plantable", Names.item_and_block_settings + "." + Names.harvest_rod, 250, 0, itemCap);
 
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.harvest_rod, true);
 
 		//hero's medallion config
-		Settings.HeroMedallion.experienceLevelMaximum = ConfigurationHandler.getInt("experience_level_maximum", Names.item_and_block_settings + "." + Names.hero_medallion, 30, 0, 60);
+		Settings.HeroMedallion.experienceLevelMaximum = ConfigurationHandler.getInt("experience_level_maximum", Names.item_and_block_settings + "." + Names.hero_medallion, 200, 0, 1000);
 		Settings.HeroMedallion.experienceLevelMinimum = ConfigurationHandler.getInt("experience_level_minimum", Names.item_and_block_settings + "." + Names.hero_medallion, 0, 0, 30);
 		Settings.HeroMedallion.experienceLimit = ConfigurationHandler.getInt("experience_limit", Names.item_and_block_settings + "." + Names.hero_medallion, cleanIntMax, 0, cleanIntMax);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.hero_medallion, true);

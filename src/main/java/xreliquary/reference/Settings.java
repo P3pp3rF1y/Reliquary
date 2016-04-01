@@ -165,8 +165,8 @@ public class Settings {
 		public static int boneMealWorth;
 		public static int boneMealLuckPercentChance;
 		public static int boneMealLuckRolls;
-		public static int harvestBreakRadius;
-		public static int bonemealAOECooldown;
+		public static int AOERadius;
+		public static int AOECooldown;
 		public static int maxCapacityPerPlantable;
 	}
 

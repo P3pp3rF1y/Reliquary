@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -54,10 +55,6 @@ public class ItemMercyCross extends ItemSword {
 		return 0.0F;
 	}
 
-	private boolean isUndead(EntityLivingBase e) {
-		return e.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
-	}
-
 	/**
 	 * Returns the strength of the stack against a given block. 1.0F base,
 	 * (Quality+1)*2 if correct blocktype, 1.5F if sword
@@ -72,11 +69,21 @@ public class ItemMercyCross extends ItemSword {
 		Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
 
 		if(equipmentSlot == EntityEquipmentSlot.MAINHAND) {
-			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) 0, 0));
+			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) 6, 0));
 			multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, 0));
 		}
 
 		return multimap;
+	}
+
+	public void updateAttackDamageModifier(EntityLivingBase target, EntityPlayer player) {
+		double dmg = isUndead(target) ? 12 : 6;
+		IAttributeInstance attackAttribute = player.getAttributeMap().getAttributeInstanceByName(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName());
+
+		if (attackAttribute.getModifier(ATTACK_DAMAGE_MODIFIER) == null || attackAttribute.getModifier(ATTACK_DAMAGE_MODIFIER).getAmount() != dmg) {
+			attackAttribute.removeModifier(ATTACK_DAMAGE_MODIFIER);
+			attackAttribute.applyModifier(new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", dmg, 0));
+		}
 	}
 
 	@Override
@@ -89,14 +96,7 @@ public class ItemMercyCross extends ItemSword {
 		return super.onLeftClickEntity(stack, player, monster);
 	}
 
-	@Override
-	public boolean hitEntity(ItemStack stack, EntityLivingBase monster, EntityLivingBase player) {
-		super.hitEntity(stack, monster, player);
-		int dmg = isUndead(monster) ? 12 : 6;
-		if(player instanceof EntityPlayer) {
-			monster.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) player), dmg);
-		}
-		return true;
+	private boolean isUndead(EntityLivingBase e) {
+		return e.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
 	}
-
 }

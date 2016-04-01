@@ -55,6 +55,9 @@ public class EntityXRFakePlayer extends FakePlayer {
 				break;
 			}
 		}
+
+		//finish previous swing or cool down caused by change of weapons
+		this.ticksSinceLastSwing = (int) this.getCooldownPeriod();
 	}
 
 	@Override

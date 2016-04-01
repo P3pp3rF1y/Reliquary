@@ -378,7 +378,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 					blockAttemptingPlacement.onBlockAdded(world, placeBlockAt, torchBlockState);
 					double gauss = 0.5D + world.rand.nextFloat() / 2;
 					world.spawnParticle(EnumParticleTypes.SPELL_MOB, placeBlockAt.getX() + 0.5D, placeBlockAt.getY() + 0.5D, placeBlockAt.getZ() + 0.5D, gauss, gauss, 0.0F);
-					world.playSound(placeBlockAt.getX() + 0.5F, placeBlockAt.getY() + 0.5F, placeBlockAt.getZ() + 0.5F, blockAttemptingPlacement.getStepSound().getStepSound(), SoundCategory.BLOCKS, (blockAttemptingPlacement.getStepSound().getVolume() + 1.0F) / 2.0F, blockAttemptingPlacement.getStepSound().getPitch() * 0.8F, false);
+					world.playSound(null, placeBlockAt, blockAttemptingPlacement.getStepSound().getPlaceSound(), SoundCategory.BLOCKS, (blockAttemptingPlacement.getStepSound().getVolume() + 1.0F) / 2.0F, blockAttemptingPlacement.getStepSound().getPitch() * 0.8F);
 				}
 			}
 		}

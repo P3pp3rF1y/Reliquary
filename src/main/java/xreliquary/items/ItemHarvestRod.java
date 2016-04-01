@@ -3,6 +3,7 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
+import net.minecraft.block.BlockDirt;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -10,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
@@ -20,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -30,6 +33,10 @@ import net.minecraftforge.common.IPlantable;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.blocks.BlockFertileLilypad;
+import xreliquary.init.ModCapabilities;
+import xreliquary.items.util.IHarvestRodCache;
+import xreliquary.network.PacketHandler;
+import xreliquary.network.PacketHarvestRodCacheSync;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -49,6 +56,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
 	public static final String BONE_MEAL_MODE = "bone_meal";
 	public static final String PLANTABLE_MODE = "plantable";
+	public static final String HOE_MODE = "hoe";
 	public static final String MODE_NBT_TAG = "mode";
 	public static final String PLANTABLE_INDEX_NBT_TAG = "plantable_index";
 	public static final String PLANTABLE_QUANTITIES_NBT_TAG = "plantable_quantities";
@@ -97,7 +105,7 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	public int getBreakRadius() {
-		return Settings.HarvestRod.harvestBreakRadius;
+		return Settings.HarvestRod.AOERadius;
 	}
 
 	@Override
@@ -128,13 +136,13 @@ public class ItemHarvestRod extends ItemToggleable {
 			if(currentStack == null) {
 				continue;
 			}
-			if(currentStack.getItem() instanceof IPlantable && addItemToInventory(currentStack, harvestRod, player)) {
+			if(currentStack.getItem() instanceof IPlantable && addPlantableToInventory(currentStack, harvestRod, player)) {
 				break;
 			}
 		}
 	}
 
-	private boolean addItemToInventory(ItemStack stack, ItemStack harvestRod, EntityPlayer player) {
+	private boolean addPlantableToInventory(ItemStack stack, ItemStack harvestRod, EntityPlayer player) {
 		NBTTagList itemsList = harvestRod.getTagCompound().getTagList("Items", 10);
 		boolean addedToExistingStack = false;
 		for(byte i = 0; i < itemsList.tagCount(); ++i) {
@@ -163,6 +171,18 @@ public class ItemHarvestRod extends ItemToggleable {
 		harvestRod.getTagCompound().setTag("Items", itemsList);
 
 		return true;
+	}
+
+	private void removePlantableFromInventory(ItemStack harvestRod, byte idx) {
+		NBTTagCompound tagCompound = harvestRod.getTagCompound();
+
+		NBTTagList itemsList = tagCompound.getTagList("Items", 10);
+		itemsList.removeTag(idx);
+		harvestRod.getTagCompound().setTag("Items", itemsList);
+
+		NBTTagList quantities = tagCompound.getTagList(PLANTABLE_QUANTITIES_NBT_TAG, 3);
+		quantities.removeTag(idx);
+		harvestRod.getTagCompound().setTag(PLANTABLE_QUANTITIES_NBT_TAG, quantities);
 	}
 
 	@Override
@@ -224,7 +244,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		boneMealBlock(ist, player, world, pos, side, true);
 	}
 
-	private void boneMealBlock(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, boolean updateCharge) {
+	private boolean boneMealBlock(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, boolean updateCharge) {
 		ItemStack fakeItemStack = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
 		ItemDye fakeItemDye = (ItemDye) fakeItemStack.getItem();
 
@@ -241,6 +261,8 @@ public class ItemHarvestRod extends ItemToggleable {
 
 		if(updateCharge && usedRod && !player.capabilities.isCreativeMode)
 			setBoneMealCount(ist, getBoneMealCount(ist) - getBonemealCost());
+
+		return usedRod;
 	}
 
 	public int getBoneMealCount(ItemStack ist) {
@@ -273,49 +295,83 @@ public class ItemHarvestRod extends ItemToggleable {
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		if(!player.capabilities.isCreativeMode) {
-			if(getMode(stack) == BONE_MEAL_MODE)
-				setBoneMealCount(stack, Math.max(0, getBoneMealCount(stack) - getBonemealCost() * getTimesItemUsed(stack, timeLeft)));
-			else if(getMode(stack) == PLANTABLE_MODE) {
-				setPlantableQuantity(stack, getCurrentPlantableIndex(stack), getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) - getTimesItemUsed(stack, timeLeft));
-			}
-		}
-
 		RayTraceResult result = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
 
 		if(result != null) {
-			BlockPos pos = result.getBlockPos();
-			IBlockState blockState = world.getBlockState(pos);
+			IHarvestRodCache cache = stack.getCapability(ModCapabilities.HARVEST_ROD_CACHE, null);
 
-			if(getMode(stack) == BONE_MEAL_MODE) {
-				if(getBoneMealCount(stack) >= getBonemealCost() || player.capabilities.isCreativeMode) {
-					boneMealBlock(stack, player, world, pos, EnumFacing.UP);
-					return;
+			if(cache != null) {
+				if(!player.capabilities.isCreativeMode && cache.getTimesUsed() > 0) {
+					if(getMode(stack).equals(BONE_MEAL_MODE))
+						setBoneMealCount(stack, getBoneMealCount(stack) - cache.getTimesUsed());
+					else if(getMode(stack).equals(PLANTABLE_MODE)) {
+						setPlantableQuantity(stack, getCurrentPlantableIndex(stack), getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) - cache.getTimesUsed());
+					}
 				}
-			} else if(getMode(stack) == PLANTABLE_MODE) {
-				if(getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) > 0 || player.capabilities.isCreativeMode) {
-					plantItem(stack, player, pos);
+
+				BlockPos pos = result.getBlockPos();
+
+				if(getMode(stack) == BONE_MEAL_MODE) {
+					if(getBoneMealCount(stack) >= getBonemealCost() || player.capabilities.isCreativeMode) {
+						boneMealBlock(stack, player, world, pos, EnumFacing.UP);
+					}
+				} else if(getMode(stack) == PLANTABLE_MODE) {
+					if(getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) > 0 || player.capabilities.isCreativeMode) {
+						plantItem(stack, player, pos);
+					}
 				}
+				//clear the cached queue values
+				cache.reset();
+				PacketHandler.networkWrapper.sendTo(new PacketHarvestRodCacheSync(cache.getTimesUsed(), player.getActiveHand()), (EntityPlayerMP) player);
+
 			}
+		} else {
+			removeStackFromCurrent(stack, player);
 		}
 	}
 
-	private void plantItem(ItemStack stack, EntityPlayer player, BlockPos pos) {
-		plantItem(stack, player, pos, true);
+	private void removeStackFromCurrent(ItemStack stack, EntityPlayer player) {
+		if(getMode(stack).equals(BONE_MEAL_MODE)) {
+			ItemStack boneMealStack = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
+			int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), getBoneMealCount(stack));
+			int numberAdded = InventoryHelper.tryToAddToInventory(boneMealStack, player.inventory, 0, numberToAdd);
+			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded);
+		} else if(getMode(stack).equals(PLANTABLE_MODE)) {
+			byte idx = getCurrentPlantableIndex(stack);
+			ItemStack plantableStack = getPlantableItems(stack).get(idx);
+			int numberToAdd = Math.min(plantableStack.getMaxStackSize(), getPlantableQuantity(stack, idx));
+			int numberAdded = InventoryHelper.tryToAddToInventory(plantableStack, player.inventory, 0, numberToAdd);
+			setPlantableQuantity(stack, idx, getPlantableQuantity(stack, idx) - numberAdded);
+			if(getPlantableQuantity(stack, idx) <= 0) {
+				removePlantableFromInventory(stack, idx);
+				if(getPlantableItems(stack).size() > idx)
+					setCurrentPlantableIndex(stack, (byte) (idx - 1));
+				cycleMode(stack);
+			}
+
+		}
 	}
 
-	private void plantItem(ItemStack stack, EntityPlayer player, BlockPos pos, boolean updateCharge) {
+	private boolean plantItem(ItemStack stack, EntityPlayer player, BlockPos pos) {
+		return plantItem(stack, player, pos, true);
+	}
+
+	private boolean plantItem(ItemStack stack, EntityPlayer player, BlockPos pos, boolean updateCharge) {
 		byte idx = getCurrentPlantableIndex(stack);
 		ItemStack fakePlantableStack = getPlantableItems(stack).get(idx).copy();
 		fakePlantableStack.stackSize = 1;
 
 		if(fakePlantableStack.onItemUse(player, player.worldObj, pos, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0) == EnumActionResult.SUCCESS) {
-			player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_experience_orb_touch, SoundCategory.NEUTRAL, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+			player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_experience_orb_pickup, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
 
 			if(updateCharge && !player.capabilities.isCreativeMode) {
 				setPlantableQuantity(stack, idx, getPlantableQuantity(stack, idx) - 1);
 			}
+
+			return true;
 		}
+
+		return false;
 	}
 
 	@Override
@@ -326,63 +382,116 @@ public class ItemHarvestRod extends ItemToggleable {
 		EntityPlayer player = (EntityPlayer) entity;
 
 		if(isCoolDownOver(stack, count)) {
-			switch(getMode(stack)) {
-				case BONE_MEAL_MODE:
-					if(getBoneMealCount(stack) >= (getBonemealCost() * getTimesItemUsed(stack, count)) || player.capabilities.isCreativeMode) {
-						RayTraceResult result = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
-						if(result != null) {
-							World world = player.worldObj;
+			RayTraceResult result = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+			if(result != null) {
+				World world = player.worldObj;
+				IHarvestRodCache cache = stack.getCapability(ModCapabilities.HARVEST_ROD_CACHE, null);
 
-							BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, result.getBlockPos(), Settings.HarvestRod.harvestBreakRadius);
+				if(cache != null) {
+					switch(getMode(stack)) {
+						case BONE_MEAL_MODE:
+							if(getBoneMealCount(stack) >= (getBonemealCost() * cache.getTimesUsed() + 1) || player.capabilities.isCreativeMode) {
+								BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius);
 
-							if(blockToBoneMeal != null)
-								boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP, false);
+								if(blockToBoneMeal != null) {
+									if(boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP, false)) {
+										cache.incrementTimesUsed();
+										PacketHandler.networkWrapper.sendTo(new PacketHarvestRodCacheSync(cache.getTimesUsed(), player.getActiveHand()), (EntityPlayerMP) player);
+									}
+									return;
+								}
+							}
+							break;
+						case PLANTABLE_MODE:
+							if(getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) >= cache.getTimesUsed() + 1 || player.capabilities.isCreativeMode) {
+								BlockPos blockToPlantOn = getNextBlockToPlantOn(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius, (IPlantable) getPlantableItems(stack).get(getCurrentPlantableIndex(stack)).getItem());
 
-							return;
-						}
+								if(blockToPlantOn != null) {
+									if(plantItem(stack, player, blockToPlantOn, false)) {
+										cache.incrementTimesUsed();
+										PacketHandler.networkWrapper.sendTo(new PacketHarvestRodCacheSync(cache.getTimesUsed(), player.getActiveHand()), (EntityPlayerMP) player);
+									}
+									return;
+								}
+							}
+							break;
+						case HOE_MODE:
+							ItemStack fakeHoe = new ItemStack(Items.wooden_hoe);
+							BlockPos blockToHoe = getNextBlockToHoe(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius);
+							if(blockToHoe != null) {
+								if(Items.wooden_hoe.onItemUse(fakeHoe, player, world, blockToHoe, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0) == EnumActionResult.SUCCESS)
+									((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketSoundEffect(SoundEvents.item_hoe_till,  SoundCategory.BLOCKS, blockToHoe.getX(), blockToHoe.getY(), blockToHoe.getZ(), 1.0F, 1.0F));
+								return;
+							}
+						default:
+							break;
 					}
-					break;
-				case PLANTABLE_MODE:
-					if(getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) >= getTimesItemUsed(stack, count) || player.capabilities.isCreativeMode) {
-						RayTraceResult result = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
-						if(result != null) {
-							World world = player.worldObj;
-
-							BlockPos blockToPlantOn = getNextBlockToPlantOn(world, result.getBlockPos(), Settings.HarvestRod.harvestBreakRadius, (IPlantable) getPlantableItems(stack).get(getCurrentPlantableIndex(stack)).getItem());
-
-							if(blockToPlantOn != null)
-								plantItem(stack, player, blockToPlantOn, false);
-
-							return;
-						}
-					}
-					break;
-				default:
-					break;
+				}
 			}
-			player.stopActiveHand();
 		}
 	}
 
-	private BlockPos getNextBlockToPlantOn(World world, BlockPos pos, int range, IPlantable plantable) {
+	private BlockPos getNextBlockToHoe(World world, IHarvestRodCache cache, BlockPos pos, int range) {
+		if(cache.isQueueEmpty() || !pos.equals(cache.getStartBlockPos()))
+			fillQueueToHoe(world, cache, pos, range);
+
+		return cache.getNextBlockInQueue();
+	}
+
+	private void fillQueueToHoe(World world, IHarvestRodCache cache, BlockPos pos, int range) {
+		cache.setStartBlockPos(pos);
+		cache.clearBlockQueue();
 		for(int x = pos.getX() - range; x <= pos.getX() + range; x++) {
 			for(int y = pos.getY() - range; y <= pos.getY() + range; y++) {
 				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
 					BlockPos currentPos = new BlockPos(x, y, z);
 					IBlockState blockState = world.getBlockState(currentPos);
-					if(blockState.getBlock().canSustainPlant(blockState, world, pos, EnumFacing.UP, plantable) && world.isAirBlock(currentPos.up())) {
-						return currentPos;
+					Block block = blockState.getBlock();
+
+					if(world.isAirBlock(currentPos.up())) {
+						if(block == Blocks.grass || (block == Blocks.dirt && (blockState.getValue(BlockDirt.VARIANT) == BlockDirt.DirtType.DIRT || blockState.getValue(BlockDirt.VARIANT) == BlockDirt.DirtType.COARSE_DIRT))) {
+							cache.addBlockToQueue(currentPos);
+						}
 					}
 				}
 			}
 		}
-		return null;
+
 	}
 
-	public int getTimesItemUsed(ItemStack stack, int count) {
-		if(getMaxItemUseDuration(stack) - count < AOE_START_COOLDOWN)
-			return 0;
-		return (getMaxItemUseDuration(stack) - (count + AOE_START_COOLDOWN)) / Settings.HarvestRod.bonemealAOECooldown;
+	private BlockPos getNextBlockToPlantOn(World world, IHarvestRodCache cache, BlockPos pos, int range, IPlantable plantable) {
+		if(cache.isQueueEmpty() || !pos.equals(cache.getStartBlockPos()))
+			fillQueueToPlant(world, cache, pos, range, plantable);
+
+		return cache.getNextBlockInQueue();
+	}
+
+	private void fillQueueToPlant(World world, IHarvestRodCache cache, BlockPos pos, int range, IPlantable plantable) {
+		cache.setStartBlockPos(pos);
+		cache.clearBlockQueue();
+
+		boolean checkerboard = false;
+		boolean bothOddOrEven = false;
+
+		if(plantable == Items.pumpkin_seeds || plantable == Items.melon_seeds) {
+			checkerboard = true;
+			boolean xEven = pos.getX() % 2 == 0;
+			boolean zEven = pos.getZ() % 2 == 0;
+			bothOddOrEven = xEven == zEven;
+		}
+
+		for(int x = pos.getX() - range; x <= pos.getX() + range; x++) {
+			for(int y = pos.getY() - range; y <= pos.getY() + range; y++) {
+				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
+					BlockPos currentPos = new BlockPos(x, y, z);
+					IBlockState blockState = world.getBlockState(currentPos);
+					if((!checkerboard || (bothOddOrEven == ((currentPos.getX() % 2 == 0) == (currentPos.getZ() % 2 == 0)))) &&
+							blockState.getBlock().canSustainPlant(blockState, world, pos, EnumFacing.UP, plantable) && world.isAirBlock(currentPos.up())) {
+						cache.addBlockToQueue(currentPos);
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -397,22 +506,30 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	private boolean isCoolDownOver(ItemStack stack, int count) {
-		return getMaxItemUseDuration(stack) - count >= AOE_START_COOLDOWN && (getMaxItemUseDuration(stack) - count) % Settings.HarvestRod.bonemealAOECooldown == 0;
+		return getMaxItemUseDuration(stack) - count >= AOE_START_COOLDOWN && (getMaxItemUseDuration(stack) - count) % Settings.HarvestRod.AOECooldown == 0;
 	}
 
-	private BlockPos getNextBlockToBoneMeal(World world, BlockPos pos, int range) {
+	private BlockPos getNextBlockToBoneMeal(World world, IHarvestRodCache cache, BlockPos pos, int range) {
+		if(cache.isQueueEmpty() || !pos.equals(cache.getStartBlockPos()))
+			fillQueueToBoneMeal(world, cache, pos, range);
+
+		return cache.getNextBlockInQueue();
+	}
+
+	private void fillQueueToBoneMeal(World world, IHarvestRodCache cache, BlockPos pos, int range) {
+		cache.setStartBlockPos(pos);
+		cache.clearBlockQueue();
 		for(int x = pos.getX() - range; x <= pos.getX() + range; x++) {
 			for(int y = pos.getY() - range; y <= pos.getY() + range; y++) {
 				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
 					BlockPos currentPos = new BlockPos(x, y, z);
 					IBlockState blockState = world.getBlockState(currentPos);
 					if(blockState.getBlock() instanceof IGrowable && ((IGrowable) blockState.getBlock()).canGrow(world, currentPos, blockState, world.isRemote)) {
-						return currentPos;
+						cache.addBlockToQueue(currentPos);
 					}
 				}
 			}
 		}
-		return null;
 	}
 
 	private void cycleMode(ItemStack stack) {
@@ -423,14 +540,19 @@ public class ItemHarvestRod extends ItemToggleable {
 				if(items.size() > 0) {
 					setMode(stack, PLANTABLE_MODE);
 					setCurrentPlantableIndex(stack, (byte) 0);
+				} else {
+					setMode(stack, HOE_MODE);
 				}
 				break;
 			case PLANTABLE_MODE:
 				if(items.size() > getCurrentPlantableIndex(stack) + 1) {
 					setCurrentPlantableIndex(stack, (byte) (getCurrentPlantableIndex(stack) + 1));
 				} else {
-					setMode(stack, BONE_MEAL_MODE);
+					setMode(stack, HOE_MODE);
 				}
+				break;
+			case HOE_MODE:
+				setMode(stack, BONE_MEAL_MODE);
 				break;
 			default:
 				break;
