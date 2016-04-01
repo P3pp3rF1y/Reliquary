@@ -186,7 +186,7 @@ public class InventoryHelper {
 				if(worldObj.isRemote)
 					return;
 				inventory.markDirty();
-				EntityItem itemEntity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
+				EntityItem itemEntity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, stack);
 				worldObj.spawnEntityInWorld(itemEntity);
 				break;
 			}
@@ -197,7 +197,6 @@ public class InventoryHelper {
 		if(inventory.getStackInSlot(0) != null)
 			return false;
 
-		//TODO make sure that adding items to pedestal works correctly
 		inventory.setInventorySlotContents(0, player.inventory.getCurrentItem().copy());
 
 		player.inventory.getCurrentItem().stackSize--;
