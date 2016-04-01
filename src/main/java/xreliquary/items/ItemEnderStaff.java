@@ -137,7 +137,7 @@ public class ItemEnderStaff extends ItemToggleable {
 			player.worldObj.spawnParticle(EnumParticleTypes.PORTAL, player.posX, player.posY, player.posZ, player.worldObj.rand.nextGaussian(), player.worldObj.rand.nextGaussian(), player.worldObj.rand.nextGaussian());
 		}
 		if(unadjustedCount == 1) {
-			doWraithNodeWarpCheck(ist, player.worldObj, player);
+			player.stopActiveHand();
 		}
 	}
 
@@ -149,6 +149,18 @@ public class ItemEnderStaff extends ItemToggleable {
 	@Override
 	public int getMaxItemUseDuration(ItemStack par1ItemStack) {
 		return this.getNodeWarpCastTime();
+	}
+
+	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft) {
+		if(!(entityLiving instanceof EntityPlayer))
+			return;
+
+		EntityPlayer player = (EntityPlayer) entityLiving;
+
+		if(timeLeft == 1) {
+			doWraithNodeWarpCheck(stack, player.worldObj, player);
+		}
 	}
 
 	@Override
@@ -171,7 +183,8 @@ public class ItemEnderStaff extends ItemToggleable {
 			} else {
 				player.setActiveHand(hand);
 			}
-		} return super.onItemRightClick(ist, world, player, hand);
+		}
+		return super.onItemRightClick(ist, world, player, hand);
 	}
 
 	private ItemStack doWraithNodeWarpCheck(ItemStack stack, World world, EntityPlayer player) {
