@@ -314,7 +314,6 @@ public class ItemHarvestRod extends ItemToggleable {
 				if(getMode(stack) == BONE_MEAL_MODE) {
 					if(getBoneMealCount(stack) >= getBonemealCost() || player.capabilities.isCreativeMode) {
 						boneMealBlock(stack, player, world, pos, EnumFacing.UP);
-						return;
 					}
 				} else if(getMode(stack) == PLANTABLE_MODE) {
 					if(getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) > 0 || player.capabilities.isCreativeMode) {
