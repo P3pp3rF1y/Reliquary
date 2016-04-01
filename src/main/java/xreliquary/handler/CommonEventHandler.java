@@ -2,8 +2,7 @@ package xreliquary.handler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.*;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.EntityBat;
@@ -25,6 +24,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -46,6 +46,23 @@ import java.util.UUID;
 public class CommonEventHandler {
 
 	private Map<UUID, Boolean> playersFlightStatus = new HashMap<>();
+
+	@SubscribeEvent
+	public void handleMercyCrossDamage(AttackEntityEvent event) {
+		if (event.getEntityPlayer().worldObj.isRemote || !(event.getTarget() instanceof EntityLivingBase))
+			return;
+
+		if (event.getEntityPlayer().getHeldItemMainhand() != null && event.getEntityPlayer().getHeldItemMainhand().getItem() != ModItems.mercyCross)
+			return;
+
+		EntityLivingBase target = (EntityLivingBase) event.getTarget();
+
+		ModItems.mercyCross.updateAttackDamageModifier(target, event.getEntityPlayer());
+	}
+
+	private boolean isUndead(EntityLivingBase e) {
+		return e.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
+	}
 
 	@SubscribeEvent
 	public void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
