@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.PersistentRegistryManager;
 import net.minecraftforge.oredict.RecipeSorter;
 import xreliquary.items.alkahestry.AlkahestryChargingRecipe;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
@@ -26,7 +27,7 @@ public class XRRecipes {
 		if(result.getItem() == null || result.getItem().getRegistryName() == null || Arrays.asList(params).contains(null))
 			return;
 
-		ResourceLocation rl = new ResourceLocation(result.getItem().getRegistryName());
+		ResourceLocation rl = result.getItem().getRegistryName();
 		if(Settings.disabledItemsBlocks.contains(rl.getResourcePath()))
 			return;
 
@@ -35,11 +36,11 @@ public class XRRecipes {
 				continue;
 
 			if(o instanceof Block) {
-				rl = new ResourceLocation(((Block) o).getRegistryName());
+				rl = ((Block) o).getRegistryName();
 			} else if(o instanceof Item && ((Item) o).getRegistryName() != null) {
-				rl = new ResourceLocation(((Item) o).getRegistryName());
+				rl = ((Item) o).getRegistryName();
 			} else if(o instanceof ItemStack) {
-				rl = new ResourceLocation(((ItemStack) o).getItem().getRegistryName());
+				rl = ((ItemStack) o).getItem().getRegistryName();
 			}
 			if(Settings.disabledItemsBlocks.contains(rl.getResourcePath()))
 				return;

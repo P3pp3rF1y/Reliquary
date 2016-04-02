@@ -21,7 +21,7 @@ public class AlkahestConfiguration {
 	private static final int TOME_COST_UBER_TIER = 64;
 
 	public static void loadAlkahestBaseItem() {
-		String registryName = ConfigurationHandler.getString("base_item", Names.item_and_block_settings + "." + Names.alkahestry_tome, Items.redstone.getRegistryName());
+		String registryName = ConfigurationHandler.getString("base_item", Names.item_and_block_settings + "." + Names.alkahestry_tome, Items.redstone.getRegistryName().toString());
 		int meta = ConfigurationHandler.getInt("base_item_meta", Names.item_and_block_settings + "." + Names.alkahestry_tome, 0, 0, 16);
 		String[] splitName = registryName.split(":");
 		ItemStack stack = StackHelper.getItemStackFromNameMeta(splitName[0], splitName[1], meta);
@@ -63,10 +63,10 @@ public class AlkahestConfiguration {
 	}
 
 	private static void addDefaultAlkahestChargingRecipes(ConfigCategory category) {
-		addConfigAlkahestChargingRecipe(category, Blocks.redstone_block.getRegistryName(), 9);
-		addConfigAlkahestChargingRecipe(category, Items.redstone.getRegistryName(), 1);
-		addConfigAlkahestChargingRecipe(category, Blocks.glowstone.getRegistryName(), 4);
-		addConfigAlkahestChargingRecipe(category, Items.glowstone_dust.getRegistryName(), 1);
+		addConfigAlkahestChargingRecipe(category, Blocks.redstone_block.getRegistryName().toString(), 9);
+		addConfigAlkahestChargingRecipe(category, Items.redstone.getRegistryName().toString(), 1);
+		addConfigAlkahestChargingRecipe(category, Blocks.glowstone.getRegistryName().toString(), 4);
+		addConfigAlkahestChargingRecipe(category, Items.glowstone_dust.getRegistryName().toString(), 1);
 	}
 
 	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item, Integer charge) {
@@ -120,29 +120,29 @@ public class AlkahestConfiguration {
 
 	private static void addDefaultAlkahestCraftingRecipes(ConfigCategory category) {
 
-		addConfigAlkahestCraftingRecipe(category, Blocks.dirt.getRegistryName(), 32, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.dirt.getRegistryName().toString(), 32, TOME_COST_LOW_TIER);
 
-		addConfigAlkahestCraftingRecipe(category, Blocks.cobblestone.getRegistryName(), 32, TOME_COST_LOW_TIER);
-		addConfigAlkahestCraftingRecipe(category, Blocks.sand.getRegistryName(), 32, TOME_COST_LOW_TIER);
-		addConfigAlkahestCraftingRecipe(category, Blocks.gravel.getRegistryName(), 16, TOME_COST_LOW_TIER);
-		addConfigAlkahestCraftingRecipe(category, Blocks.sandstone.getRegistryName(), 8, TOME_COST_LOW_TIER);
-		addConfigAlkahestCraftingRecipe(category, Blocks.clay.getRegistryName(), 2, TOME_COST_LOW_TIER);
-		addConfigAlkahestCraftingRecipe(category, Blocks.netherrack.getRegistryName(), 8, TOME_COST_LOW_TIER);
-		addConfigAlkahestCraftingRecipe(category, Items.coal.getRegistryName(), 1, 4, TOME_COST_LOW_TIER);
-		addConfigAlkahestCraftingRecipe(category, Items.dye.getRegistryName(), 4, 1, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.cobblestone.getRegistryName().toString(), 32, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.sand.getRegistryName().toString(), 32, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.gravel.getRegistryName().toString(), 16, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.sandstone.getRegistryName().toString(), 8, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.clay.getRegistryName().toString(), 2, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.netherrack.getRegistryName().toString(), 8, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.coal.getRegistryName().toString(), 1, 4, TOME_COST_LOW_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.dye.getRegistryName().toString(), 4, 1, TOME_COST_LOW_TIER);
 
-		addConfigAlkahestCraftingRecipe(category, Blocks.obsidian.getRegistryName(), 4, TOME_COST_MIDDLE_TIER);
-		addConfigAlkahestCraftingRecipe(category, Blocks.soul_sand.getRegistryName(), 8, TOME_COST_MIDDLE_TIER);
-		addConfigAlkahestCraftingRecipe(category, Blocks.nether_brick.getRegistryName(), 4, TOME_COST_MIDDLE_TIER);
-		addConfigAlkahestCraftingRecipe(category, Blocks.end_stone.getRegistryName(), 16, TOME_COST_MIDDLE_TIER);
-		addConfigAlkahestCraftingRecipe(category, Items.coal.getRegistryName(), 4, TOME_COST_MIDDLE_TIER);
-		addConfigAlkahestCraftingRecipe(category, Items.gunpowder.getRegistryName(), 2, TOME_COST_MIDDLE_TIER);
-		addConfigAlkahestCraftingRecipe(category, Items.flint.getRegistryName(), 8, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.obsidian.getRegistryName().toString(), 4, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.soul_sand.getRegistryName().toString(), 8, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.nether_brick.getRegistryName().toString(), 4, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Blocks.end_stone.getRegistryName().toString(), 16, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.coal.getRegistryName().toString(), 4, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.gunpowder.getRegistryName().toString(), 2, TOME_COST_MIDDLE_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.flint.getRegistryName().toString(), 8, TOME_COST_MIDDLE_TIER);
 
 		//high tier
-		addConfigAlkahestCraftingRecipe(category, Items.gold_ingot.getRegistryName(), 1, TOME_COST_HIGH_TIER);
-		addConfigAlkahestCraftingRecipe(category, Items.iron_ingot.getRegistryName(), 1, TOME_COST_HIGH_TIER);
-		addConfigAlkahestCraftingRecipe(category, Items.emerald.getRegistryName(), 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.gold_ingot.getRegistryName().toString(), 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.iron_ingot.getRegistryName().toString(), 1, TOME_COST_HIGH_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.emerald.getRegistryName().toString(), 1, TOME_COST_HIGH_TIER);
 
 		// I guess mods should start following the new naming convention.
 		// *shrugs*
@@ -156,10 +156,10 @@ public class AlkahestConfiguration {
 		addConfigAlkahestCraftingRecipe(category, oreDictionary("ingotCopper"), 1, TOME_COST_HIGH_TIER);
 		addConfigAlkahestCraftingRecipe(category, oreDictionary("ingotSteel"), 1, TOME_COST_HIGH_TIER);
 
-		addConfigAlkahestCraftingRecipe(category, Items.diamond.getRegistryName(), 1, TOME_COST_UBER_TIER);
+		addConfigAlkahestCraftingRecipe(category, Items.diamond.getRegistryName().toString(), 1, TOME_COST_UBER_TIER);
 
 		//above uber
-		addConfigAlkahestCraftingRecipe(category, Items.nether_star.getRegistryName(), 1, TOME_COST_UBER_TIER * 4);
+		addConfigAlkahestCraftingRecipe(category, Items.nether_star.getRegistryName().toString(), 1, TOME_COST_UBER_TIER * 4);
 	}
 
 	private static String oreDictionary(String name) {

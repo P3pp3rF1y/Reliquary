@@ -1,6 +1,7 @@
 package xreliquary.init;
 
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.Reliquary;
 import xreliquary.items.*;
@@ -115,7 +116,9 @@ public class ModItems {
 		if(Settings.disabledItemsBlocks.contains(name))
 			return;
 
-		GameRegistry.registerItem(item, Reference.DOMAIN + name);
+		item.setRegistryName(new ResourceLocation(Reference.MOD_ID, name));
+		GameRegistry.register(item);
+		
 		if(registerInJEI)
 			Reliquary.PROXY.registerJEI(item, name);
 	}
