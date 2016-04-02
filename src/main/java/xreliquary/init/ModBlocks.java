@@ -2,6 +2,7 @@ package xreliquary.init;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.Reliquary;
 import xreliquary.blocks.*;
@@ -27,14 +28,15 @@ public class ModBlocks {
 	public static final BlockPedestal pedestal = new BlockPedestal();
 
 	public static void init() {
-		registerBlock(apothecaryCauldron, ItemBlockBase.class, Names.apothecary_cauldron);
-		registerBlock(alkahestryAltar, ItemBlockBase.class, Names.altar_idle);
-		registerBlock(alkahestryAltarActive, ItemBlockBase.class, Names.altar);
-		registerBlock(apothecaryMortar, ItemBlockBase.class, Names.apothecary_mortar);
-		registerBlock(fertileLilypad, ItemFertileLilyPad.class, Names.fertile_lilypad);
-		registerBlock(interdictionTorch, ItemBlockBase.class, Names.interdiction_torch);
-		registerBlock(wraithNode, ItemBlockBase.class, Names.wraith_node);
-		registerBlock(pedestal, ItemBlockBase.class, Names.pedestal);
+		//TODO move itemblock definitions into blocks and just call getItemBlock in register method
+		registerBlock(apothecaryCauldron, new ItemBlockBase(apothecaryCauldron), Names.apothecary_cauldron);
+		registerBlock(alkahestryAltar, new ItemBlockBase(alkahestryAltar), Names.altar_idle);
+		registerBlock(alkahestryAltarActive, new ItemBlockBase(alkahestryAltarActive), Names.altar);
+		registerBlock(apothecaryMortar, new ItemBlockBase(apothecaryMortar), Names.apothecary_mortar);
+		registerBlock(fertileLilypad, new ItemFertileLilyPad(fertileLilypad), Names.fertile_lilypad);
+		registerBlock(interdictionTorch, new ItemBlockBase(interdictionTorch), Names.interdiction_torch);
+		registerBlock(wraithNode, new ItemBlockBase(wraithNode), Names.wraith_node);
+		registerBlock(pedestal, new ItemBlockBase(pedestal), Names.pedestal);
 	}
 
 	public static void initTileEntities() {
@@ -51,11 +53,14 @@ public class ModBlocks {
 		GameRegistry.registerTileEntity(clazz, Reference.MOD_ID + "." + name);
 	}
 
-	private static void registerBlock(Block block, Class<? extends ItemBlock> itemclass, String name) {
+	private static void registerBlock(Block block, ItemBlock itemBlock, String name) {
 		if(Settings.disabledItemsBlocks.contains(name))
 			return;
 
-		GameRegistry.registerBlock(block, itemclass, Reference.DOMAIN + name);
+		block.setRegistryName(new ResourceLocation(Reference.MOD_ID, name));
+		GameRegistry.register(block);
+		GameRegistry.register(itemBlock.setRegistryName(block.getRegistryName()));
+
 		Reliquary.PROXY.registerJEI(block, name);
 	}
 
