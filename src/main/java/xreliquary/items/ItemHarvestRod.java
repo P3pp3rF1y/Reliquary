@@ -394,7 +394,7 @@ public class ItemHarvestRod extends ItemToggleable {
 								BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius);
 
 								if(blockToBoneMeal != null) {
-									if(boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP, false)) {
+									if(boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP, false) && !player.capabilities.isCreativeMode) {
 										cache.incrementTimesUsed();
 										PacketHandler.networkWrapper.sendTo(new PacketHarvestRodCacheSync(cache.getTimesUsed(), player.getActiveHand()), (EntityPlayerMP) player);
 									}
@@ -407,7 +407,7 @@ public class ItemHarvestRod extends ItemToggleable {
 								BlockPos blockToPlantOn = getNextBlockToPlantOn(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius, (IPlantable) getPlantableItems(stack).get(getCurrentPlantableIndex(stack)).getItem());
 
 								if(blockToPlantOn != null) {
-									if(plantItem(stack, player, blockToPlantOn, false)) {
+									if(plantItem(stack, player, blockToPlantOn, false) && !player.capabilities.isCreativeMode) {
 										cache.incrementTimesUsed();
 										PacketHandler.networkWrapper.sendTo(new PacketHarvestRodCacheSync(cache.getTimesUsed(), player.getActiveHand()), (EntityPlayerMP) player);
 									}
