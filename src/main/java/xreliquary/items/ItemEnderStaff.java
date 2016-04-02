@@ -64,15 +64,6 @@ public class ItemEnderStaff extends ItemToggleable {
 		return Settings.EnderStaff.nodeWarpCastTime;
 	}
 
-	//TODO test out breaking blocks without this and if not working implement something 1.9 friendly
-/*    @Override
-	public float getDigSpeed(ItemStack ist, IBlockState blockState) {
-        //temporarily sets the item damage to 1, this prevents it from being rapid fired due to swing animations during an attempt to break blocks, hopefully.
-        if (ist.getItemDamage() == 0)
-            ist.setItemDamage(1);
-        return 0F;
-    }*/
-
 	public String getMode(ItemStack ist) {
 		if(NBTHelper.getString("mode", ist).equals("")) {
 			setMode(ist, "cast");
