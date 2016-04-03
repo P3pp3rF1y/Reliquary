@@ -187,11 +187,11 @@ public class ItemHarvestRod extends ItemToggleable {
 		boolean brokenBlock = false;
 
 		Block block = player.worldObj.getBlockState(pos).getBlock();
-		if(block instanceof IPlantable || block instanceof IGrowable) {
+		if(block instanceof IPlantable || block instanceof BlockCrops || block == Blocks.melon_block || block == Blocks.pumpkin) {
 			for(int xOff = -getBreakRadius(); xOff <= getBreakRadius(); xOff++) {
 				for(int yOff = -getBreakRadius(); yOff <= getBreakRadius(); yOff++) {
 					for(int zOff = -getBreakRadius(); zOff <= getBreakRadius(); zOff++) {
-						doHarvestBlockBreak(ist, pos, player, xOff, yOff, zOff);
+						doHarvestBlockBreak(block, ist, pos, player, xOff, yOff, zOff);
 						brokenBlock = true;
 					}
 				}
@@ -201,23 +201,27 @@ public class ItemHarvestRod extends ItemToggleable {
 		return brokenBlock;
 	}
 
-	public void doHarvestBlockBreak(ItemStack ist, BlockPos pos, EntityPlayer player, int xOff, int yOff, int zOff) {
+	public boolean doHarvestBlockBreak(Block initialBlock, ItemStack ist, BlockPos pos, EntityPlayer player, int xOff, int yOff, int zOff) {
 		pos = pos.add(xOff, yOff, zOff);
 
 		IBlockState blockState = player.worldObj.getBlockState(pos);
+		Block block = blockState.getBlock();
 
-		if(!(blockState.getBlock() instanceof IPlantable) && !(blockState.getBlock() instanceof BlockCrops))
-			return;
-		if(blockState.getBlock() instanceof BlockFertileLilypad)
-			return;
+		if ((initialBlock == Blocks.melon_block || initialBlock == Blocks.pumpkin) && !(block == Blocks.melon_block || block == Blocks.pumpkin))
+			return false;
 
-		List<ItemStack> drops = blockState.getBlock().getDrops(player.worldObj, pos, blockState, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, ist));
-		Random rand = new Random();
+		if(!(block instanceof IPlantable || block instanceof BlockCrops || block == Blocks.melon_block || block == Blocks.pumpkin))
+			return false;
+		if(block instanceof BlockFertileLilypad)
+			return false;
 
 		if(player.worldObj.isRemote) {
 			for(int particles = 0; particles <= 8; particles++)
 				player.worldObj.playAuxSFXAtEntity(player, 2001, pos, Block.getStateId(blockState));
 		} else {
+			List<ItemStack> drops = block.getDrops(player.worldObj, pos, blockState, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, ist));
+			Random rand = new Random();
+
 			for(ItemStack stack : drops) {
 				float f = 0.7F;
 				double d = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
@@ -229,9 +233,11 @@ public class ItemHarvestRod extends ItemToggleable {
 			}
 
 			player.worldObj.setBlockState(pos, Blocks.air.getDefaultState());
-			player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(blockState.getBlock())], 1);
+			player.addStat(StatList.mineBlockStatArray[Block.getIdFromBlock(block)], 1);
 			player.addExhaustion(0.01F);
 		}
+
+		return true;
 	}
 
 	private void boneMealBlock(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
