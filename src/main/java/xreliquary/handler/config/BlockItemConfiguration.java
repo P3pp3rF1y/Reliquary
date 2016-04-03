@@ -121,6 +121,8 @@ public class BlockItemConfiguration {
 		Settings.HarvestRod.AOERadius = ConfigurationHandler.getInt("aoe_radius", Names.item_and_block_settings + "." + Names.harvest_rod, 2, 0, 5);
 		Settings.HarvestRod.AOECooldown = ConfigurationHandler.getInt("aoe_cooldown", Names.item_and_block_settings + "." + Names.harvest_rod, 3, 1, 20);
 		Settings.HarvestRod.maxCapacityPerPlantable = ConfigurationHandler.getInt("max_capacity_per_plantable", Names.item_and_block_settings + "." + Names.harvest_rod, 250, 0, itemCap);
+		Settings.HarvestRod.pedestalRange = ConfigurationHandler.getInt("pedestal_range", Names.item_and_block_settings + "." + Names.harvest_rod, 4, 1, 20);
+		Settings.HarvestRod.pedestalCooldown = (byte) ConfigurationHandler.getInt("pedestal_cooldown", Names.item_and_block_settings + "." + Names.harvest_rod, 5, 1, 20);
 
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.harvest_rod, true);
 

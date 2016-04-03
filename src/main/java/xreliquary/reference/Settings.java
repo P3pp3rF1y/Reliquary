@@ -168,6 +168,8 @@ public class Settings {
 		public static int AOERadius;
 		public static int AOECooldown;
 		public static int maxCapacityPerPlantable;
+		public static int pedestalRange;
+		public static byte pedestalCooldown;
 	}
 
 	public static class HeroMedallion {
