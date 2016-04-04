@@ -207,7 +207,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		IBlockState blockState = player.worldObj.getBlockState(pos);
 		Block block = blockState.getBlock();
 
-		if ((initialBlock == Blocks.melon_block || initialBlock == Blocks.pumpkin) && !(block == Blocks.melon_block || block == Blocks.pumpkin))
+		if((initialBlock == Blocks.melon_block || initialBlock == Blocks.pumpkin) && !(block == Blocks.melon_block || block == Blocks.pumpkin))
 			return false;
 
 		if(!(block instanceof IPlantable || block instanceof BlockCrops || block == Blocks.melon_block || block == Blocks.pumpkin))
@@ -269,7 +269,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		return NBTHelper.getInteger("bonemeal", ist);
 	}
 
-	private void setBoneMealCount(ItemStack ist, int boneMealCount) {
+	public void setBoneMealCount(ItemStack ist, int boneMealCount) {
 		NBTHelper.setInteger("bonemeal", ist, boneMealCount);
 	}
 
@@ -311,6 +311,7 @@ public class ItemHarvestRod extends ItemToggleable {
 					setBoneMealCount(stack, getBoneMealCount(stack) - props.getTimesUsed());
 				else if(getMode(stack).equals(PLANTABLE_MODE)) {
 					setPlantableQuantity(stack, getCurrentPlantableIndex(stack), getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) - props.getTimesUsed());
+					removeEmptyPlantable(stack, getCurrentPlantableIndex(stack));
 				}
 			}
 
@@ -344,13 +345,16 @@ public class ItemHarvestRod extends ItemToggleable {
 			int numberToAdd = Math.min(plantableStack.getMaxStackSize(), getPlantableQuantity(stack, idx));
 			int numberAdded = InventoryHelper.tryToAddToInventory(plantableStack, player.inventory, 0, numberToAdd);
 			setPlantableQuantity(stack, idx, getPlantableQuantity(stack, idx) - numberAdded);
-			if(getPlantableQuantity(stack, idx) <= 0) {
-				removePlantableFromInventory(stack, idx);
-				if(getPlantableItems(stack).size() > idx)
-					setCurrentPlantableIndex(stack, (byte) (idx - 1));
-				cycleMode(stack);
-			}
+			removeEmptyPlantable(stack, idx);
+		}
+	}
 
+	public void removeEmptyPlantable(ItemStack stack, byte idx) {
+		if(getPlantableQuantity(stack, idx) <= 0) {
+			removePlantableFromInventory(stack, idx);
+			if(getPlantableItems(stack).size() > idx)
+				setCurrentPlantableIndex(stack, (byte) (idx - 1));
+			cycleMode(stack);
 		}
 	}
 
@@ -368,6 +372,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
 			if(updateCharge && !player.capabilities.isCreativeMode) {
 				setPlantableQuantity(stack, idx, getPlantableQuantity(stack, idx) - 1);
+				removeEmptyPlantable(stack, idx);
 			}
 
 			return true;
@@ -596,7 +601,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		return ((NBTTagInt) plantableQuantities.get(itemIndex)).getInt();
 	}
 
-	private void setPlantableQuantity(ItemStack stack, byte itemIndex, int quantity) {
+	public void setPlantableQuantity(ItemStack stack, byte itemIndex, int quantity) {
 		NBTTagList plantableQuantities = stack.getTagCompound().getTagList(PLANTABLE_QUANTITIES_NBT_TAG, 3);
 
 		byte currentSize = (byte) plantableQuantities.tagCount();

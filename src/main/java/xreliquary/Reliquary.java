@@ -22,6 +22,7 @@ import xreliquary.compat.ICompat;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.handler.config.PotionConfiguration;
 import xreliquary.init.*;
+import xreliquary.items.ItemHarvestRod;
 import xreliquary.items.ItemRendingGale;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Compatibility;
@@ -96,10 +97,12 @@ public class Reliquary {
 
 		ModFluids.postInit();
 
+		//TODO: move this to a separate init class
 		PedestalRegistry.registerItemWrapper(ItemSword.class, PedestalMeleeWeaponWrapper.class);
 		PedestalRegistry.registerItemWrapper(ItemBucket.class, PedestalBucketWrapper.class);
 		PedestalRegistry.registerItemWrapper(ItemShears.class, PedestalShearsWrapper.class);
 		PedestalRegistry.registerItemWrapper(ItemRendingGale.class, PedestalRendingGaleWrapper.class);
+		PedestalRegistry.registerItemWrapper(ItemHarvestRod.class, PedestalHarvestRodWrapper.class);
 		if(Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
 			PedestalRegistry.registerItemWrapper(Cleaver.class, PedestalMeleeWeaponWrapper.Slow.class);
 			PedestalRegistry.registerItemWrapper(BroadSword.class, PedestalMeleeWeaponWrapper.class);
