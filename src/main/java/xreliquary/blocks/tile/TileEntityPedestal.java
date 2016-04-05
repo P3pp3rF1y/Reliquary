@@ -32,6 +32,10 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	private List<ItemStack> fluidContainers = new ArrayList<>();
 	private FakePlayer fakePlayer = null;
 
+	public TileEntityPedestal() {
+		super(1);
+	}
+
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
@@ -69,8 +73,20 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		tag.setTag("Items", items);
 	}
 
-	public TileEntityPedestal() {
-		super(1);
+	@Override
+	public void onChunkUnload() {
+		super.onChunkUnload();
+
+		if (!this.worldObj.isRemote)
+			PedestalRegistry.unregisterPosition(this.pos);
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+
+		if (!this.worldObj.isRemote)
+			PedestalRegistry.registerPosition(this.pos);
 	}
 
 	@Override

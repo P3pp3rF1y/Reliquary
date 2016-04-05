@@ -290,10 +290,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
 					BlockPos currentPos = new BlockPos(x, y, z);
 					IBlockState blockState = world.getBlockState(currentPos);
-					if(blockState.getBlock() instanceof IGrowable && ((IGrowable) blockState.getBlock()).canGrow(world, currentPos, blockState, world.isRemote)) {
-						if (blockState.getBlock() == Blocks.grass && world.getBlockState(currentPos.up()).getBlock() != Blocks.air)
-							continue;
-
+					if(blockState.getBlock() != Blocks.grass && blockState.getBlock() instanceof IGrowable && ((IGrowable) blockState.getBlock()).canGrow(world, currentPos, blockState, world.isRemote)) {
 						queueToBoneMeal.add(currentPos);
 					}
 				}
