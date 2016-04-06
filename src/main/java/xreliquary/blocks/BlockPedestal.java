@@ -14,6 +14,7 @@ import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
+import xreliquary.util.pedestal.PedestalRegistry;
 
 public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 	public BlockPedestal() {
@@ -61,6 +62,8 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 		if (pedestal != null) {
 			net.minecraft.inventory.InventoryHelper.dropInventoryItems(world, pos, pedestal);
 		}
+
+		PedestalRegistry.unregisterPosition(world.provider.getDimensionId(), pos);
 
 		super.breakBlock(world, pos, state);
 	}

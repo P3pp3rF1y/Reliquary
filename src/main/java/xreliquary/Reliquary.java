@@ -9,12 +9,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import slimeknights.tconstruct.tools.item.BroadSword;
 import slimeknights.tconstruct.tools.item.Cleaver;
 import xreliquary.common.CommonProxy;
@@ -135,5 +133,10 @@ public class Reliquary {
 	@EventHandler
 	public void serverLoad(FMLServerStartingEvent event) {
 		//event.registerServerCommand(new CommandGenLootChest());
+	}
+
+	@EventHandler
+	public void serverStopping(FMLServerStoppingEvent event) {
+		PedestalRegistry.clearPositions();
 	}
 }

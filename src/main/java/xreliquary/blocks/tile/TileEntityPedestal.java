@@ -75,18 +75,18 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 
 	@Override
 	public void onChunkUnload() {
-		super.onChunkUnload();
-
 		if (!this.worldObj.isRemote)
-			PedestalRegistry.unregisterPosition(this.pos);
+			PedestalRegistry.unregisterPosition(this.worldObj.provider.getDimensionId(), this.pos);
+
+		super.onChunkUnload();
 	}
 
 	@Override
 	public void onLoad() {
-		super.onLoad();
-
 		if (!this.worldObj.isRemote)
-			PedestalRegistry.registerPosition(this.pos);
+			PedestalRegistry.registerPosition(this.worldObj.provider.getDimensionId(), this.pos);
+
+		super.onLoad();
 	}
 
 	@Override
