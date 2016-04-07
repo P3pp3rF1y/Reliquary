@@ -13,9 +13,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.*;
-import xreliquary.api.IPedestal;
-import xreliquary.api.IPedestalActionItem;
-import xreliquary.api.IPedestalActionItemWrapper;
+import xreliquary.api.*;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.XRFakePlayerFactory;
 import xreliquary.util.pedestal.PedestalRegistry;
@@ -25,12 +23,20 @@ import java.util.*;
 public class TileEntityPedestal extends TileEntityInventory implements IPedestal, IFluidHandler {
 
 	private boolean tickable = false;
-	private int[] actionCooldowns;
+	private int[] actionCooldowns = new int[0];
 	private int currentItemIndex;
 	private Map<Integer, IPedestalActionItem> actionItems = new HashMap<>();
 	private Map<Integer, IPedestalActionItemWrapper> itemWrappers = new HashMap<>();
+	private Map<Integer, IPedestalRedstoneItem> redstoneItems = new HashMap<>();
 	private List<ItemStack> fluidContainers = new ArrayList<>();
 	private FakePlayer fakePlayer = null;
+	private boolean switchedOn = false;
+	private List<Long> onSwitches = new ArrayList<>();
+	private boolean initRedstone = false;
+
+	public TileEntityPedestal() {
+		super(1);
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
@@ -69,14 +75,30 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		tag.setTag("Items", items);
 	}
 
-	public TileEntityPedestal() {
-		super(1);
+	@Override
+	public void onChunkUnload() {
+		if(!this.worldObj.isRemote)
+			PedestalRegistry.unregisterPosition(this.worldObj.provider.getDimension(), this.pos);
+
+		super.onChunkUnload();
+	}
+
+	@Override
+	public void onLoad() {
+		if(!this.worldObj.isRemote)
+			PedestalRegistry.registerPosition(this.worldObj.provider.getDimension(), this.pos);
+
+		super.onLoad();
 	}
 
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) {
+		if (stack == null && redstoneItems.containsKey(slot)) {
+			redstoneItems.get(slot).onRemoved(inventory[slot], this);
+		}
 		super.setInventorySlotContents(slot, stack);
 		updateSpecialItems();
+		updateRedstone();
 		IBlockState blockState = worldObj.getBlockState(getPos());
 		worldObj.notifyBlockUpdate(getPos(), blockState, blockState, 3);
 	}
@@ -86,6 +108,7 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		fluidContainers.clear();
 		itemWrappers.clear();
 		actionItems.clear();
+		redstoneItems.clear();
 
 		for(int i = 0; i < inventory.length; i++) {
 			ItemStack item = inventory[i];
@@ -95,11 +118,18 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 			if(item.getItem() instanceof IPedestalActionItem) {
 				tickable = true;
 				actionItems.put(i, (IPedestalActionItem) item.getItem());
+			} else if(item.getItem() instanceof IPedestalRedstoneItem) {
+				redstoneItems.put(i, (IPedestalRedstoneItem) item.getItem());
 			} else {
-				IPedestalActionItemWrapper wrapper = PedestalRegistry.getItemWrapper(item);
+				IPedestalItemWrapper wrapper = PedestalRegistry.getItemWrapper(item);
 				if(wrapper != null) {
-					tickable = true;
-					itemWrappers.put(i, wrapper);
+					if(wrapper instanceof IPedestalActionItemWrapper) {
+						tickable = true;
+						itemWrappers.put(i, (IPedestalActionItemWrapper) wrapper);
+					}
+					if(wrapper instanceof IPedestalRedstoneItemWrapper) {
+						redstoneItems.put(i, (IPedestalRedstoneItem) wrapper);
+					}
 				}
 			}
 
@@ -145,19 +175,35 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 
 	@Override
 	public void update() {
-		if(isPowered() && tickable && !worldObj.isRemote) {
+		if(worldObj.isRemote)
+			return;
+
+		if(!initRedstone) {
+			initRedstone = true;
+			updateRedstone();
+		}
+
+		if((isPowered() || switchedOn) && tickable) {
 			for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
 				if(actionCooldowns[currentItemIndex] > 0) {
 					actionCooldowns[currentItemIndex]--;
 				} else {
 					ItemStack item = inventory[currentItemIndex];
-
+					//TODO refactor to just one actionItems list
 					if(actionItems.containsKey(currentItemIndex)) {
 						actionItems.get(currentItemIndex).update(item, this);
 					} else if(itemWrappers.containsKey(currentItemIndex)) {
 						itemWrappers.get(currentItemIndex).update(inventory[currentItemIndex], this);
 					}
 				}
+			}
+		}
+	}
+
+	public void updateRedstone() {
+		for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
+			if(redstoneItems.containsKey(currentItemIndex)) {
+				redstoneItems.get(currentItemIndex).updateRedstone(inventory[currentItemIndex], this);
 			}
 		}
 	}
@@ -231,7 +277,9 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 
 	@Override
 	public void setActionCoolDown(int coolDownTicks) {
-		actionCooldowns[currentItemIndex] = coolDownTicks;
+		//prevent derpy items from updating cooldown after the item gets destroyed by its use
+		if (currentItemIndex < actionCooldowns.length)
+			actionCooldowns[currentItemIndex] = coolDownTicks;
 	}
 
 	@Override
@@ -252,6 +300,27 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	@Override
 	public void replaceCurrentItem(ItemStack stack) {
 		this.setInventorySlotContents(currentItemIndex, stack);
+	}
+
+	@Override
+	public List<BlockPos> getPedestalsInRange(int range) {
+		return PedestalRegistry.getPositionsInRange(this.worldObj.provider.getDimension(), this.pos, range);
+	}
+
+	@Override
+	public void switchOn(BlockPos switchedOnFrom) {
+		if (!onSwitches.contains(switchedOnFrom.toLong()))
+			onSwitches.add(switchedOnFrom.toLong());
+
+		this.switchedOn = true;
+	}
+
+	@Override
+	public void switchOff(BlockPos switchedOffFrom) {
+		onSwitches.remove(switchedOffFrom.toLong());
+
+		if (onSwitches.size() == 0)
+			this.switchedOn = false;
 	}
 
 	public List<IInventory> getAdjacentInventories() {
@@ -410,5 +479,11 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 
 	private boolean isPowered() {
 		return worldObj.isBlockPowered(pos);
+	}
+
+	public void removeRedstoneItems() {
+		for (Map.Entry<Integer, IPedestalRedstoneItem> item : redstoneItems.entrySet()) {
+			item.getValue().onRemoved(inventory[item.getKey()], this);
+		}
 	}
 }

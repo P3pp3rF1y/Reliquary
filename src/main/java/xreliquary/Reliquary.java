@@ -1,5 +1,6 @@
 package xreliquary;
 
+import net.minecraft.block.BlockCompressedPowered;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,19 +10,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import slimeknights.tconstruct.tools.item.BroadSword;
-import slimeknights.tconstruct.tools.item.Cleaver;
 import xreliquary.common.CommonProxy;
 import xreliquary.compat.ICompat;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.handler.config.PotionConfiguration;
 import xreliquary.init.*;
+import xreliquary.items.ItemHarvestRod;
 import xreliquary.items.ItemRendingGale;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Compatibility;
@@ -94,13 +91,17 @@ public class Reliquary {
 
 		ModFluids.postInit();
 
+		//TODO: move this to a separate init class
 		PedestalRegistry.registerItemWrapper(ItemSword.class, PedestalMeleeWeaponWrapper.class);
 		PedestalRegistry.registerItemWrapper(ItemBucket.class, PedestalBucketWrapper.class);
 		PedestalRegistry.registerItemWrapper(ItemShears.class, PedestalShearsWrapper.class);
 		PedestalRegistry.registerItemWrapper(ItemRendingGale.class, PedestalRendingGaleWrapper.class);
+		PedestalRegistry.registerItemWrapper(ItemHarvestRod.class, PedestalHarvestRodWrapper.class);
+		PedestalRegistry.registerItemWrapper(ItemRedstone.class, PedestalRedstoneWrapper.Toggleable.class);
+		PedestalRegistry.registerItemBlockWrapper(BlockCompressedPowered.class, PedestalRedstoneWrapper.AlwaysOn.class);
 		if(Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
-			PedestalRegistry.registerItemWrapper(Cleaver.class, PedestalMeleeWeaponWrapper.class);
-			PedestalRegistry.registerItemWrapper(BroadSword.class, PedestalMeleeWeaponWrapper.class);
+			//PedestalRegistry.registerItemWrapper(Cleaver.class, PedestalMeleeWeaponWrapper.class);
+			//PedestalRegistry.registerItemWrapper(BroadSword.class, PedestalMeleeWeaponWrapper.class);
 			//not implemented currently in TiCon
 			//PedestalRegistry.registerItemWrapper(BattleAxe.class, new PedestalMeleeWeaponWrapper());
 			//PedestalRegistry.registerItemWrapper(Scythe.class, new PedestalMeleeWeaponWrapper());
@@ -130,5 +131,10 @@ public class Reliquary {
 	@EventHandler
 	public void serverLoad(FMLServerStartingEvent event) {
 		//event.registerServerCommand(new CommandGenLootChest());
+	}
+
+	@EventHandler
+	public void serverStopping(FMLServerStoppingEvent event) {
+		PedestalRegistry.clearPositions();
 	}
 }

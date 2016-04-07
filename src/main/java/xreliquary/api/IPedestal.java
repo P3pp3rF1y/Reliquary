@@ -6,6 +6,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.List;
+
 public interface IPedestal {
 	World getTheWorld();
 
@@ -24,4 +26,7 @@ public interface IPedestal {
 	void destroyCurrentItem();
 
 	void replaceCurrentItem(ItemStack stack);
+	List<BlockPos> getPedestalsInRange(int range);
+	void switchOn(BlockPos switchedOnFrom);
+	void switchOff(BlockPos switchedOffFrom);
 }

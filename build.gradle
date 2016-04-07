@@ -57,13 +57,13 @@ targetCompatibility = 1.8
 
 dependencies {
     deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
-    deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
+    //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights.TConstruct:TConstruct:${tconstruct_version}"
-    //compile "mcp.mobius.waila:Waila:${waila_version}:dev"
+    compile "mcp.mobius.waila:Waila:${waila_version}:dev"
     compile name:'JustEnoughResources', version: jer_version, ext: 'jar'
     compile name:'Baubles', version: baubles_version, ext: 'jar'
     //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
-    compile name:'TConstruct', version: tconstruct_version, ext: 'jar'
+    //compile name:'TConstruct', version: tconstruct_version, ext: 'jar'
 }
 
 minecraft {
@@ -102,7 +102,7 @@ def getBuildNumber() {
 }
 
 def getStable() {
-    if (System.getenv("DRONE_BRANCH") != "master" && System.getenv("DRONE_BRANCH") != "1.9") {
+    if (System.getenv("DRONE_BRANCH") != "1.8.9" && System.getenv("DRONE_BRANCH") != "1.9") {
         return "unstable"
     }
     return ""

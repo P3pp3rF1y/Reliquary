@@ -1,10 +1,10 @@
 package xreliquary.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -17,6 +17,7 @@ import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
+import xreliquary.util.pedestal.PedestalRegistry;
 
 public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 	private static final AxisAlignedBB PEDESTAL_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.6875D, 0.875D);
@@ -35,6 +36,13 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
+	}
+
+	@Override
+	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+		super.onNeighborBlockChange(worldIn, pos, state, neighborBlock);
+
+		((TileEntityPedestal) worldIn.getTileEntity(pos)).updateRedstone();
 	}
 
 	@Override
@@ -68,6 +76,10 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 		if(pedestal != null) {
 			net.minecraft.inventory.InventoryHelper.dropInventoryItems(world, pos, pedestal);
 		}
+
+		PedestalRegistry.unregisterPosition(world.provider.getDimension(), pos);
+
+		pedestal.removeRedstoneItems();
 
 		super.breakBlock(world, pos, state);
 	}
