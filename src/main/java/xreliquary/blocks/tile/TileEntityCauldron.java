@@ -30,6 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.client.particle.EntityCauldronBubbleFX;
 import xreliquary.client.particle.EntityCauldronSteamFX;
+import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemPotionEssence;
@@ -42,7 +43,7 @@ import java.util.List;
 
 //import thaumcraft.api.blocks.BlocksTC;
 
-public class TileEntityCauldron extends TileEntityBase /*implements IWailaDataChangeIndicator TODO add back with Waila*/ {
+public class TileEntityCauldron extends TileEntityBase implements IWailaDataChangeIndicator {
 
 	public int redstoneCount = 0;
 	public PotionEssence potionEssence = null;
@@ -395,14 +396,12 @@ public class TileEntityCauldron extends TileEntityBase /*implements IWailaDataCh
 		}
 	}
 
-/* TODO add back with Waila integration
-
 	@Override
 	public boolean getDataChanged() {
 		boolean ret = this.dataChanged;
 		this.dataChanged = false;
 		return ret;
-	}*/
+	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {

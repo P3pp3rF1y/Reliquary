@@ -17,9 +17,11 @@ public class ModBlockColors {
 		blockColors.registerBlockColorHandler(new IBlockColor() {
 			@Override
 			public int colorMultiplier(IBlockState state, IBlockAccess world, BlockPos pos, int tintIndex) {
-				TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
-				if(cauldron != null) {
-					return cauldron.getColorMultiplier();
+				if (pos != null) {
+					TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
+					if(cauldron != null) {
+						return cauldron.getColorMultiplier();
+					}
 				}
 
 				return -1;

@@ -1,4 +1,3 @@
-/*
 package xreliquary.compat.waila.provider;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -10,8 +9,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.blocks.tile.TileEntityCauldron;
@@ -45,7 +44,7 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
             return currenttip;
 
         if (!cauldron.hasNetherwart)
-            currenttip.add(ChatFormatting.RED + StatCollector.translateToLocal("waila.xreliquary.cauldron.missing_netherwart") + ChatFormatting.RESET);
+            currenttip.add(ChatFormatting.RED + I18n.translateToLocal("waila.xreliquary.cauldron.missing_netherwart") + ChatFormatting.RESET);
 
         StringBuilder ingredients = new StringBuilder();
         if (cauldron.redstoneCount > 0){
@@ -64,9 +63,9 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
         currenttip.add(ingredients.toString());
 
         if (cauldron.hasGunpowder) {
-            currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + StatCollector.translateToLocal("waila.xreliquary.cauldron.splash") + ChatFormatting.RESET);
+            currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + I18n.translateToLocal("waila.xreliquary.cauldron.splash") + ChatFormatting.RESET);
         } else {
-            currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + StatCollector.translateToLocal("waila.xreliquary.cauldron.potion") + ChatFormatting.RESET);
+            currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + I18n.translateToLocal("waila.xreliquary.cauldron.potion") + ChatFormatting.RESET);
         }
 
         addEffectsInfo(currenttip, cauldron.potionEssence);
@@ -112,4 +111,3 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
         return null;
     }
 }
-*/
