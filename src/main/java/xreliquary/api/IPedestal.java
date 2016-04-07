@@ -8,6 +8,8 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.List;
+
 public interface IPedestal {
 	World getTheWorld();
 	BlockPos getBlockPos();
@@ -18,4 +20,7 @@ public interface IPedestal {
 	FakePlayer getFakePlayer();
 	void destroyCurrentItem();
 	void replaceCurrentItem(ItemStack stack);
+	List<BlockPos> getPedestalsInRange(int range);
+	void switchOn(BlockPos switchedOnFrom);
+	void switchOff(BlockPos switchedOffFrom);
 }

@@ -1,5 +1,6 @@
 package xreliquary.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -14,6 +15,7 @@ import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
+import xreliquary.util.pedestal.PedestalRegistry;
 
 public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 	public BlockPedestal() {
@@ -31,6 +33,13 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 	@Override
 	public boolean isOpaqueCube() {
 		return false;
+	}
+
+	@Override
+	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+		super.onNeighborBlockChange(worldIn, pos, state, neighborBlock);
+
+		((TileEntityPedestal) worldIn.getTileEntity(pos)).updateRedstone();
 	}
 
 	@Override
@@ -61,6 +70,10 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 		if (pedestal != null) {
 			net.minecraft.inventory.InventoryHelper.dropInventoryItems(world, pos, pedestal);
 		}
+
+		PedestalRegistry.unregisterPosition(world.provider.getDimensionId(), pos);
+
+		pedestal.removeRedstoneItems();
 
 		super.breakBlock(world, pos, state);
 	}
