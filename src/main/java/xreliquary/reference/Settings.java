@@ -303,5 +303,6 @@ public class Settings {
 		public static byte bucketWrapperCooldown;
 		public static int shearsWrapperRange;
 		public static byte shearsWrapperCooldown;
+		public static int redstoneWrapperRange;
 	}
 }

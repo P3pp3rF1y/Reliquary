@@ -710,6 +710,8 @@ config.item_and_block_settings.pedestal.shears_wrapper_cooldown.label=Shears wra
 config.item_and_block_settings.pedestal.shears_wrapper_cooldown.comment=How long it takes between shearing actions (in ticks)
 config.item_and_block_settings.pedestal.shears_wrapper_range.label=Shears wrapper range
 config.item_and_block_settings.pedestal.shears_wrapper_range.comment=Range at which shears will shear sheep or
+config.item_and_block_settings.pedestal.redstone_wrapper_range.label=Redstone wrapper range
+config.item_and_block_settings.pedestal.redstone_wrapper_range.comment=Range at which pedestal will get turned on if either redstone block gets put in or redstone dust and transmitting pedestal is powered
 
 jei.recipe.alkahest_crafting=Alkahestry Tome Crafting
 jei.recipe.alkahest_charging=Alkahestry Tome Charging

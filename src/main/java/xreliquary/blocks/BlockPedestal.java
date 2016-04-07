@@ -1,5 +1,6 @@
 package xreliquary.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -35,6 +36,13 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 	}
 
 	@Override
+	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+		super.onNeighborBlockChange(worldIn, pos, state, neighborBlock);
+
+		((TileEntityPedestal) worldIn.getTileEntity(pos)).updateRedstone();
+	}
+
+	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
 		TileEntityPedestal pedestal = (TileEntityPedestal) world.getTileEntity(pos);
 		if (pedestal == null)
@@ -64,6 +72,8 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 		}
 
 		PedestalRegistry.unregisterPosition(world.provider.getDimensionId(), pos);
+
+		pedestal.removeRedstoneItems();
 
 		super.breakBlock(world, pos, state);
 	}

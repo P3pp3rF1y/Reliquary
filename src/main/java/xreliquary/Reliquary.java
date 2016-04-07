@@ -1,5 +1,6 @@
 package xreliquary;
 
+import net.minecraft.block.BlockCompressedPowered;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
@@ -101,6 +102,8 @@ public class Reliquary {
 		PedestalRegistry.registerItemWrapper(ItemShears.class, PedestalShearsWrapper.class);
 		PedestalRegistry.registerItemWrapper(ItemRendingGale.class, PedestalRendingGaleWrapper.class);
 		PedestalRegistry.registerItemWrapper(ItemHarvestRod.class, PedestalHarvestRodWrapper.class);
+		PedestalRegistry.registerItemWrapper(ItemRedstone.class, PedestalRedstoneWrapper.Toggleable.class);
+		PedestalRegistry.registerItemBlockWrapper(BlockCompressedPowered.class, PedestalRedstoneWrapper.AlwaysOn.class);
 		if(Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
 			PedestalRegistry.registerItemWrapper(Cleaver.class, PedestalMeleeWeaponWrapper.Slow.class);
 			PedestalRegistry.registerItemWrapper(BroadSword.class, PedestalMeleeWeaponWrapper.class);
