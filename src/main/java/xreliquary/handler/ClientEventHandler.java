@@ -126,13 +126,13 @@ public class ClientEventHandler {
 		if(enderStaffStack == null)
 			return;
 
-		ItemEnderStaff enderStaffItem = (ItemEnderStaff) enderStaffStack.getItem();
+		ItemEnderStaff enderStaffItem = ModItems.enderStaff;
 		String staffMode = enderStaffItem.getMode(enderStaffStack);
-		ItemStack displayItemStack = new ItemStack(Items.ender_pearl, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
+		ItemStack displayItemStack = new ItemStack(Items.ender_pearl, enderStaffItem.getPearlCount(enderStaffStack), 0);
 		if(staffMode.equals("node_warp")) {
-			displayItemStack = new ItemStack(ModBlocks.wraithNode, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
+			displayItemStack = new ItemStack(ModBlocks.wraithNode, enderStaffItem.getPearlCount(enderStaffStack), 0);
 		} else if(staffMode.equals("long_cast")) {
-			displayItemStack = new ItemStack(Items.ender_eye, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
+			displayItemStack = new ItemStack(Items.ender_eye, enderStaffItem.getPearlCount(enderStaffStack), 0);
 		}
 		renderStandardTwoItemHUD(mc, player, enderStaffStack, displayItemStack, Settings.HudPositions.enderStaff, 0, 0);
 	}

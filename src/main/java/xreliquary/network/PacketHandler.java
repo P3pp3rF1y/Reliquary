@@ -21,5 +21,7 @@ public class PacketHandler {
 		networkWrapper.registerMessage(PacketFXConcussiveExplosion.class, PacketFXConcussiveExplosion.class, idx, Side.CLIENT);
 		idx++;
 		networkWrapper.registerMessage(PacketHarvestRodCacheSync.class, PacketHarvestRodCacheSync.class, idx, Side.CLIENT);
+		idx++;
+		networkWrapper.registerMessage(PacketEnderStaffItemSync.class, PacketEnderStaffItemSync.class, idx, Side.CLIENT);
 	}
 }
