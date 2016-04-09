@@ -9,8 +9,11 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -18,19 +21,19 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
+import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.network.PacketEnderStaffItemSync;
 import xreliquary.network.PacketHandler;
-import xreliquary.network.PacketHarvestRodCacheSync;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -110,19 +113,29 @@ public class ItemEnderStaff extends ItemToggleable {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-		return new ICapabilityProvider() {
-			IItemHandler itemHandler = new ItemStackHandler(1);
+		return new ICapabilitySerializable<NBTTagCompound>() {
+			FilteredItemStackHandler itemHandler = new FilteredItemStackHandler(new int[] {Settings.EnderStaff.enderPearlLimit}, new Item[] {Items.ender_pearl});
+
+			@Override
+			public NBTTagCompound serializeNBT() {
+				return itemHandler.serializeNBT();
+			}
+
+			@Override
+			public void deserializeNBT(NBTTagCompound tagCompound) {
+				itemHandler.deserializeNBT(tagCompound);
+			}
 
 			@Override
 			public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-				if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+				if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 					return true;
 				return false;
 			}
 
 			@Override
 			public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-				if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+				if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 					return (T) itemHandler;
 
 				return null;
@@ -156,13 +169,11 @@ public class ItemEnderStaff extends ItemToggleable {
 		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		ItemStack enderPearlStack = itemHandler.getStackInSlot(0);
-		if (enderPearlStack == null) {
+		if(enderPearlStack == null) {
 			enderPearlStack = new ItemStack(Items.ender_pearl);
 			itemHandler.insertItem(0, enderPearlStack, false);
 		}
 		enderPearlStack.stackSize = count;
-
-		CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(itemHandler, null);
 
 		//TODO this is a hack and needs a replacement
 		EnumHand hand = player.getHeldItemMainhand().getItem() == ModItems.enderStaff ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
@@ -176,7 +187,7 @@ public class ItemEnderStaff extends ItemToggleable {
 
 		ItemStack enderPearlStack = itemHandler.getStackInSlot(0);
 
-		return enderPearlStack == null? 0 : enderPearlStack.stackSize;
+		return enderPearlStack == null ? 0 : enderPearlStack.stackSize;
 	}
 
 	@Override
