@@ -11,7 +11,12 @@ public class RegistryHelper {
 	}
 
 	public static String getItemRegistryName(Item item) {
-		return GameData.getItemRegistry().getNameForObject(item).toString();
+		ResourceLocation rl = GameData.getItemRegistry().getNameForObject(item);
+		//null check because some mods don't properly register items they use in recipes
+		if (rl != null)
+			return rl.toString();
+
+		return "";
 	}
 
 	public static Block getBlockFromName(String registryName) {
