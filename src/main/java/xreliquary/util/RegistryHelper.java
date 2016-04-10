@@ -4,10 +4,11 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class RegistryHelper {
 	public static Item getItemFromName(String registryName) {
-		return GameData.getItemRegistry().getObject(new ResourceLocation(registryName));
+		return Item.getByNameOrId(registryName);
 	}
 
 	public static String getItemRegistryName(Item item) {
@@ -20,11 +21,11 @@ public class RegistryHelper {
 	}
 
 	public static Block getBlockFromName(String registryName) {
-		return GameData.getBlockRegistry().getObject(new ResourceLocation(registryName));
+		return Block.getBlockFromName(registryName);
 	}
 
 	public static String getBlockRegistryName(Block block) {
-		return GameData.getBlockRegistry().getNameForObject(block).toString();
+		return block.getRegistryName().toString();
 	}
 
 	public static boolean blocksEqual(Block block1, Block block2) {
