@@ -11,7 +11,7 @@ public class RegistryHelper {
 	}
 
 	public static String getItemRegistryName(Item item) {
-		ResourceLocation rl = GameData.getItemRegistry().getNameForObject(item);
+		ResourceLocation rl = item.getRegistryName();
 		//null check because some mods don't properly register items they use in recipes
 		if (rl != null)
 			return rl.toString();
