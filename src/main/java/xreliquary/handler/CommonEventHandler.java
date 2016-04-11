@@ -52,7 +52,7 @@ public class CommonEventHandler {
 		if (event.getEntityPlayer().worldObj.isRemote || !(event.getTarget() instanceof EntityLivingBase))
 			return;
 
-		if (event.getEntityPlayer().getHeldItemMainhand() != null && event.getEntityPlayer().getHeldItemMainhand().getItem() != ModItems.mercyCross)
+		if (event.getEntityPlayer().getHeldItemMainhand() == null || event.getEntityPlayer().getHeldItemMainhand().getItem() != ModItems.mercyCross)
 			return;
 
 		EntityLivingBase target = (EntityLivingBase) event.getTarget();
