@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -53,8 +54,7 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 
 		if(heldItem == null) {
 			if(player.isSneaking()) {
-				InventoryHelper.tryRemovingLastStack(pedestal, world, pos);
-				pedestal.setInventorySlotContents(0, null);
+				pedestal.removeLastPedestalStack();
 				return true;
 			} else {
 				return false;

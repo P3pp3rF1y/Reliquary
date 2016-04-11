@@ -1,6 +1,7 @@
 package xreliquary.blocks.tile;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -18,6 +19,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.api.*;
 import xreliquary.util.InventoryHelper;
+import xreliquary.util.StackHelper;
 import xreliquary.util.XRFakePlayerFactory;
 import xreliquary.util.pedestal.PedestalRegistry;
 
@@ -564,8 +566,8 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 			}
 
 			this.inventory[slot] = stack;
-			if(stack != null && stack.stackSize > this.getInventoryStackLimit()) {
-				stack.stackSize = this.getInventoryStackLimit();
+			if(stack != null && stack.stackSize > 1) {
+				stack.stackSize = 1;
 			}
 
 			updateItemsAndBlock();
@@ -576,7 +578,22 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 		Tuple<IItemHandler, Integer> handlerSlot = getHandlerSlot(adjustedSlot);
 
-		handlerSlot.getFirst().insertItem(handlerSlot.getSecond(), stack, false);
+		IItemHandler itemHandler = handlerSlot.getFirst();
+		adjustedSlot = handlerSlot.getSecond();
+
+		ItemStack stackInSlot = itemHandler.getStackInSlot(adjustedSlot);
+
+		if (stack != null && !StackHelper.isItemAndNbtEqual(stack, stackInSlot))
+			return;
+
+		if (stack == null || stack.stackSize < stackInSlot.stackSize) {
+			int amount = stackInSlot.stackSize - (stack == null ? 0 : stack.stackSize);
+			itemHandler.extractItem(adjustedSlot, amount, false);
+		} else if (stack.stackSize > stackInSlot.stackSize) {
+			int amount = stack.stackSize - stackInSlot.stackSize;
+			stack.stackSize = amount;
+			itemHandler.insertItem(adjustedSlot, stack, false);
+		}
 	}
 
 	@Override
@@ -591,7 +608,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 	@Override
 	public int getInventoryStackLimit() {
-		return 1;
+		return 64;
 	}
 
 	@Override
@@ -634,4 +651,20 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		for(int i = 0; i < this.getSizeInventory(); i++)
 			this.setInventorySlotContents(i, null);
 	}
+
+	public void removeLastPedestalStack() {
+		for(int i = slots - 1; i >= 0; i--) {
+			ItemStack stack = inventory[i];
+			if(stack != null) {
+				setInventorySlotContents(i, null);
+				if(worldObj.isRemote)
+					return;
+				markDirty();
+				EntityItem itemEntity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, stack);
+				worldObj.spawnEntityInWorld(itemEntity);
+				break;
+			}
+		}
+	}
+
 }
