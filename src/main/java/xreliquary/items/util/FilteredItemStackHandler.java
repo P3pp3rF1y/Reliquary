@@ -107,9 +107,10 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 
 		if(inputAmount != Math.max(itemStacks[parentSlot].getMaxStackSize() - remainingCapacity, 0)) {
 			stacks[inputSlot] = itemStacks[parentSlot];
-			stacks[inputSlot].stackSize = itemStacks[parentSlot].getMaxStackSize() - remainingCapacity;
+			stacks[inputSlot].stackSize = Math.max(itemStacks[parentSlot].getMaxStackSize() - remainingCapacity, 0);
+		}
 
-		} else if(stacks[inputSlot] != null && stacks[inputSlot].stackSize == 0) {
+		if(stacks[inputSlot] != null && stacks[inputSlot].stackSize == 0) {
 			stacks[inputSlot] = null;
 		}
 	}
