@@ -583,14 +583,14 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 		ItemStack stackInSlot = itemHandler.getStackInSlot(adjustedSlot);
 
-		if (stack != null && !StackHelper.isItemAndNbtEqual(stack, stackInSlot))
+		if(stackInSlot != null && stack != null && !StackHelper.isItemAndNbtEqual(stack, stackInSlot))
 			return;
 
-		if (stack == null || stack.stackSize < stackInSlot.stackSize) {
+		if(stackInSlot != null && (stack == null || stack.stackSize < stackInSlot.stackSize)) {
 			int amount = stackInSlot.stackSize - (stack == null ? 0 : stack.stackSize);
 			itemHandler.extractItem(adjustedSlot, amount, false);
-		} else if (stack.stackSize > stackInSlot.stackSize) {
-			int amount = stack.stackSize - stackInSlot.stackSize;
+		} else if(stack != null && (stackInSlot == null || stack.stackSize > stackInSlot.stackSize)) {
+			int amount = stack.stackSize - (stackInSlot == null ? 0 : stackInSlot.stackSize);
 			stack.stackSize = amount;
 			itemHandler.insertItem(adjustedSlot, stack, false);
 		}

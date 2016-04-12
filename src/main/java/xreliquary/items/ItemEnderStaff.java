@@ -28,6 +28,7 @@ import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.util.FilteredItemHandlerProvider;
+import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.network.PacketEnderStaffItemSync;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Names;
@@ -137,12 +138,12 @@ public class ItemEnderStaff extends ItemToggleable {
 		//NBTHelper.setInteger("ender_pearls", ist, count);
 		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-		ItemStack enderPearlStack = itemHandler.getStackInSlot(0);
-		if(enderPearlStack == null) {
-			enderPearlStack = new ItemStack(Items.ender_pearl);
-			itemHandler.insertItem(0, enderPearlStack, false);
-		}
-		enderPearlStack.stackSize = count;
+		if (!(itemHandler instanceof FilteredItemStackHandler))
+			return;
+
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+		filteredHandler.setTotalAmount(0, count);
 
 		//TODO this is a hack and needs a replacement
 		EnumHand hand = player.getHeldItemMainhand().getItem() == ModItems.enderStaff ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
@@ -154,9 +155,12 @@ public class ItemEnderStaff extends ItemToggleable {
 		//return NBTHelper.getInteger("ender_pearls", ist);
 		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-		ItemStack enderPearlStack = itemHandler.getStackInSlot(0);
+		if (!(itemHandler instanceof FilteredItemStackHandler))
+			return 0;
 
-		return enderPearlStack == null ? 0 : enderPearlStack.stackSize;
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+		return filteredHandler.getTotalAmount(0);
 	}
 
 	@Override

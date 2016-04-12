@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.init.ModCapabilities;
+import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.items.util.IHarvestRodCache;
 
 public class PacketEnderStaffItemSync implements IMessage, IMessageHandler<PacketEnderStaffItemSync, IMessage> {
@@ -45,13 +46,11 @@ public class PacketEnderStaffItemSync implements IMessage, IMessageHandler<Packe
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 		IItemHandler itemHandler = player.getHeldItem(message.hand).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-		if (itemHandler != null) {
-			ItemStack enderPearlStack = itemHandler.getStackInSlot(0);
-			if (enderPearlStack == null) {
-				enderPearlStack = new ItemStack(Items.ender_pearl);
-				itemHandler.insertItem(0, enderPearlStack, false);
-			}
-			enderPearlStack.stackSize = message.count;
+		if (itemHandler != null && itemHandler instanceof FilteredItemStackHandler) {
+
+			FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+			filteredHandler.setTotalAmount(0, message.count);
 		}
 
 		return null;
