@@ -9,7 +9,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class FilteredItemStackHandler extends ItemStackHandler {
-	public static final int SLOTS_PER_TYPE = 3;
+	public static final int SLOTS_PER_TYPE = 2;
 	private ItemStack[] itemStacks;
 	private int[] totalAmounts;
 	private int[] totalLimits;
@@ -49,7 +49,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 	public void setTotalAmount(int parentSlot, int amount) {
 		totalAmounts[parentSlot] = amount;
 
-		updateOutputSlot(parentSlot);
+		updateInputOutputSlots(parentSlot);
 	}
 
 	@Override
@@ -63,12 +63,13 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		if(!isInputSlot(slot))
 			this.stacks[slot] = stack;
 
-		updateOutputSlot(getParentSlot(slot));
+		updateInputOutputSlots(getParentSlot(slot));
 		onContentsChanged(slot);
 	}
 
-	private void updateOutputSlot(int parentSlot) {
+	private void updateInputOutputSlots(int parentSlot) {
 		int outputSlot = getOutputSlot(parentSlot);
+		int inputSlot = getInputSlot(parentSlot);
 
 		if(stacks[outputSlot] == null)
 			stacks[outputSlot] = itemStacks[parentSlot];
@@ -78,10 +79,23 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		if((outputStack.stackSize < outputStack.getMaxStackSize() && outputStack.stackSize < totalAmounts[parentSlot]) || outputStack.stackSize > totalAmounts[parentSlot]) {
 			outputStack.stackSize = Math.min(outputStack.getMaxStackSize(), totalAmounts[parentSlot]);
 		}
+
+		int remainingCapacity = totalLimits[parentSlot] - totalAmounts[parentSlot];
+
+		if (remainingCapacity < itemStacks[parentSlot].getMaxStackSize() && (stacks[outputSlot] == null || stacks[outputSlot].stackSize != remainingCapacity)) {
+			stacks[inputSlot] = itemStacks[parentSlot];
+			stacks[inputSlot].stackSize = itemStacks[parentSlot].getMaxStackSize() - remainingCapacity;
+
+		} else if (stacks[inputSlot] != null) {
+			stacks[inputSlot] = null;
+		}
 	}
 
+	private int getInputSlot(int parentSlot) {
+		return (parentSlot * SLOTS_PER_TYPE);
+	}
 	private int getOutputSlot(int parentSlot) {
-		return (parentSlot * SLOTS_PER_TYPE) + 2;
+		return (parentSlot * SLOTS_PER_TYPE) + 1;
 	}
 
 	@Override
@@ -123,7 +137,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 			onContentsChanged(slot);
 		}
 
-		updateOutputSlot(getParentSlot(slot));
+		updateInputOutputSlots(getParentSlot(slot));
 
 		return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.stackSize - limit) : null;
 	}
@@ -143,7 +157,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 						this.stacks[slot] = ItemHandlerHelper.copyStackWithSize(existing, 0);
 						this.onContentsChanged(slot);
 					}
-					updateOutputSlot(getParentSlot(slot));
+					updateInputOutputSlots(getParentSlot(slot));
 					return existing;
 				} else {
 					if(!simulate) {
@@ -151,7 +165,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 						this.onContentsChanged(slot);
 					}
 
-					updateOutputSlot(getParentSlot(slot));
+					updateInputOutputSlots(getParentSlot(slot));
 					return ItemHandlerHelper.copyStackWithSize(existing, amount);
 				}
 			}
