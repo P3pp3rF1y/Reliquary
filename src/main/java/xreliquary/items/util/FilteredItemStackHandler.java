@@ -103,11 +103,13 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 
 		int remainingCapacity = totalLimits[parentSlot] - totalAmounts[parentSlot];
 
-		if(remainingCapacity < itemStacks[parentSlot].getMaxStackSize() && (stacks[outputSlot] == null || stacks[outputSlot].stackSize != remainingCapacity)) {
+		int inputAmount = stacks[inputSlot] == null ? 0 : stacks[inputSlot].stackSize;
+
+		if(inputAmount != Math.max(itemStacks[parentSlot].getMaxStackSize() - remainingCapacity, 0)) {
 			stacks[inputSlot] = itemStacks[parentSlot];
 			stacks[inputSlot].stackSize = itemStacks[parentSlot].getMaxStackSize() - remainingCapacity;
 
-		} else if(stacks[inputSlot] != null) {
+		} else if(stacks[inputSlot] != null && stacks[inputSlot].stackSize == 0) {
 			stacks[inputSlot] = null;
 		}
 	}

@@ -115,6 +115,20 @@ public class ItemEnderStaff extends ItemToggleable {
 
 	@Override
 	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
+		//TODO remove backwards compatibility in the future
+		if (ist.getTagCompound().hasKey("ender_pearls")) {
+			IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+			if(itemHandler instanceof FilteredItemStackHandler) {
+				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+				if(ist.getTagCompound().hasKey("ender_pearls")) {
+					filteredHandler.setTotalAmount(0, NBTHelper.getInteger("ender_pearls", ist));
+					ist.getTagCompound().removeTag("ender_pearls");
+				}
+			}
+		}
+
 		if(world.isRemote)
 			return;
 
