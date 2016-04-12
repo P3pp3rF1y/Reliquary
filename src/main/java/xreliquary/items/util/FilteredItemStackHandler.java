@@ -64,9 +64,9 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 			int remaining = limit - totalAmount;
 			int outputCount = stacks[outputSlot] == null ? 0 : stacks[outputSlot].stackSize;
 
-			if (inputCount != Math.max(itemStacks[i].getMaxStackSize() - remaining, 0))
+			if(inputCount != Math.max(itemStacks[i].getMaxStackSize() - remaining, 0))
 				totalAmounts[i] += (inputCount - Math.max(itemStacks[i].getMaxStackSize() - remaining, 0));
-			if (outputCount != Math.min(totalAmount, itemStacks[i].getMaxStackSize()))
+			if(outputCount != Math.min(totalAmount, itemStacks[i].getMaxStackSize()))
 				totalAmounts[i] += (outputCount - Math.min(totalAmount, itemStacks[i].getMaxStackSize()));
 
 			updateInputOutputSlots(i);

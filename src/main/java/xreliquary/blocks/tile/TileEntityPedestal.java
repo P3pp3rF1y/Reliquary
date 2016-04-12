@@ -17,7 +17,6 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import xreliquary.api.*;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.util.InventoryHelper;
@@ -91,8 +90,8 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	public void markDirty() {
 		super.markDirty();
 
-		for (IItemHandler itemHandler : itemHandlers.values()) {
-			if (itemHandler instanceof FilteredItemStackHandler) {
+		for(IItemHandler itemHandler : itemHandlers.values()) {
+			if(itemHandler instanceof FilteredItemStackHandler) {
 				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 
 				filteredHandler.markDirty();
