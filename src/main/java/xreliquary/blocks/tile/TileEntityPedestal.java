@@ -17,7 +17,9 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import xreliquary.api.*;
+import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.StackHelper;
 import xreliquary.util.XRFakePlayerFactory;
@@ -83,6 +85,19 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 			}
 		}
 		tag.setTag("Items", items);
+	}
+
+	@Override
+	public void markDirty() {
+		super.markDirty();
+
+		for (IItemHandler itemHandler : itemHandlers.values()) {
+			if (itemHandler instanceof FilteredItemStackHandler) {
+				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+				filteredHandler.markDirty();
+			}
+		}
 	}
 
 	@Override
@@ -628,7 +643,19 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return true;
+		if(index < slots)
+			return true;
+
+		int adjustedSlot = index - slots;
+
+		Tuple<IItemHandler, Integer> handlerSlot = getHandlerSlot(adjustedSlot);
+
+		IItemHandler itemHandler = handlerSlot.getFirst();
+		adjustedSlot = handlerSlot.getSecond();
+
+		ItemStack returnedStack = itemHandler.insertItem(adjustedSlot, stack, true);
+
+		return returnedStack == null || returnedStack.stackSize != stack.stackSize;
 	}
 
 	@Override

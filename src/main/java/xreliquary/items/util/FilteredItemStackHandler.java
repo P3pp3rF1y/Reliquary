@@ -39,7 +39,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 	}
 
 	private boolean isInputSlot(int slot) {
-		return !((slot + 1) % 3 == 0);
+		return !((slot + 1) % SLOTS_PER_TYPE == 0);
 	}
 
 	public int getTotalAmount(int parentSlot) {
@@ -50,6 +50,27 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		totalAmounts[parentSlot] = amount;
 
 		updateInputOutputSlots(parentSlot);
+	}
+
+	public void markDirty() {
+		for(int i = 0; i < totalAmounts.length; i++) {
+			int totalAmount = totalAmounts[i];
+			int limit = totalLimits[i];
+
+			int inputSlot = getInputSlot(i);
+			int outputSlot = getOutputSlot(i);
+
+			int inputCount = stacks[inputSlot] == null ? 0 : stacks[inputSlot].stackSize;
+			int remaining = limit - totalAmount;
+			int outputCount = stacks[outputSlot] == null ? 0 : stacks[outputSlot].stackSize;
+
+			if (inputCount != Math.max(itemStacks[i].getMaxStackSize() - remaining, 0))
+				totalAmounts[i] += (inputCount - Math.max(itemStacks[i].getMaxStackSize() - remaining, 0));
+			if (outputCount != Math.min(totalAmount, itemStacks[i].getMaxStackSize()))
+				totalAmounts[i] += (outputCount - Math.min(totalAmount, itemStacks[i].getMaxStackSize()));
+
+			updateInputOutputSlots(i);
+		}
 	}
 
 	@Override
@@ -82,11 +103,11 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 
 		int remainingCapacity = totalLimits[parentSlot] - totalAmounts[parentSlot];
 
-		if (remainingCapacity < itemStacks[parentSlot].getMaxStackSize() && (stacks[outputSlot] == null || stacks[outputSlot].stackSize != remainingCapacity)) {
+		if(remainingCapacity < itemStacks[parentSlot].getMaxStackSize() && (stacks[outputSlot] == null || stacks[outputSlot].stackSize != remainingCapacity)) {
 			stacks[inputSlot] = itemStacks[parentSlot];
 			stacks[inputSlot].stackSize = itemStacks[parentSlot].getMaxStackSize() - remainingCapacity;
 
-		} else if (stacks[inputSlot] != null) {
+		} else if(stacks[inputSlot] != null) {
 			stacks[inputSlot] = null;
 		}
 	}
@@ -94,6 +115,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 	private int getInputSlot(int parentSlot) {
 		return (parentSlot * SLOTS_PER_TYPE);
 	}
+
 	private int getOutputSlot(int parentSlot) {
 		return (parentSlot * SLOTS_PER_TYPE) + 1;
 	}
@@ -134,10 +156,10 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 					existing.stackSize += reachedLimit ? limit : stack.stackSize;
 				}
 			}
+			updateInputOutputSlots(getParentSlot(slot));
+
 			onContentsChanged(slot);
 		}
-
-		updateInputOutputSlots(getParentSlot(slot));
 
 		return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.stackSize - limit) : null;
 	}
