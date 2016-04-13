@@ -10,8 +10,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class FilteredItemHandlerProvider implements ICapabilitySerializable<NBTTagCompound> {
 	FilteredItemStackHandler itemHandler;
 
-	public FilteredItemHandlerProvider(int[] limits, Item[] items) {
-		itemHandler = new FilteredItemStackHandler(limits, items);
+	public FilteredItemHandlerProvider(int[] limits, Item[] items, int[] unitWorth) {
+		itemHandler = new FilteredItemStackHandler(limits, items, unitWorth);
 	}
 
 	@Override

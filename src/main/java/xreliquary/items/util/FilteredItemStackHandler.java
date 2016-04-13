@@ -13,17 +13,19 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 	private ItemStack[] itemStacks;
 	private int[] totalAmounts;
 	private int[] totalLimits;
+	private int[] unitWorth;
 
-	public FilteredItemStackHandler(int[] totalLimits, Item[] items) {
-		this(totalLimits, getItemStacks(items));
+	public FilteredItemStackHandler(int[] totalLimits, Item[] items, int[] unitWorth) {
+		this(totalLimits, getItemStacks(items), unitWorth);
 	}
 
-	public FilteredItemStackHandler(int[] totalLimits, ItemStack[] itemStacks) {
+	public FilteredItemStackHandler(int[] totalLimits, ItemStack[] itemStacks, int[] unitWorth) {
 		super(itemStacks.length * SLOTS_PER_TYPE);
 
 		this.totalLimits = totalLimits;
 		this.itemStacks = itemStacks;
 		this.totalAmounts = new int[this.itemStacks.length];
+		this.unitWorth = unitWorth;
 	}
 
 	private static ItemStack[] getItemStacks(Item[] items) {
@@ -54,24 +56,32 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 
 	public void markDirty() {
 		for(int i = 0; i < totalAmounts.length; i++) {
-			int totalAmount = totalAmounts[i];
-			int limit = totalLimits[i];
+			int totalAmount = worthToUnits(totalAmounts[i], i);
 
 			int inputSlot = getInputSlot(i);
 			int outputSlot = getOutputSlot(i);
 
 			int inputCount = stacks[inputSlot] == null ? 0 : stacks[inputSlot].stackSize;
-			int remaining = limit - totalAmount;
+			int remaining = worthToUnits(totalLimits[i] - totalAmounts[i], i);
 			int outputCount = stacks[outputSlot] == null ? 0 : stacks[outputSlot].stackSize;
 
 			if(inputCount != Math.max(itemStacks[i].getMaxStackSize() - remaining, 0))
-				totalAmounts[i] += (inputCount - Math.max(itemStacks[i].getMaxStackSize() - remaining, 0));
+				totalAmounts[i] += unitsToWorth(inputCount - Math.max(itemStacks[i].getMaxStackSize() - remaining, 0), i);
 			if(outputCount != Math.min(totalAmount, itemStacks[i].getMaxStackSize()))
-				totalAmounts[i] += (outputCount - Math.min(totalAmount, itemStacks[i].getMaxStackSize()));
+				totalAmounts[i] += unitsToWorth(outputCount - Math.min(totalAmount, itemStacks[i].getMaxStackSize()), i);
 
 			updateInputOutputSlots(i);
 		}
 	}
+
+	private int worthToUnits(int worth, int parentSlot) {
+		return worth / unitWorth[parentSlot];
+	}
+
+	private int unitsToWorth(int units, int parentSlot) {
+		return units * unitWorth[parentSlot];
+	}
+
 
 	@Override
 	public void setStackInSlot(int slot, ItemStack stack) {
@@ -79,7 +89,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		if(ItemStack.areItemStacksEqual(this.stacks[slot], stack))
 			return;
 
-		totalAmounts[getParentSlot(slot)] += ((stack == null ? 0 : stack.stackSize) - stacks[slot].stackSize);
+		totalAmounts[getParentSlot(slot)] += unitsToWorth((stack == null ? 0 : stack.stackSize) - stacks[slot].stackSize, getParentSlot(slot));
 
 		if(!isInputSlot(slot))
 			this.stacks[slot] = stack;
@@ -97,11 +107,11 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 
 		ItemStack outputStack = stacks[outputSlot];
 
-		if((outputStack.stackSize < outputStack.getMaxStackSize() && outputStack.stackSize < totalAmounts[parentSlot]) || outputStack.stackSize > totalAmounts[parentSlot]) {
-			outputStack.stackSize = Math.min(outputStack.getMaxStackSize(), totalAmounts[parentSlot]);
+		if((outputStack.stackSize < outputStack.getMaxStackSize() && outputStack.stackSize < worthToUnits(totalAmounts[parentSlot], parentSlot)) || outputStack.stackSize > worthToUnits(totalAmounts[parentSlot], parentSlot)) {
+			outputStack.stackSize = Math.min(outputStack.getMaxStackSize(), worthToUnits(totalAmounts[parentSlot], parentSlot));
 		}
 
-		int remainingCapacity = totalLimits[parentSlot] - totalAmounts[parentSlot];
+		int remainingCapacity = worthToUnits(totalLimits[parentSlot] - totalAmounts[parentSlot], parentSlot);
 
 		int inputAmount = stacks[inputSlot] == null ? 0 : stacks[inputSlot].stackSize;
 
@@ -131,7 +141,9 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 
 		validateSlotIndex(slot);
 
-		if(!ItemHandlerHelper.canItemStacksStack(stack, itemStacks[getParentSlot(slot)]))
+		int parentSlot = getParentSlot(slot);
+
+		if(!ItemHandlerHelper.canItemStacksStack(stack, itemStacks[parentSlot]))
 			return stack;
 
 		ItemStack existing = this.stacks[slot];
@@ -141,7 +153,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 			limit -= existing.stackSize;
 		}
 
-		int remainingTotal = totalLimits[getParentSlot(slot)] - totalAmounts[getParentSlot(slot)];
+		int remainingTotal = worthToUnits(totalLimits[parentSlot] - totalAmounts[parentSlot], parentSlot);
 
 		limit = Math.min(limit, remainingTotal);
 
@@ -151,7 +163,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		boolean reachedLimit = stack.stackSize > limit;
 
 		if(!simulate) {
-			totalAmounts[getParentSlot(slot)] += reachedLimit ? limit : stack.stackSize;
+			totalAmounts[parentSlot] += unitsToWorth(reachedLimit ? limit : stack.stackSize, parentSlot);
 			if(!isInputSlot(slot)) {
 				if(existing == null) {
 					this.stacks[slot] = reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack;
@@ -159,7 +171,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 					existing.stackSize += reachedLimit ? limit : stack.stackSize;
 				}
 			}
-			updateInputOutputSlots(getParentSlot(slot));
+			updateInputOutputSlots(parentSlot);
 
 			onContentsChanged(slot);
 		}

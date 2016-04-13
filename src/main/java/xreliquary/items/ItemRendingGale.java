@@ -253,7 +253,7 @@ public class ItemRendingGale extends ItemToggleable {
 	}
 
 	@Override
-	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
+	public void onUpdate(ItemStack ist, World world, Entity e, int slotNumber, boolean b) {
 		//TODO remove backwards compatibility in the future
 		if (ist.getTagCompound().hasKey("feathers")) {
 			IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
@@ -276,7 +276,7 @@ public class ItemRendingGale extends ItemToggleable {
 		if(this.isEnabled(ist)) {
 			if(getFeatherCount(ist) + getFeathersWorth() <= getChargeLimit()) {
 				if(InventoryHelper.consumeItem(new ItemStack(Items.feather), player)) {
-					setFeatherCount(ist, player, getFeatherCount(ist) + getFeathersWorth());
+					setFeatherCount(ist, player, slotNumber, getFeatherCount(ist) + getFeathersWorth());
 				}
 			}
 		}
@@ -320,7 +320,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-		return new FilteredItemHandlerProvider(new int[] {Settings.EnderStaff.enderPearlLimit}, new Item[] {Items.feather});
+		return new FilteredItemHandlerProvider(new int[] {Settings.RendingGale.chargeLimit}, new Item[] {Items.feather}, new int[] {Settings.RendingGale.chargeFeatherWorth});
 	}
 
 	@Override
@@ -372,24 +372,16 @@ public class ItemRendingGale extends ItemToggleable {
 		if(getFeatherCount(ist) < getChargeCost() && !player.capabilities.isCreativeMode)
 			return;
 		count -= 1;
-		count = getMaxItemUseDuration(ist) - count;
-		if(count == getMaxItemUseDuration(ist) || ((getMaxItemUseDuration(ist) - count) * getChargeCost() >= getFeatherCount(ist) && !player.capabilities.isCreativeMode)) {
-			int chargeUsed = count * getChargeCost();
-			if(!player.capabilities.isCreativeMode)
-				setFeatherCount(ist, player, getFeatherCount(ist) - chargeUsed);
-			player.stopActiveHand();
-		}
 
 		if(getMode(ist).equals("flight")) {
+			if(!player.capabilities.isCreativeMode && !player.worldObj.isRemote)
+				setFeatherCount(ist, player, player.getActiveHand(), getFeatherCount(ist) - getChargeCost());
 			attemptFlight(player);
 			spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
 		} else if(getMode(ist).equals("push")) {
 			doRadialPush(player.worldObj, player.posX, player.posY, player.posZ, player, false);
 		} else if(getMode(ist).equals("pull")) {
 			doRadialPush(player.worldObj, player.posX, player.posY, player.posZ, player, true);
-			//doPushEffect(player, player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
-			//spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
-
 		} else if(getMode(ist).equals("bolt")) {
 
 			RayTraceResult mop = this.getCycloneBlockTarget(player.worldObj, player);
@@ -402,28 +394,14 @@ public class ItemRendingGale extends ItemToggleable {
 					}
 					if(player.worldObj.isRainingAt(new BlockPos(mop.getBlockPos().getX(), attemptedY, mop.getBlockPos().getZ()))) {
 						if(getFeatherCount(ist) >= getBoltChargeCost() || player.capabilities.isCreativeMode) {
-							if(!player.capabilities.isCreativeMode)
-								setFeatherCount(ist, player, getFeatherCount(ist) - getBoltChargeCost());
+							if(!player.capabilities.isCreativeMode && !player.worldObj.isRemote)
+								setFeatherCount(ist, player, player.getActiveHand(), getFeatherCount(ist) - getBoltChargeCost());
 							player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, (double) mop.getBlockPos().getX(), (double) mop.getBlockPos().getY(), (double) mop.getBlockPos().getZ(), false));
 						}
 					}
 				}
 			}
 		}
-	}
-
-	//experimenting with a more sophisticated charge/drain mechanism
-	@Override
-	public void onPlayerStoppedUsing(ItemStack ist, World world, EntityLivingBase entity, int count) {
-		if(world.isRemote || !(entity instanceof EntityPlayer))
-			return;
-
-		EntityPlayer player = (EntityPlayer) entity;
-		//count starts at 64 instead of 63, so it needs to account for its first used tick.
-		count -= 1;
-		int chargeUsed = (getMaxItemUseDuration(ist) - count) * getChargeCost();
-		if(!player.capabilities.isCreativeMode)
-			setFeatherCount(ist, player, getFeatherCount(ist) - Math.min(chargeUsed, getFeatherCount(ist)));
 	}
 
 	public int getFeatherCount(ItemStack ist) {
@@ -437,7 +415,17 @@ public class ItemRendingGale extends ItemToggleable {
 		return filteredHandler.getTotalAmount(0);
 	}
 
-	private void setFeatherCount(ItemStack ist, EntityPlayer player, int featherCount) {
+	private void setFeatherCount(ItemStack ist, EntityPlayer player, int slotNumber, int featherCount) {
+		setFeatherCount(ist, featherCount);
+
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(featherCount, slotNumber), (EntityPlayerMP) player);
+	}
+	private void setFeatherCount(ItemStack ist, EntityPlayer player, EnumHand hand, int featherCount) {
+		setFeatherCount(ist, featherCount);
+
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(featherCount, hand), (EntityPlayerMP) player);
+	}
+	private void setFeatherCount(ItemStack ist, int featherCount) {
 		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -446,10 +434,6 @@ public class ItemRendingGale extends ItemToggleable {
 		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 
 		filteredHandler.setTotalAmount(0, featherCount);
-
-		//TODO this is a hack and needs a replacement
-		EnumHand hand = player.getHeldItemMainhand().getItem() == ModItems.rendingGale ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
-		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(featherCount, hand), (EntityPlayerMP) player);
 	}
 
 	public void doRadialPush(World worldObj, double posX, double posY, double posZ, EntityPlayer player, boolean pull) {

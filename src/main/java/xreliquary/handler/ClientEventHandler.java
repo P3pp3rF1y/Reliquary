@@ -362,13 +362,7 @@ public class ClientEventHandler {
 			return;
 
 		ItemStack featherStack = new ItemStack(Items.feather, ModItems.rendingGale.getFeatherCount(rendingGaleStack), 0);
-		int charge = featherStack.stackSize;
-		if(player.isHandActive() && getHandHoldingCorrectItem(player, ModItems.rendingGale) == player.getActiveHand()) {
-			int count = rendingGaleStack.getItem().getMaxItemUseDuration(rendingGaleStack) - (player.getItemInUseCount() - 1);
-			charge -= (count * ItemRendingGale.getChargeCost());
-		}
-		charge /= 100;
-		renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Settings.HudPositions.rendingGale, 0, Math.max(charge, 0));
+		renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Settings.HudPositions.rendingGale, 0, Math.max(featherStack.stackSize/100, 0));
 	}
 
 	public void handleHandgunHUDCheck(Minecraft mc) {
