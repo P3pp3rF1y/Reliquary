@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
@@ -29,7 +30,7 @@ import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
-import xreliquary.network.PacketEnderStaffItemSync;
+import xreliquary.network.PacketItemHandlerSync;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -114,7 +115,7 @@ public class ItemEnderStaff extends ItemToggleable {
 	}
 
 	@Override
-	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
+	public void onUpdate(ItemStack ist, World world, Entity e, int slotNumber, boolean b) {
 		//TODO remove backwards compatibility in the future
 		if (ist.getTagCompound().hasKey("ender_pearls")) {
 			IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
@@ -142,12 +143,12 @@ public class ItemEnderStaff extends ItemToggleable {
 			return;
 		if(getPearlCount(ist) + getEnderPearlWorth() <= getEnderPearlLimit()) {
 			if(InventoryHelper.consumeItem(new ItemStack(Items.ender_pearl), player)) {
-				setPearlCount(ist, player, getPearlCount(ist) + getEnderPearlWorth());
+				setPearlCount(ist, player, slotNumber, getPearlCount(ist) + getEnderPearlWorth());
 			}
 		}
 	}
 
-	private void setPearlCount(ItemStack ist, EntityPlayer player, int count) {
+	private void setPearlCount(ItemStack ist, EntityPlayer player, int slotNumber, int count) {
 		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -157,9 +158,7 @@ public class ItemEnderStaff extends ItemToggleable {
 
 		filteredHandler.setTotalAmount(0, count);
 
-		//TODO this is a hack and needs a replacement
-		EnumHand hand = player.getHeldItemMainhand().getItem() == ModItems.enderStaff ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
-		PacketHandler.networkWrapper.sendTo(new PacketEnderStaffItemSync(count, hand), (EntityPlayerMP) player);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(count, slotNumber), (EntityPlayerMP) player);
 	}
 
 	public int getPearlCount(ItemStack ist) {
@@ -231,7 +230,7 @@ public class ItemEnderStaff extends ItemToggleable {
 					enderStaffProjectile.func_184538_a(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F); //TODO test out this change, hopefully doesn't override gravityvelocity setting in entity
 					player.worldObj.spawnEntityInWorld(enderStaffProjectile);
 					if(!player.capabilities.isCreativeMode)
-						setPearlCount(ist, player, getPearlCount(ist) - getEnderStaffPearlCost());
+						setPearlCount(ist, player, player.inventory.getSlotFor()hand == EnumHand.MAIN_HAND ? EntityEquipmentSlot.MAINHAND.getIndex() : EntityEquipmentSlot.OFFHAND, getPearlCount(ist) - getEnderStaffPearlCost());
 				}
 			} else {
 				player.setActiveHand(hand);

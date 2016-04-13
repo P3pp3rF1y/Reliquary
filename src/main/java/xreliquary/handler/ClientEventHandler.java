@@ -361,7 +361,7 @@ public class ClientEventHandler {
 		if(rendingGaleStack == null)
 			return;
 
-		ItemStack featherStack = new ItemStack(Items.feather, NBTHelper.getInteger("feathers", rendingGaleStack), 0);
+		ItemStack featherStack = new ItemStack(Items.feather, ModItems.rendingGale.getFeatherCount(rendingGaleStack), 0);
 		int charge = featherStack.stackSize;
 		if(player.isHandActive() && getHandHoldingCorrectItem(player, ModItems.rendingGale) == player.getActiveHand()) {
 			int count = rendingGaleStack.getItem().getMaxItemUseDuration(rendingGaleStack) - (player.getItemInUseCount() - 1);
