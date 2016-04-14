@@ -14,18 +14,20 @@ public class ModBlockColors {
 	public static void init() {
 		BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
 
-		blockColors.registerBlockColorHandler(new IBlockColor() {
-			@Override
-			public int colorMultiplier(IBlockState state, IBlockAccess world, BlockPos pos, int tintIndex) {
-				if (pos != null) {
-					TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
-					if(cauldron != null) {
-						return cauldron.getColorMultiplier();
+		if(ModBlocks.apothecaryCauldron.getRegistryName() != null) {
+			blockColors.registerBlockColorHandler(new IBlockColor() {
+				@Override
+				public int colorMultiplier(IBlockState state, IBlockAccess world, BlockPos pos, int tintIndex) {
+					if(pos != null) {
+						TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
+						if(cauldron != null) {
+							return cauldron.getColorMultiplier();
+						}
 					}
-				}
 
-				return -1;
-			}
-		}, new Block[] {ModBlocks.apothecaryCauldron});
+					return -1;
+				}
+			}, new Block[] {ModBlocks.apothecaryCauldron});
+		}
 	}
 }
