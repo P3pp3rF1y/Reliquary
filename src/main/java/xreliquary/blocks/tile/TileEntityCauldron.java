@@ -39,6 +39,7 @@ import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 //import thaumcraft.api.blocks.BlocksTC;
@@ -117,7 +118,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 
 	public int getColor(PotionEssence essence) {
 		//basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
-		return PotionUtils.getPotionColorFromEffectList(essence == null ? null : essence.getEffects());
+		return PotionUtils.getPotionColorFromEffectList(essence == null || essence.getEffects() == null ? Collections.emptyList() : essence.getEffects());
 	}
 
 	@SideOnly(Side.CLIENT)
