@@ -126,13 +126,13 @@ public class ClientEventHandler {
 		if(enderStaffStack == null)
 			return;
 
-		ItemEnderStaff enderStaffItem = (ItemEnderStaff) enderStaffStack.getItem();
+		ItemEnderStaff enderStaffItem = ModItems.enderStaff;
 		String staffMode = enderStaffItem.getMode(enderStaffStack);
-		ItemStack displayItemStack = new ItemStack(Items.ender_pearl, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
+		ItemStack displayItemStack = new ItemStack(Items.ender_pearl, enderStaffItem.getPearlCount(enderStaffStack), 0);
 		if(staffMode.equals("node_warp")) {
-			displayItemStack = new ItemStack(ModBlocks.wraithNode, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
+			displayItemStack = new ItemStack(ModBlocks.wraithNode, enderStaffItem.getPearlCount(enderStaffStack), 0);
 		} else if(staffMode.equals("long_cast")) {
-			displayItemStack = new ItemStack(Items.ender_eye, NBTHelper.getInteger("ender_pearls", enderStaffStack), 0);
+			displayItemStack = new ItemStack(Items.ender_eye, enderStaffItem.getPearlCount(enderStaffStack), 0);
 		}
 		renderStandardTwoItemHUD(mc, player, enderStaffStack, displayItemStack, Settings.HudPositions.enderStaff, 0, 0);
 	}
@@ -361,14 +361,8 @@ public class ClientEventHandler {
 		if(rendingGaleStack == null)
 			return;
 
-		ItemStack featherStack = new ItemStack(Items.feather, NBTHelper.getInteger("feathers", rendingGaleStack), 0);
-		int charge = featherStack.stackSize;
-		if(player.isHandActive() && getHandHoldingCorrectItem(player, ModItems.rendingGale) == player.getActiveHand()) {
-			int count = rendingGaleStack.getItem().getMaxItemUseDuration(rendingGaleStack) - (player.getItemInUseCount() - 1);
-			charge -= (count * ItemRendingGale.getChargeCost());
-		}
-		charge /= 100;
-		renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Settings.HudPositions.rendingGale, 0, Math.max(charge, 0));
+		ItemStack featherStack = new ItemStack(Items.feather, ModItems.rendingGale.getFeatherCount(rendingGaleStack), 0);
+		renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Settings.HudPositions.rendingGale, 0, Math.max(featherStack.stackSize/100, 0));
 	}
 
 	public void handleHandgunHUDCheck(Minecraft mc) {

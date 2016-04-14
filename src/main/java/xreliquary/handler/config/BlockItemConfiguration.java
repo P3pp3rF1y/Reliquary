@@ -121,6 +121,8 @@ public class BlockItemConfiguration {
 		Settings.HarvestRod.AOERadius = ConfigurationHandler.getInt("aoe_radius", Names.item_and_block_settings + "." + Names.harvest_rod, 2, 0, 5);
 		Settings.HarvestRod.AOECooldown = ConfigurationHandler.getInt("aoe_cooldown", Names.item_and_block_settings + "." + Names.harvest_rod, 3, 1, 20);
 		Settings.HarvestRod.maxCapacityPerPlantable = ConfigurationHandler.getInt("max_capacity_per_plantable", Names.item_and_block_settings + "." + Names.harvest_rod, 250, 0, itemCap);
+		Settings.HarvestRod.pedestalRange = ConfigurationHandler.getInt("pedestal_range", Names.item_and_block_settings + "." + Names.harvest_rod, 4, 1, 20);
+		Settings.HarvestRod.pedestalCooldown = (byte) ConfigurationHandler.getInt("pedestal_cooldown", Names.item_and_block_settings + "." + Names.harvest_rod, 5, 1, 20);
 
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.harvest_rod, true);
 
@@ -258,8 +260,9 @@ public class BlockItemConfiguration {
 		Settings.Pedestal.meleeWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.melee_wrapper_cooldown, Names.item_and_block_settings + "." + Names.pedestal, 5, 1, 200);
 		Settings.Pedestal.bucketWrapperRange = ConfigurationHandler.getInt(Names.bucket_wrapper_range, Names.item_and_block_settings + "." + Names.pedestal, 4, 1, 10);
 		Settings.Pedestal.bucketWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.bucket_wrapper_cooldown, Names.item_and_block_settings + "." + Names.pedestal, 40, 1, 200);
-		Settings.Pedestal.shearsWrapperRange = ConfigurationHandler.getInt(Names.shears_wrapper_range, Names.item_and_block_settings + "." + Names.pedestal, 4, 1, 200);
+		Settings.Pedestal.shearsWrapperRange = ConfigurationHandler.getInt(Names.shears_wrapper_range, Names.item_and_block_settings + "." + Names.pedestal, 4, 1, 10);
 		Settings.Pedestal.shearsWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.shears_wrapper_cooldown, Names.item_and_block_settings + "." + Names.pedestal, 10, 1, 200);
+		Settings.Pedestal.redstoneWrapperRange = ConfigurationHandler.getInt(Names.redstone_wrapper_range, Names.item_and_block_settings + "." + Names.pedestal, 10, 1, 200);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.pedestal, true);
 
 	}

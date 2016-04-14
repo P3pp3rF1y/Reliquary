@@ -1,4 +1,3 @@
-/*
 package xreliquary.compat.waila.provider;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -9,8 +8,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import xreliquary.blocks.BlockApothecaryMortar;
 import xreliquary.blocks.tile.TileEntityMortar;
@@ -66,7 +65,7 @@ public class DataProviderMortar extends CachedBodyDataProvider {
 
         PotionEssence essence = new PotionEssence(potionIngredients.toArray(new PotionIngredient[potionIngredients.size()]));
         if (essence.effects.size() > 0) {
-            currenttip.add(ChatFormatting.WHITE + StatCollector.translateToLocal("waila.xreliquary.mortar.result") + ChatFormatting.RESET);
+            currenttip.add(ChatFormatting.WHITE + I18n.translateToLocal("waila.xreliquary.mortar.result") + ChatFormatting.RESET);
 
             List<String> effectLines = new ArrayList<>();
 
@@ -107,4 +106,3 @@ public class DataProviderMortar extends CachedBodyDataProvider {
         return null;
     }
 }
-*/

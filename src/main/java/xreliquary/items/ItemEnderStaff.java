@@ -4,22 +4,32 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.init.ModBlocks;
+import xreliquary.items.util.FilteredItemHandlerProvider;
+import xreliquary.items.util.FilteredItemStackHandler;
+import xreliquary.network.PacketHandler;
+import xreliquary.network.PacketItemHandlerSync;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -64,15 +74,6 @@ public class ItemEnderStaff extends ItemToggleable {
 		return Settings.EnderStaff.nodeWarpCastTime;
 	}
 
-	//TODO test out breaking blocks without this and if not working implement something 1.9 friendly
-/*    @Override
-	public float getDigSpeed(ItemStack ist, IBlockState blockState) {
-        //temporarily sets the item damage to 1, this prevents it from being rapid fired due to swing animations during an attempt to break blocks, hopefully.
-        if (ist.getItemDamage() == 0)
-            ist.setItemDamage(1);
-        return 0F;
-    }*/
-
 	public String getMode(ItemStack ist) {
 		if(NBTHelper.getString("mode", ist).equals("")) {
 			setMode(ist, "cast");
@@ -107,23 +108,87 @@ public class ItemEnderStaff extends ItemToggleable {
 	}
 
 	@Override
-	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return new FilteredItemHandlerProvider(new int[] {Settings.EnderStaff.enderPearlLimit}, new Item[] {Items.ender_pearl}, new int[] {Settings.EnderStaff.enderPearlWorth});
+	}
+
+	@Override
+	public void onUpdate(ItemStack ist, World world, Entity e, int slotNumber, boolean isSelected) {
+		//TODO remove backwards compatibility in the future
+		if(ist.getTagCompound().hasKey("ender_pearls")) {
+			IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+			if(itemHandler instanceof FilteredItemStackHandler) {
+				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+				if(ist.getTagCompound().hasKey("ender_pearls")) {
+					filteredHandler.setTotalAmount(0, NBTHelper.getInteger("ender_pearls", ist));
+					ist.getTagCompound().removeTag("ender_pearls");
+				}
+			}
+		}
+
 		if(world.isRemote)
 			return;
 
-		if(!this.isEnabled(ist))
-			return;
 		EntityPlayer player = null;
 		if(e instanceof EntityPlayer) {
 			player = (EntityPlayer) e;
 		}
 		if(player == null)
 			return;
-		if(NBTHelper.getInteger("ender_pearls", ist) + getEnderPearlWorth() <= getEnderPearlLimit()) {
+
+		//TODO finalize updating client with capability info, but this is likely the only way
+		if(isSelected) {
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(getPearlCount(ist), slotNumber), (EntityPlayerMP) player);
+		}
+
+		if(!this.isEnabled(ist))
+			return;
+		if(getPearlCount(ist) + getEnderPearlWorth() <= getEnderPearlLimit()) {
 			if(InventoryHelper.consumeItem(new ItemStack(Items.ender_pearl), player)) {
-				NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) + getEnderPearlWorth());
+				setPearlCount(ist, player, slotNumber, getPearlCount(ist) + getEnderPearlWorth());
 			}
 		}
+	}
+
+	private void setPearlCount(ItemStack ist, EntityPlayer player, EnumHand hand, int count) {
+		setPearlCount(ist, count);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(count, hand), (EntityPlayerMP) player);
+	}
+
+	private void setPearlCount(ItemStack ist, EntityPlayer player, int slotNumber, int count) {
+		setPearlCount(ist, count);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(count, slotNumber), (EntityPlayerMP) player);
+	}
+
+	private void setPearlCount(ItemStack ist, int count) {
+		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		if(!(itemHandler instanceof FilteredItemStackHandler))
+			return;
+
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+		filteredHandler.setTotalAmount(0, count);
+
+	}
+
+	public int getPearlCount(ItemStack ist) {
+		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		if(!(itemHandler instanceof FilteredItemStackHandler))
+			return 0;
+
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+		//TODO remove backwards compatibility in the future
+		if(ist.getTagCompound().hasKey("ender_pearls")) {
+			filteredHandler.setTotalAmount(0, NBTHelper.getInteger("ender_pearls", ist));
+			ist.getTagCompound().removeTag("ender_pearls");
+		}
+
+		return filteredHandler.getTotalAmount(0);
 	}
 
 	@Override
@@ -170,7 +235,7 @@ public class ItemEnderStaff extends ItemToggleable {
 				if(player.isSwingInProgress)
 					return new ActionResult<>(EnumActionResult.FAIL, ist);
 				player.swingArm(hand);
-				if(NBTHelper.getInteger("ender_pearls", ist) < getEnderStaffPearlCost() && !player.capabilities.isCreativeMode)
+				if(getPearlCount(ist) < getEnderStaffPearlCost() && !player.capabilities.isCreativeMode)
 					return new ActionResult<>(EnumActionResult.FAIL, ist);
 				player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_enderpearl_throw, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 				if(!player.worldObj.isRemote) {
@@ -178,7 +243,7 @@ public class ItemEnderStaff extends ItemToggleable {
 					enderStaffProjectile.func_184538_a(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F); //TODO test out this change, hopefully doesn't override gravityvelocity setting in entity
 					player.worldObj.spawnEntityInWorld(enderStaffProjectile);
 					if(!player.capabilities.isCreativeMode)
-						NBTHelper.setInteger("ender_pearls", ist, NBTHelper.getInteger("ender_pearls", ist) - getEnderStaffPearlCost());
+						setPearlCount(ist, player, hand, getPearlCount(ist) - getEnderStaffPearlCost());
 				}
 			} else {
 				player.setActiveHand(hand);
@@ -188,7 +253,7 @@ public class ItemEnderStaff extends ItemToggleable {
 	}
 
 	private ItemStack doWraithNodeWarpCheck(ItemStack stack, World world, EntityPlayer player) {
-		if(NBTHelper.getInteger("ender_pearls", stack) < getEnderStaffNodeWarpCost() && !player.capabilities.isCreativeMode)
+		if(getPearlCount(stack) < getEnderStaffNodeWarpCost() && !player.capabilities.isCreativeMode)
 			return stack;
 
 		if(stack.getTagCompound() != null && stack.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(player))) {
@@ -199,8 +264,8 @@ public class ItemEnderStaff extends ItemToggleable {
 			if(canTeleport(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
 				teleportPlayer(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
 				//setCooldown(ist);
-				if(!player.capabilities.isCreativeMode)
-					NBTHelper.setInteger("ender_pearls", stack, NBTHelper.getInteger("ender_pearls", stack) - getEnderStaffNodeWarpCost());
+				if(!player.capabilities.isCreativeMode && !player.worldObj.isRemote)
+					setPearlCount(stack, player, player.getActiveHand(), getPearlCount(stack) - getEnderStaffNodeWarpCost());
 			}
 		} else if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("dimensionID")) {
 			stack.getTagCompound().removeTag("dimensionID");
@@ -237,7 +302,7 @@ public class ItemEnderStaff extends ItemToggleable {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		//added spacing here to make sure the tooltips didn't come out with weird punctuation derps.
-		String charge = Integer.toString(NBTHelper.getInteger("ender_pearls", ist));
+		String charge = Integer.toString(getPearlCount(ist));
 		String phrase = "Currently bound to ";
 		String position = "";
 		if(ist.getTagCompound() != null && ist.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(player))) {
@@ -280,4 +345,5 @@ public class ItemEnderStaff extends ItemToggleable {
 	public String getWorld(EntityPlayer player) {
 		return Integer.valueOf(player.worldObj.provider.getDimension()).toString();
 	}
+
 }

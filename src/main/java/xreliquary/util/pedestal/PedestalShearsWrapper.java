@@ -37,12 +37,12 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 			}
 		}
 
-		if(stack.stackSize == 0)
-			pedestal.destroyCurrentItem();
-
 		if(!isShearingBlock) {
 			pedestal.setActionCoolDown(Settings.Pedestal.shearsWrapperCooldown);
 		}
+
+		if (stack.stackSize == 0)
+			pedestal.destroyCurrentItem();
 	}
 
 	private boolean shearBlocks(ItemStack stack, World world, IPedestal pedestal, FakePlayer fakePlayer, BlockPos pos, int shearsRange) {

@@ -1,36 +1,53 @@
 package xreliquary.blocks.tile;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.*;
-import xreliquary.api.IPedestal;
-import xreliquary.api.IPedestalActionItem;
-import xreliquary.api.IPedestalActionItemWrapper;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import xreliquary.api.*;
+import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.util.InventoryHelper;
+import xreliquary.util.StackHelper;
 import xreliquary.util.XRFakePlayerFactory;
 import xreliquary.util.pedestal.PedestalRegistry;
 
 import java.util.*;
 
-public class TileEntityPedestal extends TileEntityInventory implements IPedestal, IFluidHandler {
+public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFluidHandler, IInventory {
 
 	private boolean tickable = false;
-	private int[] actionCooldowns;
+	private int[] actionCooldowns = new int[0];
 	private int currentItemIndex;
 	private Map<Integer, IPedestalActionItem> actionItems = new HashMap<>();
 	private Map<Integer, IPedestalActionItemWrapper> itemWrappers = new HashMap<>();
+	private Map<Integer, IPedestalRedstoneItem> redstoneItems = new HashMap<>();
+	private Map<Integer, IItemHandler> itemHandlers = new HashMap<>();
 	private List<ItemStack> fluidContainers = new ArrayList<>();
 	private FakePlayer fakePlayer = null;
+	private boolean switchedOn = false;
+	private List<Long> onSwitches = new ArrayList<>();
+	private boolean initRedstone = false;
+
+	private short slots = 0;
+	private ItemStack[] inventory;
+
+	public TileEntityPedestal() {
+		this.slots = 1;
+		inventory = new ItemStack[this.slots];
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
@@ -69,16 +86,32 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		tag.setTag("Items", items);
 	}
 
-	public TileEntityPedestal() {
-		super(1);
+	@Override
+	public void markDirty() {
+		for(IItemHandler itemHandler : itemHandlers.values()) {
+			if(itemHandler instanceof FilteredItemStackHandler) {
+				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+				filteredHandler.markDirty();
+			}
+		}
+		super.markDirty();
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) {
-		super.setInventorySlotContents(slot, stack);
-		updateSpecialItems();
-		IBlockState blockState = worldObj.getBlockState(getPos());
-		worldObj.notifyBlockUpdate(getPos(), blockState, blockState, 3);
+	public void onChunkUnload() {
+		if(!this.worldObj.isRemote)
+			PedestalRegistry.unregisterPosition(this.worldObj.provider.getDimension(), this.pos);
+
+		super.onChunkUnload();
+	}
+
+	@Override
+	public void onLoad() {
+		if(!this.worldObj.isRemote)
+			PedestalRegistry.registerPosition(this.worldObj.provider.getDimension(), this.pos);
+
+		super.onLoad();
 	}
 
 	private void updateSpecialItems() {
@@ -86,20 +119,33 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		fluidContainers.clear();
 		itemWrappers.clear();
 		actionItems.clear();
+		redstoneItems.clear();
+		itemHandlers.clear();
 
 		for(int i = 0; i < inventory.length; i++) {
 			ItemStack item = inventory[i];
 			if(item == null)
 				continue;
 
+			if(item.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
+				itemHandlers.put(i, item.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null));
+			}
+
 			if(item.getItem() instanceof IPedestalActionItem) {
 				tickable = true;
 				actionItems.put(i, (IPedestalActionItem) item.getItem());
+			} else if(item.getItem() instanceof IPedestalRedstoneItem) {
+				redstoneItems.put(i, (IPedestalRedstoneItem) item.getItem());
 			} else {
-				IPedestalActionItemWrapper wrapper = PedestalRegistry.getItemWrapper(item);
+				IPedestalItemWrapper wrapper = PedestalRegistry.getItemWrapper(item);
 				if(wrapper != null) {
-					tickable = true;
-					itemWrappers.put(i, wrapper);
+					if(wrapper instanceof IPedestalActionItemWrapper) {
+						tickable = true;
+						itemWrappers.put(i, (IPedestalActionItemWrapper) wrapper);
+					}
+					if(wrapper instanceof IPedestalRedstoneItemWrapper) {
+						redstoneItems.put(i, (IPedestalRedstoneItem) wrapper);
+					}
 				}
 			}
 
@@ -109,49 +155,28 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 				// maybe it's not an issue as the method description in interface says it's not fluid sensitive
 			}
 		}
+
 		actionCooldowns = new int[inventory.length];
 		Arrays.fill(actionCooldowns, 0);
 	}
 
 	@Override
-	public int getInventoryStackLimit() {
-		return 1;
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) {
-
-	}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {
-
-	}
-
-	@Override
-	public int getField(int id) {
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {
-
-	}
-
-	@Override
-	public int getFieldCount() {
-		return 0;
-	}
-
-	@Override
 	public void update() {
-		if(isPowered() && tickable && !worldObj.isRemote) {
+		if(worldObj.isRemote)
+			return;
+
+		if(!initRedstone) {
+			initRedstone = true;
+			updateRedstone();
+		}
+
+		if((isPowered() || switchedOn) && tickable) {
 			for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
 				if(actionCooldowns[currentItemIndex] > 0) {
 					actionCooldowns[currentItemIndex]--;
 				} else {
 					ItemStack item = inventory[currentItemIndex];
-
+					//TODO refactor to just one actionItems list
 					if(actionItems.containsKey(currentItemIndex)) {
 						actionItems.get(currentItemIndex).update(item, this);
 					} else if(itemWrappers.containsKey(currentItemIndex)) {
@@ -162,19 +187,12 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 		}
 	}
 
-	@Override
-	public String getName() {
-		return null;
-	}
-
-	@Override
-	public boolean hasCustomName() {
-		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName() {
-		return null;
+	public void updateRedstone() {
+		for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
+			if(redstoneItems.containsKey(currentItemIndex)) {
+				redstoneItems.get(currentItemIndex).updateRedstone(inventory[currentItemIndex], this);
+			}
+		}
 	}
 
 	@Override
@@ -231,7 +249,9 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 
 	@Override
 	public void setActionCoolDown(int coolDownTicks) {
-		actionCooldowns[currentItemIndex] = coolDownTicks;
+		//prevent derpy items from updating cooldown after the item gets destroyed by its use
+		if(currentItemIndex < actionCooldowns.length)
+			actionCooldowns[currentItemIndex] = coolDownTicks;
 	}
 
 	@Override
@@ -252,6 +272,27 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	@Override
 	public void replaceCurrentItem(ItemStack stack) {
 		this.setInventorySlotContents(currentItemIndex, stack);
+	}
+
+	@Override
+	public List<BlockPos> getPedestalsInRange(int range) {
+		return PedestalRegistry.getPositionsInRange(this.worldObj.provider.getDimension(), this.pos, range);
+	}
+
+	@Override
+	public void switchOn(BlockPos switchedOnFrom) {
+		if(!onSwitches.contains(switchedOnFrom.toLong()))
+			onSwitches.add(switchedOnFrom.toLong());
+
+		this.switchedOn = true;
+	}
+
+	@Override
+	public void switchOff(BlockPos switchedOffFrom) {
+		onSwitches.remove(switchedOffFrom.toLong());
+
+		if(onSwitches.size() == 0)
+			this.switchedOn = false;
 	}
 
 	public List<IInventory> getAdjacentInventories() {
@@ -411,4 +452,244 @@ public class TileEntityPedestal extends TileEntityInventory implements IPedestal
 	private boolean isPowered() {
 		return worldObj.isBlockPowered(pos);
 	}
+
+	public void removeRedstoneItems() {
+		for(Map.Entry<Integer, IPedestalRedstoneItem> item : redstoneItems.entrySet()) {
+			item.getValue().onRemoved(inventory[item.getKey()], this);
+		}
+	}
+
+	// IInventory
+
+	@Override
+	public String getName() {
+		return null;
+	}
+
+	@Override
+	public int getSizeInventory() {
+		int itemHandlerSlots = 0;
+		for(IItemHandler itemHandler : itemHandlers.values()) {
+			itemHandlerSlots += itemHandler.getSlots();
+		}
+
+		return slots + itemHandlerSlots;
+	}
+
+	@Override
+	public ItemStack getStackInSlot(int slot) {
+		if(slot < slots)
+			return inventory[slot];
+
+		int adjustedSlot = slot - slots;
+
+		Tuple<IItemHandler, Integer> handlerSlot = getHandlerSlot(adjustedSlot);
+
+		return handlerSlot == null ? null : handlerSlot.getFirst().getStackInSlot(handlerSlot.getSecond());
+	}
+
+	private Tuple<IItemHandler, Integer> getHandlerSlot(int origSlot) {
+		Tuple<IItemHandler, Integer> handlerSlot = null;
+		int adjustedSlot = origSlot;
+		for(IItemHandler itemHandler : itemHandlers.values()) {
+			if(adjustedSlot < itemHandler.getSlots()) {
+				handlerSlot = new Tuple<>(itemHandler, adjustedSlot);
+				break;
+			}
+			adjustedSlot -= itemHandler.getSlots();
+		}
+		return handlerSlot;
+	}
+
+	@Override
+	public ItemStack decrStackSize(int slot, int count) {
+		if(slot < slots) {
+			return decrStackInInventory(slot, count);
+		}
+
+		int adjustedSlot = slot - slots;
+
+		Tuple<IItemHandler, Integer> handlerSlot = getHandlerSlot(adjustedSlot);
+
+		return handlerSlot.getFirst().extractItem(handlerSlot.getSecond(), count, false);
+	}
+
+	private ItemStack decrStackInInventory(int slot, int count) {
+		if(this.inventory[slot] != null) {
+			ItemStack stack;
+
+			if(this.inventory[slot].stackSize > count) {
+				stack = this.inventory[slot].splitStack(count);
+			} else {
+				stack = this.inventory[slot];
+
+				if(redstoneItems.containsKey(slot)) {
+					redstoneItems.get(slot).onRemoved(inventory[slot], this);
+				}
+
+				this.inventory[slot] = null;
+
+				updateItemsAndBlock();
+			}
+
+			return stack;
+		} else {
+			return null;
+		}
+	}
+
+	private void updateItemsAndBlock() {
+		updateSpecialItems();
+		updateRedstone();
+		IBlockState blockState = worldObj.getBlockState(getPos());
+		worldObj.notifyBlockUpdate(getPos(), blockState, blockState, 3);
+	}
+
+	@Override
+	public ItemStack removeStackFromSlot(int slot) {
+		ItemStack stack;
+		if(slot < slots) {
+			stack = this.inventory[slot];
+
+			if(redstoneItems.containsKey(slot)) {
+				redstoneItems.get(slot).onRemoved(inventory[slot], this);
+			}
+
+			this.inventory[slot] = null;
+
+			updateItemsAndBlock();
+
+			return stack;
+		}
+
+		int adjustedSlot = slot - slots;
+
+		Tuple<IItemHandler, Integer> handlerSlot = getHandlerSlot(adjustedSlot);
+
+		stack = handlerSlot.getFirst().getStackInSlot(handlerSlot.getSecond());
+
+		return handlerSlot.getFirst().extractItem(handlerSlot.getSecond(), stack.stackSize, false);
+	}
+
+	@Override
+	public void setInventorySlotContents(int slot, ItemStack stack) {
+		if(slot < slots) {
+			if(stack == null && redstoneItems.containsKey(slot)) {
+				redstoneItems.get(slot).onRemoved(inventory[slot], this);
+			}
+
+			this.inventory[slot] = stack;
+			if(stack != null && stack.stackSize > 1) {
+				stack.stackSize = 1;
+			}
+
+			updateItemsAndBlock();
+			return;
+		}
+
+		int adjustedSlot = slot - slots;
+
+		Tuple<IItemHandler, Integer> handlerSlot = getHandlerSlot(adjustedSlot);
+
+		IItemHandler itemHandler = handlerSlot.getFirst();
+		adjustedSlot = handlerSlot.getSecond();
+
+		ItemStack stackInSlot = itemHandler.getStackInSlot(adjustedSlot);
+
+		if(stackInSlot != null && stack != null && !StackHelper.isItemAndNbtEqual(stack, stackInSlot))
+			return;
+
+		if(stackInSlot != null && (stack == null || stack.stackSize < stackInSlot.stackSize)) {
+			int amount = stackInSlot.stackSize - (stack == null ? 0 : stack.stackSize);
+			itemHandler.extractItem(adjustedSlot, amount, false);
+		} else if(stack != null && (stackInSlot == null || stack.stackSize > stackInSlot.stackSize)) {
+			int amount = stack.stackSize - (stackInSlot == null ? 0 : stackInSlot.stackSize);
+			stack.stackSize = amount;
+			itemHandler.insertItem(adjustedSlot, stack, false);
+		}
+	}
+
+	@Override
+	public boolean hasCustomName() {
+		return false;
+	}
+
+	@Override
+	public ITextComponent getDisplayName() {
+		return null;
+	}
+
+	@Override
+	public int getInventoryStackLimit() {
+		return 64;
+	}
+
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		return false;
+	}
+
+	@Override
+	public void openInventory(EntityPlayer player) {
+
+	}
+
+	@Override
+	public void closeInventory(EntityPlayer player) {
+
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int index, ItemStack stack) {
+		if(index < slots)
+			return true;
+
+		int adjustedSlot = index - slots;
+
+		Tuple<IItemHandler, Integer> handlerSlot = getHandlerSlot(adjustedSlot);
+
+		IItemHandler itemHandler = handlerSlot.getFirst();
+		adjustedSlot = handlerSlot.getSecond();
+
+		ItemStack returnedStack = itemHandler.insertItem(adjustedSlot, stack, true);
+
+		return returnedStack == null || returnedStack.stackSize != stack.stackSize;
+	}
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
+	@Override
+	public void clear() {
+		for(int i = 0; i < this.getSizeInventory(); i++)
+			this.setInventorySlotContents(i, null);
+	}
+
+	public void removeLastPedestalStack() {
+		for(int i = slots - 1; i >= 0; i--) {
+			ItemStack stack = inventory[i].copy();
+			if(stack != null) {
+				setInventorySlotContents(i, null);
+				if(worldObj.isRemote)
+					return;
+				markDirty();
+				EntityItem itemEntity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, stack);
+				worldObj.spawnEntityInWorld(itemEntity);
+				break;
+			}
+		}
+	}
+
 }
