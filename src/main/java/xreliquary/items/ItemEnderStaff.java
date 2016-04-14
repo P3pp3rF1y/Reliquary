@@ -109,11 +109,11 @@ public class ItemEnderStaff extends ItemToggleable {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-		return new FilteredItemHandlerProvider(new int[] {Settings.EnderStaff.enderPearlLimit}, new Item[] {Items.ender_pearl}, new int[]{Settings.EnderStaff.enderPearlWorth});
+		return new FilteredItemHandlerProvider(new int[] {Settings.EnderStaff.enderPearlLimit}, new Item[] {Items.ender_pearl}, new int[] {Settings.EnderStaff.enderPearlWorth});
 	}
 
 	@Override
-	public void onUpdate(ItemStack ist, World world, Entity e, int slotNumber, boolean b) {
+	public void onUpdate(ItemStack ist, World world, Entity e, int slotNumber, boolean isSelected) {
 		//TODO remove backwards compatibility in the future
 		if(ist.getTagCompound().hasKey("ender_pearls")) {
 			IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
@@ -131,13 +131,19 @@ public class ItemEnderStaff extends ItemToggleable {
 		if(world.isRemote)
 			return;
 
-		if(!this.isEnabled(ist))
-			return;
 		EntityPlayer player = null;
 		if(e instanceof EntityPlayer) {
 			player = (EntityPlayer) e;
 		}
 		if(player == null)
+			return;
+
+		//TODO finalize updating client with capability info, but this is likely the only way
+		if(isSelected) {
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(getPearlCount(ist), slotNumber), (EntityPlayerMP) player);
+		}
+
+		if(!this.isEnabled(ist))
 			return;
 		if(getPearlCount(ist) + getEnderPearlWorth() <= getEnderPearlLimit()) {
 			if(InventoryHelper.consumeItem(new ItemStack(Items.ender_pearl), player)) {

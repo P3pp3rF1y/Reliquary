@@ -88,8 +88,6 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 	@Override
 	public void markDirty() {
-		super.markDirty();
-
 		for(IItemHandler itemHandler : itemHandlers.values()) {
 			if(itemHandler instanceof FilteredItemStackHandler) {
 				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
@@ -97,6 +95,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 				filteredHandler.markDirty();
 			}
 		}
+		super.markDirty();
 	}
 
 	@Override
@@ -680,7 +679,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 	public void removeLastPedestalStack() {
 		for(int i = slots - 1; i >= 0; i--) {
-			ItemStack stack = inventory[i];
+			ItemStack stack = inventory[i].copy();
 			if(stack != null) {
 				setInventorySlotContents(i, null);
 				if(worldObj.isRemote)
