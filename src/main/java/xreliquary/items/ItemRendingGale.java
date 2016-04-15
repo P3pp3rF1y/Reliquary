@@ -254,7 +254,7 @@ public class ItemRendingGale extends ItemToggleable {
 	@Override
 	public void onUpdate(ItemStack ist, World world, Entity e, int slotNumber, boolean isSelected) {
 		//TODO remove backwards compatibility in the future
-		if(ist.getTagCompound().hasKey("feathers")) {
+		if(ist.getTagCompound() != null && ist.getTagCompound().hasKey("feathers")) {
 			IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 			if(itemHandler instanceof FilteredItemStackHandler) {

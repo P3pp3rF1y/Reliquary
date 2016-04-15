@@ -115,7 +115,7 @@ public class ItemEnderStaff extends ItemToggleable {
 	@Override
 	public void onUpdate(ItemStack ist, World world, Entity e, int slotNumber, boolean isSelected) {
 		//TODO remove backwards compatibility in the future
-		if(ist.getTagCompound().hasKey("ender_pearls")) {
+		if(ist.getTagCompound() != null && ist.getTagCompound().hasKey("ender_pearls")) {
 			IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 			if(itemHandler instanceof FilteredItemStackHandler) {
@@ -181,12 +181,6 @@ public class ItemEnderStaff extends ItemToggleable {
 			return 0;
 
 		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
-
-		//TODO remove backwards compatibility in the future
-		if(ist.getTagCompound().hasKey("ender_pearls")) {
-			filteredHandler.setTotalAmount(0, NBTHelper.getInteger("ender_pearls", ist));
-			ist.getTagCompound().removeTag("ender_pearls");
-		}
 
 		return filteredHandler.getTotalAmount(0);
 	}
