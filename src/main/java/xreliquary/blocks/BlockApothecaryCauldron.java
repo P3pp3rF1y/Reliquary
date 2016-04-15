@@ -59,11 +59,6 @@ public class BlockApothecaryCauldron extends BlockBase implements ITileEntityPro
 	}
 
 	@Override
-	public int damageDropped(IBlockState state) {
-		return getMetaFromState(state);
-	}
-
-	@Override
 	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collisionEntity) {
 		addCollisionBoxToList(pos, mask, list, AABB_LEGS);
 		addCollisionBoxToList(pos, mask, list, AABB_WALL_WEST);
