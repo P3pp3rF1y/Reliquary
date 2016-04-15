@@ -433,7 +433,7 @@ public class ItemRendingGale extends ItemToggleable {
 		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(featherCount, hand), (EntityPlayerMP) player);
 	}
 
-	private void setFeatherCount(ItemStack ist, int featherCount) {
+	public void setFeatherCount(ItemStack ist, int featherCount) {
 		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))

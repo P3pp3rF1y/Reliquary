@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
+import xreliquary.init.ModItems;
 import xreliquary.init.ModPotions;
 import xreliquary.items.ItemRendingGale;
 import xreliquary.reference.Settings;
@@ -32,14 +33,14 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 
 				int flightRange = Settings.RendingGale.pedestalFlightRange;
 
-				if(NBTHelper.getInteger("feathers", stack) >= (rendingGale.getChargeCost() * SECONDS_BETWEEN_BUFF_CHECKS)) {
+				if(ModItems.rendingGale.getFeatherCount(stack) >= (rendingGale.getChargeCost() * SECONDS_BETWEEN_BUFF_CHECKS)) {
 					List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos.getX() - flightRange, pos.getY() - flightRange, pos.getZ() - flightRange, pos.getX() + flightRange, pos.getY() + flightRange, pos.getZ() + flightRange));
 
 					if(!players.isEmpty()) {
 						for(EntityPlayer player : players) {
 							player.addPotionEffect(new PotionEffect(ModPotions.potionFlight, 20 * 20));
 						}
-						NBTHelper.setInteger("feathers", stack, NBTHelper.getInteger("feathers", stack) - (SECONDS_BETWEEN_BUFF_CHECKS * Settings.RendingGale.pedestalCostPerSecond));
+						ModItems.rendingGale.setFeatherCount(stack, ModItems.rendingGale.getFeatherCount(stack) - (SECONDS_BETWEEN_BUFF_CHECKS * Settings.RendingGale.pedestalCostPerSecond));
 					}
 				}
 				buffCheckCoolDown = SECONDS_BETWEEN_BUFF_CHECKS * 20;
