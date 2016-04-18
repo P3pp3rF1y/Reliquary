@@ -2,10 +2,10 @@ package xreliquary.client.gui;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 import xreliquary.util.LanguageHelper;
 
 /**
@@ -79,14 +79,14 @@ public abstract class GuiBase extends GuiContainer {
 	 * @param y     Where the stack will be placed on the y axis.
 	 */
 	public void drawItemStack(ItemStack stack, int x, int y) {
-		GL11.glDisable(GL11.GL_LIGHTING);
+		GlStateManager.disableLighting();
 		this.zLevel = 200.0F;
 		itemRender.zLevel = 200.0F;
 		itemRender.renderItemAndEffectIntoGUI(stack, x, y);
 		itemRender.renderItemOverlayIntoGUI(stack.getItem().getFontRenderer(stack), stack, x, y, null);
 		this.zLevel = 0.0F;
 		itemRender.zLevel = 0.0F;
-		GL11.glEnable(GL11.GL_LIGHTING);
+		GlStateManager.enableLighting();
 	}
 
 }
