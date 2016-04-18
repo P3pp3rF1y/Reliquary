@@ -1,10 +1,8 @@
 package xreliquary.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -20,18 +18,13 @@ import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.pedestal.PedestalRegistry;
 
-public class BlockPedestal extends BlockBase implements ITileEntityProvider {
+public class BlockPedestal extends BlockBase {
 	private static final AxisAlignedBB PEDESTAL_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.6875D, 0.875D);
 
 	public BlockPedestal() {
 		super(Material.rock, Names.pedestal);
 		this.setUnlocalizedName(Names.pedestal);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-	}
-
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new TileEntityPedestal();
 	}
 
 	@Override
@@ -62,6 +55,16 @@ public class BlockPedestal extends BlockBase implements ITileEntityProvider {
 		} else {
 			return InventoryHelper.tryAddingPlayerCurrentItem(player, pedestal, EnumHand.MAIN_HAND);
 		}
+	}
+
+	@Override
+	public boolean hasTileEntity(IBlockState state) {
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) {
+		return new TileEntityPedestal();
 	}
 
 	@Override
