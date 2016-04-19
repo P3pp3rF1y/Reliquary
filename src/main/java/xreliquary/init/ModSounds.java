@@ -11,14 +11,12 @@ public class ModSounds {
 	public static SoundEvent xshot = new SoundEvent(new ResourceLocation(Reference.MOD_ID, "xshot"));
 
 	public static void init() {
-		registerSoundEvent(book);
-		registerSoundEvent(xload);
-		registerSoundEvent(xshot);
-
-		//TODO fix sounds when forge ready
+		registerSoundEvent(book, new ResourceLocation(Reference.MOD_ID, "book"));
+		registerSoundEvent(xload, new ResourceLocation(Reference.MOD_ID, "xload"));
+		registerSoundEvent(xshot, new ResourceLocation(Reference.MOD_ID, "xshot"));
 	}
 
-	private static void registerSoundEvent(SoundEvent soundEvent) {
-		GameRegistry.register(soundEvent.setRegistryName(soundEvent.getSoundName()));
+	private static void registerSoundEvent(SoundEvent soundEvent, ResourceLocation resourceLocation) {
+		GameRegistry.register(soundEvent.setRegistryName(resourceLocation));
 	}
 }
