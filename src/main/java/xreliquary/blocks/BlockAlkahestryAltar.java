@@ -23,7 +23,7 @@ import xreliquary.util.NBTHelper;
 
 import java.util.Random;
 
-public class BlockAlkahestryAltar extends BlockContainer {
+public class BlockAlkahestryAltar extends BlockBase {
 
 	static public class BlockActiveAlkahestryAltar extends BlockAlkahestryAltar {
 		public BlockActiveAlkahestryAltar() {
@@ -41,13 +41,12 @@ public class BlockAlkahestryAltar extends BlockContainer {
 	private final boolean isActive;
 
 	public BlockAlkahestryAltar(boolean isActive) {
-		super(Material.rock);
+		super(Material.rock, (isActive ? Names.altar : Names.altar_idle));
 		this.isActive = isActive;
 
 		this.setHardness(1.5F);
 		this.setResistance(5.0F);
 
-		this.setUnlocalizedName(this.isActive ? Names.altar : Names.altar_idle);
 		this.setLightLevel(this.isActive ? getAltarActiveLightLevel() : 0.0F);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
@@ -55,6 +54,16 @@ public class BlockAlkahestryAltar extends BlockContainer {
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.MODEL;
+	}
+
+	@Override
+	public boolean hasTileEntity(IBlockState state) {
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) {
+		return new TileEntityAltar();
 	}
 
 	private float getAltarActiveLightLevel() {
@@ -138,10 +147,4 @@ public class BlockAlkahestryAltar extends BlockContainer {
 			world.setBlockState(pos, ModBlocks.alkahestryAltar.getDefaultState());
 		}
 	}
-
-	@Override
-	public TileEntity createNewTileEntity(World var1, int dunnoWhatThisIs) {
-		return new TileEntityAltar();
-	}
-
 }

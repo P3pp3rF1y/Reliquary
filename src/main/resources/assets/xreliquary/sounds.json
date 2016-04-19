@@ -2,25 +2,25 @@
     "book": {
         "category": "neutral",
         "sounds": [
-            "book"
+            "xreliquary:book"
         ]
     },
     "xload": {
         "category": "player",
         "sounds": [
-            "xload"
+            "xreliquary:xload"
         ]
     },
     "xshot": {
         "category": "player",
         "sounds": [
-            "xshot"
+            "xreliquary:xshot"
         ]
     },
     "gust": {
         "category": "player",
         "sounds": [
-            "gust"
+            "xreliquary:gust"
         ]
     }
 }

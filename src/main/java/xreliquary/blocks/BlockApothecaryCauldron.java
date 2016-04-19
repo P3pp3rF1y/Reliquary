@@ -1,6 +1,5 @@
 package xreliquary.blocks;
 
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
@@ -12,10 +11,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
@@ -26,7 +25,7 @@ import xreliquary.reference.Names;
 import java.util.List;
 import java.util.Random;
 
-public class BlockApothecaryCauldron extends BlockBase implements ITileEntityProvider {
+public class BlockApothecaryCauldron extends BlockBase {
 
 	public static final PropertyInteger LEVEL = PropertyInteger.create("level", 0, 3);
 	protected static final AxisAlignedBB AABB_LEGS = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.3125D, 1.0D);
@@ -56,11 +55,6 @@ public class BlockApothecaryCauldron extends BlockBase implements ITileEntityPro
 	@Override
 	public int getMetaFromState(IBlockState state) {
 		return state.getValue(LEVEL);
-	}
-
-	@Override
-	public int damageDropped(IBlockState state) {
-		return getMetaFromState(state);
 	}
 
 	@Override
@@ -165,12 +159,12 @@ public class BlockApothecaryCauldron extends BlockBase implements ITileEntityPro
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World var1, int dunnoWhatThisIs) {
-		return new TileEntityCauldron();
+	public boolean hasTileEntity(IBlockState state) {
+		return true;
 	}
 
 	@Override
-	public boolean hasTileEntity(IBlockState state) {
-		return true;
+	public TileEntity createTileEntity(World world, IBlockState state) {
+		return new TileEntityCauldron();
 	}
 }

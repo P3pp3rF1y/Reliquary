@@ -1,6 +1,5 @@
 package xreliquary.blocks;
 
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -31,7 +30,7 @@ import xreliquary.reference.Names;
 import java.util.List;
 import java.util.Random;
 
-public class BlockApothecaryMortar extends BlockBase implements ITileEntityProvider {
+public class BlockApothecaryMortar extends BlockBase {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	private static final AxisAlignedBB MORTAR_AABB = new AxisAlignedBB(0.25D, 0.0D, 0.25D, 0.75D, 0.3D, 0.75F);
 
@@ -68,6 +67,16 @@ public class BlockApothecaryMortar extends BlockBase implements ITileEntityProvi
 	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, FACING);
+	}
+
+	@Override
+	public boolean hasTileEntity(IBlockState state) {
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) {
+		return new TileEntityMortar();
 	}
 
 	@Override
@@ -155,10 +164,4 @@ public class BlockApothecaryMortar extends BlockBase implements ITileEntityProvi
 
 		super.breakBlock(world, pos, state);
 	}
-
-	@Override
-	public TileEntity createNewTileEntity(World var1, int dunnoWhatThisIs) {
-		return new TileEntityMortar();
-	}
-
 }

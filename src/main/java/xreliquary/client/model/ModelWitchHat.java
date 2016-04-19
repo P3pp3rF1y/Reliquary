@@ -2,8 +2,8 @@ package xreliquary.client.model;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import org.lwjgl.opengl.GL11;
 
 public class ModelWitchHat extends ModelBiped {
 
@@ -35,8 +35,8 @@ public class ModelWitchHat extends ModelBiped {
 		else
 			this.witchHat.rotationPointY = 0.0F;
 
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		this.witchHat.render(f5);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 }

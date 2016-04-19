@@ -57,6 +57,8 @@ public class Reliquary {
 
 		ModCapabilities.init();
 
+		ModSounds.init();
+
 		PROXY.preInit();
 
 		//TODO figure out a better way to handle this if possible

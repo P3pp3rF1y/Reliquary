@@ -3,6 +3,7 @@ package xreliquary.handler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,8 +15,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModCapabilities;
 import xreliquary.init.ModItems;
@@ -290,22 +289,22 @@ public class ClientEventHandler {
 		float overlayScale = 2.5F;
 		float overlayOpacity = 0.75F;
 
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		ScaledResolution sr = new ScaledResolution(minecraft);
-		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glLoadIdentity();
-		GL11.glOrtho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		GL11.glLoadIdentity();
-		GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
+		GlStateManager.clear(256);
+		GlStateManager.matrixMode(5889);
+		GlStateManager.loadIdentity();
+		GlStateManager.ortho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
+		GlStateManager.matrixMode(5888);
+		GlStateManager.loadIdentity();
+		GlStateManager.translate(0.0F, 0.0F, -2000.0F);
 
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		RenderHelper.enableGUIStandardItemLighting();
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-		GL11.glEnable(GL11.GL_LIGHTING);
+		GlStateManager.disableLighting();
+		GlStateManager.enableRescaleNormal();
+		GlStateManager.enableColorMaterial();
+		GlStateManager.enableLighting();
 
 		int hudOverlayX = 8;
 		int hudOverlayY = 8;
@@ -348,9 +347,9 @@ public class ClientEventHandler {
 			renderItem.renderItemAndEffectIntoGUI(new ItemStack(Items.flint_and_steel, 1, 0), hudOverlayX - (leftSide ? 0 : 15), hudOverlayY + 24);
 		}
 
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glPopMatrix();
-		GL11.glPopMatrix();
+		GlStateManager.disableLighting();
+		GlStateManager.popMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	public void handleRendingGaleHUDCheck(Minecraft mc) {
@@ -383,22 +382,22 @@ public class ClientEventHandler {
 		float overlayScale = 2.5F;
 		float overlayOpacity = 0.75F;
 
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		ScaledResolution sr = new ScaledResolution(minecraft);
-		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glLoadIdentity();
-		GL11.glOrtho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		GL11.glLoadIdentity();
-		GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
+		GlStateManager.clear(256);
+		GlStateManager.matrixMode(5889);
+		GlStateManager.loadIdentity();
+		GlStateManager.ortho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
+		GlStateManager.matrixMode(5888);
+		GlStateManager.loadIdentity();
+		GlStateManager.translate(0.0F, 0.0F, -2000.0F);
 
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		RenderHelper.enableGUIStandardItemLighting();
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-		GL11.glEnable(GL11.GL_LIGHTING);
+		GlStateManager.disableLighting();
+		GlStateManager.enableRescaleNormal();
+		GlStateManager.enableColorMaterial();
+		GlStateManager.enableLighting();
 
 		int hudOverlayX = 8;
 		int hudOverlayY = 8;
@@ -444,9 +443,9 @@ public class ClientEventHandler {
 			}
 		}
 
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glPopMatrix();
-		GL11.glPopMatrix();
+		GlStateManager.disableLighting();
+		GlStateManager.popMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	public void handleSojournerHUDCheck(Minecraft mc) {
@@ -483,22 +482,22 @@ public class ClientEventHandler {
 		float overlayScale = 2.5F;
 		float overlayOpacity = 0.75F;
 
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		ScaledResolution sr = new ScaledResolution(minecraft);
-		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glLoadIdentity();
-		GL11.glOrtho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		GL11.glLoadIdentity();
-		GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
+		GlStateManager.clear(256);
+		GlStateManager.matrixMode(5889);
+		GlStateManager.loadIdentity();
+		GlStateManager.ortho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
+		GlStateManager.matrixMode(5888);
+		GlStateManager.loadIdentity();
+		GlStateManager.translate(0.0F, 0.0F, -2000.0F);
 
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		RenderHelper.enableGUIStandardItemLighting();
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-		GL11.glEnable(GL11.GL_LIGHTING);
+		GlStateManager.disableLighting();
+		GlStateManager.enableRescaleNormal();
+		GlStateManager.enableColorMaterial();
+		GlStateManager.enableLighting();
 
 		int hudOverlayX = 8;
 		int hudOverlayY = 8;
@@ -548,10 +547,10 @@ public class ClientEventHandler {
 			hudOverlayX = hudOverlayX + (leftSide ? 16 : 0);
 		}
 
-		GL11.glDisable(GL11.GL_LIGHTING);
+		GlStateManager.disableLighting();
 		minecraft.fontRendererObj.drawStringWithShadow(Integer.toString(stackSize), hudOverlayX - (leftSide ? 0 : (Integer.toString(stackSize).length() * 6)), hudOverlayY + 29, color);
-		GL11.glPopMatrix();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	public static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float opacity, float scale) {

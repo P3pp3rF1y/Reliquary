@@ -12,8 +12,15 @@ public class PotionFlight extends Potion {
 	private ResourceLocation icon = new ResourceLocation(Reference.MOD_ID, "textures/gui/flight_effect.png");
 
 	public PotionFlight() {
-		super(/*new ResourceLocation(Reference.DOMAIN + "potions/flight"), //TODO see if this needs to get back*/ false, 0);
+		super(false, 0);
 		this.setPotionName("flight");
+		this.setIconIndex(0,0);
+		this.setRegistryName(Reference.MOD_ID, "flight_potion");
+	}
+
+	@Override
+	public boolean hasStatusIcon() {
+		return false;
 	}
 
 	@Override
