@@ -8,16 +8,23 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
+import java.util.Arrays;
+
 public class FilteredItemStackHandler extends ItemStackHandler {
 	public static final int SLOTS_PER_TYPE = 2;
 	private ItemStack[] itemStacks;
 	private int[] totalAmounts;
 	private int[] totalLimits;
 	private int[] unitWorth;
+	private boolean dynamicSize = false;
+	private boolean[] removable;
 
 	protected FilteredItemStackHandler(int initialSlots) {
 		super(initialSlots * SLOTS_PER_TYPE);
 		this.totalAmounts = new int[initialSlots];
+		this.removable = new boolean[initialSlots];
+		Arrays.fill(this.removable, false);
+
 	}
 
 	public FilteredItemStackHandler(int[] totalLimits, Item[] items, int[] unitWorth) {
@@ -58,7 +65,91 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		updateInputOutputSlots(parentSlot);
 	}
 
+	private void addValidItemStack(ItemStack stack) {
+		expandStacks();
+
+		ItemStack[] expandedStacks = new ItemStack[itemStacks.length + 1];
+		System.arraycopy(itemStacks, 0, expandedStacks, 0, itemStacks.length);
+		expandedStacks[itemStacks.length] = stack;
+
+		this.itemStacks = expandedStacks;
+
+		this.totalAmounts = expandIntArray(this.totalAmounts, 0);
+
+	}
+
+	private int[] expandIntArray(int[] values, int def) {
+		int[] expandedArray = new int[values.length];
+
+		System.arraycopy(values, 0, expandedArray, 0, values.length);
+		expandedArray[values.length] = def;
+
+		return expandedArray;
+	}
+
+	private int[] removeFromIntArray(int[] values, int index) {
+		int[] shrunkArray = new int[values.length - 1];
+		if(index > 0) {
+			System.arraycopy(values, 0, shrunkArray, 0, index);
+		}
+		if(index < (values.length - 1)) {
+			System.arraycopy(values, index + 1, shrunkArray, index, values.length - (index + 1));
+		}
+
+		return shrunkArray;
+	}
+
+
+	private void expandStacks() {
+		if (dynamicSize) {
+			ItemStack[] expandedStacks = new ItemStack[stacks.length + SLOTS_PER_TYPE];
+			System.arraycopy(stacks, 0, expandedStacks, 0, stacks.length);
+
+			stacks = expandedStacks;
+		}
+	}
+
+	private void removeStacks(int parentSlot) {
+		if (dynamicSize) {
+			add shrinking logic
+		}
+	}
+
+	private void removeValidItemStackFromSlot(int parentSlot) {
+		ItemStack[] shrunkStacks = new ItemStack[itemStacks.length - 1];
+		if(parentSlot > 0) {
+			System.arraycopy(itemStacks, 0, shrunkStacks, 0, parentSlot);
+		}
+		if(parentSlot < (itemStacks.length - 1)) {
+			System.arraycopy(itemStacks, parentSlot + 1, shrunkStacks, parentSlot, itemStacks.length - (parentSlot + 1));
+		}
+
+		this.itemStacks = shrunkStacks;
+		this.totalAmounts = removeFromIntArray(this.totalAmounts, parentSlot);
+
+		removeStacks(parentSlot);
+	}
+
 	public void markDirty() {
+		if (dynamicSize) {
+			int nonNullStackIndex = -1;
+
+			boolean newParent = false;
+			for(int i = totalAmounts.length * SLOTS_PER_TYPE; i < (totalAmounts.length * SLOTS_PER_TYPE) + SLOTS_PER_TYPE; i++) {
+				if (stacks[i] != null) {
+					nonNullStackIndex = i;
+					break;
+				}
+			}
+
+			if (nonNullStackIndex > -1) {
+				addValidItemStack(stacks[nonNullStackIndex]);
+			}
+		}
+
+		add logic that walks through this every 2 slots as hopper will set new dynamic slots without total amount updated
+		add new null slots if there was a new stack
+
 		for(int i = 0; i < totalAmounts.length; i++) {
 			int totalAmount = worthToUnits(totalAmounts[i], i);
 
@@ -77,6 +168,10 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 				totalAmounts[i] += unitsToWorth(outputCount - Math.min(totalAmount, parentSlotStack.getMaxStackSize()), i);
 
 			updateInputOutputSlots(i);
+
+			if (getParentSlotRemovable(i) && totalAmounts[i] == 0) {
+				removeValidItemStackFromSlot(i);
+			}
 		}
 	}
 
@@ -92,25 +187,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		return unitWorth[parentSlot];
 	}
 
-	protected void addValidItemStack(ItemStack stack) {
-		ItemStack[] expandedStacks = new ItemStack[itemStacks.length + 1];
-		System.arraycopy(itemStacks, 0, expandedStacks, 0, itemStacks.length);
-		expandedStacks[itemStacks.length] = stack;
-
-		this.itemStacks = expandedStacks;
-	}
-
-	protected void removeValidItemStackFromSlot(int parentSlot) {
-		ItemStack[] shrunkStacks = new ItemStack[itemStacks.length - 1];
-		if(parentSlot > 0) {
-			System.arraycopy(itemStacks, 0, shrunkStacks, 0, parentSlot);
-		}
-		if(parentSlot < (itemStacks.length - 1)) {
-			System.arraycopy(itemStacks, parentSlot + 1, shrunkStacks, parentSlot, itemStacks.length - (parentSlot + 1));
-		}
-
-		this.itemStacks = shrunkStacks;
-	}
+	protected boolean getParentSlotRemovable(int parentSlot) {return false;}
 
 	private int unitsToWorth(int units, int parentSlot) {
 		return units * getParentSlotUnitWorth(parentSlot);
@@ -122,6 +199,11 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		if(ItemStack.areItemStacksEqual(this.stacks[slot], stack))
 			return;
 
+		add logic to populate filter item stack if parent isn't set
+
+		add logic to populate empty totalamount
+
+				add new null stacks if there's new parent
 		totalAmounts[getParentSlot(slot)] += unitsToWorth((stack == null ? 0 : stack.stackSize) - stacks[slot].stackSize, getParentSlot(slot));
 
 		if(!isInputSlot(slot))
@@ -186,8 +268,13 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 
 		int parentSlot = getParentSlot(slot);
 
+		verify that the stack doesn't exist already in case it's full as it may be valid, but there should only be one of a type
+
+
+
 		if(!isItemStackValidForParentSlot(stack, parentSlot))
 			return stack;
+
 
 		ItemStack existing = this.stacks[slot];
 
@@ -206,6 +293,8 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		boolean reachedLimit = stack.stackSize > limit;
 
 		if(!simulate) {
+			add new parent if there's one
+					add new null stacks if there's new parent
 			totalAmounts[parentSlot] += unitsToWorth(reachedLimit ? limit : stack.stackSize, parentSlot);
 			if(!isInputSlot(slot)) {
 				if(existing == null) {
@@ -234,6 +323,8 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 			} else {
 				if(existing.stackSize <= amount) {
 					if(!simulate) {
+						dynamic slots should get this deleted if total amount is 0
+								also extract needs total amounts logic
 						this.stacks[slot] = ItemHandlerHelper.copyStackWithSize(existing, 0);
 						this.onContentsChanged(slot);
 					}
@@ -277,5 +368,15 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		}
 
 		super.deserializeNBT(nbt);
+
+		add logic to reconstruct filter stacks based on output stacks
+	}
+
+	public void setDynamicSize(boolean dynamicSize) {
+		this.dynamicSize = dynamicSize;
+	}
+
+	public ItemStack[] getItemStacks() {
+		return itemStacks;
 	}
 }

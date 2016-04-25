@@ -64,6 +64,9 @@ dependencies {
     compile name:'Baubles', version: baubles_version, ext: 'jar'
     //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
     //compile name:'TConstruct', version: tconstruct_version, ext: 'jar'
+
+    testCompile 'org.testng:testng:6.9.10'
+    testCompile "org.mockito:mockito-core:1.+"
 }
 
 minecraft {
