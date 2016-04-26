@@ -70,6 +70,10 @@ dependencies {
     testCompile "org.powermock:powermock-mockito-release-full:1.6.2"
 }
 
+test {
+    useTestNG()
+}
+
 minecraft {
 	version = minecraft_version + "-" + forge_version + "-" + minecraft_version
     mappings = mcp_mappings
