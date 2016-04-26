@@ -12,7 +12,7 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 	public HarvestRodItemStackHandler() {
 		super(1);
 		this.setDynamicSize(true);
-		this.getItemStacks()[BONEMEAL_SLOT] = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
+		this.getFilterStacks()[BONEMEAL_SLOT] = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
 	}
 
 	@Override

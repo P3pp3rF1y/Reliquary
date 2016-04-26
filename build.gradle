@@ -67,6 +67,7 @@ dependencies {
 
     testCompile 'org.testng:testng:6.9.10'
     testCompile "org.mockito:mockito-core:1.+"
+    testCompile "org.powermock:powermock-mockito-release-full:1.6.2"
 }
 
 minecraft {

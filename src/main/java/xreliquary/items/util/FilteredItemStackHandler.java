@@ -5,37 +5,36 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
 
-import java.util.Arrays;
-
-public class FilteredItemStackHandler extends ItemStackHandler {
+public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<NBTTagCompound> {
 	public static final int SLOTS_PER_TYPE = 2;
-	private ItemStack[] itemStacks;
+	private ItemStack[] filterStacks;
 	private int[] totalAmounts;
 	private int[] totalLimits;
 	private int[] unitWorth;
 	private boolean dynamicSize = false;
-	private boolean[] removable;
+
+	protected ItemStack[] stacks;
 
 	protected FilteredItemStackHandler(int initialSlots) {
-		super(initialSlots * SLOTS_PER_TYPE);
+		stacks = new ItemStack[initialSlots * SLOTS_PER_TYPE];
 		this.totalAmounts = new int[initialSlots];
-		this.removable = new boolean[initialSlots];
-		Arrays.fill(this.removable, false);
-
 	}
 
 	public FilteredItemStackHandler(int[] totalLimits, Item[] items, int[] unitWorth) {
 		this(totalLimits, getItemStacks(items), unitWorth);
 	}
 
-	public FilteredItemStackHandler(int[] totalLimits, ItemStack[] itemStacks, int[] unitWorth) {
-		this(itemStacks.length);
+	public FilteredItemStackHandler(int[] totalLimits, ItemStack[] filterStacks, int[] unitWorth) {
+		this(filterStacks.length);
 
 		this.totalLimits = totalLimits;
-		this.itemStacks = itemStacks;
+		this.filterStacks = filterStacks;
 		this.unitWorth = unitWorth;
 	}
 
@@ -66,13 +65,13 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 	}
 
 	private void addValidItemStack(ItemStack stack) {
-		expandStacks();
+		expandFilterStacks();
 
-		ItemStack[] expandedStacks = new ItemStack[itemStacks.length + 1];
-		System.arraycopy(itemStacks, 0, expandedStacks, 0, itemStacks.length);
-		expandedStacks[itemStacks.length] = stack;
+		ItemStack[] expandedStacks = new ItemStack[filterStacks.length + 1];
+		System.arraycopy(filterStacks, 0, expandedStacks, 0, filterStacks.length);
+		expandedStacks[filterStacks.length] = stack;
 
-		this.itemStacks = expandedStacks;
+		this.filterStacks = expandedStacks;
 
 		this.totalAmounts = expandIntArray(this.totalAmounts, 0);
 
@@ -99,9 +98,15 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		return shrunkArray;
 	}
 
+	private void expandFilterStacks(int size) {
+		ItemStack[] expandedStacks = new ItemStack[size];
+		System.arraycopy(stacks, 0, expandedStacks, 0, stacks.length);
 
-	private void expandStacks() {
-		if (dynamicSize) {
+		stacks = expandedStacks;
+	}
+
+	private void expandFilterStacks() {
+		if(dynamicSize) {
 			ItemStack[] expandedStacks = new ItemStack[stacks.length + SLOTS_PER_TYPE];
 			System.arraycopy(stacks, 0, expandedStacks, 0, stacks.length);
 
@@ -109,46 +114,50 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		}
 	}
 
-	private void removeStacks(int parentSlot) {
-		if (dynamicSize) {
-			add shrinking logic
+	private void removeStack(int parentSlot) {
+		if(dynamicSize) {
+			ItemStack[] shrunkStacks = new ItemStack[stacks.length - SLOTS_PER_TYPE];
+			if(parentSlot > 0) {
+				System.arraycopy(stacks, 0, shrunkStacks, 0, (parentSlot + 1) * SLOTS_PER_TYPE);
+			}
+			if((parentSlot * SLOTS_PER_TYPE) < (stacks.length - SLOTS_PER_TYPE)) {
+				System.arraycopy(stacks, (parentSlot + 1) * SLOTS_PER_TYPE, shrunkStacks, parentSlot, stacks.length - ((parentSlot + 1) * SLOTS_PER_TYPE));
+			}
+
+			stacks = shrunkStacks;
 		}
 	}
 
 	private void removeValidItemStackFromSlot(int parentSlot) {
-		ItemStack[] shrunkStacks = new ItemStack[itemStacks.length - 1];
+		ItemStack[] shrunkStacks = new ItemStack[filterStacks.length - 1];
 		if(parentSlot > 0) {
-			System.arraycopy(itemStacks, 0, shrunkStacks, 0, parentSlot);
+			System.arraycopy(filterStacks, 0, shrunkStacks, 0, parentSlot);
 		}
-		if(parentSlot < (itemStacks.length - 1)) {
-			System.arraycopy(itemStacks, parentSlot + 1, shrunkStacks, parentSlot, itemStacks.length - (parentSlot + 1));
+		if(parentSlot < (filterStacks.length - 1)) {
+			System.arraycopy(filterStacks, parentSlot + 1, shrunkStacks, parentSlot, filterStacks.length - (parentSlot + 1));
 		}
 
-		this.itemStacks = shrunkStacks;
+		this.filterStacks = shrunkStacks;
 		this.totalAmounts = removeFromIntArray(this.totalAmounts, parentSlot);
 
-		removeStacks(parentSlot);
+		removeStack(parentSlot);
 	}
 
 	public void markDirty() {
-		if (dynamicSize) {
+		if(dynamicSize) {
 			int nonNullStackIndex = -1;
 
-			boolean newParent = false;
 			for(int i = totalAmounts.length * SLOTS_PER_TYPE; i < (totalAmounts.length * SLOTS_PER_TYPE) + SLOTS_PER_TYPE; i++) {
-				if (stacks[i] != null) {
+				if(stacks[i] != null) {
 					nonNullStackIndex = i;
 					break;
 				}
 			}
 
-			if (nonNullStackIndex > -1) {
+			if(nonNullStackIndex > -1) {
 				addValidItemStack(stacks[nonNullStackIndex]);
 			}
 		}
-
-		add logic that walks through this every 2 slots as hopper will set new dynamic slots without total amount updated
-		add new null slots if there was a new stack
 
 		for(int i = 0; i < totalAmounts.length; i++) {
 			int totalAmount = worthToUnits(totalAmounts[i], i);
@@ -169,7 +178,7 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 
 			updateInputOutputSlots(i);
 
-			if (getParentSlotRemovable(i) && totalAmounts[i] == 0) {
+			if(getParentSlotRemovable(i) && totalAmounts[i] == 0) {
 				removeValidItemStackFromSlot(i);
 			}
 		}
@@ -187,7 +196,9 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		return unitWorth[parentSlot];
 	}
 
-	protected boolean getParentSlotRemovable(int parentSlot) {return false;}
+	protected boolean getParentSlotRemovable(int parentSlot) {
+		return false;
+	}
 
 	private int unitsToWorth(int units, int parentSlot) {
 		return units * getParentSlotUnitWorth(parentSlot);
@@ -196,44 +207,55 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 	@Override
 	public void setStackInSlot(int slot, ItemStack stack) {
 		validateSlotIndex(slot);
-		if(ItemStack.areItemStacksEqual(this.stacks[slot], stack))
+		if(ItemStack.areItemStacksEqual(this.stacks[slot], stack) || !isItemStackValidForParentSlot(stack, getParentSlot(slot)))
 			return;
 
-		add logic to populate filter item stack if parent isn't set
+		int parentSlot = getParentSlot(slot);
 
-		add logic to populate empty totalamount
+		if(stack != null && parentSlot == filterStacks.length)
+			addValidItemStack(stack);
 
-				add new null stacks if there's new parent
-		totalAmounts[getParentSlot(slot)] += unitsToWorth((stack == null ? 0 : stack.stackSize) - stacks[slot].stackSize, getParentSlot(slot));
+		totalAmounts[parentSlot] += unitsToWorth((stack == null ? 0 : stack.stackSize) - ((stacks[slot]==null) ? 0 : stacks[slot].stackSize), parentSlot);
 
 		if(!isInputSlot(slot))
 			this.stacks[slot] = stack;
 
-		updateInputOutputSlots(getParentSlot(slot));
-		onContentsChanged(slot);
+		updateInputOutputSlots(parentSlot);
+	}
+
+	@Override
+	public int getSlots() {
+		return stacks.length;
+	}
+
+	@Override
+	public ItemStack getStackInSlot(int slot) {
+		validateSlotIndex(slot);
+		return this.stacks[slot];
 	}
 
 	private void updateInputOutputSlots(int parentSlot) {
 		int outputSlot = getOutputSlot(parentSlot);
 		int inputSlot = getInputSlot(parentSlot);
 
+		ItemStack parentSlotStack = getParentSlotStack(parentSlot);
+
 		if(stacks[outputSlot] == null)
-			stacks[outputSlot] = getParentSlotStack(parentSlot);
+			stacks[outputSlot] = parentSlotStack.copy();
 
 		ItemStack outputStack = stacks[outputSlot];
 
-		if((outputStack.stackSize < outputStack.getMaxStackSize() && outputStack.stackSize < worthToUnits(totalAmounts[parentSlot], parentSlot)) || outputStack.stackSize > worthToUnits(totalAmounts[parentSlot], parentSlot)) {
-			outputStack.stackSize = Math.min(outputStack.getMaxStackSize(), worthToUnits(totalAmounts[parentSlot], parentSlot));
+		if((outputStack.stackSize < parentSlotStack.getMaxStackSize() && outputStack.stackSize < worthToUnits(totalAmounts[parentSlot], parentSlot)) || outputStack.stackSize > worthToUnits(totalAmounts[parentSlot], parentSlot)) {
+			outputStack.stackSize = Math.min(parentSlotStack.getMaxStackSize(), worthToUnits(totalAmounts[parentSlot], parentSlot));
 		}
 
 		int remainingCapacity = worthToUnits(getParentSlotLimit(parentSlot) - totalAmounts[parentSlot], parentSlot);
 
 		int inputAmount = stacks[inputSlot] == null ? 0 : stacks[inputSlot].stackSize;
 
-		ItemStack parentSlotStack = getParentSlotStack(parentSlot);
 
 		if(inputAmount != Math.max(parentSlotStack.getMaxStackSize() - remainingCapacity, 0)) {
-			stacks[inputSlot] = parentSlotStack;
+			stacks[inputSlot] = parentSlotStack.copy();
 			stacks[inputSlot].stackSize = Math.max(parentSlotStack.getMaxStackSize() - remainingCapacity, 0);
 		}
 
@@ -243,11 +265,11 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 	}
 
 	protected ItemStack getParentSlotStack(int parentSlot) {
-		return itemStacks[parentSlot];
+		return filterStacks[parentSlot];
 	}
 
 	protected boolean isItemStackValidForParentSlot(ItemStack stack, int parentSlot) {
-		return ItemHandlerHelper.canItemStacksStack(stack, itemStacks[parentSlot]);
+		return ItemHandlerHelper.canItemStacksStack(stack, filterStacks[parentSlot]);
 	}
 
 	private int getInputSlot(int parentSlot) {
@@ -268,13 +290,8 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 
 		int parentSlot = getParentSlot(slot);
 
-		verify that the stack doesn't exist already in case it's full as it may be valid, but there should only be one of a type
-
-
-
-		if(!isItemStackValidForParentSlot(stack, parentSlot))
+		if(!isItemStackValidForParentSlot(stack, parentSlot) || filterStackExists(stack))
 			return stack;
-
 
 		ItemStack existing = this.stacks[slot];
 
@@ -293,8 +310,9 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 		boolean reachedLimit = stack.stackSize > limit;
 
 		if(!simulate) {
-			add new parent if there's one
-					add new null stacks if there's new parent
+			if(parentSlot == filterStacks.length)
+				addValidItemStack(stack);
+
 			totalAmounts[parentSlot] += unitsToWorth(reachedLimit ? limit : stack.stackSize, parentSlot);
 			if(!isInputSlot(slot)) {
 				if(existing == null) {
@@ -304,11 +322,18 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 				}
 			}
 			updateInputOutputSlots(parentSlot);
-
-			onContentsChanged(slot);
 		}
 
 		return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.stackSize - limit) : null;
+	}
+
+	private boolean filterStackExists(ItemStack stack) {
+		for(ItemStack filterStack : filterStacks) {
+			if(ItemHandlerHelper.canItemStacksStack(filterStack, stack))
+				return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -317,26 +342,29 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 			return null;
 		} else {
 			this.validateSlotIndex(slot);
-			ItemStack existing = this.stacks[slot];
+			ItemStack existing = this.stacks[slot].copy();
 			if(existing == null) {
 				return null;
 			} else {
 				if(existing.stackSize <= amount) {
 					if(!simulate) {
-						dynamic slots should get this deleted if total amount is 0
-								also extract needs total amounts logic
+						totalAmounts[getParentSlot(slot)] -= amount;
 						this.stacks[slot] = ItemHandlerHelper.copyStackWithSize(existing, 0);
-						this.onContentsChanged(slot);
+
+						if(dynamicSize) {
+							removeValidItemStackFromSlot(getParentSlot(slot));
+						} else {
+							updateInputOutputSlots(getParentSlot(slot));
+						}
 					}
-					updateInputOutputSlots(getParentSlot(slot));
 					return existing;
 				} else {
 					if(!simulate) {
+						totalAmounts[getParentSlot(slot)] -= amount;
 						this.stacks[slot] = ItemHandlerHelper.copyStackWithSize(existing, existing.stackSize - amount);
-						this.onContentsChanged(slot);
+						updateInputOutputSlots(getParentSlot(slot));
 					}
 
-					updateInputOutputSlots(getParentSlot(slot));
 					return ItemHandlerHelper.copyStackWithSize(existing, amount);
 				}
 			}
@@ -345,18 +373,30 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 
 	@Override
 	public NBTTagCompound serializeNBT() {
-		NBTTagCompound tagCompound = super.serializeNBT();
-
 		NBTTagList nbtTagList = new NBTTagList();
+		for(int i = 0; i < stacks.length; i++) {
+			if(stacks[i] != null) {
+				NBTTagCompound itemTag = new NBTTagCompound();
+				itemTag.setInteger("Slot", i);
+				stacks[i].writeToNBT(itemTag);
+				nbtTagList.appendTag(itemTag);
+			}
+		}
+
+		NBTTagCompound nbt = new NBTTagCompound();
+		nbt.setTag("Items", nbtTagList);
+		nbt.setInteger("Size", stacks.length);
+
+		NBTTagList nbtAmountsList = new NBTTagList();
 
 		for(int i = 0; i < totalAmounts.length; i++) {
 			NBTTagInt amountTag = new NBTTagInt(totalAmounts[i]);
-			nbtTagList.appendTag(amountTag);
+			nbtAmountsList.appendTag(amountTag);
 		}
 
-		tagCompound.setTag("TotalAmounts", nbtTagList);
+		nbt.setTag("TotalAmounts", nbtAmountsList);
 
-		return tagCompound;
+		return nbt;
 	}
 
 	@Override
@@ -367,16 +407,43 @@ public class FilteredItemStackHandler extends ItemStackHandler {
 			totalAmounts[i] = ((NBTTagInt) amounts.get(i)).getInt();
 		}
 
-		super.deserializeNBT(nbt);
+		int stacksSize = nbt.hasKey("Size", Constants.NBT.TAG_INT) ? nbt.getInteger("Size") : stacks.length;
+		setSize(stacksSize);
+		expandFilterStacks((stacksSize - (dynamicSize ? SLOTS_PER_TYPE : 0)) / SLOTS_PER_TYPE);
 
-		add logic to reconstruct filter stacks based on output stacks
+		NBTTagList tagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+		for(int i = 0; i < tagList.tagCount(); i++) {
+			NBTTagCompound itemTags = tagList.getCompoundTagAt(i);
+			int slot = itemTags.getInteger("Slot");
+
+			if(slot >= 0 && slot < stacks.length) {
+				stacks[slot] = ItemStack.loadItemStackFromNBT(itemTags);
+
+				ItemStack filterStack = stacks[slot].copy();
+				filterStack.stackSize = 1;
+				filterStacks[getParentSlot(slot)] = filterStack;
+			}
+		}
 	}
 
 	public void setDynamicSize(boolean dynamicSize) {
 		this.dynamicSize = dynamicSize;
 	}
 
-	public ItemStack[] getItemStacks() {
-		return itemStacks;
+	protected ItemStack[] getFilterStacks() {
+		return filterStacks;
+	}
+
+	protected void validateSlotIndex(int slot) {
+		if(slot < 0 || slot >= stacks.length)
+			throw new RuntimeException("Slot " + slot + " not in valid range - [0," + stacks.length + ")");
+	}
+
+	protected int getStackLimit(int slot, ItemStack stack) {
+		return stack.getMaxStackSize();
+	}
+
+	private void setSize(int size) {
+		stacks = new ItemStack[size];
 	}
 }
