@@ -295,7 +295,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 		ItemStack existing = this.stacks[slot];
 
-		int limit = getStackLimit(slot, stack);
+		int limit = getStackLimit(slot, filterStacks[parentSlot]);
 		if(existing != null) {
 			limit -= existing.stackSize;
 		}
@@ -342,31 +342,27 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 			return null;
 		} else {
 			this.validateSlotIndex(slot);
-			ItemStack existing = this.stacks[slot].copy();
+
+			if (this.stacks[slot] == null)
+				return null;
+
+			ItemStack existing = this.stacks[slot];
 			if(existing == null) {
 				return null;
 			} else {
-				if(existing.stackSize <= amount) {
-					if(!simulate) {
-						totalAmounts[getParentSlot(slot)] -= amount;
-						this.stacks[slot] = ItemHandlerHelper.copyStackWithSize(existing, 0);
+				int numberRemoved = Math.min(existing.stackSize, amount);
+				if (!simulate) {
+					totalAmounts[getParentSlot(slot)] -= numberRemoved;
+					this.stacks[slot] = ItemHandlerHelper.copyStackWithSize(existing, existing.stackSize - numberRemoved);
 
-						if(dynamicSize) {
-							removeValidItemStackFromSlot(getParentSlot(slot));
-						} else {
-							updateInputOutputSlots(getParentSlot(slot));
-						}
-					}
-					return existing;
-				} else {
-					if(!simulate) {
-						totalAmounts[getParentSlot(slot)] -= amount;
-						this.stacks[slot] = ItemHandlerHelper.copyStackWithSize(existing, existing.stackSize - amount);
+					if (totalAmounts[getParentSlot(slot)] == 0 && dynamicSize) {
+						removeValidItemStackFromSlot(getParentSlot(slot));
+					} else {
 						updateInputOutputSlots(getParentSlot(slot));
 					}
 
-					return ItemHandlerHelper.copyStackWithSize(existing, amount);
 				}
+				return ItemHandlerHelper.copyStackWithSize(existing, numberRemoved);
 			}
 		}
 	}
