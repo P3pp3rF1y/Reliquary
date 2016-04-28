@@ -1,6 +1,8 @@
 package xreliquary.items.util;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
+import org.hamcrest.core.IsNull;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -16,7 +18,7 @@ import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
 
-@PrepareForTest({ItemStack.class})
+@PrepareForTest({ItemHandlerHelper.class, ItemStack.class})
 @RunWith(PowerMockRunner.class)
 public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 
@@ -170,24 +172,180 @@ public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 				{1000, 950, false, 20, 930, 0, 64, 20},
 				{1000, 950, false, 10, 940, 4, 64, 10},
 				{1000, 1000, true, 64, 936, 0, 64, 64},
-				{1000, 1000, false, 64, 936, 0, 64, 64}};
+				{1000, 1000, false, 64, 936, 0, 64, 64},
+				{1000, 0, false, 64, 0, 0, 0, 0},
+				{1000, 0, true, 64, 0, 0, 0, 0}};
 	}
 
-	//extractItemRemovesValidItemStacks
+	@Test(dataProvider = "markDirtyUpdatesTotalAmountAndStacks")
+	public void markDirtyUpdatesTotalAmountAndStacks(int limit, int initialTotal, boolean inputSlot, int amount, int expectedTotal, int expectedInput, int expectedOutput) {
+		handler = spy(new FilteredItemStackHandler(new int[] {limit}, new ItemStack[] {itemStack}, new int[] {1}));
+		when(handler.isItemStackValidForParentSlot(any(ItemStack.class), anyInt())).thenReturn(true);
 
-	//extractItemDoesntRemoveInvalidItemStacks
+		handler.setTotalAmount(0, initialTotal);
 
-	//markDirtyUpdatesTotalAmountAndStacks
+		int slot = (inputSlot ? 0 : 1);
+		ItemStack stack = handler.getStackInSlot(slot);
+		if(stack == null) {
+			stack = itemStack.copy();
+			stack.stackSize = amount;
+			handler.setStackInSlot(0, stack);
+		} else {
+			stack.stackSize = amount;
+		}
+
+		handler.markDirty();
+
+		Assert.assertEquals(handler.getTotalAmount(0), expectedTotal);
+		Assert.assertEquals(handler.getStackInSlot(0) == null ? 0 : handler.getStackInSlot(0).stackSize, expectedInput);
+		Assert.assertEquals(handler.getStackInSlot(1) == null ? 0 : handler.getStackInSlot(1).stackSize, expectedOutput);
+	}
+
+	@DataProvider(name = "markDirtyUpdatesTotalAmountAndStacks")
+	public Object[][] getDataForMarkDirtyUpdatesTotalAmountAndStacks() {
+		return new Object[][] {{1000, 0, false, 10, 10, 0, 10},
+				{1000, 0, true, 10, 10, 0, 10},
+				{1000, 10, false, 20, 20, 0, 20},
+				{1000, 10, true, 64, 74, 0, 64},
+				{1000, 50, true, 20, 70, 0, 64},
+				{1000, 900, true, 30, 930, 0, 64},
+				{1000, 930, true, 20, 950, 14, 64},
+				{1000, 950, true, 64, 1000, 64, 64},
+				{1000, 1000, true, 0, 936, 0, 64},
+				{1000, 1000, false, 0, 936, 0, 64},
+				{1000, 950, true, 0, 936, 0, 64},
+				{1000, 128, false, 0, 64, 0, 64},
+				{1000, 80, false, 0, 16, 0, 16},
+				{1000, 64, false, 0, 0, 0, 0}
+
+		};
+	}
 
 	//dynamic size
 
-	//setTotalAmountToZeroRemovesDynamicStack
+	@Test
+	public void setTotalAmountToZeroRemovesDynamicStack() throws RuntimeException {
+		ItemStack dynamicItemStack = mock(ItemStack.class);
+		PowerMockito.when(dynamicItemStack.getMaxStackSize()).thenReturn(64);
+		PowerMockito.when(dynamicItemStack.copy()).thenAnswer(new Answer<ItemStack>() {
+			@Override
+			public ItemStack answer(InvocationOnMock invocation) throws Throwable {
+				return mock(ItemStack.class);
+			}
+		});
 
-	//setStackInSlotAddsDynamicStack
+		handler = spy(new FilteredItemStackHandler(new int[] {1000, 1000}, new ItemStack[] {itemStack, dynamicItemStack}, new int[] {1, 1}));
+		handler.setDynamicSize(true);
 
-	//setStackInSlotDoesntAddDuplicateDynamicStack
+		when(handler.getParentSlotRemovable(0)).thenReturn(false);
+		when(handler.getParentSlotRemovable(1)).thenReturn(true);
+		handler.setTotalAmount(0, 55);
+		handler.setTotalAmount(1, 10);
 
-	//setStackInSlotToNullRemovesDynamicStack
+		handler.setTotalAmount(1, 0);
+
+		Assert.assertEquals(handler.getStackInSlot(1).stackSize, 55);
+		Assert.assertEquals(handler.getSlots(), 4);
+	}
+
+	//TODO: add checks for invalid item stacks being added/set (probably just different data set with false)
+
+	@Test
+	public void setStackInSlotAddsDynamicStack() throws RuntimeException {
+		handler = spy(new FilteredItemStackHandler(new int[] {1000}, new ItemStack[] {itemStack}, new int[] {1}));
+		when(handler.isItemStackValidForParentSlot(any(ItemStack.class), anyInt())).thenReturn(true);
+		when(handler.getParentSlotUnitWorth(anyInt())).thenReturn(1);
+		when(handler.getParentSlotLimit(anyInt())).thenReturn(1000);
+		handler.setDynamicSize(true);
+
+		handler.setTotalAmount(0, 55);
+
+		ItemStack newStack = mock(ItemStack.class);
+		PowerMockito.when(newStack.copy()).thenAnswer(new Answer<ItemStack>() {
+			@Override
+			public ItemStack answer(InvocationOnMock invocation) throws Throwable {
+				return mock(ItemStack.class);
+			}
+		});
+
+		newStack.stackSize = 10;
+
+		handler.setStackInSlot(2, newStack);
+
+		Assert.assertEquals(handler.getStackInSlot(1).stackSize, 55);
+		Assert.assertEquals(handler.getTotalAmount(1), 10);
+		Assert.assertEquals(handler.getSlots(), 6);
+	}
+
+	@Test
+	public void setStackInSlotDoesntAddDuplicateDynamicStack() {
+		ItemStack dynamicStack = mock(ItemStack.class);
+		PowerMockito.when(dynamicStack.copy()).thenAnswer(new Answer<ItemStack>() {
+			@Override
+			public ItemStack answer(InvocationOnMock invocation) throws Throwable {
+				return mock(ItemStack.class);
+			}
+		});
+
+		handler = spy(new FilteredItemStackHandler(new int[] {1000, 1000}, new ItemStack[] {itemStack, dynamicStack}, new int[] {1, 1}));
+		doReturn(true).when(handler).isItemStackValidForParentSlot(any(ItemStack.class), anyInt());
+		when(handler.getParentSlotUnitWorth(anyInt())).thenReturn(1);
+		when(handler.getParentSlotLimit(anyInt())).thenReturn(1000);
+
+		PowerMockito.mockStatic(ItemHandlerHelper.class);
+		PowerMockito.when(ItemHandlerHelper.canItemStacksStack(any(ItemStack.class), any(ItemStack.class))).thenReturn(true);
+		handler.setDynamicSize(true);
+		handler.setTotalAmount(0, 55);
+		handler.setTotalAmount(1, 1000);
+
+		ItemStack newStack = mock(ItemStack.class);
+		PowerMockito.when(newStack.copy()).thenAnswer(new Answer<ItemStack>() {
+			@Override
+			public ItemStack answer(InvocationOnMock invocation) throws Throwable {
+				return mock(ItemStack.class);
+			}
+		});
+
+		newStack.stackSize = 10;
+
+		handler.setStackInSlot(4, newStack);
+
+		Assert.assertEquals(handler.getStackInSlot(1).stackSize, 55);
+		Assert.assertEquals(handler.getTotalAmount(1), 1000);
+		Assert.assertEquals(handler.getSlots(), 6);
+	}
+
+	@Test
+	public void setLastStackInSlotToNullRemovesDynamicStack() {
+		ItemStack dynamicStack = mock(ItemStack.class);
+		PowerMockito.when(dynamicStack.getMaxStackSize()).thenReturn(64);
+		PowerMockito.when(dynamicStack.copy()).thenAnswer(new Answer<ItemStack>() {
+			@Override
+			public ItemStack answer(InvocationOnMock invocation) throws Throwable {
+				return mock(ItemStack.class);
+			}
+		});
+
+		handler = new FilteredItemStackHandler(new int[] {1000, 1000}, new ItemStack[] {itemStack, dynamicStack}, new int[] {1, 1});
+		handler.setDynamicSize(true);
+		handler.setTotalAmount(0, 55);
+		handler.setTotalAmount(1, 64);
+
+		handler.setStackInSlot(3, null);
+
+		handler.markDirty();
+
+		Assert.assertEquals(handler.getSlots(), 4);
+		Assert.assertEquals(handler.getTotalAmount(0), 55);
+	}
+
+	@Test
+	public void insertItemAddsDynamicStack() {
+		handler = new FilteredItemStackHandler(new int[] {1000}, new ItemStack[] {itemStack}, new int[] {1});
+		handler.setDynamicSize(true);
+		handler.setTotalAmount(0, 55);
+
+	}
 
 	//insertItemAddsDynamicStack
 
@@ -196,6 +354,8 @@ public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 	//extractItemRemovesDynamicStackOnRemainderUnitsRemoval
 
 	//markDirtyAddsDynamicStack
+
+	//markDirtyRemovesDynamicStack
 
 	//TODO add unit worth
 
