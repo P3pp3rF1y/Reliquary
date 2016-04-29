@@ -148,21 +148,6 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	public void markDirty() {
-		if(dynamicSize) {
-			int nonNullStackIndex = -1;
-
-			for(int i = totalAmounts.length * SLOTS_PER_TYPE; i < (totalAmounts.length * SLOTS_PER_TYPE) + SLOTS_PER_TYPE; i++) {
-				if(stacks[i] != null) {
-					nonNullStackIndex = i;
-					break;
-				}
-			}
-
-			if(nonNullStackIndex > -1) {
-				addValidItemStack(stacks[nonNullStackIndex]);
-			}
-		}
-
 		for(int i = 0; i < totalAmounts.length; i++) {
 			int totalAmount = worthToUnits(totalAmounts[i], i);
 
@@ -313,12 +298,12 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 		ItemStack existing = this.stacks[slot];
 
-		int limit = getStackLimit(slot, filterStacks[parentSlot]);
+		int limit = getStackLimit(slot, parentSlot >= filterStacks.length ? stack : filterStacks[parentSlot]);
 		if(existing != null) {
 			limit -= existing.stackSize;
 		}
 
-		int remainingTotal = worthToUnits(getParentSlotLimit(parentSlot) - totalAmounts[parentSlot], parentSlot);
+		int remainingTotal = worthToUnits(getParentSlotLimit(parentSlot) - (parentSlot >= totalAmounts.length ? 0 : totalAmounts[parentSlot]), parentSlot);
 
 		limit = Math.min(limit, remainingTotal);
 
