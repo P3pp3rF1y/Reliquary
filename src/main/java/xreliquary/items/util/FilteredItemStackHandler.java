@@ -104,7 +104,10 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 	private void expandStacks(int size) {
 		ItemStack[] expandedStacks = new ItemStack[size];
-		System.arraycopy(stacks, 0, expandedStacks, 0, stacks.length);
+
+		if(stacks.length > 0) {
+			System.arraycopy(stacks, 0, expandedStacks, 0, stacks.length);
+		}
 
 		stacks = expandedStacks;
 	}
@@ -206,7 +209,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 		totalAmounts[parentSlot] += unitsToWorth((stack == null ? 0 : stack.stackSize) - ((stacks[slot] == null) ? 0 : stacks[slot].stackSize), parentSlot);
 
-		if (totalAmounts[parentSlot] == 0) {
+		if(totalAmounts[parentSlot] == 0) {
 			removeValidItemStackFromSlot(parentSlot);
 		} else {
 			if(!isInputSlot(slot))
@@ -217,9 +220,9 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	private boolean alreadyExistsInAnotherSlot(ItemStack stack, int parentSlot) {
-		for (int i=0; i<filterStacks.length;i++) {
-			if (i != parentSlot) {
-				if (ItemHandlerHelper.canItemStacksStack(stacks[getOutputSlot(i)],stack))
+		for(int i = 0; i < filterStacks.length; i++) {
+			if(i != parentSlot) {
+				if(ItemHandlerHelper.canItemStacksStack(stacks[getOutputSlot(i)], stack))
 					return true;
 			}
 		}
@@ -239,10 +242,14 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	private void updateInputOutputSlots(int parentSlot) {
+		ItemStack parentSlotStack = getParentSlotStack(parentSlot);
+
+		//we must be on client so let's just skip the rest
+		if (parentSlotStack == null)
+			return;
+
 		int outputSlot = getOutputSlot(parentSlot);
 		int inputSlot = getInputSlot(parentSlot);
-
-		ItemStack parentSlotStack = getParentSlotStack(parentSlot);
 
 		if(stacks[outputSlot] == null)
 			stacks[outputSlot] = parentSlotStack.copy();
@@ -293,7 +300,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 		int parentSlot = getParentSlot(slot);
 
-		if(!isItemStackValidForParentSlot(stack, parentSlot) || filterStackExists(stack))
+		if(!isItemStackValidForParentSlot(stack, parentSlot) || alreadyExistsInAnotherSlot(stack, parentSlot))
 			return stack;
 
 		ItemStack existing = this.stacks[slot];
@@ -408,7 +415,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 		int stacksSize = nbt.hasKey("Size", Constants.NBT.TAG_INT) ? nbt.getInteger("Size") : stacks.length;
 		setSize(stacksSize);
-		expandStacks((stacksSize - (dynamicSize ? SLOTS_PER_TYPE : 0)) / SLOTS_PER_TYPE);
+		setFilterStacksSize((stacksSize - (dynamicSize ? SLOTS_PER_TYPE : 0)) / SLOTS_PER_TYPE);
 
 		NBTTagList tagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		for(int i = 0; i < tagList.tagCount(); i++) {
@@ -426,10 +433,10 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	public void setDynamicSize(boolean dynamicSize) {
-		if (this.dynamicSize != dynamicSize) {
+		if(this.dynamicSize != dynamicSize) {
 			this.dynamicSize = dynamicSize;
 
-			if (this.dynamicSize) {
+			if(this.dynamicSize) {
 				expandStacks();
 			} else {
 				removeStack(this.filterStacks.length);
@@ -452,5 +459,14 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 	private void setSize(int size) {
 		stacks = new ItemStack[size];
+	}
+
+	private void setFilterStacksSize(int size) {
+		if (filterStacks.length != size) {
+			ItemStack[] expandedFilterStacks = new ItemStack[size];
+			System.arraycopy(filterStacks, 0, expandedFilterStacks, 0, filterStacks.length);
+
+			filterStacks = expandedFilterStacks;
+		}
 	}
 }

@@ -1,6 +1,9 @@
 package xreliquary.items.util;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.hamcrest.core.IsNull;
 import org.junit.runner.RunWith;
@@ -8,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.testng.PowerMockTestCase;
@@ -19,6 +23,7 @@ import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
 
+@PowerMockIgnore( {"javax.management.*"})
 @PrepareForTest({ItemHandlerHelper.class, ItemStack.class})
 @RunWith(PowerMockRunner.class)
 public class FilteredItemStackHandlerTest extends PowerMockTestCase {
@@ -465,6 +470,25 @@ public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 		Assert.assertEquals(handler.getSlots(), 4);
 		Assert.assertEquals(handler.getTotalAmount(0), 55);
 	}
+
+	@Test
+	public void canDeseriliazeDefaultNBT() {
+		handler = new FilteredItemStackHandler(new int[] {1000}, new ItemStack[] {itemStack}, new int[] {1});
+
+		NBTTagCompound nbt = new NBTTagCompound();
+		nbt.setInteger("Size", 2);
+		NBTTagList amounts = new NBTTagList();
+		amounts.appendTag(new NBTTagInt(0));
+
+		nbt.setTag("TotalAmounts", amounts);
+		nbt.setTag("Items", new NBTTagList());
+
+		handler.deserializeNBT(nbt);
+
+		Assert.assertEquals(handler.getSlots(), 2);
+		Assert.assertEquals(handler.getTotalAmount(0), 0);
+	}
+
 
 	//TODO add unit worth
 
