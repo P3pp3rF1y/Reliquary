@@ -17,6 +17,7 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,13 +31,22 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.blocks.BlockFertileLilypad;
 import xreliquary.init.ModCapabilities;
+import xreliquary.items.util.FilteredItemHandlerProvider;
+import xreliquary.items.util.FilteredItemStackHandler;
+import xreliquary.items.util.HarvestRodItemStackHandler;
 import xreliquary.items.util.IHarvestRodCache;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketHarvestRodCacheSync;
+import xreliquary.network.PacketItemHandlerSync;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -109,7 +119,55 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	@Override
-	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return new ICapabilitySerializable<NBTTagCompound>() {
+			HarvestRodItemStackHandler itemHandler;
+
+			@Override
+			public NBTTagCompound serializeNBT() {
+				return itemHandler.serializeNBT();
+			}
+
+			@Override
+			public void deserializeNBT(NBTTagCompound tagCompound) {
+				itemHandler.deserializeNBT(tagCompound);
+			}
+
+			@Override
+			public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+				if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+					return true;
+				return false;
+			}
+
+			@Override
+			public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+				if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+					return (T) itemHandler;
+
+				return null;
+			}
+		};
+	}
+
+	@Override
+	public void onUpdate(ItemStack ist, World world, Entity e, int slotNumber, boolean b) {
+		//TODO remove backwards compatibility in the future
+		if(ist.getTagCompound() != null && ist.getTagCompound().hasKey("bonemeal")) {
+			IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+			if(itemHandler instanceof FilteredItemStackHandler) {
+				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+				if(ist.getTagCompound().hasKey("bonemeal")) {
+					filteredHandler.setTotalAmount(0, NBTHelper.getInteger("bonemeal", ist));
+					ist.getTagCompound().removeTag("bonemeal");
+				}
+			}
+		}
+
+		//TODO add backwards compatibility for seeds as well
+
 		if(world.isRemote)
 			return;
 		EntityPlayer player = null;
@@ -122,7 +180,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		if(this.isEnabled(ist)) {
 			if(getBoneMealCount(ist) + getBonemealWorth() <= getBonemealLimit()) {
 				if(InventoryHelper.consumeItem(new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META), player)) {
-					setBoneMealCount(ist, getBoneMealCount(ist) + getBonemealWorth());
+					setBoneMealCount(ist, getBoneMealCount(ist) + getBonemealWorth(), slotNumber, player);
 				}
 			}
 
@@ -246,11 +304,11 @@ public class ItemHarvestRod extends ItemToggleable {
 		return true;
 	}
 
-	private void boneMealBlock(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
-		boneMealBlock(ist, player, world, pos, side, true);
+	private void boneMealBlock(ItemStack ist, EntityPlayer player, EnumHand hand, World world, BlockPos pos, EnumFacing side) {
+		boneMealBlock(ist, player, hand, world, pos, side, true);
 	}
 
-	private boolean boneMealBlock(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, boolean updateCharge) {
+	private boolean boneMealBlock(ItemStack ist, EntityPlayer player, EnumHand hand, World world, BlockPos pos, EnumFacing side, boolean updateCharge) {
 		ItemStack fakeItemStack = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
 		ItemDye fakeItemDye = (ItemDye) fakeItemStack.getItem();
 
@@ -266,17 +324,44 @@ public class ItemHarvestRod extends ItemToggleable {
 		}
 
 		if(updateCharge && usedRod && !player.capabilities.isCreativeMode)
-			setBoneMealCount(ist, getBoneMealCount(ist) - getBonemealCost());
+			setBoneMealCount(ist, getBoneMealCount(ist) - getBonemealCost(), hand, player);
 
 		return usedRod;
 	}
 
 	public int getBoneMealCount(ItemStack ist) {
-		return NBTHelper.getInteger("bonemeal", ist);
+		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		if(!(itemHandler instanceof FilteredItemStackHandler))
+			return 0;
+
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+		return filteredHandler.getTotalAmount(HarvestRodItemStackHandler.BONEMEAL_SLOT);
 	}
 
 	public void setBoneMealCount(ItemStack ist, int boneMealCount) {
-		NBTHelper.setInteger("bonemeal", ist, boneMealCount);
+		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		if(!(itemHandler instanceof FilteredItemStackHandler))
+			return;
+
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+		filteredHandler.setTotalAmount(0, boneMealCount);
+
+	}
+
+	private void setBoneMealCount(ItemStack ist, int boneMealCount, int slotNumber, EntityPlayer player) {
+		setBoneMealCount(ist, boneMealCount);
+
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(boneMealCount, slotNumber), (EntityPlayerMP) player);
+	}
+
+	private void setBoneMealCount(ItemStack ist, int boneMealCount, EnumHand hand, EntityPlayer player) {
+		setBoneMealCount(ist, boneMealCount);
+
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(boneMealCount, hand), (EntityPlayerMP) player);
 	}
 
 	@Override
@@ -309,7 +394,7 @@ public class ItemHarvestRod extends ItemToggleable {
 			if(cache != null) {
 				if(!player.capabilities.isCreativeMode && cache.getTimesUsed() > 0) {
 					if(getMode(stack).equals(BONE_MEAL_MODE))
-						setBoneMealCount(stack, getBoneMealCount(stack) - cache.getTimesUsed());
+						setBoneMealCount(stack, getBoneMealCount(stack) - cache.getTimesUsed(), player.getActiveHand(), player);
 					else if(getMode(stack).equals(PLANTABLE_MODE)) {
 						setPlantableQuantity(stack, getCurrentPlantableIndex(stack), getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) - cache.getTimesUsed());
 						removeEmptyPlantable(stack, getCurrentPlantableIndex(stack));
@@ -320,7 +405,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
 				if(getMode(stack) == BONE_MEAL_MODE) {
 					if(getBoneMealCount(stack) >= getBonemealCost() || player.capabilities.isCreativeMode) {
-						boneMealBlock(stack, player, world, pos, EnumFacing.UP);
+						boneMealBlock(stack, player, player.getActiveHand(), world, pos, EnumFacing.UP);
 					}
 				} else if(getMode(stack) == PLANTABLE_MODE) {
 					if(getPlantableQuantity(stack, getCurrentPlantableIndex(stack)) > 0 || player.capabilities.isCreativeMode) {
@@ -333,16 +418,16 @@ public class ItemHarvestRod extends ItemToggleable {
 
 			}
 		} else {
-			removeStackFromCurrent(stack, player);
+			removeStackFromCurrent(stack, player, player.getActiveHand());
 		}
 	}
 
-	private void removeStackFromCurrent(ItemStack stack, EntityPlayer player) {
+	private void removeStackFromCurrent(ItemStack stack, EntityPlayer player, EnumHand hand) {
 		if(getMode(stack).equals(BONE_MEAL_MODE)) {
 			ItemStack boneMealStack = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
 			int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), getBoneMealCount(stack));
 			int numberAdded = InventoryHelper.tryToAddToInventory(boneMealStack, player.inventory, 0, numberToAdd);
-			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded);
+			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded, hand, player);
 		} else if(getMode(stack).equals(PLANTABLE_MODE)) {
 			byte idx = getCurrentPlantableIndex(stack);
 			ItemStack plantableStack = getPlantableItems(stack).get(idx);
@@ -405,7 +490,7 @@ public class ItemHarvestRod extends ItemToggleable {
 								BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius);
 
 								if(blockToBoneMeal != null) {
-									if(boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP, false) && !player.capabilities.isCreativeMode) {
+									if(boneMealBlock(stack, player, player.getActiveHand(), world, blockToBoneMeal, EnumFacing.UP, false) && !player.capabilities.isCreativeMode) {
 										cache.incrementTimesUsed();
 										PacketHandler.networkWrapper.sendTo(new PacketHarvestRodCacheSync(cache.getTimesUsed(), player.getActiveHand()), (EntityPlayerMP) player);
 									}
@@ -431,7 +516,7 @@ public class ItemHarvestRod extends ItemToggleable {
 							BlockPos blockToHoe = getNextBlockToHoe(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius);
 							if(blockToHoe != null) {
 								if(Items.wooden_hoe.onItemUse(fakeHoe, player, world, blockToHoe, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0) == EnumActionResult.SUCCESS)
-									((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketSoundEffect(SoundEvents.item_hoe_till,  SoundCategory.BLOCKS, blockToHoe.getX(), blockToHoe.getY(), blockToHoe.getZ(), 1.0F, 1.0F));
+									((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketSoundEffect(SoundEvents.item_hoe_till, SoundCategory.BLOCKS, blockToHoe.getX(), blockToHoe.getY(), blockToHoe.getZ(), 1.0F, 1.0F));
 								return;
 							}
 						default:
