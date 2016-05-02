@@ -2,7 +2,6 @@ package xreliquary.util.pedestal;
 
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -145,11 +144,11 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		} else {
 			byte idx = 0;
 
-			if(harvestRod.getPlantableItems(stack).size() > 0) {
+			if(harvestRod.getCountPlantable(stack) > 0) {
 				int quantity = harvestRod.getPlantableQuantity(stack, idx);
 
 				if(quantity > 0) {
-					BlockPos blockToPlantOn = getNextBlockToPlantOn(world, pos, range, (IPlantable) harvestRod.getPlantableItems(stack).get(idx).getItem());
+					BlockPos blockToPlantOn = getNextBlockToPlantOn(world, pos, range, (IPlantable) harvestRod.getPlantableInSlot(stack, idx).getItem());
 
 					if(blockToPlantOn != null) {
 						plantItem(world, player, blockToPlantOn, stack, idx);
@@ -162,12 +161,12 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void plantItem(World world, EntityPlayer player, BlockPos pos, ItemStack stack, byte idx) {
-		ItemStack fakePlantableStack = harvestRod.getPlantableItems(stack).get(idx).copy();
+		ItemStack fakePlantableStack = harvestRod.getPlantableInSlot(stack, idx).copy();
 		fakePlantableStack.stackSize = 1;
 
 		if(fakePlantableStack.onItemUse(player, world, pos, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0) == EnumActionResult.SUCCESS) {
 			harvestRod.setPlantableQuantity(stack, idx, harvestRod.getPlantableQuantity(stack, idx) - 1);
-			harvestRod.removeEmptyPlantable(stack, idx);
+			harvestRod.shiftModeOnEmptyPlantable(stack, idx);
 		}
 	}
 

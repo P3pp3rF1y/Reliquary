@@ -46,7 +46,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		return itemStacks;
 	}
 
-	private int getParentSlot(int slot) {
+	public int getParentSlot(int slot) {
 		return slot / SLOTS_PER_TYPE;
 	}
 
@@ -337,13 +337,11 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.stackSize - limit) : null;
 	}
 
-	private boolean filterStackExists(ItemStack stack) {
-		for(ItemStack filterStack : filterStacks) {
-			if(ItemHandlerHelper.canItemStacksStack(filterStack, stack))
-				return true;
-		}
+	public ItemStack getStackInParentSlot(int parentSlot) {
+		if (parentSlot >= filterStacks.length)
+			return null;
 
-		return false;
+		return filterStacks[parentSlot];
 	}
 
 	@Override

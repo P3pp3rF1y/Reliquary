@@ -202,8 +202,8 @@ public class ClientEventHandler {
 		ItemStack secondaryStack;
 		ItemHarvestRod harvestRod = ModItems.harvestRod;
 		if(harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.PLANTABLE_MODE)) {
-			secondaryStack = harvestRod.getPlantableItems(harvestRodStack).get(harvestRod.getCurrentPlantableIndex(harvestRodStack)).copy();
-			int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableIndex(harvestRodStack));
+			secondaryStack = harvestRod.getCurrentPlantable(harvestRodStack).copy();
+			int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableSlot(harvestRodStack));
 
 			if(cache != null && player.isHandActive()) {
 				plantableCount -= cache.getTimesUsed();
