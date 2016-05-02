@@ -140,7 +140,7 @@ public class ItemEnderStaff extends ItemToggleable {
 
 		//TODO finalize updating client with capability info, but this is likely the only way
 		if(isSelected) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(getPearlCount(ist), slotNumber), (EntityPlayerMP) player);
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync.Builder(getPearlCount(ist)).playerSlot(slotNumber).build(), (EntityPlayerMP) player);
 		}
 
 		if(!this.isEnabled(ist))
@@ -154,12 +154,12 @@ public class ItemEnderStaff extends ItemToggleable {
 
 	private void setPearlCount(ItemStack ist, EntityPlayer player, EnumHand hand, int count) {
 		setPearlCount(ist, count);
-		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(count, hand), (EntityPlayerMP) player);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync.Builder(count).hand(hand).build(), (EntityPlayerMP) player);
 	}
 
 	private void setPearlCount(ItemStack ist, EntityPlayer player, int slotNumber, int count) {
 		setPearlCount(ist, count);
-		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(count, slotNumber), (EntityPlayerMP) player);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync.Builder(count).playerSlot(slotNumber).build(), (EntityPlayerMP) player);
 	}
 
 	private void setPearlCount(ItemStack ist, int count) {

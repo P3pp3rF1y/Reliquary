@@ -467,4 +467,11 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 			filterStacks = expandedFilterStacks;
 		}
 	}
+
+	public void setParentSlotStack(int parentSlot, ItemStack itemStack) {
+		if(parentSlot >= filterStacks.length) {
+			setFilterStacksSize(parentSlot + 1);
+		}
+		filterStacks[parentSlot] = itemStack;
+	}
 }

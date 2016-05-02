@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -16,38 +17,37 @@ import xreliquary.items.util.FilteredItemStackHandler;
 
 public class PacketItemHandlerSync implements IMessage, IMessageHandler<PacketItemHandlerSync, IMessage> {
 	private int count;
-	private int slotNumber;
+	private int playerSlotNumber;
 	private EnumHand hand;
+	private int handlerParentSlotNumber;
+	private ItemStack itemStack;
 
 	private static final int INVALID_SLOT = -1;
 
 	public PacketItemHandlerSync(){}
 
-	public PacketItemHandlerSync(int count, EnumHand hand) {
-		this(count, INVALID_SLOT, hand);
-	}
-	public PacketItemHandlerSync(int count, int slotNumber) {
-		this(count, slotNumber, EnumHand.MAIN_HAND);
-	}
-
-	private PacketItemHandlerSync(int count, int slotNumber, EnumHand hand) {
+	private PacketItemHandlerSync(int count, int playerSlotNumber, EnumHand hand, int handlerParentSlotNumber, ItemStack itemStack) {
 		this.count = count;
-		this.slotNumber = slotNumber;
+		this.playerSlotNumber = playerSlotNumber;
 		this.hand = hand;
+		this.handlerParentSlotNumber = handlerParentSlotNumber;
+		this.itemStack = itemStack;
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		count = buf.readInt();
-		slotNumber = buf.readInt();
+		playerSlotNumber = buf.readInt();
 		hand = buf.readBoolean() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+		itemStack = ByteBufUtils.readItemStack(buf);
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
 		buf.writeInt(count);
-		buf.writeInt(slotNumber);
+		buf.writeInt(playerSlotNumber);
 		buf.writeBoolean(hand == EnumHand.MAIN_HAND);
+		ByteBufUtils.writeItemStack(buf, itemStack);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -56,8 +56,8 @@ public class PacketItemHandlerSync implements IMessage, IMessageHandler<PacketIt
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
 		ItemStack stack;
-		if (message.slotNumber > INVALID_SLOT) {
-			stack = player.inventory.getStackInSlot(message.slotNumber);
+		if (message.playerSlotNumber > INVALID_SLOT) {
+			stack = player.inventory.getStackInSlot(message.playerSlotNumber);
 		} else {
 			stack = player.getHeldItem(message.hand);
 		}
@@ -68,10 +68,46 @@ public class PacketItemHandlerSync implements IMessage, IMessageHandler<PacketIt
 
 				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 
-				filteredHandler.setTotalAmount(0, message.count);
+				filteredHandler.setTotalAmount(message.handlerParentSlotNumber, message.count);
+
+				if (message.itemStack != null) {
+					filteredHandler.setParentSlotStack(message.handlerParentSlotNumber, message.itemStack);
+				}
 			}
 		}
 
 		return null;
+	}
+
+	public static class Builder {
+		private int count;
+		private int playerSlotNumber = INVALID_SLOT;
+		private EnumHand hand = EnumHand.MAIN_HAND;
+		private int handlerParentSlotNumber = 0;
+		private ItemStack itemStack = null;
+
+		public Builder(int count) {
+			this.count = count;
+		}
+
+		public Builder playerSlot(int playerSlotNumber) {
+			this.playerSlotNumber = playerSlotNumber;
+			return this;
+		}
+
+		public Builder hand(EnumHand hand) {
+			this.hand = hand;
+			return this;
+		}
+
+		public Builder itemStackInfo(int handlerParentSlotNumber, ItemStack itemStack) {
+			this.handlerParentSlotNumber = handlerParentSlotNumber;
+			this.itemStack = itemStack;
+			return this;
+		}
+
+		public PacketItemHandlerSync build() {
+			return new PacketItemHandlerSync(this.count, this.playerSlotNumber, this.hand, this.handlerParentSlotNumber, this.itemStack);
+		}
 	}
 }

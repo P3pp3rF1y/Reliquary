@@ -274,7 +274,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 		//TODO finalize updating client with capability info, but this is likely the only way
 		if(isSelected) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(getFeatherCount(ist), slotNumber), (EntityPlayerMP) player);
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync.Builder(getFeatherCount(ist)).playerSlot(slotNumber).build(), (EntityPlayerMP) player);
 		}
 
 		if(this.isEnabled(ist)) {
@@ -342,7 +342,7 @@ public class ItemRendingGale extends ItemToggleable {
 		if(player.isSneaking()) {
 			super.onItemRightClick(ist, world, player, hand);
 			if(!player.worldObj.isRemote)
-				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(getFeatherCount(ist), hand), (EntityPlayerMP) player);
+				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync.Builder(getFeatherCount(ist)).hand(hand).build(), (EntityPlayerMP) player);
 		} else
 			player.setActiveHand(hand);
 		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
@@ -424,13 +424,13 @@ public class ItemRendingGale extends ItemToggleable {
 	private void setFeatherCount(ItemStack ist, EntityPlayer player, int slotNumber, int featherCount) {
 		setFeatherCount(ist, featherCount);
 
-		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(featherCount, slotNumber), (EntityPlayerMP) player);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync.Builder(featherCount).playerSlot(slotNumber).build(), (EntityPlayerMP) player);
 	}
 
 	private void setFeatherCount(ItemStack ist, EntityPlayer player, EnumHand hand, int featherCount) {
 		setFeatherCount(ist, featherCount);
 
-		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(featherCount, hand), (EntityPlayerMP) player);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync.Builder(featherCount).hand(hand).build(), (EntityPlayerMP) player);
 	}
 
 	public void setFeatherCount(ItemStack ist, int featherCount) {
