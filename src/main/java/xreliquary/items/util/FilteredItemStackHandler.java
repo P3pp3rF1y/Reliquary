@@ -13,7 +13,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<NBTTagCompound> {
 	public static final int SLOTS_PER_TYPE = 2;
-	private ItemStack[] filterStacks;
+	protected ItemStack[] filterStacks;
 	private int[] totalAmounts;
 	private int[] totalLimits;
 	private int[] unitWorth;
@@ -24,6 +24,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	protected FilteredItemStackHandler(int initialSlots) {
 		stacks = new ItemStack[initialSlots * SLOTS_PER_TYPE];
 		this.totalAmounts = new int[initialSlots];
+		this.filterStacks = new ItemStack[initialSlots];
 	}
 
 	public FilteredItemStackHandler(int[] totalLimits, Item[] items, int[] unitWorth) {
@@ -59,7 +60,10 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	public void setTotalAmount(int parentSlot, int amount) {
-		if(dynamicSize && amount == 0 && getParentSlotRemovable(parentSlot)) {
+		setTotalAmount(parentSlot, amount, true);
+	}
+	public void setTotalAmount(int parentSlot, int amount, boolean updateDynamicStack) {
+		if(updateDynamicStack && dynamicSize && amount == 0 && getParentSlotRemovable(parentSlot)) {
 			removeValidItemStackFromSlot(parentSlot);
 		} else {
 			totalAmounts[parentSlot] = amount;
@@ -81,12 +85,17 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 	}
 
-	private int[] expandIntArray(int[] values, int def) {
-		int[] expandedArray = new int[values.length + 1];
+	private int[] expandIntArray(int[] values, int newSize, int def) {
+		int[] expandedArray = new int[newSize];
 
 		System.arraycopy(values, 0, expandedArray, 0, values.length);
-		expandedArray[values.length] = def;
 
+		return expandedArray;
+	}
+
+	private int[] expandIntArray(int[] values, int def) {
+		int[] expandedArray = expandIntArray(values, values.length + 1, def);
+		expandedArray[values.length] = def;
 		return expandedArray;
 	}
 
@@ -405,15 +414,15 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
+		int stacksSize = nbt.hasKey("Size", Constants.NBT.TAG_INT) ? nbt.getInteger("Size") : stacks.length;
+		setSize(stacksSize);
+		setFilterStacksSize((stacksSize - (dynamicSize ? SLOTS_PER_TYPE : 0)) / SLOTS_PER_TYPE);
+
 		NBTTagList amounts = nbt.getTagList("TotalAmounts", 3);
 
 		for(int i = 0; i < totalAmounts.length; i++) {
 			totalAmounts[i] = ((NBTTagInt) amounts.get(i)).getInt();
 		}
-
-		int stacksSize = nbt.hasKey("Size", Constants.NBT.TAG_INT) ? nbt.getInteger("Size") : stacks.length;
-		setSize(stacksSize);
-		setFilterStacksSize((stacksSize - (dynamicSize ? SLOTS_PER_TYPE : 0)) / SLOTS_PER_TYPE);
 
 		NBTTagList tagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		for(int i = 0; i < tagList.tagCount(); i++) {
@@ -465,6 +474,8 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 			System.arraycopy(filterStacks, 0, expandedFilterStacks, 0, filterStacks.length);
 
 			filterStacks = expandedFilterStacks;
+
+			totalAmounts = expandIntArray(totalAmounts, size, 0);
 		}
 	}
 

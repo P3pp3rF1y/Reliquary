@@ -39,6 +39,7 @@ public class PacketItemHandlerSync implements IMessage, IMessageHandler<PacketIt
 		count = buf.readInt();
 		playerSlotNumber = buf.readInt();
 		hand = buf.readBoolean() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+		handlerParentSlotNumber = buf.readInt();
 		itemStack = ByteBufUtils.readItemStack(buf);
 	}
 
@@ -47,6 +48,7 @@ public class PacketItemHandlerSync implements IMessage, IMessageHandler<PacketIt
 		buf.writeInt(count);
 		buf.writeInt(playerSlotNumber);
 		buf.writeBoolean(hand == EnumHand.MAIN_HAND);
+		buf.writeInt(handlerParentSlotNumber);
 		ByteBufUtils.writeItemStack(buf, itemStack);
 	}
 
@@ -68,11 +70,11 @@ public class PacketItemHandlerSync implements IMessage, IMessageHandler<PacketIt
 
 				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 
-				filteredHandler.setTotalAmount(message.handlerParentSlotNumber, message.count);
-
 				if (message.itemStack != null) {
 					filteredHandler.setParentSlotStack(message.handlerParentSlotNumber, message.itemStack);
 				}
+
+				filteredHandler.setTotalAmount(message.handlerParentSlotNumber, message.count, false);
 			}
 		}
 

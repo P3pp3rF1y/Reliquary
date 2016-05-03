@@ -3,6 +3,7 @@ package xreliquary.items.util;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.items.ItemHandlerHelper;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
@@ -40,6 +41,6 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 	protected boolean isItemStackValidForParentSlot(ItemStack stack, int parentSlot) {
 		if (parentSlot == BONEMEAL_SLOT)
 			return stack.getItem() == Items.dye && stack.getItemDamage() == Reference.WHITE_DYE_META;
-		return stack.getItem() instanceof IPlantable;
+		return (stack.getItem() instanceof IPlantable && (filterStacks.length <= parentSlot || ItemHandlerHelper.canItemStacksStack(stack, filterStacks[parentSlot])));
 	}
 }

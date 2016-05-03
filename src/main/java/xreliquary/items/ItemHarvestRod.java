@@ -116,7 +116,7 @@ public class ItemHarvestRod extends ItemToggleable {
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
 		return new ICapabilitySerializable<NBTTagCompound>() {
-			HarvestRodItemStackHandler itemHandler;
+			HarvestRodItemStackHandler itemHandler = new HarvestRodItemStackHandler();
 
 			@Override
 			public NBTTagCompound serializeNBT() {
@@ -146,7 +146,7 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	@Override
-	public void onUpdate(ItemStack ist, World world, Entity e, int slotNumber, boolean b) {
+	public void onUpdate(ItemStack ist, World world, Entity e, int slotNumber, boolean isSelected) {
 		//TODO remove backwards compatibility in the future
 		handleBackwardsCompatibility(ist);
 
@@ -168,6 +168,16 @@ public class ItemHarvestRod extends ItemToggleable {
 
 			consumePlantables(ist, player, slotNumber);
 		}
+
+		if(isSelected) {
+			if(getMode(ist).equals(BONE_MEAL_MODE)) {
+				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync.Builder(getBoneMealCount(ist)).playerSlot(slotNumber).build(), (EntityPlayerMP) player);
+			} else if(getMode(ist).equals(PLANTABLE_MODE)) {
+				int currentPlantableSlot = getCurrentPlantableSlot(ist);
+				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync.Builder(getPlantableQuantity(ist, currentPlantableSlot)).playerSlot(slotNumber).itemStackInfo(currentPlantableSlot, getCurrentPlantable(ist)).build(), (EntityPlayerMP) player);
+			}
+		}
+
 	}
 
 	@Deprecated
@@ -212,6 +222,7 @@ public class ItemHarvestRod extends ItemToggleable {
 				continue;
 			}
 			if(currentStack.getItem() instanceof IPlantable && incrementPlantable(harvestRod, currentStack, slotNumber, player)) {
+				InventoryHelper.consumeItem(currentStack, player, 0, 1);
 				break;
 			}
 		}
@@ -423,16 +434,20 @@ public class ItemHarvestRod extends ItemToggleable {
 			byte plantableSlot = getCurrentPlantableSlot(stack);
 			ItemStack plantableStack = getCurrentPlantable(stack);
 			int plantableQuantity = getPlantableQuantity(stack, plantableSlot);
+
 			int numberToAdd = Math.min(plantableStack.getMaxStackSize(), plantableQuantity);
 			int numberAdded = InventoryHelper.tryToAddToInventory(plantableStack, player.inventory, 0, numberToAdd);
-			setPlantableQuantity(stack, plantableSlot, getPlantableQuantity(stack, plantableSlot) - numberAdded, hand, player);
-			if(plantableQuantity <= numberAdded)
+
+			int updatedPlantableQuantity = getPlantableQuantity(stack, plantableSlot) - numberAdded;
+
+			setPlantableQuantity(stack, plantableSlot, updatedPlantableQuantity, hand, player);
+			if(updatedPlantableQuantity == 0)
 				shiftModeOnEmptyPlantable(stack, plantableSlot);
 		}
 	}
 
 	public void shiftModeOnEmptyPlantable(ItemStack harvestRod, byte plantableSlot) {
-		if(getCountPlantable(harvestRod) > plantableSlot)
+		if(plantableSlot > 0)
 			setCurrentPlantableSlot(harvestRod, (byte) (plantableSlot - 1));
 		cycleMode(harvestRod);
 	}
@@ -487,7 +502,7 @@ public class ItemHarvestRod extends ItemToggleable {
 				if(cache != null) {
 					switch(getMode(harvestRod)) {
 						case BONE_MEAL_MODE:
-							if(getBoneMealCount(harvestRod) >= (getBonemealCost() * cache.getTimesUsed() + 1) || player.capabilities.isCreativeMode) {
+							if(getBoneMealCount(harvestRod) >= getBonemealCost() || player.capabilities.isCreativeMode) {
 								BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius);
 
 								if(blockToBoneMeal != null) {
@@ -497,7 +512,7 @@ public class ItemHarvestRod extends ItemToggleable {
 							}
 							break;
 						case PLANTABLE_MODE:
-							if(getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) >= cache.getTimesUsed() + 1 || player.capabilities.isCreativeMode) {
+							if(getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) >= 1 || player.capabilities.isCreativeMode) {
 								BlockPos blockToPlantOn = getNextBlockToPlantOn(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius, (IPlantable) getCurrentPlantable(harvestRod).getItem());
 
 								if(blockToPlantOn != null) {
@@ -636,7 +651,7 @@ public class ItemHarvestRod extends ItemToggleable {
 				}
 				break;
 			case PLANTABLE_MODE:
-				if(plantableCount > getCurrentPlantableSlot(harvestRod) + 1) {
+				if(plantableCount > getCurrentPlantableSlot(harvestRod)) {
 					setCurrentPlantableSlot(harvestRod, (byte) (getCurrentPlantableSlot(harvestRod) + 1));
 				} else {
 					setMode(harvestRod, HOE_MODE);
@@ -679,18 +694,21 @@ public class ItemHarvestRod extends ItemToggleable {
 		return mode.equals("") ? BONE_MEAL_MODE : mode;
 	}
 
-	public int getPlantableQuantity(ItemStack stack, byte itemIndex) {
-		NBTTagList plantableQuantities = stack.getTagCompound().getTagList(PLANTABLE_QUANTITIES_NBT_TAG, 3);
+	public int getPlantableQuantity(ItemStack harvestRod, int parentSlot) {
+		IItemHandler itemHandler = harvestRod.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-		if(plantableQuantities.hasNoTags() || plantableQuantities.tagCount() <= itemIndex)
+		if(!(itemHandler instanceof FilteredItemStackHandler))
 			return 0;
 
-		return ((NBTTagInt) plantableQuantities.get(itemIndex)).getInt();
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+		return filteredHandler.getTotalAmount(parentSlot);
 	}
 
 	public void setPlantableQuantity(ItemStack harvestRod, byte plantableSlot, int quantity) {
 		setPlantableQuantity(harvestRod, plantableSlot, quantity, null, null);
 	}
+
 	public void setPlantableQuantity(ItemStack harvestRod, byte plantableSlot, int quantity, EnumHand hand, EntityPlayer player) {
 		IItemHandler itemHandler = harvestRod.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
@@ -701,7 +719,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
 		filteredHandler.setTotalAmount(plantableSlot, quantity);
 
-		if (player != null)
+		if(quantity != 0 && player != null)
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync.Builder(filteredHandler.getTotalAmount(plantableSlot)).hand(hand).itemStackInfo(plantableSlot, filteredHandler.getStackInParentSlot(plantableSlot)).build(), (EntityPlayerMP) player);
 	}
 }

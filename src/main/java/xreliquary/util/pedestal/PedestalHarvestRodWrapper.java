@@ -142,16 +142,16 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		if(plantCoolDown > 0) {
 			plantCoolDown--;
 		} else {
-			byte idx = 0;
+			byte plantableSlot = 1;
 
 			if(harvestRod.getCountPlantable(stack) > 0) {
-				int quantity = harvestRod.getPlantableQuantity(stack, idx);
+				int quantity = harvestRod.getPlantableQuantity(stack, plantableSlot);
 
 				if(quantity > 0) {
-					BlockPos blockToPlantOn = getNextBlockToPlantOn(world, pos, range, (IPlantable) harvestRod.getPlantableInSlot(stack, idx).getItem());
+					BlockPos blockToPlantOn = getNextBlockToPlantOn(world, pos, range, (IPlantable) harvestRod.getPlantableInSlot(stack, plantableSlot).getItem());
 
 					if(blockToPlantOn != null) {
-						plantItem(world, player, blockToPlantOn, stack, idx);
+						plantItem(world, player, blockToPlantOn, stack, plantableSlot);
 						return;
 					}
 				}
@@ -205,7 +205,9 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 					if(block instanceof IPlantable || block instanceof BlockCrops || block == Blocks.melon_block || block == Blocks.pumpkin) {
 						if(block instanceof BlockFertileLilypad || block == Blocks.pumpkin_stem || block == Blocks.melon_stem)
 							continue;
-						if(block instanceof BlockCrops && state.getValue(BlockCrops.AGE) < 7)
+						if(block instanceof BlockBeetroot && state.getValue(BlockBeetroot.BEETROOT_AGE) < 3)
+							continue;
+						if(!(block instanceof BlockBeetroot) && block instanceof BlockCrops && state.getValue(BlockCrops.AGE) < 7)
 							continue;
 						if(block instanceof BlockNetherWart && state.getValue(BlockNetherWart.AGE) < 3)
 							continue;

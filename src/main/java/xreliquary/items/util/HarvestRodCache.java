@@ -46,21 +46,6 @@ public class HarvestRodCache implements IHarvestRodCache {
 	}
 
 	@Override
-	public void incrementTimesUsed() {
-		timesUsed++;
-	}
-
-	@Override
-	public int getTimesUsed() {
-		return timesUsed;
-	}
-
-	@Override
-	public void setTimesUsed(int timesUsed) {
-		this.timesUsed = timesUsed;
-	}
-
-	@Override
 	public void reset() {
 		startBlockPos = null;
 		blockQueue.clear();
