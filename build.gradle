@@ -75,7 +75,7 @@ test {
 }
 
 minecraft {
-	version = minecraft_version + "-" + forge_version + "-" + minecraft_version
+	version = minecraft_version + "-" + forge_version
     mappings = mcp_mappings
     runDir = "run"
     replaceIn "reference/Reference.java"
