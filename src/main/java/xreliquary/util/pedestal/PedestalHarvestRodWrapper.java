@@ -2,7 +2,6 @@ package xreliquary.util.pedestal;
 
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -143,16 +142,16 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		if(plantCoolDown > 0) {
 			plantCoolDown--;
 		} else {
-			byte idx = 0;
+			byte plantableSlot = 1;
 
-			if(harvestRod.getPlantableItems(stack).size() > 0) {
-				int quantity = harvestRod.getPlantableQuantity(stack, idx);
+			if(harvestRod.getCountPlantable(stack) > 0) {
+				int quantity = harvestRod.getPlantableQuantity(stack, plantableSlot);
 
 				if(quantity > 0) {
-					BlockPos blockToPlantOn = getNextBlockToPlantOn(world, pos, range, (IPlantable) harvestRod.getPlantableItems(stack).get(idx).getItem());
+					BlockPos blockToPlantOn = getNextBlockToPlantOn(world, pos, range, (IPlantable) harvestRod.getPlantableInSlot(stack, plantableSlot).getItem());
 
 					if(blockToPlantOn != null) {
-						plantItem(world, player, blockToPlantOn, stack, idx);
+						plantItem(world, player, blockToPlantOn, stack, plantableSlot);
 						return;
 					}
 				}
@@ -162,12 +161,12 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void plantItem(World world, EntityPlayer player, BlockPos pos, ItemStack stack, byte idx) {
-		ItemStack fakePlantableStack = harvestRod.getPlantableItems(stack).get(idx).copy();
+		ItemStack fakePlantableStack = harvestRod.getPlantableInSlot(stack, idx).copy();
 		fakePlantableStack.stackSize = 1;
 
 		if(fakePlantableStack.onItemUse(player, world, pos, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0) == EnumActionResult.SUCCESS) {
 			harvestRod.setPlantableQuantity(stack, idx, harvestRod.getPlantableQuantity(stack, idx) - 1);
-			harvestRod.removeEmptyPlantable(stack, idx);
+			harvestRod.shiftModeOnEmptyPlantable(stack, idx);
 		}
 	}
 
@@ -206,7 +205,9 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 					if(block instanceof IPlantable || block instanceof BlockCrops || block == Blocks.melon_block || block == Blocks.pumpkin) {
 						if(block instanceof BlockFertileLilypad || block == Blocks.pumpkin_stem || block == Blocks.melon_stem)
 							continue;
-						if(block instanceof BlockCrops && state.getValue(BlockCrops.AGE) < 7)
+						if(block instanceof BlockBeetroot && state.getValue(BlockBeetroot.BEETROOT_AGE) < 3)
+							continue;
+						if(!(block instanceof BlockBeetroot) && block instanceof BlockCrops && state.getValue(BlockCrops.AGE) < 7)
 							continue;
 						if(block instanceof BlockNetherWart && state.getValue(BlockNetherWart.AGE) < 3)
 							continue;

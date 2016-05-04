@@ -15,11 +15,5 @@ public interface IHarvestRodCache {
 
 	boolean isQueueEmpty();
 
-	void incrementTimesUsed();
-
-	int getTimesUsed();
-
-	void setTimesUsed(int timesUsed);
-
 	void reset();
 }

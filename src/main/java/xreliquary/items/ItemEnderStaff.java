@@ -26,6 +26,7 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.init.ModBlocks;
+import xreliquary.init.ModItems;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.network.PacketHandler;
@@ -138,9 +139,10 @@ public class ItemEnderStaff extends ItemToggleable {
 		if(player == null)
 			return;
 
-		//TODO finalize updating client with capability info, but this is likely the only way
-		if(isSelected) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(getPearlCount(ist), slotNumber), (EntityPlayerMP) player);
+		if (player.inventory.getStackInSlot(slotNumber)!= null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.enderStaff && isSelected) {
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
+		} else if (player.inventory.offHandInventory[0] != null && player.inventory.offHandInventory[0].getItem() == ModItems.enderStaff) {
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 		}
 
 		if(!this.isEnabled(ist))
@@ -154,12 +156,12 @@ public class ItemEnderStaff extends ItemToggleable {
 
 	private void setPearlCount(ItemStack ist, EntityPlayer player, EnumHand hand, int count) {
 		setPearlCount(ist, count);
-		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(count, hand), (EntityPlayerMP) player);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(hand, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 	}
 
 	private void setPearlCount(ItemStack ist, EntityPlayer player, int slotNumber, int count) {
 		setPearlCount(ist, count);
-		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(count, slotNumber), (EntityPlayerMP) player);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 	}
 
 	private void setPearlCount(ItemStack ist, int count) {
@@ -172,6 +174,17 @@ public class ItemEnderStaff extends ItemToggleable {
 
 		filteredHandler.setTotalAmount(0, count);
 
+	}
+
+	private NBTTagCompound getItemHandlerNBT(ItemStack ist) {
+		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		if(!(itemHandler instanceof FilteredItemStackHandler))
+			return null;
+
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+		return filteredHandler.serializeNBT();
 	}
 
 	public int getPearlCount(ItemStack ist) {

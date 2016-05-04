@@ -64,10 +64,18 @@ dependencies {
     compile name:'Baubles', version: baubles_version, ext: 'jar'
     //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
     //compile name:'TConstruct', version: tconstruct_version, ext: 'jar'
+
+    testCompile 'org.testng:testng:6.9.10'
+    testCompile "org.mockito:mockito-core:1.+"
+    testCompile "org.powermock:powermock-mockito-release-full:1.6.2"
+}
+
+test {
+    useTestNG()
 }
 
 minecraft {
-	version = minecraft_version + "-" + forge_version + "-" + minecraft_version
+	version = minecraft_version + "-" + forge_version
     mappings = mcp_mappings
     runDir = "run"
     replaceIn "reference/Reference.java"

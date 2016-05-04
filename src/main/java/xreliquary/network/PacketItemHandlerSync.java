@@ -1,10 +1,17 @@
 package xreliquary.network;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+import io.netty.handler.codec.EncoderException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTSizeTracker;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -14,40 +21,50 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.items.util.FilteredItemStackHandler;
 
+import java.io.IOException;
+
 public class PacketItemHandlerSync implements IMessage, IMessageHandler<PacketItemHandlerSync, IMessage> {
-	private int count;
-	private int slotNumber;
-	private EnumHand hand;
+	private int playerSlotNumber;
+	private EnumHand hand = EnumHand.MAIN_HAND;
+	private NBTTagCompound itemHandlerNBT;
 
 	private static final int INVALID_SLOT = -1;
 
-	public PacketItemHandlerSync(){}
-
-	public PacketItemHandlerSync(int count, EnumHand hand) {
-		this(count, INVALID_SLOT, hand);
-	}
-	public PacketItemHandlerSync(int count, int slotNumber) {
-		this(count, slotNumber, EnumHand.MAIN_HAND);
+	public PacketItemHandlerSync() {
 	}
 
-	private PacketItemHandlerSync(int count, int slotNumber, EnumHand hand) {
-		this.count = count;
-		this.slotNumber = slotNumber;
+	public PacketItemHandlerSync(EnumHand hand, NBTTagCompound itemHandlerNBT) {
 		this.hand = hand;
+		this.itemHandlerNBT = itemHandlerNBT;
+		this.playerSlotNumber = INVALID_SLOT;
+	}
+	public PacketItemHandlerSync(int playerSlotNumber, NBTTagCompound itemHandlerNBT) {
+		this.playerSlotNumber = playerSlotNumber;
+		this.itemHandlerNBT = itemHandlerNBT;
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		count = buf.readInt();
-		slotNumber = buf.readInt();
+		playerSlotNumber = buf.readInt();
 		hand = buf.readBoolean() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+		try {
+			itemHandlerNBT = CompressedStreamTools.read(new ByteBufInputStream(buf), new NBTSizeTracker(2097152L));
+		}
+		catch(IOException e) {
+			throw new EncoderException(e);
+		}
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(count);
-		buf.writeInt(slotNumber);
+		buf.writeInt(playerSlotNumber);
 		buf.writeBoolean(hand == EnumHand.MAIN_HAND);
+		try {
+			CompressedStreamTools.write(itemHandlerNBT, new ByteBufOutputStream(buf));
+		}
+		catch(IOException e) {
+			throw new EncoderException(e);
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -56,19 +73,21 @@ public class PacketItemHandlerSync implements IMessage, IMessageHandler<PacketIt
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
 		ItemStack stack;
-		if (message.slotNumber > INVALID_SLOT) {
-			stack = player.inventory.getStackInSlot(message.slotNumber);
+		if(message.playerSlotNumber > INVALID_SLOT) {
+			stack = player.inventory.getStackInSlot(message.playerSlotNumber);
 		} else {
 			stack = player.getHeldItem(message.hand);
 		}
 
-		if (stack != null) {
+		if(stack != null) {
 			IItemHandler itemHandler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			if (itemHandler != null && itemHandler instanceof FilteredItemStackHandler) {
+			if(itemHandler != null && itemHandler instanceof FilteredItemStackHandler) {
 
 				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 
-				filteredHandler.setTotalAmount(0, message.count);
+				if (filteredHandler != null) {
+					filteredHandler.deserializeNBT(message.itemHandlerNBT);
+				}
 			}
 		}
 

@@ -199,23 +199,19 @@ public class ClientEventHandler {
 
 		IHarvestRodCache cache = harvestRodStack.getCapability(ModCapabilities.HARVEST_ROD_CACHE, null);
 
-		ItemStack secondaryStack;
+		ItemStack secondaryStack = null;
 		ItemHarvestRod harvestRod = ModItems.harvestRod;
 		if(harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.PLANTABLE_MODE)) {
-			secondaryStack = harvestRod.getPlantableItems(harvestRodStack).get(harvestRod.getCurrentPlantableIndex(harvestRodStack)).copy();
-			int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableIndex(harvestRodStack));
+			ItemStack currenPlantable = harvestRod.getCurrentPlantable(harvestRodStack);
 
-			if(cache != null && player.isHandActive()) {
-				plantableCount -= cache.getTimesUsed();
+			if (currenPlantable != null) {
+				secondaryStack = currenPlantable.copy();
+				int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableSlot(harvestRodStack));
+
+				secondaryStack.stackSize = plantableCount;
 			}
-
-			secondaryStack.stackSize = plantableCount;
 		} else if(harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.BONE_MEAL_MODE)) {
 			int boneMealCount = harvestRod.getBoneMealCount(harvestRodStack);
-
-			if(cache != null && player.isHandActive()) {
-				boneMealCount -= cache.getTimesUsed();
-			}
 
 			secondaryStack = new ItemStack(Items.dye, boneMealCount, Reference.WHITE_DYE_META);
 		} else {
@@ -361,7 +357,7 @@ public class ClientEventHandler {
 			return;
 
 		ItemStack featherStack = new ItemStack(Items.feather, ModItems.rendingGale.getFeatherCount(rendingGaleStack), 0);
-		renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Settings.HudPositions.rendingGale, 0, Math.max(featherStack.stackSize/100, 0));
+		renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Settings.HudPositions.rendingGale, 0, Math.max(featherStack.stackSize / 100, 0));
 	}
 
 	public void handleHandgunHUDCheck(Minecraft mc) {

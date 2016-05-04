@@ -28,6 +28,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
+import xreliquary.init.ModItems;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.network.PacketHandler;
@@ -272,9 +273,10 @@ public class ItemRendingGale extends ItemToggleable {
 
 		EntityPlayer player = (EntityPlayer) e;
 
-		//TODO finalize updating client with capability info, but this is likely the only way
-		if(isSelected) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(getFeatherCount(ist), slotNumber), (EntityPlayerMP) player);
+		if (player.inventory.getStackInSlot(slotNumber)!= null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.rendingGale && isSelected) {
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
+		} else if (player.inventory.offHandInventory[0] != null && player.inventory.offHandInventory[0].getItem() == ModItems.rendingGale) {
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 		}
 
 		if(this.isEnabled(ist)) {
@@ -284,6 +286,17 @@ public class ItemRendingGale extends ItemToggleable {
 				}
 			}
 		}
+	}
+
+	private NBTTagCompound getItemHandlerNBT(ItemStack ist) {
+		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		if(!(itemHandler instanceof FilteredItemStackHandler))
+			return null;
+
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+		return filteredHandler.serializeNBT();
 	}
 
 	public String getMode(ItemStack ist) {
@@ -342,7 +355,7 @@ public class ItemRendingGale extends ItemToggleable {
 		if(player.isSneaking()) {
 			super.onItemRightClick(ist, world, player, hand);
 			if(!player.worldObj.isRemote)
-				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(getFeatherCount(ist), hand), (EntityPlayerMP) player);
+				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(hand, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 		} else
 			player.setActiveHand(hand);
 		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
@@ -424,13 +437,13 @@ public class ItemRendingGale extends ItemToggleable {
 	private void setFeatherCount(ItemStack ist, EntityPlayer player, int slotNumber, int featherCount) {
 		setFeatherCount(ist, featherCount);
 
-		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(featherCount, slotNumber), (EntityPlayerMP) player);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 	}
 
 	private void setFeatherCount(ItemStack ist, EntityPlayer player, EnumHand hand, int featherCount) {
 		setFeatherCount(ist, featherCount);
 
-		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(featherCount, hand), (EntityPlayerMP) player);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(hand, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 	}
 
 	public void setFeatherCount(ItemStack ist, int featherCount) {
