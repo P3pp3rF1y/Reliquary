@@ -60,10 +60,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	public void setTotalAmount(int parentSlot, int amount) {
-		setTotalAmount(parentSlot, amount, true);
-	}
-	public void setTotalAmount(int parentSlot, int amount, boolean updateDynamicStack) {
-		if(updateDynamicStack && dynamicSize && amount == 0 && getParentSlotRemovable(parentSlot)) {
+		if(dynamicSize && amount == 0 && getParentSlotRemovable(parentSlot)) {
 			removeValidItemStackFromSlot(parentSlot);
 		} else {
 			totalAmounts[parentSlot] = amount;
@@ -472,19 +469,9 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 	private void setFilterStacksSize(int size) {
 		if (filterStacks.length != size) {
-			ItemStack[] expandedFilterStacks = new ItemStack[size];
-			System.arraycopy(filterStacks, 0, expandedFilterStacks, 0, filterStacks.length);
+			filterStacks = new ItemStack[size];
 
-			filterStacks = expandedFilterStacks;
-
-			totalAmounts = expandIntArray(totalAmounts, size, 0);
+			totalAmounts = new int[size];
 		}
-	}
-
-	public void setParentSlotStack(int parentSlot, ItemStack itemStack) {
-		if(parentSlot >= filterStacks.length) {
-			setFilterStacksSize(parentSlot + 1);
-		}
-		filterStacks[parentSlot] = itemStack;
 	}
 }
