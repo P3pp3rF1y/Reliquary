@@ -56,7 +56,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	public int getTotalAmount(int parentSlot) {
-		return totalAmounts[parentSlot];
+		return parentSlot < totalAmounts.length ? totalAmounts[parentSlot] : 0;
 	}
 
 	public void setTotalAmount(int parentSlot, int amount) {
@@ -413,11 +413,11 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	public void deserializeNBT(NBTTagCompound nbt) {
 		int stacksSize = nbt.hasKey("Size", Constants.NBT.TAG_INT) ? nbt.getInteger("Size") : stacks.length;
 		setSize(stacksSize);
-		setFilterStacksSize((stacksSize - (dynamicSize ? SLOTS_PER_TYPE : 0)) / SLOTS_PER_TYPE);
 
 		NBTTagList amounts = nbt.getTagList("TotalAmounts", 3);
+		setFilterStacksSize(amounts.tagCount());
 
-		for(int i = 0; i < totalAmounts.length; i++) {
+		for(int i = 0; i < amounts.tagCount(); i++) {
 			totalAmounts[i] = ((NBTTagInt) amounts.get(i)).getInt();
 		}
 

@@ -36,6 +36,7 @@ public class PacketItemHandlerSync implements IMessage, IMessageHandler<PacketIt
 	public PacketItemHandlerSync(EnumHand hand, NBTTagCompound itemHandlerNBT) {
 		this.hand = hand;
 		this.itemHandlerNBT = itemHandlerNBT;
+		this.playerSlotNumber = INVALID_SLOT;
 	}
 	public PacketItemHandlerSync(int playerSlotNumber, NBTTagCompound itemHandlerNBT) {
 		this.playerSlotNumber = playerSlotNumber;
