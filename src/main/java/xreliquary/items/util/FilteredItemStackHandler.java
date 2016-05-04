@@ -432,9 +432,11 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 			if(slot >= 0 && slot < stacks.length) {
 				stacks[slot] = ItemStack.loadItemStackFromNBT(itemTags);
 
-				ItemStack filterStack = stacks[slot].copy();
-				filterStack.stackSize = 1;
-				filterStacks[getParentSlot(slot)] = filterStack;
+				if (filterStacks.length> getParentSlot(slot)) {
+					ItemStack filterStack = stacks[slot].copy();
+					filterStack.stackSize = 1;
+					filterStacks[getParentSlot(slot)] = filterStack;
+				}
 			}
 		}
 	}

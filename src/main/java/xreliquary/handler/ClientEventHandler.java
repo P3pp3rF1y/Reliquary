@@ -199,13 +199,17 @@ public class ClientEventHandler {
 
 		IHarvestRodCache cache = harvestRodStack.getCapability(ModCapabilities.HARVEST_ROD_CACHE, null);
 
-		ItemStack secondaryStack;
+		ItemStack secondaryStack = null;
 		ItemHarvestRod harvestRod = ModItems.harvestRod;
 		if(harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.PLANTABLE_MODE)) {
-			secondaryStack = harvestRod.getCurrentPlantable(harvestRodStack).copy();
-			int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableSlot(harvestRodStack));
+			ItemStack currenPlantable = harvestRod.getCurrentPlantable(harvestRodStack);
 
-			secondaryStack.stackSize = plantableCount;
+			if (currenPlantable != null) {
+				secondaryStack = currenPlantable.copy();
+				int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableSlot(harvestRodStack));
+
+				secondaryStack.stackSize = plantableCount;
+			}
 		} else if(harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.BONE_MEAL_MODE)) {
 			int boneMealCount = harvestRod.getBoneMealCount(harvestRodStack);
 
