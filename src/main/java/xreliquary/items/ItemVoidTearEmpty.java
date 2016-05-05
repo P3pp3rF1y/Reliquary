@@ -86,7 +86,7 @@ public class ItemVoidTearEmpty extends ItemBase {
 			return null;
 		ItemStack filledTear = new ItemStack(ModItems.filledVoidTear, 1, 0);
 
-		NBTHelper.setTagCompound("item", filledTear, target.writeToNBT(new NBTTagCompound()));
+		ModItems.filledVoidTear.setItemStack(filledTear, target);
 
 		int quantity = InventoryHelper.getItemQuantity(target, inventory);
 		if(isPlayerInventory) {
@@ -99,7 +99,8 @@ public class ItemVoidTearEmpty extends ItemBase {
 		} else {
 			quantity = InventoryHelper.tryToRemoveFromInventory(target, inventory, Settings.VoidTear.itemLimit);
 		}
-		NBTHelper.setInteger("itemQuantity", filledTear, quantity);
+		ModItems.filledVoidTear.setItemQuantity(filledTear, quantity);
+
 		//configurable auto-drain when created.
 		NBTHelper.setBoolean("enabled", filledTear, Settings.VoidTear.absorbWhenCreated);
 
