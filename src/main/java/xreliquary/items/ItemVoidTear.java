@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.items.util.VoidTearItemStackHandler;
@@ -137,26 +138,31 @@ public class ItemVoidTear extends ItemToggleable {
 
 			EntityPlayer player = (EntityPlayer) entity;
 
-			if(player.inventory.getStackInSlot(slotNumber) != null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.filledVoidTear && isSelected) {
+			boolean quantityUpdated = false;
+			if (this.isEnabled(voidTear)) {
+				ItemStack contents = this.getContainedItem(voidTear);
+
+				int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
+
+				if(getItemQuantity(voidTear) < Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
+					//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
+					if(!player.capabilities.isCreativeMode) {
+						setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - contents.getMaxStackSize());
+						quantityUpdated = true;
+					}
+				}
+
+				if (attemptToReplenishSingleStack(player, voidTear))
+					quantityUpdated = true;
+			}
+
+			if(player.inventory.getStackInSlot(slotNumber) != null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.filledVoidTear && (isSelected || quantityUpdated)) {
 				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(voidTear)), (EntityPlayerMP) player);
 			} else if(player.inventory.offHandInventory[0] != null && player.inventory.offHandInventory[0].getItem() == ModItems.filledVoidTear) {
 				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(voidTear)), (EntityPlayerMP) player);
 			}
 
-			if (!this.isEnabled(voidTear))
-				return;
 
-			ItemStack contents = this.getContainedItem(voidTear);
-
-			int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
-
-			if(getItemQuantity(voidTear) < Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
-				//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
-				if(!player.capabilities.isCreativeMode)
-					setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - contents.getMaxStackSize());
-			}
-
-			attemptToReplenishSingleStack(player, voidTear);
 		}
 	}
 
@@ -171,7 +177,7 @@ public class ItemVoidTear extends ItemToggleable {
 		return filteredHandler.serializeNBT();
 	}
 
-	public void attemptToReplenishSingleStack(EntityPlayer player, ItemStack ist) {
+	public boolean attemptToReplenishSingleStack(EntityPlayer player, ItemStack voidTear) {
 		int preferredSlot = -1;
 		int stackCount = 0;
 		IInventory inventory = player.inventory;
@@ -180,7 +186,7 @@ public class ItemVoidTear extends ItemToggleable {
 			if(stackFound == null) {
 				continue;
 			}
-			if(StackHelper.isItemAndNbtEqual(stackFound, getContainedItem(ist))) {
+			if(StackHelper.isItemAndNbtEqual(stackFound, getContainedItem(voidTear))) {
 				if(preferredSlot == -1)
 					preferredSlot = slot;
 				stackCount += 1;
@@ -194,27 +200,32 @@ public class ItemVoidTear extends ItemToggleable {
 				stackCount = 1;
 		}
 
-		if(stackCount == 1 && preferredSlot != -1 && getItemQuantity(ist) > 1) {
+		if(stackCount == 1 && preferredSlot != -1 && getItemQuantity(voidTear) > 1) {
 			ItemStack stackToIncrease = player.inventory.getStackInSlot(preferredSlot);
 			if(stackToIncrease == null) {
-				ItemStack newStack = getContainedItem(ist).copy();
-				int quantityToDecrease = Math.min(newStack.getMaxStackSize(), getItemQuantity(ist) - 1);
+				ItemStack newStack = getContainedItem(voidTear).copy();
+				int quantityToDecrease = Math.min(newStack.getMaxStackSize(), getItemQuantity(voidTear) - 1);
 				newStack.stackSize = quantityToDecrease;
 				player.inventory.setInventorySlotContents(preferredSlot, newStack);
-				setItemQuantity(ist, getItemQuantity(ist) - quantityToDecrease);
-				return;
+				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
+				return true;
 			}
 
 			if(stackToIncrease.stackSize < stackToIncrease.getMaxStackSize()) {
-				int quantityToDecrease = Math.min(stackToIncrease.getMaxStackSize() - stackToIncrease.stackSize, getItemQuantity(ist) - 1);
+				int quantityToDecrease = Math.min(stackToIncrease.getMaxStackSize() - stackToIncrease.stackSize, getItemQuantity(voidTear) - 1);
 				stackToIncrease.stackSize += quantityToDecrease;
-				setItemQuantity(ist, getItemQuantity(ist) - quantityToDecrease);
+				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	@Override
 	public EnumActionResult onItemUseFirst(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+		if(world.getBlockState(pos).getBlock() == ModBlocks.pedestal)
+			return EnumActionResult.PASS;
+
 		if(!world.isRemote) {
 			if(world.getTileEntity(pos) instanceof IInventory) {
 				IInventory inventory = (IInventory) world.getTileEntity(pos);
