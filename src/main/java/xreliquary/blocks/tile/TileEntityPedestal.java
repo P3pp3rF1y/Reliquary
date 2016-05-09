@@ -49,6 +49,18 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		inventory = new ItemStack[this.slots];
 	}
 
+	public void dropPedestalInventory() {
+		for (int i = 0; i < inventory.length; ++i)
+		{
+			ItemStack itemstack = inventory[i];
+
+			if (itemstack != null)
+			{
+				InventoryHelper.spawnItemStack(this.worldObj, this.pos.getX(), this.pos.getY(), this.pos.getZ(), itemstack);
+			}
+		}
+	}
+
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);

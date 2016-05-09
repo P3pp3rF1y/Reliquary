@@ -6,14 +6,47 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class InventoryHelper {
+
+	public static void spawnItemStack(World worldIn, double x, double y, double z, ItemStack stack)
+	{
+		Random rnd = new Random();
+
+		float f = rnd.nextFloat() * 0.8F + 0.1F;
+		float f1 = rnd.nextFloat() * 0.8F + 0.1F;
+		float f2 = rnd.nextFloat() * 0.8F + 0.1F;
+
+		while (stack.stackSize > 0)
+		{
+			int i = rnd.nextInt(21) + 10;
+
+			if (i > stack.stackSize)
+			{
+				i = stack.stackSize;
+			}
+
+			stack.stackSize -= i;
+
+			ItemStack stackToDrop = stack.copy();
+			stackToDrop.stackSize = i;
+			EntityItem entityitem = new EntityItem(worldIn, x + (double)f, y + (double)f1, z + (double)f2, stackToDrop);
+
+			float f3 = 0.05F;
+			entityitem.motionX = rnd.nextGaussian() * (double)f3;
+			entityitem.motionY = rnd.nextGaussian() * (double)f3 + 0.20000000298023224D;
+			entityitem.motionZ = rnd.nextGaussian() * (double)f3;
+			worldIn.spawnEntityInWorld(entityitem);
+		}
+	}
 
 	public static void removeItem(ItemStack stack, IInventory inventory, int quantity) {
 		InventoryHelper.removeItem(stack, inventory, quantity, -1);

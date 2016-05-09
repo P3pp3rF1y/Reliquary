@@ -108,16 +108,6 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		return shrunkArray;
 	}
 
-	private void expandStacks(int size) {
-		ItemStack[] expandedStacks = new ItemStack[size];
-
-		if(stacks.length > 0) {
-			System.arraycopy(stacks, 0, expandedStacks, 0, stacks.length);
-		}
-
-		stacks = expandedStacks;
-	}
-
 	private void expandStacks() {
 		if(dynamicSize) {
 			ItemStack[] expandedStacks = new ItemStack[stacks.length + SLOTS_PER_TYPE];
@@ -280,8 +270,14 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		}
 	}
 
-	protected ItemStack getParentSlotStack(int parentSlot) {
+	private ItemStack getParentSlotStack(int parentSlot) {
 		return filterStacks[parentSlot];
+	}
+
+	public void setParentSlotStack(int parentSlot, ItemStack filterStack) {
+		if (filterStacks[parentSlot] == null) {
+			filterStacks[parentSlot] = filterStack.copy();
+		}
 	}
 
 	protected boolean isItemStackValidForParentSlot(ItemStack stack, int parentSlot) {
@@ -399,8 +395,8 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 		NBTTagList nbtAmountsList = new NBTTagList();
 
-		for(int i = 0; i < totalAmounts.length; i++) {
-			NBTTagInt amountTag = new NBTTagInt(totalAmounts[i]);
+		for(int totalAmount : totalAmounts) {
+			NBTTagInt amountTag = new NBTTagInt(totalAmount);
 			nbtAmountsList.appendTag(amountTag);
 		}
 
@@ -438,7 +434,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		}
 	}
 
-	public void setDynamicSize(boolean dynamicSize) {
+	protected void setDynamicSize(boolean dynamicSize) {
 		if(this.dynamicSize != dynamicSize) {
 			this.dynamicSize = dynamicSize;
 
@@ -454,12 +450,12 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		return filterStacks;
 	}
 
-	protected void validateSlotIndex(int slot) {
+	private void validateSlotIndex(int slot) {
 		if(slot < 0 || slot >= stacks.length)
 			throw new RuntimeException("Slot " + slot + " not in valid range - [0," + stacks.length + ")");
 	}
 
-	protected int getStackLimit(int slot, ItemStack stack) {
+	private int getStackLimit(int slot, ItemStack stack) {
 		return stack.getMaxStackSize();
 	}
 

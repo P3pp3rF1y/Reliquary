@@ -4,19 +4,30 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockChest;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
+import xreliquary.items.util.FilteredItemStackHandler;
+import xreliquary.items.util.VoidTearItemStackHandler;
+import xreliquary.network.PacketHandler;
+import xreliquary.network.PacketItemHandlerSync;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -36,9 +47,40 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return new ICapabilitySerializable<NBTTagCompound>() {
+			VoidTearItemStackHandler itemHandler = new VoidTearItemStackHandler();
+
+			@Override
+			public NBTTagCompound serializeNBT() {
+				return itemHandler.serializeNBT();
+			}
+
+			@Override
+			public void deserializeNBT(NBTTagCompound nbt) {
+				itemHandler.deserializeNBT(nbt);
+			}
+
+			@Override
+			public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+				if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+					return true;
+				return false;
+			}
+
+			@Override
+			public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+				if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+					return (T) itemHandler;
+
+				return null;
+			}
+		};
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-
 		this.formatTooltip(null, stack, list);
 
 		ItemStack contents = this.getContainedItem(stack);
@@ -50,14 +92,14 @@ public class ItemVoidTear extends ItemToggleable {
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName()), stack, list);
 			list.add(LanguageHelper.getLocalization("tooltip.absorb_tear"));
 		}
-		LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(NBTHelper.getInteger("itemQuantity", stack))), stack, list);
+		LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(getItemQuantity(stack))), stack, list);
 	}
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
 		if(!world.isRemote) {
 
-			if(NBTHelper.getInteger("itemQuantity", ist) == 0)
+			if(getItemQuantity(ist) == 0)
 				return new ActionResult<>(EnumActionResult.SUCCESS, new ItemStack(ModItems.emptyVoidTear, 1, 0));
 
 			RayTraceResult movingObjectPosition = this.getMovingObjectPositionFromPlayer(world, player, false);
@@ -80,28 +122,62 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int i, boolean f) {
+	public void onUpdate(ItemStack voidTear, World world, Entity entity, int slotNumber, boolean isSelected) {
+		if(voidTear.getTagCompound().hasKey("item")) {
+
+			setItemStack(voidTear, ItemStack.loadItemStackFromNBT(NBTHelper.getTagCompound("item", voidTear)));
+			setItemQuantity(voidTear, NBTHelper.getInteger("itemQuantity", voidTear));
+
+			voidTear.getTagCompound().removeTag("item");
+			voidTear.getTagCompound().removeTag("itemQuantity");
+		}
+
 		if(!world.isRemote) {
-			if(!this.isEnabled(stack) || !(entity instanceof EntityPlayer))
+			if(!(entity instanceof EntityPlayer))
 				return;
 
 			EntityPlayer player = (EntityPlayer) entity;
 
-			ItemStack contents = this.getContainedItem(stack);
+			boolean quantityUpdated = false;
+			if (this.isEnabled(voidTear)) {
+				ItemStack contents = this.getContainedItem(voidTear);
 
-			int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
+				int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
 
-			if(NBTHelper.getInteger("itemQuantity", stack) < Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
-				//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
-				if(!player.capabilities.isCreativeMode)
-					NBTHelper.setInteger("itemQuantity", stack, NBTHelper.getInteger("itemQuantity", stack) + itemQuantity - contents.getMaxStackSize());
+				if(getItemQuantity(voidTear) < Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
+					//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
+					if(!player.capabilities.isCreativeMode) {
+						setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - contents.getMaxStackSize());
+						quantityUpdated = true;
+					}
+				}
+
+				if (attemptToReplenishSingleStack(player, voidTear))
+					quantityUpdated = true;
 			}
 
-			attemptToReplenishSingleStack(player, stack);
+			if(player.inventory.getStackInSlot(slotNumber) != null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.filledVoidTear && (isSelected || quantityUpdated)) {
+				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(voidTear)), (EntityPlayerMP) player);
+			} else if(player.inventory.offHandInventory[0] != null && player.inventory.offHandInventory[0].getItem() == ModItems.filledVoidTear) {
+				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(voidTear)), (EntityPlayerMP) player);
+			}
+
+
 		}
 	}
 
-	public void attemptToReplenishSingleStack(EntityPlayer player, ItemStack ist) {
+	private NBTTagCompound getItemHandlerNBT(ItemStack ist) {
+		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		if(!(itemHandler instanceof FilteredItemStackHandler))
+			return null;
+
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+		return filteredHandler.serializeNBT();
+	}
+
+	public boolean attemptToReplenishSingleStack(EntityPlayer player, ItemStack voidTear) {
 		int preferredSlot = -1;
 		int stackCount = 0;
 		IInventory inventory = player.inventory;
@@ -110,7 +186,7 @@ public class ItemVoidTear extends ItemToggleable {
 			if(stackFound == null) {
 				continue;
 			}
-			if(StackHelper.isItemAndNbtEqual(stackFound, getContainedItem(ist))) {
+			if(StackHelper.isItemAndNbtEqual(stackFound, getContainedItem(voidTear))) {
 				if(preferredSlot == -1)
 					preferredSlot = slot;
 				stackCount += 1;
@@ -124,27 +200,32 @@ public class ItemVoidTear extends ItemToggleable {
 				stackCount = 1;
 		}
 
-		if(stackCount == 1 && preferredSlot != -1 && NBTHelper.getInteger("itemQuantity", ist) > 1) {
+		if(stackCount == 1 && preferredSlot != -1 && getItemQuantity(voidTear) > 1) {
 			ItemStack stackToIncrease = player.inventory.getStackInSlot(preferredSlot);
 			if(stackToIncrease == null) {
-				ItemStack newStack = getContainedItem(ist).copy();
-				int quantityToDecrease = Math.min(newStack.getMaxStackSize(), NBTHelper.getInteger("itemQuantity", ist) - 1);
+				ItemStack newStack = getContainedItem(voidTear).copy();
+				int quantityToDecrease = Math.min(newStack.getMaxStackSize(), getItemQuantity(voidTear) - 1);
 				newStack.stackSize = quantityToDecrease;
 				player.inventory.setInventorySlotContents(preferredSlot, newStack);
-				NBTHelper.setInteger("itemQuantity", ist, NBTHelper.getInteger("itemQuantity", ist) - quantityToDecrease);
-				return;
+				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
+				return true;
 			}
 
 			if(stackToIncrease.stackSize < stackToIncrease.getMaxStackSize()) {
-				int quantityToDecrease = Math.min(stackToIncrease.getMaxStackSize() - stackToIncrease.stackSize, NBTHelper.getInteger("itemQuantity", ist) - 1);
+				int quantityToDecrease = Math.min(stackToIncrease.getMaxStackSize() - stackToIncrease.stackSize, getItemQuantity(voidTear) - 1);
 				stackToIncrease.stackSize += quantityToDecrease;
-				NBTHelper.setInteger("itemQuantity", ist, NBTHelper.getInteger("itemQuantity", ist) - quantityToDecrease);
+				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	@Override
 	public EnumActionResult onItemUseFirst(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+		if(world.getBlockState(pos).getBlock() == ModBlocks.pedestal)
+			return EnumActionResult.PASS;
+
 		if(!world.isRemote) {
 			if(world.getTileEntity(pos) instanceof IInventory) {
 				IInventory inventory = (IInventory) world.getTileEntity(pos);
@@ -159,7 +240,7 @@ public class ItemVoidTear extends ItemToggleable {
 				} else {
 					//disabled == placement mode, try and stuff the tear's contents into the inventory
 					this.attemptToEmptyIntoInventory(ist, player, inventory, 0);
-					if(!player.isSneaking() && !(NBTHelper.getInteger("itemQuantity", ist) > 0)) {
+					if(!player.isSneaking() && !(getItemQuantity(ist) > 0)) {
 						player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(ModItems.emptyVoidTear, 1, 0));
 					}
 				}
@@ -169,33 +250,16 @@ public class ItemVoidTear extends ItemToggleable {
 		return EnumActionResult.PASS;
 	}
 
-	public ItemStack getContainedItem(ItemStack ist) {
-		//something awful happened. We either lost data or this is an invalid tear by some other means. Either way, not great.
-		if(NBTHelper.getString("itemID", ist).equals("") && (NBTHelper.getTagCompound("item", ist) == null || NBTHelper.getTagCompound("item", ist).hasNoTags()))
-			return null;
-
-		//backwards compatibility
-		//TODO remove later
-		if(!NBTHelper.getString("itemID", ist).equals("")) {
-			return new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(NBTHelper.getString("itemID", ist))), NBTHelper.getInteger("itemQuantity", ist));
-		}
-
-		ItemStack stackToReturn = ItemStack.loadItemStackFromNBT(NBTHelper.getTagCompound("item", ist));
-		stackToReturn.stackSize = NBTHelper.getInteger("itemQuantity", ist);
-
-		return stackToReturn;
-	}
-
 	protected boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory, int limit) {
 		ItemStack contents = this.getContainedItem(ist);
 		contents.stackSize = 1;
 
-		int quantity = NBTHelper.getInteger("itemQuantity", ist);
+		int quantity = getItemQuantity(ist);
 		int maxNumberToEmpty = player.isSneaking() ? quantity : Math.min(contents.getMaxStackSize(), quantity);
 
 		quantity -= InventoryHelper.tryToAddToInventory(contents, inventory, limit, maxNumberToEmpty);
 
-		NBTHelper.setInteger("itemQuantity", ist, quantity);
+		setItemQuantity(ist, quantity);
 		if(quantity == 0) {
 			player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_experience_orb_touch, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
 			return true;
@@ -207,7 +271,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 	protected void drainInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
 		ItemStack contents = this.getContainedItem(ist);
-		int quantity = NBTHelper.getInteger("itemQuantity", ist);
+		int quantity = getItemQuantity(ist);
 
 		int quantityDrained = InventoryHelper.tryToRemoveFromInventory(contents, inventory, Settings.VoidTear.itemLimit - quantity);
 
@@ -216,7 +280,53 @@ public class ItemVoidTear extends ItemToggleable {
 
 		player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_experience_orb_touch, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
 
-		NBTHelper.setInteger("itemQuantity", ist, quantity + quantityDrained);
+		setItemQuantity(ist, quantity + quantityDrained);
+	}
+
+	public ItemStack getContainedItem(ItemStack voidTear) {
+		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		if(!(itemHandler instanceof FilteredItemStackHandler))
+			return null;
+
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+		ItemStack stackToReturn = null;
+		if(filteredHandler.getStackInParentSlot(0) != null) {
+			stackToReturn = filteredHandler.getStackInParentSlot(0).copy();
+			stackToReturn.stackSize = filteredHandler.getTotalAmount(0);
+		}
+
+		return stackToReturn;
+	}
+
+	public void setItemStack(ItemStack voidTear, ItemStack stack) {
+		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		if(!(itemHandler instanceof FilteredItemStackHandler))
+			return;
+
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+		filteredHandler.setParentSlotStack(0, stack);
+	}
+
+	public void setItemQuantity(ItemStack voidTear, int quantity) {
+		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		if(!(itemHandler instanceof FilteredItemStackHandler))
+			return;
+
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+		filteredHandler.setTotalAmount(0, quantity);
+	}
+
+	private int getItemQuantity(ItemStack voidTear) {
+		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+		if(!(itemHandler instanceof FilteredItemStackHandler))
+			return 0;
+
+		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+		return filteredHandler.getTotalAmount(0);
 	}
 
 }

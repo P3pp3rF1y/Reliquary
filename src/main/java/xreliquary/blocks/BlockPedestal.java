@@ -77,7 +77,7 @@ public class BlockPedestal extends BlockBase {
 		TileEntityPedestal pedestal = (TileEntityPedestal) world.getTileEntity(pos);
 
 		if(pedestal != null) {
-			net.minecraft.inventory.InventoryHelper.dropInventoryItems(world, pos, pedestal);
+			pedestal.dropPedestalInventory();
 		}
 
 		PedestalRegistry.unregisterPosition(world.provider.getDimension(), pos);
