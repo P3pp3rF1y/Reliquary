@@ -1,5 +1,8 @@
 {
   "variants": {
-    "normal": { "model": "xreliquary:pedestal"}
+    "facing=north": { "model": "xreliquary:pedestal" },
+    "facing=south": { "model": "xreliquary:pedestal", "y": 180 },
+    "facing=west":  { "model": "xreliquary:pedestal", "y": 270 },
+    "facing=east":  { "model": "xreliquary:pedestal", "y": 90 }
   }
 }

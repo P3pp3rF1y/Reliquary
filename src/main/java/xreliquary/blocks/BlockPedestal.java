@@ -2,7 +2,10 @@ package xreliquary.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -19,12 +22,30 @@ import xreliquary.util.InventoryHelper;
 import xreliquary.util.pedestal.PedestalRegistry;
 
 public class BlockPedestal extends BlockBase {
+	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	private static final AxisAlignedBB PEDESTAL_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.6875D, 0.875D);
 
 	public BlockPedestal() {
 		super(Material.rock, Names.pedestal);
 		this.setUnlocalizedName(Names.pedestal);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		EnumFacing enumfacing = EnumFacing.getHorizontal(meta);
+
+		return this.getDefaultState().withProperty(FACING, enumfacing);
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, FACING);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(FACING).getHorizontalIndex();
 	}
 
 	@Override
@@ -37,6 +58,11 @@ public class BlockPedestal extends BlockBase {
 		super.onNeighborBlockChange(worldIn, pos, state, neighborBlock);
 
 		((TileEntityPedestal) worldIn.getTileEntity(pos)).updateRedstone();
+	}
+
+	@Override
+	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
 	}
 
 	@Override
