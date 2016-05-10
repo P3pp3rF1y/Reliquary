@@ -2,6 +2,8 @@ package xreliquary.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -23,6 +25,7 @@ import xreliquary.util.pedestal.PedestalRegistry;
 
 public class BlockPedestal extends BlockBase {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+	public static final PropertyBool SWITCH_ON = PropertyBool.create("switch_on");
 	private static final AxisAlignedBB PEDESTAL_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.6875D, 0.875D);
 
 	public BlockPedestal() {
@@ -35,17 +38,25 @@ public class BlockPedestal extends BlockBase {
 	public IBlockState getStateFromMeta(int meta) {
 		EnumFacing enumfacing = EnumFacing.getHorizontal(meta);
 
-		return this.getDefaultState().withProperty(FACING, enumfacing);
+		return this.getDefaultState().withProperty(FACING, enumfacing).withProperty(SWITCH_ON, (meta & 4) != 0);
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, FACING);
+		return new BlockStateContainer(this, new IProperty[] {FACING, SWITCH_ON});
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return state.getValue(FACING).getHorizontalIndex();
+		int i = 0;
+
+		i |= state.getValue(FACING).getHorizontalIndex();
+
+		if(state.getValue(SWITCH_ON)) {
+			i |= 4;
+		}
+
+		return i;
 	}
 
 	@Override
@@ -62,7 +73,7 @@ public class BlockPedestal extends BlockBase {
 
 	@Override
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
+		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing()).withProperty(SWITCH_ON, false);
 	}
 
 	@Override
