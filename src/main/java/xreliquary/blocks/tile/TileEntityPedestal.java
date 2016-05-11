@@ -18,6 +18,8 @@ import net.minecraftforge.fluids.*;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.api.*;
+import xreliquary.blocks.BlockPedestal;
+import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.StackHelper;
@@ -296,15 +298,22 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		if(!onSwitches.contains(switchedOnFrom.toLong()))
 			onSwitches.add(switchedOnFrom.toLong());
 
-		this.switchedOn = true;
+		setSwitchedOn(true);
 	}
 
 	@Override
 	public void switchOff(BlockPos switchedOffFrom) {
 		onSwitches.remove(switchedOffFrom.toLong());
 
-		if(onSwitches.size() == 0)
-			this.switchedOn = false;
+		if(onSwitches.size() == 0) {
+			setSwitchedOn(false);
+		}
+	}
+
+	private void setSwitchedOn(boolean switchedOn) {
+		this.switchedOn = switchedOn;
+		IBlockState state = worldObj.getBlockState(pos).withProperty(BlockPedestal.ENABLED, switchedOn);
+		worldObj.setBlockState(pos, state);
 	}
 
 	public List<IInventory> getAdjacentInventories() {

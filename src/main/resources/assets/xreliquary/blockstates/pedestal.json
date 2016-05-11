@@ -1,8 +1,31 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "6": "blocks/redstone_block"
+    },
+    "model": "xreliquary:pedestal"
+  },
   "variants": {
-    "facing=north": { "model": "xreliquary:pedestal" },
-    "facing=south": { "model": "xreliquary:pedestal", "y": 180 },
-    "facing=west":  { "model": "xreliquary:pedestal", "y": 270 },
-    "facing=east":  { "model": "xreliquary:pedestal", "y": 90 }
+    "facing": {
+      "north": {},
+      "south": {
+        "y": 180
+      },
+      "west": {
+        "y": 270
+      },
+      "east": {
+        "y": 90
+      }
+    },
+    "enabled": {
+      "true": {},
+      "false": {
+        "textures": {
+          "6": "xreliquary:blocks/redstone_block_off"
+        }
+      }
+    }
   }
 }

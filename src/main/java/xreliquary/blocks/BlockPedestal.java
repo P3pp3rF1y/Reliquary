@@ -25,7 +25,7 @@ import xreliquary.util.pedestal.PedestalRegistry;
 
 public class BlockPedestal extends BlockBase {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-	public static final PropertyBool SWITCH_ON = PropertyBool.create("switch_on");
+	public static final PropertyBool ENABLED = PropertyBool.create("enabled");
 	private static final AxisAlignedBB PEDESTAL_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.6875D, 0.875D);
 
 	public BlockPedestal() {
@@ -38,12 +38,12 @@ public class BlockPedestal extends BlockBase {
 	public IBlockState getStateFromMeta(int meta) {
 		EnumFacing enumfacing = EnumFacing.getHorizontal(meta);
 
-		return this.getDefaultState().withProperty(FACING, enumfacing).withProperty(SWITCH_ON, (meta & 4) != 0);
+		return this.getDefaultState().withProperty(FACING, enumfacing).withProperty(ENABLED, (meta & 4) != 0);
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] {FACING, SWITCH_ON});
+		return new BlockStateContainer(this, new IProperty[] {FACING, ENABLED});
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class BlockPedestal extends BlockBase {
 
 		i |= state.getValue(FACING).getHorizontalIndex();
 
-		if(state.getValue(SWITCH_ON)) {
+		if(state.getValue(ENABLED)) {
 			i |= 4;
 		}
 
@@ -73,7 +73,7 @@ public class BlockPedestal extends BlockBase {
 
 	@Override
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing()).withProperty(SWITCH_ON, false);
+		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing()).withProperty(ENABLED, false);
 	}
 
 	@Override
@@ -128,5 +128,4 @@ public class BlockPedestal extends BlockBase {
 	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
-
 }
