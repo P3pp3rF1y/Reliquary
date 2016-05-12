@@ -18,7 +18,6 @@ import net.minecraftforge.fluids.*;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.api.*;
-import xreliquary.blocks.BlockPedestal;
 import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.util.InventoryHelper;
@@ -38,7 +37,6 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	private Map<Integer, IPedestalRedstoneItem> redstoneItems = new HashMap<>();
 	private Map<Integer, IItemHandler> itemHandlers = new HashMap<>();
 	private List<ItemStack> fluidContainers = new ArrayList<>();
-	private FakePlayer fakePlayer = null;
 	private boolean switchedOn = false;
 	private List<Long> onSwitches = new ArrayList<>();
 	private boolean initRedstone = false;
@@ -52,12 +50,10 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	}
 
 	public void dropPedestalInventory() {
-		for (int i = 0; i < inventory.length; ++i)
-		{
+		for(int i = 0; i < inventory.length; ++i) {
 			ItemStack itemstack = inventory[i];
 
-			if (itemstack != null)
-			{
+			if(itemstack != null) {
 				InventoryHelper.spawnItemStack(this.worldObj, this.pos.getX(), this.pos.getY(), this.pos.getZ(), itemstack);
 			}
 		}
@@ -312,8 +308,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 	private void setSwitchedOn(boolean switchedOn) {
 		this.switchedOn = switchedOn;
-		IBlockState state = worldObj.getBlockState(pos).withProperty(BlockPedestal.ENABLED, switchedOn);
-		worldObj.setBlockState(pos, state);
+		ModBlocks.pedestal.setEnabled(worldObj, pos, switchedOn);
 	}
 
 	public List<IInventory> getAdjacentInventories() {
@@ -567,6 +562,11 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	}
 
 	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+		return !(oldState.getBlock() == ModBlocks.pedestal && newState.getBlock() == ModBlocks.pedestal);
+	}
+
+	@Override
 	public ItemStack removeStackFromSlot(int slot) {
 		ItemStack stack;
 		if(slot < slots) {
@@ -595,8 +595,9 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) {
 		if(slot < slots) {
+			IPedestalRedstoneItem removedRedstoneItem = null;
 			if(stack == null && redstoneItems.containsKey(slot)) {
-				redstoneItems.get(slot).onRemoved(inventory[slot], this);
+				removedRedstoneItem = redstoneItems.get(slot);
 			}
 
 			this.inventory[slot] = stack;
@@ -605,6 +606,10 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 			}
 
 			updateItemsAndBlock();
+
+			if (removedRedstoneItem != null)
+				removedRedstoneItem.onRemoved(inventory[slot], this);
+
 			return;
 		}
 

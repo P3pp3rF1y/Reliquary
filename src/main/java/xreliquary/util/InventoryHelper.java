@@ -230,12 +230,12 @@ public class InventoryHelper {
 		if(inventory.getStackInSlot(0) != null)
 			return false;
 
-		inventory.setInventorySlotContents(0, player.inventory.getCurrentItem().copy());
+		inventory.setInventorySlotContents(0, player.getHeldItem(hand).copy());
 
-		player.inventory.getCurrentItem().stackSize--;
+		player.getHeldItem(hand).stackSize--;
 
-		if(player.inventory.getCurrentItem().stackSize == 0)
-			player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+		if(player.getHeldItem(hand).stackSize == 0)
+			player.setHeldItem(hand, null);
 
 		player.inventory.markDirty();
 		return true;

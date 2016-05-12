@@ -82,6 +82,9 @@ public class BlockPedestal extends BlockBase {
 		if(pedestal == null)
 			return false;
 
+		if(world.isRemote)
+			return player.getHeldItem(hand) != null || player.isSneaking();
+
 		if(heldItem == null) {
 			if(player.isSneaking()) {
 				pedestal.removeLastPedestalStack();
@@ -127,5 +130,14 @@ public class BlockPedestal extends BlockBase {
 	@Override
 	public boolean isFullCube(IBlockState state) {
 		return false;
+	}
+
+	public void setEnabled(World world, BlockPos pos, boolean enabled) {
+		IBlockState state = world.getBlockState(pos);
+		if(state.getValue(BlockPedestal.ENABLED) != enabled) {
+			state = state.withProperty(BlockPedestal.ENABLED, enabled);
+
+			world.setBlockState(pos, state);
+		}
 	}
 }
