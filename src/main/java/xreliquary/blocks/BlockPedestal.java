@@ -68,7 +68,7 @@ public class BlockPedestal extends BlockBase {
 	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
 		super.onNeighborBlockChange(worldIn, pos, state, neighborBlock);
 
-		((TileEntityPedestal) worldIn.getTileEntity(pos)).updateRedstone();
+		((TileEntityPedestal) worldIn.getTileEntity(pos)).neighborUpdate();
 	}
 
 	@Override

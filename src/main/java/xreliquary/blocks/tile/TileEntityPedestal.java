@@ -18,6 +18,7 @@ import net.minecraftforge.fluids.*;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.api.*;
+import xreliquary.blocks.BlockPedestal;
 import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.util.InventoryHelper;
@@ -40,6 +41,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	private boolean switchedOn = false;
 	private List<Long> onSwitches = new ArrayList<>();
 	private boolean initRedstone = false;
+	private boolean isPowered = false;
 
 	private short slots = 0;
 	private ItemStack[] inventory;
@@ -180,7 +182,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 			updateRedstone();
 		}
 
-		if((isPowered() || switchedOn) && tickable) {
+		if(tickable && worldObj.getBlockState(this.pos).getValue(BlockPedestal.ENABLED)) {
 			for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
 				if(actionCooldowns[currentItemIndex] > 0) {
 					actionCooldowns[currentItemIndex]--;
@@ -194,6 +196,17 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 					}
 				}
 			}
+		}
+	}
+
+	public void neighborUpdate(){
+		if(isPowered != worldObj.isBlockPowered(this.pos)) {
+			isPowered = worldObj.isBlockPowered(this.pos);
+
+			if (isPowered)
+				switchOn(null);
+			else
+				switchOff(null);
 		}
 	}
 
@@ -291,7 +304,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 	@Override
 	public void switchOn(BlockPos switchedOnFrom) {
-		if(!onSwitches.contains(switchedOnFrom.toLong()))
+		if (switchedOnFrom != null && !onSwitches.contains(switchedOnFrom.toLong()))
 			onSwitches.add(switchedOnFrom.toLong());
 
 		setSwitchedOn(true);
@@ -299,9 +312,10 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 	@Override
 	public void switchOff(BlockPos switchedOffFrom) {
-		onSwitches.remove(switchedOffFrom.toLong());
+		if (switchedOffFrom != null)
+			onSwitches.remove(switchedOffFrom.toLong());
 
-		if(onSwitches.size() == 0) {
+		if(!isPowered && onSwitches.size() == 0) {
 			setSwitchedOn(false);
 		}
 	}
@@ -465,10 +479,6 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		return tankInfo;
 	}
 
-	private boolean isPowered() {
-		return worldObj.isBlockPowered(pos);
-	}
-
 	public void removeRedstoneItems() {
 		for(Map.Entry<Integer, IPedestalRedstoneItem> item : redstoneItems.entrySet()) {
 			item.getValue().onRemoved(inventory[item.getKey()], this);
@@ -607,7 +617,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 			updateItemsAndBlock();
 
-			if (removedRedstoneItem != null)
+			if(removedRedstoneItem != null)
 				removedRedstoneItem.onRemoved(inventory[slot], this);
 
 			return;
