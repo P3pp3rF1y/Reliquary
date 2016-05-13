@@ -40,7 +40,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	private List<ItemStack> fluidContainers = new ArrayList<>();
 	private boolean switchedOn = false;
 	private List<Long> onSwitches = new ArrayList<>();
-	private boolean initRedstone = false;
+	private boolean initEnabled = false;
 	private boolean isPowered = false;
 
 	private short slots = 0;
@@ -77,7 +77,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 				this.inventory[b0] = ItemStack.loadItemStackFromNBT(item);
 			}
 		}
-
+		switchedOn = tag.getBoolean("SwitchedOn");
 		updateSpecialItems();
 	}
 
@@ -96,6 +96,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 			}
 		}
 		tag.setTag("Items", items);
+		tag.setBoolean("SwitchedOn", switchedOn);
 	}
 
 	@Override
@@ -177,10 +178,9 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		if(worldObj.isRemote)
 			return;
 
-		if(!initRedstone) {
-			initRedstone = true;
+		if(!initEnabled) {
+			initEnabled = true;
 			neighborUpdate();
-			updateRedstone();
 		}
 
 		if(tickable && worldObj.getBlockState(this.pos).getValue(BlockPedestal.ENABLED)) {
@@ -209,6 +209,8 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 			else
 				switchOff(null);
 		}
+
+		updateRedstone();
 	}
 
 	public void updateRedstone() {
@@ -308,7 +310,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		if (switchedOnFrom != null && !onSwitches.contains(switchedOnFrom.toLong()))
 			onSwitches.add(switchedOnFrom.toLong());
 
-		setSwitchedOn(true);
+		setEnabled(true);
 	}
 
 	@Override
@@ -316,13 +318,12 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		if (switchedOffFrom != null)
 			onSwitches.remove(switchedOffFrom.toLong());
 
-		if(!isPowered && onSwitches.size() == 0) {
-			setSwitchedOn(false);
+		if(!switchedOn && !isPowered && onSwitches.size() == 0) {
+			setEnabled(false);
 		}
 	}
 
-	private void setSwitchedOn(boolean switchedOn) {
-		this.switchedOn = switchedOn;
+	private void setEnabled(boolean switchedOn) {
 		ModBlocks.pedestal.setEnabled(worldObj, pos, switchedOn);
 	}
 
@@ -729,4 +730,12 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		}
 	}
 
+	public void toggleSwitch() {
+		switchedOn = !switchedOn;
+
+		if (switchedOn)
+			switchOn(null);
+		else
+			switchOff(null);
+	}
 }
