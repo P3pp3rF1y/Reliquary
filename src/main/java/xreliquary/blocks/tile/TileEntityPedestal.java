@@ -179,6 +179,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 		if(!initRedstone) {
 			initRedstone = true;
+			neighborUpdate();
 			updateRedstone();
 		}
 
