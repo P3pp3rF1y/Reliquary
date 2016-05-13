@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -22,6 +23,8 @@ import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.pedestal.PedestalRegistry;
+
+import java.util.Random;
 
 public class BlockPedestal extends BlockBase {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -74,6 +77,34 @@ public class BlockPedestal extends BlockBase {
 	@Override
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing()).withProperty(ENABLED, false);
+	}
+
+	@Override
+	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand) {
+
+		if (state.getValue(ENABLED) && rand.nextInt(3) == 1) {
+			EnumFacing enumfacing = state.getValue(FACING);
+			double xMiddle = (double)pos.getX() + 0.5D;
+			double y = (double)pos.getY() + 4.0D/16.0D + rand.nextDouble() * 4.0D / 16.0D;
+			double zMiddle = (double)pos.getZ() + 0.5D;
+			double sideOffset = 0.27D;
+			double randomOffset = rand.nextDouble() * 0.3D - 0.15D;
+
+			switch (enumfacing)
+			{
+				case WEST:
+					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle + sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D, new int[0]);
+					break;
+				case EAST:
+					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle - sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D, new int[0]);
+					break;
+				case NORTH:
+					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle + randomOffset, y, zMiddle + sideOffset, 0.0D, 0.0D, 0.0D, new int[0]);
+					break;
+				case SOUTH:
+					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle + randomOffset, y, zMiddle - sideOffset, 0.0D, 0.0D, 0.0D, new int[0]);
+			}
+		}
 	}
 
 	@Override
