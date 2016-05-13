@@ -24,6 +24,7 @@ import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.pedestal.PedestalRegistry;
 
+import java.util.List;
 import java.util.Random;
 
 public class BlockPedestal extends BlockBase {
@@ -35,6 +36,18 @@ public class BlockPedestal extends BlockBase {
 		super(Material.rock, Names.pedestal);
 		this.setUnlocalizedName(Names.pedestal);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+	}
+
+	@Override
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(worldIn.provider.getDimension(), pos, 160);
+
+		for(BlockPos pedestalPosition : pedestalPositions) {
+			TileEntity te = worldIn.getTileEntity(pedestalPosition);
+			if(te != null && te instanceof TileEntityPedestal) {
+				((TileEntityPedestal) te).updateRedstone();
+			}
+		}
 	}
 
 	@Override
@@ -82,16 +95,15 @@ public class BlockPedestal extends BlockBase {
 	@Override
 	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand) {
 
-		if (state.getValue(ENABLED) && rand.nextInt(3) == 1) {
+		if(state.getValue(ENABLED) && rand.nextInt(3) == 1) {
 			EnumFacing enumfacing = state.getValue(FACING);
-			double xMiddle = (double)pos.getX() + 0.5D;
-			double y = (double)pos.getY() + 4.0D/16.0D + rand.nextDouble() * 4.0D / 16.0D;
-			double zMiddle = (double)pos.getZ() + 0.5D;
+			double xMiddle = (double) pos.getX() + 0.5D;
+			double y = (double) pos.getY() + 4.0D / 16.0D + rand.nextDouble() * 4.0D / 16.0D;
+			double zMiddle = (double) pos.getZ() + 0.5D;
 			double sideOffset = 0.27D;
 			double randomOffset = rand.nextDouble() * 0.3D - 0.15D;
 
-			switch (enumfacing)
-			{
+			switch(enumfacing) {
 				case WEST:
 					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle + sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D, new int[0]);
 					break;
