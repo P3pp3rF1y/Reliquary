@@ -129,7 +129,7 @@ public class BlockPedestal extends BlockBase {
 			return player.getHeldItem(hand) != null || player.isSneaking();
 
 		if(heldItem == null) {
-			if(switchClicked(side, xOff, yOff, zOff)) {
+			if(!player.isSneaking() && hand == EnumHand.MAIN_HAND && switchClicked(side, xOff, yOff, zOff)) {
 				pedestal.toggleSwitch();
 				return true;
 			}
@@ -148,14 +148,12 @@ public class BlockPedestal extends BlockBase {
 	private boolean switchClicked(EnumFacing side, float xOff, float yOff, float zOff) {
 		if(yOff < 0.3 || yOff > 0.65)
 			return false;
-
 		if(side == EnumFacing.NORTH && (xOff < 0.35 || xOff > 0.65 || zOff != 0.125))
 			return false;
 		if(side == EnumFacing.SOUTH && (xOff < 0.35 || xOff > 0.65 || zOff != 0.875))
 			return false;
 		if(side == EnumFacing.WEST && (zOff < 0.35 || zOff > 0.65 || xOff != 0.125))
 			return false;
-
 		if(side == EnumFacing.EAST && (zOff < 0.35 || zOff > 0.65 || xOff != 0.875))
 			return false;
 
