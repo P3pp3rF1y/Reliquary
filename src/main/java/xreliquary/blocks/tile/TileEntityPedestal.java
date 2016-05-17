@@ -19,6 +19,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.api.*;
 import xreliquary.blocks.BlockPedestal;
+import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.util.InventoryHelper;
@@ -28,7 +29,7 @@ import xreliquary.util.pedestal.PedestalRegistry;
 
 import java.util.*;
 
-public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFluidHandler, IInventory {
+public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFluidHandler, IInventory, IWailaDataChangeIndicator {
 
 	private boolean tickable = false;
 	private int[] actionCooldowns = new int[0];
@@ -40,11 +41,13 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	private List<ItemStack> fluidContainers = new ArrayList<>();
 	private boolean switchedOn = false;
 	private List<Long> onSwitches = new ArrayList<>();
-	private boolean initEnabled = false;
-	private boolean isPowered = false;
+	private boolean enabledInitialized = false;
+	private boolean powered = false;
 
 	private short slots = 0;
 	private ItemStack[] inventory;
+
+	private boolean dataChanged = false;
 
 	public TileEntityPedestal() {
 		this.slots = 1;
@@ -178,8 +181,8 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		if(worldObj.isRemote)
 			return;
 
-		if(!initEnabled) {
-			initEnabled = true;
+		if(!enabledInitialized) {
+			enabledInitialized = true;
 			neighborUpdate();
 		}
 
@@ -201,10 +204,10 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	}
 
 	public void neighborUpdate(){
-		if(isPowered != worldObj.isBlockPowered(this.pos)) {
-			isPowered = worldObj.isBlockPowered(this.pos);
+		if(powered != worldObj.isBlockPowered(this.pos)) {
+			powered = worldObj.isBlockPowered(this.pos);
 
-			if (isPowered)
+			if (powered)
 				switchOn(null);
 			else
 				switchOff(null);
@@ -311,6 +314,8 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 			onSwitches.add(switchedOnFrom.toLong());
 
 		setEnabled(true);
+
+		this.dataChanged = true;
 	}
 
 	@Override
@@ -318,9 +323,11 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		if (switchedOffFrom != null)
 			onSwitches.remove(switchedOffFrom.toLong());
 
-		if(!switchedOn && !isPowered && onSwitches.size() == 0) {
+		if(!switchedOn && !powered && onSwitches.size() == 0) {
 			setEnabled(false);
 		}
+
+		this.dataChanged = true;
 	}
 
 	private void setEnabled(boolean switchedOn) {
@@ -645,6 +652,8 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 			stack.stackSize = amount;
 			itemHandler.insertItem(adjustedSlot, stack, false);
 		}
+
+		this.dataChanged = true;
 	}
 
 	@Override
@@ -728,6 +737,8 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 				break;
 			}
 		}
+
+		this.dataChanged = true;
 	}
 
 	public void toggleSwitch() {
@@ -737,5 +748,26 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 			switchOn(null);
 		else
 			switchOff(null);
+
+
+	}
+
+	@Override
+	public boolean getDataChanged() {
+		boolean ret = this.dataChanged;
+		this.dataChanged = false;
+		return ret;
+	}
+
+	public boolean isPowered() {
+		return powered;
+	}
+
+	public List<Long> getOnSwitches() {
+		return onSwitches;
+	}
+
+	public boolean isSwitchedOn() {
+		return switchedOn;
 	}
 }
