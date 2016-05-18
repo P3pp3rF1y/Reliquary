@@ -1,7 +1,9 @@
 package xreliquary.compat.waila.provider;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,19 +14,39 @@ import xreliquary.blocks.BlockPedestal;
 import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.init.ModBlocks;
 
+import java.text.MessageFormat;
 import java.util.List;
 
-public class DataProviderPedestal extends CachedBodyDataProvider {
+public class DataProviderPedestal extends WailaDataProviderBase {
 	@Override
-	List<String> getWailaBodyToCache(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+	List<String> getWailaBodyInternal(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		if(!(accessor.getBlock() instanceof BlockPedestal && accessor.getTileEntity() instanceof TileEntityPedestal))
 			return currenttip;
 
 		TileEntityPedestal pedestal = (TileEntityPedestal) accessor.getTileEntity();
+		IBlockState pedestalState = accessor.getBlockState();
 
-		pedesta.
+		if(pedestalState.getValue(BlockPedestal.ENABLED)) {
+			//TODO translate in lang file if there will be a need for that in the future
+			currenttip.add(ChatFormatting.GREEN + "ON");
+			if(pedestal.isSwitchedOn()) {
+				currenttip.add("Pedestal Switch On");
+			}
+			if(pedestal.isPowered()) {
+				currenttip.add("Powered By Redstone");
+			}
+			if(pedestal.getOnSwitches().size() > 0) {
+				currenttip.add("Switched On Remotely from:");
+				for(long loc : pedestal.getOnSwitches()) {
+					BlockPos pos = BlockPos.fromLong(loc);
+					currenttip.add(MessageFormat.format("x:{0} y:{1} z:{2}", pos.getX(), pos.getY(), pos.getZ()));
+				}
+			}
+		} else {
+			currenttip.add(ChatFormatting.RED + "OFF");
+		}
 
-		return null;
+		return currenttip;
 	}
 
 	@Override

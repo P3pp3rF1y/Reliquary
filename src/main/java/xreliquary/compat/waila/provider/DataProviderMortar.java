@@ -3,7 +3,6 @@ package xreliquary.compat.waila.provider;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import mcp.mobius.waila.api.IWailaDataProvider;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class DataProviderMortar extends CachedBodyDataProvider {
+public class DataProviderMortar extends WailaDataProviderBase {
     @Override
     public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
         return null;
@@ -33,7 +32,7 @@ public class DataProviderMortar extends CachedBodyDataProvider {
     }
 
     @Override
-    public List<String> getWailaBodyToCache(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+    public List<String> getWailaBodyInternal(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 
         if (! (accessor.getBlock() instanceof BlockApothecaryMortar && accessor.getTileEntity() instanceof TileEntityMortar))
             return currenttip;

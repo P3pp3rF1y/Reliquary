@@ -12,7 +12,6 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 import xreliquary.util.potions.PotionEssence;
@@ -22,20 +21,18 @@ import xreliquary.util.potions.XRPotionHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityMortar extends TileEntityInventory implements IWailaDataChangeIndicator {
+public class TileEntityMortar extends TileEntityInventory {
 
 	// counts the number of times the player has right clicked the block
 	// arbitrarily setting the number of times the player needs to grind the
 	// materials to five.
 	private int pestleUsedCounter;
 	private String customInventoryName;
-	private boolean dataChanged;
 
 	public TileEntityMortar() {
 		//inventory size
 		super(3);
 		pestleUsedCounter = 0;
-		dataChanged = true;
 	}
 
 	@Override
@@ -158,7 +155,6 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) {
 		super.setInventorySlotContents(slot, stack);
-		this.dataChanged = true;
 	}
 
 	@Override
@@ -221,12 +217,5 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 	@Override
 	public ITextComponent getDisplayName() {
 		return this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName());
-	}
-
-	@Override
-	public boolean getDataChanged() {
-		boolean ret = this.dataChanged;
-		this.dataChanged = false;
-		return ret;
 	}
 }
