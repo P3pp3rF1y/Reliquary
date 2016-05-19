@@ -12,6 +12,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
@@ -28,6 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.client.particle.EntityCauldronBubbleFX;
 import xreliquary.client.particle.EntityCauldronSteamFX;
+import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemPotionEssence;
@@ -41,7 +44,7 @@ import java.util.List;
 
 //import thaumcraft.api.blocks.BlocksTC;
 
-public class TileEntityCauldron extends TileEntityBase {
+public class TileEntityCauldron extends TileEntityBase implements IWailaDataChangeIndicator {
 
 	public int redstoneCount = 0;
 	public PotionEssence potionEssence = null;
@@ -50,8 +53,10 @@ public class TileEntityCauldron extends TileEntityBase {
 	public boolean hasNetherwart = false;
 	public int cookTime = 0;
 	private int liquidLevel = 0;
+	private boolean dataChanged;
 
 	public TileEntityCauldron() {
+		dataChanged = true;
 	}
 
 	@Override
@@ -225,6 +230,7 @@ public class TileEntityCauldron extends TileEntityBase {
 		this.hasNetherwart = false;
 		this.redstoneCount = 0;
 		this.potionEssence = null;
+		this.dataChanged = true;
 		IBlockState blockState = worldObj.getBlockState(this.getPos());
 		worldObj.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
 	}
@@ -389,5 +395,18 @@ public class TileEntityCauldron extends TileEntityBase {
 			this.worldObj.setBlockState(this.getPos(), blockState);
 			this.worldObj.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
 		}
+	}
+
+	@Override
+	public boolean getDataChanged() {
+		boolean ret = this.dataChanged;
+		this.dataChanged = false;
+		return ret;
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+		super.onDataPacket(net, packet);
+		this.dataChanged = true;
 	}
 }

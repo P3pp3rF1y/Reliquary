@@ -17,9 +17,9 @@ import xreliquary.init.ModBlocks;
 import java.text.MessageFormat;
 import java.util.List;
 
-public class DataProviderPedestal extends WailaDataProviderBase {
+public class DataProviderPedestal extends CachedBodyDataProvider {
 	@Override
-	List<String> getWailaBodyInternal(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+	List<String> getWailaBodyToCache(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		if(!(accessor.getBlock() instanceof BlockPedestal && accessor.getTileEntity() instanceof TileEntityPedestal))
 			return currenttip;
 
@@ -47,6 +47,11 @@ public class DataProviderPedestal extends WailaDataProviderBase {
 		}
 
 		return currenttip;
+	}
+
+	@Override
+	protected boolean isCached() {
+		return false;
 	}
 
 	@Override
