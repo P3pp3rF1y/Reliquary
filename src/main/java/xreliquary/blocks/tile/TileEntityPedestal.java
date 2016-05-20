@@ -7,6 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
@@ -78,6 +79,16 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 			}
 		}
 		switchedOn = tag.getBoolean("SwitchedOn");
+		powered = tag.getBoolean("Powered");
+
+		NBTTagList onLocations = tag.getTagList("OnSwitches", 4);
+
+		onSwitches.clear();
+
+		for(int i = 0; i < onLocations.tagCount(); i++) {
+			onSwitches.add(((NBTTagLong) onLocations.get(i)).getLong());
+		}
+
 		updateSpecialItems();
 	}
 
@@ -97,6 +108,14 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		}
 		tag.setTag("Items", items);
 		tag.setBoolean("SwitchedOn", switchedOn);
+		tag.setBoolean("Powered", powered);
+
+		NBTTagList onLocations = new NBTTagList();
+
+		for(int i = 0; i < onSwitches.size(); i++) {
+			onLocations.appendTag(new NBTTagLong(onSwitches.get(i)));
+		}
+		tag.setTag("OnSwitches", onLocations);
 	}
 
 	@Override
@@ -108,6 +127,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 				filteredHandler.markDirty();
 			}
 		}
+
 		super.markDirty();
 	}
 
@@ -311,6 +331,9 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 			onSwitches.add(switchedOnFrom.toLong());
 
 		setEnabled(true);
+
+		IBlockState blockState = worldObj.getBlockState(pos);
+		worldObj.notifyBlockUpdate(pos, blockState, blockState, 3);
 	}
 
 	@Override
@@ -321,6 +344,8 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		if(!switchedOn && !powered && onSwitches.size() == 0) {
 			setEnabled(false);
 		}
+		IBlockState blockState = worldObj.getBlockState(pos);
+		worldObj.notifyBlockUpdate(pos, blockState, blockState, 3);
 	}
 
 	private void setEnabled(boolean switchedOn) {

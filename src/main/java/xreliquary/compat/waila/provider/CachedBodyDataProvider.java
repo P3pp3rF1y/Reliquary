@@ -23,8 +23,13 @@ public abstract class CachedBodyDataProvider implements IWailaDataProvider {
 			return currenttip;
 		}
 
-		IWailaDataChangeIndicator changeIndicator = (IWailaDataChangeIndicator) accessor.getTileEntity();
-		if(!isCached() || cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition()) || changeIndicator.getDataChanged()) {
+		IWailaDataChangeIndicator changeIndicator = null;
+
+		if(accessor.getTileEntity() instanceof IWailaDataChangeIndicator) {
+			changeIndicator = (IWailaDataChangeIndicator) accessor.getTileEntity();
+		}
+
+		if(changeIndicator == null || cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition()) || changeIndicator.getDataChanged()) {
 			cachedBody = getWailaBodyToCache(itemStack, currenttip, accessor, config);
 			cachedPosition = accessor.getPosition();
 		}
@@ -33,6 +38,4 @@ public abstract class CachedBodyDataProvider implements IWailaDataProvider {
 	}
 
 	abstract List<String> getWailaBodyToCache(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config);
-
-	protected boolean isCached() {return true;}
 }

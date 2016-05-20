@@ -30,16 +30,15 @@ public class DataProviderPedestal extends CachedBodyDataProvider {
 			//TODO translate in lang file if there will be a need for that in the future
 			currenttip.add(ChatFormatting.GREEN + "ON");
 			if(pedestal.isSwitchedOn()) {
-				currenttip.add("Pedestal Switch On");
+				currenttip.add("Switch");
 			}
 			if(pedestal.isPowered()) {
-				currenttip.add("Powered By Redstone");
+				currenttip.add("Redstone");
 			}
 			if(pedestal.getOnSwitches().size() > 0) {
-				currenttip.add("Switched On Remotely from:");
 				for(long loc : pedestal.getOnSwitches()) {
 					BlockPos pos = BlockPos.fromLong(loc);
-					currenttip.add(MessageFormat.format("x:{0} y:{1} z:{2}", pos.getX(), pos.getY(), pos.getZ()));
+					currenttip.add(MessageFormat.format("Remote at: {0}, {1}, {2}", pos.getX(), pos.getY(), pos.getZ()));
 				}
 			}
 		} else {
@@ -47,11 +46,6 @@ public class DataProviderPedestal extends CachedBodyDataProvider {
 		}
 
 		return currenttip;
-	}
-
-	@Override
-	protected boolean isCached() {
-		return false;
 	}
 
 	@Override
