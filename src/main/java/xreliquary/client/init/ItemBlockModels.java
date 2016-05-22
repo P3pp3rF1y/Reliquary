@@ -19,6 +19,7 @@ public class ItemBlockModels {
 		registerBlockItemModel(ModBlocks.wraithNode, Names.wraith_node);
 		registerBlockItemModel(ModBlocks.fertileLilypad, Names.fertile_lilypad);
 		registerBlockItemModel(ModBlocks.pedestal, Names.pedestal);
+		registerBlockItemModel(ModBlocks.pedestalPassive, Names.pedestal_passive);
 
 	}
 

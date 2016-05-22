@@ -11,7 +11,7 @@ import net.minecraft.util.ITickable;
 /**
  * A small class for making tile entity code less repetitive. Takes care of client NBT loading.
  */
-public abstract class TileEntityBase extends TileEntity implements ITickable {
+public abstract class TileEntityBase extends TileEntity {
 
 	@Override
 	public Packet getDescriptionPacket() {

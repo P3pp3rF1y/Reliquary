@@ -27,15 +27,13 @@ import xreliquary.util.pedestal.PedestalRegistry;
 import java.util.List;
 import java.util.Random;
 
-public class BlockPedestal extends BlockBase {
+public class BlockPedestal extends BlockPedestalPassive {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	public static final PropertyBool ENABLED = PropertyBool.create("enabled");
-	private static final AxisAlignedBB PEDESTAL_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.6875D, 0.875D);
 
 	public BlockPedestal() {
-		super(Material.rock, Names.pedestal);
+		super();
 		this.setUnlocalizedName(Names.pedestal);
-		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
 	@Override
@@ -73,11 +71,6 @@ public class BlockPedestal extends BlockBase {
 		}
 
 		return i;
-	}
-
-	@Override
-	public boolean isOpaqueCube(IBlockState state) {
-		return false;
 	}
 
 	@Override
@@ -121,27 +114,18 @@ public class BlockPedestal extends BlockBase {
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float xOff, float yOff, float zOff) {
-		TileEntityPedestal pedestal = (TileEntityPedestal) world.getTileEntity(pos);
-		if(pedestal == null)
-			return false;
-
 		if(world.isRemote)
 			return player.getHeldItem(hand) != null || player.isSneaking();
 
-		if(heldItem == null) {
-			if(!player.isSneaking() && hand == EnumHand.MAIN_HAND && switchClicked(side, xOff, yOff, zOff)) {
-				pedestal.toggleSwitch();
-				return true;
-			}
+		if (!(world.getTileEntity(pos) instanceof TileEntityPedestal))
+			return false;
 
-			if(player.isSneaking()) {
-				pedestal.removeLastPedestalStack();
-				return true;
-			} else {
-				return false;
-			}
+		if(heldItem == null && !player.isSneaking() && hand == EnumHand.MAIN_HAND && switchClicked(side, xOff, yOff, zOff)) {
+			TileEntityPedestal pedestal = (TileEntityPedestal) world.getTileEntity(pos);
+			pedestal.toggleSwitch();
+			return true;
 		} else {
-			return InventoryHelper.tryAddingPlayerCurrentItem(player, pedestal, EnumHand.MAIN_HAND);
+			return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, xOff, yOff, zOff);
 		}
 	}
 
@@ -161,38 +145,14 @@ public class BlockPedestal extends BlockBase {
 	}
 
 	@Override
-	public boolean hasTileEntity(IBlockState state) {
-		return true;
-	}
-
-	@Override
-	public TileEntity createTileEntity(World world, IBlockState state) {
-		return new TileEntityPedestal();
-	}
-
-	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		return PEDESTAL_AABB;
-	}
-
-	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state) {
 		TileEntityPedestal pedestal = (TileEntityPedestal) world.getTileEntity(pos);
-
-		if(pedestal != null) {
-			pedestal.dropPedestalInventory();
-		}
 
 		PedestalRegistry.unregisterPosition(world.provider.getDimension(), pos);
 
 		pedestal.removeRedstoneItems();
 
 		super.breakBlock(world, pos, state);
-	}
-
-	@Override
-	public boolean isFullCube(IBlockState state) {
-		return false;
 	}
 
 	public void setEnabled(World world, BlockPos pos, boolean enabled) {

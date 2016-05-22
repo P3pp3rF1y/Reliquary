@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -29,7 +30,7 @@ import xreliquary.util.pedestal.PedestalRegistry;
 
 import java.util.*;
 
-public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFluidHandler, IInventory {
+public class TileEntityPedestal extends TileEntityPedestalPassive implements IPedestal, IFluidHandler, ITickable {
 
 	private boolean tickable = false;
 	private int[] actionCooldowns = new int[0];
@@ -43,24 +44,6 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	private List<Long> onSwitches = new ArrayList<>();
 	private boolean enabledInitialized = false;
 	private boolean powered = false;
-
-	private short slots = 0;
-	private ItemStack[] inventory;
-
-	public TileEntityPedestal() {
-		this.slots = 1;
-		inventory = new ItemStack[this.slots];
-	}
-
-	public void dropPedestalInventory() {
-		for(int i = 0; i < inventory.length; ++i) {
-			ItemStack itemstack = inventory[i];
-
-			if(itemstack != null) {
-				InventoryHelper.spawnItemStack(this.worldObj, this.pos.getX(), this.pos.getY(), this.pos.getZ(), itemstack);
-			}
-		}
-	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
@@ -513,12 +496,6 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	}
 
 	// IInventory
-
-	@Override
-	public String getName() {
-		return null;
-	}
-
 	@Override
 	public int getSizeInventory() {
 		int itemHandlerSlots = 0;
@@ -673,38 +650,8 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	}
 
 	@Override
-	public boolean hasCustomName() {
-		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName() {
-		return null;
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return 64;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		return false;
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) {
-
-	}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {
-
-	}
-
-	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		if(index < slots)
+		if(super.isItemValidForSlot(index, stack))
 			return true;
 
 		int adjustedSlot = index - slots;
@@ -717,43 +664,6 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		ItemStack returnedStack = itemHandler.insertItem(adjustedSlot, stack, true);
 
 		return returnedStack == null || returnedStack.stackSize != stack.stackSize;
-	}
-
-	@Override
-	public int getField(int id) {
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {
-
-	}
-
-	@Override
-	public int getFieldCount() {
-		return 0;
-	}
-
-	@Override
-	public void clear() {
-		for(int i = 0; i < this.getSizeInventory(); i++)
-			this.setInventorySlotContents(i, null);
-	}
-
-	public void removeLastPedestalStack() {
-		for(int i = slots - 1; i >= 0; i--) {
-			ItemStack stack = inventory[i].copy();
-			if(stack != null) {
-				setInventorySlotContents(i, null);
-				if(worldObj.isRemote)
-					return;
-				markDirty();
-				EntityItem itemEntity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, stack);
-				worldObj.spawnEntityInWorld(itemEntity);
-				break;
-			}
-		}
-
 	}
 
 	public void toggleSwitch() {

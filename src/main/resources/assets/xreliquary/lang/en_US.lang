@@ -25,6 +25,7 @@ tile.apothecary_mortar.name=Apothecary Mortar
 tile.apothecary_mortar.tooltip=Used to grind ingredients;into potion essence.
 
 tile.pedestal.name=Pedestal
+tile.pedestal_passive.name=Pedestal (Display only)
 
 item.attraction_potion.name=Aphrodite's Serum
 item.attraction_potion.tooltip=Makes animals mate.

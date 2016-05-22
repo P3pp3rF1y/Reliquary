@@ -48,12 +48,6 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 		super.onDataPacket(net, packet);
 	}
 
-	//TODO: change code so that it's not part of tickable tiles
-	@Override
-	public void update() {
-		// do stuff on tick? I don't think we need this to tick.
-	}
-
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);

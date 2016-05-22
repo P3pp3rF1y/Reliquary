@@ -6,10 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.Reliquary;
 import xreliquary.blocks.*;
-import xreliquary.blocks.tile.TileEntityAltar;
-import xreliquary.blocks.tile.TileEntityCauldron;
-import xreliquary.blocks.tile.TileEntityMortar;
-import xreliquary.blocks.tile.TileEntityPedestal;
+import xreliquary.blocks.tile.*;
 import xreliquary.items.block.ItemBlockBase;
 import xreliquary.items.block.ItemFertileLilyPad;
 import xreliquary.reference.Names;
@@ -26,6 +23,7 @@ public class ModBlocks {
 	public static final BlockInterdictionTorch interdictionTorch = new BlockInterdictionTorch();
 	public static final BlockWraithNode wraithNode = new BlockWraithNode();
 	public static final BlockPedestal pedestal = new BlockPedestal();
+	public static final BlockPedestalPassive pedestalPassive = new BlockPedestalPassive();
 
 	public static void init() {
 		//TODO move itemblock definitions into blocks and just call getItemBlock in register method
@@ -37,6 +35,7 @@ public class ModBlocks {
 		registerBlock(interdictionTorch, new ItemBlockBase(interdictionTorch), Names.interdiction_torch);
 		registerBlock(wraithNode, new ItemBlockBase(wraithNode), Names.wraith_node);
 		registerBlock(pedestal, new ItemBlockBase(pedestal), Names.pedestal);
+		registerBlock(pedestalPassive, new ItemBlockBase(pedestalPassive), Names.pedestal_passive);
 	}
 
 	public static void initTileEntities() {
@@ -44,6 +43,7 @@ public class ModBlocks {
 		registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
 		registerTileEntity(TileEntityCauldron.class, "reliquaryCauldron");
 		registerTileEntity(TileEntityPedestal.class, "reliquaryPedestal");
+		registerTileEntity(TileEntityPedestalPassive.class, "reliquaryPedestalPassive");
 	}
 
 	private static void registerTileEntity(Class clazz, String name) {
