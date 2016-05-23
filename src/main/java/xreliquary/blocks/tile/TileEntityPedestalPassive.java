@@ -5,8 +5,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.ITextComponent;
-import xreliquary.api.IPedestalRedstoneItem;
 import xreliquary.util.InventoryHelper;
 
 public class TileEntityPedestalPassive extends TileEntityBase implements IInventory {
@@ -101,6 +102,41 @@ public class TileEntityPedestalPassive extends TileEntityBase implements IInvent
 	private void notifyBlock() {
 		IBlockState blockState = worldObj.getBlockState(getPos());
 		worldObj.notifyBlockUpdate(getPos(), blockState, blockState, 3);
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound compound) {
+		super.readFromNBT(compound);
+
+		NBTTagList items = compound.getTagList("Items", 10);
+
+		this.inventory = new ItemStack[this.getSizeInventory()];
+
+		for(int i = 0; i < items.tagCount(); ++i) {
+			NBTTagCompound item = items.getCompoundTagAt(i);
+			byte b0 = item.getByte("Slot");
+
+			if(b0 >= 0 && b0 < this.inventory.length) {
+				this.inventory[b0] = ItemStack.loadItemStackFromNBT(item);
+			}
+		}
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound compound) {
+		super.writeToNBT(compound);
+
+		NBTTagList items = new NBTTagList();
+
+		for(int i = 0; i < this.inventory.length; ++i) {
+			if(this.inventory[i] != null) {
+				NBTTagCompound item = new NBTTagCompound();
+				this.inventory[i].writeToNBT(item);
+				item.setByte("Slot", (byte) i);
+				items.appendTag(item);
+			}
+		}
+		compound.setTag("Items", items);
 	}
 
 	@Override

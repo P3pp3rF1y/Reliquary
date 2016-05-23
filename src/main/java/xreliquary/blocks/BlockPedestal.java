@@ -49,6 +49,11 @@ public class BlockPedestal extends BlockPedestalPassive {
 	}
 
 	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) {
+		return new TileEntityPedestal();
+	}
+
+	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		EnumFacing enumfacing = EnumFacing.getHorizontal(meta);
 

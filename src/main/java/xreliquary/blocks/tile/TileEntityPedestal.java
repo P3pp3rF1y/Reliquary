@@ -49,18 +49,6 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 
-		NBTTagList items = tag.getTagList("Items", 10);
-
-		this.inventory = new ItemStack[this.getSizeInventory()];
-
-		for(int i = 0; i < items.tagCount(); ++i) {
-			NBTTagCompound item = items.getCompoundTagAt(i);
-			byte b0 = item.getByte("Slot");
-
-			if(b0 >= 0 && b0 < this.inventory.length) {
-				this.inventory[b0] = ItemStack.loadItemStackFromNBT(item);
-			}
-		}
 		switchedOn = tag.getBoolean("SwitchedOn");
 		powered = tag.getBoolean("Powered");
 
@@ -79,17 +67,6 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
 
-		NBTTagList items = new NBTTagList();
-
-		for(int i = 0; i < this.inventory.length; ++i) {
-			if(this.inventory[i] != null) {
-				NBTTagCompound item = new NBTTagCompound();
-				this.inventory[i].writeToNBT(item);
-				item.setByte("Slot", (byte) i);
-				items.appendTag(item);
-			}
-		}
-		tag.setTag("Items", items);
 		tag.setBoolean("SwitchedOn", switchedOn);
 		tag.setBoolean("Powered", powered);
 
