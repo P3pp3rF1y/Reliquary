@@ -9,6 +9,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -19,6 +20,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityPedestalPassive;
+import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
 
@@ -43,7 +45,11 @@ public class BlockPedestalPassive extends BlockBase {
 
 	@Override
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing()).withProperty(COLOR, EnumDyeColor.WHITE);
+		return this.getStateFromMeta(meta).withProperty(FACING, placer.getHorizontalFacing());
+	}
+
+	public ItemStack getColoredItemBlockStack(int amount, EnumDyeColor color) {
+		return new ItemStack(ModBlocks.pedestalPassive, amount, getMetaFromState(getDefaultState().withProperty(COLOR, color)));
 	}
 
 	@Override
