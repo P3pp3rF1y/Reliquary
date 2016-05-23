@@ -70,11 +70,11 @@ public class BlockPedestal extends BlockPedestalPassive {
 	public int getMetaFromState(IBlockState state) {
 		int i = 0;
 
-		i |= state.getValue(FACING).getHorizontalIndex();
-
 		if(state.getValue(ENABLED)) {
 			i |= 4;
 		}
+
+		i |= state.getValue(FACING).getHorizontalIndex();
 
 		return i;
 	}

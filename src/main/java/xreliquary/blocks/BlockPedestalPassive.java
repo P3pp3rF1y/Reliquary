@@ -3,10 +3,12 @@ package xreliquary.blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -21,24 +23,27 @@ import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
 
 public class BlockPedestalPassive extends BlockBase {
+	public static final PropertyEnum<EnumDyeColor> COLOR = PropertyEnum.<EnumDyeColor>create("color", EnumDyeColor.class);
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	private static final AxisAlignedBB PEDESTAL_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.6875D, 0.875D);
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		EnumFacing enumfacing = EnumFacing.getHorizontal(meta);
+		EnumFacing enumfacing = EnumFacing.getHorizontal(meta & 3);
 
-		return this.getDefaultState().withProperty(FACING, enumfacing);
+		EnumDyeColor color = EnumDyeColor.byMetadata((meta >> 2) & 15);
+
+		return this.getDefaultState().withProperty(FACING, enumfacing).withProperty(COLOR, color);
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] {FACING});
+		return new BlockStateContainer(this, new IProperty[] {FACING, COLOR});
 	}
 
 	@Override
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
+		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing()).withProperty(COLOR, EnumDyeColor.WHITE);
 	}
 
 	@Override
@@ -46,6 +51,8 @@ public class BlockPedestalPassive extends BlockBase {
 		int i = 0;
 
 		i |= state.getValue(FACING).getHorizontalIndex();
+
+		i |= (state.getValue(COLOR).getMetadata() << 2);
 
 		return i;
 	}
