@@ -42,8 +42,7 @@ public class BlockPedestalPassive extends BlockBase {
 	}
 
 	public BlockPedestalPassive() {
-		super(Material.rock, Names.pedestal);
-		this.setUnlocalizedName(Names.pedestal);
+		super(Material.rock, Names.pedestal_passive);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
