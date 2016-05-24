@@ -37,7 +37,7 @@ public class ItemBlockModels {
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.pedestalPassive), 0, new ModelResourceLocation(Reference.DOMAIN + Names.pedestal_passive, "inventory"));
 
 		for (int i=0; i < 16 ; i++) {
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.pedestalPassive), ModBlocks.pedestalPassive.getColorItemBlockStack(1, EnumDyeColor.byMetadata(i)).getMetadata(), new ModelResourceLocation(Reference.DOMAIN + Names.pedestal_passive + "_" + ModBlocks.pedestalPassive.getColorItemBlockStack(1, EnumDyeColor.byMetadata(i)).getMetadata(), "inventory"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.pedestalPassive), i, new ModelResourceLocation(Reference.DOMAIN + Names.pedestal_passive + "_" + i, "inventory"));
 		}
 	}
 }

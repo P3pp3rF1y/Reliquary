@@ -4,6 +4,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -13,6 +14,7 @@ import xreliquary.util.InventoryHelper;
 public class TileEntityPedestalPassive extends TileEntityBase implements IInventory {
 	protected ItemStack[] inventory;
 	protected short slots = 0;
+	private EnumDyeColor color = EnumDyeColor.RED;
 
 	public TileEntityPedestalPassive() {
 		this.slots = 1;
@@ -120,6 +122,7 @@ public class TileEntityPedestalPassive extends TileEntityBase implements IInvent
 				this.inventory[b0] = ItemStack.loadItemStackFromNBT(item);
 			}
 		}
+		color = EnumDyeColor.byMetadata(compound.getInteger("color"));
 	}
 
 	@Override
@@ -137,6 +140,7 @@ public class TileEntityPedestalPassive extends TileEntityBase implements IInvent
 			}
 		}
 		compound.setTag("Items", items);
+		compound.setInteger("color", color.getMetadata());
 	}
 
 	@Override
@@ -212,5 +216,13 @@ public class TileEntityPedestalPassive extends TileEntityBase implements IInvent
 	@Override
 	public ITextComponent getDisplayName() {
 		return null;
+	}
+
+	public EnumDyeColor getClothColor() {
+		return color;
+	}
+
+	public void setColor(EnumDyeColor color) {
+		this.color = color;
 	}
 }

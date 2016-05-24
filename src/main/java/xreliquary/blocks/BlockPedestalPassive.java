@@ -26,7 +26,6 @@ import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
 
 import java.util.List;
-import java.util.Random;
 
 public class BlockPedestalPassive extends BlockBase {
 	public static final PropertyEnum<EnumDyeColor> COLOR = PropertyEnum.<EnumDyeColor>create("color", EnumDyeColor.class);
@@ -40,16 +39,33 @@ public class BlockPedestalPassive extends BlockBase {
 
 	@Override
 	public int damageDropped(IBlockState state) {
-		return getMetaFromState(getDefaultState().withProperty(COLOR, state.getValue(COLOR)));
+		return state.getValue(COLOR).getMetadata();
+	}
+
+	@Override
+	public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+		for(int i = 0; i < 16; i++) {
+			list.add(new ItemStack(ModBlocks.pedestalPassive, 1, i));
+		}
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+		EnumDyeColor color = EnumDyeColor.RED;
+
+		if(worldIn.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
+			TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) worldIn.getTileEntity(pos);
+
+			color = pedestal.getClothColor();
+		}
+
+		return state.withProperty(COLOR, color);
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		EnumFacing enumfacing = EnumFacing.getHorizontal(meta & 3);
-
-		EnumDyeColor color = EnumDyeColor.byMetadata((meta >> 2) & 15);
-
-		return this.getDefaultState().withProperty(FACING, enumfacing).withProperty(COLOR, color);
+		EnumFacing enumfacing = EnumFacing.getHorizontal(meta);
+		return this.getDefaultState().withProperty(FACING, enumfacing);
 	}
 
 	@Override
@@ -59,11 +75,18 @@ public class BlockPedestalPassive extends BlockBase {
 
 	@Override
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return this.getStateFromMeta(meta).withProperty(FACING, placer.getHorizontalFacing());
+
+		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing()).withProperty(COLOR, EnumDyeColor.byMetadata(meta));
 	}
 
-	public ItemStack getColorItemBlockStack(int amount, EnumDyeColor color) {
-		return new ItemStack(ModBlocks.pedestalPassive, amount, getMetaFromState(getDefaultState().withProperty(COLOR, color)));
+	@Override
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+		if(worldIn.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
+			TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) worldIn.getTileEntity(pos);
+
+			pedestal.setColor(state.getValue(COLOR));
+		}
 	}
 
 	@Override
@@ -78,13 +101,7 @@ public class BlockPedestalPassive extends BlockBase {
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		int i = 0;
-
-		i |= state.getValue(FACING).getHorizontalIndex();
-
-		i |= (state.getValue(COLOR).getMetadata() << 2);
-
-		return i;
+		return state.getValue(FACING).getHorizontalIndex();
 	}
 
 	@Override
