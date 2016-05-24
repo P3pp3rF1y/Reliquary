@@ -2,6 +2,7 @@ package xreliquary.client.init;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import xreliquary.init.ModBlocks;
@@ -19,8 +20,7 @@ public class ItemBlockModels {
 		registerBlockItemModel(ModBlocks.wraithNode, Names.wraith_node);
 		registerBlockItemModel(ModBlocks.fertileLilypad, Names.fertile_lilypad);
 		registerBlockItemModel(ModBlocks.pedestal, Names.pedestal);
-		registerBlockItemModel(ModBlocks.pedestalPassive, Names.pedestal_passive);
-
+		registerPassivePedestalBlockItemModel();
 	}
 
 	private static void registerBlockItemModel(Block block, String resourceName) {
@@ -30,4 +30,14 @@ public class ItemBlockModels {
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(Reference.DOMAIN + resourceName, "inventory"));
 	}
 
+	private static void registerPassivePedestalBlockItemModel() {
+		if(Settings.disabledItemsBlocks.contains(Names.pedestal_passive))
+			return;
+
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.pedestalPassive), 0, new ModelResourceLocation(Reference.DOMAIN + Names.pedestal_passive, "inventory"));
+
+		for (int i=0; i < 16 ; i++) {
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.pedestalPassive), ModBlocks.pedestalPassive.getColorItemBlockStack(1, EnumDyeColor.byMetadata(i)).getMetadata(), new ModelResourceLocation(Reference.DOMAIN + Names.pedestal_passive + "_" + ModBlocks.pedestalPassive.getColorItemBlockStack(1, EnumDyeColor.byMetadata(i)).getMetadata(), "inventory"));
+		}
+	}
 }

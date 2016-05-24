@@ -362,7 +362,7 @@ public class XRRecipes {
 
 		//passive pedestal
 		for(int i = 0; i < 16; i++) {
-			addRecipe(false, false, ModBlocks.pedestalPassive.getColoredItemBlockStack(1, EnumDyeColor.byMetadata(i)), " c ", "gqg", "sss", 'c', new ItemStack(Blocks.carpet, 1, i), 'g', Items.gold_nugget, 'q', Blocks.quartz_block, 's', new ItemStack(Blocks.stone_slab, 1, 7));
+			addRecipe(false, false, ModBlocks.pedestalPassive.getColorItemBlockStack(1, EnumDyeColor.byMetadata(i)), " c ", "gqg", "sss", 'c', new ItemStack(Blocks.carpet, 1, i), 'g', Items.gold_nugget, 'q', Blocks.quartz_block, 's', new ItemStack(Blocks.stone_slab, 1, 7));
 		}
 
 		addMobDropUncraftingRecipes();

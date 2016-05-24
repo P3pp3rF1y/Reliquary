@@ -6,10 +6,11 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -24,10 +25,23 @@ import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
 
+import java.util.List;
+import java.util.Random;
+
 public class BlockPedestalPassive extends BlockBase {
 	public static final PropertyEnum<EnumDyeColor> COLOR = PropertyEnum.<EnumDyeColor>create("color", EnumDyeColor.class);
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	private static final AxisAlignedBB PEDESTAL_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.6875D, 0.875D);
+
+	public BlockPedestalPassive() {
+		super(Material.rock, Names.pedestal_passive);
+		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+	}
+
+	@Override
+	public int damageDropped(IBlockState state) {
+		return getMetaFromState(getDefaultState().withProperty(COLOR, state.getValue(COLOR)));
+	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
@@ -48,8 +62,18 @@ public class BlockPedestalPassive extends BlockBase {
 		return this.getStateFromMeta(meta).withProperty(FACING, placer.getHorizontalFacing());
 	}
 
-	public ItemStack getColoredItemBlockStack(int amount, EnumDyeColor color) {
+	public ItemStack getColorItemBlockStack(int amount, EnumDyeColor color) {
 		return new ItemStack(ModBlocks.pedestalPassive, amount, getMetaFromState(getDefaultState().withProperty(COLOR, color)));
+	}
+
+	@Override
+	public String getHarvestTool(IBlockState state) {
+		return "pickaxe";
+	}
+
+	@Override
+	public int getHarvestLevel(IBlockState state) {
+		return -1;
 	}
 
 	@Override
@@ -83,11 +107,6 @@ public class BlockPedestalPassive extends BlockBase {
 		} else {
 			return InventoryHelper.tryAddingPlayerCurrentItem(player, pedestal, EnumHand.MAIN_HAND);
 		}
-	}
-
-	public BlockPedestalPassive() {
-		super(Material.rock, Names.pedestal_passive);
-		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
 	@Override
