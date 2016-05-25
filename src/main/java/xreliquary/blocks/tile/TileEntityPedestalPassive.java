@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.ITextComponent;
+import xreliquary.blocks.BlockPedestalPassive;
+import xreliquary.init.ModBlocks;
 import xreliquary.util.InventoryHelper;
 
 public class TileEntityPedestalPassive extends TileEntityBase implements IInventory {

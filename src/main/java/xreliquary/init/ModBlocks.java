@@ -8,7 +8,7 @@ import xreliquary.Reliquary;
 import xreliquary.blocks.*;
 import xreliquary.blocks.tile.*;
 import xreliquary.items.block.ItemBlockBase;
-import xreliquary.items.block.ItemBlockPedestalPassive;
+import xreliquary.items.block.ItemBlockPedestal;
 import xreliquary.items.block.ItemFertileLilyPad;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
@@ -35,8 +35,8 @@ public class ModBlocks {
 		registerBlock(fertileLilypad, new ItemFertileLilyPad(fertileLilypad), Names.fertile_lilypad);
 		registerBlock(interdictionTorch, new ItemBlockBase(interdictionTorch), Names.interdiction_torch);
 		registerBlock(wraithNode, new ItemBlockBase(wraithNode), Names.wraith_node);
-		registerBlock(pedestal, new ItemBlockBase(pedestal), Names.pedestal);
-		registerBlock(pedestalPassive, new ItemBlockPedestalPassive(pedestalPassive), Names.pedestal_passive);
+		registerBlock(pedestal, new ItemBlockPedestal(pedestal), Names.pedestal);
+		registerBlock(pedestalPassive, new ItemBlockPedestal(pedestalPassive), Names.pedestal_passive);
 	}
 
 	public static void initTileEntities() {

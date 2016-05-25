@@ -1,11 +1,8 @@
-
 package xreliquary.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -17,21 +14,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityPedestal;
+import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
-import xreliquary.util.InventoryHelper;
 import xreliquary.util.pedestal.PedestalRegistry;
 
 import java.util.List;
 import java.util.Random;
 
 public class BlockPedestal extends BlockPedestalPassive {
-	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	public static final PropertyBool ENABLED = PropertyBool.create("enabled");
 
 	public BlockPedestal() {
@@ -41,11 +34,15 @@ public class BlockPedestal extends BlockPedestalPassive {
 
 	@Override
 	public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
-		list.add(new ItemStack(itemIn));
+		for(int i = 0; i < 16; i++) {
+			list.add(new ItemStack(ModBlocks.pedestal, 1, i));
+		}
 	}
 
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+
 		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(worldIn.provider.getDimension(), pos, 160);
 
 		for(BlockPos pedestalPosition : pedestalPositions) {
@@ -63,14 +60,12 @@ public class BlockPedestal extends BlockPedestalPassive {
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		EnumFacing enumfacing = EnumFacing.getHorizontal(meta);
-
-		return this.getDefaultState().withProperty(FACING, enumfacing).withProperty(ENABLED, (meta & 4) != 0);
+		return super.getStateFromMeta(meta).withProperty(ENABLED, (meta & 4) != 0);
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] {FACING, ENABLED});
+		return new BlockStateContainer(this, new IProperty[] {FACING, COLOR, ENABLED});
 	}
 
 	@Override
@@ -81,7 +76,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 			i |= 4;
 		}
 
-		i |= state.getValue(FACING).getHorizontalIndex();
+		i |= super.getMetaFromState(state);
 
 		return i;
 	}
@@ -95,7 +90,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 
 	@Override
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing()).withProperty(ENABLED, false);
+		return super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(ENABLED, false);
 	}
 
 	@Override
@@ -130,7 +125,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 		if(world.isRemote)
 			return player.getHeldItem(hand) != null || player.isSneaking();
 
-		if (!(world.getTileEntity(pos) instanceof TileEntityPedestal))
+		if(!(world.getTileEntity(pos) instanceof TileEntityPedestal))
 			return false;
 
 		if(heldItem == null && !player.isSneaking() && hand == EnumHand.MAIN_HAND && switchClicked(side, xOff, yOff, zOff)) {

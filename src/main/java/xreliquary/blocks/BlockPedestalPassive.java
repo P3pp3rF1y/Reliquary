@@ -25,6 +25,7 @@ import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlockPedestalPassive extends BlockBase {
@@ -35,11 +36,6 @@ public class BlockPedestalPassive extends BlockBase {
 	public BlockPedestalPassive() {
 		super(Material.rock, Names.pedestal_passive);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-	}
-
-	@Override
-	public int damageDropped(IBlockState state) {
-		return state.getValue(COLOR).getMetadata();
 	}
 
 	@Override
@@ -63,8 +59,26 @@ public class BlockPedestalPassive extends BlockBase {
 	}
 
 	@Override
+	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+		List list = new ArrayList<>();
+
+		Item item = this.getItemDropped(state,((World) world).rand, fortune);
+
+		int meta = 0;
+		if (world.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
+			TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) world.getTileEntity(pos);
+
+			meta = pedestal.getClothColor().getMetadata();
+		}
+
+		list.add(new ItemStack(item, 1, meta));
+
+		return list;
+	}
+
+	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		EnumFacing enumfacing = EnumFacing.getHorizontal(meta);
+		EnumFacing enumfacing = EnumFacing.getHorizontal(meta & 3);
 		return this.getDefaultState().withProperty(FACING, enumfacing);
 	}
 
@@ -75,7 +89,6 @@ public class BlockPedestalPassive extends BlockBase {
 
 	@Override
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-
 		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing()).withProperty(COLOR, EnumDyeColor.byMetadata(meta));
 	}
 
@@ -92,11 +105,6 @@ public class BlockPedestalPassive extends BlockBase {
 	@Override
 	public String getHarvestTool(IBlockState state) {
 		return "pickaxe";
-	}
-
-	@Override
-	public int getHarvestLevel(IBlockState state) {
-		return -1;
 	}
 
 	@Override
@@ -135,6 +143,20 @@ public class BlockPedestalPassive extends BlockBase {
 		}
 
 		super.breakBlock(world, pos, state);
+	}
+
+	@Override
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	{
+		if (willHarvest) return true; //If it will harvest, delay deletion of the block until after getDrops
+		return super.removedByPlayer(state, world, pos, player, willHarvest);
+	}
+
+	@Override
+	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te, ItemStack tool)
+	{
+		super.harvestBlock(world, player, pos, state, te, tool);
+		world.setBlockToAir(pos);
 	}
 
 	@Override
