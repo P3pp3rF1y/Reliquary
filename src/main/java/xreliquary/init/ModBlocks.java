@@ -35,8 +35,8 @@ public class ModBlocks {
 		registerBlock(fertileLilypad, new ItemFertileLilyPad(fertileLilypad), Names.fertile_lilypad);
 		registerBlock(interdictionTorch, new ItemBlockBase(interdictionTorch), Names.interdiction_torch);
 		registerBlock(wraithNode, new ItemBlockBase(wraithNode), Names.wraith_node);
-		registerBlock(pedestal, new ItemBlockPedestal(pedestal), Names.pedestal);
-		registerBlock(pedestalPassive, new ItemBlockPedestal(pedestalPassive), Names.pedestal_passive);
+		registerBlock(pedestal, new ItemBlockPedestal(pedestal), Names.pedestal, true);
+		registerBlock(pedestalPassive, new ItemBlockPedestal(pedestalPassive), Names.pedestal_passive, true);
 	}
 
 	public static void initTileEntities() {
@@ -55,6 +55,9 @@ public class ModBlocks {
 	}
 
 	private static void registerBlock(Block block, ItemBlock itemBlock, String name) {
+		registerBlock(block, itemBlock, name, false);
+	}
+	private static void registerBlock(Block block, ItemBlock itemBlock, String name, boolean jeiOneDescription) {
 		if(Settings.disabledItemsBlocks.contains(name))
 			return;
 
@@ -62,7 +65,7 @@ public class ModBlocks {
 		GameRegistry.register(block);
 		GameRegistry.register(itemBlock.setRegistryName(block.getRegistryName()));
 
-		Reliquary.PROXY.registerJEI(block, name);
+		Reliquary.PROXY.registerJEI(block, name, jeiOneDescription);
 	}
 
 }

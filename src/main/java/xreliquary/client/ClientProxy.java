@@ -50,8 +50,23 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void registerJEI(Block block, String name) {
-		if(Loader.isModLoaded(Compatibility.MOD_ID.JEI))
-			JEIDescriptionRegistry.register(Item.getItemFromBlock(block), name);
+		registerJEI(block, name, false);
+	}
+
+
+	@Override
+	public void registerJEI(Block block, String name, boolean oneDescription) {
+		if(Loader.isModLoaded(Compatibility.MOD_ID.JEI)) {
+			if (oneDescription) {
+				List<ItemStack> subBlocks = new ArrayList<>();
+
+				block.getSubBlocks(Item.getItemFromBlock(block), null, subBlocks);
+
+				JEIDescriptionRegistry.register(subBlocks, name);
+			} else {
+				JEIDescriptionRegistry.register(Item.getItemFromBlock(block), name);
+			}
+		}
 	}
 
 	@Override
