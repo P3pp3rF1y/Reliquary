@@ -17,6 +17,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
@@ -56,6 +57,19 @@ public class BlockPedestalPassive extends BlockBase {
 		}
 
 		return state.withProperty(COLOR, color);
+	}
+
+	@Override
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+		int meta = 0;
+
+		if (world.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
+			TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) world.getTileEntity(pos);
+
+			meta = pedestal.getClothColor().getMetadata();
+		}
+
+		return new ItemStack(Item.getItemFromBlock(this), 1, meta);
 	}
 
 	@Override
