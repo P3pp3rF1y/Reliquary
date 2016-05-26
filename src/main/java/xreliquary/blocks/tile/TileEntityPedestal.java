@@ -50,12 +50,10 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	}
 
 	public void dropPedestalInventory() {
-		for (int i = 0; i < inventory.length; ++i)
-		{
+		for(int i = 0; i < inventory.length; ++i) {
 			ItemStack itemstack = inventory[i];
 
-			if (itemstack != null)
-			{
+			if(itemstack != null) {
 				InventoryHelper.spawnItemStack(this.worldObj, this.pos.getX(), this.pos.getY(), this.pos.getZ(), itemstack);
 			}
 		}
@@ -691,8 +689,8 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 	public void removeLastPedestalStack() {
 		for(int i = slots - 1; i >= 0; i--) {
-			ItemStack stack = inventory[i].copy();
-			if(stack != null) {
+			if(inventory[i] != null) {
+				ItemStack stack = inventory[i].copy();
 				setInventorySlotContents(i, null);
 				if(worldObj.isRemote)
 					return;
