@@ -9,8 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.ITextComponent;
-import xreliquary.blocks.BlockPedestalPassive;
-import xreliquary.init.ModBlocks;
 import xreliquary.util.InventoryHelper;
 
 public class TileEntityPedestalPassive extends TileEntityBase implements IInventory {
@@ -36,8 +34,8 @@ public class TileEntityPedestalPassive extends TileEntityBase implements IInvent
 
 	public void removeLastPedestalStack() {
 		for(int i = slots - 1; i >= 0; i--) {
-			ItemStack stack = inventory[i].copy();
-			if(stack != null) {
+			if(inventory[i] != null) {
+				ItemStack stack = inventory[i].copy();
 				setInventorySlotContents(i, null);
 				if(worldObj.isRemote)
 					return;
