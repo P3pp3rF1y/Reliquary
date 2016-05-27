@@ -139,7 +139,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 				continue;
 			if(!(staffItem == player.inventory.getStackInSlot(slot).getItem()))
 				continue;
-			Item torch = ItemBlock.getItemFromBlock(Blocks.torch);
+			Item torch = ItemBlock.getItemFromBlock(Blocks.TORCH);
 			if(((ItemSojournerStaff) staffItem).removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch, 1, player))
 				return true;
 		}
@@ -177,7 +177,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 		float zOff = (float) player.posZ;
 		float yOff = (float) player.posY;
 
-		if(Blocks.torch.canPlaceBlockAt(world, new BlockPos(x, y, z))) {
+		if(Blocks.TORCH.canPlaceBlockAt(world, new BlockPos(x, y, z))) {
 			int rotation = ((MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3) + 2) % 4;
 			EnumFacing trySide = EnumFacing.DOWN;
 			switch(rotation) {
@@ -209,17 +209,17 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 				trySides.add(tryOtherSide);
 			}
 			for(EnumFacing side : trySides) {
-				if(!world.canBlockBePlaced(Blocks.torch, new BlockPos(x, y, z), false, side, player, stack))
+				if(!world.canBlockBePlaced(Blocks.TORCH, new BlockPos(x, y, z), false, side, player, stack))
 					continue;
-				if(!(InventoryHelper.consumeItem(Blocks.torch, player, 0, 1) || findAndDrainSojournersStaff(player)))
+				if(!(InventoryHelper.consumeItem(Blocks.TORCH, player, 0, 1) || findAndDrainSojournersStaff(player)))
 					continue;
 				IBlockState torchBlockState = getTorchSideAttempt(world, new BlockPos(x, y, z), side, player);
 
 				if(placeBlockAt(stack, player, world, new BlockPos(x, y, z), torchBlockState)) {
-					Blocks.torch.onBlockAdded(world, new BlockPos(x, y, z), torchBlockState);
+					Blocks.TORCH.onBlockAdded(world, new BlockPos(x, y, z), torchBlockState);
 					double gauss = 0.5D + world.rand.nextFloat() / 2;
 					world.spawnParticle(EnumParticleTypes.SPELL_MOB, x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);
-					SoundType torchSoundType = Blocks.torch.getStepSound();
+					SoundType torchSoundType = Blocks.TORCH.getSoundType();
 					world.playSound(null, new BlockPos(x, y, z), torchSoundType.getStepSound(), SoundCategory.BLOCKS, (torchSoundType.getVolume() + 1.0F) / 2.0F, torchSoundType.getPitch() * 0.8F);
 					return true;
 				}
@@ -229,16 +229,16 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 	}
 
 	private IBlockState getTorchSideAttempt(World world, BlockPos pos, EnumFacing side, EntityPlayer player) {
-		return Blocks.torch.onBlockPlaced(world, pos, side, pos.getX(), pos.getY(), pos.getZ(), 0, player);
+		return Blocks.TORCH.onBlockPlaced(world, pos, side, pos.getX(), pos.getY(), pos.getZ(), 0, player);
 	}
 
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, IBlockState torchBlockState) {
 		if(!world.setBlockState(pos, torchBlockState, 3))
 			return false;
 
-		if(RegistryHelper.blocksEqual(torchBlockState.getBlock(), Blocks.torch)) {
-			Blocks.torch.onNeighborBlockChange(world, pos, torchBlockState, torchBlockState.getBlock());
-			Blocks.torch.onBlockPlacedBy(world, pos, torchBlockState, player, stack);
+		if(RegistryHelper.blocksEqual(torchBlockState.getBlock(), Blocks.TORCH)) {
+			Blocks.TORCH.neighborChanged(torchBlockState, world, pos, torchBlockState.getBlock());
+			Blocks.TORCH.onBlockPlacedBy(world, pos, torchBlockState, player, stack);
 		}
 
 		return true;

@@ -16,17 +16,17 @@ import java.util.List;
 public class BlockItemConfiguration {
 	public static void loadEntitiesSettings() {
 		List<String> entityNames = new ArrayList<String>();
-		for(Object o : EntityList.stringToClassMapping.values()) {
+		for(Object o : EntityList.NAME_TO_CLASS.values()) {
 			Class c = (Class) o;
 			if(EntityLiving.class.isAssignableFrom(c)) {
-				entityNames.add(EntityList.classToStringMapping.get(o));
+				entityNames.add(EntityList.CLASS_TO_NAME.get(o));
 			}
 		}
 		List<String> projectileNames = new ArrayList<String>();
-		for(Object o : EntityList.stringToClassMapping.values()) {
+		for(Object o : EntityList.NAME_TO_CLASS.values()) {
 			Class c = (Class) o;
 			if(IProjectile.class.isAssignableFrom(c)) {
-				projectileNames.add(EntityList.classToStringMapping.get(o));
+				projectileNames.add(EntityList.CLASS_TO_NAME.get(o));
 			}
 		}
 

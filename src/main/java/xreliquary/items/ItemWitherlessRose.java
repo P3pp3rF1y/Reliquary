@@ -42,8 +42,8 @@ public class ItemWitherlessRose extends ItemBase {
 		if(!(e instanceof EntityPlayer))
 			return;
 		player = (EntityPlayer) e;
-		if(player.isPotionActive(MobEffects.wither)) {
-			player.removePotionEffect(MobEffects.wither);
+		if(player.isPotionActive(MobEffects.WITHER)) {
+			player.removePotionEffect(MobEffects.WITHER);
 			for(int particles = 0; particles < 10; particles++) {
 				double gauss1 = gaussian(world.rand);
 				double gauss2 = gaussian(world.rand);

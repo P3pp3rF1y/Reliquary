@@ -88,7 +88,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		IBlockState blockState = world.getBlockState(pos);
 		Block block = blockState.getBlock();
 
-		List<ItemStack> drops = block.getDrops(world, pos, blockState, EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, ist));
+		List<ItemStack> drops = block.getDrops(world, pos, blockState, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, ist));
 		Random rand = new Random();
 
 		for(ItemStack stack : drops) {
@@ -101,7 +101,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 			world.spawnEntityInWorld(entityitem);
 		}
 
-		world.setBlockState(pos, Blocks.air.getDefaultState());
+		world.setBlockState(pos, Blocks.AIR.getDefaultState());
 	}
 
 	private void boneMealCrops(World world, EntityPlayer player, BlockPos pos, ItemStack stack, int range) {
@@ -113,7 +113,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 				BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, pos, range);
 
 				if(blockToBoneMeal != null) {
-					boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP, false);
+					boneMealBlock(stack, player, world, blockToBoneMeal, EnumFacing.UP);
 					return;
 				}
 			}
@@ -121,8 +121,8 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		}
 	}
 
-	private void boneMealBlock(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, boolean updateCharge) {
-		ItemStack fakeItemStack = new ItemStack(Items.dye, 1, Reference.WHITE_DYE_META);
+	private void boneMealBlock(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
+		ItemStack fakeItemStack = new ItemStack(Items.DYE, 1, Reference.WHITE_DYE_META);
 		ItemDye fakeItemDye = (ItemDye) fakeItemStack.getItem();
 
 		boolean boneMealUsed = false;
@@ -174,10 +174,10 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		if(hoeCoolDown > 0) {
 			hoeCoolDown--;
 		} else {
-			ItemStack fakeHoe = new ItemStack(Items.wooden_hoe);
+			ItemStack fakeHoe = new ItemStack(Items.WOODEN_HOE);
 			BlockPos blockToHoe = getNextBlockToHoe(world, pos, range);
 			if(blockToHoe != null) {
-				Items.wooden_hoe.onItemUse(fakeHoe, player, world, blockToHoe, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0);
+				Items.WOODEN_HOE.onItemUse(fakeHoe, player, world, blockToHoe, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0);
 				return;
 			} else {
 				hoeCoolDown = NO_JOB_COOL_DOWN_CYCLES;
@@ -202,8 +202,8 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 					BlockPos currentPos = new BlockPos(x, y, z);
 					IBlockState state = world.getBlockState(currentPos);
 					Block block = state.getBlock();
-					if(block instanceof IPlantable || block instanceof BlockCrops || block == Blocks.melon_block || block == Blocks.pumpkin) {
-						if(block instanceof BlockFertileLilypad || block == Blocks.pumpkin_stem || block == Blocks.melon_stem)
+					if(block instanceof IPlantable || block instanceof BlockCrops || block == Blocks.MELON_BLOCK || block == Blocks.PUMPKIN) {
+						if(block instanceof BlockFertileLilypad || block == Blocks.PUMPKIN_STEM || block == Blocks.MELON_STEM)
 							continue;
 						if(block instanceof BlockBeetroot && state.getValue(BlockBeetroot.BEETROOT_AGE) < 3)
 							continue;
@@ -237,7 +237,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 					Block block = blockState.getBlock();
 
 					if(world.isAirBlock(currentPos.up())) {
-						if(block == Blocks.grass || (block == Blocks.dirt && (blockState.getValue(BlockDirt.VARIANT) == BlockDirt.DirtType.DIRT || blockState.getValue(BlockDirt.VARIANT) == BlockDirt.DirtType.COARSE_DIRT))) {
+						if(block == Blocks.GRASS || (block == Blocks.DIRT && (blockState.getValue(BlockDirt.VARIANT) == BlockDirt.DirtType.DIRT || blockState.getValue(BlockDirt.VARIANT) == BlockDirt.DirtType.COARSE_DIRT))) {
 							queueToHoe.add(currentPos);
 						}
 					}
@@ -259,7 +259,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		boolean checkerboard = false;
 		boolean bothOddOrEven = false;
 
-		if(plantable == Items.pumpkin_seeds || plantable == Items.melon_seeds) {
+		if(plantable == Items.PUMPKIN_SEEDS || plantable == Items.MELON_SEEDS) {
 			checkerboard = true;
 			boolean xEven = pos.getX() % 2 == 0;
 			boolean zEven = pos.getZ() % 2 == 0;
@@ -294,7 +294,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
 					BlockPos currentPos = new BlockPos(x, y, z);
 					IBlockState blockState = world.getBlockState(currentPos);
-					if(blockState.getBlock() != Blocks.grass && blockState.getBlock() instanceof IGrowable && ((IGrowable) blockState.getBlock()).canGrow(world, currentPos, blockState, world.isRemote)) {
+					if(blockState.getBlock() != Blocks.GRASS && blockState.getBlock() instanceof IGrowable && ((IGrowable) blockState.getBlock()).canGrow(world, currentPos, blockState, world.isRemote)) {
 						queueToBoneMeal.add(currentPos);
 					}
 				}

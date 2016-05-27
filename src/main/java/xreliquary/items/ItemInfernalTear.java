@@ -98,9 +98,9 @@ public class ItemInfernalTear extends ItemToggleable {
 		String[] nameParts = NBTHelper.getString("itemID", tear).split("\\|");
 		ItemStack stack;
 		if(nameParts.length > 1)
-			stack = new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(nameParts[0])), 1, Integer.parseInt(nameParts[1]));
+			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(nameParts[0])), 1, Integer.parseInt(nameParts[1]));
 		else
-			stack = new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(nameParts[0])));
+			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(nameParts[0])));
 
 		return stack;
 	}

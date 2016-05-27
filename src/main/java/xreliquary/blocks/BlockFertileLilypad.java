@@ -95,14 +95,14 @@ public class BlockFertileLilypad extends BlockBush {
 	}
 
 	@Override
-	protected boolean func_185514_i(IBlockState state) {
-		return state.getBlock() == Blocks.water;
+	protected boolean canSustainBush(IBlockState state) {
+		return state.getBlock() == Blocks.WATER;
 	}
 
 	@Override
 	public boolean canBlockStay(World world, BlockPos pos, IBlockState state) {
 		IBlockState blockBelowState = world.getBlockState(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()));
-		return pos.getY() >= 0 && pos.getY() < 256 && blockBelowState.getBlock().getMaterial(blockBelowState) == Material.water && blockBelowState.getValue(BlockLiquid.LEVEL) == 0;
+		return pos.getY() >= 0 && pos.getY() < 256 && blockBelowState.getBlock().getMaterial(blockBelowState) == Material.WATER && blockBelowState.getValue(BlockLiquid.LEVEL) == 0;
 	}
 
 	@Override

@@ -74,7 +74,7 @@ public class ItemEmperorChalice extends ItemToggleable implements IFluidContaine
 		double yOff = player.prevPosY + (player.posY - player.prevPosY) * coeff + player.getEyeHeight();
 		double zOff = player.prevPosZ + (player.posZ - player.prevPosZ) * coeff;
 		boolean isInDrainMode = this.isEnabled(ist);
-		RayTraceResult result = this.getMovingObjectPositionFromPlayer(world, player, isInDrainMode);
+		RayTraceResult result = this.rayTrace(world, player, isInDrainMode);
 
 		if(result == null) {
 			if(!this.isEnabled(ist)) {
@@ -127,8 +127,8 @@ public class ItemEmperorChalice extends ItemToggleable implements IFluidContaine
 
 				} else {
 					String ident = RegistryHelper.getBlockRegistryName(world.getBlockState(result.getBlockPos()).getBlock());
-					if((ident.equals(RegistryHelper.getBlockRegistryName(Blocks.flowing_water)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.water))) && world.getBlockState(result.getBlockPos()).getValue(Blocks.water.LEVEL) == 0) {
-						world.setBlockState(result.getBlockPos(), Blocks.air.getDefaultState());
+					if((ident.equals(RegistryHelper.getBlockRegistryName(Blocks.FLOWING_WATER)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.WATER))) && world.getBlockState(result.getBlockPos()).getValue(Blocks.WATER.LEVEL) == 0) {
+						world.setBlockState(result.getBlockPos(), Blocks.AIR.getDefaultState());
 
 						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 					}
@@ -149,13 +149,13 @@ public class ItemEmperorChalice extends ItemToggleable implements IFluidContaine
 			return false;
 		else {
 			if(world.provider.doesWaterVaporize()) {
-				world.playSound(null, pos, SoundEvents.block_lava_extinguish, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+				world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
 				for(int var11 = 0; var11 < 8; ++var11) {
 					world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
 				}
 			} else {
-				world.setBlockState(pos, Blocks.flowing_water.getDefaultState(), 3);
+				world.setBlockState(pos, Blocks.FLOWING_WATER.getDefaultState(), 3);
 			}
 
 			return true;

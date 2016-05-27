@@ -60,7 +60,7 @@ public class ItemMagicbane extends ItemSword {
 	 */
 	@Override
 	public float getStrVsBlock(ItemStack stack, IBlockState blockState) {
-		return blockState.getBlock() == Blocks.web ? 15.0F : 1.5F;
+		return blockState.getBlock() == Blocks.WEB ? 15.0F : 1.5F;
 	}
 
 	/**
@@ -77,26 +77,26 @@ public class ItemMagicbane extends ItemSword {
 				case 2:
 				case 3:
 				case 4:
-					e.addPotionEffect(new PotionEffect(MobEffects.weakness, 100, 2));
+					e.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 100, 2));
 				case 5:
 				case 6:
 				case 7:
 				case 8:
-					e.addPotionEffect(new PotionEffect(MobEffects.moveSlowdown, 100, 2));
+					e.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 100, 2));
 					break;
 				case 9:
 				case 10:
 				case 11:
-					e.addPotionEffect(new PotionEffect(MobEffects.moveSlowdown, 100, 2));
+					e.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 100, 2));
 					break;
 				case 12:
 				case 13:
-					e.addPotionEffect(new PotionEffect(MobEffects.poison, 100, 2));
-					e.addPotionEffect(new PotionEffect(MobEffects.confusion, 100, 2));
+					e.addPotionEffect(new PotionEffect(MobEffects.POISON, 100, 2));
+					e.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 100, 2));
 					break;
 				case 14:
-					e.addPotionEffect(new PotionEffect(MobEffects.wither, 100, 2));
-					e.addPotionEffect(new PotionEffect(MobEffects.blindness, 100, 2));
+					e.addPotionEffect(new PotionEffect(MobEffects.WITHER, 100, 2));
+					e.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 100, 2));
 					break;
 				default:
 					break;

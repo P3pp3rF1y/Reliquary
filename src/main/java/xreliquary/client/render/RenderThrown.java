@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+//TODO: get rid of this renderer, doesn't do anything extra on top of what RenderSnowball does already
+
 @SideOnly(Side.CLIENT)
 public class RenderThrown<T extends Entity> extends RenderSnowball<T> {
 	public RenderThrown(RenderManager renderManager, Item item, RenderItem itemRenderer) {
@@ -16,8 +18,8 @@ public class RenderThrown<T extends Entity> extends RenderSnowball<T> {
 	}
 
 	@Override
-	public ItemStack getPotion(T entityIn) {
-		ItemStack entity = new ItemStack(this.field_177084_a, 1);
+	public ItemStack getStackToRender(T entityIn) {
+		ItemStack entity = new ItemStack(this.item, 1);
 
 		return entity;
 	}

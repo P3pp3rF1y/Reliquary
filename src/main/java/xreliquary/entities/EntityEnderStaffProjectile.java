@@ -137,7 +137,7 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 		}
 
 		if(var3 != null) {
-			if(var3.typeOfHit == RayTraceResult.Type.BLOCK && worldObj.getBlockState(var3.getBlockPos()).getBlock() == Blocks.portal) {
+			if(var3.typeOfHit == RayTraceResult.Type.BLOCK && worldObj.getBlockState(var3.getBlockPos()).getBlock() == Blocks.PORTAL) {
 				this.setPortal(var3.getBlockPos());
 			} else {
 				this.onImpact(var3);
@@ -227,7 +227,7 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 					return;
 				}
 
-				getThrower().playSound(SoundEvents.entity_endermen_teleport, 1.0f, 1.0f);
+				getThrower().playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0f, 1.0f);
 				getThrower().setPositionAndUpdate(x + 0.5F, y + 0.5F, z + 0.5F);
 			}
 			this.setDead();

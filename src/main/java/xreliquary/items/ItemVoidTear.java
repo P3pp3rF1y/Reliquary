@@ -102,7 +102,7 @@ public class ItemVoidTear extends ItemToggleable {
 			if(getItemQuantity(ist) == 0)
 				return new ActionResult<>(EnumActionResult.SUCCESS, new ItemStack(ModItems.emptyVoidTear, 1, 0));
 
-			RayTraceResult movingObjectPosition = this.getMovingObjectPositionFromPlayer(world, player, false);
+			RayTraceResult movingObjectPosition = this.rayTrace(world, player, false);
 
 			//not enabling void tear if player tried to deposit everything into inventory but there wasn't enough space
 			if(movingObjectPosition != null && movingObjectPosition.typeOfHit == RayTraceResult.Type.BLOCK && world.getTileEntity(movingObjectPosition.getBlockPos()) instanceof IInventory && player.isSneaking())
@@ -111,7 +111,7 @@ public class ItemVoidTear extends ItemToggleable {
 			if(player.isSneaking())
 				return super.onItemRightClick(ist, world, player, hand);
 			if(this.attemptToEmptyIntoInventory(ist, player, player.inventory, player.inventory.mainInventory.length)) {
-				player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_experience_orb_touch, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+				player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
 				NBTHelper.resetTag(ist);
 				return new ActionResult<>(EnumActionResult.SUCCESS, new ItemStack(ModItems.emptyVoidTear, 1, 0));
 			}
@@ -139,21 +139,23 @@ public class ItemVoidTear extends ItemToggleable {
 			EntityPlayer player = (EntityPlayer) entity;
 
 			boolean quantityUpdated = false;
-			if (this.isEnabled(voidTear)) {
+			if(this.isEnabled(voidTear)) {
 				ItemStack contents = this.getContainedItem(voidTear);
 
-				int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
+				if (contents != null) {
+					int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
 
-				if(getItemQuantity(voidTear) < Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
-					//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
-					if(!player.capabilities.isCreativeMode) {
-						setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - contents.getMaxStackSize());
-						quantityUpdated = true;
+					if(getItemQuantity(voidTear) < Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
+						//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
+						if(!player.capabilities.isCreativeMode) {
+							setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - contents.getMaxStackSize());
+							quantityUpdated = true;
+						}
 					}
-				}
 
-				if (attemptToReplenishSingleStack(player, voidTear))
-					quantityUpdated = true;
+					if(attemptToReplenishSingleStack(player, voidTear))
+						quantityUpdated = true;
+				}
 			}
 
 			if(player.inventory.getStackInSlot(slotNumber) != null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.filledVoidTear && (isSelected || quantityUpdated)) {
@@ -161,7 +163,6 @@ public class ItemVoidTear extends ItemToggleable {
 			} else if(player.inventory.offHandInventory[0] != null && player.inventory.offHandInventory[0].getItem() == ModItems.filledVoidTear) {
 				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(voidTear)), (EntityPlayerMP) player);
 			}
-
 
 		}
 	}
@@ -261,10 +262,10 @@ public class ItemVoidTear extends ItemToggleable {
 
 		setItemQuantity(ist, quantity);
 		if(quantity == 0) {
-			player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_experience_orb_touch, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
+			player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
 			return true;
 		} else {
-			player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_experience_orb_touch, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+			player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
 			return false;
 		}
 	}
@@ -278,7 +279,7 @@ public class ItemVoidTear extends ItemToggleable {
 		if(!(quantityDrained > 0))
 			return;
 
-		player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_experience_orb_touch, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+		player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
 
 		setItemQuantity(ist, quantity + quantityDrained);
 	}

@@ -69,9 +69,9 @@ public class ItemSalamanderEye extends ItemBase {
 		for(int xOff = -3; xOff <= 3; xOff++) {
 			for(int yOff = -3; yOff <= 3; yOff++) {
 				for(int zOff = -3; zOff <= 3; zOff++)
-					if(RegistryHelper.getBlockRegistryName(player.worldObj.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock()).equals(RegistryHelper.getBlockRegistryName(Blocks.fire))) {
-						player.worldObj.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.air.getDefaultState());
-						player.worldObj.playSound(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, SoundEvents.block_fire_extinguish, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
+					if(RegistryHelper.getBlockRegistryName(player.worldObj.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock()).equals(RegistryHelper.getBlockRegistryName(Blocks.FIRE))) {
+						player.worldObj.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.AIR.getDefaultState());
+						player.worldObj.playSound(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
 					}
 			}
 		}
@@ -86,7 +86,7 @@ public class ItemSalamanderEye extends ItemBase {
 				fireball.setDead();
 			}
 			fireball.attackEntityFrom(DamageSource.causePlayerDamage(player), 1);
-			player.worldObj.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.block_fire_extinguish, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
+			player.worldObj.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
 		}
 		List blazeFireballs = player.worldObj.getEntitiesWithinAABB(EntitySmallFireball.class, new AxisAlignedBB(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));
 		Iterator fire2 = blazeFireballs.iterator();
@@ -95,7 +95,7 @@ public class ItemSalamanderEye extends ItemBase {
 			for(int particles = 0; particles < 4; particles++) {
 				player.worldObj.spawnParticle(EnumParticleTypes.REDSTONE, fireball.posX, fireball.posY, fireball.posZ, 0.0D, 1.0D, 1.0D);
 			}
-			player.worldObj.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.block_fire_extinguish, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
+			player.worldObj.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
 			fireball.setDead();
 		}
 	}

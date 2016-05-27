@@ -11,7 +11,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -61,7 +60,7 @@ public class ItemMercyCross extends ItemSword {
 	 */
 	@Override
 	public float getStrVsBlock(ItemStack stack, IBlockState blockState) {
-		return blockState.getBlock() == Blocks.web ? 15.0F : 1.5F;
+		return blockState.getBlock() == Blocks.WEB ? 15.0F : 1.5F;
 	}
 
 	@Override
@@ -80,7 +79,7 @@ public class ItemMercyCross extends ItemSword {
 		double dmg = isUndead(target) ? 12 : 6;
 		IAttributeInstance attackAttribute = player.getAttributeMap().getAttributeInstanceByName(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName());
 
-		if (attackAttribute.getModifier(ATTACK_DAMAGE_MODIFIER) == null || attackAttribute.getModifier(ATTACK_DAMAGE_MODIFIER).getAmount() != dmg) {
+		if(attackAttribute.getModifier(ATTACK_DAMAGE_MODIFIER) == null || attackAttribute.getModifier(ATTACK_DAMAGE_MODIFIER).getAmount() != dmg) {
 			attackAttribute.removeModifier(ATTACK_DAMAGE_MODIFIER);
 			attackAttribute.applyModifier(new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", dmg, 0));
 		}

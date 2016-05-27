@@ -122,7 +122,7 @@ public class Reliquary {
 						Settings.AlkahestryTome.craftingRecipes.put("OreDictionary:" + tag.getString("dictionaryName"), new AlkahestCraftRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
 					else
 						Settings.AlkahestryTome.craftingRecipes.put(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem().getRegistryName().toString(), new AlkahestCraftRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
-					LogHelper.info("[IMC] Added AlkahestRecipe ID: " + Item.itemRegistry.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem()) + " from " + message.getSender() + " to registry.");
+					LogHelper.info("[IMC] Added AlkahestRecipe ID: " + Item.REGISTRY.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem()) + " from " + message.getSender() + " to registry.");
 				} else {
 					LogHelper.warn("[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");
 				}

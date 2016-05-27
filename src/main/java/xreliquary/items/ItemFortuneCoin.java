@@ -64,7 +64,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 		if(!disabledAudio())
 			if(NBTHelper.getShort("soundTimer", ist) > 0) {
 				if(NBTHelper.getShort("soundTimer", ist) % 2 == 0) {
-					world.playSound(null, entity.getPosition(), SoundEvents.entity_experience_orb_touch, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
+					world.playSound(null, entity.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
 				}
 				NBTHelper.setShort("soundTimer", ist, NBTHelper.getShort("soundTimer", ist) - 1);
 			}
@@ -118,7 +118,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 		double z = player.posZ + player.getLookVec().zCoord * 0.2D;
 		item.setPosition(x, y, z);
 		if(!disabledAudio()) {
-			player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_experience_orb_touch, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
+			player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
 		}
 	}
 

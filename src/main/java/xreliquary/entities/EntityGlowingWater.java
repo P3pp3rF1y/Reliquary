@@ -72,7 +72,7 @@ public class EntityGlowingWater extends EntityThrowable {
 				}
 			}
 
-			worldObj.playAuxSFX(2002, new BlockPos(this), 0);
+			worldObj.playEvent(2002, new BlockPos(this), 0);
 			this.setDead();
 		}
 	}
@@ -83,10 +83,11 @@ public class EntityGlowingWater extends EntityThrowable {
 		double z = posZ;
 
 		for(int particleNum = 0; particleNum < 8; ++particleNum) {
-			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, new int[] {Item.getIdFromItem(ModItems.glowingWater)});
+			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, new int[] {
+					Item.getIdFromItem(ModItems.glowingWater)});
 		}
 
-		worldObj.playSound(null, getPosition(), SoundEvents.block_glass_break, SoundCategory.NEUTRAL, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		worldObj.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 		PacketHandler.networkWrapper.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), this.posX, this.posY, this.posZ), new NetworkRegistry.TargetPoint(this.dimension, this.posX, this.posY, this.posZ, 32.0D));
 
 	}

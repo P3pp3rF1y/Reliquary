@@ -61,7 +61,7 @@ public class ItemRendingGale extends ItemToggleable {
 		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(getFeatherCount(ist))), ist, list);
 
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.WHITE + Items.feather.getItemStackDisplayName(new ItemStack(Items.feather))), ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.WHITE + Items.FEATHER.getItemStackDisplayName(new ItemStack(Items.FEATHER))), ist, list);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
 	}
 
@@ -241,8 +241,8 @@ public class ItemRendingGale extends ItemToggleable {
 					IBlockState blockState = worldObj.getBlockState(new BlockPos(xOff, yOff, zOff));
 					Block block = blockState.getBlock();
 
-					if(block.getMaterial(blockState) != Material.air && block.getMaterial(blockState) != Material.water && block.getMaterial(blockState) != Material.lava &&
-							block.getMaterial(blockState) != Material.fire && block.getMaterial(blockState) != Material.vine && block.getMaterial(blockState) != Material.plants && block.getMaterial(blockState) != Material.circuits && block != Blocks.snow_layer) {
+					if(block.getMaterial(blockState) != Material.AIR && block.getMaterial(blockState) != Material.WATER && block.getMaterial(blockState) != Material.LAVA &&
+							block.getMaterial(blockState) != Material.FIRE && block.getMaterial(blockState) != Material.VINE && block.getMaterial(blockState) != Material.PLANTS && block.getMaterial(blockState) != Material.CIRCUITS && block != Blocks.SNOW_LAYER) {
 						return true;
 					}
 				}
@@ -281,7 +281,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 		if(this.isEnabled(ist)) {
 			if(getFeatherCount(ist) + getFeathersWorth() <= getChargeLimit()) {
-				if(InventoryHelper.consumeItem(new ItemStack(Items.feather), player)) {
+				if(InventoryHelper.consumeItem(new ItemStack(Items.FEATHER), player)) {
 					setFeatherCount(ist, player, slotNumber, getFeatherCount(ist) + getFeathersWorth());
 				}
 			}
@@ -337,7 +337,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-		return new FilteredItemHandlerProvider(new int[] {Settings.RendingGale.chargeLimit}, new Item[] {Items.feather}, new int[] {Settings.RendingGale.chargeFeatherWorth});
+		return new FilteredItemHandlerProvider(new int[] {Settings.RendingGale.chargeLimit}, new Item[] {Items.FEATHER}, new int[] {Settings.RendingGale.chargeFeatherWorth});
 	}
 
 	@Override
@@ -479,7 +479,7 @@ public class ItemRendingGale extends ItemToggleable {
 		while(iterator.hasNext()) {
 			Entity e = (Entity) iterator.next();
 			Class entityClass = e.getClass();
-			String entityName = EntityList.classToStringMapping.get(entityClass);
+			String entityName = EntityList.CLASS_TO_NAME.get(entityClass);
 			if(entitiesThatCanBePushed.contains(entityName) || (!pull && canPushProjectiles() && projectilesThatCanBePushed.contains(entityName))) {
 				double distance = getDistanceToEntity(posX, posY, posZ, e);
 				if(distance >= getRadialPushRadius())
@@ -514,7 +514,7 @@ public class ItemRendingGale extends ItemToggleable {
 			float randY = 10F * (itemRand.nextFloat() - 0.5F);
 			float randZ = 10F * (itemRand.nextFloat() - 0.5F);
 
-			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX, y + randY, z + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5, Block.getStateId(Blocks.snow_layer.getStateFromMeta(0)));
+			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX, y + randY, z + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5, Block.getStateId(Blocks.SNOW_LAYER.getStateFromMeta(0)));
 		}
 	}
 
@@ -534,7 +534,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 			double posYAdjusted = player == null ? posY : (posY + player.getEyeHeight()) - (player.height / 2);
 
-			worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.snow_layer.getStateFromMeta(0)));
+			worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.SNOW_LAYER.getStateFromMeta(0)));
 		}
 	}
 }

@@ -46,11 +46,11 @@ public class CommandGenLootChest extends CommandBase {
 		World world = sender.getEntityWorld();
 
 		if(world.isAirBlock(chestPosition)) {
-			world.setBlockState(chestPosition, Blocks.chest.getDefaultState(), 2);
+			world.setBlockState(chestPosition, Blocks.CHEST.getDefaultState(), 2);
 			TileEntity tileEntity = world.getTileEntity(chestPosition);
 
 			if(tileEntity instanceof TileEntityChest) {
-				((TileEntityChest) tileEntity).setLoot(new ResourceLocation(chestType), world.rand.nextLong());
+				((TileEntityChest) tileEntity).setLootTable(new ResourceLocation(chestType), world.rand.nextLong());
 			}
 		}
 

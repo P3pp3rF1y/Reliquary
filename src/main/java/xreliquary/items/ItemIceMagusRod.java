@@ -42,7 +42,7 @@ public class ItemIceMagusRod extends ItemToggleable {
 			return;
 		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("snowballs", ist))), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.snowball.getItemStackDisplayName(new ItemStack(Items.snowball))), ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.SNOWBALL.getItemStackDisplayName(new ItemStack(Items.SNOWBALL))), ist, list);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
 	}
 
@@ -78,9 +78,9 @@ public class ItemIceMagusRod extends ItemToggleable {
 		player.swingArm(hand);
 		if(!player.isSneaking()) {
 			if(NBTHelper.getInteger("snowballs", ist) >= getSnowballCost() || player.capabilities.isCreativeMode) {
-				world.playSound(null, player.getPosition(), SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+				world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 				EntitySpecialSnowball snowball = new EntitySpecialSnowball(world, player, this instanceof ItemGlacialStaff);
-				snowball.func_184538_a(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.2F, 1.0F);
+				snowball.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.2F, 1.0F);
 				world.spawnEntityInWorld(snowball);
 				if(!player.capabilities.isCreativeMode)
 					NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
@@ -108,7 +108,7 @@ public class ItemIceMagusRod extends ItemToggleable {
 
 		if(this.isEnabled(ist)) {
 			if(NBTHelper.getInteger("snowballs", ist) + getSnowballWorth() <= getSnowballCap()) {
-				if(InventoryHelper.consumeItem(new ItemStack(Items.snowball), player)) {
+				if(InventoryHelper.consumeItem(new ItemStack(Items.SNOWBALL), player)) {
 					NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) + getSnowballWorth());
 				}
 			}

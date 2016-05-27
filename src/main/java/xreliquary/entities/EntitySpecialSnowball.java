@@ -68,9 +68,9 @@ public class EntitySpecialSnowball extends EntitySnowball {
 			result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), damage);
 		}
 
-		if(result.typeOfHit == RayTraceResult.Type.BLOCK && worldObj.getBlockState(result.getBlockPos()).getBlock() == Blocks.fire) {
-			worldObj.playSound(null, result.getBlockPos().up(), SoundEvents.entity_generic_burn, SoundCategory.NEUTRAL, 0.5F, (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.8F);
-			worldObj.setBlockState(new BlockPos(result.getBlockPos().getX(), result.getBlockPos().getY() + 1, result.getBlockPos().getZ()), Blocks.air.getDefaultState());
+		if(result.typeOfHit == RayTraceResult.Type.BLOCK && worldObj.getBlockState(result.getBlockPos()).getBlock() == Blocks.FIRE) {
+			worldObj.playSound(null, result.getBlockPos().up(), SoundEvents.ENTITY_GENERIC_BURN, SoundCategory.NEUTRAL, 0.5F, (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.8F);
+			worldObj.setBlockState(new BlockPos(result.getBlockPos().getX(), result.getBlockPos().getY() + 1, result.getBlockPos().getZ()), Blocks.AIR.getDefaultState());
 		}
 
 		for(int var3 = 0; var3 < 8; ++var3) {
@@ -168,7 +168,7 @@ public class EntitySpecialSnowball extends EntitySnowball {
 		}
 
 		if(var3 != null) {
-			if(var3.typeOfHit == RayTraceResult.Type.BLOCK && worldObj.getBlockState(var3.getBlockPos()).getBlock() == Blocks.portal) {
+			if(var3.typeOfHit == RayTraceResult.Type.BLOCK && worldObj.getBlockState(var3.getBlockPos()).getBlock() == Blocks.PORTAL) {
 				this.setPortal(var3.getBlockPos());
 			} else {
 				this.onImpact(var3);

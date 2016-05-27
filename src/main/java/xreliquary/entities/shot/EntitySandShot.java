@@ -82,7 +82,7 @@ public class EntitySandShot extends EntityShotBase {
 		}
 		// it also causes blinding
 		if(e instanceof EntityLiving)
-			e.addPotionEffect(new PotionEffect(MobEffects.blindness, 200, 1));
+			e.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 200, 1));
 		return (worldObj.getWorldInfo().isRaining() ? 4 : 8) + d6();
 	}
 

@@ -50,7 +50,7 @@ public class XRPotionHelper {
 		return null;
 	}
 
-	private static Potion[] nonAugmentableEffects = new Potion[] {MobEffects.blindness, MobEffects.confusion, MobEffects.invisibility, MobEffects.nightVision, MobEffects.waterBreathing};
+	private static Potion[] nonAugmentableEffects = new Potion[] {MobEffects.BLINDNESS, MobEffects.NAUSEA, MobEffects.INVISIBILITY, MobEffects.NIGHT_VISION, MobEffects.WATER_BREATHING};
 
 	public static boolean isAugmentablePotionEffect(PotionEffect effect) {
 		for(int i = 0; i < nonAugmentableEffects.length; i++) {

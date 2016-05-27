@@ -43,7 +43,7 @@ public class ItemGlowingBread extends ItemFood {
 
 		--ist.stackSize;
 		player.getFoodStats().addStats(20, 1.0F);
-		world.playSound(null, player.getPosition(), SoundEvents.entity_player_burp, SoundCategory.PLAYERS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
+		world.playSound(null, player.getPosition(), SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
 		this.onFoodEaten(ist, world, player);
 		return ist;
 	}

@@ -44,7 +44,7 @@ public class DataProviderAltar implements IWailaDataProvider {
 
         if(!altar.isActive()) {
             currenttip.add(ChatFormatting.RED + I18n.translateToLocal("waila.xreliquary.altar.inactive") + ChatFormatting.RESET);
-            currenttip.add(altar.getRedstoneCount() + "x" + (new ItemStack(Items.redstone).getDisplayName()));
+            currenttip.add(altar.getRedstoneCount() + "x" + (new ItemStack(Items.REDSTONE).getDisplayName()));
             return currenttip;
         }
 

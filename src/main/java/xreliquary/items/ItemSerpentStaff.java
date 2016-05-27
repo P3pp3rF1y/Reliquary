@@ -48,10 +48,10 @@ public class ItemSerpentStaff extends ItemBase {
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+		player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
 		EntityKrakenSlime krakenSlime = new EntityKrakenSlime(player.worldObj, player);
-		krakenSlime.func_184538_a(player, player.rotationPitch, player.rotationYaw, 0F, 1.5F, 1.0F);
+		krakenSlime.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0F, 1.5F, 1.0F);
 		player.worldObj.spawnEntityInWorld(krakenSlime);
 		item.damageItem(1, player);
 	}

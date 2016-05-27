@@ -1,8 +1,11 @@
 package xreliquary.handler;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.entity.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.EntityBat;
@@ -49,10 +52,10 @@ public class CommonEventHandler {
 
 	@SubscribeEvent
 	public void handleMercyCrossDamage(AttackEntityEvent event) {
-		if (event.getEntityPlayer().worldObj.isRemote || !(event.getTarget() instanceof EntityLivingBase))
+		if(event.getEntityPlayer().worldObj.isRemote || !(event.getTarget() instanceof EntityLivingBase))
 			return;
 
-		if (event.getEntityPlayer().getHeldItemMainhand() == null || event.getEntityPlayer().getHeldItemMainhand().getItem() != ModItems.mercyCross)
+		if(event.getEntityPlayer().getHeldItemMainhand() == null || event.getEntityPlayer().getHeldItemMainhand().getItem() != ModItems.mercyCross)
 			return;
 
 		EntityLivingBase target = (EntityLivingBase) event.getTarget();
@@ -363,7 +366,7 @@ public class CommonEventHandler {
 		spawnAngelheartVialParticles(player);
 
 		// play some glass breaking effects at the player location
-		player.worldObj.playSound(null, player.getPosition(), SoundEvents.block_glass_break, SoundCategory.NEUTRAL, 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		player.worldObj.playSound(null, player.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
 
 		// gives the player a few hearts, sparing them from death.
 		float amountHealed = player.getMaxHealth() * (float) Settings.AngelHeartVial.healPercentageOfMaxLife / 100F;
@@ -382,7 +385,8 @@ public class CommonEventHandler {
 		double var12 = player.posZ;
 		Random var7 = player.worldObj.rand;
 		for(int var15 = 0; var15 < 8; ++var15) {
-			player.worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, new int[] {Item.getIdFromItem(Items.potionitem)});
+			player.worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, new int[] {
+					Item.getIdFromItem(Items.POTIONITEM)});
 		}
 
 		// purple, for reals.
@@ -398,7 +402,7 @@ public class CommonEventHandler {
 			double var27 = 0.01D + var7.nextDouble() * 0.5D;
 			double var29 = Math.sin(var23) * var39;
 			if(player.worldObj.isRemote) {
-				EntityFX var31 = Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), var8 + var25 * 0.1D, var10 + 0.3D, var12 + var29 * 0.1D, var25, var27, var29);
+				Particle var31 = Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), var8 + var25 * 0.1D, var10 + 0.3D, var12 + var29 * 0.1D, var25, var27, var29);
 				if(var31 != null) {
 					float var32 = 0.75F + var7.nextFloat() * 0.25F;
 					var31.setRBGColorF(red * var32, green * var32, blue * var32);
@@ -407,19 +411,19 @@ public class CommonEventHandler {
 			}
 		}
 
-		player.worldObj.playSound(null, player.getPosition(), SoundEvents.block_glass_break, SoundCategory.NEUTRAL, 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		player.worldObj.playSound(null, player.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
 
 	}
 
 	public void removeNegativeStatusEffects(EntityPlayer player) {
-		player.removePotionEffect(MobEffects.wither);
-		player.removePotionEffect(MobEffects.hunger);
-		player.removePotionEffect(MobEffects.poison);
-		player.removePotionEffect(MobEffects.confusion);
-		player.removePotionEffect(MobEffects.digSlowdown);
-		player.removePotionEffect(MobEffects.moveSlowdown);
-		player.removePotionEffect(MobEffects.blindness);
-		player.removePotionEffect(MobEffects.weakness);
+		player.removePotionEffect(MobEffects.WITHER);
+		player.removePotionEffect(MobEffects.HUNGER);
+		player.removePotionEffect(MobEffects.POISON);
+		player.removePotionEffect(MobEffects.NAUSEA);
+		player.removePotionEffect(MobEffects.MINING_FATIGUE);
+		player.removePotionEffect(MobEffects.SLOWNESS);
+		player.removePotionEffect(MobEffects.BLINDNESS);
+		player.removePotionEffect(MobEffects.WEAKNESS);
 	}
 
 	public void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
@@ -453,19 +457,19 @@ public class CommonEventHandler {
 
 			// added bonus, has some extra effects when drowning or dying to lava
 			if(event.getSource() == DamageSource.lava && Settings.PhoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou)
-				player.addPotionEffect(new PotionEffect(MobEffects.fireResistance, 200, 0));
+				player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 200, 0));
 			if(event.getSource() == DamageSource.drown && Settings.PhoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou) {
 				player.setAir(10);
-				player.addPotionEffect(new PotionEffect(MobEffects.waterBreathing, 200, 0));
+				player.addPotionEffect(new PotionEffect(MobEffects.WATER_BREATHING, 200, 0));
 			}
 
 			// give the player temporary resistance to other damages.
 			if(Settings.PhoenixDown.giveTemporaryDamageResistance)
-				player.addPotionEffect(new PotionEffect(MobEffects.resistance, 200, 1));
+				player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 200, 1));
 
 			// give the player temporary regeneration.
 			if(Settings.PhoenixDown.giveTemporaryRegeneration)
-				player.addPotionEffect(new PotionEffect(MobEffects.regeneration, 200, 1));
+				player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 200, 1));
 
 			// particles, lots of them
 			spawnPhoenixResurrectionParticles(player);
@@ -586,7 +590,7 @@ public class CommonEventHandler {
 				playersFlightStatus.put(player.getGameProfile().getId(), true);
 				player.capabilities.allowFlying = true;
 				player.fallDistance = 0;
-				((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketPlayerAbilities(player.capabilities));
+				((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
 			}
 		} else {
 			if(event.getEntityLiving() instanceof EntityPlayer) {
@@ -603,7 +607,7 @@ public class CommonEventHandler {
 					if(!player.capabilities.isCreativeMode) {
 						player.capabilities.allowFlying = false;
 						player.capabilities.isFlying = false;
-						((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketPlayerAbilities(player.capabilities));
+						((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
 					}
 				}
 			}

@@ -59,9 +59,9 @@ public class EntityBlazeShot extends EntityShotBase {
 
 			BlockPos fireSpawnPos = result.getBlockPos().offset(result.sideHit);
 
-			if(shootingEntity.canPlayerEdit(fireSpawnPos, result.sideHit, new ItemStack(Items.flint_and_steel, 1, 0))) {
+			if(shootingEntity.canPlayerEdit(fireSpawnPos, result.sideHit, new ItemStack(Items.FLINT_AND_STEEL, 1, 0))) {
 				if(this.worldObj.isAirBlock(fireSpawnPos)) {
-					worldObj.setBlockState(fireSpawnPos, Blocks.fire.getDefaultState());
+					worldObj.setBlockState(fireSpawnPos, Blocks.FIRE.getDefaultState());
 				}
 			}
 		}

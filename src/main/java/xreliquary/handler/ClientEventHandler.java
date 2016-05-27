@@ -113,7 +113,7 @@ public class ClientEventHandler {
 		if(destructionCatalystStack == null)
 			return;
 
-		ItemStack gunpowderStack = new ItemStack(Items.gunpowder, NBTHelper.getInteger("gunpowder", destructionCatalystStack), 0);
+		ItemStack gunpowderStack = new ItemStack(Items.GUNPOWDER, NBTHelper.getInteger("gunpowder", destructionCatalystStack), 0);
 		renderStandardTwoItemHUD(mc, player, destructionCatalystStack, gunpowderStack, Settings.HudPositions.destructionCatalyst, 0, 0);
 	}
 
@@ -127,11 +127,11 @@ public class ClientEventHandler {
 
 		ItemEnderStaff enderStaffItem = ModItems.enderStaff;
 		String staffMode = enderStaffItem.getMode(enderStaffStack);
-		ItemStack displayItemStack = new ItemStack(Items.ender_pearl, enderStaffItem.getPearlCount(enderStaffStack), 0);
+		ItemStack displayItemStack = new ItemStack(Items.ENDER_PEARL, enderStaffItem.getPearlCount(enderStaffStack), 0);
 		if(staffMode.equals("node_warp")) {
 			displayItemStack = new ItemStack(ModBlocks.wraithNode, enderStaffItem.getPearlCount(enderStaffStack), 0);
 		} else if(staffMode.equals("long_cast")) {
-			displayItemStack = new ItemStack(Items.ender_eye, enderStaffItem.getPearlCount(enderStaffStack), 0);
+			displayItemStack = new ItemStack(Items.ENDER_EYE, enderStaffItem.getPearlCount(enderStaffStack), 0);
 		}
 		renderStandardTwoItemHUD(mc, player, enderStaffStack, displayItemStack, Settings.HudPositions.enderStaff, 0, 0);
 	}
@@ -144,7 +144,7 @@ public class ClientEventHandler {
 		if(iceRodStack == null)
 			return;
 
-		ItemStack snowballStack = new ItemStack(Items.snowball, NBTHelper.getInteger("snowballs", iceRodStack), 0);
+		ItemStack snowballStack = new ItemStack(Items.SNOWBALL, NBTHelper.getInteger("snowballs", iceRodStack), 0);
 		//still allows for differing HUD positions, like a baws.
 		int hudPosition = Settings.HudPositions.iceMagusRod;
 		renderStandardTwoItemHUD(mc, player, iceRodStack, snowballStack, hudPosition, 0, NBTHelper.getInteger("snowballs", iceRodStack));
@@ -158,7 +158,7 @@ public class ClientEventHandler {
 		if(glacialStaff == null)
 			return;
 
-		ItemStack snowballStack = new ItemStack(Items.snowball, NBTHelper.getInteger("snowballs", glacialStaff), 0);
+		ItemStack snowballStack = new ItemStack(Items.SNOWBALL, NBTHelper.getInteger("snowballs", glacialStaff), 0);
 		//still allows for differing HUD positions, like a baws.
 		int hudPosition = Settings.HudPositions.glacialStaff;
 		renderStandardTwoItemHUD(mc, player, glacialStaff, snowballStack, hudPosition, 0, NBTHelper.getInteger("snowballs", glacialStaff));
@@ -185,7 +185,7 @@ public class ClientEventHandler {
 		if(midasTouchstoneStack == null)
 			return;
 
-		ItemStack glowstoneStack = new ItemStack(Items.glowstone_dust, NBTHelper.getInteger("glowstone", midasTouchstoneStack), 0);
+		ItemStack glowstoneStack = new ItemStack(Items.GLOWSTONE_DUST, NBTHelper.getInteger("glowstone", midasTouchstoneStack), 0);
 		renderStandardTwoItemHUD(mc, player, midasTouchstoneStack, glowstoneStack, Settings.HudPositions.midasTouchstone, 0, 0);
 	}
 
@@ -204,7 +204,7 @@ public class ClientEventHandler {
 		if(harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.PLANTABLE_MODE)) {
 			ItemStack currenPlantable = harvestRod.getCurrentPlantable(harvestRodStack);
 
-			if (currenPlantable != null) {
+			if(currenPlantable != null) {
 				secondaryStack = currenPlantable.copy();
 				int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableSlot(harvestRodStack));
 
@@ -213,9 +213,9 @@ public class ClientEventHandler {
 		} else if(harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.BONE_MEAL_MODE)) {
 			int boneMealCount = harvestRod.getBoneMealCount(harvestRodStack);
 
-			secondaryStack = new ItemStack(Items.dye, boneMealCount, Reference.WHITE_DYE_META);
+			secondaryStack = new ItemStack(Items.DYE, boneMealCount, Reference.WHITE_DYE_META);
 		} else {
-			secondaryStack = new ItemStack(Items.wooden_hoe);
+			secondaryStack = new ItemStack(Items.WOODEN_HOE);
 		}
 
 		renderStandardTwoItemHUD(mc, player, harvestRodStack, secondaryStack, Settings.HudPositions.harvestRod, 0, 0);
@@ -229,7 +229,7 @@ public class ClientEventHandler {
 		if(infernalChaliceStack == null)
 			return;
 
-		ItemStack lavaStack = new ItemStack(Items.lava_bucket, NBTHelper.getInteger("fluidStacks", infernalChaliceStack), 0);
+		ItemStack lavaStack = new ItemStack(Items.LAVA_BUCKET, NBTHelper.getInteger("fluidStacks", infernalChaliceStack), 0);
 		renderStandardTwoItemHUD(mc, player, infernalChaliceStack, lavaStack, Settings.HudPositions.infernalChalice, Colors.get(Colors.BLOOD_RED_COLOR), lavaStack.stackSize / 1000);
 	}
 
@@ -264,9 +264,9 @@ public class ClientEventHandler {
 				Item containedItem = RegistryHelper.getItemFromName(itemName);
 				int quantity = tagItemData.getInteger("Quantity");
 
-				if(containedItem == Items.blaze_powder) {
+				if(containedItem == Items.BLAZE_POWDER) {
 					blaze = quantity;
-				} else if(containedItem == Items.fire_charge) {
+				} else if(containedItem == Items.FIRE_CHARGE) {
 					charge = quantity;
 				}
 			}
@@ -274,8 +274,8 @@ public class ClientEventHandler {
 
 		String staffMode = ((ItemPyromancerStaff) pyromancerStaffStack.getItem()).getMode(pyromancerStaffStack);
 
-		ItemStack fireChargeStack = new ItemStack(Items.fire_charge, charge, 0);
-		ItemStack blazePowderStack = new ItemStack(Items.blaze_powder, blaze, 0);
+		ItemStack fireChargeStack = new ItemStack(Items.FIRE_CHARGE, charge, 0);
+		ItemStack blazePowderStack = new ItemStack(Items.BLAZE_POWDER, blaze, 0);
 		renderPyromancerStaffHUD(mc, player, pyromancerStaffStack, fireChargeStack, blazePowderStack, staffMode);
 	}
 
@@ -340,7 +340,7 @@ public class ClientEventHandler {
 			if(staffMode.equals("eruption"))
 				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(friendlyStaffMode, hudOverlayX - (leftSide ? 0 : (friendlyStaffMode.length() * 6)), hudOverlayY + 18, color);
 		} else if(staffMode.equals("flint_and_steel")) {
-			renderItem.renderItemAndEffectIntoGUI(new ItemStack(Items.flint_and_steel, 1, 0), hudOverlayX - (leftSide ? 0 : 15), hudOverlayY + 24);
+			renderItem.renderItemAndEffectIntoGUI(new ItemStack(Items.FLINT_AND_STEEL, 1, 0), hudOverlayX - (leftSide ? 0 : 15), hudOverlayY + 24);
 		}
 
 		GlStateManager.disableLighting();
@@ -356,7 +356,7 @@ public class ClientEventHandler {
 		if(rendingGaleStack == null)
 			return;
 
-		ItemStack featherStack = new ItemStack(Items.feather, ModItems.rendingGale.getFeatherCount(rendingGaleStack), 0);
+		ItemStack featherStack = new ItemStack(Items.FEATHER, ModItems.rendingGale.getFeatherCount(rendingGaleStack), 0);
 		renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Settings.HudPositions.rendingGale, 0, Math.max(featherStack.stackSize / 100, 0));
 	}
 

@@ -1,20 +1,18 @@
 package xreliquary.client.particle;
 
-import net.minecraft.client.particle.EntityReddustFX;
+import net.minecraft.client.particle.ParticleRedstone;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class EntityCauldronSteamFX extends EntityReddustFX {
-	float reddustParticleScale;
-	private static final String __OBFID = "CL_00000923";
+public class EntityCauldronSteamFX extends ParticleRedstone {
 
 	public EntityCauldronSteamFX(World world, double x, double y, double z, double xMot, double yMot, double zMot, float red, float green, float blue) {
 		this(world, x, y, z, 1.0F, red, green, blue);
-		this.xSpeed += xMot;
-		this.ySpeed += yMot;
-		this.zSpeed += zMot;
+		this.motionX += xMot;
+		this.motionY += yMot;
+		this.motionZ += zMot;
 	}
 
 	public EntityCauldronSteamFX(World world, double x, double y, double z, float sizeAndLifespanLoL, float red, float green, float blue) {
@@ -38,20 +36,20 @@ public class EntityCauldronSteamFX extends EntityReddustFX {
 
 		this.setParticleTextureIndex(7 - this.particleAge * 8 / this.particleMaxAge);
 		this.setAlphaF((1F - ((float) this.particleAge / (float) this.particleMaxAge)) / 2F);
-		this.moveEntity(this.xSpeed, this.ySpeed, this.zSpeed);
+		this.moveEntity(this.motionX, this.motionY, this.motionZ);
 
 		if(this.posY == this.prevPosY) {
-			this.xSpeed *= 1.1D;
-			this.zSpeed *= 1.1D;
+			this.motionX *= 1.1D;
+			this.motionZ *= 1.1D;
 		}
 
-		this.xSpeed *= 0.9599999785423279D;
-		this.ySpeed *= 0.9599999785423279D;
-		this.zSpeed *= 0.9599999785423279D;
+		this.motionX *= 0.9599999785423279D;
+		this.motionY *= 0.9599999785423279D;
+		this.motionZ *= 0.9599999785423279D;
 
 		if(this.isCollided) {
-			this.xSpeed *= 0.699999988079071D;
-			this.zSpeed *= 0.699999988079071D;
+			this.motionX *= 0.699999988079071D;
+			this.motionZ *= 0.699999988079071D;
 		}
 	}
 }

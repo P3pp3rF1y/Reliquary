@@ -37,7 +37,7 @@ public class TileEntityAltar extends TileEntityBase implements ITickable {
 			}
 		} else {
 			isActive = false;
-			worldObj.setBlockState(getPos().add(0, 1, 0), Blocks.glowstone.getDefaultState());
+			worldObj.setBlockState(getPos().add(0, 1, 0), Blocks.GLOWSTONE.getDefaultState());
 			BlockAlkahestryAltar.updateAltarBlockState(isActive(), worldObj, getPos());
 		}
 	}
@@ -60,11 +60,13 @@ public class TileEntityAltar extends TileEntityBase implements ITickable {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-		super.writeToNBT(par1NBTTagCompound);
-		par1NBTTagCompound.setShort("cycleTime", (short) cycleTime);
-		par1NBTTagCompound.setShort("redstoneCount", (short) redstoneCount);
-		par1NBTTagCompound.setBoolean("isActive", isActive);
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		super.writeToNBT(compound);
+		compound.setShort("cycleTime", (short) cycleTime);
+		compound.setShort("redstoneCount", (short) redstoneCount);
+		compound.setBoolean("isActive", isActive);
+
+		return compound;
 	}
 
 	public void addRedstone() {

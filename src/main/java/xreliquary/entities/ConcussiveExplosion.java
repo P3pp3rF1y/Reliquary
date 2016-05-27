@@ -16,7 +16,6 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import xreliquary.network.PacketFXConcussiveExplosion;
-import xreliquary.network.PacketFXThrownPotionImpact;
 import xreliquary.network.PacketHandler;
 
 import java.util.List;
@@ -135,7 +134,7 @@ public class ConcussiveExplosion extends Explosion {
 	 */
 	@Override
 	public void doExplosionB(boolean par1) {
-		worldObj.playSound(null, new BlockPos(explosionX, explosionY, explosionZ), SoundEvents.entity_generic_explode, SoundCategory.BLOCKS, 4.0F, (1.0F + (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+		worldObj.playSound(null, new BlockPos(explosionX, explosionY, explosionZ), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 
 		if(explosionSize >= 2.0F && field_82755_b) {
 			worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);

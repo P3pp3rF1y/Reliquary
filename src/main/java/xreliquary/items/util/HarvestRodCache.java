@@ -9,7 +9,6 @@ public class HarvestRodCache implements IHarvestRodCache {
 
 	private BlockPos startBlockPos;
 	private Queue<BlockPos> blockQueue;
-	private int timesUsed;
 
 	public HarvestRodCache() {
 		blockQueue = new ArrayDeque<>();
@@ -49,6 +48,5 @@ public class HarvestRodCache implements IHarvestRodCache {
 	public void reset() {
 		startBlockPos = null;
 		blockQueue.clear();
-		timesUsed = 0;
 	}
 }

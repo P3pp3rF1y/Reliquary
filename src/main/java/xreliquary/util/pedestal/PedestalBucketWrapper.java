@@ -123,16 +123,16 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		EntityCow cow = entities.get(world.rand.nextInt(entities.size()));
 
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
-		ItemStack bucketStack = new ItemStack(Items.bucket);
+		ItemStack bucketStack = new ItemStack(Items.BUCKET);
 		fakePlayer.setHeldItem(EnumHand.MAIN_HAND, bucketStack);
 
 		cow.processInteract(fakePlayer, EnumHand.MAIN_HAND, bucketStack);
 
 		//TODO: verify that milk bucket still works
-		if(fakePlayer.getHeldItem(EnumHand.MAIN_HAND).getItem() == Items.milk_bucket) {
+		if(fakePlayer.getHeldItem(EnumHand.MAIN_HAND).getItem() == Items.MILK_BUCKET) {
 			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.milk, FluidContainerRegistry.BUCKET_VOLUME));
 			if(fluidAdded == 0) {
-				pedestal.replaceCurrentItem(new ItemStack(Items.milk_bucket));
+				pedestal.replaceCurrentItem(new ItemStack(Items.MILK_BUCKET));
 				return true;
 			}
 		}

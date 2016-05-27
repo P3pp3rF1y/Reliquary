@@ -81,7 +81,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 		List<Item> items = new ArrayList<Item>();
 
 		//default to always work with vanilla torches
-		ItemStack vanillaTorch = new ItemStack(Blocks.torch, 1, 0);
+		ItemStack vanillaTorch = new ItemStack(Blocks.TORCH, 1, 0);
 		items.add(vanillaTorch.getItem());
 
 		for(String torch : torches) {
@@ -332,7 +332,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 		}
 		this.formatTooltip(ImmutableMap.of("phrase", phrase, "placing", placing), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + getItemStackDisplayName(new ItemStack(Blocks.torch))), ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + getItemStackDisplayName(new ItemStack(Blocks.TORCH))), ist, list);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
 	}
 
@@ -356,9 +356,9 @@ public class ItemSojournerStaff extends ItemToggleable {
 		Block blockTargetted = world.getBlockState(pos).getBlock();
 		BlockPos placeBlockAt = pos;
 
-		if(RegistryHelper.blocksEqual(blockTargetted, Blocks.snow)) {
+		if(RegistryHelper.blocksEqual(blockTargetted, Blocks.SNOW)) {
 			side = EnumFacing.UP;
-		} else if(!RegistryHelper.blocksEqual(blockTargetted, Blocks.vine) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.tallgrass) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.deadbush) && (blockTargetted == null || !blockTargetted.isReplaceable(world, pos))) {
+		} else if(!RegistryHelper.blocksEqual(blockTargetted, Blocks.VINE) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.TALLGRASS) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.DEADBUSH) && (blockTargetted == null || !blockTargetted.isReplaceable(world, pos))) {
 			placeBlockAt = pos.offset(side);
 		}
 
@@ -378,7 +378,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 					blockAttemptingPlacement.onBlockAdded(world, placeBlockAt, torchBlockState);
 					double gauss = 0.5D + world.rand.nextFloat() / 2;
 					world.spawnParticle(EnumParticleTypes.SPELL_MOB, placeBlockAt.getX() + 0.5D, placeBlockAt.getY() + 0.5D, placeBlockAt.getZ() + 0.5D, gauss, gauss, 0.0F);
-					world.playSound(null, placeBlockAt, blockAttemptingPlacement.getStepSound().getPlaceSound(), SoundCategory.BLOCKS, (blockAttemptingPlacement.getStepSound().getVolume() + 1.0F) / 2.0F, blockAttemptingPlacement.getStepSound().getPitch() * 0.8F);
+					world.playSound(null, placeBlockAt, blockAttemptingPlacement.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (blockAttemptingPlacement.getSoundType().getVolume() + 1.0F) / 2.0F, blockAttemptingPlacement.getSoundType().getPitch() * 0.8F);
 				}
 			}
 		}
@@ -426,7 +426,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 
 	//I named the vars in this method weird crap cos I have no idea what they do. This was stolen from the bucket code, I think.
 	@Override
-	protected RayTraceResult getMovingObjectPositionFromPlayer(World world, EntityPlayer player, boolean weirdBucketBoolean) {
+	protected RayTraceResult rayTrace(World world, EntityPlayer player, boolean weirdBucketBoolean) {
 		float movementCoefficient = 1.0F;
 		float pitchOff = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * movementCoefficient;
 		float yawOff = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * movementCoefficient;
@@ -449,9 +449,9 @@ public class ItemSojournerStaff extends ItemToggleable {
 		if(!world.setBlockState(pos, torchBlockState, 3))
 			return false;
 
-		if(RegistryHelper.blocksEqual(torchBlockState.getBlock(), Blocks.torch)) {
-			Blocks.torch.onNeighborBlockChange(world, pos, torchBlockState, torchBlockState.getBlock());
-			Blocks.torch.onBlockPlacedBy(world, pos, torchBlockState, player, stack);
+		if(RegistryHelper.blocksEqual(torchBlockState.getBlock(), Blocks.TORCH)) {
+			Blocks.TORCH.neighborChanged(torchBlockState, world, pos, torchBlockState.getBlock());
+			Blocks.TORCH.onBlockPlacedBy(world, pos, torchBlockState, player, stack);
 		}
 
 		return true;

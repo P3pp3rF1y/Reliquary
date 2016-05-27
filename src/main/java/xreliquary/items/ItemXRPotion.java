@@ -137,7 +137,7 @@ public class ItemXRPotion extends ItemBase {
 				player.setActiveHand(hand);
 				return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 			} else {
-				RayTraceResult rayTraceResult = this.getMovingObjectPositionFromPlayer(world, player, true);
+				RayTraceResult rayTraceResult = this.rayTrace(world, player, true);
 
 				if(rayTraceResult == null)
 					return new ActionResult<>(EnumActionResult.PASS, ist);
@@ -165,12 +165,12 @@ public class ItemXRPotion extends ItemBase {
 			if(world.isRemote)
 				return new ActionResult<>(EnumActionResult.PASS, ist);
 			EntityThrownXRPotion e = new EntityThrownXRPotion(world, player, ist);
-			e.func_184538_a(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.5F, 1.0F);
+			e.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.5F, 1.0F);
 
 			if(!player.capabilities.isCreativeMode) {
 				--ist.stackSize;
 			}
-			world.playSound(null, player.getPosition(), SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 			world.spawnEntityInWorld(e);
 		}
 		return new ActionResult<>(EnumActionResult.PASS, ist);

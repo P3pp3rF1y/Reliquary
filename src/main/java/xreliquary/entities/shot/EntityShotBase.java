@@ -70,7 +70,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 
 	@Override
 	protected void entityInit() {
-		dataWatcher.register(CRITICAL, (byte) 0);
+		dataManager.register(CRITICAL, (byte) 0);
 	} //TODO remove this perhaps / doesn't seem to be used
 
 	/**
@@ -97,21 +97,23 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		prevRotationPitch = rotationPitch = (float) (Math.atan2(var3, var10) * 180.0D / Math.PI);
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
 	/**
 	 * Sets the position and rotation. Only difference from the other one is no bounding on the rotation. Args: posX,
 	 * posY, posZ, yaw, pitch
-	 */ public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean p_180426_10_) {
+	 **/
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean p_180426_10_) {
 		this.setPosition(x, y, z);
 		this.setRotation(yaw, pitch);
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
 	/**
 	 * Sets the velocity to the args. Args: x, y, z
-	 */ public void setVelocity(double par1, double par3, double par5) {
+	 */
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void setVelocity(double par1, double par3, double par5) {
 		motionX = par1;
 		motionY = par3;
 		motionZ = par5;
@@ -131,6 +133,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	// this prevents a lot of weird things from happening with bullet effects
 	// that
 	// require an originating player. Consider deprecating this.
+	//TODO look into replacing this with just the player property of entity
 	protected void ensurePlayerShooterEntity() {
 		if(shootingEntity == null) {
 			List players = worldObj.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(posX - 1, posY - 1, posZ - 1, posX + 1, posY + 1, posZ + 1));
@@ -172,7 +175,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		IBlockState blockState = this.worldObj.getBlockState(new BlockPos(this.xTile, this.yTile, this.zTile));
 		Block block = blockState.getBlock();
 
-		if(block.getMaterial(blockState) != Material.air) {
+		if(block.getMaterial(blockState) != Material.AIR) {
 			AxisAlignedBB axisalignedbb = block.getCollisionBoundingBox(blockState, this.worldObj, new BlockPos(this.xTile, this.yTile, this.zTile));
 
 			if(axisalignedbb != null && axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
@@ -283,7 +286,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 * If returns false, the item will not inflict any damage against entities.
 	 */
 	@Override
-	public boolean canAttackWithItem() {
+	public boolean canBeAttackedWithItem() {
 		return false;
 	}
 
@@ -427,7 +430,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			Entity currentTarget = (Entity) iTarget.next();
 
 			Class entityClass = currentTarget.getClass();
-			String entityName = (String) EntityList.classToStringMapping.get(entityClass);
+			String entityName = (String) EntityList.CLASS_TO_NAME.get(entityClass);
 			if(!entitiesThatCanBeHunted.contains(entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead))
 				continue;
 			// goes for the closest thing it can

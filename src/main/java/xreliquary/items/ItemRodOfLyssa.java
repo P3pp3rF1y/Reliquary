@@ -48,7 +48,7 @@ public class ItemRodOfLyssa extends ItemBase {
 			player.swingArm(hand);
 			player.fishEntity.handleHookRetraction();
 		} else {
-			world.playSound(null, player.getPosition(), SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
 			if(!world.isRemote) {
 				world.spawnEntityInWorld(new EntityLyssaHook(world, player));

@@ -35,7 +35,7 @@ public class BlockApothecaryMortar extends BlockBase {
 	private static final AxisAlignedBB MORTAR_AABB = new AxisAlignedBB(0.25D, 0.0D, 0.25D, 0.75D, 0.3D, 0.75F);
 
 	public BlockApothecaryMortar() {
-		super(Material.rock, Names.apothecary_mortar);
+		super(Material.ROCK, Names.apothecary_mortar);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 		this.setHardness(1.5F);
 		this.setResistance(2.0F);
@@ -106,7 +106,7 @@ public class BlockApothecaryMortar extends BlockBase {
 				return true;
 			}
 			boolean done = mortar.usePestle();
-			world.playSound(null, pos, this.stepSound.getStepSound(), SoundCategory.BLOCKS, (this.stepSound.getVolume() + 1.0F) / 2.0F, this.stepSound.getPitch() * 0.8F);
+			world.playSound(null, pos, this.blockSoundType.getStepSound(), SoundCategory.BLOCKS, (this.blockSoundType.getVolume() + 1.0F) / 2.0F, this.blockSoundType.getPitch() * 0.8F);
 			player.swingArm(hand);
 			if(done) {
 				return true;
@@ -129,7 +129,7 @@ public class BlockApothecaryMortar extends BlockBase {
 		}
 		if(!putItemInSlot) {
 			mortar.usePestle();
-			world.playSound(null, pos, this.stepSound.getStepSound(), SoundCategory.BLOCKS, (this.stepSound.getVolume() + 1.0F) / 2.0F, this.stepSound.getPitch() * 0.8F);
+			world.playSound(null, pos, this.blockSoundType.getStepSound(), SoundCategory.BLOCKS, (this.blockSoundType.getVolume() + 1.0F) / 2.0F, this.blockSoundType.getPitch() * 0.8F);
 			return false;
 		} else {
 			//TODO: make sure to optimize markDirty calls

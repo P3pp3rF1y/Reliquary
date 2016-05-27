@@ -8,17 +8,22 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 
+import javax.annotation.Nullable;
+
 /**
  * A small class for making tile entity code less repetitive. Takes care of client NBT loading.
  */
 public abstract class TileEntityBase extends TileEntity {
 
 	@Override
-	public Packet getDescriptionPacket() {
-		NBTTagCompound nbtTag = new NBTTagCompound();
-		this.writeToNBT(nbtTag);
+	public NBTTagCompound getUpdateTag() {
+		return this.writeToNBT(new NBTTagCompound());
+	}
 
-		return new SPacketUpdateTileEntity(this.getPos(), 1, nbtTag);
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(this.pos, 1, getUpdateTag());
 	}
 
 	@Override

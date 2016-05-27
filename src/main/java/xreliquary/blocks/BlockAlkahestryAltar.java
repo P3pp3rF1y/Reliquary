@@ -1,6 +1,5 @@
 package xreliquary.blocks;
 
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,7 +40,7 @@ public class BlockAlkahestryAltar extends BlockBase {
 	private final boolean isActive;
 
 	public BlockAlkahestryAltar(boolean isActive) {
-		super(Material.rock, (isActive ? Names.altar : Names.altar_idle));
+		super(Material.ROCK, (isActive ? Names.altar : Names.altar_idle));
 		this.isActive = isActive;
 
 		this.setHardness(1.5F);
@@ -98,11 +97,11 @@ public class BlockAlkahestryAltar extends BlockBase {
 			return true;
 		if(heldItem == null)
 			return true;
-		if(heldItem.getItem() == Items.redstone) {
+		if(heldItem.getItem() == Items.REDSTONE) {
 			int slot = getSlotWithRedstoneDust(player);
 			if(slot == -1)
 				return true;
-			world.playSound(null, pos, SoundEvents.block_lava_extinguish, SoundCategory.BLOCKS, 0.3F, 0.5F + 0.5F * altar.getRedstoneCount() + (float) (world.rand.nextGaussian() / 8));
+			world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.3F, 0.5F + 0.5F * altar.getRedstoneCount() + (float) (world.rand.nextGaussian() / 8));
 			for(int particles = world.rand.nextInt(3); particles < 3 + altar.getRedstoneCount() * 4 + altar.getRedstoneCount(); particles++) {
 				world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + 0.5D + world.rand.nextGaussian() / 5, pos.getY() + 1.2D, pos.getZ() + 0.5D + world.rand.nextGaussian() / 5, 1D, 0D, 0D);
 			}
@@ -111,7 +110,7 @@ public class BlockAlkahestryAltar extends BlockBase {
 			player.inventory.decrStackSize(slot, 1);
 			altar.addRedstone();
 		} else if(heldItem.getItem() instanceof ItemAlkahestryTome && NBTHelper.getInteger("redstone", heldItem) > 0) {
-			world.playSound(null, pos, SoundEvents.block_lava_extinguish, SoundCategory.BLOCKS, 0.3F, 0.5F + 0.5F * altar.getRedstoneCount() + (float) (world.rand.nextGaussian() / 8));
+			world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.3F, 0.5F + 0.5F * altar.getRedstoneCount() + (float) (world.rand.nextGaussian() / 8));
 			for(int particles = world.rand.nextInt(3); particles < 3 + altar.getRedstoneCount() * 4 + altar.getRedstoneCount(); particles++) {
 				world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + 0.5D + world.rand.nextGaussian() / 5, pos.getY() + 1.2D, pos.getZ() + 0.5D + world.rand.nextGaussian() / 5, 1D, 0D, 0D);
 			}
@@ -128,7 +127,7 @@ public class BlockAlkahestryAltar extends BlockBase {
 			if(player.inventory.mainInventory[slot] == null) {
 				continue;
 			}
-			if(player.inventory.mainInventory[slot].getItem() == Items.redstone)
+			if(player.inventory.mainInventory[slot].getItem() == Items.REDSTONE)
 				return slot;
 		}
 		return -1;

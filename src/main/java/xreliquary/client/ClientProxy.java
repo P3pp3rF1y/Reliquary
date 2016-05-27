@@ -53,11 +53,10 @@ public class ClientProxy extends CommonProxy {
 		registerJEI(block, name, false);
 	}
 
-
 	@Override
 	public void registerJEI(Block block, String name, boolean oneDescription) {
 		if(Loader.isModLoaded(Compatibility.MOD_ID.JEI)) {
-			if (oneDescription) {
+			if(oneDescription) {
 				List<ItemStack> subBlocks = new ArrayList<>();
 
 				block.getSubBlocks(Item.getItemFromBlock(block), null, subBlocks);
@@ -140,8 +139,8 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, new RenderThrown<EntityFertilePotion>(renderManager, ModItems.fertilePotion, renderItem));
 		RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, new RenderThrown<EntityHolyHandGrenade>(renderManager, ModItems.holyHandGrenade, renderItem));
 		RenderingRegistry.registerEntityRenderingHandler(EntityKrakenSlime.class, new RenderThrownKrakenSlime(renderManager));
-		RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, new RenderSnowball<EntitySpecialSnowball>(renderManager, Items.snowball, renderItem));
-		RenderingRegistry.registerEntityRenderingHandler(EntityEnderStaffProjectile.class, new RenderSnowball<EntityEnderStaffProjectile>(renderManager, Items.ender_pearl, renderItem));
+		RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, new RenderSnowball<EntitySpecialSnowball>(renderManager, Items.SNOWBALL, renderItem));
+		RenderingRegistry.registerEntityRenderingHandler(EntityEnderStaffProjectile.class, new RenderSnowball<EntityEnderStaffProjectile>(renderManager, Items.ENDER_PEARL, renderItem));
 		RenderingRegistry.registerEntityRenderingHandler(EntityThrownXRPotion.class, new RenderThrownXRPotion(renderManager, renderItem));
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMortar.class, new RenderApothecaryMortar());

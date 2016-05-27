@@ -110,7 +110,7 @@ public class ItemEnderStaff extends ItemToggleable {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-		return new FilteredItemHandlerProvider(new int[] {Settings.EnderStaff.enderPearlLimit}, new Item[] {Items.ender_pearl}, new int[] {Settings.EnderStaff.enderPearlWorth});
+		return new FilteredItemHandlerProvider(new int[] {Settings.EnderStaff.enderPearlLimit}, new Item[] {Items.ENDER_PEARL}, new int[] {Settings.EnderStaff.enderPearlWorth});
 	}
 
 	@Override
@@ -139,16 +139,16 @@ public class ItemEnderStaff extends ItemToggleable {
 		if(player == null)
 			return;
 
-		if (player.inventory.getStackInSlot(slotNumber)!= null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.enderStaff && isSelected) {
+		if(player.inventory.getStackInSlot(slotNumber) != null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.enderStaff && isSelected) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
-		} else if (player.inventory.offHandInventory[0] != null && player.inventory.offHandInventory[0].getItem() == ModItems.enderStaff) {
+		} else if(player.inventory.offHandInventory[0] != null && player.inventory.offHandInventory[0].getItem() == ModItems.enderStaff) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 		}
 
 		if(!this.isEnabled(ist))
 			return;
 		if(getPearlCount(ist) + getEnderPearlWorth() <= getEnderPearlLimit()) {
-			if(InventoryHelper.consumeItem(new ItemStack(Items.ender_pearl), player)) {
+			if(InventoryHelper.consumeItem(new ItemStack(Items.ENDER_PEARL), player)) {
 				setPearlCount(ist, player, slotNumber, getPearlCount(ist) + getEnderPearlWorth());
 			}
 		}
@@ -244,10 +244,10 @@ public class ItemEnderStaff extends ItemToggleable {
 				player.swingArm(hand);
 				if(getPearlCount(ist) < getEnderStaffPearlCost() && !player.capabilities.isCreativeMode)
 					return new ActionResult<>(EnumActionResult.FAIL, ist);
-				player.worldObj.playSound(null, player.getPosition(), SoundEvents.entity_enderpearl_throw, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+				player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_ENDERPEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 				if(!player.worldObj.isRemote) {
 					EntityEnderStaffProjectile enderStaffProjectile = new EntityEnderStaffProjectile(player.worldObj, player, !getMode(ist).equals("long_cast"));
-					enderStaffProjectile.func_184538_a(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F); //TODO test out this change, hopefully doesn't override gravityvelocity setting in entity
+					enderStaffProjectile.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
 					player.worldObj.spawnEntityInWorld(enderStaffProjectile);
 					if(!player.capabilities.isCreativeMode)
 						setPearlCount(ist, player, hand, getPearlCount(ist) - getEnderStaffPearlCost());
@@ -283,7 +283,7 @@ public class ItemEnderStaff extends ItemToggleable {
 			if(!world.isRemote) {
 				player.addChatComponentMessage(new TextComponentString(TextFormatting.DARK_RED + "Node dosen't exist!"));
 			} else {
-				player.playSound(SoundEvents.entity_endermen_death, 1.0f, 1.0f);
+				player.playSound(SoundEvents.ENTITY_ENDERMEN_DEATH, 1.0f, 1.0f);
 			}
 		}
 		return stack;
@@ -297,7 +297,7 @@ public class ItemEnderStaff extends ItemToggleable {
 
 	private void teleportPlayer(World world, int x, int y, int z, EntityPlayer player) {
 		player.setPositionAndUpdate(x + 0.5, y + 0.875, z + 0.5);
-		player.playSound(SoundEvents.entity_endermen_teleport, 1.0f, 1.0f);
+		player.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0f, 1.0f);
 		for(int particles = 0; particles < 2; particles++) {
 			world.spawnParticle(EnumParticleTypes.PORTAL, player.posX, player.posY, player.posZ, world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
 		}
@@ -321,7 +321,7 @@ public class ItemEnderStaff extends ItemToggleable {
 		}
 		this.formatTooltip(ImmutableMap.of("phrase", phrase, "position", position, "charge", charge), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + Items.ender_pearl.getItemStackDisplayName(new ItemStack(Items.ender_pearl))), ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + Items.ENDER_PEARL.getItemStackDisplayName(new ItemStack(Items.ENDER_PEARL))), ist, list);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
 	}
 
@@ -331,7 +331,7 @@ public class ItemEnderStaff extends ItemToggleable {
 		if((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && RegistryHelper.blocksEqual(world.getBlockState(pos).getBlock(), ModBlocks.wraithNode)) {
 			setWraithNode(ist, pos, Integer.valueOf(getWorld(player)), player);
 
-			player.playSound(SoundEvents.entity_endermen_teleport, 1.0f, 1.0f);
+			player.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0f, 1.0f);
 			for(int particles = 0; particles < 12; particles++) {
 				world.spawnParticle(EnumParticleTypes.PORTAL, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
 			}

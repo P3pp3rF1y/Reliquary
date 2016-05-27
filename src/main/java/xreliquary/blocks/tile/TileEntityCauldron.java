@@ -184,15 +184,17 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound tag) {
-		super.writeToNBT(tag);
-		tag.setInteger("liquidLevel", getLiquidLevel());
-		tag.setInteger("cookTime", cookTime);
-		tag.setInteger("redstoneCount", redstoneCount);
-		tag.setInteger("glowstoneCount", glowstoneCount);
-		tag.setBoolean("hasGunpowder", hasGunpowder);
-		tag.setBoolean("hasNetherwart", hasNetherwart);
-		tag.setTag("potionEssence", potionEssence == null ? new NBTTagCompound() : potionEssence.writeToNBT());
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		super.writeToNBT(compound);
+		compound.setInteger("liquidLevel", getLiquidLevel());
+		compound.setInteger("cookTime", cookTime);
+		compound.setInteger("redstoneCount", redstoneCount);
+		compound.setInteger("glowstoneCount", glowstoneCount);
+		compound.setBoolean("hasGunpowder", hasGunpowder);
+		compound.setBoolean("hasNetherwart", hasNetherwart);
+		compound.setTag("potionEssence", potionEssence == null ? new NBTTagCompound() : potionEssence.writeToNBT());
+
+		return compound;
 	}
 
 	public boolean finishedCooking() {
@@ -239,21 +241,21 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	public boolean isItemValidForInput(ItemStack ist) {
 		if(getLiquidLevel() < 3)
 			return false;
-		return ((ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null) || (ist.getItem() == Items.gunpowder && !this.hasGunpowder) || (ist.getItem() == Items.glowstone_dust && this.glowstoneCount < getGlowstoneAmpLimit()) || (ist.getItem() == Items.redstone && this.redstoneCount < getRedstoneAmpLimit()) || (ist.getItem() == Items.nether_wart && !this.hasNetherwart));
+		return ((ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null) || (ist.getItem() == Items.GUNPOWDER && !this.hasGunpowder) || (ist.getItem() == Items.GLOWSTONE_DUST && this.glowstoneCount < getGlowstoneAmpLimit()) || (ist.getItem() == Items.REDSTONE && this.redstoneCount < getRedstoneAmpLimit()) || (ist.getItem() == Items.NETHER_WART && !this.hasNetherwart));
 	}
 
 	public void addItem(ItemStack ist) {
 		if(ist.getItem() instanceof ItemPotionEssence) {
 			potionEssence = new PotionEssence(ist.getTagCompound());
-		} else if(ist.getItem() == Items.gunpowder) {
+		} else if(ist.getItem() == Items.GUNPOWDER) {
 			this.hasGunpowder = true;
-		} else if(ist.getItem() == Items.glowstone_dust) {
+		} else if(ist.getItem() == Items.GLOWSTONE_DUST) {
 			++this.glowstoneCount;
 			potionEssence.addGlowstone(this.glowstoneCount);
-		} else if(ist.getItem() == Items.redstone) {
+		} else if(ist.getItem() == Items.REDSTONE) {
 			++this.redstoneCount;
 			potionEssence.addRedstone(this.redstoneCount);
-		} else if(ist.getItem() == Items.nether_wart) {
+		} else if(ist.getItem() == Items.NETHER_WART) {
 			this.hasNetherwart = true;
 		}
 
@@ -278,9 +280,9 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 				heatSources.add(RegistryHelper.getBlockFromName(blockName));
 		}
 		//defaults that can't be removed.
-		heatSources.add(Blocks.lava);
-		heatSources.add(Blocks.flowing_lava);
-		heatSources.add(Blocks.fire);
+		heatSources.add(Blocks.LAVA);
+		heatSources.add(Blocks.FLOWING_LAVA);
+		heatSources.add(Blocks.FIRE);
 /*
 		if(Loader.isModLoaded(Compatibility.MOD_ID.THAUMCRAFT))
 			heatSources.add(BlocksTC.nitor); //TODO add back when Thaumcraft is back in
@@ -345,11 +347,11 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	public boolean handleBlockActivation(World world, EntityPlayer player) {
 		ItemStack itemStack = player.inventory.getCurrentItem();
 
-		if(itemStack.getItem() == Items.water_bucket || (itemStack.getItem() instanceof IFluidContainerItem && ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack).equals(new FluidStack(FluidRegistry.WATER, 1000)))) {
+		if(itemStack.getItem() == Items.WATER_BUCKET || (itemStack.getItem() instanceof IFluidContainerItem && ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack).equals(new FluidStack(FluidRegistry.WATER, 1000)))) {
 			if(getLiquidLevel() < 3 && !finishedCooking()) {
 				if(!player.capabilities.isCreativeMode) {
-					if(itemStack.getItem() == Items.water_bucket) {
-						player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket));
+					if(itemStack.getItem() == Items.WATER_BUCKET) {
+						player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.BUCKET));
 					} else {
 						((IFluidContainerItem) itemStack.getItem()).drain(itemStack, 1000, true);
 					}

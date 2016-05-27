@@ -40,7 +40,7 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 			return;
 		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("gunpowder", ist))), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GRAY + Items.gunpowder.getItemStackDisplayName(new ItemStack(Items.gunpowder))), ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GRAY + Items.GUNPOWDER.getItemStackDisplayName(new ItemStack(Items.GUNPOWDER))), ist, list);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
 	}
 
@@ -66,7 +66,7 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 
 		if(this.isEnabled(ist)) {
 			if(NBTHelper.getInteger("gunpowder", ist) + gunpowderWorth() < gunpowderLimit()) {
-				if(InventoryHelper.consumeItem(new ItemStack(Items.gunpowder), player)) {
+				if(InventoryHelper.consumeItem(new ItemStack(Items.GUNPOWDER), player)) {
 					NBTHelper.setInteger("gunpowder", ist, NBTHelper.getInteger("gunpowder", ist) + gunpowderWorth());
 				}
 			}
@@ -109,13 +109,13 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 					}
 
 					if(isBreakable(RegistryHelper.getBlockRegistryName(world.getBlockState(new BlockPos(x + xD, y + yD, z + zD)).getBlock()))) {
-						world.setBlockState(new BlockPos(x + xD, y + yD, z + zD), Blocks.air.getDefaultState());
+						world.setBlockState(new BlockPos(x + xD, y + yD, z + zD), Blocks.AIR.getDefaultState());
 						if(world.rand.nextInt(2) == 0) {
 							world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, x + xD + (world.rand.nextFloat() - 0.5F), y + yD + (world.rand.nextFloat() - 0.5F), z + zD + (world.rand.nextFloat() - 0.5F), 0.0D, 0.0D, 0.0D);
 						}
 						destroyedSomething = true;
 						if(playOnce) {
-							world.playSound(x, y, z, SoundEvents.entity_generic_explode, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
+							world.playSound(x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
 							playOnce = false;
 						}
 					}

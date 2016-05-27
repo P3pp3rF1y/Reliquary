@@ -34,7 +34,7 @@ public class EntityKrakenSlime extends EntityThrowable {
 			float amplifier = 0.25F;
 			worldObj.spawnParticle(EnumParticleTypes.SLIME, posX - motionX * amplifier + worldObj.rand.nextDouble(), posY - motionY * amplifier + worldObj.rand.nextDouble(), posZ - motionZ * amplifier + worldObj.rand.nextDouble(), motionX, motionY, motionZ);
 		}
-		this.worldObj.playSound(null, getPosition(), SoundEvents.entity_slime_jump, SoundCategory.NEUTRAL, 0.5F, 0.4F / (worldObj.rand.nextFloat() * 0.4F + 0.8F));
+		this.worldObj.playSound(null, getPosition(), SoundEvents.ENTITY_SLIME_JUMP, SoundCategory.NEUTRAL, 0.5F, 0.4F / (worldObj.rand.nextFloat() * 0.4F + 0.8F));
 		this.setDead();
 	}
 

@@ -1,8 +1,6 @@
 package xreliquary.blocks.tile;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,7 +10,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
@@ -64,18 +61,20 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound tag) {
-		super.writeToNBT(tag);
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		super.writeToNBT(compound);
 
-		tag.setBoolean("SwitchedOn", switchedOn);
-		tag.setBoolean("Powered", powered);
+		compound.setBoolean("SwitchedOn", switchedOn);
+		compound.setBoolean("Powered", powered);
 
 		NBTTagList onLocations = new NBTTagList();
 
 		for(int i = 0; i < onSwitches.size(); i++) {
 			onLocations.appendTag(new NBTTagLong(onSwitches.get(i)));
 		}
-		tag.setTag("OnSwitches", onLocations);
+		compound.setTag("OnSwitches", onLocations);
+
+		return compound;
 	}
 
 	@Override

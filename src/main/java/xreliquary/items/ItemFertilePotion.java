@@ -40,10 +40,10 @@ public class ItemFertilePotion extends ItemBase {
 		if(!player.capabilities.isCreativeMode) {
 			--ist.stackSize;
 		}
-		world.playSound(null, player.getPosition(), SoundEvents.entity_splash_potion_throw, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+		world.playSound(null, player.getPosition(), SoundEvents.ENTITY_SPLASH_POTION_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
 		EntityFertilePotion fertilePotion = new EntityFertilePotion(world, player);
-		fertilePotion.func_184538_a(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
+		fertilePotion.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
 		world.spawnEntityInWorld(fertilePotion);
 		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 	}

@@ -47,7 +47,7 @@ public class ItemShearsOfWinter extends ItemBase {
 
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState blockState, BlockPos pos, EntityLivingBase player) {
-		if(blockState.getMaterial() != Material.leaves && blockState.getBlock() != Blocks.web && blockState.getBlock() != Blocks.tallgrass && blockState.getBlock() != Blocks.vine && blockState.getBlock() != Blocks.tripwire && !(blockState.getBlock() instanceof IShearable)) {
+		if(blockState.getMaterial() != Material.LEAVES && blockState.getBlock() != Blocks.WEB && blockState.getBlock() != Blocks.TALLGRASS && blockState.getBlock() != Blocks.VINE && blockState.getBlock() != Blocks.TRIPWIRE && !(blockState.getBlock() instanceof IShearable)) {
 			return super.onBlockDestroyed(stack, world, blockState, pos, player);
 		} else {
 			return true;
@@ -56,12 +56,12 @@ public class ItemShearsOfWinter extends ItemBase {
 
 	@Override
 	public boolean canHarvestBlock(IBlockState blockState) {
-		return blockState.getBlock() == Blocks.web || blockState.getBlock() == Blocks.redstone_wire || blockState.getBlock() == Blocks.tripwire;
+		return blockState.getBlock() == Blocks.WEB || blockState.getBlock() == Blocks.REDSTONE_WIRE || blockState.getBlock() == Blocks.TRIPWIRE;
 	}
 
 	@Override
 	public float getStrVsBlock(ItemStack stack, IBlockState blockState) {
-		return blockState.getBlock() != Blocks.web && blockState.getMaterial() != Material.leaves ? (blockState.getBlock() == Blocks.wool ? 5.0F : super.getStrVsBlock(stack, blockState)) : 15.0F;
+		return blockState.getBlock() != Blocks.WEB && blockState.getMaterial() != Material.LEAVES ? (blockState.getBlock() == Blocks.WOOL ? 5.0F : super.getStrVsBlock(stack, blockState)) : 15.0F;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class ItemShearsOfWinter extends ItemBase {
 			IShearable target = (IShearable) entity;
 			BlockPos pos = new BlockPos(entity.posX, entity.posY, entity.posZ);
 			if(target.isShearable(itemstack, entity.worldObj, pos)) {
-				List<ItemStack> drops = target.onSheared(itemstack, entity.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, itemstack));
+				List<ItemStack> drops = target.onSheared(itemstack, entity.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, itemstack));
 
 				Random rand = new Random();
 				for(ItemStack stack : drops) {
@@ -101,7 +101,7 @@ public class ItemShearsOfWinter extends ItemBase {
 		if(block instanceof IShearable) {
 			IShearable target = (IShearable) block;
 			if(target.isShearable(itemstack, player.worldObj, pos)) {
-				List<ItemStack> drops = target.onSheared(itemstack, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, itemstack));
+				List<ItemStack> drops = target.onSheared(itemstack, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, itemstack));
 				Random rand = new Random();
 
 				for(ItemStack stack : drops) {
@@ -115,7 +115,7 @@ public class ItemShearsOfWinter extends ItemBase {
 				}
 
 				itemstack.damageItem(1, player);
-				player.addStat(StatList.func_188055_a(block));
+				player.addStat(StatList.getBlockStats(block));
 			}
 		}
 		return false;
@@ -287,16 +287,16 @@ public class ItemShearsOfWinter extends ItemBase {
 			Block block = blockState.getBlock();
 			if(block instanceof IShearable) {
 				IShearable target = (IShearable) block;
-				if(target.isShearable(new ItemStack(Items.shears, 1, 0), player.worldObj, new BlockPos(x, y, z))) {
+				if(target.isShearable(new ItemStack(Items.SHEARS, 1, 0), player.worldObj, new BlockPos(x, y, z))) {
 					//this commented portion causes the item to be sheared instead of just broken.
 					//ArrayList<ItemStack> drops = target.onSheared(new ItemStack(Items.shears, 1, 0), player.worldObj, x, y, z,
 					//        EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, ist));
-					List<ItemStack> drops = block.getDrops(player.worldObj, new BlockPos(x, y, z), player.worldObj.getBlockState(new BlockPos(x, y, z)), EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, ist));
+					List<ItemStack> drops = block.getDrops(player.worldObj, new BlockPos(x, y, z), player.worldObj.getBlockState(new BlockPos(x, y, z)), EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, ist));
 					Random rand = new Random();
 
 					if(player.worldObj.isRemote) {
-						if(block.getMaterial(blockState) != Material.air)
-							player.worldObj.playAuxSFXAtEntity(player, 2001, new BlockPos(x, y, z), Block.getStateId(player.worldObj.getBlockState(new BlockPos(x, y, z))));
+						if(block.getMaterial(blockState) != Material.AIR)
+							player.worldObj.playEvent(player, 2001, new BlockPos(x, y, z), Block.getStateId(player.worldObj.getBlockState(new BlockPos(x, y, z))));
 
 					} else {
 						for(ItemStack stack : drops) {
@@ -309,8 +309,8 @@ public class ItemShearsOfWinter extends ItemBase {
 							player.worldObj.spawnEntityInWorld(entityitem);
 						}
 
-						player.worldObj.setBlockState(new BlockPos(x, y, z), Blocks.air.getDefaultState());
-						player.addStat(StatList.func_188055_a(block));
+						player.worldObj.setBlockState(new BlockPos(x, y, z), Blocks.AIR.getDefaultState());
+						player.addStat(StatList.getBlockStats(block));
 						player.addExhaustion(0.01F);
 					}
 				}
@@ -338,11 +338,11 @@ public class ItemShearsOfWinter extends ItemBase {
 			if(probabilityFactor > 0 && player.worldObj.rand.nextInt(probabilityFactor) != 0)
 				continue;
 			if(e instanceof EntityLivingBase && !e.isEntityEqual(player))
-				((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.moveSlowdown, 120, 1));
+				((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 120, 1));
 			if(e instanceof IShearable) {
 				IShearable target = (IShearable) e;
-				if(target.isShearable(new ItemStack(Items.shears, 1, 0), e.worldObj, new BlockPos((int) e.posX, (int) e.posY, (int) e.posZ))) {
-					List<ItemStack> drops = target.onSheared(new ItemStack(Items.shears, 1, 0), e.worldObj, new BlockPos((int) e.posX, (int) e.posY, (int) e.posZ), EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, ist));
+				if(target.isShearable(new ItemStack(Items.SHEARS, 1, 0), e.worldObj, new BlockPos((int) e.posX, (int) e.posY, (int) e.posZ))) {
+					List<ItemStack> drops = target.onSheared(new ItemStack(Items.SHEARS, 1, 0), e.worldObj, new BlockPos((int) e.posX, (int) e.posY, (int) e.posZ), EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, ist));
 
 					Random rand = new Random();
 					for(ItemStack stack : drops) {
@@ -365,7 +365,7 @@ public class ItemShearsOfWinter extends ItemBase {
 			float randY = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
 			float randZ = 10F * (player.worldObj.rand.nextFloat() - 0.5F);
 
-			player.worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5, Block.getStateId(Blocks.snow_layer.getStateFromMeta(0)));
+			player.worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5, Block.getStateId(Blocks.SNOW_LAYER.getStateFromMeta(0)));
 
 		}
 

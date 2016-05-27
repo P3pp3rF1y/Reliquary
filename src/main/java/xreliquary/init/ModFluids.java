@@ -40,7 +40,7 @@ public class ModFluids {
 			milk = new Fluid(MILK_FLUID_NAME, new ResourceLocation(Reference.MOD_ID, "fluids/milk"), new ResourceLocation(Reference.MOD_ID, "fluids/milk_flowing")).setTemperature(320);
 			FluidRegistry.registerFluid(milk);
 
-			FluidContainerRegistry.registerFluidContainer(new FluidStack(milk, FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(Items.milk_bucket), FluidContainerRegistry.EMPTY_BUCKET);
+			FluidContainerRegistry.registerFluidContainer(new FluidStack(milk, FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(Items.MILK_BUCKET), FluidContainerRegistry.EMPTY_BUCKET);
 		}
 
 	}

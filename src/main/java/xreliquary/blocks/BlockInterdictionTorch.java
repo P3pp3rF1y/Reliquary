@@ -31,7 +31,7 @@ public class BlockInterdictionTorch extends BlockTorch {
 		this.setHardness(0.0F);
 		this.setLightLevel(1.0F);
 		this.setTickRandomly(true);
-		this.setStepSound(SoundType.WOOD);
+		this.blockSoundType = SoundType.WOOD;
 	}
 
 	@Override
@@ -51,12 +51,12 @@ public class BlockInterdictionTorch extends BlockTorch {
 		List<String> entitiesThatCanBePushed = Settings.InterdictionTorch.entitiesThatCanBePushed;
 		List<String> projectilesThatCanBePushed = Settings.InterdictionTorch.projectilesThatCanBePushed;
 
-		List<Entity> entities = (List<Entity>) world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius, pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius));
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius, pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius));
 		for(Entity entity : entities) {
 			if(entity instanceof EntityPlayer)
 				continue;
 			Class entityClass = entity.getClass();
-			String entityName = (String) EntityList.classToStringMapping.get(entityClass);
+			String entityName = EntityList.CLASS_TO_NAME.get(entityClass);
 			if(entitiesThatCanBePushed.contains(entityName) || (projectilesThatCanBePushed.contains(entityName) && Settings.InterdictionTorch.canPushProjectiles)) {
 				double distance = entity.getDistance((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
 				if(distance >= radius || distance == 0)

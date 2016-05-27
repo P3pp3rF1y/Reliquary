@@ -35,7 +35,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 			return;
 		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("glowstone", ist))), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + Items.glowstone_dust.getItemStackDisplayName(new ItemStack(Items.glowstone_dust))), ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + Items.GLOWSTONE_DUST.getItemStackDisplayName(new ItemStack(Items.GLOWSTONE_DUST))), ist, list);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
 	}
 
@@ -58,7 +58,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 		//don't drain glowstone if it isn't activated.
 		if(this.isEnabled(ist)) {
 			if(NBTHelper.getInteger("glowstone", ist) + getGlowStoneWorth() <= getGlowstoneLimit()) {
-				if(InventoryHelper.consumeItem(new ItemStack(Items.glowstone_dust), player)) {
+				if(InventoryHelper.consumeItem(new ItemStack(Items.GLOWSTONE_DUST), player)) {
 					NBTHelper.setInteger("glowstone", ist, NBTHelper.getInteger("glowstone", ist) + getGlowStoneWorth());
 				}
 			}
@@ -71,7 +71,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 
 	private void doRepairAndDamageTouchstone(ItemStack ist, EntityPlayer player) {
 		//list of customizable items added through configs that can be repaired by the touchstone.
-		List<String> goldItems = (List<String>) Settings.MidasTouchstone.goldItems;
+		List<String> goldItems = Settings.MidasTouchstone.goldItems;
 
 		for(int slot = 0; slot < player.inventory.armorInventory.length; slot++) {
 			if(player.inventory.armorInventory[slot] == null) {

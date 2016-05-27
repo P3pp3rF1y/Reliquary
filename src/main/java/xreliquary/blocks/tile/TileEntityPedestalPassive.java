@@ -126,7 +126,7 @@ public class TileEntityPedestalPassive extends TileEntityBase implements IInvent
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound compound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 
 		NBTTagList items = new NBTTagList();
@@ -141,6 +141,8 @@ public class TileEntityPedestalPassive extends TileEntityBase implements IInvent
 		}
 		compound.setTag("Items", items);
 		compound.setInteger("color", color.getMetadata());
+
+		return compound;
 	}
 
 	@Override

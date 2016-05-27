@@ -48,7 +48,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 			return;
 		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("snowballs", ist))), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.snowball.getItemStackDisplayName(new ItemStack(Items.snowball))), ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.SNOWBALL.getItemStackDisplayName(new ItemStack(Items.SNOWBALL))), ist, list);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
 	}
 
@@ -56,12 +56,12 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 	public boolean onLeftClickEntity(ItemStack ist, EntityPlayer player, Entity e) {
 		if(e instanceof EntityLivingBase && NBTHelper.getInteger("snowballs", ist) >= getSnowballCost()) {
 			EntityLivingBase livingBase = (EntityLivingBase) e;
-			PotionEffect slow = new PotionEffect(MobEffects.moveSlowdown, 30, 0);
+			PotionEffect slow = new PotionEffect(MobEffects.SLOWNESS, 30, 0);
 
 			//if the creature is slowed already, refresh the duration and increase the amplifier by 1.
 			//5 hits is all it takes to max out the amplitude.
-			if(livingBase.getActivePotionEffect(MobEffects.moveSlowdown) != null)
-				slow = new PotionEffect(MobEffects.moveSlowdown, Math.min(livingBase.getActivePotionEffect(MobEffects.moveSlowdown).getDuration() + 30, 300), Math.min(livingBase.getActivePotionEffect(MobEffects.moveSlowdown).getAmplifier() + 1, 4));
+			if(livingBase.getActivePotionEffect(MobEffects.SLOWNESS) != null)
+				slow = new PotionEffect(MobEffects.SLOWNESS, Math.min(livingBase.getActivePotionEffect(MobEffects.SLOWNESS).getDuration() + 30, 300), Math.min(livingBase.getActivePotionEffect(MobEffects.SLOWNESS).getAmplifier() + 1, 4));
 
 			((EntityLivingBase) e).addPotionEffect(slow);
 			e.attackEntityFrom(DamageSource.causePlayerDamage(player), slow.getAmplifier());
@@ -109,9 +109,9 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 		x += xOff;
 		z += zOff;
 		IBlockState blockState = world.getBlockState(new BlockPos(x, y, z));
-		if(blockState.getBlock().getMaterial(blockState) == Material.water && blockState.getValue(Blocks.water.LEVEL) == 0 && world.isAirBlock(new BlockPos(x, y + 1, z))) {
+		if(blockState.getBlock().getMaterial(blockState) == Material.WATER && blockState.getValue(Blocks.WATER.LEVEL) == 0 && world.isAirBlock(new BlockPos(x, y + 1, z))) {
 			addFrozenBlockToList(ist, x, y, z);
-			world.setBlockState(new BlockPos(x, y, z), Blocks.packed_ice.getDefaultState());
+			world.setBlockState(new BlockPos(x, y, z), Blocks.PACKED_ICE.getDefaultState());
 
 			float red = 0.75F;
 			float green = 0.75F;
@@ -125,9 +125,9 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 					Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.REDSTONE.getParticleID(), x + xVel, y + yVel, z + zVel, red, green, blue);
 				}
 			}
-		} else if(blockState.getBlock().getMaterial(blockState) == Material.lava && blockState.getValue(Blocks.lava.LEVEL) == 0) {
+		} else if(blockState.getBlock().getMaterial(blockState) == Material.LAVA && blockState.getValue(Blocks.LAVA.LEVEL) == 0) {
 			addFrozenBlockToList(ist, x, y, z);
-			world.setBlockState(new BlockPos(x, y, z), Blocks.obsidian.getDefaultState());
+			world.setBlockState(new BlockPos(x, y, z), Blocks.OBSIDIAN.getDefaultState());
 			for(int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
 				float xVel = world.rand.nextFloat();
 				float yVel = world.rand.nextFloat() + 0.5F;
@@ -144,9 +144,9 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 		y += yOff;
 		z += zOff;
 		IBlockState blockState = world.getBlockState(new BlockPos(x, y, z));
-		if(blockState == Blocks.packed_ice.getDefaultState()) {
+		if(blockState == Blocks.PACKED_ICE.getDefaultState()) {
 			if(removeFrozenBlockFromList(ist, x, y, z)) {
-				world.setBlockState(new BlockPos(x, y, z), Blocks.water.getDefaultState());
+				world.setBlockState(new BlockPos(x, y, z), Blocks.WATER.getDefaultState());
 				for(int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
 					float xVel = world.rand.nextFloat();
 					float yVel = world.rand.nextFloat() + 0.5F;
@@ -155,9 +155,9 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 
 				}
 			}
-		} else if(blockState == Blocks.obsidian.getDefaultState()) {
+		} else if(blockState == Blocks.OBSIDIAN.getDefaultState()) {
 			if(removeFrozenBlockFromList(ist, x, y, z)) {
-				world.setBlockState(new BlockPos(x, y, z), Blocks.lava.getDefaultState());
+				world.setBlockState(new BlockPos(x, y, z), Blocks.LAVA.getDefaultState());
 
 				float red = 1.0F;
 				float green = 0.0F;

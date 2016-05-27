@@ -1,6 +1,6 @@
 package xreliquary.client.particle;
 
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -19,7 +19,7 @@ import xreliquary.reference.Reference;
  * Created by Xeno on 11/9/2014.
  */
 @SideOnly(Side.CLIENT)
-public class EntityCauldronBubbleFX extends EntityFX {
+public class EntityCauldronBubbleFX extends Particle {
 	private static ResourceLocation bubbleTexture = new ResourceLocation(Reference.MOD_ID + ":textures/particles/" + Names.cauldron_bubble + ".png");
 
 	private TextureManager theRenderEngine;
@@ -29,9 +29,9 @@ public class EntityCauldronBubbleFX extends EntityFX {
 		this.setSize(0.02F, 0.02F);
 		theRenderEngine = renderEngine;
 		this.particleScale = 0.5F + (worldObj.rand.nextFloat() - 0.5F) * 0.4F;
-		this.xSpeed = xMot;
-		this.ySpeed = yMot;
-		this.zSpeed = zMot;
+		this.motionX = xMot;
+		this.motionY = yMot;
+		this.motionZ = zMot;
 		this.particleRed = red;
 		this.particleGreen = green;
 		this.particleBlue = blue;

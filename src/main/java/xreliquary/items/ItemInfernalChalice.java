@@ -59,7 +59,7 @@ public class ItemInfernalChalice extends ItemToggleable implements IFluidContain
 		double yOffset = player.prevPosY + (player.posY - player.prevPosY) * movementThresholdCoefficient + player.getEyeHeight();
 		double zOffset = player.prevPosZ + (player.posZ - player.prevPosZ) * movementThresholdCoefficient;
 		boolean isInDrainMode = this.isEnabled(stack);
-		RayTraceResult result = this.getMovingObjectPositionFromPlayer(world, player, isInDrainMode);
+		RayTraceResult result = this.rayTrace(world, player, isInDrainMode);
 
 		if(result == null) {
 			return new ActionResult<>(EnumActionResult.PASS, stack);
@@ -102,8 +102,8 @@ public class ItemInfernalChalice extends ItemToggleable implements IFluidContain
 				}
 
 				String ident = RegistryHelper.getBlockRegistryName(world.getBlockState(result.getBlockPos()).getBlock());
-				if(this.isEnabled(stack) && (ident.equals(RegistryHelper.getBlockRegistryName(Blocks.flowing_lava)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.lava))) && world.getBlockState(result.getBlockPos()).getValue(Blocks.lava.LEVEL) == 0) {
-					world.setBlockState(result.getBlockPos(), Blocks.air.getDefaultState());
+				if(this.isEnabled(stack) && (ident.equals(RegistryHelper.getBlockRegistryName(Blocks.FLOWING_LAVA)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.LAVA))) && world.getBlockState(result.getBlockPos()).getValue(Blocks.LAVA.LEVEL) == 0) {
+					world.setBlockState(result.getBlockPos(), Blocks.AIR.getDefaultState());
 					NBTHelper.setInteger("fluidStacks", stack, NBTHelper.getInteger("fluidStacks", stack) + 1000);
 					return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 				}
@@ -133,7 +133,7 @@ public class ItemInfernalChalice extends ItemToggleable implements IFluidContain
 			return false;
 		else {
 
-			world.setBlockState(pos, Blocks.flowing_lava.getDefaultState(), 3);
+			world.setBlockState(pos, Blocks.FLOWING_LAVA.getDefaultState(), 3);
 			return true;
 		}
 	}

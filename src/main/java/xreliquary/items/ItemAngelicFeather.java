@@ -47,7 +47,7 @@ public class ItemAngelicFeather extends ItemBase {
 		potency -= 1;
 		if(e instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) e;
-			player.addPotionEffect(new PotionEffect(MobEffects.jump, 2, potency, true, false));
+			player.addPotionEffect(new PotionEffect(MobEffects.JUMP_BOOST, 2, potency, true, false));
 		}
 	}
 }

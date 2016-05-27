@@ -46,9 +46,9 @@ public class ItemHolyHandGrenade extends ItemBase {
 			--stack.stackSize;
 		}
 
-		world.playSound(null, player.getPosition(), SoundEvents.entity_arrow_shoot, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+		world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 		EntityHolyHandGrenade grenade = new EntityHolyHandGrenade(world, player);
-		grenade.func_184538_a(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.9F, 1.0F);
+		grenade.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.9F, 1.0F);
 		world.spawnEntityInWorld(grenade);
 
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);

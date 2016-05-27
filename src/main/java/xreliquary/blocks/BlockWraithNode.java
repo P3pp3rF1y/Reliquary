@@ -13,7 +13,7 @@ public class BlockWraithNode extends Block {
 	private static final AxisAlignedBB WRAITH_NODE_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.750D, 0.875D);
 
 	public BlockWraithNode() {
-		super(Material.rock);
+		super(Material.ROCK);
 		blockHardness = 1.5F;
 		blockResistance = 5.0F;
 		this.setUnlocalizedName(Names.wraith_node);

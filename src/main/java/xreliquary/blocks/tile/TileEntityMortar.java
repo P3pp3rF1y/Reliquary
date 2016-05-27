@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.text.ITextComponent;
@@ -39,11 +38,6 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 	}
 
 	@Override
-	public Packet getDescriptionPacket() {
-		return super.getDescriptionPacket();
-	}
-
-	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
 		super.onDataPacket(net, packet);
 	}
@@ -71,9 +65,9 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound tag) {
-		super.writeToNBT(tag);
-		tag.setShort("pestleUsed", (short) this.pestleUsedCounter);
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		super.writeToNBT(compound);
+		compound.setShort("pestleUsed", (short) this.pestleUsedCounter);
 		NBTTagList items = new NBTTagList();
 
 		for(int i = 0; i < this.inventory.length; ++i) {
@@ -85,11 +79,13 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 			}
 		}
 
-		tag.setTag("Items", items);
+		compound.setTag("Items", items);
 
 		if(this.hasCustomName()) {
-			tag.setString("CustomName", this.getName());
+			compound.setString("CustomName", this.getName());
 		}
+
+		return compound;
 	}
 
 	// gets the contents of the tile entity as an array of inventory
@@ -100,7 +96,7 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 	// increases the "pestleUsed" counter, checks to see if it is at its limit
 	public boolean usePestle() {
 		int itemCount = 0;
-		List<PotionIngredient> potionIngredients = new ArrayList<PotionIngredient>();
+		List<PotionIngredient> potionIngredients = new ArrayList<>();
 		for(ItemStack item : this.getItemStacks()) {
 			if(item == null)
 				continue;

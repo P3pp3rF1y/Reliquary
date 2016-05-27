@@ -26,17 +26,17 @@ public class CauldronRecipeMaker {
 			inputs.add(potionEssence);
 
 			if(essence.getRedstoneCount() > 0)
-				inputs.add(new ItemStack(Items.redstone, essence.getRedstoneCount()));
+				inputs.add(new ItemStack(Items.REDSTONE, essence.getRedstoneCount()));
 
 			if(essence.getGlowstoneCount() > 0)
-				inputs.add(new ItemStack(Items.glowstone_dust, essence.getGlowstoneCount()));
+				inputs.add(new ItemStack(Items.GLOWSTONE_DUST, essence.getGlowstoneCount()));
 
 			List<ItemStack> splashInputs = new ArrayList<>(inputs);
 
-			splashInputs.add(new ItemStack(Items.gunpowder));
+			splashInputs.add(new ItemStack(Items.GUNPOWDER));
 
-			inputs.add(new ItemStack(Items.nether_wart));
-			splashInputs.add(new ItemStack(Items.nether_wart));
+			inputs.add(new ItemStack(Items.NETHER_WART));
+			splashInputs.add(new ItemStack(Items.NETHER_WART));
 
 			inputs.add(new ItemStack(ModItems.potion, 3));
 			splashInputs.add(new ItemStack(ModItems.potion, 3));

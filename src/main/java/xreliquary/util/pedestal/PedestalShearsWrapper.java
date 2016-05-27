@@ -41,7 +41,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 			pedestal.setActionCoolDown(Settings.Pedestal.shearsWrapperCooldown);
 		}
 
-		if (stack.stackSize == 0)
+		if(stack.stackSize == 0)
 			pedestal.destroyCurrentItem();
 	}
 
@@ -67,7 +67,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 			stack.getItem().onBlockStartBreak(stack, blockPosBeingSheared, fakePlayer);
 			IBlockState blockState = world.getBlockState(blockPosBeingSheared);
 			world.setBlockToAir(blockPosBeingSheared);
-			world.playAuxSFX(2001, blockPosBeingSheared, Block.getStateId(blockState));
+			world.playEvent(2001, blockPosBeingSheared, Block.getStateId(blockState));
 
 			isShearingBlock = false;
 		}

@@ -32,7 +32,7 @@ public class ItemFertileLilyPad extends ItemBlockBase {
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		//this is the "ray-trace" portion of the method
-		RayTraceResult result = this.getMovingObjectPositionFromPlayer(world, player, true);
+		RayTraceResult result = this.rayTrace(world, player, true);
 
 		boolean blockPlaced = false;
 
@@ -50,7 +50,7 @@ public class ItemFertileLilyPad extends ItemBlockBase {
 	 * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
 	 */
 	public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn) {
-		RayTraceResult movingobjectposition = this.getMovingObjectPositionFromPlayer(worldIn, playerIn, true);
+		RayTraceResult movingobjectposition = this.rayTrace(worldIn, playerIn, true);
 
 		if(movingobjectposition == null) {
 			return itemStackIn;
@@ -77,7 +77,7 @@ public class ItemFertileLilyPad extends ItemBlockBase {
 			BlockPos blockpos1 = blockpos.up();
 			IBlockState iblockstate = worldIn.getBlockState(blockpos);
 
-			if(iblockstate.getBlock().getMaterial(iblockstate) == Material.water && ((Integer) iblockstate.getValue(BlockLiquid.LEVEL)).intValue() == 0 && worldIn.isAirBlock(blockpos1)) {
+			if(iblockstate.getBlock().getMaterial(iblockstate) == Material.WATER && ((Integer) iblockstate.getValue(BlockLiquid.LEVEL)).intValue() == 0 && worldIn.isAirBlock(blockpos1)) {
 				// special case for handling block placement with water lilies
 				net.minecraftforge.common.util.BlockSnapshot blocksnapshot = net.minecraftforge.common.util.BlockSnapshot.getBlockSnapshot(worldIn, blockpos1);
 				worldIn.setBlockState(blockpos1, ModBlocks.fertileLilypad.getDefaultState());

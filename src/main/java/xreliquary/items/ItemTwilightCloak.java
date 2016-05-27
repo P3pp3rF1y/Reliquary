@@ -54,7 +54,7 @@ public class ItemTwilightCloak extends ItemToggleable {
 
 		//checks if the effect would do anything. Literally all this does is make the player invisible. It doesn't interfere with mob AI.
 		//for that, we're attempting to use an event handler.
-		PotionEffect quickInvisibility = new PotionEffect(MobEffects.invisibility, 2, 0, false, false);
+		PotionEffect quickInvisibility = new PotionEffect(MobEffects.INVISIBILITY, 2, 0, false, false);
 		player.addPotionEffect(quickInvisibility);
 	}
 }
