@@ -3,10 +3,11 @@ package xreliquary.blocks.tile;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ITickable;
 import xreliquary.blocks.BlockAlkahestryAltar;
 import xreliquary.reference.Settings;
 
-public class TileEntityAltar extends TileEntityBase {
+public class TileEntityAltar extends TileEntityBase implements ITickable {
 	private int cycleTime;
 	private boolean isActive;
 	private int redstoneCount;

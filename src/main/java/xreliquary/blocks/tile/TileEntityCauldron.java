@@ -19,6 +19,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -44,7 +45,7 @@ import java.util.List;
 
 //import thaumcraft.api.blocks.BlocksTC;
 
-public class TileEntityCauldron extends TileEntityBase implements IWailaDataChangeIndicator {
+public class TileEntityCauldron extends TileEntityBase implements IWailaDataChangeIndicator, ITickable {
 
 	public int redstoneCount = 0;
 	public PotionEssence potionEssence = null;

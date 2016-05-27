@@ -3,11 +3,11 @@ package xreliquary.init;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.PersistentRegistryManager;
 import net.minecraftforge.oredict.RecipeSorter;
 import xreliquary.items.alkahestry.AlkahestryChargingRecipe;
 import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
@@ -358,7 +358,13 @@ public class XRRecipes {
 		addRecipe(false, false, new ItemStack(ModItems.fertilePotion, 5), "gbg", "gfg", "cgy", 'g', Blocks.glass_pane, 'b', Items.water_bucket, 'f', FERTILE_ESSENCE, 'c', new ItemStack(Items.dye, 1, Reference.GREEN_DYE_META), 'y', new ItemStack(Items.dye, 1, Reference.YELLOW_DYE_META));
 
 		//pedestal
-		addRecipe(false, false, new ItemStack(ModBlocks.pedestal), "dqd", " q ", "dqd", 'd', Items.diamond, 'q', Blocks.quartz_block);
+		for(int i = 0; i < 16; i++) {
+			addRecipe(false, false, new ItemStack(ModBlocks.pedestal, 1, i), "d d", " p ", "d d", 'd', Items.diamond, 'p', new ItemStack(ModBlocks.pedestalPassive, 1, i));
+		}
+		//passive pedestal
+		for(int i = 0; i < 16; i++) {
+			addRecipe(false, false, new ItemStack(ModBlocks.pedestalPassive, 1, i), " c ", "gqg", "sss", 'c', new ItemStack(Blocks.carpet, 1, i), 'g', Items.gold_nugget, 'q', Blocks.quartz_block, 's', new ItemStack(Blocks.stone_slab, 1, 7));
+		}
 
 		addMobDropUncraftingRecipes();
 

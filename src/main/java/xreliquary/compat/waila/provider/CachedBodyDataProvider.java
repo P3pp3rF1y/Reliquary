@@ -13,24 +13,29 @@ import java.util.List;
 
 public abstract class CachedBodyDataProvider implements IWailaDataProvider {
 
-    List<String> cachedBody = null;
-    BlockPos cachedPosition = null;
+	List<String> cachedBody = null;
+	BlockPos cachedPosition = null;
 
-    @Override
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        if (Settings.wailaShiftForInfo && !accessor.getPlayer().isSneaking()) {
-            currenttip.add(ChatFormatting.ITALIC + I18n.translateToLocal("waila.xreliquary.shift_for_more") + ChatFormatting.RESET);
-            return currenttip;
-        }
+	@Override
+	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+		if(Settings.wailaShiftForInfo && !accessor.getPlayer().isSneaking()) {
+			currenttip.add(ChatFormatting.ITALIC + I18n.translateToLocal("waila.xreliquary.shift_for_more") + ChatFormatting.RESET);
+			return currenttip;
+		}
 
-        IWailaDataChangeIndicator changeIndicator = (IWailaDataChangeIndicator) accessor.getTileEntity();
-        if (cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition()) || changeIndicator.getDataChanged()) {
-            cachedBody = getWailaBodyToCache(itemStack, currenttip, accessor, config);
-            cachedPosition = accessor.getPosition();
-        }
+		IWailaDataChangeIndicator changeIndicator = null;
 
-        return cachedBody;
-    }
+		if(accessor.getTileEntity() instanceof IWailaDataChangeIndicator) {
+			changeIndicator = (IWailaDataChangeIndicator) accessor.getTileEntity();
+		}
 
-    abstract List<String> getWailaBodyToCache(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config);
+		if(changeIndicator == null || cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition()) || changeIndicator.getDataChanged()) {
+			cachedBody = getWailaBodyToCache(itemStack, currenttip, accessor, config);
+			cachedPosition = accessor.getPosition();
+		}
+
+		return cachedBody;
+	}
+
+	abstract List<String> getWailaBodyToCache(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config);
 }

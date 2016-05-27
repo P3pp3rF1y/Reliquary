@@ -18,6 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.blocks.tile.TileEntityPedestal;
+import xreliquary.blocks.tile.TileEntityPedestalPassive;
 import xreliquary.client.init.ItemBlockModels;
 import xreliquary.client.init.ItemModels;
 import xreliquary.client.init.ModBlockColors;
@@ -33,7 +34,6 @@ import xreliquary.entities.shot.*;
 import xreliquary.handler.ClientEventHandler;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
-import xreliquary.init.ModSounds;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -50,8 +50,23 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void registerJEI(Block block, String name) {
-		if(Loader.isModLoaded(Compatibility.MOD_ID.JEI))
-			JEIDescriptionRegistry.register(Item.getItemFromBlock(block), name);
+		registerJEI(block, name, false);
+	}
+
+
+	@Override
+	public void registerJEI(Block block, String name, boolean oneDescription) {
+		if(Loader.isModLoaded(Compatibility.MOD_ID.JEI)) {
+			if (oneDescription) {
+				List<ItemStack> subBlocks = new ArrayList<>();
+
+				block.getSubBlocks(Item.getItemFromBlock(block), null, subBlocks);
+
+				JEIDescriptionRegistry.register(subBlocks, name);
+			} else {
+				JEIDescriptionRegistry.register(Item.getItemFromBlock(block), name);
+			}
+		}
 	}
 
 	@Override
@@ -131,6 +146,7 @@ public class ClientProxy extends CommonProxy {
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMortar.class, new RenderApothecaryMortar());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPedestal.class, new TileEntityPedestalRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPedestalPassive.class, new TileEntityPedestalPassiveRenderer());
 	}
 
 	@Override

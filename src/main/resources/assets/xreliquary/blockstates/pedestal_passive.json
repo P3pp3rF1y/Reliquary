@@ -1,10 +1,7 @@
 {
     "forge_marker": 1,
     "defaults": {
-        "textures": {
-            "6": "blocks/redstone_block"
-        },
-        "model": "xreliquary:pedestal"
+        "model": "xreliquary:pedestal_passive"
     },
     "variants": {
         "facing": {
@@ -17,14 +14,6 @@
             },
             "east": {
                 "y": 90
-            }
-        },
-        "enabled": {
-            "true": {},
-            "false": {
-                "textures": {
-                    "6": "xreliquary:blocks/redstone_block_off"
-                }
             }
         },
         "color": {

@@ -6,11 +6,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.Reliquary;
 import xreliquary.blocks.*;
-import xreliquary.blocks.tile.TileEntityAltar;
-import xreliquary.blocks.tile.TileEntityCauldron;
-import xreliquary.blocks.tile.TileEntityMortar;
-import xreliquary.blocks.tile.TileEntityPedestal;
+import xreliquary.blocks.tile.*;
 import xreliquary.items.block.ItemBlockBase;
+import xreliquary.items.block.ItemBlockPedestal;
 import xreliquary.items.block.ItemFertileLilyPad;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
@@ -26,6 +24,7 @@ public class ModBlocks {
 	public static final BlockInterdictionTorch interdictionTorch = new BlockInterdictionTorch();
 	public static final BlockWraithNode wraithNode = new BlockWraithNode();
 	public static final BlockPedestal pedestal = new BlockPedestal();
+	public static final BlockPedestalPassive pedestalPassive = new BlockPedestalPassive();
 
 	public static void init() {
 		//TODO move itemblock definitions into blocks and just call getItemBlock in register method
@@ -36,7 +35,8 @@ public class ModBlocks {
 		registerBlock(fertileLilypad, new ItemFertileLilyPad(fertileLilypad), Names.fertile_lilypad);
 		registerBlock(interdictionTorch, new ItemBlockBase(interdictionTorch), Names.interdiction_torch);
 		registerBlock(wraithNode, new ItemBlockBase(wraithNode), Names.wraith_node);
-		registerBlock(pedestal, new ItemBlockBase(pedestal), Names.pedestal);
+		registerBlock(pedestal, new ItemBlockPedestal(pedestal), Names.pedestal, true);
+		registerBlock(pedestalPassive, new ItemBlockPedestal(pedestalPassive), Names.pedestal_passive, true);
 	}
 
 	public static void initTileEntities() {
@@ -44,6 +44,7 @@ public class ModBlocks {
 		registerTileEntity(TileEntityMortar.class, "apothecaryMortar");
 		registerTileEntity(TileEntityCauldron.class, "reliquaryCauldron");
 		registerTileEntity(TileEntityPedestal.class, "reliquaryPedestal");
+		registerTileEntity(TileEntityPedestalPassive.class, "reliquaryPedestalPassive");
 	}
 
 	private static void registerTileEntity(Class clazz, String name) {
@@ -54,6 +55,9 @@ public class ModBlocks {
 	}
 
 	private static void registerBlock(Block block, ItemBlock itemBlock, String name) {
+		registerBlock(block, itemBlock, name, false);
+	}
+	private static void registerBlock(Block block, ItemBlock itemBlock, String name, boolean jeiOneDescription) {
 		if(Settings.disabledItemsBlocks.contains(name))
 			return;
 
@@ -61,7 +65,7 @@ public class ModBlocks {
 		GameRegistry.register(block);
 		GameRegistry.register(itemBlock.setRegistryName(block.getRegistryName()));
 
-		Reliquary.PROXY.registerJEI(block, name);
+		Reliquary.PROXY.registerJEI(block, name, jeiOneDescription);
 	}
 
 }

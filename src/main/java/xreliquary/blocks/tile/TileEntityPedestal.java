@@ -7,7 +7,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -18,6 +20,8 @@ import net.minecraftforge.fluids.*;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.api.*;
+import xreliquary.blocks.BlockPedestal;
+import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.StackHelper;
@@ -26,7 +30,7 @@ import xreliquary.util.pedestal.PedestalRegistry;
 
 import java.util.*;
 
-public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFluidHandler, IInventory {
+public class TileEntityPedestal extends TileEntityPedestalPassive implements IPedestal, IFluidHandler, ITickable {
 
 	private boolean tickable = false;
 	private int[] actionCooldowns = new int[0];
@@ -36,44 +40,24 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	private Map<Integer, IPedestalRedstoneItem> redstoneItems = new HashMap<>();
 	private Map<Integer, IItemHandler> itemHandlers = new HashMap<>();
 	private List<ItemStack> fluidContainers = new ArrayList<>();
-	private FakePlayer fakePlayer = null;
 	private boolean switchedOn = false;
 	private List<Long> onSwitches = new ArrayList<>();
-	private boolean initRedstone = false;
-
-	private short slots = 0;
-	private ItemStack[] inventory;
-
-	public TileEntityPedestal() {
-		this.slots = 1;
-		inventory = new ItemStack[this.slots];
-	}
-
-	public void dropPedestalInventory() {
-		for(int i = 0; i < inventory.length; ++i) {
-			ItemStack itemstack = inventory[i];
-
-			if(itemstack != null) {
-				InventoryHelper.spawnItemStack(this.worldObj, this.pos.getX(), this.pos.getY(), this.pos.getZ(), itemstack);
-			}
-		}
-	}
+	private boolean enabledInitialized = false;
+	private boolean powered = false;
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 
-		NBTTagList items = tag.getTagList("Items", 10);
+		switchedOn = tag.getBoolean("SwitchedOn");
+		powered = tag.getBoolean("Powered");
 
-		this.inventory = new ItemStack[this.getSizeInventory()];
+		NBTTagList onLocations = tag.getTagList("OnSwitches", 4);
 
-		for(int i = 0; i < items.tagCount(); ++i) {
-			NBTTagCompound item = items.getCompoundTagAt(i);
-			byte b0 = item.getByte("Slot");
+		onSwitches.clear();
 
-			if(b0 >= 0 && b0 < this.inventory.length) {
-				this.inventory[b0] = ItemStack.loadItemStackFromNBT(item);
-			}
+		for(int i = 0; i < onLocations.tagCount(); i++) {
+			onSwitches.add(((NBTTagLong) onLocations.get(i)).getLong());
 		}
 
 		updateSpecialItems();
@@ -83,17 +67,15 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
 
-		NBTTagList items = new NBTTagList();
+		tag.setBoolean("SwitchedOn", switchedOn);
+		tag.setBoolean("Powered", powered);
 
-		for(int i = 0; i < this.inventory.length; ++i) {
-			if(this.inventory[i] != null) {
-				NBTTagCompound item = new NBTTagCompound();
-				this.inventory[i].writeToNBT(item);
-				item.setByte("Slot", (byte) i);
-				items.appendTag(item);
-			}
+		NBTTagList onLocations = new NBTTagList();
+
+		for(int i = 0; i < onSwitches.size(); i++) {
+			onLocations.appendTag(new NBTTagLong(onSwitches.get(i)));
 		}
-		tag.setTag("Items", items);
+		tag.setTag("OnSwitches", onLocations);
 	}
 
 	@Override
@@ -105,6 +87,7 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 				filteredHandler.markDirty();
 			}
 		}
+
 		super.markDirty();
 	}
 
@@ -175,12 +158,12 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		if(worldObj.isRemote)
 			return;
 
-		if(!initRedstone) {
-			initRedstone = true;
-			updateRedstone();
+		if(!enabledInitialized) {
+			enabledInitialized = true;
+			neighborUpdate();
 		}
 
-		if((isPowered() || switchedOn) && tickable) {
+		if(tickable && worldObj.getBlockState(this.pos).getValue(BlockPedestal.ENABLED)) {
 			for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
 				if(actionCooldowns[currentItemIndex] > 0) {
 					actionCooldowns[currentItemIndex]--;
@@ -195,6 +178,19 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 				}
 			}
 		}
+	}
+
+	public void neighborUpdate() {
+		if(powered != worldObj.isBlockPowered(this.pos)) {
+			powered = worldObj.isBlockPowered(this.pos);
+
+			if(powered)
+				switchOn(null);
+			else
+				switchOff(null);
+		}
+
+		updateRedstone();
 	}
 
 	public void updateRedstone() {
@@ -291,18 +287,29 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 
 	@Override
 	public void switchOn(BlockPos switchedOnFrom) {
-		if(!onSwitches.contains(switchedOnFrom.toLong()))
+		if(switchedOnFrom != null && !onSwitches.contains(switchedOnFrom.toLong()))
 			onSwitches.add(switchedOnFrom.toLong());
 
-		this.switchedOn = true;
+		setEnabled(true);
+
+		IBlockState blockState = worldObj.getBlockState(pos);
+		worldObj.notifyBlockUpdate(pos, blockState, blockState, 3);
 	}
 
 	@Override
 	public void switchOff(BlockPos switchedOffFrom) {
-		onSwitches.remove(switchedOffFrom.toLong());
+		if(switchedOffFrom != null)
+			onSwitches.remove(switchedOffFrom.toLong());
 
-		if(onSwitches.size() == 0)
-			this.switchedOn = false;
+		if(!switchedOn && !powered && onSwitches.size() == 0) {
+			setEnabled(false);
+		}
+		IBlockState blockState = worldObj.getBlockState(pos);
+		worldObj.notifyBlockUpdate(pos, blockState, blockState, 3);
+	}
+
+	private void setEnabled(boolean switchedOn) {
+		ModBlocks.pedestal.setEnabled(worldObj, pos, switchedOn);
 	}
 
 	public List<IInventory> getAdjacentInventories() {
@@ -459,10 +466,6 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		return tankInfo;
 	}
 
-	private boolean isPowered() {
-		return worldObj.isBlockPowered(pos);
-	}
-
 	public void removeRedstoneItems() {
 		for(Map.Entry<Integer, IPedestalRedstoneItem> item : redstoneItems.entrySet()) {
 			item.getValue().onRemoved(inventory[item.getKey()], this);
@@ -470,12 +473,6 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	}
 
 	// IInventory
-
-	@Override
-	public String getName() {
-		return null;
-	}
-
 	@Override
 	public int getSizeInventory() {
 		int itemHandlerSlots = 0;
@@ -556,6 +553,11 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	}
 
 	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+		return !(oldState.getBlock() == ModBlocks.pedestal && newState.getBlock() == ModBlocks.pedestal);
+	}
+
+	@Override
 	public ItemStack removeStackFromSlot(int slot) {
 		ItemStack stack;
 		if(slot < slots) {
@@ -584,8 +586,9 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) {
 		if(slot < slots) {
+			IPedestalRedstoneItem removedRedstoneItem = null;
 			if(stack == null && redstoneItems.containsKey(slot)) {
-				redstoneItems.get(slot).onRemoved(inventory[slot], this);
+				removedRedstoneItem = redstoneItems.get(slot);
 			}
 
 			this.inventory[slot] = stack;
@@ -594,6 +597,10 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 			}
 
 			updateItemsAndBlock();
+
+			if(removedRedstoneItem != null)
+				removedRedstoneItem.onRemoved(inventory[slot], this);
+
 			return;
 		}
 
@@ -620,38 +627,8 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 	}
 
 	@Override
-	public boolean hasCustomName() {
-		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName() {
-		return null;
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return 64;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		return false;
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) {
-
-	}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {
-
-	}
-
-	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		if(index < slots)
+		if(super.isItemValidForSlot(index, stack))
 			return true;
 
 		int adjustedSlot = index - slots;
@@ -666,40 +643,25 @@ public class TileEntityPedestal extends TileEntityBase implements IPedestal, IFl
 		return returnedStack == null || returnedStack.stackSize != stack.stackSize;
 	}
 
-	@Override
-	public int getField(int id) {
-		return 0;
+	public void toggleSwitch() {
+		switchedOn = !switchedOn;
+
+		if(switchedOn)
+			switchOn(null);
+		else
+			switchOff(null);
+
 	}
 
-	@Override
-	public void setField(int id, int value) {
-
+	public boolean isPowered() {
+		return powered;
 	}
 
-	@Override
-	public int getFieldCount() {
-		return 0;
+	public List<Long> getOnSwitches() {
+		return onSwitches;
 	}
 
-	@Override
-	public void clear() {
-		for(int i = 0; i < this.getSizeInventory(); i++)
-			this.setInventorySlotContents(i, null);
+	public boolean isSwitchedOn() {
+		return switchedOn;
 	}
-
-	public void removeLastPedestalStack() {
-		for(int i = slots - 1; i >= 0; i--) {
-			if(inventory[i] != null) {
-				ItemStack stack = inventory[i].copy();
-				setInventorySlotContents(i, null);
-				if(worldObj.isRemote)
-					return;
-				markDirty();
-				EntityItem itemEntity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, stack);
-				worldObj.spawnEntityInWorld(itemEntity);
-				break;
-			}
-		}
-	}
-
 }
