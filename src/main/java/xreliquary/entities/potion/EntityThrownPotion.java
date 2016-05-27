@@ -1,18 +1,15 @@
 package xreliquary.entities.potion;
 
-import net.minecraft.block.SoundType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.BossInfo;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -87,7 +84,7 @@ public abstract class EntityThrownPotion extends EntityThrowable {
 	// most of these are the same in every potion, the only thing that isn't is
 	// the coloration of the particles.
 	protected void spawnParticles() {
-		if (worldObj.isRemote)
+		if(worldObj.isRemote)
 			return;
 
 		Random rand = this.rand;
@@ -95,7 +92,7 @@ public abstract class EntityThrownPotion extends EntityThrowable {
 			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, Item.getIdFromItem(Items.potionitem));
 		}
 
-		worldObj.playSound(null, getPosition(), SoundType.GLASS.getBreakSound(), SoundCategory.BLOCKS, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		worldObj.playSound(null, getPosition(), SoundEvents.block_glass_break, SoundCategory.BLOCKS, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 
 		PacketHandler.networkWrapper.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), this.posX, this.posY, this.posZ), new NetworkRegistry.TargetPoint(this.dimension, this.posX, this.posY, this.posZ, 32.0D));
 	}

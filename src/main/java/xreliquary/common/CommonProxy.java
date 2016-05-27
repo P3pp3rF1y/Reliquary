@@ -77,7 +77,9 @@ public class CommonProxy {
 
 	public void registerJEI(Block block, String name) {
 	}
+	public void registerJEI(Block block, String name, boolean oneDescription) {
 
+	}
 	public void initPotionsJEI() {
 	}
 }
