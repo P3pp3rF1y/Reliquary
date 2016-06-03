@@ -34,33 +34,34 @@ public class ClientEventHandler {
 	private static int time;
 
 	@SubscribeEvent
-
-	public void onRenderLiving(RenderLivingEvent event) {
+	public void onRenderLiving(RenderLivingEvent.Pre event) {
 		if (event.getEntity() instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) event.getEntity();
 
 			boolean firesHandgun = false;
 
-			if (player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == ModItems.handgun && player.getActiveHand() == EnumHand.MAIN_HAND) {
-				firesHandgun = true;
-			}
-			else if (player.getHeldItem(EnumHand.OFF_HAND) != null && player.getHeldItem(EnumHand.OFF_HAND).getItem() == ModItems.handgun && player.getActiveHand() == EnumHand.OFF_HAND) {
-				firesHandgun = true;
-			}
-
-			if (firesHandgun) {
+			if ((player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == ModItems.handgun)
+					|| (player.getHeldItem(EnumHand.OFF_HAND) != null && player.getHeldItem(EnumHand.OFF_HAND).getItem() == ModItems.handgun && player.getActiveHand() == EnumHand.OFF_HAND)) {
 				ModelBiped model = (ModelBiped) event.getRenderer().getMainModel();
 
-				EnumHand hand = player.getActiveHand();
-				EnumHandSide primaryHand = player.getPrimaryHand();
+				if(player.isHandActive()) {
+					EnumHand hand = player.getActiveHand();
+					EnumHandSide primaryHand = player.getPrimaryHand();
 
-				if ((hand == EnumHand.MAIN_HAND && primaryHand == EnumHandSide.RIGHT) || (hand == EnumHand.OFF_HAND && primaryHand == EnumHandSide.LEFT)) {
-					model.rightArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
-				} else if ((hand == EnumHand.OFF_HAND && primaryHand == EnumHandSide.RIGHT) || (hand == EnumHand.MAIN_HAND && primaryHand == EnumHandSide.LEFT)) {
-					model.leftArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+					if(((hand == EnumHand.MAIN_HAND && primaryHand == EnumHandSide.RIGHT) || (hand == EnumHand.OFF_HAND && primaryHand == EnumHandSide.LEFT)) && model.rightArmPose != ModelBiped.ArmPose.BOW_AND_ARROW) {
+						model.rightArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+					} else if(((hand == EnumHand.OFF_HAND && primaryHand == EnumHandSide.RIGHT) || (hand == EnumHand.MAIN_HAND && primaryHand == EnumHandSide.LEFT)) && model.leftArmPose != ModelBiped.ArmPose.BOW_AND_ARROW) {
+						model.leftArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+					}
+				} else {
+					if(model.rightArmPose == ModelBiped.ArmPose.BOW_AND_ARROW) {
+						model.rightArmPose = ModelBiped.ArmPose.ITEM;
+					}
+					if(model.leftArmPose == ModelBiped.ArmPose.BOW_AND_ARROW) {
+						model.leftArmPose = ModelBiped.ArmPose.ITEM;
+					}
 				}
 			}
-
 		}
 	}
 	@SubscribeEvent
