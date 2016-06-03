@@ -3,6 +3,7 @@ package xreliquary.handler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
@@ -13,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumHandSide;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import xreliquary.init.ModBlocks;
@@ -30,6 +33,36 @@ public class ClientEventHandler {
 	private static RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 	private static int time;
 
+	@SubscribeEvent
+
+	public void onRenderLiving(RenderLivingEvent event) {
+		if (event.getEntity() instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer) event.getEntity();
+
+			boolean firesHandgun = false;
+
+			if (player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == ModItems.handgun && player.getActiveHand() == EnumHand.MAIN_HAND) {
+				firesHandgun = true;
+			}
+			else if (player.getHeldItem(EnumHand.OFF_HAND) != null && player.getHeldItem(EnumHand.OFF_HAND).getItem() == ModItems.handgun && player.getActiveHand() == EnumHand.OFF_HAND) {
+				firesHandgun = true;
+			}
+
+			if (firesHandgun) {
+				ModelBiped model = (ModelBiped) event.getRenderer().getMainModel();
+
+				EnumHand hand = player.getActiveHand();
+				EnumHandSide primaryHand = player.getPrimaryHand();
+
+				if ((hand == EnumHand.MAIN_HAND && primaryHand == EnumHandSide.RIGHT) || (hand == EnumHand.OFF_HAND && primaryHand == EnumHandSide.LEFT)) {
+					model.rightArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+				} else if ((hand == EnumHand.OFF_HAND && primaryHand == EnumHandSide.RIGHT) || (hand == EnumHand.MAIN_HAND && primaryHand == EnumHandSide.LEFT)) {
+					model.leftArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+				}
+			}
+
+		}
+	}
 	@SubscribeEvent
 	public void onRenderTick(TickEvent.RenderTickEvent event) {
 		Minecraft mc = Minecraft.getMinecraft();

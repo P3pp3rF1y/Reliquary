@@ -28,32 +28,32 @@ public class ItemHandgun extends ItemBase {
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
-	public int getBulletCount(ItemStack ist) {
-		return NBTHelper.getShort("bulletCount", ist);
+	public int getBulletCount(ItemStack handgun) {
+		return NBTHelper.getShort("bulletCount", handgun);
 	}
 
-	public void setBulletCount(ItemStack ist, int i) {
-		NBTHelper.setShort("bulletCount", ist, i);
+	public void setBulletCount(ItemStack handgun, int i) {
+		NBTHelper.setShort("bulletCount", handgun, i);
 	}
 
-	public int getBulletType(ItemStack ist) {
-		return NBTHelper.getShort("bulletType", ist);
+	public int getBulletType(ItemStack handgun) {
+		return NBTHelper.getShort("bulletType", handgun);
 	}
 
-	public void setBulletType(ItemStack ist, int i) {
-		NBTHelper.setShort("bulletType", ist, i);
+	public void setBulletType(ItemStack handgun, int i) {
+		NBTHelper.setShort("bulletType", handgun, i);
 	}
 
-	public void setLastFiredShotType(ItemStack ist, int i) {
-		NBTHelper.setShort("lastFiredShot", ist, i);
+	public void setLastFiredShotType(ItemStack handgun, int i) {
+		NBTHelper.setShort("lastFiredShot", handgun, i);
 	}
 
-	public boolean isInCooldown(ItemStack ist) {
-		return NBTHelper.getBoolean("inCooldown", ist);
+	public boolean isInCooldown(ItemStack handgun) {
+		return NBTHelper.getBoolean("inCooldown", handgun);
 	}
 
-	public void setInCooldown(ItemStack ist, boolean inCooldown) {
-		NBTHelper.setBoolean("inCooldown", ist, inCooldown);
+	public void setInCooldown(ItemStack handgun, boolean inCooldown) {
+		NBTHelper.setBoolean("inCooldown", handgun, inCooldown);
 	}
 
 	public long getCooldown(ItemStack ist) {
@@ -65,8 +65,8 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	@Override
-	public EnumAction getItemUseAction(ItemStack stack) {
-		if (getBulletCount(stack)> 0)
+	public EnumAction getItemUseAction(ItemStack handgun) {
+		if (getBulletCount(handgun)> 0)
 			return EnumAction.NONE;
 		else
 			return EnumAction.BLOCK;
@@ -84,41 +84,32 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	@Override
-	public void onUpdate(ItemStack ist, World worldObj, Entity e, int i, boolean flag) {
+	public void onUpdate(ItemStack handgun, World worldObj, Entity e, int i, boolean flag) {
 		if(!worldObj.isRemote) {
-			if(isInCooldown(ist) && (isCooldownOver(worldObj, ist) || !isValidCooldownTime(worldObj, ist))) {
-				setInCooldown(ist, false);
+			if(isInCooldown(handgun) && (isCooldownOver(worldObj, handgun) || !isValidCooldownTime(worldObj, handgun))) {
+				setInCooldown(handgun, false);
 			}
 		}
 	}
 
-	private boolean isCooldownOver(World worldObj, ItemStack ist) {
-		return getCooldown(ist) < worldObj.getWorldTime() && worldObj.getWorldTime() - getCooldown(ist) < 12000;
+	private boolean isCooldownOver(World worldObj, ItemStack handgun) {
+		return getCooldown(handgun) < worldObj.getWorldTime() && worldObj.getWorldTime() - getCooldown(handgun) < 12000;
 	}
 
-	private boolean isValidCooldownTime(World worldObj, ItemStack ist) {
-		return Math.min(Math.abs(worldObj.getWorldTime() - getCooldown(ist)), Math.abs(worldObj.getWorldTime() - 23999 - getCooldown(ist))) <= getMaxItemUseDuration(ist);
+	private boolean isValidCooldownTime(World worldObj, ItemStack handgun) {
+		return Math.min(Math.abs(worldObj.getWorldTime() - getCooldown(handgun)), Math.abs(worldObj.getWorldTime() - 23999 - getCooldown(handgun))) <= getMaxItemUseDuration(handgun);
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World worldObj, EntityPlayer player, EnumHand hand) {
-		if(!isInCooldown(ist)) {
-			if(!(getBulletCount(ist) > 0) && !(getBulletType(ist) > 0)) {
-				player.setActiveHand(hand);
-			} else {
-				if(!worldObj.isRemote) {
-					setCooldown(ist, worldObj.getWorldTime() + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM));
-					setInCooldown(ist, true);
-
-					fireBullet(ist, worldObj, player);
-				}
-			}
+	public ActionResult<ItemStack> onItemRightClick(ItemStack handgun, World worldObj, EntityPlayer player, EnumHand hand) {
+		if(hasFilledMagazine(player) || getBulletCount(handgun) > 0) {
+			player.setActiveHand(hand);
 		}
-		return new ActionResult<>(EnumActionResult.PASS, ist);
+		return new ActionResult<>(EnumActionResult.PASS, handgun);
 	}
 
 	@Override
-	public void onUsingTick(ItemStack ist, EntityLivingBase entity, int unadjustedCount) {
+	public void onUsingTick(ItemStack handgun, EntityLivingBase entity, int unadjustedCount) {
 		if(entity.worldObj.isRemote || !(entity instanceof EntityPlayer))
 			return;
 
@@ -133,42 +124,48 @@ public class ItemHandgun extends ItemBase {
 			player.stopActiveHand();
 			return;
 		}
+
+		//loaded and ready to fire
+		if (!isInCooldown(handgun) && getBulletCount(handgun) > 0) {
+			player.stopActiveHand();
+		}
 	}
 
 	@Override
-	public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+	public int getMaxItemUseDuration(ItemStack handgun) {
 		return this.getItemUseDuration();
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft) {
+	public void onPlayerStoppedUsing(ItemStack handgun, World worldIn, EntityLivingBase entityLiving, int timeLeft) {
 		if (!(entityLiving instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) entityLiving;
 
-		if(!hasFilledMagazine(player)) {
-			//arbitrary "feels good" cooldown for after the reload - this one just plays so you can't "fail" at reloading too fast.
-			setCooldown(stack, player.worldObj.getWorldTime() + 12);
-			setInCooldown(stack, true);
+		// fire bullet
+		if (getBulletCount(handgun) > 0) {
+			if (!isInCooldown(handgun)) {
+				setCooldown(handgun, worldIn.getWorldTime() + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM));
+				setInCooldown(handgun, true);
+
+				fireBullet(handgun, worldIn, player);
+			}
 			return;
 		}
 
-		int maxUseOffset = getItemUseDuration() - getPlayerReloadDelay(player);
-		int actualCount = timeLeft - maxUseOffset;
-
 		//arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
-		setCooldown(stack, player.worldObj.getWorldTime() + 12);
-		setInCooldown(stack, true);
-		setBulletType(stack, getMagazineTypeAndRemoveOne(player));
-		if(getBulletType(stack) != 0) {
+		setCooldown(handgun, player.worldObj.getWorldTime() + 12);
+		setInCooldown(handgun, true);
+		setBulletType(handgun, getMagazineTypeAndRemoveOne(player));
+		if(getBulletType(handgun) != 0) {
 			player.swingArm(player.getActiveHand());
 			this.spawnEmptyMagazine(player);
-			setBulletCount(stack, 8);
+			setBulletCount(handgun, 8);
 			player.worldObj.playSound(null, player.getPosition(), ModSounds.xload, SoundCategory.PLAYERS, 0.25F, 1.0F);
 		}
-		if(getBulletCount(stack) == 0) {
-			setBulletType(stack, 0);
+		if(getBulletCount(handgun) == 0) {
+			setBulletType(handgun, 0);
 		}
 	}
 
@@ -176,9 +173,9 @@ public class ItemHandgun extends ItemBase {
 		return Reference.HANDGUN_RELOAD_SKILL_OFFSET + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM;
 	}
 
-	private void fireBullet(ItemStack ist, World worldObj, EntityPlayer player) {
+	private void fireBullet(ItemStack handgun, World worldObj, EntityPlayer player) {
 		if(!worldObj.isRemote) {
-			switch(getBulletType(ist)) {
+			switch(getBulletType(handgun)) {
 				case 0:
 					return;
 				case Reference.NEUTRAL_SHOT_INDEX:
@@ -213,11 +210,11 @@ public class ItemHandgun extends ItemBase {
 			worldObj.playSound(null, player.getPosition(), ModSounds.xshot, SoundCategory.PLAYERS, 0.2F, 1.2F);
 
 			//prevents the gun from forgetting that it fired a certain type of shot.
-			setLastFiredShotType(ist, getBulletType(ist));
+			setLastFiredShotType(handgun, getBulletType(handgun));
 
-			setBulletCount(ist, getBulletCount(ist) - 1);
-			if(getBulletCount(ist) == 0) {
-				setBulletType(ist, 0);
+			setBulletCount(handgun, getBulletCount(handgun) - 1);
+			if(getBulletCount(handgun) == 0) {
+				setBulletType(handgun, 0);
 			}
 			spawnCasing(player);
 		}
