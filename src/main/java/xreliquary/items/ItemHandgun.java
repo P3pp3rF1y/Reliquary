@@ -71,6 +71,18 @@ public class ItemHandgun extends ItemBase {
 		else
 			return EnumAction.BLOCK;
 	}
+
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+		if (oldStack == null || newStack == null)
+			return true;
+
+		if (oldStack.getItem() == ModItems.handgun && newStack.getItem() == ModItems.handgun)
+			return false;
+
+		return true;
+	}
+
 	@Override
 	public void onUpdate(ItemStack ist, World worldObj, Entity e, int i, boolean flag) {
 		if(!worldObj.isRemote) {
