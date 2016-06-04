@@ -66,7 +66,7 @@ public class ItemHandgun extends ItemBase {
 
 	@Override
 	public EnumAction getItemUseAction(ItemStack handgun) {
-		if (getBulletCount(handgun)> 0)
+		if(getBulletCount(handgun) > 0)
 			return EnumAction.NONE;
 		else
 			return EnumAction.BLOCK;
@@ -74,10 +74,10 @@ public class ItemHandgun extends ItemBase {
 
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-		if (oldStack == null || newStack == null)
+		if(oldStack == null || newStack == null)
 			return true;
 
-		if (oldStack.getItem() == ModItems.handgun && newStack.getItem() == ModItems.handgun)
+		if(oldStack.getItem() == ModItems.handgun && newStack.getItem() == ModItems.handgun)
 			return false;
 
 		return true;
@@ -102,10 +102,45 @@ public class ItemHandgun extends ItemBase {
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack handgun, World worldObj, EntityPlayer player, EnumHand hand) {
-		if(hasFilledMagazine(player) || getBulletCount(handgun) > 0) {
+		if((hasFilledMagazine(player) && getBulletCount(handgun) == 0) || (getBulletCount(handgun) > 0 && (!hasHandgunInSecondHand(player, hand) || cooledMoreThanSecondHandgun(handgun, player, hand)))) {
 			player.setActiveHand(hand);
+			return new ActionResult<>(EnumActionResult.SUCCESS, handgun);
 		}
 		return new ActionResult<>(EnumActionResult.PASS, handgun);
+	}
+
+	private boolean cooledMoreThanSecondHandgun(ItemStack handgun, EntityPlayer player, EnumHand hand) {
+		if (!isInCooldown(handgun))
+			return true;
+
+		if (hand == EnumHand.MAIN_HAND)
+			return getCooldown(handgun) < getCooldown(player.getHeldItemOffhand());
+		else
+			return getCooldown(handgun) < getCooldown(player.getHeldItemMainhand());
+	}
+
+	private boolean secondHandgunCooledEnough(World world, EntityPlayer player, EnumHand hand) {
+		ItemStack secondHandgun;
+
+		if(hand == EnumHand.MAIN_HAND) {
+			secondHandgun = player.getHeldItemOffhand();
+		} else {
+			secondHandgun = player.getHeldItemMainhand();
+		}
+		if(!isInCooldown(secondHandgun))
+			return true;
+
+		if((getCooldown(secondHandgun) - world.getWorldTime()) < (getPlayerReloadDelay(player) / 2))
+			return true;
+
+		return false;
+	}
+
+	private boolean hasHandgunInSecondHand(EntityPlayer player, EnumHand hand) {
+		if(hand == EnumHand.MAIN_HAND && player.getHeldItemOffhand() != null && player.getHeldItemOffhand().getItem() == ModItems.handgun)
+			return true;
+
+		return (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ModItems.handgun);
 	}
 
 	@Override
@@ -126,7 +161,7 @@ public class ItemHandgun extends ItemBase {
 		}
 
 		//loaded and ready to fire
-		if (!isInCooldown(handgun) && getBulletCount(handgun) > 0) {
+		if(!isInCooldown(handgun) && getBulletCount(handgun) > 0 && (!hasHandgunInSecondHand(player, player.getActiveHand()) || secondHandgunCooledEnough(player.worldObj, player, player.getActiveHand()))) {
 			player.stopActiveHand();
 		}
 	}
@@ -138,14 +173,14 @@ public class ItemHandgun extends ItemBase {
 
 	@Override
 	public void onPlayerStoppedUsing(ItemStack handgun, World worldIn, EntityLivingBase entityLiving, int timeLeft) {
-		if (!(entityLiving instanceof EntityPlayer))
+		if(!(entityLiving instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) entityLiving;
 
 		// fire bullet
-		if (getBulletCount(handgun) > 0) {
-			if (!isInCooldown(handgun)) {
+		if(getBulletCount(handgun) > 0) {
+			if(!isInCooldown(handgun)) {
 				setCooldown(handgun, worldIn.getWorldTime() + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM));
 				setInCooldown(handgun, true);
 
