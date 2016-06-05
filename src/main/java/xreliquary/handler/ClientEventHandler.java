@@ -35,13 +35,10 @@ public class ClientEventHandler {
 
 	@SubscribeEvent
 	public void onRenderLiving(RenderLivingEvent.Pre event) {
-		if (event.getEntity() instanceof EntityPlayer) {
+		if(event.getEntity() instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) event.getEntity();
 
-			boolean firesHandgun = false;
-
-			if ((player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == ModItems.handgun)
-					|| (player.getHeldItem(EnumHand.OFF_HAND) != null && player.getHeldItem(EnumHand.OFF_HAND).getItem() == ModItems.handgun && player.getActiveHand() == EnumHand.OFF_HAND)) {
+			if((player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == ModItems.handgun) || (player.getHeldItem(EnumHand.OFF_HAND) != null && player.getHeldItem(EnumHand.OFF_HAND).getItem() == ModItems.handgun && player.getActiveHand() == EnumHand.OFF_HAND)) {
 				ModelBiped model = (ModelBiped) event.getRenderer().getMainModel();
 
 				if(player.isHandActive()) {
@@ -64,6 +61,7 @@ public class ClientEventHandler {
 			}
 		}
 	}
+
 	@SubscribeEvent
 	public void onRenderTick(TickEvent.RenderTickEvent event) {
 		Minecraft mc = Minecraft.getMinecraft();
@@ -398,19 +396,27 @@ public class ClientEventHandler {
 		// handles rendering the hud for the handgun, WIP
 		EntityPlayer player = mc.thePlayer;
 
-		ItemStack handgunStack = getCorrectItemFromEitherHand(player, ModItems.handgun);
+		ItemStack mainHandgunStack = (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ModItems.handgun) ? player.getHeldItemMainhand() : null;
+		ItemStack offHandgunStack = (player.getHeldItemOffhand() != null && player.getHeldItemOffhand().getItem() == ModItems.handgun) ? player.getHeldItemOffhand() : null;
 
-		if(handgunStack == null)
+		if(mainHandgunStack == null && offHandgunStack == null)
 			return;
 
-		ItemHandgun handgunItem = (ItemHandgun) handgunStack.getItem();
-		ItemStack bulletStack = new ItemStack(ModItems.bullet, handgunItem.getBulletCount(handgunStack), handgunItem.getBulletType(handgunStack));
-		renderHandgunHUD(mc, player, handgunStack, bulletStack);
+		ItemStack mainBulletStack = null;
+		if(mainHandgunStack != null) {
+			mainBulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(mainHandgunStack), ModItems.handgun.getBulletType(mainHandgunStack));
+		}
+		ItemStack offBulletStack = null;
+		if(offHandgunStack != null) {
+			offBulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(offHandgunStack), ModItems.handgun.getBulletType(offHandgunStack));
+		}
+		renderHandgunHUD(mc, player, mainHandgunStack, mainBulletStack, offHandgunStack, offBulletStack);
 	}
 
-	private static void renderHandgunHUD(Minecraft minecraft, EntityPlayer player, ItemStack handgunStack, ItemStack bulletStack) {
+	private static void renderHandgunHUD(Minecraft minecraft, EntityPlayer player, ItemStack mainHandgunStack, ItemStack mainBulletStack, ItemStack offHandgunStack, ItemStack offBulletStack) {
 		float overlayScale = 2.5F;
 		float overlayOpacity = 0.75F;
+		float segmentHeight = 6 * overlayScale;
 
 		GlStateManager.pushMatrix();
 		ScaledResolution sr = new ScaledResolution(minecraft);
@@ -429,25 +435,28 @@ public class ClientEventHandler {
 		GlStateManager.enableColorMaterial();
 		GlStateManager.enableLighting();
 
-		int hudOverlayX = 8;
-		int hudOverlayY = 8;
+		int hudOverlayX = (int) (16 * overlayScale);
+		int hudOverlayY = (int) (6 * overlayScale);
 		boolean leftSide = Settings.HudPositions.handgun == 0 || Settings.HudPositions.handgun == 2;
+		boolean twoHandguns = mainHandgunStack != null && offHandgunStack != null;
 
 		switch(Settings.HudPositions.handgun) {
 			case 0: {
+				hudOverlayX = (int) (44 * overlayScale);
 				break;
 			}
 			case 1: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 16 * overlayScale);
+				hudOverlayX = (int) (sr.getScaledWidth() - 12 * overlayScale);
 				break;
 			}
 			case 2: {
-				hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
+				hudOverlayX = (int) (44 * overlayScale);
+				hudOverlayY = (int) (sr.getScaledHeight() - (16 * overlayScale + (twoHandguns ? segmentHeight : 0)));
 				break;
 			}
 			case 3: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 16 * overlayScale);
-				hudOverlayY = (int) (sr.getScaledHeight() - 16 * overlayScale);
+				hudOverlayX = (int) (sr.getScaledWidth() - 12 * overlayScale);
+				hudOverlayY = (int) (sr.getScaledHeight() - (16 * overlayScale + (twoHandguns ? segmentHeight : 0)));
 				break;
 			}
 			default: {
@@ -455,27 +464,43 @@ public class ClientEventHandler {
 			}
 		}
 
-		renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), handgunStack, hudOverlayX, hudOverlayY, overlayOpacity, overlayScale);
+		if(mainHandgunStack != null) {
+			renderHandgunAndBullets(EnumHand.MAIN_HAND, minecraft, mainHandgunStack, mainBulletStack, overlayScale, overlayOpacity, hudOverlayX, hudOverlayY);
+
+			hudOverlayY += segmentHeight;
+		}
+
+		if(offHandgunStack != null)
+			renderHandgunAndBullets(EnumHand.OFF_HAND, minecraft, offHandgunStack, offBulletStack, overlayScale, overlayOpacity, hudOverlayX, hudOverlayY);
+
+		GlStateManager.disableLighting();
+		GlStateManager.popMatrix();
+		GlStateManager.popMatrix();
+	}
+
+	private static void renderHandgunAndBullets(EnumHand hand, Minecraft minecraft, ItemStack handgunStack, ItemStack bulletStack, float overlayScale, float overlayOpacity, int hudOverlayX, int hudOverlayY) {
+		renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), handgunStack, hudOverlayX - (hand == EnumHand.OFF_HAND ? 100 : 0), hudOverlayY, overlayOpacity, overlayScale);
+
+		int adjustedHudOverlayX = hand == EnumHand.MAIN_HAND ? (int) (hudOverlayX - 6 * overlayScale) : (int) (hudOverlayX - 2 * overlayScale);
+
 		// if the gun is empty, displays a blinking empty magazine instead.
 		if(bulletStack.stackSize == 0) {
 			if(getTime() % 32 > 16) {
 				// offsets it a little to the left, it looks silly if you put it
 				// over the gun.
-				renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), new ItemStack(ModItems.magazine, 1, 0), hudOverlayX - (leftSide ? 0 : 8), hudOverlayY + 12, overlayOpacity, overlayScale / 2F);
+				renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), new ItemStack(ModItems.magazine, 1, 0), adjustedHudOverlayX, hudOverlayY, overlayOpacity, overlayScale / 2F);
 			}
 		} else {
+			adjustedHudOverlayX = adjustedHudOverlayX - (hand == EnumHand.OFF_HAND ? 10 : 0);
+
 			// renders the number of bullets onto the screen.
 			for(int xOffset = 0; xOffset < bulletStack.stackSize; xOffset++) {
 				// xOffset * 6 makes the bullets line up, -16 moves them all to
 				// the left by a bit
 
-				renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), bulletStack, hudOverlayX - (leftSide ? 0 : 8) - 1 * (leftSide ? -1 : 1) * (xOffset * 10), hudOverlayY + 12, 1.0F, overlayScale / 2F);
+				renderItemIntoGUI(minecraft.getRenderManager().getFontRenderer(), bulletStack, (int) (adjustedHudOverlayX - ((xOffset * 4) * overlayScale)), hudOverlayY, 1.0F, overlayScale / 2F);
 			}
 		}
-
-		GlStateManager.disableLighting();
-		GlStateManager.popMatrix();
-		GlStateManager.popMatrix();
 	}
 
 	public void handleSojournerHUDCheck(Minecraft mc) {
