@@ -229,8 +229,6 @@ public class ClientEventHandler {
 		if(harvestRodStack == null)
 			return;
 
-		IHarvestRodCache cache = harvestRodStack.getCapability(ModCapabilities.HARVEST_ROD_CACHE, null);
-
 		ItemStack secondaryStack = null;
 		ItemHarvestRod harvestRod = ModItems.harvestRod;
 		if(harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.PLANTABLE_MODE)) {
