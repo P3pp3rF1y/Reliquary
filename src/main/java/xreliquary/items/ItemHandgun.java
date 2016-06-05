@@ -242,7 +242,7 @@ public class ItemHandgun extends ItemBase {
 					break;
 			}
 
-			worldObj.playSound(null, player.getPosition(), ModSounds.xshot, SoundCategory.PLAYERS, 0.2F, 1.2F);
+			worldObj.playSound(null, player.getPosition(), ModSounds.xshot, SoundCategory.PLAYERS, 0.5F, 1.2F);
 
 			//prevents the gun from forgetting that it fired a certain type of shot.
 			setLastFiredShotType(handgun, getBulletType(handgun));
