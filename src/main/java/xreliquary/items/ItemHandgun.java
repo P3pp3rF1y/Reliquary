@@ -167,9 +167,9 @@ public class ItemHandgun extends ItemBase {
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		if(player.inventory.getStackInSlot(slotNumber) != null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.handgun && isSelected) {
-			PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(slotNumber, getBulletCount(handgun), getBulletType(handgun)), (EntityPlayerMP) player);
-		} else if(player.getHeldItemOffhand() != null && player.getHeldItemOffhand().getItem() == ModItems.handgun) {
+		if(handgun == player.getHeldItemMainhand()) {
+			PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(EnumHand.MAIN_HAND, getBulletCount(handgun), getBulletType(handgun)), (EntityPlayerMP) player);
+		} else if(handgun == player.getHeldItemOffhand()) {
 			PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(EnumHand.OFF_HAND, getBulletCount(handgun), getBulletType(handgun)), (EntityPlayerMP) player);
 		}
 	}
