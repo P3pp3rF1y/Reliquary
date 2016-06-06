@@ -8,6 +8,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -22,8 +23,8 @@ public class EntitySandShot extends EntityShotBase {
 		super(par1World, par2, par4, par6);
 	}
 
-	public EntitySandShot(World par1World, EntityPlayer par2EntityPlayer) {
-		super(par1World, par2EntityPlayer);
+	public EntitySandShot(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
+		super(par1World, par2EntityPlayer, hand);
 	}
 
 	@Override

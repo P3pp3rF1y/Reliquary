@@ -266,7 +266,7 @@ public class ItemHandgun extends ItemBase {
 				setCooldown(handgun, worldIn.getWorldTime() + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM));
 				setInCooldown(handgun, true);
 
-				fireBullet(handgun, worldIn, player);
+				fireBullet(handgun, worldIn, player, handgun == player.getHeldItemMainhand() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
 			}
 			return;
 		}
@@ -290,37 +290,37 @@ public class ItemHandgun extends ItemBase {
 		return Reference.HANDGUN_RELOAD_SKILL_OFFSET + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM;
 	}
 
-	private void fireBullet(ItemStack handgun, World worldObj, EntityPlayer player) {
+	private void fireBullet(ItemStack handgun, World worldObj, EntityPlayer player, EnumHand hand) {
 		if(!worldObj.isRemote) {
 			switch(getBulletType(handgun)) {
 				case 0:
 					return;
 				case Reference.NEUTRAL_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityNeutralShot(worldObj, player));
+					worldObj.spawnEntityInWorld(new EntityNeutralShot(worldObj, player, hand));
 					break;
 				case Reference.EXORCISM_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityExorcismShot(worldObj, player));
+					worldObj.spawnEntityInWorld(new EntityExorcismShot(worldObj, player, hand));
 					break;
 				case Reference.BLAZE_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityBlazeShot(worldObj, player));
+					worldObj.spawnEntityInWorld(new EntityBlazeShot(worldObj, player, hand));
 					break;
 				case Reference.ENDER_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityEnderShot(worldObj, player));
+					worldObj.spawnEntityInWorld(new EntityEnderShot(worldObj, player, hand));
 					break;
 				case Reference.CONCUSSIVE_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityConcussiveShot(worldObj, player));
+					worldObj.spawnEntityInWorld(new EntityConcussiveShot(worldObj, player, hand));
 					break;
 				case Reference.BUSTER_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityBusterShot(worldObj, player));
+					worldObj.spawnEntityInWorld(new EntityBusterShot(worldObj, player, hand));
 					break;
 				case Reference.SEEKER_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntitySeekerShot(worldObj, player));
+					worldObj.spawnEntityInWorld(new EntitySeekerShot(worldObj, player, hand));
 					break;
 				case Reference.SAND_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntitySandShot(worldObj, player));
+					worldObj.spawnEntityInWorld(new EntitySandShot(worldObj, player, hand));
 					break;
 				case Reference.STORM_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityStormShot(worldObj, player));
+					worldObj.spawnEntityInWorld(new EntityStormShot(worldObj, player, hand));
 					break;
 			}
 

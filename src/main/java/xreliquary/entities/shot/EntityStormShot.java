@@ -5,6 +5,7 @@ import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -19,8 +20,8 @@ public class EntityStormShot extends EntityShotBase {
 		super(par1World, par2, par4, par6);
 	}
 
-	public EntityStormShot(World par1World, EntityPlayer par2EntityPlayer) {
-		super(par1World, par2EntityPlayer);
+	public EntityStormShot(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
+		super(par1World, par2EntityPlayer, hand);
 	}
 
 	@Override

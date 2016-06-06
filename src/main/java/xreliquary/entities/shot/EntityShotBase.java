@@ -12,10 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -53,14 +50,14 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		this.setPosition(par2, par4, par6);
 	}
 
-	public EntityShotBase(World par1World, EntityPlayer par2EntityPlayer) {
+	public EntityShotBase(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
 		this(par1World);
 		shootingEntity = par2EntityPlayer;
 		float par3 = 0.8F;
 		this.setLocationAndAngles(par2EntityPlayer.posX, par2EntityPlayer.posY + par2EntityPlayer.getEyeHeight(), par2EntityPlayer.posZ, par2EntityPlayer.rotationYaw, par2EntityPlayer.rotationPitch);
-		posX -= MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
-		posY -= 0.2D;
-		posZ -= MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
+		posX -= MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * (hand == EnumHand.MAIN_HAND ? 1 : -1) * 0.16F;
+		posY -= 0.1D;
+		posZ -= MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * (hand == EnumHand.MAIN_HAND ? 1 : -1) * 0.16F;
 		this.setPosition(posX, posY, posZ);
 		motionX = -MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0F * (float) Math.PI);
 		motionZ = MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0F * (float) Math.PI);

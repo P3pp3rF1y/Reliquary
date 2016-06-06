@@ -7,6 +7,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -21,8 +22,8 @@ public class EntityBlazeShot extends EntityShotBase {
 		super(par1World);
 	}
 
-	public EntityBlazeShot(World par1World, EntityPlayer par2EntityPlayer) {
-		super(par1World, par2EntityPlayer);
+	public EntityBlazeShot(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
+		super(par1World, par2EntityPlayer, hand);
 	}
 
 	@Override
