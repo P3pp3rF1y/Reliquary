@@ -10,8 +10,8 @@
                     "weight": 1,
                     "functions": [
                         {
-                        "function": "minecraft:set_data",
-                        "data": 3
+                            "function": "minecraft:set_data",
+                            "data": 3
                         }
                     ]
                 }
@@ -19,6 +19,40 @@
             "conditions": [
                 {
                     "condition": "killed_by_player"
+                },
+                {
+                    "condition": "random_chance_with_looting",
+                    "chance": 0.1,
+                    "looting_multiplier": 0.05
+                }
+            ]
+        },
+        {
+            "name": "powered_creeper",
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "xreliquary:mob_ingredient",
+                    "weight": 1,
+                    "functions": [
+                        {
+                            "function": "minecraft:set_data",
+                            "data": 8
+                        }
+                    ]
+                }
+            ],
+            "conditions": [
+                {
+                    "condition": "killed_by_player"
+                },
+                {
+                    "condition": "entity_properties",
+                    "entity": "this",
+                    "properties": {
+                        "powered": true
+                    }
                 },
                 {
                     "condition": "random_chance_with_looting",

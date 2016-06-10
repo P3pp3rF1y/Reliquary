@@ -4,8 +4,10 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.properties.EntityPropertyManager;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import xreliquary.loot.EntityPowered;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
@@ -14,7 +16,7 @@ import java.util.List;
 public class ModLoot {
 	private static final List<String> CHEST_TABLES = ImmutableList.of(); //"abandoned_mineshaft", "desert_pyramid", "jungle_temple", "simple_dungeon", "stronghold_corridor", "village_blacksmith");
 
-	private static final List<String> ENTITY_TABLES = ImmutableList.of("blaze");
+	private static final List<String> ENTITY_TABLES = ImmutableList.of("bat", "blaze", "cave_spider", "creeper", "enderman", "ghast", "magma_cube", "skeleton", "slime", "snowman", "spider", "squid", "witch", "wither_skeleton", "zombie", "zombie_pigman");
 
 	public static void init() {
 		if(Settings.chestLootEnabled) {
@@ -23,8 +25,12 @@ public class ModLoot {
 			}
 		}
 
-		for(String s : ENTITY_TABLES) {
-			LootTableList.register(new ResourceLocation(Reference.MOD_ID, s));
+		if(Settings.mobDropsEnabled) {
+			for(String s : ENTITY_TABLES) {
+				LootTableList.register(new ResourceLocation(Reference.MOD_ID, s));
+			}
+
+			EntityPropertyManager.registerProperty(new EntityPowered.Serializer());
 		}
 	}
 
