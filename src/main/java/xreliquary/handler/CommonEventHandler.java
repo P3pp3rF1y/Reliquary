@@ -197,6 +197,7 @@ public class CommonEventHandler {
 		if(!Settings.mobDropsEnabled)
 			return;
 
+		/*
 		Entity e = event.getEntity();
 		handleSquidDropsCheck(e, event);
 		handleWitchDropsCheck(e, event);
@@ -210,6 +211,7 @@ public class CommonEventHandler {
 		handleEndermanDropsCheck(e, event);
 		handleBatsDropsCheck(e, event);
 		handleSnowGolemDropsCheck(e, event);
+		*/
 	}
 
 	public void handleEventDropListAddition(Entity e, LivingDropsEvent event, float probabilityBase, float lootingProbabilityIncrement, ItemStack ist) {
