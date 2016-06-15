@@ -1,0 +1,101 @@
+{
+    "pools": [
+        {
+            "name": "main",
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "entryName": "xreliquary:rib_bone",
+                    "name": "xreliquary:mob_ingredient",
+                    "weight": 8,
+                    "functions": [
+                        {
+                            "function": "minecraft:set_data",
+                            "data": 0
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "entryName": "xreliquary:chelicerae",
+                    "name": "xreliquary:mob_ingredient",
+                    "weight": 8,
+                    "functions": [
+                        {
+                            "function": "minecraft:set_data",
+                            "data": 2
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "entryName": "xreliquary:zombie_heart",
+                    "name": "xreliquary:mob_ingredient",
+                    "weight": 8,
+                    "functions": [
+                        {
+                            "function": "minecraft:set_data",
+                            "data": 6
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "xreliquary:witch_hat",
+                    "weight": 3,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
+
+                },
+                {
+                    "type": "item",
+                    "name": "xreliquary:glowing_water",
+                    "weight": 5,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
+
+                },
+                {
+                    "type": "empty",
+                    "weight": 68
+                }
+            ]
+        }
+    ]
+}
