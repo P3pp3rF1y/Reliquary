@@ -22,6 +22,12 @@ public class CauldronRecipeHandler implements IRecipeHandler<CauldronRecipeJEI> 
 
 	@Nonnull
 	@Override
+	public String getRecipeCategoryUid(@Nonnull CauldronRecipeJEI recipe) {
+		return Reference.JEI_CATEGORY_CAULDRON;
+	}
+
+	@Nonnull
+	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull CauldronRecipeJEI recipe) {
 		return recipe;
 	}

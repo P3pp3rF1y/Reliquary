@@ -22,6 +22,12 @@ public class MortarRecipeHandler implements IRecipeHandler<MortarRecipeJEI> {
 
 	@Nonnull
 	@Override
+	public String getRecipeCategoryUid(@Nonnull MortarRecipeJEI recipe) {
+		return Reference.JEI_CATEGORY_MORTAR;
+	}
+
+	@Nonnull
+	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull MortarRecipeJEI recipe) {
 		return recipe;
 	}
