@@ -356,9 +356,21 @@ public class ItemRendingGale extends ItemToggleable {
 			super.onItemRightClick(ist, world, player, hand);
 			if(!player.worldObj.isRemote)
 				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(hand, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
-		} else
+		} else {
 			player.setActiveHand(hand);
+			player.capabilities.allowFlying = true;
+		}
 		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
+	}
+
+	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft) {
+		if (!(entityLiving instanceof EntityPlayer))
+			return;
+
+		EntityPlayer player = (EntityPlayer) entityLiving;
+
+		player.capabilities.allowFlying = false;
 	}
 
 	//a longer ranged version of "getMovingObjectPositionFromPlayer" basically
