@@ -386,7 +386,20 @@ public class ClientEventHandler {
 		if(rendingGaleStack == null)
 			return;
 
-		ItemStack featherStack = new ItemStack(Items.FEATHER, ModItems.rendingGale.getFeatherCount(rendingGaleStack), 0);
+		int currentCost = 0;
+
+		if (!player.capabilities.isCreativeMode && player.isHandActive()) {
+			int ticksInUse = ModItems.rendingGale.getMaxItemUseDuration(rendingGaleStack) - player.getItemInUseCount();
+
+			if (ModItems.rendingGale.isFlightMode(rendingGaleStack)) {
+				currentCost = ModItems.rendingGale.getChargeCost() * ticksInUse;
+			} else if (ModItems.rendingGale.isBoltMode(rendingGaleStack)) {
+				currentCost = ModItems.rendingGale.getBoltChargeCost() * (ticksInUse / 8);
+			}
+		}
+
+		ItemStack featherStack = new ItemStack(Items.FEATHER, ModItems.rendingGale.getFeatherCount(rendingGaleStack) - currentCost, 0);
+
 		renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Settings.HudPositions.rendingGale, 0, Math.max(featherStack.stackSize / 100, 0));
 	}
 

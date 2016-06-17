@@ -8,6 +8,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.init.ModCapabilities;
 import xreliquary.items.util.handgun.IHandgunData;
 
@@ -51,6 +53,7 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 		buf.writeShort(bulletType);
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IMessage onMessage(PacketHandgunDataSync message, MessageContext ctx) {
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
