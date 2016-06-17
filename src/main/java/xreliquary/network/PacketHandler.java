@@ -22,8 +22,6 @@ public class PacketHandler {
 		idx++;
 		networkWrapper.registerMessage(PacketItemHandlerSync.class, PacketItemHandlerSync.class, idx, Side.CLIENT);
 		idx++;
-		networkWrapper.registerMessage(PacketPlayerItemHandlerSync.class, PacketPlayerItemHandlerSync.class, idx, Side.CLIENT);
-		idx++;
 		networkWrapper.registerMessage(PacketHandgunDataSync.class, PacketHandgunDataSync.class, idx, Side.CLIENT);
 	}
 }

@@ -236,7 +236,7 @@ public class ClientEventHandler {
 
 			if(currenPlantable != null) {
 				secondaryStack = currenPlantable.copy();
-				int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableSlot(harvestRodStack), player);
+				int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableSlot(harvestRodStack));
 
 				secondaryStack.stackSize = plantableCount;
 			}

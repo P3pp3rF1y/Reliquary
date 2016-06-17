@@ -43,10 +43,8 @@ import xreliquary.init.ModItems;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.items.util.HarvestRodItemStackHandler;
 import xreliquary.items.util.IHarvestRodCache;
-import xreliquary.network.PacketHandgunDataSync;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketItemHandlerSync;
-import xreliquary.network.PacketPlayerItemHandlerSync;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -149,33 +147,39 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	@Override
-	public void onUpdate(ItemStack harvestRod, World world, Entity e, int slotNumber, boolean isSelected) {
+	public void onUpdate(ItemStack ist, World world, Entity e, int slotNumber, boolean isSelected) {
+		//TODO remove backwards compatibility in the future
+		handleBackwardsCompatibility(ist);
+
 		if(world.isRemote)
 			return;
-
-		if(!(e instanceof EntityPlayer))
+		EntityPlayer player = null;
+		if(e instanceof EntityPlayer) {
+			player = (EntityPlayer) e;
+		}
+		if(player == null)
 			return;
 
-		EntityPlayer player = (EntityPlayer) e;
-
-		if(this.isEnabled(harvestRod)) {
-			if(getBoneMealCount(harvestRod) + getBonemealWorth() <= getBonemealLimit()) {
+		if(this.isEnabled(ist)) {
+			if(getBoneMealCount(ist) + getBonemealWorth() <= getBonemealLimit()) {
 				if(InventoryHelper.consumeItem(new ItemStack(Items.DYE, 1, Reference.WHITE_DYE_META), player)) {
-					setBoneMealCount(harvestRod, getBoneMealCount(harvestRod) + getBonemealWorth(), slotNumber, player);
+					setBoneMealCount(ist, getBoneMealCount(ist) + getBonemealWorth(), slotNumber, player);
 				}
 			}
 
-			consumePlantables(harvestRod, player, slotNumber);
+			consumePlantables(ist, player, slotNumber);
 		}
 
-		if(harvestRod == player.getHeldItemMainhand()) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.MAIN_HAND, getItemHandlerNBT(harvestRod)), (EntityPlayerMP) player);
-		} else if(harvestRod == player.getHeldItemOffhand()) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(harvestRod)), (EntityPlayerMP) player);
+		if(player.inventory.getStackInSlot(slotNumber) != null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.harvestRod && isSelected) {
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
+		} else if(player.inventory.offHandInventory[0] != null && player.inventory.offHandInventory[0].getItem() == ModItems.harvestRod) {
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 		}
 	}
 
-	private NBTTagCompound getItemHandlerNBT(IItemHandler itemHandler) {
+	private NBTTagCompound getItemHandlerNBT(ItemStack ist) {
+		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
 		if(!(itemHandler instanceof FilteredItemStackHandler))
 			return null;
 
@@ -184,10 +188,39 @@ public class ItemHarvestRod extends ItemToggleable {
 		return filteredHandler.serializeNBT();
 	}
 
-	private NBTTagCompound getItemHandlerNBT(ItemStack ist) {
-		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+	@Deprecated
+	private void handleBackwardsCompatibility(ItemStack ist) {
+		if(ist.getTagCompound() != null && ist.getTagCompound().hasKey("bonemeal")) {
+			IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-		return getItemHandlerNBT(itemHandler);
+			if(itemHandler instanceof FilteredItemStackHandler) {
+				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+
+				if(ist.getTagCompound().hasKey("bonemeal")) {
+					filteredHandler.setTotalAmount(0, NBTHelper.getInteger("bonemeal", ist));
+					ist.getTagCompound().removeTag("bonemeal");
+				}
+
+				if(ist.getTagCompound().hasKey("Items")) {
+					NBTTagList itemsList = ist.getTagCompound().getTagList("Items", 10);
+					NBTTagList quantities = ist.getTagCompound().getTagList(PLANTABLE_QUANTITIES_NBT_TAG, 3);
+
+					for(int i = 0; i < itemsList.tagCount(); ++i) {
+						NBTTagCompound item = itemsList.getCompoundTagAt(i);
+						byte slotIndex = item.getByte("Slot");
+						if(slotIndex >= 0) {
+							int slot = itemHandler.getSlots() - 1;
+							filteredHandler.insertItem(slot, ItemStack.loadItemStackFromNBT(item), false);
+							filteredHandler.setTotalAmount(filteredHandler.getParentSlot(slot), ((NBTTagInt) quantities.get(i)).getInt());
+						}
+					}
+					ist.getTagCompound().removeTag("Items");
+					ist.getTagCompound().removeTag(PLANTABLE_QUANTITIES_NBT_TAG);
+				}
+			}
+
+			setMode(ist, BONE_MEAL_MODE);
+		}
 	}
 
 	private void consumePlantables(ItemStack harvestRod, EntityPlayer player, int slotNumber) {
@@ -196,7 +229,7 @@ public class ItemHarvestRod extends ItemToggleable {
 			if(currentStack == null) {
 				continue;
 			}
-			if(currentStack.getItem() instanceof IPlantable && incrementPlantable(harvestRod, currentStack)) {
+			if(currentStack.getItem() instanceof IPlantable && incrementPlantable(harvestRod, currentStack, slotNumber, player)) {
 				InventoryHelper.consumeItem(currentStack, player, 0, 1);
 				break;
 			}
@@ -283,19 +316,8 @@ public class ItemHarvestRod extends ItemToggleable {
 			setBoneMealCount(ist, getBoneMealCount(ist) - getBonemealCost(), hand, player);
 	}
 
-	private EnumHand getActiveHand(EntityPlayer player, ItemStack ist) {
-		if(player.getHeldItemMainhand() == ist)
-			return EnumHand.MAIN_HAND;
-
-		return EnumHand.OFF_HAND;
-	}
-
 	public int getBoneMealCount(ItemStack ist) {
-		return getBoneMealCount(ist, null);
-	}
-
-	public int getBoneMealCount(ItemStack ist, EntityPlayer player) {
-		IItemHandler itemHandler = getItemHandler(ist, player);
+		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
 			return 0;
@@ -305,27 +327,8 @@ public class ItemHarvestRod extends ItemToggleable {
 		return filteredHandler.getTotalAmount(HarvestRodItemStackHandler.BONEMEAL_SLOT);
 	}
 
-	private IItemHandler getItemHandler(ItemStack ist, EntityPlayer player) {
-		if(player != null && player.isHandActive()) {
-			return getPlayerItemHandler(ist, player);
-		}
-		return ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-	}
-
-	private IItemHandler getPlayerItemHandler(EnumHand hand, EntityPlayer player) {
-		return player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, hand == EnumHand.MAIN_HAND ? EnumFacing.EAST : EnumFacing.WEST);
-	}
-
-	private IItemHandler getPlayerItemHandler(ItemStack ist, EntityPlayer player) {
-		return getPlayerItemHandler(getActiveHand(player, ist), player);
-	}
-
 	public void setBoneMealCount(ItemStack ist, int boneMealCount) {
-		setBoneMealCount(ist, boneMealCount, null);
-	}
-
-	public void setBoneMealCount(ItemStack ist, int boneMealCount, EntityPlayer player) {
-		IItemHandler itemHandler = getItemHandler(ist, player);
+		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
 			return;
@@ -336,7 +339,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
 	}
 
-	private boolean incrementPlantable(ItemStack harvestRod, ItemStack plantable) {
+	private boolean incrementPlantable(ItemStack harvestRod, ItemStack plantable, int slotNumber, EntityPlayer player) {
 		IItemHandler itemHandler = harvestRod.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -350,25 +353,27 @@ public class ItemHarvestRod extends ItemToggleable {
 		for(int slot = 2; slot < filteredHandler.getSlots(); slot++) {
 			ItemStack remainingStack = filteredHandler.insertItem(slot, plantableCopy, false);
 			if(remainingStack == null || remainingStack.stackSize == 0) {
+				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(harvestRod)), (EntityPlayerMP) player);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private void setBoneMealCount(ItemStack harvestRod, int boneMealCount, int slotNumber, EntityPlayer player) {
-		setBoneMealCount(harvestRod, boneMealCount);
+	private void setBoneMealCount(ItemStack ist, int boneMealCount, int slotNumber, EntityPlayer player) {
+		setBoneMealCount(ist, boneMealCount);
+
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 	}
 
-	private void setBoneMealCount(ItemStack harvestRod, int boneMealCount, EnumHand hand, EntityPlayer player) {
-		setBoneMealCount(harvestRod, boneMealCount, player);
+	private void setBoneMealCount(ItemStack ist, int boneMealCount, EnumHand hand, EntityPlayer player) {
+		setBoneMealCount(ist, boneMealCount);
 
-		if (player != null && player.isHandActive())
-			PacketHandler.networkWrapper.sendTo(new PacketPlayerItemHandlerSync(getActiveHand(player, harvestRod) == EnumHand.MAIN_HAND ? EnumFacing.EAST : EnumFacing.WEST, getItemHandlerNBT(harvestRod)), (EntityPlayerMP) player);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(hand, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 	}
 
 	private void decrementPlantable(ItemStack harvestRod, int parentSlot, EnumHand hand, EntityPlayer player) {
-		IItemHandler itemHandler = getItemHandler(harvestRod, player);
+		IItemHandler itemHandler = harvestRod.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
 			return;
@@ -377,27 +382,17 @@ public class ItemHarvestRod extends ItemToggleable {
 
 		filteredHandler.setTotalAmount(parentSlot, filteredHandler.getTotalAmount(parentSlot) - 1);
 
-		if (player != null && player.isHandActive())
-			PacketHandler.networkWrapper.sendTo(new PacketPlayerItemHandlerSync(getActiveHand(player, harvestRod) == EnumHand.MAIN_HAND ? EnumFacing.EAST : EnumFacing.WEST, getItemHandlerNBT(harvestRod)), (EntityPlayerMP) player);
+		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(hand, getItemHandlerNBT(harvestRod)), (EntityPlayerMP) player);
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack harvestRod, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 		if(player.isSneaking())
-			return super.onItemRightClick(harvestRod, world, player, hand);
+			return super.onItemRightClick(stack, world, player, hand);
 
 		player.setActiveHand(hand);
 
-		//copy capability data to player temp storage
-		IItemHandler itemHandler = harvestRod.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-
-		IItemHandler playerItemHandler = getPlayerItemHandler(hand, player);
-
-		if (playerItemHandler instanceof FilteredItemStackHandler) {
-			((FilteredItemStackHandler) playerItemHandler).deserializeNBT(getItemHandlerNBT(itemHandler));
-		}
-
-		return new ActionResult<>(EnumActionResult.SUCCESS, harvestRod);
+		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
@@ -412,16 +407,6 @@ public class ItemHarvestRod extends ItemToggleable {
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		//copy temp capability data back to item
-		IItemHandler playerItemHandler = getPlayerItemHandler(harvestRod, player);
-
-		IItemHandler itemHandler = harvestRod.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-
-		if(itemHandler instanceof FilteredItemStackHandler) {
-			((FilteredItemStackHandler) itemHandler).deserializeNBT(getItemHandlerNBT(playerItemHandler));
-		}
-
-		//process block click stuff
 		RayTraceResult result = this.rayTrace(player.worldObj, player, true);
 
 		if(result != null) {
@@ -462,7 +447,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
 			int updatedPlantableQuantity = getPlantableQuantity(stack, plantableSlot) - numberAdded;
 
-			setPlantableQuantity(stack, plantableSlot, updatedPlantableQuantity, player);
+			setPlantableQuantity(stack, plantableSlot, updatedPlantableQuantity, hand, player);
 			if(updatedPlantableQuantity == 0)
 				shiftModeOnEmptyPlantable(stack, plantableSlot);
 		}
@@ -717,11 +702,7 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	public int getPlantableQuantity(ItemStack harvestRod, int parentSlot) {
-		return getPlantableQuantity(harvestRod, parentSlot, null);
-	}
-
-	public int getPlantableQuantity(ItemStack harvestRod, int parentSlot, EntityPlayer player) {
-		IItemHandler itemHandler = getItemHandler(harvestRod, player);
+		IItemHandler itemHandler = harvestRod.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
 			return 0;
@@ -732,11 +713,11 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	public void setPlantableQuantity(ItemStack harvestRod, byte plantableSlot, int quantity) {
-		setPlantableQuantity(harvestRod, plantableSlot, quantity, null);
+		setPlantableQuantity(harvestRod, plantableSlot, quantity, null, null);
 	}
 
-	public void setPlantableQuantity(ItemStack harvestRod, byte plantableSlot, int quantity, EntityPlayer player) {
-		IItemHandler itemHandler = getItemHandler(harvestRod, player);
+	public void setPlantableQuantity(ItemStack harvestRod, byte plantableSlot, int quantity, EnumHand hand, EntityPlayer player) {
+		IItemHandler itemHandler = harvestRod.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
 			return;
@@ -744,5 +725,8 @@ public class ItemHarvestRod extends ItemToggleable {
 		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 
 		filteredHandler.setTotalAmount(plantableSlot, quantity);
+
+		if(quantity != 0 && player != null)
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(hand, getItemHandlerNBT(harvestRod)), (EntityPlayerMP) player);
 	}
 }
