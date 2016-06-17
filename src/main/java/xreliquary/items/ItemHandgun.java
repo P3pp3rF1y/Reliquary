@@ -67,7 +67,7 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public short getBulletCount(ItemStack handgun) {
-		IHandgunData data = handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
+		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
 			return data.getBulletCount();
@@ -75,8 +75,12 @@ public class ItemHandgun extends ItemBase {
 		return 0;
 	}
 
+	private IHandgunData getHandgunData(ItemStack handgun) {
+		return handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
+	}
+
 	public void setBulletCount(ItemStack handgun, short bulletCount) {
-		IHandgunData data = handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
+		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
 			data.setBulletCount(bulletCount);
@@ -84,7 +88,7 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public short getBulletType(ItemStack handgun) {
-		IHandgunData data = handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
+		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
 			return data.getBulletType();
@@ -93,7 +97,7 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public void setBulletType(ItemStack handgun, short bulletType) {
-		IHandgunData data = handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
+		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
 			data.setBulletType(bulletType);
@@ -101,7 +105,7 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public boolean isInCooldown(ItemStack handgun) {
-		IHandgunData data = handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
+		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
 			return data.isInCoolDown();
@@ -110,7 +114,7 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public void setInCooldown(ItemStack handgun, boolean inCooldown) {
-		IHandgunData data = handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
+		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
 			data.setInCoolDown(inCooldown);
@@ -118,7 +122,7 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public long getCooldown(ItemStack handgun) {
-		IHandgunData data = handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
+		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
 			return data.getCoolDownTime();
@@ -127,7 +131,7 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public void setCooldown(ItemStack handgun, long coolDownTime) {
-		IHandgunData data = handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
+		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
 			data.setCoolDownTime(coolDownTime);
