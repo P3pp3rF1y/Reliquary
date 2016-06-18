@@ -70,7 +70,7 @@ public class CommonEventHandler {
 	@SubscribeEvent
 	public void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
 		// Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
-		if(event.player.getGameProfile().getName() == "Drullkus") {
+		if(event.player.getGameProfile().getName().equals("Drullkus")) {
 			if(!event.player.getEntityData().hasKey("gift")) {
 				if(event.player.inventory.addItemStackToInventory(new ItemStack(ModItems.witchHat))) {
 					event.player.getEntityData().setBoolean("gift", true);
