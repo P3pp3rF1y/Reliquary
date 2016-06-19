@@ -15,14 +15,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import xreliquary.init.ModBlocks;
-import xreliquary.init.ModCapabilities;
 import xreliquary.init.ModItems;
 import xreliquary.items.*;
-import xreliquary.items.util.IHarvestRodCache;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -38,11 +37,15 @@ public class ClientEventHandler {
 		if(event.getEntity() instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) event.getEntity();
 
-			if((player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == ModItems.handgun) || (player.getHeldItem(EnumHand.OFF_HAND) != null && player.getHeldItem(EnumHand.OFF_HAND).getItem() == ModItems.handgun && player.getActiveHand() == EnumHand.OFF_HAND)) {
+			boolean handgunInOff = player.getHeldItem(EnumHand.OFF_HAND) != null && player.getHeldItem(EnumHand.OFF_HAND).getItem() == ModItems.handgun;
+			boolean handgunInMain = player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == ModItems.handgun;
+
+
+			if(handgunInOff || handgunInMain) {
 				ModelBiped model = (ModelBiped) event.getRenderer().getMainModel();
 
-				if(player.isHandActive()) {
-					EnumHand hand = player.getActiveHand();
+				if(isHandgunActive(player, handgunInMain, handgunInOff)) {
+					EnumHand hand = getActiveHandgunHand(player, handgunInMain, handgunInOff);
 					EnumHandSide primaryHand = player.getPrimaryHand();
 
 					if(((hand == EnumHand.MAIN_HAND && primaryHand == EnumHandSide.RIGHT) || (hand == EnumHand.OFF_HAND && primaryHand == EnumHandSide.LEFT)) && model.rightArmPose != ModelBiped.ArmPose.BOW_AND_ARROW) {
@@ -60,6 +63,39 @@ public class ClientEventHandler {
 				}
 			}
 		}
+	}
+
+	private EnumHand getActiveHandgunHand(EntityPlayer player, boolean handgunInMain, boolean handgunInOff) {
+		if (handgunInMain != handgunInOff) {
+			return handgunInMain ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+		}
+
+		boolean mainValid = isValidTimeFrame(player.worldObj, player.getHeldItemMainhand());
+		boolean offValid = isValidTimeFrame(player.worldObj, player.getHeldItemOffhand());
+
+		if (mainValid != offValid)
+			return mainValid ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+
+		return ModItems.handgun.getCooldown(player.getHeldItemMainhand()) < ModItems.handgun.getCooldown(player.getHeldItemOffhand()) ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+	}
+
+	private boolean isHandgunActive(EntityPlayer player, boolean handgunInMain, boolean handgunInOff) {
+		if (handgunInMain && isValidTimeFrame(player.worldObj, player.getHeldItemMainhand()))
+			return true;
+
+		if (handgunInOff && isValidTimeFrame(player.worldObj, player.getHeldItemOffhand()))
+			return true;
+
+		return false;
+	}
+
+	private boolean isValidTimeFrame(World world, ItemStack handgun) {
+		long cooldownTime = ModItems.handgun.getCooldown(handgun) + 5;
+
+		if (cooldownTime - world.getWorldTime() <= ModItems.handgun.getMaxItemUseDuration(handgun) && cooldownTime >= world.getWorldTime())
+			return true;
+
+		return false;
 	}
 
 	@SubscribeEvent
