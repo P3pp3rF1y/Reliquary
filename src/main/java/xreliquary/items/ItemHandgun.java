@@ -4,7 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -21,6 +20,7 @@ import xreliquary.items.util.handgun.HandgunData;
 import xreliquary.items.util.handgun.IHandgunData;
 import xreliquary.network.PacketHandgunDataSync;
 import xreliquary.network.PacketHandler;
+import xreliquary.network.PacketPlayerHandgunDataSync;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
@@ -67,7 +67,11 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public short getBulletCount(ItemStack handgun) {
-		IHandgunData data = getHandgunData(handgun);
+		return getBulletCount(handgun, null);
+	}
+
+	public short getBulletCount(ItemStack handgun, EntityPlayer player) {
+		IHandgunData data = getHandgunData(handgun, player);
 
 		if(data != null) {
 			return data.getBulletCount();
@@ -75,12 +79,20 @@ public class ItemHandgun extends ItemBase {
 		return 0;
 	}
 
-	private IHandgunData getHandgunData(ItemStack handgun) {
+	private IHandgunData getHandgunData(ItemStack handgun, EntityPlayer player) {
+		if(player != null && player.isHandActive()) {
+			EnumHand hand = EnumHand.OFF_HAND;
+			if(player.getHeldItemMainhand() == handgun)
+				hand = EnumHand.MAIN_HAND;
+
+			return player.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, hand == EnumHand.MAIN_HAND ? EnumFacing.EAST : EnumFacing.WEST);
+		}
+
 		return handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
 	}
 
-	public void setBulletCount(ItemStack handgun, short bulletCount) {
-		IHandgunData data = getHandgunData(handgun);
+	public void setBulletCount(ItemStack handgun, short bulletCount, EntityPlayer player) {
+		IHandgunData data = getHandgunData(handgun, player);
 
 		if(data != null) {
 			data.setBulletCount(bulletCount);
@@ -88,7 +100,11 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public short getBulletType(ItemStack handgun) {
-		IHandgunData data = getHandgunData(handgun);
+		return getBulletType(handgun, null);
+	}
+
+	public short getBulletType(ItemStack handgun, EntityPlayer player) {
+		IHandgunData data = getHandgunData(handgun, player);
 
 		if(data != null) {
 			return data.getBulletType();
@@ -97,7 +113,11 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public void setBulletType(ItemStack handgun, short bulletType) {
-		IHandgunData data = getHandgunData(handgun);
+		setBulletType(handgun, bulletType, null);
+	}
+
+	public void setBulletType(ItemStack handgun, short bulletType, EntityPlayer player) {
+		IHandgunData data = getHandgunData(handgun, player);
 
 		if(data != null) {
 			data.setBulletType(bulletType);
@@ -105,7 +125,11 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public boolean isInCooldown(ItemStack handgun) {
-		IHandgunData data = getHandgunData(handgun);
+		return isInCooldown(handgun, null);
+	}
+
+	public boolean isInCooldown(ItemStack handgun, EntityPlayer player) {
+		IHandgunData data = getHandgunData(handgun, player);
 
 		if(data != null) {
 			return data.isInCoolDown();
@@ -114,7 +138,11 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public void setInCooldown(ItemStack handgun, boolean inCooldown) {
-		IHandgunData data = getHandgunData(handgun);
+		setInCooldown(handgun, inCooldown, null);
+	}
+
+	public void setInCooldown(ItemStack handgun, boolean inCooldown, EntityPlayer player) {
+		IHandgunData data = getHandgunData(handgun, player);
 
 		if(data != null) {
 			data.setInCoolDown(inCooldown);
@@ -122,7 +150,11 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	public long getCooldown(ItemStack handgun) {
-		IHandgunData data = getHandgunData(handgun);
+		return getCooldown(handgun, null);
+	}
+
+	public long getCooldown(ItemStack handgun, EntityPlayer player) {
+		IHandgunData data = getHandgunData(handgun, player);
 
 		if(data != null) {
 			return data.getCoolDownTime();
@@ -130,20 +162,12 @@ public class ItemHandgun extends ItemBase {
 		return 0;
 	}
 
-	public void setCooldown(ItemStack handgun, long coolDownTime) {
-		IHandgunData data = getHandgunData(handgun);
+	public void setCooldown(ItemStack handgun, long coolDownTime, EntityPlayer player) {
+		IHandgunData data = getHandgunData(handgun, player);
 
 		if(data != null) {
 			data.setCoolDownTime(coolDownTime);
 		}
-	}
-
-	@Override
-	public EnumAction getItemUseAction(ItemStack handgun) {
-		if(getBulletCount(handgun) > 0)
-			return EnumAction.NONE;
-		else
-			return EnumAction.BLOCK;
 	}
 
 	@Override
@@ -162,38 +186,41 @@ public class ItemHandgun extends ItemBase {
 		if(worldObj.isRemote)
 			return;
 
-		if(isInCooldown(handgun) && (isCooldownOver(worldObj, handgun) || !isValidCooldownTime(worldObj, handgun))) {
-			setInCooldown(handgun, false);
-		}
-
 		if(!(entity instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity;
 
+		if(isInCooldown(handgun, player) && (isCooldownOver(worldObj, handgun, player) || !isValidCooldownTime(worldObj, handgun, player))) {
+			setInCooldown(handgun, false, player);
+		}
+
 		if(handgun == player.getHeldItemMainhand()) {
-			PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(EnumHand.MAIN_HAND, getBulletCount(handgun), getBulletType(handgun)), (EntityPlayerMP) player);
+			if (player.isHandActive()) {
+				PacketHandler.networkWrapper.sendTo(new PacketPlayerHandgunDataSync(EnumHand.MAIN_HAND, getBulletCount(handgun, player), getBulletType(handgun, player), getCooldown(handgun, player), isInCooldown(handgun, player)), (EntityPlayerMP) player);
+			} else {
+				PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(EnumHand.MAIN_HAND, getBulletCount(handgun), getBulletType(handgun)), (EntityPlayerMP) player);
+			}
 		} else if(handgun == player.getHeldItemOffhand()) {
-			PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(EnumHand.OFF_HAND, getBulletCount(handgun), getBulletType(handgun)), (EntityPlayerMP) player);
+			if (player.isHandActive()) {
+				PacketHandler.networkWrapper.sendTo(new PacketPlayerHandgunDataSync(EnumHand.OFF_HAND, getBulletCount(handgun, player), getBulletType(handgun, player), getCooldown(handgun, player), isInCooldown(handgun, player)), (EntityPlayerMP) player);
+			} else {
+				PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(EnumHand.OFF_HAND, getBulletCount(handgun), getBulletType(handgun)), (EntityPlayerMP) player);
+			}
 		}
 	}
 
 	private boolean isCooldownOver(World worldObj, ItemStack handgun) {
-		return getCooldown(handgun) < worldObj.getWorldTime() && worldObj.getWorldTime() - getCooldown(handgun) < 12000;
+		return isCooldownOver(worldObj, handgun, null);
 	}
 
-	private boolean isValidCooldownTime(World worldObj, ItemStack handgun) {
-		return Math.min(Math.abs(worldObj.getWorldTime() - getCooldown(handgun)), Math.abs(worldObj.getWorldTime() - 23999 - getCooldown(handgun))) <= getMaxItemUseDuration(handgun);
+	private boolean isCooldownOver(World worldObj, ItemStack handgun, EntityPlayer player) {
+		return getCooldown(handgun, player) < worldObj.getWorldTime() && worldObj.getWorldTime() - getCooldown(handgun, player) < 12000;
 	}
 
-	private boolean cooledMoreThanSecondHandgun(ItemStack handgun, EntityPlayer player, EnumHand hand) {
-		if(!isInCooldown(handgun))
-			return true;
-
-		if(hand == EnumHand.MAIN_HAND)
-			return getCooldown(handgun) < getCooldown(player.getHeldItemOffhand());
-		else
-			return getCooldown(handgun) < getCooldown(player.getHeldItemMainhand());
+	private boolean isValidCooldownTime(World worldObj, ItemStack handgun, EntityPlayer player) {
+		return Math.min(Math.abs(worldObj.getWorldTime() - getCooldown(handgun, player)), Math.abs(worldObj.getWorldTime() - 23999 - getCooldown(handgun, player)))
+				<= Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Math.max(Reference.HANDGUN_COOLDOWN_SKILL_OFFSET, Reference.HANDGUN_RELOAD_SKILL_OFFSET);
 	}
 
 	private boolean secondHandgunCooledEnough(World world, EntityPlayer player, EnumHand hand) {
@@ -204,10 +231,10 @@ public class ItemHandgun extends ItemBase {
 		} else {
 			secondHandgun = player.getHeldItemMainhand();
 		}
-		if(!isInCooldown(secondHandgun))
+		if(!isInCooldown(secondHandgun, player))
 			return true;
 
-		if((getCooldown(secondHandgun) - world.getWorldTime()) < (getPlayerReloadDelay(player) / 2))
+		if((getCooldown(secondHandgun, player) - world.getWorldTime()) < (getPlayerReloadDelay(player) / 2))
 			return true;
 
 		return false;
@@ -222,8 +249,17 @@ public class ItemHandgun extends ItemBase {
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack handgun, World worldObj, EntityPlayer player, EnumHand hand) {
-		if((hasFilledMagazine(player) && getBulletCount(handgun) == 0) || (getBulletCount(handgun) > 0 && (!hasHandgunInSecondHand(player, hand) || cooledMoreThanSecondHandgun(handgun, player, hand)))) {
+		if (worldObj.isRemote)
+			return new ActionResult<>(EnumActionResult.PASS, handgun);
+
+		if((hasFilledMagazine(player) && getBulletCount(handgun) == 0) || (getBulletCount(handgun) > 0)) {
 			player.setActiveHand(hand);
+
+			copyDataToPlayer(handgun, player);
+
+			if (getBulletCount(handgun, player) <= 0)
+				setReloadCooldown(handgun, player);
+
 			return new ActionResult<>(EnumActionResult.SUCCESS, handgun);
 		}
 		return new ActionResult<>(EnumActionResult.PASS, handgun);
@@ -236,67 +272,106 @@ public class ItemHandgun extends ItemBase {
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		int maxUseOffset = getItemUseDuration() - getPlayerReloadDelay(player);
-		int actualCount = unadjustedCount - maxUseOffset;
-		actualCount -= 1;
-
 		//you can't reload if you don't have any full mags left, so the rest of the method doesn't fire at all.
-		if((getBulletCount(handgun) <= 0 && !hasFilledMagazine(player)) || actualCount == 0) {
-			player.stopActiveHand();
+		if(getBulletCount(handgun, player) <= 0 && !isInCooldown(handgun, player) && hasFilledMagazine(player)) {
+			setCooldown(handgun, player.worldObj.getWorldTime() + 12, player);
+			setInCooldown(handgun, true, player);
+			setBulletType(handgun, getMagazineTypeAndRemoveOne(player), player);
+			if(getBulletType(handgun, player) != 0) {
+				player.swingArm(player.getActiveHand());
+				this.spawnEmptyMagazine(player);
+				setBulletCount(handgun, (short) 8, player);
+				player.worldObj.playSound(null, player.getPosition(), ModSounds.xload, SoundCategory.PLAYERS, 0.25F, 1.0F);
+			}
 			return;
 		}
 
 		//loaded and ready to fire
-		if(!isInCooldown(handgun) && getBulletCount(handgun) > 0 && (!hasHandgunInSecondHand(player, player.getActiveHand()) || secondHandgunCooledEnough(player.worldObj, player, player.getActiveHand()))) {
-			player.stopActiveHand();
+		if(!isInCooldown(handgun, player) && getBulletCount(handgun, player) > 0 && (!hasHandgunInSecondHand(player, player.getActiveHand()) || secondHandgunCooledEnough(player.worldObj, player, player.getActiveHand()))) {
+			setCooldown(handgun, player.worldObj.getWorldTime() + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM), player);
+			setInCooldown(handgun, true, player);
+
+			fireBullet(handgun, player.worldObj, player, handgun == player.getHeldItemMainhand() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
+
+			if (getBulletCount(handgun, player) <= 0) {
+				setReloadCooldown(handgun, player);
+			}
 		}
+	}
+
+	private void setReloadCooldown(ItemStack handgun, EntityPlayer player) {
+		setCooldown(handgun, player.worldObj.getWorldTime() + getPlayerReloadDelay(player), player);
+		setInCooldown(handgun, true, player);
 	}
 
 	@Override
 	public void onPlayerStoppedUsing(ItemStack handgun, World worldIn, EntityLivingBase entityLiving, int timeLeft) {
+		if (worldIn.isRemote)
+			return;
+
 		if(!(entityLiving instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) entityLiving;
 
-		// fire bullet
-		if(getBulletCount(handgun) > 0) {
-			if(!isInCooldown(handgun)) {
-				setCooldown(handgun, worldIn.getWorldTime() + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM));
-				setInCooldown(handgun, true);
+		copyDataFromPlayer(handgun, player);
 
-				fireBullet(handgun, worldIn, player, handgun == player.getHeldItemMainhand() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
-			}
-			return;
-		}
-
-		//arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
-		setCooldown(handgun, player.worldObj.getWorldTime() + 12);
-		setInCooldown(handgun, true);
-		setBulletType(handgun, getMagazineTypeAndRemoveOne(player));
-		if(getBulletType(handgun) != 0) {
-			player.swingArm(player.getActiveHand());
-			this.spawnEmptyMagazine(player);
-			setBulletCount(handgun, (short) 8);
-			player.worldObj.playSound(null, player.getPosition(), ModSounds.xload, SoundCategory.PLAYERS, 0.25F, 1.0F);
-		}
 		if(getBulletCount(handgun) == 0) {
 			setBulletType(handgun, (short) 0);
 		}
 	}
 
-	@Override
-	public int getMaxItemUseDuration(ItemStack handgun) {
-		return this.getItemUseDuration();
+	private void copyDataToPlayer(ItemStack handgun, EntityPlayer player) {
+		if (player.worldObj.isRemote)
+			return;
+
+		IHandgunData handgunData = handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
+
+		if(handgunData != null) {
+			EnumFacing facing = EnumFacing.WEST;
+
+			if(player.getHeldItemMainhand() == handgun) {
+				facing = EnumFacing.EAST;
+			}
+
+			IHandgunData playerData = player.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, facing);
+
+			if(playerData != null) {
+				playerData.deserializeNBT(handgunData.serializeNBT());
+			}
+		}
+
 	}
 
-	private int getItemUseDuration() {
-		return Reference.HANDGUN_RELOAD_SKILL_OFFSET + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM;
+	private void copyDataFromPlayer(ItemStack handgun, EntityPlayer player) {
+		if (player.worldObj.isRemote)
+			return;
+
+		IHandgunData handgunData = handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
+
+		if(handgunData != null) {
+			EnumFacing facing = EnumFacing.WEST;
+
+			if(player.getHeldItemMainhand() == handgun) {
+				facing = EnumFacing.EAST;
+			}
+
+			IHandgunData playerData = player.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, facing);
+
+			if(playerData != null) {
+				handgunData.deserializeNBT(playerData.serializeNBT());
+			}
+		}
+	}
+
+	@Override
+	public int getMaxItemUseDuration(ItemStack handgun) {
+		return 6000;
 	}
 
 	private void fireBullet(ItemStack handgun, World worldObj, EntityPlayer player, EnumHand hand) {
 		if(!worldObj.isRemote) {
-			switch(getBulletType(handgun)) {
+			switch(getBulletType(handgun, player)) {
 				case 0:
 					return;
 				case Reference.NEUTRAL_SHOT_INDEX:
@@ -330,9 +405,9 @@ public class ItemHandgun extends ItemBase {
 
 			worldObj.playSound(null, player.getPosition(), ModSounds.xshot, SoundCategory.PLAYERS, 0.5F, 1.2F);
 
-			setBulletCount(handgun, (short) (getBulletCount(handgun) - 1));
-			if(getBulletCount(handgun) == 0) {
-				setBulletType(handgun, (short) 0);
+			setBulletCount(handgun, (short) (getBulletCount(handgun, player) - 1), player);
+			if(getBulletCount(handgun, player) == 0) {
+				setBulletType(handgun, (short) 0, player);
 			}
 			spawnCasing(player);
 		}
