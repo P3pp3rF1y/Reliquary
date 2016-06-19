@@ -186,6 +186,15 @@ public class ItemHandgun extends ItemBase {
 		return Math.min(Math.abs(worldObj.getWorldTime() - getCooldown(handgun)), Math.abs(worldObj.getWorldTime() - 23999 - getCooldown(handgun))) <= getMaxItemUseDuration(handgun);
 	}
 
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(ItemStack handgun, World worldObj, EntityPlayer player, EnumHand hand) {
+		if((hasFilledMagazine(player) && getBulletCount(handgun) == 0) || (getBulletCount(handgun) > 0 && (!hasHandgunInSecondHand(player, hand) || cooledMoreThanSecondHandgun(handgun, player, hand)))) {
+			player.setActiveHand(hand);
+			return new ActionResult<>(EnumActionResult.SUCCESS, handgun);
+		}
+		return new ActionResult<>(EnumActionResult.PASS, handgun);
+	}
+
 	private boolean cooledMoreThanSecondHandgun(ItemStack handgun, EntityPlayer player, EnumHand hand) {
 		if(!isInCooldown(handgun))
 			return true;
@@ -221,15 +230,6 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack handgun, World worldObj, EntityPlayer player, EnumHand hand) {
-		if((hasFilledMagazine(player) && getBulletCount(handgun) == 0) || (getBulletCount(handgun) > 0 && (!hasHandgunInSecondHand(player, hand) || cooledMoreThanSecondHandgun(handgun, player, hand)))) {
-			player.setActiveHand(hand);
-			return new ActionResult<>(EnumActionResult.SUCCESS, handgun);
-		}
-		return new ActionResult<>(EnumActionResult.PASS, handgun);
-	}
-
-	@Override
 	public void onUsingTick(ItemStack handgun, EntityLivingBase entity, int unadjustedCount) {
 		if(entity.worldObj.isRemote || !(entity instanceof EntityPlayer))
 			return;
@@ -241,7 +241,7 @@ public class ItemHandgun extends ItemBase {
 		actualCount -= 1;
 
 		//you can't reload if you don't have any full mags left, so the rest of the method doesn't fire at all.
-		if((getBulletCount(handgun) <= 0 && !hasFilledMagazine(player)) || actualCount == 0) {
+		if(!hasFilledMagazine(player) || actualCount == 0) {
 			player.stopActiveHand();
 			return;
 		}
@@ -250,6 +250,11 @@ public class ItemHandgun extends ItemBase {
 		if(!isInCooldown(handgun) && getBulletCount(handgun) > 0 && (!hasHandgunInSecondHand(player, player.getActiveHand()) || secondHandgunCooledEnough(player.worldObj, player, player.getActiveHand()))) {
 			player.stopActiveHand();
 		}
+	}
+
+	@Override
+	public int getMaxItemUseDuration(ItemStack handgun) {
+		return this.getItemUseDuration();
 	}
 
 	@Override
@@ -283,11 +288,6 @@ public class ItemHandgun extends ItemBase {
 		if(getBulletCount(handgun) == 0) {
 			setBulletType(handgun, (short) 0);
 		}
-	}
-
-	@Override
-	public int getMaxItemUseDuration(ItemStack handgun) {
-		return this.getItemUseDuration();
 	}
 
 	private int getItemUseDuration() {

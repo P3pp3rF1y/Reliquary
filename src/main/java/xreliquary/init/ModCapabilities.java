@@ -1,10 +1,11 @@
 package xreliquary.init;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.items.util.HarvestRodCache;
@@ -41,37 +42,6 @@ public class ModCapabilities {
 				@Override
 				public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 					return capability == HARVEST_ROD_CACHE ? HARVEST_ROD_CACHE.<T>cast(instance) : null;
-				}
-			});
-		}
-	}
-
-	@SubscribeEvent
-	public void onEntityConstruct(AttachCapabilitiesEvent.Entity evt) {
-		if (evt.getEntity() instanceof EntityPlayer) {
-			evt.addCapability(new ResourceLocation(Reference.MOD_ID, "IHandgunData"), new ICapabilityProvider() {
-
-				private IHandgunData mainHandgunData = new HandgunData();
-				private IHandgunData offHandgunData = new HandgunData();
-
-				@Override
-				public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-					if(capability == ModCapabilities.HANDGUN_DATA_CAPABILITY && (facing == EnumFacing.EAST || facing == EnumFacing.WEST))
-						return true;
-					return false;
-				}
-
-				@Override
-				public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-					if (capability != ModCapabilities.HANDGUN_DATA_CAPABILITY)
-						return null;
-
-					if(facing == EnumFacing.EAST)
-						return ModCapabilities.HANDGUN_DATA_CAPABILITY.cast(mainHandgunData);
-					else if (facing == EnumFacing.WEST)
-						return ModCapabilities.HANDGUN_DATA_CAPABILITY.cast(offHandgunData);
-
-					return null;
 				}
 			});
 		}
