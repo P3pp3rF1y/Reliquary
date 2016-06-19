@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -29,13 +28,13 @@ public class PacketPlayerHandgunDataSync implements IMessage, IMessageHandler<Pa
 	private EnumHand hand = EnumHand.MAIN_HAND;
 	private short bulletCount;
 	private short bulletType;
-	private long coolDownTime;
+	private int coolDownTime;
 	private boolean inCoolDown;
 
 	public PacketPlayerHandgunDataSync() {
 	}
 
-	public PacketPlayerHandgunDataSync(EnumHand hand, short bulletCount, short bulletType, long coolDownTime, boolean inCoolDown) {
+	public PacketPlayerHandgunDataSync(EnumHand hand, short bulletCount, short bulletType, int coolDownTime, boolean inCoolDown) {
 		this.hand = hand;
 		this.bulletCount = bulletCount;
 		this.bulletType = bulletType;
@@ -48,7 +47,7 @@ public class PacketPlayerHandgunDataSync implements IMessage, IMessageHandler<Pa
 		hand = buf.readBoolean() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
 		bulletCount = buf.readShort();
 		bulletType = buf.readShort();
-		coolDownTime = buf.readLong();
+		coolDownTime = buf.readInt();
 		inCoolDown = buf.readBoolean();
 	}
 
@@ -57,7 +56,7 @@ public class PacketPlayerHandgunDataSync implements IMessage, IMessageHandler<Pa
 		buf.writeBoolean(hand == EnumHand.MAIN_HAND);
 		buf.writeShort(bulletCount);
 		buf.writeShort(bulletType);
-		buf.writeLong(coolDownTime);
+		buf.writeInt(coolDownTime);
 		buf.writeBoolean(inCoolDown);
 	}
 
@@ -66,9 +65,7 @@ public class PacketPlayerHandgunDataSync implements IMessage, IMessageHandler<Pa
 	public IMessage onMessage(PacketPlayerHandgunDataSync message, MessageContext ctx) {
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
-		EnumFacing facing = message.hand == EnumHand.MAIN_HAND ? EnumFacing.EAST : EnumFacing.WEST;
-
-		IHandgunData handgunData = player.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, facing);
+		IHandgunData handgunData = player.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
 		if(handgunData != null) {
 
 			handgunData.setBulletCount(message.bulletCount);

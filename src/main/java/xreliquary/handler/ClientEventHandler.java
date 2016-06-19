@@ -415,11 +415,11 @@ public class ClientEventHandler {
 
 		ItemStack mainBulletStack = null;
 		if(mainHandgunStack != null) {
-			mainBulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(mainHandgunStack, player), ModItems.handgun.getBulletType(mainHandgunStack, player));
+			mainBulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(mainHandgunStack), ModItems.handgun.getBulletType(mainHandgunStack));
 		}
 		ItemStack offBulletStack = null;
 		if(offHandgunStack != null) {
-			offBulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(offHandgunStack, player), ModItems.handgun.getBulletType(offHandgunStack, player));
+			offBulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(offHandgunStack), ModItems.handgun.getBulletType(offHandgunStack));
 		}
 		renderHandgunHUD(mc, player, mainHandgunStack, mainBulletStack, offHandgunStack, offBulletStack);
 	}
