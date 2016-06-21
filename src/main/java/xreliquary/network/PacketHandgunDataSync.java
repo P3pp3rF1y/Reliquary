@@ -18,20 +18,26 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 	private EnumHand hand = EnumHand.MAIN_HAND;
 	private short bulletCount;
 	private short bulletType;
+	private boolean isInCooldown;
+	private long cooldownTime;
 
 	private static final int INVALID_SLOT = -1;
 
 	public PacketHandgunDataSync() {
 	}
 
-	public PacketHandgunDataSync(int playerSlotNumber, short bulletCount, short bulletType) {
+	public PacketHandgunDataSync(int playerSlotNumber, short bulletCount, short bulletType, boolean isInCooldown, long cooldownTime) {
 		this.playerSlotNumber = playerSlotNumber;
 		this.bulletCount = bulletCount;
 		this.bulletType = bulletType;
+		this.isInCooldown = isInCooldown;
+		this.cooldownTime = cooldownTime;
 	}
 
-	public PacketHandgunDataSync(EnumHand hand, short bulletCount, short bulletType) {
+	public PacketHandgunDataSync(EnumHand hand, short bulletCount, short bulletType, boolean isInCooldown, long cooldownTime) {
 		this.hand = hand;
+		this.isInCooldown = isInCooldown;
+		this.cooldownTime = cooldownTime;
 		this.playerSlotNumber = INVALID_SLOT;
 		this.bulletCount = bulletCount;
 		this.bulletType = bulletType;
@@ -43,6 +49,8 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 		hand = buf.readBoolean() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
 		bulletCount = buf.readShort();
 		bulletType = buf.readShort();
+		isInCooldown = buf.readBoolean();
+		cooldownTime = buf.readLong();
 	}
 
 	@Override
@@ -51,6 +59,8 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 		buf.writeBoolean(hand == EnumHand.MAIN_HAND);
 		buf.writeShort(bulletCount);
 		buf.writeShort(bulletType);
+		buf.writeBoolean(isInCooldown);
+		buf.writeLong(cooldownTime);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -71,6 +81,8 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 			if(data != null) {
 				data.setBulletCount(message.bulletCount);
 				data.setBulletType(message.bulletType);
+				data.setInCoolDown(message.isInCooldown);
+				data.setCoolDownTime(message.cooldownTime);
 			}
 		}
 

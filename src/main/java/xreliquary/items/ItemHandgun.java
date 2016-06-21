@@ -172,9 +172,9 @@ public class ItemHandgun extends ItemBase {
 		EntityPlayer player = (EntityPlayer) entity;
 
 		if(handgun == player.getHeldItemMainhand()) {
-			PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(EnumHand.MAIN_HAND, getBulletCount(handgun), getBulletType(handgun)), (EntityPlayerMP) player);
+			PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(EnumHand.MAIN_HAND, getBulletCount(handgun), getBulletType(handgun), isInCooldown(handgun), getCooldown(handgun)), (EntityPlayerMP) player);
 		} else if(handgun == player.getHeldItemOffhand()) {
-			PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(EnumHand.OFF_HAND, getBulletCount(handgun), getBulletType(handgun)), (EntityPlayerMP) player);
+			PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(EnumHand.OFF_HAND, getBulletCount(handgun), getBulletType(handgun), isInCooldown(handgun), getCooldown(handgun)), (EntityPlayerMP) player);
 		}
 	}
 
@@ -200,9 +200,9 @@ public class ItemHandgun extends ItemBase {
 			return true;
 
 		if(hand == EnumHand.MAIN_HAND)
-			return getCooldown(handgun) < getCooldown(player.getHeldItemOffhand());
+			return !isInCooldown(player.getHeldItemOffhand()) && getCooldown(handgun) < getCooldown(player.getHeldItemOffhand());
 		else
-			return getCooldown(handgun) < getCooldown(player.getHeldItemMainhand());
+			return !isInCooldown(player.getHeldItemMainhand()) && getCooldown(handgun) < getCooldown(player.getHeldItemMainhand());
 	}
 
 	private boolean secondHandgunCooledEnough(World world, EntityPlayer player, EnumHand hand) {
