@@ -22,6 +22,12 @@ public class AlkahestryChargingRecipeHandler implements IRecipeHandler<Alkahestr
 
 	@Nonnull
 	@Override
+	public String getRecipeCategoryUid(@Nonnull AlkahestryChargingRecipeJEI recipe) {
+		return Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING;
+	}
+
+	@Nonnull
+	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull AlkahestryChargingRecipeJEI recipe) {
 		return recipe;
 	}

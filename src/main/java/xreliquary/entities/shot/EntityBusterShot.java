@@ -3,6 +3,7 @@ package xreliquary.entities.shot;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -17,8 +18,8 @@ public class EntityBusterShot extends EntityShotBase {
 		super(par1World, par2, par4, par6);
 	}
 
-	public EntityBusterShot(World par1World, EntityPlayer par2EntityPlayer) {
-		super(par1World, par2EntityPlayer);
+	public EntityBusterShot(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
+		super(par1World, par2EntityPlayer, hand);
 	}
 
 	@Override
