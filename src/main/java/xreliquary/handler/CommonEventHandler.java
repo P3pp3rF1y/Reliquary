@@ -146,7 +146,7 @@ public class CommonEventHandler {
 	}
 
 	public void doSkeletonZhuCheck(Entity e, EntityPlayer p) {
-		if(e instanceof EntitySkeleton && ((EntitySkeleton) e).getSkeletonType() != 1) {
+		if(e instanceof EntitySkeleton && ((EntitySkeleton) e).func_189771_df() != SkeletonType.WITHER) {
 			if(playerHasItem(p, heartZhu(Reference.SKELETON_ZHU_META), false)) {
 				((EntitySkeleton) e).setAttackTarget(null);
 				((EntitySkeleton) e).setRevengeTarget(null);
@@ -155,7 +155,7 @@ public class CommonEventHandler {
 	}
 
 	public void doWitherSkeletonZhuCheck(Entity e, EntityPlayer p) {
-		if(e instanceof EntitySkeleton && ((EntitySkeleton) e).getSkeletonType() == 1) {
+		if(e instanceof EntitySkeleton && ((EntitySkeleton) e).func_189771_df() == SkeletonType.WITHER) {
 			if(playerHasItem(p, heartZhu(Reference.WITHER_SKELETON_ZHU_META), false)) {
 				((EntitySkeleton) e).setAttackTarget(null);
 				((EntitySkeleton) e).setRevengeTarget(null);
