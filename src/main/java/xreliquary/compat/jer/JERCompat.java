@@ -1,6 +1,3 @@
-//TODO add back with JER integration
-
-/*
 package xreliquary.compat.jer;
 
 import jeresources.api.IJERAPI;
@@ -51,14 +48,15 @@ public class JERCompat implements ICompat {
 		//Spider
 		registerMobDrop(EntitySpider.class, XRRecipes.ingredient(1, Reference.SPIDER_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.spider_fangs), Conditional.playerKill);
 
-*/
-/*      TODO fix when there is proper way to handle this in JER
+/*
+      TODO fix when there is proper way to handle this in JER
 		//Skeleton
 		registerMobDrop(EntitySkeleton.class, WatchableData.REGULAR_SKELETON, XRRecipes.ingredient(1, Reference.SKELETON_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.rib_bone), Conditional.playerKill);
 
 		//Wither Skeleton
 		registerMobDrop(EntitySkeleton.class, WatchableData.WITHER_SKELETON, XRRecipes.ingredient(1, Reference.WITHER_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.withered_rib), Conditional.playerKill);
-*//*
+*/
+
 
 
 		//Zombie
@@ -79,14 +77,15 @@ public class JERCompat implements ICompat {
 		//Creeper
 		registerMobDrop(EntityCreeper.class, XRRecipes.ingredient(1, Reference.CREEPER_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.creeper_gland), Conditional.playerKill);
 
-*/
-/* TODO fix when there are loot tables or JER logic
+/*
+ TODO fix when there are loot tables or JER logic
 		//Charged Creeper
 		LootDrop eyeOfTheStorm = new LootDrop(XRRecipes.ingredient(1, Reference.STORM_INGREDIENT_META), 1, 1, Settings.MobDrops.getBaseDrop(Names.eye_of_the_storm), Conditional.playerKill);
 		EntityCreeper chargedCreeper = new EntityCreeper(world);
 		chargedCreeper.getDataManager().updateObject(17, Byte.valueOf((byte)1));
 		api.getMobRegistry().register(chargedCreeper, LightLevel.hostile, 5, eyeOfTheStorm);
-*//*
+*/
+
 
 
 		//Enderman
@@ -108,4 +107,3 @@ public class JERCompat implements ICompat {
 		registerMobDrop(entity, WatchableData.EMPTY, drop, chance, conditionals);
 	}
 }
-*/

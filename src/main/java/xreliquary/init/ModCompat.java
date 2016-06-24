@@ -5,6 +5,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.compat.ICompat;
+import xreliquary.compat.jer.JERCompat;
 import xreliquary.compat.waila.WailaCompat;
 
 import java.util.ArrayList;
@@ -13,8 +14,8 @@ public class ModCompat {
 	private static ArrayList<ICompat> compats = new ArrayList<ICompat>();
 
 	public static void registerModCompat() {
-		//compats.add(new JERCompat());//TODO add back with JER compat
-		//compats.add(new TCCompat());
+		compats.add(new JERCompat());
+		//compats.add(new TCCompat()); // TODO add back when TC is updated
 		compats.add(new WailaCompat());
 	}
 
