@@ -1,5 +1,3 @@
-//TODO add back with Waila integration
-/*
 package xreliquary.compat.waila.provider;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -70,4 +68,3 @@ public class DataProviderPedestal extends CachedBodyDataProvider {
 		return null;
 	}
 }
-*/

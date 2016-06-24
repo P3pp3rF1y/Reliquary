@@ -1,5 +1,3 @@
-//TODO add back with Waila integration
-/*
 package xreliquary.compat.waila.provider;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -22,49 +20,48 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class DataProviderAltar implements IWailaDataProvider {
-    @Override
-    public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        return null;
-    }
+	@Override
+	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
+		return null;
+	}
 
-    @Override
-    public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        return null;
-    }
+	@Override
+	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+		return null;
+	}
 
-    @Override
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        if (Settings.wailaShiftForInfo && !accessor.getPlayer().isSneaking()) {
-            currenttip.add(ChatFormatting.ITALIC + I18n.translateToLocal("waila.xreliquary.shift_for_more") + ChatFormatting.RESET);
-            return currenttip;
-        }
+	@Override
+	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+		if(Settings.wailaShiftForInfo && !accessor.getPlayer().isSneaking()) {
+			currenttip.add(ChatFormatting.ITALIC + I18n.translateToLocal("waila.xreliquary.shift_for_more") + ChatFormatting.RESET);
+			return currenttip;
+		}
 
-        if (! (accessor.getBlock() instanceof BlockAlkahestryAltar && accessor.getTileEntity() instanceof TileEntityAltar))
-            return currenttip;
+		if(!(accessor.getBlock() instanceof BlockAlkahestryAltar && accessor.getTileEntity() instanceof TileEntityAltar))
+			return currenttip;
 
-        TileEntityAltar altar = (TileEntityAltar) accessor.getTileEntity();
+		TileEntityAltar altar = (TileEntityAltar) accessor.getTileEntity();
 
-        if(!altar.isActive()) {
-            currenttip.add(ChatFormatting.RED + I18n.translateToLocal("waila.xreliquary.altar.inactive") + ChatFormatting.RESET);
-            currenttip.add(altar.getRedstoneCount() + "x" + (new ItemStack(Items.REDSTONE).getDisplayName()));
-            return currenttip;
-        }
+		if(!altar.isActive()) {
+			currenttip.add(ChatFormatting.RED + I18n.translateToLocal("waila.xreliquary.altar.inactive") + ChatFormatting.RESET);
+			currenttip.add(altar.getRedstoneCount() + "x" + (new ItemStack(Items.REDSTONE).getDisplayName()));
+			return currenttip;
+		}
 
-        currenttip.add(ChatFormatting.GREEN + I18n.translateToLocal("waila.xreliquary.altar.active") + ChatFormatting.RESET);
-        currenttip.add(String.format(I18n.translateToLocal("waila.xreliquary.altar.time_remaining"), new SimpleDateFormat("mm:ss").format(altar.getCycleTime()*50)));
+		currenttip.add(ChatFormatting.GREEN + I18n.translateToLocal("waila.xreliquary.altar.active") + ChatFormatting.RESET);
+		currenttip.add(String.format(I18n.translateToLocal("waila.xreliquary.altar.time_remaining"), new SimpleDateFormat("mm:ss").format(altar.getCycleTime() * 50)));
 
-        return currenttip;
-    }
+		return currenttip;
+	}
 
-    @Override
-    public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        return null;
-    }
+	@Override
+	public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+		return null;
+	}
 
-    @Override
-    public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
-        return null;
-    }
+	@Override
+	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
+		return null;
+	}
 
 }
-*/
