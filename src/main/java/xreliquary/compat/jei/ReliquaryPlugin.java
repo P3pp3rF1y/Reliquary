@@ -40,6 +40,10 @@ public class ReliquaryPlugin implements IModPlugin {
 
 		//blacklist filled void tear
 		registry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(new ItemStack(ModItems.filledVoidTear));
+
+		ISubtypeRegistry nbtRegistry = registry.getJeiHelpers().getSubtypeRegistry();
+
+		nbtRegistry.useNbtForSubtypes(ModItems.potion, ModItems.potionEssence);
 	}
 
 	@Override

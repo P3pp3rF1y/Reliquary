@@ -39,10 +39,6 @@ repositories {
         name "Thaumcraft"
         artifactPattern "http://addons-origin.cursecdn.com/files/${thaumcraft_cf}/[module]-[revision].[ext]"
     }
-    ivy {
-        name "TConstruct"
-        artifactPattern "http://addons-origin.cursecdn.com/files/${tconstruct_cf}/[module]-[revision].[ext]"
-    }
 }
 
 
@@ -57,8 +53,8 @@ targetCompatibility = 1.8
 
 dependencies {
     deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
-    //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
-    //deobfCompile "slimeknights.TConstruct:TConstruct:${tconstruct_version}"
+    deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
+    deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     compile "mcp.mobius.waila:Waila:${waila_version}:dev"
     compile name:'JustEnoughResources', version: jer_version, ext: 'jar'
     compile name:'Baubles', version: baubles_version, ext: 'jar'
