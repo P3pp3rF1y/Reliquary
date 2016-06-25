@@ -36,10 +36,19 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	private int renderColor;
 	public PotionEssence essence = null;
 
-	public EntityThrownXRPotion(World world, EntityLivingBase elb, ItemStack ist) {
-		super(world, elb);
+	public EntityThrownXRPotion(World world, double x, double y, double z, ItemStack ist) {
+		super(world, x, y, z);
+		setEssence(ist);
+	}
+
+	private void setEssence(ItemStack ist) {
 		this.essence = new PotionEssence(ist.getTagCompound());
 		setRenderColor(getColor());
+	}
+
+	public EntityThrownXRPotion(World world, EntityLivingBase elb, ItemStack ist) {
+		super(world, elb);
+		setEssence(ist);
 	}
 
 	/**
