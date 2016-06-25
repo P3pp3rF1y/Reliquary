@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import baubles.api.BaubleType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -14,12 +15,14 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
 import xreliquary.init.ModFluids;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
@@ -187,8 +190,6 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 	}
 
-	//TODO add back with Baubles integration
-/*
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public BaubleType getBaubleType(ItemStack stack) {
@@ -199,7 +200,6 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 	public void onWornTick(ItemStack stack, EntityLivingBase player) {
 		this.onUpdate(stack, player.worldObj, player, 0, false);
 	}
-*/
 
 	private boolean disabledAudio() {
 		return Settings.FortuneCoin.disableAudio;
