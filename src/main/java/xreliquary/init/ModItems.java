@@ -1,9 +1,16 @@
 package xreliquary.init;
 
+import net.minecraft.block.BlockDispenser;
+import net.minecraft.dispenser.*;
+import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.projectile.EntityPotion;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.Reliquary;
+import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.items.*;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
@@ -105,6 +112,30 @@ public class ModItems {
 		registerItem(witchHat, Names.witch_hat);
 		registerItem(witherlessRose, Names.witherless_rose);
 		registerItem(potion, Names.potion);
+
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.potion, new IBehaviorDispenseItem() {
+			/**
+			 * Dispenses the specified ItemStack from a dispenser.
+			 */
+			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
+				if(!ModItems.potion.getSplash(stack))
+					return new BehaviorDefaultDispenseItem().dispense(source, stack);
+
+				return (new BehaviorProjectileDispense() {
+					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+						return new EntityThrownXRPotion(worldIn, position.getX(), position.getY(), position.getZ(), stack);
+					}
+
+					protected float getProjectileInaccuracy() {
+						return super.getProjectileInaccuracy() * 0.5F;
+					}
+
+					protected float getProjectileVelocity() {
+						return super.getProjectileVelocity() * 1.25F;
+					}
+				}).dispense(source, stack);
+			}
+		});
 	}
 
 	private static void registerItem(Item item, String name) {
@@ -118,7 +149,7 @@ public class ModItems {
 
 		item.setRegistryName(new ResourceLocation(Reference.MOD_ID, name));
 		GameRegistry.register(item);
-		
+
 		if(registerInJEI)
 			Reliquary.PROXY.registerJEI(item, name);
 	}

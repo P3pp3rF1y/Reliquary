@@ -1,17 +1,21 @@
 package xreliquary.items;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Optional;
 import xreliquary.reference.Compatibility;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = Compatibility.MOD_ID.BAUBLES, striprefs = true)
-public abstract class ItemBauble extends ItemBase /*implements IBauble*/ {
+public abstract class ItemBauble extends ItemBase implements IBauble {
 
 	public ItemBauble(String langName) {
 		super(langName);
 	}
 
-	//TODO add back with Baubles integration
-/*	@Override
+	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public abstract BaubleType getBaubleType(ItemStack stack);
 
@@ -43,5 +47,5 @@ public abstract class ItemBauble extends ItemBase /*implements IBauble*/ {
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public boolean canUnequip(ItemStack stack, EntityLivingBase player) {
 		return true;
-	}*/
+	}
 }
