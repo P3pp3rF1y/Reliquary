@@ -42,9 +42,15 @@ public class EntityAttractionPotion extends EntityThrownPotion {
 		if(!(el instanceof EntityAnimal))
 			return;
 		EntityAnimal e = (EntityAnimal) el;
-		if(e == null || e.getGrowingAge() != 0 || !(this.getThrower() instanceof EntityPlayer))
+		if(e == null || e.getGrowingAge() != 0)
 			return;
-		e.setInLove((EntityPlayer) this.getThrower());
+		if (this.getThrower() instanceof EntityPlayer) {
+			e.setInLove((EntityPlayer) this.getThrower());
+		}
+		else {
+			e.setInLove(null);
+		}
+
 		for(int var3 = 0; var3 < 7; ++var3) {
 			double var4 = rand.nextGaussian() * 0.02D;
 			double var6 = rand.nextGaussian() * 0.02D;

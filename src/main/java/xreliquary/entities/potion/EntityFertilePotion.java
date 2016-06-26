@@ -3,6 +3,7 @@ package xreliquary.entities.potion;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -46,9 +47,7 @@ public class EntityFertilePotion extends EntityThrownPotion {
 		for(int xD = -1; xD <= 1; xD++) {
 			for(int yD = -2; yD <= 1; yD++) {
 				for(int zD = -1; zD <= 1; zD++) {
-					if(this.getThrower() instanceof EntityPlayer) {
-						Items.DYE.onItemUse(new ItemStack(Items.DYE, 1, 15), (EntityPlayer) this.getThrower(), worldObj, new BlockPos(x + xD, y + yD, z + zD), EnumHand.MAIN_HAND, EnumFacing.UP, 0F, 0F, 0F);
-					}
+					ItemDye.applyBonemeal(new ItemStack(Items.DYE, 1, 15), worldObj, new BlockPos(x + xD, y + yD, z + zD));
 				}
 			}
 		}

@@ -67,8 +67,13 @@ public class EntityGlowingWater extends EntityThrowable {
 			Iterator i = eList.iterator();
 			while(i.hasNext()) {
 				EntityLiving e = (EntityLiving) i.next();
-				if(isUndead(e) && this.getThrower() != null && this.getThrower() instanceof EntityPlayer) {
-					e.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) this.getThrower()), 18 + rand.nextInt(17));
+				if(isUndead(e)) {
+					float amount = 18 + rand.nextInt(17);
+					if (this.getThrower() != null && this.getThrower() instanceof EntityPlayer) {
+						e.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) this.getThrower()), amount);
+					} else {
+						e.attackEntityFrom(DamageSource.magic, amount);
+					}
 				}
 			}
 
