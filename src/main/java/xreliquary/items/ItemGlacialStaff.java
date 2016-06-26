@@ -94,15 +94,38 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 			}
 		}
 
-		for(int xOff = -5; xOff <= 5; xOff++) {
-			for(int yOff = -5; yOff <= 5; yOff++) {
-				for(int zOff = -5; zOff <= 5; zOff++) {
-					if(Math.abs(yOff) < 3 && Math.abs(xOff) < 3 && Math.abs(zOff) < 3 && !(Math.abs(xOff) == 2 && Math.abs(zOff) == 2))
-						continue;
-					doThawCheck(ist, x, y, z, world, xOff, yOff, zOff);
-				}
+		if (!world.isRemote) {
+			for(BlockPos pos : getBlockLocations(ist)) {
+				int xOff = Math.abs(MathHelper.floor_double(player.posX) - pos.getX());
+				int yOff = Math.abs(MathHelper.floor_double(player.posY) - pos.getY());
+				int zOff = Math.abs(MathHelper.floor_double(player.posZ) - pos.getZ());
+
+				if(xOff < 3 && yOff < 3 && zOff < 3 && !(xOff == 2 && zOff == 2))
+					continue;
+
+				doThawCheck(ist, pos.getX(), pos.getY(), pos.getZ(), world);
 			}
 		}
+	}
+
+	private BlockPos[] getBlockLocations(ItemStack ist) {
+		NBTTagCompound tagCompound = ist.getTagCompound();
+		if(tagCompound == null) {
+			tagCompound = new NBTTagCompound();
+		}
+
+		if(tagCompound.getTag("BlockLocations") == null)
+			tagCompound.setTag("BlockLocations", new NBTTagList());
+		NBTTagList tagList = tagCompound.getTagList("BlockLocations", 10);
+
+		BlockPos[] locations = new BlockPos[tagList.tagCount()];
+
+		for(int i = 0; i < tagList.tagCount(); i++) {
+			NBTTagCompound nbtLocation = (NBTTagCompound) tagList.get(i);
+			locations[i] = new BlockPos(nbtLocation.getInteger("x"), nbtLocation.getInteger("y"), nbtLocation.getInteger("z"));
+		}
+
+		return locations;
 	}
 
 	public void doFreezeCheck(ItemStack ist, int x, int y, int z, World world, int xOff, int zOff) {
@@ -113,17 +136,11 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 			addFrozenBlockToList(ist, x, y, z);
 			world.setBlockState(new BlockPos(x, y, z), Blocks.PACKED_ICE.getDefaultState());
 
-			float red = 0.75F;
-			float green = 0.75F;
-			float blue = 1.0F;
-
 			for(int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
-				if(world.isRemote) {
-					float xVel = world.rand.nextFloat();
-					float yVel = world.rand.nextFloat() + 0.5F;
-					float zVel = world.rand.nextFloat();
-					Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.REDSTONE.getParticleID(), x + xVel, y + yVel, z + zVel, red, green, blue);
-				}
+				float xVel = world.rand.nextFloat();
+				float yVel = world.rand.nextFloat() + 0.5F;
+				float zVel = world.rand.nextFloat();
+				world.spawnParticle(EnumParticleTypes.REDSTONE, x + xVel, y + yVel, z + zVel, 0.75F, 0.75F, 1.0F);
 			}
 		} else if(blockState.getBlock().getMaterial(blockState) == Material.LAVA && blockState.getValue(Blocks.LAVA.LEVEL) == 0) {
 			addFrozenBlockToList(ist, x, y, z);
@@ -139,10 +156,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 		}
 	}
 
-	public void doThawCheck(ItemStack ist, int x, int y, int z, World world, int xOff, int yOff, int zOff) {
-		x += xOff;
-		y += yOff;
-		z += zOff;
+	public void doThawCheck(ItemStack ist, int x, int y, int z, World world) {
 		IBlockState blockState = world.getBlockState(new BlockPos(x, y, z));
 		if(blockState == Blocks.PACKED_ICE.getDefaultState()) {
 			if(removeFrozenBlockFromList(ist, x, y, z)) {
@@ -164,12 +178,10 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 				float blue = 0.0F;
 
 				for(int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
-					if(world.isRemote) {
-						float xVel = world.rand.nextFloat();
-						float yVel = world.rand.nextFloat() + 0.5F;
-						float zVel = world.rand.nextFloat();
-						Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.REDSTONE.getParticleID(), x + xVel, y + yVel, z + zVel, red, green, blue);
-					}
+					float xVel = world.rand.nextFloat();
+					float yVel = world.rand.nextFloat() + 0.5F;
+					float zVel = world.rand.nextFloat();
+					world.spawnParticle(EnumParticleTypes.REDSTONE, x + xVel, y + yVel, z + zVel, red, green, blue);
 				}
 			}
 		}
