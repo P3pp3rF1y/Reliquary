@@ -14,6 +14,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
@@ -24,6 +25,11 @@ import java.util.Random;
 
 public class BlockFertileLilypad extends BlockBush {
 	private static final AxisAlignedBB LILY_PAD_AABB = new AxisAlignedBB(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.09375D, 0.9375D);
+
+	@Override
+	public EnumPlantType getPlantType(IBlockAccess world, BlockPos pos) {
+		return EnumPlantType.Water;
+	}
 
 	public BlockFertileLilypad() {
 		this.setTickRandomly(false);
