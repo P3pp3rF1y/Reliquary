@@ -10,5 +10,6 @@ public class Compatibility {
 		public static final String TINKERS_CONSTRUCT = "tconstruct";
 		public static final String OPEN_BLOCKS = "OpenBlocks";
 		public static final String ENDERIO = "EnderIO";
+		public static final String BLOOD_MAGIC = "BloodMagic";
 	}
 }
