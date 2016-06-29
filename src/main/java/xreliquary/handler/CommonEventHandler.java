@@ -6,10 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.*;
-import net.minecraft.entity.passive.EntityBat;
-import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -24,7 +21,6 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -36,7 +32,6 @@ import xreliquary.init.ModItems;
 import xreliquary.init.ModPotions;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemToggleable;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.XRFakePlayerFactory;
@@ -80,19 +75,43 @@ public class CommonEventHandler {
 	}
 
 	@SubscribeEvent
-	public void onEntityLiving(LivingEvent event) {
-		doTwilightCloakCheck(event);
-		//doPacifiedDebuffCheck(event);
-		doHeartZhuCheck(event);
-	}
-
-	@SubscribeEvent
 	public void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
 		doTwilightCloakCheck(event);
 		//doPacifiedDebuffCheck(event);
-		doHeartZhuCheck(event);
+		doHeartZhuCheckOnSetTarget(event);
 	}
 
+	@SubscribeEvent
+	public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+		doTwilightCloakCheck(event);
+		doHeartZhuCheckOnUpdate(event);
+	}
+
+	private void doHeartZhuCheckOnUpdate(LivingEvent event) {
+		if(!(event.getEntity() instanceof EntityLiving))
+			return;
+		EntityLiving entity = (EntityLiving) event.getEntity();
+
+		if (entity.getAttackTarget() == null || !(entity.getAttackTarget() instanceof EntityPlayer))
+			return;
+
+		EntityPlayer player = (EntityPlayer) entity.getAttackTarget();
+		boolean resetTarget = false;
+
+		if (entity instanceof EntityGhast) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.GHAST_META), false);
+		} else if (entity instanceof EntityMagmaCube) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META), false);
+		} else if (entity instanceof EntitySlime) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SLIME_META), false);
+		}
+
+		if (resetTarget) {
+			entity.setAttackTarget(null);
+			entity.setRevengeTarget(null);
+		}
+
+	}
 	//TODO figure out if this needs to be added for serpent staff
 	//
 	//    @SubscribeEvent
@@ -105,70 +124,49 @@ public class CommonEventHandler {
 	//        }
 	//    }
 
-	public void doHeartZhuCheck(LivingSetAttackTargetEvent event) {
+	public void doHeartZhuCheckOnSetTarget(LivingSetAttackTargetEvent event) {
 		if(event.getTarget() == null)
 			return;
 		if(!(event.getTarget() instanceof EntityPlayer))
 			return;
+
 		EntityPlayer player = (EntityPlayer) event.getTarget();
-		doZombieZhuCheck(event.getEntity(), player);
-		doSkeletonZhuCheck(event.getEntity(), player);
-		doWitherSkeletonZhuCheck(event.getEntity(), player);
-		doCreeperZhuCheck(event.getEntity(), player);
-	}
+		boolean resetTarget = false;
+		EntityLiving entity = (EntityLiving) event.getEntity();
 
-	public void doHeartZhuCheck(LivingEvent event) {
-		if(event.getEntity() instanceof EntityLiving) {
-			EntityLiving entityLiving = ((EntityLiving) event.getEntity());
-			if(entityLiving.getAttackTarget() == null)
-				return;
-			if(!(entityLiving.getAttackTarget() instanceof EntityPlayer))
-				return;
-			EntityPlayer player = (EntityPlayer) entityLiving.getAttackTarget();
-			doZombieZhuCheck(event.getEntity(), player);
-			doSkeletonZhuCheck(event.getEntity(), player);
-			doWitherSkeletonZhuCheck(event.getEntity(), player);
-			doCreeperZhuCheck(event.getEntity(), player);
-		}
-	}
-
-	private ItemStack heartZhu(int meta) {
-		return XRRecipes.nianZhu(meta);
-	}
-
-	public void doZombieZhuCheck(Entity e, EntityPlayer p) {
-		if(e instanceof EntityZombie && !(e instanceof EntityPigZombie)) {
-			if(playerHasItem(p, heartZhu(Reference.ZOMBIE_ZHU_META), false)) {
-				((EntityZombie) e).setAttackTarget(null);
-				((EntityZombie) e).setRevengeTarget(null);
+		if (entity instanceof EntityPigZombie) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META), false);
+		} else if (entity instanceof EntityZombie) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_META), false);
+		} else if (entity instanceof EntitySkeleton) {
+			if (((EntitySkeleton) entity).func_189771_df() == SkeletonType.WITHER) {
+				resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.WITHER_SKELETON_META), false);
+			} else {
+				resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SKELETON_META), false);
 			}
+		} else if (entity instanceof EntityCreeper) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.CREEPER_META), false);
+		} else if (entity instanceof EntityWitch) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.WITCH_META), false);
+		} else if (entity instanceof EntityCaveSpider) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.CAVE_SPIDER_META), false);
+		} else if (entity instanceof EntitySpider){
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SPIDER_META), false);
+		} else if (entity instanceof EntityEnderman) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ENDERMAN_META), false);
+		} else if (entity instanceof EntityBlaze) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.BLAZE_META), false);
+		} else if (entity instanceof EntityGhast) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.GHAST_META), false);
+		} else if (entity instanceof EntityMagmaCube) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META), false);
+		} else if (entity instanceof EntitySlime) {
+			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SLIME_META), false);
 		}
-	}
 
-	public void doSkeletonZhuCheck(Entity e, EntityPlayer p) {
-		if(e instanceof EntitySkeleton && ((EntitySkeleton) e).func_189771_df() != SkeletonType.WITHER) {
-			if(playerHasItem(p, heartZhu(Reference.SKELETON_ZHU_META), false)) {
-				((EntitySkeleton) e).setAttackTarget(null);
-				((EntitySkeleton) e).setRevengeTarget(null);
-			}
-		}
-	}
-
-	public void doWitherSkeletonZhuCheck(Entity e, EntityPlayer p) {
-		if(e instanceof EntitySkeleton && ((EntitySkeleton) e).func_189771_df() == SkeletonType.WITHER) {
-			if(playerHasItem(p, heartZhu(Reference.WITHER_SKELETON_ZHU_META), false)) {
-				((EntitySkeleton) e).setAttackTarget(null);
-				((EntitySkeleton) e).setRevengeTarget(null);
-			}
-		}
-	}
-
-	public void doCreeperZhuCheck(Entity e, EntityPlayer p) {
-		if(e instanceof EntityCreeper) {
-			if(playerHasItem(p, heartZhu(Reference.CREEPER_ZHU_META), false)) {
-				((EntityCreeper) e).setAttackTarget(null);
-				((EntityCreeper) e).setRevengeTarget(null);
-			}
+		if (resetTarget) {
+			entity.setAttackTarget(null);
+			entity.setRevengeTarget(null);
 		}
 	}
 

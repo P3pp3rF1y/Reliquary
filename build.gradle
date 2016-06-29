@@ -39,12 +39,10 @@ repositories {
         name "Thaumcraft"
         artifactPattern "http://addons-origin.cursecdn.com/files/${thaumcraft_cf}/[module]-[revision].[ext]"
     }
-/*
     ivy {
-        name "TConstruct"
-        artifactPattern "http://addons-origin.cursecdn.com/files/${tconstruct_cf}/[module]-[revision].[ext]"
+        name "BloodMagic"
+        artifactPattern "http://addons-origin.cursecdn.com/files/${blood_magic_cf}/[module]-[revision].[ext]"
     }
-*/
 }
 
 
@@ -64,6 +62,7 @@ dependencies {
     compile "mcp.mobius.waila:Waila:${waila_version}:dev"
     compile name:'JustEnoughResources', version: jer_version, ext: 'jar'
     compile name:'Baubles', version: baubles_version, ext: 'jar'
+    compile name:'BloodMagic', version: blood_magic_version, ext: 'jar'
     //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
     //compile name:'TConstruct', version: tconstruct_version, ext: 'jar'
 

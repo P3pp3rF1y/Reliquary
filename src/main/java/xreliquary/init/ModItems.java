@@ -10,6 +10,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.Reliquary;
+import xreliquary.entities.EntityGlowingWater;
+import xreliquary.entities.EntityHolyHandGrenade;
+import xreliquary.entities.potion.EntityAttractionPotion;
+import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.items.*;
 import xreliquary.reference.Names;
@@ -114,9 +118,6 @@ public class ModItems {
 		registerItem(potion, Names.potion);
 
 		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.potion, new IBehaviorDispenseItem() {
-			/**
-			 * Dispenses the specified ItemStack from a dispenser.
-			 */
 			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
 				if(!ModItems.potion.getSplash(stack))
 					return new BehaviorDefaultDispenseItem().dispense(source, stack);
@@ -124,6 +125,78 @@ public class ModItems {
 				return (new BehaviorProjectileDispense() {
 					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
 						return new EntityThrownXRPotion(worldIn, position.getX(), position.getY(), position.getZ(), stack);
+					}
+
+					protected float getProjectileInaccuracy() {
+						return super.getProjectileInaccuracy() * 0.5F;
+					}
+
+					protected float getProjectileVelocity() {
+						return super.getProjectileVelocity() * 1.25F;
+					}
+				}).dispense(source, stack);
+			}
+		});
+
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.glowingWater, new IBehaviorDispenseItem() {
+			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
+				return (new BehaviorProjectileDispense() {
+					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+						return new EntityGlowingWater(worldIn, position.getX(), position.getY(), position.getZ());
+					}
+
+					protected float getProjectileInaccuracy() {
+						return super.getProjectileInaccuracy() * 0.5F;
+					}
+
+					protected float getProjectileVelocity() {
+						return super.getProjectileVelocity() * 1.25F;
+					}
+				}).dispense(source, stack);
+			}
+		});
+
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.attractionPotion, new IBehaviorDispenseItem() {
+			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
+				return (new BehaviorProjectileDispense() {
+					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+						return new EntityAttractionPotion(worldIn, position.getX(), position.getY(), position.getZ());
+					}
+
+					protected float getProjectileInaccuracy() {
+						return super.getProjectileInaccuracy() * 0.5F;
+					}
+
+					protected float getProjectileVelocity() {
+						return super.getProjectileVelocity() * 1.25F;
+					}
+				}).dispense(source, stack);
+			}
+		});
+
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.fertilePotion, new IBehaviorDispenseItem() {
+			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
+				return (new BehaviorProjectileDispense() {
+					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+						return new EntityFertilePotion(worldIn, position.getX(), position.getY(), position.getZ());
+					}
+
+					protected float getProjectileInaccuracy() {
+						return super.getProjectileInaccuracy() * 0.5F;
+					}
+
+					protected float getProjectileVelocity() {
+						return super.getProjectileVelocity() * 1.25F;
+					}
+				}).dispense(source, stack);
+			}
+		});
+
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.holyHandGrenade, new IBehaviorDispenseItem() {
+			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
+				return (new BehaviorProjectileDispense() {
+					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+						return new EntityHolyHandGrenade(worldIn, position.getX(), position.getY(), position.getZ());
 					}
 
 					protected float getProjectileInaccuracy() {

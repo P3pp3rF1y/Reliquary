@@ -7,6 +7,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -30,36 +31,16 @@ public class ItemFertileLilyPad extends ItemBlockBase {
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		//this is the "ray-trace" portion of the method
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 		RayTraceResult result = this.rayTrace(world, player, true);
 
-		boolean blockPlaced = false;
+		if (result == null)
+			return new ActionResult<>(EnumActionResult.PASS, stack);
 
-		if(result != null) {
-			blockPlaced = TryPlacingLilyPad(stack, world, player, result);
+		if(TryPlacingLilyPad(stack, world, player, result)) {
+			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}
-
-		if(!blockPlaced) {
-			return super.onItemUse(stack, player, world, pos, hand, facing, hitX, hitY, hitZ);
-		}
-		return EnumActionResult.SUCCESS;
-	}
-
-	/**
-	 * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-	 */
-	public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn) {
-		RayTraceResult movingobjectposition = this.rayTrace(worldIn, playerIn, true);
-
-		if(movingobjectposition == null) {
-			return itemStackIn;
-		} else {
-			if(!TryPlacingLilyPad(itemStackIn, worldIn, playerIn, movingobjectposition))
-				return itemStackIn;
-
-			return itemStackIn;
-		}
+		return new ActionResult<>(EnumActionResult.FAIL, stack);
 	}
 
 	private boolean TryPlacingLilyPad(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, RayTraceResult result) {

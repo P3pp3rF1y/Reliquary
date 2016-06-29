@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionUtils;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
+import xreliquary.reference.Reference;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
 
@@ -21,14 +22,32 @@ public class ModItemColors {
 				public int getColorFromItemstack(ItemStack stack, int tintIndex) {
 					int meta = stack.getItemDamage();
 					switch(meta) {
-						case 0:
-							return Integer.parseInt(Colors.ZOMBIE_HEART_ZHU_COLOR, 16);
-						case 1:
-							return Integer.parseInt(Colors.SKELETON_HEART_ZHU_COLOR, 16);
-						case 2:
-							return Integer.parseInt(Colors.WITHER_SKELETON_HEART_ZHU_COLOR, 16);
-						case 3:
-							return Integer.parseInt(Colors.CREEPER_HEART_ZHU_COLOR, 16);
+						case Reference.NIAN_ZHU.ZOMBIE_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.ZOMBIE, 16);
+						case Reference.NIAN_ZHU.SKELETON_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.SKELETON, 16);
+						case Reference.NIAN_ZHU.WITHER_SKELETON_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.WITHER_SKELETON, 16);
+						case Reference.NIAN_ZHU.CREEPER_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.CREEPER, 16);
+						case Reference.NIAN_ZHU.WITCH_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.WITCH, 16);
+						case Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.ZOMBIE_PIGMAN, 16);
+						case Reference.NIAN_ZHU.CAVE_SPIDER_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.CAVE_SPIDER, 16);
+						case Reference.NIAN_ZHU.SPIDER_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.SPIDER, 16);
+						case Reference.NIAN_ZHU.ENDERMAN_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.ENDERMAN, 16);
+						case Reference.NIAN_ZHU.GHAST_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.GHAST, 16);
+						case Reference.NIAN_ZHU.SLIME_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.SLIME, 16);
+						case Reference.NIAN_ZHU.MAGMA_CUBE_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.MAGMA_CUBE, 16);
+						case Reference.NIAN_ZHU.BLAZE_META:
+							return Integer.parseInt(Colors.NIAN_ZHU.BLAZE, 16);
 					}
 					return Integer.parseInt(Colors.PURE, 16);
 				}

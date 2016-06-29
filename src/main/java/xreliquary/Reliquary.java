@@ -29,6 +29,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 import xreliquary.util.pedestal.*;
+import WayofTime.bloodmagic.item.ItemDaggerOfSacrifice;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS, dependencies = Reference.DEPENDENCIES)
 public class Reliquary {
@@ -110,6 +111,10 @@ public class Reliquary {
 			//PedestalRegistry.registerItemWrapper(BattleAxe.class, new PedestalMeleeWeaponWrapper());
 			//PedestalRegistry.registerItemWrapper(Scythe.class, new PedestalMeleeWeaponWrapper());
 		}
+		if (Loader.isModLoaded(Compatibility.MOD_ID.BLOOD_MAGIC)) {
+			PedestalRegistry.registerItemWrapper(ItemDaggerOfSacrifice.class, PedestalMeleeWeaponWrapper.class);
+		}
+
 
 		LogHelper.info("Loaded successfully!");
 	}
