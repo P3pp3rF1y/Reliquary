@@ -1,5 +1,7 @@
 package xreliquary.reference;
 
+import javax.naming.SizeLimitExceededException;
+
 public class Colors {
 
 	public static int get(String s) {
@@ -58,9 +60,20 @@ public class Colors {
 	public static final String SATURATION_COLOR = "AA8800";
 	public static final String HUNGER_COLOR = "772200";
 
-	public static final String ZOMBIE_HEART_ZHU_COLOR = "993300";
-	public static final String SKELETON_HEART_ZHU_COLOR = "FFFFCC";
-	public static final String WITHER_SKELETON_HEART_ZHU_COLOR = "333329";
-	public static final String CREEPER_HEART_ZHU_COLOR = "00CC00";
+	public static class NIAN_ZHU {
+		public static final String ZOMBIE = "993300";
+		public static final String SKELETON = "FFFFCC";
+		public static final String WITHER_SKELETON = "333329";
+		public static final String CREEPER = "00CC00";
+		public static final String WITCH = "340000";
+		public static final String ZOMBIE_PIGMAN = "EA9393";
+		public static final String CAVE_SPIDER = "C424E";
+		public static final String SPIDER = "342D27";
+		public static final String ENDERMAN = "161616";
+		public static final String GHAST = "F9F9F9";
+		public static final String SLIME = "51A03E";
+		public static final String MAGMA_CUBE="340000";
+		public static final String BLAZE="F6B201";
+	}
 
 }

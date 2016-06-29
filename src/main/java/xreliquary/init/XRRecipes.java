@@ -3,8 +3,10 @@ package xreliquary.init;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.PotionTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
@@ -326,16 +328,34 @@ public class XRRecipes {
 			addRecipe(false, false, new ItemStack(ModItems.destructionCatalyst, 1, 0), "tmc", "gim", "fgt", 't', Blocks.TNT, 'm', MOLTEN_CORE, 'c', CREEPER_GLAND, 'g', Items.GOLD_INGOT, 'i', ModItems.infernalTear, 'f', Items.FLINT_AND_STEEL);
 
 		// nian zhu heart pearls
-		addRecipe(false, false, heartPearl(Reference.ZOMBIE_ZHU_META), "ppp", "sts", "ppp", 'p', ZOMBIE_HEART, 's', Items.ROTTEN_FLESH, 't', Items.BONE);
-		addRecipe(false, false, heartPearl(Reference.SKELETON_ZHU_META), "ppp", "sts", "ppp", 'p', RIB_BONE, 's', Items.BONE, 't', Items.FLINT);
-		addRecipe(false, false, heartPearl(Reference.WITHER_SKELETON_ZHU_META), "ppp", "sts", "ppp", 'p', WITHER_RIB, 's', Items.BONE, 't', WITHER_SKULL);
-		addRecipe(false, false, heartPearl(Reference.CREEPER_ZHU_META), "ppp", "sts", "ppp", 'p', CREEPER_GLAND, 's', Items.GUNPOWDER, 't', Items.BONE);
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.ZOMBIE_META), "ppp", "sts", "ppp", 'p', ZOMBIE_HEART, 's', Items.ROTTEN_FLESH, 't', Items.BONE);
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.SKELETON_META), "ppp", "sts", "ppp", 'p', RIB_BONE, 's', Items.BONE, 't', Items.FLINT);
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.WITHER_SKELETON_META), "ppp", "sts", "ppp", 'p', WITHER_RIB, 's', Items.BONE, 't', WITHER_SKULL);
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.CREEPER_META), "ppp", "sts", "ppp", 'p', CREEPER_GLAND, 's', Items.GUNPOWDER, 't', Items.BONE);
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.WITCH_META), "ppp", "sts", "ppp", 'p', ModItems.witchHat, 's', Items.GLASS_BOTTLE, 't', Items.SPIDER_EYE);
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META), "ppp", "sts", "ppp", 'p', ZOMBIE_HEART, 's', Items.ROTTEN_FLESH, 't', Items.GOLDEN_SWORD);
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.CAVE_SPIDER_META), "ppp", "sts", "ppp", 'p', CHELICERAE, 's', Items.STRING, 't', PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), PotionTypes.POISON));
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.SPIDER_META), "ppp", "sts", "ppp", 'p', CHELICERAE, 's', Items.STRING, 't', Items.SPIDER_EYE);
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.ENDERMAN_META), "ppp", "sts", "ppp", 'p', NEBULOUS_HEART, 's', Items.ENDER_PEARL, 't', NEBULOUS_HEART);
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.BLAZE_META), "ppp", "sts", "ppp", 'p', MOLTEN_CORE, 's', Items.BLAZE_ROD, 't', Items.BLAZE_POWDER);
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.GHAST_META), "ppp", "sts", "ppp", 'p', Items.GHAST_TEAR, 's', Items.GUNPOWDER, 't', CREEPER_GLAND);
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.MAGMA_CUBE_META), "ppp", "sss", "ppp", 'p', MOLTEN_CORE, 's', Items.MAGMA_CREAM);
+		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.SLIME_META), "ppp", "sss", "ppp", 'p', SLIME_PEARL, 's', Items.SLIME_BALL);
 
 		// nian zhu actual items
-		addRecipe(true, false, nianZhu(Reference.ZOMBIE_ZHU_META), Items.STRING, heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META), heartPearl(Reference.ZOMBIE_ZHU_META));
-		addRecipe(true, false, nianZhu(Reference.SKELETON_ZHU_META), Items.STRING, heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META), heartPearl(Reference.SKELETON_ZHU_META));
-		addRecipe(true, false, nianZhu(Reference.WITHER_SKELETON_ZHU_META), Items.STRING, heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META), heartPearl(Reference.WITHER_SKELETON_ZHU_META));
-		addRecipe(true, false, nianZhu(Reference.CREEPER_ZHU_META), Items.STRING, heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META), heartPearl(Reference.CREEPER_ZHU_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.ZOMBIE_META), heartPearl(Reference.NIAN_ZHU.ZOMBIE_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.SKELETON_META), heartPearl(Reference.NIAN_ZHU.SKELETON_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.WITHER_SKELETON_META), heartPearl(Reference.NIAN_ZHU.WITHER_SKELETON_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.CREEPER_META), heartPearl(Reference.NIAN_ZHU.CREEPER_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.WITCH_META), heartPearl(Reference.NIAN_ZHU.WITCH_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META), heartPearl(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.CAVE_SPIDER_META), heartPearl(Reference.NIAN_ZHU.CAVE_SPIDER_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.SPIDER_META), heartPearl(Reference.NIAN_ZHU.SPIDER_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.ENDERMAN_META), heartPearl(Reference.NIAN_ZHU.ENDERMAN_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.BLAZE_META), heartPearl(Reference.NIAN_ZHU.BLAZE_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.GHAST_META), heartPearl(Reference.NIAN_ZHU.GHAST_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META), heartPearl(Reference.NIAN_ZHU.MAGMA_CUBE_META));
+		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.SLIME_META), heartPearl(Reference.NIAN_ZHU.SLIME_META));
 
 		/* potions and splash potions */
 
@@ -369,6 +389,10 @@ public class XRRecipes {
 
 		if(Settings.dropCraftingRecipesEnabled)
 			addMobDropCraftingRecipes();
+	}
+
+	private static void addNianZhuRecipe(ItemStack nianZhu, ItemStack pearl) {
+		addRecipe(true, false, nianZhu, Items.STRING, pearl, pearl, pearl, pearl, pearl, pearl);
 	}
 
 	private static void addMobDropCraftingRecipes() {
