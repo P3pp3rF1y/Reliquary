@@ -95,7 +95,7 @@ public class ConcussiveExplosion extends Explosion {
 
 		for(int var11 = 0; var11 < var9.size(); ++var11) {
 			Entity entity = (Entity) var9.get(var11);
-			if(!(entity instanceof EntityLiving)) {
+			if(!(entity instanceof EntityLiving) && (!(exploder instanceof EntityHolyHandGrenade) || !(entity instanceof EntityPlayer) || ((EntityHolyHandGrenade) exploder).getCustomName() == null || !((EntityHolyHandGrenade) exploder).getCustomName().contains(((EntityPlayer) entity).getGameProfile().getName()))) {
 				continue;
 			}
 			if(entity == shootingEntity && !hurtsPlayer) {
@@ -118,10 +118,6 @@ public class ConcussiveExplosion extends Explosion {
 					entity.motionX += d5 * d10;
 					entity.motionY += d7 * d10;
 					entity.motionZ += d9 * d10;
-
-					if(entity instanceof EntityPlayer) {
-						this.playerKnockbackMap.put((EntityPlayer) entity, new Vec3d(d5 * d10, d7 * d10, d9 * d10));
-					}
 				}
 			}
 		}
