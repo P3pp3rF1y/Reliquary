@@ -196,7 +196,7 @@ public class ModItems {
 			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
 				return (new BehaviorProjectileDispense() {
 					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-						return new EntityHolyHandGrenade(worldIn, position.getX(), position.getY(), position.getZ());
+						return new EntityHolyHandGrenade(worldIn, position.getX(), position.getY(), position.getZ(), stackIn.getDisplayName());
 					}
 
 					protected float getProjectileInaccuracy() {

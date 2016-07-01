@@ -129,6 +129,8 @@ public class CommonEventHandler {
 			return;
 		if(!(event.getTarget() instanceof EntityPlayer))
 			return;
+		if(!(event.getEntity() instanceof EntityLiving))
+			return;
 
 		EntityPlayer player = (EntityPlayer) event.getTarget();
 		boolean resetTarget = false;
