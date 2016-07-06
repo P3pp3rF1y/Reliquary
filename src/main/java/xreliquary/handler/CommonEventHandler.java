@@ -141,7 +141,7 @@ public class CommonEventHandler {
 		} else if (entity instanceof EntityZombie) {
 			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_META), false);
 		} else if (entity instanceof EntitySkeleton) {
-			if (((EntitySkeleton) entity).func_189771_df() == SkeletonType.WITHER) {
+			if (((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
 				resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.WITHER_SKELETON_META), false);
 			} else {
 				resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SKELETON_META), false);
