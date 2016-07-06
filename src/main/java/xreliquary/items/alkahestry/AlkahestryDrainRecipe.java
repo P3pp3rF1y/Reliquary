@@ -1,14 +1,12 @@
 package xreliquary.items.alkahestry;
 
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Settings;
-import xreliquary.util.CraftingHelper;
 import xreliquary.util.NBTHelper;
 
 public class AlkahestryDrainRecipe implements IRecipe {
@@ -22,9 +20,6 @@ public class AlkahestryDrainRecipe implements IRecipe {
 			if(stack == null)
 				continue;
 			if((stack.getItem() instanceof ItemAlkahestryTome)) {
-				if(!CraftingHelper.hasSlotCrafting(inv))
-					return false;
-
 				if(!valid)
 					valid = NBTHelper.getInteger("charge", stack) > 0;
 			} else {

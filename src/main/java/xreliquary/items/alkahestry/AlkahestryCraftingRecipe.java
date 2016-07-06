@@ -2,14 +2,12 @@ package xreliquary.items.alkahestry;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Settings;
-import xreliquary.util.CraftingHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
@@ -26,8 +24,6 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(stack != null) {
 				if(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome))) {
-					if(!CraftingHelper.hasSlotCrafting(inv))
-						return false;
 					tome = stack.copy();
 				} else if(!RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome))) {
 					if(valid == 0) {
