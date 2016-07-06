@@ -2,6 +2,7 @@ package xreliquary.compat.jei;
 
 import mezz.jei.api.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import xreliquary.compat.jei.alkahestry.*;
 import xreliquary.compat.jei.cauldron.CauldronRecipeCategory;
 import xreliquary.compat.jei.cauldron.CauldronRecipeHandler;
@@ -12,6 +13,9 @@ import xreliquary.compat.jei.mortar.MortarRecipeCategory;
 import xreliquary.compat.jei.mortar.MortarRecipeHandler;
 import xreliquary.compat.jei.mortar.MortarRecipeMaker;
 import xreliquary.init.ModItems;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @JEIPlugin
 public class ReliquaryPlugin implements IModPlugin {
@@ -43,7 +47,19 @@ public class ReliquaryPlugin implements IModPlugin {
 
 		ISubtypeRegistry nbtRegistry = registry.getJeiHelpers().getSubtypeRegistry();
 
-		nbtRegistry.useNbtForSubtypes(ModItems.potion, ModItems.potionEssence);
+		nbtRegistry.useNbtForSubtypes(ModItems.potionEssence);
+
+		nbtRegistry.registerNbtInterpreter(ModItems.potion, new ISubtypeRegistry.ISubtypeInterpreter() {
+			@Nullable
+			@Override
+			public String getSubtypeInfo(@Nonnull ItemStack itemStack) {
+				NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
+				if(nbtTagCompound == null || nbtTagCompound.hasNoTags()) {
+					return null;
+				}
+				return nbtTagCompound.toString();
+			}
+		});
 	}
 
 	@Override
