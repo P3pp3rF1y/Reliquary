@@ -24,7 +24,6 @@ public class XRRecipes {
 	//if any component of the item is in the recipe disabler list, it will ALSO block the recipe automatically.
 	//override disabler forces the recipe to evaluate anyway. This occurs for items that don't fall into XR scope, and thus shouldn't be evaluated.
 	public static void addRecipe(boolean isShapeless, boolean overrideDisabler, ItemStack result, Object... params) {
-		//TODO remove overrideDisabler - people should know what they're doing when disabling blocks and items
 		if(result.getItem() == null || result.getItem().getRegistryName() == null || Arrays.asList(params).contains(null))
 			return;
 
@@ -55,13 +54,7 @@ public class XRRecipes {
 
 	public static void init() {
 		// tome and alkahestry recipes
-		GameRegistry.addRecipe(new AlkahestryDrainRecipe());
-		GameRegistry.addRecipe(new AlkahestryChargingRecipe());
-		GameRegistry.addRecipe(new AlkahestryCraftingRecipe());
-
-		RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
-		RecipeSorter.register(Reference.MOD_ID + ":alkahest_charge", AlkahestryChargingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
-		RecipeSorter.register(Reference.MOD_ID + ":alkahest_drain", AlkahestryDrainRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_charge");
+		addTomeRecipes();
 
 		//misc recipes
 		//frozen cores to make packed ice.
@@ -389,6 +382,19 @@ public class XRRecipes {
 
 		if(Settings.dropCraftingRecipesEnabled)
 			addMobDropCraftingRecipes();
+	}
+
+	private static void addTomeRecipes() {
+		if(ModItems.alkahestryTome.getRegistryName() == null || Settings.disabledItemsBlocks.contains(ModItems.alkahestryTome.getRegistryName().getResourcePath()))
+			return;
+
+		GameRegistry.addRecipe(new AlkahestryDrainRecipe());
+		GameRegistry.addRecipe(new AlkahestryChargingRecipe());
+		GameRegistry.addRecipe(new AlkahestryCraftingRecipe());
+
+		RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register(Reference.MOD_ID + ":alkahest_charge", AlkahestryChargingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
+		RecipeSorter.register(Reference.MOD_ID + ":alkahest_drain", AlkahestryDrainRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_charge");
 	}
 
 	private static void addNianZhuRecipe(ItemStack nianZhu, ItemStack pearl) {
