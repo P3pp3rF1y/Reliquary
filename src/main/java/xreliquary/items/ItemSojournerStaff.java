@@ -324,7 +324,9 @@ public class ItemSojournerStaff extends ItemToggleable {
 			}
 
 			//add "currently placing: blah blah blah" to the tooltip.
-			Item placingItem = RegistryHelper.getItemFromName(getTorchPlacementMode(ist));
+			Item placingItem = null;
+			if (getTorchPlacementMode(ist) != null)
+				placingItem = RegistryHelper.getItemFromName(getTorchPlacementMode(ist));
 
 			if(placingItem != null) {
 				placing = new ItemStack(placingItem, 1, 0).getDisplayName();
