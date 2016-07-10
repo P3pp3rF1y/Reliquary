@@ -348,7 +348,6 @@ public class ItemRendingGale extends ItemToggleable {
 			super.onItemRightClick(ist, world, player, hand);
 		} else {
 			player.setActiveHand(hand);
-			player.capabilities.allowFlying = true;
 		}
 		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 	}
@@ -408,11 +407,6 @@ public class ItemRendingGale extends ItemToggleable {
 
 		EntityPlayer player = (EntityPlayer) entityLiving;
 
-		if (!player.capabilities.isCreativeMode) {
-			player.capabilities.allowFlying = false;
-			player.capabilities.isFlying = false;
-		}
-
 		if (worldIn.isRemote)
 			return;
 
@@ -433,6 +427,16 @@ public class ItemRendingGale extends ItemToggleable {
 
 	public boolean isFlightMode(ItemStack ist) {
 		return getMode(ist).equals("flight");
+	}
+
+	public boolean hasFlightCharge(EntityPlayer player, ItemStack ist) {
+		int remainingCharge = 0;
+		remainingCharge = getFeatherCount(ist);
+		if (player.isHandActive()) {
+			remainingCharge -= (player.getItemInUseMaxCount() - player.getItemInUseCount()) * getChargeCost();
+		}
+
+		return remainingCharge > 0;
 	}
 
 	public boolean isBoltMode(ItemStack stack) {
