@@ -28,6 +28,8 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModPotions;
 import xreliquary.init.XRRecipes;
@@ -469,35 +471,35 @@ public class CommonEventHandler {
 	}
 
 	@SubscribeEvent
-	public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
-		if(event.getEntityLiving().worldObj.isRemote)
+	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+		if(event.side == Side.CLIENT)
 			return;
 
-		if(event.getEntityLiving().isPotionActive(ModPotions.potionFlight)) {
-			if(event.getEntityLiving() instanceof EntityPlayer) {
-				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-				playersFlightStatus.put(player.getGameProfile().getId(), true);
-				player.capabilities.allowFlying = true;
-				player.fallDistance = 0;
-				((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
-			}
+		EntityPlayer player = event.player;
+
+		if(player.isPotionActive(ModPotions.potionFlight)) {
+			playersFlightStatus.put(player.getGameProfile().getId(), true);
+			player.capabilities.allowFlying = true;
+			player.fallDistance = 0;
+			((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
+		} else if (player.isHandActive() && player.getActiveItemStack().getItem() == ModItems.rendingGale
+				&& ModItems.rendingGale.isFlightMode(player.getActiveItemStack()) && ModItems.rendingGale.hasFlightCharge(player, player.getActiveItemStack())){
+			playersFlightStatus.put(player.getGameProfile().getId(), true);
+			player.capabilities.allowFlying = true;
+			((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
 		} else {
-			if(event.getEntityLiving() instanceof EntityPlayer) {
-				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+			if(!playersFlightStatus.containsKey(player.getGameProfile().getId())) {
+				playersFlightStatus.put(player.getGameProfile().getId(), false);
+			}
 
-				if(!playersFlightStatus.containsKey(player.getGameProfile().getId())) {
-					playersFlightStatus.put(player.getGameProfile().getId(), false);
-				}
+			if(playersFlightStatus.get(player.getGameProfile().getId())) {
 
-				if(playersFlightStatus.get(player.getGameProfile().getId())) {
+				playersFlightStatus.put(player.getGameProfile().getId(), false);
 
-					playersFlightStatus.put(player.getGameProfile().getId(), false);
-
-					if(!player.capabilities.isCreativeMode) {
-						player.capabilities.allowFlying = false;
-						player.capabilities.isFlying = false;
-						((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
-					}
+				if(!player.capabilities.isCreativeMode) {
+					player.capabilities.allowFlying = false;
+					player.capabilities.isFlying = false;
+					((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
 				}
 			}
 		}

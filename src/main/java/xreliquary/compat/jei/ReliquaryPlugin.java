@@ -13,6 +13,7 @@ import xreliquary.compat.jei.mortar.MortarRecipeCategory;
 import xreliquary.compat.jei.mortar.MortarRecipeHandler;
 import xreliquary.compat.jei.mortar.MortarRecipeMaker;
 import xreliquary.init.ModItems;
+import xreliquary.reference.Settings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,18 +25,25 @@ public class ReliquaryPlugin implements IModPlugin {
 	public void register(IModRegistry registry) {
 		IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
 
-		registry.addRecipeCategories(new AlkahestryCraftingRecipeCategory(guiHelper));
-		registry.addRecipeCategories(new AlkahestryChargingRecipeCategory(guiHelper));
+		boolean tomeEnabled = ModItems.alkahestryTome.getRegistryName() != null && !Settings.disabledItemsBlocks.contains(ModItems.alkahestryTome.getRegistryName().getResourcePath());
+
+		if (tomeEnabled) {
+			registry.addRecipeCategories(new AlkahestryCraftingRecipeCategory(guiHelper));
+			registry.addRecipeCategories(new AlkahestryChargingRecipeCategory(guiHelper));
+
+			registry.addRecipeHandlers(new AlkahestryCraftingRecipeHandler());
+			registry.addRecipeHandlers(new AlkahestryChargingRecipeHandler());
+
+			registry.addRecipes(AlkahestryCraftingRecipeMaker.getRecipes());
+			registry.addRecipes(AlkahestryChargingRecipeMaker.getRecipes());
+		}
+
 		registry.addRecipeCategories(new MortarRecipeCategory(guiHelper));
 		registry.addRecipeCategories(new CauldronRecipeCategory(guiHelper));
 
-		registry.addRecipeHandlers(new AlkahestryCraftingRecipeHandler());
-		registry.addRecipeHandlers(new AlkahestryChargingRecipeHandler());
 		registry.addRecipeHandlers(new MortarRecipeHandler());
 		registry.addRecipeHandlers(new CauldronRecipeHandler());
 
-		registry.addRecipes(AlkahestryCraftingRecipeMaker.getRecipes());
-		registry.addRecipes(AlkahestryChargingRecipeMaker.getRecipes());
 		registry.addRecipes(MortarRecipeMaker.getRecipes());
 		registry.addRecipes(CauldronRecipeMaker.getRecipes());
 
