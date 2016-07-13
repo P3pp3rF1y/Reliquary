@@ -362,6 +362,11 @@ public class ItemRendingGale extends ItemToggleable {
 		int totalCost = -1;
 		int ticksInUse = getMaxItemUseDuration(ist) - count;
 
+		if (ticksInUse < 0) {
+			player.stopActiveHand();
+			return;
+		}
+
 		if (!player.capabilities.isCreativeMode) {
 			if (isFlightMode(ist)) {
 				totalCost = ticksInUse * getChargeCost();
@@ -412,12 +417,14 @@ public class ItemRendingGale extends ItemToggleable {
 
 		int ticksInUse = getMaxItemUseDuration(stack) - timeLeft;
 
-		if(isFlightMode(stack)) {
-			if(!player.capabilities.isCreativeMode)
-				setFeatherCount(stack, player, player.getActiveHand(), getFeatherCount(stack) - (getChargeCost() * ticksInUse));
-		} else if (isBoltMode(stack)) {
-			if(!player.capabilities.isCreativeMode)
-				setFeatherCount(stack, player, player.getActiveHand(), getFeatherCount(stack) - (getBoltChargeCost() * (ticksInUse / 8)));
+		if (ticksInUse > 0) {
+			if(isFlightMode(stack)) {
+				if(!player.capabilities.isCreativeMode)
+					setFeatherCount(stack, player, player.getActiveHand(), (getFeatherCount(stack) - (getChargeCost() * ticksInUse)) > 0 ? (getFeatherCount(stack) - (getChargeCost() * ticksInUse)) : 0);
+			} else if (isBoltMode(stack)) {
+				if(!player.capabilities.isCreativeMode)
+					setFeatherCount(stack, player, player.getActiveHand(), (getFeatherCount(stack) - (getBoltChargeCost() * (ticksInUse / 8))) > 0 ? (getFeatherCount(stack) - (getBoltChargeCost() * (ticksInUse / 8))) : 0);
+			}
 		}
 	}
 
