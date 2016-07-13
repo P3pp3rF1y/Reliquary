@@ -482,7 +482,7 @@ public class CommonEventHandler {
 			player.capabilities.allowFlying = true;
 			player.fallDistance = 0;
 			((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
-		} else if (player.isHandActive() && player.getActiveItemStack().getItem() == ModItems.rendingGale
+		} else if (player.isHandActive() && player.getActiveItemStack() != null && player.getActiveItemStack().getItem() == ModItems.rendingGale
 				&& ModItems.rendingGale.isFlightMode(player.getActiveItemStack()) && ModItems.rendingGale.hasFlightCharge(player, player.getActiveItemStack())){
 			playersFlightStatus.put(player.getGameProfile().getId(), true);
 			player.capabilities.allowFlying = true;
