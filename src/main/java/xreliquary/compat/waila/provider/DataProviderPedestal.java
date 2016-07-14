@@ -3,6 +3,7 @@ package xreliquary.compat.waila.provider;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
+import mcp.mobius.waila.api.IWailaDataProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -15,11 +16,22 @@ import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.init.ModBlocks;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
-public class DataProviderPedestal extends CachedBodyDataProvider {
+public class DataProviderPedestal implements IWailaDataProvider {
 	@Override
-	List<String> getWailaBodyToCache(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
+		return new ItemStack(ModBlocks.pedestal);
+	}
+
+	@Override
+	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+		return null;
+	}
+
+	@Override
+	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		if(!(accessor.getBlock() instanceof BlockPedestal && accessor.getTileEntity() instanceof TileEntityPedestal))
 			return currenttip;
 
@@ -46,16 +58,6 @@ public class DataProviderPedestal extends CachedBodyDataProvider {
 		}
 
 		return currenttip;
-	}
-
-	@Override
-	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return new ItemStack(ModBlocks.pedestal);
-	}
-
-	@Override
-	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return null;
 	}
 
 	@Override

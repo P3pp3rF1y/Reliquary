@@ -30,12 +30,14 @@ public abstract class CachedBodyDataProvider implements IWailaDataProvider {
 		}
 
 		if(changeIndicator == null || cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition()) || changeIndicator.getDataChanged()) {
-			cachedBody = getWailaBodyToCache(itemStack, currenttip, accessor, config);
+			cachedBody = getWailaBodyToCache(itemStack, accessor, config);
 			cachedPosition = accessor.getPosition();
 		}
 
-		return cachedBody;
+		currenttip.addAll(cachedBody);
+
+		return currenttip;
 	}
 
-	abstract List<String> getWailaBodyToCache(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config);
+	abstract List<String> getWailaBodyToCache(ItemStack itemStack, IWailaDataAccessor accessor, IWailaConfigHandler config);
 }
