@@ -33,7 +33,9 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 	}
 
 	@Override
-	public List<String> getWailaBodyToCache(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+	public List<String> getWailaBodyToCache(ItemStack itemStack, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+		List<String> currenttip = new ArrayList<>();
+
 		if(!(accessor.getBlock() instanceof BlockApothecaryCauldron && accessor.getTileEntity() instanceof TileEntityCauldron))
 			return currenttip;
 
