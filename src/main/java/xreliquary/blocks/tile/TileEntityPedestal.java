@@ -12,8 +12,12 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.api.*;
@@ -27,7 +31,7 @@ import xreliquary.util.pedestal.PedestalRegistry;
 
 import java.util.*;
 
-public class TileEntityPedestal extends TileEntityPedestalPassive implements IPedestal, IFluidHandler, ITickable {
+public class TileEntityPedestal extends TileEntityPedestalPassive implements IPedestal, ITickable {
 
 	private boolean tickable = false;
 	private int[] actionCooldowns = new int[0];
@@ -41,6 +45,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	private List<Long> onSwitches = new ArrayList<>();
 	private boolean enabledInitialized = false;
 	private boolean powered = false;
+	private PedestalFluidHandler pedestalFluidHandler = null;
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
@@ -104,6 +109,23 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			PedestalRegistry.registerPosition(this.worldObj.provider.getDimension(), this.pos);
 
 		super.onLoad();
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			if (pedestalFluidHandler == null) {
+				pedestalFluidHandler = new PedestalFluidHandler(this);
+			}
+			return (T) pedestalFluidHandler;
+		}
+
+		return super.getCapability(capability, facing);
 	}
 
 	private void updateSpecialItems() {
@@ -233,8 +255,8 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		FluidStack copy = fluidStack.copy();
 
 		for(IFluidHandler tank : adjacentTanks) {
-			if(tank.fill(EnumFacing.UP, copy, false) == copy.amount) {
-				fluidFilled += tank.fill(EnumFacing.UP, copy, doFill);
+			if(tank.fill(copy, false) == copy.amount) {
+				fluidFilled += tank.fill(copy, doFill);
 
 				if(fluidFilled >= fluidStack.amount) {
 					break;
@@ -345,124 +367,26 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	}
 
 	public List<IFluidHandler> getAdjacentTanks() {
-		BlockPos south = this.getPos().add(EnumFacing.SOUTH.getDirectionVec());
-		BlockPos north = this.getPos().add(EnumFacing.NORTH.getDirectionVec());
-		BlockPos east = this.getPos().add(EnumFacing.EAST.getDirectionVec());
-		BlockPos west = this.getPos().add(EnumFacing.WEST.getDirectionVec());
-
 		List<IFluidHandler> adjacentTanks = new ArrayList<>();
 
-		IFluidHandler tank = getTankAtPos(south);
-		if(tank != null)
-			adjacentTanks.add(tank);
+		for (EnumFacing facing : EnumFacing.values()) {
+			BlockPos tankPos = this.getPos().add(facing.getDirectionVec());
 
-		tank = getTankAtPos(north);
-		if(tank != null)
-			adjacentTanks.add(tank);
-
-		tank = getTankAtPos(east);
-		if(tank != null)
-			adjacentTanks.add(tank);
-
-		tank = getTankAtPos(west);
-		if(tank != null)
-			adjacentTanks.add(tank);
+			IFluidHandler tank = getTankAtPos(tankPos, facing.getOpposite());
+			if(tank != null)
+				adjacentTanks.add(tank);
+		}
 
 		return adjacentTanks;
 	}
 
-	private IFluidHandler getTankAtPos(BlockPos pos) {
-		if(worldObj.getTileEntity(pos) instanceof IFluidHandler)
-			return (IFluidHandler) worldObj.getTileEntity(pos);
-		return null;
-	}
-
-	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-		int totalFilled = 0;
-		FluidStack resourceCopy = resource.copy();
-		for(ItemStack container : fluidContainers) {
-			IFluidContainerItem fluidContainer = (IFluidContainerItem) container.getItem();
-
-			totalFilled += fluidContainer.fill(container, resourceCopy, doFill);
-			resourceCopy.amount = resource.amount - totalFilled;
-
-			if(totalFilled >= resource.amount)
-				break;
-		}
-
-		return totalFilled;
-	}
-
-	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-		int totalDrained = 0;
-		for(ItemStack container : fluidContainers) {
-			IFluidContainerItem fluidContainer = (IFluidContainerItem) container.getItem();
-
-			FluidStack drainedStack = fluidContainer.drain(container, resource.amount - totalDrained, doDrain);
-			totalDrained += drainedStack.amount;
-
-			if(totalDrained >= resource.amount)
-				break;
-		}
-
-		return new FluidStack(resource.getFluid(), totalDrained);
-	}
-
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-		if(fluidContainers.size() == 0)
+	private IFluidHandler getTankAtPos(BlockPos pos, EnumFacing facing) {
+		if (worldObj.getTileEntity(pos) == null)
 			return null;
 
-		ItemStack container = fluidContainers.get(0);
-		Fluid fluid = getContainerFluid(container);
-
-		return drain(from, new FluidStack(fluid, maxDrain), doDrain);
-	}
-
-	private Fluid getContainerFluid(ItemStack container) {
-		return ((IFluidContainerItem) container.getItem()).getFluid(container).getFluid();
-	}
-
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid) {
-		if(fluidContainers.size() == 0)
-			return false;
-
-		for(ItemStack container : fluidContainers) {
-			if(((IFluidContainerItem) container.getItem()).fill(container, new FluidStack(fluid, 1), false) == 1)
-				return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid) {
-		if(fluidContainers.size() == 0)
-			return false;
-
-		for(ItemStack container : fluidContainers) {
-			if(((IFluidContainerItem) container.getItem()).drain(container, 1, false) == new FluidStack(fluid, 1))
-				return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from) {
-		FluidTankInfo[] tankInfo = new FluidTankInfo[fluidContainers.size()];
-
-		for(int i = 0; i < fluidContainers.size(); i++) {
-			ItemStack container = fluidContainers.get(i);
-			IFluidContainerItem fluidContainer = (IFluidContainerItem) container.getItem();
-
-			tankInfo[i] = new FluidTankInfo(fluidContainer.getFluid(container), fluidContainer.getCapacity(container));
-		}
-
-		return tankInfo;
+		if(worldObj.getTileEntity(pos).hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing))
+			return worldObj.getTileEntity(pos).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
+		return null;
 	}
 
 	public void removeRedstoneItems() {
@@ -662,5 +586,9 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 	public boolean isSwitchedOn() {
 		return switchedOn;
+	}
+
+	public List<ItemStack> getFluidContainers() {
+		return fluidContainers;
 	}
 }
