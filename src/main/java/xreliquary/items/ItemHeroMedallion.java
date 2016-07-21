@@ -5,27 +5,26 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.init.ModFluids;
+import xreliquary.items.util.fluid.FluidHandlerHeroMedallion;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
-import xreliquary.util.XpHelper;
 
 import java.util.List;
 
-public class ItemHeroMedallion extends ItemToggleable implements IFluidContainerItem {
+public class ItemHeroMedallion extends ItemToggleable {
 
 	public ItemHeroMedallion() {
 		super(Names.hero_medallion);
@@ -75,7 +74,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IFluidContainer
 			// in order to make this stop at a specific level, we will need to do
 			// a preemptive check for a specific level.
 			for(int levelLoop = 0; levelLoop <= Math.sqrt(!player.capabilities.isCreativeMode ? player.experienceLevel : 30); ++levelLoop) {
-				if((player.experienceLevel > getExperienceMinimum() || player.experience > 0F || player.capabilities.isCreativeMode) && getExperience(ist) < Integer.MAX_VALUE) {
+				if((player.experienceLevel > getExperienceMinimum() || player.experience >= 1F || player.capabilities.isCreativeMode) && getExperience(ist) < Integer.MAX_VALUE) {
 					if(!player.capabilities.isCreativeMode)
 						decreasePlayerExperience(player);
 					increaseMedallionExperience(ist);
@@ -141,38 +140,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IFluidContainer
 	}
 
 	@Override
-	public FluidStack getFluid(ItemStack container) {
-		if(this.isEnabled(container))
-			return null;
-
-		return new FluidStack(ModFluids.fluidXpJuice, XpHelper.experienceToLiquid(getExperience(container)));
-	}
-
-	@Override
-	public int getCapacity(ItemStack container) {
-		return Integer.MAX_VALUE;
-	}
-
-	@Override
-	public int fill(ItemStack container, FluidStack resource, boolean doFill) {
-		if(resource.getFluid() != ModFluids.fluidXpJuice)
-			return 0;
-
-		if(doFill) {
-			setExperience(container, getExperience(container) + XpHelper.liquidToExperience(resource.amount));
-		}
-
-		return resource.amount;
-	}
-
-	@Override
-	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) {
-		int experienceToRemove = Math.min(XpHelper.liquidToExperience(maxDrain), getExperience(container));
-
-		if(doDrain) {
-			setExperience(container, getExperience(container) - experienceToRemove);
-		}
-
-		return new FluidStack(ModFluids.fluidXpJuice, XpHelper.experienceToLiquid(experienceToRemove));
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return new FluidHandlerHeroMedallion(stack);
 	}
 }

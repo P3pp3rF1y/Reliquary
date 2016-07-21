@@ -9,20 +9,21 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
+import xreliquary.items.util.fluid.FluidHandlerEmperorChalice;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.RegistryHelper;
 
-public class ItemEmperorChalice extends ItemToggleable implements IFluidContainerItem {
+public class ItemEmperorChalice extends ItemToggleable {
 
 	public ItemEmperorChalice() {
 		super(Names.emperor_chalice);
@@ -36,6 +37,11 @@ public class ItemEmperorChalice extends ItemToggleable implements IFluidContaine
 	@Override
 	public int getMaxItemUseDuration(ItemStack par1ItemStack) {
 		return 16;
+	}
+
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return new FluidHandlerEmperorChalice(stack);
 	}
 
 	@Override
@@ -90,37 +96,12 @@ public class ItemEmperorChalice extends ItemToggleable implements IFluidContaine
 
 				if(!player.canPlayerEdit(result.getBlockPos(), result.sideHit, ist))
 					return new ActionResult<>(EnumActionResult.FAIL, ist);
-				;
-
-				if(this.isEnabled(ist)) {
-					TileEntity tile = world.getTileEntity(result.getBlockPos());
-					if(tile instanceof IFluidHandler) {
-						//it's got infinite water.. it just drains water, nothing more.
-						FluidStack fluid = new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-						((IFluidHandler) tile).drain(result.sideHit, fluid, true);
-
-						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
-					}
-				} else {
-					TileEntity tile = world.getTileEntity(result.getBlockPos());
-					if(tile instanceof IFluidHandler) {
-						FluidStack fluid = new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-						int amount = ((IFluidHandler) tile).fill(result.sideHit, fluid, false);
-
-						if(amount > 0) {
-							((IFluidHandler) tile).fill(result.sideHit, fluid, true);
-						}
-
-						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
-					}
-				}
 
 				if(!this.isEnabled(ist)) {
 					BlockPos waterPlacementPos = result.getBlockPos().offset(result.sideHit);
 
 					if(!player.canPlayerEdit(waterPlacementPos, result.sideHit, ist))
 						return new ActionResult<>(EnumActionResult.FAIL, ist);
-					;
 
 					if(this.tryPlaceContainedLiquid(world, ist, xOff, yOff, zOff, waterPlacementPos))
 						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
@@ -160,38 +141,5 @@ public class ItemEmperorChalice extends ItemToggleable implements IFluidContaine
 
 			return true;
 		}
-	}
-
-	@Override
-	public FluidStack getFluid(ItemStack container) {
-		if(this.isEnabled(container))
-			return null;
-
-		return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-	}
-
-	@Override
-	public int getCapacity(ItemStack container) {
-		return FluidContainerRegistry.BUCKET_VOLUME;
-	}
-
-	@Override
-	public int fill(ItemStack container, FluidStack resource, boolean doFill) {
-		if(!this.isEnabled(container) || resource == null) {
-			return 0;
-		}
-
-		if(!resource.isFluidEqual(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME)))
-			return 0;
-
-		return FluidContainerRegistry.BUCKET_VOLUME;
-	}
-
-	@Override
-	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) {
-		if(this.isEnabled(container))
-			return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-
-		return null;
 	}
 }
