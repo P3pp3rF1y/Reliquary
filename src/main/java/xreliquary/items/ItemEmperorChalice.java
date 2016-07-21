@@ -10,14 +10,11 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.fluids.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
@@ -99,37 +96,12 @@ public class ItemEmperorChalice extends ItemToggleable {
 
 				if(!player.canPlayerEdit(result.getBlockPos(), result.sideHit, ist))
 					return new ActionResult<>(EnumActionResult.FAIL, ist);
-				;
-
-				if(this.isEnabled(ist)) {
-					TileEntity tile = world.getTileEntity(result.getBlockPos());
-					if(tile instanceof IFluidHandler) {
-						//it's got infinite water.. it just drains water, nothing more.
-						FluidStack fluid = new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-						((IFluidHandler) tile).drain(result.sideHit, fluid, true);
-
-						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
-					}
-				} else {
-					TileEntity tile = world.getTileEntity(result.getBlockPos());
-					if(tile instanceof IFluidHandler) {
-						FluidStack fluid = new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-						int amount = ((IFluidHandler) tile).fill(result.sideHit, fluid, false);
-
-						if(amount > 0) {
-							((IFluidHandler) tile).fill(result.sideHit, fluid, true);
-						}
-
-						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
-					}
-				}
 
 				if(!this.isEnabled(ist)) {
 					BlockPos waterPlacementPos = result.getBlockPos().offset(result.sideHit);
 
 					if(!player.canPlayerEdit(waterPlacementPos, result.sideHit, ist))
 						return new ActionResult<>(EnumActionResult.FAIL, ist);
-					;
 
 					if(this.tryPlaceContainedLiquid(world, ist, xOff, yOff, zOff, waterPlacementPos))
 						return new ActionResult<>(EnumActionResult.SUCCESS, ist);

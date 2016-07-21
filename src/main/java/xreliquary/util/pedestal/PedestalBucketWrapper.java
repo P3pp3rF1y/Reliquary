@@ -11,7 +11,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidBlock;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
 import xreliquary.init.ModFluids;
@@ -107,7 +110,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 			if(doDrain)
 				world.setBlockToAir(pos);
 
-			return new FluidStack(fluid, FluidContainerRegistry.BUCKET_VOLUME);
+			return new FluidStack(fluid, Fluid.BUCKET_VOLUME);
 		}
 		return null;
 	}
@@ -130,7 +133,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		//TODO: verify that milk bucket still works
 		if(fakePlayer.getHeldItem(EnumHand.MAIN_HAND).getItem() == Items.MILK_BUCKET) {
-			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.milk, FluidContainerRegistry.BUCKET_VOLUME));
+			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.milk, Fluid.BUCKET_VOLUME));
 			if(fluidAdded == 0) {
 				pedestal.replaceCurrentItem(new ItemStack(Items.MILK_BUCKET));
 				return true;
