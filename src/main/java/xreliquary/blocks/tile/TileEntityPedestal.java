@@ -163,10 +163,8 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 				}
 			}
 
-			if(item.getItem() instanceof IFluidContainerItem) {
+			if(item.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
 				fluidContainers.add(item);
-				//TODO code to check that all have the same fluid (Due to fluidhandler interface drain method that doesn't specify type of fluid to drain
-				// maybe it's not an issue as the method description in interface says it's not fluid sensitive
 			}
 		}
 

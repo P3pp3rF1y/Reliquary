@@ -7,29 +7,31 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import xreliquary.Reliquary;
+import xreliquary.items.util.fluid.FluidHandlerInfernalChalice;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
-import xreliquary.util.RegistryHelper;
 
 import java.util.List;
 
 /**
  * Created by Xeno on 10/11/2014.
  */
-public class ItemInfernalChalice extends ItemToggleable implements IFluidContainerItem {
+public class ItemInfernalChalice extends ItemToggleable {
 	public ItemInfernalChalice() {
 		super(Names.infernal_chalice);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
@@ -42,10 +44,6 @@ public class ItemInfernalChalice extends ItemToggleable implements IFluidContain
 		//String fluid = "lava.";
 		String amount = Integer.toString(NBTHelper.getInteger("fluidStacks", ist));
 		this.formatTooltip(ImmutableMap.of("amount", amount), ist, list);
-	}
-
-	protected int fluidLimit() {
-		return Settings.InfernalChalice.fluidLimit;
 	}
 
 	@Override
@@ -72,53 +70,30 @@ public class ItemInfernalChalice extends ItemToggleable implements IFluidContain
 				if(!player.canPlayerEdit(result.getBlockPos(), result.sideHit, stack))
 					return new ActionResult<>(EnumActionResult.PASS, stack);
 
-				//fluid handler support!
-				if(this.isEnabled(stack) && NBTHelper.getInteger("fluidStacks", stack) + 1000 <= fluidLimit()) {
-					TileEntity tile = world.getTileEntity(result.getBlockPos());
-					if(tile instanceof IFluidHandler) {
-						FluidStack fluid = new FluidStack(FluidRegistry.LAVA, 1000);
-						FluidStack simulatedDrainedFluid = ((IFluidHandler) tile).drain(result.sideHit, fluid, false);
-						if(simulatedDrainedFluid.amount == 1000) {
-							NBTHelper.setInteger("fluidStacks", stack, NBTHelper.getInteger("fluidStacks", stack) - 1000);
-							return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-						}
+				IFluidHandler fluidHandler = getFluidHandler(stack);
+				if(fluidHandler == null)
+					return new ActionResult<>(EnumActionResult.FAIL, stack);
 
-						return new ActionResult<>(EnumActionResult.FAIL, stack);
-					}
-				} else {
-					TileEntity tile = world.getTileEntity(result.getBlockPos());
-					if(tile instanceof IFluidHandler && NBTHelper.getInteger("fluidStacks", stack) >= 1000) {
-						FluidStack fluid = new FluidStack(FluidRegistry.LAVA, 1000);
-						int amount = ((IFluidHandler) tile).fill(result.sideHit, fluid, false);
-
-						if(amount == 1000) {
-							((IFluidHandler) tile).fill(result.sideHit, fluid, true);
-							NBTHelper.setInteger("fluidStacks", stack, NBTHelper.getInteger("fluidStacks", stack) - 1000);
-							return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-						}
-
-						return new ActionResult<>(EnumActionResult.FAIL, stack);
-					}
-				}
-
-				String ident = RegistryHelper.getBlockRegistryName(world.getBlockState(result.getBlockPos()).getBlock());
-				if(this.isEnabled(stack) && (ident.equals(RegistryHelper.getBlockRegistryName(Blocks.FLOWING_LAVA)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.LAVA))) && world.getBlockState(result.getBlockPos()).getValue(Blocks.LAVA.LEVEL) == 0) {
+				IBlockState blockState = world.getBlockState(result.getBlockPos());
+				if(this.isEnabled(stack) && (blockState.getBlock() == Blocks.FLOWING_LAVA || blockState.getBlock() == Blocks.LAVA) && blockState.getValue(Blocks.LAVA.LEVEL) == 0 && fluidHandler.fill(new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME), false) == Fluid.BUCKET_VOLUME) {
 					world.setBlockState(result.getBlockPos(), Blocks.AIR.getDefaultState());
-					NBTHelper.setInteger("fluidStacks", stack, NBTHelper.getInteger("fluidStacks", stack) + 1000);
+					fluidHandler.fill(new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME), true);
 					return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 				}
 
-				if(!this.isEnabled(stack) && (NBTHelper.getInteger("fluidStacks", stack) >= 1000 || player.capabilities.isCreativeMode)) {
-					BlockPos adjustedPos = result.getBlockPos().offset(result.sideHit);
+				if(!this.isEnabled(stack)) {
+					FluidStack fluidDrained = fluidHandler.drain(new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME), false);
+					if(player.capabilities.isCreativeMode || (fluidDrained != null && fluidDrained.amount == Fluid.BUCKET_VOLUME)) {
+						BlockPos adjustedPos = result.getBlockPos().offset(result.sideHit);
 
-					if(!player.canPlayerEdit(adjustedPos, result.sideHit, stack))
-						return new ActionResult<>(EnumActionResult.PASS, stack);
+						if(!player.canPlayerEdit(adjustedPos, result.sideHit, stack))
+							return new ActionResult<>(EnumActionResult.PASS, stack);
 
-					if(this.tryPlaceContainedLiquid(world, stack, xOffset, yOffset, zOffset, adjustedPos) && !player.capabilities.isCreativeMode) {
-						NBTHelper.setInteger("fluidStacks", stack, NBTHelper.getInteger("fluidStacks", stack) - 1000);
-						return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+						if(this.tryPlaceContainedLiquid(world, stack, xOffset, yOffset, zOffset, adjustedPos) && !player.capabilities.isCreativeMode) {
+							fluidHandler.drain(new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME), true);
+							return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+						}
 					}
-
 				}
 			}
 
@@ -126,9 +101,17 @@ public class ItemInfernalChalice extends ItemToggleable implements IFluidContain
 		}
 	}
 
+	private IFluidHandler getFluidHandler(ItemStack stack) {
+		if(!stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+			return null;
+
+		IFluidHandler fluidHandler = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+		return fluidHandler;
+	}
+
 	public boolean tryPlaceContainedLiquid(World world, ItemStack ist, double par2, double par4, double par6, BlockPos pos) {
 		IBlockState blockState = world.getBlockState(pos);
-		Material material = blockState.getBlock().getMaterial(blockState);
+		Material material = blockState.getMaterial();
 		if(!world.isAirBlock(pos) && material.isSolid())
 			return false;
 		else {
@@ -149,52 +132,7 @@ public class ItemInfernalChalice extends ItemToggleable implements IFluidContain
 	}
 
 	@Override
-	public FluidStack getFluid(ItemStack container) {
-		if(this.isEnabled(container))
-			return null;
-		return new FluidStack(FluidRegistry.LAVA, NBTHelper.getInteger("fluidStacks", container));
-	}
-
-	@Override
-	public int getCapacity(ItemStack container) {
-		if(this.isEnabled(container))
-			return fluidLimit() - NBTHelper.getInteger("fluidStacks", container);
-
-		return fluidLimit();
-	}
-
-	@Override
-	public int fill(ItemStack container, FluidStack resource, boolean doFill) {
-		if(!this.isEnabled(container) || resource == null) {
-			return 0;
-		}
-
-		if(!resource.isFluidEqual(new FluidStack(FluidRegistry.LAVA, 1000)))
-			return 0;
-
-		int toFill = Math.min(fluidLimit() - NBTHelper.getInteger("fluidStacks", container), resource.amount);
-
-		if(doFill) {
-			int fluidLevel = NBTHelper.getInteger("fluidStacks", container);
-			fluidLevel += toFill;
-			NBTHelper.setInteger("fluidStacks", container, fluidLevel);
-		}
-
-		return toFill;
-	}
-
-	@Override
-	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) {
-		if(this.isEnabled(container)) {
-			return null;
-		}
-
-		FluidStack stack = new FluidStack(FluidRegistry.LAVA, Math.min(NBTHelper.getInteger("fluidStacks", container), maxDrain));
-
-		if(doDrain) {
-			NBTHelper.setInteger("fluidStacks", container, NBTHelper.getInteger("fluidStacks", container) - stack.amount);
-		}
-
-		return stack;
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return new FluidHandlerInfernalChalice(stack);
 	}
 }

@@ -9,20 +9,24 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
+import xreliquary.items.util.fluid.FluidHandlerEmperorChalice;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.RegistryHelper;
 
-public class ItemEmperorChalice extends ItemToggleable implements IFluidContainerItem {
+public class ItemEmperorChalice extends ItemToggleable {
 
 	public ItemEmperorChalice() {
 		super(Names.emperor_chalice);
@@ -36,6 +40,11 @@ public class ItemEmperorChalice extends ItemToggleable implements IFluidContaine
 	@Override
 	public int getMaxItemUseDuration(ItemStack par1ItemStack) {
 		return 16;
+	}
+
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return new FluidHandlerEmperorChalice(stack);
 	}
 
 	@Override
@@ -160,38 +169,5 @@ public class ItemEmperorChalice extends ItemToggleable implements IFluidContaine
 
 			return true;
 		}
-	}
-
-	@Override
-	public FluidStack getFluid(ItemStack container) {
-		if(this.isEnabled(container))
-			return null;
-
-		return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-	}
-
-	@Override
-	public int getCapacity(ItemStack container) {
-		return FluidContainerRegistry.BUCKET_VOLUME;
-	}
-
-	@Override
-	public int fill(ItemStack container, FluidStack resource, boolean doFill) {
-		if(!this.isEnabled(container) || resource == null) {
-			return 0;
-		}
-
-		if(!resource.isFluidEqual(new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME)))
-			return 0;
-
-		return FluidContainerRegistry.BUCKET_VOLUME;
-	}
-
-	@Override
-	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) {
-		if(this.isEnabled(container))
-			return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
-
-		return null;
 	}
 }
