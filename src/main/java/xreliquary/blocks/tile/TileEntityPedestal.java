@@ -15,7 +15,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -118,8 +117,8 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-			if (pedestalFluidHandler == null) {
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			if(pedestalFluidHandler == null) {
 				pedestalFluidHandler = new PedestalFluidHandler(this);
 			}
 			return (T) pedestalFluidHandler;
@@ -367,7 +366,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	public List<IFluidHandler> getAdjacentTanks() {
 		List<IFluidHandler> adjacentTanks = new ArrayList<>();
 
-		for (EnumFacing facing : EnumFacing.values()) {
+		for(EnumFacing facing : EnumFacing.values()) {
 			BlockPos tankPos = this.getPos().add(facing.getDirectionVec());
 
 			IFluidHandler tank = getTankAtPos(tankPos, facing.getOpposite());
@@ -379,7 +378,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	}
 
 	private IFluidHandler getTankAtPos(BlockPos pos, EnumFacing facing) {
-		if (worldObj.getTileEntity(pos) == null)
+		if(worldObj.getTileEntity(pos) == null)
 			return null;
 
 		if(worldObj.getTileEntity(pos).hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing))

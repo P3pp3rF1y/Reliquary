@@ -1,13 +1,9 @@
 package xreliquary.init;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -35,10 +31,7 @@ public class ModFluids {
 		if(!Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT) && !FluidRegistry.isFluidRegistered(MILK_FLUID_NAME)) {
 			milk = new Fluid(MILK_FLUID_NAME, new ResourceLocation(Reference.MOD_ID, "fluids/milk"), new ResourceLocation(Reference.MOD_ID, "fluids/milk_flowing")).setTemperature(320);
 			FluidRegistry.registerFluid(milk);
-
-			FluidContainerRegistry.registerFluidContainer(new FluidStack(milk, Fluid.BUCKET_VOLUME), new ItemStack(Items.MILK_BUCKET), FluidContainerRegistry.EMPTY_BUCKET);
 		}
-
 	}
 
 	public static void postInit() {
