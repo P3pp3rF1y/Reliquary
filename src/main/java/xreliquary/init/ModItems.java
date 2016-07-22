@@ -68,6 +68,7 @@ public class ModItems {
 	public static final ItemWitchHat witchHat = new ItemWitchHat();
 	public static final ItemWitherlessRose witherlessRose = new ItemWitherlessRose();
 	public static final ItemXRPotion potion = new ItemXRPotion();
+	public static final ItemNianZhuBelt nianZhuBelt = new ItemNianZhuBelt();
 
 	public static void init() {
 		registerItem(alkahestryTome, Names.alkahestry_tome);
@@ -101,6 +102,7 @@ public class ModItems {
 		registerItem(magazine, Names.magazine);
 		registerItem(magicbane, Names.magicbane);
 		registerItem(midasTouchstone, Names.midas_touchstone);
+		registerItem(nianZhuBelt, Names.nian_zhu_belt, false);
 		registerItem(potionEssence, Names.potion_essence, false);
 		registerItem(phoenixDown, Names.phoenix_down);
 		registerItem(pyromancerStaff, Names.pyromancer_staff);

@@ -53,7 +53,10 @@ public class ItemModels {
 		registerItemModel(ModItems.witchHat, Names.witch_hat);
 		registerItemModel(ModItems.witherlessRose, Names.witherless_rose);
 
+		registerItemModel(ModItems.nianZhuBelt, Names.nian_zhu_belt);
+
 		registerItemModel(ModItems.rodOfLyssa, Names.rod_of_lyssa);
+
 		ModelBakery.registerItemVariants(ModItems.rodOfLyssa, ItemModelLocations.getInstance().getModel(ItemModelLocations.ROD_OF_LYSSA_CAST));
 
 		for(int i = 0; i < 16; i++) {
