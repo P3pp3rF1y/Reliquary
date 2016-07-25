@@ -71,6 +71,7 @@ public class Names {
     public static final String ender_heart = "nebulous_heart";
     public static final String fertile_essence = "fertile_essence";
     public static final String nian_zhu_belt = "nian_zhu_belt";
+    public static final String nian_zhu = "nian_zhu";
 
     public static final String gun_part = "gun_part";
     // potion info
