@@ -17,7 +17,7 @@ public class ModItemColors {
 	public static void init() {
 		ItemColors itemColors = Minecraft.getMinecraft().getItemColors();
 
-		if(isEnabled(ModItems.heartPearl) && isEnabled(ModItems.heartZhu)) {
+		if(isEnabled(ModItems.heartPearl) && isEnabled(ModItems.heartZhu) && isEnabled(ModItems.nianZhu)) {
 			itemColors.registerItemColorHandler(new IItemColor() {
 				@Override
 				public int getColorFromItemstack(ItemStack stack, int tintIndex) {
@@ -52,19 +52,19 @@ public class ModItemColors {
 					}
 					return Integer.parseInt(Colors.PURE, 16);
 				}
-			}, new Item[] {ModItems.heartPearl});
+			}, new Item[] {ModItems.heartPearl, ModItems.heartZhu});
 		}
 
-		if(isEnabled(ModItems.heartPearl) && isEnabled(ModItems.heartZhu)) {
+		if(isEnabled(ModItems.heartPearl) && isEnabled(ModItems.nianZhu)) {
 			itemColors.registerItemColorHandler(new IItemColor() {
 				@Override
 				public int getColorFromItemstack(ItemStack stack, int tintIndex) {
 					if (tintIndex < 1 || tintIndex > 2)
 						return -1;
 
-					int meta = stack.getItemDamage();
+					int type = ModItems.nianZhu.getType(stack);
 					String entityName = "";
-					switch(meta) {
+					switch(type) {
 						case Reference.NIAN_ZHU.ZOMBIE_META:
 							entityName = "Zombie";
 							break;
@@ -113,7 +113,7 @@ public class ModItemColors {
 
 					return -1;
 				}
-			}, new Item[] {ModItems.heartZhu});
+			}, new Item[] {ModItems.nianZhu});
 		}
 
 		if(isEnabled(ModItems.magazine) && isEnabled(ModItems.bullet)) {

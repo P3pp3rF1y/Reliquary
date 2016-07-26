@@ -85,6 +85,12 @@ public class ItemModels {
 			}
 		});
 
+		registerItemModelForAllVariants(ModItems.nianZhu, Names.nian_zhu, new ItemMeshDefinition() {
+			public ModelResourceLocation getModelLocation(ItemStack stack) {
+				return new ModelResourceLocation(Reference.DOMAIN + Names.nian_zhu, "inventory");
+			}
+		});
+
 		registerItemModelForAllVariants(ModItems.potionEssence, Names.potion_essence, new ItemMeshDefinition() {
 			public ModelResourceLocation getModelLocation(ItemStack stack) {
 				return new ModelResourceLocation(Reference.DOMAIN + Names.potion_essence, "inventory");

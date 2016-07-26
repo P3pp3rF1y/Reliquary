@@ -69,6 +69,7 @@ public class ModItems {
 	public static final ItemWitherlessRose witherlessRose = new ItemWitherlessRose();
 	public static final ItemXRPotion potion = new ItemXRPotion();
 	public static final ItemNianZhuBelt nianZhuBelt = new ItemNianZhuBelt();
+	public static final ItemNianZhu nianZhu = new ItemNianZhu();
 
 	public static void init() {
 		registerItem(alkahestryTome, Names.alkahestry_tome);
@@ -90,7 +91,7 @@ public class ModItems {
 		registerItem(handgun, Names.handgun);
 		registerItem(harvestRod, Names.harvest_rod);
 		registerItem(heartPearl, Names.heart_pearl);
-		registerItem(heartZhu, Names.heart_zhu);
+		registerItem(heartZhu, Names.heart_zhu, false);
 		registerItem(heroMedallion, Names.hero_medallion);
 		registerItem(holyHandGrenade, Names.holy_hand_grenade);
 		registerItem(iceMagusRod, Names.ice_magus_rod);
@@ -102,7 +103,8 @@ public class ModItems {
 		registerItem(magazine, Names.magazine);
 		registerItem(magicbane, Names.magicbane);
 		registerItem(midasTouchstone, Names.midas_touchstone);
-		registerItem(nianZhuBelt, Names.nian_zhu_belt, false);
+		registerItem(nianZhu, Names.nian_zhu);
+		registerItem(nianZhuBelt, Names.nian_zhu_belt);
 		registerItem(potionEssence, Names.potion_essence, false);
 		registerItem(phoenixDown, Names.phoenix_down);
 		registerItem(pyromancerStaff, Names.pyromancer_staff);
