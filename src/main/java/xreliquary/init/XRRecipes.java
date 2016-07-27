@@ -473,8 +473,12 @@ public class XRRecipes {
 		return new ItemStack(ModItems.heartPearl, 1, meta);
 	}
 
-	public static ItemStack nianZhu(int meta) {
-		return new ItemStack(ModItems.heartZhu, 1, meta);
+	public static ItemStack nianZhu(byte meta) {
+		ItemStack nianZhu = new ItemStack(ModItems.nianZhu);
+
+		ModItems.nianZhu.setType(nianZhu, meta);
+
+		return nianZhu;
 	}
 
 }

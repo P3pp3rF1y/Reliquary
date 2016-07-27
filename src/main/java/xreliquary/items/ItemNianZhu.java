@@ -39,14 +39,14 @@ public class ItemNianZhu extends ItemBase {
 		}
 	}
 
-	public Byte getType(ItemStack stack) {
+	public byte getType(ItemStack stack) {
 		if (stack.getItem() != ModItems.nianZhu || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TYPE_TAG))
 			return -1;
 
 		return stack.getTagCompound().getByte(TYPE_TAG);
 	}
 
-	private void setType(ItemStack stack, byte type) {
+	public void setType(ItemStack stack, byte type) {
 		NBTTagCompound compound = stack.getTagCompound();
 
 		if (compound == null)
