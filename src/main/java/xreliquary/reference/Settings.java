@@ -305,4 +305,10 @@ public class Settings {
 		public static byte shearsWrapperCooldown;
 		public static int redstoneWrapperRange;
 	}
+
+	public static class NianZhu {
+		public static int durability;
+		public static int damagePerKill;
+		public static int dropDurabilityRepair;
+	}
 }

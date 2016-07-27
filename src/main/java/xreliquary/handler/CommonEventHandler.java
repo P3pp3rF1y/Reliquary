@@ -21,6 +21,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -89,6 +90,34 @@ public class CommonEventHandler {
 		doHeartZhuCheckOnUpdate(event);
 	}
 
+	@SubscribeEvent
+	public void onLivingDeath(LivingDeathEvent event) {
+		if (event.getSource() == null || event.getSource().getEntity() == null || !(event.getSource().getEntity() instanceof EntityPlayer))
+			return;
+
+		EntityPlayer player = (EntityPlayer) event.getSource().getEntity();
+
+		damagePlayersNianZhu(player, event.getEntity());
+	}
+
+	private void damagePlayersNianZhu(EntityPlayer player, Entity entity) {
+		ItemStack nianZhu = ModItems.nianZhu.getNianZhuForEntity(entity);
+
+		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+			if(player.inventory.mainInventory[slot] == null)
+				continue;
+			if(areItemStacksEqualIgnoreDurability(player.inventory.mainInventory[slot], nianZhu)) {
+				ItemStack playersNianZhu = player.inventory.mainInventory[slot];
+				if (playersNianZhu.getItemDamage() + Settings.NianZhu.damagePerKill > playersNianZhu.getMaxDamage()) {
+					player.inventory.mainInventory[slot] = null;
+				} else {
+					playersNianZhu.damageItem(Settings.NianZhu.damagePerKill, player);
+				}
+				return;
+			}
+		}
+	}
+
 	private void doHeartZhuCheckOnUpdate(LivingEvent event) {
 		if(!(event.getEntity() instanceof EntityLiving))
 			return;
@@ -101,11 +130,11 @@ public class CommonEventHandler {
 		boolean resetTarget = false;
 
 		if (entity instanceof EntityGhast) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.GHAST_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.GHAST_META), false);
 		} else if (entity instanceof EntityMagmaCube) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META), false);
 		} else if (entity instanceof EntitySlime) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SLIME_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SLIME_META), false);
 		}
 
 		if (resetTarget) {
@@ -139,33 +168,33 @@ public class CommonEventHandler {
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
 		if (entity instanceof EntityPigZombie) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META), false);
 		} else if (entity instanceof EntityZombie) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_META), false);
 		} else if (entity instanceof EntitySkeleton) {
 			if (((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
-				resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.WITHER_SKELETON_META), false);
+				resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.WITHER_SKELETON_META), false);
 			} else {
-				resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SKELETON_META), false);
+				resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SKELETON_META), false);
 			}
 		} else if (entity instanceof EntityCreeper) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.CREEPER_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.CREEPER_META), false);
 		} else if (entity instanceof EntityWitch) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.WITCH_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.WITCH_META), false);
 		} else if (entity instanceof EntityCaveSpider) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.CAVE_SPIDER_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.CAVE_SPIDER_META), false);
 		} else if (entity instanceof EntitySpider){
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SPIDER_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SPIDER_META), false);
 		} else if (entity instanceof EntityEnderman) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ENDERMAN_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ENDERMAN_META), false);
 		} else if (entity instanceof EntityBlaze) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.BLAZE_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.BLAZE_META), false);
 		} else if (entity instanceof EntityGhast) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.GHAST_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.GHAST_META), false);
 		} else if (entity instanceof EntityMagmaCube) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META), false);
 		} else if (entity instanceof EntitySlime) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SLIME_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SLIME_META), false);
 		}
 
 		if (resetTarget) {
@@ -450,6 +479,20 @@ public class CommonEventHandler {
 			}
 		}
 		return false;
+	}
+
+	private boolean playerHasItemIgnoreDurability(EntityPlayer player, ItemStack ist, boolean checkEnabled) {
+		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+			if(player.inventory.mainInventory[slot] == null)
+				continue;
+			if(areItemStacksEqualIgnoreDurability(player.inventory.mainInventory[slot], ist))
+				return true;
+		}
+		return false;
+	}
+
+	private boolean areItemStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2) {
+		return ItemStack.areItemsEqualIgnoreDurability(stack1, stack2) && ItemStack.areItemStackTagsEqual(stack1, stack2);
 	}
 
 	// pretty much the same as above, specific to angelheart vial. finds it and breaks one.
