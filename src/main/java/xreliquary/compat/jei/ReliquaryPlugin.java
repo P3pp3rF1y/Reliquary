@@ -58,6 +58,7 @@ public class ReliquaryPlugin implements IModPlugin {
 
 		ISubtypeRegistry nbtRegistry = registry.getJeiHelpers().getSubtypeRegistry();
 
+		nbtRegistry.useNbtForSubtypes(ModItems.nianZhu);
 		nbtRegistry.useNbtForSubtypes(ModItems.potionEssence);
 
 		nbtRegistry.registerNbtInterpreter(ModItems.potion, new ISubtypeRegistry.ISubtypeInterpreter() {
