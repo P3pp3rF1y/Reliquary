@@ -10,9 +10,10 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
-import xreliquary.items.alkahestry.AlkahestryChargingRecipe;
-import xreliquary.items.alkahestry.AlkahestryCraftingRecipe;
-import xreliquary.items.alkahestry.AlkahestryDrainRecipe;
+import xreliquary.crafting.AlkahestryChargingRecipe;
+import xreliquary.crafting.AlkahestryCraftingRecipe;
+import xreliquary.crafting.AlkahestryDrainRecipe;
+import xreliquary.crafting.NianZhuDataFixRecipe;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
@@ -391,10 +392,12 @@ public class XRRecipes {
 		GameRegistry.addRecipe(new AlkahestryDrainRecipe());
 		GameRegistry.addRecipe(new AlkahestryChargingRecipe());
 		GameRegistry.addRecipe(new AlkahestryCraftingRecipe());
+		GameRegistry.addRecipe(new NianZhuDataFixRecipe());
 
 		RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register(Reference.MOD_ID + ":alkahest_charge", AlkahestryChargingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
 		RecipeSorter.register(Reference.MOD_ID + ":alkahest_drain", AlkahestryDrainRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_charge");
+		RecipeSorter.register(Reference.MOD_ID + ":nian_zhu_data_fix", NianZhuDataFixRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
 	}
 
 	private static void addNianZhuRecipe(ItemStack nianZhu, ItemStack pearl) {
