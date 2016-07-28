@@ -52,7 +52,7 @@ public class ModItemColors {
 					}
 					return Integer.parseInt(Colors.PURE, 16);
 				}
-			}, new Item[] {ModItems.heartPearl, ModItems.heartZhu});
+			}, new Item[] {ModItems.heartZhu});
 		}
 
 		if(isEnabled(ModItems.heartPearl) && isEnabled(ModItems.nianZhu)) {
@@ -114,6 +114,67 @@ public class ModItemColors {
 					return -1;
 				}
 			}, new Item[] {ModItems.nianZhu});
+		}
+
+		if(isEnabled(ModItems.heartPearl) && isEnabled(ModItems.nianZhu)) {
+			itemColors.registerItemColorHandler(new IItemColor() {
+				@Override
+				public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+					if (tintIndex < 0 || tintIndex > 1)
+						return -1;
+
+					int type = stack.getMetadata();
+					String entityName = "";
+					switch(type) {
+						case Reference.NIAN_ZHU.ZOMBIE_META:
+							entityName = "Zombie";
+							break;
+						case Reference.NIAN_ZHU.SKELETON_META:
+							entityName = "Skeleton";
+							break;
+						case Reference.NIAN_ZHU.WITHER_SKELETON_META:
+							return tintIndex == 0 ? Integer.parseInt(Colors.WITHER_COLOR, 16) : Integer.parseInt(Colors.LIGHT_GRAY, 16);
+						case Reference.NIAN_ZHU.CREEPER_META:
+							entityName = "Creeper";
+							break;
+						case Reference.NIAN_ZHU.WITCH_META:
+							entityName = "Witch";
+							break;
+						case Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META:
+							entityName = "PigZombie";
+							break;
+						case Reference.NIAN_ZHU.CAVE_SPIDER_META:
+							entityName = "CaveSpider";
+							break;
+						case Reference.NIAN_ZHU.SPIDER_META:
+							entityName = "Spider";
+							break;
+						case Reference.NIAN_ZHU.ENDERMAN_META:
+							entityName = "Enderman";
+							break;
+						case Reference.NIAN_ZHU.GHAST_META:
+							entityName = "Ghast";
+							break;
+						case Reference.NIAN_ZHU.SLIME_META:
+							entityName = "Slime";
+							break;
+						case Reference.NIAN_ZHU.MAGMA_CUBE_META:
+							entityName = "LavaSlime";
+							break;
+						case Reference.NIAN_ZHU.BLAZE_META:
+							entityName = "Blaze";
+							break;
+					}
+
+					EntityList.EntityEggInfo eggInfo = EntityList.ENTITY_EGGS.get(entityName);
+
+					if (eggInfo != null) {
+						return tintIndex == 0 ? eggInfo.primaryColor : eggInfo.secondaryColor;
+					}
+
+					return -1;
+				}
+			}, new Item[] {ModItems.heartPearl});
 		}
 
 		if(isEnabled(ModItems.magazine) && isEnabled(ModItems.bullet)) {

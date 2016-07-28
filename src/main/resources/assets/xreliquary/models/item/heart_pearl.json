@@ -1,6 +1,7 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/heart_pearl"
+    "layer0": "xreliquary:items/heart_pearl",
+    "layer1": "xreliquary:items/heart_pearl_overlay_1"
   }
 }
