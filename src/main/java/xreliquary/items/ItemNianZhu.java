@@ -32,7 +32,7 @@ public class ItemNianZhu extends ItemBase {
 
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
-		return "item.heart_zhu_" + getType(ist);
+		return "item." + Names.nian_zhu + "_" + getType(ist);
 	}
 
 	@Override
@@ -63,33 +63,33 @@ public class ItemNianZhu extends ItemBase {
 	}
 
 	public ItemStack getNianZhuForEntity(Entity entity) {
-		if (entity instanceof EntityGhast) {
+		if(entity instanceof EntityGhast) {
 			return XRRecipes.nianZhu(Reference.NIAN_ZHU.GHAST_META);
-		} else if (entity instanceof EntityMagmaCube) {
+		} else if(entity instanceof EntityMagmaCube) {
 			return XRRecipes.nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META);
-		} else if (entity instanceof EntitySlime) {
+		} else if(entity instanceof EntitySlime) {
 			return XRRecipes.nianZhu(Reference.NIAN_ZHU.SLIME_META);
-		} else if (entity instanceof EntityPigZombie) {
+		} else if(entity instanceof EntityPigZombie) {
 			return XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META);
-		} else if (entity instanceof EntityZombie) {
+		} else if(entity instanceof EntityZombie) {
 			return XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_META);
-		} else if (entity instanceof EntitySkeleton) {
-			if (((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
+		} else if(entity instanceof EntitySkeleton) {
+			if(((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
 				return XRRecipes.nianZhu(Reference.NIAN_ZHU.WITHER_SKELETON_META);
 			} else {
 				return XRRecipes.nianZhu(Reference.NIAN_ZHU.SKELETON_META);
 			}
-		} else if (entity instanceof EntityCreeper) {
+		} else if(entity instanceof EntityCreeper) {
 			return XRRecipes.nianZhu(Reference.NIAN_ZHU.CREEPER_META);
-		} else if (entity instanceof EntityWitch) {
+		} else if(entity instanceof EntityWitch) {
 			return XRRecipes.nianZhu(Reference.NIAN_ZHU.WITCH_META);
-		} else if (entity instanceof EntityCaveSpider) {
+		} else if(entity instanceof EntityCaveSpider) {
 			return XRRecipes.nianZhu(Reference.NIAN_ZHU.CAVE_SPIDER_META);
-		} else if (entity instanceof EntitySpider){
+		} else if(entity instanceof EntitySpider) {
 			return XRRecipes.nianZhu(Reference.NIAN_ZHU.SPIDER_META);
-		} else if (entity instanceof EntityEnderman) {
+		} else if(entity instanceof EntityEnderman) {
 			return XRRecipes.nianZhu(Reference.NIAN_ZHU.ENDERMAN_META);
-		} else if (entity instanceof EntityBlaze) {
+		} else if(entity instanceof EntityBlaze) {
 			return XRRecipes.nianZhu(Reference.NIAN_ZHU.BLAZE_META);
 		}
 
