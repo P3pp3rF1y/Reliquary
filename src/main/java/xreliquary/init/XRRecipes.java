@@ -10,10 +10,7 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
-import xreliquary.crafting.AlkahestryChargingRecipe;
-import xreliquary.crafting.AlkahestryCraftingRecipe;
-import xreliquary.crafting.AlkahestryDrainRecipe;
-import xreliquary.crafting.NianZhuDataFixRecipe;
+import xreliquary.crafting.*;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
@@ -56,6 +53,9 @@ public class XRRecipes {
 	public static void init() {
 		// tome and alkahestry recipes
 		addTomeRecipes();
+
+		//Nian zhu data fix and repair recipes
+		addNianZhuRecipes();
 
 		//misc recipes
 		//frozen cores to make packed ice.
@@ -392,12 +392,18 @@ public class XRRecipes {
 		GameRegistry.addRecipe(new AlkahestryDrainRecipe());
 		GameRegistry.addRecipe(new AlkahestryChargingRecipe());
 		GameRegistry.addRecipe(new AlkahestryCraftingRecipe());
-		GameRegistry.addRecipe(new NianZhuDataFixRecipe());
 
 		RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
 		RecipeSorter.register(Reference.MOD_ID + ":alkahest_charge", AlkahestryChargingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
 		RecipeSorter.register(Reference.MOD_ID + ":alkahest_drain", AlkahestryDrainRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_charge");
+	}
+
+	private static void addNianZhuRecipes() {
+		GameRegistry.addRecipe(new NianZhuDataFixRecipe());
+		GameRegistry.addRecipe(new NianZhuRepairRecipe());
+
 		RecipeSorter.register(Reference.MOD_ID + ":nian_zhu_data_fix", NianZhuDataFixRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register(Reference.MOD_ID + ":nian_zhu_repair", NianZhuRepairRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 	}
 
 	private static void addNianZhuRecipe(ItemStack nianZhu, ItemStack pearl) {
