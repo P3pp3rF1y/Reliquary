@@ -60,7 +60,7 @@ public class Colors {
 	public static final String SATURATION_COLOR = "AA8800";
 	public static final String HUNGER_COLOR = "772200";
 
-	public static class NIAN_ZHU {
+	public static class HEART_ZHU {
 		public static final String ZOMBIE = "993300";
 		public static final String SKELETON = "FFFFCC";
 		public static final String WITHER_SKELETON = "333329";

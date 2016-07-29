@@ -48,7 +48,7 @@ public class Names {
     public static final String harvest_rod = "harvest_rod";
 
     public static final String mob_ingredient = "mob_ingredient";
-    public static final String heart_pearl = "heart_pearl";
+    public static final String mob_charm_fragment = "mob_charm_fragment";
     public static final String heart_zhu = "heart_zhu";
 
     //these aren't the names of the items (those are based on metadata, purely) but they're used for config readability.
@@ -70,8 +70,8 @@ public class Names {
     public static final String slime_pearl = "slime_pearl";
     public static final String ender_heart = "nebulous_heart";
     public static final String fertile_essence = "fertile_essence";
-    public static final String nian_zhu_belt = "nian_zhu_belt";
-    public static final String nian_zhu = "nian_zhu";
+    public static final String mob_charm_belt = "mob_charm_belt";
+    public static final String mob_charm = "mob_charm";
 
     public static final String gun_part = "gun_part";
     // potion info

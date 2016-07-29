@@ -29,7 +29,7 @@ public class Reference {
 
 	public static final String MODEL_TEXTURE_PATH = "textures/models/";
 
-	public static class NIAN_ZHU {
+	public static class MOB_CHARM {
 		public static final byte ZOMBIE_META = 0;
 		public static final byte SKELETON_META = 1;
 		public static final byte WITHER_SKELETON_META = 2;

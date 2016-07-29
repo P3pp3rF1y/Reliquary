@@ -3,7 +3,6 @@ package xreliquary.init;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.*;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.entity.projectile.EntityPotion;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -42,7 +41,7 @@ public class ModItems {
 	public static final ItemGunPart gunPart = new ItemGunPart();
 	public static final ItemHandgun handgun = new ItemHandgun();
 	public static final ItemHarvestRod harvestRod = new ItemHarvestRod();
-	public static final ItemHeartPearl heartPearl = new ItemHeartPearl();
+	public static final ItemMobCharmFragment mobCharmFragment = new ItemMobCharmFragment();
 	public static final ItemHeartZhu heartZhu = new ItemHeartZhu();
 	public static final ItemHeroMedallion heroMedallion = new ItemHeroMedallion();
 	public static final ItemIceMagusRod iceMagusRod = new ItemIceMagusRod();
@@ -68,8 +67,8 @@ public class ModItems {
 	public static final ItemWitchHat witchHat = new ItemWitchHat();
 	public static final ItemWitherlessRose witherlessRose = new ItemWitherlessRose();
 	public static final ItemXRPotion potion = new ItemXRPotion();
-	public static final ItemNianZhuBelt nianZhuBelt = new ItemNianZhuBelt();
-	public static final ItemNianZhu nianZhu = new ItemNianZhu();
+	public static final ItemMobCharmBelt mobCharmBelt = new ItemMobCharmBelt();
+	public static final ItemMobCharm mobCharm = new ItemMobCharm();
 
 	public static void init() {
 		registerItem(alkahestryTome, Names.alkahestry_tome);
@@ -90,7 +89,7 @@ public class ModItems {
 		registerItem(gunPart, Names.gun_part);
 		registerItem(handgun, Names.handgun);
 		registerItem(harvestRod, Names.harvest_rod);
-		registerItem(heartPearl, Names.heart_pearl);
+		registerItem(mobCharmFragment, Names.mob_charm_fragment);
 		registerItem(heartZhu, Names.heart_zhu, false);
 		registerItem(heroMedallion, Names.hero_medallion);
 		registerItem(holyHandGrenade, Names.holy_hand_grenade);
@@ -103,8 +102,8 @@ public class ModItems {
 		registerItem(magazine, Names.magazine);
 		registerItem(magicbane, Names.magicbane);
 		registerItem(midasTouchstone, Names.midas_touchstone);
-		registerItem(nianZhu, Names.nian_zhu);
-		registerItem(nianZhuBelt, Names.nian_zhu_belt);
+		registerItem(mobCharm, Names.mob_charm);
+		registerItem(mobCharmBelt, Names.mob_charm_belt);
 		registerItem(potionEssence, Names.potion_essence, false);
 		registerItem(phoenixDown, Names.phoenix_down);
 		registerItem(pyromancerStaff, Names.pyromancer_staff);

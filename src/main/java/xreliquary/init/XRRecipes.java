@@ -52,10 +52,10 @@ public class XRRecipes {
 
 	public static void init() {
 		// tome and alkahestry recipes
-		addTomeRecipes();
+		addTomeRecipeHandlers();
 
-		//Nian zhu data fix and repair recipes
-		addNianZhuRecipes();
+		// mob charm data fix and repair recipes
+		addMobCharmRecipeHandlers();
 
 		//misc recipes
 		//frozen cores to make packed ice.
@@ -321,35 +321,35 @@ public class XRRecipes {
 		else
 			addRecipe(false, false, new ItemStack(ModItems.destructionCatalyst, 1, 0), "tmc", "gim", "fgt", 't', Blocks.TNT, 'm', MOLTEN_CORE, 'c', CREEPER_GLAND, 'g', Items.GOLD_INGOT, 'i', ModItems.infernalTear, 'f', Items.FLINT_AND_STEEL);
 
-		// nian zhu heart pearls
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.ZOMBIE_META), "ppp", "sts", "ppp", 'p', ZOMBIE_HEART, 's', Items.ROTTEN_FLESH, 't', Items.BONE);
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.SKELETON_META), "ppp", "sts", "ppp", 'p', RIB_BONE, 's', Items.BONE, 't', Items.FLINT);
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.WITHER_SKELETON_META), "ppp", "sts", "ppp", 'p', WITHER_RIB, 's', Items.BONE, 't', WITHER_SKULL);
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.CREEPER_META), "ppp", "sts", "ppp", 'p', CREEPER_GLAND, 's', Items.GUNPOWDER, 't', Items.BONE);
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.WITCH_META), "ppp", "sts", "ppp", 'p', ModItems.witchHat, 's', Items.GLASS_BOTTLE, 't', Items.SPIDER_EYE);
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META), "ppp", "sts", "ppp", 'p', ZOMBIE_HEART, 's', Items.ROTTEN_FLESH, 't', Items.GOLDEN_SWORD);
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.CAVE_SPIDER_META), "ppp", "sts", "ppp", 'p', CHELICERAE, 's', Items.STRING, 't', PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), PotionTypes.POISON));
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.SPIDER_META), "ppp", "sts", "ppp", 'p', CHELICERAE, 's', Items.STRING, 't', Items.SPIDER_EYE);
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.ENDERMAN_META), "ppp", "sts", "ppp", 'p', NEBULOUS_HEART, 's', Items.ENDER_PEARL, 't', NEBULOUS_HEART);
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.BLAZE_META), "ppp", "sts", "ppp", 'p', MOLTEN_CORE, 's', Items.BLAZE_ROD, 't', Items.BLAZE_POWDER);
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.GHAST_META), "ppp", "sts", "ppp", 'p', Items.GHAST_TEAR, 's', Items.GUNPOWDER, 't', CREEPER_GLAND);
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.MAGMA_CUBE_META), "ppp", "sss", "ppp", 'p', MOLTEN_CORE, 's', Items.MAGMA_CREAM);
-		addRecipe(false, false, heartPearl(Reference.NIAN_ZHU.SLIME_META), "ppp", "sss", "ppp", 'p', SLIME_PEARL, 's', Items.SLIME_BALL);
+		// mob charm fragments
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.ZOMBIE_META), "ppp", "sts", "ppp", 'p', ZOMBIE_HEART, 's', Items.ROTTEN_FLESH, 't', Items.BONE);
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.SKELETON_META), "ppp", "sts", "ppp", 'p', RIB_BONE, 's', Items.BONE, 't', Items.FLINT);
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.WITHER_SKELETON_META), "ppp", "sts", "ppp", 'p', WITHER_RIB, 's', Items.BONE, 't', WITHER_SKULL);
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.CREEPER_META), "ppp", "sts", "ppp", 'p', CREEPER_GLAND, 's', Items.GUNPOWDER, 't', Items.BONE);
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.WITCH_META), "ppp", "sts", "ppp", 'p', ModItems.witchHat, 's', Items.GLASS_BOTTLE, 't', Items.SPIDER_EYE);
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.ZOMBIE_PIGMAN_META), "ppp", "sts", "ppp", 'p', ZOMBIE_HEART, 's', Items.ROTTEN_FLESH, 't', Items.GOLDEN_SWORD);
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.CAVE_SPIDER_META), "ppp", "sts", "ppp", 'p', CHELICERAE, 's', Items.STRING, 't', PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), PotionTypes.POISON));
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.SPIDER_META), "ppp", "sts", "ppp", 'p', CHELICERAE, 's', Items.STRING, 't', Items.SPIDER_EYE);
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.ENDERMAN_META), "ppp", "sts", "ppp", 'p', NEBULOUS_HEART, 's', Items.ENDER_PEARL, 't', NEBULOUS_HEART);
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.BLAZE_META), "ppp", "sts", "ppp", 'p', MOLTEN_CORE, 's', Items.BLAZE_ROD, 't', Items.BLAZE_POWDER);
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.GHAST_META), "ppp", "sts", "ppp", 'p', Items.GHAST_TEAR, 's', Items.GUNPOWDER, 't', CREEPER_GLAND);
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.MAGMA_CUBE_META), "ppp", "sss", "ppp", 'p', MOLTEN_CORE, 's', Items.MAGMA_CREAM);
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.SLIME_META), "ppp", "sss", "ppp", 'p', SLIME_PEARL, 's', Items.SLIME_BALL);
 
-		// nian zhu actual items
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.ZOMBIE_META), heartPearl(Reference.NIAN_ZHU.ZOMBIE_META));
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.SKELETON_META), heartPearl(Reference.NIAN_ZHU.SKELETON_META));
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.WITHER_SKELETON_META), heartPearl(Reference.NIAN_ZHU.WITHER_SKELETON_META));
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.CREEPER_META), heartPearl(Reference.NIAN_ZHU.CREEPER_META));
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.WITCH_META), heartPearl(Reference.NIAN_ZHU.WITCH_META));
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META), heartPearl(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META));
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.CAVE_SPIDER_META), heartPearl(Reference.NIAN_ZHU.CAVE_SPIDER_META));
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.SPIDER_META), heartPearl(Reference.NIAN_ZHU.SPIDER_META));
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.ENDERMAN_META), heartPearl(Reference.NIAN_ZHU.ENDERMAN_META));
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.BLAZE_META), heartPearl(Reference.NIAN_ZHU.BLAZE_META));
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.GHAST_META), heartPearl(Reference.NIAN_ZHU.GHAST_META));
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META), heartPearl(Reference.NIAN_ZHU.MAGMA_CUBE_META));
-		addNianZhuRecipe(nianZhu(Reference.NIAN_ZHU.SLIME_META), heartPearl(Reference.NIAN_ZHU.SLIME_META));
+		// mob charm actual items
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.ZOMBIE_META), charmFragment(Reference.MOB_CHARM.ZOMBIE_META));
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.SKELETON_META), charmFragment(Reference.MOB_CHARM.SKELETON_META));
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.WITHER_SKELETON_META), charmFragment(Reference.MOB_CHARM.WITHER_SKELETON_META));
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.CREEPER_META), charmFragment(Reference.MOB_CHARM.CREEPER_META));
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.WITCH_META), charmFragment(Reference.MOB_CHARM.WITCH_META));
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.ZOMBIE_PIGMAN_META), charmFragment(Reference.MOB_CHARM.ZOMBIE_PIGMAN_META));
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.CAVE_SPIDER_META), charmFragment(Reference.MOB_CHARM.CAVE_SPIDER_META));
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.SPIDER_META), charmFragment(Reference.MOB_CHARM.SPIDER_META));
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.ENDERMAN_META), charmFragment(Reference.MOB_CHARM.ENDERMAN_META));
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.BLAZE_META), charmFragment(Reference.MOB_CHARM.BLAZE_META));
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.GHAST_META), charmFragment(Reference.MOB_CHARM.GHAST_META));
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.MAGMA_CUBE_META), charmFragment(Reference.MOB_CHARM.MAGMA_CUBE_META));
+		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.SLIME_META), charmFragment(Reference.MOB_CHARM.SLIME_META));
 
 		/* potions and splash potions */
 
@@ -385,7 +385,7 @@ public class XRRecipes {
 			addMobDropCraftingRecipes();
 	}
 
-	private static void addTomeRecipes() {
+	private static void addTomeRecipeHandlers() {
 		if(ModItems.alkahestryTome.getRegistryName() == null || Settings.disabledItemsBlocks.contains(ModItems.alkahestryTome.getRegistryName().getResourcePath()))
 			return;
 
@@ -398,16 +398,16 @@ public class XRRecipes {
 		RecipeSorter.register(Reference.MOD_ID + ":alkahest_drain", AlkahestryDrainRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_charge");
 	}
 
-	private static void addNianZhuRecipes() {
-		GameRegistry.addRecipe(new NianZhuDataFixRecipe());
-		GameRegistry.addRecipe(new NianZhuRepairRecipe());
+	private static void addMobCharmRecipeHandlers() {
+		GameRegistry.addRecipe(new MobCharmDataFixRecipe());
+		GameRegistry.addRecipe(new MobCharmRepairRecipe());
 
-		RecipeSorter.register(Reference.MOD_ID + ":nian_zhu_data_fix", NianZhuDataFixRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
-		RecipeSorter.register(Reference.MOD_ID + ":nian_zhu_repair", NianZhuRepairRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+		RecipeSorter.register(Reference.MOD_ID + ":mob_charm_data_fix", MobCharmDataFixRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
+		RecipeSorter.register(Reference.MOD_ID + ":mob_charm_repair", MobCharmRepairRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 	}
 
-	private static void addNianZhuRecipe(ItemStack nianZhu, ItemStack pearl) {
-		addRecipe(true, false, nianZhu, Items.STRING, pearl, pearl, pearl, pearl, pearl, pearl);
+	private static void addMobCharmRecipe(ItemStack mobCharm, ItemStack fragment) {
+		addRecipe(true, false, mobCharm, Items.STRING, fragment, fragment, fragment, fragment, fragment, fragment);
 	}
 
 	private static void addMobDropCraftingRecipes() {
@@ -478,16 +478,16 @@ public class XRRecipes {
 	public static final ItemStack SQUID_BEAK = ingredient(1, Reference.SQUID_INGREDIENT_META);
 	public static final ItemStack CHELICERAE = ingredient(1, Reference.SPIDER_INGREDIENT_META);
 
-	public static ItemStack heartPearl(int meta) {
-		return new ItemStack(ModItems.heartPearl, 1, meta);
+	public static ItemStack charmFragment(int meta) {
+		return new ItemStack(ModItems.mobCharmFragment, 1, meta);
 	}
 
-	public static ItemStack nianZhu(byte meta) {
-		ItemStack nianZhu = new ItemStack(ModItems.nianZhu);
+	public static ItemStack mobCharm(byte meta) {
+		ItemStack mobCharm = new ItemStack(ModItems.mobCharm);
 
-		ModItems.nianZhu.setType(nianZhu, meta);
+		ModItems.mobCharm.setType(mobCharm, meta);
 
-		return nianZhu;
+		return mobCharm;
 	}
 
 }

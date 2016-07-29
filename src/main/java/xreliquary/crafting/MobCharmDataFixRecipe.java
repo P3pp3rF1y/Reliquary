@@ -9,7 +9,7 @@ import xreliquary.init.XRRecipes;
 
 import javax.annotation.Nullable;
 
-public class NianZhuDataFixRecipe implements IRecipe {
+public class MobCharmDataFixRecipe implements IRecipe {
 	@Override
 	public boolean matches(InventoryCrafting inv, World worldIn) {
 		boolean heartZhuFound = false;
@@ -32,7 +32,7 @@ public class NianZhuDataFixRecipe implements IRecipe {
 		for(int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack stack = inv.getStackInSlot(i);
 			if(stack != null && stack.getItem() == ModItems.heartZhu) {
-				return XRRecipes.nianZhu((byte) stack.getMetadata());
+				return XRRecipes.mobCharm((byte) stack.getMetadata());
 			}
 		}
 		return null;

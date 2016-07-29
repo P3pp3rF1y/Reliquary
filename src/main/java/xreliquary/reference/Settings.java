@@ -306,7 +306,7 @@ public class Settings {
 		public static int redstoneWrapperRange;
 	}
 
-	public static class NianZhu {
+	public static class MobCharm {
 		public static int durability;
 		public static int damagePerKill;
 		public static int dropDurabilityRepair;

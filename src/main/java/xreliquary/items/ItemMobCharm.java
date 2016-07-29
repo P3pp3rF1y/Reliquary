@@ -18,13 +18,13 @@ import java.util.List;
 /**
  * Created by Xeno on 10/11/2014.
  */
-public class ItemNianZhu extends ItemBase {
+public class ItemMobCharm extends ItemBase {
 	private static final String TYPE_TAG = "type";
 
-	public ItemNianZhu() {
-		super(Names.nian_zhu);
+	public ItemMobCharm() {
+		super(Names.mob_charm);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		this.setMaxDamage(Settings.NianZhu.durability);
+		this.setMaxDamage(Settings.MobCharm.durability);
 		this.setMaxStackSize(1);
 		this.setHasSubtypes(true);
 		this.canRepair = false;
@@ -32,7 +32,7 @@ public class ItemNianZhu extends ItemBase {
 
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
-		return "item." + Names.nian_zhu + "_" + getType(ist);
+		return "item." + Names.mob_charm + "_" + getType(ist);
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class ItemNianZhu extends ItemBase {
 	}
 
 	public byte getType(ItemStack stack) {
-		if(stack.getItem() != ModItems.nianZhu || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TYPE_TAG))
+		if(stack.getItem() != ModItems.mobCharm || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TYPE_TAG))
 			return -1;
 
 		return stack.getTagCompound().getByte(TYPE_TAG);
@@ -62,35 +62,35 @@ public class ItemNianZhu extends ItemBase {
 		stack.setTagCompound(compound);
 	}
 
-	public ItemStack getNianZhuForEntity(Entity entity) {
+	public ItemStack getMobCharmForEntity(Entity entity) {
 		if(entity instanceof EntityGhast) {
-			return XRRecipes.nianZhu(Reference.NIAN_ZHU.GHAST_META);
+			return XRRecipes.mobCharm(Reference.MOB_CHARM.GHAST_META);
 		} else if(entity instanceof EntityMagmaCube) {
-			return XRRecipes.nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META);
+			return XRRecipes.mobCharm(Reference.MOB_CHARM.MAGMA_CUBE_META);
 		} else if(entity instanceof EntitySlime) {
-			return XRRecipes.nianZhu(Reference.NIAN_ZHU.SLIME_META);
+			return XRRecipes.mobCharm(Reference.MOB_CHARM.SLIME_META);
 		} else if(entity instanceof EntityPigZombie) {
-			return XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META);
+			return XRRecipes.mobCharm(Reference.MOB_CHARM.ZOMBIE_PIGMAN_META);
 		} else if(entity instanceof EntityZombie) {
-			return XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_META);
+			return XRRecipes.mobCharm(Reference.MOB_CHARM.ZOMBIE_META);
 		} else if(entity instanceof EntitySkeleton) {
 			if(((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
-				return XRRecipes.nianZhu(Reference.NIAN_ZHU.WITHER_SKELETON_META);
+				return XRRecipes.mobCharm(Reference.MOB_CHARM.WITHER_SKELETON_META);
 			} else {
-				return XRRecipes.nianZhu(Reference.NIAN_ZHU.SKELETON_META);
+				return XRRecipes.mobCharm(Reference.MOB_CHARM.SKELETON_META);
 			}
 		} else if(entity instanceof EntityCreeper) {
-			return XRRecipes.nianZhu(Reference.NIAN_ZHU.CREEPER_META);
+			return XRRecipes.mobCharm(Reference.MOB_CHARM.CREEPER_META);
 		} else if(entity instanceof EntityWitch) {
-			return XRRecipes.nianZhu(Reference.NIAN_ZHU.WITCH_META);
+			return XRRecipes.mobCharm(Reference.MOB_CHARM.WITCH_META);
 		} else if(entity instanceof EntityCaveSpider) {
-			return XRRecipes.nianZhu(Reference.NIAN_ZHU.CAVE_SPIDER_META);
+			return XRRecipes.mobCharm(Reference.MOB_CHARM.CAVE_SPIDER_META);
 		} else if(entity instanceof EntitySpider) {
-			return XRRecipes.nianZhu(Reference.NIAN_ZHU.SPIDER_META);
+			return XRRecipes.mobCharm(Reference.MOB_CHARM.SPIDER_META);
 		} else if(entity instanceof EntityEnderman) {
-			return XRRecipes.nianZhu(Reference.NIAN_ZHU.ENDERMAN_META);
+			return XRRecipes.mobCharm(Reference.MOB_CHARM.ENDERMAN_META);
 		} else if(entity instanceof EntityBlaze) {
-			return XRRecipes.nianZhu(Reference.NIAN_ZHU.BLAZE_META);
+			return XRRecipes.mobCharm(Reference.MOB_CHARM.BLAZE_META);
 		}
 
 		return null;

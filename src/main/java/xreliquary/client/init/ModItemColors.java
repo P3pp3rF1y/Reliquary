@@ -17,90 +17,90 @@ public class ModItemColors {
 	public static void init() {
 		ItemColors itemColors = Minecraft.getMinecraft().getItemColors();
 
-		if(isEnabled(ModItems.heartPearl) && isEnabled(ModItems.heartZhu) && isEnabled(ModItems.nianZhu)) {
+		if(isEnabled(ModItems.mobCharmFragment) && isEnabled(ModItems.heartZhu) && isEnabled(ModItems.mobCharm)) {
 			itemColors.registerItemColorHandler(new IItemColor() {
 				@Override
 				public int getColorFromItemstack(ItemStack stack, int tintIndex) {
 					int meta = stack.getItemDamage();
 					switch(meta) {
-						case Reference.NIAN_ZHU.ZOMBIE_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.ZOMBIE, 16);
-						case Reference.NIAN_ZHU.SKELETON_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.SKELETON, 16);
-						case Reference.NIAN_ZHU.WITHER_SKELETON_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.WITHER_SKELETON, 16);
-						case Reference.NIAN_ZHU.CREEPER_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.CREEPER, 16);
-						case Reference.NIAN_ZHU.WITCH_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.WITCH, 16);
-						case Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.ZOMBIE_PIGMAN, 16);
-						case Reference.NIAN_ZHU.CAVE_SPIDER_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.CAVE_SPIDER, 16);
-						case Reference.NIAN_ZHU.SPIDER_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.SPIDER, 16);
-						case Reference.NIAN_ZHU.ENDERMAN_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.ENDERMAN, 16);
-						case Reference.NIAN_ZHU.GHAST_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.GHAST, 16);
-						case Reference.NIAN_ZHU.SLIME_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.SLIME, 16);
-						case Reference.NIAN_ZHU.MAGMA_CUBE_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.MAGMA_CUBE, 16);
-						case Reference.NIAN_ZHU.BLAZE_META:
-							return Integer.parseInt(Colors.NIAN_ZHU.BLAZE, 16);
+						case Reference.MOB_CHARM.ZOMBIE_META:
+							return Integer.parseInt(Colors.HEART_ZHU.ZOMBIE, 16);
+						case Reference.MOB_CHARM.SKELETON_META:
+							return Integer.parseInt(Colors.HEART_ZHU.SKELETON, 16);
+						case Reference.MOB_CHARM.WITHER_SKELETON_META:
+							return Integer.parseInt(Colors.HEART_ZHU.WITHER_SKELETON, 16);
+						case Reference.MOB_CHARM.CREEPER_META:
+							return Integer.parseInt(Colors.HEART_ZHU.CREEPER, 16);
+						case Reference.MOB_CHARM.WITCH_META:
+							return Integer.parseInt(Colors.HEART_ZHU.WITCH, 16);
+						case Reference.MOB_CHARM.ZOMBIE_PIGMAN_META:
+							return Integer.parseInt(Colors.HEART_ZHU.ZOMBIE_PIGMAN, 16);
+						case Reference.MOB_CHARM.CAVE_SPIDER_META:
+							return Integer.parseInt(Colors.HEART_ZHU.CAVE_SPIDER, 16);
+						case Reference.MOB_CHARM.SPIDER_META:
+							return Integer.parseInt(Colors.HEART_ZHU.SPIDER, 16);
+						case Reference.MOB_CHARM.ENDERMAN_META:
+							return Integer.parseInt(Colors.HEART_ZHU.ENDERMAN, 16);
+						case Reference.MOB_CHARM.GHAST_META:
+							return Integer.parseInt(Colors.HEART_ZHU.GHAST, 16);
+						case Reference.MOB_CHARM.SLIME_META:
+							return Integer.parseInt(Colors.HEART_ZHU.SLIME, 16);
+						case Reference.MOB_CHARM.MAGMA_CUBE_META:
+							return Integer.parseInt(Colors.HEART_ZHU.MAGMA_CUBE, 16);
+						case Reference.MOB_CHARM.BLAZE_META:
+							return Integer.parseInt(Colors.HEART_ZHU.BLAZE, 16);
 					}
 					return Integer.parseInt(Colors.PURE, 16);
 				}
 			}, new Item[] {ModItems.heartZhu});
 		}
 
-		if(isEnabled(ModItems.heartPearl) && isEnabled(ModItems.nianZhu)) {
+		if(isEnabled(ModItems.mobCharmFragment) && isEnabled(ModItems.mobCharm)) {
 			itemColors.registerItemColorHandler(new IItemColor() {
 				@Override
 				public int getColorFromItemstack(ItemStack stack, int tintIndex) {
 					if (tintIndex < 1 || tintIndex > 2)
 						return -1;
 
-					int type = ModItems.nianZhu.getType(stack);
+					int type = ModItems.mobCharm.getType(stack);
 					String entityName = "";
 					switch(type) {
-						case Reference.NIAN_ZHU.ZOMBIE_META:
+						case Reference.MOB_CHARM.ZOMBIE_META:
 							entityName = "Zombie";
 							break;
-						case Reference.NIAN_ZHU.SKELETON_META:
+						case Reference.MOB_CHARM.SKELETON_META:
 							entityName = "Skeleton";
 							break;
-						case Reference.NIAN_ZHU.WITHER_SKELETON_META:
+						case Reference.MOB_CHARM.WITHER_SKELETON_META:
 							return tintIndex == 1 ? Integer.parseInt(Colors.WITHER_COLOR, 16) : Integer.parseInt(Colors.LIGHT_GRAY, 16);
-						case Reference.NIAN_ZHU.CREEPER_META:
+						case Reference.MOB_CHARM.CREEPER_META:
 							entityName = "Creeper";
 							break;
-						case Reference.NIAN_ZHU.WITCH_META:
+						case Reference.MOB_CHARM.WITCH_META:
 							entityName = "Witch";
 							break;
-						case Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META:
+						case Reference.MOB_CHARM.ZOMBIE_PIGMAN_META:
 							entityName = "PigZombie";
 							break;
-						case Reference.NIAN_ZHU.CAVE_SPIDER_META:
+						case Reference.MOB_CHARM.CAVE_SPIDER_META:
 							entityName = "CaveSpider";
 							break;
-						case Reference.NIAN_ZHU.SPIDER_META:
+						case Reference.MOB_CHARM.SPIDER_META:
 							entityName = "Spider";
 							break;
-						case Reference.NIAN_ZHU.ENDERMAN_META:
+						case Reference.MOB_CHARM.ENDERMAN_META:
 							entityName = "Enderman";
 							break;
-						case Reference.NIAN_ZHU.GHAST_META:
+						case Reference.MOB_CHARM.GHAST_META:
 							entityName = "Ghast";
 							break;
-						case Reference.NIAN_ZHU.SLIME_META:
+						case Reference.MOB_CHARM.SLIME_META:
 							entityName = "Slime";
 							break;
-						case Reference.NIAN_ZHU.MAGMA_CUBE_META:
+						case Reference.MOB_CHARM.MAGMA_CUBE_META:
 							entityName = "LavaSlime";
 							break;
-						case Reference.NIAN_ZHU.BLAZE_META:
+						case Reference.MOB_CHARM.BLAZE_META:
 							entityName = "Blaze";
 							break;
 					}
@@ -113,10 +113,10 @@ public class ModItemColors {
 
 					return -1;
 				}
-			}, new Item[] {ModItems.nianZhu});
+			}, new Item[] {ModItems.mobCharm});
 		}
 
-		if(isEnabled(ModItems.heartPearl) && isEnabled(ModItems.nianZhu)) {
+		if(isEnabled(ModItems.mobCharmFragment) && isEnabled(ModItems.mobCharm)) {
 			itemColors.registerItemColorHandler(new IItemColor() {
 				@Override
 				public int getColorFromItemstack(ItemStack stack, int tintIndex) {
@@ -126,42 +126,42 @@ public class ModItemColors {
 					int type = stack.getMetadata();
 					String entityName = "";
 					switch(type) {
-						case Reference.NIAN_ZHU.ZOMBIE_META:
+						case Reference.MOB_CHARM.ZOMBIE_META:
 							entityName = "Zombie";
 							break;
-						case Reference.NIAN_ZHU.SKELETON_META:
+						case Reference.MOB_CHARM.SKELETON_META:
 							entityName = "Skeleton";
 							break;
-						case Reference.NIAN_ZHU.WITHER_SKELETON_META:
+						case Reference.MOB_CHARM.WITHER_SKELETON_META:
 							return tintIndex == 0 ? Integer.parseInt(Colors.WITHER_COLOR, 16) : Integer.parseInt(Colors.LIGHT_GRAY, 16);
-						case Reference.NIAN_ZHU.CREEPER_META:
+						case Reference.MOB_CHARM.CREEPER_META:
 							entityName = "Creeper";
 							break;
-						case Reference.NIAN_ZHU.WITCH_META:
+						case Reference.MOB_CHARM.WITCH_META:
 							entityName = "Witch";
 							break;
-						case Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META:
+						case Reference.MOB_CHARM.ZOMBIE_PIGMAN_META:
 							entityName = "PigZombie";
 							break;
-						case Reference.NIAN_ZHU.CAVE_SPIDER_META:
+						case Reference.MOB_CHARM.CAVE_SPIDER_META:
 							entityName = "CaveSpider";
 							break;
-						case Reference.NIAN_ZHU.SPIDER_META:
+						case Reference.MOB_CHARM.SPIDER_META:
 							entityName = "Spider";
 							break;
-						case Reference.NIAN_ZHU.ENDERMAN_META:
+						case Reference.MOB_CHARM.ENDERMAN_META:
 							entityName = "Enderman";
 							break;
-						case Reference.NIAN_ZHU.GHAST_META:
+						case Reference.MOB_CHARM.GHAST_META:
 							entityName = "Ghast";
 							break;
-						case Reference.NIAN_ZHU.SLIME_META:
+						case Reference.MOB_CHARM.SLIME_META:
 							entityName = "Slime";
 							break;
-						case Reference.NIAN_ZHU.MAGMA_CUBE_META:
+						case Reference.MOB_CHARM.MAGMA_CUBE_META:
 							entityName = "LavaSlime";
 							break;
-						case Reference.NIAN_ZHU.BLAZE_META:
+						case Reference.MOB_CHARM.BLAZE_META:
 							entityName = "Blaze";
 							break;
 					}
@@ -174,7 +174,7 @@ public class ModItemColors {
 
 					return -1;
 				}
-			}, new Item[] {ModItems.heartPearl});
+			}, new Item[] {ModItems.mobCharmFragment});
 		}
 
 		if(isEnabled(ModItems.magazine) && isEnabled(ModItems.bullet)) {

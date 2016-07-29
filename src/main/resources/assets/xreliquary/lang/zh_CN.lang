@@ -77,16 +77,16 @@ item.handgun.tooltip=为了伟大的正义.;右击开火,长按装填.
 item.harvest_rod.name={{!colors.green}}丰收之杖
 item.harvest_rod.tooltip=右击施肥,;可进行范围性收割.;{{!colors.green}}充能: {{charge}};Shift右击充能.
 
-item.heart_pearl_0.name={{!colors.rose}}僵尸心珠
+item.mob_charm_fragment_0.name={{!colors.rose}}僵尸心珠
 item.heart_zhu_0.name={{!colors.rose}}僵尸念珠
 item.heart_zhu_0.tooltip=僵尸会无法看见你.
-item.heart_pearl_1.name={{!colors.white}}骷髅心珠
+item.mob_charm_fragment_1.name={{!colors.white}}骷髅心珠
 item.heart_zhu_1.name={{!colors.white}}骷髅念珠
 item.heart_zhu_1.tooltip=骷髅会无法看见你.
-item.heart_pearl_2.name={{!colors.gray}}凋零骷髅心珠
+item.mob_charm_fragment_2.name={{!colors.gray}}凋零骷髅心珠
 item.heart_zhu_2.name={{!colors.gray}}凋零骷髅念珠
 item.heart_zhu_2.tooltip=凋零骷髅会无法看见你.
-item.heart_pearl_3.name={{!colors.light_green}}爬行者心珠
+item.mob_charm_fragment_3.name={{!colors.light_green}}爬行者心珠
 item.heart_zhu_3.name={{!colors.light_green}}爬行者念珠
 item.heart_zhu_3.tooltip=爬行者会无法看见你.
  

@@ -13,39 +13,39 @@ import xreliquary.reference.Settings;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
-public class NianZhuRepairRecipe implements IRecipe {
+public class MobCharmRepairRecipe implements IRecipe {
 	private static final HashMap<Byte, ItemStack> REPAIR_INGREDIENTS;
 
 	static {
 		REPAIR_INGREDIENTS = new HashMap<>();
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.BLAZE_META, XRRecipes.MOLTEN_CORE);
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.CAVE_SPIDER_META, XRRecipes.CHELICERAE);
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.CREEPER_META, XRRecipes.CREEPER_GLAND);
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.ENDERMAN_META, XRRecipes.NEBULOUS_HEART);
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.GHAST_META, new ItemStack(Items.GHAST_TEAR));
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.MAGMA_CUBE_META, XRRecipes.MOLTEN_CORE);
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.SKELETON_META, XRRecipes.RIB_BONE);
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.SLIME_META, XRRecipes.SLIME_PEARL);
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.SPIDER_META, XRRecipes.CHELICERAE);
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.WITCH_META, new ItemStack(ModItems.witchHat));
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.WITHER_SKELETON_META, XRRecipes.WITHER_RIB);
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.ZOMBIE_META, XRRecipes.ZOMBIE_HEART);
-		REPAIR_INGREDIENTS.put(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META, XRRecipes.ZOMBIE_HEART);
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.BLAZE_META, XRRecipes.MOLTEN_CORE);
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.CAVE_SPIDER_META, XRRecipes.CHELICERAE);
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.CREEPER_META, XRRecipes.CREEPER_GLAND);
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.ENDERMAN_META, XRRecipes.NEBULOUS_HEART);
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.GHAST_META, new ItemStack(Items.GHAST_TEAR));
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.MAGMA_CUBE_META, XRRecipes.MOLTEN_CORE);
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.SKELETON_META, XRRecipes.RIB_BONE);
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.SLIME_META, XRRecipes.SLIME_PEARL);
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.SPIDER_META, XRRecipes.CHELICERAE);
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.WITCH_META, new ItemStack(ModItems.witchHat));
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.WITHER_SKELETON_META, XRRecipes.WITHER_RIB);
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.ZOMBIE_META, XRRecipes.ZOMBIE_HEART);
+		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.ZOMBIE_PIGMAN_META, XRRecipes.ZOMBIE_HEART);
 	}
 
 	@Override
 	public boolean matches(InventoryCrafting inv, World worldIn) {
 		ItemStack ingredient = null;
 		int numberIngredients = 0;
-		ItemStack nianZhu = null;
+		ItemStack mobCharm = null;
 
 		for(int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack currentStack = inv.getStackInSlot(i);
 			if(currentStack != null) {
-				if(currentStack.getItem() == ModItems.nianZhu) {
-					if(nianZhu != null || !REPAIR_INGREDIENTS.keySet().contains(ModItems.nianZhu.getType(currentStack)))
+				if(currentStack.getItem() == ModItems.mobCharm) {
+					if(mobCharm != null || !REPAIR_INGREDIENTS.keySet().contains(ModItems.mobCharm.getType(currentStack)))
 						return false;
-					nianZhu = currentStack;
+					mobCharm = currentStack;
 					continue;
 				}
 
@@ -62,10 +62,10 @@ public class NianZhuRepairRecipe implements IRecipe {
 			}
 		}
 
-		if (nianZhu == null || ingredient == null || !REPAIR_INGREDIENTS.get(ModItems.nianZhu.getType(nianZhu)).isItemEqual(ingredient))
+		if (mobCharm == null || ingredient == null || !REPAIR_INGREDIENTS.get(ModItems.mobCharm.getType(mobCharm)).isItemEqual(ingredient))
 			return false;
 
-		if (nianZhu.getItemDamage() < (Settings.NianZhu.dropDurabilityRepair * (numberIngredients - 1)))
+		if (mobCharm.getItemDamage() < (Settings.MobCharm.dropDurabilityRepair * (numberIngredients - 1)))
 			return false;
 
 		return true;
@@ -84,13 +84,13 @@ public class NianZhuRepairRecipe implements IRecipe {
 	public ItemStack getCraftingResult(InventoryCrafting inv) {
 		ItemStack ingredient = null;
 		int numberIngredients = 0;
-		ItemStack nianZhu = null;
+		ItemStack mobCharm = null;
 
 		for(int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack currentStack = inv.getStackInSlot(i);
 			if(currentStack != null) {
-				if(currentStack.getItem() == ModItems.nianZhu) {
-					nianZhu = currentStack;
+				if(currentStack.getItem() == ModItems.mobCharm) {
+					mobCharm = currentStack;
 					continue;
 				}
 				if(ingredient == null) {
@@ -100,11 +100,11 @@ public class NianZhuRepairRecipe implements IRecipe {
 			}
 		}
 
-		ItemStack resultingNianZhu = nianZhu.copy();
+		ItemStack resultingMobCharm = mobCharm.copy();
 
-		resultingNianZhu.setItemDamage(Math.max(resultingNianZhu.getItemDamage() - (Settings.NianZhu.dropDurabilityRepair * numberIngredients), 0));
+		resultingMobCharm.setItemDamage(Math.max(resultingMobCharm.getItemDamage() - (Settings.MobCharm.dropDurabilityRepair * numberIngredients), 0));
 
-		return resultingNianZhu;
+		return resultingMobCharm;
 	}
 
 	@Override

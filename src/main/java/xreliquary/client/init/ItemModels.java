@@ -53,7 +53,7 @@ public class ItemModels {
 		registerItemModel(ModItems.witchHat, Names.witch_hat);
 		registerItemModel(ModItems.witherlessRose, Names.witherless_rose);
 
-		registerItemModel(ModItems.nianZhuBelt, Names.nian_zhu_belt);
+		registerItemModel(ModItems.mobCharmBelt, Names.mob_charm_belt);
 
 		registerItemModel(ModItems.rodOfLyssa, Names.rod_of_lyssa);
 
@@ -73,9 +73,9 @@ public class ItemModels {
 			}
 		});
 
-		registerItemModelForAllVariants(ModItems.heartPearl, Names.heart_pearl, new ItemMeshDefinition() {
+		registerItemModelForAllVariants(ModItems.mobCharmFragment, Names.mob_charm_fragment, new ItemMeshDefinition() {
 			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				return new ModelResourceLocation(Reference.DOMAIN + Names.heart_pearl, "inventory");
+				return new ModelResourceLocation(Reference.DOMAIN + Names.mob_charm_fragment, "inventory");
 			}
 		});
 
@@ -85,9 +85,9 @@ public class ItemModels {
 			}
 		});
 
-		registerItemModelForAllVariants(ModItems.nianZhu, Names.nian_zhu, new ItemMeshDefinition() {
+		registerItemModelForAllVariants(ModItems.mobCharm, Names.mob_charm, new ItemMeshDefinition() {
 			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				return new ModelResourceLocation(Reference.DOMAIN + Names.nian_zhu, "inventory");
+				return new ModelResourceLocation(Reference.DOMAIN + Names.mob_charm, "inventory");
 			}
 		});
 

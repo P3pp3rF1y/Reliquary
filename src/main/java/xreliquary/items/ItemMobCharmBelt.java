@@ -6,9 +6,9 @@ import net.minecraft.item.ItemStack;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 
-public class ItemNianZhuBelt extends ItemBauble {
-	public ItemNianZhuBelt() {
-		super(Names.nian_zhu_belt);
+public class ItemMobCharmBelt extends ItemBauble {
+	public ItemMobCharmBelt() {
+		super(Names.mob_charm_belt);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 

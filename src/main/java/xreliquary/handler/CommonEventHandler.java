@@ -81,13 +81,13 @@ public class CommonEventHandler {
 	public void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
 		doTwilightCloakCheck(event);
 		//doPacifiedDebuffCheck(event);
-		doHeartZhuCheckOnSetTarget(event);
+		doMobCharmCheckOnSetTarget(event);
 	}
 
 	@SubscribeEvent
 	public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
 		doTwilightCloakCheck(event);
-		doHeartZhuCheckOnUpdate(event);
+		doMobCharmCheckOnUpdate(event);
 	}
 
 	@SubscribeEvent
@@ -97,28 +97,28 @@ public class CommonEventHandler {
 
 		EntityPlayer player = (EntityPlayer) event.getSource().getEntity();
 
-		damagePlayersNianZhu(player, event.getEntity());
+		damagePlayersMobCharm(player, event.getEntity());
 	}
 
-	private void damagePlayersNianZhu(EntityPlayer player, Entity entity) {
-		ItemStack nianZhu = ModItems.nianZhu.getNianZhuForEntity(entity);
+	private void damagePlayersMobCharm(EntityPlayer player, Entity entity) {
+		ItemStack mobCharm = ModItems.mobCharm.getMobCharmForEntity(entity);
 
 		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
 			if(player.inventory.mainInventory[slot] == null)
 				continue;
-			if(areItemStacksEqualIgnoreDurability(player.inventory.mainInventory[slot], nianZhu)) {
-				ItemStack playersNianZhu = player.inventory.mainInventory[slot];
-				if (playersNianZhu.getItemDamage() + Settings.NianZhu.damagePerKill > playersNianZhu.getMaxDamage()) {
+			if(areItemStacksEqualIgnoreDurability(player.inventory.mainInventory[slot], mobCharm)) {
+				ItemStack playersMobCharm = player.inventory.mainInventory[slot];
+				if (playersMobCharm.getItemDamage() + Settings.MobCharm.damagePerKill > playersMobCharm.getMaxDamage()) {
 					player.inventory.mainInventory[slot] = null;
 				} else {
-					playersNianZhu.damageItem(Settings.NianZhu.damagePerKill, player);
+					playersMobCharm.damageItem(Settings.MobCharm.damagePerKill, player);
 				}
 				return;
 			}
 		}
 	}
 
-	private void doHeartZhuCheckOnUpdate(LivingEvent event) {
+	private void doMobCharmCheckOnUpdate(LivingEvent event) {
 		if(!(event.getEntity() instanceof EntityLiving))
 			return;
 		EntityLiving entity = (EntityLiving) event.getEntity();
@@ -130,11 +130,11 @@ public class CommonEventHandler {
 		boolean resetTarget = false;
 
 		if (entity instanceof EntityGhast) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.GHAST_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.GHAST_META), false);
 		} else if (entity instanceof EntityMagmaCube) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.MAGMA_CUBE_META), false);
 		} else if (entity instanceof EntitySlime) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SLIME_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.SLIME_META), false);
 		}
 
 		if (resetTarget) {
@@ -155,7 +155,7 @@ public class CommonEventHandler {
 	//        }
 	//    }
 
-	public void doHeartZhuCheckOnSetTarget(LivingSetAttackTargetEvent event) {
+	public void doMobCharmCheckOnSetTarget(LivingSetAttackTargetEvent event) {
 		if(event.getTarget() == null)
 			return;
 		if(!(event.getTarget() instanceof EntityPlayer))
@@ -168,33 +168,33 @@ public class CommonEventHandler {
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
 		if (entity instanceof EntityPigZombie) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.ZOMBIE_PIGMAN_META), false);
 		} else if (entity instanceof EntityZombie) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.ZOMBIE_META), false);
 		} else if (entity instanceof EntitySkeleton) {
 			if (((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
-				resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.WITHER_SKELETON_META), false);
+				resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.WITHER_SKELETON_META), false);
 			} else {
-				resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SKELETON_META), false);
+				resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.SKELETON_META), false);
 			}
 		} else if (entity instanceof EntityCreeper) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.CREEPER_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.CREEPER_META), false);
 		} else if (entity instanceof EntityWitch) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.WITCH_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.WITCH_META), false);
 		} else if (entity instanceof EntityCaveSpider) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.CAVE_SPIDER_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.CAVE_SPIDER_META), false);
 		} else if (entity instanceof EntitySpider){
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SPIDER_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.SPIDER_META), false);
 		} else if (entity instanceof EntityEnderman) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ENDERMAN_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.ENDERMAN_META), false);
 		} else if (entity instanceof EntityBlaze) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.BLAZE_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.BLAZE_META), false);
 		} else if (entity instanceof EntityGhast) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.GHAST_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.GHAST_META), false);
 		} else if (entity instanceof EntityMagmaCube) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.MAGMA_CUBE_META), false);
 		} else if (entity instanceof EntitySlime) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SLIME_META), false);
+			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.SLIME_META), false);
 		}
 
 		if (resetTarget) {

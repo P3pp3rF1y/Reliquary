@@ -184,11 +184,11 @@ public class BlockItemConfiguration {
 		Settings.MidasTouchstone.glowstoneLimit = ConfigurationHandler.getInt("glowstone_limit", Names.item_and_block_settings + "." + Names.midas_touchstone, 250, 0, itemCap);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.midas_touchstone, true);
 
-		//nian zhu configs
-		Settings.NianZhu.durability = ConfigurationHandler.getInt("durability", Names.item_and_block_settings + "." + Names.nian_zhu, 80, 20, 1000);
-		Settings.NianZhu.damagePerKill = ConfigurationHandler.getInt("damage_per_kill", Names.item_and_block_settings + "." + Names.nian_zhu, 1, 0, 40);
-		Settings.NianZhu.dropDurabilityRepair = ConfigurationHandler.getInt("drop_durability_repair", Names.item_and_block_settings + "." + Names.nian_zhu, 20, 1, 200);
-		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.nian_zhu, true);
+		//mob charm configs
+		Settings.MobCharm.durability = ConfigurationHandler.getInt("durability", Names.item_and_block_settings + "." + Names.mob_charm, 80, 20, 1000);
+		Settings.MobCharm.damagePerKill = ConfigurationHandler.getInt("damage_per_kill", Names.item_and_block_settings + "." + Names.mob_charm, 1, 0, 40);
+		Settings.MobCharm.dropDurabilityRepair = ConfigurationHandler.getInt("drop_durability_repair", Names.item_and_block_settings + "." + Names.mob_charm, 20, 1, 200);
+		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.mob_charm, true);
 
 		//phoenix down configs
 		Settings.PhoenixDown.hungerCostPercent = ConfigurationHandler.getInt("hunger_cost_percent", Names.item_and_block_settings + "." + Names.phoenix_down, 25, 0, 50);
