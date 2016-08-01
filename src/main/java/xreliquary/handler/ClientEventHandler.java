@@ -7,6 +7,10 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -21,6 +25,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
+import xreliquary.init.XRRecipes;
 import xreliquary.items.*;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Reference;
@@ -28,9 +33,48 @@ import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ClientEventHandler {
 	private static RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 	private static int time;
+
+	private static List<CharmToDraw> charmsToDraw = new ArrayList<>();
+
+	private static class CharmToDraw {
+		CharmToDraw(byte type, int damage, long time) {
+			this.type = type;
+			this.damage = damage;
+			this.time = time;
+		}
+
+		byte type;
+		int damage;
+		long time;
+	}
+
+	static {
+		ItemStack mobCharm = XRRecipes.mobCharm(Reference.MOB_CHARM.CREEPER_META);
+		mobCharm.setItemDamage(40);
+		addCharmToDraw(mobCharm);
+
+		charmsToDraw.add(new CharmToDraw(Reference.MOB_CHARM.CAVE_SPIDER_META, 0, System.currentTimeMillis()));
+		charmsToDraw.add(new CharmToDraw(Reference.MOB_CHARM.BLAZE_META, 20, System.currentTimeMillis()));
+		charmsToDraw.add(new CharmToDraw(Reference.MOB_CHARM.ENDERMAN_META, 70, System.currentTimeMillis()));
+
+	}
+
+
+
+	public static void addCharmToDraw(ItemStack mobCharm) {
+		int maxMobCharmsToDisplay = 6; //TODO make setting
+		if(charmsToDraw.size() == maxMobCharmsToDisplay) {
+			charmsToDraw.remove(0);
+		}
+
+		charmsToDraw.add(new CharmToDraw(ModItems.mobCharm.getType(mobCharm), mobCharm.getItemDamage(), System.currentTimeMillis()));
+	}
 
 	@SubscribeEvent
 	public void onRenderLiving(RenderLivingEvent.Pre event) {
@@ -39,7 +83,6 @@ public class ClientEventHandler {
 
 			boolean handgunInOff = player.getHeldItem(EnumHand.OFF_HAND) != null && player.getHeldItem(EnumHand.OFF_HAND).getItem() == ModItems.handgun;
 			boolean handgunInMain = player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == ModItems.handgun;
-
 
 			if(handgunInOff || handgunInMain) {
 				ModelBiped model = (ModelBiped) event.getRenderer().getMainModel();
@@ -66,24 +109,24 @@ public class ClientEventHandler {
 	}
 
 	private EnumHand getActiveHandgunHand(EntityPlayer player, boolean handgunInMain, boolean handgunInOff) {
-		if (handgunInMain != handgunInOff) {
+		if(handgunInMain != handgunInOff) {
 			return handgunInMain ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
 		}
 
 		boolean mainValid = isValidTimeFrame(player.worldObj, player.getHeldItemMainhand());
 		boolean offValid = isValidTimeFrame(player.worldObj, player.getHeldItemOffhand());
 
-		if (mainValid != offValid)
+		if(mainValid != offValid)
 			return mainValid ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
 
 		return ModItems.handgun.getCooldown(player.getHeldItemMainhand()) < ModItems.handgun.getCooldown(player.getHeldItemOffhand()) ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
 	}
 
 	private boolean isHandgunActive(EntityPlayer player, boolean handgunInMain, boolean handgunInOff) {
-		if (handgunInMain && isValidTimeFrame(player.worldObj, player.getHeldItemMainhand()))
+		if(handgunInMain && isValidTimeFrame(player.worldObj, player.getHeldItemMainhand()))
 			return true;
 
-		if (handgunInOff && isValidTimeFrame(player.worldObj, player.getHeldItemOffhand()))
+		if(handgunInOff && isValidTimeFrame(player.worldObj, player.getHeldItemOffhand()))
 			return true;
 
 		return false;
@@ -92,7 +135,7 @@ public class ClientEventHandler {
 	private boolean isValidTimeFrame(World world, ItemStack handgun) {
 		long cooldownTime = ModItems.handgun.getCooldown(handgun) + 5;
 
-		if (cooldownTime - world.getWorldTime() <= ModItems.handgun.getMaxItemUseDuration(handgun) && cooldownTime >= world.getWorldTime())
+		if(cooldownTime - world.getWorldTime() <= ModItems.handgun.getMaxItemUseDuration(handgun) && cooldownTime >= world.getWorldTime())
 			return true;
 
 		return false;
@@ -119,6 +162,62 @@ public class ClientEventHandler {
 		handleHeroMedallionHUDCheck(mc);
 		handlePyromancerStaffHUDCheck(mc);
 		handleRendingGaleHUDCheck(mc);
+
+		handleMobCharmDisplay(mc);
+	}
+
+	private void handleMobCharmDisplay(Minecraft minecraft) {
+		int hudOverlayX;
+		int hudOverlayY;
+		int numberItems = charmsToDraw.size();
+		int itemSize = 16;
+		int borderSpacing = 8;
+		int itemSpacing = 2;
+
+		ScaledResolution sr = new ScaledResolution(minecraft);
+
+		GlStateManager.pushMatrix();
+		RenderHelper.enableGUIStandardItemLighting();
+		GlStateManager.disableLighting();
+		GlStateManager.enableRescaleNormal();
+		GlStateManager.enableLighting();
+
+		hudOverlayX = sr.getScaledWidth() - (itemSize + borderSpacing);
+		hudOverlayY = sr.getScaledHeight() / 2 - (itemSize / 2) - (Math.max(0, (numberItems - 1) * (itemSize + itemSpacing) / 2));
+
+		for(CharmToDraw charmToDraw : charmsToDraw) {
+			ItemStack stackToRender = XRRecipes.mobCharm(charmToDraw.type);
+			stackToRender.setItemDamage(charmToDraw.damage);
+			IBakedModel bakedModel = renderItem.getItemModelWithOverrides(stackToRender, null, null);
+			GlStateManager.pushMatrix();
+			TextureManager textureManager = minecraft.getTextureManager();
+			textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+			textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+			GlStateManager.enableRescaleNormal();
+			GlStateManager.disableAlpha();
+			GlStateManager.enableBlend();
+			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			GlStateManager.translate((float) hudOverlayX, (float) hudOverlayY, 100.0F);
+			GlStateManager.translate(8.0F, 8.0F, 0.0F);
+			GlStateManager.scale(1.0F, -1.0F, 1.0F);
+			GlStateManager.scale(16.0F, 16.0F, 16.0F);
+
+			bakedModel = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(bakedModel, ItemCameraTransforms.TransformType.GUI, false);
+			renderItem.renderItem(stackToRender, bakedModel);
+			GlStateManager.disableAlpha();
+			GlStateManager.disableRescaleNormal();
+			GlStateManager.disableLighting();
+			GlStateManager.popMatrix();
+			textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+			textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+			renderItem.renderItemOverlayIntoGUI(minecraft.getRenderManager().getFontRenderer(), stackToRender, hudOverlayX, hudOverlayY, null);
+
+			hudOverlayY += itemSize + itemSpacing;
+		}
+		GlStateManager.disableBlend();
+		GlStateManager.disableLighting();
+		GlStateManager.popMatrix();
 	}
 
 	public void handleTickIncrement(TickEvent.RenderTickEvent event) {
@@ -424,12 +523,12 @@ public class ClientEventHandler {
 
 		int currentCost = 0;
 
-		if (!player.capabilities.isCreativeMode && player.isHandActive()) {
+		if(!player.capabilities.isCreativeMode && player.isHandActive()) {
 			int ticksInUse = ModItems.rendingGale.getMaxItemUseDuration(rendingGaleStack) - player.getItemInUseCount();
 
-			if (ModItems.rendingGale.isFlightMode(rendingGaleStack)) {
+			if(ModItems.rendingGale.isFlightMode(rendingGaleStack)) {
 				currentCost = ModItems.rendingGale.getChargeCost() * ticksInUse;
-			} else if (ModItems.rendingGale.isBoltMode(rendingGaleStack)) {
+			} else if(ModItems.rendingGale.isBoltMode(rendingGaleStack)) {
 				currentCost = ModItems.rendingGale.getBoltChargeCost() * (ticksInUse / 8);
 			}
 		}
