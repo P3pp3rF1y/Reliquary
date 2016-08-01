@@ -33,15 +33,19 @@ import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Map;
 
 public class ClientEventHandler {
 	private static RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 	private static int time;
 
-	private static HashMap<Integer ,CharmToDraw> charmsToDraw = new HashMap<>();
+	private static HashMap<Integer, CharmToDraw> charmsToDraw = new HashMap<>();
+
+	private static synchronized HashMap<Integer, CharmToDraw> getCharmsToDraw() {
+		return charmsToDraw;
+	}
 
 	private static class CharmToDraw {
 		CharmToDraw(byte type, int damage, long time) {
@@ -57,16 +61,18 @@ public class ClientEventHandler {
 
 	public static void addCharmToDraw(byte type, int damage, int slot) {
 		int maxMobCharmsToDisplay = 6; //TODO make setting
-		if(charmsToDraw.size() == maxMobCharmsToDisplay) {
-			charmsToDraw.remove(0);
-		}
+		synchronized(charmsToDraw) {
+			if(charmsToDraw.size() == maxMobCharmsToDisplay) {
+				charmsToDraw.remove(0);
+			}
 
-		if (charmsToDraw.keySet().contains(slot)) {
-			charmsToDraw.remove(slot);
-		}
+			if(charmsToDraw.keySet().contains(slot)) {
+				charmsToDraw.remove(slot);
+			}
 
-		if (damage != 0)
-			charmsToDraw.put(slot, new CharmToDraw(type, damage, System.currentTimeMillis()));
+			if(damage != 0)
+				charmsToDraw.put(slot, new CharmToDraw(type, damage, System.currentTimeMillis()));
+		}
 	}
 
 	@SubscribeEvent
@@ -162,13 +168,15 @@ public class ClientEventHandler {
 	private void handleMobCharmDisplay(Minecraft minecraft) {
 		int hudOverlayX;
 		int hudOverlayY;
-		int numberItems = charmsToDraw.size();
+		int numberItems = getCharmsToDraw().size();
 		int itemSize = 16;
 		int borderSpacing = 8;
 		int itemSpacing = 2;
 
-		if (numberItems <= 0)
+		if(numberItems <= 0)
 			return;
+
+		removeExpiredMobCharms();
 
 		ScaledResolution sr = new ScaledResolution(minecraft);
 
@@ -181,7 +189,7 @@ public class ClientEventHandler {
 		hudOverlayX = sr.getScaledWidth() - (itemSize + borderSpacing);
 		hudOverlayY = sr.getScaledHeight() / 2 - (itemSize / 2) - (Math.max(0, (numberItems - 1) * (itemSize + itemSpacing) / 2));
 
-		HashMap<Integer, CharmToDraw> charmsToDrawCopy = new HashMap<>(charmsToDraw);
+		HashMap<Integer, CharmToDraw> charmsToDrawCopy = new HashMap<>(getCharmsToDraw());
 		for(CharmToDraw charmToDraw : charmsToDrawCopy.values()) {
 			ItemStack stackToRender = XRRecipes.mobCharm(charmToDraw.type);
 			stackToRender.setItemDamage(charmToDraw.damage);
@@ -215,6 +223,18 @@ public class ClientEventHandler {
 		GlStateManager.disableBlend();
 		GlStateManager.disableLighting();
 		GlStateManager.popMatrix();
+	}
+
+	private void removeExpiredMobCharms() {
+		int secondsToExpire = 3; //TODO setting
+		synchronized(charmsToDraw) {
+			for(Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext(); ){
+				Map.Entry<Integer, CharmToDraw> entry = iterator.next();
+				if(entry.getValue().time + secondsToExpire * 1000 < System.currentTimeMillis()) {
+					iterator.remove();
+				}
+			}
+		}
 	}
 
 	public void handleTickIncrement(TickEvent.RenderTickEvent event) {
