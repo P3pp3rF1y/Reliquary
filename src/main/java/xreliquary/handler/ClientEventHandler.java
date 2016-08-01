@@ -34,13 +34,14 @@ import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ClientEventHandler {
 	private static RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 	private static int time;
 
-	private static List<CharmToDraw> charmsToDraw = new ArrayList<>();
+	private static HashMap<Integer ,CharmToDraw> charmsToDraw = new HashMap<>();
 
 	private static class CharmToDraw {
 		CharmToDraw(byte type, int damage, long time) {
@@ -54,26 +55,18 @@ public class ClientEventHandler {
 		long time;
 	}
 
-	static {
-		ItemStack mobCharm = XRRecipes.mobCharm(Reference.MOB_CHARM.CREEPER_META);
-		mobCharm.setItemDamage(40);
-		addCharmToDraw(mobCharm);
-
-		charmsToDraw.add(new CharmToDraw(Reference.MOB_CHARM.CAVE_SPIDER_META, 0, System.currentTimeMillis()));
-		charmsToDraw.add(new CharmToDraw(Reference.MOB_CHARM.BLAZE_META, 20, System.currentTimeMillis()));
-		charmsToDraw.add(new CharmToDraw(Reference.MOB_CHARM.ENDERMAN_META, 70, System.currentTimeMillis()));
-
-	}
-
-
-
-	public static void addCharmToDraw(ItemStack mobCharm) {
+	public static void addCharmToDraw(byte type, int damage, int slot) {
 		int maxMobCharmsToDisplay = 6; //TODO make setting
 		if(charmsToDraw.size() == maxMobCharmsToDisplay) {
 			charmsToDraw.remove(0);
 		}
 
-		charmsToDraw.add(new CharmToDraw(ModItems.mobCharm.getType(mobCharm), mobCharm.getItemDamage(), System.currentTimeMillis()));
+		if (charmsToDraw.keySet().contains(slot)) {
+			charmsToDraw.remove(slot);
+		}
+
+		if (damage != 0)
+			charmsToDraw.put(slot, new CharmToDraw(type, damage, System.currentTimeMillis()));
 	}
 
 	@SubscribeEvent
@@ -174,6 +167,9 @@ public class ClientEventHandler {
 		int borderSpacing = 8;
 		int itemSpacing = 2;
 
+		if (numberItems <= 0)
+			return;
+
 		ScaledResolution sr = new ScaledResolution(minecraft);
 
 		GlStateManager.pushMatrix();
@@ -185,7 +181,8 @@ public class ClientEventHandler {
 		hudOverlayX = sr.getScaledWidth() - (itemSize + borderSpacing);
 		hudOverlayY = sr.getScaledHeight() / 2 - (itemSize / 2) - (Math.max(0, (numberItems - 1) * (itemSize + itemSpacing) / 2));
 
-		for(CharmToDraw charmToDraw : charmsToDraw) {
+		HashMap<Integer, CharmToDraw> charmsToDrawCopy = new HashMap<>(charmsToDraw);
+		for(CharmToDraw charmToDraw : charmsToDrawCopy.values()) {
 			ItemStack stackToRender = XRRecipes.mobCharm(charmToDraw.type);
 			stackToRender.setItemDamage(charmToDraw.damage);
 			IBakedModel bakedModel = renderItem.getItemModelWithOverrides(stackToRender, null, null);

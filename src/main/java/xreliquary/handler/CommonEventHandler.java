@@ -35,6 +35,8 @@ import xreliquary.init.ModItems;
 import xreliquary.init.ModPotions;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemToggleable;
+import xreliquary.network.PacketHandler;
+import xreliquary.network.PacketMobCharmDamage;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.XRFakePlayerFactory;
@@ -110,12 +112,15 @@ public class CommonEventHandler {
 				ItemStack playersMobCharm = player.inventory.mainInventory[slot];
 				if (playersMobCharm.getItemDamage() + Settings.MobCharm.damagePerKill > playersMobCharm.getMaxDamage()) {
 					player.inventory.mainInventory[slot] = null;
+					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(ModItems.mobCharm.getType(mobCharm), 0, slot), (EntityPlayerMP) player);
 				} else {
 					playersMobCharm.damageItem(Settings.MobCharm.damagePerKill, player);
+					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(ModItems.mobCharm.getType(mobCharm), playersMobCharm.getItemDamage(), slot), (EntityPlayerMP) player);
 				}
 				return;
 			}
 		}
+
 	}
 
 	private void doMobCharmCheckOnUpdate(LivingEvent event) {
