@@ -17,6 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
+import xreliquary.common.gui.GUIHandler;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModSounds;
 import xreliquary.reference.Names;
@@ -46,7 +47,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
 			return new ActionResult<>(EnumActionResult.SUCCESS, newStack);
 
 		player.playSound(ModSounds.book, 1.0f, 1.0f);
-		player.openGui(Reliquary.INSTANCE, 0, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+		player.openGui(Reliquary.INSTANCE, GUIHandler.ALKAHESTRY_TOME, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
