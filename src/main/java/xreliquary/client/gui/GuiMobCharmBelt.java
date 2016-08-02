@@ -27,11 +27,13 @@ public class GuiMobCharmBelt extends GuiBase {
 		int j = (this.height - HEIGHT) / 2;
 		this.drawTexturedModalRect(i, j, 0, 0, WIDTH, HEIGHT);
 
-		drawMobCharmSlots(i, j);
+		updateMobCharmSlots(i, j);
 	}
 
-	private void drawMobCharmSlots(int xLeft, int yTop) {
+	private void updateMobCharmSlots(int xLeft, int yTop) {
 		int slots = ModItems.mobCharmBelt.getCharmCount(belt);
+		slots = Math.min(slots, Reference.MOB_CHARM.COUNT_TYPES);
+
 		double radius = 44.0;
 		int centerX = xLeft + 88;
 		int centerY = yTop + 67;
@@ -49,6 +51,10 @@ public class GuiMobCharmBelt extends GuiBase {
 			int y = centerY - offsetY - 8;
 
 			this.drawTexturedModalRect(x, y, 176, 0, 16, 16);
+			this.inventorySlots.inventorySlots.get(i - 1).xDisplayPosition = x - xLeft;
+			this.inventorySlots.inventorySlots.get(i - 1).yDisplayPosition = y - yTop - 27;
 		}
+		this.inventorySlots.inventorySlots.get(slots).xDisplayPosition = 80;// xLeft + 80;
+		this.inventorySlots.inventorySlots.get(slots).yDisplayPosition = -12; // yTop + 35;
 	}
 }

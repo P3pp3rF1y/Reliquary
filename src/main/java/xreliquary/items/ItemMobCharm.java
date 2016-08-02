@@ -37,7 +37,7 @@ public class ItemMobCharm extends ItemBase {
 
 	@Override
 	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-		for(byte i = 0; i < 13; i++) {
+		for(byte i = 0; i < Reference.MOB_CHARM.COUNT_TYPES; i++) {
 			ItemStack subItem = new ItemStack(par1);
 			setType(subItem, i);
 			par3List.add(subItem);

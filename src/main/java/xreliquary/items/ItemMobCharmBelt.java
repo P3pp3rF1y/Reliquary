@@ -65,6 +65,11 @@ public class ItemMobCharmBelt extends ItemBauble {
 	}
 
 	public void putMobCharmInSlot(ItemStack belt, int slotIndex, ItemStack mobCharm) {
+		if (mobCharm == null) {
+			removeMobCharmInSlot(belt, slotIndex);
+			return;
+		}
+
 		NBTTagCompound mobCharmNbt = new NBTTagCompound();
 		mobCharmNbt.setByte(TYPE_TAG, ModItems.mobCharm.getType(mobCharm));
 		mobCharmNbt.setInteger(DAMAGE_TAG, mobCharm.getItemDamage());
@@ -86,6 +91,8 @@ public class ItemMobCharmBelt extends ItemBauble {
 		} else {
 			mobCharms.set(slotIndex, mobCharmNbt);
 		}
+		nbt.setTag(SLOTS_TAG, mobCharms);
+		belt.setTagCompound(nbt);
 	}
 
 	public void removeMobCharmInSlot(ItemStack belt, int slotIndex) {
