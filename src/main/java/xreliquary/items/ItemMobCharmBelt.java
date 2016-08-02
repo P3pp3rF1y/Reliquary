@@ -48,12 +48,12 @@ public class ItemMobCharmBelt extends ItemBauble {
 	public ItemStack getMobCharmInSlot(ItemStack belt, int slotIndex) {
 		NBTTagCompound nbt = belt.getTagCompound();
 
-		if (nbt == null)
+		if(nbt == null)
 			return null;
 
 		NBTTagList mobCharms = nbt.getTagList(SLOTS_TAG, 10);
 
-		if (mobCharms.tagCount() <= slotIndex)
+		if(mobCharms.tagCount() <= slotIndex)
 			return null;
 
 		NBTTagCompound mobCharmNbt = (NBTTagCompound) mobCharms.get(slotIndex);
@@ -71,20 +71,19 @@ public class ItemMobCharmBelt extends ItemBauble {
 
 		NBTTagCompound nbt = belt.getTagCompound();
 		NBTTagList mobCharms;
-		if (nbt == null) {
+		if(nbt == null) {
 			nbt = new NBTTagCompound();
 			mobCharms = new NBTTagList();
 		} else {
 			mobCharms = nbt.getTagList(SLOTS_TAG, 10);
 		}
 
-		if (mobCharms.tagCount() < slotIndex)
+		if(mobCharms.tagCount() < slotIndex)
 			return;
 
-		if (mobCharms.tagCount() == slotIndex) {
+		if(mobCharms.tagCount() == slotIndex) {
 			mobCharms.appendTag(mobCharmNbt);
-		}
-		else {
+		} else {
 			mobCharms.set(slotIndex, mobCharmNbt);
 		}
 	}
@@ -92,14 +91,25 @@ public class ItemMobCharmBelt extends ItemBauble {
 	public void removeMobCharmInSlot(ItemStack belt, int slotIndex) {
 		NBTTagCompound nbt = belt.getTagCompound();
 
-		if (nbt == null)
+		if(nbt == null)
 			return;
 
 		NBTTagList mobCharms = nbt.getTagList(SLOTS_TAG, 10);
 
-		if (mobCharms == null || mobCharms.tagCount() <= slotIndex)
+		if(mobCharms == null || mobCharms.tagCount() <= slotIndex)
 			return;
 
 		mobCharms.removeTag(slotIndex);
+	}
+
+	public int getCharmCount(ItemStack belt) {
+		NBTTagCompound nbt = belt.getTagCompound();
+
+		if(nbt == null)
+			return 0;
+
+		NBTTagList mobCharms = nbt.getTagList(SLOTS_TAG, 10);
+
+		return mobCharms == null ? 0 : mobCharms.tagCount();
 	}
 }

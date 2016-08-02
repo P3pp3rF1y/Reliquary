@@ -6,10 +6,15 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import xreliquary.init.ModItems;
 
 public class ContainerMobCharmBelt extends Container {
+	private ItemStack belt;
 
 	public ContainerMobCharmBelt(InventoryPlayer playerInventory, ItemStack belt) {
+		this.belt = belt;
+
+		int charmSlots = ModItems.mobCharmBelt.getCharmCount(belt);
 
 		this.addSlotToContainer(new SlotMobCharm(belt, 0, 80, 15));
 
@@ -30,5 +35,9 @@ public class ContainerMobCharmBelt extends Container {
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn) {
 		return true;
+	}
+
+	public ItemStack getBelt() {
+		return belt;
 	}
 }

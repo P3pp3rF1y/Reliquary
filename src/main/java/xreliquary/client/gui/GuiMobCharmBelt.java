@@ -1,8 +1,10 @@
 package xreliquary.client.gui;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import xreliquary.common.gui.ContainerMobCharmBelt;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 
 public class GuiMobCharmBelt extends GuiBase {
@@ -10,8 +12,11 @@ public class GuiMobCharmBelt extends GuiBase {
 	private static int WIDTH = 175;
 	private static int HEIGHT = 221;
 
-	public GuiMobCharmBelt(Container container) {
+	private ItemStack belt;
+
+	public GuiMobCharmBelt(ContainerMobCharmBelt container) {
 		super(container);
+		this.belt = container.getBelt();
 	}
 
 	@Override
@@ -26,7 +31,7 @@ public class GuiMobCharmBelt extends GuiBase {
 	}
 
 	private void drawMobCharmSlots(int xLeft, int yTop) {
-		int slots = 13;
+		int slots = ModItems.mobCharmBelt.getCharmCount(belt);
 		double radius = 44.0;
 		int centerX = xLeft + 88;
 		int centerY = yTop + 67;
@@ -34,7 +39,7 @@ public class GuiMobCharmBelt extends GuiBase {
 		double increment = 2d * Math.PI / ((double) (slots + 1));
 		double start = Math.PI / 2d;
 
-		for (int i=1; i<=slots; i++) {
+		for(int i = 1; i <= slots; i++) {
 			double angle = start + (((double) i) * increment);
 
 			int offsetX = (int) Math.round(Math.cos(angle) * radius);
