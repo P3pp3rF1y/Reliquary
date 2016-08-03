@@ -32,9 +32,7 @@ public class ItemMobCharmBelt extends ItemBauble {
 	}
 
 	@Override
-	public void onWornTick(ItemStack stack, EntityLivingBase player) {
-
-	}
+	public void onWornTick(ItemStack stack, EntityLivingBase player) {}
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
@@ -48,7 +46,7 @@ public class ItemMobCharmBelt extends ItemBauble {
 	public ItemStack getMobCharmInSlot(ItemStack belt, int slotIndex) {
 		NBTTagCompound nbt = belt.getTagCompound();
 
-		if(nbt == null)
+		if(nbt == null || !nbt.hasKey(SLOTS_TAG))
 			return null;
 
 		NBTTagList mobCharms = nbt.getTagList(SLOTS_TAG, 10);
@@ -57,6 +55,11 @@ public class ItemMobCharmBelt extends ItemBauble {
 			return null;
 
 		NBTTagCompound mobCharmNbt = (NBTTagCompound) mobCharms.get(slotIndex);
+
+		if (!mobCharmNbt.hasKey(TYPE_TAG) || !mobCharmNbt.hasKey(DAMAGE_TAG)) {
+			removeMobCharmInSlot(belt, slotIndex);
+			return null;
+		}
 
 		ItemStack mobCharm = XRRecipes.mobCharm(mobCharmNbt.getByte(TYPE_TAG));
 		mobCharm.setItemDamage(mobCharmNbt.getInteger(DAMAGE_TAG));
@@ -98,12 +101,12 @@ public class ItemMobCharmBelt extends ItemBauble {
 	public void removeMobCharmInSlot(ItemStack belt, int slotIndex) {
 		NBTTagCompound nbt = belt.getTagCompound();
 
-		if(nbt == null)
+		if(nbt == null || !nbt.hasKey(SLOTS_TAG))
 			return;
 
 		NBTTagList mobCharms = nbt.getTagList(SLOTS_TAG, 10);
 
-		if(mobCharms == null || mobCharms.tagCount() <= slotIndex)
+		if(mobCharms.tagCount() <= slotIndex)
 			return;
 
 		mobCharms.removeTag(slotIndex);
@@ -118,5 +121,27 @@ public class ItemMobCharmBelt extends ItemBauble {
 		NBTTagList mobCharms = nbt.getTagList(SLOTS_TAG, 10);
 
 		return mobCharms == null ? 0 : mobCharms.tagCount();
+	}
+
+	public boolean hasCharmType(ItemStack belt, byte type) {
+		NBTTagCompound nbt = belt.getTagCompound();
+
+		if(nbt == null || !nbt.hasKey(SLOTS_TAG))
+			return false;
+
+		NBTTagList mobCharms = nbt.getTagList(SLOTS_TAG, 10);
+
+		for (int i=mobCharms.tagCount() - 1; i>=0; i--) {
+			NBTTagCompound mobCharmNbt = (NBTTagCompound) mobCharms.get(i);
+
+			if (!mobCharmNbt.hasKey(TYPE_TAG) || !mobCharmNbt.hasKey(DAMAGE_TAG)) {
+				removeMobCharmInSlot(belt, i);
+			}
+
+			if (mobCharmNbt.getByte(TYPE_TAG) == type)
+				return true;
+		}
+
+		return false;
 	}
 }
