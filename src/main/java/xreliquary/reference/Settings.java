@@ -310,5 +310,6 @@ public class Settings {
 		public static int durability;
 		public static int damagePerKill;
 		public static int dropDurabilityRepair;
+		public static int maxCharmsToDisplay;
 	}
 }

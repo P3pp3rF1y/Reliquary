@@ -60,7 +60,7 @@ public class ClientEventHandler {
 	}
 
 	public static void addCharmToDraw(byte type, int damage, int slot) {
-		int maxMobCharmsToDisplay = 6; //TODO make setting
+		int maxMobCharmsToDisplay = Settings.MobCharm.maxCharmsToDisplay;
 		synchronized(charmsToDraw) {
 			if(charmsToDraw.size() == maxMobCharmsToDisplay) {
 				charmsToDraw.remove(0);
@@ -226,7 +226,7 @@ public class ClientEventHandler {
 	}
 
 	private void removeExpiredMobCharms() {
-		int secondsToExpire = 3; //TODO setting
+		int secondsToExpire = 4;
 		synchronized(charmsToDraw) {
 			for(Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext(); ){
 				Map.Entry<Integer, CharmToDraw> entry = iterator.next();
