@@ -36,7 +36,7 @@ public class GUIHandler implements IGuiHandler {
 
 	private ItemStack getBeltFromEitherHand(EntityPlayer player) {
 		ItemStack belt = player.getHeldItemMainhand();
-		if (belt.getItem() != ModItems.mobCharmBelt)
+		if (belt == null || belt.getItem() != ModItems.mobCharmBelt)
 			belt = player.getHeldItemOffhand();
 
 		return belt;
