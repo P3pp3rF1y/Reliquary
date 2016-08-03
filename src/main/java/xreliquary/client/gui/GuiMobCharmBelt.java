@@ -9,6 +9,7 @@ import xreliquary.reference.Reference;
 
 public class GuiMobCharmBelt extends GuiBase {
 	private static final ResourceLocation BELT_TEX = new ResourceLocation(Reference.MOD_ID, "textures/gui/mob_charm_belt.png");
+	private static final ResourceLocation BELT_ITEM_TEX = new ResourceLocation(Reference.MOD_ID, "textures/items/mob_charm_belt.png");
 	private static int WIDTH = 175;
 	private static int HEIGHT = 221;
 
@@ -36,17 +37,20 @@ public class GuiMobCharmBelt extends GuiBase {
 		GlStateManager.disableBlend();
 		GlStateManager.popAttrib();
 
-		updateMobCharmSlots(i, j);
+		int centerX = i + 88;
+		int centerY = j + 67;
 
+		updateMobCharmSlots(centerX, centerY);
+
+		this.bindTexture(this.BELT_ITEM_TEX);
+		this.drawModalRectWithCustomSizedTexture(centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
 	}
 
-	private void updateMobCharmSlots(int xLeft, int yTop) {
+	private void updateMobCharmSlots(int centerX, int centerY) {
 		int slots = ModItems.mobCharmBelt.getCharmCount(belt);
 		slots = Math.min(slots, Reference.MOB_CHARM.COUNT_TYPES);
 
 		double radius = 44.0;
-		int centerX = xLeft + 88;
-		int centerY = yTop + 67;
 
 		double increment = 2d * Math.PI / ((double) (slots + 1));
 		double start = Math.PI / 2d;
@@ -70,8 +74,8 @@ public class GuiMobCharmBelt extends GuiBase {
 			GlStateManager.disableBlend();
 			GlStateManager.popAttrib();
 
-			this.inventorySlots.inventorySlots.get(i - 1).xDisplayPosition = x - xLeft;
-			this.inventorySlots.inventorySlots.get(i - 1).yDisplayPosition = y - yTop - 27;
+			this.inventorySlots.inventorySlots.get(i - 1).xDisplayPosition = x - centerX + 88;
+			this.inventorySlots.inventorySlots.get(i - 1).yDisplayPosition = y - centerY + 40;
 		}
 		this.inventorySlots.inventorySlots.get(slots).xDisplayPosition = 80;
 		this.inventorySlots.inventorySlots.get(slots).yDisplayPosition = -12;
