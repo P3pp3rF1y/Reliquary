@@ -106,6 +106,9 @@ public class CommonEventHandler {
 	}
 
 	private void damagePlayersMobCharm(EntityPlayer player, Entity entity) {
+		if (player.capabilities.isCreativeMode)
+			return;
+
 		byte mobCharmType = ModItems.mobCharm.getMobCharmTypeForEntity(entity);
 
 		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
