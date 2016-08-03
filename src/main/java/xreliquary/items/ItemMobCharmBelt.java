@@ -15,6 +15,7 @@ import xreliquary.common.gui.GUIHandler;
 import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 public class ItemMobCharmBelt extends ItemBauble {
 	private static final String SLOTS_TAG = "Slots";
@@ -143,5 +144,37 @@ public class ItemMobCharmBelt extends ItemBauble {
 		}
 
 		return false;
+	}
+
+	public int damageCharmType(ItemStack belt, byte type) {
+		NBTTagCompound nbt = belt.getTagCompound();
+
+		if(nbt == null || !nbt.hasKey(SLOTS_TAG))
+			return -1;
+
+		NBTTagList mobCharms = nbt.getTagList(SLOTS_TAG, 10);
+
+		for (int i=mobCharms.tagCount() - 1; i>=0; i--) {
+			NBTTagCompound mobCharmNbt = (NBTTagCompound) mobCharms.get(i);
+
+			if (!mobCharmNbt.hasKey(TYPE_TAG) || !mobCharmNbt.hasKey(DAMAGE_TAG)) {
+				removeMobCharmInSlot(belt, i);
+			}
+
+			if (mobCharmNbt.getByte(TYPE_TAG) == type) {
+				int damage = mobCharmNbt.getInteger(DAMAGE_TAG);
+				if (damage + Settings.MobCharm.damagePerKill > ModItems.mobCharm.getMaxDamage()) {
+					removeMobCharmInSlot(belt, i);
+					return ModItems.mobCharm.getMaxDamage();
+				} else {
+					damage += Settings.MobCharm.damagePerKill;
+					mobCharmNbt.setInteger(DAMAGE_TAG, damage);
+					return damage;
+				}
+			}
+		}
+
+		return -1;
+
 	}
 }

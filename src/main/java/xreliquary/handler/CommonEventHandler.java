@@ -33,7 +33,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModPotions;
-import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemToggleable;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketMobCharmDamage;
@@ -94,7 +93,7 @@ public class CommonEventHandler {
 
 	@SubscribeEvent
 	public void onLivingDeath(LivingDeathEvent event) {
-		if (event.getSource() == null || event.getSource().getEntity() == null || !(event.getSource().getEntity() instanceof EntityPlayer))
+		if(event.getSource() == null || event.getSource().getEntity() == null || !(event.getSource().getEntity() instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) event.getSource().getEntity();
@@ -103,24 +102,33 @@ public class CommonEventHandler {
 	}
 
 	private void damagePlayersMobCharm(EntityPlayer player, Entity entity) {
-		ItemStack mobCharm = ModItems.mobCharm.getMobCharmForEntity(entity);
+		byte mobCharmType = ModItems.mobCharm.getMobCharmTypeForEntity(entity);
 
 		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
 			if(player.inventory.mainInventory[slot] == null)
 				continue;
-			if(areItemStacksEqualIgnoreDurability(player.inventory.mainInventory[slot], mobCharm)) {
+			ItemStack slotStack = player.inventory.mainInventory[slot];
+
+			if(slotStack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(slotStack) == mobCharmType) {
 				ItemStack playersMobCharm = player.inventory.mainInventory[slot];
-				if (playersMobCharm.getItemDamage() + Settings.MobCharm.damagePerKill > playersMobCharm.getMaxDamage()) {
+				if(playersMobCharm.getItemDamage() + Settings.MobCharm.damagePerKill > playersMobCharm.getMaxDamage()) {
 					player.inventory.mainInventory[slot] = null;
-					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(ModItems.mobCharm.getType(mobCharm), 0, slot), (EntityPlayerMP) player);
+					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, ModItems.mobCharm.getMaxDamage(), slot), (EntityPlayerMP) player);
 				} else {
 					playersMobCharm.damageItem(Settings.MobCharm.damagePerKill, player);
-					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(ModItems.mobCharm.getType(mobCharm), playersMobCharm.getItemDamage(), slot), (EntityPlayerMP) player);
+					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, playersMobCharm.getItemDamage(), slot), (EntityPlayerMP) player);
 				}
 				return;
 			}
-		}
+			if(slotStack.getItem() == ModItems.mobCharmBelt) {
+				int damage = ModItems.mobCharmBelt.damageCharmType(slotStack, mobCharmType);
 
+				if (damage > -1) {
+					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, damage, -mobCharmType), (EntityPlayerMP) player);
+					return;
+				}
+			}
+		}
 	}
 
 	private void doMobCharmCheckOnUpdate(LivingEvent event) {
@@ -128,21 +136,21 @@ public class CommonEventHandler {
 			return;
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
-		if (entity.getAttackTarget() == null || !(entity.getAttackTarget() instanceof EntityPlayer))
+		if(entity.getAttackTarget() == null || !(entity.getAttackTarget() instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity.getAttackTarget();
 		boolean resetTarget = false;
 
-		if (entity instanceof EntityGhast) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.GHAST_META), false);
-		} else if (entity instanceof EntityMagmaCube) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.MAGMA_CUBE_META), false);
-		} else if (entity instanceof EntitySlime) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.SLIME_META), false);
+		if(entity instanceof EntityGhast) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.GHAST_META);
+		} else if(entity instanceof EntityMagmaCube) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.MAGMA_CUBE_META);
+		} else if(entity instanceof EntitySlime) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SLIME_META);
 		}
 
-		if (resetTarget) {
+		if(resetTarget) {
 			entity.setAttackTarget(null);
 			entity.setRevengeTarget(null);
 		}
@@ -172,37 +180,37 @@ public class CommonEventHandler {
 		boolean resetTarget = false;
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
-		if (entity instanceof EntityPigZombie) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.ZOMBIE_PIGMAN_META), false);
-		} else if (entity instanceof EntityZombie) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.ZOMBIE_META), false);
-		} else if (entity instanceof EntitySkeleton) {
-			if (((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
-				resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.WITHER_SKELETON_META), false);
+		if(entity instanceof EntityPigZombie) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ZOMBIE_PIGMAN_META);
+		} else if(entity instanceof EntityZombie) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ZOMBIE_META);
+		} else if(entity instanceof EntitySkeleton) {
+			if(((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
+				resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.WITHER_SKELETON_META);
 			} else {
-				resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.SKELETON_META), false);
+				resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SKELETON_META);
 			}
-		} else if (entity instanceof EntityCreeper) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.CREEPER_META), false);
-		} else if (entity instanceof EntityWitch) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.WITCH_META), false);
-		} else if (entity instanceof EntityCaveSpider) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.CAVE_SPIDER_META), false);
-		} else if (entity instanceof EntitySpider){
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.SPIDER_META), false);
-		} else if (entity instanceof EntityEnderman) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.ENDERMAN_META), false);
-		} else if (entity instanceof EntityBlaze) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.BLAZE_META), false);
-		} else if (entity instanceof EntityGhast) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.GHAST_META), false);
-		} else if (entity instanceof EntityMagmaCube) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.MAGMA_CUBE_META), false);
-		} else if (entity instanceof EntitySlime) {
-			resetTarget = playerHasItemIgnoreDurability(player, XRRecipes.mobCharm(Reference.MOB_CHARM.SLIME_META), false);
+		} else if(entity instanceof EntityCreeper) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.CREEPER_META);
+		} else if(entity instanceof EntityWitch) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.WITCH_META);
+		} else if(entity instanceof EntityCaveSpider) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.CAVE_SPIDER_META);
+		} else if(entity instanceof EntitySpider) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SPIDER_META);
+		} else if(entity instanceof EntityEnderman) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ENDERMAN_META);
+		} else if(entity instanceof EntityBlaze) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.BLAZE_META);
+		} else if(entity instanceof EntityGhast) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.GHAST_META);
+		} else if(entity instanceof EntityMagmaCube) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.MAGMA_CUBE_META);
+		} else if(entity instanceof EntitySlime) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SLIME_META);
 		}
 
-		if (resetTarget) {
+		if(resetTarget) {
 			entity.setAttackTarget(null);
 			entity.setRevengeTarget(null);
 		}
@@ -486,13 +494,17 @@ public class CommonEventHandler {
 		return false;
 	}
 
-	private boolean playerHasItemIgnoreDurability(EntityPlayer player, ItemStack ist, boolean checkEnabled) {
+	private boolean playerHasMobCharm(EntityPlayer player, byte type) {
 		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
 			if(player.inventory.mainInventory[slot] == null)
 				continue;
-			if(areItemStacksEqualIgnoreDurability(player.inventory.mainInventory[slot], ist))
+			ItemStack slotStack = player.inventory.mainInventory[slot];
+			if(slotStack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(slotStack) == type)
+				return true;
+			if(slotStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(slotStack, type))
 				return true;
 		}
+
 		return false;
 	}
 
@@ -530,8 +542,7 @@ public class CommonEventHandler {
 			player.capabilities.allowFlying = true;
 			player.fallDistance = 0;
 			((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
-		} else if (player.isHandActive() && player.getActiveItemStack() != null && player.getActiveItemStack().getItem() == ModItems.rendingGale
-				&& ModItems.rendingGale.isFlightMode(player.getActiveItemStack()) && ModItems.rendingGale.hasFlightCharge(player, player.getActiveItemStack())){
+		} else if(player.isHandActive() && player.getActiveItemStack() != null && player.getActiveItemStack().getItem() == ModItems.rendingGale && ModItems.rendingGale.isFlightMode(player.getActiveItemStack()) && ModItems.rendingGale.hasFlightCharge(player, player.getActiveItemStack())) {
 			playersFlightStatus.put(player.getGameProfile().getId(), true);
 			player.capabilities.allowFlying = true;
 			((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));

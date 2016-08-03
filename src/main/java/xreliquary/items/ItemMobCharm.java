@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
-import xreliquary.init.XRRecipes;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -62,38 +61,38 @@ public class ItemMobCharm extends ItemBase {
 		stack.setTagCompound(compound);
 	}
 
-	public ItemStack getMobCharmForEntity(Entity entity) {
+	public byte getMobCharmTypeForEntity(Entity entity) {
 		if(entity instanceof EntityGhast) {
-			return XRRecipes.mobCharm(Reference.MOB_CHARM.GHAST_META);
+			return Reference.MOB_CHARM.GHAST_META;
 		} else if(entity instanceof EntityMagmaCube) {
-			return XRRecipes.mobCharm(Reference.MOB_CHARM.MAGMA_CUBE_META);
+			return Reference.MOB_CHARM.MAGMA_CUBE_META;
 		} else if(entity instanceof EntitySlime) {
-			return XRRecipes.mobCharm(Reference.MOB_CHARM.SLIME_META);
+			return Reference.MOB_CHARM.SLIME_META;
 		} else if(entity instanceof EntityPigZombie) {
-			return XRRecipes.mobCharm(Reference.MOB_CHARM.ZOMBIE_PIGMAN_META);
+			return Reference.MOB_CHARM.ZOMBIE_PIGMAN_META;
 		} else if(entity instanceof EntityZombie) {
-			return XRRecipes.mobCharm(Reference.MOB_CHARM.ZOMBIE_META);
+			return Reference.MOB_CHARM.ZOMBIE_META;
 		} else if(entity instanceof EntitySkeleton) {
 			if(((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
-				return XRRecipes.mobCharm(Reference.MOB_CHARM.WITHER_SKELETON_META);
+				return Reference.MOB_CHARM.WITHER_SKELETON_META;
 			} else {
-				return XRRecipes.mobCharm(Reference.MOB_CHARM.SKELETON_META);
+				return Reference.MOB_CHARM.SKELETON_META;
 			}
 		} else if(entity instanceof EntityCreeper) {
-			return XRRecipes.mobCharm(Reference.MOB_CHARM.CREEPER_META);
+			return Reference.MOB_CHARM.CREEPER_META;
 		} else if(entity instanceof EntityWitch) {
-			return XRRecipes.mobCharm(Reference.MOB_CHARM.WITCH_META);
+			return Reference.MOB_CHARM.WITCH_META;
 		} else if(entity instanceof EntityCaveSpider) {
-			return XRRecipes.mobCharm(Reference.MOB_CHARM.CAVE_SPIDER_META);
+			return Reference.MOB_CHARM.CAVE_SPIDER_META;
 		} else if(entity instanceof EntitySpider) {
-			return XRRecipes.mobCharm(Reference.MOB_CHARM.SPIDER_META);
+			return Reference.MOB_CHARM.SPIDER_META;
 		} else if(entity instanceof EntityEnderman) {
-			return XRRecipes.mobCharm(Reference.MOB_CHARM.ENDERMAN_META);
+			return Reference.MOB_CHARM.ENDERMAN_META;
 		} else if(entity instanceof EntityBlaze) {
-			return XRRecipes.mobCharm(Reference.MOB_CHARM.BLAZE_META);
+			return Reference.MOB_CHARM.BLAZE_META;
 		}
 
-		return null;
+		return -1;
 	}
 
 }
