@@ -189,6 +189,7 @@ public class BlockItemConfiguration {
 		Settings.MobCharm.damagePerKill = ConfigurationHandler.getInt("damage_per_kill", Names.item_and_block_settings + "." + Names.mob_charm, 1, 0, 40);
 		Settings.MobCharm.dropDurabilityRepair = ConfigurationHandler.getInt("drop_durability_repair", Names.item_and_block_settings + "." + Names.mob_charm, 20, 1, 200);
 		Settings.MobCharm.maxCharmsToDisplay = ConfigurationHandler.getInt("max_charms_to_display", Names.item_and_block_settings + "." + Names.mob_charm, 6, 1, 20);
+		Settings.MobCharm.displayPosition = ConfigurationHandler.getInt("display_position", Names.item_and_block_settings + "." + Names.mob_charm, 1, 1, 3);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.mob_charm, true);
 
 		//phoenix down configs

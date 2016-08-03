@@ -172,6 +172,7 @@ public class ClientEventHandler {
 		int itemSize = 16;
 		int borderSpacing = 8;
 		int itemSpacing = 2;
+		int displayPosition = Settings.MobCharm.displayPosition;
 
 		if(numberItems <= 0)
 			return;
@@ -186,8 +187,20 @@ public class ClientEventHandler {
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.enableLighting();
 
-		hudOverlayX = sr.getScaledWidth() - (itemSize + borderSpacing);
-		hudOverlayY = sr.getScaledHeight() / 2 - (itemSize / 2) - (Math.max(0, (numberItems - 1) * (itemSize + itemSpacing) / 2));
+		if (displayPosition == 1 || displayPosition == 3) {
+			hudOverlayY = sr.getScaledHeight() / 2 - (itemSize / 2) - (Math.max(0, (numberItems - 1) * (itemSize + itemSpacing) / 2));
+
+			if (displayPosition == 1) {
+				hudOverlayX = sr.getScaledWidth() - (itemSize + borderSpacing);
+			} else {
+				hudOverlayX = borderSpacing;
+			}
+		} else {
+			hudOverlayY = borderSpacing;
+			hudOverlayX = sr.getScaledWidth() / 2 - (itemSize / 2) - (Math.max(0, (numberItems - 1) * (itemSize + itemSpacing) / 2));
+		}
+
+
 
 		HashMap<Integer, CharmToDraw> charmsToDrawCopy = new HashMap<>(getCharmsToDraw());
 		for(CharmToDraw charmToDraw : charmsToDrawCopy.values()) {
@@ -218,7 +231,10 @@ public class ClientEventHandler {
 			textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
 			renderItem.renderItemOverlayIntoGUI(minecraft.getRenderManager().getFontRenderer(), stackToRender, hudOverlayX, hudOverlayY, null);
 
-			hudOverlayY += itemSize + itemSpacing;
+			if (displayPosition == 1 || displayPosition == 3)
+				hudOverlayY += itemSize + itemSpacing;
+			else
+				hudOverlayX += itemSize + itemSpacing;
 		}
 		GlStateManager.disableBlend();
 		GlStateManager.disableLighting();
