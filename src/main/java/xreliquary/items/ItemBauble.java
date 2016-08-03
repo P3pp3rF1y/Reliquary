@@ -26,9 +26,6 @@ public abstract class ItemBauble extends ItemBase implements IBauble {
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {
-		if(!player.worldObj.isRemote)
-			player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 2.2F));
-		onWornTick(stack, player);
 	}
 
 	@Override

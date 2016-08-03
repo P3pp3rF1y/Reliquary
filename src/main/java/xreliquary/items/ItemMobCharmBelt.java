@@ -3,6 +3,7 @@ package xreliquary.items;
 import baubles.api.BaubleType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -10,10 +11,12 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 import xreliquary.Reliquary;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
@@ -28,12 +31,20 @@ public class ItemMobCharmBelt extends ItemBauble {
 	}
 
 	@Override
+	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public BaubleType getBaubleType(ItemStack stack) {
 		return BaubleType.BELT;
 	}
 
 	@Override
 	public void onWornTick(ItemStack stack, EntityLivingBase player) {}
+
+	@Override
+	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
+	public void onEquipped(ItemStack stack, EntityLivingBase player) {
+		if(player.worldObj.isRemote)
+			player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1F, 1F);
+	}
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {

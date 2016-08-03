@@ -1,5 +1,6 @@
 package xreliquary.handler;
 
+import baubles.api.BaublesApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.Entity;
@@ -12,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketPlayerAbilities;
@@ -26,6 +28,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -36,6 +39,7 @@ import xreliquary.init.ModPotions;
 import xreliquary.items.ItemToggleable;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketMobCharmDamage;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.XRFakePlayerFactory;
@@ -120,15 +124,35 @@ public class CommonEventHandler {
 				}
 				return;
 			}
-			if(slotStack.getItem() == ModItems.mobCharmBelt) {
-				int damage = ModItems.mobCharmBelt.damageCharmType(slotStack, mobCharmType);
+			if(damageMobCharmInBelt((EntityPlayerMP) player, mobCharmType, slotStack))
+				return;
+		}
 
-				if (damage > -1) {
-					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, damage, -mobCharmType), (EntityPlayerMP) player);
+		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
+			IInventory inventoryBaubles = BaublesApi.getBaubles(player);
+
+			for(int i = 0; i < inventoryBaubles.getSizeInventory(); i++) {
+				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
+
+				if(baubleStack == null)
+					continue;
+
+				if(damageMobCharmInBelt((EntityPlayerMP) player, mobCharmType, baubleStack))
 					return;
-				}
 			}
 		}
+	}
+
+	private boolean damageMobCharmInBelt(EntityPlayerMP player, byte mobCharmType, ItemStack slotStack) {
+		if(slotStack.getItem() == ModItems.mobCharmBelt) {
+			int damage = ModItems.mobCharmBelt.damageCharmType(slotStack, mobCharmType);
+
+			if(damage > -1) {
+				PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, damage, -mobCharmType), player);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void doMobCharmCheckOnUpdate(LivingEvent event) {
@@ -503,6 +527,16 @@ public class CommonEventHandler {
 				return true;
 			if(slotStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(slotStack, type))
 				return true;
+		}
+
+		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
+			IInventory inventoryBaubles = BaublesApi.getBaubles(player);
+
+			for(int i = 0; i < inventoryBaubles.getSizeInventory(); i++) {
+				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
+				if(baubleStack != null && baubleStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(baubleStack, type))
+					return true;
+			}
 		}
 
 		return false;
