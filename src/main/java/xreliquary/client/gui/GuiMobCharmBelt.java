@@ -21,13 +21,23 @@ public class GuiMobCharmBelt extends GuiBase {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		this.bindTexture(this.BELT_TEX);
 		int i = (this.width - WIDTH) / 2;
 		int j = (this.height - HEIGHT) / 2;
+
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.pushAttrib();
+		GlStateManager.enableAlpha();
+		GlStateManager.enableBlend();
+
+		this.bindTexture(this.BELT_TEX);
 		this.drawTexturedModalRect(i, j, 0, 0, WIDTH, HEIGHT);
 
+		GlStateManager.disableAlpha();
+		GlStateManager.disableBlend();
+		GlStateManager.popAttrib();
+
 		updateMobCharmSlots(i, j);
+
 	}
 
 	private void updateMobCharmSlots(int xLeft, int yTop) {
@@ -50,11 +60,20 @@ public class GuiMobCharmBelt extends GuiBase {
 			int x = centerX - offsetX - 8;
 			int y = centerY - offsetY - 8;
 
+			GlStateManager.pushAttrib();
+			GlStateManager.enableAlpha();
+			GlStateManager.enableBlend();
+
 			this.drawTexturedModalRect(x, y, 176, 0, 16, 16);
+
+			GlStateManager.disableAlpha();
+			GlStateManager.disableBlend();
+			GlStateManager.popAttrib();
+
 			this.inventorySlots.inventorySlots.get(i - 1).xDisplayPosition = x - xLeft;
 			this.inventorySlots.inventorySlots.get(i - 1).yDisplayPosition = y - yTop - 27;
 		}
-		this.inventorySlots.inventorySlots.get(slots).xDisplayPosition = 80;// xLeft + 80;
-		this.inventorySlots.inventorySlots.get(slots).yDisplayPosition = -12; // yTop + 35;
+		this.inventorySlots.inventorySlots.get(slots).xDisplayPosition = 80;
+		this.inventorySlots.inventorySlots.get(slots).yDisplayPosition = -12;
 	}
 }
