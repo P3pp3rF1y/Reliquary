@@ -120,7 +120,7 @@ public class CommonEventHandler {
 				ItemStack playersMobCharm = player.inventory.mainInventory[slot];
 				if(playersMobCharm.getItemDamage() + Settings.MobCharm.damagePerKill > playersMobCharm.getMaxDamage()) {
 					player.inventory.mainInventory[slot] = null;
-					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, ModItems.mobCharm.getMaxDamage(), slot), (EntityPlayerMP) player);
+					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, ModItems.mobCharm.getMaxDamage() + 1, slot), (EntityPlayerMP) player);
 				} else {
 					playersMobCharm.damageItem(Settings.MobCharm.damagePerKill, player);
 					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, playersMobCharm.getItemDamage(), slot), (EntityPlayerMP) player);

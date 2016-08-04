@@ -70,8 +70,12 @@ public class ClientEventHandler {
 				charmsToDraw.remove(slot);
 			}
 
-			if(damage != 0)
+			if(damage > ModItems.mobCharm.getMaxDamage())
+				charmsToDraw.remove(slot);
+
+			if(damage <= ModItems.mobCharm.getMaxDamage())
 				charmsToDraw.put(slot, new CharmToDraw(type, damage, System.currentTimeMillis()));
+
 		}
 	}
 
@@ -200,8 +204,6 @@ public class ClientEventHandler {
 			hudOverlayX = sr.getScaledWidth() / 2 - (itemSize / 2) - (Math.max(0, (numberItems - 1) * (itemSize + itemSpacing) / 2));
 		}
 
-
-
 		HashMap<Integer, CharmToDraw> charmsToDrawCopy = new HashMap<>(getCharmsToDraw());
 		for(CharmToDraw charmToDraw : charmsToDrawCopy.values()) {
 			ItemStack stackToRender = XRRecipes.mobCharm(charmToDraw.type);
@@ -246,6 +248,9 @@ public class ClientEventHandler {
 		synchronized(charmsToDraw) {
 			for(Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext(); ){
 				Map.Entry<Integer, CharmToDraw> entry = iterator.next();
+				if (Settings.MobCharm.keepAlmostDestroyedDisplayed && entry.getValue().damage >= (ModItems.mobCharm.getMaxDamage() * 0.9))
+					continue;
+
 				if(entry.getValue().time + secondsToExpire * 1000 < System.currentTimeMillis()) {
 					iterator.remove();
 				}

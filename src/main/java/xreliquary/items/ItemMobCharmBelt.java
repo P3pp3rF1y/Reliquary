@@ -176,7 +176,7 @@ public class ItemMobCharmBelt extends ItemBauble {
 				int damage = mobCharmNbt.getInteger(DAMAGE_TAG);
 				if (damage + Settings.MobCharm.damagePerKill > ModItems.mobCharm.getMaxDamage()) {
 					removeMobCharmInSlot(belt, i);
-					return ModItems.mobCharm.getMaxDamage();
+					return ModItems.mobCharm.getMaxDamage() + 1;
 				} else {
 					damage += Settings.MobCharm.damagePerKill;
 					mobCharmNbt.setInteger(DAMAGE_TAG, damage);
