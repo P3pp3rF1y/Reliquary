@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -43,6 +44,7 @@ import xreliquary.util.potions.PotionEssence;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 //TODO refactor proxy so that it has functionally named methods that get called from main mod class
 @SideOnly(Side.CLIENT)
@@ -113,12 +115,19 @@ public class ClientProxy extends CommonProxy {
 		super.init();
 		ModItemColors.init();
 		ModBlockColors.init();
+		RegisterBeltRender();
 		FMLCommonHandler.instance().bus().register(new ClientEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ModFluids());
-		//MinecraftForge.EVENT_BUS.register( new ModelBakeEventHandler() );
 
 		this.registerRenderers();
+	}
+
+	private void RegisterBeltRender() {
+		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
+		RenderPlayer render;
+		render = skinMap.get("default");
+		render.addLayer(new MobCharmBeltLayerRenderer());
 	}
 
 	public void registerRenderers() {

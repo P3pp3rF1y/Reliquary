@@ -11,9 +11,9 @@ import java.util.List;
 /**
  * Created by Xeno on 10/11/2014.
  */
-public class ItemHeartPearl extends ItemBase {
-	public ItemHeartPearl() {
-		super(Names.heart_pearl);
+public class ItemMobCharmFragment extends ItemBase {
+	public ItemMobCharmFragment() {
+		super(Names.mob_charm_fragment);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);
@@ -23,7 +23,7 @@ public class ItemHeartPearl extends ItemBase {
 
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
-		return "item.heart_pearl_" + ist.getItemDamage();
+		return "item.mob_charm_fragment_" + ist.getItemDamage();
 	}
 
 	@Override

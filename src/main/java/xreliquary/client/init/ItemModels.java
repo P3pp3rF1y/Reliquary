@@ -53,7 +53,10 @@ public class ItemModels {
 		registerItemModel(ModItems.witchHat, Names.witch_hat);
 		registerItemModel(ModItems.witherlessRose, Names.witherless_rose);
 
+		registerItemModel(ModItems.mobCharmBelt, Names.mob_charm_belt);
+
 		registerItemModel(ModItems.rodOfLyssa, Names.rod_of_lyssa);
+
 		ModelBakery.registerItemVariants(ModItems.rodOfLyssa, ItemModelLocations.getInstance().getModel(ItemModelLocations.ROD_OF_LYSSA_CAST));
 
 		for(int i = 0; i < 16; i++) {
@@ -70,15 +73,21 @@ public class ItemModels {
 			}
 		});
 
-		registerItemModelForAllVariants(ModItems.heartPearl, Names.heart_pearl, new ItemMeshDefinition() {
+		registerItemModelForAllVariants(ModItems.mobCharmFragment, Names.mob_charm_fragment, new ItemMeshDefinition() {
 			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				return new ModelResourceLocation(Reference.DOMAIN + Names.heart_pearl, "inventory");
+				return new ModelResourceLocation(Reference.DOMAIN + Names.mob_charm_fragment, "inventory");
 			}
 		});
 
 		registerItemModelForAllVariants(ModItems.heartZhu, Names.heart_zhu, new ItemMeshDefinition() {
 			public ModelResourceLocation getModelLocation(ItemStack stack) {
 				return new ModelResourceLocation(Reference.DOMAIN + Names.heart_zhu, "inventory");
+			}
+		});
+
+		registerItemModelForAllVariants(ModItems.mobCharm, Names.mob_charm, new ItemMeshDefinition() {
+			public ModelResourceLocation getModelLocation(ItemStack stack) {
+				return new ModelResourceLocation(Reference.DOMAIN + Names.mob_charm, "inventory");
 			}
 		});
 

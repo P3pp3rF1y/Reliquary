@@ -50,11 +50,15 @@ public class ReliquaryPlugin implements IModPlugin {
 		for(DescriptionEntry entry : JEIDescriptionRegistry.entrySet())
 			registry.addDescription(entry.itemStacks(), entry.langKey());
 
-		//blacklist filled void tear
+		//blacklisted items
 		registry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(new ItemStack(ModItems.filledVoidTear));
+		for (byte i=0; i<13; i++) {
+			registry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(new ItemStack(ModItems.heartZhu, 1, i));
+		}
 
 		ISubtypeRegistry nbtRegistry = registry.getJeiHelpers().getSubtypeRegistry();
 
+		nbtRegistry.useNbtForSubtypes(ModItems.mobCharm);
 		nbtRegistry.useNbtForSubtypes(ModItems.potionEssence);
 
 		nbtRegistry.registerNbtInterpreter(ModItems.potion, new ISubtypeRegistry.ISubtypeInterpreter() {

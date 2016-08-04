@@ -29,20 +29,21 @@ public class Reference {
 
 	public static final String MODEL_TEXTURE_PATH = "textures/models/";
 
-	public static class NIAN_ZHU {
-		public static final int ZOMBIE_META = 0;
-		public static final int SKELETON_META = 1;
-		public static final int WITHER_SKELETON_META = 2;
-		public static final int CREEPER_META = 3;
-		public static final int WITCH_META = 4;
-		public static final int ZOMBIE_PIGMAN_META = 5;
-		public static final int CAVE_SPIDER_META = 6;
-		public static final int SPIDER_META = 7;
-		public static final int ENDERMAN_META = 8;
-		public static final int GHAST_META = 9;
-		public static final int SLIME_META = 10;
-		public static final int MAGMA_CUBE_META = 11;
-		public static final int BLAZE_META = 12;
+	public static class MOB_CHARM {
+		public static final byte ZOMBIE_META = 0;
+		public static final byte SKELETON_META = 1;
+		public static final byte WITHER_SKELETON_META = 2;
+		public static final byte CREEPER_META = 3;
+		public static final byte WITCH_META = 4;
+		public static final byte ZOMBIE_PIGMAN_META = 5;
+		public static final byte CAVE_SPIDER_META = 6;
+		public static final byte SPIDER_META = 7;
+		public static final byte ENDERMAN_META = 8;
+		public static final byte GHAST_META = 9;
+		public static final byte SLIME_META = 10;
+		public static final byte MAGMA_CUBE_META = 11;
+		public static final byte BLAZE_META = 12;
+		public static final byte COUNT_TYPES = 13;
 	}
 
 	public static final int SKELETON_INGREDIENT_META = 0;

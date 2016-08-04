@@ -77,16 +77,16 @@ item.handgun.tooltip=Für die Gerechtigkeit!;Rechtsklick feuert, halte zum nachl
 item.harvest_rod.name={{!colors.green}}Ernterute
 item.harvest_rod.tooltip=Klicke auf Blöcke zum Düngen,;schlage Feldfrüchte, um einen großen Bereich abzuernten.{{!colors.green}}Ladung: {{charge}};Shift + Rechtsklick zum Aufladen.
 
-item.heart_pearl_0.name={{!colors.rose}}Zombie-Herzperle
+item.charm_fragment_0.name={{!colors.rose}}Zombie-Herzperle
 item.heart_zhu_0.name={{!colors.rose}}Nian Zhu (Zombie)
 item.heart_zhu_0.tooltip=Zombies können dich hiermit nicht sehen.
-item.heart_pearl_1.name={{!colors.white}}Skelett-Herzperle
+item.charm_fragment_1.name={{!colors.white}}Skelett-Herzperle
 item.heart_zhu_1.name={{!colors.white}}Nian Zhu (Skelett)
 item.heart_zhu_1.tooltip=Skelette können dich hiermit nicht sehen.
-item.heart_pearl_2.name={{!colors.gray}}Witherskelett-Herzperle
+item.charm_fragment_2.name={{!colors.gray}}Witherskelett-Herzperle
 item.heart_zhu_2.name={{!colors.gray}}Nian Zhu (Witherskelett)
 item.heart_zhu_2.tooltip=Witherskelette können dich hiermit nicht sehen.
-item.heart_pearl_3.name={{!colors.light_green}}Creeper-Herzperle
+item.charm_fragment_3.name={{!colors.light_green}}Creeper-Herzperle
 item.heart_zhu_3.name={{!colors.light_green}}Nian Zhu (Creeper)
 item.heart_zhu_3.tooltip=Creeper können dich hiermit nicht sehen.
 
