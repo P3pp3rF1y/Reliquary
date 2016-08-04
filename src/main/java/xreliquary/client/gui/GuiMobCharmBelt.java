@@ -79,5 +79,9 @@ public class GuiMobCharmBelt extends GuiBase {
 		}
 		this.inventorySlots.inventorySlots.get(slots).xDisplayPosition = 80;
 		this.inventorySlots.inventorySlots.get(slots).yDisplayPosition = -12;
+
+		for(int i = slots + 1; i < Reference.MOB_CHARM.COUNT_TYPES + 1; i++) {
+			this.inventorySlots.inventorySlots.get(i).xDisplayPosition = -999;
+		}
 	}
 }
