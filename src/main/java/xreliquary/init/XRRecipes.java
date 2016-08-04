@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import xreliquary.crafting.*;
 import xreliquary.reference.Reference;
@@ -350,6 +351,9 @@ public class XRRecipes {
 		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.GHAST_META), charmFragment(Reference.MOB_CHARM.GHAST_META));
 		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.MAGMA_CUBE_META), charmFragment(Reference.MOB_CHARM.MAGMA_CUBE_META));
 		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.SLIME_META), charmFragment(Reference.MOB_CHARM.SLIME_META));
+
+		// mob charm belt
+		addRecipe(false, false, new ItemStack(ModItems.mobCharmBelt), "lll", "f f", "fff", 'l', Items.LEATHER, 'f', new ItemStack(ModItems.mobCharmFragment, 1, OreDictionary.WILDCARD_VALUE));
 
 		/* potions and splash potions */
 
