@@ -22,8 +22,8 @@ public class GuiMobCharmBelt extends GuiBase {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		int i = (this.width - WIDTH) / 2;
-		int j = (this.height - HEIGHT) / 2;
+		int i = this.guiLeft;
+		int j = this.guiTop;
 
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.pushAttrib();
@@ -31,14 +31,14 @@ public class GuiMobCharmBelt extends GuiBase {
 		GlStateManager.enableBlend();
 
 		this.bindTexture(this.BELT_TEX);
-		this.drawTexturedModalRect(i, j, 0, 0, WIDTH, HEIGHT);
+		this.drawTexturedModalRect(i, j - 27, 0, 0, WIDTH, HEIGHT);
 
 		GlStateManager.disableAlpha();
 		GlStateManager.disableBlend();
 		GlStateManager.popAttrib();
 
 		int centerX = i + 88;
-		int centerY = j + 67;
+		int centerY = j + 40;
 
 		updateMobCharmSlots(centerX, centerY);
 
