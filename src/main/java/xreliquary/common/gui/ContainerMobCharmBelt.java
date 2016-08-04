@@ -24,7 +24,7 @@ public class ContainerMobCharmBelt extends Container {
 		ItemStack slotStack = slot == null ? null : slot.getStack();
 
 		//prevent moving belt out of its slot
-		if(slot != null && slotStack != null && slotStack.getItem() == ModItems.mobCharm && slotStack == player.getHeldItemMainhand())
+		if(slot != null && slotStack != null && slotStack.getItem() == ModItems.mobCharmBelt && slotStack == player.getHeldItemMainhand())
 			return null;
 
 		//overriden here so that on shift click it doesn't retry and thus move more charms out of belt
