@@ -338,19 +338,19 @@ public class XRRecipes {
 		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.SLIME_META), "ppp", "sss", "ppp", 'p', SLIME_PEARL, 's', Items.SLIME_BALL);
 
 		// mob charm actual items
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.ZOMBIE_META), charmFragment(Reference.MOB_CHARM.ZOMBIE_META));
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.SKELETON_META), charmFragment(Reference.MOB_CHARM.SKELETON_META));
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.WITHER_SKELETON_META), charmFragment(Reference.MOB_CHARM.WITHER_SKELETON_META));
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.CREEPER_META), charmFragment(Reference.MOB_CHARM.CREEPER_META));
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.WITCH_META), charmFragment(Reference.MOB_CHARM.WITCH_META));
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.ZOMBIE_PIGMAN_META), charmFragment(Reference.MOB_CHARM.ZOMBIE_PIGMAN_META));
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.CAVE_SPIDER_META), charmFragment(Reference.MOB_CHARM.CAVE_SPIDER_META));
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.SPIDER_META), charmFragment(Reference.MOB_CHARM.SPIDER_META));
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.ENDERMAN_META), charmFragment(Reference.MOB_CHARM.ENDERMAN_META));
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.BLAZE_META), charmFragment(Reference.MOB_CHARM.BLAZE_META));
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.GHAST_META), charmFragment(Reference.MOB_CHARM.GHAST_META));
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.MAGMA_CUBE_META), charmFragment(Reference.MOB_CHARM.MAGMA_CUBE_META));
-		addMobCharmRecipe(mobCharm(Reference.MOB_CHARM.SLIME_META), charmFragment(Reference.MOB_CHARM.SLIME_META));
+		addMobCharmRecipe(Reference.MOB_CHARM.ZOMBIE_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.SKELETON_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.WITHER_SKELETON_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.CREEPER_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.WITCH_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.ZOMBIE_PIGMAN_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.CAVE_SPIDER_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.SPIDER_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.ENDERMAN_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.BLAZE_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.GHAST_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.MAGMA_CUBE_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.SLIME_META);
 
 		// mob charm belt
 		addRecipe(false, false, new ItemStack(ModItems.mobCharmBelt), "lll", "f f", "fff", 'l', Items.LEATHER, 'f', new ItemStack(ModItems.mobCharmFragment, 1, OreDictionary.WILDCARD_VALUE));
@@ -410,8 +410,11 @@ public class XRRecipes {
 		RecipeSorter.register(Reference.MOD_ID + ":mob_charm_repair", MobCharmRepairRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 	}
 
-	private static void addMobCharmRecipe(ItemStack mobCharm, ItemStack fragment) {
-		addRecipe(true, false, mobCharm, Items.STRING, fragment, fragment, fragment, fragment, fragment, fragment);
+	private static void addMobCharmRecipe(byte type) {
+		ItemStack mobCharm = mobCharm(type);
+		ItemStack fragment = charmFragment(type);
+
+		addRecipe(false, false, mobCharm, "flf", "fsf", "f f", 'f', fragment, 'l', Items.LEATHER, 's', Items.STRING);
 	}
 
 	private static void addMobDropCraftingRecipes() {
