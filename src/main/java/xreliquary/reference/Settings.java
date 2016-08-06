@@ -305,4 +305,13 @@ public class Settings {
 		public static byte shearsWrapperCooldown;
 		public static int redstoneWrapperRange;
 	}
+
+	public static class MobCharm {
+		public static int durability;
+		public static int damagePerKill;
+		public static int dropDurabilityRepair;
+		public static int maxCharmsToDisplay;
+		public static int displayPosition;
+		public static boolean keepAlmostDestroyedDisplayed;
+	}
 }

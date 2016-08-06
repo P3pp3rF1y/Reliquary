@@ -1,4 +1,4 @@
-package xreliquary.items.alkahestry;
+package xreliquary.crafting;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;

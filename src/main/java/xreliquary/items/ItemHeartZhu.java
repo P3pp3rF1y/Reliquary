@@ -14,11 +14,16 @@ import java.util.List;
 public class ItemHeartZhu extends ItemBase {
 	public ItemHeartZhu() {
 		super(Names.heart_zhu);
-		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+		this.setCreativeTab(null);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		this.setHasSubtypes(true);
 		canRepair = false;
+	}
+
+	@Override
+	protected boolean showTooltipsAlways() {
+		return true;
 	}
 
 	@Override

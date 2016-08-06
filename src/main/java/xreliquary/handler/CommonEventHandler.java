@@ -1,5 +1,6 @@
 package xreliquary.handler;
 
+import baubles.api.BaublesApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.Entity;
@@ -12,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketPlayerAbilities;
@@ -21,10 +23,12 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -32,8 +36,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModPotions;
-import xreliquary.init.XRRecipes;
 import xreliquary.items.ItemToggleable;
+import xreliquary.network.PacketHandler;
+import xreliquary.network.PacketMobCharmDamage;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.XRFakePlayerFactory;
@@ -80,35 +86,98 @@ public class CommonEventHandler {
 	public void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
 		doTwilightCloakCheck(event);
 		//doPacifiedDebuffCheck(event);
-		doHeartZhuCheckOnSetTarget(event);
+		doMobCharmCheckOnSetTarget(event);
 	}
 
 	@SubscribeEvent
 	public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
 		doTwilightCloakCheck(event);
-		doHeartZhuCheckOnUpdate(event);
+		doMobCharmCheckOnUpdate(event);
 	}
 
-	private void doHeartZhuCheckOnUpdate(LivingEvent event) {
+	@SubscribeEvent
+	public void onLivingDeath(LivingDeathEvent event) {
+		if(event.getSource() == null || event.getSource().getEntity() == null || !(event.getSource().getEntity() instanceof EntityPlayer))
+			return;
+
+		EntityPlayer player = (EntityPlayer) event.getSource().getEntity();
+
+		damagePlayersMobCharm(player, event.getEntity());
+	}
+
+	private void damagePlayersMobCharm(EntityPlayer player, Entity entity) {
+		if (player.capabilities.isCreativeMode)
+			return;
+
+		byte mobCharmType = ModItems.mobCharm.getMobCharmTypeForEntity(entity);
+
+		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+			if(player.inventory.mainInventory[slot] == null)
+				continue;
+			ItemStack slotStack = player.inventory.mainInventory[slot];
+
+			if(slotStack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(slotStack) == mobCharmType) {
+				ItemStack playersMobCharm = player.inventory.mainInventory[slot];
+				if(playersMobCharm.getItemDamage() + Settings.MobCharm.damagePerKill > playersMobCharm.getMaxDamage()) {
+					player.inventory.mainInventory[slot] = null;
+					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, ModItems.mobCharm.getMaxDamage() + 1, slot), (EntityPlayerMP) player);
+				} else {
+					playersMobCharm.damageItem(Settings.MobCharm.damagePerKill, player);
+					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, playersMobCharm.getItemDamage(), slot), (EntityPlayerMP) player);
+				}
+				return;
+			}
+			if(damageMobCharmInBelt((EntityPlayerMP) player, mobCharmType, slotStack))
+				return;
+		}
+
+		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
+			IInventory inventoryBaubles = BaublesApi.getBaubles(player);
+
+			for(int i = 0; i < inventoryBaubles.getSizeInventory(); i++) {
+				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
+
+				if(baubleStack == null)
+					continue;
+
+				if(damageMobCharmInBelt((EntityPlayerMP) player, mobCharmType, baubleStack))
+					return;
+			}
+		}
+	}
+
+	private boolean damageMobCharmInBelt(EntityPlayerMP player, byte mobCharmType, ItemStack slotStack) {
+		if(slotStack.getItem() == ModItems.mobCharmBelt) {
+			int damage = ModItems.mobCharmBelt.damageCharmType(slotStack, mobCharmType);
+
+			if(damage > -1) {
+				PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, damage, -mobCharmType), player);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void doMobCharmCheckOnUpdate(LivingEvent event) {
 		if(!(event.getEntity() instanceof EntityLiving))
 			return;
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
-		if (entity.getAttackTarget() == null || !(entity.getAttackTarget() instanceof EntityPlayer))
+		if(entity.getAttackTarget() == null || !(entity.getAttackTarget() instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity.getAttackTarget();
 		boolean resetTarget = false;
 
-		if (entity instanceof EntityGhast) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.GHAST_META), false);
-		} else if (entity instanceof EntityMagmaCube) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META), false);
-		} else if (entity instanceof EntitySlime) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SLIME_META), false);
+		if(entity instanceof EntityGhast) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.GHAST_META);
+		} else if(entity instanceof EntityMagmaCube) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.MAGMA_CUBE_META);
+		} else if(entity instanceof EntitySlime) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SLIME_META);
 		}
 
-		if (resetTarget) {
+		if(resetTarget) {
 			entity.setAttackTarget(null);
 			entity.setRevengeTarget(null);
 		}
@@ -126,7 +195,7 @@ public class CommonEventHandler {
 	//        }
 	//    }
 
-	public void doHeartZhuCheckOnSetTarget(LivingSetAttackTargetEvent event) {
+	public void doMobCharmCheckOnSetTarget(LivingSetAttackTargetEvent event) {
 		if(event.getTarget() == null)
 			return;
 		if(!(event.getTarget() instanceof EntityPlayer))
@@ -138,37 +207,37 @@ public class CommonEventHandler {
 		boolean resetTarget = false;
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
-		if (entity instanceof EntityPigZombie) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_PIGMAN_META), false);
-		} else if (entity instanceof EntityZombie) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ZOMBIE_META), false);
-		} else if (entity instanceof EntitySkeleton) {
-			if (((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
-				resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.WITHER_SKELETON_META), false);
+		if(entity instanceof EntityPigZombie) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ZOMBIE_PIGMAN_META);
+		} else if(entity instanceof EntityZombie) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ZOMBIE_META);
+		} else if(entity instanceof EntitySkeleton) {
+			if(((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
+				resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.WITHER_SKELETON_META);
 			} else {
-				resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SKELETON_META), false);
+				resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SKELETON_META);
 			}
-		} else if (entity instanceof EntityCreeper) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.CREEPER_META), false);
-		} else if (entity instanceof EntityWitch) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.WITCH_META), false);
-		} else if (entity instanceof EntityCaveSpider) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.CAVE_SPIDER_META), false);
-		} else if (entity instanceof EntitySpider){
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SPIDER_META), false);
-		} else if (entity instanceof EntityEnderman) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.ENDERMAN_META), false);
-		} else if (entity instanceof EntityBlaze) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.BLAZE_META), false);
-		} else if (entity instanceof EntityGhast) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.GHAST_META), false);
-		} else if (entity instanceof EntityMagmaCube) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.MAGMA_CUBE_META), false);
-		} else if (entity instanceof EntitySlime) {
-			resetTarget = playerHasItem(player, XRRecipes.nianZhu(Reference.NIAN_ZHU.SLIME_META), false);
+		} else if(entity instanceof EntityCreeper) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.CREEPER_META);
+		} else if(entity instanceof EntityWitch) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.WITCH_META);
+		} else if(entity instanceof EntityCaveSpider) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.CAVE_SPIDER_META);
+		} else if(entity instanceof EntitySpider) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SPIDER_META);
+		} else if(entity instanceof EntityEnderman) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ENDERMAN_META);
+		} else if(entity instanceof EntityBlaze) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.BLAZE_META);
+		} else if(entity instanceof EntityGhast) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.GHAST_META);
+		} else if(entity instanceof EntityMagmaCube) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.MAGMA_CUBE_META);
+		} else if(entity instanceof EntitySlime) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SLIME_META);
 		}
 
-		if (resetTarget) {
+		if(resetTarget) {
 			entity.setAttackTarget(null);
 			entity.setRevengeTarget(null);
 		}
@@ -452,6 +521,34 @@ public class CommonEventHandler {
 		return false;
 	}
 
+	private boolean playerHasMobCharm(EntityPlayer player, byte type) {
+		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+			if(player.inventory.mainInventory[slot] == null)
+				continue;
+			ItemStack slotStack = player.inventory.mainInventory[slot];
+			if(slotStack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(slotStack) == type)
+				return true;
+			if(slotStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(slotStack, type))
+				return true;
+		}
+
+		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
+			IInventory inventoryBaubles = BaublesApi.getBaubles(player);
+
+			for(int i = 0; i < inventoryBaubles.getSizeInventory(); i++) {
+				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
+				if(baubleStack != null && baubleStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(baubleStack, type))
+					return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean areItemStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2) {
+		return ItemStack.areItemsEqualIgnoreDurability(stack1, stack2) && ItemStack.areItemStackTagsEqual(stack1, stack2);
+	}
+
 	// pretty much the same as above, specific to angelheart vial. finds it and breaks one.
 	private void decreaseItemByOne(EntityPlayer player, Item item) {
 		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
@@ -482,8 +579,7 @@ public class CommonEventHandler {
 			player.capabilities.allowFlying = true;
 			player.fallDistance = 0;
 			((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
-		} else if (player.isHandActive() && player.getActiveItemStack() != null && player.getActiveItemStack().getItem() == ModItems.rendingGale
-				&& ModItems.rendingGale.isFlightMode(player.getActiveItemStack()) && ModItems.rendingGale.hasFlightCharge(player, player.getActiveItemStack())){
+		} else if(player.isHandActive() && player.getActiveItemStack() != null && player.getActiveItemStack().getItem() == ModItems.rendingGale && ModItems.rendingGale.isFlightMode(player.getActiveItemStack()) && ModItems.rendingGale.hasFlightCharge(player, player.getActiveItemStack())) {
 			playersFlightStatus.put(player.getGameProfile().getId(), true);
 			player.capabilities.allowFlying = true;
 			((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
