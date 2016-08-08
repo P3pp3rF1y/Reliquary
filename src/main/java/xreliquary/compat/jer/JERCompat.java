@@ -96,6 +96,10 @@ public class JERCompat implements ICompat {
 
 		//Snow Golem
 		registerMobDrop(EntitySnowman.class, XRRecipes.ingredient(1, Reference.FROZEN_INGREDIENT_META), Settings.MobDrops.getBaseDrop(Names.frozen_core), Conditional.playerKill);
+
+		//Guardian
+		registerMobDrop(EntityGuardian.class, XRRecipes.ingredient(1, Reference.GUARDIAN_INGREDIENT_META), 0.1f, Conditional.playerKill);
+
 	}
 
 	private static void registerMobDrop(Class<? extends EntityLivingBase> entity, WatchableData watchableData, ItemStack drop, float chance, Conditional... conditionals) {

@@ -62,6 +62,7 @@ public class Reference {
 	public static final int CLAW_INGREDIENT_META = 13;
 	public static final int SHELL_INGREDIENT_META = 14;
 	public static final int CLOTH_INGREDIENT_META = 15;
+	public static final int GUARDIAN_INGREDIENT_META = 16;
 
 	public static final int APHRODITE_META = 0;
 	public static final int FERTILIZER_META = 1;
