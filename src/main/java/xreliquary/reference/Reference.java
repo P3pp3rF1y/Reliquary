@@ -43,7 +43,8 @@ public class Reference {
 		public static final byte SLIME_META = 10;
 		public static final byte MAGMA_CUBE_META = 11;
 		public static final byte BLAZE_META = 12;
-		public static final byte COUNT_TYPES = 13;
+		public static final byte GUARDIAN_META = 13;
+		public static final byte COUNT_TYPES = 14;
 	}
 
 	public static final int SKELETON_INGREDIENT_META = 0;

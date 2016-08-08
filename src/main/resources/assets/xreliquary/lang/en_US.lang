@@ -125,6 +125,7 @@ item.heart_zhu_11.tooltip={{!colors.rose}}Outdated item. Please put in crafting 
 item.mob_charm_fragment_12.name={{!colors.light_green}}Blaze Charm Fragment
 item.heart_zhu_12.name={{!colors.light_green}}Blaze Nian Zhu
 item.heart_zhu_12.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
+item.mob_charm_fragment_13.name={{!colors.light_green}}Guardian Charm Fragment
 
 item.hero_medallion.name=Hero's Medallion
 item.hero_medallion.tooltip=Stores experience for you.;Right click to reclaim levels.;{{!colors.green}}Experience: {{experience}}
@@ -221,6 +222,8 @@ item.mob_charm_11.name={{!colors.light_green}}Magma Cube Charm
 item.mob_charm_11.tooltip=Magma Cubes can't see you with this.
 item.mob_charm_12.name={{!colors.light_green}}Blaze Charm
 item.mob_charm_12.tooltip=Blazes can't see you with this.
+item.mob_charm_13.name={{!colors.light_green}}Guardian Charm
+item.mob_charm_13.tooltip=Guardians can't see you with this.
 item.mob_charm_belt.name=Charm Belt
 
 item.phoenix_down.name=Phoenix Down
