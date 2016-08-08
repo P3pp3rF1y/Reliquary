@@ -22,6 +22,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -68,6 +69,16 @@ public class CommonEventHandler {
 
 	private boolean isUndead(EntityLivingBase e) {
 		return e.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
+	}
+
+
+	@SubscribeEvent
+	public void preventMending(AnvilUpdateEvent event) {
+		if (event.getLeft() == null || event.getRight() == null)
+			return;
+
+		if (event.getLeft().getItem() == ModItems.mobCharm || event.getLeft().getItem() == ModItems.alkahestryTome)
+			event.setCanceled(true);
 	}
 
 	@SubscribeEvent
