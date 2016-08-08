@@ -114,13 +114,15 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 
 		for(int i = 0; i < aitemstack.length; ++i) {
 			ItemStack itemstack = inv.getStackInSlot(i);
-			ItemStack remainingStack = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
+			ItemStack stackCopy = itemstack == null ? null : itemstack.copy();
 
-			if(remainingStack != null && remainingStack.getItem() instanceof ItemAlkahestryTome) {
-				NBTHelper.setInteger("charge", remainingStack, NBTHelper.getInteger("charge", remainingStack) - getCraftingResultCost(inv));
-				remainingStack.setItemDamage(remainingStack.getMaxDamage() - NBTHelper.getInteger("charge", remainingStack));
+			if(stackCopy != null && stackCopy.getItem() instanceof ItemAlkahestryTome) {
+				NBTHelper.setInteger("charge", stackCopy, NBTHelper.getInteger("charge", stackCopy) - getCraftingResultCost(inv));
+				stackCopy.setItemDamage(stackCopy.getMaxDamage() - NBTHelper.getInteger("charge", stackCopy));
+			} else {
+				stackCopy = null;
 			}
-			aitemstack[i] = remainingStack;
+			aitemstack[i] = stackCopy;
 		}
 
 		return aitemstack;

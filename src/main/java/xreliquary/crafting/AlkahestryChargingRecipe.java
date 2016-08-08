@@ -89,14 +89,7 @@ public class AlkahestryChargingRecipe implements IRecipe {
 		ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
 
 		for(int i = 0; i < aitemstack.length; ++i) {
-			ItemStack itemstack = inv.getStackInSlot(i);
-			ItemStack remainingStack = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
-
-			if(remainingStack != null && remainingStack.getItem() instanceof ItemAlkahestryTome) {
-				remainingStack = null;
-			}
-
-			aitemstack[i] = remainingStack;
+			aitemstack[i] = null;
 		}
 
 		return aitemstack;
