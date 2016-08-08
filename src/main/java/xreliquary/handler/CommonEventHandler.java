@@ -235,6 +235,8 @@ public class CommonEventHandler {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.MAGMA_CUBE_META);
 		} else if(entity instanceof EntitySlime) {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SLIME_META);
+		}else if(entity instanceof EntityGuardian && !((EntityGuardian) entity).isElder()) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.GUARDIAN_META);
 		}
 
 		if(resetTarget) {
