@@ -16,7 +16,7 @@ import java.util.List;
 public class ModLoot {
 	private static final List<String> CHEST_TABLES = ImmutableList.of("abandoned_mineshaft", "desert_pyramid", "end_city_treasure", "igloo_chest", "jungle_temple", "nether_bridge", "simple_dungeon", "stronghold_corridor", "stronghold_crossing", "stronghold_library", "village_blacksmith");
 
-	private static final List<String> ENTITY_TABLES = ImmutableList.of("bat", "blaze", "cave_spider", "creeper", "enderman", "ghast", "magma_cube", "skeleton", "slime", "snowman", "spider", "stray", "squid", "witch", "wither_skeleton", "zombie", "zombie_pigman");
+	private static final List<String> ENTITY_TABLES = ImmutableList.of("bat", "blaze", "cave_spider", "creeper", "enderman", "ghast", "guardian", "magma_cube", "skeleton", "slime", "snowman", "spider", "stray", "squid", "witch", "wither_skeleton", "zombie", "zombie_pigman");
 
 	public static void init() {
 		if(Settings.chestLootEnabled) {
