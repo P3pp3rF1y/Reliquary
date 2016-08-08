@@ -193,6 +193,7 @@ item.mob_ingredient_12.name=Squid Beak
 item.mob_ingredient_13.name=Infernal Claw
 item.mob_ingredient_14.name=Kraken Shell Fragment
 item.mob_ingredient_15.name=Crimson Cloth
+item.mob_ingredient_16.name=Guardian Spike
 
 item.mob_charm_0.name={{!colors.light_green}}Zombie Charm
 item.mob_charm_0.tooltip=Zombies can't see you with this.
@@ -877,6 +878,7 @@ jei.descriptions.mob_ingredient12=Squid Beak is one of the drops used for crafti
 jei.descriptions.mob_ingredient13=Infernal Claw is a crafting component used in further recipes.
 jei.descriptions.mob_ingredient14=Kraken Shell Fragment is a crafting component used in further recipes.
 jei.descriptions.mob_ingredient15=Crimson Cloth is a crafting component used in further recipes.
+jei.descriptions.mob_ingredient16=Guardian Spike is one of the drops used in crafting. \n\nDrop from guardians.
 jei.descriptions.mob_ingredient2=Chelicerae is one of the drops used for crafting. \n\nDrops from spiders (both regular and cave).
 jei.descriptions.mob_ingredient3=Catalyzin Gland is one of the drops used for crafting. \n\nDrops from creepers and ghasts.
 jei.descriptions.mob_ingredient4=Slime Pearl is one of the drops used for crafting. \n\nDrops from slimes and magma cubes.
