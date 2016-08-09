@@ -448,6 +448,7 @@ public class XRRecipes {
 		addRecipe(true, false, new ItemStack(Items.MAGMA_CREAM, 3), MOLTEN_CORE);
 		addRecipe(true, false, new ItemStack(Items.GUNPOWDER, 10), STORM_EYE);
 		addRecipe(true, false, new ItemStack(Items.SNOWBALL, 5), FROZEN_CORE);
+		addRecipe(true, false, new ItemStack(Items.PRISMARINE_SHARD, 5), GUARDIAN_SPIKE);
 	}
 
 	public static final ItemStack EMPTY_VOID_TEAR = new ItemStack(ModItems.emptyVoidTear, 1, 0);
