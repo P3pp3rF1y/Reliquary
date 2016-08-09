@@ -3,6 +3,7 @@ package xreliquary.handler;
 import baubles.api.BaublesApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -10,11 +11,13 @@ import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketPlayerAbilities;
 import net.minecraft.potion.PotionEffect;
@@ -73,12 +76,16 @@ public class CommonEventHandler {
 
 
 	@SubscribeEvent
-	public void preventMending(AnvilUpdateEvent event) {
+	public void preventMendingAndUnbreaking(AnvilUpdateEvent event) {
 		if (event.getLeft() == null || event.getRight() == null)
 			return;
 
-		if (event.getLeft().getItem() == ModItems.mobCharm || event.getLeft().getItem() == ModItems.alkahestryTome)
-			event.setCanceled(true);
+		if (event.getLeft().getItem() == ModItems.mobCharm || event.getLeft().getItem() == ModItems.alkahestryTome) {
+			ItemStack mendingBook = Items.ENCHANTED_BOOK.getEnchantedItemStack(new EnchantmentData(Enchantments.MENDING, Enchantments.MENDING.getMaxLevel()));
+			if (ItemStack.areItemStacksEqual(event.getRight(), mendingBook)) {
+				event.setCanceled(true);
+			}
+		}
 	}
 
 	@SubscribeEvent
@@ -133,7 +140,7 @@ public class CommonEventHandler {
 					player.inventory.mainInventory[slot] = null;
 					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, ModItems.mobCharm.getMaxDamage() + 1, slot), (EntityPlayerMP) player);
 				} else {
-					playersMobCharm.damageItem(Settings.MobCharm.damagePerKill, player);
+					playersMobCharm.setItemDamage(playersMobCharm.getItemDamage() + Settings.MobCharm.damagePerKill);
 					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, playersMobCharm.getItemDamage(), slot), (EntityPlayerMP) player);
 				}
 				return;
