@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -14,6 +15,7 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatList;
@@ -26,8 +28,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.util.LanguageHelper;
 
 import java.util.Iterator;
 import java.util.List;
@@ -36,9 +42,9 @@ import java.util.Random;
 /**
  * Created by Xeno on 10/11/2014.
  */
-public class ItemShearsOfWinter extends ItemBase {
+public class ItemShearsOfWinter extends ItemShears {
 	public ItemShearsOfWinter() {
-		super(Names.shears_of_winter);
+		this.setUnlocalizedName(Names.shears_of_winter);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -62,63 +68,6 @@ public class ItemShearsOfWinter extends ItemBase {
 	@Override
 	public float getStrVsBlock(ItemStack stack, IBlockState blockState) {
 		return blockState.getBlock() != Blocks.WEB && blockState.getMaterial() != Material.LEAVES ? (blockState.getBlock() == Blocks.WOOL ? 5.0F : super.getStrVsBlock(stack, blockState)) : 15.0F;
-	}
-
-	/**
-	 * Returns true if the item can be used on the given entity, e.g. shears on sheep.
-	 */
-	@Override
-	public boolean itemInteractionForEntity(ItemStack itemstack, EntityPlayer player, EntityLivingBase entity, EnumHand hand) {
-		if(entity.worldObj.isRemote) {
-			return false;
-		}
-		if(entity instanceof IShearable) {
-			IShearable target = (IShearable) entity;
-			BlockPos pos = new BlockPos(entity.posX, entity.posY, entity.posZ);
-			if(target.isShearable(itemstack, entity.worldObj, pos)) {
-				List<ItemStack> drops = target.onSheared(itemstack, entity.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, itemstack));
-
-				Random rand = new Random();
-				for(ItemStack stack : drops) {
-					EntityItem ent = entity.entityDropItem(stack, 1.0F);
-					ent.motionY += rand.nextFloat() * 0.05F;
-					ent.motionX += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
-					ent.motionZ += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
-				}
-				itemstack.damageItem(1, entity);
-			}
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
-		if(player.worldObj.isRemote) {
-			return false;
-		}
-		Block block = player.worldObj.getBlockState(pos).getBlock();
-		if(block instanceof IShearable) {
-			IShearable target = (IShearable) block;
-			if(target.isShearable(itemstack, player.worldObj, pos)) {
-				List<ItemStack> drops = target.onSheared(itemstack, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, itemstack));
-				Random rand = new Random();
-
-				for(ItemStack stack : drops) {
-					float f = 0.7F;
-					double d = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-					double d1 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-					double d2 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-					EntityItem entityitem = new EntityItem(player.worldObj, (double) pos.getX() + d, (double) pos.getY() + d1, (double) pos.getZ() + d2, stack);
-					entityitem.setPickupDelay(10);
-					player.worldObj.spawnEntityInWorld(entityitem);
-				}
-
-				itemstack.damageItem(1, player);
-				player.addStat(StatList.getBlockStats(block));
-			}
-		}
-		return false;
 	}
 
 	@Override
@@ -160,6 +109,24 @@ public class ItemShearsOfWinter extends ItemBase {
 		else
 			doNegativeXCheck(ist, player, lookVector);
 
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatDoesThisEvenDo) {
+		this.formatTooltip(null, stack, list);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void formatTooltip(ImmutableMap<String, String> toFormat, ItemStack stack, List list) {
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", toFormat, stack, list);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public String getItemStackDisplayName(ItemStack stack) {
+		return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
 	}
 
 	public void doPositiveXCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
