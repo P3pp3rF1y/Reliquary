@@ -131,7 +131,6 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		cow.processInteract(fakePlayer, EnumHand.MAIN_HAND, bucketStack);
 
-		//TODO: verify that milk bucket still works
 		if(fakePlayer.getHeldItem(EnumHand.MAIN_HAND).getItem() == Items.MILK_BUCKET) {
 			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.milk, Fluid.BUCKET_VOLUME));
 			if(fluidAdded == 0) {
