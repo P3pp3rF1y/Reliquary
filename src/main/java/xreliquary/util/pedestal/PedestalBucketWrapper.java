@@ -82,8 +82,10 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		unsuccessfulTries++;
 
-		if (unsuccessfulTries >= UNSUCCESSFUL_TRIES_TO_CLEAN_QUEUE)
+		if (unsuccessfulTries >= UNSUCCESSFUL_TRIES_TO_CLEAN_QUEUE) {
 			queueToDrain.clear();
+			unsuccessfulTries = 0;
+		}
 
 		return false;
 	}
