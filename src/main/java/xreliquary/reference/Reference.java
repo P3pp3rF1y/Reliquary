@@ -163,7 +163,6 @@ public class Reference {
 
 	public static final String JEI_CATEGORY_ALKAHESTRY_CRAFTING = DOMAIN + "alkahestryCrafting";
 	public static final String JEI_CATEGORY_ALKAHESTRY_CHARGING = DOMAIN + "alkahestryCharging";
-	public static final String JEI_CATEGORY_MORTAR = "mortar";
-	public static final String JEI_CATEGORY_CAULDRON = "cauldron";
-	public static final String JEI_CATEGORY_CAULDRON_SPLASH = "cauldronSplash";
+	public static final String JEI_CATEGORY_MORTAR = DOMAIN + "mortar";
+	public static final String JEI_CATEGORY_CAULDRON = DOMAIN + "cauldron";
 }
