@@ -103,6 +103,9 @@ public class ModItemColors {
 						case Reference.MOB_CHARM.BLAZE_META:
 							entityName = "Blaze";
 							break;
+						case Reference.MOB_CHARM.GUARDIAN_META:
+							entityName = "Guardian";
+							break;
 					}
 
 					EntityList.EntityEggInfo eggInfo = EntityList.ENTITY_EGGS.get(entityName);
@@ -163,6 +166,9 @@ public class ModItemColors {
 							break;
 						case Reference.MOB_CHARM.BLAZE_META:
 							entityName = "Blaze";
+							break;
+						case Reference.MOB_CHARM.GUARDIAN_META:
+							entityName = "Guardian";
 							break;
 					}
 

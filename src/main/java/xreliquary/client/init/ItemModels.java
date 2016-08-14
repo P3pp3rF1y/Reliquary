@@ -59,7 +59,7 @@ public class ItemModels {
 
 		ModelBakery.registerItemVariants(ModItems.rodOfLyssa, ItemModelLocations.getInstance().getModel(ItemModelLocations.ROD_OF_LYSSA_CAST));
 
-		for(int i = 0; i < 16; i++) {
+		for(int i = 0; i < 17; i++) {
 			registerItemModel(ModItems.mobIngredient, Names.mob_ingredient, i, true);
 		}
 

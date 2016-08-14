@@ -21,12 +21,15 @@ import xreliquary.init.ModFluids;
 import xreliquary.reference.Settings;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
+	private static final int UNSUCCESSFUL_TRIES_TO_CLEAN_QUEUE = 5;
+
 	private List<BlockPos> queueToDrain = new ArrayList<>();
-	private Fluid currentFluid;
+	private int unsuccessfulTries = 0;
 
 	@Override
 	public void update(ItemStack stack, IPedestal pedestal) {
@@ -52,23 +55,43 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		if(queueToDrain.isEmpty())
 			return false;
 
-		BlockPos blockToDrain = queueToDrain.get(0);
-		IBlockState blockState = world.getBlockState(blockToDrain);
-		Fluid fluid = FluidRegistry.lookupFluidForBlock(blockState.getBlock());
-		if(fluid != null) {
-			FluidStack fluidStack = drainBlock(world, blockToDrain, blockState.getBlock(), blockState, fluid, false);
-			if(fluidStack != null) {
-				if((pedestal.fillConnectedTank(fluidStack, false) != fluidStack.amount))
-					return false;
+		Iterator<BlockPos> iterator = queueToDrain.iterator();
 
-				drainBlock(world, blockToDrain, blockState.getBlock(), blockState, fluid, true);
-				pedestal.fillConnectedTank(fluidStack);
+		//iterate through all the fluid blocks in queue - needed in case there are multiple fluids and next fluid in queue can't go in any tank
+		while (iterator.hasNext()) {
+			BlockPos blockToDrain = iterator.next();
+			IBlockState blockState = world.getBlockState(blockToDrain);
+			Fluid fluid = FluidRegistry.lookupFluidForBlock(blockState.getBlock());
+
+			//make sure that the block is still fluid as we're working with cached queue
+			if(fluid != null) {
+				FluidStack fluidStack = drainBlock(world, blockToDrain, blockState.getBlock(), blockState, fluid, false);
+				if(fluidStack != null) {
+
+					//check if we were able to fill the fluid in some tank, otherwise try the next fluid block in queue
+					if((pedestal.fillConnectedTank(fluidStack, false) != fluidStack.amount))
+						continue;
+
+					drainBlock(world, blockToDrain, blockState.getBlock(), blockState, fluid, true);
+					pedestal.fillConnectedTank(fluidStack);
+					iterator.remove();
+					return true;
+				} else {
+					iterator.remove();
+				}
+			} else {
+				iterator.remove();
 			}
 		}
 
-		queueToDrain.remove(0);
+		unsuccessfulTries++;
 
-		return true;
+		if (unsuccessfulTries >= UNSUCCESSFUL_TRIES_TO_CLEAN_QUEUE) {
+			queueToDrain.clear();
+			unsuccessfulTries = 0;
+		}
+
+		return false;
 	}
 
 	private void updateQueueToDrain(World world, BlockPos pos, int bucketRange) {
@@ -79,10 +102,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 					IBlockState blockState = world.getBlockState(currentBlockPos);
 					Fluid fluid = FluidRegistry.lookupFluidForBlock(blockState.getBlock());
 
-					if(fluid != null && canDrainBlock(world, currentBlockPos, blockState.getBlock(), blockState, fluid) && (fluid == currentFluid || queueToDrain.isEmpty())) {
-						if(queueToDrain.isEmpty())
-							currentFluid = fluid;
-
+					if(fluid != null && canDrainBlock(world, currentBlockPos, blockState.getBlock(), blockState, fluid)) {
 						queueToDrain.add(currentBlockPos);
 					}
 				}
@@ -116,6 +136,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private boolean milkCows(IPedestal pedestal, BlockPos pos, int bucketRange) {
+		//find all cow entities in range
 		World world = pedestal.getTheWorld();
 		List<EntityCow> entities = world.getEntitiesWithinAABB(EntityCow.class, new AxisAlignedBB(pos.getX() - bucketRange, pos.getY() - bucketRange, pos.getZ() - bucketRange, pos.getX() + bucketRange, pos.getY() + bucketRange, pos.getZ() + bucketRange));
 
@@ -125,15 +146,18 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		EntityCow cow = entities.get(world.rand.nextInt(entities.size()));
 
+		//init fake player
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
 		ItemStack bucketStack = new ItemStack(Items.BUCKET);
 		fakePlayer.setHeldItem(EnumHand.MAIN_HAND, bucketStack);
 
+		//right click cow with bucket
 		cow.processInteract(fakePlayer, EnumHand.MAIN_HAND, bucketStack);
 
-		//TODO: verify that milk bucket still works
+		//put milk in the adjacent tanks
 		if(fakePlayer.getHeldItem(EnumHand.MAIN_HAND).getItem() == Items.MILK_BUCKET) {
 			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.milk, Fluid.BUCKET_VOLUME));
+			//replace bucket in the pedestal with milk one if the tanks can't hold it
 			if(fluidAdded == 0) {
 				pedestal.replaceCurrentItem(new ItemStack(Items.MILK_BUCKET));
 				return true;

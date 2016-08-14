@@ -37,7 +37,6 @@ public class ItemAlkahestryTome extends ItemToggleable {
 		this.setMaxStackSize(1);
 		this.setMaxDamage(getChargeLimit() + 1); //to always display damage bar
 		this.canRepair = false;
-		this.setContainerItem(this);
 	}
 
 	@Override
@@ -98,14 +97,6 @@ public class ItemAlkahestryTome extends ItemToggleable {
 		ItemStack stack = new ItemStack(ModItems.alkahestryTome);
 		stack.setItemDamage(ModItems.alkahestryTome.getMaxDamage());
 		subItems.add(stack);
-	}
-
-	@Override
-	public ItemStack getContainerItem(ItemStack stack) {
-		ItemStack copy = stack.copy();
-
-		copy.stackSize = 1;
-		return copy;
 	}
 
 	private static int getChargeLimit() {

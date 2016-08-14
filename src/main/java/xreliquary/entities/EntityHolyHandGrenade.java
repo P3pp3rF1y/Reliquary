@@ -39,7 +39,7 @@ public class EntityHolyHandGrenade extends EntityThrowable {
 	 */
 	@Override
 	protected float getGravityVelocity() {
-		return 0.04F;
+		return 0.03F;
 	}
 
 	@Override

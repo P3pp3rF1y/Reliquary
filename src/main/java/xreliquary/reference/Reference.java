@@ -10,7 +10,7 @@ public class Reference {
 	public static final String DOMAIN = MOD_ID.toLowerCase() + ":";
 	public static final String MOD_NAME = "Reliquary";
 	public static final String GUI_FACTORY_CLASS = "xreliquary.client.gui.GuiFactory";
-	public static final String DEPENDENCIES = "after:" + Compatibility.MOD_ID.JER + "@[0.3.4,)";
+	public static final String DEPENDENCIES = "after:\" + Compatibility.MOD_ID.JER + \"@[0.4.6,)";
 
 	public static final String CLIENT_PROXY = "xreliquary.client.ClientProxy";
 	public static final String COMMON_PROXY = "xreliquary.common.CommonProxy";
@@ -43,7 +43,8 @@ public class Reference {
 		public static final byte SLIME_META = 10;
 		public static final byte MAGMA_CUBE_META = 11;
 		public static final byte BLAZE_META = 12;
-		public static final byte COUNT_TYPES = 13;
+		public static final byte GUARDIAN_META = 13;
+		public static final byte COUNT_TYPES = 14;
 	}
 
 	public static final int SKELETON_INGREDIENT_META = 0;
@@ -62,6 +63,7 @@ public class Reference {
 	public static final int CLAW_INGREDIENT_META = 13;
 	public static final int SHELL_INGREDIENT_META = 14;
 	public static final int CLOTH_INGREDIENT_META = 15;
+	public static final int GUARDIAN_INGREDIENT_META = 16;
 
 	public static final int APHRODITE_META = 0;
 	public static final int FERTILIZER_META = 1;
@@ -161,7 +163,6 @@ public class Reference {
 
 	public static final String JEI_CATEGORY_ALKAHESTRY_CRAFTING = DOMAIN + "alkahestryCrafting";
 	public static final String JEI_CATEGORY_ALKAHESTRY_CHARGING = DOMAIN + "alkahestryCharging";
-	public static final String JEI_CATEGORY_MORTAR = "mortar";
-	public static final String JEI_CATEGORY_CAULDRON = "cauldron";
-	public static final String JEI_CATEGORY_CAULDRON_SPLASH = "cauldronSplash";
+	public static final String JEI_CATEGORY_MORTAR = DOMAIN + "mortar";
+	public static final String JEI_CATEGORY_CAULDRON = DOMAIN + "cauldron";
 }

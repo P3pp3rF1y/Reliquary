@@ -90,6 +90,8 @@ public class ItemMobCharm extends ItemBase {
 			return Reference.MOB_CHARM.ENDERMAN_META;
 		} else if(entity instanceof EntityBlaze) {
 			return Reference.MOB_CHARM.BLAZE_META;
+		} else if(entity instanceof EntityGuardian && !((EntityGuardian) entity).isElder()) {
+			return Reference.MOB_CHARM.GUARDIAN_META;
 		}
 
 		return -1;

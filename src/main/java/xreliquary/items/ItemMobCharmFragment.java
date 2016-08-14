@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class ItemMobCharmFragment extends ItemBase {
 
 	@Override
 	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-		for(int i = 0; i < 13; i++)
+		for(int i = 0; i < Reference.MOB_CHARM.COUNT_TYPES; i++)
 			par3List.add(new ItemStack(par1, 1, i));
 	}
 }

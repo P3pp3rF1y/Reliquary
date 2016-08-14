@@ -336,6 +336,7 @@ public class XRRecipes {
 		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.GHAST_META), "ppp", "sts", "ppp", 'p', Items.GHAST_TEAR, 's', Items.GUNPOWDER, 't', CREEPER_GLAND);
 		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.MAGMA_CUBE_META), "ppp", "sss", "ppp", 'p', MOLTEN_CORE, 's', Items.MAGMA_CREAM);
 		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.SLIME_META), "ppp", "sss", "ppp", 'p', SLIME_PEARL, 's', Items.SLIME_BALL);
+		addRecipe(false, false, charmFragment(Reference.MOB_CHARM.GUARDIAN_META), "ppp", "sts", "ppp", 'p', GUARDIAN_SPIKE, 's', Items.PRISMARINE_SHARD, 't', Items.FISH);
 
 		// mob charm actual items
 		addMobCharmRecipe(Reference.MOB_CHARM.ZOMBIE_META);
@@ -351,6 +352,7 @@ public class XRRecipes {
 		addMobCharmRecipe(Reference.MOB_CHARM.GHAST_META);
 		addMobCharmRecipe(Reference.MOB_CHARM.MAGMA_CUBE_META);
 		addMobCharmRecipe(Reference.MOB_CHARM.SLIME_META);
+		addMobCharmRecipe(Reference.MOB_CHARM.GUARDIAN_META);
 
 		// mob charm belt
 		addRecipe(false, false, new ItemStack(ModItems.mobCharmBelt), "lll", "f f", "fff", 'l', Items.LEATHER, 'f', new ItemStack(ModItems.mobCharmFragment, 1, OreDictionary.WILDCARD_VALUE));
@@ -430,6 +432,7 @@ public class XRRecipes {
 		addRecipe(false, false, FROZEN_CORE, "gpg", "gsg", "gsg", 'p', Blocks.PUMPKIN, 's', Blocks.SNOW, 'g', Items.GOLD_INGOT);
 		addRecipe(false, false, NEBULOUS_HEART, "ggg", "geg", "ggg", 'e', Items.ENDER_PEARL, 'g', Items.GOLD_INGOT);
 		addRecipe(false, false, SQUID_BEAK, "ggg", "gig", "ggg", 'i', Items.DYE, 'g', Items.GOLD_INGOT);
+		addRecipe(false, false, GUARDIAN_SPIKE, "ggg", "gpg", "ggg", 'p', Items.PRISMARINE_SHARD, 'g', Items.GOLD_INGOT);
 	}
 
 	private static void addMobDropUncraftingRecipes() {
@@ -445,6 +448,7 @@ public class XRRecipes {
 		addRecipe(true, false, new ItemStack(Items.MAGMA_CREAM, 3), MOLTEN_CORE);
 		addRecipe(true, false, new ItemStack(Items.GUNPOWDER, 10), STORM_EYE);
 		addRecipe(true, false, new ItemStack(Items.SNOWBALL, 5), FROZEN_CORE);
+		addRecipe(true, false, new ItemStack(Items.PRISMARINE_SHARD, 5), GUARDIAN_SPIKE);
 	}
 
 	public static final ItemStack EMPTY_VOID_TEAR = new ItemStack(ModItems.emptyVoidTear, 1, 0);
@@ -484,6 +488,7 @@ public class XRRecipes {
 	public static final ItemStack SHELL_FRAGMENT = ingredient(1, Reference.SHELL_INGREDIENT_META);
 	public static final ItemStack SQUID_BEAK = ingredient(1, Reference.SQUID_INGREDIENT_META);
 	public static final ItemStack CHELICERAE = ingredient(1, Reference.SPIDER_INGREDIENT_META);
+	public static final ItemStack GUARDIAN_SPIKE = ingredient(1, Reference.GUARDIAN_INGREDIENT_META);
 
 	public static ItemStack charmFragment(int meta) {
 		return new ItemStack(ModItems.mobCharmFragment, 1, meta);
