@@ -76,7 +76,11 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 					pedestal.fillConnectedTank(fluidStack);
 					iterator.remove();
 					return true;
+				} else {
+					iterator.remove();
 				}
+			} else {
+				iterator.remove();
 			}
 		}
 
