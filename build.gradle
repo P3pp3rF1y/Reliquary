@@ -40,7 +40,7 @@ version = "1.2"
 archivesBaseName = 'Reliquary'
 
 minecraft {
-	version = "1.7.10-10.13.0.1180"
+	version = "1.7.10-10.13.4.1614"
 }
 
 jar {
