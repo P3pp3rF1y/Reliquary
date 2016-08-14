@@ -21,8 +21,6 @@ import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.modstats.ModstatInfo;
-import org.modstats.Modstats;
 import xreliquary.common.CommonProxy;
 import xreliquary.integration.NEIModIntegration;
 import xreliquary.lib.Reference;
@@ -34,7 +32,6 @@ import xreliquary.util.potions.PotionMap;
 
 import java.io.File;
 
-@ModstatInfo(prefix = "reliquary")
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:libsandstone", guiFactory = "xreliquary.client.gui.XRGuiFactory")
 @SandstoneMod(basePackage = "xreliquary")
 public class Reliquary {
@@ -72,7 +69,6 @@ public class Reliquary {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        Modstats.instance().getReporter().registerMod(this);
         Sandstone.addModIntegration(new NEIModIntegration());
 
         PROXY.init();
