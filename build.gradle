@@ -11,17 +11,15 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1+"
+        classpath 'org.codehaus.groovy:groovy-backports-compat23:2.3.5'
     }
 }
 
-plugins {
-    id "com.jfrog.bintray" version "1.5"
-}
-
 // We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'forge'
+apply plugin: 'com.jfrog.bintray'
 
 group = 'xreliquary' // Your main package.
 version = "1.7.10-1.2.1.${getBuildNumber()}"
