@@ -13,7 +13,7 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
         classpath 'org.codehaus.groovy:groovy-backports-compat23:2.3.5'
     }
 }
@@ -21,6 +21,7 @@ buildscript {
 // We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
 apply plugin: 'forge'
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'java'
 
 group = 'xreliquary' // Your main package.
 version = "1.7.10-1.2.1.${getBuildNumber()}"
@@ -69,11 +70,14 @@ bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
     publish = true
+    configurations = ['archives']
+/*
     filesSpec {
         from 'build/libs'
         into '.'
         exclude '*sources.jar'
     }
+*/
     pkg {
         version {
             name="{$project.version}"
