@@ -13,7 +13,7 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1+"
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7"
         classpath 'org.codehaus.groovy:groovy-backports-compat23:2.3.5'
     }
 }
