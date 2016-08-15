@@ -1,20 +1,6 @@
-/*
-
-ForgeGradle building for Reliquary! This script is meant to be a easy way to build the mod, as well as example for implementing ForgeGradle in your own mods.
-
-How to use:
-
-(from a Terminal or Command Prompt)
-1. './gradlew setupCIWorkspace'
-2. './gradlew build'
-3. Enjoy!
-
-*/
-
-// This simple grabs the latest 'forge' plugin, or ForgeGradle, from Forge's servers.
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
@@ -25,22 +11,28 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1+"
     }
 }
 
-sourceCompatiblity = 1.6
-targetCompatiblity = 1.7
+plugins {
+    id "com.jfrog.bintray" version "1.5"
+}
 
 // We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
-apply plugin: 'forge'
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 group = 'xreliquary' // Your main package.
 version = "1.7.10-1.2.1.${getBuildNumber()}"
 archivesBaseName = 'Reliquary'
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 minecraft {
 	version = "1.7.10-10.13.4.1614-1.7.10"
+    mappings = "stable_12"
 }
 
 jar {
