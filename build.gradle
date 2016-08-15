@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
@@ -25,12 +26,12 @@ group = 'xreliquary' // Your main package.
 version = "1.7.10-1.2.1.${getBuildNumber()}"
 archivesBaseName = 'Reliquary'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatiblity = 1.6
+targetCompatiblity = 1.7
 
 minecraft {
 	version = "1.7.10-10.13.4.1614-1.7.10"
-    mappings = "stable_12"
+    //mappings = "stable_12"
 }
 
 jar {
