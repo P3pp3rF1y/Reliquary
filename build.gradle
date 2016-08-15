@@ -80,7 +80,7 @@ bintray {
 */
     pkg {
         version {
-            name="{$project.version}"
+            name="1.2.1"
             released = new Date()
         }
         repo = 'maven'
