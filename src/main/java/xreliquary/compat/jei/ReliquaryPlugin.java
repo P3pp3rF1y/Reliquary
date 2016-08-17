@@ -1,6 +1,7 @@
 package xreliquary.compat.jei;
 
 import mezz.jei.api.*;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import xreliquary.compat.jei.alkahestry.*;
@@ -12,7 +13,9 @@ import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
 import xreliquary.compat.jei.mortar.MortarRecipeCategory;
 import xreliquary.compat.jei.mortar.MortarRecipeHandler;
 import xreliquary.compat.jei.mortar.MortarRecipeMaker;
+import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
+import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
 import javax.annotation.Nonnull;
@@ -43,6 +46,11 @@ public class ReliquaryPlugin implements IModPlugin {
 
 		registry.addRecipeHandlers(new MortarRecipeHandler());
 		registry.addRecipeHandlers(new CauldronRecipeHandler());
+
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Blocks.CRAFTING_TABLE), Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING);
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Blocks.CRAFTING_TABLE), Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING);
+		registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.apothecaryMortar), Reference.JEI_CATEGORY_MORTAR);
+		registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.apothecaryCauldron), Reference.JEI_CATEGORY_CAULDRON);
 
 		registry.addRecipes(MortarRecipeMaker.getRecipes());
 		registry.addRecipes(CauldronRecipeMaker.getRecipes());

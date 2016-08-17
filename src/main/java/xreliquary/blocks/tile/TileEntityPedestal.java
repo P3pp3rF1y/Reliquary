@@ -212,9 +212,9 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	}
 
 	public void updateRedstone() {
-		for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
-			if(redstoneItems.containsKey(currentItemIndex)) {
-				redstoneItems.get(currentItemIndex).updateRedstone(inventory[currentItemIndex], this);
+		for(int i = 0; i < inventory.length; i++) {
+			if(redstoneItems.containsKey(i)) {
+				redstoneItems.get(i).updateRedstone(inventory[i], this);
 			}
 		}
 	}

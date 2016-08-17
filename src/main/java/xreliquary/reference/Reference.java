@@ -10,7 +10,7 @@ public class Reference {
 	public static final String DOMAIN = MOD_ID.toLowerCase() + ":";
 	public static final String MOD_NAME = "Reliquary";
 	public static final String GUI_FACTORY_CLASS = "xreliquary.client.gui.GuiFactory";
-	public static final String DEPENDENCIES = "";
+	public static final String DEPENDENCIES = "after:\" + Compatibility.MOD_ID.JER + \"@[0.4.6,)";
 
 	public static final String CLIENT_PROXY = "xreliquary.client.ClientProxy";
 	public static final String COMMON_PROXY = "xreliquary.common.CommonProxy";
@@ -163,7 +163,6 @@ public class Reference {
 
 	public static final String JEI_CATEGORY_ALKAHESTRY_CRAFTING = DOMAIN + "alkahestryCrafting";
 	public static final String JEI_CATEGORY_ALKAHESTRY_CHARGING = DOMAIN + "alkahestryCharging";
-	public static final String JEI_CATEGORY_MORTAR = "mortar";
-	public static final String JEI_CATEGORY_CAULDRON = "cauldron";
-	public static final String JEI_CATEGORY_CAULDRON_SPLASH = "cauldronSplash";
+	public static final String JEI_CATEGORY_MORTAR = DOMAIN + "mortar";
+	public static final String JEI_CATEGORY_CAULDRON = DOMAIN + "cauldron";
 }
