@@ -3,8 +3,6 @@ package xreliquary.util;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class RegistryHelper {
 	public static Item getItemFromName(String registryName) {
@@ -14,7 +12,7 @@ public class RegistryHelper {
 	public static String getItemRegistryName(Item item) {
 		ResourceLocation rl = item.getRegistryName();
 		//null check because some mods don't properly register items they use in recipes
-		if (rl != null)
+		if(rl != null)
 			return rl.toString();
 
 		return "";
@@ -25,7 +23,11 @@ public class RegistryHelper {
 	}
 
 	public static String getBlockRegistryName(Block block) {
-		return block.getRegistryName().toString();
+		if(block.getRegistryName() == null) {
+			LogHelper.warn("Block " + block.toString() + " isn't registered properly");
+		} else {
+			return block.getRegistryName().toString();
+		} return null;
 	}
 
 	public static boolean blocksEqual(Block block1, Block block2) {
