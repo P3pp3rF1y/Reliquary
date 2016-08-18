@@ -45,6 +45,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	private boolean enabledInitialized = false;
 	private boolean powered = false;
 	private PedestalFluidHandler pedestalFluidHandler = null;
+	private List<Object> itemData = new ArrayList<>();
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
@@ -324,6 +325,30 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		}
 		IBlockState blockState = worldObj.getBlockState(pos);
 		worldObj.notifyBlockUpdate(pos, blockState, blockState, 3);
+	}
+
+	@Override
+	public int getCurrentItemIndex() {
+		return currentItemIndex;
+	}
+
+	@Override
+	public Object getItemData(int index) {
+		if (itemData.size() <= index)
+			return null;
+
+		return itemData.get(index);
+	}
+
+	@Override
+	public void setItemData(int index, Object data) {
+		while(itemData.size() < index)
+			itemData.add(null);
+
+		if (itemData.size() == index)
+			itemData.add(data);
+		else
+			itemData.set(index, data);
 	}
 
 	private void setEnabled(boolean switchedOn) {

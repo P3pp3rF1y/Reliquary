@@ -9,14 +9,19 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
 import xreliquary.entities.EntityXRFakePlayer;
+import xreliquary.network.PacketHandler;
+import xreliquary.network.PacketPedestalFishHook;
 
 import java.util.Random;
 
 public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
+	private static final int PACKET_RANGE = 50;
+
 	private EntityXRFakePlayer fakePlayer;
 	private static Random rand = new Random();
 
@@ -25,6 +30,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		setupFakePlayer(pedestal.getTheWorld(), pedestal.getBlockPos(), stack);
 
 		if (fakePlayer.fishEntity != null) {
+			syncHookData(pedestal);
 			if (getTicksCatchable(fakePlayer.fishEntity) > 0) {
 				int i = fakePlayer.fishEntity.handleHookRetraction();
 				stack.damageItem(i, fakePlayer);
@@ -35,7 +41,14 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 
 			world.spawnEntityInWorld(new EntityFishHook(world, fakePlayer));
 		}
+	}
 
+	private void syncHookData(IPedestal pedestal) {
+		EntityFishHook hook = fakePlayer.fishEntity;
+		BlockPos pedestalPos = pedestal.getBlockPos();
+
+		PacketHandler.networkWrapper.sendToAllAround(new PacketPedestalFishHook(pedestal.getBlockPos(), pedestal.getCurrentItemIndex(), hook.posX, hook.posY, hook.posZ),
+				new NetworkRegistry.TargetPoint(pedestal.getTheWorld().provider.getDimension(), pedestalPos.getX(), pedestalPos.getY(), pedestalPos.getZ(), PACKET_RANGE));
 	}
 
 	@Override
@@ -50,7 +63,9 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			fakePlayer = new EntityXRFakePlayer((WorldServer) world);
 			fakePlayer.setPosition(pos.getX(), pos.getY() + 1, pos.getZ());
 		}
-		fakePlayer.setHeldItem(EnumHand.MAIN_HAND, fishingRod);
+		if (fakePlayer.getHeldItemMainhand() == null)
+			fakePlayer.setHeldItem(EnumHand.MAIN_HAND, fishingRod);
+
 	}
 
 	private int getTicksCatchable(EntityFishHook hook) {
