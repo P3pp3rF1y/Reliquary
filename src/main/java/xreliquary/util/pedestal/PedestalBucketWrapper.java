@@ -46,6 +46,11 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		pedestal.setActionCoolDown(Settings.Pedestal.bucketWrapperCooldown);
 	}
 
+	@Override
+	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+
+	}
+
 	private boolean drainLiquid(IPedestal pedestal, BlockPos pos, int bucketRange) {
 		World world = pedestal.getTheWorld();
 		if(queueToDrain.isEmpty()) {

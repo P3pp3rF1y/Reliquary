@@ -68,4 +68,9 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 		if(stack.stackSize == 0)
 			pedestal.destroyCurrentItem();
 	}
+
+	@Override
+	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+
+	}
 }

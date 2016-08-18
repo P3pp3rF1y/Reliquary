@@ -254,4 +254,9 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 			}
 		}
 	}
+
+	@Override
+	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+
+	}
 }

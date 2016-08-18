@@ -386,8 +386,16 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		return null;
 	}
 
-	public void removeRedstoneItems() {
+	public void removeItemsFromLists() {
 		for(Map.Entry<Integer, IPedestalRedstoneItem> item : redstoneItems.entrySet()) {
+			item.getValue().onRemoved(inventory[item.getKey()], this);
+		}
+
+		for(Map.Entry<Integer, IPedestalActionItem> item : actionItems.entrySet()) {
+			item.getValue().onRemoved(inventory[item.getKey()], this);
+		}
+
+		for(Map.Entry<Integer, IPedestalActionItemWrapper> item : itemWrappers.entrySet()) {
 			item.getValue().onRemoved(inventory[item.getKey()], this);
 		}
 	}
@@ -452,6 +460,10 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 				if(redstoneItems.containsKey(slot)) {
 					redstoneItems.get(slot).onRemoved(inventory[slot], this);
+				} else if (actionItems.containsKey(slot)) {
+					actionItems.get(slot).onRemoved(inventory[slot], this);
+				} else if (itemWrappers.containsKey(slot)) {
+					itemWrappers.get(slot).onRemoved(inventory[slot], this);
 				}
 
 				this.inventory[slot] = null;
@@ -485,6 +497,10 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 			if(redstoneItems.containsKey(slot)) {
 				redstoneItems.get(slot).onRemoved(inventory[slot], this);
+			} else if (actionItems.containsKey(slot)) {
+				actionItems.get(slot).onRemoved(inventory[slot], this);
+			} else if (itemWrappers.containsKey(slot)) {
+				itemWrappers.get(slot).onRemoved(inventory[slot], this);
 			}
 
 			this.inventory[slot] = null;
@@ -507,8 +523,15 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	public void setInventorySlotContents(int slot, ItemStack stack) {
 		if(slot < slots) {
 			IPedestalRedstoneItem removedRedstoneItem = null;
-			if(stack == null && redstoneItems.containsKey(slot)) {
-				removedRedstoneItem = redstoneItems.get(slot);
+			IPedestalActionItem removedActionItem = null;
+			if(stack == null) {
+				if (redstoneItems.containsKey(slot)) {
+					removedRedstoneItem = redstoneItems.get(slot);
+				} else if (actionItems.containsKey(slot)) {
+					removedActionItem = actionItems.get(slot);
+				} else if (itemWrappers.containsKey(slot)) {
+					removedActionItem = itemWrappers.get(slot);
+				}
 			}
 
 			this.inventory[slot] = stack;
@@ -520,6 +543,9 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 			if(removedRedstoneItem != null)
 				removedRedstoneItem.onRemoved(inventory[slot], this);
+
+			if(removedActionItem != null)
+				removedActionItem.onRemoved(inventory[slot], this);
 
 			return;
 		}

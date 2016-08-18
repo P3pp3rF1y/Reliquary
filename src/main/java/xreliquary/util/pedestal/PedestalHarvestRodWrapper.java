@@ -70,6 +70,11 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		pedestal.setActionCoolDown(cooldown);
 	}
 
+	@Override
+	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+
+	}
+
 	private void breakCrops(World world, BlockPos pos, ItemStack stack, int range) {
 		if(breakCoolDown > 0) {
 			breakCoolDown--;

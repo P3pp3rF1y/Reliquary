@@ -45,6 +45,11 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 			pedestal.destroyCurrentItem();
 	}
 
+	@Override
+	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+
+	}
+
 	private boolean shearBlocks(ItemStack stack, World world, IPedestal pedestal, FakePlayer fakePlayer, BlockPos pos, int shearsRange) {
 		if(!isShearingBlock) {
 			if(blockQueue.isEmpty()) {
