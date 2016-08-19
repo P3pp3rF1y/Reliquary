@@ -127,8 +127,9 @@ public class Names {
     public static final String bucket_wrapper_cooldown = "bucket_wrapper_cooldown";
     public static final String shears_wrapper_range = "shears_wrapper_range";
     public static final String shears_wrapper_cooldown = "shears_wrapper_cooldown";
-    public static final String flight_potion_id = "flight_potion_id";
     public static final String redstone_wrapper_range = "redstone_wrapper_range";
+    public static final String fishing_wrapper_success_rate = "fishing_wrapper_success_rate";
+    public static final String fishing_wrapper_retract_delay = "fishing_wrapper_retract_delay";
 
     //these are for items, like above, didn't want to magic string them. I will use them eventually.
 //    public static final String snowball_mode = "snowballs";

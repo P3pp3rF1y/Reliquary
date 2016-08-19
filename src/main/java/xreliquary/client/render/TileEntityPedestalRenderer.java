@@ -4,15 +4,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
+import xreliquary.api.client.IPedestalItemRenderer;
 import xreliquary.blocks.tile.TileEntityPedestal;
+import xreliquary.client.registry.PedestalClientRegistry;
 
 public class TileEntityPedestalRenderer extends TileEntitySpecialRenderer<TileEntityPedestal> {
 
 	@Override
 	public void renderTileEntityAt(TileEntityPedestal te, double x, double y, double z, float partialTicks, int destroyStage) {
 		if(te.getStackInSlot(0) != null) {
-			EntityItem item = new EntityItem(te.getWorld(), 0.0D, 0.0D, 0.0D, te.getStackInSlot(0));
+			ItemStack stack = te.getStackInSlot(0);
+			EntityItem item = new EntityItem(te.getWorld(), 0.0D, 0.0D, 0.0D, stack);
 			item.getEntityItem().stackSize = 1;
 			item.hoverStart = 0.0F;
 			GlStateManager.pushMatrix();
@@ -23,6 +27,15 @@ public class TileEntityPedestalRenderer extends TileEntitySpecialRenderer<TileEn
 			GlStateManager.scale(0.75d, 0.75d, 0.75d);
 			Minecraft.getMinecraft().getRenderManager().doRenderEntity(item, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, false);
 			GlStateManager.popMatrix();
+
+			IPedestalItemRenderer extraRenderer = PedestalClientRegistry.getItemRenderer(stack);
+			if (extraRenderer == null && stack.getItem() instanceof IPedestalItemRenderer) {
+				extraRenderer = (IPedestalItemRenderer) stack.getItem();
+			}
+
+			if (extraRenderer != null) {
+				extraRenderer.doRender(this, te, stack, x, y, z, partialTicks, destroyStage);
+			}
 		}
 	}
 }

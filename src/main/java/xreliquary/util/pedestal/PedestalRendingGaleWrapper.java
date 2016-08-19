@@ -63,4 +63,9 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 			}
 		}
 	}
+
+	@Override
+	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+
+	}
 }

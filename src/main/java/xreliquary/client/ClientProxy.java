@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,6 +25,7 @@ import xreliquary.client.init.ItemBlockModels;
 import xreliquary.client.init.ItemModels;
 import xreliquary.client.init.ModBlockColors;
 import xreliquary.client.init.ModItemColors;
+import xreliquary.client.registry.PedestalClientRegistry;
 import xreliquary.client.render.*;
 import xreliquary.common.CommonProxy;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
@@ -121,6 +123,12 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new ModFluids());
 
 		this.registerRenderers();
+	}
+
+	@Override
+	public void postInit() {
+		super.postInit();
+		PedestalClientRegistry.registerItemRenderer(ItemFishingRod.class, RenderPedestalFishHook.class);
 	}
 
 	private void RegisterBeltRender() {

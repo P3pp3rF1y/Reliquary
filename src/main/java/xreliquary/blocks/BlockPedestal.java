@@ -158,7 +158,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 
 		PedestalRegistry.unregisterPosition(world.provider.getDimension(), pos);
 
-		pedestal.removeRedstoneItems();
+		pedestal.removeItemsFromLists();
 
 		super.breakBlock(world, pos, state);
 	}

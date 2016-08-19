@@ -29,4 +29,7 @@ public interface IPedestal {
 	List<BlockPos> getPedestalsInRange(int range);
 	void switchOn(BlockPos switchedOnFrom);
 	void switchOff(BlockPos switchedOffFrom);
+	int getCurrentItemIndex();
+	Object getItemData(int index);
+	void setItemData(int index, Object data);
 }
