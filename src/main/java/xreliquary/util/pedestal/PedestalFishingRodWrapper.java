@@ -145,16 +145,28 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			}
 		}
 
-		BlockPos firstBlockInLargestGroup = null;
+		BlockPos closestBlockInLargestGroup = null;
+		int closestSqDistance = Integer.MAX_VALUE;
 		int mostBlocks = 0;
 		for(List<BlockPos> group : connectedGroups) {
 			if(group.size() > mostBlocks) {
 				mostBlocks = group.size();
-				firstBlockInLargestGroup = group.get(0);
+				for(BlockPos waterPos : group) {
+					int xDiff = waterPos.getX() - pedestalX;
+					int yDiff = waterPos.getY() - pedestalY;
+					int zDiff = waterPos.getZ() - pedestalZ;
+
+					int sqDistance = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff;
+
+					if (sqDistance < closestSqDistance) {
+						closestSqDistance = sqDistance;
+						closestBlockInLargestGroup = waterPos;
+					}
+				}
 			}
 		}
 
-		return firstBlockInLargestGroup;
+		return closestBlockInLargestGroup;
 	}
 
 	private void checkForAndAddWaterBlocks(IPedestal pedestal, List<BlockPos> visitedBlocks, List<List<BlockPos>> connectedGroups, double pedestalX, double pedestalY, double pedestalZ, int x, int y, int z) {
