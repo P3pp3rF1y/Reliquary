@@ -31,7 +31,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	private static final int RANGE = 4;
 	private static final int NO_WATER_COOLDOWN = 100;
 	private static final int BAD_THROW_TIMEOUT = 60;
-	private static final int ABSOLUTE_TIMEOUT = 1200;
+	private static final int ABSOLUTE_TIMEOUT = 400;
 	private static Random rand = new Random();
 
 	private EntityXRFakePlayer fakePlayer;
@@ -62,9 +62,9 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void handleHookStates(ItemStack stack, IPedestal pedestal) {
-		if (retractFail) {
+		if(retractFail) {
 			//take care of failed retract
-			if (getTicksCatchable(fakePlayer.fishEntity) == 0) {
+			if(getTicksCatchable(fakePlayer.fishEntity) == 0) {
 				retractHook(pedestal, stack);
 				retractFail = false;
 			}
@@ -75,11 +75,11 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			} else {
 				badThrowChecked = true;
 			}
-		} else if (ticksSinceLastThrow > ABSOLUTE_TIMEOUT) {
+		} else if(ticksSinceLastThrow > ABSOLUTE_TIMEOUT) {
 			//sometimes hook can get stuck in a bad state so take care of that
 			syncHookData(pedestal);
-		} else if(getTicksCatchable(fakePlayer.fishEntity) > 0) {
-			if (rand.nextInt(100) <= Settings.Pedestal.fishingWrapperSuccessRate) {
+		} else if(getTicksCatchable(fakePlayer.fishEntity) > 0 || fakePlayer.fishEntity.caughtEntity != null) {
+			if(rand.nextInt(100) <= Settings.Pedestal.fishingWrapperSuccessRate) {
 				retractHook(pedestal, stack);
 			} else {
 				retractFail = true;
