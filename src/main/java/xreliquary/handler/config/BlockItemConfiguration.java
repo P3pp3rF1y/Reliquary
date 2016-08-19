@@ -272,6 +272,8 @@ public class BlockItemConfiguration {
 		Settings.Pedestal.shearsWrapperRange = ConfigurationHandler.getInt(Names.shears_wrapper_range, Names.item_and_block_settings + "." + Names.pedestal, 4, 1, 10);
 		Settings.Pedestal.shearsWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.shears_wrapper_cooldown, Names.item_and_block_settings + "." + Names.pedestal, 10, 1, 200);
 		Settings.Pedestal.redstoneWrapperRange = ConfigurationHandler.getInt(Names.redstone_wrapper_range, Names.item_and_block_settings + "." + Names.pedestal, 10, 1, 200);
+		Settings.Pedestal.fishingWrapperSuccessRate = ConfigurationHandler.getInt(Names.fishing_wrapper_success_rate, Names.item_and_block_settings + "." + Names.pedestal, 0, 80, 100);
+		Settings.Pedestal.fishingWrapperRetractDelay = ConfigurationHandler.getInt(Names.fishing_wrapper_retract_delay, Names.item_and_block_settings + "." + Names.pedestal, 1, 2, 20);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.pedestal, true);
 
 	}

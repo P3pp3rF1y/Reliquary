@@ -62,7 +62,9 @@ public class PacketPedestalFishHook implements IMessage, IMessageHandler<PacketP
 		if(te != null && te instanceof IPedestal) {
 			IPedestal pedestal = (IPedestal) te;
 
-			RenderPedestalFishHook.HookRenderingData data = new RenderPedestalFishHook.HookRenderingData(message.hookX, message.hookY, message.hookZ);
+			RenderPedestalFishHook.HookRenderingData data = null;
+			if (message.hookY > 0)
+				data = new RenderPedestalFishHook.HookRenderingData(message.hookX, message.hookY, message.hookZ);
 
 			pedestal.setItemData(message.itemIndex, data);
 		}

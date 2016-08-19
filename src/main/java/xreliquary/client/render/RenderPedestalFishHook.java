@@ -52,16 +52,13 @@ public class RenderPedestalFishHook implements IPedestalItemRenderer {
 		GlStateManager.popMatrix();
 
 		//TODO fix/calculate yawoffset
-		float f9 = (0/*entity.angler.prevRenderYawOffset*/) * 0.017453292F;
-		double d0 = (double) MathHelper.sin(f9);
-		double d1 = (double) MathHelper.cos(f9);
 		double d4;
 		double d5;
 		double d6;
 
-		d4 = te.getPos().getX() - d0 * 0.8D;
-		d5 = te.getPos().getY() + 0.8D;
-		d6 = te.getPos().getZ() + d1 * 0.8D;
+		d4 = te.getPos().getX() + 0.5D;
+		d5 = te.getPos().getY() + 0.7D;
+		d6 = te.getPos().getZ() + 0.5D;
 
 		double d13 = data.hookX;
 		double d8 = data.hookY + 0.25D;

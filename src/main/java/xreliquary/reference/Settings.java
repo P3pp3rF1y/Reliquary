@@ -304,6 +304,8 @@ public class Settings {
 		public static int shearsWrapperRange;
 		public static byte shearsWrapperCooldown;
 		public static int redstoneWrapperRange;
+		public static int fishingWrapperSuccessRate;
+		public static int fishingWrapperRetractDelay;
 	}
 
 	public static class MobCharm {
