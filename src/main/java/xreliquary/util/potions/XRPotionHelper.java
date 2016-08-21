@@ -12,7 +12,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Settings;
-import xreliquary.util.LanguageHelper;
 
 import java.util.List;
 import java.util.Map;
@@ -74,7 +73,7 @@ public class XRPotionHelper {
 		if(essence.getEffects().size() > 0) {
 			List<Tuple<String, AttributeModifier>> list1 = Lists.<Tuple<String, AttributeModifier>>newArrayList();
 			for(PotionEffect potioneffect : essence.getEffects()) {
-				String s1 = LanguageHelper.getLocalization(potioneffect.getEffectName()).trim();
+				String s1 = I18n.translateToLocal(potioneffect.getEffectName()).trim();
 				Potion potion = potioneffect.getPotion();
 				Map<IAttribute, AttributeModifier> map = potion.getAttributeModifierMap();
 
@@ -87,7 +86,7 @@ public class XRPotionHelper {
 				}
 
 				if(potioneffect.getAmplifier() > 0) {
-					s1 = s1 + " " + LanguageHelper.getLocalization("potion.potency." + potioneffect.getAmplifier()).trim();
+					s1 = s1 + " " + I18n.translateToLocal("potion.potency." + potioneffect.getAmplifier()).trim();
 				}
 
 				if(potioneffect.getDuration() > 20) {
@@ -103,7 +102,7 @@ public class XRPotionHelper {
 
 			if(!list1.isEmpty()) {
 				list.add("");
-				list.add(TextFormatting.DARK_PURPLE + LanguageHelper.getLocalization("potion.whenDrank"));
+				list.add(TextFormatting.DARK_PURPLE + I18n.translateToLocal("potion.whenDrank"));
 
 				for(Tuple<String, AttributeModifier> tuple : list1) {
 					AttributeModifier attributemodifier2 = (AttributeModifier) tuple.getSecond();
@@ -119,12 +118,12 @@ public class XRPotionHelper {
 					if(d0 > 0.0D) {
 						list.add(TextFormatting.BLUE + I18n.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.getOperation(), new Object[] {
 								ItemStack.DECIMALFORMAT.format(d1),
-								LanguageHelper.getLocalization("attribute.name." + (String) tuple.getFirst())}));
+								I18n.translateToLocal("attribute.name." + (String) tuple.getFirst())}));
 					} else if(d0 < 0.0D) {
 						d1 = d1 * -1.0D;
 						list.add(TextFormatting.RED + I18n.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.getOperation(), new Object[] {
 								ItemStack.DECIMALFORMAT.format(d1),
-								LanguageHelper.getLocalization("attribute.name." + (String) tuple.getFirst())}));
+								I18n.translateToLocal("attribute.name." + (String) tuple.getFirst())}));
 					}
 				}
 			}
