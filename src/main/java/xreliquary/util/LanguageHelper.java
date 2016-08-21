@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xreliquary.reference.Reference;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,9 +56,9 @@ public class LanguageHelper {
 	}
 
 	private static String getLocalization(String key, boolean fallback) {
-		String localization = I18n.translateToLocal(key);
+		String localization = I18n.translateToLocal(Reference.MOD_ID + "." + key);
 		if(localization.equals(key) && fallback) {
-			localization = I18n.translateToFallback(key);
+			localization = I18n.translateToFallback(Reference.MOD_ID + "." + key);
 		}
 		return localization;
 	}
