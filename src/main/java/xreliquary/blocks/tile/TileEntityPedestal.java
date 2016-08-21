@@ -182,7 +182,8 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			neighborUpdate();
 		}
 
-		if(tickable && worldObj.getBlockState(this.pos).getValue(BlockPedestal.ENABLED)) {
+		IBlockState blockState = worldObj.getBlockState(this.pos);
+		if(tickable && blockState.getBlock() == ModBlocks.pedestal && blockState.getValue(BlockPedestal.ENABLED)) {
 			for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
 				if(actionCooldowns[currentItemIndex] > 0) {
 					actionCooldowns[currentItemIndex]--;
