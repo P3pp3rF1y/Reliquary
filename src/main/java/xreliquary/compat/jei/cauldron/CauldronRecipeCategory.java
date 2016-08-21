@@ -8,10 +8,9 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
-import xreliquary.compat.jei.ReliquaryPlugin;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Reference;
+import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -30,7 +29,7 @@ public class CauldronRecipeCategory implements IRecipeCategory {
 
 	public CauldronRecipeCategory(IGuiHelper guiHelper) {
 		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/cauldron.png"), 0, 0, 107, 51);
-		localizedName = I18n.translateToLocal("jei.recipe.cauldron");
+		localizedName = LanguageHelper.getLocalization("jei.recipe.cauldron");
 	}
 
 	@Nonnull

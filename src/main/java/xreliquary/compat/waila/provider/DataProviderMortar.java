@@ -8,10 +8,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import xreliquary.blocks.BlockApothecaryMortar;
 import xreliquary.blocks.tile.TileEntityMortar;
+import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
 import xreliquary.util.potions.XRPotionHelper;
@@ -65,7 +65,7 @@ public class DataProviderMortar extends CachedBodyDataProvider {
 
 		PotionEssence essence = new PotionEssence(potionIngredients.toArray(new PotionIngredient[potionIngredients.size()]));
 		if(essence.effects.size() > 0) {
-			currenttip.add(ChatFormatting.WHITE + I18n.translateToLocal("waila.xreliquary.mortar.result") + ChatFormatting.RESET);
+			currenttip.add(ChatFormatting.WHITE + LanguageHelper.getLocalization("waila.xreliquary.mortar.result") + ChatFormatting.RESET);
 
 			List<String> effectLines = new ArrayList<>();
 

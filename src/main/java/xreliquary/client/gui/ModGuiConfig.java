@@ -1,20 +1,20 @@
 package xreliquary.client.gui;
 
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.util.LanguageHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModGuiConfig extends GuiConfig {
 	public ModGuiConfig(GuiScreen guiScreen) {
-		super(guiScreen, getConfigElements(), Reference.MOD_ID, false, false, I18n.translateToLocal("config.title1"));
+		super(guiScreen, getConfigElements(), Reference.MOD_ID, false, false, LanguageHelper.getLocalization("config.title1"));
 	}
 
 	private static List<IConfigElement> getConfigElements() {

@@ -6,8 +6,8 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import xreliquary.reference.Settings;
+import xreliquary.util.LanguageHelper;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public abstract class CachedBodyDataProvider implements IWailaDataProvider {
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		if(Settings.wailaShiftForInfo && !accessor.getPlayer().isSneaking()) {
-			currenttip.add(ChatFormatting.ITALIC + I18n.translateToLocal("waila.xreliquary.shift_for_more") + ChatFormatting.RESET);
+			currenttip.add(ChatFormatting.ITALIC + LanguageHelper.getLocalization("waila.xreliquary.shift_for_more") + ChatFormatting.RESET);
 			return currenttip;
 		}
 
