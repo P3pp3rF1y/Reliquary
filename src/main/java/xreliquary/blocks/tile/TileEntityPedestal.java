@@ -177,13 +177,16 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		if(worldObj.isRemote)
 			return;
 
+		IBlockState blockState = worldObj.getBlockState(this.pos);
+		if (blockState.getBlock() != ModBlocks.pedestal)
+			return;
+
 		if(!enabledInitialized) {
 			enabledInitialized = true;
 			neighborUpdate();
 		}
 
-		IBlockState blockState = worldObj.getBlockState(this.pos);
-		if(tickable && blockState.getBlock() == ModBlocks.pedestal && blockState.getValue(BlockPedestal.ENABLED)) {
+		if(tickable && blockState.getValue(BlockPedestal.ENABLED)) {
 			for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
 				if(actionCooldowns[currentItemIndex] > 0) {
 					actionCooldowns[currentItemIndex]--;
