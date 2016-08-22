@@ -92,6 +92,12 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 		Iterator iterator = iList.iterator();
 		while(iterator.hasNext()) {
 			EntityItem item = (EntityItem) iterator.next();
+
+			//if entity is marked not to be picked up by magnets leave it alone - IE thing but may be more than that
+			if(item.getEntityData().getBoolean("PreventRemoteMovement")) {
+				continue;
+			}
+
 			if(!checkForRoom(item.getEntityItem(), player)) {
 				continue;
 			}
