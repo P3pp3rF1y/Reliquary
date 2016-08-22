@@ -121,10 +121,10 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntitySeekerShot.class, RenderShot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntitySandShot.class, RenderShot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, RenderShot::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, renderManager -> new RenderThrown(renderManager, ModItems.glowingWater, Minecraft.getMinecraft().getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, renderManager -> new RenderThrown(renderManager, ModItems.attractionPotion, Minecraft.getMinecraft().getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, renderManager -> new RenderThrown(renderManager, ModItems.fertilePotion, Minecraft.getMinecraft().getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, renderManager -> new RenderThrown(renderManager, ModItems.holyHandGrenade, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, renderManager -> new RenderSnowball(renderManager, ModItems.glowingWater, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, renderManager -> new RenderSnowball(renderManager, ModItems.attractionPotion, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, renderManager -> new RenderSnowball(renderManager, ModItems.fertilePotion, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, renderManager -> new RenderSnowball(renderManager, ModItems.holyHandGrenade, Minecraft.getMinecraft().getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityKrakenSlime.class, RenderThrownKrakenSlime::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, renderManager -> new RenderSnowball(renderManager, Items.SNOWBALL, Minecraft.getMinecraft().getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityEnderStaffProjectile.class, renderManager -> new RenderSnowball(renderManager, Items.ENDER_PEARL, Minecraft.getMinecraft().getRenderItem()));
