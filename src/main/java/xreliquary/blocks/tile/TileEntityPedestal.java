@@ -1,11 +1,14 @@
 package xreliquary.blocks.tile;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Tuple;
@@ -238,15 +241,19 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	public int addToConnectedInventory(ItemStack stack) {
 		List<IInventory> adjacentInventories = getAdjacentInventories();
 
-		int sizeAdded = 0;
-		for(IInventory inventory : adjacentInventories) {
-			sizeAdded += InventoryHelper.tryToAddToInventory(stack, inventory, 0, stack.stackSize - sizeAdded);
+		int numberAdded = 0;
+		for(EnumFacing facing : EnumFacing.VALUES) {
+			IInventory inventory = getInventoryAtPos(this.getPos().add(facing.getDirectionVec()));
 
-			if(sizeAdded >= stack.stackSize)
-				break;
+			if(inventory != null) {
+				numberAdded += InventoryHelper.tryToAddToInventory(stack, inventory, stack.stackSize - numberAdded, facing.getOpposite());
+
+				if(numberAdded >= stack.stackSize)
+					break;
+			}
 		}
 
-		return sizeAdded;
+		return numberAdded;
 	}
 
 	@Override
@@ -387,8 +394,17 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	}
 
 	private IInventory getInventoryAtPos(BlockPos pos) {
-		if(worldObj.getTileEntity(pos) instanceof IInventory)
-			return (IInventory) worldObj.getTileEntity(pos);
+		if(worldObj.getTileEntity(pos) instanceof IInventory) {
+			IInventory inventory = (IInventory) worldObj.getTileEntity(pos);
+			Block block = worldObj.getBlockState(pos).getBlock();
+
+			if (inventory instanceof TileEntityChest && block instanceof BlockChest)
+			{
+				inventory = ((BlockChest)block).getContainer(worldObj, pos, true);
+			}
+
+			return inventory;
+		}
 		return null;
 	}
 

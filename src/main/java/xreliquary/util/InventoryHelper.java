@@ -4,9 +4,10 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -17,20 +18,17 @@ import java.util.Random;
 
 public class InventoryHelper {
 
-	public static void spawnItemStack(World worldIn, double x, double y, double z, ItemStack stack)
-	{
+	public static void spawnItemStack(World worldIn, double x, double y, double z, ItemStack stack) {
 		Random rnd = new Random();
 
 		float f = rnd.nextFloat() * 0.8F + 0.1F;
 		float f1 = rnd.nextFloat() * 0.8F + 0.1F;
 		float f2 = rnd.nextFloat() * 0.8F + 0.1F;
 
-		while (stack.stackSize > 0)
-		{
+		while(stack.stackSize > 0) {
 			int i = rnd.nextInt(21) + 10;
 
-			if (i > stack.stackSize)
-			{
+			if(i > stack.stackSize) {
 				i = stack.stackSize;
 			}
 
@@ -38,12 +36,12 @@ public class InventoryHelper {
 
 			ItemStack stackToDrop = stack.copy();
 			stackToDrop.stackSize = i;
-			EntityItem entityitem = new EntityItem(worldIn, x + (double)f, y + (double)f1, z + (double)f2, stackToDrop);
+			EntityItem entityitem = new EntityItem(worldIn, x + (double) f, y + (double) f1, z + (double) f2, stackToDrop);
 
 			float f3 = 0.05F;
-			entityitem.motionX = rnd.nextGaussian() * (double)f3;
-			entityitem.motionY = rnd.nextGaussian() * (double)f3 + 0.20000000298023224D;
-			entityitem.motionZ = rnd.nextGaussian() * (double)f3;
+			entityitem.motionX = rnd.nextGaussian() * (double) f3;
+			entityitem.motionY = rnd.nextGaussian() * (double) f3 + 0.20000000298023224D;
+			entityitem.motionZ = rnd.nextGaussian() * (double) f3;
 			worldIn.spawnEntityInWorld(entityitem);
 		}
 	}
@@ -180,34 +178,85 @@ public class InventoryHelper {
 		return numberRemoved;
 	}
 
-	public static int tryToAddToInventory(ItemStack contents, IInventory inventory, int limit, int maxToAdd) {
+	public static int tryToAddToInventory(ItemStack contents, IInventory inventory, int maxToAdd) {
+		return tryToAddToInventory(contents, inventory, maxToAdd, EnumFacing.UP);
+	}
+	public static int tryToAddToInventory(ItemStack contents, IInventory inventory, int maxToAdd, EnumFacing insertDirection) {
 		int numberAdded = 0;
 
-		for(int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
-			if(inventory.getStackInSlot(slot) == null) {
-				//loop because of storage drawers like inventories
-				while(inventory.getStackInSlot(slot) == null && maxToAdd > numberAdded) {
-					ItemStack newContents = contents.copy();
-					int stackAddition = Math.min(Math.min(newContents.getMaxStackSize(), inventory.getInventoryStackLimit()), maxToAdd - numberAdded);
-					newContents.stackSize = stackAddition;
-					inventory.setInventorySlotContents(slot, newContents);
+		if (inventory instanceof ISidedInventory) {
+			ISidedInventory sidedInventory = (ISidedInventory) inventory;
+
+			int[] slotsForFace = sidedInventory.getSlotsForFace(insertDirection);
+			for(int slot : slotsForFace) {
+				if (sidedInventory.getStackInSlot(slot) == null) {
+					numberAdded += insertIntoEmptySlot(contents, sidedInventory, slot, maxToAdd, insertDirection);
+				} else if(StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
+					//noinspection ConstantConditions
+					if(inventory.getStackInSlot(slot).stackSize == Math.min(inventory.getStackInSlot(slot).getMaxStackSize(), inventory.getInventoryStackLimit())) {
+						continue;
+					}
+					int stackAddition = addToNonEmptySlot(inventory, maxToAdd, numberAdded, slot);
 					numberAdded += stackAddition;
 				}
-			} else if(StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
-				if(inventory.getStackInSlot(slot).stackSize == Math.min(inventory.getStackInSlot(slot).getMaxStackSize(), inventory.getInventoryStackLimit())) {
-					continue;
-				}
-				ItemStack slotStack = inventory.getStackInSlot(slot);
-				int stackAddition = Math.min(Math.min(slotStack.getMaxStackSize(), inventory.getInventoryStackLimit()) - slotStack.stackSize, maxToAdd - numberAdded);
-				slotStack.stackSize += stackAddition;
-				numberAdded += stackAddition;
+				if(numberAdded >= maxToAdd)
+					break;
 			}
-			if(numberAdded >= maxToAdd)
-				break;
+
+		} else {
+			for(int slot = 0; slot < Math.min(inventory.getSizeInventory(), inventory.getSizeInventory()); slot++) {
+				if(inventory.getStackInSlot(slot) == null) {
+					numberAdded += insertIntoEmptySlot(contents, inventory, slot, maxToAdd);
+				} else if(StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
+					//noinspection ConstantConditions
+					if(inventory.getStackInSlot(slot).stackSize == Math.min(inventory.getStackInSlot(slot).getMaxStackSize(), inventory.getInventoryStackLimit())) {
+						continue;
+					}
+					int stackAddition = addToNonEmptySlot(inventory, maxToAdd, numberAdded, slot);
+					numberAdded += stackAddition;
+				}
+				if(numberAdded >= maxToAdd)
+					break;
+			}
 		}
+
 		if(numberAdded > 0)
 			inventory.markDirty();
 
+		return numberAdded;
+	}
+
+	private static int addToNonEmptySlot(IInventory inventory, int maxToAdd, int numberAdded, int slot) {
+		ItemStack slotStack = inventory.getStackInSlot(slot);
+		//noinspection ConstantConditions
+		int stackAddition = Math.min(Math.min(slotStack.getMaxStackSize(), inventory.getInventoryStackLimit()) - slotStack.stackSize, maxToAdd - numberAdded);
+		slotStack.stackSize += stackAddition;
+		return stackAddition;
+	}
+
+	private static int insertIntoEmptySlot(ItemStack contents, IInventory inventory, int slot, int maxToAdd) {
+		int numberAdded = 0;
+		//loop because of storage drawers like inventories
+		while(inventory.getStackInSlot(slot) == null && maxToAdd > numberAdded) {
+			int stackAddition = Math.min(Math.min(contents.getMaxStackSize(), inventory.getInventoryStackLimit()), maxToAdd - numberAdded);
+			ItemStack newContents = contents.copy();
+			newContents.stackSize = stackAddition;
+			inventory.setInventorySlotContents(slot, newContents);
+			numberAdded += stackAddition;
+		}
+		return numberAdded;
+	}
+
+	private static int insertIntoEmptySlot(ItemStack contents, ISidedInventory inventory, int slot, int maxToAdd, EnumFacing insertDirection) {
+		int numberAdded = 0;
+		//loop because of storage drawers like inventories
+		while(inventory.canInsertItem(slot, contents, insertDirection) && maxToAdd > numberAdded) {
+			int stackAddition = Math.min(Math.min(contents.getMaxStackSize(), inventory.getInventoryStackLimit()), maxToAdd - numberAdded);
+			ItemStack newContents = contents.copy();
+			newContents.stackSize = stackAddition;
+			inventory.setInventorySlotContents(slot, newContents);
+			numberAdded += stackAddition;
+		}
 		return numberAdded;
 	}
 
