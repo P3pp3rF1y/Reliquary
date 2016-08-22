@@ -18,7 +18,6 @@ import java.util.Map;
  * @author TheMike
  * @author x3n0ph0b3
  */
-@SideOnly(Side.CLIENT)
 public class LanguageHelper {
 
 	private static Map<String, String> preprocesssed = new HashMap<String, String>();
