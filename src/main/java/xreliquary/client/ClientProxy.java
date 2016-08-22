@@ -2,8 +2,6 @@ package xreliquary.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.init.Items;
@@ -110,6 +108,27 @@ public class ClientProxy extends CommonProxy {
 
 		ItemBlockModels.registerItemBlockModels();
 		ItemModels.registerItemModels();
+		registerEntityRenderers();
+	}
+
+	private void registerEntityRenderers() {
+		RenderingRegistry.registerEntityRenderingHandler(EntityBlazeShot.class, RenderShot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityBusterShot.class, RenderShot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityConcussiveShot.class, RenderShot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityEnderShot.class, RenderShot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityExorcismShot.class, RenderShot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityNeutralShot.class, RenderShot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntitySeekerShot.class, RenderShot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntitySandShot.class, RenderShot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, RenderShot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, renderManager -> new RenderThrown(renderManager, ModItems.glowingWater, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, renderManager -> new RenderThrown(renderManager, ModItems.attractionPotion, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, renderManager -> new RenderThrown(renderManager, ModItems.fertilePotion, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, renderManager -> new RenderThrown(renderManager, ModItems.holyHandGrenade, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityKrakenSlime.class, RenderThrownKrakenSlime::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, renderManager -> new RenderSnowball(renderManager, Items.SNOWBALL, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityEnderStaffProjectile.class, renderManager -> new RenderSnowball(renderManager, Items.ENDER_PEARL, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityThrownXRPotion.class, renderManager -> new RenderThrownXRPotion(renderManager, Minecraft.getMinecraft().getRenderItem()));
 	}
 
 	@Override
@@ -139,27 +158,6 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	public void registerRenderers() {
-		RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-		RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-		//TODO:replace deprecated call
-		RenderingRegistry.registerEntityRenderingHandler(EntityBlazeShot.class, new RenderShot<EntityBlazeShot>(renderManager));
-		RenderingRegistry.registerEntityRenderingHandler(EntityBusterShot.class, new RenderShot<EntityBusterShot>(renderManager));
-		RenderingRegistry.registerEntityRenderingHandler(EntityConcussiveShot.class, new RenderShot<EntityConcussiveShot>(renderManager));
-		RenderingRegistry.registerEntityRenderingHandler(EntityEnderShot.class, new RenderShot<EntityEnderShot>(renderManager));
-		RenderingRegistry.registerEntityRenderingHandler(EntityExorcismShot.class, new RenderShot<EntityExorcismShot>(renderManager));
-		RenderingRegistry.registerEntityRenderingHandler(EntityNeutralShot.class, new RenderShot<EntityNeutralShot>(renderManager));
-		RenderingRegistry.registerEntityRenderingHandler(EntitySeekerShot.class, new RenderShot<EntitySeekerShot>(renderManager));
-		RenderingRegistry.registerEntityRenderingHandler(EntitySandShot.class, new RenderShot<EntitySandShot>(renderManager));
-		RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, new RenderShot<EntityStormShot>(renderManager));
-		RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, new RenderThrown<EntityGlowingWater>(renderManager, ModItems.glowingWater, renderItem));
-		RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, new RenderThrown<EntityAttractionPotion>(renderManager, ModItems.attractionPotion, renderItem));
-		RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, new RenderThrown<EntityFertilePotion>(renderManager, ModItems.fertilePotion, renderItem));
-		RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, new RenderThrown<EntityHolyHandGrenade>(renderManager, ModItems.holyHandGrenade, renderItem));
-		RenderingRegistry.registerEntityRenderingHandler(EntityKrakenSlime.class, new RenderThrownKrakenSlime(renderManager));
-		RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, new RenderSnowball<EntitySpecialSnowball>(renderManager, Items.SNOWBALL, renderItem));
-		RenderingRegistry.registerEntityRenderingHandler(EntityEnderStaffProjectile.class, new RenderSnowball<EntityEnderStaffProjectile>(renderManager, Items.ENDER_PEARL, renderItem));
-		RenderingRegistry.registerEntityRenderingHandler(EntityThrownXRPotion.class, new RenderThrownXRPotion(renderManager, renderItem));
-
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMortar.class, new RenderApothecaryMortar());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPedestal.class, new TileEntityPedestalRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPedestalPassive.class, new TileEntityPedestalPassiveRenderer());
