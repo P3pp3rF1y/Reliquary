@@ -86,13 +86,13 @@ xreliquary.item.handgun.tooltip=For great justice.;Right click fires, hold to re
 xreliquary.item.harvest_rod.name={{!colors.green}}Harvest Rod
 xreliquary.item.harvest_rod.tooltip=Right-click to fertilize,;breaks crops in an area.;{{!colors.green}}Charge: {{charge}}
 
-xreliquary.item.mob_charm_fragment_0.name={{!colors.rose}}Zombie Charm Fragment
+xreliquary.item.mob_charm_fragment_0.name={{!colors.light_green}}Zombie Charm Fragment
 xreliquary.item.heart_zhu_0.name={{!colors.rose}}Zombie Nian Zhu
 xreliquary.item.heart_zhu_0.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
-xreliquary.item.mob_charm_fragment_1.name={{!colors.white}}Skeleton Charm Fragment
+xreliquary.item.mob_charm_fragment_1.name={{!colors.light_green}}Skeleton Charm Fragment
 xreliquary.item.heart_zhu_1.name={{!colors.white}}Skeleton Nian Zhu
 xreliquary.item.heart_zhu_1.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
-xreliquary.item.mob_charm_fragment_2.name={{!colors.gray}}Wither Skeleton Charm Fragment
+xreliquary.item.mob_charm_fragment_2.name={{!colors.light_green}}Wither Skeleton Charm Fragment
 xreliquary.item.heart_zhu_2.name={{!colors.gray}}Wither Skeleton Nian Zhu
 xreliquary.item.heart_zhu_2.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_3.name={{!colors.light_green}}Creeper Charm Fragment
