@@ -60,7 +60,7 @@ public class BlockFertileLilypad extends BlockBush {
 		return Settings.FertileLilypad.fullPotencyRange;
 	}
 
-	public void growCropsNearby(World world, BlockPos pos, IBlockState state) {
+	private void growCropsNearby(World world, BlockPos pos, IBlockState state) {
 		int xO = pos.getX();
 		int yO = pos.getY();
 		int zO = pos.getZ();
@@ -93,6 +93,7 @@ public class BlockFertileLilypad extends BlockBush {
 		world.scheduleBlockUpdate(pos, state.getBlock(), secondsBetweenGrowthTicks() * 20, 1);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
 		if(!(collidingEntity instanceof EntityBoat)) {

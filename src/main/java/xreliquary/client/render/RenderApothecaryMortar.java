@@ -15,7 +15,6 @@ import xreliquary.reference.ClientReference;
 public class RenderApothecaryMortar extends TileEntitySpecialRenderer<TileEntityMortar> {
 
 	private ModelMortar modelMortar = new ModelMortar();
-	private final float modifier = 0.0625f;
 
 	@Override
 	public void renderTileEntityAt(TileEntityMortar tile, double x, double y, double z, float var8, int i) {
@@ -33,13 +32,12 @@ public class RenderApothecaryMortar extends TileEntitySpecialRenderer<TileEntity
 			GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
 			GlStateManager.rotate(horizontalRotation, 0.0F, 1.0F, 0.0F);
 
+			float modifier = 0.0625f;
 			this.modelMortar.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0f, modifier);
-			// TODO: Paving the way for the model rendering.
 			this.modelMortar.pestle.render(modifier);
 			this.modelMortar.pestleKnob.render(modifier);
 
-			TileEntityMortar tileEntityMortar = tile;
-			ItemStack[] mortarItems = tileEntityMortar.getItemStacks();
+			ItemStack[] mortarItems = tile.getItemStacks();
 
 			if(mortarItems[0] != null) {
 				EntityItem item = new EntityItem(tile.getWorld(), 0.0D, 0.0D, 0.0D, mortarItems[0]);

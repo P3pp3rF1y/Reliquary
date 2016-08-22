@@ -222,6 +222,7 @@ public class ItemHandgun extends ItemBase {
 		return false;
 	}
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean hasHandgunInSecondHand(EntityPlayer player, EnumHand hand) {
 		if(hand == EnumHand.MAIN_HAND)
 			return player.getHeldItemOffhand() != null && player.getHeldItemOffhand().getItem() == ModItems.handgun;

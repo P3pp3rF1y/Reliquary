@@ -44,7 +44,7 @@ public class AlkahestryCraftingRecipeMaker {
 				output = new ItemStack(recipe.item.getItem(), recipe.yield + 1, recipe.item.getMetadata());
 			}
 			if(input != null) {
-				recipes.add(new AlkahestryCraftingRecipeJEI(input, inputTome, output, outputTome, recipe.cost));
+				recipes.add(new AlkahestryCraftingRecipeJEI(input, inputTome, output, outputTome));
 			}
 		}
 

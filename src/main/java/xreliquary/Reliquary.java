@@ -112,11 +112,6 @@ public class Reliquary {
 	}
 
 	@EventHandler
-	public void serverLoad(FMLServerStartingEvent event) {
-		//event.registerServerCommand(new CommandGenLootChest());
-	}
-
-	@EventHandler
 	public void serverStopping(FMLServerStoppingEvent event) {
 		PedestalRegistry.clearPositions();
 	}

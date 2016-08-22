@@ -78,7 +78,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		}
 	}
 
-	public int getCraftingResultCost(IInventory inv) {
+	private int getCraftingResultCost(IInventory inv) {
 		AlkahestCraftRecipe returned = null;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);

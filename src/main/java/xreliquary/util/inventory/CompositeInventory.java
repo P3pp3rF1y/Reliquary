@@ -10,8 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 
 //TODO finish
-public class CompositeInventory implements IInventory {
-	List<IInventory> childInventories = new ArrayList<>();
+class CompositeInventory implements IInventory {
+	private List<IInventory> childInventories = new ArrayList<>();
 
 	@Override
 	public int getSizeInventory() {

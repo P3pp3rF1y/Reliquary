@@ -51,7 +51,7 @@ public class PacketFXThrownPotionImpact implements IMessage, IMessageHandler<Pac
 
 		float red = (((color >> 16) & 255) / 256F);
 		float green = (((color >> 8) & 255) / 256F);
-		float blue = (((color >> 0) & 255) / 256F);
+		float blue = ((color & 255) / 256F);
 
 		for(int var20 = 0; var20 < 100; ++var20) {
 			double var39 = rand.nextDouble() * 4.0D;

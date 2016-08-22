@@ -24,8 +24,7 @@ public class AlkahestConfiguration {
 		String registryName = ConfigurationHandler.getString("base_item", Names.item_and_block_settings + "." + Names.alkahestry_tome, Items.REDSTONE.getRegistryName().toString());
 		int meta = ConfigurationHandler.getInt("base_item_meta", Names.item_and_block_settings + "." + Names.alkahestry_tome, 0, 0, 16);
 		String[] splitName = registryName.split(":");
-		ItemStack stack = StackHelper.getItemStackFromNameMeta(splitName[0], splitName[1], meta);
-		Settings.AlkahestryTome.baseItem = stack;
+		Settings.AlkahestryTome.baseItem = StackHelper.getItemStackFromNameMeta(splitName[0], splitName[1], meta);
 
 		Settings.AlkahestryTome.baseItemWorth = ConfigurationHandler.getInt("base_item_worth", Names.item_and_block_settings + "." + Names.alkahestry_tome, 1, 1, 1000);
 	}

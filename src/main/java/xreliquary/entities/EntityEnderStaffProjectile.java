@@ -16,12 +16,12 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class EntityEnderStaffProjectile extends EntityThrowable {
-	public int ticksInAir;
-	public int ticksInGround;
-	public IBlockState inTile;
-	public int xTile;
-	public int yTile;
-	public int zTile;
+	private int ticksInAir;
+	private int ticksInGround;
+	private IBlockState inTile;
+	private int xTile;
+	private int yTile;
+	private int zTile;
 
 	public EntityEnderStaffProjectile(World world) {
 		super(world);
@@ -188,7 +188,7 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 		onThrowableCollision(result);
 	}
 
-	protected void onThrowableCollision(RayTraceResult result) {
+	private void onThrowableCollision(RayTraceResult result) {
 		if(result != null && result.entityHit != null) {
 			if(!result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, getThrower()), 0))
 				;

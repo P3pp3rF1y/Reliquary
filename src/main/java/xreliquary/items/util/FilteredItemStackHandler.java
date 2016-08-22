@@ -51,6 +51,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		return slot / SLOTS_PER_TYPE;
 	}
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean isInputSlot(int slot) {
 		return !((slot + 1) % SLOTS_PER_TYPE == 0);
 	}

@@ -1,5 +1,6 @@
 package xreliquary.client.gui;
 
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -10,8 +11,8 @@ import xreliquary.reference.Reference;
 public class GuiMobCharmBelt extends GuiBase {
 	private static final ResourceLocation BELT_TEX = new ResourceLocation(Reference.MOD_ID, "textures/gui/mob_charm_belt.png");
 	private static final ResourceLocation BELT_ITEM_TEX = new ResourceLocation(Reference.MOD_ID, "textures/items/mob_charm_belt.png");
-	private static int WIDTH = 175;
-	private static int HEIGHT = 221;
+	private static final int WIDTH = 175;
+	private static final int HEIGHT = 221;
 
 	private ItemStack belt;
 
@@ -30,7 +31,7 @@ public class GuiMobCharmBelt extends GuiBase {
 		GlStateManager.enableAlpha();
 		GlStateManager.enableBlend();
 
-		this.bindTexture(this.BELT_TEX);
+		this.bindTexture(BELT_TEX);
 		this.drawTexturedModalRect(i, j - 27, 0, 0, WIDTH, HEIGHT);
 
 		GlStateManager.disableAlpha();
@@ -42,8 +43,8 @@ public class GuiMobCharmBelt extends GuiBase {
 
 		updateMobCharmSlots(centerX, centerY);
 
-		this.bindTexture(this.BELT_ITEM_TEX);
-		this.drawModalRectWithCustomSizedTexture(centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
+		this.bindTexture(BELT_ITEM_TEX);
+		drawModalRectWithCustomSizedTexture(centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
 	}
 
 	private void updateMobCharmSlots(int centerX, int centerY) {

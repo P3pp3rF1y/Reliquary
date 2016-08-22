@@ -11,10 +11,10 @@ import xreliquary.util.LanguageHelper;
 
 import java.util.List;
 
-public abstract class CachedBodyDataProvider implements IWailaDataProvider {
+abstract class CachedBodyDataProvider implements IWailaDataProvider {
 
-	List<String> cachedBody = null;
-	BlockPos cachedPosition = null;
+	private List<String> cachedBody = null;
+	private BlockPos cachedPosition = null;
 
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {

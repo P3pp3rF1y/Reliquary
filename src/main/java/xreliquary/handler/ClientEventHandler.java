@@ -41,7 +41,7 @@ public class ClientEventHandler {
 	private static RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 	private static int time;
 
-	private static HashMap<Integer, CharmToDraw> charmsToDraw = new HashMap<>();
+	private static final HashMap<Integer, CharmToDraw> charmsToDraw = new HashMap<>();
 
 	private static synchronized HashMap<Integer, CharmToDraw> getCharmsToDraw() {
 		return charmsToDraw;
@@ -258,7 +258,7 @@ public class ClientEventHandler {
 		}
 	}
 
-	public void handleTickIncrement(TickEvent.RenderTickEvent event) {
+	private void handleTickIncrement(TickEvent.RenderTickEvent event) {
 		// this is currently used for nothing but the blinking magazine in the handgun HUD renderer
 		if(event.phase != TickEvent.Phase.END)
 			return;
@@ -270,7 +270,7 @@ public class ClientEventHandler {
 		}
 	}
 
-	public static int getTime() {
+	private static int getTime() {
 		return time;
 	}
 
@@ -297,7 +297,7 @@ public class ClientEventHandler {
 		return player.getHeldItem(itemInHand);
 	}
 
-	public void handleTomeHUDCheck(Minecraft mc) {
+	private void handleTomeHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
 		ItemStack tomeStack = getCorrectItemFromEitherHand(player, ModItems.alkahestryTome);
@@ -310,7 +310,7 @@ public class ClientEventHandler {
 		renderStandardTwoItemHUD(mc, player, tomeStack, chargeStack, Settings.HudPositions.alkahestryTome, 0, 0);
 	}
 
-	public void handleDestructionCatalystHUDCheck(Minecraft mc) {
+	private void handleDestructionCatalystHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
 		ItemStack destructionCatalystStack = getCorrectItemFromEitherHand(player, ModItems.destructionCatalyst);
@@ -322,7 +322,7 @@ public class ClientEventHandler {
 		renderStandardTwoItemHUD(mc, player, destructionCatalystStack, gunpowderStack, Settings.HudPositions.destructionCatalyst, 0, 0);
 	}
 
-	public void handleEnderStaffHUDCheck(Minecraft mc) {
+	private void handleEnderStaffHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
 		ItemStack enderStaffStack = getCorrectItemFromEitherHand(player, ModItems.enderStaff);
@@ -341,7 +341,7 @@ public class ClientEventHandler {
 		renderStandardTwoItemHUD(mc, player, enderStaffStack, displayItemStack, Settings.HudPositions.enderStaff, 0, 0);
 	}
 
-	public void handleIceMagusRodHUDCheck(Minecraft mc) {
+	private void handleIceMagusRodHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
 		ItemStack iceRodStack = getCorrectItemFromEitherHand(player, ModItems.iceMagusRod);
@@ -355,7 +355,7 @@ public class ClientEventHandler {
 		renderStandardTwoItemHUD(mc, player, iceRodStack, snowballStack, hudPosition, 0, NBTHelper.getInteger("snowballs", iceRodStack));
 	}
 
-	public void handleGlacialStaffHUDCheck(Minecraft mc) {
+	private void handleGlacialStaffHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
 		ItemStack glacialStaff = getCorrectItemFromEitherHand(player, ModItems.glacialStaff);
@@ -369,7 +369,7 @@ public class ClientEventHandler {
 		renderStandardTwoItemHUD(mc, player, glacialStaff, snowballStack, hudPosition, 0, NBTHelper.getInteger("snowballs", glacialStaff));
 	}
 
-	public void handleVoidTearHUDCheck(Minecraft mc) {
+	private void handleVoidTearHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
 		ItemStack voidTearStack = getCorrectItemFromEitherHand(player, ModItems.filledVoidTear);
@@ -382,7 +382,7 @@ public class ClientEventHandler {
 		renderStandardTwoItemHUD(mc, player, voidTearStack, containedItemStack, Settings.HudPositions.voidTear, 0, 0);
 	}
 
-	public void handleMidasTouchstoneHUDCheck(Minecraft mc) {
+	private void handleMidasTouchstoneHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
 		ItemStack midasTouchstoneStack = getCorrectItemFromEitherHand(player, ModItems.midasTouchstone);
@@ -394,7 +394,7 @@ public class ClientEventHandler {
 		renderStandardTwoItemHUD(mc, player, midasTouchstoneStack, glowstoneStack, Settings.HudPositions.midasTouchstone, 0, 0);
 	}
 
-	public void handleHarvestRodHUDCheck(Minecraft mc) {
+	private void handleHarvestRodHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
 		ItemStack harvestRodStack = getCorrectItemFromEitherHand(player, ModItems.harvestRod);
@@ -404,16 +404,15 @@ public class ClientEventHandler {
 
 		ItemStack secondaryStack = null;
 		ItemHarvestRod harvestRod = ModItems.harvestRod;
-		if(harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.PLANTABLE_MODE)) {
+		if(harvestRod.getMode(harvestRodStack).equals(ItemHarvestRod.PLANTABLE_MODE)) {
 			ItemStack currenPlantable = harvestRod.getCurrentPlantable(harvestRodStack);
 
 			if(currenPlantable != null) {
 				secondaryStack = currenPlantable.copy();
-				int plantableCount = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableSlot(harvestRodStack));
 
-				secondaryStack.stackSize = plantableCount;
+				secondaryStack.stackSize = harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableSlot(harvestRodStack));
 			}
-		} else if(harvestRod.getMode(harvestRodStack).equals(ModItems.harvestRod.BONE_MEAL_MODE)) {
+		} else if(harvestRod.getMode(harvestRodStack).equals(ItemHarvestRod.BONE_MEAL_MODE)) {
 			int boneMealCount = harvestRod.getBoneMealCount(harvestRodStack);
 
 			secondaryStack = new ItemStack(Items.DYE, boneMealCount, Reference.WHITE_DYE_META);
@@ -424,7 +423,7 @@ public class ClientEventHandler {
 		renderStandardTwoItemHUD(mc, player, harvestRodStack, secondaryStack, Settings.HudPositions.harvestRod, 0, 0);
 	}
 
-	public void handleInfernalChaliceHUDCheck(Minecraft mc) {
+	private void handleInfernalChaliceHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
 		ItemStack infernalChaliceStack = getCorrectItemFromEitherHand(player, ModItems.infernalChalice);
@@ -436,7 +435,7 @@ public class ClientEventHandler {
 		renderStandardTwoItemHUD(mc, player, infernalChaliceStack, lavaStack, Settings.HudPositions.infernalChalice, Colors.get(Colors.BLOOD_RED_COLOR), lavaStack.stackSize / 1000);
 	}
 
-	public void handleHeroMedallionHUDCheck(Minecraft mc) {
+	private void handleHeroMedallionHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
 		ItemStack heroMedallionStack = getCorrectItemFromEitherHand(player, ModItems.heroMedallion);
@@ -448,7 +447,7 @@ public class ClientEventHandler {
 		renderStandardTwoItemHUD(mc, player, heroMedallionStack, null, Settings.HudPositions.heroMedallion, Colors.get(Colors.GREEN), experience);
 	}
 
-	public void handlePyromancerStaffHUDCheck(Minecraft mc) {
+	private void handlePyromancerStaffHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
 		ItemStack pyromancerStaffStack = getCorrectItemFromEitherHand(player, ModItems.pyromancerStaff);
@@ -551,7 +550,7 @@ public class ClientEventHandler {
 		GlStateManager.popMatrix();
 	}
 
-	public void handleRendingGaleHUDCheck(Minecraft mc) {
+	private void handleRendingGaleHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.thePlayer;
 
 		ItemStack rendingGaleStack = getCorrectItemFromEitherHand(player, ModItems.rendingGale);
@@ -565,9 +564,9 @@ public class ClientEventHandler {
 			int ticksInUse = ModItems.rendingGale.getMaxItemUseDuration(rendingGaleStack) - player.getItemInUseCount();
 
 			if(ModItems.rendingGale.isFlightMode(rendingGaleStack)) {
-				currentCost = ModItems.rendingGale.getChargeCost() * ticksInUse;
+				currentCost = ItemRendingGale.getChargeCost() * ticksInUse;
 			} else if(ModItems.rendingGale.isBoltMode(rendingGaleStack)) {
-				currentCost = ModItems.rendingGale.getBoltChargeCost() * (ticksInUse / 8);
+				currentCost = ItemRendingGale.getBoltChargeCost() * (ticksInUse / 8);
 			}
 		}
 
@@ -576,7 +575,7 @@ public class ClientEventHandler {
 		renderStandardTwoItemHUD(mc, player, rendingGaleStack, featherStack, Settings.HudPositions.rendingGale, 0, Math.max(featherStack.stackSize / 100, 0));
 	}
 
-	public void handleHandgunHUDCheck(Minecraft mc) {
+	private void handleHandgunHUDCheck(Minecraft mc) {
 		// handles rendering the hud for the handgun, WIP
 		EntityPlayer player = mc.thePlayer;
 
@@ -687,7 +686,7 @@ public class ClientEventHandler {
 		}
 	}
 
-	public void handleSojournerHUDCheck(Minecraft mc) {
+	private void handleSojournerHUDCheck(Minecraft mc) {
 		// handles rendering the hud for the sojourner's staff so we don't have to use chat messages, because annoying.
 		EntityPlayer player = mc.thePlayer;
 
@@ -792,7 +791,7 @@ public class ClientEventHandler {
 		GlStateManager.popMatrix();
 	}
 
-	public static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float opacity, float scale) {
+	private static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float opacity, float scale) {
 		renderItem.renderItemIntoGUI(itemStack, x, y);
 	}
 }

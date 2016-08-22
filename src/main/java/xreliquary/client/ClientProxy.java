@@ -157,7 +157,7 @@ public class ClientProxy extends CommonProxy {
 		render.addLayer(new MobCharmBeltLayerRenderer());
 	}
 
-	public void registerRenderers() {
+	private void registerRenderers() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMortar.class, new RenderApothecaryMortar());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPedestal.class, new TileEntityPedestalRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPedestalPassive.class, new TileEntityPedestalPassiveRenderer());

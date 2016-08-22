@@ -595,8 +595,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			int amount = stackInSlot.stackSize - (stack == null ? 0 : stack.stackSize);
 			itemHandler.extractItem(adjustedSlot, amount, false);
 		} else if(stack != null && (stackInSlot == null || stack.stackSize > stackInSlot.stackSize)) {
-			int amount = stack.stackSize - (stackInSlot == null ? 0 : stackInSlot.stackSize);
-			stack.stackSize = amount;
+			stack.stackSize = stack.stackSize - (stackInSlot == null ? 0 : stackInSlot.stackSize);
 			itemHandler.insertItem(adjustedSlot, stack, false);
 		}
 	}

@@ -15,7 +15,7 @@ public class EntityCauldronSteamFX extends ParticleRedstone {
 		this.motionZ += zMot;
 	}
 
-	public EntityCauldronSteamFX(World world, double x, double y, double z, float sizeAndLifespanLoL, float red, float green, float blue) {
+	private EntityCauldronSteamFX(World world, double x, double y, double z, float sizeAndLifespanLoL, float red, float green, float blue) {
 		super(world, x, y, z, sizeAndLifespanLoL, red, green, blue);
 		this.particleRed = red;
 		this.particleGreen = green;

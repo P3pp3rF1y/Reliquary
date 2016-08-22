@@ -7,21 +7,17 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
-public class AlkahestryCraftingRecipeJEI extends BlankRecipeWrapper {
+class AlkahestryCraftingRecipeJEI extends BlankRecipeWrapper {
 	@Nonnull
 	private final List<Object> inputs;
 
 	@Nonnull
 	private final List<Object> outputs;
 
-	@Nonnull
-	private final int cost;
-
 	@SuppressWarnings("unchecked")
-	public AlkahestryCraftingRecipeJEI(@Nonnull Object input, @Nonnull ItemStack tomeInput, @Nonnull Object output, @Nonnull ItemStack tomeOutput, int cost) {
+	public AlkahestryCraftingRecipeJEI(@Nonnull Object input, @Nonnull ItemStack tomeInput, @Nonnull Object output, @Nonnull ItemStack tomeOutput) {
 		this.inputs = Arrays.asList(input, tomeInput);
 		this.outputs = Arrays.asList(output, tomeOutput);
-		this.cost = cost;
 	}
 
 	@Override

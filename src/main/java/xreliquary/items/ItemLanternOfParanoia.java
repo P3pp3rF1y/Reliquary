@@ -147,9 +147,6 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 	}
 
 	public boolean tryToPlaceTorchAround(ItemStack stack, int xO, int yO, int zO, EntityPlayer player, World world) {
-		int x = xO;
-		int y = yO;
-		int z = zO;
 
 		double playerEyeHeight = player.posY + player.getEyeHeight();
 
@@ -158,7 +155,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 				for(float zOff = -0.2F; zOff <= 0.2F; zOff += 0.4F) {
 
 					Vec3d playerVec = new Vec3d(player.posX + xOff, playerEyeHeight + yOff, player.posZ + zOff);
-					Vec3d rayTraceVector = new Vec3d((float) x + 0.5D + xOff, (float) y + 0.5D + yOff, (float) z + 0.5D + zOff);
+					Vec3d rayTraceVector = new Vec3d((float) xO + 0.5D + xOff, (float) yO + 0.5D + yOff, (float) zO + 0.5D + zOff);
 
 					RayTraceResult rayTraceResult = world.rayTraceBlocks(playerVec, rayTraceVector, false, false, true);
 
@@ -177,7 +174,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 		float zOff = (float) player.posZ;
 		float yOff = (float) player.posY;
 
-		if(Blocks.TORCH.canPlaceBlockAt(world, new BlockPos(x, y, z))) {
+		if(Blocks.TORCH.canPlaceBlockAt(world, new BlockPos(xO, yO, zO))) {
 			int rotation = ((MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3) + 2) % 4;
 			EnumFacing trySide = EnumFacing.DOWN;
 			switch(rotation) {
@@ -209,18 +206,18 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 				trySides.add(tryOtherSide);
 			}
 			for(EnumFacing side : trySides) {
-				if(!world.canBlockBePlaced(Blocks.TORCH, new BlockPos(x, y, z), false, side, player, stack))
+				if(!world.canBlockBePlaced(Blocks.TORCH, new BlockPos(xO, yO, zO), false, side, player, stack))
 					continue;
 				if(!(InventoryHelper.consumeItem(Blocks.TORCH, player, 0, 1) || findAndDrainSojournersStaff(player)))
 					continue;
-				IBlockState torchBlockState = getTorchSideAttempt(world, new BlockPos(x, y, z), side, player);
+				IBlockState torchBlockState = getTorchSideAttempt(world, new BlockPos(xO, yO, zO), side, player);
 
-				if(placeBlockAt(stack, player, world, new BlockPos(x, y, z), torchBlockState)) {
-					Blocks.TORCH.onBlockAdded(world, new BlockPos(x, y, z), torchBlockState);
+				if(placeBlockAt(stack, player, world, new BlockPos(xO, yO, zO), torchBlockState)) {
+					Blocks.TORCH.onBlockAdded(world, new BlockPos(xO, yO, zO), torchBlockState);
 					double gauss = 0.5D + world.rand.nextFloat() / 2;
-					world.spawnParticle(EnumParticleTypes.SPELL_MOB, x + 0.5D, y + 0.5D, z + 0.5D, gauss, gauss, 0.0F);
+					world.spawnParticle(EnumParticleTypes.SPELL_MOB, xO + 0.5D, yO + 0.5D, zO + 0.5D, gauss, gauss, 0.0F);
 					SoundType torchSoundType = Blocks.TORCH.getSoundType();
-					world.playSound(null, new BlockPos(x, y, z), torchSoundType.getStepSound(), SoundCategory.BLOCKS, (torchSoundType.getVolume() + 1.0F) / 2.0F, torchSoundType.getPitch() * 0.8F);
+					world.playSound(null, new BlockPos(xO, yO, zO), torchSoundType.getStepSound(), SoundCategory.BLOCKS, (torchSoundType.getVolume() + 1.0F) / 2.0F, torchSoundType.getPitch() * 0.8F);
 					return true;
 				}
 			}

@@ -47,7 +47,7 @@ public class EntityLyssaHook extends EntityFishHook {
 	private int ticksCaughtDelay;
 	private int ticksCatchableDelay;
 	private float fishApproachAngle;
-	public Entity caughtEntity;
+	private Entity caughtEntity;
 	private int fishPosRotationIncrements;
 	private double fishX;
 	private double fishY;
@@ -318,9 +318,7 @@ public class EntityLyssaHook extends EntityFishHook {
 				float f5 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
 				this.rotationYaw = (float) (MathHelper.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
 
-				//TODO test if this is supposed to stay
 				for(this.rotationPitch = (float) (MathHelper.atan2(this.motionY, (double) f5) * 180.0D / Math.PI); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F) {
-					;
 				}
 
 				while(this.rotationPitch - this.prevRotationPitch >= 180.0F) {
@@ -608,7 +606,7 @@ public class EntityLyssaHook extends EntityFishHook {
 		super.handleStatusUpdate(id);
 	}
 
-	protected void func_184527_k() {
+	private void func_184527_k() {
 		double d0 = this.angler.posX - this.posX;
 		double d2 = this.angler.posY - this.posY;
 		double d4 = this.angler.posZ - this.posZ;

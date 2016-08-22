@@ -33,7 +33,7 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 
 				int flightRange = Settings.RendingGale.pedestalFlightRange;
 
-				if(ModItems.rendingGale.getFeatherCount(stack) >= (rendingGale.getChargeCost() * SECONDS_BETWEEN_BUFF_CHECKS)) {
+				if(ModItems.rendingGale.getFeatherCount(stack) >= (ItemRendingGale.getChargeCost() * SECONDS_BETWEEN_BUFF_CHECKS)) {
 					List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos.getX() - flightRange, pos.getY() - flightRange, pos.getZ() - flightRange, pos.getX() + flightRange, pos.getY() + flightRange, pos.getZ() + flightRange));
 
 					if(!players.isEmpty()) {

@@ -5,7 +5,7 @@ import xreliquary.util.LanguageHelper;
 
 import java.util.Comparator;
 
-public class EffectComparator implements Comparator<PotionEffect> {
+class EffectComparator implements Comparator<PotionEffect> {
 	@Override
 	public int compare(PotionEffect o1, PotionEffect o2) {
 		int ret = LanguageHelper.getLocalization(o1.getEffectName()).trim().compareTo(LanguageHelper.getLocalization(o2.getEffectName()).trim());

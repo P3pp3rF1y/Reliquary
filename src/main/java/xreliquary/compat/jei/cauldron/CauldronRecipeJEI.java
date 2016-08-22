@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
-public class CauldronRecipeJEI extends BlankRecipeWrapper {
+class CauldronRecipeJEI extends BlankRecipeWrapper {
 	@Nonnull
 	private final List<ItemStack> inputs;
 

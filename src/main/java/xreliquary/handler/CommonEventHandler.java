@@ -213,7 +213,7 @@ public class CommonEventHandler {
 	//        }
 	//    }
 
-	public void doMobCharmCheckOnSetTarget(LivingSetAttackTargetEvent event) {
+	private void doMobCharmCheckOnSetTarget(LivingSetAttackTargetEvent event) {
 		if(event.getTarget() == null)
 			return;
 		if(!(event.getTarget() instanceof EntityPlayer))
@@ -263,7 +263,7 @@ public class CommonEventHandler {
 		}
 	}
 
-	public void doTwilightCloakCheck(LivingEvent event) {
+	private void doTwilightCloakCheck(LivingEvent event) {
 		if(event.getEntity() instanceof EntityLiving) {
 			EntityLiving entityLiving = ((EntityLiving) event.getEntity());
 			if(entityLiving.getAttackTarget() == null)
@@ -300,7 +300,7 @@ public class CommonEventHandler {
 			event.setResult(null);
 	}
 
-	public void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {
+	private void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!playerHasItem(player, ModItems.infernalClaws, false))
 			return;
 		if(!(event.getSource() == DamageSource.inFire) && !(event.getSource() == DamageSource.onFire))
@@ -314,7 +314,7 @@ public class CommonEventHandler {
 		event.setCanceled(true);
 	}
 
-	public void handleInfernalChaliceCheck(EntityPlayer player, LivingAttackEvent event) {
+	private void handleInfernalChaliceCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!playerHasItem(player, ModItems.infernalChalice, false))
 			return;
 		//TODO: figure out if there's some way to know that the fire was caused by lava, otherwise this is the only way to prevent damage from lava - reason being that most of the damage is from fire caused by lava
@@ -329,7 +329,7 @@ public class CommonEventHandler {
 		event.setCanceled(true);
 	}
 
-	public void handleAngelheartVialCheck(EntityPlayer player, LivingAttackEvent event) {
+	private void handleAngelheartVialCheck(EntityPlayer player, LivingAttackEvent event) {
 		// I'm rounding because I'm not 100% on whether the health value being a
 		// fraction matters for determining death
 		// Rounding would be worst case. I'm doing an early abort to keep my
@@ -359,7 +359,7 @@ public class CommonEventHandler {
 		event.setCanceled(true);
 	}
 
-	public void spawnAngelheartVialParticles(EntityPlayer player) {
+	private void spawnAngelheartVialParticles(EntityPlayer player) {
 		double var8 = player.posX;
 		double var10 = player.posY;
 		double var12 = player.posZ;
@@ -395,7 +395,7 @@ public class CommonEventHandler {
 
 	}
 
-	public void removeNegativeStatusEffects(EntityPlayer player) {
+	private void removeNegativeStatusEffects(EntityPlayer player) {
 		player.removePotionEffect(MobEffects.WITHER);
 		player.removePotionEffect(MobEffects.HUNGER);
 		player.removePotionEffect(MobEffects.POISON);
@@ -406,7 +406,7 @@ public class CommonEventHandler {
 		player.removePotionEffect(MobEffects.WEAKNESS);
 	}
 
-	public void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
+	private void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!playerHasItem(player, ModItems.phoenixDown, false))
 			return;
 		if(player.getHealth() > Math.round(event.getAmount())) {
@@ -458,13 +458,13 @@ public class CommonEventHandler {
 		}
 	}
 
-	public void spawnPhoenixResurrectionParticles(EntityPlayer player) {
+	private void spawnPhoenixResurrectionParticles(EntityPlayer player) {
 		for(int particles = 0; particles <= 400; particles++) {
 			player.worldObj.spawnParticle(EnumParticleTypes.FLAME, player.posX, player.posY, player.posZ, player.worldObj.rand.nextGaussian() * 8, player.worldObj.rand.nextGaussian() * 8, player.worldObj.rand.nextGaussian() * 8);
 		}
 	}
 
-	public void handleAngelicFeatherCheck(EntityPlayer player, LivingAttackEvent event) {
+	private void handleAngelicFeatherCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!playerHasItem(player, ModItems.angelicFeather, false))
 			return;
 		if(!(event.getSource() == DamageSource.fall))
@@ -480,7 +480,7 @@ public class CommonEventHandler {
 		event.setCanceled(true);
 	}
 
-	public void handleKrakenEyeCheck(EntityPlayer player, LivingAttackEvent event) {
+	private void handleKrakenEyeCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!playerHasItem(player, ModItems.krakenShell, false))
 			return;
 		if(player.getFoodStats().getFoodLevel() <= 0)
@@ -505,6 +505,7 @@ public class CommonEventHandler {
 		}
 	}
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean playerHasItem(EntityPlayer player, Item item, boolean checkEnabled) {
 		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
 			if(player.inventory.mainInventory[slot] == null)

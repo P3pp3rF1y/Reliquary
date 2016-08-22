@@ -74,11 +74,11 @@ public class ConfigurationHandler {
 		return configuration.getString(name, category, defaultValue, getTranslatedComment(category, name), getLabelLangRef(category, name));
 	}
 
-	public static String getTranslatedComment(String category, String config) {
+	private static String getTranslatedComment(String category, String config) {
 		return LanguageHelper.getLocalization("config." + category + "." + config + ".comment");
 	}
 
-	public static String getLabelLangRef(String category, String config) {
+	private static String getLabelLangRef(String category, String config) {
 		return "config." + category + "." + config + ".label";
 	}
 

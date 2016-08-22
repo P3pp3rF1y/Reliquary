@@ -22,9 +22,6 @@ import java.util.List;
  */
 public class ItemBlockBase extends ItemBlock {
 
-	//defaults to only showing the tooltip when shift is pressed. you can override this behavior at the item level by setting the item's showTooltipsAlways bool to true.
-	private boolean showTooltipsAlways = false;
-
 	public ItemBlockBase(Block block) {
 		super(block);
 	}
@@ -61,6 +58,6 @@ public class ItemBlockBase extends ItemBlock {
 	}
 
 	protected boolean showTooltipsAlways() {
-		return this.showTooltipsAlways;
+		return false;
 	}
 }

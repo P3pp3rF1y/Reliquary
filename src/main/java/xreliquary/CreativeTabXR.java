@@ -6,7 +6,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.init.ModItems;
 
-public class CreativeTabXR extends CreativeTabs {
+class CreativeTabXR extends CreativeTabs {
 
 	public CreativeTabXR(int ID, String langName) {
 		super(ID, langName);
