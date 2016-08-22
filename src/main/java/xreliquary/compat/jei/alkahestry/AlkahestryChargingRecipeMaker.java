@@ -34,7 +34,7 @@ public class AlkahestryChargingRecipeMaker {
 				input = recipe.item;
 			}
 			if(input != null) {
-				recipes.add(new AlkahestryChargingRecipeJEI(input, inputTome, outputTome, recipe.charge));
+				recipes.add(new AlkahestryChargingRecipeJEI(input, inputTome, outputTome));
 			}
 		}
 

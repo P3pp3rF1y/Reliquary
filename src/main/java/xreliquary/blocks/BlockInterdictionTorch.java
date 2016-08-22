@@ -92,7 +92,7 @@ public class BlockInterdictionTorch extends BlockTorch {
 		}
 	}
 
-	public int tickRate() {
+	private int tickRate() {
 		return 1;
 	}
 

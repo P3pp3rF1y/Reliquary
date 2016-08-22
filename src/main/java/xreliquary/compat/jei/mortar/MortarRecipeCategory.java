@@ -8,10 +8,9 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
-import xreliquary.compat.jei.ReliquaryPlugin;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Reference;
+import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
 
@@ -30,7 +29,7 @@ public class MortarRecipeCategory implements IRecipeCategory {
 
 	public MortarRecipeCategory(IGuiHelper guiHelper) {
 		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/mortar.png"), 0, 0, 79, 51);
-		localizedName = I18n.translateToLocal("jei.recipe.mortar");
+		localizedName = LanguageHelper.getLocalization("jei.recipe.mortar");
 	}
 
 	@Nonnull

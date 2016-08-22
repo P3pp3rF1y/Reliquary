@@ -15,7 +15,7 @@ public class StackHelper {
 		return new ItemStack(RegistryHelper.getItemFromName(registryName), 1, meta);
 	}
 
-	@Deprecated //TODO remove
+	//TODO refactor to use Item.REGISTRY and Block.Registry
 	public static ItemStack getItemStackFromNameMeta(String modId, String name, int meta) {
 		ItemStack stack = null;
 		Item item = GameRegistry.findItem(modId, name);

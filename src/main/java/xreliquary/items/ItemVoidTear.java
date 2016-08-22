@@ -110,7 +110,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 			if(player.isSneaking())
 				return super.onItemRightClick(ist, world, player, hand);
-			if(this.attemptToEmptyIntoInventory(ist, player, player.inventory, player.inventory.mainInventory.length)) {
+			if(this.attemptToEmptyIntoInventory(ist, player, player.inventory)) {
 				player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
 				NBTHelper.resetTag(ist);
 				return new ActionResult<>(EnumActionResult.SUCCESS, new ItemStack(ModItems.emptyVoidTear, 1, 0));
@@ -240,7 +240,7 @@ public class ItemVoidTear extends ItemToggleable {
 					this.drainInventory(ist, player, inventory);
 				} else {
 					//disabled == placement mode, try and stuff the tear's contents into the inventory
-					this.attemptToEmptyIntoInventory(ist, player, inventory, 0);
+					this.attemptToEmptyIntoInventory(ist, player, inventory);
 					if(!player.isSneaking() && !(getItemQuantity(ist) > 0)) {
 						player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(ModItems.emptyVoidTear, 1, 0));
 					}
@@ -251,14 +251,14 @@ public class ItemVoidTear extends ItemToggleable {
 		return EnumActionResult.PASS;
 	}
 
-	protected boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory, int limit) {
+	protected boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
 		ItemStack contents = this.getContainedItem(ist);
 		contents.stackSize = 1;
 
 		int quantity = getItemQuantity(ist);
 		int maxNumberToEmpty = player.isSneaking() ? quantity : Math.min(contents.getMaxStackSize(), quantity);
 
-		quantity -= InventoryHelper.tryToAddToInventory(contents, inventory, limit, maxNumberToEmpty);
+		quantity -= InventoryHelper.tryToAddToInventory(contents, inventory, maxNumberToEmpty);
 
 		setItemQuantity(ist, quantity);
 		if(quantity == 0) {

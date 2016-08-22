@@ -8,9 +8,8 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
-import xreliquary.compat.jei.ReliquaryPlugin;
 import xreliquary.reference.Reference;
+import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -28,7 +27,7 @@ public class AlkahestryChargingRecipeCategory implements IRecipeCategory {
 
 	public AlkahestryChargingRecipeCategory(IGuiHelper guiHelper) {
 		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/alkahest_charging.png"), 0, 0, 95, 36);
-		localizedName = I18n.translateToLocal("jei.recipe.alkahest_charging");
+		localizedName = LanguageHelper.getLocalization("jei.recipe.alkahest_charging");
 	}
 
 	@Nonnull

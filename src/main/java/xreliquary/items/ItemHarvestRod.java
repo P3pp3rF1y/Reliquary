@@ -435,7 +435,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		if(getMode(stack).equals(BONE_MEAL_MODE)) {
 			ItemStack boneMealStack = new ItemStack(Items.DYE, 1, Reference.WHITE_DYE_META);
 			int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), getBoneMealCount(stack));
-			int numberAdded = InventoryHelper.tryToAddToInventory(boneMealStack, player.inventory, 0, numberToAdd);
+			int numberAdded = InventoryHelper.tryToAddToInventory(boneMealStack, player.inventory, numberToAdd);
 			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded, hand, player);
 		} else if(getMode(stack).equals(PLANTABLE_MODE)) {
 			byte plantableSlot = getCurrentPlantableSlot(stack);
@@ -443,7 +443,7 @@ public class ItemHarvestRod extends ItemToggleable {
 			int plantableQuantity = getPlantableQuantity(stack, plantableSlot);
 
 			int numberToAdd = Math.min(plantableStack.getMaxStackSize(), plantableQuantity);
-			int numberAdded = InventoryHelper.tryToAddToInventory(plantableStack, player.inventory, 0, numberToAdd);
+			int numberAdded = InventoryHelper.tryToAddToInventory(plantableStack, player.inventory, numberToAdd);
 
 			int updatedPlantableQuantity = getPlantableQuantity(stack, plantableSlot) - numberAdded;
 

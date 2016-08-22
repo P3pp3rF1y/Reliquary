@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -108,7 +109,7 @@ public class ItemEmperorChalice extends ItemToggleable {
 
 				} else {
 					String ident = RegistryHelper.getBlockRegistryName(world.getBlockState(result.getBlockPos()).getBlock());
-					if((ident.equals(RegistryHelper.getBlockRegistryName(Blocks.FLOWING_WATER)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.WATER))) && world.getBlockState(result.getBlockPos()).getValue(Blocks.WATER.LEVEL) == 0) {
+					if((ident.equals(RegistryHelper.getBlockRegistryName(Blocks.FLOWING_WATER)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.WATER))) && world.getBlockState(result.getBlockPos()).getValue(BlockLiquid.LEVEL) == 0) {
 						world.setBlockState(result.getBlockPos(), Blocks.AIR.getDefaultState());
 
 						return new ActionResult<>(EnumActionResult.SUCCESS, ist);

@@ -29,6 +29,7 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.client.particle.EntityCauldronBubbleFX;
 import xreliquary.client.particle.EntityCauldronSteamFX;
 import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
@@ -103,7 +104,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 
 		float red = (((color >> 16) & 255) / 256F);
 		float green = (((color >> 8) & 255) / 256F);
-		float blue = (((color >> 0) & 255) / 256F);
+		float blue = ((color & 255) / 256F);
 
 		EntityCauldronBubbleFX bubble = new EntityCauldronBubbleFX(Minecraft.getMinecraft().getTextureManager(), worldObj, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0D, 0D, 0D, red, green, blue);
 		EntityCauldronSteamFX steam = new EntityCauldronSteamFX(worldObj, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0D, 0.05D + 0.02F * getRenderLiquidLevel(), 0D, red, green, blue);
@@ -394,7 +395,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		this.liquidLevel = liquidLevel;
 		if(this.worldObj != null) {
 			IBlockState blockState = this.worldObj.getBlockState(this.getPos());
-			blockState = blockState.withProperty(ModBlocks.apothecaryCauldron.LEVEL, liquidLevel);
+			blockState = blockState.withProperty(BlockApothecaryCauldron.LEVEL, liquidLevel);
 			this.worldObj.setBlockState(this.getPos(), blockState);
 			this.worldObj.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
 		}

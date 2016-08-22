@@ -26,17 +26,16 @@ public class ConcussiveExplosion extends Explosion {
 	/**
 	 * whether or not the explosion sets fire to blocks around it
 	 */
-	public boolean field_82755_b = true;
-	private int field_77289_h = 16;
+	private boolean field_82755_b = true;
 	private World worldObj;
-	public double explosionX;
-	public double explosionY;
-	public double explosionZ;
-	public Entity exploder;
-	public float explosionSize;
+	private double explosionX;
+	private double explosionY;
+	private double explosionZ;
+	private Entity exploder;
+	private float explosionSize;
 	private final Map<EntityPlayer, Vec3d> playerKnockbackMap;
 	private EntityPlayer shootingEntity;
-	public boolean hurtsPlayer;
+	private boolean hurtsPlayer;
 
 	public ConcussiveExplosion(World world, Entity entity, EntityPlayer par3Entity, double explosionX, double explosionY, double explosionZ, float size, boolean isFlaming, boolean isSmoking) {
 		super(world, entity, explosionX, explosionY, explosionZ, size, isFlaming, isSmoking);
@@ -63,6 +62,7 @@ public class ConcussiveExplosion extends Explosion {
 		double d7;
 		double d9;
 
+		int field_77289_h = 16;
 		for(var3 = 0; var3 < field_77289_h; ++var3) {
 			for(var4 = 0; var4 < field_77289_h; ++var4) {
 				for(var5 = 0; var5 < field_77289_h; ++var5) {

@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -75,7 +76,7 @@ public class ItemInfernalChalice extends ItemToggleable {
 					return new ActionResult<>(EnumActionResult.FAIL, stack);
 
 				IBlockState blockState = world.getBlockState(result.getBlockPos());
-				if(this.isEnabled(stack) && (blockState.getBlock() == Blocks.FLOWING_LAVA || blockState.getBlock() == Blocks.LAVA) && blockState.getValue(Blocks.LAVA.LEVEL) == 0 && fluidHandler.fill(new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME), false) == Fluid.BUCKET_VOLUME) {
+				if(this.isEnabled(stack) && (blockState.getBlock() == Blocks.FLOWING_LAVA || blockState.getBlock() == Blocks.LAVA) && blockState.getValue(BlockLiquid.LEVEL) == 0 && fluidHandler.fill(new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME), false) == Fluid.BUCKET_VOLUME) {
 					world.setBlockState(result.getBlockPos(), Blocks.AIR.getDefaultState());
 					fluidHandler.fill(new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME), true);
 					return new ActionResult<>(EnumActionResult.SUCCESS, stack);
@@ -105,8 +106,7 @@ public class ItemInfernalChalice extends ItemToggleable {
 		if(!stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
 			return null;
 
-		IFluidHandler fluidHandler = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-		return fluidHandler;
+		return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
 	}
 
 	public boolean tryPlaceContainedLiquid(World world, ItemStack ist, double par2, double par4, double par6, BlockPos pos) {

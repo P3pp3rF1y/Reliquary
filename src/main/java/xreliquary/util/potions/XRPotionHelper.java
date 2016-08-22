@@ -50,7 +50,11 @@ public class XRPotionHelper {
 		return null;
 	}
 
-	private static Potion[] nonAugmentableEffects = new Potion[] {MobEffects.BLINDNESS, MobEffects.NAUSEA, MobEffects.INVISIBILITY, MobEffects.NIGHT_VISION, MobEffects.WATER_BREATHING};
+	private static Potion[] nonAugmentableEffects = new Potion[] {MobEffects.BLINDNESS,
+			MobEffects.NAUSEA,
+			MobEffects.INVISIBILITY,
+			MobEffects.NIGHT_VISION,
+			MobEffects.WATER_BREATHING};
 
 	public static boolean isAugmentablePotionEffect(PotionEffect effect) {
 		for(int i = 0; i < nonAugmentableEffects.length; i++) {
@@ -112,10 +116,14 @@ public class XRPotionHelper {
 					}
 
 					if(d0 > 0.0D) {
-						list.add(TextFormatting.BLUE + I18n.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.getOperation(), new Object[] {ItemStack.DECIMALFORMAT.format(d1), I18n.translateToLocal("attribute.name." + (String) tuple.getFirst())}));
+						list.add(TextFormatting.BLUE + I18n.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.getOperation(), new Object[] {
+								ItemStack.DECIMALFORMAT.format(d1),
+								I18n.translateToLocal("attribute.name." + (String) tuple.getFirst())}));
 					} else if(d0 < 0.0D) {
 						d1 = d1 * -1.0D;
-						list.add(TextFormatting.RED + I18n.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.getOperation(), new Object[] {ItemStack.DECIMALFORMAT.format(d1), I18n.translateToLocal("attribute.name." + (String) tuple.getFirst())}));
+						list.add(TextFormatting.RED + I18n.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.getOperation(), new Object[] {
+								ItemStack.DECIMALFORMAT.format(d1),
+								I18n.translateToLocal("attribute.name." + (String) tuple.getFirst())}));
 					}
 				}
 			}

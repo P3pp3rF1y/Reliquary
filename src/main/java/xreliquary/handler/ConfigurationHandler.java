@@ -1,6 +1,5 @@
 package xreliquary.handler;
 
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -9,6 +8,7 @@ import xreliquary.handler.config.*;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.LanguageHelper;
 
 import java.io.File;
 import java.util.Arrays;
@@ -74,11 +74,11 @@ public class ConfigurationHandler {
 		return configuration.getString(name, category, defaultValue, getTranslatedComment(category, name), getLabelLangRef(category, name));
 	}
 
-	public static String getTranslatedComment(String category, String config) {
-		return I18n.translateToLocal("config." + category + "." + config + ".comment");
+	private static String getTranslatedComment(String category, String config) {
+		return LanguageHelper.getLocalization("config." + category + "." + config + ".comment");
 	}
 
-	public static String getLabelLangRef(String category, String config) {
+	private static String getLabelLangRef(String category, String config) {
 		return "config." + category + "." + config + ".label";
 	}
 
@@ -87,7 +87,7 @@ public class ConfigurationHandler {
 
 		category.setLanguageKey("config." + categoryName + ".label");
 		if(setComment) {
-			category.setComment(I18n.translateToLocal("config." + categoryName + ".comment"));
+			category.setComment(LanguageHelper.getLocalization("config." + categoryName + ".comment"));
 		}
 	}
 

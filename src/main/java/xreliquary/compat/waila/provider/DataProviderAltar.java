@@ -10,11 +10,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import xreliquary.blocks.BlockAlkahestryAltar;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.reference.Settings;
+import xreliquary.util.LanguageHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -33,7 +33,7 @@ public class DataProviderAltar implements IWailaDataProvider {
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		if(Settings.wailaShiftForInfo && !accessor.getPlayer().isSneaking()) {
-			currenttip.add(ChatFormatting.ITALIC + I18n.translateToLocal("waila.xreliquary.shift_for_more") + ChatFormatting.RESET);
+			currenttip.add(ChatFormatting.ITALIC + LanguageHelper.getLocalization("waila.xreliquary.shift_for_more") + ChatFormatting.RESET);
 			return currenttip;
 		}
 
@@ -43,13 +43,13 @@ public class DataProviderAltar implements IWailaDataProvider {
 		TileEntityAltar altar = (TileEntityAltar) accessor.getTileEntity();
 
 		if(!altar.isActive()) {
-			currenttip.add(ChatFormatting.RED + I18n.translateToLocal("waila.xreliquary.altar.inactive") + ChatFormatting.RESET);
+			currenttip.add(ChatFormatting.RED + LanguageHelper.getLocalization("waila.xreliquary.altar.inactive") + ChatFormatting.RESET);
 			currenttip.add(altar.getRedstoneCount() + "x" + (new ItemStack(Items.REDSTONE).getDisplayName()));
 			return currenttip;
 		}
 
-		currenttip.add(ChatFormatting.GREEN + I18n.translateToLocal("waila.xreliquary.altar.active") + ChatFormatting.RESET);
-		currenttip.add(String.format(I18n.translateToLocal("waila.xreliquary.altar.time_remaining"), new SimpleDateFormat("mm:ss").format(altar.getCycleTime() * 50)));
+		currenttip.add(ChatFormatting.GREEN + LanguageHelper.getLocalization("waila.xreliquary.altar.active") + ChatFormatting.RESET);
+		currenttip.add(String.format(LanguageHelper.getLocalization("waila.xreliquary.altar.time_remaining"), new SimpleDateFormat("mm:ss").format(altar.getCycleTime() * 50)));
 
 		return currenttip;
 	}

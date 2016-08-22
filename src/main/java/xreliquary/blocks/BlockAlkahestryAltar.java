@@ -24,18 +24,6 @@ import java.util.Random;
 
 public class BlockAlkahestryAltar extends BlockBase {
 
-	static public class BlockActiveAlkahestryAltar extends BlockAlkahestryAltar {
-		public BlockActiveAlkahestryAltar() {
-			super(true);
-		}
-	}
-
-	static public class BlockIdleAlkahestryAltar extends BlockAlkahestryAltar {
-		public BlockIdleAlkahestryAltar() {
-			super(false);
-		}
-	}
-
 	//TODO: implement Property instead of this and use 2 variants of the block state
 	private final boolean isActive;
 
@@ -50,6 +38,7 @@ public class BlockAlkahestryAltar extends BlockBase {
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.MODEL;

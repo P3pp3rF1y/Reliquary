@@ -9,11 +9,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.init.ModBlocks;
+import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
@@ -45,7 +45,7 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 			return currenttip;
 
 		if(!cauldron.hasNetherwart)
-			currenttip.add(ChatFormatting.RED + I18n.translateToLocal("waila.xreliquary.cauldron.missing_netherwart") + ChatFormatting.RESET);
+			currenttip.add(ChatFormatting.RED + LanguageHelper.getLocalization("waila.xreliquary.cauldron.missing_netherwart") + ChatFormatting.RESET);
 
 		StringBuilder ingredients = new StringBuilder();
 		if(cauldron.redstoneCount > 0) {
@@ -64,9 +64,9 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		currenttip.add(ingredients.toString());
 
 		if(cauldron.hasGunpowder) {
-			currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + I18n.translateToLocal("waila.xreliquary.cauldron.splash") + ChatFormatting.RESET);
+			currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + LanguageHelper.getLocalization("waila.xreliquary.cauldron.splash") + ChatFormatting.RESET);
 		} else {
-			currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + I18n.translateToLocal("waila.xreliquary.cauldron.potion") + ChatFormatting.RESET);
+			currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + LanguageHelper.getLocalization("waila.xreliquary.cauldron.potion") + ChatFormatting.RESET);
 		}
 
 		addEffectsInfo(currenttip, cauldron.potionEssence);
