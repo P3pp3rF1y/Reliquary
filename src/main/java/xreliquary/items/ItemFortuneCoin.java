@@ -232,6 +232,12 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 
 			List<EntityItem> entities = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
 			for(EntityItem entityItem : entities) {
+
+				//if entity is marked not to be picked up by magnets leave it alone - IE thing but may be more than that
+				if(entityItem.getEntityData().getBoolean("PreventRemoteMovement")) {
+					continue;
+				}
+
 				int numberAdded = pedestal.addToConnectedInventory(entityItem.getEntityItem().copy());
 				if(numberAdded > 0) {
 					entityItem.getEntityItem().stackSize = entityItem.getEntityItem().stackSize - numberAdded;
