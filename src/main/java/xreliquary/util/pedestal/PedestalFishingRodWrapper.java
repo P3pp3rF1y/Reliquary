@@ -231,14 +231,14 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void onRemoved(ItemStack stack, IPedestal pedestal) {
-		if(fakePlayer.fishEntity != null) {
+		if(fakePlayer !=null && fakePlayer.fishEntity != null) {
 			fakePlayer.fishEntity.setDead();
 		}
 	}
 
 	@Override
 	public void stop(ItemStack stack, IPedestal pedestal) {
-		if(fakePlayer.fishEntity != null) {
+		if(fakePlayer !=null && fakePlayer.fishEntity != null) {
 			fakePlayer.fishEntity.setDead();
 			syncHookData(pedestal);
 		}
