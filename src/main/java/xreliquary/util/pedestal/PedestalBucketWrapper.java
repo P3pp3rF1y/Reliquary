@@ -3,6 +3,7 @@ package xreliquary.util.pedestal;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -36,7 +37,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		BlockPos pos = pedestal.getBlockPos();
 		int bucketRange = Settings.Pedestal.bucketWrapperRange;
 
-		if(!milkCows(pedestal, pos, bucketRange)) {
+		if(!milkCows(pedestal, pos, bucketRange, stack)) {
 			if(!drainLiquid(pedestal, pos, bucketRange)) {
 				pedestal.setActionCoolDown(2 * Settings.Pedestal.bucketWrapperCooldown);
 				return;
@@ -66,7 +67,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		Iterator<BlockPos> iterator = queueToDrain.iterator();
 
 		//iterate through all the fluid blocks in queue - needed in case there are multiple fluids and next fluid in queue can't go in any tank
-		while (iterator.hasNext()) {
+		while(iterator.hasNext()) {
 			BlockPos blockToDrain = iterator.next();
 			IBlockState blockState = world.getBlockState(blockToDrain);
 			Fluid fluid = FluidRegistry.lookupFluidForBlock(blockState.getBlock());
@@ -94,7 +95,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		unsuccessfulTries++;
 
-		if (unsuccessfulTries >= UNSUCCESSFUL_TRIES_TO_CLEAN_QUEUE) {
+		if(unsuccessfulTries >= UNSUCCESSFUL_TRIES_TO_CLEAN_QUEUE) {
 			queueToDrain.clear();
 			unsuccessfulTries = 0;
 		}
@@ -143,7 +144,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		return null;
 	}
 
-	private boolean milkCows(IPedestal pedestal, BlockPos pos, int bucketRange) {
+	private boolean milkCows(IPedestal pedestal, BlockPos pos, int bucketRange, ItemStack stack) {
 		//find all cow entities in range
 		World world = pedestal.getTheWorld();
 		List<EntityCow> entities = world.getEntitiesWithinAABB(EntityCow.class, new AxisAlignedBB(pos.getX() - bucketRange, pos.getY() - bucketRange, pos.getZ() - bucketRange, pos.getX() + bucketRange, pos.getY() + bucketRange, pos.getZ() + bucketRange));
@@ -167,8 +168,14 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.milk, Fluid.BUCKET_VOLUME));
 			//replace bucket in the pedestal with milk one if the tanks can't hold it
 			if(fluidAdded == 0) {
-				pedestal.replaceCurrentItem(new ItemStack(Items.MILK_BUCKET));
-				return true;
+				if(stack.stackSize == 1) {
+					pedestal.replaceCurrentItem(new ItemStack(Items.MILK_BUCKET));
+					return true;
+				} else if(stack.stackSize > 1) {
+					stack.stackSize--;
+					EntityItem entity = new EntityItem(world, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, new ItemStack(Items.MILK_BUCKET));
+					world.spawnEntityInWorld(entity);
+				}
 			}
 		}
 		return true;
