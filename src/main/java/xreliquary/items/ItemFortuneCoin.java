@@ -82,7 +82,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 		if(entity instanceof EntityPlayer) {
 			player = (EntityPlayer) entity;
 		}
-		if(player == null)
+		if(player == null || player.isSpectator())
 			return;
 		scanForEntitiesInRange(world, player, getStandardPullDistance());
 	}
