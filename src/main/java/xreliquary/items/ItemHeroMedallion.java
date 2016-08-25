@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
@@ -9,6 +10,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -21,6 +24,7 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.XpHelper;
 
 import java.util.List;
 
@@ -97,7 +101,11 @@ public class ItemHeroMedallion extends ItemToggleable {
 	}
 
 	public void decreaseMedallionExperience(ItemStack ist) {
-		setExperience(ist, getExperience(ist) - 1);
+		decreaseMedallionExperience(ist, 1);
+	}
+
+	public void decreaseMedallionExperience(ItemStack ist, int experience) {
+		setExperience(ist, getExperience(ist) - experience);
 	}
 
 	public void decreasePlayerLevel(EntityPlayer player) {
@@ -130,13 +138,36 @@ public class ItemHeroMedallion extends ItemToggleable {
 			return super.onItemRightClick(ist, world, player, hand);
 		//turn it on/off.
 
-		int playerLevel = player.experienceLevel;
-		while(player.experienceLevel < getExperienceMaximum() && playerLevel == player.experienceLevel && (getExperience(ist) > 0 || player.capabilities.isCreativeMode)) {
-			increasePlayerExperience(player);
-			if(!player.capabilities.isCreativeMode)
-				decreaseMedallionExperience(ist);
+		RayTraceResult rayTraceResult = this.rayTrace(world, player, true);
+
+		if(rayTraceResult == null || rayTraceResult.typeOfHit != RayTraceResult.Type.BLOCK) {
+			int playerLevel = player.experienceLevel;
+			while(player.experienceLevel < getExperienceMaximum() && playerLevel == player.experienceLevel && (getExperience(ist) > 0 || player.capabilities.isCreativeMode)) {
+				increasePlayerExperience(player);
+				if(!player.capabilities.isCreativeMode)
+					decreaseMedallionExperience(ist);
+			}
+		} else {
+			BlockPos hitPos = rayTraceResult.getBlockPos().add(rayTraceResult.sideHit.getDirectionVec());
+			spawnXpOnGround(ist, world, hitPos);
 		}
+
 		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
+	}
+
+	private void spawnXpOnGround(ItemStack ist, World world, BlockPos hitPos) {
+		int xp = XpHelper.getExperienceForLevel(1) / 2;
+
+		if(getExperience(ist) >= xp) {
+
+			decreaseMedallionExperience(ist, xp);
+
+			while(xp > 0) {
+				int j = EntityXPOrb.getXPSplit(xp);
+				xp -= j;
+				world.spawnEntityInWorld(new EntityXPOrb(world, hitPos.getX(), hitPos.getY(), hitPos.getZ(), j));
+			}
+		}
 	}
 
 	@Override
