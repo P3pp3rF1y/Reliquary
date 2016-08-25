@@ -39,6 +39,9 @@ public class ReliquaryPlugin implements IModPlugin {
 
 			registry.addRecipes(AlkahestryCraftingRecipeMaker.getRecipes());
 			registry.addRecipes(AlkahestryChargingRecipeMaker.getRecipes());
+
+			registry.addRecipeCategoryCraftingItem(new ItemStack(Blocks.CRAFTING_TABLE), Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING);
+			registry.addRecipeCategoryCraftingItem(new ItemStack(Blocks.CRAFTING_TABLE), Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING);
 		}
 
 		registry.addRecipeCategories(new MortarRecipeCategory(guiHelper));
@@ -47,8 +50,6 @@ public class ReliquaryPlugin implements IModPlugin {
 		registry.addRecipeHandlers(new MortarRecipeHandler());
 		registry.addRecipeHandlers(new CauldronRecipeHandler());
 
-		registry.addRecipeCategoryCraftingItem(new ItemStack(Blocks.CRAFTING_TABLE), Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING);
-		registry.addRecipeCategoryCraftingItem(new ItemStack(Blocks.CRAFTING_TABLE), Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING);
 		registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.apothecaryMortar), Reference.JEI_CATEGORY_MORTAR);
 		registry.addRecipeCategoryCraftingItem(new ItemStack(ModBlocks.apothecaryCauldron), Reference.JEI_CATEGORY_CAULDRON);
 
