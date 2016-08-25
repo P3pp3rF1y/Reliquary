@@ -48,7 +48,10 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+	}
 
+	@Override
+	public void stop(ItemStack stack, IPedestal pedestal) {
 	}
 
 	private boolean drainLiquid(IPedestal pedestal, BlockPos pos, int bucketRange) {

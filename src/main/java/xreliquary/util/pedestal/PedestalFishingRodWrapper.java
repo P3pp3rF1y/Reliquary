@@ -236,6 +236,14 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		}
 	}
 
+	@Override
+	public void stop(ItemStack stack, IPedestal pedestal) {
+		if(fakePlayer.fishEntity != null) {
+			fakePlayer.fishEntity.setDead();
+			syncHookData(pedestal);
+		}
+	}
+
 	private void setupFakePlayer(World world, BlockPos pos) {
 		if(fakePlayer == null) {
 			fakePlayer = new EntityXRFakePlayer((WorldServer) world);
