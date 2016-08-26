@@ -86,7 +86,7 @@ public class ItemHeroMedallion extends ItemToggleable {
 		}
 	}
 
-	public void decreasePlayerExperience(EntityPlayer player) {
+	private void decreasePlayerExperience(EntityPlayer player) {
 		player.experience -= 1F / (float) player.xpBarCap();
 		player.experienceTotal -= Math.min(1, player.experienceTotal);
 
@@ -95,25 +95,25 @@ public class ItemHeroMedallion extends ItemToggleable {
 		}
 	}
 
-	public void decreaseMedallionExperience(ItemStack ist) {
+	private void decreaseMedallionExperience(ItemStack ist) {
 		decreaseMedallionExperience(ist, 1);
 	}
 
-	public void decreaseMedallionExperience(ItemStack ist, int experience) {
+	private void decreaseMedallionExperience(ItemStack ist, int experience) {
 		setExperience(ist, getExperience(ist) - experience);
 	}
 
-	public void decreasePlayerLevel(EntityPlayer player) {
+	private void decreasePlayerLevel(EntityPlayer player) {
 		float experienceToRemove = -player.experience * player.xpBarCap();
 		player.experienceLevel -= 1;
 		player.experience = 1F - (experienceToRemove / player.xpBarCap());
 	}
 
-	public void increasePlayerExperience(EntityPlayer player) {
+	private void increasePlayerExperience(EntityPlayer player) {
 		player.addExperience(1);
 	}
 
-	public void increaseMedallionExperience(ItemStack ist) {
+	private void increaseMedallionExperience(ItemStack ist) {
 		setExperience(ist, getExperience(ist) + 1);
 	}
 
@@ -151,7 +151,7 @@ public class ItemHeroMedallion extends ItemToggleable {
 	}
 
 	private void spawnXpOnGround(ItemStack ist, World world, BlockPos hitPos) {
-		int xp = Settings.HeroMedallion.experienceDrop;
+		int xp = Math.min(Settings.HeroMedallion.experienceDrop, getExperience(ist));
 
 		if(getExperience(ist) >= xp) {
 
