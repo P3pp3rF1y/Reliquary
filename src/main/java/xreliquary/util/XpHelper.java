@@ -30,11 +30,11 @@ public class XpHelper {
 			return 0;
 		}
 		if(level > 0 && level < 16) {
-			return level * 17;
+			return level * (16 + level * 2) / 2;
 		} else if(level > 15 && level < 31) {
-			return (int) (1.5 * Math.pow(level, 2) - 29.5 * level + 360);
+			return (level - 15) * (79 + (level - 15) * 5) / 2 + 345;
 		} else {
-			return (int) (3.5 * Math.pow(level, 2) - 151.5 * level + 2220);
+			return (level - 30)*(233 + (level - 30)*9)/2 + 1500;
 		}
 	}
 
