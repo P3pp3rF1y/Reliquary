@@ -12,7 +12,6 @@ import xreliquary.init.ModItems;
 import xreliquary.init.ModPotions;
 import xreliquary.items.ItemRendingGale;
 import xreliquary.reference.Settings;
-import xreliquary.util.NBTHelper;
 
 import java.util.List;
 
@@ -66,6 +65,9 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+	}
 
+	@Override
+	public void stop(ItemStack stack, IPedestal pedestal) {
 	}
 }

@@ -176,6 +176,7 @@ public class Settings {
 		public static int experienceLevelMaximum;
 		public static int experienceLevelMinimum;
 		public static int experienceLimit;
+		public static int experienceDrop;
 	}
 
 	public static class IceMagusRod {

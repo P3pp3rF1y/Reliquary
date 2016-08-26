@@ -72,7 +72,10 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+	}
 
+	@Override
+	public void stop(ItemStack stack, IPedestal pedestal) {
 	}
 
 	private void breakCrops(World world, BlockPos pos, ItemStack stack, int range) {
@@ -276,8 +279,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
 					BlockPos currentPos = new BlockPos(x, y, z);
 					IBlockState blockState = world.getBlockState(currentPos);
-					if((!checkerboard || (bothOddOrEven == ((currentPos.getX() % 2 == 0) == (currentPos.getZ() % 2 == 0)))) &&
-							blockState.getBlock().canSustainPlant(blockState, world, pos, EnumFacing.UP, plantable) && world.isAirBlock(currentPos.up())) {
+					if((!checkerboard || (bothOddOrEven == ((currentPos.getX() % 2 == 0) == (currentPos.getZ() % 2 == 0)))) && blockState.getBlock().canSustainPlant(blockState, world, pos, EnumFacing.UP, plantable) && world.isAirBlock(currentPos.up())) {
 						queueToPlant.add(currentPos);
 					}
 				}

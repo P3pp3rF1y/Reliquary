@@ -364,6 +364,14 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 	private void setEnabled(boolean switchedOn) {
 		ModBlocks.pedestal.setEnabled(worldObj, pos, switchedOn);
+		if (!switchedOn)
+		for(currentItemIndex = 0; currentItemIndex<inventory.length; currentItemIndex++) {
+			if(actionItems.containsKey(currentItemIndex)) {
+				actionItems.get(currentItemIndex).stop(inventory[currentItemIndex], this);
+			} else if (itemWrappers.containsKey(currentItemIndex)) {
+				itemWrappers.get(currentItemIndex).stop(inventory[currentItemIndex], this);
+			}
+		}
 	}
 
 	public List<IInventory> getAdjacentInventories() {

@@ -16,6 +16,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
+import xreliquary.util.LanguageHelper;
 
 public class ItemGlowingBread extends ItemFood {
 
@@ -26,6 +27,12 @@ public class ItemGlowingBread extends ItemFood {
 		canRepair = false;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setUnlocalizedName(Names.glowing_bread);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public String getItemStackDisplayName(ItemStack stack) {
+		return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
 	}
 
 	@Override
