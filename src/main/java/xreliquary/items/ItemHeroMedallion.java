@@ -24,7 +24,6 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
-import xreliquary.util.XpHelper;
 
 import java.util.List;
 
@@ -78,7 +77,7 @@ public class ItemHeroMedallion extends ItemToggleable {
 			// in order to make this stop at a specific level, we will need to do
 			// a preemptive check for a specific level.
 			for(int levelLoop = 0; levelLoop <= Math.sqrt(!player.capabilities.isCreativeMode ? player.experienceLevel : 30); ++levelLoop) {
-				if((player.experienceLevel > getExperienceMinimum() || player.experience >= 1F || player.capabilities.isCreativeMode) && getExperience(ist) < Integer.MAX_VALUE) {
+				if((player.experienceLevel > getExperienceMinimum() || player.experience >= (1F / player.xpBarCap()) || player.capabilities.isCreativeMode) && getExperience(ist) < Settings.HeroMedallion.experienceLimit) {
 					if(!player.capabilities.isCreativeMode)
 						decreasePlayerExperience(player);
 					increaseMedallionExperience(ist);
@@ -87,17 +86,13 @@ public class ItemHeroMedallion extends ItemToggleable {
 		}
 	}
 
-	//TODO look into this comment
-	// I'm not 100% this is needed. You may be able to avoid this whole call by
-	// using the method in the player class, might be worth testing
-	// (player.addExperience(-1)?)
 	public void decreasePlayerExperience(EntityPlayer player) {
-		if(player.experience - (1.0F / (float) player.xpBarCap()) <= 0 && player.experienceLevel > getExperienceMinimum()) {
-			decreasePlayerLevel(player);
-			return;
-		}
-		player.experience -= Math.min(1.0F / (float) player.xpBarCap(), player.experience);
+		player.experience -= 1F / (float) player.xpBarCap();
 		player.experienceTotal -= Math.min(1, player.experienceTotal);
+
+		if(player.experience < 0F) {
+			decreasePlayerLevel(player);
+		}
 	}
 
 	public void decreaseMedallionExperience(ItemStack ist) {
@@ -109,9 +104,9 @@ public class ItemHeroMedallion extends ItemToggleable {
 	}
 
 	public void decreasePlayerLevel(EntityPlayer player) {
-		player.experience = 1.0F - (1.0F / (float) player.xpBarCap());
-		player.experienceTotal -= Math.min(1, player.experienceTotal);
+		float experienceToRemove = -player.experience * player.xpBarCap();
 		player.experienceLevel -= 1;
+		player.experience = 1F - (experienceToRemove / player.xpBarCap());
 	}
 
 	public void increasePlayerExperience(EntityPlayer player) {
