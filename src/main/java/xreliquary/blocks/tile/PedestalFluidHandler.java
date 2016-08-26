@@ -55,6 +55,10 @@ public class PedestalFluidHandler implements IFluidHandler {
 		int totalDrained = 0;
 		for(ItemStack container : pedestal.getFluidContainers()) {
 			FluidStack drainedStack = getFluidCapFromContainer(container).drain(resource.amount - totalDrained, doDrain);
+
+			if (drainedStack == null)
+				continue;
+
 			totalDrained += drainedStack.amount;
 
 			if(totalDrained >= resource.amount)
