@@ -462,6 +462,8 @@ xreliquary.config.item_and_block_settings.hero_medallion.experience_level_minimu
 xreliquary.config.item_and_block_settings.hero_medallion.experience_level_minimum.comment=A player's experience level at which the medallion will stop pulling from the player
 xreliquary.config.item_and_block_settings.hero_medallion.experience_limit.label=Experience limit
 xreliquary.config.item_and_block_settings.hero_medallion.experience_limit.comment=Experience level that the medallion can hold
+xreliquary.config.item_and_block_settings.hero_medallion.experience_drop.label=Experience dropped on ground
+xreliquary.config.item_and_block_settings.hero_medallion.experience_drop.comment=How much experience gets dropped on ground when hero's medallion is right clicked on it (9 is the first level of player xp)
 xreliquary.config.item_and_block_settings.ice_magus_rod.label=Ice Magus Rod
 xreliquary.config.item_and_block_settings.ice_magus_rod.comment=Ice Magus Rod settings
 xreliquary.config.item_and_block_settings.ice_magus_rod.snowball_limit.label=Snowball limit

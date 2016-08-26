@@ -156,7 +156,7 @@ public class ItemHeroMedallion extends ItemToggleable {
 	}
 
 	private void spawnXpOnGround(ItemStack ist, World world, BlockPos hitPos) {
-		int xp = XpHelper.getExperienceForLevel(1) / 2;
+		int xp = Settings.HeroMedallion.experienceDrop;
 
 		if(getExperience(ist) >= xp) {
 

@@ -130,6 +130,7 @@ public class BlockItemConfiguration {
 		Settings.HeroMedallion.experienceLevelMaximum = ConfigurationHandler.getInt("experience_level_maximum", Names.item_and_block_settings + "." + Names.hero_medallion, 200, 0, 1000);
 		Settings.HeroMedallion.experienceLevelMinimum = ConfigurationHandler.getInt("experience_level_minimum", Names.item_and_block_settings + "." + Names.hero_medallion, 0, 0, 30);
 		Settings.HeroMedallion.experienceLimit = ConfigurationHandler.getInt("experience_limit", Names.item_and_block_settings + "." + Names.hero_medallion, cleanIntMax, 0, cleanIntMax);
+		Settings.HeroMedallion.experienceDrop = ConfigurationHandler.getInt("experience_drop", Names.item_and_block_settings + "." + Names.hero_medallion, 9, 0, 100);
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.hero_medallion, true);
 
 		//ice rod configs
