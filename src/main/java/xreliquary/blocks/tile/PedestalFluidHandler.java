@@ -27,7 +27,7 @@ public class PedestalFluidHandler implements IFluidHandler {
 		List<IFluidTankProperties> props = new ArrayList<>();
 		for(ItemStack container : fluidContainers) {
 			IFluidTankProperties[] containerProps = getContainerTankProperties(container);
-			for(int i=0; i < containerProps.length; i++) {
+			for(int i = 0; i < containerProps.length; i++) {
 				props.add(containerProps[i]);
 			}
 		}
@@ -49,6 +49,7 @@ public class PedestalFluidHandler implements IFluidHandler {
 
 		return totalFilled;
 	}
+
 	@Nullable
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain) {
@@ -56,7 +57,7 @@ public class PedestalFluidHandler implements IFluidHandler {
 		for(ItemStack container : pedestal.getFluidContainers()) {
 			FluidStack drainedStack = getFluidCapFromContainer(container).drain(resource.amount - totalDrained, doDrain);
 
-			if (drainedStack == null)
+			if(drainedStack == null)
 				continue;
 
 			totalDrained += drainedStack.amount;
@@ -78,11 +79,14 @@ public class PedestalFluidHandler implements IFluidHandler {
 		ItemStack container = fluidContainers.get(0);
 		Fluid fluid = getFirstContainerFluid(container);
 
+		if(fluid == null)
+			return null;
+
 		return drain(new FluidStack(fluid, maxDrain), doDrain);
 	}
 
 	private IFluidHandler getFluidCapFromContainer(ItemStack container) {
-		if (!container.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+		if(!container.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
 			return null;
 
 		return container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
@@ -91,12 +95,23 @@ public class PedestalFluidHandler implements IFluidHandler {
 	private IFluidTankProperties[] getContainerTankProperties(ItemStack container) {
 		IFluidHandler handler = getFluidCapFromContainer(container);
 
-		if (handler == null)
+		if(handler == null)
 			return null;
 
 		return handler.getTankProperties();
 	}
+
 	private Fluid getFirstContainerFluid(ItemStack container) {
-		return getFluidCapFromContainer (container).getTankProperties()[0].getContents().getFluid();
+		IFluidHandler handler = getFluidCapFromContainer(container);
+
+		if(handler == null)
+			return null;
+
+		IFluidTankProperties[] tankProperties = handler.getTankProperties();
+
+		if(tankProperties == null || tankProperties.length == 0)
+			return null;
+
+		return tankProperties[0].getContents() == null ? null : tankProperties[0].getContents().getFluid();
 	}
 }
