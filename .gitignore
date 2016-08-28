@@ -9,6 +9,7 @@
 !build.gradle
 !build.properties
 !gradle.properties
+!.travis.yml
 
 # include markdowns
 !README.md
