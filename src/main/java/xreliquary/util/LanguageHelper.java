@@ -62,7 +62,7 @@ public class LanguageHelper {
 		return localization;
 	}
 
-	public static void formatTooltip(String langName, ImmutableMap<String, String> toFormat, ItemStack stack, List list) {
+	public static void formatTooltip(String langName, ImmutableMap<String, String> toFormat, ItemStack stack, List<String> list) {
 		String langTooltip = LanguageHelper.getLocalization(langName);
 		if(langTooltip == null || langTooltip.equals(langName))
 			return;

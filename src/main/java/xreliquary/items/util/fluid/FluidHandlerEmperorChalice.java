@@ -61,6 +61,7 @@ public class FluidHandlerEmperorChalice implements IFluidHandler, ICapabilityPro
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+		//noinspection unchecked
 		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T) this : null;
 	}
 }

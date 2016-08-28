@@ -146,10 +146,8 @@ public class BlockPedestal extends BlockPedestalPassive {
 			return false;
 		if(side == EnumFacing.WEST && (zOff < 0.35 || zOff > 0.65 || xOff != 0.125))
 			return false;
-		if(side == EnumFacing.EAST && (zOff < 0.35 || zOff > 0.65 || xOff != 0.875))
-			return false;
+		return !(side == EnumFacing.EAST && (zOff < 0.35 || zOff > 0.65 || xOff != 0.875));
 
-		return true;
 	}
 
 	@Override

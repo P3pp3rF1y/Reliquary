@@ -65,11 +65,11 @@ public class XRPotionHelper {
 		return true;
 	}
 
-	public static void addPotionInfo(PotionEssence essence, List list) {
+	public static void addPotionInfo(PotionEssence essence, List<String> list) {
 		addPotionInfo(essence, list, true);
 	}
 
-	public static void addPotionInfo(PotionEssence essence, List list, boolean addEffectDescription) {
+	public static void addPotionInfo(PotionEssence essence, List<String> list, boolean addEffectDescription) {
 		if(essence.getEffects().size() > 0) {
 			List<Tuple<String, AttributeModifier>> list1 = Lists.<Tuple<String, AttributeModifier>>newArrayList();
 			for(PotionEffect potioneffect : essence.getEffects()) {
@@ -79,9 +79,9 @@ public class XRPotionHelper {
 
 				if(!map.isEmpty()) {
 					for(Map.Entry<IAttribute, AttributeModifier> entry : map.entrySet()) {
-						AttributeModifier attributemodifier = (AttributeModifier) entry.getValue();
+						AttributeModifier attributemodifier = entry.getValue();
 						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.getAttributeModifierAmount(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
-						list1.add(new Tuple(((IAttribute) entry.getKey()).getAttributeUnlocalizedName(), attributemodifier1));
+						list1.add(new Tuple<>(entry.getKey().getAttributeUnlocalizedName(), attributemodifier1));
 					}
 				}
 

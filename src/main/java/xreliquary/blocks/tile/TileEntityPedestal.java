@@ -125,6 +125,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			if(pedestalFluidHandler == null) {
 				pedestalFluidHandler = new PedestalFluidHandler(this);
 			}
+			//noinspection unchecked
 			return (T) pedestalFluidHandler;
 		}
 

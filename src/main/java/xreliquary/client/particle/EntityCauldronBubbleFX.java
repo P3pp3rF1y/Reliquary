@@ -24,14 +24,14 @@ public class EntityCauldronBubbleFX extends Particle {
 
 	private TextureManager theRenderEngine;
 
-	public EntityCauldronBubbleFX(TextureManager renderEngine, World world, double x, double y, double z, double xMot, double yMot, double zMot, float red, float green, float blue) {
-		super(world, x, y, z, xMot, yMot, zMot);
+	public EntityCauldronBubbleFX(TextureManager renderEngine, World world, double x, double y, double z, float red, float green, float blue) {
+		super(world, x, y, z, 0D, 0D, 0D);
 		this.setSize(0.02F, 0.02F);
 		theRenderEngine = renderEngine;
 		this.particleScale = 0.5F + (worldObj.rand.nextFloat() - 0.5F) * 0.4F;
-		this.motionX = xMot;
-		this.motionY = yMot;
-		this.motionZ = zMot;
+		this.motionX = 0D;
+		this.motionY = 0D;
+		this.motionZ = 0D;
 		this.particleRed = red;
 		this.particleGreen = green;
 		this.particleBlue = blue;

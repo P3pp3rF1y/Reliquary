@@ -36,7 +36,7 @@ public class EntityBusterShot extends EntityShotBase {
 
 	@Override
 	void doBurstEffect(EnumFacing sideHit) {
-		ConcussiveExplosion.customBusterExplosion(this, shootingEntity, posX, posY, posZ, 4.0F, false, true);
+		ConcussiveExplosion.customBusterExplosion(this, posX, posY, posZ, 4.0F);
 		this.setDead();
 	}
 

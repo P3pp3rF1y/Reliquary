@@ -66,10 +66,8 @@ public class MobCharmRepairRecipe implements IRecipe {
 		if (mobCharm == null || ingredient == null || !REPAIR_INGREDIENTS.get(ModItems.mobCharm.getType(mobCharm)).isItemEqual(ingredient))
 			return false;
 
-		if (mobCharm.getItemDamage() < (Settings.MobCharm.dropDurabilityRepair * (numberIngredients - 1)))
-			return false;
+		return mobCharm.getItemDamage() >= (Settings.MobCharm.dropDurabilityRepair * (numberIngredients - 1));
 
-		return true;
 	}
 
 	private boolean isRepairIngredient(ItemStack stack) {

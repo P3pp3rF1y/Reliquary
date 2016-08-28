@@ -32,7 +32,7 @@ public class ItemElsewhereFlask extends ItemBase {
 	// instead of one.
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
 
 	}
 

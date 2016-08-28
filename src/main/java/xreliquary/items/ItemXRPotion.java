@@ -52,7 +52,7 @@ public class ItemXRPotion extends ItemBase {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean flag) {
+	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean flag) {
 		PotionEssence essence = new PotionEssence(ist.getTagCompound());
 		XRPotionHelper.addPotionInfo(essence, list);
 	}

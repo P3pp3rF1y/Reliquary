@@ -32,7 +32,7 @@ public class ItemBase extends Item {
 	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatDoesThisEvenDo) {
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean whatDoesThisEvenDo) {
 		this.formatTooltip(null, stack, list);
 	}
 
@@ -48,7 +48,7 @@ public class ItemBase extends Item {
 	 * @param list     List of description lines passed from addInformation.
 	 */
 	@SideOnly(Side.CLIENT)
-	public void formatTooltip(ImmutableMap<String, String> toFormat, ItemStack stack, List list) {
+	public void formatTooltip(ImmutableMap<String, String> toFormat, ItemStack stack, List<String> list) {
 		if(showTooltipsAlways() || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", toFormat, stack, list);
 	}

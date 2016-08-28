@@ -39,7 +39,7 @@ public class ConfigurationHandler {
 		configuration.getCategory("general").get(Names.mob_drop_crafting_recipes_enabled).setRequiresMcRestart(true);
 		Settings.mobDropsEnabled = getBoolean(Names.mob_drops_enabled, "general", true);
 		configuration.getCategory("general").get(Names.mob_drops_enabled).setRequiresMcRestart(true);
-		Settings.disabledItemsBlocks = ConfigurationHandler.getStringList(Names.disabled_items_blocks, "general", Collections.EMPTY_LIST);
+		Settings.disabledItemsBlocks = ConfigurationHandler.getStringList(Names.disabled_items_blocks, "general", Collections.emptyList());
 		configuration.getCategory("general").get(Names.disabled_items_blocks).setRequiresMcRestart(true);
 	}
 
@@ -70,7 +70,7 @@ public class ConfigurationHandler {
 		return configuration.getInt(name, category, defaultValue, minValue, maxValue, getTranslatedComment(category, name), getLabelLangRef(category, name));
 	}
 
-	public static String getString(String name, String category, String defaultValue) {
+	public static String getString(@SuppressWarnings("SameParameterValue") String name, String category, String defaultValue) {
 		return configuration.getString(name, category, defaultValue, getTranslatedComment(category, name), getLabelLangRef(category, name));
 	}
 
@@ -82,7 +82,7 @@ public class ConfigurationHandler {
 		return "config." + category + "." + config + ".label";
 	}
 
-	public static void setCategoryTranslations(String categoryName, boolean setComment) {
+	public static void setCategoryTranslations(String categoryName, @SuppressWarnings("SameParameterValue") boolean setComment) {
 		ConfigCategory category = configuration.getCategory(categoryName);
 
 		category.setLanguageKey("config." + categoryName + ".label");

@@ -76,7 +76,7 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(getBoneMealCount(ist))), ist, list);
@@ -131,14 +131,13 @@ public class ItemHarvestRod extends ItemToggleable {
 
 			@Override
 			public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-				if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-					return true;
-				return false;
+				return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 			}
 
 			@Override
 			public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 				if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+					//noinspection unchecked
 					return (T) itemHandler;
 
 				return null;
@@ -297,14 +296,14 @@ public class ItemHarvestRod extends ItemToggleable {
 		return true;
 	}
 
-	private void boneMealBlock(ItemStack ist, EntityPlayer player, EnumHand hand, World world, BlockPos pos, EnumFacing side) {
+	private void boneMealBlock(ItemStack ist, EntityPlayer player, EnumHand hand, World world, BlockPos pos) {
 		ItemStack fakeItemStack = new ItemStack(Items.DYE, 1, Reference.WHITE_DYE_META);
 		ItemDye fakeItemDye = (ItemDye) fakeItemStack.getItem();
 
 		boolean usedRod = false;
 		for(int repeatedUses = 0; repeatedUses <= getLuckRolls(); repeatedUses++) {
 			if(repeatedUses == 0 || world.rand.nextInt(100) <= getLuckPercent()) {
-				if(fakeItemDye.onItemUse(fakeItemStack, player, world, pos, EnumHand.MAIN_HAND, side, 0, 0, 0) == EnumActionResult.SUCCESS) {
+				if(fakeItemDye.onItemUse(fakeItemStack, player, world, pos, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0) == EnumActionResult.SUCCESS) {
 					if(!usedRod)
 						usedRod = true;
 					player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.NEUTRAL, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
@@ -418,7 +417,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
 			if(getMode(harvestRod) == BONE_MEAL_MODE) {
 				if(getBoneMealCount(harvestRod) >= getBonemealCost() || player.capabilities.isCreativeMode) {
-					boneMealBlock(harvestRod, player, player.getActiveHand(), world, pos, EnumFacing.UP);
+					boneMealBlock(harvestRod, player, player.getActiveHand(), world, pos);
 				}
 			} else if(getMode(harvestRod) == PLANTABLE_MODE) {
 				if(getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) > 0 || player.capabilities.isCreativeMode) {
@@ -513,7 +512,7 @@ public class ItemHarvestRod extends ItemToggleable {
 								BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius);
 
 								if(blockToBoneMeal != null) {
-									boneMealBlock(harvestRod, player, player.getActiveHand(), world, blockToBoneMeal, EnumFacing.UP);
+									boneMealBlock(harvestRod, player, player.getActiveHand(), world, blockToBoneMeal);
 									return;
 								}
 							}

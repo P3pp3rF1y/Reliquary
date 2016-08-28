@@ -26,14 +26,13 @@ public class FilteredItemHandlerProvider implements ICapabilitySerializable<NBTT
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return true;
-		return false;
+		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			//noinspection unchecked
 			return (T) itemHandler;
 
 		return null;

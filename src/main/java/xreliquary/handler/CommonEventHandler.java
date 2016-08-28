@@ -17,7 +17,6 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketPlayerAbilities;
 import net.minecraft.potion.PotionEffect;
@@ -339,7 +338,7 @@ public class CommonEventHandler {
 		if(!playerHasItem(player, ModItems.angelheartVial, false))
 			return;
 
-		decreaseItemByOne(player, ModItems.angelheartVial);
+		decreaseItemByOne(player);
 
 		// player should see a vial "shatter" effect and hear the glass break to
 		// let them know they lost a vial.
@@ -421,7 +420,6 @@ public class CommonEventHandler {
 
 			event.setCanceled(true);
 
-			return;
 		} else {
 
 			// item reverts to a normal feather.
@@ -513,9 +511,7 @@ public class CommonEventHandler {
 			if(player.inventory.mainInventory[slot].getItem() == item) {
 				if(checkEnabled) {
 					if(player.inventory.mainInventory[slot].getItem() instanceof ItemToggleable) {
-						if(((ItemToggleable) player.inventory.mainInventory[slot].getItem()).isEnabled(player.inventory.mainInventory[slot]))
-							return true;
-						return false;
+						return ((ItemToggleable) player.inventory.mainInventory[slot].getItem()).isEnabled(player.inventory.mainInventory[slot]);
 					}
 				}
 				return true;
@@ -531,9 +527,7 @@ public class CommonEventHandler {
 			if(player.inventory.mainInventory[slot].isItemEqual(ist)) {
 				if(checkEnabled) {
 					if(player.inventory.mainInventory[slot].getItem() instanceof ItemToggleable) {
-						if(((ItemToggleable) player.inventory.mainInventory[slot].getItem()).isEnabled(player.inventory.mainInventory[slot]))
-							return true;
-						return false;
+						return ((ItemToggleable) player.inventory.mainInventory[slot].getItem()).isEnabled(player.inventory.mainInventory[slot]);
 					}
 				}
 				return true;
@@ -571,11 +565,11 @@ public class CommonEventHandler {
 	}
 
 	// pretty much the same as above, specific to angelheart vial. finds it and breaks one.
-	private void decreaseItemByOne(EntityPlayer player, Item item) {
+	private void decreaseItemByOne(EntityPlayer player) {
 		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
 			if(player.inventory.mainInventory[slot] == null)
 				continue;
-			if(player.inventory.mainInventory[slot].getItem() == item) {
+			if(player.inventory.mainInventory[slot].getItem() == ModItems.angelheartVial) {
 				player.inventory.decrStackSize(slot, 1);
 				return;
 			}

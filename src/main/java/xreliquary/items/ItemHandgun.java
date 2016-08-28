@@ -52,14 +52,13 @@ public class ItemHandgun extends ItemBase {
 
 			@Override
 			public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-				if(capability == ModCapabilities.HANDGUN_DATA_CAPABILITY)
-					return true;
-				return false;
+				return capability == ModCapabilities.HANDGUN_DATA_CAPABILITY;
 			}
 
 			@Override
 			public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 				if(capability == ModCapabilities.HANDGUN_DATA_CAPABILITY)
+					//noinspection unchecked
 					return (T) handgunData;
 				return null;
 			}
@@ -151,10 +150,8 @@ public class ItemHandgun extends ItemBase {
 		if(oldStack == null || newStack == null)
 			return true;
 
-		if(oldStack.getItem() == ModItems.handgun && newStack.getItem() == ModItems.handgun)
-			return false;
+		return !(oldStack.getItem() == ModItems.handgun && newStack.getItem() == ModItems.handgun);
 
-		return true;
 	}
 
 	@Override
@@ -216,10 +213,8 @@ public class ItemHandgun extends ItemBase {
 		if(!isInCooldown(secondHandgun))
 			return true;
 
-		if((getCooldown(secondHandgun) - world.getWorldTime()) < (getPlayerReloadDelay(player) / 2))
-			return true;
+		return (getCooldown(secondHandgun) - world.getWorldTime()) < (getPlayerReloadDelay(player) / 2);
 
-		return false;
 	}
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")

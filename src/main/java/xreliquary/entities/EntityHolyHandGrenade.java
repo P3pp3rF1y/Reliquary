@@ -62,7 +62,7 @@ public class EntityHolyHandGrenade extends EntityThrowable {
 	protected void onImpact(RayTraceResult result) {
 		this.setDead();
 
-		ConcussiveExplosion.customConcussiveExplosion(this, playerThrower, posX, posY, posZ, 4.0F, false, true);
+		ConcussiveExplosion.customConcussiveExplosion(this, playerThrower, posX, posY, posZ, 4.0F, false);
 	}
 
 	public String getCustomName() {

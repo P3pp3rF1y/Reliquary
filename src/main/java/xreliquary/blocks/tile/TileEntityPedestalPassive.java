@@ -179,9 +179,7 @@ public class TileEntityPedestalPassive extends TileEntityBase implements IInvent
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		if(index < slots)
-			return true;
-		return false;
+		return index < slots;
 	}
 
 	@Override

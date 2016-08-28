@@ -72,7 +72,7 @@ public class AlkahestConfiguration {
 		addConfigAlkahestChargingRecipe(category, item, 0, charge);
 	}
 
-	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item, Integer meta, Integer charge) {
+	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item, @SuppressWarnings("SameParameterValue") Integer meta, Integer charge) {
 		Property prop = new Property(item, new String[] {meta.toString(), charge.toString()}, Property.Type.INTEGER);
 
 		category.put(item, prop);

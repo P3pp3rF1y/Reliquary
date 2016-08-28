@@ -2,6 +2,7 @@ package xreliquary.init;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.Reliquary;
@@ -32,7 +33,7 @@ public class ModBlocks {
 		registerBlock(alkahestryAltar, new ItemBlockBase(alkahestryAltar), Names.altar_idle);
 		registerBlock(alkahestryAltarActive, new ItemBlockBase(alkahestryAltarActive), Names.altar);
 		registerBlock(apothecaryMortar, new ItemBlockBase(apothecaryMortar), Names.apothecary_mortar);
-		registerBlock(fertileLilypad, new ItemFertileLilyPad(fertileLilypad), Names.fertile_lilypad);
+		registerBlock(fertileLilypad, new ItemFertileLilyPad(), Names.fertile_lilypad);
 		registerBlock(interdictionTorch, new ItemBlockBase(interdictionTorch), Names.interdiction_torch);
 		registerBlock(wraithNode, new ItemBlockBase(wraithNode), Names.wraith_node);
 		registerBlock(pedestal, new ItemBlockPedestal(pedestal), Names.pedestal, true);
@@ -47,7 +48,7 @@ public class ModBlocks {
 		registerTileEntity(TileEntityPedestalPassive.class, "reliquaryPedestalPassive");
 	}
 
-	private static void registerTileEntity(Class clazz, String name) {
+	private static void registerTileEntity(Class<? extends TileEntity> clazz, String name) {
 		if(Settings.disabledItemsBlocks.contains(name))
 			return;
 

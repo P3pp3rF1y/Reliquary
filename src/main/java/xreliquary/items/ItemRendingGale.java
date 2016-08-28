@@ -54,7 +54,7 @@ public class ItemRendingGale extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 
@@ -224,7 +224,6 @@ public class ItemRendingGale extends ItemToggleable {
 
 		player.fallDistance = 0.0F;
 
-		return;
 	}
 
 	public boolean isAABBInAnythingButAir(World worldObj, AxisAlignedBB aabb) {

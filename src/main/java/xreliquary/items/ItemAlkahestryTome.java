@@ -75,7 +75,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+	public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		this.formatTooltip(ImmutableMap.of("chargeAmount", String.valueOf(NBTHelper.getInteger("charge", ist)), "chargeLimit", String.valueOf(getChargeLimit())), ist, list);

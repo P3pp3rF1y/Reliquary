@@ -129,19 +129,14 @@ public class ClientEventHandler {
 		if(handgunInMain && isValidTimeFrame(player.worldObj, player.getHeldItemMainhand()))
 			return true;
 
-		if(handgunInOff && isValidTimeFrame(player.worldObj, player.getHeldItemOffhand()))
-			return true;
+		return handgunInOff && isValidTimeFrame(player.worldObj, player.getHeldItemOffhand());
 
-		return false;
 	}
 
 	private boolean isValidTimeFrame(World world, ItemStack handgun) {
 		long cooldownTime = ModItems.handgun.getCooldown(handgun) + 5;
 
-		if(cooldownTime - world.getWorldTime() <= ModItems.handgun.getMaxItemUseDuration(handgun) && cooldownTime >= world.getWorldTime())
-			return true;
-
-		return false;
+		return cooldownTime - world.getWorldTime() <= ModItems.handgun.getMaxItemUseDuration(handgun) && cooldownTime >= world.getWorldTime();
 	}
 
 	@SubscribeEvent
@@ -191,10 +186,10 @@ public class ClientEventHandler {
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.enableLighting();
 
-		if (displayPosition == 1 || displayPosition == 3) {
+		if(displayPosition == 1 || displayPosition == 3) {
 			hudOverlayY = sr.getScaledHeight() / 2 - (itemSize / 2) - (Math.max(0, (numberItems - 1) * (itemSize + itemSpacing) / 2));
 
-			if (displayPosition == 1) {
+			if(displayPosition == 1) {
 				hudOverlayX = sr.getScaledWidth() - (itemSize + borderSpacing);
 			} else {
 				hudOverlayX = borderSpacing;
@@ -233,7 +228,7 @@ public class ClientEventHandler {
 			textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
 			renderItem.renderItemOverlayIntoGUI(minecraft.getRenderManager().getFontRenderer(), stackToRender, hudOverlayX, hudOverlayY, null);
 
-			if (displayPosition == 1 || displayPosition == 3)
+			if(displayPosition == 1 || displayPosition == 3)
 				hudOverlayY += itemSize + itemSpacing;
 			else
 				hudOverlayX += itemSize + itemSpacing;
@@ -246,9 +241,9 @@ public class ClientEventHandler {
 	private void removeExpiredMobCharms() {
 		int secondsToExpire = 4;
 		synchronized(charmsToDraw) {
-			for(Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext(); ){
+			for(Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext(); ) {
 				Map.Entry<Integer, CharmToDraw> entry = iterator.next();
-				if (Settings.MobCharm.keepAlmostDestroyedDisplayed && entry.getValue().damage >= (ModItems.mobCharm.getMaxDamage() * 0.9))
+				if(Settings.MobCharm.keepAlmostDestroyedDisplayed && entry.getValue().damage >= (ModItems.mobCharm.getMaxDamage() * 0.9))
 					continue;
 
 				if(entry.getValue().time + secondsToExpire * 1000 < System.currentTimeMillis()) {

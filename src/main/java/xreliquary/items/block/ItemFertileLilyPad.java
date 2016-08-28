@@ -1,6 +1,5 @@
 package xreliquary.items.block;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -20,8 +19,8 @@ import xreliquary.init.ModBlocks;
 import xreliquary.reference.Settings;
 
 public class ItemFertileLilyPad extends ItemBlockBase {
-	public ItemFertileLilyPad(Block block) {
-		super(block);
+	public ItemFertileLilyPad() {
+		super(ModBlocks.fertileLilypad);
 	}
 
 	@Override

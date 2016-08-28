@@ -1,6 +1,5 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -113,14 +112,14 @@ public class ItemShearsOfWinter extends ItemShears {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatDoesThisEvenDo) {
-		this.formatTooltip(null, stack, list);
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean whatDoesThisEvenDo) {
+		this.formatTooltip(stack, list);
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void formatTooltip(ImmutableMap<String, String> toFormat, ItemStack stack, List list) {
+	public void formatTooltip(ItemStack stack, List<String> list) {
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", toFormat, stack, list);
+			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", null, stack, list);
 	}
 
 	@Override
@@ -282,7 +281,6 @@ public class ItemShearsOfWinter extends ItemShears {
 					}
 				}
 			}
-			return;
 		}
 	}
 

@@ -145,14 +145,14 @@ public class ConcussiveExplosion extends Explosion {
 		return this.playerKnockbackMap;
 	}
 
-	public static void customBusterExplosion(Entity par1Entity, EntityPlayer player, double par2, double par4, double par6, float par8, boolean par9, boolean par10) {
+	public static void customBusterExplosion(Entity par1Entity, double par2, double par4, double par6, float par8) {
 		if(par1Entity.worldObj.isRemote)
 			return;
-		par1Entity.worldObj.newExplosion(par1Entity, par2, par4, par6, par8, par9, par10);
+		par1Entity.worldObj.newExplosion(par1Entity, par2, par4, par6, par8, false, true);
 	}
 
-	public static ConcussiveExplosion customConcussiveExplosion(Entity entity, EntityPlayer player, double explosionX, double explosionY, double explosionZ, float size, boolean isFlaming, boolean isSmoking) {
-		ConcussiveExplosion var11 = new ConcussiveExplosion(entity.worldObj, entity, player, explosionX, explosionY, explosionZ, size, isFlaming, isSmoking);
+	public static ConcussiveExplosion customConcussiveExplosion(Entity entity, EntityPlayer player, double explosionX, double explosionY, double explosionZ, float size, boolean isFlaming) {
+		ConcussiveExplosion var11 = new ConcussiveExplosion(entity.worldObj, entity, player, explosionX, explosionY, explosionZ, size, isFlaming, true);
 		var11.doExplosionA();
 		var11.doExplosionB(false);
 

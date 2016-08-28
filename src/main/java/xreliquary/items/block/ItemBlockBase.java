@@ -1,6 +1,5 @@
 package xreliquary.items.block;
 
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -31,24 +30,20 @@ public class ItemBlockBase extends ItemBlock {
 	 * formatTooltip() directly and DO NOT call super.addInformation().
 	 */
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatDoesThisEvenDo) {
-		this.formatTooltip(null, stack, list);
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean whatDoesThisEvenDo) {
+		this.formatTooltip(stack, list);
 	}
 
 	/**
 	 * Used to format tooltips. Grabs tooltip from language registry with the
 	 * entry 'item.unlocalizedName.tooltip'. Has support for Handlebars-style
 	 * templating, and line breaking using '\n'.
-	 *
-	 * @param toFormat An ImmutableMap that has all the regex keys and values. Regex
-	 *                 strings are handled on the tooltip by including '{{regexKey}}'
-	 *                 with your regex key, of course.
-	 * @param stack    The ItemStack passed from addInformation.
+	 *  @param stack    The ItemStack passed from addInformation.
 	 * @param list     List of description lines passed from addInformation.
 	 */
-	public void formatTooltip(ImmutableMap<String, String> toFormat, ItemStack stack, List list) {
+	public void formatTooltip(ItemStack stack, List<String> list) {
 		if(showTooltipsAlways() || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", toFormat, stack, list);
+			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", null, stack, list);
 	}
 
 	@Override

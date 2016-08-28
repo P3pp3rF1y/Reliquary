@@ -115,10 +115,7 @@ public class BlockApothecaryMortar extends BlockBase {
 			boolean done = mortar.usePestle();
 			world.playSound(null, pos, this.blockSoundType.getStepSound(), SoundCategory.BLOCKS, (this.blockSoundType.getVolume() + 1.0F) / 2.0F, this.blockSoundType.getPitch() * 0.8F);
 			player.swingArm(hand);
-			if(done) {
-				return true;
-			}
-			return false;
+			return done;
 		}
 		ItemStack[] mortarItems = mortar.getItemStacks();
 		boolean putItemInSlot = false;

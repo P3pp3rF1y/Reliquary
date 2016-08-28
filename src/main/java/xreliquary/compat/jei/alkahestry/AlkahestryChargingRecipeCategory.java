@@ -67,6 +67,7 @@ public class AlkahestryChargingRecipeCategory implements IRecipeCategory {
 		if(recipeWrapper instanceof AlkahestryChargingRecipeJEI) {
 			AlkahestryChargingRecipeJEI alkahestryChargingWrapper = (AlkahestryChargingRecipeJEI) recipeWrapper;
 			if(alkahestryChargingWrapper.getInputs().get(0) instanceof Collection) {
+				//noinspection unchecked
 				recipeLayout.getItemStacks().set(INPUT_SLOT, ((Collection<ItemStack>) alkahestryChargingWrapper.getInputs().get(0)));
 			} else {
 				recipeLayout.getItemStacks().set(INPUT_SLOT, (ItemStack) alkahestryChargingWrapper.getInputs().get(0));

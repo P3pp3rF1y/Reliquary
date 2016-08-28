@@ -58,7 +58,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
 		//maps the contents of the Pyromancer's staff to a tooltip, so the player can review the torches stored within.
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
@@ -215,10 +215,10 @@ public class ItemPyromancerStaff extends ItemToggleable {
 				count -= 1;
 				count = getMaxItemUseDuration(ist) - count;
 
-				doEruptionAuxEffects(player, rayTraceResult.getBlockPos().getX(), rayTraceResult.getBlockPos().getY(), rayTraceResult.getBlockPos().getZ(), 5D);
+				doEruptionAuxEffects(player, rayTraceResult.getBlockPos().getX(), rayTraceResult.getBlockPos().getY(), rayTraceResult.getBlockPos().getZ());
 				if(count % 10 == 0) {
 					if(removeItemFromInternalStorage(ist, Items.BLAZE_POWDER, getBlazePowderCost(), player.worldObj.isRemote, player)) {
-						doEruptionEffect(player, rayTraceResult.getBlockPos().getX(), rayTraceResult.getBlockPos().getY(), rayTraceResult.getBlockPos().getZ(), 5D);
+						doEruptionEffect(player, rayTraceResult.getBlockPos().getX(), rayTraceResult.getBlockPos().getY(), rayTraceResult.getBlockPos().getZ());
 					}
 				}
 			}
@@ -242,45 +242,45 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		return EnumActionResult.PASS;
 	}
 
-	public void doEruptionAuxEffects(EntityPlayer player, int soundX, int soundY, int soundZ, double areaCoefficient) {
+	public void doEruptionAuxEffects(EntityPlayer player, int soundX, int soundY, int soundZ) {
 		player.worldObj.playSound((double) soundX + 0.5D, (double) soundY + 0.5D, (double) soundZ + 0.5D, SoundEvents.ENTITY_GHAST_SHOOT, SoundCategory.NEUTRAL, 0.2F, 0.03F + (0.07F * itemRand.nextFloat()), false);
 
 		for(int particleCount = 0; particleCount < 2; ++particleCount) {
-			double randX = (soundX + 0.5D) + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient;
-			double randZ = (soundZ + 0.5D) + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient;
+			double randX = (soundX + 0.5D) + (player.worldObj.rand.nextFloat() - 0.5F) * 5D;
+			double randZ = (soundZ + 0.5D) + (player.worldObj.rand.nextFloat() - 0.5F) * 5D;
 			if(Math.abs(randX - (soundX + 0.5D)) >= 4.0D && Math.abs(randZ - (soundZ + 0.5D)) >= 4.0D)
 				continue;
 			player.worldObj.spawnParticle(EnumParticleTypes.LAVA, randX, soundY + 1D, randZ, 0D, 0D, 0D);
 		}
 		for(int particleCount = 0; particleCount < 4; ++particleCount) {
-			double randX = soundX + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient / 2D;
-			double randZ = soundZ + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient / 2D;
+			double randX = soundX + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * 5D / 2D;
+			double randZ = soundZ + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * 5D / 2D;
 			if(Math.abs(randX - (soundX + 0.5D)) >= 4.0D && Math.abs(randZ - (soundZ + 0.5D)) >= 4.0D)
 				continue;
 			player.worldObj.spawnParticle(EnumParticleTypes.LAVA, randX, soundY + 1D, randZ, 0D, 0D, 0D);
 		}
 		for(int particleCount = 0; particleCount < 6; ++particleCount) {
-			double randX = soundX + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient;
-			double randZ = soundZ + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient;
+			double randX = soundX + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * 5D;
+			double randZ = soundZ + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * 5D;
 			if(Math.abs(randX - (soundX + 0.5D)) >= 4.0D && Math.abs(randZ - (soundZ + 0.5D)) >= 4.0D)
 				continue;
 			player.worldObj.spawnParticle(EnumParticleTypes.FLAME, randX, soundY + 1D, randZ, player.worldObj.rand.nextGaussian() * 0.2D, player.worldObj.rand.nextGaussian() * 0.2D, player.worldObj.rand.nextGaussian() * 0.2D);
 		}
 		for(int particleCount = 0; particleCount < 8; ++particleCount) {
-			double randX = soundX + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient / 2D;
-			double randZ = soundZ + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * areaCoefficient / 2D;
+			double randX = soundX + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * 5D / 2D;
+			double randZ = soundZ + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * 5D / 2D;
 			if(Math.abs(randX - (soundX + 0.5D)) >= 4.0D && Math.abs(randZ - (soundZ + 0.5D)) >= 4.0D)
 				continue;
 			player.worldObj.spawnParticle(EnumParticleTypes.FLAME, randX, soundY + 1D, randZ, player.worldObj.rand.nextGaussian() * 0.2D, player.worldObj.rand.nextGaussian() * 0.2D, player.worldObj.rand.nextGaussian() * 0.2D);
 		}
 	}
 
-	public void doEruptionEffect(EntityPlayer player, int x, int y, int z, double areaCoefficient) {
-		double lowerX = x - areaCoefficient + 0.5D;
-		double lowerZ = z - areaCoefficient + 0.5D;
-		double upperX = x + areaCoefficient + 0.5D;
-		double upperY = y + areaCoefficient;
-		double upperZ = z + areaCoefficient + 0.5D;
+	public void doEruptionEffect(EntityPlayer player, int x, int y, int z) {
+		double lowerX = x - 5D + 0.5D;
+		double lowerZ = z - 5D + 0.5D;
+		double upperX = x + 5D + 0.5D;
+		double upperY = y + 5D;
+		double upperZ = z + 5D + 0.5D;
 		List eList = player.worldObj.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, y, lowerZ, upperX, upperY, upperZ));
 		Iterator iterator = eList.iterator();
 
