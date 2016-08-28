@@ -23,10 +23,6 @@ import java.util.Map;
 
 public class ConcussiveExplosion extends Explosion {
 
-	/**
-	 * whether or not the explosion sets fire to blocks around it
-	 */
-	private boolean field_82755_b = true;
 	private World worldObj;
 	private double explosionX;
 	private double explosionY;
@@ -132,6 +128,10 @@ public class ConcussiveExplosion extends Explosion {
 	public void doExplosionB(boolean par1) {
 		worldObj.playSound(null, new BlockPos(explosionX, explosionY, explosionZ), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 
+		/*
+	  whether or not the explosion sets fire to blocks around it
+	 */
+		boolean field_82755_b = true;
 		if(explosionSize >= 2.0F && field_82755_b) {
 			worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);
 		} else {

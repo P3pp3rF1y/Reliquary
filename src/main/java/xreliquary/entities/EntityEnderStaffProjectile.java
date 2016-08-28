@@ -18,10 +18,6 @@ import java.util.List;
 public class EntityEnderStaffProjectile extends EntityThrowable {
 	private int ticksInAir;
 	private int ticksInGround;
-	private IBlockState inTile;
-	private int xTile;
-	private int yTile;
-	private int zTile;
 
 	public EntityEnderStaffProjectile(World world) {
 		super(world);
@@ -66,11 +62,11 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 			worldObj.spawnParticle(EnumParticleTypes.PORTAL, posX, posY, posZ, 0.0D, 0.0D, 1.0D);
 		}
 
-		xTile = (int) Math.round(posX);
-		yTile = (int) Math.round(posY);
-		zTile = (int) Math.round(posZ);
+		int xTile = (int) Math.round(posX);
+		int yTile = (int) Math.round(posY);
+		int zTile = (int) Math.round(posZ);
 
-		inTile = worldObj.getBlockState(new BlockPos(xTile, yTile, zTile));
+		IBlockState inTile = worldObj.getBlockState(new BlockPos(xTile, yTile, zTile));
 
 		if(inGround) {
 			IBlockState var1 = worldObj.getBlockState(new BlockPos(xTile, yTile, zTile));

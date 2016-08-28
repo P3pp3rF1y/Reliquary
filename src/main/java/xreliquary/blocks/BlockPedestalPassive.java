@@ -74,7 +74,7 @@ public class BlockPedestalPassive extends BlockBase {
 
 	@Override
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		List list = new ArrayList<>();
+		List<ItemStack> list = new ArrayList<>();
 
 		Item item = this.getItemDropped(state,((World) world).rand, fortune);
 
