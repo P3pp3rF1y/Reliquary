@@ -1,4 +1,5 @@
 language: java
+install: true
 script:
  ./gradlew clean
  ./gradlew setupCIWorkspace
