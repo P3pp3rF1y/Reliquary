@@ -1,6 +1,6 @@
 language: java
 install: true
 script:
- ./gradlew clean
- ./gradlew setupCIWorkspace
- ./gradlew build
+- ./gradlew clean
+- ./gradlew setupCIWorkspace
+- ./gradlew build
