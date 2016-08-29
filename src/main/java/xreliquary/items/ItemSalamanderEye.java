@@ -21,7 +21,6 @@ import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class ItemSalamanderEye extends ItemBase {
@@ -77,20 +76,16 @@ public class ItemSalamanderEye extends ItemBase {
 	}
 
 	private void doFireballEffect(EntityPlayer player) {
-		List ghastFireballs = player.worldObj.getEntitiesWithinAABB(EntityLargeFireball.class, new AxisAlignedBB(player.posX - 5, player.posY - 5, player.posZ - 5, player.posX + 5, player.posY + 5, player.posZ + 5));
-		Iterator fire1 = ghastFireballs.iterator();
-		while(fire1.hasNext()) {
-			EntityLargeFireball fireball = (EntityLargeFireball) fire1.next();
+		List<EntityLargeFireball> ghastFireballs = player.worldObj.getEntitiesWithinAABB(EntityLargeFireball.class, new AxisAlignedBB(player.posX - 5, player.posY - 5, player.posZ - 5, player.posX + 5, player.posY + 5, player.posZ + 5));
+		for(EntityLargeFireball fireball : ghastFireballs) {
 			if(player.getDistanceToEntity(fireball) < 4) {
 				fireball.setDead();
 			}
 			fireball.attackEntityFrom(DamageSource.causePlayerDamage(player), 1);
 			player.worldObj.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
 		}
-		List blazeFireballs = player.worldObj.getEntitiesWithinAABB(EntitySmallFireball.class, new AxisAlignedBB(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));
-		Iterator fire2 = blazeFireballs.iterator();
-		while(fire2.hasNext()) {
-			EntitySmallFireball fireball = (EntitySmallFireball) fire2.next();
+		List<EntitySmallFireball> blazeFireballs = player.worldObj.getEntitiesWithinAABB(EntitySmallFireball.class, new AxisAlignedBB(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));
+		for(EntitySmallFireball fireball : blazeFireballs) {
 			for(int particles = 0; particles < 4; particles++) {
 				player.worldObj.spawnParticle(EnumParticleTypes.REDSTONE, fireball.posX, fireball.posY, fireball.posZ, 0.0D, 1.0D, 1.0D);
 			}

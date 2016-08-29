@@ -88,14 +88,14 @@ public class PotionConfiguration {
 		for(PotionIngredient ingredient1 : Settings.Potions.potionMap) {
 			for(PotionIngredient ingredient2 : Settings.Potions.potionMap) {
 				if(ingredient1.item.getItem() != ingredient2.item.getItem() || ingredient1.item.getMetadata() != ingredient2.item.getMetadata()) {
-					PotionEssence twoEssence = new PotionEssence(new PotionIngredient[] {ingredient1, ingredient2});
+					PotionEssence twoEssence = new PotionEssence(ingredient1, ingredient2);
 					if(twoEssence.effects.size() > 0 && twoEssence.effects.size() <= Settings.Potions.maxEffectCount) {
 						addPotionCombination(twoEssence);
 
 						if(Settings.Potions.threeIngredients) {
 							for(PotionIngredient ingredient3 : Settings.Potions.potionMap) {
 								if((ingredient3.item.getItem() != ingredient1.item.getItem() || ingredient3.item.getMetadata() != ingredient1.item.getMetadata()) && (ingredient3.item.getItem() != ingredient2.item.getItem() || ingredient3.item.getMetadata() != ingredient2.item.getMetadata())) {
-									PotionEssence threeEssence = new PotionEssence(new PotionIngredient[] {ingredient1, ingredient2, ingredient3});
+									PotionEssence threeEssence = new PotionEssence(ingredient1, ingredient2, ingredient3);
 
 									if(!effectsEqual(twoEssence.effects, threeEssence.effects)) {
 										addPotionCombination(threeEssence);
@@ -178,8 +178,8 @@ public class PotionConfiguration {
 
 			if(stack != null) {
 				PotionIngredient ingredient = new PotionIngredient(stack);
-				for(int i = 0; i < effects.length; i++) {
-					String[] effectValues = effects[i].split("\\|");
+				for(String effect : effects) {
+					String[] effectValues = effect.split("\\|");
 					int potionId = XRPotionHelper.getPotionIdByName(effectValues[0]);
 					if(potionId > 0) {
 						short durationWeight = Short.parseShort(effectValues[1]);

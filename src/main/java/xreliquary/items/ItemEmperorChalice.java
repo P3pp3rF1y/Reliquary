@@ -109,6 +109,7 @@ public class ItemEmperorChalice extends ItemToggleable {
 
 				} else {
 					String ident = RegistryHelper.getBlockRegistryName(world.getBlockState(result.getBlockPos()).getBlock());
+					//noinspection ConstantConditions
 					if((ident.equals(RegistryHelper.getBlockRegistryName(Blocks.FLOWING_WATER)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.WATER))) && world.getBlockState(result.getBlockPos()).getValue(BlockLiquid.LEVEL) == 0) {
 						world.setBlockState(result.getBlockPos(), Blocks.AIR.getDefaultState());
 

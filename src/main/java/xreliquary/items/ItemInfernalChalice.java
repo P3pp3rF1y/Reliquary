@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -24,7 +23,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import xreliquary.Reliquary;
 import xreliquary.items.util.fluid.FluidHandlerInfernalChalice;
 import xreliquary.reference.Names;
-import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 
 import java.util.List;

@@ -3,12 +3,9 @@ package xreliquary.util;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.reference.Reference;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +17,8 @@ import java.util.Map;
  */
 public class LanguageHelper {
 
-	private static Map<String, String> preprocesssed = new HashMap<String, String>();
-	public static Map<String, String> globals = new HashMap<String, String>();
+	private static Map<String, String> preprocesssed = new HashMap<>();
+	public static Map<String, String> globals = new HashMap<>();
 
 	/**
 	 * Gets the preprocessed version of the localized string. Preprocessing will only be ran once, not on every call.
@@ -67,9 +64,7 @@ public class LanguageHelper {
 		if(langTooltip == null || langTooltip.equals(langName))
 			return;
 		if(toFormat != null) {
-			Iterator<Map.Entry<String, String>> entrySet = toFormat.entrySet().iterator();
-			while(entrySet.hasNext()) {
-				Map.Entry<String, String> toReplace = entrySet.next();
+			for(Map.Entry<String, String> toReplace : toFormat.entrySet()) {
 				langTooltip = langTooltip.replace("{{" + toReplace.getKey() + "}}", toReplace.getValue());
 			}
 		}

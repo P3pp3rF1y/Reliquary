@@ -97,7 +97,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 			}
 			if(player.inventory.mainInventory[slot].getItem() instanceof ItemSword) {
 				ItemSword sword = (ItemSword) player.inventory.mainInventory[slot].getItem();
-				if(sword.getToolMaterialName() != ItemSword.ToolMaterial.GOLD.name() && !goldItems.contains(RegistryHelper.getItemRegistryName(sword))) {
+				if(!ItemSword.ToolMaterial.GOLD.name().equals(sword.getToolMaterialName()) && !goldItems.contains(RegistryHelper.getItemRegistryName(sword))) {
 					continue;
 				}
 				if(player.inventory.mainInventory[slot].getItemDamage() <= 0) {
@@ -108,7 +108,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 				}
 			} else if(player.inventory.mainInventory[slot].getItem() instanceof ItemTool) {
 				ItemTool tool = (ItemTool) player.inventory.mainInventory[slot].getItem();
-				if(tool.getToolMaterialName() != ItemSword.ToolMaterial.GOLD.name() && !goldItems.contains(RegistryHelper.getItemRegistryName(tool))) {
+				if(!ItemSword.ToolMaterial.GOLD.name().equals(tool.getToolMaterialName()) && !goldItems.contains(RegistryHelper.getItemRegistryName(tool))) {
 					continue;
 				}
 				if(player.inventory.mainInventory[slot].getItemDamage() <= 0) {

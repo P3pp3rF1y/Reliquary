@@ -57,7 +57,7 @@ public class DataProviderMortar extends CachedBodyDataProvider {
 		if(ingredients[1] == null)
 			return currenttip;
 
-		List<PotionIngredient> potionIngredients = new ArrayList<PotionIngredient>();
+		List<PotionIngredient> potionIngredients = new ArrayList<>();
 		potionIngredients.add(XRPotionHelper.getIngredient(ingredients[0]));
 		potionIngredients.add(XRPotionHelper.getIngredient(ingredients[1]));
 		if(ingredients[2] != null)

@@ -9,6 +9,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PedestalFluidHandler implements IFluidHandler {
@@ -27,9 +28,7 @@ public class PedestalFluidHandler implements IFluidHandler {
 		List<IFluidTankProperties> props = new ArrayList<>();
 		for(ItemStack container : fluidContainers) {
 			IFluidTankProperties[] containerProps = getContainerTankProperties(container);
-			for(int i = 0; i < containerProps.length; i++) {
-				props.add(containerProps[i]);
-			}
+			Collections.addAll(props, containerProps);
 		}
 
 		return props.toArray(new IFluidTankProperties[0]);

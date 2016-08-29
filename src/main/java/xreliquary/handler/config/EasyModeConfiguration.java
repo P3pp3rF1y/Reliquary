@@ -5,6 +5,7 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
 public class EasyModeConfiguration {
+	@SuppressWarnings("ConstantConditions")
 	public static void loadEasyModeSettings() {
 		boolean easyModeDefault = true;
 

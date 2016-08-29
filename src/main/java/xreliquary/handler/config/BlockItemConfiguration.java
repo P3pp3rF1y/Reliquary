@@ -15,14 +15,14 @@ import java.util.List;
 
 public class BlockItemConfiguration {
 	public static void loadEntitiesSettings() {
-		List<String> entityNames = new ArrayList<String>();
+		List<String> entityNames = new ArrayList<>();
 		for(Object o : EntityList.NAME_TO_CLASS.values()) {
 			Class c = (Class) o;
 			if(EntityLiving.class.isAssignableFrom(c)) {
 				entityNames.add(EntityList.CLASS_TO_NAME.get(o));
 			}
 		}
-		List<String> projectileNames = new ArrayList<String>();
+		List<String> projectileNames = new ArrayList<>();
 		for(Object o : EntityList.NAME_TO_CLASS.values()) {
 			Class c = (Class) o;
 			if(IProjectile.class.isAssignableFrom(c)) {
@@ -76,7 +76,7 @@ public class BlockItemConfiguration {
 		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.apothecary_cauldron, true);
 
 		//destruction catalyst configs
-		Settings.DestructionCatalyst.mundaneBlocks = ConfigurationHandler.getStringList("mundane_blocks", Names.item_and_block_settings + "." + Names.destruction_catalyst, new ArrayList<String>(ItemDestructionCatalyst.ids));
+		Settings.DestructionCatalyst.mundaneBlocks = ConfigurationHandler.getStringList("mundane_blocks", Names.item_and_block_settings + "." + Names.destruction_catalyst, new ArrayList<>(ItemDestructionCatalyst.ids));
 		Settings.DestructionCatalyst.gunpowderCost = ConfigurationHandler.getInt("gunpowder_cost", Names.item_and_block_settings + "." + Names.destruction_catalyst, 3, 0, 10);
 		Settings.DestructionCatalyst.gunpowderWorth = ConfigurationHandler.getInt("gunpowder_worth", Names.item_and_block_settings + "." + Names.destruction_catalyst, 1, 0, 3);
 		Settings.DestructionCatalyst.gunpowderLimit = ConfigurationHandler.getInt("gunpowder_limit", Names.item_and_block_settings + "." + Names.destruction_catalyst, 250, 0, itemCap);

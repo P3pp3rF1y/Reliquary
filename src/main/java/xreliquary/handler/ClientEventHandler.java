@@ -126,10 +126,7 @@ public class ClientEventHandler {
 	}
 
 	private boolean isHandgunActive(EntityPlayer player, boolean handgunInMain, boolean handgunInOff) {
-		if(handgunInMain && isValidTimeFrame(player.worldObj, player.getHeldItemMainhand()))
-			return true;
-
-		return handgunInOff && isValidTimeFrame(player.worldObj, player.getHeldItemOffhand());
+		return handgunInMain && isValidTimeFrame(player.worldObj, player.getHeldItemMainhand()) || handgunInOff && isValidTimeFrame(player.worldObj, player.getHeldItemOffhand());
 
 	}
 
@@ -505,7 +502,7 @@ public class ClientEventHandler {
 		boolean leftSide = Settings.HudPositions.pyromancerStaff == 0 || Settings.HudPositions.pyromancerStaff == 2;
 		switch(Settings.HudPositions.pyromancerStaff) {
 			case 1: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 8);
+				hudOverlayX = sr.getScaledWidth() - 8;
 				break;
 			}
 			case 2: {
@@ -513,7 +510,7 @@ public class ClientEventHandler {
 				break;
 			}
 			case 3: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 8);
+				hudOverlayX = sr.getScaledWidth() - 8;
 				hudOverlayY = (int) (sr.getScaledHeight() - 18 * overlayScale);
 				break;
 			}
@@ -615,7 +612,6 @@ public class ClientEventHandler {
 
 		int hudOverlayX = (int) (16 * overlayScale);
 		int hudOverlayY = (int) (6 * overlayScale);
-		boolean leftSide = Settings.HudPositions.handgun == 0 || Settings.HudPositions.handgun == 2;
 		boolean twoHandguns = mainHandgunStack != null && offHandgunStack != null;
 
 		switch(Settings.HudPositions.handgun) {
@@ -738,7 +734,7 @@ public class ClientEventHandler {
 		boolean leftSide = hudPosition == 0 || hudPosition == 2;
 		switch(hudPosition) {
 			case 1: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 8);
+				hudOverlayX = sr.getScaledWidth() - 8;
 				break;
 			}
 			case 2: {
@@ -746,7 +742,7 @@ public class ClientEventHandler {
 				break;
 			}
 			case 3: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 8);
+				hudOverlayX = sr.getScaledWidth() - 8;
 				hudOverlayY = (int) (sr.getScaledHeight() - (18 * overlayScale));
 				break;
 			}
@@ -762,14 +758,20 @@ public class ClientEventHandler {
 		if(hudStack.getItem() instanceof ItemRendingGale) {
 			ItemRendingGale staffItem = (ItemRendingGale) hudStack.getItem();
 			String staffMode = staffItem.getMode(hudStack);
-			if(staffMode.equals("flight"))
-				staffMode = "FLIGHT";
-			else if(staffMode.equals("push"))
-				staffMode = "PUSH";
-			else if(staffMode.equals("pull"))
-				staffMode = "PULL";
-			else
-				staffMode = "BOLT";
+			switch(staffMode) {
+				case "flight":
+					staffMode = "FLIGHT";
+					break;
+				case "push":
+					staffMode = "PUSH";
+					break;
+				case "pull":
+					staffMode = "PULL";
+					break;
+				default:
+					staffMode = "BOLT";
+					break;
+			}
 			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(staffMode, hudOverlayX - (leftSide ? 0 : staffMode.length() * 6), hudOverlayY + 18, color);
 		}
 

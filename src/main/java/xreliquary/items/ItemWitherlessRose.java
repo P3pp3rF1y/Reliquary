@@ -38,10 +38,9 @@ public class ItemWitherlessRose extends ItemBase {
 
 	@Override
 	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
-		EntityPlayer player = null;
 		if(!(e instanceof EntityPlayer))
 			return;
-		player = (EntityPlayer) e;
+		EntityPlayer player = (EntityPlayer) e;
 		if(player.isPotionActive(MobEffects.WITHER)) {
 			player.removePotionEffect(MobEffects.WITHER);
 			for(int particles = 0; particles < 10; particles++) {

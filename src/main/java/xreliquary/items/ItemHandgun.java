@@ -106,10 +106,7 @@ public class ItemHandgun extends ItemBase {
 	public boolean isInCooldown(ItemStack handgun) {
 		IHandgunData data = getHandgunData(handgun);
 
-		if(data != null) {
-			return data.isInCoolDown();
-		}
-		return false;
+		return data != null && data.isInCoolDown();
 	}
 
 	public void setInCooldown(ItemStack handgun, boolean inCooldown) {
@@ -147,10 +144,7 @@ public class ItemHandgun extends ItemBase {
 
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-		if(oldStack == null || newStack == null)
-			return true;
-
-		return !(oldStack.getItem() == ModItems.handgun && newStack.getItem() == ModItems.handgun);
+		return oldStack == null || newStack == null || !(oldStack.getItem() == ModItems.handgun && newStack.getItem() == ModItems.handgun);
 
 	}
 
@@ -210,10 +204,7 @@ public class ItemHandgun extends ItemBase {
 		} else {
 			secondHandgun = player.getHeldItemMainhand();
 		}
-		if(!isInCooldown(secondHandgun))
-			return true;
-
-		return (getCooldown(secondHandgun) - world.getWorldTime()) < (getPlayerReloadDelay(player) / 2);
+		return !isInCooldown(secondHandgun) || (getCooldown(secondHandgun) - world.getWorldTime()) < (getPlayerReloadDelay(player) / 2);
 
 	}
 

@@ -17,7 +17,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.network.PacketFXThrownPotionImpact;
 import xreliquary.network.PacketHandler;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -69,12 +68,8 @@ public abstract class EntityThrownPotion extends EntityThrowable {
 		if(!this.hasLivingEntityEffect())
 			return;
 		AxisAlignedBB bb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
-		List eList = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, bb);
-		Iterator i = eList.iterator();
-		while(i.hasNext()) {
-			EntityLivingBase e = (EntityLivingBase) i.next();
-			this.doLivingSplashEffect(e);
-		}
+		List<EntityLivingBase> eList = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, bb);
+		eList.forEach(this::doLivingSplashEffect);
 	}
 
 	// called by doSplash effect, allows user to override the ground effect,

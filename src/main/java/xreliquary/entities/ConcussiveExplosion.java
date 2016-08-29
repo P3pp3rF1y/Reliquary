@@ -42,7 +42,7 @@ public class ConcussiveExplosion extends Explosion {
 		this.explosionX = explosionX;
 		this.explosionY = explosionY;
 		this.explosionZ = explosionZ;
-		this.playerKnockbackMap = Maps.<EntityPlayer, Vec3d>newHashMap();
+		this.playerKnockbackMap = Maps.newHashMap();
 	}
 
 	/**
@@ -70,6 +70,7 @@ public class ConcussiveExplosion extends Explosion {
 						var6 /= var12;
 						var8 /= var12;
 						var10 /= var12;
+						//TODO figure out what the heck this whole loop does. Seems to be a lot looping just to set these 3 variables
 						d5 = explosionX;
 						d7 = explosionY;
 						d9 = explosionZ;
@@ -85,12 +86,11 @@ public class ConcussiveExplosion extends Explosion {
 		int var28 = MathHelper.floor_double(explosionY + explosionSize + 1.0D);
 		int var7 = MathHelper.floor_double(explosionZ - explosionSize - 1.0D);
 		int var29 = MathHelper.floor_double(explosionZ + explosionSize + 1.0D);
-		List var9 = worldObj.getEntitiesWithinAABBExcludingEntity(exploder, new AxisAlignedBB(var3, var5, var7, var4, var28, var29));
+		List<Entity> var9 = worldObj.getEntitiesWithinAABBExcludingEntity(exploder, new AxisAlignedBB(var3, var5, var7, var4, var28, var29));
 
 		Vec3d var30 = new Vec3d(explosionX, explosionY, explosionZ);
 
-		for(int var11 = 0; var11 < var9.size(); ++var11) {
-			Entity entity = (Entity) var9.get(var11);
+		for(Entity entity : var9) {
 			if(!(entity instanceof EntityLiving) && (!(exploder instanceof EntityHolyHandGrenade) || !(entity instanceof EntityPlayer) || ((EntityHolyHandGrenade) exploder).getCustomName() == null || !((EntityHolyHandGrenade) exploder).getCustomName().contains(((EntityPlayer) entity).getGameProfile().getName()))) {
 				continue;
 			}
@@ -131,8 +131,7 @@ public class ConcussiveExplosion extends Explosion {
 		/*
 	  whether or not the explosion sets fire to blocks around it
 	 */
-		boolean field_82755_b = true;
-		if(explosionSize >= 2.0F && field_82755_b) {
+		if(explosionSize >= 2.0F) {
 			worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);
 		} else {
 			worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);

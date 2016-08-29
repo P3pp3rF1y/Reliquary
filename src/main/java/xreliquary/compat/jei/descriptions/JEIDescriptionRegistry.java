@@ -6,18 +6,13 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class JEIDescriptionRegistry {
 	private static Map<String, List<ItemStack>> registry = new HashMap<>();
 
 	public static Set<DescriptionEntry> entrySet() {
-		HashSet<DescriptionEntry> descriptionEntries = new HashSet<>();
-
-		for(Map.Entry<String, List<ItemStack>> entry : registry.entrySet()) {
-			descriptionEntries.add(new DescriptionEntry(entry.getValue(), entry.getKey()));
-		}
-
-		return descriptionEntries;
+		return registry.entrySet().stream().map(entry -> new DescriptionEntry(entry.getValue(), entry.getKey())).collect(Collectors.toCollection(HashSet::new));
 	}
 
 	public static void register(List<ItemStack> itemStacks, String name) {

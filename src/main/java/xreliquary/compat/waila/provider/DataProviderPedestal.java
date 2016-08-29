@@ -16,7 +16,6 @@ import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.init.ModBlocks;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DataProviderPedestal implements IWailaDataProvider {

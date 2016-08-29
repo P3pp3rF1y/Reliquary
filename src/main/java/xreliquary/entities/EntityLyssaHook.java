@@ -31,11 +31,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class EntityLyssaHook extends EntityFishHook {
-	private static final DataParameter<Integer> field_184528_c = EntityDataManager.<Integer>createKey(EntityFishHook.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> field_184528_c = EntityDataManager.createKey(EntityFishHook.class, DataSerializers.VARINT);
 	private int xTile;
 	private int yTile;
 	private int zTile;
@@ -83,12 +82,12 @@ public class EntityLyssaHook extends EntityFishHook {
 	}
 
 	protected void entityInit() {
-		this.getDataManager().register(field_184528_c, Integer.valueOf(0));
+		this.getDataManager().register(field_184528_c, 0);
 	}
 
 	public void notifyDataManagerChange(DataParameter<?> key) {
 		if(field_184528_c.equals(key)) {
-			int i = ((Integer) this.getDataManager().get(field_184528_c)).intValue();
+			int i = this.getDataManager().get(field_184528_c);
 
 			if(i > 0 && this.caughtEntity != null) {
 				this.caughtEntity = null;
@@ -172,18 +171,9 @@ public class EntityLyssaHook extends EntityFishHook {
 		//super.onUpdate();
 
 		//pulling items toward it routine
-		List pullingItemsList = this.worldObj.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(3.0D, 3.0D, 3.0D));
+		List<EntityItem> pullingItemsList = this.worldObj.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(3.0D, 3.0D, 3.0D));
 
-		Iterator itemIterator = pullingItemsList.iterator();
-		while(itemIterator.hasNext()) {
-			Entity e = (Entity) itemIterator.next();
-			if(!(e instanceof EntityItem))
-				continue;
-			//if (e.getDistance(this.posX, this.posY, this.posZ) < 0.5D) {
-			//EntityItem itemEntity = (EntityItem) e;
-			//pulledItems.add(itemEntity.getEntityItem());
-			//itemEntity.setDead();
-			//} else {
+		for(EntityItem e : pullingItemsList) {
 			Vec3d pullVector = new Vec3d(this.posX - e.posX, this.posY - e.posY, this.posZ - e.posZ).normalize();
 			e.motionX = pullVector.xCoord * 0.4D;
 			e.motionY = pullVector.yCoord * 0.4D;
@@ -192,7 +182,7 @@ public class EntityLyssaHook extends EntityFishHook {
 		}
 
 		if(this.worldObj.isRemote) {
-			int i = this.getDataManager().get(field_184528_c).intValue();
+			int i = this.getDataManager().get(field_184528_c);
 
 			if(i > 0 && this.caughtEntity == null) {
 				this.caughtEntity = this.worldObj.getEntityByID(i - 1);
@@ -265,9 +255,7 @@ public class EntityLyssaHook extends EntityFishHook {
 			List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
 			double d0 = 0.0D;
 
-			for(int i = 0; i < list.size(); ++i) {
-				Entity entity1 = list.get(i);
-
+			for(Entity entity1 : list) {
 				if(entity1.canBeCollidedWith() && (entity1 != this.angler || this.ticksInAir >= 5)) {
 					float f = 0.3F;
 					AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand((double) f, (double) f, (double) f);
@@ -297,12 +285,10 @@ public class EntityLyssaHook extends EntityFishHook {
 					double upperY = this.posY + 5D;
 					double upperZ = this.posZ + 7D;
 
-					List eList = worldObj.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
-					Iterator iterator = eList.iterator();
-					while(iterator.hasNext()) {
-						Entity e = (Entity) iterator.next();
+					List<EntityLiving> eList = worldObj.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
+					for(EntityLiving e : eList) {
 						if(e instanceof EntityLivingBase && !e.isEntityEqual(angler)) {
-							if(angler.isSneaking() || rayTraceResult.entityHit.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) e), 0.0F)) {
+							if(angler.isSneaking() || rayTraceResult.entityHit.attackEntityFrom(DamageSource.causeMobDamage(e), 0.0F)) {
 								this.caughtEntity = rayTraceResult.entityHit;
 								break;
 							}
@@ -318,6 +304,7 @@ public class EntityLyssaHook extends EntityFishHook {
 				float f5 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
 				this.rotationYaw = (float) (MathHelper.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
 
+				//noinspection StatementWithEmptyBody
 				for(this.rotationPitch = (float) (MathHelper.atan2(this.motionY, (double) f5) * 180.0D / Math.PI); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F) {
 				}
 
@@ -383,8 +370,8 @@ public class EntityLyssaHook extends EntityFishHook {
 							this.motionY -= 0.20000000298023224D;
 							this.playSound(SoundEvents.ENTITY_BOBBER_SPLASH, 0.25F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
 							float f8 = (float) MathHelper.floor_double(this.getEntityBoundingBox().minY);
-							worldserver.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX, (double) (f8 + 1.0F), this.posZ, (int) (1.0F + this.width * 20.0F), (double) this.width, 0.0D, (double) this.width, 0.20000000298023224D, new int[0]);
-							worldserver.spawnParticle(EnumParticleTypes.WATER_WAKE, this.posX, (double) (f8 + 1.0F), this.posZ, (int) (1.0F + this.width * 20.0F), (double) this.width, 0.0D, (double) this.width, 0.20000000298023224D, new int[0]);
+							worldserver.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX, (double) (f8 + 1.0F), this.posZ, (int) (1.0F + this.width * 20.0F), (double) this.width, 0.0D, (double) this.width, 0.20000000298023224D);
+							worldserver.spawnParticle(EnumParticleTypes.WATER_WAKE, this.posX, (double) (f8 + 1.0F), this.posZ, (int) (1.0F + this.width * 20.0F), (double) this.width, 0.0D, (double) this.width, 0.20000000298023224D);
 							this.ticksCatchable = MathHelper.getRandomIntegerInRange(this.rand, 10, 30);
 						} else {
 							this.fishApproachAngle = (float) ((double) this.fishApproachAngle + this.rand.nextGaussian() * 4.0D);
@@ -398,13 +385,13 @@ public class EntityLyssaHook extends EntityFishHook {
 
 							if(block1 == Blocks.WATER || block1 == Blocks.FLOWING_WATER) {
 								if(this.rand.nextFloat() < 0.15F) {
-									worldserver.spawnParticle(EnumParticleTypes.WATER_BUBBLE, d13, d15 - 0.10000000149011612D, d16, 1, (double) f10, 0.1D, (double) f11, 0.0D, new int[0]);
+									worldserver.spawnParticle(EnumParticleTypes.WATER_BUBBLE, d13, d15 - 0.10000000149011612D, d16, 1, (double) f10, 0.1D, (double) f11, 0.0D);
 								}
 
 								float f3 = f10 * 0.04F;
 								float f4 = f11 * 0.04F;
-								worldserver.spawnParticle(EnumParticleTypes.WATER_WAKE, d13, d15, d16, 0, (double) f4, 0.01D, (double) (-f3), 1.0D, new int[0]);
-								worldserver.spawnParticle(EnumParticleTypes.WATER_WAKE, d13, d15, d16, 0, (double) (-f4), 0.01D, (double) f3, 1.0D, new int[0]);
+								worldserver.spawnParticle(EnumParticleTypes.WATER_WAKE, d13, d15, d16, 0, (double) f4, 0.01D, (double) (-f3), 1.0D);
+								worldserver.spawnParticle(EnumParticleTypes.WATER_WAKE, d13, d15, d16, 0, (double) (-f4), 0.01D, (double) f3, 1.0D);
 							}
 						}
 					} else if(this.ticksCaughtDelay > 0) {
@@ -428,7 +415,7 @@ public class EntityLyssaHook extends EntityFishHook {
 							Block block = worldserver.getBlockState(new BlockPos((int) d12, (int) d14 - 1, (int) d6)).getBlock();
 
 							if(block == Blocks.WATER || block == Blocks.FLOWING_WATER) {
-								worldserver.spawnParticle(EnumParticleTypes.WATER_SPLASH, d12, d14, d6, 2 + this.rand.nextInt(2), 0.10000000149011612D, 0.0D, 0.10000000149011612D, 0.0D, new int[0]);
+								worldserver.spawnParticle(EnumParticleTypes.WATER_SPLASH, d12, d14, d6, 2 + this.rand.nextInt(2), 0.10000000149011612D, 0.0D, 0.10000000149011612D, 0.0D);
 							}
 						}
 
@@ -469,8 +456,8 @@ public class EntityLyssaHook extends EntityFishHook {
 		tagCompound.setInteger("xTile", (short) this.xTile);
 		tagCompound.setInteger("yTile", (short) this.yTile);
 		tagCompound.setInteger("zTile", (short) this.zTile);
-		ResourceLocation resourcelocation = (ResourceLocation) Block.REGISTRY.getNameForObject(this.inTile);
-		tagCompound.setString("inTile", resourcelocation == null ? "" : resourcelocation.toString());
+		ResourceLocation resourcelocation = Block.REGISTRY.getNameForObject(this.inTile);
+		tagCompound.setString("inTile", resourcelocation.toString());
 		tagCompound.setByte("inGround", (byte) (this.inGround ? 1 : 0));
 	}
 
@@ -573,22 +560,17 @@ public class EntityLyssaHook extends EntityFishHook {
 				i = 1;
 			}
 
-			List pullingItemsList = this.worldObj.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+			List<EntityItem> pullingItemsList = this.worldObj.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
 
-			Iterator itemIterator = pullingItemsList.iterator();
-			while(itemIterator.hasNext()) {
-				Entity e = (Entity) itemIterator.next();
-				if(!(e instanceof EntityItem))
-					continue;
-
+			for(EntityItem e : pullingItemsList) {
 				double d1 = this.angler.posX - this.posX;
 				double d3 = this.angler.posY - this.posY;
 				double d5 = this.angler.posZ - this.posZ;
 				double d7 = (double) MathHelper.sqrt_double(d1 * d1 + d3 * d3 + d5 * d5);
 				double d9 = 0.1D;
-				((EntityItem) e).motionX = d1 * d9;
-				((EntityItem) e).motionY = d3 * d9 + (double) MathHelper.sqrt_double(d7) * 0.08D;
-				((EntityItem) e).motionZ = d5 * d9;
+				e.motionX = d1 * d9;
+				e.motionY = d3 * d9 + (double) MathHelper.sqrt_double(d7) * 0.08D;
+				e.motionZ = d5 * d9;
 			}
 
 			this.setDead();

@@ -63,6 +63,7 @@ public class MobCharmRepairRecipe implements IRecipe {
 			}
 		}
 
+		//noinspection SimplifiableIfStatement
 		if (mobCharm == null || ingredient == null || !REPAIR_INGREDIENTS.get(ModItems.mobCharm.getType(mobCharm)).isItemEqual(ingredient))
 			return false;
 

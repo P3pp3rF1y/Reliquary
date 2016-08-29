@@ -10,7 +10,7 @@ import xreliquary.compat.waila.WailaCompat;
 import java.util.ArrayList;
 
 public class ModCompat {
-	private static ArrayList<ICompat> compats = new ArrayList<ICompat>();
+	private static ArrayList<ICompat> compats = new ArrayList<>();
 
 	public static void registerModCompat() {
 		//compats.add(new TCCompat()); // TODO add back when TC is updated
@@ -18,9 +18,7 @@ public class ModCompat {
 	}
 
 	public static void loadCompat(ICompat.InitializationPhase phase, World world) {
-		for(ICompat compatibility : compats)
-			if(Loader.isModLoaded(compatibility.getModId()))
-				compatibility.loadCompatibility(phase, world);
+		compats.stream().filter(compatibility -> Loader.isModLoaded(compatibility.getModId())).forEach(compatibility -> compatibility.loadCompatibility(phase, world));
 	}
 
 	@SubscribeEvent

@@ -121,6 +121,7 @@ public class BlockApothecaryMortar extends BlockBase {
 		boolean putItemInSlot = false;
 		for(int slot = 0; slot < mortarItems.length; slot++) {
 			ItemStack item = new ItemStack(heldItem.getItem(), 1, heldItem.getItemDamage());
+			//noinspection ConstantConditions
 			item.setTagCompound(heldItem.getTagCompound());
 			if(mortarItems[slot] == null && mortar.isItemValidForSlot(slot, item)) {
 				heldItem.stackSize--;

@@ -128,7 +128,7 @@ public class InventoryHelper {
 			return true;
 		if(itemList.length == 0 || !(itemList[0] instanceof ItemStack || itemList[0] instanceof Item || itemList[0] instanceof Block))
 			return false;
-		List<Integer> suggestedSlots = new ArrayList<Integer>();
+		List<Integer> suggestedSlots = new ArrayList<>();
 		int itemCount = 0;
 		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
 			if(player.inventory.mainInventory[slot] == null) {
@@ -279,6 +279,7 @@ public class InventoryHelper {
 		if(inventory.getStackInSlot(0) != null)
 			return false;
 
+		//noinspection ConstantConditions
 		inventory.setInventorySlotContents(0, player.getHeldItem(hand).copy());
 
 		player.getHeldItem(hand).stackSize--;

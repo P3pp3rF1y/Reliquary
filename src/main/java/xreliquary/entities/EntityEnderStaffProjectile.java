@@ -104,13 +104,11 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 
 		if(!worldObj.isRemote) {
 			Entity var4 = null;
-			List var5 = worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
+			List<Entity> var5 = worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
 			double var6 = 0.0D;
 			EntityLivingBase var8 = this.getThrower();
 
-			for(int var9 = 0; var9 < var5.size(); ++var9) {
-				Entity var10 = (Entity) var5.get(var9);
-
+			for(Entity var10 : var5) {
 				if(var10.canBeCollidedWith() && (var10 != var8 || ticksInAir >= 5)) {
 					float var11 = 0.5F;
 					AxisAlignedBB var12 = var10.getEntityBoundingBox().expand(var11, var11, var11);
@@ -144,8 +142,10 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 		posY += motionY;
 		posZ += motionZ;
 		float var17 = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
+		//noinspection SuspiciousNameCombination
 		rotationYaw = (float) (Math.atan2(motionX, motionZ) * 180.0D / Math.PI);
 
+		//noinspection StatementWithEmptyBody
 		for(rotationPitch = (float) (Math.atan2(motionY, var17) * 180.0D / Math.PI); rotationPitch - prevRotationPitch < -180.0F; prevRotationPitch -= 360.0F) {
 
 		}

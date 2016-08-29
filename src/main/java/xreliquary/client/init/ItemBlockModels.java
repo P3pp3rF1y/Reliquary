@@ -28,6 +28,7 @@ public class ItemBlockModels {
 		if(Settings.disabledItemsBlocks.contains(resourceName))
 			return;
 
+		//noinspection ConstantConditions
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(Reference.DOMAIN + resourceName, "inventory"));
 	}
 
@@ -35,9 +36,11 @@ public class ItemBlockModels {
 		if(Settings.disabledItemsBlocks.contains(resourceName))
 			return;
 
+		//noinspection ConstantConditions
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(Reference.DOMAIN + resourceName, "inventory"));
 
 		for (int i=0; i < 16 ; i++) {
+			//noinspection ConstantConditions
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), i, new ModelResourceLocation(Reference.DOMAIN + resourceName + "_" + EnumDyeColor.byMetadata(i).getName(), "inventory"));
 		}
 	}

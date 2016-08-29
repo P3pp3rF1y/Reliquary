@@ -59,7 +59,7 @@ public class PacketFXThrownPotionImpact implements IMessage, IMessageHandler<Pac
 			double var25 = Math.cos(var23) * var39;
 			double var27 = 0.01D + rand.nextDouble() * 0.5D;
 			double var29 = Math.sin(var23) * var39;
-			Particle var31 = mc.effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), message.posX + var25 * 0.1D, message.posY + 0.3D, message.posZ + var29 * 0.1D, var25, var27, var29, new int[0]);
+			Particle var31 = mc.effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), message.posX + var25 * 0.1D, message.posY + 0.3D, message.posZ + var29 * 0.1D, var25, var27, var29);
 			if(var31 != null) {
 				float var32 = 0.75F + rand.nextFloat() * 0.25F;
 				var31.setRBGColorF(red * var32, green * var32, blue * var32);

@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import xreliquary.api.client.IPedestalItemRenderer;
 import xreliquary.blocks.tile.TileEntityPedestal;
 
@@ -69,7 +68,6 @@ public class RenderPedestalFishHook implements IPedestalItemRenderer {
 		GlStateManager.disableTexture2D();
 		GlStateManager.disableLighting();
 		vertexbuffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
-		int l = 16;
 
 		for(int i1 = 0; i1 <= 16; ++i1) {
 			float f10 = (float) i1 / 16.0F;

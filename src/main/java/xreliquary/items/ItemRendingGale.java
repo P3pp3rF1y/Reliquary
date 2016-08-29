@@ -39,7 +39,6 @@ import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -240,8 +239,7 @@ public class ItemRendingGale extends ItemToggleable {
 					IBlockState blockState = worldObj.getBlockState(new BlockPos(xOff, yOff, zOff));
 					Block block = blockState.getBlock();
 
-					if(block.getMaterial(blockState) != Material.AIR && block.getMaterial(blockState) != Material.WATER && block.getMaterial(blockState) != Material.LAVA &&
-							block.getMaterial(blockState) != Material.FIRE && block.getMaterial(blockState) != Material.VINE && block.getMaterial(blockState) != Material.PLANTS && block.getMaterial(blockState) != Material.CIRCUITS && block != Blocks.SNOW_LAYER) {
+					if(block.getMaterial(blockState) != Material.AIR && block.getMaterial(blockState) != Material.WATER && block.getMaterial(blockState) != Material.LAVA && block.getMaterial(blockState) != Material.FIRE && block.getMaterial(blockState) != Material.VINE && block.getMaterial(blockState) != Material.PLANTS && block.getMaterial(blockState) != Material.CIRCUITS && block != Blocks.SNOW_LAYER) {
 						return true;
 					}
 				}
@@ -266,11 +264,11 @@ public class ItemRendingGale extends ItemToggleable {
 			}
 		}
 
-		if (player.getHeldItemMainhand() == ist) {
+		if(player.getHeldItemMainhand() == ist) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.MAIN_HAND, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
-		} else if (player.getHeldItemOffhand() == ist) {
+		} else if(player.getHeldItemOffhand() == ist) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
-		} else if (player.inventory.getStackInSlot(slotNumber)!= null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.rendingGale) {
+		} else if(player.inventory.getStackInSlot(slotNumber) != null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.rendingGale) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 		}
 	}
@@ -361,20 +359,20 @@ public class ItemRendingGale extends ItemToggleable {
 		int totalCost = -1;
 		int ticksInUse = getMaxItemUseDuration(ist) - count;
 
-		if (ticksInUse < 0) {
+		if(ticksInUse < 0) {
 			player.stopActiveHand();
 			return;
 		}
 
-		if (!player.capabilities.isCreativeMode) {
-			if (isFlightMode(ist)) {
+		if(!player.capabilities.isCreativeMode) {
+			if(isFlightMode(ist)) {
 				totalCost = ticksInUse * getChargeCost();
-			} else if (isBoltMode(ist)) {
+			} else if(isBoltMode(ist)) {
 				totalCost = (ticksInUse / 8) * getBoltChargeCost();
 			}
 		}
 
-		if (getFeatherCount(ist) <= totalCost) {
+		if(getFeatherCount(ist) <= totalCost) {
 			player.stopActiveHand();
 			return;
 		}
@@ -406,21 +404,21 @@ public class ItemRendingGale extends ItemToggleable {
 
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft) {
-		if (!(entityLiving instanceof EntityPlayer))
+		if(!(entityLiving instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) entityLiving;
 
-		if (worldIn.isRemote)
+		if(worldIn.isRemote)
 			return;
 
 		int ticksInUse = getMaxItemUseDuration(stack) - timeLeft;
 
-		if (ticksInUse > 0) {
+		if(ticksInUse > 0) {
 			if(isFlightMode(stack)) {
 				if(!player.capabilities.isCreativeMode)
 					setFeatherCount(stack, player, player.getActiveHand(), (getFeatherCount(stack) - (getChargeCost() * ticksInUse)) > 0 ? (getFeatherCount(stack) - (getChargeCost() * ticksInUse)) : 0);
-			} else if (isBoltMode(stack)) {
+			} else if(isBoltMode(stack)) {
 				if(!player.capabilities.isCreativeMode)
 					setFeatherCount(stack, player, player.getActiveHand(), (getFeatherCount(stack) - (getBoltChargeCost() * (ticksInUse / 8))) > 0 ? (getFeatherCount(stack) - (getBoltChargeCost() * (ticksInUse / 8))) : 0);
 			}
@@ -436,9 +434,8 @@ public class ItemRendingGale extends ItemToggleable {
 	}
 
 	public boolean hasFlightCharge(EntityPlayer player, ItemStack ist) {
-		int remainingCharge = 0;
-		remainingCharge = getFeatherCount(ist);
-		if (player.isHandActive()) {
+		int remainingCharge = getFeatherCount(ist);
+		if(player.isHandActive()) {
 			remainingCharge -= (player.getItemInUseMaxCount() - player.getItemInUseCount()) * getChargeCost();
 		}
 
@@ -515,11 +512,9 @@ public class ItemRendingGale extends ItemToggleable {
 		List<String> entitiesThatCanBePushed = Settings.RendingGale.entitiesThatCanBePushed;
 		List<String> projectilesThatCanBePushed = Settings.RendingGale.projectilesThatCanBePushed;
 
-		List eList = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
+		List<Entity> eList = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 
-		Iterator iterator = eList.iterator();
-		while(iterator.hasNext()) {
-			Entity e = (Entity) iterator.next();
+		for(Entity e : eList) {
 			Class entityClass = e.getClass();
 			String entityName = EntityList.CLASS_TO_NAME.get(entityClass);
 			if(entitiesThatCanBePushed.contains(entityName) || (!pull && canPushProjectiles() && projectilesThatCanBePushed.contains(entityName))) {

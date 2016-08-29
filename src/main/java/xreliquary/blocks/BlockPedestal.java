@@ -1,7 +1,6 @@
 package xreliquary.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -65,7 +64,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] {FACING, COLOR, ENABLED});
+		return new BlockStateContainer(this, FACING, COLOR, ENABLED);
 	}
 
 	@Override
@@ -85,6 +84,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock) {
 		super.neighborChanged(state, worldIn, pos, neighborBlock);
 
+		//noinspection ConstantConditions
 		((TileEntityPedestal) worldIn.getTileEntity(pos)).neighborUpdate();
 	}
 
@@ -106,16 +106,16 @@ public class BlockPedestal extends BlockPedestalPassive {
 
 			switch(enumfacing) {
 				case WEST:
-					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle + sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D, new int[0]);
+					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle + sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D);
 					break;
 				case EAST:
-					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle - sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D, new int[0]);
+					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle - sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D);
 					break;
 				case NORTH:
-					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle + randomOffset, y, zMiddle + sideOffset, 0.0D, 0.0D, 0.0D, new int[0]);
+					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle + randomOffset, y, zMiddle + sideOffset, 0.0D, 0.0D, 0.0D);
 					break;
 				case SOUTH:
-					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle + randomOffset, y, zMiddle - sideOffset, 0.0D, 0.0D, 0.0D, new int[0]);
+					world.spawnParticle(EnumParticleTypes.REDSTONE, xMiddle + randomOffset, y, zMiddle - sideOffset, 0.0D, 0.0D, 0.0D);
 			}
 		}
 	}
@@ -130,6 +130,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 
 		if(heldItem == null && !player.isSneaking() && hand == EnumHand.MAIN_HAND && switchClicked(side, xOff, yOff, zOff)) {
 			TileEntityPedestal pedestal = (TileEntityPedestal) world.getTileEntity(pos);
+			//noinspection ConstantConditions
 			pedestal.toggleSwitch();
 			return true;
 		} else {
@@ -144,6 +145,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 			return false;
 		if(side == EnumFacing.SOUTH && (xOff < 0.35 || xOff > 0.65 || zOff != 0.875))
 			return false;
+		//noinspection SimplifiableIfStatement
 		if(side == EnumFacing.WEST && (zOff < 0.35 || zOff > 0.65 || xOff != 0.125))
 			return false;
 		return !(side == EnumFacing.EAST && (zOff < 0.35 || zOff > 0.65 || xOff != 0.875));
@@ -156,6 +158,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 
 		PedestalRegistry.unregisterPosition(world.provider.getDimension(), pos);
 
+		//noinspection ConstantConditions
 		pedestal.removeItemsFromLists();
 
 		super.breakBlock(world, pos, state);

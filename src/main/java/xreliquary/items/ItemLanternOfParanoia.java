@@ -170,10 +170,6 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 			}
 		}
 
-		float xOff = (float) player.posX;
-		float zOff = (float) player.posZ;
-		float yOff = (float) player.posY;
-
 		if(Blocks.TORCH.canPlaceBlockAt(world, new BlockPos(xO, yO, zO))) {
 			int rotation = ((MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3) + 2) % 4;
 			EnumFacing trySide = EnumFacing.DOWN;
@@ -192,7 +188,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 					break;
 			}
 
-			List<EnumFacing> trySides = new ArrayList<EnumFacing>();
+			List<EnumFacing> trySides = new ArrayList<>();
 			trySides.add(trySide);
 			trySides.add(EnumFacing.DOWN);
 

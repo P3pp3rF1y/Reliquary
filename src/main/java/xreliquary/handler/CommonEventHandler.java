@@ -364,15 +364,13 @@ public class CommonEventHandler {
 		double var12 = player.posZ;
 		Random var7 = player.worldObj.rand;
 		for(int var15 = 0; var15 < 8; ++var15) {
-			player.worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, new int[] {
-					Item.getIdFromItem(Items.POTIONITEM)});
+			player.worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.POTIONITEM));
 		}
 
 		// purple, for reals.
 		float red = 1.0F;
 		float green = 0.0F;
 		float blue = 1.0F;
-		String var19 = "spell";
 
 		for(int var20 = 0; var20 < 100; ++var20) {
 			double var39 = var7.nextDouble() * 4.0D;

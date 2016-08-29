@@ -415,11 +415,11 @@ public class ItemHarvestRod extends ItemToggleable {
 			}
 			BlockPos pos = result.getBlockPos();
 
-			if(getMode(harvestRod) == BONE_MEAL_MODE) {
+			if(BONE_MEAL_MODE.equals(getMode(harvestRod))) {
 				if(getBoneMealCount(harvestRod) >= getBonemealCost() || player.capabilities.isCreativeMode) {
 					boneMealBlock(harvestRod, player, player.getActiveHand(), world, pos);
 				}
-			} else if(getMode(harvestRod) == PLANTABLE_MODE) {
+			} else if(PLANTABLE_MODE.equals(getMode(harvestRod))) {
 				if(getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) > 0 || player.capabilities.isCreativeMode) {
 					plantItem(harvestRod, player, pos, player.getActiveHand());
 				}

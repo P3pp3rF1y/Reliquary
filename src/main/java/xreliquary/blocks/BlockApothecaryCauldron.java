@@ -1,7 +1,6 @@
 package xreliquary.blocks;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -39,12 +38,12 @@ public class BlockApothecaryCauldron extends BlockBase {
 		this.setHardness(1.5F);
 		this.setResistance(5.0F);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, Integer.valueOf(0)));
+		this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, 0));
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] {LEVEL});
+		return new BlockStateContainer(this, LEVEL);
 	}
 
 	@SuppressWarnings("deprecation")

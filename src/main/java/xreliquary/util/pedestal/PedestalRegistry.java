@@ -109,6 +109,9 @@ public class PedestalRegistry {
 
 		@Override
 		public boolean equals(Object o) {
+			if (! (o instanceof LocationKey))
+				return false;
+
 			LocationKey key2 = (LocationKey) o;
 
 			return this.getDimensionId() == key2.getDimensionId() && this.getLocation() == key2.getLocation();

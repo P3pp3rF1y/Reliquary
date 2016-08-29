@@ -29,7 +29,6 @@ import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -281,12 +280,10 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		double upperX = x + 5D + 0.5D;
 		double upperY = y + 5D;
 		double upperZ = z + 5D + 0.5D;
-		List eList = player.worldObj.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, y, lowerZ, upperX, upperY, upperZ));
-		Iterator iterator = eList.iterator();
+		List<EntityLiving> eList = player.worldObj.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, y, lowerZ, upperX, upperY, upperZ));
 
-		while(iterator.hasNext()) {
-			Entity e = (Entity) iterator.next();
-			if(e instanceof EntityLivingBase && !e.isEntityEqual(player)) {
+		for(EntityLiving e : eList) {
+			if(!e.isEntityEqual(player)) {
 				e.setFire(40);
 				if(!e.isImmuneToFire())
 					e.attackEntityFrom(DamageSource.causePlayerDamage(player), 4F);
@@ -295,7 +292,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 	}
 
 	private void scanForFireChargeAndBlazePowder(ItemStack ist, EntityPlayer player) {
-		List<Item> absorbItems = new ArrayList<Item>();
+		List<Item> absorbItems = new ArrayList<>();
 		absorbItems.add(Items.FIRE_CHARGE);
 		absorbItems.add(Items.BLAZE_POWDER);
 		for(Item absorbItem : absorbItems) {
@@ -453,10 +450,8 @@ public class ItemPyromancerStaff extends ItemToggleable {
 	}
 
 	private void doFireballAbsorbEffect(ItemStack ist, EntityPlayer player) {
-		List ghastFireballs = player.worldObj.getEntitiesWithinAABB(EntityLargeFireball.class, new AxisAlignedBB(player.posX - 5, player.posY - 5, player.posZ - 5, player.posX + 5, player.posY + 5, player.posZ + 5));
-		Iterator fire1 = ghastFireballs.iterator();
-		while(fire1.hasNext()) {
-			EntityLargeFireball fireball = (EntityLargeFireball) fire1.next();
+		List<EntityLargeFireball> ghastFireballs = player.worldObj.getEntitiesWithinAABB(EntityLargeFireball.class, new AxisAlignedBB(player.posX - 5, player.posY - 5, player.posZ - 5, player.posX + 5, player.posY + 5, player.posZ + 5));
+		for(EntityLargeFireball fireball : ghastFireballs) {
 			if(fireball.shootingEntity == player)
 				continue;
 			if(player.getDistanceToEntity(fireball) < 4) {
@@ -467,10 +462,8 @@ public class ItemPyromancerStaff extends ItemToggleable {
 				fireball.setDead();
 			}
 		}
-		List blazeFireballs = player.worldObj.getEntitiesWithinAABB(EntitySmallFireball.class, new AxisAlignedBB(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));
-		Iterator fire2 = blazeFireballs.iterator();
-		while(fire2.hasNext()) {
-			EntitySmallFireball fireball = (EntitySmallFireball) fire2.next();
+		List<EntitySmallFireball> blazeFireballs = player.worldObj.getEntitiesWithinAABB(EntitySmallFireball.class, new AxisAlignedBB(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));
+		for(EntitySmallFireball fireball : blazeFireballs) {
 			if(fireball.shootingEntity == player)
 				continue;
 			for(int particles = 0; particles < 4; particles++) {

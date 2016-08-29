@@ -22,7 +22,6 @@ import xreliquary.network.PacketFXThrownPotionImpact;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Colors;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class EntityGlowingWater extends EntityThrowable {
@@ -63,13 +62,11 @@ public class EntityGlowingWater extends EntityThrowable {
 		if(!worldObj.isRemote) {
 			this.spawnParticles();
 			AxisAlignedBB bb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
-			List eList = worldObj.getEntitiesWithinAABB(EntityLiving.class, bb);
-			Iterator i = eList.iterator();
-			while(i.hasNext()) {
-				EntityLiving e = (EntityLiving) i.next();
+			List<EntityLiving> eList = worldObj.getEntitiesWithinAABB(EntityLiving.class, bb);
+			for(EntityLiving e : eList) {
 				if(isUndead(e)) {
 					float amount = 18 + rand.nextInt(17);
-					if (this.getThrower() != null && this.getThrower() instanceof EntityPlayer) {
+					if(this.getThrower() != null && this.getThrower() instanceof EntityPlayer) {
 						e.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) this.getThrower()), amount);
 					} else {
 						e.attackEntityFrom(DamageSource.magic, amount);
@@ -88,8 +85,7 @@ public class EntityGlowingWater extends EntityThrowable {
 		double z = posZ;
 
 		for(int particleNum = 0; particleNum < 8; ++particleNum) {
-			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, new int[] {
-					Item.getIdFromItem(ModItems.glowingWater)});
+			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, Item.getIdFromItem(ModItems.glowingWater));
 		}
 
 		worldObj.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);

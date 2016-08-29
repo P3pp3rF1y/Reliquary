@@ -28,7 +28,6 @@ import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.XpHelper;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
@@ -88,11 +87,8 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 	}
 
 	private void scanForEntitiesInRange(World world, EntityPlayer player, double d) {
-		List iList = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(player.posX - d, player.posY - d, player.posZ - d, player.posX + d, player.posY + d, player.posZ + d));
-		Iterator iterator = iList.iterator();
-		while(iterator.hasNext()) {
-			EntityItem item = (EntityItem) iterator.next();
-
+		List<EntityItem> iList = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(player.posX - d, player.posY - d, player.posZ - d, player.posX + d, player.posY + d, player.posZ + d));
+		for(EntityItem item : iList) {
 			//if entity is marked not to be picked up by magnets leave it alone - IE thing but may be more than that
 			if(item.getEntityData().getBoolean("PreventRemoteMovement")) {
 				continue;
@@ -109,10 +105,8 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 			teleportEntityToPlayer(item, player);
 			break;
 		}
-		List iList2 = world.getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(player.posX - d, player.posY - d, player.posZ - d, player.posX + d, player.posY + d, player.posZ + d));
-		Iterator iterator2 = iList2.iterator();
-		while(iterator2.hasNext()) {
-			EntityXPOrb item = (EntityXPOrb) iterator2.next();
+		List<EntityXPOrb> iList2 = world.getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(player.posX - d, player.posY - d, player.posZ - d, player.posX + d, player.posY + d, player.posZ + d));
+		for(EntityXPOrb item : iList2) {
 			if(player.xpCooldown > 0) {
 				player.xpCooldown = 0;
 			}

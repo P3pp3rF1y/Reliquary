@@ -29,7 +29,7 @@ public class RenderThrownKrakenSlime extends Render<EntityKrakenSlime> {
 		GlStateManager.scale(0.5F, 0.5F, 0.5F);
 		Tessellator tessellator = Tessellator.getInstance();
 		VertexBuffer worldrenderer = tessellator.getBuffer();
-		float f = (float) (TEXTURE_INDEX % 16 * 16 + 0) / 256.0F;
+		float f = (float) (TEXTURE_INDEX % 16 * 16) / 256.0F;
 		float f1 = (float) (TEXTURE_INDEX % 16 * 16 + 16) / 256.0F;
 		float f2 = (float) (TEXTURE_INDEX / 16 * 16 + 0) / 256.0F;
 		float f3 = (float) (TEXTURE_INDEX / 16 * 16 + 16) / 256.0F;

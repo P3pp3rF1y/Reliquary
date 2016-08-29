@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import xreliquary.client.ItemModelLocations;
@@ -67,63 +66,28 @@ public class ItemModels {
 			registerItemModel(ModItems.gunPart, Names.gun_part, i, true);
 		}
 
-		registerItemModelForAllVariants(ModItems.bullet, Names.bullet, new ItemMeshDefinition() {
-			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				return new ModelResourceLocation(Reference.DOMAIN + Names.bullet, "inventory");
+		registerItemModelForAllVariants(ModItems.bullet, Names.bullet, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.bullet, "inventory"));
+		registerItemModelForAllVariants(ModItems.mobCharmFragment, Names.mob_charm_fragment, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.mob_charm_fragment, "inventory"));
+		registerItemModelForAllVariants(ModItems.heartZhu, Names.heart_zhu, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.heart_zhu, "inventory"));
+		registerItemModelForAllVariants(ModItems.mobCharm, Names.mob_charm, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.mob_charm, "inventory"));
+		registerItemModelForAllVariants(ModItems.potionEssence, Names.potion_essence, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.potion_essence, "inventory"));
+		registerItemModelForAllVariants(ModItems.infernalTear, Names.infernal_tear_empty, stack -> {
+			if(ModItems.infernalTear.getStackFromTear(stack) != null) {
+				return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR);
 			}
-		});
-
-		registerItemModelForAllVariants(ModItems.mobCharmFragment, Names.mob_charm_fragment, new ItemMeshDefinition() {
-			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				return new ModelResourceLocation(Reference.DOMAIN + Names.mob_charm_fragment, "inventory");
-			}
-		});
-
-		registerItemModelForAllVariants(ModItems.heartZhu, Names.heart_zhu, new ItemMeshDefinition() {
-			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				return new ModelResourceLocation(Reference.DOMAIN + Names.heart_zhu, "inventory");
-			}
-		});
-
-		registerItemModelForAllVariants(ModItems.mobCharm, Names.mob_charm, new ItemMeshDefinition() {
-			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				return new ModelResourceLocation(Reference.DOMAIN + Names.mob_charm, "inventory");
-			}
-		});
-
-		registerItemModelForAllVariants(ModItems.potionEssence, Names.potion_essence, new ItemMeshDefinition() {
-			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				return new ModelResourceLocation(Reference.DOMAIN + Names.potion_essence, "inventory");
-			}
-		});
-
-		registerItemModelForAllVariants(ModItems.infernalTear, Names.infernal_tear_empty, new ItemMeshDefinition() {
-			@Override
-			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				if(ModItems.infernalTear.getStackFromTear(stack) != null) {
-					return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR);
-				}
-				return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR_EMPTY);
-			}
+			return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR_EMPTY);
 		});
 		ModelBakery.registerItemVariants(ModItems.infernalTear, ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR));
 
-		registerItemModelForAllVariants(ModItems.potion, Names.potion, new ItemMeshDefinition() {
-			@Override
-			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				if(ModItems.potion.getSplash(stack)) {
-					return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_SPLASH);
-				}
-				return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION);
+		registerItemModelForAllVariants(ModItems.potion, Names.potion, stack -> {
+			if(ModItems.potion.getSplash(stack)) {
+				return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_SPLASH);
 			}
+			return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION);
 		});
 		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_SPLASH));
 
-		registerItemModelForAllVariants(ModItems.magazine, Names.magazine, new ItemMeshDefinition() {
-			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				return new ModelResourceLocation(Reference.DOMAIN + Names.magazine, "inventory");
-			}
-		});
+		registerItemModelForAllVariants(ModItems.magazine, Names.magazine, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.magazine, "inventory"));
 	}
 
 	private static void registerItemModelForAllVariants(Item item, String resourceName, ItemMeshDefinition itemMeshDefinition) {

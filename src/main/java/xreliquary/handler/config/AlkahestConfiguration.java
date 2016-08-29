@@ -110,9 +110,7 @@ public class AlkahestConfiguration {
 
 				String key = entry.getKey() + (stack.getItem().getHasSubtypes() ? "|" + meta : "");
 
-				if(stack != null) {
-					Settings.AlkahestryTome.craftingRecipes.put(key, new AlkahestCraftRecipe(stack, yield, cost));
-				}
+				Settings.AlkahestryTome.craftingRecipes.put(key, new AlkahestCraftRecipe(stack, yield, cost));
 			}
 		}
 	}

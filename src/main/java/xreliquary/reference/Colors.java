@@ -1,7 +1,5 @@
 package xreliquary.reference;
 
-import javax.naming.SizeLimitExceededException;
-
 public class Colors {
 
 	public static int get(String s) {
