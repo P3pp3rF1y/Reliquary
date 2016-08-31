@@ -188,14 +188,14 @@ public class BlockItemConfiguration {
 
 		//infernal claws configs
 		categoryKey = Names.item_and_block_settings + "." + Names.infernal_claws;
-		Settings.InfernalClaws.hungerCostPercent = ConfigurationHandler.getInt("hunger_cost_percent", categoryKey, 10, 0, 30, "Percent hunger used to heal player per 1 damage that would be taken otherwise.");
+		Settings.InfernalClaws.hungerCostPercent = ConfigurationHandler.getInt("hunger_cost_percent", categoryKey, 5, 0, 30, "Percent hunger used to heal player per 1 damage that would be taken otherwise.");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
 		category.setComment("Infernal Claws settings");
 
 		//infernal chalice configs
 		categoryKey = Names.item_and_block_settings + "." + Names.infernal_chalice;
-		Settings.InfernalChalice.hungerCostPercent = ConfigurationHandler.getInt("hunger_cost_percent", categoryKey, 5, 0, 10, "Percent hunger used to heal player per 1 damage that would be taken otherwise.");
+		Settings.InfernalChalice.hungerCostPercent = ConfigurationHandler.getInt("hunger_cost_percent", categoryKey, 1, 0, 10, "Percent hunger used to heal player per 1 damage that would be taken otherwise.");
 		Settings.InfernalChalice.fluidLimit = ConfigurationHandler.getInt("fluid_limit", categoryKey, 500000, 0, cleanIntMax, "Millibuckets of lava that the chalice can hold");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
