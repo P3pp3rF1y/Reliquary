@@ -21,16 +21,19 @@ public class AlkahestConfiguration {
 	private static final int TOME_COST_UBER_TIER = 64;
 
 	public static void loadAlkahestBaseItem() {
-		String registryName = ConfigurationHandler.getString("base_item", Names.item_and_block_settings + "." + Names.alkahestry_tome, Items.REDSTONE.getRegistryName().toString());
-		int meta = ConfigurationHandler.getInt("base_item_meta", Names.item_and_block_settings + "." + Names.alkahestry_tome, 0, 0, 16);
+		String registryName = ConfigurationHandler.getString("base_item", Names.item_and_block_settings + "." + Names.alkahestry_tome, Items.REDSTONE.getRegistryName().toString(), "Base Item name in format \"ModId:item\"");
+		int meta = ConfigurationHandler.getInt("base_item_meta", Names.item_and_block_settings + "." + Names.alkahestry_tome, 0, 0, 16, "meta of the Base Item");
 		String[] splitName = registryName.split(":");
 		Settings.AlkahestryTome.baseItem = StackHelper.getItemStackFromNameMeta(splitName[0], splitName[1], meta);
 
-		Settings.AlkahestryTome.baseItemWorth = ConfigurationHandler.getInt("base_item_worth", Names.item_and_block_settings + "." + Names.alkahestry_tome, 1, 1, 1000);
+		Settings.AlkahestryTome.baseItemWorth = ConfigurationHandler.getInt("base_item_worth", Names.item_and_block_settings + "." + Names.alkahestry_tome, 1, 1, 1000, "How much charge the Base Item is worth");
 	}
 
 	public static void loadAlkahestChargingRecipes() {
-		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.charging_recipes);
+		String categoryKey = Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.charging_recipes;
+		ConfigCategory category = ConfigurationHandler.configuration.getCategory(categoryKey);
+		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
+		category.setComment("List of recipes that can be used with Alkahestry Tome to charge it. The values are item name \"modID:name\", meta, charge points.\n");
 
 		if(category.isEmpty()) {
 			addDefaultAlkahestChargingRecipes(category);
@@ -38,7 +41,6 @@ public class AlkahestConfiguration {
 
 		loadAlkahestChargingRecipesIntoSettings(category);
 
-		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.charging_recipes, true);
 	}
 
 	private static void loadAlkahestChargingRecipesIntoSettings(ConfigCategory category) {
@@ -72,22 +74,24 @@ public class AlkahestConfiguration {
 		addConfigAlkahestChargingRecipe(category, item, 0, charge);
 	}
 
-	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item, @SuppressWarnings("SameParameterValue") Integer meta, Integer charge) {
+	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item,
+			@SuppressWarnings("SameParameterValue") Integer meta, Integer charge) {
 		Property prop = new Property(item, new String[] {meta.toString(), charge.toString()}, Property.Type.INTEGER);
 
 		category.put(item, prop);
 	}
 
 	public static void loadAlkahestCraftingRecipes() {
-		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.crafting_recipes);
+		String categoryKey = Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.crafting_recipes;
+		ConfigCategory category = ConfigurationHandler.configuration.getCategory(categoryKey);
+		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
+		category.setComment("List of recipes that can be used with Alkahestry Tome to craft items. The values are item name \"modID:name\", meta, yield, cost.");
 
 		if(category.isEmpty()) {
 			addDefaultAlkahestCraftingRecipes(category);
 		}
 
 		loadAlkahestCraftingRecipesIntoSettings(category);
-
-		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.crafting_recipes, true);
 	}
 
 	private static void loadAlkahestCraftingRecipesIntoSettings(ConfigCategory category) {

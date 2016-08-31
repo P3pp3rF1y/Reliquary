@@ -36,7 +36,7 @@ public class PotionConfiguration {
 		loadUniquePotions();
 		LogHelper.debug("Done with potion combinations");
 
-		ConfigurationHandler.setCategoryTranslations(Names.potion_map, true);
+		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(Names.potion_map));
 	}
 
 	private static void loadUniquePotions() {
@@ -275,99 +275,99 @@ public class PotionConfiguration {
 		addPotionConfig(category, XRRecipes.INFERNAL_CLAW, harm(1), resist(6, 1), fireres(6, 0), dboost(6, 1), satur(1), heal(1));
 	}
 
-	public static String harm(int potency) {
+	private static String harm(int potency) {
 		return effectString(Reference.HARM, Integer.toString(0), Integer.toString(potency));
 	}
 
-	public static String heal(int potency) {
+	private static String heal(int potency) {
 		return effectString(Reference.HEAL, Integer.toString(0), Integer.toString(potency));
 	}
 
-	public static String satur(int potency) {
+	private static String satur(int potency) {
 		return effectString(Reference.SATURATION, Integer.toString(0), Integer.toString(potency));
 	}
 
-	public static String invis(int duration, int potency) {
+	private static String invis(int duration, int potency) {
 		return effectString(Reference.INVIS, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String absorb(int duration, int potency) {
+	private static String absorb(int duration, int potency) {
 		return effectString(Reference.ABSORB, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String hboost(int duration, int potency) {
+	private static String hboost(int duration, int potency) {
 		return effectString(Reference.HBOOST, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String dboost(int duration, int potency) {
+	private static String dboost(int duration, int potency) {
 		return effectString(Reference.DBOOST, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String speed(int duration, int potency) {
+	private static String speed(int duration, int potency) {
 		return effectString(Reference.SPEED, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String haste(int duration, int potency) {
+	private static String haste(int duration, int potency) {
 		return effectString(Reference.HASTE, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String slow(int duration, int potency) {
+	private static String slow(int duration, int potency) {
 		return effectString(Reference.SLOW, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String fatigue(int duration, int potency) {
+	private static String fatigue(int duration, int potency) {
 		return effectString(Reference.FATIGUE, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String breath(int duration, int potency) {
+	private static String breath(int duration, int potency) {
 		return effectString(Reference.BREATH, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String vision(int duration, int potency) {
+	private static String vision(int duration, int potency) {
 		return effectString(Reference.VISION, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String resist(int duration, int potency) {
+	private static String resist(int duration, int potency) {
 		return effectString(Reference.RESIST, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String fireres(int duration, int potency) {
+	private static String fireres(int duration, int potency) {
 		return effectString(Reference.FRESIST, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String weak(int duration, int potency) {
+	private static String weak(int duration, int potency) {
 		return effectString(Reference.WEAK, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String jump(int duration, int potency) {
+	private static String jump(int duration, int potency) {
 		return effectString(Reference.JUMP, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String nausea(int duration, int potency) {
+	private static String nausea(int duration, int potency) {
 		return effectString(Reference.NAUSEA, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String hunger(int duration, int potency) {
+	private static String hunger(int duration, int potency) {
 		return effectString(Reference.HUNGER, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String regen(int duration, int potency) {
+	private static String regen(int duration, int potency) {
 		return effectString(Reference.REGEN, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String poison(int duration, int potency) {
+	private static String poison(int duration, int potency) {
 		return effectString(Reference.POISON, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String wither(int duration, int potency) {
+	private static String wither(int duration, int potency) {
 		return effectString(Reference.WITHER, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String blind(int duration, int potency) {
+	private static String blind(int duration, int potency) {
 		return effectString(Reference.BLIND, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	public static String effectString(String name, String duration, String potency) {
+	private static String effectString(String name, String duration, String potency) {
 		return name + "|" + duration + "|" + potency;
 	}
 
