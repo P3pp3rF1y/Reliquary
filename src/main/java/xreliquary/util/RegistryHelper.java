@@ -23,11 +23,10 @@ public class RegistryHelper {
 	}
 
 	public static String getBlockRegistryName(Block block) {
-		if(block.getRegistryName() == null) {
-			LogHelper.warn("Block " + block.toString() + " isn't registered properly");
-		} else {
+		if(block.getRegistryName() != null) {
 			return block.getRegistryName().toString();
-		} return null;
+		}
+		return null;
 	}
 
 	public static boolean blocksEqual(Block block1, Block block2) {
