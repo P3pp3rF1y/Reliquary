@@ -443,8 +443,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 			for(int yOff = -3; yOff <= 3; yOff++) {
 				for(int zOff = -3; zOff <= 3; zOff++) {
 					Block block = player.worldObj.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock();
-					String registryName = RegistryHelper.getBlockRegistryName(block);
-					if(RegistryHelper.getBlockRegistryName(Blocks.FIRE).equals(registryName)) {
+					if(block == Blocks.FIRE) {
 						player.worldObj.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.AIR.getDefaultState());
 						player.worldObj.playSound(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
 					}
