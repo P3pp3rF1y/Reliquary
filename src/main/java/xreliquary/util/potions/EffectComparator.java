@@ -8,7 +8,7 @@ import java.util.Comparator;
 class EffectComparator implements Comparator<PotionEffect> {
 	@Override
 	public int compare(PotionEffect o1, PotionEffect o2) {
-		int ret = LanguageHelper.getLocalization(o1.getEffectName()).trim().compareTo(LanguageHelper.getLocalization(o2.getEffectName()).trim());
+		int ret = o1.getEffectName().trim().compareTo(o2.getEffectName().trim());
 
 		if(ret == 0)
 			ret = Integer.compare(o1.getAmplifier(), o2.getAmplifier());
