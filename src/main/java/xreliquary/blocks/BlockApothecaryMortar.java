@@ -32,7 +32,7 @@ import java.util.Random;
 
 public class BlockApothecaryMortar extends BlockBase {
 	private static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-	private static final AxisAlignedBB MORTAR_AABB = new AxisAlignedBB(0.25D, 0.0D, 0.25D, 0.75D, 0.3D, 0.75F);
+	private static final AxisAlignedBB MORTAR_AABB = new AxisAlignedBB(0.25D, 0.0D, 0.25D, 0.75D, 0.4D, 0.75F);
 
 	public BlockApothecaryMortar() {
 		super(Material.ROCK, Names.apothecary_mortar);

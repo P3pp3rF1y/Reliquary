@@ -7,11 +7,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import xreliquary.blocks.tile.TileEntityMortar;
-import xreliquary.client.model.ModelMortar;
 
 public class RenderApothecaryMortar extends TileEntitySpecialRenderer<TileEntityMortar> {
-
-	private ModelMortar modelMortar = new ModelMortar();
 
 	@Override
 	public void renderTileEntityAt(TileEntityMortar tile, double x, double y, double z, float var8, int i) {
