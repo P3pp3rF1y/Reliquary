@@ -50,7 +50,7 @@ public class ItemBase extends Item {
 	@SideOnly(Side.CLIENT)
 	public void formatTooltip(ImmutableMap<String, String> toFormat, ItemStack stack, List<String> list) {
 		if(showTooltipsAlways() || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", toFormat, stack, list);
+			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", toFormat, list);
 	}
 
 	@Override

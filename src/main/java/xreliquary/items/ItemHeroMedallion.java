@@ -55,8 +55,8 @@ public class ItemHeroMedallion extends ItemToggleable {
 			return;
 		this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getInteger("experience", ist))), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + "XP"), ist, list);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + "XP"), list);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}
 
 	private int getExperienceMinimum() {

@@ -118,7 +118,7 @@ public class ItemShearsOfWinter extends ItemShears {
 	@SideOnly(Side.CLIENT)
 	public void formatTooltip(ItemStack stack, List<String> list) {
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", null, stack, list);
+			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", null, list);
 	}
 
 	@Override

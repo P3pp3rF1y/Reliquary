@@ -74,15 +74,15 @@ public class ItemInfernalTear extends ItemToggleable {
 		this.formatTooltip(null, stack, list);
 
 		if(this.getStackFromTear(stack) == null) {
-			LanguageHelper.formatTooltip("tooltip.infernal_tear.tear_empty", null, null, list);
+			LanguageHelper.formatTooltip("tooltip.infernal_tear.tear_empty", null, list);
 		} else {
 			ItemStack contents = this.getStackFromTear(stack);
 			String itemName = contents.getDisplayName();
 
-			LanguageHelper.formatTooltip("tooltip.tear", ImmutableMap.of("item", itemName), stack, list);
+			LanguageHelper.formatTooltip("tooltip.tear", ImmutableMap.of("item", itemName), list);
 
 			if(this.isEnabled(stack)) {
-				LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + itemName), stack, list);
+				LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + itemName), list);
 			}
 			list.add(LanguageHelper.getLocalization("tooltip.absorb"));
 			list.add(LanguageHelper.getLocalization("tooltip.infernal_tear.absorb_unset"));
