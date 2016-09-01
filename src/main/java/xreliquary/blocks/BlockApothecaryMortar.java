@@ -91,12 +91,6 @@ public class BlockApothecaryMortar extends BlockBase {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state) {
-		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		return MORTAR_AABB;
 	}
