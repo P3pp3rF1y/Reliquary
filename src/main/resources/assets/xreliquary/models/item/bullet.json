@@ -3,5 +3,13 @@
   "textures": {
     "layer0": "xreliquary:items/bullet",
     "layer1": "xreliquary:items/bullet_overlay"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "empty": 1
+      },
+      "model": "xreliquary:item/bullet_empty"
+    }
+  ]
 }
