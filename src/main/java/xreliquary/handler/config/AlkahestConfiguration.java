@@ -52,8 +52,19 @@ public class AlkahestConfiguration {
 
 			String modId = nameParts[0];
 			String name = nameParts[1];
-			int meta = values[0];
-			int charge = values[1];
+			int meta = 0;
+
+			//allows specifying without meta in which case meta 0 is assumed
+			if(name.contains("|")) {
+				nameParts = name.split("\\|");
+				name = nameParts[0];
+				meta = Integer.parseInt(nameParts[1]);
+			} else if (values.length > 1){
+				meta = values[0];
+			}
+
+			//using last because of legacy configs that have meta as first
+			int charge = values[values.length - 1];
 
 			ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
 
@@ -76,7 +87,7 @@ public class AlkahestConfiguration {
 
 	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item,
 			@SuppressWarnings("SameParameterValue") Integer meta, Integer charge) {
-		Property prop = new Property(item, new String[] {meta.toString(), charge.toString()}, Property.Type.INTEGER);
+		Property prop = new Property(item, new String[] {charge.toString()}, Property.Type.INTEGER);
 
 		category.put(item, prop);
 	}
@@ -103,9 +114,17 @@ public class AlkahestConfiguration {
 
 			String modId = nameParts[0];
 			String name = nameParts[1];
-			int meta = values[0];
-			int yield = values[1];
-			int cost = values[2];
+			int meta = 0;
+			//allows specifying without meta in which case meta 0 is assumed
+			if(name.contains("|")) {
+				nameParts = name.split("\\|");
+				name = nameParts[0];
+				meta = Integer.parseInt(nameParts[1]);
+			} else if (values.length > 2) {
+				meta = values[0];
+			}
+			int yield = values[values.length - 2];
+			int cost = values[values.length - 1];
 
 			if(modId.toLowerCase().equals("oredictionary")) {
 				Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(name, yield, cost));
@@ -172,8 +191,7 @@ public class AlkahestConfiguration {
 	}
 
 	private static void addConfigAlkahestCraftingRecipe(ConfigCategory category, String item, Integer meta, Integer yield, Integer cost) {
-
-		Property prop = new Property(item, new String[] {meta.toString(), yield.toString(), cost.toString()}, Property.Type.INTEGER);
+		Property prop = new Property(item + "|" + meta, new String[] {yield.toString(), cost.toString()}, Property.Type.INTEGER);
 
 		category.put(item, prop);
 	}
