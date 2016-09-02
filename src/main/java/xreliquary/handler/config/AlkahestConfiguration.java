@@ -1,8 +1,11 @@
 package xreliquary.handler.config;
 
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Property;
 import xreliquary.handler.ConfigurationHandler;
@@ -12,6 +15,8 @@ import xreliquary.util.StackHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AlkahestConfiguration {
@@ -53,12 +58,16 @@ public class AlkahestConfiguration {
 			String modId = nameParts[0];
 			String name = nameParts[1];
 			int meta = 0;
+			boolean allSubitems = false;
 
 			//allows specifying without meta in which case meta 0 is assumed
 			if(name.contains("|")) {
 				nameParts = name.split("\\|");
 				name = nameParts[0];
-				meta = Integer.parseInt(nameParts[1]);
+				if ("*".equals(nameParts[1]))
+					allSubitems = true;
+				else
+					meta = Integer.parseInt(nameParts[1]);
 			} else if (values.length > 1){
 				meta = values[0];
 			}
@@ -66,10 +75,25 @@ public class AlkahestConfiguration {
 			//using last because of legacy configs that have meta as first
 			int charge = values[values.length - 1];
 
-			ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
+			if (allSubitems) {
+				Item item = Item.REGISTRY.getObject(new ResourceLocation(modId, name));
+				Block block = Block.REGISTRY.getObject(new ResourceLocation(modId, name));
+				List<ItemStack> subItems = new ArrayList<>();
+				if (item != null) {
+					item.getSubItems(item, null, subItems);
+				} else {
+					block.getSubBlocks(Item.getItemFromBlock(block), null, subItems);
+				}
 
-			if(stack != null) {
-				Settings.AlkahestryTome.chargingRecipes.put(entry.getKey(), new AlkahestChargeRecipe(stack, charge));
+				for (ItemStack stack : subItems) {
+					Settings.AlkahestryTome.chargingRecipes.put(entry.getKey().replace("*", String.valueOf(stack.getMetadata())), new AlkahestChargeRecipe(stack, charge));
+				}
+			} else {
+				ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
+
+				if(stack != null) {
+					Settings.AlkahestryTome.chargingRecipes.put(entry.getKey(), new AlkahestChargeRecipe(stack, charge));
+				}
 			}
 		}
 	}
@@ -115,11 +139,16 @@ public class AlkahestConfiguration {
 			String modId = nameParts[0];
 			String name = nameParts[1];
 			int meta = 0;
+			boolean allSubitems = false;
+
 			//allows specifying without meta in which case meta 0 is assumed
 			if(name.contains("|")) {
 				nameParts = name.split("\\|");
 				name = nameParts[0];
-				meta = Integer.parseInt(nameParts[1]);
+				if ("*".equals(nameParts[1]))
+					allSubitems = true;
+				else
+					meta = Integer.parseInt(nameParts[1]);
 			} else if (values.length > 2) {
 				meta = values[0];
 			}
@@ -129,11 +158,26 @@ public class AlkahestConfiguration {
 			if(modId.toLowerCase().equals("oredictionary")) {
 				Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(name, yield, cost));
 			} else {
-				ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
+				if (allSubitems) {
+					Item item = Item.REGISTRY.getObject(new ResourceLocation(modId, name));
+					Block block = Block.REGISTRY.getObject(new ResourceLocation(modId, name));
+					List<ItemStack> subItems = new ArrayList<>();
+					if (item != null) {
+						item.getSubItems(item, null, subItems);
+					} else {
+						block.getSubBlocks(Item.getItemFromBlock(block), null, subItems);
+					}
 
-				String key = entry.getKey() + (stack.getItem().getHasSubtypes() ? "|" + meta : "");
+					for (ItemStack stack : subItems) {
+						Settings.AlkahestryTome.craftingRecipes.put(entry.getKey().replace("*", String.valueOf(stack.getMetadata())), new AlkahestCraftRecipe(stack, yield, cost));
+					}
+				} else {
+					ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
 
-				Settings.AlkahestryTome.craftingRecipes.put(key, new AlkahestCraftRecipe(stack, yield, cost));
+					String key = entry.getKey() + (stack.getItem().getHasSubtypes() ? "|" + meta : "");
+
+					Settings.AlkahestryTome.craftingRecipes.put(key, new AlkahestCraftRecipe(stack, yield, cost));
+				}
 			}
 		}
 	}
