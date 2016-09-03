@@ -249,13 +249,17 @@ public class InventoryHelper {
 
 	private static int insertIntoEmptySlot(ItemStack contents, ISidedInventory inventory, int slot, int maxToAdd, EnumFacing insertDirection) {
 		int numberAdded = 0;
+		ItemStack stackInSlot = inventory.getStackInSlot(slot);
+
 		//loop because of storage drawers like inventories
-		while(inventory.canInsertItem(slot, contents, insertDirection) && maxToAdd > numberAdded) {
-			int stackAddition = Math.min(Math.min(contents.getMaxStackSize(), inventory.getInventoryStackLimit()), maxToAdd - numberAdded);
+		while(inventory.canInsertItem(slot, contents, insertDirection) && (stackInSlot == null || stackInSlot.stackSize > stackInSlot.getMaxStackSize()) && maxToAdd > numberAdded) {
+			int maxSlotAddition = stackInSlot == null ? contents.getMaxStackSize() : stackInSlot.getMaxStackSize() - stackInSlot.stackSize;
+			int stackAddition = Math.min(maxSlotAddition, maxToAdd - numberAdded);
 			ItemStack newContents = contents.copy();
 			newContents.stackSize = stackAddition;
 			inventory.setInventorySlotContents(slot, newContents);
 			numberAdded += stackAddition;
+			stackInSlot = inventory.getStackInSlot(slot);
 		}
 		return numberAdded;
 	}
