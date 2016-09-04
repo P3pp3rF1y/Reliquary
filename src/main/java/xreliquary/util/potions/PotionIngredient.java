@@ -10,7 +10,7 @@ import java.util.List;
 public class PotionIngredient {
 
 	public ItemStack item;
-	public List<PotionEffect> effects = new ArrayList<PotionEffect>();
+	public List<PotionEffect> effects = new ArrayList<>();
 
     /*
 	* current standard for potion crafting, an item must be supplied with a weighted potion effect so its weight can be calculated.

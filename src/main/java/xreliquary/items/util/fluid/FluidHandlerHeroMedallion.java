@@ -32,6 +32,7 @@ public class FluidHandlerHeroMedallion implements IFluidHandler, ICapabilityProv
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+		//noinspection unchecked
 		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T) this : null;
 	}
 

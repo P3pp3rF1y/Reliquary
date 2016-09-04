@@ -1,6 +1,5 @@
 package xreliquary.items.block;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -20,8 +19,8 @@ import xreliquary.init.ModBlocks;
 import xreliquary.reference.Settings;
 
 public class ItemFertileLilyPad extends ItemBlockBase {
-	public ItemFertileLilyPad(Block block) {
-		super(block);
+	public ItemFertileLilyPad() {
+		super(ModBlocks.fertileLilypad);
 	}
 
 	@Override
@@ -58,7 +57,7 @@ public class ItemFertileLilyPad extends ItemBlockBase {
 			BlockPos blockpos1 = blockpos.up();
 			IBlockState iblockstate = worldIn.getBlockState(blockpos);
 
-			if(iblockstate.getBlock().getMaterial(iblockstate) == Material.WATER && ((Integer) iblockstate.getValue(BlockLiquid.LEVEL)).intValue() == 0 && worldIn.isAirBlock(blockpos1)) {
+			if(iblockstate.getBlock().getMaterial(iblockstate) == Material.WATER && iblockstate.getValue(BlockLiquid.LEVEL) == 0 && worldIn.isAirBlock(blockpos1)) {
 				// special case for handling block placement with water lilies
 				net.minecraftforge.common.util.BlockSnapshot blocksnapshot = net.minecraftforge.common.util.BlockSnapshot.getBlockSnapshot(worldIn, blockpos1);
 				worldIn.setBlockState(blockpos1, ModBlocks.fertileLilypad.getDefaultState());

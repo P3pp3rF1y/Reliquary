@@ -186,7 +186,6 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 			BlockPos blockToHoe = getNextBlockToHoe(world, pos, range);
 			if(blockToHoe != null) {
 				Items.WOODEN_HOE.onItemUse(fakeHoe, player, world, blockToHoe, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0);
-				return;
 			} else {
 				hoeCoolDown = NO_JOB_COOL_DOWN_CYCLES;
 			}

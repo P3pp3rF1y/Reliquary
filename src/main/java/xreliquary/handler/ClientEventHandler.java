@@ -126,22 +126,14 @@ public class ClientEventHandler {
 	}
 
 	private boolean isHandgunActive(EntityPlayer player, boolean handgunInMain, boolean handgunInOff) {
-		if(handgunInMain && isValidTimeFrame(player.worldObj, player.getHeldItemMainhand()))
-			return true;
+		return handgunInMain && isValidTimeFrame(player.worldObj, player.getHeldItemMainhand()) || handgunInOff && isValidTimeFrame(player.worldObj, player.getHeldItemOffhand());
 
-		if(handgunInOff && isValidTimeFrame(player.worldObj, player.getHeldItemOffhand()))
-			return true;
-
-		return false;
 	}
 
 	private boolean isValidTimeFrame(World world, ItemStack handgun) {
 		long cooldownTime = ModItems.handgun.getCooldown(handgun) + 5;
 
-		if(cooldownTime - world.getWorldTime() <= ModItems.handgun.getMaxItemUseDuration(handgun) && cooldownTime >= world.getWorldTime())
-			return true;
-
-		return false;
+		return cooldownTime - world.getWorldTime() <= ModItems.handgun.getMaxItemUseDuration(handgun) && cooldownTime >= world.getWorldTime();
 	}
 
 	@SubscribeEvent
@@ -191,10 +183,10 @@ public class ClientEventHandler {
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.enableLighting();
 
-		if (displayPosition == 1 || displayPosition == 3) {
+		if(displayPosition == 1 || displayPosition == 3) {
 			hudOverlayY = sr.getScaledHeight() / 2 - (itemSize / 2) - (Math.max(0, (numberItems - 1) * (itemSize + itemSpacing) / 2));
 
-			if (displayPosition == 1) {
+			if(displayPosition == 1) {
 				hudOverlayX = sr.getScaledWidth() - (itemSize + borderSpacing);
 			} else {
 				hudOverlayX = borderSpacing;
@@ -233,7 +225,7 @@ public class ClientEventHandler {
 			textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
 			renderItem.renderItemOverlayIntoGUI(minecraft.getRenderManager().getFontRenderer(), stackToRender, hudOverlayX, hudOverlayY, null);
 
-			if (displayPosition == 1 || displayPosition == 3)
+			if(displayPosition == 1 || displayPosition == 3)
 				hudOverlayY += itemSize + itemSpacing;
 			else
 				hudOverlayX += itemSize + itemSpacing;
@@ -246,9 +238,9 @@ public class ClientEventHandler {
 	private void removeExpiredMobCharms() {
 		int secondsToExpire = 4;
 		synchronized(charmsToDraw) {
-			for(Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext(); ){
+			for(Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext(); ) {
 				Map.Entry<Integer, CharmToDraw> entry = iterator.next();
-				if (Settings.MobCharm.keepAlmostDestroyedDisplayed && entry.getValue().damage >= (ModItems.mobCharm.getMaxDamage() * 0.9))
+				if(Settings.MobCharm.keepAlmostDestroyedDisplayed && entry.getValue().damage >= (ModItems.mobCharm.getMaxDamage() * 0.9))
 					continue;
 
 				if(entry.getValue().time + secondsToExpire * 1000 < System.currentTimeMillis()) {
@@ -510,7 +502,7 @@ public class ClientEventHandler {
 		boolean leftSide = Settings.HudPositions.pyromancerStaff == 0 || Settings.HudPositions.pyromancerStaff == 2;
 		switch(Settings.HudPositions.pyromancerStaff) {
 			case 1: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 8);
+				hudOverlayX = sr.getScaledWidth() - 8;
 				break;
 			}
 			case 2: {
@@ -518,7 +510,7 @@ public class ClientEventHandler {
 				break;
 			}
 			case 3: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 8);
+				hudOverlayX = sr.getScaledWidth() - 8;
 				hudOverlayY = (int) (sr.getScaledHeight() - 18 * overlayScale);
 				break;
 			}
@@ -620,7 +612,6 @@ public class ClientEventHandler {
 
 		int hudOverlayX = (int) (16 * overlayScale);
 		int hudOverlayY = (int) (6 * overlayScale);
-		boolean leftSide = Settings.HudPositions.handgun == 0 || Settings.HudPositions.handgun == 2;
 		boolean twoHandguns = mainHandgunStack != null && offHandgunStack != null;
 
 		switch(Settings.HudPositions.handgun) {
@@ -743,7 +734,7 @@ public class ClientEventHandler {
 		boolean leftSide = hudPosition == 0 || hudPosition == 2;
 		switch(hudPosition) {
 			case 1: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 8);
+				hudOverlayX = sr.getScaledWidth() - 8;
 				break;
 			}
 			case 2: {
@@ -751,7 +742,7 @@ public class ClientEventHandler {
 				break;
 			}
 			case 3: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 8);
+				hudOverlayX = sr.getScaledWidth() - 8;
 				hudOverlayY = (int) (sr.getScaledHeight() - (18 * overlayScale));
 				break;
 			}
@@ -767,14 +758,20 @@ public class ClientEventHandler {
 		if(hudStack.getItem() instanceof ItemRendingGale) {
 			ItemRendingGale staffItem = (ItemRendingGale) hudStack.getItem();
 			String staffMode = staffItem.getMode(hudStack);
-			if(staffMode.equals("flight"))
-				staffMode = "FLIGHT";
-			else if(staffMode.equals("push"))
-				staffMode = "PUSH";
-			else if(staffMode.equals("pull"))
-				staffMode = "PULL";
-			else
-				staffMode = "BOLT";
+			switch(staffMode) {
+				case "flight":
+					staffMode = "FLIGHT";
+					break;
+				case "push":
+					staffMode = "PUSH";
+					break;
+				case "pull":
+					staffMode = "PULL";
+					break;
+				default:
+					staffMode = "BOLT";
+					break;
+			}
 			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(staffMode, hudOverlayX - (leftSide ? 0 : staffMode.length() * 6), hudOverlayY + 18, color);
 		}
 

@@ -52,14 +52,13 @@ public class ItemHandgun extends ItemBase {
 
 			@Override
 			public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-				if(capability == ModCapabilities.HANDGUN_DATA_CAPABILITY)
-					return true;
-				return false;
+				return capability == ModCapabilities.HANDGUN_DATA_CAPABILITY;
 			}
 
 			@Override
 			public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 				if(capability == ModCapabilities.HANDGUN_DATA_CAPABILITY)
+					//noinspection unchecked
 					return (T) handgunData;
 				return null;
 			}
@@ -107,10 +106,7 @@ public class ItemHandgun extends ItemBase {
 	public boolean isInCooldown(ItemStack handgun) {
 		IHandgunData data = getHandgunData(handgun);
 
-		if(data != null) {
-			return data.isInCoolDown();
-		}
-		return false;
+		return data != null && data.isInCoolDown();
 	}
 
 	public void setInCooldown(ItemStack handgun, boolean inCooldown) {
@@ -148,13 +144,8 @@ public class ItemHandgun extends ItemBase {
 
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-		if(oldStack == null || newStack == null)
-			return true;
+		return oldStack == null || newStack == null || !(oldStack.getItem() == ModItems.handgun && newStack.getItem() == ModItems.handgun);
 
-		if(oldStack.getItem() == ModItems.handgun && newStack.getItem() == ModItems.handgun)
-			return false;
-
-		return true;
 	}
 
 	@Override
@@ -213,13 +204,8 @@ public class ItemHandgun extends ItemBase {
 		} else {
 			secondHandgun = player.getHeldItemMainhand();
 		}
-		if(!isInCooldown(secondHandgun))
-			return true;
+		return !isInCooldown(secondHandgun) || (getCooldown(secondHandgun) - world.getWorldTime()) < (getPlayerReloadDelay(player) / 2);
 
-		if((getCooldown(secondHandgun) - world.getWorldTime()) < (getPlayerReloadDelay(player) / 2))
-			return true;
-
-		return false;
 	}
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")

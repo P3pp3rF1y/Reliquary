@@ -1,7 +1,6 @@
 package xreliquary.blocks;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -30,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlockPedestalPassive extends BlockBase {
-	static final PropertyEnum<EnumDyeColor> COLOR = PropertyEnum.<EnumDyeColor>create("color", EnumDyeColor.class);
+	static final PropertyEnum<EnumDyeColor> COLOR = PropertyEnum.create("color", EnumDyeColor.class);
 	static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	private static final AxisAlignedBB PEDESTAL_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.6875D, 0.875D);
 
@@ -53,6 +52,7 @@ public class BlockPedestalPassive extends BlockBase {
 		if(worldIn.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
 			TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) worldIn.getTileEntity(pos);
 
+			//noinspection ConstantConditions
 			color = pedestal.getClothColor();
 		}
 
@@ -66,15 +66,17 @@ public class BlockPedestalPassive extends BlockBase {
 		if (world.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
 			TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) world.getTileEntity(pos);
 
+			//noinspection ConstantConditions
 			meta = pedestal.getClothColor().getMetadata();
 		}
 
+		//noinspection ConstantConditions
 		return new ItemStack(Item.getItemFromBlock(this), 1, meta);
 	}
 
 	@Override
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		List list = new ArrayList<>();
+		List<ItemStack> list = new ArrayList<>();
 
 		Item item = this.getItemDropped(state,((World) world).rand, fortune);
 
@@ -82,9 +84,11 @@ public class BlockPedestalPassive extends BlockBase {
 		if (world.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
 			TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) world.getTileEntity(pos);
 
+			//noinspection ConstantConditions
 			meta = pedestal.getClothColor().getMetadata();
 		}
 
+		//noinspection ConstantConditions
 		list.add(new ItemStack(item, 1, meta));
 
 		return list;
@@ -98,7 +102,7 @@ public class BlockPedestalPassive extends BlockBase {
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] {FACING, COLOR});
+		return new BlockStateContainer(this, FACING, COLOR);
 	}
 
 	@Override
@@ -112,6 +116,7 @@ public class BlockPedestalPassive extends BlockBase {
 		if(worldIn.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
 			TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) worldIn.getTileEntity(pos);
 
+			//noinspection ConstantConditions
 			pedestal.setColor(state.getValue(COLOR));
 		}
 	}
@@ -138,6 +143,7 @@ public class BlockPedestalPassive extends BlockBase {
 
 		if(heldItem == null) {
 			if(player.isSneaking()) {
+				//noinspection ConstantConditions
 				pedestal.removeLastPedestalStack();
 				return true;
 			} else {
@@ -160,10 +166,9 @@ public class BlockPedestalPassive extends BlockBase {
 	}
 
 	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
-	{
-		if (willHarvest) return true; //If it will harvest, delay deletion of the block until after getDrops
-		return super.removedByPlayer(state, world, pos, player, willHarvest);
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+		//If it will harvest, delay deletion of the block until after getDrops
+		return willHarvest || super.removedByPlayer(state, world, pos, player, willHarvest);
 	}
 
 	@Override

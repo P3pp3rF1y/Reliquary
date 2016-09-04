@@ -8,7 +8,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.reference.Reference;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,10 +17,11 @@ import java.util.Map;
  * @author TheMike
  * @author x3n0ph0b3
  */
+@SideOnly(Side.CLIENT)
 public class LanguageHelper {
 
-	private static Map<String, String> preprocesssed = new HashMap<String, String>();
-	public static Map<String, String> globals = new HashMap<String, String>();
+	private static Map<String, String> preprocesssed = new HashMap<>();
+	public static Map<String, String> globals = new HashMap<>();
 
 	/**
 	 * Gets the preprocessed version of the localized string. Preprocessing will only be ran once, not on every call.
@@ -62,14 +62,12 @@ public class LanguageHelper {
 		return localization;
 	}
 
-	public static void formatTooltip(String langName, ImmutableMap<String, String> toFormat, ItemStack stack, List list) {
+	public static void formatTooltip(String langName, ImmutableMap<String, String> toFormat, List<String> list) {
 		String langTooltip = LanguageHelper.getLocalization(langName);
 		if(langTooltip == null || langTooltip.equals(langName))
 			return;
 		if(toFormat != null) {
-			Iterator<Map.Entry<String, String>> entrySet = toFormat.entrySet().iterator();
-			while(entrySet.hasNext()) {
-				Map.Entry<String, String> toReplace = entrySet.next();
+			for(Map.Entry<String, String> toReplace : toFormat.entrySet()) {
 				langTooltip = langTooltip.replace("{{" + toReplace.getKey() + "}}", toReplace.getValue());
 			}
 		}

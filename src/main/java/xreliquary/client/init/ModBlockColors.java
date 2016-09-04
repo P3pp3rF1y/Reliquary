@@ -1,12 +1,7 @@
 package xreliquary.client.init;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.init.ModBlocks;
 
@@ -15,19 +10,16 @@ public class ModBlockColors {
 		BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
 
 		if(ModBlocks.apothecaryCauldron.getRegistryName() != null) {
-			blockColors.registerBlockColorHandler(new IBlockColor() {
-				@Override
-				public int colorMultiplier(IBlockState state, IBlockAccess world, BlockPos pos, int tintIndex) {
-					if(pos != null) {
-						TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
-						if(cauldron != null) {
-							return cauldron.getColorMultiplier();
-						}
+			blockColors.registerBlockColorHandler((state, world, pos, tintIndex) -> {
+				if(pos != null) {
+					TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
+					if(cauldron != null) {
+						return cauldron.getColorMultiplier();
 					}
-
-					return -1;
 				}
-			}, new Block[] {ModBlocks.apothecaryCauldron});
+
+				return -1;
+			}, ModBlocks.apothecaryCauldron);
 		}
 	}
 }

@@ -290,9 +290,7 @@ public class ItemEnderStaff extends ItemToggleable {
 	}
 
 	private boolean canTeleport(World world, int x, int y, int z) {
-		if(!world.isAirBlock(new BlockPos(x, y + 1, z)) || !world.isAirBlock(new BlockPos(x, y + 2, z)))
-			return false;
-		return true;
+		return !(!world.isAirBlock(new BlockPos(x, y + 1, z)) || !world.isAirBlock(new BlockPos(x, y + 2, z)));
 	}
 
 	private void teleportPlayer(World world, int x, int y, int z, EntityPlayer player) {
@@ -301,11 +299,10 @@ public class ItemEnderStaff extends ItemToggleable {
 		for(int particles = 0; particles < 2; particles++) {
 			world.spawnParticle(EnumParticleTypes.PORTAL, player.posX, player.posY, player.posZ, world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
 		}
-		return;
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean flag) {
+	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		//added spacing here to make sure the tooltips didn't come out with weird punctuation derps.
@@ -321,8 +318,8 @@ public class ItemEnderStaff extends ItemToggleable {
 		}
 		this.formatTooltip(ImmutableMap.of("phrase", phrase, "position", position, "charge", charge), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + Items.ENDER_PEARL.getItemStackDisplayName(new ItemStack(Items.ENDER_PEARL))), ist, list);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + Items.ENDER_PEARL.getItemStackDisplayName(new ItemStack(Items.ENDER_PEARL))), list);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}
 
 	@Override

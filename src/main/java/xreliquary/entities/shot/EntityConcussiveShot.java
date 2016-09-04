@@ -67,13 +67,13 @@ public class EntityConcussiveShot extends EntityShotBase {
 	void onImpact(EntityLivingBase mop) {
 		if(mop != shootingEntity || ticksInAir > 3)
 			doDamage(mop);
-		ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, posX, posY, posZ, 1.5F, true, true);
+		ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, posX, posY, posZ, 1.5F, true);
 		this.setDead();
 	}
 
 	@Override
 	void doBurstEffect(EnumFacing sideHit) {
-		ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, posX, posY, posZ, 1.5F, true, true);
+		ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, posX, posY, posZ, 1.5F, true);
 		this.setDead();
 	}
 }

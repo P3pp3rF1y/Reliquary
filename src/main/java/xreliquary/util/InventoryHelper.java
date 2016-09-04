@@ -128,7 +128,7 @@ public class InventoryHelper {
 			return true;
 		if(itemList.length == 0 || !(itemList[0] instanceof ItemStack || itemList[0] instanceof Item || itemList[0] instanceof Block))
 			return false;
-		List<Integer> suggestedSlots = new ArrayList<Integer>();
+		List<Integer> suggestedSlots = new ArrayList<>();
 		int itemCount = 0;
 		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
 			if(player.inventory.mainInventory[slot] == null) {
@@ -249,13 +249,17 @@ public class InventoryHelper {
 
 	private static int insertIntoEmptySlot(ItemStack contents, ISidedInventory inventory, int slot, int maxToAdd, EnumFacing insertDirection) {
 		int numberAdded = 0;
+		ItemStack stackInSlot = inventory.getStackInSlot(slot);
+
 		//loop because of storage drawers like inventories
-		while(inventory.canInsertItem(slot, contents, insertDirection) && maxToAdd > numberAdded) {
-			int stackAddition = Math.min(Math.min(contents.getMaxStackSize(), inventory.getInventoryStackLimit()), maxToAdd - numberAdded);
+		while(inventory.canInsertItem(slot, contents, insertDirection) && (stackInSlot == null || stackInSlot.stackSize > stackInSlot.getMaxStackSize()) && maxToAdd > numberAdded) {
+			int maxSlotAddition = stackInSlot == null ? contents.getMaxStackSize() : stackInSlot.getMaxStackSize() - stackInSlot.stackSize;
+			int stackAddition = Math.min(maxSlotAddition, maxToAdd - numberAdded);
 			ItemStack newContents = contents.copy();
 			newContents.stackSize = stackAddition;
 			inventory.setInventorySlotContents(slot, newContents);
 			numberAdded += stackAddition;
+			stackInSlot = inventory.getStackInSlot(slot);
 		}
 		return numberAdded;
 	}
@@ -279,6 +283,7 @@ public class InventoryHelper {
 		if(inventory.getStackInSlot(0) != null)
 			return false;
 
+		//noinspection ConstantConditions
 		inventory.setInventorySlotContents(0, player.getHeldItem(hand).copy());
 
 		player.getHeldItem(hand).stackSize--;

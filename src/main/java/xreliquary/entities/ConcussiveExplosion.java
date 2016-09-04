@@ -23,10 +23,6 @@ import java.util.Map;
 
 public class ConcussiveExplosion extends Explosion {
 
-	/**
-	 * whether or not the explosion sets fire to blocks around it
-	 */
-	private boolean field_82755_b = true;
 	private World worldObj;
 	private double explosionX;
 	private double explosionY;
@@ -46,7 +42,7 @@ public class ConcussiveExplosion extends Explosion {
 		this.explosionX = explosionX;
 		this.explosionY = explosionY;
 		this.explosionZ = explosionZ;
-		this.playerKnockbackMap = Maps.<EntityPlayer, Vec3d>newHashMap();
+		this.playerKnockbackMap = Maps.newHashMap();
 	}
 
 	/**
@@ -74,6 +70,7 @@ public class ConcussiveExplosion extends Explosion {
 						var6 /= var12;
 						var8 /= var12;
 						var10 /= var12;
+						//TODO figure out what the heck this whole loop does. Seems to be a lot looping just to set these 3 variables
 						d5 = explosionX;
 						d7 = explosionY;
 						d9 = explosionZ;
@@ -89,12 +86,11 @@ public class ConcussiveExplosion extends Explosion {
 		int var28 = MathHelper.floor_double(explosionY + explosionSize + 1.0D);
 		int var7 = MathHelper.floor_double(explosionZ - explosionSize - 1.0D);
 		int var29 = MathHelper.floor_double(explosionZ + explosionSize + 1.0D);
-		List var9 = worldObj.getEntitiesWithinAABBExcludingEntity(exploder, new AxisAlignedBB(var3, var5, var7, var4, var28, var29));
+		List<Entity> var9 = worldObj.getEntitiesWithinAABBExcludingEntity(exploder, new AxisAlignedBB(var3, var5, var7, var4, var28, var29));
 
 		Vec3d var30 = new Vec3d(explosionX, explosionY, explosionZ);
 
-		for(int var11 = 0; var11 < var9.size(); ++var11) {
-			Entity entity = (Entity) var9.get(var11);
+		for(Entity entity : var9) {
 			if(!(entity instanceof EntityLiving) && (!(exploder instanceof EntityHolyHandGrenade) || !(entity instanceof EntityPlayer) || ((EntityHolyHandGrenade) exploder).getCustomName() == null || !((EntityHolyHandGrenade) exploder).getCustomName().contains(((EntityPlayer) entity).getGameProfile().getName()))) {
 				continue;
 			}
@@ -132,7 +128,10 @@ public class ConcussiveExplosion extends Explosion {
 	public void doExplosionB(boolean par1) {
 		worldObj.playSound(null, new BlockPos(explosionX, explosionY, explosionZ), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (worldObj.rand.nextFloat() - worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 
-		if(explosionSize >= 2.0F && field_82755_b) {
+		/*
+	  whether or not the explosion sets fire to blocks around it
+	 */
+		if(explosionSize >= 2.0F) {
 			worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);
 		} else {
 			worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);
@@ -145,14 +144,14 @@ public class ConcussiveExplosion extends Explosion {
 		return this.playerKnockbackMap;
 	}
 
-	public static void customBusterExplosion(Entity par1Entity, EntityPlayer player, double par2, double par4, double par6, float par8, boolean par9, boolean par10) {
+	public static void customBusterExplosion(Entity par1Entity, double par2, double par4, double par6, float par8) {
 		if(par1Entity.worldObj.isRemote)
 			return;
-		par1Entity.worldObj.newExplosion(par1Entity, par2, par4, par6, par8, par9, par10);
+		par1Entity.worldObj.newExplosion(par1Entity, par2, par4, par6, par8, false, true);
 	}
 
-	public static ConcussiveExplosion customConcussiveExplosion(Entity entity, EntityPlayer player, double explosionX, double explosionY, double explosionZ, float size, boolean isFlaming, boolean isSmoking) {
-		ConcussiveExplosion var11 = new ConcussiveExplosion(entity.worldObj, entity, player, explosionX, explosionY, explosionZ, size, isFlaming, isSmoking);
+	public static ConcussiveExplosion customConcussiveExplosion(Entity entity, EntityPlayer player, double explosionX, double explosionY, double explosionZ, float size, boolean isFlaming) {
+		ConcussiveExplosion var11 = new ConcussiveExplosion(entity.worldObj, entity, player, explosionX, explosionY, explosionZ, size, isFlaming, true);
 		var11.doExplosionA();
 		var11.doExplosionB(false);
 

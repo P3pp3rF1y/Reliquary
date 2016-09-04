@@ -23,9 +23,7 @@ public class TileEntityPedestalPassive extends TileEntityBase implements IInvent
 	}
 
 	public void dropPedestalInventory() {
-		for(int i = 0; i < inventory.length; ++i) {
-			ItemStack itemstack = inventory[i];
-
+		for(ItemStack itemstack : inventory) {
 			if(itemstack != null) {
 				InventoryHelper.spawnItemStack(this.worldObj, this.pos.getX(), this.pos.getY(), this.pos.getZ(), itemstack);
 			}
@@ -179,9 +177,7 @@ public class TileEntityPedestalPassive extends TileEntityBase implements IInvent
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		if(index < slots)
-			return true;
-		return false;
+		return index < slots;
 	}
 
 	@Override

@@ -32,7 +32,7 @@ import java.util.Random;
 
 public class BlockApothecaryMortar extends BlockBase {
 	private static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-	private static final AxisAlignedBB MORTAR_AABB = new AxisAlignedBB(0.25D, 0.0D, 0.25D, 0.75D, 0.3D, 0.75F);
+	private static final AxisAlignedBB MORTAR_AABB = new AxisAlignedBB(0.25D, 0.0D, 0.25D, 0.75D, 0.4D, 0.75F);
 
 	public BlockApothecaryMortar() {
 		super(Material.ROCK, Names.apothecary_mortar);
@@ -45,6 +45,7 @@ public class BlockApothecaryMortar extends BlockBase {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB mask, List list, Entity collidingEntity) {
+		//noinspection unchecked
 		addCollisionBoxToList(pos, mask, list, MORTAR_AABB);
 	}
 
@@ -90,12 +91,6 @@ public class BlockApothecaryMortar extends BlockBase {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state) {
-		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		return MORTAR_AABB;
 	}
@@ -114,15 +109,13 @@ public class BlockApothecaryMortar extends BlockBase {
 			boolean done = mortar.usePestle();
 			world.playSound(null, pos, this.blockSoundType.getStepSound(), SoundCategory.BLOCKS, (this.blockSoundType.getVolume() + 1.0F) / 2.0F, this.blockSoundType.getPitch() * 0.8F);
 			player.swingArm(hand);
-			if(done) {
-				return true;
-			}
-			return false;
+			return done;
 		}
 		ItemStack[] mortarItems = mortar.getItemStacks();
 		boolean putItemInSlot = false;
 		for(int slot = 0; slot < mortarItems.length; slot++) {
 			ItemStack item = new ItemStack(heldItem.getItem(), 1, heldItem.getItemDamage());
+			//noinspection ConstantConditions
 			item.setTagCompound(heldItem.getTagCompound());
 			if(mortarItems[slot] == null && mortar.isItemValidForSlot(slot, item)) {
 				heldItem.stackSize--;

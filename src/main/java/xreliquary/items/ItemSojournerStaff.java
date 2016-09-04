@@ -78,22 +78,17 @@ public class ItemSojournerStaff extends ItemToggleable {
 
 	private void scanForMatchingTorchesToFillInternalStorage(ItemStack ist, EntityPlayer player) {
 		List<String> torches = Settings.SojournerStaff.torches;
-		List<Item> items = new ArrayList<Item>();
+		List<Item> items = new ArrayList<>();
 
 		//default to always work with vanilla torches
 		ItemStack vanillaTorch = new ItemStack(Blocks.TORCH, 1, 0);
 		items.add(vanillaTorch.getItem());
 
-		for(String torch : torches) {
-			if(!items.contains(RegistryHelper.getItemFromName(torch)))
-				items.add(RegistryHelper.getItemFromName(torch));
-		}
+		torches.stream().filter(torch -> !items.contains(RegistryHelper.getItemFromName(torch))).forEach(torch -> items.add(RegistryHelper.getItemFromName(torch)));
 
-		for(Item item : items) {
-			if(!isInternalStorageFullOfItem(ist, item) && InventoryHelper.consumeItem(item, player)) {
-				addItemToInternalStorage(ist, item);
-			}
-		}
+		items.stream().filter(item -> !isInternalStorageFullOfItem(ist, item) && InventoryHelper.consumeItem(item, player)).forEach(item -> {
+			addItemToInternalStorage(ist, item);
+		});
 	}
 
 	private void addItemToInternalStorage(ItemStack ist, Item item) {
@@ -306,7 +301,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		//maps the contents of the Sojourner's staff to a tooltip, so the player can review the torches stored within.
@@ -334,8 +329,8 @@ public class ItemSojournerStaff extends ItemToggleable {
 		}
 		this.formatTooltip(ImmutableMap.of("phrase", phrase, "placing", placing), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + getItemStackDisplayName(new ItemStack(Blocks.TORCH))), ist, list);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + getItemStackDisplayName(new ItemStack(Blocks.TORCH))), list);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}
 
 	@Override

@@ -8,15 +8,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class EntityCauldronSteamFX extends ParticleRedstone {
 
-	public EntityCauldronSteamFX(World world, double x, double y, double z, double xMot, double yMot, double zMot, float red, float green, float blue) {
-		this(world, x, y, z, 1.0F, red, green, blue);
-		this.motionX += xMot;
+	public EntityCauldronSteamFX(World world, double x, double y, double z, double yMot, float red, float green, float blue) {
+		this(world, x, y, z, red, green, blue);
+		this.motionX += 0D;
 		this.motionY += yMot;
-		this.motionZ += zMot;
+		this.motionZ += 0D;
 	}
 
-	private EntityCauldronSteamFX(World world, double x, double y, double z, float sizeAndLifespanLoL, float red, float green, float blue) {
-		super(world, x, y, z, sizeAndLifespanLoL, red, green, blue);
+	private EntityCauldronSteamFX(World world, double x, double y, double z, float red, float green, float blue) {
+		super(world, x, y, z, 1.0F, red, green, blue);
 		this.particleRed = red;
 		this.particleGreen = green;
 		this.particleBlue = blue;

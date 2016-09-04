@@ -106,8 +106,8 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		float green = (((color >> 8) & 255) / 256F);
 		float blue = ((color & 255) / 256F);
 
-		EntityCauldronBubbleFX bubble = new EntityCauldronBubbleFX(Minecraft.getMinecraft().getTextureManager(), worldObj, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0D, 0D, 0D, red, green, blue);
-		EntityCauldronSteamFX steam = new EntityCauldronSteamFX(worldObj, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0D, 0.05D + 0.02F * getRenderLiquidLevel(), 0D, red, green, blue);
+		EntityCauldronBubbleFX bubble = new EntityCauldronBubbleFX(Minecraft.getMinecraft().getTextureManager(), worldObj, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, red, green, blue);
+		EntityCauldronSteamFX steam = new EntityCauldronSteamFX(worldObj, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.05D + 0.02F * getRenderLiquidLevel(), red, green, blue);
 		FMLClientHandler.instance().getClient().effectRenderer.addEffect(bubble);
 		if(worldObj.rand.nextInt(6) == 0)
 			FMLClientHandler.instance().getClient().effectRenderer.addEffect(steam);
@@ -240,6 +240,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	public boolean isItemValidForInput(ItemStack ist) {
+		//noinspection SimplifiableIfStatement
 		if(getLiquidLevel() < 3)
 			return false;
 		return ((ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null) || (ist.getItem() == Items.GUNPOWDER && !this.hasGunpowder) || (ist.getItem() == Items.GLOWSTONE_DUST && this.glowstoneCount < getGlowstoneAmpLimit()) || (ist.getItem() == Items.REDSTONE && this.redstoneCount < getRedstoneAmpLimit()) || (ist.getItem() == Items.NETHER_WART && !this.hasNetherwart));
@@ -273,13 +274,10 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	public List<Block> getHeatSources() {
-		List<Block> heatSources = new ArrayList<Block>();
+		List<Block> heatSources = new ArrayList<>();
 		List<String> heatSourceBlockNames = Settings.ApothecaryCauldron.heatSources;
 
-		for(String blockName : heatSourceBlockNames) {
-			if(!heatSources.contains(RegistryHelper.getBlockFromName(blockName)))
-				heatSources.add(RegistryHelper.getBlockFromName(blockName));
-		}
+		heatSourceBlockNames.stream().filter(blockName -> !heatSources.contains(RegistryHelper.getBlockFromName(blockName))).forEach(blockName -> heatSources.add(RegistryHelper.getBlockFromName(blockName)));
 		//defaults that can't be removed.
 		heatSources.add(Blocks.LAVA);
 		heatSources.add(Blocks.FLOWING_LAVA);

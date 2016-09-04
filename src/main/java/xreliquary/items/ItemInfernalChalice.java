@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -24,7 +23,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import xreliquary.Reliquary;
 import xreliquary.items.util.fluid.FluidHandlerInfernalChalice;
 import xreliquary.reference.Names;
-import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 
 import java.util.List;
@@ -41,7 +39,7 @@ public class ItemInfernalChalice extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
 		//String fluid = "lava.";
 		String amount = Integer.toString(NBTHelper.getInteger("fluidStacks", ist));
 		this.formatTooltip(ImmutableMap.of("amount", amount), ist, list);
@@ -119,16 +117,6 @@ public class ItemInfernalChalice extends ItemToggleable {
 			world.setBlockState(pos, Blocks.FLOWING_LAVA.getDefaultState(), 3);
 			return true;
 		}
-	}
-
-	@Override
-	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean b) {
-		EntityPlayer player = null;
-		if(e instanceof EntityPlayer) {
-			player = (EntityPlayer) e;
-		}
-		if(player == null)
-			return;
 	}
 
 	@Override

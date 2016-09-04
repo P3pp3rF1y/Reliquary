@@ -61,6 +61,7 @@ public class ClientProxy extends CommonProxy {
 			if(oneDescription) {
 				List<ItemStack> subBlocks = new ArrayList<>();
 
+				//noinspection ConstantConditions
 				block.getSubBlocks(Item.getItemFromBlock(block), null, subBlocks);
 
 				JEIDescriptionRegistry.register(subBlocks, name);

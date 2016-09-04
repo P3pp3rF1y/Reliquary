@@ -14,7 +14,6 @@ import xreliquary.items.util.IHarvestRodCache;
 import xreliquary.items.util.handgun.HandgunData;
 import xreliquary.items.util.handgun.HandgunDataStorage;
 import xreliquary.items.util.handgun.IHandgunData;
-import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 
 public class ModCapabilities {

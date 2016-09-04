@@ -61,6 +61,7 @@ public class ContainerMobCharmBelt extends Container {
 
 		if(slot != null && slot.getHasStack()) {
 			ItemStack originalStack = slot.getStack();
+			//noinspection ConstantConditions
 			copiedStack = originalStack.copy();
 
 			if(index < PLAYER_INV_INDEX) {

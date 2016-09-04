@@ -1,6 +1,5 @@
 package xreliquary.handler;
 
-import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -8,7 +7,6 @@ import xreliquary.handler.config.*;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
-import xreliquary.util.LanguageHelper;
 
 import java.io.File;
 import java.util.Arrays;
@@ -29,17 +27,16 @@ public class ConfigurationHandler {
 	private static void loadConfiguration() {
 		HudConfiguration.loadHudPositions();
 		EasyModeConfiguration.loadEasyModeSettings();
-		MobDropConfiguration.loadMobDropProbabilities();
 		BlockItemConfiguration.loadBlockAndItemSettings();
 
-		Settings.chestLootEnabled = getBoolean(Names.chest_loot_enabled, "general", true);
+		Settings.chestLootEnabled = getBoolean(Names.chest_loot_enabled, "general", true, "Determines whether Reliquary items will be generated in chest loot (mostly mob drops, very rarely some lower level items)");
 		configuration.getCategory("general").get(Names.chest_loot_enabled).setRequiresMcRestart(true);
-		Settings.wailaShiftForInfo = getBoolean(Names.waila_shift_for_info, "general", false);
-		Settings.dropCraftingRecipesEnabled = getBoolean(Names.mob_drop_crafting_recipes_enabled, "general", false);
+		Settings.wailaShiftForInfo = getBoolean(Names.waila_shift_for_info, "general", false, "Whether player has to sneak to see additional info in waila");
+		Settings.dropCraftingRecipesEnabled = getBoolean(Names.mob_drop_crafting_recipes_enabled, "general", false, "Determines wheter Reliquary mob drops have crafting recipes");
 		configuration.getCategory("general").get(Names.mob_drop_crafting_recipes_enabled).setRequiresMcRestart(true);
-		Settings.mobDropsEnabled = getBoolean(Names.mob_drops_enabled, "general", true);
+		Settings.mobDropsEnabled = getBoolean(Names.mob_drops_enabled, "general", true, "Whether mobs drop the Reliquary mob drops. This won't remove mob drop items from registry and replace them with something else, but allows to turn off the additional drops when mobs are killed by player. If this is turned off the mob drop crafting recipes turned on by the other setting can be used.");
 		configuration.getCategory("general").get(Names.mob_drops_enabled).setRequiresMcRestart(true);
-		Settings.disabledItemsBlocks = ConfigurationHandler.getStringList(Names.disabled_items_blocks, "general", Collections.EMPTY_LIST);
+		Settings.disabledItemsBlocks = ConfigurationHandler.getStringList(Names.disabled_items_blocks, "general", Collections.emptyList(), "List of items and blocks that are supposed to be disabled. By default this is empty, but you can use the names of the blocks and items (e.g. \"fertile_lilypad\", \"wraith_node\", \"glacial_staff\") in this list and mod will not register those. It will also not register any recipes that include whatever is disabled.");
 		configuration.getCategory("general").get(Names.disabled_items_blocks).setRequiresMcRestart(true);
 	}
 
@@ -58,37 +55,28 @@ public class ConfigurationHandler {
 		}
 	}
 
-	public static List<String> getStringList(String name, String category, List<String> defaultValue) {
-		return Arrays.asList(configuration.getStringList(name, category, defaultValue.toArray(new String[defaultValue.size()]), getTranslatedComment(category, name), new String[] {}, getLabelLangRef(category, name)));
+	public static List<String> getStringList(String name, String category, List<String> defaultValue, String comment) {
+		return Arrays.asList(configuration.getStringList(name, category, defaultValue.toArray(new String[defaultValue.size()]), comment, new String[] {}, getConfigLangRef(category, name)));
 	}
 
-	public static boolean getBoolean(String name, String category, boolean defaultValue) {
-		return configuration.getBoolean(name, category, defaultValue, getTranslatedComment(category, name), getLabelLangRef(category, name));
+	public static boolean getBoolean(String name, String category, boolean defaultValue, String comment) {
+		return configuration.getBoolean(name, category, defaultValue, comment, getConfigLangRef(category, name));
 	}
 
-	public static int getInt(String name, String category, int defaultValue, int minValue, int maxValue) {
-		return configuration.getInt(name, category, defaultValue, minValue, maxValue, getTranslatedComment(category, name), getLabelLangRef(category, name));
+	public static int getInt(String name, String category, int defaultValue, int minValue, int maxValue, String comment) {
+		return configuration.getInt(name, category, defaultValue, minValue, maxValue, comment, getConfigLangRef(category, name));
 	}
 
-	public static String getString(String name, String category, String defaultValue) {
-		return configuration.getString(name, category, defaultValue, getTranslatedComment(category, name), getLabelLangRef(category, name));
+	public static String getString(@SuppressWarnings("SameParameterValue") String name, String category, String defaultValue, String comment) {
+		return configuration.getString(name, category, defaultValue, comment, getConfigLangRef(category, name));
 	}
 
-	private static String getTranslatedComment(String category, String config) {
-		return LanguageHelper.getLocalization("config." + category + "." + config + ".comment");
+	private static String getConfigLangRef(String category, String config) {
+		return "xreliquary.config." + category + "." + config + ".label";
 	}
 
-	private static String getLabelLangRef(String category, String config) {
-		return "config." + category + "." + config + ".label";
-	}
-
-	public static void setCategoryTranslations(String categoryName, boolean setComment) {
-		ConfigCategory category = configuration.getCategory(categoryName);
-
-		category.setLanguageKey("config." + categoryName + ".label");
-		if(setComment) {
-			category.setComment(LanguageHelper.getLocalization("config." + categoryName + ".comment"));
-		}
+	public static String getCategoryLangRef(String category) {
+		return "xreliquary.config." + category + ".label";
 	}
 
 	@SubscribeEvent

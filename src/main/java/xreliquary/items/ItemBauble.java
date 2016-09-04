@@ -3,7 +3,6 @@ package xreliquary.items;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Optional;
 import xreliquary.reference.Compatibility;

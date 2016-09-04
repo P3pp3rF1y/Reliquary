@@ -50,13 +50,13 @@ public class ItemHeroMedallion extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+	public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getInteger("experience", ist))), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + "XP"), ist, list);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + "XP"), list);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}
 
 	private int getExperienceMinimum() {

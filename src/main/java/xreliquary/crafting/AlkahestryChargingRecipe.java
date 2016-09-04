@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
-import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
@@ -70,6 +69,7 @@ public class AlkahestryChargingRecipe implements IRecipe {
 		}
 
 		NBTHelper.setInteger("charge", tome, NBTHelper.getInteger("charge", tome) + amount);
+		//noinspection ConstantConditions
 		tome.setItemDamage(tome.getMaxDamage() - NBTHelper.getInteger("charge", tome));
 		return tome;
 	}

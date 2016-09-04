@@ -1,12 +1,20 @@
 package xreliquary.items;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
+import xreliquary.util.LanguageHelper;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemBullet extends ItemBase {
@@ -20,32 +28,13 @@ public class ItemBullet extends ItemBase {
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(64);
 		this.setHasSubtypes(true);
+		this.addPropertyOverride(new ResourceLocation("empty"), new IItemPropertyGetter() {
+			@SideOnly(Side.CLIENT)
+			public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
+				return stack.getMetadata() == 0 ? 1 : 0;
+			}
+		});
 		canRepair = false;
-	}
-
-	public int getColor(ItemStack itemStack) {
-
-		switch(itemStack.getItemDamage()) {
-			case 1:
-				return Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16);
-			case 2:
-				return Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16);
-			case 3:
-				return Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16);
-			case 4:
-				return Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16);
-			case 5:
-				return Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16);
-			case 6:
-				return Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16);
-			case 7:
-				return Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16);
-			case 8:
-				return Integer.parseInt(Colors.SAND_SHOT_COLOR, 16);
-			case 9:
-				return Integer.parseInt(Colors.STORM_SHOT_COLOR, 16);
-		}
-		return Integer.parseInt(Colors.PURE, 16);
 	}
 
 	@Override
@@ -54,16 +43,16 @@ public class ItemBullet extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-		par3List.add(new ItemStack(par1, 1, 0));
-		par3List.add(new ItemStack(par1, 1, 1));
-		par3List.add(new ItemStack(par1, 1, 2));
-		par3List.add(new ItemStack(par1, 1, 3));
-		par3List.add(new ItemStack(par1, 1, 4));
-		par3List.add(new ItemStack(par1, 1, 5));
-		par3List.add(new ItemStack(par1, 1, 6));
-		par3List.add(new ItemStack(par1, 1, 7));
-		par3List.add(new ItemStack(par1, 1, 8));
-		par3List.add(new ItemStack(par1, 1, 9));
+	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
+		if (stack.getMetadata() < 2)
+			return;
+		LanguageHelper.formatTooltip("item." + Names.bullet + "_" + stack.getMetadata() + ".tooltip", null, list);
+	}
+
+	@Override
+	public void getSubItems(Item item, CreativeTabs creativeTabs, List<ItemStack> subItems) {
+		for(int meta=0; meta<=9;meta++) {
+			subItems.add(new ItemStack(item, 1, meta));
+		}
 	}
 }

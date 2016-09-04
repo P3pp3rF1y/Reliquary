@@ -69,6 +69,7 @@ public class AlkahestryCraftingRecipeCategory implements IRecipeCategory {
 		if(recipeWrapper instanceof AlkahestryCraftingRecipeJEI) {
 			AlkahestryCraftingRecipeJEI alkahestryCraftingWrapper = (AlkahestryCraftingRecipeJEI) recipeWrapper;
 			if(alkahestryCraftingWrapper.getInputs().get(0) instanceof Collection) {
+				//noinspection unchecked
 				recipeLayout.getItemStacks().set(INPUT_SLOT, ((Collection<ItemStack>) alkahestryCraftingWrapper.getInputs().get(0)));
 			} else {
 				recipeLayout.getItemStacks().set(INPUT_SLOT, (ItemStack) alkahestryCraftingWrapper.getInputs().get(0));
@@ -76,6 +77,7 @@ public class AlkahestryCraftingRecipeCategory implements IRecipeCategory {
 			recipeLayout.getItemStacks().set(TOME_SLOT, (ItemStack) alkahestryCraftingWrapper.getInputs().get(1));
 
 			if(alkahestryCraftingWrapper.getOutputs().get(0) instanceof Collection) {
+				//noinspection unchecked
 				recipeLayout.getItemStacks().set(OUTPUT_SLOT, ((Collection<ItemStack>) alkahestryCraftingWrapper.getOutputs().get(0)));
 			} else {
 				recipeLayout.getItemStacks().set(OUTPUT_SLOT, (ItemStack) alkahestryCraftingWrapper.getOutputs().get(0));

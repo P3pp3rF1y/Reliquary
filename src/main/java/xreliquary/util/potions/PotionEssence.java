@@ -40,10 +40,10 @@ public class PotionEssence extends PotionIngredient {
 	public PotionEssence(PotionIngredient... ingredients) {
 
 		//helper list to store what we have, altogether
-		Map<Integer, List<PotionEffect>> potionEffectCounterList = new HashMap<Integer, List<PotionEffect>>();
+		Map<Integer, List<PotionEffect>> potionEffectCounterList = new HashMap<>();
 
 		//actual list to store what we have two or more of, these are the actual final effects
-		List<Integer> potionEffectList = new ArrayList<Integer>();
+		List<Integer> potionEffectList = new ArrayList<>();
 
 		//add each effect to the counter list. if it appears twice, add it to the potionEffectList too.
 		for(PotionIngredient ingredient : ingredients) {
@@ -166,9 +166,7 @@ public class PotionEssence extends PotionIngredient {
 	}
 
 	public void apply(EntityPlayer player) {
-		for(PotionEffect effect : effects) {
-			player.addPotionEffect(effect);
-		}
+		effects.forEach(player::addPotionEffect);
 	}
 
 	public int getRedstoneCount() {

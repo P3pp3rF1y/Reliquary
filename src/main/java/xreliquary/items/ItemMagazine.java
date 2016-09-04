@@ -1,13 +1,20 @@
 package xreliquary.items;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemMagazine extends ItemBase {
@@ -18,16 +25,20 @@ public class ItemMagazine extends ItemBase {
 		this.setMaxStackSize(64);
 		canRepair = false;
 		this.setHasSubtypes(true);
+		this.addPropertyOverride(new ResourceLocation("empty"), new IItemPropertyGetter() {
+			@SideOnly(Side.CLIENT)
+			public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
+				return stack.getMetadata() == 0 ? 1 : 0;
+			}
+		});
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		//TODO get rid of this, obviously at some point magazines were part of this class
-		if(stack.getItemDamage() < 2) {
-			//list.add(LanguageHelper.getLocalization("item." + Names.magazine + "_" + stack.getItemDamage() + ".tooltip"));
-		} else {
-			list.add(LanguageHelper.getLocalization("item." + Names.bullet + "_" + stack.getItemDamage() + ".tooltip"));
-		}
+	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
+		if(stack.getMetadata() < 2)
+			return;
+		//taking tooltip from bullets as it's the same text for magazines
+		LanguageHelper.formatTooltip("item." + Names.bullet + "_" + stack.getMetadata() + ".tooltip", null, list);
 	}
 
 	@Override
@@ -36,17 +47,10 @@ public class ItemMagazine extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-		par3List.add(new ItemStack(par1, 1, 0));
-		par3List.add(new ItemStack(par1, 1, 1));
-		par3List.add(new ItemStack(par1, 1, 2));
-		par3List.add(new ItemStack(par1, 1, 3));
-		par3List.add(new ItemStack(par1, 1, 4));
-		par3List.add(new ItemStack(par1, 1, 5));
-		par3List.add(new ItemStack(par1, 1, 6));
-		par3List.add(new ItemStack(par1, 1, 7));
-		par3List.add(new ItemStack(par1, 1, 8));
-		par3List.add(new ItemStack(par1, 1, 9));
+	public void getSubItems(Item item, CreativeTabs creativeTabs, List<ItemStack> subItems) {
+		for(int meta = 0; meta <= 9; meta++) {
+			subItems.add(new ItemStack(item, 1, meta));
+		}
 	}
 
 }

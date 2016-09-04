@@ -57,21 +57,21 @@ public class XRPotionHelper {
 			MobEffects.WATER_BREATHING};
 
 	public static boolean isAugmentablePotionEffect(PotionEffect effect) {
-		for(int i = 0; i < nonAugmentableEffects.length; i++) {
-			if(nonAugmentableEffects[i] == effect.getPotion())
+		for(Potion nonAugmentableEffect : nonAugmentableEffects) {
+			if(nonAugmentableEffect == effect.getPotion())
 				return false;
 		}
 
 		return true;
 	}
 
-	public static void addPotionInfo(PotionEssence essence, List list) {
+	public static void addPotionInfo(PotionEssence essence, List<String> list) {
 		addPotionInfo(essence, list, true);
 	}
 
-	public static void addPotionInfo(PotionEssence essence, List list, boolean addEffectDescription) {
+	public static void addPotionInfo(PotionEssence essence, List<String> list, boolean addEffectDescription) {
 		if(essence.getEffects().size() > 0) {
-			List<Tuple<String, AttributeModifier>> list1 = Lists.<Tuple<String, AttributeModifier>>newArrayList();
+			List<Tuple<String, AttributeModifier>> list1 = Lists.newArrayList();
 			for(PotionEffect potioneffect : essence.getEffects()) {
 				String s1 = I18n.translateToLocal(potioneffect.getEffectName()).trim();
 				Potion potion = potioneffect.getPotion();
@@ -79,9 +79,9 @@ public class XRPotionHelper {
 
 				if(!map.isEmpty()) {
 					for(Map.Entry<IAttribute, AttributeModifier> entry : map.entrySet()) {
-						AttributeModifier attributemodifier = (AttributeModifier) entry.getValue();
+						AttributeModifier attributemodifier = entry.getValue();
 						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.getAttributeModifierAmount(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
-						list1.add(new Tuple(((IAttribute) entry.getKey()).getAttributeUnlocalizedName(), attributemodifier1));
+						list1.add(new Tuple<>(entry.getKey().getAttributeUnlocalizedName(), attributemodifier1));
 					}
 				}
 
@@ -105,7 +105,7 @@ public class XRPotionHelper {
 				list.add(TextFormatting.DARK_PURPLE + I18n.translateToLocal("potion.whenDrank"));
 
 				for(Tuple<String, AttributeModifier> tuple : list1) {
-					AttributeModifier attributemodifier2 = (AttributeModifier) tuple.getSecond();
+					AttributeModifier attributemodifier2 = tuple.getSecond();
 					double d0 = attributemodifier2.getAmount();
 					double d1;
 
@@ -116,14 +116,10 @@ public class XRPotionHelper {
 					}
 
 					if(d0 > 0.0D) {
-						list.add(TextFormatting.BLUE + I18n.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.getOperation(), new Object[] {
-								ItemStack.DECIMALFORMAT.format(d1),
-								I18n.translateToLocal("attribute.name." + (String) tuple.getFirst())}));
+						list.add(TextFormatting.BLUE + I18n.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.translateToLocal("attribute.name." + tuple.getFirst())));
 					} else if(d0 < 0.0D) {
 						d1 = d1 * -1.0D;
-						list.add(TextFormatting.RED + I18n.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.getOperation(), new Object[] {
-								ItemStack.DECIMALFORMAT.format(d1),
-								I18n.translateToLocal("attribute.name." + (String) tuple.getFirst())}));
+						list.add(TextFormatting.RED + I18n.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.translateToLocal("attribute.name." + tuple.getFirst())));
 					}
 				}
 			}

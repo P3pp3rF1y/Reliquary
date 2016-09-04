@@ -63,14 +63,13 @@ public class ItemVoidTear extends ItemToggleable {
 
 			@Override
 			public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-				if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-					return true;
-				return false;
+				return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 			}
 
 			@Override
 			public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 				if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+					//noinspection unchecked
 					return (T) itemHandler;
 
 				return null;
@@ -80,7 +79,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
 		this.formatTooltip(null, stack, list);
 
 		ItemStack contents = this.getContainedItem(stack);
@@ -89,10 +88,10 @@ public class ItemVoidTear extends ItemToggleable {
 			return;
 
 		if(this.isEnabled(stack)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName()), stack, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName()), list);
 			list.add(LanguageHelper.getLocalization("tooltip.absorb_tear"));
 		}
-		LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(getItemQuantity(stack))), stack, list);
+		LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(getItemQuantity(stack))), list);
 	}
 
 	@Override

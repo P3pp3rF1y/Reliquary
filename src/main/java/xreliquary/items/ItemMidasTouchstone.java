@@ -30,13 +30,13 @@ public class ItemMidasTouchstone extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List list, boolean par4) {
+	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("glowstone", ist))), ist, list);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + Items.GLOWSTONE_DUST.getItemStackDisplayName(new ItemStack(Items.GLOWSTONE_DUST))), ist, list);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, ist, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + Items.GLOWSTONE_DUST.getItemStackDisplayName(new ItemStack(Items.GLOWSTONE_DUST))), list);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 			}
 			if(player.inventory.mainInventory[slot].getItem() instanceof ItemSword) {
 				ItemSword sword = (ItemSword) player.inventory.mainInventory[slot].getItem();
-				if(sword.getToolMaterialName() != ItemSword.ToolMaterial.GOLD.name() && !goldItems.contains(RegistryHelper.getItemRegistryName(sword))) {
+				if(!ItemSword.ToolMaterial.GOLD.name().equals(sword.getToolMaterialName()) && !goldItems.contains(RegistryHelper.getItemRegistryName(sword))) {
 					continue;
 				}
 				if(player.inventory.mainInventory[slot].getItemDamage() <= 0) {
@@ -108,7 +108,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 				}
 			} else if(player.inventory.mainInventory[slot].getItem() instanceof ItemTool) {
 				ItemTool tool = (ItemTool) player.inventory.mainInventory[slot].getItem();
-				if(tool.getToolMaterialName() != ItemSword.ToolMaterial.GOLD.name() && !goldItems.contains(RegistryHelper.getItemRegistryName(tool))) {
+				if(!ItemSword.ToolMaterial.GOLD.name().equals(tool.getToolMaterialName()) && !goldItems.contains(RegistryHelper.getItemRegistryName(tool))) {
 					continue;
 				}
 				if(player.inventory.mainInventory[slot].getItemDamage() <= 0) {

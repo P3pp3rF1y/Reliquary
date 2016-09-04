@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class EntityShotBase extends Entity implements IProjectile {
-	private static final DataParameter<Byte> CRITICAL = EntityDataManager.<Byte>createKey(EntityShotBase.class, DataSerializers.BYTE);
+	private static final DataParameter<Byte> CRITICAL = EntityDataManager.createKey(EntityShotBase.class, DataSerializers.BYTE);
 	protected int xTile = -1;
 	protected int yTile = -1;
 	protected int zTile = -1;
@@ -165,6 +165,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 
 		if(prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
 			float pythingy = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
+			//noinspection SuspiciousNameCombination
 			prevRotationYaw = rotationYaw = (float) (Math.atan2(motionX, motionZ) * 180.0D / Math.PI);
 			prevRotationPitch = rotationPitch = (float) (Math.atan2(motionY, pythingy) * 180.0D / Math.PI);
 		}
@@ -316,11 +317,6 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	}
 
 	/**
-	 * This small collection of gaussian options is used to simplify spawning
-	 * particles with easily repeated, low velocity vectors.
-	 */
-
-	/**
 	 * @param d is the factor of the double
 	 * @return a negative or positive value with limits of 50% of d
 	 */
@@ -427,7 +423,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			Entity currentTarget = (Entity) iTarget.next();
 
 			Class entityClass = currentTarget.getClass();
-			String entityName = (String) EntityList.CLASS_TO_NAME.get(entityClass);
+			String entityName = EntityList.CLASS_TO_NAME.get(entityClass);
 			if(!entitiesThatCanBeHunted.contains(entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead))
 				continue;
 			// goes for the closest thing it can

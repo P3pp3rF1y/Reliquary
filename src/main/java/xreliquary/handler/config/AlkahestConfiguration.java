@@ -1,8 +1,11 @@
 package xreliquary.handler.config;
 
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Property;
 import xreliquary.handler.ConfigurationHandler;
@@ -12,6 +15,8 @@ import xreliquary.util.StackHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AlkahestConfiguration {
@@ -21,16 +26,19 @@ public class AlkahestConfiguration {
 	private static final int TOME_COST_UBER_TIER = 64;
 
 	public static void loadAlkahestBaseItem() {
-		String registryName = ConfigurationHandler.getString("base_item", Names.item_and_block_settings + "." + Names.alkahestry_tome, Items.REDSTONE.getRegistryName().toString());
-		int meta = ConfigurationHandler.getInt("base_item_meta", Names.item_and_block_settings + "." + Names.alkahestry_tome, 0, 0, 16);
+		String registryName = ConfigurationHandler.getString("base_item", Names.item_and_block_settings + "." + Names.alkahestry_tome, Items.REDSTONE.getRegistryName().toString(), "Base Item name in format \"ModId:item\"");
+		int meta = ConfigurationHandler.getInt("base_item_meta", Names.item_and_block_settings + "." + Names.alkahestry_tome, 0, 0, 16, "meta of the Base Item");
 		String[] splitName = registryName.split(":");
 		Settings.AlkahestryTome.baseItem = StackHelper.getItemStackFromNameMeta(splitName[0], splitName[1], meta);
 
-		Settings.AlkahestryTome.baseItemWorth = ConfigurationHandler.getInt("base_item_worth", Names.item_and_block_settings + "." + Names.alkahestry_tome, 1, 1, 1000);
+		Settings.AlkahestryTome.baseItemWorth = ConfigurationHandler.getInt("base_item_worth", Names.item_and_block_settings + "." + Names.alkahestry_tome, 1, 1, 1000, "How much charge the Base Item is worth");
 	}
 
 	public static void loadAlkahestChargingRecipes() {
-		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.charging_recipes);
+		String categoryKey = Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.charging_recipes;
+		ConfigCategory category = ConfigurationHandler.configuration.getCategory(categoryKey);
+		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
+		category.setComment("List of recipes that can be used with Alkahestry Tome to charge it. The values are item name \"modID:name\", meta, charge points.\n");
 
 		if(category.isEmpty()) {
 			addDefaultAlkahestChargingRecipes(category);
@@ -38,7 +46,6 @@ public class AlkahestConfiguration {
 
 		loadAlkahestChargingRecipesIntoSettings(category);
 
-		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.charging_recipes, true);
 	}
 
 	private static void loadAlkahestChargingRecipesIntoSettings(ConfigCategory category) {
@@ -50,13 +57,43 @@ public class AlkahestConfiguration {
 
 			String modId = nameParts[0];
 			String name = nameParts[1];
-			int meta = values[0];
-			int charge = values[1];
+			int meta = 0;
+			boolean allSubitems = false;
 
-			ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
+			//allows specifying without meta in which case meta 0 is assumed
+			if(name.contains("|")) {
+				nameParts = name.split("\\|");
+				name = nameParts[0];
+				if ("*".equals(nameParts[1]))
+					allSubitems = true;
+				else
+					meta = Integer.parseInt(nameParts[1]);
+			} else if (values.length > 1){
+				meta = values[0];
+			}
 
-			if(stack != null) {
-				Settings.AlkahestryTome.chargingRecipes.put(entry.getKey(), new AlkahestChargeRecipe(stack, charge));
+			//using last because of legacy configs that have meta as first
+			int charge = values[values.length - 1];
+
+			if (allSubitems) {
+				Item item = Item.REGISTRY.getObject(new ResourceLocation(modId, name));
+				Block block = Block.REGISTRY.getObject(new ResourceLocation(modId, name));
+				List<ItemStack> subItems = new ArrayList<>();
+				if (item != null) {
+					item.getSubItems(item, null, subItems);
+				} else {
+					block.getSubBlocks(Item.getItemFromBlock(block), null, subItems);
+				}
+
+				for (ItemStack stack : subItems) {
+					Settings.AlkahestryTome.chargingRecipes.put(entry.getKey().replace("*", String.valueOf(stack.getMetadata())), new AlkahestChargeRecipe(stack, charge));
+				}
+			} else {
+				ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
+
+				if(stack != null) {
+					Settings.AlkahestryTome.chargingRecipes.put(entry.getKey(), new AlkahestChargeRecipe(stack, charge));
+				}
 			}
 		}
 	}
@@ -72,22 +109,24 @@ public class AlkahestConfiguration {
 		addConfigAlkahestChargingRecipe(category, item, 0, charge);
 	}
 
-	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item, Integer meta, Integer charge) {
-		Property prop = new Property(item, new String[] {meta.toString(), charge.toString()}, Property.Type.INTEGER);
+	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item,
+			@SuppressWarnings("SameParameterValue") Integer meta, Integer charge) {
+		Property prop = new Property(item, new String[] {charge.toString()}, Property.Type.INTEGER);
 
 		category.put(item, prop);
 	}
 
 	public static void loadAlkahestCraftingRecipes() {
-		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.crafting_recipes);
+		String categoryKey = Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.crafting_recipes;
+		ConfigCategory category = ConfigurationHandler.configuration.getCategory(categoryKey);
+		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
+		category.setComment("List of recipes that can be used with Alkahestry Tome to craft items. The values are item name \"modID:name\", meta, yield, cost.");
 
 		if(category.isEmpty()) {
 			addDefaultAlkahestCraftingRecipes(category);
 		}
 
 		loadAlkahestCraftingRecipesIntoSettings(category);
-
-		ConfigurationHandler.setCategoryTranslations(Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.crafting_recipes, true);
 	}
 
 	private static void loadAlkahestCraftingRecipesIntoSettings(ConfigCategory category) {
@@ -99,18 +138,44 @@ public class AlkahestConfiguration {
 
 			String modId = nameParts[0];
 			String name = nameParts[1];
-			int meta = values[0];
-			int yield = values[1];
-			int cost = values[2];
+			int meta = 0;
+			boolean allSubitems = false;
+
+			//allows specifying without meta in which case meta 0 is assumed
+			if(name.contains("|")) {
+				nameParts = name.split("\\|");
+				name = nameParts[0];
+				if ("*".equals(nameParts[1]))
+					allSubitems = true;
+				else
+					meta = Integer.parseInt(nameParts[1]);
+			} else if (values.length > 2) {
+				meta = values[0];
+			}
+			int yield = values[values.length - 2];
+			int cost = values[values.length - 1];
 
 			if(modId.toLowerCase().equals("oredictionary")) {
 				Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(name, yield, cost));
 			} else {
-				ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
+				if (allSubitems) {
+					Item item = Item.REGISTRY.getObject(new ResourceLocation(modId, name));
+					Block block = Block.REGISTRY.getObject(new ResourceLocation(modId, name));
+					List<ItemStack> subItems = new ArrayList<>();
+					if (item != null) {
+						item.getSubItems(item, null, subItems);
+					} else {
+						block.getSubBlocks(Item.getItemFromBlock(block), null, subItems);
+					}
 
-				String key = entry.getKey() + (stack.getItem().getHasSubtypes() ? "|" + meta : "");
+					for (ItemStack stack : subItems) {
+						Settings.AlkahestryTome.craftingRecipes.put(entry.getKey().replace("*", String.valueOf(stack.getMetadata())), new AlkahestCraftRecipe(stack, yield, cost));
+					}
+				} else {
+					ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
 
-				if(stack != null) {
+					String key = entry.getKey() + (stack.getItem().getHasSubtypes() ? "|" + meta : "");
+
 					Settings.AlkahestryTome.craftingRecipes.put(key, new AlkahestCraftRecipe(stack, yield, cost));
 				}
 			}
@@ -170,8 +235,7 @@ public class AlkahestConfiguration {
 	}
 
 	private static void addConfigAlkahestCraftingRecipe(ConfigCategory category, String item, Integer meta, Integer yield, Integer cost) {
-
-		Property prop = new Property(item, new String[] {meta.toString(), yield.toString(), cost.toString()}, Property.Type.INTEGER);
+		Property prop = new Property(item + "|" + meta, new String[] {yield.toString(), cost.toString()}, Property.Type.INTEGER);
 
 		category.put(item, prop);
 	}

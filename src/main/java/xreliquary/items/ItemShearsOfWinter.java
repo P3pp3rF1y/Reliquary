@@ -1,11 +1,9 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -35,7 +33,6 @@ import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -53,6 +50,7 @@ public class ItemShearsOfWinter extends ItemShears {
 
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState blockState, BlockPos pos, EntityLivingBase player) {
+		//noinspection SimplifiableIfStatement
 		if(blockState.getMaterial() != Material.LEAVES && blockState.getBlock() != Blocks.WEB && blockState.getBlock() != Blocks.TALLGRASS && blockState.getBlock() != Blocks.VINE && blockState.getBlock() != Blocks.TRIPWIRE && !(blockState.getBlock() instanceof IShearable)) {
 			return super.onBlockDestroyed(stack, world, blockState, pos, player);
 		} else {
@@ -113,14 +111,14 @@ public class ItemShearsOfWinter extends ItemShears {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatDoesThisEvenDo) {
-		this.formatTooltip(null, stack, list);
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean whatDoesThisEvenDo) {
+		this.formatTooltip(stack, list);
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void formatTooltip(ImmutableMap<String, String> toFormat, ItemStack stack, List list) {
+	public void formatTooltip(ItemStack stack, List<String> list) {
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", toFormat, stack, list);
+			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", null, list);
 	}
 
 	@Override
@@ -282,7 +280,6 @@ public class ItemShearsOfWinter extends ItemShears {
 					}
 				}
 			}
-			return;
 		}
 	}
 
@@ -295,17 +292,14 @@ public class ItemShearsOfWinter extends ItemShears {
 		double upperX = Math.max(player.posX, player.posX + lookVector.xCoord * 10D);
 		double upperY = Math.max(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.yCoord * 10D);
 		double upperZ = Math.max(player.posZ, player.posZ + lookVector.zCoord * 10D);
-		List eList = player.worldObj.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
-		Iterator iterator = eList.iterator();
-		while(iterator.hasNext()) {
-			Entity e = (Entity) iterator.next();
-
+		List<EntityLiving> eList = player.worldObj.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
+		for(EntityLiving e : eList) {
 			int distance = (int) player.getDistanceToEntity(e);
 			int probabilityFactor = (distance - 3) / 2;
 			if(probabilityFactor > 0 && player.worldObj.rand.nextInt(probabilityFactor) != 0)
 				continue;
-			if(e instanceof EntityLivingBase && !e.isEntityEqual(player))
-				((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 120, 1));
+			if(!e.isEntityEqual(player))
+				e.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 120, 1));
 			if(e instanceof IShearable) {
 				IShearable target = (IShearable) e;
 				if(target.isShearable(new ItemStack(Items.SHEARS, 1, 0), e.worldObj, new BlockPos((int) e.posX, (int) e.posY, (int) e.posZ))) {

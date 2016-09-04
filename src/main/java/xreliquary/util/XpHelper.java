@@ -3,10 +3,9 @@ package xreliquary.util;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
- * Code originally from EnderIO @see {@link https://github.com/SleepyTrousers/EnderIO/blob/master/src/main/java/crazypants/enderio/xp/XpUtil.java}
+ * Code originally from EnderIO @see {https://github.com/SleepyTrousers/EnderIO/blob/master/src/main/java/crazypants/enderio/xp/XpUtil.java}
  * Values taken from OpenMods EnchantmentUtils to ensure consistent behavior
- *
- * @see {@link https://github.com/OpenMods/OpenModsLib/blob/master/src/main/java/openmods/utils/EnchantmentUtils.java}
+ * @see {https://github.com/OpenMods/OpenModsLib/blob/master/src/main/java/openmods/utils/EnchantmentUtils.java}
  */
 public class XpHelper {
 	//Values taken from OpenBlocks to ensure compatibility

@@ -21,7 +21,6 @@ import xreliquary.network.PacketFXThrownPotionImpact;
 import xreliquary.network.PacketHandler;
 import xreliquary.util.potions.PotionEssence;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -66,17 +65,15 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	 */
 	protected void onImpact(RayTraceResult result) {
 		if(!this.worldObj.isRemote) {
-			List list = essence.getEffects();
+			List<PotionEffect> list = essence.getEffects();
 
 			if(list != null && !list.isEmpty()) {
 				AxisAlignedBB axisalignedbb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
-				List list1 = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
+				List<EntityLivingBase> list1 = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
-				if(list1 != null && !list1.isEmpty()) {
-					Iterator iterator = list1.iterator();
+				if(!list1.isEmpty()) {
 
-					while(iterator.hasNext()) {
-						EntityLivingBase entitylivingbase = (EntityLivingBase) iterator.next();
+					for(EntityLivingBase entitylivingbase : list1) {
 						double d0 = this.getDistanceSqToEntity(entitylivingbase);
 
 						if(d0 < 16.0D) {
@@ -86,11 +83,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 								d1 = 1.0D;
 							}
 
-							Iterator iterator1 = list.iterator();
-
-							while(iterator1.hasNext()) {
-								PotionEffect potioneffect = (PotionEffect) iterator1.next();
-
+							for(PotionEffect potioneffect : list) {
 								if(potioneffect.getPotion().isInstant()) {
 									potioneffect.getPotion().affectEntity(this, this.getThrower(), entitylivingbase, potioneffect.getAmplifier(), d1);
 								} else {
@@ -118,7 +111,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	// most of these are the same in every potion, the only thing that isn't is
 	// the coloration of the particles.
 	protected void spawnParticles() {
-		if (worldObj.isRemote)
+		if(worldObj.isRemote)
 			return;
 
 		Random var7 = rand;

@@ -77,8 +77,8 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 		NBTTagList onLocations = new NBTTagList();
 
-		for(int i = 0; i < onSwitches.size(); i++) {
-			onLocations.appendTag(new NBTTagLong(onSwitches.get(i)));
+		for(Long onSwitch : onSwitches) {
+			onLocations.appendTag(new NBTTagLong(onSwitch));
 		}
 		compound.setTag("OnSwitches", onLocations);
 
@@ -87,13 +87,11 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 	@Override
 	public void markDirty() {
-		for(IItemHandler itemHandler : itemHandlers.values()) {
-			if(itemHandler instanceof FilteredItemStackHandler) {
-				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
+		itemHandlers.values().stream().filter(itemHandler -> itemHandler instanceof FilteredItemStackHandler).forEach(itemHandler -> {
+			FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 
-				filteredHandler.markDirty();
-			}
-		}
+			filteredHandler.markDirty();
+		});
 
 		super.markDirty();
 	}
@@ -125,6 +123,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			if(pedestalFluidHandler == null) {
 				pedestalFluidHandler = new PedestalFluidHandler(this);
 			}
+			//noinspection unchecked
 			return (T) pedestalFluidHandler;
 		}
 
@@ -181,7 +180,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			return;
 
 		IBlockState blockState = worldObj.getBlockState(this.pos);
-		if (blockState.getBlock() != ModBlocks.pedestal)
+		if(blockState.getBlock() != ModBlocks.pedestal)
 			return;
 
 		if(!enabledInitialized) {
@@ -239,8 +238,6 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 	@Override
 	public int addToConnectedInventory(ItemStack stack) {
-		List<IInventory> adjacentInventories = getAdjacentInventories();
-
 		int numberAdded = 0;
 		for(EnumFacing facing : EnumFacing.VALUES) {
 			IInventory inventory = getInventoryAtPos(this.getPos().add(facing.getDirectionVec()));
@@ -345,7 +342,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 	@Override
 	public Object getItemData(int index) {
-		if (itemData.size() <= index)
+		if(itemData.size() <= index)
 			return null;
 
 		return itemData.get(index);
@@ -356,7 +353,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		while(itemData.size() < index)
 			itemData.add(null);
 
-		if (itemData.size() == index)
+		if(itemData.size() == index)
 			itemData.add(data);
 		else
 			itemData.set(index, data);
@@ -364,41 +361,14 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 	private void setEnabled(boolean switchedOn) {
 		ModBlocks.pedestal.setEnabled(worldObj, pos, switchedOn);
-		if (!switchedOn)
-		for(currentItemIndex = 0; currentItemIndex<inventory.length; currentItemIndex++) {
-			if(actionItems.containsKey(currentItemIndex)) {
-				actionItems.get(currentItemIndex).stop(inventory[currentItemIndex], this);
-			} else if (itemWrappers.containsKey(currentItemIndex)) {
-				itemWrappers.get(currentItemIndex).stop(inventory[currentItemIndex], this);
+		if(!switchedOn)
+			for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
+				if(actionItems.containsKey(currentItemIndex)) {
+					actionItems.get(currentItemIndex).stop(inventory[currentItemIndex], this);
+				} else if(itemWrappers.containsKey(currentItemIndex)) {
+					itemWrappers.get(currentItemIndex).stop(inventory[currentItemIndex], this);
+				}
 			}
-		}
-	}
-
-	public List<IInventory> getAdjacentInventories() {
-		BlockPos south = this.getPos().add(EnumFacing.SOUTH.getDirectionVec());
-		BlockPos north = this.getPos().add(EnumFacing.NORTH.getDirectionVec());
-		BlockPos east = this.getPos().add(EnumFacing.EAST.getDirectionVec());
-		BlockPos west = this.getPos().add(EnumFacing.WEST.getDirectionVec());
-
-		List<IInventory> adjacentInventories = new ArrayList<>();
-
-		IInventory inventory = getInventoryAtPos(south);
-		if(inventory != null)
-			adjacentInventories.add(inventory);
-
-		inventory = getInventoryAtPos(north);
-		if(inventory != null)
-			adjacentInventories.add(inventory);
-
-		inventory = getInventoryAtPos(east);
-		if(inventory != null)
-			adjacentInventories.add(inventory);
-
-		inventory = getInventoryAtPos(west);
-		if(inventory != null)
-			adjacentInventories.add(inventory);
-
-		return adjacentInventories;
 	}
 
 	private IInventory getInventoryAtPos(BlockPos pos) {
@@ -406,9 +376,8 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			IInventory inventory = (IInventory) worldObj.getTileEntity(pos);
 			Block block = worldObj.getBlockState(pos).getBlock();
 
-			if (inventory instanceof TileEntityChest && block instanceof BlockChest)
-			{
-				inventory = ((BlockChest)block).getContainer(worldObj, pos, true);
+			if(inventory instanceof TileEntityChest && block instanceof BlockChest) {
+				inventory = ((BlockChest) block).getContainer(worldObj, pos, true);
 			}
 
 			return inventory;
@@ -513,9 +482,9 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 				if(redstoneItems.containsKey(slot)) {
 					redstoneItems.get(slot).onRemoved(inventory[slot], this);
-				} else if (actionItems.containsKey(slot)) {
+				} else if(actionItems.containsKey(slot)) {
 					actionItems.get(slot).onRemoved(inventory[slot], this);
-				} else if (itemWrappers.containsKey(slot)) {
+				} else if(itemWrappers.containsKey(slot)) {
 					itemWrappers.get(slot).onRemoved(inventory[slot], this);
 				}
 
@@ -550,9 +519,9 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 			if(redstoneItems.containsKey(slot)) {
 				redstoneItems.get(slot).onRemoved(inventory[slot], this);
-			} else if (actionItems.containsKey(slot)) {
+			} else if(actionItems.containsKey(slot)) {
 				actionItems.get(slot).onRemoved(inventory[slot], this);
-			} else if (itemWrappers.containsKey(slot)) {
+			} else if(itemWrappers.containsKey(slot)) {
 				itemWrappers.get(slot).onRemoved(inventory[slot], this);
 			}
 
@@ -578,11 +547,11 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			IPedestalRedstoneItem removedRedstoneItem = null;
 			IPedestalActionItem removedActionItem = null;
 			if(stack == null) {
-				if (redstoneItems.containsKey(slot)) {
+				if(redstoneItems.containsKey(slot)) {
 					removedRedstoneItem = redstoneItems.get(slot);
-				} else if (actionItems.containsKey(slot)) {
+				} else if(actionItems.containsKey(slot)) {
 					removedActionItem = actionItems.get(slot);
-				} else if (itemWrappers.containsKey(slot)) {
+				} else if(itemWrappers.containsKey(slot)) {
 					removedActionItem = itemWrappers.get(slot);
 				}
 			}
