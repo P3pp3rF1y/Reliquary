@@ -82,10 +82,13 @@ public class ItemModels {
 		registerItemModelForAllVariants(ModItems.potion, Names.potion, stack -> {
 			if(ModItems.potion.getSplash(stack)) {
 				return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_SPLASH);
+			} else if(ModItems.potion.getLingering(stack)) {
+				return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_LINGERING);
 			}
 			return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION);
 		});
 		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_SPLASH));
+		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_LINGERING));
 
 		registerItemModelForAllVariants(ModItems.magazine, Names.magazine, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.magazine, "inventory"));
 	}

@@ -77,6 +77,7 @@ public class Names {
     // potion info
     public static final String potion = "potion";
     public static final String potion_splash = "potion_splash";
+    public static final String potion_lingering = "potion_lingering";
     public static final String potion_overlay = "potion_overlay";
     public static final String potion_splash_overlay = "potion_splash_overlay";
     public static final String potion_essence = "potion_essence";
@@ -131,7 +132,7 @@ public class Names {
     public static final String fishing_wrapper_success_rate = "fishing_wrapper_success_rate";
     public static final String fishing_wrapper_retract_delay = "fishing_wrapper_retract_delay";
 
-    //these are for items, like above, didn't want to magic string them. I will use them eventually.
+	//these are for items, like above, didn't want to magic string them. I will use them eventually.
 //    public static final String snowball_mode = "snowballs";
 //    public static final String eruption_mode = "eruption";
 //    public static final String blaze_mode = "blaze";

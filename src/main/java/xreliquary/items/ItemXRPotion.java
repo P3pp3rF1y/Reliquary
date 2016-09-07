@@ -86,6 +86,10 @@ public class ItemXRPotion extends ItemBase {
 		return NBTHelper.getBoolean("splash", ist);
 	}
 
+	public boolean getLingering(ItemStack ist) {
+		return NBTHelper.getBoolean("lingering", ist);
+	}
+
 	/**
 	 * How long it takes to use or consume an item
 	 */
@@ -99,6 +103,7 @@ public class ItemXRPotion extends ItemBase {
 		subItems.add(new ItemStack(ModItems.potion)); //just an empty one
 
 		List<ItemStack> splashPotions = new ArrayList<>();
+		List<ItemStack> lingeringPotions = new ArrayList<>();
 		for(PotionEssence essence : Settings.Potions.uniquePotions) {
 			ItemStack potion = new ItemStack(ModItems.potion, 1);
 			potion.setTagCompound(essence.writeToNBT());
@@ -107,10 +112,15 @@ public class ItemXRPotion extends ItemBase {
 			ItemStack splashPotion = potion.copy();
 			NBTHelper.setBoolean("splash", splashPotion, true);
 
+			ItemStack lingeringPotion = potion.copy();
+			NBTHelper.setBoolean("lingering", lingeringPotion, true);
+
 			subItems.add(potion);
 			splashPotions.add(splashPotion);
+			lingeringPotions.add(lingeringPotion);
 		}
 		subItems.addAll(splashPotions);
+		subItems.addAll(lingeringPotions);
 	}
 
 	/**
