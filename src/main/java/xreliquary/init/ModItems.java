@@ -122,7 +122,7 @@ public class ModItems {
 
 		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.potion, new IBehaviorDispenseItem() {
 			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
-				if(!ModItems.potion.getSplash(stack))
+				if(!ModItems.potion.getSplash(stack) && !ModItems.potion.getLingering(stack))
 					return new BehaviorDefaultDispenseItem().dispense(source, stack);
 
 				return (new BehaviorProjectileDispense() {
