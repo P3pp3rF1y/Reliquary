@@ -174,7 +174,7 @@ public class ItemXRPotion extends ItemBase {
 		} else {
 			if(world.isRemote)
 				return new ActionResult<>(EnumActionResult.PASS, ist);
-			EntityThrownXRPotion e = new EntityThrownXRPotion(world, player, ist, getLingering(ist));
+			EntityThrownXRPotion e = new EntityThrownXRPotion(world, player, ist);
 			e.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.5F, 1.0F);
 
 			if(!player.capabilities.isCreativeMode) {

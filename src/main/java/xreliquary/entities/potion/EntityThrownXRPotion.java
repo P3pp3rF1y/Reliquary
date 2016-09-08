@@ -18,6 +18,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import xreliquary.init.ModItems;
 import xreliquary.network.PacketFXThrownPotionImpact;
 import xreliquary.network.PacketHandler;
 import xreliquary.util.potions.PotionEssence;
@@ -38,13 +39,9 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	public PotionEssence essence = null;
 
 	public EntityThrownXRPotion(World world, double x, double y, double z, ItemStack potion) {
-		this(world, x, y, z, potion, false);
-	}
-
-	public EntityThrownXRPotion(World world, double x, double y, double z, ItemStack potion, boolean lingering) {
 		super(world, x, y, z);
 		setEssence(potion);
-		this.lingering = lingering;
+		this.lingering = ModItems.potion.getLingering(potion);
 	}
 
 	private void setEssence(ItemStack ist) {
@@ -53,12 +50,9 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	}
 
 	public EntityThrownXRPotion(World world, EntityLivingBase elb, ItemStack potion) {
-		this(world, elb, potion, false);
-	}
-	public EntityThrownXRPotion(World world, EntityLivingBase elb, ItemStack potion, boolean lingering) {
 		super(world, elb);
 		setEssence(potion);
-		this.lingering = lingering;
+		this.lingering = ModItems.potion.getLingering(potion);
 	}
 
 	/**
