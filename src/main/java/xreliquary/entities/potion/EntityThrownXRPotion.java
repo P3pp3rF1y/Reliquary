@@ -1,6 +1,7 @@
 package xreliquary.entities.potion;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Items;
@@ -33,11 +34,17 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	}
 
 	private int renderColor;
+	private boolean lingering = false;
 	public PotionEssence essence = null;
 
-	public EntityThrownXRPotion(World world, double x, double y, double z, ItemStack ist) {
+	public EntityThrownXRPotion(World world, double x, double y, double z, ItemStack potion) {
+		this(world, x, y, z, potion, false);
+	}
+
+	public EntityThrownXRPotion(World world, double x, double y, double z, ItemStack potion, boolean lingering) {
 		super(world, x, y, z);
-		setEssence(ist);
+		setEssence(potion);
+		this.lingering = lingering;
 	}
 
 	private void setEssence(ItemStack ist) {
@@ -45,9 +52,13 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 		setRenderColor(getColor());
 	}
 
-	public EntityThrownXRPotion(World world, EntityLivingBase elb, ItemStack ist) {
+	public EntityThrownXRPotion(World world, EntityLivingBase elb, ItemStack potion) {
+		this(world, elb, potion, false);
+	}
+	public EntityThrownXRPotion(World world, EntityLivingBase elb, ItemStack potion, boolean lingering) {
 		super(world, elb);
-		setEssence(ist);
+		setEssence(potion);
+		this.lingering = lingering;
 	}
 
 	/**
@@ -65,32 +76,49 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	 */
 	protected void onImpact(RayTraceResult result) {
 		if(!this.worldObj.isRemote) {
-			List<PotionEffect> list = essence.getEffects();
+			if (this.lingering) {
+				EntityAreaEffectCloud entityareaeffectcloud = new EntityAreaEffectCloud(this.worldObj, this.posX, this.posY, this.posZ);
+				entityareaeffectcloud.setOwner(this.getThrower());
+				entityareaeffectcloud.setRadius(3.0F);
+				entityareaeffectcloud.setRadiusOnUse(-0.5F);
+				entityareaeffectcloud.setWaitTime(10);
+				entityareaeffectcloud.setRadiusPerTick(-entityareaeffectcloud.getRadius() / (float)entityareaeffectcloud.getDuration());
+				entityareaeffectcloud.setColor(this.renderColor);
 
-			if(list != null && !list.isEmpty()) {
-				AxisAlignedBB axisalignedbb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
-				List<EntityLivingBase> list1 = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
+				for (PotionEffect potioneffect : this.essence.getEffects())
+				{
+					entityareaeffectcloud.addEffect(new PotionEffect(potioneffect.getPotion(), potioneffect.getDuration(), potioneffect.getAmplifier()));
+				}
 
-				if(!list1.isEmpty()) {
+				this.worldObj.spawnEntityInWorld(entityareaeffectcloud);
+			} else {
+				List<PotionEffect> list = essence.getEffects();
 
-					for(EntityLivingBase entitylivingbase : list1) {
-						double d0 = this.getDistanceSqToEntity(entitylivingbase);
+				if(list != null && !list.isEmpty()) {
+					AxisAlignedBB axisalignedbb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
+					List<EntityLivingBase> livingEntities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
-						if(d0 < 16.0D) {
-							double d1 = 1.0D - Math.sqrt(d0) / 4.0D;
+					if(!livingEntities.isEmpty()) {
 
-							if(entitylivingbase == result.entityHit) {
-								d1 = 1.0D;
-							}
+						for(EntityLivingBase entitylivingbase : livingEntities) {
+							double d0 = this.getDistanceSqToEntity(entitylivingbase);
 
-							for(PotionEffect potioneffect : list) {
-								if(potioneffect.getPotion().isInstant()) {
-									potioneffect.getPotion().affectEntity(this, this.getThrower(), entitylivingbase, potioneffect.getAmplifier(), d1);
-								} else {
-									int j = (int) (d1 * (double) potioneffect.getDuration() + 0.5D);
+							if(d0 < 16.0D) {
+								double d1 = 1.0D - Math.sqrt(d0) / 4.0D;
 
-									if(j > 20) {
-										entitylivingbase.addPotionEffect(new PotionEffect(potioneffect.getPotion(), j, potioneffect.getAmplifier(), false, false));
+								if(entitylivingbase == result.entityHit) {
+									d1 = 1.0D;
+								}
+
+								for(PotionEffect potioneffect : list) {
+									if(potioneffect.getPotion().isInstant()) {
+										potioneffect.getPotion().affectEntity(this, this.getThrower(), entitylivingbase, potioneffect.getAmplifier(), d1);
+									} else {
+										int j = (int) (d1 * (double) potioneffect.getDuration() + 0.5D);
+
+										if(j > 20) {
+											entitylivingbase.addPotionEffect(new PotionEffect(potioneffect.getPotion(), j, potioneffect.getAmplifier(), false, false));
+										}
 									}
 								}
 							}
@@ -98,6 +126,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 					}
 				}
 			}
+
 			spawnParticles();
 			this.setDead();
 		}
@@ -127,6 +156,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 		super.readEntityFromNBT(tag);
 		this.essence = new PotionEssence(tag);
 		setRenderColor(tag.getInteger("color"));
+		this.lingering = tag.getBoolean("lingering");
 		if(this.essence.getEffects().size() == 0)
 			this.setDead();
 	}
@@ -135,6 +165,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 		super.writeEntityToNBT(tag);
 		tag.setTag("potion", essence == null ? new NBTTagCompound() : essence.writeToNBT());
 		tag.setInteger("color", getRenderColor());
+		tag.setBoolean("lingering", this.lingering);
 	}
 
 	public int getRenderColor() {
@@ -144,15 +175,21 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	@Override
 	public void writeSpawnData(ByteBuf buffer) {
 		buffer.writeInt(renderColor);
+		buffer.writeBoolean(lingering);
 	}
 
 	@Override
 	public void readSpawnData(ByteBuf additionalData) {
 		setRenderColor(additionalData.readInt());
+		this.lingering = additionalData.readBoolean();
 	}
 
 	public void setRenderColor(int renderColor) {
 		this.renderColor = renderColor;
+	}
+
+	public boolean getLingering() {
+		return lingering;
 	}
 }
 

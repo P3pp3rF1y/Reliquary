@@ -142,7 +142,7 @@ public class ItemXRPotion extends ItemBase {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
 		PotionEssence essence = new PotionEssence(ist.getTagCompound());
-		if(!getSplash(ist)) {
+		if(!getSplash(ist) && !getLingering(ist)) {
 			if(essence.getEffects().size() > 0) {
 				player.setActiveHand(hand);
 				return new ActionResult<>(EnumActionResult.SUCCESS, ist);
@@ -174,7 +174,7 @@ public class ItemXRPotion extends ItemBase {
 		} else {
 			if(world.isRemote)
 				return new ActionResult<>(EnumActionResult.PASS, ist);
-			EntityThrownXRPotion e = new EntityThrownXRPotion(world, player, ist);
+			EntityThrownXRPotion e = new EntityThrownXRPotion(world, player, ist, getLingering(ist));
 			e.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.5F, 1.0F);
 
 			if(!player.capabilities.isCreativeMode) {

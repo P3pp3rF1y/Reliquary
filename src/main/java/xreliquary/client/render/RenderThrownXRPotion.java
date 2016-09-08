@@ -19,7 +19,8 @@ public class RenderThrownXRPotion extends RenderSnowball<EntityThrownXRPotion> {
 	@Override
 	public ItemStack getStackToRender(EntityThrownXRPotion entityIn) {
 		ItemStack potion = new ItemStack(this.item, 1);
-		NBTHelper.setBoolean("splash", potion, true);
+		NBTHelper.setBoolean("splash", potion, !entityIn.getLingering());
+		NBTHelper.setBoolean("lingering", potion, entityIn.getLingering());
 		NBTHelper.setInteger("renderColor", potion, entityIn.getRenderColor());
 		return potion;
 	}
