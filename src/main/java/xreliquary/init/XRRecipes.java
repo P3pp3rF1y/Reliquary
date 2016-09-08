@@ -58,6 +58,9 @@ public class XRRecipes {
 		// mob charm data fix and repair recipes
 		addMobCharmRecipeHandlers();
 
+		// lingering potion related recipes - arrows / shots
+		addLingeringPotionRecipes();
+
 		//misc recipes
 		//frozen cores to make packed ice.
 		addRecipe(true, true, new ItemStack(Blocks.PACKED_ICE, 1, 0), Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, FROZEN_CORE);
@@ -389,6 +392,13 @@ public class XRRecipes {
 
 		if(Settings.dropCraftingRecipesEnabled)
 			addMobDropCraftingRecipes();
+	}
+
+	private static void addLingeringPotionRecipes() {
+		GameRegistry.addRecipe(new XRPotionArrowsRecipe());
+
+		RecipeSorter.register(Reference.MOD_ID + ":tipped_arrows", MobCharmRepairRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+
 	}
 
 	private static void addTomeRecipeHandlers() {
