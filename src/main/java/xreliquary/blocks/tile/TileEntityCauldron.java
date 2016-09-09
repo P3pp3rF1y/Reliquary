@@ -52,10 +52,10 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	public int glowstoneCount = 0;
 	public boolean hasGunpowder = false;
 	public boolean hasNetherwart = false;
+	public boolean hasDragonBreath = false;
 	private int cookTime = 0;
 	private int liquidLevel = 0;
 	private boolean dataChanged;
-	private boolean hasDragonBreath = false;
 
 	public TileEntityCauldron() {
 		dataChanged = true;
@@ -196,7 +196,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	private boolean finishedCooking() {
-		return hasNetherwart && potionEssence != null && this.cookTime >= getCookTime();
+		return hasNetherwart && potionEssence != null && this.cookTime >= getCookTime() && (!hasDragonBreath || hasGunpowder);
 	}
 
 	public NBTTagCompound removeContainedPotion() {
