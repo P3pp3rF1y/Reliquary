@@ -38,6 +38,7 @@ import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.PotionEssence;
 
@@ -72,8 +73,12 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			if(worldObj.isRemote) {
 				for(int particleCount = 0; particleCount <= 2; ++particleCount)
 					spawnBoilingParticles();
-				if(hasGunpowder)
+
+				if(hasDragonBreath)
+					spawnDragonBreathParticles();
+				else if(hasGunpowder)
 					spawnGunpowderParticles();
+
 				if(glowstoneCount > 0)
 					spawnGlowstoneParticles();
 				if(hasNetherwart) {
@@ -124,6 +129,15 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
 		float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
 		worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void spawnDragonBreathParticles() {
+		if(worldObj.rand.nextInt(8) > 0)
+			return;
+		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
+		worldObj.spawnParticle(EnumParticleTypes.DRAGON_BREATH, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -404,7 +418,14 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			if(isItemValidForInput(itemStack)) {
 				addItem(itemStack);
 
+				if (itemStack.getItem() == Items.DRAGON_BREATH) {
+					if (InventoryHelper.tryToAddToInventory(new ItemStack(Items.GLASS_BOTTLE),player.inventory, 1) != 1) {
+						InventoryHelper.spawnItemStack(world, pos.getX() + 0.5f, pos.getY() + 1.5f, pos.getZ() + 0.5f, new ItemStack(Items.GLASS_BOTTLE));
+					}
+				}
+
 				--itemStack.stackSize;
+
 				if(itemStack.stackSize <= 0)
 					player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
 
