@@ -253,6 +253,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		worldObj.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
 	}
 
+	@SuppressWarnings("SimplifiableIfStatement")
 	private boolean isItemValidForInput(ItemStack ist) {
 		if(ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null)
 			return true;
@@ -264,9 +265,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			return true;
 		if(ist.getItem() == Items.NETHER_WART && !this.hasNetherwart)
 			return true;
-		if(ist.getItem() == Items.DRAGON_BREATH && !this.hasDragonBreath)
-			return true;
-		return false;
+		return ist.getItem() == Items.DRAGON_BREATH && !this.hasDragonBreath;
 	}
 
 	private void addItem(ItemStack ist) {
@@ -362,6 +361,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return liquidLevel;
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
 		return oldState.getBlock() != newState.getBlock();
