@@ -225,6 +225,9 @@ public class ModItemColors {
 					return Integer.parseInt(Colors.PURE, 16);
 			}, ModItems.potion);
 		}
+		if(isEnabled(ModItems.tippedArrow)) {
+			itemColors.registerItemColorHandler((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromStack(stack)) : -1, ModItems.tippedArrow);
+		}
 	}
 
 	private static boolean isEnabled(Item item) {

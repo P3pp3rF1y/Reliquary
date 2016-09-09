@@ -11,11 +11,12 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class XRPotionArrowsRecipe implements IRecipe {
+public class XRTippedArrowsRecipe implements IRecipe {
 	private static final ItemStack[] EMPTY_ITEMS = new ItemStack[9];
 
 	/**
@@ -70,9 +71,9 @@ public class XRPotionArrowsRecipe implements IRecipe {
 
 		if (itemstack != null && itemstack.getItem() == ModItems.potion && ModItems.potion.getLingering(itemstack))
 		{
-			ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW, 8);
+			ItemStack tippedArrows = new ItemStack(ModItems.tippedArrow, 8);
 			PotionUtils.addPotionToItemStack(tippedArrows, PotionTypes.EMPTY);
-			PotionUtils.appendEffects(tippedArrows, new PotionEssence(itemstack.getTagCompound()).getEffects());
+			PotionUtils.appendEffects(tippedArrows, XRPotionHelper.changeDuration(new PotionEssence(itemstack.getTagCompound()).getEffects(), 0.125F));
 			return tippedArrows;
 		}
 		else

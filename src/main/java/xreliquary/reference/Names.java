@@ -58,6 +58,7 @@ public class Names {
 		public static final String ANGELHEART_VIAL = "angelheart_vial";
 		public static final String FERTILE_POTION = "fertile_potion";
 		public static final String ATTRACTION_POTION = "attraction_potion";
+		public static final String TIPPED_ARROW = "tipped_arrow";
 	}
 
 	public static class Blocks {

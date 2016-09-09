@@ -44,6 +44,7 @@ public class ItemModels {
 		registerItemModel(ModItems.serpentStaff, Names.Items.SERPENT_STAFF);
 		registerItemModel(ModItems.shearsOfWinter, Names.Items.SHEARS_OF_WINTER);
 		registerItemModel(ModItems.sojournerStaff, Names.Items.SOJOURNER_STAFF);
+		registerItemModel(ModItems.tippedArrow, Names.Items.TIPPED_ARROW);
 		registerItemModel(ModItems.twilightCloak, Names.Items.TWILIGHT_CLOAK);
 
 		registerItemModel(ModItems.emptyVoidTear, Names.Items.VOID_TEAR_EMPTY);

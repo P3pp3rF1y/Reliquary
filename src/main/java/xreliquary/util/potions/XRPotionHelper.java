@@ -13,8 +13,11 @@ import net.minecraft.util.text.translation.I18n;
 import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Settings;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by Xeno on 11/8/2014.
@@ -124,5 +127,9 @@ public class XRPotionHelper {
 				}
 			}
 		}
+	}
+
+	public static List<PotionEffect> changeDuration(List<PotionEffect> effects, float factor) {
+		return effects.stream().map(effect -> new PotionEffect(effect.getPotion(), (int) (effect.getPotion().isInstant() ? 1 : effect.getDuration() * factor), effect.getAmplifier(), effect.getIsAmbient(), effect.doesShowParticles())).collect(Collectors.toList());
 	}
 }

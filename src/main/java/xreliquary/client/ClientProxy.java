@@ -122,6 +122,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntitySeekerShot.class, RenderShot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntitySandShot.class, RenderShot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, RenderShot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityXRTippedArrow.class, RenderXRTippedArrow::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, renderManager -> new RenderSnowball(renderManager, ModItems.glowingWater, Minecraft.getMinecraft().getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, renderManager -> new RenderSnowball(renderManager, ModItems.attractionPotion, Minecraft.getMinecraft().getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, renderManager -> new RenderSnowball(renderManager, ModItems.fertilePotion, Minecraft.getMinecraft().getRenderItem()));

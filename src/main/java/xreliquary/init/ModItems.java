@@ -61,6 +61,7 @@ public class ModItems {
 	public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
 	public static final ItemShearsOfWinter shearsOfWinter = new ItemShearsOfWinter();
 	public static final ItemSojournerStaff sojournerStaff = new ItemSojournerStaff();
+	public static final ItemXRTippedArrow tippedArrow = new ItemXRTippedArrow();
 	public static final ItemTwilightCloak twilightCloak = new ItemTwilightCloak();
 	public static final ItemVoidTearEmpty emptyVoidTear = new ItemVoidTearEmpty();
 	public static final ItemVoidTear filledVoidTear = new ItemVoidTear();
@@ -113,6 +114,7 @@ public class ModItems {
 		registerItem(serpentStaff, Names.Items.SERPENT_STAFF);
 		registerItem(shearsOfWinter, Names.Items.SHEARS_OF_WINTER);
 		registerItem(sojournerStaff, Names.Items.SOJOURNER_STAFF);
+		registerItem(tippedArrow, Names.Items.TIPPED_ARROW);
 		registerItem(twilightCloak, Names.Items.TWILIGHT_CLOAK);
 		registerItem(emptyVoidTear, Names.Items.VOID_TEAR_EMPTY);
 		registerItem(filledVoidTear, Names.Items.VOID_TEAR);

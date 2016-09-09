@@ -65,6 +65,7 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(EntityFertilePotion.class, "entitySplashFertility", 21, Reliquary.INSTANCE, 128, 5, true);
 		EntityRegistry.registerModEntity(EntityKrakenSlime.class, "entityKSlime", 22, Reliquary.INSTANCE, 128, 5, true);
 		EntityRegistry.registerModEntity(EntityEnderStaffProjectile.class, "entityEnderStaffProjectile", 23, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(EntityXRTippedArrow.class, "entityTippedArrow", 24, Reliquary.INSTANCE, 128, 5, true);
 	}
 
 	public void initColors() {

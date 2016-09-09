@@ -259,6 +259,8 @@ xreliquary.item.shears_of_winter.tooltip=Magic shears that tear the;leaves from 
 xreliquary.item.sojourner_staff.name=Sojourner's Staff
 xreliquary.item.sojourner_staff.tooltip=Consumes torches, can place them;long distances, but costs extra.;{{!colors.yellow}}Contents: {{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}}
 
+xreliquary.item.tipped_arrow.name=Tipped Arrow
+
 xreliquary.item.twilight_cloak.name=Twilight Cloak
 xreliquary.item.twilight_cloak.tooltip=Makes you invisible in darkness.
 
