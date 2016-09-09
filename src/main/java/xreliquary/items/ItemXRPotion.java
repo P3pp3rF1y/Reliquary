@@ -155,7 +155,7 @@ public class ItemXRPotion extends ItemBase {
 					if(rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
 						if(world.getBlockState(rayTraceResult.getBlockPos()).getBlock() instanceof BlockApothecaryCauldron) {
 							TileEntityCauldron cauldronTile = (TileEntityCauldron) world.getTileEntity(rayTraceResult.getBlockPos());
-							NBTTagCompound potionTag = cauldronTile.removeContainedPotion(world);
+							NBTTagCompound potionTag = cauldronTile.removeContainedPotion();
 							ItemStack newPotion = new ItemStack(this, 1, 0);
 							newPotion.setTagCompound(potionTag);
 

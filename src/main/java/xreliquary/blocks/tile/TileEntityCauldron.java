@@ -25,7 +25,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -44,8 +45,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//import thaumcraft.api.blocks.BlocksTC;
-
 public class TileEntityCauldron extends TileEntityBase implements IWailaDataChangeIndicator, ITickable {
 
 	public int redstoneCount = 0;
@@ -53,7 +52,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	public int glowstoneCount = 0;
 	public boolean hasGunpowder = false;
 	public boolean hasNetherwart = false;
-	public int cookTime = 0;
+	private int cookTime = 0;
 	private int liquidLevel = 0;
 	private boolean dataChanged;
 
@@ -88,13 +87,8 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		}
 	}
 
-	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
-		return oldState.getBlock() != newState.getBlock();
-	}
-
 	@SideOnly(Side.CLIENT)
-	public void spawnBoilingParticles() {
+	private void spawnBoilingParticles() {
 		if(worldObj.rand.nextInt(getCookTime() * getCookTime()) > cookTime * cookTime)
 			return;
 		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
@@ -118,13 +112,12 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return (float) (6 + 3 * j) / 16.0F;
 	}
 
-	public int getColor(PotionEssence essence) {
-		//basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
+	private int getColor(PotionEssence essence) {
 		return PotionUtils.getPotionColorFromEffectList(essence == null || essence.getEffects() == null ? Collections.emptyList() : essence.getEffects());
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void spawnGunpowderParticles() {
+	private void spawnGunpowderParticles() {
 		if(worldObj.rand.nextInt(8) > 0)
 			return;
 		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
@@ -133,7 +126,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void spawnGlowstoneParticles() {
+	private void spawnGlowstoneParticles() {
 		if(worldObj.rand.nextInt(8) > 0)
 			return;
 		double gauss = 0.5D + worldObj.rand.nextFloat() / 2;
@@ -143,7 +136,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void spawnNetherwartParticles() {
+	private void spawnNetherwartParticles() {
 		if(worldObj.rand.nextInt(8) > 0)
 			return;
 		double gauss = 0.5D + worldObj.rand.nextFloat() / 2;
@@ -153,7 +146,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void spawnRedstoneParticles() {
+	private void spawnRedstoneParticles() {
 		if(worldObj.rand.nextInt(10) / this.redstoneCount > 0)
 			return;
 		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
@@ -162,7 +155,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void spawnFinishedParticles() {
+	private void spawnFinishedParticles() {
 		if(worldObj.rand.nextInt(8) > 0)
 			return;
 		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
@@ -184,6 +177,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			this.potionEssence = null;
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
@@ -198,11 +192,11 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return compound;
 	}
 
-	public boolean finishedCooking() {
+	private boolean finishedCooking() {
 		return hasNetherwart && potionEssence != null && this.cookTime >= getCookTime();
 	}
 
-	public NBTTagCompound removeContainedPotion(World world) {
+	public NBTTagCompound removeContainedPotion() {
 		if(!hasNetherwart || potionEssence == null || getLiquidLevel() <= 0)
 			return null;
 
@@ -215,7 +209,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return tag;
 	}
 
-	public NBTTagCompound getFinishedPotion() {
+	private NBTTagCompound getFinishedPotion() {
 		NBTTagCompound tag = potionEssence.writeToNBT();
 		NBTTagList effectsList = tag.getTagList("effects", 10);
 		NBTTagCompound newTag = new NBTTagCompound();
@@ -227,7 +221,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return newTag;
 	}
 
-	public void clearAllFields() {
+	private void clearAllFields() {
 		this.cookTime = 0;
 		this.glowstoneCount = 0;
 		this.hasGunpowder = false;
@@ -239,14 +233,11 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		worldObj.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
 	}
 
-	public boolean isItemValidForInput(ItemStack ist) {
-		//noinspection SimplifiableIfStatement
-		if(getLiquidLevel() < 3)
-			return false;
+	private boolean isItemValidForInput(ItemStack ist) {
 		return ((ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null) || (ist.getItem() == Items.GUNPOWDER && !this.hasGunpowder) || (ist.getItem() == Items.GLOWSTONE_DUST && this.glowstoneCount < getGlowstoneAmpLimit()) || (ist.getItem() == Items.REDSTONE && this.redstoneCount < getRedstoneAmpLimit()) || (ist.getItem() == Items.NETHER_WART && !this.hasNetherwart));
 	}
 
-	public void addItem(ItemStack ist) {
+	private void addItem(ItemStack ist) {
 		if(ist.getItem() instanceof ItemPotionEssence) {
 			potionEssence = new PotionEssence(ist.getTagCompound());
 		} else if(ist.getItem() == Items.GUNPOWDER) {
@@ -265,15 +256,15 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		worldObj.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
 	}
 
-	public int getGlowstoneAmpLimit() {
+	private int getGlowstoneAmpLimit() {
 		return Settings.ApothecaryCauldron.glowstoneLimit;
 	}
 
-	public int getRedstoneAmpLimit() {
+	private int getRedstoneAmpLimit() {
 		return Settings.ApothecaryCauldron.redstoneLimit;
 	}
 
-	public List<Block> getHeatSources() {
+	private List<Block> getHeatSources() {
 		List<Block> heatSources = new ArrayList<>();
 		List<String> heatSourceBlockNames = Settings.ApothecaryCauldron.heatSources;
 
@@ -289,12 +280,12 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return heatSources;
 	}
 
-	public int getCookTime() {
+	private int getCookTime() {
 		return Settings.ApothecaryCauldron.cookTime;
 	}
 
 	public void handleCollidingEntity(World world, BlockPos pos, Entity collidingEntity) {
-		int l = 3;
+		int l = getLiquidLevel();
 		float f = (float) pos.getY() + (6.0F + (float) (3 * l)) / 16.0F;
 		if(collidingEntity.getEntityBoundingBox().minY <= (double) f) {
 
@@ -337,7 +328,12 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return liquidLevel;
 	}
 
-	public void fillWithRain(World world) {
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+		return oldState.getBlock() != newState.getBlock();
+	}
+
+	public void fillWithRain() {
 		if(getLiquidLevel() < 3 && !finishedCooking()) {
 			setLiquidLevel(getLiquidLevel() + 1);
 		}
@@ -346,50 +342,61 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	public boolean handleBlockActivation(World world, EntityPlayer player) {
 		ItemStack itemStack = player.inventory.getCurrentItem();
 
-		if(itemStack.getItem() == Items.WATER_BUCKET || (itemStack.getItem() instanceof IFluidContainerItem && ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack).equals(new FluidStack(FluidRegistry.WATER, 1000)))) {
-			if(getLiquidLevel() < 3 && !finishedCooking()) {
-				if(!player.capabilities.isCreativeMode) {
-					if(itemStack.getItem() == Items.WATER_BUCKET) {
-						player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.BUCKET));
-					} else {
-						((IFluidContainerItem) itemStack.getItem()).drain(itemStack, 1000, true);
-					}
-				}
+		if(itemStack == null)
+			return false;
 
-				setLiquidLevel(3);
-				cookTime = 0;
+		if(getLiquidLevel() < 3 && !finishedCooking()) {
+			if(itemStack.getItem() == Items.WATER_BUCKET) {
+				if(!player.capabilities.isCreativeMode)
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.BUCKET));
+			} else if(itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+				FluidStack waterStack = new FluidStack(FluidRegistry.WATER, 1000);
+				IFluidHandler fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+				//noinspection ConstantConditions
+				if(!fluidHandler.drain(waterStack, false).equals(waterStack))
+					return false;
+
+				if(!player.capabilities.isCreativeMode)
+					fluidHandler.drain(waterStack, true);
+			} else {
+				return false;
 			}
+			setLiquidLevel(3);
+			cookTime = 0;
 
 			return true;
-		} else {
+		} else if(finishedCooking() && getLiquidLevel() > 0) {
 			if(itemStack.getItem() == ModItems.potion && (itemStack.getTagCompound() == null || !itemStack.getTagCompound().getBoolean("hasPotion"))) {
-				if(getLiquidLevel() > 0) {
+				if(finishedCooking()) {
+					ItemStack potion = new ItemStack(ModItems.potion, 1, 0);
+					potion.setTagCompound(removeContainedPotion());
 
-					if(finishedCooking()) {
-						ItemStack potion = new ItemStack(ModItems.potion, 1, 0);
-						potion.setTagCompound(removeContainedPotion(world));
+					--itemStack.stackSize;
 
-						--itemStack.stackSize;
-
-						if(itemStack.stackSize <= 0) {
-							player.inventory.setInventorySlotContents(player.inventory.currentItem, potion);
-						} else if(!player.inventory.addItemStackToInventory(potion)) {
-							world.spawnEntityInWorld(new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
-						}
+					if(itemStack.stackSize <= 0) {
+						player.inventory.setInventorySlotContents(player.inventory.currentItem, potion);
+					} else if(!player.inventory.addItemStackToInventory(potion)) {
+						world.spawnEntityInWorld(new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
 					}
+
+					return true;
 				}
-			} else if(isItemValidForInput(itemStack)) {
+			}
+		} else if(getLiquidLevel() == 3) {
+			if(isItemValidForInput(itemStack)) {
 				addItem(itemStack);
 
 				--itemStack.stackSize;
 				if(itemStack.stackSize <= 0)
 					player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+
+				return true;
 			}
-			return true;
 		}
+		return false;
 	}
 
-	public void setLiquidLevel(int liquidLevel) {
+	private void setLiquidLevel(int liquidLevel) {
 		this.liquidLevel = liquidLevel;
 		if(this.worldObj != null) {
 			IBlockState blockState = this.worldObj.getBlockState(this.getPos());

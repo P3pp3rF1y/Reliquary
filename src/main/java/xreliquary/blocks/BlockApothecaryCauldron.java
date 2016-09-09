@@ -129,7 +129,7 @@ public class BlockApothecaryCauldron extends BlockBase {
 		if(world.rand.nextInt(20) == 1) {
 			TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
 			if(cauldron != null) {
-				cauldron.fillWithRain(world);
+				cauldron.fillWithRain();
 			}
 		}
 	}
