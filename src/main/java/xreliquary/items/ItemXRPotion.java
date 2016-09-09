@@ -142,7 +142,7 @@ public class ItemXRPotion extends ItemBase {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
 		PotionEssence essence = new PotionEssence(ist.getTagCompound());
-		if(!getSplash(ist)) {
+		if(!getSplash(ist) && !getLingering(ist)) {
 			if(essence.getEffects().size() > 0) {
 				player.setActiveHand(hand);
 				return new ActionResult<>(EnumActionResult.SUCCESS, ist);
