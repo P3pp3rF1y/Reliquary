@@ -55,6 +55,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	private int cookTime = 0;
 	private int liquidLevel = 0;
 	private boolean dataChanged;
+	private boolean hasDragonBreath = false;
 
 	public TileEntityCauldron() {
 		dataChanged = true;
@@ -170,6 +171,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		this.glowstoneCount = tag.getInteger("glowstoneCount");
 		this.hasNetherwart = tag.getBoolean("hasNetherwart");
 		this.hasGunpowder = tag.getBoolean("hasGunpowder");
+		this.hasDragonBreath = tag.getBoolean("hasDragonBreath");
 		this.redstoneCount = tag.getInteger("redstoneCount");
 		this.cookTime = tag.getInteger("cookTime");
 		this.potionEssence = new PotionEssence((NBTTagCompound) tag.getTag("potionEssence"));
@@ -186,6 +188,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		compound.setInteger("redstoneCount", redstoneCount);
 		compound.setInteger("glowstoneCount", glowstoneCount);
 		compound.setBoolean("hasGunpowder", hasGunpowder);
+		compound.setBoolean("hasDragonBreath", hasDragonBreath);
 		compound.setBoolean("hasNetherwart", hasNetherwart);
 		compound.setTag("potionEssence", potionEssence == null ? new NBTTagCompound() : potionEssence.writeToNBT());
 
@@ -215,7 +218,9 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		NBTTagCompound newTag = new NBTTagCompound();
 		newTag.setTag("effects", effectsList);
 		newTag.setBoolean("hasPotion", true);
-		if(hasGunpowder) {
+		if (hasDragonBreath) {
+			newTag.setBoolean("lingering", true);
+		} else if(hasGunpowder) {
 			newTag.setBoolean("splash", true);
 		}
 		return newTag;
@@ -229,12 +234,25 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		this.redstoneCount = 0;
 		this.potionEssence = null;
 		this.dataChanged = true;
+		this.hasDragonBreath = false;
 		IBlockState blockState = worldObj.getBlockState(this.getPos());
 		worldObj.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
 	}
 
 	private boolean isItemValidForInput(ItemStack ist) {
-		return ((ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null) || (ist.getItem() == Items.GUNPOWDER && !this.hasGunpowder) || (ist.getItem() == Items.GLOWSTONE_DUST && this.glowstoneCount < getGlowstoneAmpLimit()) || (ist.getItem() == Items.REDSTONE && this.redstoneCount < getRedstoneAmpLimit()) || (ist.getItem() == Items.NETHER_WART && !this.hasNetherwart));
+		if(ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null)
+			return true;
+		if(ist.getItem() == Items.GUNPOWDER && !this.hasGunpowder)
+			return true;
+		if(ist.getItem() == Items.GLOWSTONE_DUST && this.glowstoneCount < getGlowstoneAmpLimit())
+			return true;
+		if(ist.getItem() == Items.REDSTONE && this.redstoneCount < getRedstoneAmpLimit())
+			return true;
+		if(ist.getItem() == Items.NETHER_WART && !this.hasNetherwart)
+			return true;
+		if(ist.getItem() == Items.DRAGON_BREATH && !this.hasDragonBreath)
+			return true;
+		return false;
 	}
 
 	private void addItem(ItemStack ist) {
@@ -250,6 +268,8 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			potionEssence.addRedstone(this.redstoneCount);
 		} else if(ist.getItem() == Items.NETHER_WART) {
 			this.hasNetherwart = true;
+		} else if(ist.getItem() == Items.DRAGON_BREATH) {
+			this.hasDragonBreath = true;
 		}
 
 		IBlockState blockState = worldObj.getBlockState(this.getPos());
@@ -365,22 +385,20 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			cookTime = 0;
 
 			return true;
-		} else if(finishedCooking() && getLiquidLevel() > 0) {
-			if(itemStack.getItem() == ModItems.potion && (itemStack.getTagCompound() == null || !itemStack.getTagCompound().getBoolean("hasPotion"))) {
-				if(finishedCooking()) {
-					ItemStack potion = new ItemStack(ModItems.potion, 1, 0);
-					potion.setTagCompound(removeContainedPotion());
+		} else if(itemStack.getItem() == ModItems.potion && (itemStack.getTagCompound() == null || !itemStack.getTagCompound().getBoolean("hasPotion")) && finishedCooking() && getLiquidLevel() > 0) {
+			if(finishedCooking()) {
+				ItemStack potion = new ItemStack(ModItems.potion, 1, 0);
+				potion.setTagCompound(removeContainedPotion());
 
-					--itemStack.stackSize;
+				--itemStack.stackSize;
 
-					if(itemStack.stackSize <= 0) {
-						player.inventory.setInventorySlotContents(player.inventory.currentItem, potion);
-					} else if(!player.inventory.addItemStackToInventory(potion)) {
-						world.spawnEntityInWorld(new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
-					}
-
-					return true;
+				if(itemStack.stackSize <= 0) {
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, potion);
+				} else if(!player.inventory.addItemStackToInventory(potion)) {
+					world.spawnEntityInWorld(new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
 				}
+
+				return true;
 			}
 		} else if(getLiquidLevel() == 3) {
 			if(isItemValidForInput(itemStack)) {
