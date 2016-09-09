@@ -134,6 +134,19 @@ public class ItemXRPotion extends ItemBase {
 		return EnumAction.NONE;
 	}
 
+	@Override
+	public String getUnlocalizedName(ItemStack stack) {
+		if (!stack.hasTagCompound() || stack.getTagCompound().hasNoTags()) {
+			return "item.potion_empty";
+		} else if (getLingering(stack)) {
+			return "item.potion_lingering";
+		} else if (getSplash(stack)) {
+			return "item.potion_splash";
+		}
+
+		return super.getUnlocalizedName(stack);
+	}
+
 	/**
 	 * Called whenever this item is equipped and the right mouse button is
 	 * pressed. Args: itemStack, world, entityPlayer
