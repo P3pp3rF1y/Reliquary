@@ -47,6 +47,9 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		if(!cauldron.hasNetherwart)
 			currenttip.add(ChatFormatting.RED + LanguageHelper.getLocalization("waila.xreliquary.cauldron.missing_netherwart") + ChatFormatting.RESET);
 
+		if(!cauldron.hasGunpowder && cauldron.hasDragonBreath)
+			currenttip.add(ChatFormatting.RED + LanguageHelper.getLocalization("waila.xreliquary.cauldron.missing_gunpowder") + ChatFormatting.RESET);
+
 		StringBuilder ingredients = new StringBuilder();
 		if(cauldron.redstoneCount > 0) {
 			ingredients.append(cauldron.redstoneCount);
@@ -63,7 +66,10 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 
 		currenttip.add(ingredients.toString());
 
-		if(cauldron.hasGunpowder) {
+		if (cauldron.hasDragonBreath) {
+			currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + LanguageHelper.getLocalization("waila.xreliquary.cauldron.lingering") + ChatFormatting.RESET);
+		}
+		else if(cauldron.hasGunpowder) {
 			currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + LanguageHelper.getLocalization("waila.xreliquary.cauldron.splash") + ChatFormatting.RESET);
 		} else {
 			currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + LanguageHelper.getLocalization("waila.xreliquary.cauldron.potion") + ChatFormatting.RESET);

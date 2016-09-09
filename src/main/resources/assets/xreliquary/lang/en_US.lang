@@ -229,7 +229,10 @@ xreliquary.item.mob_charm_belt.name=Charm Belt
 xreliquary.item.phoenix_down.name=Phoenix Down
 xreliquary.item.phoenix_down.tooltip=Resurrects you once with;full health and reverts;to an Angelic Feather.
 
+xreliquary.item.potion_empty.name=Condensed Potion Vial
 xreliquary.item.potion.name=Condensed Potion
+xreliquary.item.potion_splash.name=Splash Condensed Potion
+xreliquary.item.potion_lingering.name=Lingering Condensed Potion
 xreliquary.item.potion.tooltip=Effects:;{{effects}}
 
 xreliquary.item.potion_essence.name=Potion Essence
@@ -625,6 +628,8 @@ xreliquary.jei.descriptions.pedestal_passive=Display only pedestal is exactly th
 xreliquary.waila.xreliquary.mortar.ingredients=Ingredients:
 xreliquary.waila.xreliquary.mortar.result=Resulting potion effects:
 xreliquary.waila.xreliquary.cauldron.missing_netherwart=Missing Nether Wart
+xreliquary.waila.xreliquary.cauldron.missing_gunpowder=Missing Gunpowder
+xreliquary.waila.xreliquary.cauldron.lingering=Lingering potion
 xreliquary.waila.xreliquary.cauldron.splash=Splash potion
 xreliquary.waila.xreliquary.cauldron.potion=Potion
 xreliquary.waila.xreliquary.altar.inactive=Inactive
