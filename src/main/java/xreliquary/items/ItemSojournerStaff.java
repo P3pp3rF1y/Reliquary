@@ -36,7 +36,7 @@ import java.util.List;
 public class ItemSojournerStaff extends ItemToggleable {
 
 	public ItemSojournerStaff() {
-		super(Names.sojourner_staff);
+		super(Names.Items.SOJOURNER_STAFF);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;

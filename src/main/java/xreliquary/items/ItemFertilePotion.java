@@ -16,7 +16,7 @@ import xreliquary.reference.Names;
 public class ItemFertilePotion extends ItemBase {
 
 	public ItemFertilePotion() {
-		super(Names.fertile_potion);
+		super(Names.Items.FERTILE_POTION);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);

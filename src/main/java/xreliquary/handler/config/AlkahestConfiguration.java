@@ -26,16 +26,16 @@ public class AlkahestConfiguration {
 	private static final int TOME_COST_UBER_TIER = 64;
 
 	public static void loadAlkahestBaseItem() {
-		String registryName = ConfigurationHandler.getString("base_item", Names.item_and_block_settings + "." + Names.alkahestry_tome, Items.REDSTONE.getRegistryName().toString(), "Base Item name in format \"ModId:item\"");
-		int meta = ConfigurationHandler.getInt("base_item_meta", Names.item_and_block_settings + "." + Names.alkahestry_tome, 0, 0, 16, "meta of the Base Item");
+		String registryName = ConfigurationHandler.getString("base_item", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.ALKAHESTRY_TOME, Items.REDSTONE.getRegistryName().toString(), "Base Item name in format \"ModId:item\"");
+		int meta = ConfigurationHandler.getInt("base_item_meta", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.ALKAHESTRY_TOME, 0, 0, 16, "meta of the Base Item");
 		String[] splitName = registryName.split(":");
 		Settings.AlkahestryTome.baseItem = StackHelper.getItemStackFromNameMeta(splitName[0], splitName[1], meta);
 
-		Settings.AlkahestryTome.baseItemWorth = ConfigurationHandler.getInt("base_item_worth", Names.item_and_block_settings + "." + Names.alkahestry_tome, 1, 1, 1000, "How much charge the Base Item is worth");
+		Settings.AlkahestryTome.baseItemWorth = ConfigurationHandler.getInt("base_item_worth", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.ALKAHESTRY_TOME, 1, 1, 1000, "How much charge the Base Item is worth");
 	}
 
 	public static void loadAlkahestChargingRecipes() {
-		String categoryKey = Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.charging_recipes;
+		String categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.ALKAHESTRY_TOME + "." + Names.Configs.CHARGING_RECIPES;
 		ConfigCategory category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
 		category.setComment("List of recipes that can be used with Alkahestry Tome to charge it. The values are item name \"modID:name\", meta, charge points.\n");
@@ -117,7 +117,7 @@ public class AlkahestConfiguration {
 	}
 
 	public static void loadAlkahestCraftingRecipes() {
-		String categoryKey = Names.item_and_block_settings + "." + Names.alkahestry_tome + "." + Names.crafting_recipes;
+		String categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.ALKAHESTRY_TOME + "." + Names.Configs.CRAFTING_RECIPES;
 		ConfigCategory category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
 		category.setComment("List of recipes that can be used with Alkahestry Tome to craft items. The values are item name \"modID:name\", meta, yield, cost.");

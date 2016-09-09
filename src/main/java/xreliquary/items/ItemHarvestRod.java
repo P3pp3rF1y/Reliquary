@@ -69,7 +69,7 @@ public class ItemHarvestRod extends ItemToggleable {
 	private static final int AOE_START_COOLDOWN = 10;
 
 	public ItemHarvestRod() {
-		super(Names.harvest_rod);
+		super(Names.Items.HARVEST_ROD);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;

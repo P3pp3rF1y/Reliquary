@@ -37,7 +37,7 @@ import java.util.List;
 public class ItemXRPotion extends ItemBase {
 
 	public ItemXRPotion() {
-		super(Names.potion);
+		super(Names.Items.POTION);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(64);
 		this.setHasSubtypes(true);

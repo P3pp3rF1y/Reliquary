@@ -18,7 +18,7 @@ import xreliquary.reference.Names;
 public class ItemGlowingWater extends ItemBase {
 
 	public ItemGlowingWater() {
-		super(Names.glowing_water);
+		super(Names.Items.GLOWING_WATER);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);

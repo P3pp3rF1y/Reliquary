@@ -18,11 +18,11 @@ import xreliquary.util.LanguageHelper;
 
 public class ItemWitchHat extends ItemArmor {
 
-	public static final ItemArmor.ArmorMaterial hatMaterial = EnumHelper.addArmorMaterial("hat_material", Reference.DOMAIN + Names.witch_hat, 0, new int[] {0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0.0F);
+	public static final ItemArmor.ArmorMaterial hatMaterial = EnumHelper.addArmorMaterial("hat_material", Reference.DOMAIN + Names.Items.WITCH_HAT, 0, new int[] {0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0.0F);
 
 	public ItemWitchHat() {
 		super(hatMaterial, 0, EntityEquipmentSlot.HEAD);
-		this.setUnlocalizedName(Names.witch_hat);
+		this.setUnlocalizedName(Names.Items.WITCH_HAT);
 
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}

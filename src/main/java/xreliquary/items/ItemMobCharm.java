@@ -21,7 +21,7 @@ public class ItemMobCharm extends ItemBase {
 	private static final String TYPE_TAG = "type";
 
 	public ItemMobCharm() {
-		super(Names.mob_charm);
+		super(Names.Items.MOB_CHARM);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(Settings.MobCharm.durability);
 		this.setMaxStackSize(1);
@@ -31,7 +31,7 @@ public class ItemMobCharm extends ItemBase {
 
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
-		return "item." + Names.mob_charm + "_" + getType(ist);
+		return "item." + Names.Items.MOB_CHARM + "_" + getType(ist);
 	}
 
 	@Override

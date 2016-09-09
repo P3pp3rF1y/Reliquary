@@ -29,15 +29,15 @@ public class ModBlocks {
 
 	public static void init() {
 		//TODO move itemblock definitions into blocks and just call getItemBlock in register method
-		registerBlock(apothecaryCauldron, new ItemBlockBase(apothecaryCauldron), Names.apothecary_cauldron);
-		registerBlock(alkahestryAltar, new ItemBlockBase(alkahestryAltar), Names.altar_idle);
-		registerBlock(alkahestryAltarActive, new ItemBlockBase(alkahestryAltarActive), Names.altar);
-		registerBlock(apothecaryMortar, new ItemBlockBase(apothecaryMortar), Names.apothecary_mortar);
-		registerBlock(fertileLilypad, new ItemFertileLilyPad(), Names.fertile_lilypad);
-		registerBlock(interdictionTorch, new ItemBlockBase(interdictionTorch), Names.interdiction_torch);
-		registerBlock(wraithNode, new ItemBlockBase(wraithNode), Names.wraith_node);
-		registerBlock(pedestal, new ItemBlockPedestal(pedestal), Names.pedestal, true);
-		registerBlock(pedestalPassive, new ItemBlockPedestal(pedestalPassive), Names.pedestal_passive, true);
+		registerBlock(apothecaryCauldron, new ItemBlockBase(apothecaryCauldron), Names.Blocks.APOTHECARY_CAULDRON);
+		registerBlock(alkahestryAltar, new ItemBlockBase(alkahestryAltar), Names.Blocks.ALTAR_IDLE);
+		registerBlock(alkahestryAltarActive, new ItemBlockBase(alkahestryAltarActive), Names.Blocks.ALTAR);
+		registerBlock(apothecaryMortar, new ItemBlockBase(apothecaryMortar), Names.Blocks.APOTHECARY_MORTAR);
+		registerBlock(fertileLilypad, new ItemFertileLilyPad(), Names.Blocks.FERTILE_LILYPAD);
+		registerBlock(interdictionTorch, new ItemBlockBase(interdictionTorch), Names.Blocks.INTERDICTION_TORCH);
+		registerBlock(wraithNode, new ItemBlockBase(wraithNode), Names.Blocks.WRAITH_NODE);
+		registerBlock(pedestal, new ItemBlockPedestal(pedestal), Names.Blocks.PEDESTAL, true);
+		registerBlock(pedestalPassive, new ItemBlockPedestal(pedestalPassive), Names.Blocks.PEDESTAL_PASSIVE, true);
 	}
 
 	public static void initTileEntities() {

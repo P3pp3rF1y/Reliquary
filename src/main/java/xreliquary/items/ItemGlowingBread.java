@@ -26,7 +26,7 @@ public class ItemGlowingBread extends ItemFood {
 		this.setMaxStackSize(64);
 		canRepair = false;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		this.setUnlocalizedName(Names.glowing_bread);
+		this.setUnlocalizedName(Names.Items.GLOWING_BREAD);
 	}
 
 	@Override

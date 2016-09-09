@@ -16,7 +16,7 @@ import xreliquary.reference.Names;
 public class ItemAttractionPotion extends ItemBase {
 
 	public ItemAttractionPotion() {
-		super(Names.attraction_potion);
+		super(Names.Items.ATTRACTION_POTION);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);

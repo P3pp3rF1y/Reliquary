@@ -78,7 +78,7 @@ public class ClientProxy extends CommonProxy {
 
 		List<ItemStack> subItems = new ArrayList<>();
 		ModItems.potionEssence.getSubItems(ModItems.potionEssence, ModItems.potionEssence.getCreativeTab(), subItems);
-		JEIDescriptionRegistry.register(subItems, Names.potion_essence);
+		JEIDescriptionRegistry.register(subItems, Names.Items.POTION_ESSENCE);
 
 		List<ItemStack> potions = new ArrayList<>();
 		List<ItemStack> splashPotions = new ArrayList<>();
@@ -93,8 +93,8 @@ public class ClientProxy extends CommonProxy {
 			NBTHelper.setBoolean("splash", splashPotion, true);
 			splashPotions.add(splashPotion);
 		}
-		JEIDescriptionRegistry.register(potions, Names.potion);
-		JEIDescriptionRegistry.register(splashPotions, Names.potion_splash);
+		JEIDescriptionRegistry.register(potions, Names.Items.POTION);
+		JEIDescriptionRegistry.register(splashPotions, Names.Items.POTION_SPLASH);
 	}
 
 	@Override

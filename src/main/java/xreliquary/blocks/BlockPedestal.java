@@ -28,7 +28,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 
 	public BlockPedestal() {
 		super();
-		this.setUnlocalizedName(Names.pedestal);
+		this.setUnlocalizedName(Names.Blocks.PEDESTAL);
 	}
 
 	@Override

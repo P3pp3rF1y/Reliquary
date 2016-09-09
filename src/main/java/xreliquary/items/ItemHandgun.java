@@ -27,7 +27,7 @@ import xreliquary.reference.Reference;
 public class ItemHandgun extends ItemBase {
 
 	public ItemHandgun() {
-		super(Names.handgun);
+		super(Names.Items.HANDGUN);
 		this.setMaxStackSize(1);
 		this.setMaxDamage(0);
 		canRepair = false;

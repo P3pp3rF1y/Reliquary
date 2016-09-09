@@ -16,7 +16,7 @@ public class JEIDescriptionRegistry {
 	}
 
 	public static void register(List<ItemStack> itemStacks, String name) {
-		registry.put(Reference.MOD_ID + "." + Names.jei_description_prefix + name, itemStacks);
+		registry.put(Reference.MOD_ID + "." + Names.Configs.JEI_DESCRIPTIONS + name, itemStacks);
 	}
 
 	public static void register(Item item, String name) {
@@ -26,10 +26,10 @@ public class JEIDescriptionRegistry {
 				item.getSubItems(item, item.getCreativeTab(), subItems);
 
 				for(ItemStack stack : subItems) {
-					registry.put(Reference.MOD_ID + "." + Names.jei_description_prefix + name + stack.getMetadata(), Collections.singletonList(stack));
+					registry.put(Reference.MOD_ID + "." + Names.Configs.JEI_DESCRIPTIONS + name + stack.getMetadata(), Collections.singletonList(stack));
 				}
 			} else {
-				registry.put(Reference.MOD_ID + "." + Names.jei_description_prefix + name, Collections.singletonList(new ItemStack(item, 1)));
+				registry.put(Reference.MOD_ID + "." + Names.Configs.JEI_DESCRIPTIONS + name, Collections.singletonList(new ItemStack(item, 1)));
 			}
 		}
 	}

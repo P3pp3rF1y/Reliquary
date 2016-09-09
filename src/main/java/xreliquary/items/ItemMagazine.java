@@ -20,7 +20,7 @@ import java.util.List;
 public class ItemMagazine extends ItemBase {
 
 	public ItemMagazine() {
-		super(Names.magazine);
+		super(Names.Items.MAGAZINE);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(64);
 		canRepair = false;
@@ -38,12 +38,12 @@ public class ItemMagazine extends ItemBase {
 		if(stack.getMetadata() < 2)
 			return;
 		//taking tooltip from bullets as it's the same text for magazines
-		LanguageHelper.formatTooltip("item." + Names.bullet + "_" + stack.getMetadata() + ".tooltip", null, list);
+		LanguageHelper.formatTooltip("item." + Names.Items.BULLET + "_" + stack.getMetadata() + ".tooltip", null, list);
 	}
 
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
-		return "item." + Names.magazine + "_" + ist.getItemDamage();
+		return "item." + Names.Items.MAGAZINE + "_" + ist.getItemDamage();
 	}
 
 	@Override

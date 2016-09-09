@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class ItemMobCharmFragment extends ItemBase {
 	public ItemMobCharmFragment() {
-		super(Names.mob_charm_fragment);
+		super(Names.Items.MOB_CHARM_FRAGMENT);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);

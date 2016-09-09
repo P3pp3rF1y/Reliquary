@@ -33,7 +33,7 @@ import java.util.List;
 public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 
 	public ItemFortuneCoin() {
-		super(Names.fortune_coin);
+		super(Names.Items.FORTUNE_COIN);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);

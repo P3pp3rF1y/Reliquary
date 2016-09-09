@@ -14,7 +14,7 @@ import xreliquary.reference.Names;
 public class ItemKrakenShell extends ItemBase {
 
 	public ItemKrakenShell() {
-		super(Names.kraken_shell);
+		super(Names.Items.KRAKEN_SHELL);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);

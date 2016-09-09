@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class PotionConfiguration {
 	public static void loadPotionMap() {
-		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.potion_map);
+		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.Configs.POTION_MAP);
 
 		if(category.isEmpty()) {
 			addDefaultPotionMap(category);
@@ -36,7 +36,7 @@ public class PotionConfiguration {
 		loadUniquePotions();
 		LogHelper.debug("Done with potion combinations");
 
-		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(Names.potion_map));
+		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(Names.Configs.POTION_MAP));
 	}
 
 	private static void loadUniquePotions() {

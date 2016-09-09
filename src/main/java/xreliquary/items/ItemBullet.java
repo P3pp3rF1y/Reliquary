@@ -24,7 +24,7 @@ public class ItemBullet extends ItemBase {
 	// 8 = Sand, 9 = Storm
 
 	public ItemBullet() {
-		super(Names.bullet);
+		super(Names.Items.BULLET);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(64);
 		this.setHasSubtypes(true);
@@ -39,14 +39,14 @@ public class ItemBullet extends ItemBase {
 
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
-		return "item." + Names.bullet + "_" + ist.getItemDamage();
+		return "item." + Names.Items.BULLET + "_" + ist.getItemDamage();
 	}
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
 		if (stack.getMetadata() < 2)
 			return;
-		LanguageHelper.formatTooltip("item." + Names.bullet + "_" + stack.getMetadata() + ".tooltip", null, list);
+		LanguageHelper.formatTooltip("item." + Names.Items.BULLET + "_" + stack.getMetadata() + ".tooltip", null, list);
 	}
 
 	@Override

@@ -32,7 +32,7 @@ import java.util.List;
 public class ItemInfernalTear extends ItemToggleable {
 
 	public ItemInfernalTear() {
-		super(Names.infernal_tear);
+		super(Names.Items.INFERNAL_TEAR);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;

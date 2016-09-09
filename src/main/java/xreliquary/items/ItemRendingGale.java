@@ -46,7 +46,7 @@ import java.util.List;
  */
 public class ItemRendingGale extends ItemToggleable {
 	public ItemRendingGale() {
-		super(Names.rending_gale);
+		super(Names.Items.RENDING_GALE);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;

@@ -18,7 +18,7 @@ import java.util.List;
 public class ItemMobIngredient extends ItemBase {
 
 	public ItemMobIngredient() {
-		super(Names.mob_ingredient);
+		super(Names.Items.MOB_INGREDIENT);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);

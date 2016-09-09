@@ -18,7 +18,7 @@ import xreliquary.reference.Names;
  */
 public class ItemRodOfLyssa extends ItemBase {
 	public ItemRodOfLyssa() {
-		super(Names.rod_of_lyssa);
+		super(Names.Items.ROD_OF_LYSSA);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);

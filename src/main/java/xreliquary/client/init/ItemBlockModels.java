@@ -13,15 +13,15 @@ import xreliquary.reference.Settings;
 
 public class ItemBlockModels {
 	public static void registerItemBlockModels() {
-		registerBlockItemModel(ModBlocks.apothecaryCauldron, Names.apothecary_cauldron);
-		registerBlockItemModel(ModBlocks.apothecaryMortar, Names.apothecary_mortar);
-		registerBlockItemModel(ModBlocks.alkahestryAltar, Names.altar_idle);
-		registerBlockItemModel(ModBlocks.alkahestryAltarActive, Names.altar);
-		registerBlockItemModel(ModBlocks.interdictionTorch, Names.interdiction_torch);
-		registerBlockItemModel(ModBlocks.wraithNode, Names.wraith_node);
-		registerBlockItemModel(ModBlocks.fertileLilypad, Names.fertile_lilypad);
-		registerPedestalBlockItemModels(ModBlocks.pedestal, Names.pedestal);
-		registerPedestalBlockItemModels(ModBlocks.pedestalPassive, Names.pedestal_passive);
+		registerBlockItemModel(ModBlocks.apothecaryCauldron, Names.Blocks.APOTHECARY_CAULDRON);
+		registerBlockItemModel(ModBlocks.apothecaryMortar, Names.Blocks.APOTHECARY_MORTAR);
+		registerBlockItemModel(ModBlocks.alkahestryAltar, Names.Blocks.ALTAR_IDLE);
+		registerBlockItemModel(ModBlocks.alkahestryAltarActive, Names.Blocks.ALTAR);
+		registerBlockItemModel(ModBlocks.interdictionTorch, Names.Blocks.INTERDICTION_TORCH);
+		registerBlockItemModel(ModBlocks.wraithNode, Names.Blocks.WRAITH_NODE);
+		registerBlockItemModel(ModBlocks.fertileLilypad, Names.Blocks.FERTILE_LILYPAD);
+		registerPedestalBlockItemModels(ModBlocks.pedestal, Names.Blocks.PEDESTAL);
+		registerPedestalBlockItemModels(ModBlocks.pedestalPassive, Names.Blocks.PEDESTAL_PASSIVE);
 	}
 
 	private static void registerBlockItemModel(Block block, String resourceName) {

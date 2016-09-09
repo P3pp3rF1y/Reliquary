@@ -26,7 +26,7 @@ public class BlockInterdictionTorch extends BlockTorch {
 
 	public BlockInterdictionTorch() {
 		super();
-		this.setUnlocalizedName(Names.interdiction_torch);
+		this.setUnlocalizedName(Names.Blocks.INTERDICTION_TORCH);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setHardness(0.0F);
 		this.setLightLevel(1.0F);

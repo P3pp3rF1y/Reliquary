@@ -30,7 +30,7 @@ import java.util.List;
 public class ItemHeroMedallion extends ItemToggleable {
 
 	public ItemHeroMedallion() {
-		super(Names.hero_medallion);
+		super(Names.Items.HERO_MEDALLION);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);

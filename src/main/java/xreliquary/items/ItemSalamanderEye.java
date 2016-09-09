@@ -26,7 +26,7 @@ import java.util.List;
 public class ItemSalamanderEye extends ItemBase {
 
 	public ItemSalamanderEye() {
-		super(Names.salamander_eye);
+		super(Names.Items.SALAMANDER_EYE);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);

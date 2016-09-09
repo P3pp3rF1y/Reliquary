@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class ItemPyromancerStaff extends ItemToggleable {
 	public ItemPyromancerStaff() {
-		super(Names.pyromancer_staff);
+		super(Names.Items.PYROMANCER_STAFF);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;

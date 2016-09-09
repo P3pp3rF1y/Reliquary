@@ -10,7 +10,7 @@ import xreliquary.reference.Names;
 public class ItemAngelheartVial extends ItemBase {
 
 	public ItemAngelheartVial() {
-		super(Names.angelheart_vial);
+		super(Names.Items.ANGELHEART_VIAL);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);

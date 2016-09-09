@@ -30,7 +30,7 @@ import java.util.List;
 public class ItemIceMagusRod extends ItemToggleable {
 
 	public ItemIceMagusRod() {
-		super(Names.ice_magus_rod);
+		super(Names.Items.ICE_MAGUS_ROD);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;

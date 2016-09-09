@@ -13,65 +13,65 @@ import xreliquary.reference.Reference;
 
 public class ItemModels {
 	public static void registerItemModels() {
-		registerItemModel(ModItems.alkahestryTome, Names.alkahestry_tome);
-		registerItemModel(ModItems.mercyCross, Names.mercy_cross);
-		registerItemModel(ModItems.angelheartVial, Names.angelheart_vial);
-		registerItemModel(ModItems.angelicFeather, Names.angelic_feather);
-		registerItemModel(ModItems.attractionPotion, Names.attraction_potion);
-		registerItemModel(ModItems.destructionCatalyst, Names.destruction_catalyst);
-		registerItemModel(ModItems.emperorChalice, Names.emperor_chalice);
-		registerItemModel(ModItems.enderStaff, Names.ender_staff);
-		registerItemModel(ModItems.fertilePotion, Names.fertile_potion);
-		registerItemModel(ModItems.fortuneCoin, Names.fortune_coin);
-		registerItemModel(ModItems.glacialStaff, Names.glacial_staff);
-		registerItemModel(ModItems.glowingBread, Names.glowing_bread);
-		registerItemModel(ModItems.glowingWater, Names.glowing_water);
-		registerItemModel(ModItems.handgun, Names.handgun);
-		registerItemModel(ModItems.harvestRod, Names.harvest_rod);
-		registerItemModel(ModItems.heroMedallion, Names.hero_medallion);
-		registerItemModel(ModItems.holyHandGrenade, Names.holy_hand_grenade);
-		registerItemModel(ModItems.iceMagusRod, Names.ice_magus_rod);
-		registerItemModel(ModItems.infernalChalice, Names.infernal_chalice);
-		registerItemModel(ModItems.infernalClaws, Names.infernal_claws);
-		registerItemModel(ModItems.krakenShell, Names.kraken_shell);
-		registerItemModel(ModItems.lanternOfParanoia, Names.lantern_of_paranoia);
-		registerItemModel(ModItems.magicbane, Names.magicbane);
-		registerItemModel(ModItems.midasTouchstone, Names.midas_touchstone);
-		registerItemModel(ModItems.phoenixDown, Names.phoenix_down);
-		registerItemModel(ModItems.pyromancerStaff, Names.pyromancer_staff);
-		registerItemModel(ModItems.rendingGale, Names.rending_gale);
-		registerItemModel(ModItems.salamanderEye, Names.salamander_eye);
-		registerItemModel(ModItems.serpentStaff, Names.serpent_staff);
-		registerItemModel(ModItems.shearsOfWinter, Names.shears_of_winter);
-		registerItemModel(ModItems.sojournerStaff, Names.sojourner_staff);
-		registerItemModel(ModItems.twilightCloak, Names.twilight_cloak);
+		registerItemModel(ModItems.alkahestryTome, Names.Items.ALKAHESTRY_TOME);
+		registerItemModel(ModItems.mercyCross, Names.Items.MERCY_CROSS);
+		registerItemModel(ModItems.angelheartVial, Names.Items.ANGELHEART_VIAL);
+		registerItemModel(ModItems.angelicFeather, Names.Items.ANGELIC_FEATHER);
+		registerItemModel(ModItems.attractionPotion, Names.Items.ATTRACTION_POTION);
+		registerItemModel(ModItems.destructionCatalyst, Names.Items.DESTRUCTION_CATALYST);
+		registerItemModel(ModItems.emperorChalice, Names.Items.EMPEROR_CHALICE);
+		registerItemModel(ModItems.enderStaff, Names.Items.ENDER_STAFF);
+		registerItemModel(ModItems.fertilePotion, Names.Items.FERTILE_POTION);
+		registerItemModel(ModItems.fortuneCoin, Names.Items.FORTUNE_COIN);
+		registerItemModel(ModItems.glacialStaff, Names.Items.GLACIAL_STAFF);
+		registerItemModel(ModItems.glowingBread, Names.Items.GLOWING_BREAD);
+		registerItemModel(ModItems.glowingWater, Names.Items.GLOWING_WATER);
+		registerItemModel(ModItems.handgun, Names.Items.HANDGUN);
+		registerItemModel(ModItems.harvestRod, Names.Items.HARVEST_ROD);
+		registerItemModel(ModItems.heroMedallion, Names.Items.HERO_MEDALLION);
+		registerItemModel(ModItems.holyHandGrenade, Names.Items.HOLY_HAND_GRENADE);
+		registerItemModel(ModItems.iceMagusRod, Names.Items.ICE_MAGUS_ROD);
+		registerItemModel(ModItems.infernalChalice, Names.Items.INFERNAL_CHALICE);
+		registerItemModel(ModItems.infernalClaws, Names.Items.INFERNAL_CLAWS);
+		registerItemModel(ModItems.krakenShell, Names.Items.KRAKEN_SHELL);
+		registerItemModel(ModItems.lanternOfParanoia, Names.Items.LANTERN_OF_PARANOIA);
+		registerItemModel(ModItems.magicbane, Names.Items.MAGICBANE);
+		registerItemModel(ModItems.midasTouchstone, Names.Items.MIDAS_TOUCHSTONE);
+		registerItemModel(ModItems.phoenixDown, Names.Items.PHOENIX_DOWN);
+		registerItemModel(ModItems.pyromancerStaff, Names.Items.PYROMANCER_STAFF);
+		registerItemModel(ModItems.rendingGale, Names.Items.RENDING_GALE);
+		registerItemModel(ModItems.salamanderEye, Names.Items.SALAMANDER_EYE);
+		registerItemModel(ModItems.serpentStaff, Names.Items.SERPENT_STAFF);
+		registerItemModel(ModItems.shearsOfWinter, Names.Items.SHEARS_OF_WINTER);
+		registerItemModel(ModItems.sojournerStaff, Names.Items.SOJOURNER_STAFF);
+		registerItemModel(ModItems.twilightCloak, Names.Items.TWILIGHT_CLOAK);
 
-		registerItemModel(ModItems.emptyVoidTear, Names.void_tear_empty);
-		registerItemModel(ModItems.filledVoidTear, Names.void_tear);
+		registerItemModel(ModItems.emptyVoidTear, Names.Items.VOID_TEAR_EMPTY);
+		registerItemModel(ModItems.filledVoidTear, Names.Items.VOID_TEAR);
 
-		registerItemModel(ModItems.witchHat, Names.witch_hat);
-		registerItemModel(ModItems.witherlessRose, Names.witherless_rose);
+		registerItemModel(ModItems.witchHat, Names.Items.WITCH_HAT);
+		registerItemModel(ModItems.witherlessRose, Names.Items.WITHERLESS_ROSE);
 
-		registerItemModel(ModItems.mobCharmBelt, Names.mob_charm_belt);
+		registerItemModel(ModItems.mobCharmBelt, Names.Items.MOB_CHARM_BELT);
 
-		registerItemModel(ModItems.rodOfLyssa, Names.rod_of_lyssa);
+		registerItemModel(ModItems.rodOfLyssa, Names.Items.ROD_OF_LYSSA);
 
 		ModelBakery.registerItemVariants(ModItems.rodOfLyssa, ItemModelLocations.getInstance().getModel(ItemModelLocations.ROD_OF_LYSSA_CAST));
 
 		for(int i = 0; i < 17; i++) {
-			registerItemModel(ModItems.mobIngredient, Names.mob_ingredient, i, true);
+			registerItemModel(ModItems.mobIngredient, Names.Items.MOB_INGREDIENT, i, true);
 		}
 
 		for(int i = 0; i < 3; i++) {
-			registerItemModel(ModItems.gunPart, Names.gun_part, i, true);
+			registerItemModel(ModItems.gunPart, Names.Items.GUN_PART, i, true);
 		}
 
-		registerItemModelForAllVariants(ModItems.bullet, Names.bullet, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.bullet, "inventory"));
-		registerItemModelForAllVariants(ModItems.mobCharmFragment, Names.mob_charm_fragment, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.mob_charm_fragment, "inventory"));
-		registerItemModelForAllVariants(ModItems.heartZhu, Names.heart_zhu, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.heart_zhu, "inventory"));
-		registerItemModelForAllVariants(ModItems.mobCharm, Names.mob_charm, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.mob_charm, "inventory"));
-		registerItemModelForAllVariants(ModItems.potionEssence, Names.potion_essence, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.potion_essence, "inventory"));
-		registerItemModelForAllVariants(ModItems.infernalTear, Names.infernal_tear_empty, stack -> {
+		registerItemModelForAllVariants(ModItems.bullet, Names.Items.BULLET, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.BULLET, "inventory"));
+		registerItemModelForAllVariants(ModItems.mobCharmFragment, Names.Items.MOB_CHARM_FRAGMENT, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MOB_CHARM_FRAGMENT, "inventory"));
+		registerItemModelForAllVariants(ModItems.heartZhu, Names.Items.HEART_ZHU, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.HEART_ZHU, "inventory"));
+		registerItemModelForAllVariants(ModItems.mobCharm, Names.Items.MOB_CHARM, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MOB_CHARM, "inventory"));
+		registerItemModelForAllVariants(ModItems.potionEssence, Names.Items.POTION_ESSENCE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.POTION_ESSENCE, "inventory"));
+		registerItemModelForAllVariants(ModItems.infernalTear, Names.Items.INFERNAL_TEAR_EMPTY, stack -> {
 			if(ModItems.infernalTear.getStackFromTear(stack) != null) {
 				return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR);
 			}
@@ -79,7 +79,7 @@ public class ItemModels {
 		});
 		ModelBakery.registerItemVariants(ModItems.infernalTear, ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR));
 
-		registerItemModelForAllVariants(ModItems.potion, Names.potion, stack -> {
+		registerItemModelForAllVariants(ModItems.potion, Names.Items.POTION, stack -> {
 			if(ModItems.potion.getSplash(stack)) {
 				return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_SPLASH);
 			} else if(ModItems.potion.getLingering(stack)) {
@@ -90,7 +90,7 @@ public class ItemModels {
 		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_SPLASH));
 		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_LINGERING));
 
-		registerItemModelForAllVariants(ModItems.magazine, Names.magazine, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.magazine, "inventory"));
+		registerItemModelForAllVariants(ModItems.magazine, Names.Items.MAGAZINE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MAGAZINE, "inventory"));
 	}
 
 	private static void registerItemModelForAllVariants(Item item, String resourceName, ItemMeshDefinition itemMeshDefinition) {

@@ -12,7 +12,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
@@ -35,7 +34,7 @@ public class BlockApothecaryMortar extends BlockBase {
 	private static final AxisAlignedBB MORTAR_AABB = new AxisAlignedBB(0.25D, 0.0D, 0.25D, 0.75D, 0.4D, 0.75F);
 
 	public BlockApothecaryMortar() {
-		super(Material.ROCK, Names.apothecary_mortar);
+		super(Material.ROCK, Names.Blocks.APOTHECARY_MORTAR);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 		this.setHardness(1.5F);
 		this.setResistance(2.0F);

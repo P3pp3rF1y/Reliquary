@@ -20,7 +20,7 @@ import xreliquary.reference.Reference;
  */
 @SideOnly(Side.CLIENT)
 public class EntityCauldronBubbleFX extends Particle {
-	private static ResourceLocation bubbleTexture = new ResourceLocation(Reference.MOD_ID + ":textures/particles/" + Names.cauldron_bubble + ".png");
+	private static ResourceLocation bubbleTexture = new ResourceLocation(Reference.MOD_ID + ":textures/particles/" + Names.Blocks.CAULDRON_BUBBLE + ".png");
 
 	private TextureManager theRenderEngine;
 
