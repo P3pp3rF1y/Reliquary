@@ -51,24 +51,9 @@ public class EntityConcussiveShot extends EntityShotBase {
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		if(result.typeOfHit == RayTraceResult.Type.ENTITY && result.entityHit != null) {
-			if(result.entityHit == shootingEntity)
-				return;
-			if(!(result.entityHit instanceof EntityLivingBase))
-				return;
-			this.onImpact((EntityLivingBase) result.entityHit);
-		} else if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
-			this.groundImpact(result.sideHit);
-		}
-	}
-
-	@Override
-	void onImpact(EntityLivingBase mop) {
-		if(mop != shootingEntity || ticksInAir > 3)
-			doDamage(mop);
+	protected void onImpact(EntityLivingBase entityLiving) {
 		ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, posX, posY, posZ, 1.5F, true);
-		this.setDead();
+		super.onImpact(entityLiving);
 	}
 
 	@Override

@@ -69,13 +69,9 @@ public class EntityBlazeShot extends EntityShotBase {
 	}
 
 	@Override
-	void onImpact(EntityLivingBase mop) {
-		if(mop != shootingEntity || ticksInAir > 3) {
-			mop.setFire(40);
-			doDamage(mop);
-		}
-		spawnHitParticles(8);
-		this.setDead();
+	protected void onImpact(EntityLivingBase entityLiving) {
+		entityLiving.setFire(40);
+		super.onImpact(entityLiving);
 	}
 
 	@Override

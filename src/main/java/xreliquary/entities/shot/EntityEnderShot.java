@@ -54,6 +54,16 @@ public class EntityEnderShot extends EntityShotBase {
 	}
 
 	@Override
+	protected void onImpact(EntityLivingBase mop) {
+		if(mop != shootingEntity || ticksInAir > 3) {
+			doDamage(mop);
+		}
+		spawnHitParticles(8);
+
+		//continues after hit and thus no setting dead here
+	}
+
+	@Override
 	protected void groundImpact(EnumFacing SideHit) {
 		//do absolutely nothing. this avoids a death sentence.
 	}
@@ -70,14 +80,6 @@ public class EntityEnderShot extends EntityShotBase {
 		// much.
 		if(ticksInAir > 100)
 			doPortalExplosion();
-	}
-
-	@Override
-	void onImpact(EntityLivingBase mop) {
-		if(mop != shootingEntity || ticksInAir > 3) {
-			doDamage(mop);
-		}
-		spawnHitParticles(8);
 	}
 
 	@Override

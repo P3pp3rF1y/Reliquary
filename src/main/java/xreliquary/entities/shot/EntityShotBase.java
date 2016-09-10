@@ -477,16 +477,27 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	/**
 	 * Additional entity impact effects should go here
 	 *
-	 * @param mop the entity being struck
+	 * @param entityLiving the entity being struck
 	 */
-	abstract void onImpact(EntityLivingBase mop);
+	protected void onImpact(EntityLivingBase entityLiving) {
+		if(entityLiving != shootingEntity || ticksInAir > 3) {
+			doDamage(entityLiving);
+		}
+		spawnHitParticles(8);
+		this.setDead();
+	}
 
-	/**
-	 * Additional effects of TILE/MISC [non-entity] impacts should go here
-	 *
-	 * @param result the RayTraceResult data of the tile/misc object being struck
-	 */
-	protected abstract void onImpact(RayTraceResult result);
+	protected void onImpact(RayTraceResult result) {
+		if(result.typeOfHit == RayTraceResult.Type.ENTITY && result.entityHit != null) {
+			if(result.entityHit == shootingEntity)
+				return;
+			if(!(result.entityHit instanceof EntityLivingBase))
+				return;
+			this.onImpact((EntityLivingBase) result.entityHit);
+		} else if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
+			this.groundImpact(result.sideHit);
+		}
+	}
 
 	/**
 	 * This is the effect called when the shot reaches the ground and has no
@@ -518,7 +529,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 */
 	abstract void spawnHitParticles(int i);
 
-	protected int getShotType() {
+	private int getShotType() {
 		if(this instanceof EntityNeutralShot)
 			return Reference.NEUTRAL_SHOT_INDEX;
 		else if(this instanceof EntityExorcismShot)
@@ -566,14 +577,4 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		}
 		return ClientReference.NEUTRAL;
 	}
-
-	/**
-	 * simple overloaded method for the standard doBurstEffect, basically calls
-	 * the abstracted version wherever it is needed. It just passes sideHit as a
-	 * EnumFacing.UP, since it doesn't matter.
-	 */
-	protected void doBurstEffect() {
-		this.doBurstEffect(EnumFacing.UP);
-	}
-
 }

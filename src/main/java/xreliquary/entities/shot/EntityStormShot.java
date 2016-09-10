@@ -37,30 +37,16 @@ public class EntityStormShot extends EntityShotBase {
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		if(result.typeOfHit == RayTraceResult.Type.ENTITY && result.entityHit != null) {
-			if(result.entityHit == shootingEntity)
-				return;
-			if(!(result.entityHit instanceof EntityLivingBase))
-				return;
-			this.onImpact((EntityLivingBase) result.entityHit);
-		} else if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
+		if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
 			if(worldObj.isRainingAt(result.getBlockPos()) && worldObj.getWorldInfo().isRaining() && worldObj.getWorldInfo().isThundering())
 				worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, result.getBlockPos().getX(), result.getBlockPos().getY(), result.getBlockPos().getZ(), false));
-			this.groundImpact(result.sideHit);
 		}
+		super.onImpact(result);
 	}
 
 	@Override
 	void doBurstEffect(EnumFacing sideHit) {
 		// does nothing
-	}
-
-	@Override
-	void onImpact(EntityLivingBase mop) {
-		if(mop != shootingEntity || ticksInAir > 3)
-			doDamage(mop);
-		spawnHitParticles(18);
-		this.setDead();
 	}
 
 	@Override

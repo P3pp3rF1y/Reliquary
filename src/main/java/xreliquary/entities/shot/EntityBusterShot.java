@@ -23,21 +23,8 @@ public class EntityBusterShot extends EntityShotBase {
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		if(result.typeOfHit == RayTraceResult.Type.ENTITY && result.entityHit != null) {
-			if(result.entityHit == shootingEntity)
-				return;
-			if(!(result.entityHit instanceof EntityLivingBase))
-				return;
-			this.onImpact((EntityLivingBase) result.entityHit);
-		} else if(result.typeOfHit == RayTraceResult.Type.BLOCK)
-			this.groundImpact(result.sideHit);
-	}
-
-	@Override
 	void doBurstEffect(EnumFacing sideHit) {
 		ConcussiveExplosion.customBusterExplosion(this, posX, posY, posZ, 4.0F);
-		this.setDead();
 	}
 
 	@Override
@@ -58,10 +45,9 @@ public class EntityBusterShot extends EntityShotBase {
 	}
 
 	@Override
-	void onImpact(EntityLivingBase mop) {
-		if(mop != shootingEntity || ticksInAir > 3)
-			doDamage(mop);
-		this.doBurstEffect();
+	protected void onImpact(EntityLivingBase entityLiving) {
+		ConcussiveExplosion.customBusterExplosion(this, posX, posY, posZ, 4.0F);
+		super.onImpact(entityLiving);
 	}
 
 	@Override

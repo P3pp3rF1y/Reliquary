@@ -37,33 +37,8 @@ public class EntityExorcismShot extends EntityShotBase {
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		if(result.typeOfHit == RayTraceResult.Type.ENTITY && result.entityHit != null) {
-			if(result.entityHit == shootingEntity)
-				return;
-			if(!(result.entityHit instanceof EntityLivingBase))
-				return;
-			this.onImpact((EntityLivingBase) result.entityHit);
-		} else if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
-			this.groundImpact(result.sideHit);
-		}
-	}
-
-	@Override
 	void doBurstEffect(EnumFacing sideHit) {
 		// none really.
-	}
-
-	@Override
-	void onImpact(EntityLivingBase e) {
-		if(e != shootingEntity || ticksInAir > 3) {
-			doDamage(e);
-		}
-		// unfortunately this isn't a traditional call of spawnHitParticles or
-		// we could factor out the whole method. "mobSpellAmbient" is a weird
-		// particle.
-		spawnHitParticles(8);
-		this.setDead();
 	}
 
 	@Override
