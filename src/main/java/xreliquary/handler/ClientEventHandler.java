@@ -17,6 +17,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.world.World;
@@ -35,6 +37,7 @@ import xreliquary.util.RegistryHelper;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class ClientEventHandler {
@@ -579,13 +582,23 @@ public class ClientEventHandler {
 
 		ItemStack mainBulletStack = null;
 		if(mainHandgunStack != null) {
-			mainBulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(mainHandgunStack), ModItems.handgun.getBulletType(mainHandgunStack));
+			mainBulletStack = getBulletStackFromHandgun(mainHandgunStack);
 		}
 		ItemStack offBulletStack = null;
 		if(offHandgunStack != null) {
-			offBulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(offHandgunStack), ModItems.handgun.getBulletType(offHandgunStack));
+			offBulletStack = getBulletStackFromHandgun(offHandgunStack);
 		}
 		renderHandgunHUD(mc, player, mainHandgunStack, mainBulletStack, offHandgunStack, offBulletStack);
+	}
+
+	private ItemStack getBulletStackFromHandgun(ItemStack handgun) {
+		ItemStack bulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(handgun), ModItems.handgun.getBulletType(handgun));
+		List<PotionEffect> potionEffects = ModItems.handgun.getPotionEffects(handgun);
+		if(potionEffects != null && potionEffects.size() > 0) {
+			PotionUtils.appendEffects(bulletStack, potionEffects);
+		}
+
+		return bulletStack;
 	}
 
 	private static void renderHandgunHUD(Minecraft minecraft, EntityPlayer player, ItemStack mainHandgunStack, ItemStack mainBulletStack, ItemStack offHandgunStack, ItemStack offBulletStack) {

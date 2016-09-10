@@ -1,9 +1,17 @@
 package xreliquary.network;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+import io.netty.handler.codec.EncoderException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTSizeTracker;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -12,6 +20,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.init.ModCapabilities;
 import xreliquary.items.util.handgun.IHandgunData;
+import xreliquary.util.potions.XRPotionHelper;
+
+import java.io.IOException;
+import java.util.List;
 
 public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHandgunDataSync, IMessage> {
 	private int playerSlotNumber;
@@ -20,27 +32,30 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 	private short bulletType;
 	private boolean isInCooldown;
 	private long cooldownTime;
+	private List<PotionEffect> potionEffects;
 
 	private static final int INVALID_SLOT = -1;
 
 	public PacketHandgunDataSync() {
 	}
 
-	public PacketHandgunDataSync(int playerSlotNumber, short bulletCount, short bulletType, boolean isInCooldown, long cooldownTime) {
+	public PacketHandgunDataSync(int playerSlotNumber, short bulletCount, short bulletType, boolean isInCooldown, long cooldownTime, List<PotionEffect> potionEffects) {
 		this.playerSlotNumber = playerSlotNumber;
 		this.bulletCount = bulletCount;
 		this.bulletType = bulletType;
 		this.isInCooldown = isInCooldown;
 		this.cooldownTime = cooldownTime;
+		this.potionEffects = potionEffects;
 	}
 
-	public PacketHandgunDataSync(EnumHand hand, short bulletCount, short bulletType, boolean isInCooldown, long cooldownTime) {
+	public PacketHandgunDataSync(EnumHand hand, short bulletCount, short bulletType, boolean isInCooldown, long cooldownTime, List<PotionEffect> potionEffects) {
 		this.hand = hand;
 		this.isInCooldown = isInCooldown;
 		this.cooldownTime = cooldownTime;
 		this.playerSlotNumber = INVALID_SLOT;
 		this.bulletCount = bulletCount;
 		this.bulletType = bulletType;
+		this.potionEffects = potionEffects;
 	}
 
 	@Override
@@ -51,6 +66,14 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 		bulletType = buf.readShort();
 		isInCooldown = buf.readBoolean();
 		cooldownTime = buf.readLong();
+		if (buf.readBoolean()) {
+			try {
+				potionEffects = PotionUtils.getFullEffectsFromTag(CompressedStreamTools.read(new ByteBufInputStream(buf), new NBTSizeTracker(2097152L)));
+			}
+			catch(IOException e) {
+				throw new EncoderException(e);
+			}
+		}
 	}
 
 	@Override
@@ -61,6 +84,17 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 		buf.writeShort(bulletType);
 		buf.writeBoolean(isInCooldown);
 		buf.writeLong(cooldownTime);
+		buf.writeBoolean(potionEffects.size()>0);
+		if (potionEffects.size() > 0) {
+			NBTTagCompound potionTag = new NBTTagCompound();
+			XRPotionHelper.appendEffectsToNBT(potionTag, potionEffects);
+			try {
+				CompressedStreamTools.write(potionTag, new ByteBufOutputStream(buf));
+			}
+			catch(IOException e) {
+				throw new EncoderException(e);
+			}
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -83,6 +117,7 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 				data.setBulletType(message.bulletType);
 				data.setInCoolDown(message.isInCooldown);
 				data.setCoolDownTime(message.cooldownTime);
+				data.setPotionEffects(message.potionEffects);
 			}
 		}
 

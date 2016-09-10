@@ -79,7 +79,7 @@ public class ItemMagazine extends ItemBase {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	private boolean isPotionAttached(ItemStack stack) {
+	public boolean isPotionAttached(ItemStack stack) {
 		return stack.hasTagCompound() && stack.getTagCompound().hasKey("CustomPotionEffects");
 	}
 }

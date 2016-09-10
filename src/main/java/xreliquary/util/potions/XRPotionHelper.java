@@ -5,6 +5,8 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.Tuple;
@@ -13,8 +15,6 @@ import net.minecraft.util.text.translation.I18n;
 import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Settings;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -131,5 +131,18 @@ public class XRPotionHelper {
 
 	public static List<PotionEffect> changeDuration(List<PotionEffect> effects, float factor) {
 		return effects.stream().map(effect -> new PotionEffect(effect.getPotion(), (int) (effect.getPotion().isInstant() ? 1 : effect.getDuration() * factor), effect.getAmplifier(), effect.getIsAmbient(), effect.doesShowParticles())).collect(Collectors.toList());
+	}
+
+	public static void appendEffectsToNBT(NBTTagCompound compound, List<PotionEffect> potionEffects) {
+		if (potionEffects == null || potionEffects.size() == 0)
+			return;
+
+		NBTTagList nbttaglist = compound.getTagList("CustomPotionEffects", 9);
+
+		for(PotionEffect potioneffect : potionEffects) {
+			nbttaglist.appendTag(potioneffect.writeCustomPotionEffectToNBT(new NBTTagCompound()));
+		}
+
+		compound.setTag("CustomPotionEffects", nbttaglist);
 	}
 }
