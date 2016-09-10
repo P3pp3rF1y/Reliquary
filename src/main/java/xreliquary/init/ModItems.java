@@ -3,6 +3,7 @@ package xreliquary.init;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.*;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityGlowingWater;
 import xreliquary.entities.EntityHolyHandGrenade;
+import xreliquary.entities.EntityXRTippedArrow;
 import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.entities.potion.EntityThrownXRPotion;
@@ -212,6 +214,35 @@ public class ModItems {
 						return super.getProjectileVelocity() * 1.25F;
 					}
 				}).dispense(source, stack);
+			}
+		});
+
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.holyHandGrenade, new IBehaviorDispenseItem() {
+			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
+				return (new BehaviorProjectileDispense() {
+					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+						return new EntityHolyHandGrenade(worldIn, position.getX(), position.getY(), position.getZ(), stackIn.getDisplayName());
+					}
+
+					protected float getProjectileInaccuracy() {
+						return super.getProjectileInaccuracy() * 0.5F;
+					}
+
+					protected float getProjectileVelocity() {
+						return super.getProjectileVelocity() * 1.25F;
+					}
+				}).dispense(source, stack);
+			}
+		});
+
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.tippedArrow, new BehaviorProjectileDispense() {
+
+			@Override
+			protected IProjectile getProjectileEntity(World world, IPosition position, ItemStack stack) {
+				EntityXRTippedArrow entitytippedarrow = new EntityXRTippedArrow(world, position.getX(), position.getY(), position.getZ());
+				entitytippedarrow.setPotionEffect(stack);
+				entitytippedarrow.pickupStatus = EntityArrow.PickupStatus.ALLOWED;
+				return entitytippedarrow;
 			}
 		});
 	}
