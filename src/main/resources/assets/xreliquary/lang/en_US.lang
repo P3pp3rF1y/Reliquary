@@ -638,3 +638,11 @@ xreliquary.waila.xreliquary.altar.inactive=Inactive
 xreliquary.waila.xreliquary.altar.active=Active
 xreliquary.waila.xreliquary.altar.time_remaining=Time remaining: %s
 xreliquary.waila.xreliquary.shift_for_more=Hold shift for more info
+
+potion.potency.3=IV
+potion.potency.4=V
+potion.potency.5=VI
+potion.potency.6=VII
+potion.potency.7=VIII
+potion.potency.8=IX
+potion.potency.9=X
