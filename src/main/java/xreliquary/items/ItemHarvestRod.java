@@ -423,6 +423,10 @@ public class ItemHarvestRod extends ItemToggleable {
 				if(getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) > 0 || player.capabilities.isCreativeMode) {
 					plantItem(harvestRod, player, pos, player.getActiveHand());
 				}
+			} else if(HOE_MODE.equals(getMode(harvestRod))) {
+				ItemStack fakeHoe = new ItemStack(Items.WOODEN_HOE);
+				if(Items.WOODEN_HOE.onItemUse(fakeHoe, player, world, pos, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0) == EnumActionResult.SUCCESS)
+					((EntityPlayerMP) player).connection.sendPacket(new SPacketSoundEffect(SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, pos.getX(), pos.getY(), pos.getZ(), 1.0F, 1.0F));
 			}
 
 		} else {
