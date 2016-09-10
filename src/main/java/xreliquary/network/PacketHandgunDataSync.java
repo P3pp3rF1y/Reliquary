@@ -84,8 +84,8 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 		buf.writeShort(bulletType);
 		buf.writeBoolean(isInCooldown);
 		buf.writeLong(cooldownTime);
-		buf.writeBoolean(potionEffects.size()>0);
-		if (potionEffects.size() > 0) {
+		buf.writeBoolean(potionEffects!=null && potionEffects.size()>0);
+		if (potionEffects!=null && potionEffects.size() > 0) {
 			NBTTagCompound potionTag = new NBTTagCompound();
 			XRPotionHelper.appendEffectsToNBT(potionTag, potionEffects);
 			try {
