@@ -88,8 +88,8 @@ public class BlockItemConfiguration {
 		//apothecary cauldron configs
 		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Blocks.APOTHECARY_CAULDRON;
 		List<String> heatSources = ImmutableList.of();
-		Settings.ApothecaryCauldron.redstoneLimit = ConfigurationHandler.getInt("redstone_limit", categoryKey, 5, 0, 5, "Limit of redstone that can be used in cauldron to make potion last longer");
-		Settings.ApothecaryCauldron.glowstoneLimit = ConfigurationHandler.getInt("glowstone_limit", categoryKey, 4, 0, 4, "Limit of glowstone that can be used in cauldron to make potion more potent");
+		Settings.ApothecaryCauldron.redstoneLimit = ConfigurationHandler.getInt("redstone_limit", categoryKey, 3, 0, 5, "Limit of redstone that can be used in cauldron to make potion last longer");
+		Settings.ApothecaryCauldron.glowstoneLimit = ConfigurationHandler.getInt("glowstone_limit", categoryKey, 2, 0, 4, "Limit of glowstone that can be used in cauldron to make potion more potent");
 		Settings.ApothecaryCauldron.cookTime = ConfigurationHandler.getInt("cook_time", categoryKey, 160, 20, 32000, "Time it takes to cook potion");
 		Settings.ApothecaryCauldron.heatSources = ConfigurationHandler.getStringList("heat_sources", categoryKey, heatSources, "List of acceptable heat sources");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
