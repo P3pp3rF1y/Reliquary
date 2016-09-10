@@ -82,6 +82,5 @@ public class ItemBullet extends ItemBase {
 
 			subItems.add(neutralBulletWithPotion);
 		}
-
 	}
 }
