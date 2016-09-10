@@ -1,0 +1,8 @@
+{
+  "parent": "xreliquary:item/default_item",
+  "textures": {
+    "layer0": "xreliquary:items/magazine",
+    "layer1": "xreliquary:items/magazine_overlay",
+    "layer2": "xreliquary:items/magazine_potion_overlay"
+  }
+}

@@ -5,8 +5,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTippedArrow;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
@@ -20,7 +20,7 @@ import xreliquary.util.potions.XRPotionHelper;
 
 import java.util.List;
 
-public class ItemXRTippedArrow extends ItemTippedArrow {
+public class ItemXRTippedArrow extends ItemArrow {
 
 	public ItemXRTippedArrow() {
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
