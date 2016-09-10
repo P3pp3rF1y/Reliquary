@@ -174,9 +174,9 @@ public class ModItemColors {
 
 		if(isEnabled(ModItems.magazine) && isEnabled(ModItems.bullet)) {
 			itemColors.registerItemColorHandler((stack, tintIndex) -> {
-				if(stack.getItemDamage() == 0 || tintIndex != 1)
+				if(stack.getItemDamage() == 0 || tintIndex == 0)
 					return Integer.parseInt(Colors.DARKER, 16);
-				else {
+				else if(tintIndex == 1) {
 					switch(stack.getItemDamage()) {
 						case 1:
 							return Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16);
@@ -198,9 +198,13 @@ public class ModItemColors {
 							return Integer.parseInt(Colors.STORM_SHOT_COLOR, 16);
 					}
 					return Integer.parseInt(Colors.DARKEST, 16);
+				} else if(tintIndex == 2) {
+					return PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromStack(stack));
 				}
+				return Integer.parseInt(Colors.DARKER, 16);
 			}, ModItems.magazine, ModItems.bullet);
 		}
+
 		if(isEnabled(ModItems.potionEssence)) {
 			itemColors.registerItemColorHandler((stack, tintIndex) -> {
 				//basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
