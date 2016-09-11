@@ -4,8 +4,6 @@ import WayofTime.bloodmagic.item.ItemDaggerOfSacrifice;
 import net.minecraft.block.BlockCompressedPowered;
 import net.minecraft.item.*;
 import net.minecraftforge.fml.common.Loader;
-import slimeknights.tconstruct.tools.item.BroadSword;
-import slimeknights.tconstruct.tools.item.Cleaver;
 import xreliquary.items.ItemHarvestRod;
 import xreliquary.items.ItemRendingGale;
 import xreliquary.reference.Compatibility;
@@ -24,14 +22,32 @@ public class PedestalItems {
 		PedestalRegistry.registerItemWrapper(ItemFishingRod.class, PedestalFishingRodWrapper.class);
 
 		if(Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
-			PedestalRegistry.registerItemWrapper(Cleaver.class, PedestalMeleeWeaponWrapper.class);
-			PedestalRegistry.registerItemWrapper(BroadSword.class, PedestalMeleeWeaponWrapper.class);
+			if (classExists("slimeknights.tconstruct.tools.item.BroadSword")) {
+				PedestalRegistry.registerItemWrapper(slimeknights.tconstruct.tools.item.Cleaver.class, PedestalMeleeWeaponWrapper.class);
+				PedestalRegistry.registerItemWrapper(slimeknights.tconstruct.tools.item.BroadSword.class, PedestalMeleeWeaponWrapper.class);
+			} else if (classExists("slimeknights.tconstruct.library.tools.SwordCore")) {
+				try {
+					PedestalRegistry.registerItemWrapper((Class<? extends Item>) Class.forName("slimeknights.tconstruct.library.tools.SwordCore"), PedestalMeleeWeaponWrapper.class);
+				}
+				catch(ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
 			//not implemented currently in TiCon
 			//PedestalRegistry.registerItemWrapper(BattleAxe.class, new PedestalMeleeWeaponWrapper());
 			//PedestalRegistry.registerItemWrapper(Scythe.class, new PedestalMeleeWeaponWrapper());
 		}
 		if (Loader.isModLoaded(Compatibility.MOD_ID.BLOOD_MAGIC)) {
 			PedestalRegistry.registerItemWrapper(ItemDaggerOfSacrifice.class, PedestalMeleeWeaponWrapper.class);
+		}
+	}
+
+	private static boolean classExists(String className) {
+		try  {
+			Class.forName(className);
+			return true;
+		}  catch (final ClassNotFoundException e) {
+			return false;
 		}
 	}
 }
