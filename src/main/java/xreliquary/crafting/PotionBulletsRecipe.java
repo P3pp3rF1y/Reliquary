@@ -36,7 +36,7 @@ public class PotionBulletsRecipe implements IRecipe {
 							return false;
 						}
 					} else {
-						if (item != ModItems.bullet)
+						if (item != ModItems.bullet || itemstack.getMetadata() < 1)
 							return false;
 
 						if (bulletMeta == -1) {
