@@ -79,7 +79,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	}
 
 	public EntityShotBase addPotionEffects(List<PotionEffect> potionEffects) {
-		if (potionEffects!=null) {
+		if (potionEffects!=null && !potionEffects.isEmpty()) {
 			this.potionEffects = new ArrayList<>();
 			for (PotionEffect potionEffect : potionEffects) {
 				this.potionEffects.add(new PotionEffect(potionEffect));
@@ -184,6 +184,10 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			this.setDead();
 		ensurePlayerShooterEntity();
 
+
+		if(this.worldObj.isRemote) {
+			this.spawnPotionParticles();
+		}
 		if(prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
 			float pythingy = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
 			//noinspection SuspiciousNameCombination
@@ -257,6 +261,24 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 
 			this.moveEntity(motionX, motionY, motionZ);
 		}
+	}
+
+	private void spawnPotionParticles() {
+		int color = this.getColor();
+
+		if(color != 0 ) {
+			double d0 = (double) (color >> 16 & 255) / 255.0D;
+			double d1 = (double) (color >> 8 & 255) / 255.0D;
+			double d2 = (double) (color & 255) / 255.0D;
+
+			for(int j = 0; j < 2; ++j) {
+				this.worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB, this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.posY + this.rand.nextDouble() * (double) this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width, d0, d1, d2);
+			}
+		}
+	}
+
+	public int getColor() {
+		return this.dataManager.get(COLOR);
 	}
 
 	private void applyPotionEffects(RayTraceResult objectStruckByVector) {
