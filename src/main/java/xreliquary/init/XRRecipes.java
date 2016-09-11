@@ -396,8 +396,10 @@ public class XRRecipes {
 
 	private static void addLingeringPotionRecipes() {
 		GameRegistry.addRecipe(new XRTippedArrowsRecipe());
+		GameRegistry.addRecipe(new PotionBulletsRecipe());
 
 		RecipeSorter.register(Reference.MOD_ID + ":tipped_arrows", MobCharmRepairRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+		RecipeSorter.register(Reference.MOD_ID + ":potion_bullets", MobCharmRepairRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 
 	}
 
