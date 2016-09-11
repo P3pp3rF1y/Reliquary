@@ -21,7 +21,7 @@ public class MagazineRecipeMaker {
 		for(int meta = 1; meta <= 9; meta++) {
 			List<ItemStack> inputs = new ArrayList<>();
 			inputs.add(new ItemStack(ModItems.magazine));
-			inputs.addAll(addShots(inputs, meta, null));
+			inputs = addShots(inputs, meta, null);
 
 			recipes.add(new MagazineRecipeJEI(inputs, new ItemStack(ModItems.magazine, 1, meta)));
 		}
@@ -31,8 +31,8 @@ public class MagazineRecipeMaker {
 			List<PotionEffect> effects = XRPotionHelper.changeDuration(essence.getEffects(), 0.2F);
 
 			List<ItemStack> inputs = new ArrayList<>();
-			inputs.add(new ItemStack(ModItems.magazine, 1, 1));
-			inputs.addAll(addShots(inputs, 1, effects));
+			inputs.add(new ItemStack(ModItems.magazine, 1, 0));
+			inputs = addShots(inputs, 1, effects);
 
 			ItemStack output = new ItemStack(ModItems.magazine, 1, 1);
 			PotionUtils.appendEffects(output, effects);
