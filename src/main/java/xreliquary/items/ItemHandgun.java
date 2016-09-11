@@ -287,7 +287,7 @@ public class ItemHandgun extends ItemBase {
 		setInCooldown(handgun, true);
 
 		int slot = getMagazineSlot(player);
-		if (slot != -1) {
+		if(slot != -1) {
 			ItemStack magazine = player.inventory.mainInventory[slot];
 			setBulletType(handgun, (short) magazine.getMetadata());
 			setPotionEffects(handgun, PotionUtils.getFullEffectsFromItem(magazine));
@@ -315,31 +315,31 @@ public class ItemHandgun extends ItemBase {
 				case 0:
 					return;
 				case Reference.NEUTRAL_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityNeutralShot(worldObj, player, hand));
+					worldObj.spawnEntityInWorld(new EntityNeutralShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.EXORCISM_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityExorcismShot(worldObj, player, hand));
+					worldObj.spawnEntityInWorld(new EntityExorcismShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.BLAZE_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityBlazeShot(worldObj, player, hand));
+					worldObj.spawnEntityInWorld(new EntityBlazeShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.ENDER_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityEnderShot(worldObj, player, hand));
+					worldObj.spawnEntityInWorld(new EntityEnderShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.CONCUSSIVE_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityConcussiveShot(worldObj, player, hand));
+					worldObj.spawnEntityInWorld(new EntityConcussiveShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.BUSTER_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityBusterShot(worldObj, player, hand));
+					worldObj.spawnEntityInWorld(new EntityBusterShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.SEEKER_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntitySeekerShot(worldObj, player, hand));
+					worldObj.spawnEntityInWorld(new EntitySeekerShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.SAND_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntitySandShot(worldObj, player, hand));
+					worldObj.spawnEntityInWorld(new EntitySandShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.STORM_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityStormShot(worldObj, player, hand));
+					worldObj.spawnEntityInWorld(new EntityStormShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 			}
 
@@ -386,7 +386,7 @@ public class ItemHandgun extends ItemBase {
 			if(player.inventory.mainInventory[slot].getItem() == ModItems.magazine && player.inventory.mainInventory[slot].getItemDamage() != 0) {
 				ItemStack magazine = player.inventory.mainInventory[slot];
 				bulletFound = (short) magazine.getItemDamage();
-				if (ModItems.magazine.isPotionAttached(magazine))
+				if(ModItems.magazine.isPotionAttached(magazine))
 					effects = PotionUtils.getEffectsFromStack(magazine);
 				player.inventory.decrStackSize(slot, 1);
 				return bulletFound;
