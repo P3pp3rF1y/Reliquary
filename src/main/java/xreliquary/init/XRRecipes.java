@@ -139,24 +139,9 @@ public class XRRecipes {
 		// magazines...
 		addRecipe(false, false, magazine(5, 0), "i i", "igi", "sis", 's', Blocks.STONE, 'i', Items.IRON_INGOT, 'g', Blocks.GLASS);
 
-		// neutral
-		addRecipe(true, false, magazine(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), magazine(1, 0));
-		// exorcist
-		addRecipe(true, false, magazine(1, 2), bullet(1, 2), bullet(1, 2), bullet(1, 2), bullet(1, 2), bullet(1, 2), bullet(1, 2), bullet(1, 2), bullet(1, 2), magazine(1, 0));
-		// blaze
-		addRecipe(true, false, magazine(1, 3), bullet(1, 3), bullet(1, 3), bullet(1, 3), bullet(1, 3), bullet(1, 3), bullet(1, 3), bullet(1, 3), bullet(1, 3), magazine(1, 0));
-		// ender
-		addRecipe(true, false, magazine(1, 4), bullet(1, 4), bullet(1, 4), bullet(1, 4), bullet(1, 4), bullet(1, 4), bullet(1, 4), bullet(1, 4), bullet(1, 4), magazine(1, 0));
-		// venom
-		addRecipe(true, false, magazine(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), magazine(1, 0));
-		// buster
-		addRecipe(true, false, magazine(1, 6), bullet(1, 6), bullet(1, 6), bullet(1, 6), bullet(1, 6), bullet(1, 6), bullet(1, 6), bullet(1, 6), bullet(1, 6), magazine(1, 0));
-		// seeker
-		addRecipe(true, false, magazine(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), magazine(1, 0));
-		// sand
-		addRecipe(true, false, magazine(1, 8), bullet(1, 8), bullet(1, 8), bullet(1, 8), bullet(1, 8), bullet(1, 8), bullet(1, 8), bullet(1, 8), bullet(1, 8), magazine(1, 0));
-		// storm
-		addRecipe(true, false, magazine(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), bullet(1, 9), magazine(1, 0));
+		//special magazines recipe because of all the potion combinations
+		GameRegistry.addRecipe(new MagazineRecipe());
+		RecipeSorter.register(Reference.MOD_ID + ":magazines", MagazineRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 
 		// gunpart 0 = grip, 1 = barrel, 2 = mechanism
 		addRecipe(false, false, gunPart(1, 0), "iii", "imi", "ici", 'i', Items.IRON_INGOT, 'c', magazine(1, 0), 'm', Items.MAGMA_CREAM);
@@ -398,8 +383,8 @@ public class XRRecipes {
 		GameRegistry.addRecipe(new XRTippedArrowsRecipe());
 		GameRegistry.addRecipe(new PotionBulletsRecipe());
 
-		RecipeSorter.register(Reference.MOD_ID + ":tipped_arrows", MobCharmRepairRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-		RecipeSorter.register(Reference.MOD_ID + ":potion_bullets", MobCharmRepairRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+		RecipeSorter.register(Reference.MOD_ID + ":tipped_arrows", XRTippedArrowsRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+		RecipeSorter.register(Reference.MOD_ID + ":potion_bullets", PotionBulletsRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 
 	}
 
