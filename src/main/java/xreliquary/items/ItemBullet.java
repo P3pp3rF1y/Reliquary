@@ -78,7 +78,7 @@ public class ItemBullet extends ItemBase {
 		//adding just basic bullets with potions here even though all bullet types can have potions attached
 		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
 			ItemStack neutralBulletWithPotion = new ItemStack(ModItems.bullet, 1, 1);
-			PotionUtils.appendEffects(neutralBulletWithPotion, XRPotionHelper.changeDuration(essence.getEffects(), 0.125F));
+			PotionUtils.appendEffects(neutralBulletWithPotion, XRPotionHelper.changeDuration(essence.getEffects(), 0.2F));
 
 			subItems.add(neutralBulletWithPotion);
 		}

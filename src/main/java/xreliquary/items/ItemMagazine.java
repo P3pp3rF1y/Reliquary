@@ -72,7 +72,7 @@ public class ItemMagazine extends ItemBase {
 		//similar to bullets adding just basic magazines with potions here even though all magazine types can have potions attached
 		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
 			ItemStack neutralMagazineWithPotion = new ItemStack(ModItems.magazine, 1, 1);
-			PotionUtils.appendEffects(neutralMagazineWithPotion, XRPotionHelper.changeDuration(essence.getEffects(), 0.125F));
+			PotionUtils.appendEffects(neutralMagazineWithPotion, XRPotionHelper.changeDuration(essence.getEffects(), 0.2F));
 
 			subItems.add(neutralMagazineWithPotion);
 		}
