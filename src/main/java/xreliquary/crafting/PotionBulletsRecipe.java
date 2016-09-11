@@ -62,7 +62,7 @@ public class PotionBulletsRecipe implements IRecipe {
 
 		if(potion != null && potion.getItem() == ModItems.potion && ModItems.potion.getLingering(potion)) {
 			ItemStack potionBullets = new ItemStack(ModItems.bullet, 8, bullet.getMetadata());
-			PotionUtils.appendEffects(potionBullets, XRPotionHelper.changeDuration(new PotionEssence(potion.getTagCompound()).getEffects(), 0.125F));
+			PotionUtils.appendEffects(potionBullets, XRPotionHelper.changeDuration(new PotionEssence(potion.getTagCompound()).getEffects(), 0.2F));
 			return potionBullets;
 		} else {
 			return null;
