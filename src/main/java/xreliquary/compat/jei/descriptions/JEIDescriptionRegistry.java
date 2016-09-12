@@ -25,8 +25,16 @@ public class JEIDescriptionRegistry {
 				ArrayList<ItemStack> subItems = new ArrayList<>();
 				item.getSubItems(item, item.getCreativeTab(), subItems);
 
+				Set<Integer> addedMeta = new HashSet<>();
+
 				for(ItemStack stack : subItems) {
-					registry.put(Reference.MOD_ID + "." + Names.Configs.JEI_DESCRIPTIONS + name + stack.getMetadata(), Collections.singletonList(stack));
+					if (!addedMeta.contains(stack.getMetadata())) {
+						registry.put(Reference.MOD_ID + "." + Names.Configs.JEI_DESCRIPTIONS + name + stack.getMetadata(), Collections.singletonList(stack));
+						addedMeta.add(stack.getMetadata());
+					} else {
+						//expecting meta subitems to be first in subitems collection, the ones different in nbt need to be handled differently
+						break;
+					}
 				}
 			} else {
 				registry.put(Reference.MOD_ID + "." + Names.Configs.JEI_DESCRIPTIONS + name, Collections.singletonList(new ItemStack(item, 1)));

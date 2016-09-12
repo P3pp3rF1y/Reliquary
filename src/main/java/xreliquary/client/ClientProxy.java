@@ -45,6 +45,7 @@ import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +82,8 @@ public class ClientProxy extends CommonProxy {
 		List<ItemStack> subItems = new ArrayList<>();
 		ModItems.potionEssence.getSubItems(ModItems.potionEssence, ModItems.potionEssence.getCreativeTab(), subItems);
 		JEIDescriptionRegistry.register(subItems, Names.Items.POTION_ESSENCE);
+
+		JEIDescriptionRegistry.register(Collections.singletonList(new ItemStack(ModItems.potion)), "potion0");
 
 		List<ItemStack> potions = new ArrayList<>();
 		List<ItemStack> splashPotions = new ArrayList<>();

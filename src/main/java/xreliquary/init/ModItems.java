@@ -105,7 +105,7 @@ public class ModItems {
 		registerItem(magazine, Names.Items.MAGAZINE);
 		registerItem(magicbane, Names.Items.MAGICBANE);
 		registerItem(midasTouchstone, Names.Items.MIDAS_TOUCHSTONE);
-		registerItem(mobCharm, Names.Items.MOB_CHARM);
+		registerItem(mobCharm, Names.Items.MOB_CHARM, false);
 		registerItem(mobCharmBelt, Names.Items.MOB_CHARM_BELT);
 		registerItem(potionEssence, Names.Items.POTION_ESSENCE, false);
 		registerItem(phoenixDown, Names.Items.PHOENIX_DOWN);
@@ -116,13 +116,13 @@ public class ModItems {
 		registerItem(serpentStaff, Names.Items.SERPENT_STAFF);
 		registerItem(shearsOfWinter, Names.Items.SHEARS_OF_WINTER);
 		registerItem(sojournerStaff, Names.Items.SOJOURNER_STAFF);
-		registerItem(tippedArrow, Names.Items.TIPPED_ARROW);
+		registerItem(tippedArrow, Names.Items.TIPPED_ARROW, false);
 		registerItem(twilightCloak, Names.Items.TWILIGHT_CLOAK);
 		registerItem(emptyVoidTear, Names.Items.VOID_TEAR_EMPTY);
 		registerItem(filledVoidTear, Names.Items.VOID_TEAR);
 		registerItem(witchHat, Names.Items.WITCH_HAT);
 		registerItem(witherlessRose, Names.Items.WITHERLESS_ROSE);
-		registerItem(potion, Names.Items.POTION);
+		registerItem(potion, Names.Items.POTION, false);
 
 		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.potion, new IBehaviorDispenseItem() {
 			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
