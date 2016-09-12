@@ -9,6 +9,8 @@ import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityXRTippedArrow;
 import xreliquary.init.ModItems;
@@ -35,6 +37,7 @@ public class ItemXRTippedArrow extends ItemArrow {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public String getItemStackDisplayName(ItemStack stack) {
 		return LanguageHelper.getLocalization("item." + Names.Items.TIPPED_ARROW + ".name");
 	}
