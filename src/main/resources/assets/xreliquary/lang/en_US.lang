@@ -373,6 +373,9 @@ xreliquary.config.item_and_block_settings.hero_medallion.experience_level_maximu
 xreliquary.config.item_and_block_settings.hero_medallion.experience_level_minimum.label=Experience level minimum
 xreliquary.config.item_and_block_settings.hero_medallion.experience_limit.label=Experience limit
 xreliquary.config.item_and_block_settings.hero_medallion.experience_drop.label=Experience dropped on ground
+xreliquary.config.item_and_block_settings.hero_medallion.pedestal_cooldown.label=Pedestal cooldown
+xreliquary.config.item_and_block_settings.hero_medallion.pedestal_range.label=Pedestal range
+xreliquary.config.item_and_block_settings.hero_medallion.pedestal_repair_step_xp.label=Pedestal repair step xp
 xreliquary.config.item_and_block_settings.ice_magus_rod.label=Ice Magus Rod
 xreliquary.config.item_and_block_settings.ice_magus_rod.snowball_limit.label=Snowball limit
 xreliquary.config.item_and_block_settings.ice_magus_rod.snowball_cost.label=Snowball cost

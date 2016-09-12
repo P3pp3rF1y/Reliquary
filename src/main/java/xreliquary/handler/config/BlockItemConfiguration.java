@@ -170,6 +170,9 @@ public class BlockItemConfiguration {
 		Settings.HeroMedallion.experienceLevelMinimum = ConfigurationHandler.getInt("experience_level_minimum", categoryKey, 0, 0, 30, "A player's experience level at which the medallion will stop pulling from the player");
 		Settings.HeroMedallion.experienceLimit = ConfigurationHandler.getInt("experience_limit", categoryKey, cleanIntMax, 0, cleanIntMax, "Experience level that the medallion can hold");
 		Settings.HeroMedallion.experienceDrop = ConfigurationHandler.getInt("experience_drop", categoryKey, 9, 0, 100, "How much experience gets dropped on ground when hero's medallion is right clicked on it (9 is the first level of player xp)");
+		Settings.HeroMedallion.pedestalCoolDown = ConfigurationHandler.getInt("pedestal_cooldown", categoryKey, 20, 1, 100, "Cooldown between hero medallion tries to fix mending items in nearby pedestals");
+		Settings.HeroMedallion.pedestalRange = ConfigurationHandler.getInt("pedestal_range", categoryKey, 5, 1, 20, "Range in which pedestals are checked for items with mending enchant that need fixing");
+		Settings.HeroMedallion.pedestalRepairStepXP = ConfigurationHandler.getInt("pedestal_repair_step_xp", categoryKey, 5, 1, 20, "Maximum amount of xp that is used each time medallion repairs items");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
 		category.setComment("Hero Medallion settings");

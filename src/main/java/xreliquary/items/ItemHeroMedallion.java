@@ -179,13 +179,9 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 		return new FluidHandlerHeroMedallion(stack);
 	}
 
-	private static final int RANGE = 5;
-	private static final int REPAIR_STEP_XP = 5;
-	private static final int COOLDOWN = 20;
-
 	@Override
 	public void update(ItemStack stack, IPedestal pedestal) {
-		List<BlockPos> posInRange = pedestal.getPedestalsInRange(RANGE);
+		List<BlockPos> posInRange = pedestal.getPedestalsInRange(Settings.HeroMedallion.pedestalRange);
 		World world = pedestal.getTheWorld();
 
 		for(BlockPos pedestalPos : posInRange) {
@@ -194,7 +190,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 				List<ItemStack> toRepair = getMendingItemsForRepair(pedestalInventory);
 
 				for(ItemStack itemToRepair : toRepair) {
-					int xpToRepair = Math.min(REPAIR_STEP_XP, getExperience(stack));
+					int xpToRepair = Math.min(Settings.HeroMedallion.pedestalRepairStepXP, getExperience(stack));
 					int durabilityToRepair = Math.min(XpHelper.xpToDurability(xpToRepair), itemToRepair.getItemDamage());
 
 					setExperience(stack, getExperience(stack) - XpHelper.durabilityToXp(durabilityToRepair));
@@ -202,7 +198,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 				}
 			}
 		}
-		pedestal.setActionCoolDown(COOLDOWN);
+		pedestal.setActionCoolDown(Settings.HeroMedallion.pedestalCoolDown);
 	}
 
 	private List<ItemStack> getMendingItemsForRepair(IInventory inventory) {
