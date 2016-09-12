@@ -57,4 +57,15 @@ public class XpHelper {
 		player.experience = (float) (experience - expForLevel) / (float) player.xpBarCap();
 	}
 
+	public static int durabilityToXp(int durability)
+	{
+		return durability / 2;
+	}
+
+	public static int xpToDurability(int xp)
+	{
+		return xp * 2;
+	}
+
+
 }

@@ -1,9 +1,12 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,15 +22,19 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
+import xreliquary.api.IPedestal;
+import xreliquary.api.IPedestalActionItem;
 import xreliquary.items.util.fluid.FluidHandlerHeroMedallion;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.XpHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ItemHeroMedallion extends ItemToggleable {
+public class ItemHeroMedallion extends ItemToggleable implements IPedestalActionItem {
 
 	public ItemHeroMedallion() {
 		super(Names.Items.HERO_MEDALLION);
@@ -37,6 +44,7 @@ public class ItemHeroMedallion extends ItemToggleable {
 		canRepair = false;
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -165,8 +173,60 @@ public class ItemHeroMedallion extends ItemToggleable {
 		}
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
 		return new FluidHandlerHeroMedallion(stack);
+	}
+
+	private static final int RANGE = 5;
+	private static final int REPAIR_STEP_XP = 5;
+	private static final int COOLDOWN = 20;
+
+	@Override
+	public void update(ItemStack stack, IPedestal pedestal) {
+		List<BlockPos> posInRange = pedestal.getPedestalsInRange(RANGE);
+		World world = pedestal.getTheWorld();
+
+		for(BlockPos pedestalPos : posInRange) {
+			IInventory pedestalInventory = (IInventory) world.getTileEntity(pedestalPos);
+			if(pedestalInventory != null) {
+				List<ItemStack> toRepair = getMendingItemsForRepair(pedestalInventory);
+
+				for(ItemStack itemToRepair : toRepair) {
+					int xpToRepair = Math.min(REPAIR_STEP_XP, getExperience(stack));
+					int durabilityToRepair = Math.min(XpHelper.xpToDurability(xpToRepair), itemToRepair.getItemDamage());
+
+					setExperience(stack, getExperience(stack) - XpHelper.durabilityToXp(durabilityToRepair));
+					itemToRepair.setItemDamage(itemToRepair.getItemDamage() - durabilityToRepair);
+				}
+			}
+		}
+		pedestal.setActionCoolDown(COOLDOWN);
+	}
+
+	private List<ItemStack> getMendingItemsForRepair(IInventory inventory) {
+		List<ItemStack> stacksToReturn = new ArrayList<>();
+
+		for(int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+			ItemStack stack = inventory.getStackInSlot(slot);
+
+			//only getting items that are more than 1 damaged to not waste xp
+			if(stack != null && stack.isItemDamaged() && stack.getItemDamage() > 1 && EnchantmentHelper.getEnchantmentLevel(Enchantments.MENDING, stack) > 0) {
+				stacksToReturn.add(stack);
+			}
+		}
+
+		return stacksToReturn;
+	}
+
+	@Override
+	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+		//nothing needed
+	}
+
+	@Override
+	public void stop(ItemStack stack, IPedestal pedestal) {
+		//nothing needed
 	}
 }
