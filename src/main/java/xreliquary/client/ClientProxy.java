@@ -8,6 +8,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -41,6 +42,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.XRPotionHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +84,10 @@ public class ClientProxy extends CommonProxy {
 
 		List<ItemStack> potions = new ArrayList<>();
 		List<ItemStack> splashPotions = new ArrayList<>();
+		List<ItemStack> lingeringPotions = new ArrayList<>();
+		List<ItemStack> tippedArrows = new ArrayList<>();
+		List<ItemStack> potionShots = new ArrayList<>();
+		List<ItemStack> potionMagazines = new ArrayList<>();
 
 		for(PotionEssence essence : Settings.Potions.uniquePotions) {
 			ItemStack potion = new ItemStack(ModItems.potion, 1);
@@ -92,9 +98,29 @@ public class ClientProxy extends CommonProxy {
 			ItemStack splashPotion = potion.copy();
 			NBTHelper.setBoolean("splash", splashPotion, true);
 			splashPotions.add(splashPotion);
+
+			ItemStack lingeringPotion = potion.copy();
+			NBTHelper.setBoolean("lingering", lingeringPotion, true);
+			lingeringPotions.add(lingeringPotion);
+
+			ItemStack tippedArrow = new ItemStack(ModItems.tippedArrow);
+			PotionUtils.appendEffects(tippedArrow, XRPotionHelper.changeDuration(essence.getEffects(), 0.125F));
+			tippedArrows.add(tippedArrow);
+
+			ItemStack potionShot = new ItemStack(ModItems.bullet, 1, 1);
+			PotionUtils.appendEffects(potionShot, XRPotionHelper.changeDuration(essence.getEffects(), 0.2F));
+			potionShots.add(potionShot);
+
+			ItemStack potionMagazine = new ItemStack(ModItems.magazine, 1, 1);
+			PotionUtils.appendEffects(potionMagazine, XRPotionHelper.changeDuration(essence.getEffects(), 0.2F));
+			potionMagazines.add(potionMagazine);
 		}
 		JEIDescriptionRegistry.register(potions, Names.Items.POTION);
 		JEIDescriptionRegistry.register(splashPotions, Names.Items.POTION_SPLASH);
+		JEIDescriptionRegistry.register(lingeringPotions, Names.Items.POTION_LINGERING);
+		JEIDescriptionRegistry.register(tippedArrows, Names.Items.TIPPED_ARROW);
+		JEIDescriptionRegistry.register(potionShots, "bullet1_potion");
+		JEIDescriptionRegistry.register(potionMagazines, "magazine1_potion");
 	}
 
 	@Override
