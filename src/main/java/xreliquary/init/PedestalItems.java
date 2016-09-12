@@ -23,8 +23,13 @@ public class PedestalItems {
 
 		if(Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
 			if (classExists("slimeknights.tconstruct.tools.item.BroadSword")) {
-				PedestalRegistry.registerItemWrapper(slimeknights.tconstruct.tools.item.Cleaver.class, PedestalMeleeWeaponWrapper.class);
-				PedestalRegistry.registerItemWrapper(slimeknights.tconstruct.tools.item.BroadSword.class, PedestalMeleeWeaponWrapper.class);
+				try {
+					PedestalRegistry.registerItemWrapper((Class<? extends Item>) Class.forName("slimeknights.tconstruct.tools.item.Cleaver"), PedestalMeleeWeaponWrapper.class);
+					PedestalRegistry.registerItemWrapper((Class<? extends Item>) Class.forName("slimeknights.tconstruct.tools.item.BroadSword"), PedestalMeleeWeaponWrapper.class);
+				}
+				catch(ClassNotFoundException e) {
+					e.printStackTrace();
+				}
 			} else if (classExists("slimeknights.tconstruct.library.tools.SwordCore")) {
 				try {
 					PedestalRegistry.registerItemWrapper((Class<? extends Item>) Class.forName("slimeknights.tconstruct.library.tools.SwordCore"), PedestalMeleeWeaponWrapper.class);
