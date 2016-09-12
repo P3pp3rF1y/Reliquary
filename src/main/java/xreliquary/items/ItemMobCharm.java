@@ -29,17 +29,19 @@ public class ItemMobCharm extends ItemBase {
 		this.canRepair = false;
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
 		return "item." + Names.Items.MOB_CHARM + "_" + getType(ist);
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
-	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {
+	public void getSubItems(Item item, CreativeTabs creativeTab, List<ItemStack> subItems) {
 		for(byte i = 0; i < Reference.MOB_CHARM.COUNT_TYPES; i++) {
-			ItemStack subItem = new ItemStack(par1);
+			ItemStack subItem = new ItemStack(item);
 			setType(subItem, i);
-			par3List.add(subItem);
+			subItems.add(subItem);
 		}
 	}
 
