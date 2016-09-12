@@ -62,7 +62,7 @@ public class Reliquary {
 		//TODO figure out a better way to handle this if possible
 		PotionConfiguration.loadPotionMap();
 
-		PROXY.initPotionsJEI();
+		PROXY.initSpecialJEIDescriptions();
 
 		PacketHandler.init();
 

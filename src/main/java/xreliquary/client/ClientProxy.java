@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.blocks.tile.TileEntityPedestalPassive;
@@ -38,6 +39,7 @@ import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
@@ -75,7 +77,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void initPotionsJEI() {
+	public void initSpecialJEIDescriptions() {
 		if(!Loader.isModLoaded(Compatibility.MOD_ID.JEI))
 			return;
 
@@ -124,6 +126,16 @@ public class ClientProxy extends CommonProxy {
 		JEIDescriptionRegistry.register(tippedArrows, Names.Items.TIPPED_ARROW);
 		JEIDescriptionRegistry.register(potionShots, "bullet1_potion");
 		JEIDescriptionRegistry.register(potionMagazines, "magazine1_potion");
+
+		List<ItemStack> mobCharms = new ArrayList<>();
+		ModItems.mobCharm.getSubItems(ModItems.mobCharm, Reliquary.CREATIVE_TAB, mobCharms);
+
+		int meta = 0;
+		for(ItemStack mobCharm : mobCharms) {
+			JEIDescriptionRegistry.register(Collections.singletonList(mobCharm), Names.Items.MOB_CHARM + meta);
+			meta++;
+		}
+
 	}
 
 	@Override
