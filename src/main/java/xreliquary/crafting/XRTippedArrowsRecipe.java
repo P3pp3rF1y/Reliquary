@@ -57,7 +57,6 @@ public class XRTippedArrowsRecipe implements IRecipe {
 
 		if(itemstack != null && itemstack.getItem() == ModItems.potion && ModItems.potion.getLingering(itemstack)) {
 			ItemStack tippedArrows = new ItemStack(ModItems.tippedArrow, 8);
-			PotionUtils.addPotionToItemStack(tippedArrows, PotionTypes.EMPTY);
 			PotionUtils.appendEffects(tippedArrows, XRPotionHelper.changeDuration(new PotionEssence(itemstack.getTagCompound()).getEffects(), 0.125F));
 			return tippedArrows;
 		} else {
