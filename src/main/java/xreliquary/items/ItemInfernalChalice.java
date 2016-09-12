@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class ItemInfernalChalice extends ItemToggleable {
 	public ItemInfernalChalice() {
-		super(Names.infernal_chalice);
+		super(Names.Items.INFERNAL_CHALICE);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;

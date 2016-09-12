@@ -35,7 +35,7 @@ import java.util.List;
 public class ItemLanternOfParanoia extends ItemToggleable {
 
 	public ItemLanternOfParanoia() {
-		super(Names.lantern_of_paranoia);
+		super(Names.Items.LANTERN_OF_PARANOIA);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;

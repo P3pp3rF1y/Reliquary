@@ -23,7 +23,7 @@ import java.util.List;
 public class ItemMidasTouchstone extends ItemToggleable {
 
 	public ItemMidasTouchstone() {
-		super(Names.midas_touchstone);
+		super(Names.Items.MIDAS_TOUCHSTONE);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;

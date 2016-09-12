@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class ItemAlkahestryTome extends ItemToggleable {
 	public ItemAlkahestryTome() {
-		super(Names.alkahestry_tome);
+		super(Names.Items.ALKAHESTRY_TOME);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		this.setMaxDamage(getChargeLimit() + 1); //to always display damage bar

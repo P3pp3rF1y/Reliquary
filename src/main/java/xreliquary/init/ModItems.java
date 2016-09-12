@@ -3,6 +3,7 @@ package xreliquary.init;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.*;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityGlowingWater;
 import xreliquary.entities.EntityHolyHandGrenade;
+import xreliquary.entities.EntityXRTippedArrow;
 import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.entities.potion.EntityThrownXRPotion;
@@ -61,6 +63,7 @@ public class ModItems {
 	public static final ItemSerpentStaff serpentStaff = new ItemSerpentStaff();
 	public static final ItemShearsOfWinter shearsOfWinter = new ItemShearsOfWinter();
 	public static final ItemSojournerStaff sojournerStaff = new ItemSojournerStaff();
+	public static final ItemXRTippedArrow tippedArrow = new ItemXRTippedArrow();
 	public static final ItemTwilightCloak twilightCloak = new ItemTwilightCloak();
 	public static final ItemVoidTearEmpty emptyVoidTear = new ItemVoidTearEmpty();
 	public static final ItemVoidTear filledVoidTear = new ItemVoidTear();
@@ -71,58 +74,59 @@ public class ModItems {
 	public static final ItemMobCharm mobCharm = new ItemMobCharm();
 
 	public static void init() {
-		registerItem(alkahestryTome, Names.alkahestry_tome);
-		registerItem(mobIngredient, Names.mob_ingredient);
-		registerItem(mercyCross, Names.mercy_cross);
-		registerItem(angelheartVial, Names.angelheart_vial);
-		registerItem(angelicFeather, Names.angelic_feather);
-		registerItem(attractionPotion, Names.attraction_potion);
-		registerItem(bullet, Names.bullet);
-		registerItem(destructionCatalyst, Names.destruction_catalyst);
-		registerItem(emperorChalice, Names.emperor_chalice);
-		registerItem(enderStaff, Names.ender_staff);
-		registerItem(fertilePotion, Names.fertile_potion);
-		registerItem(fortuneCoin, Names.fortune_coin);
-		registerItem(glacialStaff, Names.glacial_staff);
-		registerItem(glowingBread, Names.glowing_bread);
-		registerItem(glowingWater, Names.glowing_water);
-		registerItem(gunPart, Names.gun_part);
-		registerItem(handgun, Names.handgun);
-		registerItem(harvestRod, Names.harvest_rod);
-		registerItem(mobCharmFragment, Names.mob_charm_fragment);
-		registerItem(heartZhu, Names.heart_zhu, false);
-		registerItem(heroMedallion, Names.hero_medallion);
-		registerItem(holyHandGrenade, Names.holy_hand_grenade);
-		registerItem(iceMagusRod, Names.ice_magus_rod);
-		registerItem(infernalChalice, Names.infernal_chalice);
-		registerItem(infernalClaws, Names.infernal_claws);
-		registerItem(infernalTear, Names.infernal_tear);
-		registerItem(krakenShell, Names.kraken_shell);
-		registerItem(lanternOfParanoia, Names.lantern_of_paranoia);
-		registerItem(magazine, Names.magazine);
-		registerItem(magicbane, Names.magicbane);
-		registerItem(midasTouchstone, Names.midas_touchstone);
-		registerItem(mobCharm, Names.mob_charm);
-		registerItem(mobCharmBelt, Names.mob_charm_belt);
-		registerItem(potionEssence, Names.potion_essence, false);
-		registerItem(phoenixDown, Names.phoenix_down);
-		registerItem(pyromancerStaff, Names.pyromancer_staff);
-		registerItem(rendingGale, Names.rending_gale);
-		registerItem(rodOfLyssa, Names.rod_of_lyssa);
-		registerItem(salamanderEye, Names.salamander_eye);
-		registerItem(serpentStaff, Names.serpent_staff);
-		registerItem(shearsOfWinter, Names.shears_of_winter);
-		registerItem(sojournerStaff, Names.sojourner_staff);
-		registerItem(twilightCloak, Names.twilight_cloak);
-		registerItem(emptyVoidTear, Names.void_tear_empty);
-		registerItem(filledVoidTear, Names.void_tear);
-		registerItem(witchHat, Names.witch_hat);
-		registerItem(witherlessRose, Names.witherless_rose);
-		registerItem(potion, Names.potion);
+		registerItem(alkahestryTome, Names.Items.ALKAHESTRY_TOME);
+		registerItem(mobIngredient, Names.Items.MOB_INGREDIENT);
+		registerItem(mercyCross, Names.Items.MERCY_CROSS);
+		registerItem(angelheartVial, Names.Items.ANGELHEART_VIAL);
+		registerItem(angelicFeather, Names.Items.ANGELIC_FEATHER);
+		registerItem(attractionPotion, Names.Items.ATTRACTION_POTION);
+		registerItem(bullet, Names.Items.BULLET);
+		registerItem(destructionCatalyst, Names.Items.DESTRUCTION_CATALYST);
+		registerItem(emperorChalice, Names.Items.EMPEROR_CHALICE);
+		registerItem(enderStaff, Names.Items.ENDER_STAFF);
+		registerItem(fertilePotion, Names.Items.FERTILE_POTION);
+		registerItem(fortuneCoin, Names.Items.FORTUNE_COIN);
+		registerItem(glacialStaff, Names.Items.GLACIAL_STAFF);
+		registerItem(glowingBread, Names.Items.GLOWING_BREAD);
+		registerItem(glowingWater, Names.Items.GLOWING_WATER);
+		registerItem(gunPart, Names.Items.GUN_PART);
+		registerItem(handgun, Names.Items.HANDGUN);
+		registerItem(harvestRod, Names.Items.HARVEST_ROD);
+		registerItem(mobCharmFragment, Names.Items.MOB_CHARM_FRAGMENT);
+		registerItem(heartZhu, Names.Items.HEART_ZHU, false);
+		registerItem(heroMedallion, Names.Items.HERO_MEDALLION);
+		registerItem(holyHandGrenade, Names.Items.HOLY_HAND_GRENADE);
+		registerItem(iceMagusRod, Names.Items.ICE_MAGUS_ROD);
+		registerItem(infernalChalice, Names.Items.INFERNAL_CHALICE);
+		registerItem(infernalClaws, Names.Items.INFERNAL_CLAWS);
+		registerItem(infernalTear, Names.Items.INFERNAL_TEAR);
+		registerItem(krakenShell, Names.Items.KRAKEN_SHELL);
+		registerItem(lanternOfParanoia, Names.Items.LANTERN_OF_PARANOIA);
+		registerItem(magazine, Names.Items.MAGAZINE);
+		registerItem(magicbane, Names.Items.MAGICBANE);
+		registerItem(midasTouchstone, Names.Items.MIDAS_TOUCHSTONE);
+		registerItem(mobCharm, Names.Items.MOB_CHARM, false);
+		registerItem(mobCharmBelt, Names.Items.MOB_CHARM_BELT);
+		registerItem(potionEssence, Names.Items.POTION_ESSENCE, false);
+		registerItem(phoenixDown, Names.Items.PHOENIX_DOWN);
+		registerItem(pyromancerStaff, Names.Items.PYROMANCER_STAFF);
+		registerItem(rendingGale, Names.Items.RENDING_GALE);
+		registerItem(rodOfLyssa, Names.Items.ROD_OF_LYSSA);
+		registerItem(salamanderEye, Names.Items.SALAMANDER_EYE);
+		registerItem(serpentStaff, Names.Items.SERPENT_STAFF);
+		registerItem(shearsOfWinter, Names.Items.SHEARS_OF_WINTER);
+		registerItem(sojournerStaff, Names.Items.SOJOURNER_STAFF);
+		registerItem(tippedArrow, Names.Items.TIPPED_ARROW, false);
+		registerItem(twilightCloak, Names.Items.TWILIGHT_CLOAK);
+		registerItem(emptyVoidTear, Names.Items.VOID_TEAR_EMPTY);
+		registerItem(filledVoidTear, Names.Items.VOID_TEAR);
+		registerItem(witchHat, Names.Items.WITCH_HAT);
+		registerItem(witherlessRose, Names.Items.WITHERLESS_ROSE);
+		registerItem(potion, Names.Items.POTION, false);
 
 		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.potion, new IBehaviorDispenseItem() {
 			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
-				if(!ModItems.potion.getSplash(stack))
+				if(!ModItems.potion.getSplash(stack) && !ModItems.potion.getLingering(stack))
 					return new BehaviorDefaultDispenseItem().dispense(source, stack);
 
 				return (new BehaviorProjectileDispense() {
@@ -210,6 +214,35 @@ public class ModItems {
 						return super.getProjectileVelocity() * 1.25F;
 					}
 				}).dispense(source, stack);
+			}
+		});
+
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.holyHandGrenade, new IBehaviorDispenseItem() {
+			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
+				return (new BehaviorProjectileDispense() {
+					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+						return new EntityHolyHandGrenade(worldIn, position.getX(), position.getY(), position.getZ(), stackIn.getDisplayName());
+					}
+
+					protected float getProjectileInaccuracy() {
+						return super.getProjectileInaccuracy() * 0.5F;
+					}
+
+					protected float getProjectileVelocity() {
+						return super.getProjectileVelocity() * 1.25F;
+					}
+				}).dispense(source, stack);
+			}
+		});
+
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.tippedArrow, new BehaviorProjectileDispense() {
+
+			@Override
+			protected IProjectile getProjectileEntity(World world, IPosition position, ItemStack stack) {
+				EntityXRTippedArrow entitytippedarrow = new EntityXRTippedArrow(world, position.getX(), position.getY(), position.getZ());
+				entitytippedarrow.setPotionEffect(stack);
+				entitytippedarrow.pickupStatus = EntityArrow.PickupStatus.ALLOWED;
+				return entitytippedarrow;
 			}
 		});
 	}

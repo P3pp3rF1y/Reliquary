@@ -17,7 +17,7 @@ import java.util.Random;
 public class ItemWitherlessRose extends ItemBase {
 
 	public ItemWitherlessRose() {
-		super(Names.witherless_rose);
+		super(Names.Items.WITHERLESS_ROSE);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);

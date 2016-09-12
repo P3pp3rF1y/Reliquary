@@ -30,17 +30,17 @@ public class BlockItemConfiguration {
 			}
 		}
 
-		Settings.InterdictionTorch.entitiesThatCanBePushed = ConfigurationHandler.getStringList("entities_that_can_be_pushed", Names.item_and_block_settings + "." + Names.interdiction_torch, entityNames, "List of entities that can be pushed by the torch");
-		Settings.InterdictionTorch.projectilesThatCanBePushed = ConfigurationHandler.getStringList("projectiles_that_can_be_pushed", Names.item_and_block_settings + "." + Names.interdiction_torch, projectileNames, "List of projectiles that can be pushed by the torch");
+		Settings.InterdictionTorch.entitiesThatCanBePushed = ConfigurationHandler.getStringList("entities_that_can_be_pushed", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Blocks.INTERDICTION_TORCH, entityNames, "List of entities that can be pushed by the torch");
+		Settings.InterdictionTorch.projectilesThatCanBePushed = ConfigurationHandler.getStringList("projectiles_that_can_be_pushed", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Blocks.INTERDICTION_TORCH, projectileNames, "List of projectiles that can be pushed by the torch");
 
-		Settings.RendingGale.entitiesThatCanBePushed = ConfigurationHandler.getStringList("entities_that_can_be_pushed", Names.item_and_block_settings + "." + Names.rending_gale, entityNames, "List of entities that can be pushed by Rending Gale");
-		Settings.RendingGale.projectilesThatCanBePushed = ConfigurationHandler.getStringList("projectiles_that_can_be_pushed", Names.item_and_block_settings + "." + Names.rending_gale, projectileNames, "List of projectiles that can be pushed by Rending Gale");
+		Settings.RendingGale.entitiesThatCanBePushed = ConfigurationHandler.getStringList("entities_that_can_be_pushed", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.RENDING_GALE, entityNames, "List of entities that can be pushed by Rending Gale");
+		Settings.RendingGale.projectilesThatCanBePushed = ConfigurationHandler.getStringList("projectiles_that_can_be_pushed", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.RENDING_GALE, projectileNames, "List of projectiles that can be pushed by Rending Gale");
 
-		Settings.SeekerShot.entitiesThatCanBeHunted = ConfigurationHandler.getStringList("entities_that_can_be_hunted", Names.item_and_block_settings + "." + Names.seeker_shot, entityNames, "Entities that can be tracked by seeker shot");
+		Settings.SeekerShot.entitiesThatCanBeHunted = ConfigurationHandler.getStringList("entities_that_can_be_hunted", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.SEEKER_SHOT, entityNames, "Entities that can be tracked by seeker shot");
 
-		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.item_and_block_settings + "." + Names.seeker_shot);
+		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.SEEKER_SHOT);
 
-		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(Names.item_and_block_settings + "." + Names.seeker_shot));
+		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.SEEKER_SHOT));
 		category.setComment("Seeker Shot settings");
 	}
 
@@ -52,7 +52,7 @@ public class BlockItemConfiguration {
 		String categoryKey;
 
 		//alkahestry tome configs
-		categoryKey = Names.item_and_block_settings + "." + Names.alkahestry_tome;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.ALKAHESTRY_TOME;
 		Settings.AlkahestryTome.chargeLimit = ConfigurationHandler.getInt("charge_limit", categoryKey, 1000, 0, itemCap, "Charge limit of the tome");
 		ConfigurationHandler.configuration.getCategory(categoryKey).get("charge_limit").setRequiresMcRestart(true);
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
@@ -60,7 +60,7 @@ public class BlockItemConfiguration {
 		category.setComment("Alkahestry Tome settings");
 
 		//altar configs
-		categoryKey = Names.item_and_block_settings + "." + Names.altar;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Blocks.ALTAR;
 		Settings.Altar.redstoneCost = ConfigurationHandler.getInt("redstone_cost", categoryKey, 3, 0, 10, "Number of redstone it costs to activate altar");
 		Settings.Altar.timeInMinutes = ConfigurationHandler.getInt("time_in_minutes", categoryKey, 20, 0, 60, "Time in minutes it takes for the altar to create glowstone block");
 		Settings.Altar.maximumTimeVarianceInMinutes = ConfigurationHandler.getInt("maximum_time_variance_in_minutes", categoryKey, 5, 0, 15, "Maximum time variance in minutes. A random part of it gets added to the Time in minutes.");
@@ -70,7 +70,7 @@ public class BlockItemConfiguration {
 		category.setComment("Altar of Light settings");
 
 		//angelic feather configs
-		categoryKey = Names.item_and_block_settings + "." + Names.angelic_feather;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.ANGELIC_FEATHER;
 		Settings.AngelicFeather.hungerCostPercent = ConfigurationHandler.getInt("hunger_cost_percent", categoryKey, 50, 0, 100, "Percent hunger used to heal player per 1 damage that would be taken otherwise.");
 		Settings.AngelicFeather.leapingPotency = ConfigurationHandler.getInt("leaping_potency", categoryKey, 1, 0, 5, "Potency of the leaping effect");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
@@ -78,7 +78,7 @@ public class BlockItemConfiguration {
 		category.setComment("Angelic Feather settings");
 
 		//angelheart vial configs
-		categoryKey = Names.item_and_block_settings + "." + Names.angelheart_vial;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.ANGELHEART_VIAL;
 		Settings.AngelHeartVial.healPercentageOfMaxLife = ConfigurationHandler.getInt("heal_percentage_of_max_life", categoryKey, 25, 0, 100, "Percent of life that gets healed when the player would die");
 		Settings.AngelHeartVial.removeNegativeStatus = ConfigurationHandler.getBoolean("remove_negative_status", categoryKey, true, "Whether the player gets negative statuses removed");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
@@ -86,10 +86,10 @@ public class BlockItemConfiguration {
 		category.setComment("Angelheart Vial settings");
 
 		//apothecary cauldron configs
-		categoryKey = Names.item_and_block_settings + "." + Names.apothecary_cauldron;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Blocks.APOTHECARY_CAULDRON;
 		List<String> heatSources = ImmutableList.of();
-		Settings.ApothecaryCauldron.redstoneLimit = ConfigurationHandler.getInt("redstone_limit", categoryKey, 5, 0, 5, "Limit of redstone that can be used in cauldron to make potion last longer");
-		Settings.ApothecaryCauldron.glowstoneLimit = ConfigurationHandler.getInt("glowstone_limit", categoryKey, 4, 0, 4, "Limit of glowstone that can be used in cauldron to make potion more potent");
+		Settings.ApothecaryCauldron.redstoneLimit = ConfigurationHandler.getInt("redstone_limit", categoryKey, 3, 0, 5, "Limit of redstone that can be used in cauldron to make potion last longer");
+		Settings.ApothecaryCauldron.glowstoneLimit = ConfigurationHandler.getInt("glowstone_limit", categoryKey, 2, 0, 4, "Limit of glowstone that can be used in cauldron to make potion more potent");
 		Settings.ApothecaryCauldron.cookTime = ConfigurationHandler.getInt("cook_time", categoryKey, 160, 20, 32000, "Time it takes to cook potion");
 		Settings.ApothecaryCauldron.heatSources = ConfigurationHandler.getStringList("heat_sources", categoryKey, heatSources, "List of acceptable heat sources");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
@@ -97,7 +97,7 @@ public class BlockItemConfiguration {
 		category.setComment("Apothecary Cauldron settings");
 
 		//destruction catalyst configs
-		categoryKey = Names.item_and_block_settings + "." + Names.destruction_catalyst;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.DESTRUCTION_CATALYST;
 		Settings.DestructionCatalyst.mundaneBlocks = ConfigurationHandler.getStringList("mundane_blocks", categoryKey, new ArrayList<>(ItemDestructionCatalyst.ids), "List of mundane blocks the catalyst will break");
 		Settings.DestructionCatalyst.gunpowderCost = ConfigurationHandler.getInt("gunpowder_cost", categoryKey, 3, 0, 10, "Number of gunpowder it costs per catalyst use");
 		Settings.DestructionCatalyst.gunpowderWorth = ConfigurationHandler.getInt("gunpowder_worth", categoryKey, 1, 0, 3, "Number of gunpowder that gets added to catalyst per one that's consumed from players inventory");
@@ -110,14 +110,14 @@ public class BlockItemConfiguration {
 		category.setComment("Destruction Catalyst settings");
 
 		//emperor's chalice configs
-		categoryKey = Names.item_and_block_settings + "." + Names.emperor_chalice;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.EMPEROR_CHALICE;
 		Settings.EmperorChalice.hungerSatiationMultiplier = ConfigurationHandler.getInt("hunger_satiation_multiplier", categoryKey, 4, 0, 10, "How much saturation is added in addition to filling the hunger");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
 		category.setComment("Emperor Chalice settings");
 
 		//ender staff configs
-		categoryKey = Names.item_and_block_settings + "." + Names.ender_staff;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.ENDER_STAFF;
 		Settings.EnderStaff.enderPearlCastCost = ConfigurationHandler.getInt("ender_pearl_cast_cost", categoryKey, 1, 0, 3, "Number of ender pearls per use");
 		Settings.EnderStaff.enderPearlNodeWarpCost = ConfigurationHandler.getInt("ender_pearl_node_warp_cost", categoryKey, 1, 0, 3, "Number of ender pearls per teleportation to the wraith node");
 		Settings.EnderStaff.enderPearlWorth = ConfigurationHandler.getInt("ender_pearl_worth", categoryKey, 1, 0, 10, "Number of ender pearls that get added to the staff per one that's consumed from players inventory");
@@ -128,7 +128,7 @@ public class BlockItemConfiguration {
 		category.setComment("Ender Staff settings");
 
 		//fortune coin configs
-		categoryKey = Names.item_and_block_settings + "." + Names.fortune_coin;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.FORTUNE_COIN;
 		Settings.FortuneCoin.disableAudio = ConfigurationHandler.getBoolean("disable_audio", categoryKey, false, "Disables the sound of fortune coin teleporting stuff");
 		Settings.FortuneCoin.standardPullDistance = ConfigurationHandler.getInt("standard_pull_distance", categoryKey, 5, 3, 10, "The distance that it pulls from when activated");
 		Settings.FortuneCoin.longRangePullDistance = ConfigurationHandler.getInt("long_range_pull_distance", categoryKey, 15, 9, 30, "The distance that it pulls from when right click is held");
@@ -137,7 +137,7 @@ public class BlockItemConfiguration {
 		category.setComment("Fortune Coin settings");
 
 		//glacial staff configs
-		categoryKey = Names.item_and_block_settings + "." + Names.glacial_staff;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.GLACIAL_STAFF;
 		Settings.GlacialStaff.snowballLimit = ConfigurationHandler.getInt("snowball_limit", categoryKey, 250, 0, itemCap, "Number of snowballs the staff can hold");
 		Settings.GlacialStaff.snowballCost = ConfigurationHandler.getInt("snowball_cost", categoryKey, 1, 0, 3, "Number of snowballs it costs when the staff is used");
 		Settings.GlacialStaff.snowballWorth = ConfigurationHandler.getInt("snowball_worth", categoryKey, 1, 0, 3, "Number of snowballs that get added to the staff per one that's consumed from player's inventory");
@@ -149,7 +149,7 @@ public class BlockItemConfiguration {
 		category.setComment("Glacial Staff settings");
 
 		//harvest rod configs
-		categoryKey = Names.item_and_block_settings + "." + Names.harvest_rod;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.HARVEST_ROD;
 		Settings.HarvestRod.boneMealLimit = ConfigurationHandler.getInt("bonemeal_limit", categoryKey, 250, 0, itemCap, "Number of bonemeal the rod can hold");
 		Settings.HarvestRod.boneMealCost = ConfigurationHandler.getInt("bonemeal_cost", categoryKey, 1, 0, 3, "Number of bonemeal consumed per use");
 		Settings.HarvestRod.boneMealWorth = ConfigurationHandler.getInt("bonemeal_worth", categoryKey, 1, 0, 3, "Number of bonemeal that gets added to the rod per one that's consumed from player's inventory");
@@ -165,17 +165,20 @@ public class BlockItemConfiguration {
 		category.setComment("Harvest Rod settings");
 
 		//hero's medallion config
-		categoryKey = Names.item_and_block_settings + "." + Names.hero_medallion;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.HERO_MEDALLION;
 		Settings.HeroMedallion.experienceLevelMaximum = ConfigurationHandler.getInt("experience_level_maximum", categoryKey, 200, 0, 1000, "A player's experience level at which pulling from the medallion to player will stop");
 		Settings.HeroMedallion.experienceLevelMinimum = ConfigurationHandler.getInt("experience_level_minimum", categoryKey, 0, 0, 30, "A player's experience level at which the medallion will stop pulling from the player");
 		Settings.HeroMedallion.experienceLimit = ConfigurationHandler.getInt("experience_limit", categoryKey, cleanIntMax, 0, cleanIntMax, "Experience level that the medallion can hold");
 		Settings.HeroMedallion.experienceDrop = ConfigurationHandler.getInt("experience_drop", categoryKey, 9, 0, 100, "How much experience gets dropped on ground when hero's medallion is right clicked on it (9 is the first level of player xp)");
+		Settings.HeroMedallion.pedestalCoolDown = ConfigurationHandler.getInt("pedestal_cooldown", categoryKey, 20, 1, 100, "Cooldown between hero medallion tries to fix mending items in nearby pedestals");
+		Settings.HeroMedallion.pedestalRange = ConfigurationHandler.getInt("pedestal_range", categoryKey, 5, 1, 20, "Range in which pedestals are checked for items with mending enchant that need fixing");
+		Settings.HeroMedallion.pedestalRepairStepXP = ConfigurationHandler.getInt("pedestal_repair_step_xp", categoryKey, 5, 1, 20, "Maximum amount of xp that is used each time medallion repairs items");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
 		category.setComment("Hero Medallion settings");
 
 		//ice rod configs
-		categoryKey = Names.item_and_block_settings + "." + Names.ice_magus_rod;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.ICE_MAGUS_ROD;
 		Settings.IceMagusRod.snowballLimit = ConfigurationHandler.getInt("snowball_limit", categoryKey, 250, 0, itemCap, "Number of snowballs the rod can hold");
 		Settings.IceMagusRod.snowballCost = ConfigurationHandler.getInt("snowball_cost", categoryKey, 1, 0, 3, "Number of snowballs it costs when the rod is used");
 		Settings.IceMagusRod.snowballWorth = ConfigurationHandler.getInt("snowball_worth", categoryKey, 1, 0, 3, "Number of snowballs that get added to the rod per one that's consumed from player's inventory");
@@ -187,14 +190,14 @@ public class BlockItemConfiguration {
 		category.setComment("Ice Magus Rod settings");
 
 		//infernal claws configs
-		categoryKey = Names.item_and_block_settings + "." + Names.infernal_claws;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.INFERNAL_CLAWS;
 		Settings.InfernalClaws.hungerCostPercent = ConfigurationHandler.getInt("hunger_cost_percent", categoryKey, 5, 0, 30, "Percent hunger used to heal player per 1 damage that would be taken otherwise.");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
 		category.setComment("Infernal Claws settings");
 
 		//infernal chalice configs
-		categoryKey = Names.item_and_block_settings + "." + Names.infernal_chalice;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.INFERNAL_CHALICE;
 		Settings.InfernalChalice.hungerCostPercent = ConfigurationHandler.getInt("hunger_cost_percent", categoryKey, 1, 0, 10, "Percent hunger used to heal player per 1 damage that would be taken otherwise.");
 		Settings.InfernalChalice.fluidLimit = ConfigurationHandler.getInt("fluid_limit", categoryKey, 500000, 0, cleanIntMax, "Millibuckets of lava that the chalice can hold");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
@@ -202,7 +205,7 @@ public class BlockItemConfiguration {
 		category.setComment("Infernal Chalice settings");
 
 		//infernal tear
-		categoryKey = Names.item_and_block_settings + "." + Names.infernal_tear;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.INFERNAL_TEAR;
 		Settings.InfernalTear.absorbWhenCreated = ConfigurationHandler.getBoolean("absorb_when_created", categoryKey, false, "Whether the infernal tear starts absorbing immediately after it is set to item type");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
@@ -210,7 +213,7 @@ public class BlockItemConfiguration {
 
 		//interdiction torch configs
 		//see post init for entity configs
-		categoryKey = Names.item_and_block_settings + "." + Names.interdiction_torch;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Blocks.INTERDICTION_TORCH;
 		Settings.InterdictionTorch.pushRadius = ConfigurationHandler.getInt("push_radius", categoryKey, 5, 1, 15, "Radius in which the torch can push out mobs");
 		Settings.InterdictionTorch.canPushProjectiles = ConfigurationHandler.getBoolean("can_push_projectiles", categoryKey, false, "Whether the torch can push projectiles");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
@@ -218,14 +221,14 @@ public class BlockItemConfiguration {
 		category.setComment("Interdiction Torch settings");
 
 		//kraken shell configs
-		categoryKey = Names.item_and_block_settings + "." + Names.kraken_shell;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.KRAKEN_SHELL;
 		Settings.KrakenShell.hungerCostPercent = ConfigurationHandler.getInt("hunger_cost_percent", categoryKey, 25, 0, 50, "Percent hunger used to heal player per 1 damage that would be taken otherwise.");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
 		category.setComment("Kraken Shell settings");
 
 		//lantern of paranoia configs
-		categoryKey = Names.item_and_block_settings + "." + Names.lantern_of_paranoia;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.LANTERN_OF_PARANOIA;
 		Settings.LanternOfParanoia.minLightLevel = ConfigurationHandler.getInt("min_light_level", categoryKey, 8, 0, 15, "Minimum light level below which the lantern will place torches");
 		Settings.LanternOfParanoia.placementScanRadius = ConfigurationHandler.getInt("placement_scan_radius", categoryKey, 6, 1, 15, "Radius in which the lantern checks for light levels and places torches");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
@@ -233,7 +236,7 @@ public class BlockItemConfiguration {
 		category.setComment("Lantern of Paranoia settings");
 
 		//fertile_lilypad of fertility configs
-		categoryKey = Names.item_and_block_settings + "." + Names.fertile_lilypad;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Blocks.FERTILE_LILYPAD;
 		Settings.FertileLilypad.secondsBetweenGrowthTicks = ConfigurationHandler.getInt("seconds_between_growth_ticks", categoryKey, 47, 1, 150, "Interval in seconds at which the lilypad causes growth tick updates");
 		Settings.FertileLilypad.tileRange = ConfigurationHandler.getInt("tile_range", categoryKey, 4, 1, 15, "Radius in which lilypad causes growh ticks");
 		Settings.FertileLilypad.fullPotencyRange = ConfigurationHandler.getInt("full_potency_range", categoryKey, 1, 1, 15, "Radius around lilypad where the growth ticks occur the most often");
@@ -242,7 +245,7 @@ public class BlockItemConfiguration {
 		category.setComment("Lilypad of Fertility settings");
 
 		//midas touchstone configs
-		categoryKey = Names.item_and_block_settings + "." + Names.midas_touchstone;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.MIDAS_TOUCHSTONE;
 		List<String> goldItems = ImmutableList.of();
 		Settings.MidasTouchstone.goldItems = ConfigurationHandler.getStringList("gold_items", categoryKey, goldItems, "Gold items that can be repaired by the touchstone");
 		Settings.MidasTouchstone.ticksBetweenRepairTicks = ConfigurationHandler.getInt("ticks_between_repair_ticks", categoryKey, 4, 1, cleanShortMax, "Number of ticks between repairs");
@@ -254,7 +257,7 @@ public class BlockItemConfiguration {
 		category.setComment("Midas Touchstone settings");
 
 		//mob charm configs
-		categoryKey = Names.item_and_block_settings + "." + Names.mob_charm;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.MOB_CHARM;
 		Settings.MobCharm.durability = ConfigurationHandler.getInt("durability", categoryKey, 80, 20, 1000, "Total durability of Mob Charm");
 		Settings.MobCharm.damagePerKill = ConfigurationHandler.getInt("damage_per_kill", categoryKey, 1, 0, 40, "Damage that Mob Charm takes when player kills mob it protects them from");
 		Settings.MobCharm.dropDurabilityRepair = ConfigurationHandler.getInt("drop_durability_repair", categoryKey, 20, 1, 200, "Sets how much durability of Mob Charm gets repaired per special drop");
@@ -266,7 +269,7 @@ public class BlockItemConfiguration {
 		category.setComment("Mob Charm settings");
 
 		//phoenix down configs
-		categoryKey = Names.item_and_block_settings + "." + Names.phoenix_down;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.PHOENIX_DOWN;
 		Settings.PhoenixDown.hungerCostPercent = ConfigurationHandler.getInt("hunger_cost_percent", categoryKey, 25, 0, 50, "Percent hunger used to heal player per 1 damage that would be taken otherwise");
 		Settings.PhoenixDown.leapingPotency = ConfigurationHandler.getInt("leaping_potency", categoryKey, 1, 0, 5, "Potency of the leaping effect");
 		Settings.PhoenixDown.healPercentageOfMaxLife = ConfigurationHandler.getInt("heal_percentage_of_max_life", categoryKey, 100, 0, 100, "Percent of life that gets healed when the player would die");
@@ -280,7 +283,7 @@ public class BlockItemConfiguration {
 		category.setComment("Phoenix Down settings");
 
 		//pyromancer staff configs
-		categoryKey = Names.item_and_block_settings + "." + Names.pyromancer_staff;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.PYROMANCER_STAFF;
 		Settings.PyromancerStaff.hungerCostPercent = ConfigurationHandler.getInt("hunger_cost_percent", categoryKey, 5, 0, 10, "Percent hunger used to heal player per 1 damage that would be taken otherwise");
 		Settings.PyromancerStaff.fireChargeLimit = ConfigurationHandler.getInt("fire_charge_limit", categoryKey, 250, 0, itemCap, "Number of fire charges the staff can hold");
 		Settings.PyromancerStaff.fireChargeCost = ConfigurationHandler.getInt("fire_charge_cost", categoryKey, 1, 0, 3, "Number of fire charges used when the staff is fired");
@@ -295,7 +298,7 @@ public class BlockItemConfiguration {
 		category.setComment("Pyromancer Staff settings");
 
 		//rending gale configs
-		categoryKey = Names.item_and_block_settings + "." + Names.rending_gale;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.RENDING_GALE;
 		Settings.RendingGale.chargeLimit = ConfigurationHandler.getInt("charge_limit", categoryKey, cleanShortMax, 0, cleanIntMax, "Number of feathers the rending gale can hold");
 		Settings.RendingGale.castChargeCost = ConfigurationHandler.getInt("cast_charge_cost", categoryKey, 1, 0, 3, "Number of feathers used when the rending gale is cast in flight mode");
 		Settings.RendingGale.boltChargeCost = ConfigurationHandler.getInt("bolt_charge_cost", categoryKey, 100, 0, 250, "Number of feathers used to cast a lightning bolt");
@@ -310,7 +313,7 @@ public class BlockItemConfiguration {
 		category.setComment("Rending Gale settings");
 
 		//rod of lyssa configs
-		categoryKey = Names.item_and_block_settings + "." + Names.rod_of_lyssa;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.ROD_OF_LYSSA;
 		Settings.RodOfLyssa.useLeveledFailureRate = ConfigurationHandler.getBoolean("use_leveled_failure_rate", categoryKey, true, "Whether level influences stealing failure rate of the rod");
 		Settings.RodOfLyssa.levelCapForLeveledFormula = ConfigurationHandler.getInt("level_cap_for_leveled_formula", categoryKey, 100, 1, 900, "The experience level cap after which the failure rate is at a minimum and doesn't get better");
 		Settings.RodOfLyssa.flatStealFailurePercentRate = ConfigurationHandler.getInt("flat_steal_failure_percent_rate", categoryKey, 10, 0, 100, "The flat failure rate in case failure rate isn't influenced by player's level");
@@ -322,7 +325,7 @@ public class BlockItemConfiguration {
 		category.setComment("Rod of Lyssa settings");
 
 		//sojourners staff configs
-		categoryKey = Names.item_and_block_settings + "." + Names.sojourner_staff;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.SOJOURNER_STAFF;
 		List<String> torches = ImmutableList.of();
 		Settings.SojournerStaff.torches = ConfigurationHandler.getStringList("torches", categoryKey, torches, "List of torches that are supported by the staff in addition to the default minecraft torch");
 		Settings.SojournerStaff.maxCapacityPerItemType = ConfigurationHandler.getInt("max_capacity_per_item_type", categoryKey, 1500, 1, itemCap, "Number of items the staff can store per item type");
@@ -333,14 +336,14 @@ public class BlockItemConfiguration {
 		category.setComment("Sojourner Staff settings");
 
 		//twilight cloak configs
-		categoryKey = Names.item_and_block_settings + "." + Names.twilight_cloak;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.TWILIGHT_CLOAK;
 		Settings.TwilightCloak.maxLightLevel = ConfigurationHandler.getInt("max_light_level", categoryKey, 4, 0, 15, "Maximum light level at which the player is still invisible to the mobs");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
 		category.setComment("Twilight Cloak settings");
 
 		//void tear configs
-		categoryKey = Names.item_and_block_settings + "." + Names.void_tear;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.VOID_TEAR;
 		Settings.VoidTear.itemLimit = ConfigurationHandler.getInt("item_limit", categoryKey, 2000000000, 0, cleanIntMax, "Number of items the tear can hold of the item type it is set to");
 		Settings.VoidTear.absorbWhenCreated = ConfigurationHandler.getBoolean("absorb_when_created", categoryKey, true, "Whether the void tear starts absorbing immediately after it is set to item type");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
@@ -348,31 +351,31 @@ public class BlockItemConfiguration {
 		category.setComment("Void Tear settings");
 
 		//potions
-		categoryKey = Names.item_and_block_settings + "." + Names.potions;
-		Settings.Potions.maxEffectCount = ConfigurationHandler.getInt(Names.max_effect_count, categoryKey, 1, 1, 6, "Maximum number of effects a potion can have to appear in creative tabs / JEI");
-		Settings.Potions.threeIngredients = ConfigurationHandler.getBoolean(Names.three_ingredients, categoryKey, false, "Whether potions that are made out of three base ingredients appear in creative tabs / JEI");
-		Settings.Potions.differentDurations = ConfigurationHandler.getBoolean(Names.different_durations, categoryKey, false, "Whether potions augmented with Redstone and Glowstone appear in creative tabs / JEI");
-		Settings.Potions.redstoneAndGlowstone = ConfigurationHandler.getBoolean(Names.redstone_and_glowstone, categoryKey, false, "Whether potions with the same effect combination, but different duration appear in creative tabs / JEI");
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Configs.POTIONS;
+		Settings.Potions.maxEffectCount = ConfigurationHandler.getInt(Names.Configs.MAX_EFFECT_COUNT, categoryKey, 1, 1, 6, "Maximum number of effects a potion can have to appear in creative tabs / JEI");
+		Settings.Potions.threeIngredients = ConfigurationHandler.getBoolean(Names.Configs.THREE_INGREDIENTS, categoryKey, false, "Whether potions that are made out of three base ingredients appear in creative tabs / JEI");
+		Settings.Potions.differentDurations = ConfigurationHandler.getBoolean(Names.Configs.DIFFERENT_DURATIONS, categoryKey, false, "Whether potions augmented with Redstone and Glowstone appear in creative tabs / JEI");
+		Settings.Potions.redstoneAndGlowstone = ConfigurationHandler.getBoolean(Names.Configs.REDSTONE_AND_GLOWSTONE, categoryKey, false, "Whether potions with the same effect combination, but different duration appear in creative tabs / JEI");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setRequiresMcRestart(true);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
 		category.setComment("Potions related settings");
 
-		categoryKey = Names.item_and_block_settings + "." + Names.pedestal;
-		Settings.Pedestal.meleeWrapperRange = ConfigurationHandler.getInt(Names.melee_wrapper_range, categoryKey, 5, 1, 10, "Range of the melee weapons in which these will attack when in pedestal");
-		Settings.Pedestal.meleeWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.melee_wrapper_cooldown, categoryKey, 5, 1, 200, "How long it takes after a melee weapon swing before it can swing again (in ticks)");
-		Settings.Pedestal.bucketWrapperRange = ConfigurationHandler.getInt(Names.bucket_wrapper_range, categoryKey, 4, 1, 10, "Range at which bucket will pickup liquid blocks or milk cows");
-		Settings.Pedestal.bucketWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.bucket_wrapper_cooldown, categoryKey, 40, 1, 200, "How long it takes in between bucket actions (in ticks)");
-		Settings.Pedestal.shearsWrapperRange = ConfigurationHandler.getInt(Names.shears_wrapper_range, categoryKey, 4, 1, 10, "How long it takes between shearing actions (in ticks)");
-		Settings.Pedestal.shearsWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.shears_wrapper_cooldown, categoryKey, 10, 1, 200, "Range at which shears will shear sheep or shearable blocks");
-		Settings.Pedestal.redstoneWrapperRange = ConfigurationHandler.getInt(Names.redstone_wrapper_range, categoryKey, 10, 1, 200, "Range at which pedestal will get turned on if either redstone block gets put in or redstone dust and transmitting pedestal is powered");
-		Settings.Pedestal.fishingWrapperSuccessRate = ConfigurationHandler.getInt(Names.fishing_wrapper_success_rate, categoryKey, 0, 80, 100, "Success rate of fishing in percent. When unsuccessful it will pull the hook too late to catch a fish.");
-		Settings.Pedestal.fishingWrapperRetractDelay = ConfigurationHandler.getInt(Names.fishing_wrapper_retract_delay, categoryKey, 1, 2, 20, "Delay in seconds before it would start fishing again after retracting the hook.");
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Blocks.PEDESTAL;
+		Settings.Pedestal.meleeWrapperRange = ConfigurationHandler.getInt(Names.Configs.MELEE_WRAPPER_RANGE, categoryKey, 5, 1, 10, "Range of the melee weapons in which these will attack when in pedestal");
+		Settings.Pedestal.meleeWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.Configs.MELEE_WRAPPER_COOLDOWN, categoryKey, 5, 1, 200, "How long it takes after a melee weapon swing before it can swing again (in ticks)");
+		Settings.Pedestal.bucketWrapperRange = ConfigurationHandler.getInt(Names.Configs.BUCKET_WRAPPER_RANGE, categoryKey, 4, 1, 10, "Range at which bucket will pickup liquid blocks or milk cows");
+		Settings.Pedestal.bucketWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.Configs.BUCKET_WRAPPER_COOLDOWN, categoryKey, 40, 1, 200, "How long it takes in between bucket actions (in ticks)");
+		Settings.Pedestal.shearsWrapperRange = ConfigurationHandler.getInt(Names.Configs.SHEARS_WRAPPER_RANGE, categoryKey, 4, 1, 10, "How long it takes between shearing actions (in ticks)");
+		Settings.Pedestal.shearsWrapperCooldown = (byte) ConfigurationHandler.getInt(Names.Configs.SHEARS_WRAPPER_COOLDOWN, categoryKey, 10, 1, 200, "Range at which shears will shear sheep or shearable blocks");
+		Settings.Pedestal.redstoneWrapperRange = ConfigurationHandler.getInt(Names.Configs.REDSTONE_WRAPPER_RANGE, categoryKey, 10, 1, 200, "Range at which pedestal will get turned on if either redstone block gets put in or redstone dust and transmitting pedestal is powered");
+		Settings.Pedestal.fishingWrapperSuccessRate = ConfigurationHandler.getInt(Names.Configs.FISHING_WRAPPER_SUCCESS_RATE, categoryKey, 0, 80, 100, "Success rate of fishing in percent. When unsuccessful it will pull the hook too late to catch a fish.");
+		Settings.Pedestal.fishingWrapperRetractDelay = ConfigurationHandler.getInt(Names.Configs.FISHING_WRAPPER_RETRACT_DELAY, categoryKey, 1, 2, 20, "Delay in seconds before it would start fishing again after retracting the hook.");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
 		category.setComment("Pedestal related settings");
 
-		categoryKey = Names.item_and_block_settings;
+		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS;
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(categoryKey));
 		category.setComment("Various settings for Reliquary items and blocks");

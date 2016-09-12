@@ -21,7 +21,7 @@ import java.util.List;
 public class ItemPotionEssence extends ItemBase {
 
 	public ItemPotionEssence() {
-		super(Names.potion_essence);
+		super(Names.Items.POTION_ESSENCE);
 		this.setMaxStackSize(64);
 		this.setHasSubtypes(true);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);

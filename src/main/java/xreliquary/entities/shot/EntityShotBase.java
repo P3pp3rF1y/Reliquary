@@ -8,10 +8,13 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
@@ -20,25 +23,29 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.reference.ClientReference;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.potions.XRPotionHelper;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public abstract class EntityShotBase extends Entity implements IProjectile {
 	private static final DataParameter<Byte> CRITICAL = EntityDataManager.createKey(EntityShotBase.class, DataSerializers.BYTE);
-	protected int xTile = -1;
-	protected int yTile = -1;
-	protected int zTile = -1;
-	protected boolean inGround = false;
+	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityShotBase.class, DataSerializers.VARINT);
+	private int xTile = -1;
+	private int yTile = -1;
+	private int zTile = -1;
+	private boolean inGround = false;
+	private List<PotionEffect> potionEffects;
 
 	/**
 	 * The owner of this arrow.
 	 */
-	public EntityPlayer shootingEntity;
+	EntityPlayer shootingEntity;
 	protected int ticksInAir = 0;
 
-	protected int ricochetCounter = 0;
-	protected boolean scheduledForDeath = false;
+	private int ricochetCounter = 0;
+	private boolean scheduledForDeath = false;
 
 	public EntityShotBase(World par1World) {
 		super(par1World);
@@ -68,7 +75,21 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	@Override
 	protected void entityInit() {
 		dataManager.register(CRITICAL, (byte) 0);
-	} //TODO remove this perhaps / doesn't seem to be used
+		dataManager.register(COLOR, 0);
+	}
+
+	public EntityShotBase addPotionEffects(List<PotionEffect> potionEffects) {
+		if (potionEffects!=null && !potionEffects.isEmpty()) {
+			this.potionEffects = new ArrayList<>();
+			for (PotionEffect potionEffect : potionEffects) {
+				this.potionEffects.add(new PotionEffect(potionEffect));
+			}
+
+			this.dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(potionEffects));
+		}
+
+		return this;
+	}
 
 	/**
 	 * Similar to setArrowHeading, it's point the throwable entity to a x, y, z
@@ -163,6 +184,10 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			this.setDead();
 		ensurePlayerShooterEntity();
 
+
+		if(this.worldObj.isRemote) {
+			this.spawnPotionParticles();
+		}
 		if(prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
 			float pythingy = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
 			//noinspection SuspiciousNameCombination
@@ -173,8 +198,8 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		IBlockState blockState = this.worldObj.getBlockState(new BlockPos(this.xTile, this.yTile, this.zTile));
 		Block block = blockState.getBlock();
 
-		if(block.getMaterial(blockState) != Material.AIR) {
-			AxisAlignedBB axisalignedbb = block.getCollisionBoundingBox(blockState, this.worldObj, new BlockPos(this.xTile, this.yTile, this.zTile));
+		if(block != Blocks.AIR) {
+			AxisAlignedBB axisalignedbb = blockState.getBoundingBox(this.worldObj, new BlockPos(this.xTile, this.yTile, this.zTile));
 
 			if(axisalignedbb != null && axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
 				this.inGround = true;
@@ -228,6 +253,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 				objectStruckByVector = new RayTraceResult(hitEntity);
 
 			if(objectStruckByVector != null) {
+				this.applyPotionEffects(objectStruckByVector);
 				this.onImpact(objectStruckByVector);
 				if(scheduledForDeath)
 					this.setDead();
@@ -237,26 +263,57 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		}
 	}
 
+	private void spawnPotionParticles() {
+		int color = this.getColor();
+
+		if(color != 0 ) {
+			double d0 = (double) (color >> 16 & 255) / 255.0D;
+			double d1 = (double) (color >> 8 & 255) / 255.0D;
+			double d2 = (double) (color & 255) / 255.0D;
+
+			for(int j = 0; j < 2; ++j) {
+				this.worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB, this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.posY + this.rand.nextDouble() * (double) this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width, d0, d1, d2);
+			}
+		}
+	}
+
+	public int getColor() {
+		return this.dataManager.get(COLOR);
+	}
+
+	private void applyPotionEffects(RayTraceResult objectStruckByVector) {
+		if(objectStruckByVector.typeOfHit == RayTraceResult.Type.ENTITY) {
+			if(objectStruckByVector.entityHit instanceof EntityLivingBase && potionEffects != null && !potionEffects.isEmpty()) {
+				EntityLivingBase living = (EntityLivingBase) objectStruckByVector.entityHit;
+				this.potionEffects.forEach(living::addPotionEffect);
+			}
+		}
+	}
+
 	/**
 	 * (abstract) Protected helper method to write subclass entity data to NBT.
 	 */
+	@SuppressWarnings("NullableProblems")
 	@Override
-	public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-		par1NBTTagCompound.setShort("xTile", (short) xTile);
-		par1NBTTagCompound.setShort("yTile", (short) yTile);
-		par1NBTTagCompound.setShort("zTile", (short) zTile);
-		par1NBTTagCompound.setByte("inGround", (byte) (inGround ? 1 : 0));
+	public void writeEntityToNBT(NBTTagCompound compound) {
+		compound.setShort("xTile", (short) xTile);
+		compound.setShort("yTile", (short) yTile);
+		compound.setShort("zTile", (short) zTile);
+		compound.setByte("inGround", (byte) (inGround ? 1 : 0));
+		XRPotionHelper.appendEffectsToNBT(compound, potionEffects);
 	}
 
 	/**
 	 * (abstract) Protected helper method to read subclass entity data from NBT.
 	 */
+	@SuppressWarnings("NullableProblems")
 	@Override
-	public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-		xTile = par1NBTTagCompound.getShort("xTile");
-		yTile = par1NBTTagCompound.getShort("yTile");
-		zTile = par1NBTTagCompound.getShort("zTile");
-		inGround = par1NBTTagCompound.getByte("inGround") == 1;
+	public void readEntityFromNBT(NBTTagCompound compound) {
+		xTile = compound.getShort("xTile");
+		yTile = compound.getShort("yTile");
+		zTile = compound.getShort("zTile");
+		inGround = compound.getByte("inGround") == 1;
+		potionEffects = PotionUtils.getFullEffectsFromTag(compound);
 	}
 
 	/**
@@ -290,22 +347,26 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 
 	// these are just simulated dice rolls, they make it slightly easier to
 	// adjust damage
-	protected int d3() {
+	int d3() {
 		return rand.nextInt(3) + 1;
 	}
 
-	protected int d6() {
+	int d6() {
 		return rand.nextInt(6) + 1;
 	}
 
-	protected int d12() {
+	int d12() {
 		return rand.nextInt(12) + 1;
 	}
 
-	protected void doDamage(EntityLivingBase e) {
+	void doDamage(EntityLivingBase e) {
 		// minor modification here, the shots are quite strong
 		// so I've made it so they only do half damage against player entities.
-		e.attackEntityFrom(this.getDamageSource(), (e instanceof EntityPlayer ? 0.5F : 1F) * this.getDamageOfShot(e));
+		e.attackEntityFrom(this.getDamageSource(), (e instanceof EntityPlayer ? 0.5F : 1F) * adjustDamageForPotionShots(this.getDamageOfShot(e)));
+	}
+
+	private float adjustDamageForPotionShots(int damageOfShot) {
+		return potionEffects != null && !potionEffects.isEmpty() ? 4 : damageOfShot; //setting the cap to damage 4 for potion shots
 	}
 
 	protected DamageSource getDamageSource() {
@@ -328,7 +389,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 * @param d is the factor of the double
 	 * @return a positive value between 0% and 50% of d
 	 */
-	protected double posGauss(double d) {
+	double posGauss(double d) {
 		return rand.nextFloat() * 0.5D * d;
 	}
 
@@ -348,7 +409,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 * @return a [comparatively] low gaussian ranging from 25% to 75% of the
 	 * parameter d
 	 */
-	protected double lowGauss(double d) {
+	double lowGauss(double d) {
 		return d - d * (rand.nextFloat() / 4 + 0.5);
 	}
 
@@ -357,10 +418,8 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 * does or doesn't ricochet. If the ricochet limit is set to 0, it will
 	 * still "ricochet" once, but will immediately self destruct by calling its
 	 * burstEffect and setting itself to dead.
-	 *
-	 * @param sideHit
 	 */
-	protected void ricochet(EnumFacing sideHit) {
+	private void ricochet(EnumFacing sideHit) {
 		switch(sideHit) {
 
 			case DOWN:
@@ -413,7 +472,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 * it could be better, but it works. As of writing this, both shots share
 	 * the same formulas.
 	 */
-	protected void seekTarget() {
+	void seekTarget() {
 		Entity closestTarget = null;
 		List<String> entitiesThatCanBeHunted = Settings.SeekerShot.entitiesThatCanBeHunted;
 		List targetsList = worldObj.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5));
@@ -477,16 +536,27 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	/**
 	 * Additional entity impact effects should go here
 	 *
-	 * @param mop the entity being struck
+	 * @param entityLiving the entity being struck
 	 */
-	abstract void onImpact(EntityLivingBase mop);
+	protected void onImpact(EntityLivingBase entityLiving) {
+		if(entityLiving != shootingEntity || ticksInAir > 3) {
+			doDamage(entityLiving);
+		}
+		spawnHitParticles(8);
+		this.setDead();
+	}
 
-	/**
-	 * Additional effects of TILE/MISC [non-entity] impacts should go here
-	 *
-	 * @param result the RayTraceResult data of the tile/misc object being struck
-	 */
-	protected abstract void onImpact(RayTraceResult result);
+	protected void onImpact(RayTraceResult result) {
+		if(result.typeOfHit == RayTraceResult.Type.ENTITY && result.entityHit != null) {
+			if(result.entityHit == shootingEntity)
+				return;
+			if(!(result.entityHit instanceof EntityLivingBase))
+				return;
+			this.onImpact((EntityLivingBase) result.entityHit);
+		} else if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
+			this.groundImpact(result.sideHit);
+		}
+	}
 
 	/**
 	 * This is the effect called when the shot reaches the ground and has no
@@ -518,7 +588,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 */
 	abstract void spawnHitParticles(int i);
 
-	protected int getShotType() {
+	private int getShotType() {
 		if(this instanceof EntityNeutralShot)
 			return Reference.NEUTRAL_SHOT_INDEX;
 		else if(this instanceof EntityExorcismShot)
@@ -566,14 +636,4 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		}
 		return ClientReference.NEUTRAL;
 	}
-
-	/**
-	 * simple overloaded method for the standard doBurstEffect, basically calls
-	 * the abstracted version wherever it is needed. It just passes sideHit as a
-	 * EnumFacing.UP, since it doesn't matter.
-	 */
-	protected void doBurstEffect() {
-		this.doBurstEffect(EnumFacing.UP);
-	}
-
 }

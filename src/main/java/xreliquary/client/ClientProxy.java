@@ -8,6 +8,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -16,6 +17,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.blocks.tile.TileEntityPedestalPassive;
@@ -37,12 +39,15 @@ import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.XRPotionHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -72,16 +77,22 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void initPotionsJEI() {
+	public void initSpecialJEIDescriptions() {
 		if(!Loader.isModLoaded(Compatibility.MOD_ID.JEI))
 			return;
 
 		List<ItemStack> subItems = new ArrayList<>();
 		ModItems.potionEssence.getSubItems(ModItems.potionEssence, ModItems.potionEssence.getCreativeTab(), subItems);
-		JEIDescriptionRegistry.register(subItems, Names.potion_essence);
+		JEIDescriptionRegistry.register(subItems, Names.Items.POTION_ESSENCE);
+
+		JEIDescriptionRegistry.register(Collections.singletonList(new ItemStack(ModItems.potion)), "potion0");
 
 		List<ItemStack> potions = new ArrayList<>();
 		List<ItemStack> splashPotions = new ArrayList<>();
+		List<ItemStack> lingeringPotions = new ArrayList<>();
+		List<ItemStack> tippedArrows = new ArrayList<>();
+		List<ItemStack> potionShots = new ArrayList<>();
+		List<ItemStack> potionMagazines = new ArrayList<>();
 
 		for(PotionEssence essence : Settings.Potions.uniquePotions) {
 			ItemStack potion = new ItemStack(ModItems.potion, 1);
@@ -92,9 +103,39 @@ public class ClientProxy extends CommonProxy {
 			ItemStack splashPotion = potion.copy();
 			NBTHelper.setBoolean("splash", splashPotion, true);
 			splashPotions.add(splashPotion);
+
+			ItemStack lingeringPotion = potion.copy();
+			NBTHelper.setBoolean("lingering", lingeringPotion, true);
+			lingeringPotions.add(lingeringPotion);
+
+			ItemStack tippedArrow = new ItemStack(ModItems.tippedArrow);
+			PotionUtils.appendEffects(tippedArrow, XRPotionHelper.changeDuration(essence.getEffects(), 0.125F));
+			tippedArrows.add(tippedArrow);
+
+			ItemStack potionShot = new ItemStack(ModItems.bullet, 1, 1);
+			PotionUtils.appendEffects(potionShot, XRPotionHelper.changeDuration(essence.getEffects(), 0.2F));
+			potionShots.add(potionShot);
+
+			ItemStack potionMagazine = new ItemStack(ModItems.magazine, 1, 1);
+			PotionUtils.appendEffects(potionMagazine, XRPotionHelper.changeDuration(essence.getEffects(), 0.2F));
+			potionMagazines.add(potionMagazine);
 		}
-		JEIDescriptionRegistry.register(potions, Names.potion);
-		JEIDescriptionRegistry.register(splashPotions, Names.potion_splash);
+		JEIDescriptionRegistry.register(potions, Names.Items.POTION);
+		JEIDescriptionRegistry.register(splashPotions, Names.Items.POTION_SPLASH);
+		JEIDescriptionRegistry.register(lingeringPotions, Names.Items.POTION_LINGERING);
+		JEIDescriptionRegistry.register(tippedArrows, Names.Items.TIPPED_ARROW);
+		JEIDescriptionRegistry.register(potionShots, "bullet1_potion");
+		JEIDescriptionRegistry.register(potionMagazines, "magazine1_potion");
+
+		List<ItemStack> mobCharms = new ArrayList<>();
+		ModItems.mobCharm.getSubItems(ModItems.mobCharm, Reliquary.CREATIVE_TAB, mobCharms);
+
+		int meta = 0;
+		for(ItemStack mobCharm : mobCharms) {
+			JEIDescriptionRegistry.register(Collections.singletonList(mobCharm), Names.Items.MOB_CHARM + meta);
+			meta++;
+		}
+
 	}
 
 	@Override
@@ -122,6 +163,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntitySeekerShot.class, RenderShot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntitySandShot.class, RenderShot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, RenderShot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityXRTippedArrow.class, RenderXRTippedArrow::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, renderManager -> new RenderSnowball(renderManager, ModItems.glowingWater, Minecraft.getMinecraft().getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, renderManager -> new RenderSnowball(renderManager, ModItems.attractionPotion, Minecraft.getMinecraft().getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, renderManager -> new RenderSnowball(renderManager, ModItems.fertilePotion, Minecraft.getMinecraft().getRenderItem()));

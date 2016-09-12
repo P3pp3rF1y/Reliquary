@@ -18,7 +18,7 @@ import xreliquary.reference.Names;
 public class ItemHolyHandGrenade extends ItemBase {
 
 	public ItemHolyHandGrenade() {
-		super(Names.holy_hand_grenade);
+		super(Names.Items.HOLY_HAND_GRENADE);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);

@@ -1,12 +1,18 @@
 package xreliquary.items.util.handgun;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
+import xreliquary.util.potions.XRPotionHelper;
+
+import java.util.List;
 
 public class HandgunData implements IHandgunData {
 	private boolean inCoolDown;
 	private long coolDownTime;
 	private short bulletCount;
 	private short bulletType;
+	private List<PotionEffect> potionEffects;
 
 	@Override
 	public NBTTagCompound serializeNBT() {
@@ -15,7 +21,7 @@ public class HandgunData implements IHandgunData {
 		compound.setLong("coolDownTime", coolDownTime);
 		compound.setShort("bulletCount", bulletCount);
 		compound.setShort("bulletType", bulletType);
-
+		XRPotionHelper.appendEffectsToNBT(compound, potionEffects);
 		return compound;
 	}
 
@@ -25,6 +31,7 @@ public class HandgunData implements IHandgunData {
 		coolDownTime = nbt.getLong("coolDownTime");
 		bulletCount = nbt.getShort("bulletCount");
 		bulletType = nbt.getShort("bulletType");
+		potionEffects = PotionUtils.getFullEffectsFromTag(nbt);
 	}
 
 	@Override
@@ -65,5 +72,15 @@ public class HandgunData implements IHandgunData {
 	@Override
 	public void setBulletType(short type) {
 		this.bulletType = type;
+	}
+
+	@Override
+	public void setPotionEffects(List<PotionEffect> potionEffects) {
+		this.potionEffects = potionEffects;
+	}
+
+	@Override
+	public List<PotionEffect> getPotionEffects() {
+		return potionEffects;
 	}
 }

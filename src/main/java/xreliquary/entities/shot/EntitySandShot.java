@@ -40,30 +40,8 @@ public class EntitySandShot extends EntityShotBase {
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		if(result.typeOfHit == RayTraceResult.Type.ENTITY && result.entityHit != null) {
-			if(result.entityHit == shootingEntity)
-				return;
-			if(!(result.entityHit instanceof EntityLivingBase))
-				return;
-			this.onImpact((EntityLivingBase) result.entityHit);
-		} else if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
-			this.groundImpact(result.sideHit);
-		}
-	}
-
-	@Override
 	void doBurstEffect(EnumFacing sideHit) {
 		spawnHitParticles(8);
-	}
-
-	@Override
-	void onImpact(EntityLivingBase mop) {
-		if(mop != shootingEntity || ticksInAir > 3) {
-			doDamage(mop);
-		}
-		spawnHitParticles(8);
-		this.setDead();
 	}
 
 	@Override

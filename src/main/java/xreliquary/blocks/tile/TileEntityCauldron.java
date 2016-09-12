@@ -25,7 +25,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -37,14 +38,13 @@ import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.PotionEssence;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-//import thaumcraft.api.blocks.BlocksTC;
 
 public class TileEntityCauldron extends TileEntityBase implements IWailaDataChangeIndicator, ITickable {
 
@@ -53,7 +53,8 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	public int glowstoneCount = 0;
 	public boolean hasGunpowder = false;
 	public boolean hasNetherwart = false;
-	public int cookTime = 0;
+	public boolean hasDragonBreath = false;
+	private int cookTime = 0;
 	private int liquidLevel = 0;
 	private boolean dataChanged;
 
@@ -72,8 +73,12 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			if(worldObj.isRemote) {
 				for(int particleCount = 0; particleCount <= 2; ++particleCount)
 					spawnBoilingParticles();
-				if(hasGunpowder)
+
+				if(hasDragonBreath)
+					spawnDragonBreathParticles();
+				else if(hasGunpowder)
 					spawnGunpowderParticles();
+
 				if(glowstoneCount > 0)
 					spawnGlowstoneParticles();
 				if(hasNetherwart) {
@@ -88,13 +93,8 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		}
 	}
 
-	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
-		return oldState.getBlock() != newState.getBlock();
-	}
-
 	@SideOnly(Side.CLIENT)
-	public void spawnBoilingParticles() {
+	private void spawnBoilingParticles() {
 		if(worldObj.rand.nextInt(getCookTime() * getCookTime()) > cookTime * cookTime)
 			return;
 		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
@@ -118,13 +118,12 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return (float) (6 + 3 * j) / 16.0F;
 	}
 
-	public int getColor(PotionEssence essence) {
-		//basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
+	private int getColor(PotionEssence essence) {
 		return PotionUtils.getPotionColorFromEffectList(essence == null || essence.getEffects() == null ? Collections.emptyList() : essence.getEffects());
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void spawnGunpowderParticles() {
+	private void spawnGunpowderParticles() {
 		if(worldObj.rand.nextInt(8) > 0)
 			return;
 		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
@@ -133,7 +132,16 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void spawnGlowstoneParticles() {
+	private void spawnDragonBreathParticles() {
+		if(worldObj.rand.nextInt(8) > 0)
+			return;
+		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
+		worldObj.spawnParticle(EnumParticleTypes.DRAGON_BREATH, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void spawnGlowstoneParticles() {
 		if(worldObj.rand.nextInt(8) > 0)
 			return;
 		double gauss = 0.5D + worldObj.rand.nextFloat() / 2;
@@ -143,7 +151,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void spawnNetherwartParticles() {
+	private void spawnNetherwartParticles() {
 		if(worldObj.rand.nextInt(8) > 0)
 			return;
 		double gauss = 0.5D + worldObj.rand.nextFloat() / 2;
@@ -153,7 +161,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void spawnRedstoneParticles() {
+	private void spawnRedstoneParticles() {
 		if(worldObj.rand.nextInt(10) / this.redstoneCount > 0)
 			return;
 		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
@@ -162,7 +170,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void spawnFinishedParticles() {
+	private void spawnFinishedParticles() {
 		if(worldObj.rand.nextInt(8) > 0)
 			return;
 		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
@@ -177,6 +185,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		this.glowstoneCount = tag.getInteger("glowstoneCount");
 		this.hasNetherwart = tag.getBoolean("hasNetherwart");
 		this.hasGunpowder = tag.getBoolean("hasGunpowder");
+		this.hasDragonBreath = tag.getBoolean("hasDragonBreath");
 		this.redstoneCount = tag.getInteger("redstoneCount");
 		this.cookTime = tag.getInteger("cookTime");
 		this.potionEssence = new PotionEssence((NBTTagCompound) tag.getTag("potionEssence"));
@@ -184,6 +193,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			this.potionEssence = null;
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
@@ -192,17 +202,18 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		compound.setInteger("redstoneCount", redstoneCount);
 		compound.setInteger("glowstoneCount", glowstoneCount);
 		compound.setBoolean("hasGunpowder", hasGunpowder);
+		compound.setBoolean("hasDragonBreath", hasDragonBreath);
 		compound.setBoolean("hasNetherwart", hasNetherwart);
 		compound.setTag("potionEssence", potionEssence == null ? new NBTTagCompound() : potionEssence.writeToNBT());
 
 		return compound;
 	}
 
-	public boolean finishedCooking() {
-		return hasNetherwart && potionEssence != null && this.cookTime >= getCookTime();
+	private boolean finishedCooking() {
+		return hasNetherwart && potionEssence != null && this.cookTime >= getCookTime() && (!hasDragonBreath || hasGunpowder);
 	}
 
-	public NBTTagCompound removeContainedPotion(World world) {
+	public NBTTagCompound removeContainedPotion() {
 		if(!hasNetherwart || potionEssence == null || getLiquidLevel() <= 0)
 			return null;
 
@@ -215,19 +226,21 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return tag;
 	}
 
-	public NBTTagCompound getFinishedPotion() {
+	private NBTTagCompound getFinishedPotion() {
 		NBTTagCompound tag = potionEssence.writeToNBT();
 		NBTTagList effectsList = tag.getTagList("effects", 10);
 		NBTTagCompound newTag = new NBTTagCompound();
 		newTag.setTag("effects", effectsList);
 		newTag.setBoolean("hasPotion", true);
-		if(hasGunpowder) {
+		if (hasDragonBreath) {
+			newTag.setBoolean("lingering", true);
+		} else if(hasGunpowder) {
 			newTag.setBoolean("splash", true);
 		}
 		return newTag;
 	}
 
-	public void clearAllFields() {
+	private void clearAllFields() {
 		this.cookTime = 0;
 		this.glowstoneCount = 0;
 		this.hasGunpowder = false;
@@ -235,18 +248,27 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		this.redstoneCount = 0;
 		this.potionEssence = null;
 		this.dataChanged = true;
+		this.hasDragonBreath = false;
 		IBlockState blockState = worldObj.getBlockState(this.getPos());
 		worldObj.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
 	}
 
-	public boolean isItemValidForInput(ItemStack ist) {
-		//noinspection SimplifiableIfStatement
-		if(getLiquidLevel() < 3)
-			return false;
-		return ((ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null) || (ist.getItem() == Items.GUNPOWDER && !this.hasGunpowder) || (ist.getItem() == Items.GLOWSTONE_DUST && this.glowstoneCount < getGlowstoneAmpLimit()) || (ist.getItem() == Items.REDSTONE && this.redstoneCount < getRedstoneAmpLimit()) || (ist.getItem() == Items.NETHER_WART && !this.hasNetherwart));
+	@SuppressWarnings("SimplifiableIfStatement")
+	private boolean isItemValidForInput(ItemStack ist) {
+		if(ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null)
+			return true;
+		if(ist.getItem() == Items.GUNPOWDER && !this.hasGunpowder)
+			return true;
+		if(ist.getItem() == Items.GLOWSTONE_DUST && this.glowstoneCount < getGlowstoneAmpLimit())
+			return true;
+		if(ist.getItem() == Items.REDSTONE && this.redstoneCount < getRedstoneAmpLimit())
+			return true;
+		if(ist.getItem() == Items.NETHER_WART && !this.hasNetherwart)
+			return true;
+		return ist.getItem() == Items.DRAGON_BREATH && !this.hasDragonBreath;
 	}
 
-	public void addItem(ItemStack ist) {
+	private void addItem(ItemStack ist) {
 		if(ist.getItem() instanceof ItemPotionEssence) {
 			potionEssence = new PotionEssence(ist.getTagCompound());
 		} else if(ist.getItem() == Items.GUNPOWDER) {
@@ -259,21 +281,23 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			potionEssence.addRedstone(this.redstoneCount);
 		} else if(ist.getItem() == Items.NETHER_WART) {
 			this.hasNetherwart = true;
+		} else if(ist.getItem() == Items.DRAGON_BREATH) {
+			this.hasDragonBreath = true;
 		}
 
 		IBlockState blockState = worldObj.getBlockState(this.getPos());
 		worldObj.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
 	}
 
-	public int getGlowstoneAmpLimit() {
+	private int getGlowstoneAmpLimit() {
 		return Settings.ApothecaryCauldron.glowstoneLimit;
 	}
 
-	public int getRedstoneAmpLimit() {
+	private int getRedstoneAmpLimit() {
 		return Settings.ApothecaryCauldron.redstoneLimit;
 	}
 
-	public List<Block> getHeatSources() {
+	private List<Block> getHeatSources() {
 		List<Block> heatSources = new ArrayList<>();
 		List<String> heatSourceBlockNames = Settings.ApothecaryCauldron.heatSources;
 
@@ -289,12 +313,12 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return heatSources;
 	}
 
-	public int getCookTime() {
+	private int getCookTime() {
 		return Settings.ApothecaryCauldron.cookTime;
 	}
 
 	public void handleCollidingEntity(World world, BlockPos pos, Entity collidingEntity) {
-		int l = 3;
+		int l = getLiquidLevel();
 		float f = (float) pos.getY() + (6.0F + (float) (3 * l)) / 16.0F;
 		if(collidingEntity.getEntityBoundingBox().minY <= (double) f) {
 
@@ -337,7 +361,13 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return liquidLevel;
 	}
 
-	public void fillWithRain(World world) {
+	@SuppressWarnings("NullableProblems")
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+		return oldState.getBlock() != newState.getBlock();
+	}
+
+	public void fillWithRain() {
 		if(getLiquidLevel() < 3 && !finishedCooking()) {
 			setLiquidLevel(getLiquidLevel() + 1);
 		}
@@ -346,50 +376,66 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	public boolean handleBlockActivation(World world, EntityPlayer player) {
 		ItemStack itemStack = player.inventory.getCurrentItem();
 
-		if(itemStack.getItem() == Items.WATER_BUCKET || (itemStack.getItem() instanceof IFluidContainerItem && ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack).equals(new FluidStack(FluidRegistry.WATER, 1000)))) {
-			if(getLiquidLevel() < 3 && !finishedCooking()) {
-				if(!player.capabilities.isCreativeMode) {
-					if(itemStack.getItem() == Items.WATER_BUCKET) {
-						player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.BUCKET));
-					} else {
-						((IFluidContainerItem) itemStack.getItem()).drain(itemStack, 1000, true);
-					}
-				}
+		if(itemStack == null)
+			return false;
 
-				setLiquidLevel(3);
-				cookTime = 0;
+		if(getLiquidLevel() < 3 && !finishedCooking()) {
+			if(itemStack.getItem() == Items.WATER_BUCKET) {
+				if(!player.capabilities.isCreativeMode)
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.BUCKET));
+			} else if(itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+				FluidStack waterStack = new FluidStack(FluidRegistry.WATER, 1000);
+				IFluidHandler fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+				//noinspection ConstantConditions
+				if(!fluidHandler.drain(waterStack, false).equals(waterStack))
+					return false;
+
+				if(!player.capabilities.isCreativeMode)
+					fluidHandler.drain(waterStack, true);
+			} else {
+				return false;
 			}
+			setLiquidLevel(3);
+			cookTime = 0;
 
 			return true;
-		} else {
-			if(itemStack.getItem() == ModItems.potion && (itemStack.getTagCompound() == null || !itemStack.getTagCompound().getBoolean("hasPotion"))) {
-				if(getLiquidLevel() > 0) {
-
-					if(finishedCooking()) {
-						ItemStack potion = new ItemStack(ModItems.potion, 1, 0);
-						potion.setTagCompound(removeContainedPotion(world));
-
-						--itemStack.stackSize;
-
-						if(itemStack.stackSize <= 0) {
-							player.inventory.setInventorySlotContents(player.inventory.currentItem, potion);
-						} else if(!player.inventory.addItemStackToInventory(potion)) {
-							world.spawnEntityInWorld(new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
-						}
-					}
-				}
-			} else if(isItemValidForInput(itemStack)) {
-				addItem(itemStack);
+		} else if(itemStack.getItem() == ModItems.potion && (itemStack.getTagCompound() == null || !itemStack.getTagCompound().getBoolean("hasPotion")) && finishedCooking() && getLiquidLevel() > 0) {
+			if(finishedCooking()) {
+				ItemStack potion = new ItemStack(ModItems.potion, 1, 0);
+				potion.setTagCompound(removeContainedPotion());
 
 				--itemStack.stackSize;
+
+				if(itemStack.stackSize <= 0) {
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, potion);
+				} else if(!player.inventory.addItemStackToInventory(potion)) {
+					world.spawnEntityInWorld(new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
+				}
+
+				return true;
+			}
+		} else if(getLiquidLevel() == 3) {
+			if(isItemValidForInput(itemStack)) {
+				addItem(itemStack);
+
+				if (itemStack.getItem() == Items.DRAGON_BREATH) {
+					if (InventoryHelper.tryToAddToInventory(new ItemStack(Items.GLASS_BOTTLE),player.inventory, 1) != 1) {
+						InventoryHelper.spawnItemStack(world, pos.getX() + 0.5f, pos.getY() + 1.5f, pos.getZ() + 0.5f, new ItemStack(Items.GLASS_BOTTLE));
+					}
+				}
+
+				--itemStack.stackSize;
+
 				if(itemStack.stackSize <= 0)
 					player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+
+				return true;
 			}
-			return true;
 		}
+		return false;
 	}
 
-	public void setLiquidLevel(int liquidLevel) {
+	private void setLiquidLevel(int liquidLevel) {
 		this.liquidLevel = liquidLevel;
 		if(this.worldObj != null) {
 			IBlockState blockState = this.worldObj.getBlockState(this.getPos());

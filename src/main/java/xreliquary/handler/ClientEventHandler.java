@@ -4,25 +4,28 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.opengl.GL11;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
@@ -32,9 +35,11 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
+import xreliquary.util.XpHelper;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class ClientEventHandler {
@@ -436,7 +441,83 @@ public class ClientEventHandler {
 			return;
 
 		int experience = NBTHelper.getInteger("experience", heroMedallionStack);
-		renderStandardTwoItemHUD(mc, player, heroMedallionStack, null, Settings.HudPositions.heroMedallion, Colors.get(Colors.GREEN), experience);
+		int level = XpHelper.getLevelForExperience(experience);
+		int remainingExperience = experience - XpHelper.getExperienceForLevel(level);
+		int maxBarExperience = XpHelper.getExperienceLimitOnLevel(level);
+
+		renderHeroXpBar(mc, remainingExperience, maxBarExperience, Settings.HudPositions.heroMedallion);
+		renderStandardTwoItemHUD(mc, player, heroMedallionStack, null, Settings.HudPositions.heroMedallion, Colors.get(Colors.GREEN), level, 20);
+	}
+
+	private static final ResourceLocation XP_BAR = new ResourceLocation(Reference.MOD_ID, "textures/gui/xp_bar.png");
+
+	private void renderHeroXpBar(Minecraft mc, int partialExperience, int experienceLimit, int hudPosition) {
+		mc.renderEngine.bindTexture(XP_BAR);
+		ScaledResolution sr = new ScaledResolution(mc);
+
+		int hudOverlayX = 10;
+		int hudOverlayY = 84;
+		switch(hudPosition) {
+			case 1: {
+				hudOverlayX = sr.getScaledWidth() - 19;
+				break;
+			}
+			case 2: {
+				hudOverlayY = sr.getScaledHeight() - 8;
+				break;
+			}
+			case 3: {
+				hudOverlayX = sr.getScaledWidth() - 19;
+				hudOverlayY = sr.getScaledHeight() - 8;
+				break;
+			}
+			default: {
+				break;
+			}
+		}
+
+		float experience = ((float) partialExperience) / ((float) experienceLimit);
+
+		int k = (int) (experience * 74.0F);
+		GlStateManager.pushMatrix();
+		GlStateManager.pushAttrib();
+		GlStateManager.clear(256);
+		GlStateManager.matrixMode(GL11.GL_PROJECTION);
+		GlStateManager.loadIdentity();
+		GlStateManager.ortho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
+		GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+		GlStateManager.loadIdentity();
+		GlStateManager.translate(0.0F, 0.0F, -2000.0F);
+
+		GlStateManager.disableLighting();
+		GlStateManager.enableBlend();
+
+		this.drawTexturedModalRect(hudOverlayX, hudOverlayY, 0, 0, 11, 74);
+
+		if(k > 0) {
+			this.drawTexturedModalRect(hudOverlayX, hudOverlayY, 11, 0, 11, k);
+		}
+
+		GlStateManager.disableBlend();
+		GlStateManager.enableLighting();
+		GlStateManager.popAttrib();
+		GlStateManager.popMatrix();
+	}
+
+	private void drawTexturedModalRect(double x, double y, double textureX, double textureY, double width, double height) {
+		double minU = textureX / 22D;
+		double maxU = (textureX + width) / 22D;
+		double minV = textureY + (74D - height) / 74D;
+		double maxV = 1D;
+
+		Tessellator tessellator = Tessellator.getInstance();
+		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+		vertexbuffer.pos(x, y, 0).tex(minU, maxV).endVertex();
+		vertexbuffer.pos(x + width, y, 0).tex(maxU, maxV).endVertex();
+		vertexbuffer.pos(x + width, y - height, 0).tex(maxU, minV).endVertex();
+		vertexbuffer.pos(x, y - height, 0).tex(minU, minV).endVertex();
+		tessellator.draw();
 	}
 
 	private void handlePyromancerStaffHUDCheck(Minecraft mc) {
@@ -579,13 +660,23 @@ public class ClientEventHandler {
 
 		ItemStack mainBulletStack = null;
 		if(mainHandgunStack != null) {
-			mainBulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(mainHandgunStack), ModItems.handgun.getBulletType(mainHandgunStack));
+			mainBulletStack = getBulletStackFromHandgun(mainHandgunStack);
 		}
 		ItemStack offBulletStack = null;
 		if(offHandgunStack != null) {
-			offBulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(offHandgunStack), ModItems.handgun.getBulletType(offHandgunStack));
+			offBulletStack = getBulletStackFromHandgun(offHandgunStack);
 		}
 		renderHandgunHUD(mc, player, mainHandgunStack, mainBulletStack, offHandgunStack, offBulletStack);
+	}
+
+	private ItemStack getBulletStackFromHandgun(ItemStack handgun) {
+		ItemStack bulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(handgun), ModItems.handgun.getBulletType(handgun));
+		List<PotionEffect> potionEffects = ModItems.handgun.getPotionEffects(handgun);
+		if(potionEffects != null && potionEffects.size() > 0) {
+			PotionUtils.appendEffects(bulletStack, potionEffects);
+		}
+
+		return bulletStack;
 	}
 
 	private static void renderHandgunHUD(Minecraft minecraft, EntityPlayer player, ItemStack mainHandgunStack, ItemStack mainBulletStack, ItemStack offHandgunStack, ItemStack offBulletStack) {
@@ -702,6 +793,10 @@ public class ClientEventHandler {
 	}
 
 	private static void renderStandardTwoItemHUD(Minecraft minecraft, EntityPlayer player, ItemStack hudStack, ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride) {
+		renderStandardTwoItemHUD(minecraft, player, hudStack, secondaryStack, hudPosition, colorOverride, stackSizeOverride, 0);
+	}
+
+	private static void renderStandardTwoItemHUD(Minecraft minecraft, EntityPlayer player, ItemStack hudStack, ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride, int xOffset) {
 		int stackSize = 0;
 		if(stackSizeOverride > 0)
 			stackSize = stackSizeOverride;
@@ -714,10 +809,10 @@ public class ClientEventHandler {
 		GlStateManager.pushMatrix();
 		ScaledResolution sr = new ScaledResolution(minecraft);
 		GlStateManager.clear(256);
-		GlStateManager.matrixMode(5889);
+		GlStateManager.matrixMode(GL11.GL_PROJECTION);
 		GlStateManager.loadIdentity();
 		GlStateManager.ortho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
-		GlStateManager.matrixMode(5888);
+		GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 		GlStateManager.loadIdentity();
 		GlStateManager.translate(0.0F, 0.0F, -2000.0F);
 
@@ -728,13 +823,13 @@ public class ClientEventHandler {
 		GlStateManager.enableColorMaterial();
 		GlStateManager.enableLighting();
 
-		int hudOverlayX = 8;
+		int hudOverlayX = 8 + xOffset;
 		int hudOverlayY = 8;
 
 		boolean leftSide = hudPosition == 0 || hudPosition == 2;
 		switch(hudPosition) {
 			case 1: {
-				hudOverlayX = sr.getScaledWidth() - 8;
+				hudOverlayX = sr.getScaledWidth() - (8 + xOffset);
 				break;
 			}
 			case 2: {
@@ -742,7 +837,7 @@ public class ClientEventHandler {
 				break;
 			}
 			case 3: {
-				hudOverlayX = sr.getScaledWidth() - 8;
+				hudOverlayX = sr.getScaledWidth() - (8 + xOffset);
 				hudOverlayY = (int) (sr.getScaledHeight() - (18 * overlayScale));
 				break;
 			}

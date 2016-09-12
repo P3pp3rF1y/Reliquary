@@ -46,26 +46,6 @@ public class InventoryHelper {
 		}
 	}
 
-	public static void removeItem(ItemStack stack, IInventory inventory, int quantity) {
-		InventoryHelper.removeItem(stack, inventory, quantity, -1);
-	}
-
-	public static void removeItem(ItemStack stack, IInventory inventory, int quantity, int limit) {
-		for(int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
-			ItemStack ist = inventory.getStackInSlot(slot);
-			if(ist == null) {
-				continue;
-			}
-			if(StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), stack)) {
-				while(quantity > 0 && inventory.getStackInSlot(slot) != null) {
-					inventory.decrStackSize(slot, 1);
-					quantity--;
-				}
-			}
-		}
-		inventory.markDirty();
-	}
-
 	public static ItemStack getTargetItem(ItemStack self, IInventory inventory, boolean disposeOfItem) {
 		ItemStack targetItem = null;
 		int itemQuantity = 0;
@@ -97,7 +77,7 @@ public class InventoryHelper {
 		return InventoryHelper.getItemQuantity(stack, inventory, 0);
 	}
 
-	public static int getItemQuantity(ItemStack stack, IInventory inventory, int limit) {
+	private static int getItemQuantity(ItemStack stack, IInventory inventory, int limit) {
 		int itemQuantity = 0;
 		for(int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
 			ItemStack newStack = inventory.getStackInSlot(slot);
@@ -146,6 +126,7 @@ public class InventoryHelper {
 		int count = amountDecreased;
 		if(suggestedSlots.size() > 0 && itemCount >= minCount + amountDecreased) {
 			for(int slot : suggestedSlots) {
+				//noinspection ConstantConditions
 				int stackSize = player.inventory.getStackInSlot(slot).stackSize;
 				if(stackSize >= count) {
 					player.inventory.decrStackSize(slot, count);
@@ -168,7 +149,9 @@ public class InventoryHelper {
 			}
 			//storage drawers compatibility loop
 			while(inventory.getStackInSlot(slot) != null && StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents) && maxToRemove > numberRemoved) {
+				//noinspection ConstantConditions
 				numberRemoved += Math.min(maxToRemove - numberRemoved, inventory.getStackInSlot(slot).stackSize);
+				//noinspection ConstantConditions
 				inventory.decrStackSize(slot, Math.min(maxToRemove, inventory.getStackInSlot(slot).stackSize));
 			}
 
@@ -181,16 +164,17 @@ public class InventoryHelper {
 	public static int tryToAddToInventory(ItemStack contents, IInventory inventory, int maxToAdd) {
 		return tryToAddToInventory(contents, inventory, maxToAdd, EnumFacing.UP);
 	}
+
 	public static int tryToAddToInventory(ItemStack contents, IInventory inventory, int maxToAdd, EnumFacing insertDirection) {
 		int numberAdded = 0;
 
-		if (inventory instanceof ISidedInventory) {
+		if(inventory instanceof ISidedInventory) {
 			ISidedInventory sidedInventory = (ISidedInventory) inventory;
 
 			int[] slotsForFace = sidedInventory.getSlotsForFace(insertDirection);
 			for(int slot : slotsForFace) {
-				if (sidedInventory.getStackInSlot(slot) == null) {
-					numberAdded += insertIntoEmptySlot(contents, sidedInventory, slot, maxToAdd, insertDirection);
+				if(sidedInventory.getStackInSlot(slot) == null && sidedInventory.canInsertItem(slot, contents, insertDirection)) {
+					numberAdded += insertIntoEmptySlot(contents, sidedInventory, slot, maxToAdd);
 				} else if(StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
 					//noinspection ConstantConditions
 					if(inventory.getStackInSlot(slot).stackSize == Math.min(inventory.getStackInSlot(slot).getMaxStackSize(), inventory.getInventoryStackLimit())) {
@@ -205,7 +189,7 @@ public class InventoryHelper {
 
 		} else {
 			for(int slot = 0; slot < Math.min(inventory.getSizeInventory(), inventory.getSizeInventory()); slot++) {
-				if(inventory.getStackInSlot(slot) == null) {
+				if(inventory.getStackInSlot(slot) == null && inventory.isItemValidForSlot(slot, contents)) {
 					numberAdded += insertIntoEmptySlot(contents, inventory, slot, maxToAdd);
 				} else if(StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
 					//noinspection ConstantConditions
@@ -247,12 +231,12 @@ public class InventoryHelper {
 		return numberAdded;
 	}
 
-	private static int insertIntoEmptySlot(ItemStack contents, ISidedInventory inventory, int slot, int maxToAdd, EnumFacing insertDirection) {
+	private static int insertIntoEmptySlot(ItemStack contents, ISidedInventory inventory, int slot, int maxToAdd) {
 		int numberAdded = 0;
 		ItemStack stackInSlot = inventory.getStackInSlot(slot);
 
 		//loop because of storage drawers like inventories
-		while(inventory.canInsertItem(slot, contents, insertDirection) && (stackInSlot == null || stackInSlot.stackSize > stackInSlot.getMaxStackSize()) && maxToAdd > numberAdded) {
+		while((stackInSlot == null || stackInSlot.stackSize > stackInSlot.getMaxStackSize()) && maxToAdd > numberAdded) {
 			int maxSlotAddition = stackInSlot == null ? contents.getMaxStackSize() : stackInSlot.getMaxStackSize() - stackInSlot.stackSize;
 			int stackAddition = Math.min(maxSlotAddition, maxToAdd - numberAdded);
 			ItemStack newContents = contents.copy();

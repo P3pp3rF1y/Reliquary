@@ -28,7 +28,7 @@ public class BlockAlkahestryAltar extends BlockBase {
 	private final boolean isActive;
 
 	public BlockAlkahestryAltar(boolean isActive) {
-		super(Material.ROCK, (isActive ? Names.altar : Names.altar_idle));
+		super(Material.ROCK, (isActive ? Names.Blocks.ALTAR : Names.Blocks.ALTAR_IDLE));
 		this.isActive = isActive;
 
 		this.setHardness(1.5F);

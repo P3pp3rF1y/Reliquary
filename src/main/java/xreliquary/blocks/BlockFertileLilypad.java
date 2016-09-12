@@ -33,7 +33,7 @@ public class BlockFertileLilypad extends BlockBush {
 
 	public BlockFertileLilypad() {
 		this.setTickRandomly(false);
-		this.setUnlocalizedName(Names.fertile_lilypad);
+		this.setUnlocalizedName(Names.Blocks.FERTILE_LILYPAD);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 

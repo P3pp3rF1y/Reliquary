@@ -25,14 +25,16 @@ public class ItemModelLocations {
 	public static int ROD_OF_LYSSA_CAST = 3;
 	public static final int POTION = 4;
 	public static final int POTION_SPLASH = 5;
+	public static final int POTION_LINGERING = 6;
 
 	private ItemModelLocations() {
-		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.infernal_tear, "inventory"));
-		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.infernal_tear_empty, "inventory"));
-		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.rod_of_lyssa, "inventory"));
-		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.rod_of_lyssa + "_cast", "inventory"));
-		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.potion, "inventory"));
-		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.potion_splash, "inventory"));
+		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.Items.INFERNAL_TEAR, "inventory"));
+		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.Items.INFERNAL_TEAR_EMPTY, "inventory"));
+		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.Items.ROD_OF_LYSSA, "inventory"));
+		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.Items.ROD_OF_LYSSA + "_cast", "inventory"));
+		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.Items.POTION, "inventory"));
+		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.Items.POTION_SPLASH, "inventory"));
+		models.add(new ModelResourceLocation(Reference.DOMAIN + Names.Items.POTION_LINGERING, "inventory"));
 	}
 
 	public ModelResourceLocation getModel(int modelIndex) {

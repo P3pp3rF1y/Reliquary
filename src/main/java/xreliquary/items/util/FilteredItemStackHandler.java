@@ -308,7 +308,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 		ItemStack existing = this.stacks[slot];
 
-		int limit = getStackLimit(slot, parentSlot >= filterStacks.length ? stack : filterStacks[parentSlot]);
+		int limit = getStackLimit(parentSlot >= filterStacks.length ? stack : filterStacks[parentSlot]);
 		if(existing != null) {
 			limit -= existing.stackSize;
 		}
@@ -418,12 +418,21 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 			totalAmounts[i] = ((NBTTagInt) amounts.get(i)).getInt();
 		}
 
+		int lastSlot = -1;
+
 		NBTTagList tagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		for(int i = 0; i < tagList.tagCount(); i++) {
 			NBTTagCompound itemTags = tagList.getCompoundTagAt(i);
 			int slot = itemTags.getInteger("Slot");
 
 			if(slot >= 0 && slot < stacks.length) {
+				//fill in null for missing slot numbers in case a slot got deleted
+				while (lastSlot + 1 != slot) {
+					lastSlot++;
+					stacks[lastSlot] = null;
+				}
+				lastSlot = slot;
+
 				stacks[slot] = ItemStack.loadItemStackFromNBT(itemTags);
 
 				if (filterStacks.length> getParentSlot(slot)) {
@@ -432,6 +441,12 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 					filterStacks[getParentSlot(slot)] = filterStack;
 				}
 			}
+		}
+
+		//fill in nulls at the end of stacks collection
+		while (lastSlot + 1 <stacks.length) {
+			lastSlot++;
+			stacks[lastSlot] = null;
 		}
 	}
 
@@ -456,12 +471,14 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 			throw new RuntimeException("Slot " + slot + " not in valid range - [0," + stacks.length + ")");
 	}
 
-	private int getStackLimit(int slot, ItemStack stack) {
+	private int getStackLimit(ItemStack stack) {
 		return stack.getMaxStackSize();
 	}
 
 	private void setSize(int size) {
-		stacks = new ItemStack[size];
+		if (stacks.length != size) {
+			stacks = new ItemStack[size];
+		}
 	}
 
 	private void setFilterStacksSize(int size) {

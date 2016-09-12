@@ -27,7 +27,7 @@ import xreliquary.util.RegistryHelper;
 public class ItemEmperorChalice extends ItemToggleable {
 
 	public ItemEmperorChalice() {
-		super(Names.emperor_chalice);
+		super(Names.Items.EMPEROR_CHALICE);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);

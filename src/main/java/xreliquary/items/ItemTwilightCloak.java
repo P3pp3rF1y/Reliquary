@@ -18,7 +18,7 @@ import xreliquary.reference.Settings;
 public class ItemTwilightCloak extends ItemToggleable {
 
 	public ItemTwilightCloak() {
-		super(Names.twilight_cloak);
+		super(Names.Items.TWILIGHT_CLOAK);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;

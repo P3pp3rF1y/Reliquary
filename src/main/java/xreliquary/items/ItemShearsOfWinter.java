@@ -41,7 +41,7 @@ import java.util.Random;
  */
 public class ItemShearsOfWinter extends ItemShears {
 	public ItemShearsOfWinter() {
-		this.setUnlocalizedName(Names.shears_of_winter);
+		this.setUnlocalizedName(Names.Items.SHEARS_OF_WINTER);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);

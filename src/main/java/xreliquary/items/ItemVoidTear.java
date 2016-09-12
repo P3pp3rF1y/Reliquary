@@ -40,7 +40,7 @@ import java.util.List;
 public class ItemVoidTear extends ItemToggleable {
 
 	public ItemVoidTear() {
-		super(Names.void_tear);
+		super(Names.Items.VOID_TEAR);
 		setMaxStackSize(1);
 		canRepair = false;
 		this.setCreativeTab(null);

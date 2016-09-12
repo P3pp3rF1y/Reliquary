@@ -19,7 +19,7 @@ import xreliquary.util.NBTHelper;
 
 public class ItemVoidTearEmpty extends ItemBase {
 	public ItemVoidTearEmpty() {
-		super(Names.void_tear_empty);
+		super(Names.Items.VOID_TEAR_EMPTY);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(16);
 		canRepair = false;

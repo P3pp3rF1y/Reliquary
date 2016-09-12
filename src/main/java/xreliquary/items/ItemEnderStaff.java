@@ -43,7 +43,7 @@ import java.util.List;
 public class ItemEnderStaff extends ItemToggleable {
 
 	public ItemEnderStaff() {
-		super(Names.ender_staff);
+		super(Names.Items.ENDER_STAFF);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;

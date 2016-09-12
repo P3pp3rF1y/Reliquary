@@ -19,7 +19,7 @@ import xreliquary.reference.Settings;
 public class ItemAngelicFeather extends ItemBase {
 
 	public ItemAngelicFeather() {
-		super(Names.angelic_feather);
+		super(Names.Items.ANGELIC_FEATHER);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;

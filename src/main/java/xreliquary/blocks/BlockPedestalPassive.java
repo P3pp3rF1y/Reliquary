@@ -34,7 +34,7 @@ public class BlockPedestalPassive extends BlockBase {
 	private static final AxisAlignedBB PEDESTAL_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.6875D, 0.875D);
 
 	public BlockPedestalPassive() {
-		super(Material.ROCK, Names.pedestal_passive);
+		super(Material.ROCK, Names.Blocks.PEDESTAL_PASSIVE);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 

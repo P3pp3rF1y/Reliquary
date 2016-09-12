@@ -28,7 +28,7 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 	public static List<String> ids = ImmutableList.of("minecraft:dirt", "minecraft:grass", "minecraft:gravel", "minecraft:cobblestone", "minecraft:stone", "minecraft:sand", "minecraft:sandstone", "minecraft:snow", "minecraft:soul_sand", "minecraft:netherrack", "minecraft:end_stone");
 
 	public ItemDestructionCatalyst() {
-		super(Names.destruction_catalyst);
+		super(Names.Items.DESTRUCTION_CATALYST);
 		this.setMaxStackSize(1);
 		canRepair = false;
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);

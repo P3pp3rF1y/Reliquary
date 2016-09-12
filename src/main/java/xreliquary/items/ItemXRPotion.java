@@ -37,7 +37,7 @@ import java.util.List;
 public class ItemXRPotion extends ItemBase {
 
 	public ItemXRPotion() {
-		super(Names.potion);
+		super(Names.Items.POTION);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(64);
 		this.setHasSubtypes(true);
@@ -86,6 +86,10 @@ public class ItemXRPotion extends ItemBase {
 		return NBTHelper.getBoolean("splash", ist);
 	}
 
+	public boolean getLingering(ItemStack ist) {
+		return NBTHelper.getBoolean("lingering", ist);
+	}
+
 	/**
 	 * How long it takes to use or consume an item
 	 */
@@ -99,6 +103,7 @@ public class ItemXRPotion extends ItemBase {
 		subItems.add(new ItemStack(ModItems.potion)); //just an empty one
 
 		List<ItemStack> splashPotions = new ArrayList<>();
+		List<ItemStack> lingeringPotions = new ArrayList<>();
 		for(PotionEssence essence : Settings.Potions.uniquePotions) {
 			ItemStack potion = new ItemStack(ModItems.potion, 1);
 			potion.setTagCompound(essence.writeToNBT());
@@ -107,10 +112,15 @@ public class ItemXRPotion extends ItemBase {
 			ItemStack splashPotion = potion.copy();
 			NBTHelper.setBoolean("splash", splashPotion, true);
 
+			ItemStack lingeringPotion = potion.copy();
+			NBTHelper.setBoolean("lingering", lingeringPotion, true);
+
 			subItems.add(potion);
 			splashPotions.add(splashPotion);
+			lingeringPotions.add(lingeringPotion);
 		}
 		subItems.addAll(splashPotions);
+		subItems.addAll(lingeringPotions);
 	}
 
 	/**
@@ -124,6 +134,19 @@ public class ItemXRPotion extends ItemBase {
 		return EnumAction.NONE;
 	}
 
+	@Override
+	public String getUnlocalizedName(ItemStack stack) {
+		if (!stack.hasTagCompound() || stack.getTagCompound().hasNoTags()) {
+			return "item.potion_empty";
+		} else if (getLingering(stack)) {
+			return "item.potion_lingering";
+		} else if (getSplash(stack)) {
+			return "item.potion_splash";
+		}
+
+		return super.getUnlocalizedName(stack);
+	}
+
 	/**
 	 * Called whenever this item is equipped and the right mouse button is
 	 * pressed. Args: itemStack, world, entityPlayer
@@ -132,7 +155,7 @@ public class ItemXRPotion extends ItemBase {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
 		PotionEssence essence = new PotionEssence(ist.getTagCompound());
-		if(!getSplash(ist)) {
+		if(!getSplash(ist) && !getLingering(ist)) {
 			if(essence.getEffects().size() > 0) {
 				player.setActiveHand(hand);
 				return new ActionResult<>(EnumActionResult.SUCCESS, ist);
@@ -145,7 +168,7 @@ public class ItemXRPotion extends ItemBase {
 					if(rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
 						if(world.getBlockState(rayTraceResult.getBlockPos()).getBlock() instanceof BlockApothecaryCauldron) {
 							TileEntityCauldron cauldronTile = (TileEntityCauldron) world.getTileEntity(rayTraceResult.getBlockPos());
-							NBTTagCompound potionTag = cauldronTile.removeContainedPotion(world);
+							NBTTagCompound potionTag = cauldronTile.removeContainedPotion();
 							ItemStack newPotion = new ItemStack(this, 1, 0);
 							newPotion.setTagCompound(potionTag);
 

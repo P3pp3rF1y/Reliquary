@@ -9,7 +9,7 @@ import xreliquary.reference.Names;
 public class ItemInfernalClaws extends ItemBase {
 
 	public ItemInfernalClaws() {
-		super(Names.infernal_claws);
+		super(Names.Items.INFERNAL_CLAWS);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);

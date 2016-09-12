@@ -165,6 +165,9 @@ public class Settings {
 		public static int experienceLevelMinimum;
 		public static int experienceLimit;
 		public static int experienceDrop;
+		public static int pedestalRange;
+		public static int pedestalRepairStepXP;
+		public static int pedestalCoolDown;
 	}
 
 	public static class IceMagusRod {

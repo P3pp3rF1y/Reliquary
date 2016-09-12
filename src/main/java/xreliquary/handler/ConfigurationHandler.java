@@ -29,15 +29,15 @@ public class ConfigurationHandler {
 		EasyModeConfiguration.loadEasyModeSettings();
 		BlockItemConfiguration.loadBlockAndItemSettings();
 
-		Settings.chestLootEnabled = getBoolean(Names.chest_loot_enabled, "general", true, "Determines whether Reliquary items will be generated in chest loot (mostly mob drops, very rarely some lower level items)");
-		configuration.getCategory("general").get(Names.chest_loot_enabled).setRequiresMcRestart(true);
-		Settings.wailaShiftForInfo = getBoolean(Names.waila_shift_for_info, "general", false, "Whether player has to sneak to see additional info in waila");
-		Settings.dropCraftingRecipesEnabled = getBoolean(Names.mob_drop_crafting_recipes_enabled, "general", false, "Determines wheter Reliquary mob drops have crafting recipes");
-		configuration.getCategory("general").get(Names.mob_drop_crafting_recipes_enabled).setRequiresMcRestart(true);
-		Settings.mobDropsEnabled = getBoolean(Names.mob_drops_enabled, "general", true, "Whether mobs drop the Reliquary mob drops. This won't remove mob drop items from registry and replace them with something else, but allows to turn off the additional drops when mobs are killed by player. If this is turned off the mob drop crafting recipes turned on by the other setting can be used.");
-		configuration.getCategory("general").get(Names.mob_drops_enabled).setRequiresMcRestart(true);
-		Settings.disabledItemsBlocks = ConfigurationHandler.getStringList(Names.disabled_items_blocks, "general", Collections.emptyList(), "List of items and blocks that are supposed to be disabled. By default this is empty, but you can use the names of the blocks and items (e.g. \"fertile_lilypad\", \"wraith_node\", \"glacial_staff\") in this list and mod will not register those. It will also not register any recipes that include whatever is disabled.");
-		configuration.getCategory("general").get(Names.disabled_items_blocks).setRequiresMcRestart(true);
+		Settings.chestLootEnabled = getBoolean(Names.Configs.CHEST_LOOT_ENABLED, "general", true, "Determines whether Reliquary items will be generated in chest loot (mostly mob drops, very rarely some lower level items)");
+		configuration.getCategory("general").get(Names.Configs.CHEST_LOOT_ENABLED).setRequiresMcRestart(true);
+		Settings.wailaShiftForInfo = getBoolean(Names.Configs.WAILA_SHIFT_FOR_INFO, "general", false, "Whether player has to sneak to see additional info in waila");
+		Settings.dropCraftingRecipesEnabled = getBoolean(Names.Configs.MOB_DROP_CRAFTING_RECIPES_ENABLED, "general", false, "Determines wheter Reliquary mob drops have crafting recipes");
+		configuration.getCategory("general").get(Names.Configs.MOB_DROP_CRAFTING_RECIPES_ENABLED).setRequiresMcRestart(true);
+		Settings.mobDropsEnabled = getBoolean(Names.Configs.MOB_DROPS_ENABLED, "general", true, "Whether mobs drop the Reliquary mob drops. This won't remove mob drop items from registry and replace them with something else, but allows to turn off the additional drops when mobs are killed by player. If this is turned off the mob drop crafting recipes turned on by the other setting can be used.");
+		configuration.getCategory("general").get(Names.Configs.MOB_DROPS_ENABLED).setRequiresMcRestart(true);
+		Settings.disabledItemsBlocks = ConfigurationHandler.getStringList(Names.Configs.DISABLED_ITEMS_BLOCKS, "general", Collections.emptyList(), "List of items and blocks that are supposed to be disabled. By default this is empty, but you can use the names of the blocks and items (e.g. \"fertile_lilypad\", \"wraith_node\", \"glacial_staff\") in this list and mod will not register those. It will also not register any recipes that include whatever is disabled.");
+		configuration.getCategory("general").get(Names.Configs.DISABLED_ITEMS_BLOCKS).setRequiresMcRestart(true);
 	}
 
 	public static void postInit() {

@@ -26,7 +26,7 @@ public class ItemMobCharmBelt extends ItemBauble {
 	private static final String DAMAGE_TAG = "Damage";
 
 	public ItemMobCharmBelt() {
-		super(Names.mob_charm_belt);
+		super(Names.Items.MOB_CHARM_BELT);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 

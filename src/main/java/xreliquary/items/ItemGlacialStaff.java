@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class ItemGlacialStaff extends ItemIceMagusRod {
 	public ItemGlacialStaff() {
-		super(Names.glacial_staff);
+		super(Names.Items.GLACIAL_STAFF);
 	}
 
 	@Override

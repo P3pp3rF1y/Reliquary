@@ -14,7 +14,7 @@ import java.util.List;
 public class ItemElsewhereFlask extends ItemBase {
 
 	public ItemElsewhereFlask() {
-		super(Names.elsewhere_flask);
+		super(Names.Items.ELSEWHERE_FLASK);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		this.canRepair = false;

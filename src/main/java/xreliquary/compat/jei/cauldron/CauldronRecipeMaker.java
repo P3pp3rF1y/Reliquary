@@ -32,14 +32,20 @@ public class CauldronRecipeMaker {
 				inputs.add(new ItemStack(Items.GLOWSTONE_DUST, essence.getGlowstoneCount()));
 
 			List<ItemStack> splashInputs = new ArrayList<>(inputs);
+			List<ItemStack> lingeringInputs = new ArrayList<>(inputs);
 
 			splashInputs.add(new ItemStack(Items.GUNPOWDER));
+			lingeringInputs.add(new ItemStack(Items.GUNPOWDER));
+
+			lingeringInputs.add(new ItemStack(Items.DRAGON_BREATH));
 
 			inputs.add(new ItemStack(Items.NETHER_WART));
 			splashInputs.add(new ItemStack(Items.NETHER_WART));
+			lingeringInputs.add(new ItemStack(Items.NETHER_WART));
 
 			inputs.add(new ItemStack(ModItems.potion, 3));
 			splashInputs.add(new ItemStack(ModItems.potion, 3));
+			lingeringInputs.add(new ItemStack(ModItems.potion, 3));
 
 			ItemStack output = new ItemStack(ModItems.potion, 3);
 			output.setTagCompound(essence.writeToNBT());
@@ -48,8 +54,12 @@ public class CauldronRecipeMaker {
 			ItemStack outputSplash = output.copy();
 			NBTHelper.setBoolean("splash", outputSplash, true);
 
+			ItemStack outputLingering = output.copy();
+			NBTHelper.setBoolean("lingering", outputLingering, true);
+
 			recipes.add(new CauldronRecipeJEI(inputs, output));
 			recipes.add(new CauldronRecipeJEI(splashInputs, outputSplash));
+			recipes.add(new CauldronRecipeJEI(lingeringInputs, outputLingering));
 		}
 
 		return recipes;

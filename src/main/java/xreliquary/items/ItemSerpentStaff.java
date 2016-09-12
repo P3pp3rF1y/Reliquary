@@ -17,7 +17,7 @@ import xreliquary.reference.Names;
 public class ItemSerpentStaff extends ItemBase {
 
 	public ItemSerpentStaff() {
-		super(Names.serpent_staff);
+		super(Names.Items.SERPENT_STAFF);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(200);
 		this.setMaxStackSize(1);

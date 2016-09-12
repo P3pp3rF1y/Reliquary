@@ -33,7 +33,7 @@ import java.util.List;
 public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 
 	public ItemFortuneCoin() {
-		super(Names.fortune_coin);
+		super(Names.Items.FORTUNE_COIN);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
@@ -48,6 +48,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -167,11 +168,11 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 		scanForEntitiesInRange(player.worldObj, player, getLongRangePullDistance());
 	}
 
-	public double getLongRangePullDistance() {
+	private double getLongRangePullDistance() {
 		return (double) Settings.FortuneCoin.longRangePullDistance;
 	}
 
-	public double getStandardPullDistance() {
+	private double getStandardPullDistance() {
 		return (double) Settings.FortuneCoin.standardPullDistance;
 	}
 
@@ -180,11 +181,13 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 		return 64;
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack) {
 		return EnumAction.BLOCK;
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
 		if(player.isSneaking()) {

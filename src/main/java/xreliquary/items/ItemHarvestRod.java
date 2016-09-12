@@ -69,7 +69,7 @@ public class ItemHarvestRod extends ItemToggleable {
 	private static final int AOE_START_COOLDOWN = 10;
 
 	public ItemHarvestRod() {
-		super(Names.harvest_rod);
+		super(Names.Items.HARVEST_ROD);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;
@@ -423,6 +423,10 @@ public class ItemHarvestRod extends ItemToggleable {
 				if(getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) > 0 || player.capabilities.isCreativeMode) {
 					plantItem(harvestRod, player, pos, player.getActiveHand());
 				}
+			} else if(HOE_MODE.equals(getMode(harvestRod))) {
+				ItemStack fakeHoe = new ItemStack(Items.WOODEN_HOE);
+				if(Items.WOODEN_HOE.onItemUse(fakeHoe, player, world, pos, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0) == EnumActionResult.SUCCESS)
+					((EntityPlayerMP) player).connection.sendPacket(new SPacketSoundEffect(SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, pos.getX(), pos.getY(), pos.getZ(), 1.0F, 1.0F));
 			}
 
 		} else {
