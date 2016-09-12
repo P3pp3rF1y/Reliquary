@@ -29,12 +29,16 @@ public class XpHelper {
 			return 0;
 		}
 		if(level > 0 && level < 16) {
-			return level * (16 + level * 2) / 2;
+			return level * (12 + level * 2) / 2;
 		} else if(level > 15 && level < 31) {
-			return (level - 15) * (79 + (level - 15) * 5) / 2 + 345;
+			return (level - 15) * (69 + (level - 15) * 5) / 2 + 315;
 		} else {
-			return (level - 30)*(233 + (level - 30)*9)/2 + 1500;
+			return (level - 30)*(215 + (level - 30)*9)/2 + 1395;
 		}
+	}
+
+	public static int getExperienceLimitOnLevel(int level) {
+		return level >= 30 ? 112 + (level - 30) * 9 : (level >= 15 ? 37 + (level - 15) * 5 : 7 + level * 2);
 	}
 
 	public static int getLevelForExperience(int experience) {
