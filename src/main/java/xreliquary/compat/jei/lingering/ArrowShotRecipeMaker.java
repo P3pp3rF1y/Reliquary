@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ArrowShotRecipeMaker {
 	@Nonnull
-	public static List<ArrowShotRecipeJEI> getRecipes(ItemStack itemStack) {
+	public static List<ArrowShotRecipeJEI> getRecipes(ItemStack itemStack, float durationFactor) {
 		ArrayList<ArrowShotRecipeJEI> recipes = new ArrayList<>();
 
 		for(PotionEssence essence : Settings.Potions.uniquePotions) {
@@ -25,7 +25,7 @@ public class ArrowShotRecipeMaker {
 
 			ItemStack output = itemStack.copy();
 			output.stackSize = 8;
-			PotionUtils.appendEffects(output, XRPotionHelper.changeDuration(essence.getEffects(), 0.2F));
+			PotionUtils.appendEffects(output, XRPotionHelper.changeDuration(essence.getEffects(), durationFactor));
 
 			recipes.add(new ArrowShotRecipeJEI(Arrays.asList(itemStack, itemStack, itemStack, itemStack, potion, itemStack, itemStack, itemStack, itemStack), output));
 		}
