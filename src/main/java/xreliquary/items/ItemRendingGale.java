@@ -102,9 +102,20 @@ public class ItemRendingGale extends ItemToggleable {
 		double y = lookVec.yCoord;
 		double z = lookVec.zCoord;
 
-		player.motionX = x;
-		player.motionY = y;
-		player.motionZ = z;
+		RayTraceResult rayTrace =  this.rayTrace(player.worldObj, player, true);
+
+		double slowDownFactor = 1.0;
+
+		if(rayTrace != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
+			double distance = player.getPosition().distanceSq(rayTrace.getBlockPos());
+			if(distance < 20) {
+				slowDownFactor = distance / 20;
+			}
+		}
+
+		player.motionX = x * slowDownFactor;
+		player.motionY = y * slowDownFactor;
+		player.motionZ = z * slowDownFactor;
 
 		player.moveEntity(player.motionX, player.motionY, player.motionZ);
 
@@ -242,7 +253,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 		if(isFlightMode(ist)) {
 			attemptFlight(player);
-			spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
+			spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player);
 		} else if(isPushMode(ist)) {
 			doRadialPush(player.worldObj, player.posX, player.posY, player.posZ, player, false);
 		} else if(isPullMode(ist)) {
@@ -407,14 +418,17 @@ public class ItemRendingGale extends ItemToggleable {
 		return MathHelper.sqrt_float(f * f + f1 * f1 + f2 * f2);
 	}
 
-	public void spawnFlightParticles(World world, double x, double y, double z, Vec3d lookVector) {
+	public void spawnFlightParticles(World world, double x, double y, double z, EntityPlayer player) {
+		Vec3d lookVector = player.getLookVec();
+		double factor = (player.motionX / lookVector.xCoord + player.motionY / lookVector.yCoord + player.motionZ / lookVector.zCoord) / 3d;
+
 		//spawn a whole mess of particles every tick.
-		for(int i = 0; i < 8; ++i) {
+		for(int i = 0; i < 8 * factor; ++i) {
 			float randX = 10F * (itemRand.nextFloat() - 0.5F);
 			float randY = 10F * (itemRand.nextFloat() - 0.5F);
 			float randZ = 10F * (itemRand.nextFloat() - 0.5F);
 
-			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX + lookVector.xCoord * 20, y + randY + lookVector.yCoord * 20, z + randZ + lookVector.zCoord * 20, -lookVector.xCoord * 5, -lookVector.yCoord * 5, -lookVector.zCoord * 5, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
+			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX + lookVector.xCoord * 20 * factor, y + randY + lookVector.yCoord * 20 * factor, z + randZ + lookVector.zCoord * 20 * factor, -lookVector.xCoord * 5 * factor, -lookVector.yCoord * 5 * factor, -lookVector.zCoord * 5 * factor, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
 		}
 	}
 
