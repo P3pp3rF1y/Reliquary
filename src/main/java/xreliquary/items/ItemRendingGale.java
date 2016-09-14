@@ -2,8 +2,6 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -416,7 +414,7 @@ public class ItemRendingGale extends ItemToggleable {
 			float randY = 10F * (itemRand.nextFloat() - 0.5F);
 			float randZ = 10F * (itemRand.nextFloat() - 0.5F);
 
-			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX, y + randY, z + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5, Block.getStateId(Blocks.SNOW_LAYER.getStateFromMeta(0)));
+			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX + lookVector.xCoord * 20, y + randY + lookVector.yCoord * 20, z + randZ + lookVector.zCoord * 20, -lookVector.xCoord * 5, -lookVector.yCoord * 5, -lookVector.zCoord * 5, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
 		}
 	}
 
