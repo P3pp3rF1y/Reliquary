@@ -29,7 +29,7 @@ import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.StackHelper;
 import xreliquary.util.XRFakePlayerFactory;
-import xreliquary.util.pedestal.PedestalRegistry;
+import xreliquary.pedestal.PedestalRegistry;
 
 import java.util.*;
 

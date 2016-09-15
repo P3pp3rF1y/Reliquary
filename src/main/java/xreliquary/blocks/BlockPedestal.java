@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
-import xreliquary.util.pedestal.PedestalRegistry;
+import xreliquary.pedestal.PedestalRegistry;
 
 import java.util.List;
 import java.util.Random;

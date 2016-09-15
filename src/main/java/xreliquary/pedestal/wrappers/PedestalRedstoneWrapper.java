@@ -1,4 +1,4 @@
-package xreliquary.util.pedestal;
+package xreliquary.pedestal.wrappers;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
