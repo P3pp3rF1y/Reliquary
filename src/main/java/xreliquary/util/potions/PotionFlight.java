@@ -9,12 +9,12 @@ import net.minecraft.util.ResourceLocation;
 import xreliquary.reference.Reference;
 
 public class PotionFlight extends Potion {
-	private ResourceLocation icon = new ResourceLocation(Reference.MOD_ID, "textures/gui/flight_effect.png");
+	private static final ResourceLocation ICON = new ResourceLocation(Reference.MOD_ID, "textures/gui/flight_effect.png");
 
 	public PotionFlight() {
 		super(false, 0);
 		this.setPotionName("flight");
-		this.setIconIndex(0,0);
+		this.setIconIndex(0, 0);
 		this.setRegistryName(Reference.MOD_ID, "flight_potion");
 	}
 
@@ -24,12 +24,19 @@ public class PotionFlight extends Potion {
 	}
 
 	@Override
-	public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc) {
-		super.renderInventoryEffect(x, y, effect, mc);
+	public void renderHUDEffect(int x, int y, PotionEffect effect, Minecraft mc, float alpha) {
+		render(mc, x + 3, y + 4);
+	}
 
-		mc.renderEngine.bindTexture(icon);
+	@Override
+	public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc) {
+		render(mc, x + 6, y + 7);
+	}
+
+	private void render(Minecraft mc, int x, int y) {
+		mc.renderEngine.bindTexture(ICON);
 
 		GlStateManager.enableBlend();
-		Gui.drawModalRectWithCustomSizedTexture(x + 6, y + 7, 0, 0, 16, 16, 16, 16);
+		Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
 	}
 }
