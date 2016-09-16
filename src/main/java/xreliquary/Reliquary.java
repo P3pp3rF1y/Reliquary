@@ -24,7 +24,7 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
-import xreliquary.util.pedestal.PedestalRegistry;
+import xreliquary.pedestal.PedestalRegistry;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS, dependencies = Reference.DEPENDENCIES)
 public class Reliquary {

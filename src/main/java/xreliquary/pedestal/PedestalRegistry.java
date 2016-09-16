@@ -1,4 +1,4 @@
-package xreliquary.util.pedestal;
+package xreliquary.pedestal;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

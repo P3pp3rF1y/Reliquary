@@ -1,4 +1,4 @@
-package xreliquary.util.pedestal;
+package xreliquary.pedestal.wrappers;
 
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;

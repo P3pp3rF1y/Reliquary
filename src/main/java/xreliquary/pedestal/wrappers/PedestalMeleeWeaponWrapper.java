@@ -1,4 +1,4 @@
-package xreliquary.util.pedestal;
+package xreliquary.pedestal.wrappers;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;

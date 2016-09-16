@@ -2,8 +2,6 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -104,149 +102,25 @@ public class ItemRendingGale extends ItemToggleable {
 		double y = lookVec.yCoord;
 		double z = lookVec.zCoord;
 
-		//you're gonna clip into something, we're trying to prevent that.
-		if(isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, y, z))) {
-			if(Math.abs(x) > Math.abs(y) && Math.abs(x) > Math.abs(z)) {
-				if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D))) {
-					// x is fine
-					if(Math.abs(z) > Math.abs(y)) {
-						if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z))) {
-							//z is fine
-							y = 0D;
-						} else if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D)))
-							z = 0D;
-					} else {
-						if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D))) {
-							//y is fine
-							z = 0D;
-						} else if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z)))
-							y = 0D;
-					}
-				} else {
-					//x is not fine
-					x = 0D;
-					//and also do the standard y/z checks
-					if(Math.abs(z) > Math.abs(y)) {
-						if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z))) {
-							//z is fine
-							y = 0D;
-						} else if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D)))
-							z = 0D;
-					} else {
-						if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D))) {
-							//y is fine
-							z = 0D;
-						} else if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z)))
-							y = 0D;
-					}
-				}
-			} else if(Math.abs(z) > Math.abs(x) && Math.abs(z) > Math.abs(y)) {
-				if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z))) {
-					//z is fine
-					if(Math.abs(x) > Math.abs(y)) {
-						if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D))) {
-							//x is fine
-							y = 0D;
-						} else if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D)))
-							x = 0D;
-					} else {
-						if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D))) {
-							//y is fine
-							x = 0D;
-						} else if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D)))
-							y = 0D;
-					}
-				} else {
-					//z is not fine
-					z = 0D;
-					if(Math.abs(x) > Math.abs(y)) {
-						if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D))) {
-							//x is fine
-							y = 0D;
-						} else if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D)))
-							x = 0D;
-					} else {
-						if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D))) {
-							//y is fine
-							x = 0D;
-						} else if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D)))
-							y = 0D;
-					}
-				}
-			} else if(Math.abs(y) > Math.abs(x) && Math.abs(y) > Math.abs(z)) {
-				if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, y, 0D))) {
-					//y is fine
-					if(Math.abs(x) > Math.abs(z)) {
-						if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D))) {
-							//x is fine
-							z = 0D;
-						} else if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z)))
-							x = 0D;
-					} else {
-						if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D))) {
-							//x is fine
-							z = 0D;
-						} else if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z)))
-							x = 0D;
-					}
-				} else {
-					//y is not fine
-					y = 0D;
-					if(Math.abs(x) > Math.abs(z)) {
-						if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D))) {
-							//x is fine
-							z = 0D;
-						} else if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z)))
-							x = 0D;
-					} else {
-						if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(0D, 0D, z))) {
-							//x is fine
-							x = 0D;
-						} else if(!isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, 0D, 0D)))
-							z = 0D;
-					}
-				}
-			}
-			if(isAABBInAnythingButAir(player.worldObj, player.getEntityBoundingBox().offset(x, y, z))) {
-				//we still failed, give up.
-				return;
-			}
+		RayTraceResult rayTrace =  this.rayTrace(player.worldObj, player, true);
 
+		double slowDownFactor = 1.0;
+
+		if(rayTrace != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
+			double distance = player.getPosition().distanceSq(rayTrace.getBlockPos());
+			if(distance < 20) {
+				slowDownFactor = distance / 20;
+			}
 		}
 
-		//player.setVelocity(x, y, z);
-		player.motionX = x;
-		player.motionY = y;
-		player.motionZ = z;
+		player.motionX = x * slowDownFactor;
+		player.motionY = y * slowDownFactor;
+		player.motionZ = z * slowDownFactor;
 
-		player.setPosition(player.posX + x, player.posY + y, player.posZ + z);
+		player.moveEntity(player.motionX, player.motionY, player.motionZ);
 
 		player.fallDistance = 0.0F;
 
-	}
-
-	public boolean isAABBInAnythingButAir(World worldObj, AxisAlignedBB aabb) {
-		int minX = MathHelper.floor_double(aabb.minX);
-		int maxX = MathHelper.floor_double(aabb.maxX + 1.0D);
-		int minY = MathHelper.floor_double(aabb.minY);
-		int maxY = MathHelper.floor_double(aabb.maxY + 1.0D);
-		int minZ = MathHelper.floor_double(aabb.minZ);
-		int maxZ = MathHelper.floor_double(aabb.maxZ + 1.0D);
-
-		for(int xOff = minX; xOff < maxX; ++xOff) {
-			for(int yOff = minY; yOff < maxY; ++yOff) {
-				for(int zOff = minZ; zOff < maxZ; ++zOff) {
-					IBlockState blockState = worldObj.getBlockState(new BlockPos(xOff, yOff, zOff));
-					Block block = blockState.getBlock();
-
-					if(block.getMaterial(blockState) != Material.AIR && block.getMaterial(blockState) != Material.WATER && block.getMaterial(blockState) != Material.LAVA && block.getMaterial(blockState) != Material.FIRE && block.getMaterial(blockState) != Material.VINE && block.getMaterial(blockState) != Material.PLANTS && block.getMaterial(blockState) != Material.CIRCUITS && block != Blocks.SNOW_LAYER) {
-						return true;
-					}
-				}
-			}
-		}
-
-		return false;
 	}
 
 	@Override
@@ -379,7 +253,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 		if(isFlightMode(ist)) {
 			attemptFlight(player);
-			spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getLookVec());
+			spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player);
 		} else if(isPushMode(ist)) {
 			doRadialPush(player.worldObj, player.posX, player.posY, player.posZ, player, false);
 		} else if(isPullMode(ist)) {
@@ -544,14 +418,17 @@ public class ItemRendingGale extends ItemToggleable {
 		return MathHelper.sqrt_float(f * f + f1 * f1 + f2 * f2);
 	}
 
-	public void spawnFlightParticles(World world, double x, double y, double z, Vec3d lookVector) {
+	public void spawnFlightParticles(World world, double x, double y, double z, EntityPlayer player) {
+		Vec3d lookVector = player.getLookVec();
+		double factor = (player.motionX / lookVector.xCoord + player.motionY / lookVector.yCoord + player.motionZ / lookVector.zCoord) / 3d;
+
 		//spawn a whole mess of particles every tick.
-		for(int i = 0; i < 8; ++i) {
+		for(int i = 0; i < 8 * factor; ++i) {
 			float randX = 10F * (itemRand.nextFloat() - 0.5F);
 			float randY = 10F * (itemRand.nextFloat() - 0.5F);
 			float randZ = 10F * (itemRand.nextFloat() - 0.5F);
 
-			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX, y + randY, z + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5, Block.getStateId(Blocks.SNOW_LAYER.getStateFromMeta(0)));
+			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX + lookVector.xCoord * 20 * factor, y + randY + lookVector.yCoord * 20 * factor, z + randZ + lookVector.zCoord * 20 * factor, -lookVector.xCoord * 5 * factor, -lookVector.yCoord * 5 * factor, -lookVector.zCoord * 5 * factor, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
 		}
 	}
 

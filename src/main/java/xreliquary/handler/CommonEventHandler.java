@@ -587,12 +587,7 @@ public class CommonEventHandler {
 
 		EntityPlayer player = event.player;
 
-		if(player.isPotionActive(ModPotions.potionFlight)) {
-			playersFlightStatus.put(player.getGameProfile().getId(), true);
-			player.capabilities.allowFlying = true;
-			player.fallDistance = 0;
-			((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
-		} else if(player.isHandActive() && player.getActiveItemStack() != null && player.getActiveItemStack().getItem() == ModItems.rendingGale && ModItems.rendingGale.isFlightMode(player.getActiveItemStack()) && ModItems.rendingGale.hasFlightCharge(player, player.getActiveItemStack())) {
+		if(player.isHandActive() && player.getActiveItemStack() != null && player.getActiveItemStack().getItem() == ModItems.rendingGale && ModItems.rendingGale.isFlightMode(player.getActiveItemStack()) && ModItems.rendingGale.hasFlightCharge(player, player.getActiveItemStack())) {
 			playersFlightStatus.put(player.getGameProfile().getId(), true);
 			player.capabilities.allowFlying = true;
 			((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
