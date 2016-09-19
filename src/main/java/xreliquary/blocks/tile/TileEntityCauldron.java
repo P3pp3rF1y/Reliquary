@@ -66,8 +66,8 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	public void update() {
 		//Item addition gets handled by the block's onEntityCollided method.
 		if(getHeatSources().contains(worldObj.getBlockState(getPos().add(0, -1, 0)).getBlock()) && getLiquidLevel() > 0) {
-			if(potionEssence != null) {
-				if(cookTime < getCookTime())
+			if(potionEssence != null && hasNetherwart) {
+				if(cookTime < getTotalCookTime())
 					cookTime++;
 			}
 			if(worldObj.isRemote) {
@@ -95,7 +95,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 
 	@SideOnly(Side.CLIENT)
 	private void spawnBoilingParticles() {
-		if(worldObj.rand.nextInt(getCookTime() * getCookTime()) > cookTime * cookTime)
+		if(worldObj.rand.nextInt(getTotalCookTime() * getTotalCookTime()) > cookTime * cookTime)
 			return;
 		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
 		float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
@@ -210,7 +210,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	private boolean finishedCooking() {
-		return hasNetherwart && potionEssence != null && this.cookTime >= getCookTime() && (!hasDragonBreath || hasGunpowder);
+		return hasNetherwart && potionEssence != null && this.cookTime >= getTotalCookTime() && (!hasDragonBreath || hasGunpowder);
 	}
 
 	public NBTTagCompound removeContainedPotion() {
@@ -313,7 +313,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return heatSources;
 	}
 
-	private int getCookTime() {
+	private int getTotalCookTime() {
 		return Settings.ApothecaryCauldron.cookTime;
 	}
 
@@ -328,14 +328,18 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			if(collidingEntity instanceof EntityLivingBase) {
 				if(this.potionEssence == null)
 					return;
-				for(PotionEffect effect : this.potionEssence.getEffects()) {
-					Potion potion = effect.getPotion();
-					if(potion.isInstant() && world.getWorldTime() % 20 != 0)
-						continue;
-					PotionEffect reducedEffect = new PotionEffect(effect.getPotion(), potion.isInstant() ? 1 : effect.getDuration() / 20, Math.max(0, effect.getAmplifier() - 1));
-					((EntityLivingBase) collidingEntity).addPotionEffect(reducedEffect);
+				//apply potion effects when done cooking potion (potion essence and netherwart in and fire below at the minimum)
+				if (finishedCooking()) {
+					for(PotionEffect effect : this.potionEssence.getEffects()) {
+						Potion potion = effect.getPotion();
+						if(potion.isInstant() && world.getWorldTime() % 20 != 0)
+							continue;
+						PotionEffect reducedEffect = new PotionEffect(effect.getPotion(), potion.isInstant() ? 1 : effect.getDuration() / 20, Math.max(0, effect.getAmplifier() - 1));
+						((EntityLivingBase) collidingEntity).addPotionEffect(reducedEffect);
+					}
 				}
-				if(this.cookTime > 0 && world.getWorldTime() % 20 != 0) {
+
+				if(this.cookTime > 0 && world.getWorldTime() % 10 == 0) {
 					collidingEntity.attackEntityFrom(DamageSource.inFire, 1.0F);
 				}
 			}
