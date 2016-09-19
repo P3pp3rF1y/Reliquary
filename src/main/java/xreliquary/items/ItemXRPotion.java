@@ -59,7 +59,7 @@ public class ItemXRPotion extends ItemBase {
 
 	@Override
 	public ItemStack onItemUseFinish(ItemStack ist, World world, EntityLivingBase entity) {
-		if(!(entity instanceof EntityPlayer))
+		if(!(entity instanceof EntityPlayer) || world.isRemote)
 			return ist;
 
 		EntityPlayer player = (EntityPlayer) entity;
@@ -67,17 +67,20 @@ public class ItemXRPotion extends ItemBase {
 		if(!player.capabilities.isCreativeMode) {
 			--ist.stackSize;
 		}
-		if(!world.isRemote) {
-			for(PotionEffect effect : new PotionEssence(ist.getTagCompound()).getEffects()) {
-				if(effect == null)
-					continue;
-				player.addPotionEffect(new PotionEffect(effect.getPotion(), effect.getDuration(), effect.getAmplifier(), false, false));
-			}
+
+		for(PotionEffect effect : new PotionEssence(ist.getTagCompound()).getEffects()) {
+			if(effect == null)
+				continue;
+			player.addPotionEffect(new PotionEffect(effect.getPotion(), effect.getDuration(), effect.getAmplifier(), false, false));
 		}
+
 		if(!player.capabilities.isCreativeMode) {
+			ItemStack emptyVial = new ItemStack(ModItems.potion);
+			emptyVial.setTagCompound(new NBTTagCompound()); //doing this as without this vials dropped on ground and picked up wouldn't stack properly - they get empty NBT assigned
 			if(ist.stackSize <= 0)
-				return new ItemStack(this, 1, 0);
-			player.inventory.addItemStackToInventory(new ItemStack(this, 1, 0));
+				return emptyVial;
+			else
+				player.inventory.addItemStackToInventory(emptyVial);
 		}
 		return ist;
 	}
@@ -154,35 +157,13 @@ public class ItemXRPotion extends ItemBase {
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
-		PotionEssence essence = new PotionEssence(ist.getTagCompound());
 		if(!getSplash(ist) && !getLingering(ist)) {
+			PotionEssence essence = new PotionEssence(ist.getTagCompound());
 			if(essence.getEffects().size() > 0) {
 				player.setActiveHand(hand);
 				return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 			} else {
-				RayTraceResult rayTraceResult = this.rayTrace(world, player, true);
-
-				if(rayTraceResult == null)
-					return new ActionResult<>(EnumActionResult.PASS, ist);
-				else {
-					if(rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
-						if(world.getBlockState(rayTraceResult.getBlockPos()).getBlock() instanceof BlockApothecaryCauldron) {
-							TileEntityCauldron cauldronTile = (TileEntityCauldron) world.getTileEntity(rayTraceResult.getBlockPos());
-							NBTTagCompound potionTag = cauldronTile.removeContainedPotion();
-							ItemStack newPotion = new ItemStack(this, 1, 0);
-							newPotion.setTagCompound(potionTag);
-
-							if(--ist.stackSize <= 0) {
-								return new ActionResult<>(EnumActionResult.SUCCESS, newPotion);
-							}
-
-							if(!player.inventory.addItemStackToInventory(newPotion)) {
-								player.entityDropItem(newPotion, 0.1F);
-								return new ActionResult<>(EnumActionResult.SUCCESS, ist);
-							}
-						}
-					}
-				}
+				return new ActionResult<>(EnumActionResult.PASS, ist);
 			}
 		} else {
 			if(world.isRemote)
