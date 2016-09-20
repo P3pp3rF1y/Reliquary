@@ -148,7 +148,7 @@ public class InventoryHelper {
 				continue;
 			}
 			//storage drawers compatibility loop
-			while(inventory.getStackInSlot(slot) != null && StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents) && maxToRemove > numberRemoved) {
+			while(inventory.getStackInSlot(slot) != null && inventory.getStackInSlot(slot).stackSize > 0 && StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents) && maxToRemove > numberRemoved) {
 				//noinspection ConstantConditions
 				numberRemoved += Math.min(maxToRemove - numberRemoved, inventory.getStackInSlot(slot).stackSize);
 				//noinspection ConstantConditions
