@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+//TODO refactor this whole thing into smaller parts
 public class ClientEventHandler {
 	private static RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 	private static int time;

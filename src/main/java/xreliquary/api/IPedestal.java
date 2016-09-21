@@ -32,4 +32,5 @@ public interface IPedestal {
 	int getCurrentItemIndex();
 	Object getItemData(int index);
 	void setItemData(int index, Object data);
+	boolean switchedOn();
 }
