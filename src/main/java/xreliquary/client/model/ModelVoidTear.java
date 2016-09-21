@@ -12,16 +12,19 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 import xreliquary.init.ModItems;
 
 import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
 import java.util.List;
 
-public class ModelVoidTear implements IBakedModel {
-	private final IBakedModel originalModel;
+public class ModelVoidTear implements IPerspectiveAwareModel {
+	private final IPerspectiveAwareModel originalModel;
 
-	public ModelVoidTear(IBakedModel originalModel) {
+	public ModelVoidTear(IPerspectiveAwareModel originalModel) {
 
 		this.originalModel = originalModel;
 	}
@@ -69,5 +72,10 @@ public class ModelVoidTear implements IBakedModel {
 				}
 			}
 		};
+	}
+
+	@Override
+	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+		return originalModel.handlePerspective(cameraTransformType);
 	}
 }
