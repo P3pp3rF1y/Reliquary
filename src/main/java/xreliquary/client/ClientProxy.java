@@ -180,7 +180,6 @@ public class ClientProxy extends CommonProxy {
 		ModItemColors.init();
 		ModBlockColors.init();
 		RegisterBeltRender();
-		FMLCommonHandler.instance().bus().register(new ClientEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ModFluids());
 
