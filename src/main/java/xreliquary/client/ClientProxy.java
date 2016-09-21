@@ -182,7 +182,7 @@ public class ClientProxy extends CommonProxy {
 		RegisterBeltRender();
 		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ModFluids());
-
+		MinecraftForge.EVENT_BUS.register(new ItemModels());
 		this.registerRenderers();
 	}
 

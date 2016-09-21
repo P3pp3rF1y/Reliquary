@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.lwjgl.input.Keyboard;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.util.FilteredItemStackHandler;
@@ -75,6 +76,13 @@ public class ItemVoidTear extends ItemToggleable {
 				return null;
 			}
 		};
+	}
+
+	@Override
+	public boolean hasEffect(ItemStack stack) {
+		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+			return false;
+		return super.hasEffect(stack);
 	}
 
 	@Override
