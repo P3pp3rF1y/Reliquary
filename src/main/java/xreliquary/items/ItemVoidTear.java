@@ -15,9 +15,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -43,8 +46,9 @@ public class ItemVoidTear extends ItemToggleable {
 	public ItemVoidTear() {
 		super(Names.Items.VOID_TEAR);
 		setMaxStackSize(1);
-		canRepair = false;
+		setNoRepair();
 		this.setCreativeTab(null);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -80,9 +84,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@Override
 	public boolean hasEffect(ItemStack stack) {
-		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			return false;
-		return super.hasEffect(stack);
+		return !(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) && super.hasEffect(stack);
 	}
 
 	@Override
@@ -149,10 +151,10 @@ public class ItemVoidTear extends ItemToggleable {
 			if(this.isEnabled(voidTear)) {
 				ItemStack contents = this.getContainedItem(voidTear);
 
-				if (contents != null) {
+				if(contents != null) {
 					int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
 
-					if(getItemQuantity(voidTear) < Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
+					if(getItemQuantity(voidTear) <= Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
 						//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
 						if(!player.capabilities.isCreativeMode) {
 							setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - contents.getMaxStackSize());
@@ -337,4 +339,26 @@ public class ItemVoidTear extends ItemToggleable {
 		return filteredHandler.getTotalAmount(0);
 	}
 
+	@SubscribeEvent
+	public void onItemPickup(EntityItemPickupEvent event) {
+		ItemStack pickedUpStack = event.getItem().getEntityItem();
+		EntityPlayer player = event.getEntityPlayer();
+
+		for (int slot = 0; slot < player.inventory.getSizeInventory(); slot ++) {
+			ItemStack tearStack = player.inventory.getStackInSlot(slot);
+			if (tearStack != null && tearStack.getItem() == this && this.isEnabled(tearStack)) {
+				int tearItemQuantity = this.getItemQuantity(tearStack);
+				if (StackHelper.isItemAndNbtEqual(this.getContainedItem(tearStack), pickedUpStack) && tearItemQuantity + pickedUpStack.stackSize <= Settings.VoidTear.itemLimit) {
+					int playerItemQuantity = InventoryHelper.getItemQuantity(pickedUpStack, player.inventory);
+
+					if (playerItemQuantity + pickedUpStack.stackSize >= pickedUpStack.getMaxStackSize()) {
+						this.setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.stackSize);
+						event.getItem().setDead();
+						event.setCanceled(true);
+						break;
+					}
+				}
+			}
+		}
+	}
 }
