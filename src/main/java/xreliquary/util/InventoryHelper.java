@@ -1,6 +1,5 @@
 package xreliquary.util;
 
-import javafx.collections.transformation.SortedList;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -12,7 +11,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class InventoryHelper {
 
@@ -119,7 +117,7 @@ public class InventoryHelper {
 			}
 		}
 
-		if (itemCount - countToConsume < minCount)
+		if(itemCount - countToConsume < minCount)
 			return false;
 
 		//fill stacks based on which ones have the highest sizes
