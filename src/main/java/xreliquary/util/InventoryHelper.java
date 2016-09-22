@@ -1,20 +1,18 @@
 package xreliquary.util;
 
-import net.minecraft.block.Block;
+import javafx.collections.transformation.SortedList;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class InventoryHelper {
 
@@ -96,17 +94,18 @@ public class InventoryHelper {
 	}
 
 	public static boolean consumeItem(ItemStack item, EntityPlayer player, int minCount) {
-		return consumeItem(item , player, minCount, 1);
+		return consumeItem(item, player, minCount, 1);
 	}
 
-	public static boolean consumeItem(ItemStack itemStack, EntityPlayer player, int minCount, int amountDecreased) {
+	public static boolean consumeItem(ItemStack itemStack, EntityPlayer player, int minCount, int countToConsume) {
 		if(player.capabilities.isCreativeMode)
 			return true;
-		if(itemStack == null)
+		if(itemStack == null || countToConsume <= 0)
 			return false;
 
-		List<Integer> suggestedSlots = new ArrayList<>();
 		int itemCount = 0;
+
+		List<Map.Entry<Integer, Integer>> slotCounts = new ArrayList<>();
 		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
 			if(player.inventory.mainInventory[slot] == null) {
 				continue;
@@ -114,22 +113,39 @@ public class InventoryHelper {
 
 			ItemStack slotStack = player.inventory.mainInventory[slot];
 			if(StackHelper.isItemAndNbtEqual(slotStack, itemStack)) {
-				itemCount += player.inventory.mainInventory[slot].stackSize;
-				suggestedSlots.add(slot);
+				int stackSize = player.inventory.mainInventory[slot].stackSize;
+				itemCount += stackSize;
+				slotCounts.add(new AbstractMap.SimpleEntry<>(slot, stackSize));
 			}
 		}
 
-		int countToConsume = itemCount - minCount;
-		if(suggestedSlots.size() > 0 && itemCount >= minCount + amountDecreased) {
-			for(int slot : suggestedSlots) {
-				//noinspection ConstantConditions
-				int stackSize = player.inventory.getStackInSlot(slot).stackSize;
-				player.inventory.decrStackSize(slot, countToConsume);
-				countToConsume -= stackSize;
-				if (countToConsume<=0)
-					return true;
+		if (itemCount - countToConsume < minCount)
+			return false;
+
+		//fill stacks based on which ones have the highest sizes
+		if(itemCount >= countToConsume) {
+			Collections.sort(slotCounts, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+
+			int countToFill = itemCount - countToConsume;
+
+			for(Map.Entry<Integer, Integer> slotCount : slotCounts) {
+				int slot = slotCount.getKey();
+
+				//fill stack sizes up to remaining value
+				if(countToFill > 0) {
+					int stackSizeToFill = Math.min(itemStack.getMaxStackSize(), countToFill);
+
+					//noinspection ConstantConditions
+					player.inventory.getStackInSlot(slot).stackSize = stackSizeToFill;
+
+					countToFill -= stackSizeToFill;
+				} else {
+					player.inventory.decrStackSize(slot, player.inventory.getStackInSlot(slot).stackSize);
+				}
 			}
+			return true;
 		}
+
 		return false;
 	}
 
