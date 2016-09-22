@@ -78,16 +78,16 @@ public class ItemSojournerStaff extends ItemToggleable {
 
 	private void scanForMatchingTorchesToFillInternalStorage(ItemStack ist, EntityPlayer player) {
 		List<String> torches = Settings.SojournerStaff.torches;
-		List<Item> items = new ArrayList<>();
+		List<ItemStack> items = new ArrayList<>();
 
 		//default to always work with vanilla torches
 		ItemStack vanillaTorch = new ItemStack(Blocks.TORCH, 1, 0);
-		items.add(vanillaTorch.getItem());
+		items.add(vanillaTorch);
 
-		torches.stream().filter(torch -> !items.contains(RegistryHelper.getItemFromName(torch))).forEach(torch -> items.add(RegistryHelper.getItemFromName(torch)));
+		torches.stream().filter(torch -> !items.contains(RegistryHelper.getItemFromName(torch))).forEach(torch -> items.add(new ItemStack(RegistryHelper.getItemFromName(torch))));
 
-		items.stream().filter(item -> !isInternalStorageFullOfItem(ist, item) && InventoryHelper.consumeItem(item, player)).forEach(item -> {
-			addItemToInternalStorage(ist, item);
+		items.stream().filter(item -> !isInternalStorageFullOfItem(ist, item.getItem()) && InventoryHelper.consumeItem(item, player)).forEach(item -> {
+			addItemToInternalStorage(ist, item.getItem());
 		});
 	}
 

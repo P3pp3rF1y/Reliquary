@@ -293,12 +293,12 @@ public class ItemPyromancerStaff extends ItemToggleable {
 	}
 
 	private void scanForFireChargeAndBlazePowder(ItemStack ist, EntityPlayer player) {
-		List<Item> absorbItems = new ArrayList<>();
-		absorbItems.add(Items.FIRE_CHARGE);
-		absorbItems.add(Items.BLAZE_POWDER);
-		for(Item absorbItem : absorbItems) {
-			if(!isInternalStorageFullOfItem(ist, absorbItem) && InventoryHelper.consumeItem(absorbItem, player)) {
-				addItemToInternalStorage(ist, absorbItem, false);
+		List<ItemStack> absorbItems = new ArrayList<>();
+		absorbItems.add(new ItemStack(Items.FIRE_CHARGE));
+		absorbItems.add(new ItemStack(Items.BLAZE_POWDER));
+		for(ItemStack absorbItem : absorbItems) {
+			if(!isInternalStorageFullOfItem(ist, absorbItem.getItem()) && InventoryHelper.consumeItem(absorbItem, player)) {
+				addItemToInternalStorage(ist, absorbItem.getItem(), false);
 			}
 		}
 	}
@@ -458,7 +458,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 			if(fireball.shootingEntity == player)
 				continue;
 			if(player.getDistanceToEntity(fireball) < 4) {
-				if(!isInternalStorageFullOfItem(ist, Items.FIRE_CHARGE) && InventoryHelper.consumeItem(Items.FIRE_CHARGE, player)) {
+				if(!isInternalStorageFullOfItem(ist, Items.FIRE_CHARGE) && InventoryHelper.consumeItem(new ItemStack(Items.FIRE_CHARGE), player)) {
 					addItemToInternalStorage(ist, Items.FIRE_CHARGE, true);
 					player.worldObj.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
 				}
@@ -474,7 +474,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 			}
 			player.worldObj.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
 
-			if(!isInternalStorageFullOfItem(ist, Items.BLAZE_POWDER) && InventoryHelper.consumeItem(Items.BLAZE_POWDER, player)) {
+			if(!isInternalStorageFullOfItem(ist, Items.BLAZE_POWDER) && InventoryHelper.consumeItem(new ItemStack(Items.BLAZE_POWDER), player)) {
 				addItemToInternalStorage(ist, Items.BLAZE_POWDER, true);
 			}
 			fireball.setDead();
