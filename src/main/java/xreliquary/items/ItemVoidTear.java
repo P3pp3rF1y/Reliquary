@@ -3,6 +3,7 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockChest;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -40,6 +41,7 @@ import xreliquary.util.NBTHelper;
 import xreliquary.util.StackHelper;
 
 import java.util.List;
+import java.util.Random;
 
 public class ItemVoidTear extends ItemToggleable {
 
@@ -346,6 +348,7 @@ public class ItemVoidTear extends ItemToggleable {
 	public void onItemPickup(EntityItemPickupEvent event) {
 		ItemStack pickedUpStack = event.getItem().getEntityItem();
 		EntityPlayer player = event.getEntityPlayer();
+		EntityItem itemEntity = event.getItem();
 
 		for(int slot = 0; slot < player.inventory.getSizeInventory(); slot++) {
 			ItemStack tearStack = player.inventory.getStackInSlot(slot);
@@ -355,7 +358,11 @@ public class ItemVoidTear extends ItemToggleable {
 
 					if(playerItemQuantity + pickedUpStack.stackSize >= pickedUpStack.getMaxStackSize()) {
 						this.setItemQuantity(tearStack, this.getItemQuantity(tearStack) + pickedUpStack.stackSize);
-						event.getItem().setDead();
+						if (!itemEntity.isSilent()) {
+							Random rand = new Random();
+							itemEntity.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						}
+						itemEntity.setDead();
 						event.setCanceled(true);
 						break;
 					}
