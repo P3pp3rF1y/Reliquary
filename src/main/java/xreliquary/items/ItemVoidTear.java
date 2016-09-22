@@ -47,10 +47,12 @@ public class ItemVoidTear extends ItemToggleable {
 		super(Names.Items.VOID_TEAR);
 		setMaxStackSize(1);
 		setNoRepair();
+		//noinspection ConstantConditions
 		this.setCreativeTab(null);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
 		return new ICapabilitySerializable<NBTTagCompound>() {
@@ -132,7 +134,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@Override
 	public void onUpdate(ItemStack voidTear, World world, Entity entity, int slotNumber, boolean isSelected) {
-		if(voidTear.getTagCompound().hasKey("item")) {
+		if(voidTear.getTagCompound() != null && voidTear.getTagCompound().hasKey("item")) {
 
 			setItemStack(voidTear, ItemStack.loadItemStackFromNBT(NBTHelper.getTagCompound("item", voidTear)));
 			setItemQuantity(voidTear, NBTHelper.getInteger("itemQuantity", voidTear));
@@ -167,6 +169,7 @@ public class ItemVoidTear extends ItemToggleable {
 				}
 			}
 
+			//noinspection ConstantConditions
 			if(player.inventory.getStackInSlot(slotNumber) != null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.filledVoidTear && (isSelected || quantityUpdated)) {
 				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(voidTear)), (EntityPlayerMP) player);
 			} else if(player.inventory.offHandInventory[0] != null && player.inventory.offHandInventory[0].getItem() == ModItems.filledVoidTear) {
@@ -187,7 +190,7 @@ public class ItemVoidTear extends ItemToggleable {
 		return filteredHandler.serializeNBT();
 	}
 
-	public boolean attemptToReplenishSingleStack(EntityPlayer player, ItemStack voidTear) {
+	private boolean attemptToReplenishSingleStack(EntityPlayer player, ItemStack voidTear) {
 		int preferredSlot = -1;
 		int stackCount = 0;
 		IInventory inventory = player.inventory;
@@ -260,7 +263,7 @@ public class ItemVoidTear extends ItemToggleable {
 		return EnumActionResult.PASS;
 	}
 
-	protected boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
+	private boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
 		ItemStack contents = this.getContainedItem(ist);
 		contents.stackSize = 1;
 
@@ -279,7 +282,7 @@ public class ItemVoidTear extends ItemToggleable {
 		}
 	}
 
-	protected void drainInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
+	private void drainInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
 		ItemStack contents = this.getContainedItem(ist);
 		int quantity = getItemQuantity(ist);
 
@@ -309,7 +312,7 @@ public class ItemVoidTear extends ItemToggleable {
 		return stackToReturn;
 	}
 
-	public void setItemStack(ItemStack voidTear, ItemStack stack) {
+	void setItemStack(ItemStack voidTear, ItemStack stack) {
 		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -319,7 +322,7 @@ public class ItemVoidTear extends ItemToggleable {
 		filteredHandler.setParentSlotStack(0, stack);
 	}
 
-	public void setItemQuantity(ItemStack voidTear, int quantity) {
+	void setItemQuantity(ItemStack voidTear, int quantity) {
 		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -344,15 +347,14 @@ public class ItemVoidTear extends ItemToggleable {
 		ItemStack pickedUpStack = event.getItem().getEntityItem();
 		EntityPlayer player = event.getEntityPlayer();
 
-		for (int slot = 0; slot < player.inventory.getSizeInventory(); slot ++) {
+		for(int slot = 0; slot < player.inventory.getSizeInventory(); slot++) {
 			ItemStack tearStack = player.inventory.getStackInSlot(slot);
-			if (tearStack != null && tearStack.getItem() == this && this.isEnabled(tearStack)) {
-				int tearItemQuantity = this.getItemQuantity(tearStack);
-				if (StackHelper.isItemAndNbtEqual(this.getContainedItem(tearStack), pickedUpStack) && tearItemQuantity + pickedUpStack.stackSize <= Settings.VoidTear.itemLimit) {
+			if(tearStack != null && tearStack.getItem() == this && this.isEnabled(tearStack)) {
+				if(canAbsorbStack(pickedUpStack, tearStack)) {
 					int playerItemQuantity = InventoryHelper.getItemQuantity(pickedUpStack, player.inventory);
 
-					if (playerItemQuantity + pickedUpStack.stackSize >= pickedUpStack.getMaxStackSize()) {
-						this.setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.stackSize);
+					if(playerItemQuantity + pickedUpStack.stackSize >= pickedUpStack.getMaxStackSize()) {
+						this.setItemQuantity(tearStack, this.getItemQuantity(tearStack) + pickedUpStack.stackSize);
 						event.getItem().setDead();
 						event.setCanceled(true);
 						break;
@@ -360,5 +362,9 @@ public class ItemVoidTear extends ItemToggleable {
 				}
 			}
 		}
+	}
+
+	boolean canAbsorbStack(ItemStack pickedUpStack, ItemStack tearStack) {
+		return StackHelper.isItemAndNbtEqual(this.getContainedItem(tearStack), pickedUpStack) && this.getItemQuantity(tearStack) + pickedUpStack.stackSize <= Settings.VoidTear.itemLimit;
 	}
 }
