@@ -187,9 +187,7 @@ public class ItemVoidTear extends ItemToggleable {
 		return filteredHandler.serializeNBT();
 	}
 
-	public boolean attemptToReplenishSingleStack(EntityPlayer player, ItemStack voidTear) {
-		int preferredSlot = -1;
-		int stackCount = 0;
+	private boolean attemptToReplenishSingleStack(EntityPlayer player, ItemStack voidTear) {
 		IInventory inventory = player.inventory;
 		for(int slot = 0; slot < inventory.getSizeInventory(); slot++) {
 			ItemStack stackFound = inventory.getStackInSlot(slot);
@@ -197,37 +195,22 @@ public class ItemVoidTear extends ItemToggleable {
 				continue;
 			}
 			if(StackHelper.isItemAndNbtEqual(stackFound, getContainedItem(voidTear))) {
-				if(preferredSlot == -1)
-					preferredSlot = slot;
-				stackCount += 1;
-			}
-		}
-
-		//use first empty slot for new stack if there's no stack to restock
-		if(preferredSlot == -1) {
-			preferredSlot = player.inventory.getFirstEmptyStack();
-			if(preferredSlot > -1)
-				stackCount = 1;
-		}
-
-		if(stackCount == 1 && preferredSlot != -1 && getItemQuantity(voidTear) > 1) {
-			ItemStack stackToIncrease = player.inventory.getStackInSlot(preferredSlot);
-			if(stackToIncrease == null) {
-				ItemStack newStack = getContainedItem(voidTear).copy();
-				int quantityToDecrease = Math.min(newStack.getMaxStackSize(), getItemQuantity(voidTear) - 1);
-				newStack.stackSize = quantityToDecrease;
-				player.inventory.setInventorySlotContents(preferredSlot, newStack);
-				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
-				return true;
-			}
-
-			if(stackToIncrease.stackSize < stackToIncrease.getMaxStackSize()) {
-				int quantityToDecrease = Math.min(stackToIncrease.getMaxStackSize() - stackToIncrease.stackSize, getItemQuantity(voidTear) - 1);
-				stackToIncrease.stackSize += quantityToDecrease;
+				int quantityToDecrease = Math.min(stackFound.getMaxStackSize() - stackFound.stackSize, getItemQuantity(voidTear) - 1);
+				stackFound.stackSize += quantityToDecrease;
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
 				return true;
 			}
 		}
+
+		if (getItemQuantity(voidTear) > 1) {
+			ItemStack newStack = getContainedItem(voidTear).copy();
+			int quantityToDecrease = Math.min(newStack.getMaxStackSize(), getItemQuantity(voidTear) - 1);
+			newStack.stackSize = quantityToDecrease;
+			player.inventory.setInventorySlotContents(player.inventory.getFirstEmptyStack(), newStack);
+			setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
+			return true;
+		}
+
 		return false;
 	}
 
