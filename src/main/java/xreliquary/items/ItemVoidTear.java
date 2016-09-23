@@ -3,6 +3,7 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockChest;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -41,6 +42,7 @@ import xreliquary.util.NBTHelper;
 import xreliquary.util.StackHelper;
 
 import java.util.List;
+import java.util.Random;
 
 public class ItemVoidTear extends ItemToggleable {
 
@@ -53,6 +55,7 @@ public class ItemVoidTear extends ItemToggleable {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
 		return new ICapabilitySerializable<NBTTagCompound>() {
@@ -134,7 +137,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@Override
 	public void onUpdate(ItemStack voidTear, World world, Entity entity, int slotNumber, boolean isSelected) {
-		if(voidTear.getTagCompound().hasKey("item")) {
+		if(voidTear.getTagCompound() != null && voidTear.getTagCompound().hasKey("item")) {
 
 			setItemStack(voidTear, ItemStack.loadItemStackFromNBT(NBTHelper.getTagCompound("item", voidTear)));
 			setItemQuantity(voidTear, NBTHelper.getInteger("itemQuantity", voidTear));
@@ -156,19 +159,20 @@ public class ItemVoidTear extends ItemToggleable {
 				if(contents != null) {
 					int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
 
-					if(getItemQuantity(voidTear) <= Settings.VoidTear.itemLimit && itemQuantity > getKeepQuantity(voidTear) && InventoryHelper.consumeItem(contents, player, getKeepQuantity(voidTear), itemQuantity - getKeepQuantity(voidTear))) {
+					if(getItemQuantity(voidTear) <= Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
 						//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
 						if(!player.capabilities.isCreativeMode) {
-							setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - getKeepQuantity(voidTear));
+							setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - contents.getMaxStackSize());
 							quantityUpdated = true;
 						}
 					}
 
-					if(getMode(voidTear) != Mode.NO_REFILL && attemptToReplenish(player, voidTear))
+					if(attemptToReplenishSingleStack(player, voidTear))
 						quantityUpdated = true;
 				}
 			}
 
+			//noinspection ConstantConditions
 			if(player.inventory.getStackInSlot(slotNumber) != null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.filledVoidTear && (isSelected || quantityUpdated)) {
 				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(voidTear)), (EntityPlayerMP) player);
 			} else if(player.inventory.offHandInventory[0] != null && player.inventory.offHandInventory[0].getItem() == ModItems.filledVoidTear) {
@@ -387,22 +391,31 @@ public class ItemVoidTear extends ItemToggleable {
 	public void onItemPickup(EntityItemPickupEvent event) {
 		ItemStack pickedUpStack = event.getItem().getEntityItem();
 		EntityPlayer player = event.getEntityPlayer();
+		EntityItem itemEntity = event.getItem();
 
-		for (int slot = 0; slot < player.inventory.getSizeInventory(); slot ++) {
+		for(int slot = 0; slot < player.inventory.getSizeInventory(); slot++) {
 			ItemStack tearStack = player.inventory.getStackInSlot(slot);
-			if (tearStack != null && tearStack.getItem() == this && this.isEnabled(tearStack)) {
+			if(tearStack != null && tearStack.getItem() == this && this.isEnabled(tearStack)) {
 				int tearItemQuantity = this.getItemQuantity(tearStack);
-				if (StackHelper.isItemAndNbtEqual(this.getContainedItem(tearStack), pickedUpStack) && tearItemQuantity + pickedUpStack.stackSize <= Settings.VoidTear.itemLimit) {
+				if(canAbsorbStack(pickedUpStack, tearStack)) {
 					int playerItemQuantity = InventoryHelper.getItemQuantity(pickedUpStack, player.inventory);
 
 					if (playerItemQuantity + pickedUpStack.stackSize >= getKeepQuantity(tearStack) || player.inventory.getFirstEmptyStack() == -1) {
 						this.setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.stackSize);
-						event.getItem().setDead();
+						if (!itemEntity.isSilent()) {
+							Random rand = new Random();
+							itemEntity.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						}
+						itemEntity.setDead();
 						event.setCanceled(true);
 						break;
 					}
 				}
 			}
 		}
+	}
+
+	boolean canAbsorbStack(ItemStack pickedUpStack, ItemStack tearStack) {
+		return StackHelper.isItemAndNbtEqual(this.getContainedItem(tearStack), pickedUpStack) && this.getItemQuantity(tearStack) + pickedUpStack.stackSize <= Settings.VoidTear.itemLimit;
 	}
 }
