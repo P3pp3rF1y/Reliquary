@@ -1,5 +1,6 @@
 package xreliquary.client.gui;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -23,6 +24,7 @@ public class GuiAlkahestTome extends GuiBase {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		this.bindTexture(this.BOOK_TEX);
 		this.drawTexturedModalRect((this.width - 146) / 2, (this.height - 179) / 2, 0, 0, 146, 179);
 		this.drawTexturedModalRect(((this.width - 16) / 2) + 19, ((this.height - 179) / 2) + 148, 0, 180, 10, 10);

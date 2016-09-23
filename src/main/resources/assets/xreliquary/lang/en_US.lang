@@ -1,6 +1,6 @@
 itemGroup.xreliquary=Reliquary
 
-xreliquary.gui.tome.text=Craft certain items and blocks;with the tome to duplicate them.;You can right-click Altars of;Alkahestry to fuel them with;redstone from the tome.
+xreliquary.gui.tome.text=Craft certain items and;blocks with the tome;to duplicate them.;You can right-click;Altars of Light to fuel;them with redstone from;the tome.
 
 xreliquary.tooltip.absorb={{!colors.light_purple}}Shift + Right click to toggle auto-absorb.
 xreliquary.tooltip.absorb_active={{!colors.purple}}Automagically absorbs {{item}}{{!colors.purple}}.
