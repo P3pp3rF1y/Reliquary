@@ -3,8 +3,8 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockChest;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -159,15 +159,15 @@ public class ItemVoidTear extends ItemToggleable {
 				if(contents != null) {
 					int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
 
-					if(getItemQuantity(voidTear) <= Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
+					if(getItemQuantity(voidTear) <= Settings.VoidTear.itemLimit && itemQuantity > getKeepQuantity(voidTear) && InventoryHelper.consumeItem(contents, player, getKeepQuantity(voidTear), itemQuantity - getKeepQuantity(voidTear))) {
 						//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
 						if(!player.capabilities.isCreativeMode) {
-							setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - contents.getMaxStackSize());
+							setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - getKeepQuantity(voidTear));
 							quantityUpdated = true;
 						}
 					}
 
-					if(attemptToReplenishSingleStack(player, voidTear))
+					if(getMode(voidTear) != Mode.NO_REFILL && attemptToReplenish(player, voidTear))
 						quantityUpdated = true;
 				}
 			}
@@ -204,19 +204,19 @@ public class ItemVoidTear extends ItemToggleable {
 				int quantityToDecrease = Math.min(stackFound.getMaxStackSize() - stackFound.stackSize, getItemQuantity(voidTear) - 1);
 				stackFound.stackSize += quantityToDecrease;
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
-				if (getMode(voidTear) != Mode.FULL_INVENTORY)
+				if(getMode(voidTear) != Mode.FULL_INVENTORY)
 					return true;
 			}
 		}
 
 		int slot;
-		while (getItemQuantity(voidTear) > 1 && (slot = player.inventory.getFirstEmptyStack()) != -1  ) {
+		while(getItemQuantity(voidTear) > 1 && (slot = player.inventory.getFirstEmptyStack()) != -1) {
 			ItemStack newStack = getContainedItem(voidTear).copy();
 			int quantityToDecrease = Math.min(newStack.getMaxStackSize(), getItemQuantity(voidTear) - 1);
 			newStack.stackSize = quantityToDecrease;
 			player.inventory.setInventorySlotContents(slot, newStack);
 			setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
-			if (getMode(voidTear) != Mode.FULL_INVENTORY)
+			if(getMode(voidTear) != Mode.FULL_INVENTORY)
 				return true;
 		}
 
@@ -345,9 +345,7 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	public enum Mode {
-		ONE_STACK,
-		FULL_INVENTORY,
-		NO_REFILL
+		ONE_STACK, FULL_INVENTORY, NO_REFILL
 	}
 
 	public Mode getMode(ItemStack voidTear) {
@@ -379,9 +377,9 @@ public class ItemVoidTear extends ItemToggleable {
 	public int getKeepQuantity(ItemStack voidTear) {
 		Mode mode = getMode(voidTear);
 
-		if (mode == Mode.NO_REFILL)
+		if(mode == Mode.NO_REFILL)
 			return 0;
-		if (mode == Mode.ONE_STACK)
+		if(mode == Mode.ONE_STACK)
 			return getContainedItem(voidTear).getMaxStackSize();
 
 		return Integer.MAX_VALUE;
@@ -400,9 +398,9 @@ public class ItemVoidTear extends ItemToggleable {
 				if(canAbsorbStack(pickedUpStack, tearStack)) {
 					int playerItemQuantity = InventoryHelper.getItemQuantity(pickedUpStack, player.inventory);
 
-					if (playerItemQuantity + pickedUpStack.stackSize >= getKeepQuantity(tearStack) || player.inventory.getFirstEmptyStack() == -1) {
+					if(playerItemQuantity + pickedUpStack.stackSize >= getKeepQuantity(tearStack) || player.inventory.getFirstEmptyStack() == -1) {
 						this.setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.stackSize);
-						if (!itemEntity.isSilent()) {
+						if(!itemEntity.isSilent()) {
 							Random rand = new Random();
 							itemEntity.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 						}
