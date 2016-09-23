@@ -48,6 +48,7 @@ public class ItemVoidTear extends ItemToggleable {
 		super(Names.Items.VOID_TEAR);
 		setMaxStackSize(1);
 		setNoRepair();
+		//noinspection ConstantConditions
 		this.setCreativeTab(null);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
@@ -155,15 +156,15 @@ public class ItemVoidTear extends ItemToggleable {
 				if(contents != null) {
 					int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
 
-					if(getItemQuantity(voidTear) <= Settings.VoidTear.itemLimit && itemQuantity > contents.getMaxStackSize() && InventoryHelper.consumeItem(contents, player, contents.getMaxStackSize(), itemQuantity - contents.getMaxStackSize())) {
+					if(getItemQuantity(voidTear) <= Settings.VoidTear.itemLimit && itemQuantity > getKeepQuantity(voidTear) && InventoryHelper.consumeItem(contents, player, getKeepQuantity(voidTear), itemQuantity - getKeepQuantity(voidTear))) {
 						//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
 						if(!player.capabilities.isCreativeMode) {
-							setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - contents.getMaxStackSize());
+							setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - getKeepQuantity(voidTear));
 							quantityUpdated = true;
 						}
 					}
 
-					if(attemptToReplenishSingleStack(player, voidTear))
+					if(getMode(voidTear) != Mode.NO_REFILL && attemptToReplenish(player, voidTear))
 						quantityUpdated = true;
 				}
 			}
@@ -188,7 +189,7 @@ public class ItemVoidTear extends ItemToggleable {
 		return filteredHandler.serializeNBT();
 	}
 
-	private boolean attemptToReplenishSingleStack(EntityPlayer player, ItemStack voidTear) {
+	private boolean attemptToReplenish(EntityPlayer player, ItemStack voidTear) {
 		IInventory inventory = player.inventory;
 		for(int slot = 0; slot < inventory.getSizeInventory(); slot++) {
 			ItemStack stackFound = inventory.getStackInSlot(slot);
@@ -199,17 +200,20 @@ public class ItemVoidTear extends ItemToggleable {
 				int quantityToDecrease = Math.min(stackFound.getMaxStackSize() - stackFound.stackSize, getItemQuantity(voidTear) - 1);
 				stackFound.stackSize += quantityToDecrease;
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
-				return true;
+				if (getMode(voidTear) != Mode.FULL_INVENTORY)
+					return true;
 			}
 		}
 
-		if (getItemQuantity(voidTear) > 1) {
+		int slot;
+		while (getItemQuantity(voidTear) > 1 && (slot = player.inventory.getFirstEmptyStack()) != -1  ) {
 			ItemStack newStack = getContainedItem(voidTear).copy();
 			int quantityToDecrease = Math.min(newStack.getMaxStackSize(), getItemQuantity(voidTear) - 1);
 			newStack.stackSize = quantityToDecrease;
-			player.inventory.setInventorySlotContents(player.inventory.getFirstEmptyStack(), newStack);
+			player.inventory.setInventorySlotContents(slot, newStack);
 			setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
-			return true;
+			if (getMode(voidTear) != Mode.FULL_INVENTORY)
+				return true;
 		}
 
 		return false;
@@ -244,7 +248,7 @@ public class ItemVoidTear extends ItemToggleable {
 		return EnumActionResult.PASS;
 	}
 
-	protected boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
+	private boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
 		ItemStack contents = this.getContainedItem(ist);
 		contents.stackSize = 1;
 
@@ -263,7 +267,7 @@ public class ItemVoidTear extends ItemToggleable {
 		}
 	}
 
-	protected void drainInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
+	private void drainInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
 		ItemStack contents = this.getContainedItem(ist);
 		int quantity = getItemQuantity(ist);
 
@@ -293,7 +297,7 @@ public class ItemVoidTear extends ItemToggleable {
 		return stackToReturn;
 	}
 
-	public void setItemStack(ItemStack voidTear, ItemStack stack) {
+	void setItemStack(ItemStack voidTear, ItemStack stack) {
 		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -303,7 +307,7 @@ public class ItemVoidTear extends ItemToggleable {
 		filteredHandler.setParentSlotStack(0, stack);
 	}
 
-	public void setItemQuantity(ItemStack voidTear, int quantity) {
+	void setItemQuantity(ItemStack voidTear, int quantity) {
 		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -349,11 +353,11 @@ public class ItemVoidTear extends ItemToggleable {
 		return Mode.valueOf(NBTHelper.getString("mode", voidTear));
 	}
 
-	public void setMode(ItemStack voidTear, Mode mode) {
+	private void setMode(ItemStack voidTear, Mode mode) {
 		NBTHelper.setString("mode", voidTear, mode.toString());
 	}
 
-	public void cycleMode(ItemStack voidTear) {
+	private void cycleMode(ItemStack voidTear) {
 		Mode mode = getMode(voidTear);
 		switch(mode) {
 			case ONE_STACK:
@@ -368,6 +372,17 @@ public class ItemVoidTear extends ItemToggleable {
 		}
 	}
 
+	public int getKeepQuantity(ItemStack voidTear) {
+		Mode mode = getMode(voidTear);
+
+		if (mode == Mode.NO_REFILL)
+			return 0;
+		if (mode == Mode.ONE_STACK)
+			return getContainedItem(voidTear).getMaxStackSize();
+
+		return Integer.MAX_VALUE;
+	}
+
 	@SubscribeEvent
 	public void onItemPickup(EntityItemPickupEvent event) {
 		ItemStack pickedUpStack = event.getItem().getEntityItem();
@@ -380,7 +395,7 @@ public class ItemVoidTear extends ItemToggleable {
 				if (StackHelper.isItemAndNbtEqual(this.getContainedItem(tearStack), pickedUpStack) && tearItemQuantity + pickedUpStack.stackSize <= Settings.VoidTear.itemLimit) {
 					int playerItemQuantity = InventoryHelper.getItemQuantity(pickedUpStack, player.inventory);
 
-					if (playerItemQuantity + pickedUpStack.stackSize >= pickedUpStack.getMaxStackSize()) {
+					if (playerItemQuantity + pickedUpStack.stackSize >= getKeepQuantity(tearStack) || player.inventory.getFirstEmptyStack() == -1) {
 						this.setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.stackSize);
 						event.getItem().setDead();
 						event.setCanceled(true);
