@@ -2,6 +2,8 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockChest;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -9,12 +11,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -110,29 +115,56 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(ItemStack voidTear, World world, EntityPlayer player, EnumHand hand) {
 		if(!world.isRemote) {
 
-			if(getItemQuantity(ist) == 0)
+			if(getItemQuantity(voidTear) == 0)
 				return new ActionResult<>(EnumActionResult.SUCCESS, new ItemStack(ModItems.emptyVoidTear, 1, 0));
 
-			RayTraceResult movingObjectPosition = this.rayTrace(world, player, false);
+			RayTraceResult rayTraceResult = this.rayTrace(world, player, false);
 
 			//not enabling void tear if player tried to deposit everything into inventory but there wasn't enough space
-			if(movingObjectPosition != null && movingObjectPosition.typeOfHit == RayTraceResult.Type.BLOCK && world.getTileEntity(movingObjectPosition.getBlockPos()) instanceof IInventory && player.isSneaking())
-				return new ActionResult<>(EnumActionResult.PASS, ist);
+			if(rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK && world.getTileEntity(rayTraceResult.getBlockPos()) instanceof IInventory && player.isSneaking())
+				return new ActionResult<>(EnumActionResult.PASS, voidTear);
 
-			if(player.isSneaking())
-				return super.onItemRightClick(ist, world, player, hand);
-			if(this.attemptToEmptyIntoInventory(ist, player, player.inventory)) {
-				player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
-				NBTHelper.resetTag(ist);
-				return new ActionResult<>(EnumActionResult.SUCCESS, new ItemStack(ModItems.emptyVoidTear, 1, 0));
+			if(rayTraceResult == null || rayTraceResult.typeOfHit != RayTraceResult.Type.BLOCK || !(getContainedItem(voidTear).getItem() instanceof ItemBlock)) {
+				if(player.isSneaking())
+					return super.onItemRightClick(voidTear, world, player, hand);
+
+				if(this.attemptToEmptyIntoInventory(voidTear, player, player.inventory)) {
+					player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+					NBTHelper.resetTag(voidTear);
+					return new ActionResult<>(EnumActionResult.SUCCESS, new ItemStack(ModItems.emptyVoidTear, 1, 0));
+				}
+			} else {
+				if(placeBlock(world, voidTear, rayTraceResult, player, hand))
+					return new ActionResult<>(EnumActionResult.SUCCESS, voidTear);
 			}
+
 		}
 
 		player.inventoryContainer.detectAndSendChanges();
-		return new ActionResult<>(EnumActionResult.PASS, ist);
+		return new ActionResult<>(EnumActionResult.PASS, voidTear);
+	}
+
+	private boolean placeBlock(World world, ItemStack voidTear, RayTraceResult rayTraceResult, EntityPlayer player, EnumHand hand) {
+		ItemStack contents = getContainedItem(voidTear);
+		ItemBlock itemblock = (ItemBlock) contents.getItem();
+		BlockPos pos = rayTraceResult.getBlockPos();
+		EnumFacing facing = rayTraceResult.sideHit;
+		Vec3d hitVec = rayTraceResult.hitVec;
+
+		if(itemblock.canPlaceBlockOnSide(world, pos, facing, player, contents)) {
+			setItemQuantity(voidTear, getItemQuantity(voidTear) - 1);
+			EnumActionResult enumActionResult = itemblock.onItemUse(contents, player, world, pos, hand, facing, (float) hitVec.xCoord, (float) hitVec.yCoord, (float) hitVec.zCoord);
+
+			BlockPos offsetPos = pos.offset(facing);
+			IBlockState blockState = world.getBlockState(offsetPos);
+			SoundType soundtype = blockState.getBlock().getSoundType(blockState, world, offsetPos, player);
+			((EntityPlayerMP) player).connection.sendPacket(new SPacketSoundEffect(soundtype.getPlaceSound(), SoundCategory.BLOCKS, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F));
+			return enumActionResult == EnumActionResult.SUCCESS;
+		}
+		return false;
 	}
 
 	@Override
@@ -374,7 +406,7 @@ public class ItemVoidTear extends ItemToggleable {
 		}
 	}
 
-	public int getKeepQuantity(ItemStack voidTear) {
+	private int getKeepQuantity(ItemStack voidTear) {
 		Mode mode = getMode(voidTear);
 
 		if(mode == Mode.NO_REFILL)
