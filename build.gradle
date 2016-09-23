@@ -32,10 +32,10 @@ repositories {
         name "JustEnoughResources"
         artifactPattern "http://addons-origin.cursecdn.com/files/${jer_cf}/[module]-[revision].[ext]"
     }
-    ivy {
+/*    ivy {
         name "Baubles"
         artifactPattern "http://addons-origin.cursecdn.com/files/${baubles_cf}/[module]-[revision].[ext]"
-    }
+    }*/
     ivy {
         name "Thaumcraft"
         artifactPattern "http://addons-origin.cursecdn.com/files/${thaumcraft_cf}/[module]-[revision].[ext]"
@@ -43,6 +43,9 @@ repositories {
     ivy {
         name "BloodMagic"
         artifactPattern "http://addons-origin.cursecdn.com/files/${blood_magic_cf}/[module]-[revision].[ext]"
+    }
+    flatDir {
+        dirs 'libs'
     }
 }
 
@@ -63,7 +66,8 @@ dependencies {
     deobfCompile "info.amerifrance.guideapi:Guide-API:${guideapi_version}"
     compile "mcp.mobius.waila:Waila:${waila_version}:dev"
     compile name:'JustEnoughResources', version: jer_version, ext: 'jar'
-    compile name:'Baubles', version: baubles_version, ext: 'jar'
+    //compile name:'Baubles', version: baubles_version, ext: 'jar'
+    compile name:'Baubles-1.10.2-1.3.BETA3-deobf'
     compile name:'BloodMagic', version: blood_magic_version, ext: 'jar'
     //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
     //compile name:'TConstruct', version: tconstruct_version, ext: 'jar'
