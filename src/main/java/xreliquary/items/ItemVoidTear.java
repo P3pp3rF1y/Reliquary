@@ -347,7 +347,7 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	public Mode getMode(ItemStack voidTear) {
-		if(NBTHelper.getString("mode", voidTear).equals("")) {
+		if(NBTHelper.getString("mode", voidTear).isEmpty()) {
 			setMode(voidTear, Mode.ONE_STACK);
 		}
 		return Mode.valueOf(NBTHelper.getString("mode", voidTear));
