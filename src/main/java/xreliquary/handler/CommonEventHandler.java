@@ -24,6 +24,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -180,7 +181,7 @@ public class CommonEventHandler {
 			return;
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
-		if(entity.getAttackTarget() == null || !(entity.getAttackTarget() instanceof EntityPlayer))
+		if(entity.getAttackTarget() == null || !(entity.getAttackTarget() instanceof EntityPlayer) || entity.getAttackTarget() instanceof FakePlayer)
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity.getAttackTarget();
@@ -215,7 +216,7 @@ public class CommonEventHandler {
 	private void doMobCharmCheckOnSetTarget(LivingSetAttackTargetEvent event) {
 		if(event.getTarget() == null)
 			return;
-		if(!(event.getTarget() instanceof EntityPlayer))
+		if(!(event.getTarget() instanceof EntityPlayer) || event.getTarget() instanceof FakePlayer)
 			return;
 		if(!(event.getEntity() instanceof EntityLiving))
 			return;
