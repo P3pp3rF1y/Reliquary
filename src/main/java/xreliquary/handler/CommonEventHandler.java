@@ -1,6 +1,7 @@
 package xreliquary.handler;
 
 import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.enchantment.EnchantmentData;
@@ -15,7 +16,6 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketPlayerAbilities;
@@ -73,15 +73,14 @@ public class CommonEventHandler {
 		return e.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
 	}
 
-
 	@SubscribeEvent
 	public void preventMendingAndUnbreaking(AnvilUpdateEvent event) {
-		if (event.getLeft() == null || event.getRight() == null)
+		if(event.getLeft() == null || event.getRight() == null)
 			return;
 
-		if (event.getLeft().getItem() == ModItems.mobCharm || event.getLeft().getItem() == ModItems.alkahestryTome) {
+		if(event.getLeft().getItem() == ModItems.mobCharm || event.getLeft().getItem() == ModItems.alkahestryTome) {
 			ItemStack mendingBook = Items.ENCHANTED_BOOK.getEnchantedItemStack(new EnchantmentData(Enchantments.MENDING, Enchantments.MENDING.getMaxLevel()));
-			if (ItemStack.areItemStacksEqual(event.getRight(), mendingBook)) {
+			if(ItemStack.areItemStacksEqual(event.getRight(), mendingBook)) {
 				event.setCanceled(true);
 			}
 		}
@@ -123,7 +122,7 @@ public class CommonEventHandler {
 	}
 
 	private void damagePlayersMobCharm(EntityPlayer player, Entity entity) {
-		if (player.capabilities.isCreativeMode)
+		if(player.capabilities.isCreativeMode)
 			return;
 
 		byte mobCharmType = ModItems.mobCharm.getMobCharmTypeForEntity(entity);
@@ -149,9 +148,9 @@ public class CommonEventHandler {
 		}
 
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
-			IInventory inventoryBaubles = BaublesApi.getBaubles(player);
+			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaubles(player);
 
-			for(int i = 0; i < inventoryBaubles.getSizeInventory(); i++) {
+			for(int i = 0; i < inventoryBaubles.getSlots(); i++) {
 				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
 
 				if(baubleStack == null)
@@ -252,7 +251,7 @@ public class CommonEventHandler {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.MAGMA_CUBE_META);
 		} else if(entity instanceof EntitySlime) {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SLIME_META);
-		}else if(entity instanceof EntityGuardian && !((EntityGuardian) entity).isElder()) {
+		} else if(entity instanceof EntityGuardian && !((EntityGuardian) entity).isElder()) {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.GUARDIAN_META);
 		}
 
@@ -546,9 +545,9 @@ public class CommonEventHandler {
 		}
 
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
-			IInventory inventoryBaubles = BaublesApi.getBaubles(player);
+			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaubles(player);
 
-			for(int i = 0; i < inventoryBaubles.getSizeInventory(); i++) {
+			for(int i = 0; i < inventoryBaubles.getSlots(); i++) {
 				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
 				if(baubleStack != null && baubleStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(baubleStack, type))
 					return true;
