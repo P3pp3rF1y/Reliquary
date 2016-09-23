@@ -268,6 +268,9 @@ xreliquary.item.witch_hat.name={{!colors.yellow}}Witch Hat
 
 xreliquary.item.void_tear_empty.name=Empty Void Tear
 xreliquary.item.void_tear.name=Void Tear
+xreliquary.item.void_tear.mode.no_refill=EMPTY
+xreliquary.item.void_tear.mode.one_stack=STACK
+xreliquary.item.void_tear.mode.full_inventory=FILL
 
 xreliquary.tooltip.tear=Currently holds {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
 xreliquary.tooltip.tear_empty=Right-click to capture whatever item you have the most of.

@@ -3,6 +3,7 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockChest;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -320,6 +321,51 @@ public class ItemVoidTear extends ItemToggleable {
 
 		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 		return filteredHandler.getTotalAmount(0);
+	}
+
+	@Override
+	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack voidTear) {
+		if(entityLiving.worldObj.isRemote || !(entityLiving instanceof EntityPlayer))
+			return false;
+
+		EntityPlayer player = (EntityPlayer) entityLiving;
+		if(player.isSneaking()) {
+			cycleMode(voidTear);
+			return true;
+		}
+		return false;
+	}
+
+	public enum Mode {
+		ONE_STACK,
+		FULL_INVENTORY,
+		NO_REFILL
+	}
+
+	public Mode getMode(ItemStack voidTear) {
+		if(NBTHelper.getString("mode", voidTear).equals("")) {
+			setMode(voidTear, Mode.ONE_STACK);
+		}
+		return Mode.valueOf(NBTHelper.getString("mode", voidTear));
+	}
+
+	public void setMode(ItemStack voidTear, Mode mode) {
+		NBTHelper.setString("mode", voidTear, mode.toString());
+	}
+
+	public void cycleMode(ItemStack voidTear) {
+		Mode mode = getMode(voidTear);
+		switch(mode) {
+			case ONE_STACK:
+				setMode(voidTear, Mode.FULL_INVENTORY);
+				break;
+			case FULL_INVENTORY:
+				setMode(voidTear, Mode.NO_REFILL);
+				break;
+			case NO_REFILL:
+				setMode(voidTear, Mode.ONE_STACK);
+				break;
+		}
 	}
 
 	@SubscribeEvent

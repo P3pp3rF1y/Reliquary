@@ -31,8 +31,10 @@ import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
 import xreliquary.items.*;
 import xreliquary.reference.Colors;
+import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.XpHelper;
@@ -377,7 +379,8 @@ public class ClientEventHandler {
 
 		ItemVoidTear voidTearItem = (ItemVoidTear) voidTearStack.getItem();
 		ItemStack containedItemStack = voidTearItem.getContainedItem(voidTearStack);
-		renderStandardTwoItemHUD(mc, player, voidTearStack, containedItemStack, Settings.HudPositions.voidTear, 0, 0);
+		String mode = LanguageHelper.getLocalization("item." + Names.Items.VOID_TEAR + ".mode." + ModItems.filledVoidTear.getMode(voidTearStack).toString().toLowerCase());
+		renderStandardTwoItemHUD(mc, player, voidTearStack, containedItemStack, Settings.HudPositions.voidTear, 0, 0, 0, mode);
 	}
 
 	private void handleMidasTouchstoneHUDCheck(Minecraft mc) {
@@ -798,6 +801,10 @@ public class ClientEventHandler {
 	}
 
 	private static void renderStandardTwoItemHUD(Minecraft minecraft, EntityPlayer player, ItemStack hudStack, ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride, int xOffset) {
+		renderStandardTwoItemHUD(minecraft, player, hudStack, secondaryStack, hudPosition, colorOverride, stackSizeOverride, xOffset, null);
+	}
+
+	private static void renderStandardTwoItemHUD(Minecraft minecraft, EntityPlayer player, ItemStack hudStack, ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride, int xOffset, String additionalText) {
 		int stackSize = 0;
 		if(stackSizeOverride > 0)
 			stackSize = stackSizeOverride;
@@ -851,24 +858,26 @@ public class ClientEventHandler {
 
 		//TODO add rending gale modes translations
 		//special item conditions are handled on a per-item-type basis:
-		if(hudStack.getItem() instanceof ItemRendingGale) {
-			ItemRendingGale staffItem = (ItemRendingGale) hudStack.getItem();
-			String staffMode = staffItem.getMode(hudStack);
-			switch(staffMode) {
-				case "flight":
-					staffMode = "FLIGHT";
-					break;
-				case "push":
-					staffMode = "PUSH";
-					break;
-				case "pull":
-					staffMode = "PULL";
-					break;
-				default:
-					staffMode = "BOLT";
-					break;
+		if(hudStack.getItem() == ModItems.rendingGale || (additionalText != null && !additionalText.isEmpty())) {
+			if (hudStack.getItem() == ModItems.rendingGale) {
+				ItemRendingGale staffItem = (ItemRendingGale) hudStack.getItem();
+				String staffMode = staffItem.getMode(hudStack);
+				switch(staffMode) {
+					case "flight":
+						additionalText = "FLIGHT";
+						break;
+					case "push":
+						additionalText = "PUSH";
+						break;
+					case "pull":
+						additionalText = "PULL";
+						break;
+					default:
+						additionalText = "BOLT";
+						break;
+				}
 			}
-			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(staffMode, hudOverlayX - (leftSide ? 0 : staffMode.length() * 6), hudOverlayY + 18, color);
+			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(additionalText, hudOverlayX - (leftSide ? 0 : additionalText.length() * 6), hudOverlayY + 18, color);
 		}
 
 		if(secondaryStack != null) {
