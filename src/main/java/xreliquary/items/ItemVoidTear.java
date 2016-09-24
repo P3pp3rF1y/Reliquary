@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
@@ -9,6 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
@@ -154,7 +156,7 @@ public class ItemVoidTear extends ItemToggleable {
 		EnumFacing facing = rayTraceResult.sideHit;
 		Vec3d hitVec = rayTraceResult.hitVec;
 
-		if(itemblock.canPlaceBlockOnSide(world, pos, facing, player, contents)) {
+		if(canPlaceBlockOnSide(world, itemblock.getBlock(), pos, facing, contents)) {
 			setItemQuantity(voidTear, getItemQuantity(voidTear) - 1);
 			EnumActionResult enumActionResult = itemblock.onItemUse(contents, player, world, pos, hand, facing, (float) hitVec.xCoord, (float) hitVec.yCoord, (float) hitVec.zCoord);
 
@@ -165,6 +167,22 @@ public class ItemVoidTear extends ItemToggleable {
 			return enumActionResult == EnumActionResult.SUCCESS;
 		}
 		return false;
+	}
+
+	private boolean canPlaceBlockOnSide(World worldIn, Block blockToPlace, BlockPos pos, EnumFacing side, ItemStack stack)
+	{
+		Block block = worldIn.getBlockState(pos).getBlock();
+
+		if (block == Blocks.SNOW_LAYER && block.isReplaceable(worldIn, pos))
+		{
+			side = EnumFacing.UP;
+		}
+		else if (!block.isReplaceable(worldIn, pos))
+		{
+			pos = pos.offset(side);
+		}
+
+		return worldIn.canBlockBePlaced(blockToPlace, pos, false, side, null, stack);
 	}
 
 	@Override
