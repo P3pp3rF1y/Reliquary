@@ -110,7 +110,7 @@ def getBuildNumber() {
     }
 
     if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
-        return Integer.toString(Integer.parseInt(System.getenv("TRAVIS_BUILD_NUMBER")) + 500) //hack to continue with build numbers on Travis
+        return (Integer.parseInt(System.getenv("TRAVIS_BUILD_NUMBER")) + 500).toString() //hack to continue with build numbers on Travis
     }
     return ""
 }
