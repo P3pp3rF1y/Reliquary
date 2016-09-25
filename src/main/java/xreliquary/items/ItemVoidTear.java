@@ -3,8 +3,6 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -16,12 +14,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -249,7 +245,7 @@ public class ItemVoidTear extends ItemToggleable {
 			return EnumActionResult.PASS;
 
 		if(world.getTileEntity(pos) instanceof IInventory) {
-			if (!world.isRemote) {
+			if(!world.isRemote) {
 				IInventory inventory = (IInventory) world.getTileEntity(pos);
 
 				if(inventory instanceof TileEntityChest && world.getBlockState(pos).getBlock() instanceof BlockChest) {
@@ -268,12 +264,12 @@ public class ItemVoidTear extends ItemToggleable {
 				}
 				return EnumActionResult.SUCCESS;
 			}
-		} else if (getContainerItem(voidTear)!= null && getContainerItem(voidTear).getItem() instanceof ItemBlock) {
+		} else if(getContainerItem(voidTear) != null && getContainerItem(voidTear).getItem() instanceof ItemBlock) {
 			ItemStack containerItem = getContainerItem(voidTear);
 			ItemBlock itemBlock = (ItemBlock) containerItem.getItem();
 			Block block = itemBlock.getBlock();
 
-			if (canPlaceBlockOnSide(world, block,  pos, side, containerItem)) {
+			if(canPlaceBlockOnSide(world, block, pos, side, containerItem)) {
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - 1);
 				return itemBlock.onItemUse(containerItem, player, world, pos, hand, side, hitX, hitY, hitZ);
 			}
