@@ -271,7 +271,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 			if(canPlaceBlockOnSide(world, block, pos, side, containerItem)) {
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - 1);
-				return itemBlock.onItemUse(containerItem, player, world, pos, hand, side, hitX, hitY, hitZ);
+				itemBlock.onItemUse(containerItem, player, world, pos, hand, side, hitX, hitY, hitZ);
 			}
 		}
 		return EnumActionResult.PASS;
