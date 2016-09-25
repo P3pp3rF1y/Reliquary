@@ -104,7 +104,7 @@ public class ItemVoidTear extends ItemToggleable {
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
 		this.formatTooltip(null, stack, list);
 
-		ItemStack contents = this.getContainedItem(stack);
+		ItemStack contents = this.getContainerItem(stack);
 
 		if(contents == null)
 			return;
@@ -125,60 +125,30 @@ public class ItemVoidTear extends ItemToggleable {
 
 			RayTraceResult rayTraceResult = this.rayTrace(world, player, false);
 
-			//not enabling void tear if player tried to deposit everything into inventory but there wasn't enough space
-			if(rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK && world.getTileEntity(rayTraceResult.getBlockPos()) instanceof IInventory && player.isSneaking())
+			//not letting logic go through if player was sneak clicking inventory or was trying to place a block
+			if(rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK && ((world.getTileEntity(rayTraceResult.getBlockPos()) instanceof IInventory && player.isSneaking()) || getContainerItem(voidTear).getItem() instanceof ItemBlock))
 				return new ActionResult<>(EnumActionResult.PASS, voidTear);
 
-			if(rayTraceResult == null || rayTraceResult.typeOfHit != RayTraceResult.Type.BLOCK || !(getContainedItem(voidTear).getItem() instanceof ItemBlock)) {
-				if(player.isSneaking())
-					return super.onItemRightClick(voidTear, world, player, hand);
+			if(player.isSneaking())
+				return super.onItemRightClick(voidTear, world, player, hand);
 
-				if(this.attemptToEmptyIntoInventory(voidTear, player, player.inventory)) {
-					player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
-					NBTHelper.resetTag(voidTear);
-					return new ActionResult<>(EnumActionResult.SUCCESS, new ItemStack(ModItems.emptyVoidTear, 1, 0));
-				}
-			} else {
-				if(placeBlock(world, voidTear, rayTraceResult, player, hand))
-					return new ActionResult<>(EnumActionResult.SUCCESS, voidTear);
+			if(this.attemptToEmptyIntoInventory(voidTear, player, player.inventory)) {
+				player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+				NBTHelper.resetTag(voidTear);
+				return new ActionResult<>(EnumActionResult.SUCCESS, new ItemStack(ModItems.emptyVoidTear, 1, 0));
 			}
-
 		}
 
 		player.inventoryContainer.detectAndSendChanges();
 		return new ActionResult<>(EnumActionResult.PASS, voidTear);
 	}
 
-	private boolean placeBlock(World world, ItemStack voidTear, RayTraceResult rayTraceResult, EntityPlayer player, EnumHand hand) {
-		ItemStack contents = getContainedItem(voidTear);
-		ItemBlock itemblock = (ItemBlock) contents.getItem();
-		BlockPos pos = rayTraceResult.getBlockPos();
-		EnumFacing facing = rayTraceResult.sideHit;
-		Vec3d hitVec = rayTraceResult.hitVec;
-
-		if(canPlaceBlockOnSide(world, itemblock.getBlock(), pos, facing, contents)) {
-			setItemQuantity(voidTear, getItemQuantity(voidTear) - 1);
-			EnumActionResult enumActionResult = itemblock.onItemUse(contents, player, world, pos, hand, facing, (float) hitVec.xCoord, (float) hitVec.yCoord, (float) hitVec.zCoord);
-
-			BlockPos offsetPos = pos.offset(facing);
-			IBlockState blockState = world.getBlockState(offsetPos);
-			SoundType soundtype = blockState.getBlock().getSoundType(blockState, world, offsetPos, player);
-			((EntityPlayerMP) player).connection.sendPacket(new SPacketSoundEffect(soundtype.getPlaceSound(), SoundCategory.BLOCKS, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F));
-			return enumActionResult == EnumActionResult.SUCCESS;
-		}
-		return false;
-	}
-
-	private boolean canPlaceBlockOnSide(World worldIn, Block blockToPlace, BlockPos pos, EnumFacing side, ItemStack stack)
-	{
+	private boolean canPlaceBlockOnSide(World worldIn, Block blockToPlace, BlockPos pos, EnumFacing side, ItemStack stack) {
 		Block block = worldIn.getBlockState(pos).getBlock();
 
-		if (block == Blocks.SNOW_LAYER && block.isReplaceable(worldIn, pos))
-		{
+		if(block == Blocks.SNOW_LAYER && block.isReplaceable(worldIn, pos)) {
 			side = EnumFacing.UP;
-		}
-		else if (!block.isReplaceable(worldIn, pos))
-		{
+		} else if(!block.isReplaceable(worldIn, pos)) {
 			pos = pos.offset(side);
 		}
 
@@ -204,7 +174,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 			boolean quantityUpdated = false;
 			if(this.isEnabled(voidTear)) {
-				ItemStack contents = this.getContainedItem(voidTear);
+				ItemStack contents = this.getContainerItem(voidTear);
 
 				if(contents != null) {
 					int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
@@ -250,7 +220,7 @@ public class ItemVoidTear extends ItemToggleable {
 			if(stackFound == null) {
 				continue;
 			}
-			if(StackHelper.isItemAndNbtEqual(stackFound, getContainedItem(voidTear))) {
+			if(StackHelper.isItemAndNbtEqual(stackFound, getContainerItem(voidTear))) {
 				int quantityToDecrease = Math.min(stackFound.getMaxStackSize() - stackFound.stackSize, getItemQuantity(voidTear) - 1);
 				stackFound.stackSize += quantityToDecrease;
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
@@ -261,7 +231,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 		int slot;
 		while(getItemQuantity(voidTear) > 1 && (slot = player.inventory.getFirstEmptyStack()) != -1) {
-			ItemStack newStack = getContainedItem(voidTear).copy();
+			ItemStack newStack = getContainerItem(voidTear).copy();
 			int quantityToDecrease = Math.min(newStack.getMaxStackSize(), getItemQuantity(voidTear) - 1);
 			newStack.stackSize = quantityToDecrease;
 			player.inventory.setInventorySlotContents(slot, newStack);
@@ -274,12 +244,12 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+	public EnumActionResult onItemUseFirst(ItemStack voidTear, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
 		if(world.getBlockState(pos).getBlock() == ModBlocks.pedestal)
 			return EnumActionResult.PASS;
 
-		if(!world.isRemote) {
-			if(world.getTileEntity(pos) instanceof IInventory) {
+		if(world.getTileEntity(pos) instanceof IInventory) {
+			if (!world.isRemote) {
 				IInventory inventory = (IInventory) world.getTileEntity(pos);
 
 				if(inventory instanceof TileEntityChest && world.getBlockState(pos).getBlock() instanceof BlockChest) {
@@ -287,23 +257,32 @@ public class ItemVoidTear extends ItemToggleable {
 				}
 
 				//enabled == drinking mode, we're going to drain the inventory of items.
-				if(this.isEnabled(ist)) {
-					this.drainInventory(ist, player, inventory);
+				if(this.isEnabled(voidTear)) {
+					this.drainInventory(voidTear, player, inventory);
 				} else {
 					//disabled == placement mode, try and stuff the tear's contents into the inventory
-					this.attemptToEmptyIntoInventory(ist, player, inventory);
-					if(!player.isSneaking() && !(getItemQuantity(ist) > 0)) {
+					this.attemptToEmptyIntoInventory(voidTear, player, inventory);
+					if(!player.isSneaking() && !(getItemQuantity(voidTear) > 0)) {
 						player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(ModItems.emptyVoidTear, 1, 0));
 					}
 				}
 				return EnumActionResult.SUCCESS;
+			}
+		} else if (getContainerItem(voidTear)!= null && getContainerItem(voidTear).getItem() instanceof ItemBlock) {
+			ItemStack containerItem = getContainerItem(voidTear);
+			ItemBlock itemBlock = (ItemBlock) containerItem.getItem();
+			Block block = itemBlock.getBlock();
+
+			if (canPlaceBlockOnSide(world, block,  pos, side, containerItem)) {
+				setItemQuantity(voidTear, getItemQuantity(voidTear) - 1);
+				return itemBlock.onItemUse(containerItem, player, world, pos, hand, side, hitX, hitY, hitZ);
 			}
 		}
 		return EnumActionResult.PASS;
 	}
 
 	private boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
-		ItemStack contents = this.getContainedItem(ist);
+		ItemStack contents = this.getContainerItem(ist);
 		contents.stackSize = 1;
 
 		int quantity = getItemQuantity(ist);
@@ -322,7 +301,7 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	private void drainInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
-		ItemStack contents = this.getContainedItem(ist);
+		ItemStack contents = this.getContainerItem(ist);
 		int quantity = getItemQuantity(ist);
 
 		int quantityDrained = InventoryHelper.tryToRemoveFromInventory(contents, inventory, Settings.VoidTear.itemLimit - quantity);
@@ -335,7 +314,7 @@ public class ItemVoidTear extends ItemToggleable {
 		setItemQuantity(ist, quantity + quantityDrained);
 	}
 
-	public ItemStack getContainedItem(ItemStack voidTear) {
+	public ItemStack getContainerItem(ItemStack voidTear) {
 		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -430,7 +409,7 @@ public class ItemVoidTear extends ItemToggleable {
 		if(mode == Mode.NO_REFILL)
 			return 0;
 		if(mode == Mode.ONE_STACK)
-			return getContainedItem(voidTear).getMaxStackSize();
+			return getContainerItem(voidTear).getMaxStackSize();
 
 		return Integer.MAX_VALUE;
 	}
@@ -464,6 +443,6 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	boolean canAbsorbStack(ItemStack pickedUpStack, ItemStack tearStack) {
-		return StackHelper.isItemAndNbtEqual(this.getContainedItem(tearStack), pickedUpStack) && this.getItemQuantity(tearStack) + pickedUpStack.stackSize <= Settings.VoidTear.itemLimit;
+		return StackHelper.isItemAndNbtEqual(this.getContainerItem(tearStack), pickedUpStack) && this.getItemQuantity(tearStack) + pickedUpStack.stackSize <= Settings.VoidTear.itemLimit;
 	}
 }

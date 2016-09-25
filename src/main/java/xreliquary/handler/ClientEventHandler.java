@@ -378,7 +378,7 @@ public class ClientEventHandler {
 			return;
 
 		ItemVoidTear voidTearItem = (ItemVoidTear) voidTearStack.getItem();
-		ItemStack containedItemStack = voidTearItem.getContainedItem(voidTearStack);
+		ItemStack containedItemStack = voidTearItem.getContainerItem(voidTearStack);
 		String mode = LanguageHelper.getLocalization("item." + Names.Items.VOID_TEAR + ".mode." + ModItems.filledVoidTear.getMode(voidTearStack).toString().toLowerCase());
 		renderStandardTwoItemHUD(mc, player, voidTearStack, containedItemStack, Settings.HudPositions.voidTear, 0, 0, 0, mode);
 	}
