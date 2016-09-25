@@ -2,6 +2,7 @@ package xreliquary.util;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -195,7 +196,9 @@ public class InventoryHelper {
 			}
 
 		} else {
-			for(int slot = 0; slot < Math.min(inventory.getSizeInventory(), inventory.getSizeInventory()); slot++) {
+			int inventorySize = inventory instanceof InventoryPlayer ? ((InventoryPlayer) inventory).mainInventory.length : inventory.getSizeInventory();
+
+			for(int slot = 0; slot < inventorySize; slot++) {
 				if(inventory.getStackInSlot(slot) == null && inventory.isItemValidForSlot(slot, contents)) {
 					numberAdded += insertIntoEmptySlot(contents, inventory, slot, maxToAdd - numberAdded);
 				} else if(StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents)) {
