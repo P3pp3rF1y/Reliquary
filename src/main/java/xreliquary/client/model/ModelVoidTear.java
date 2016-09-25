@@ -66,8 +66,11 @@ public class ModelVoidTear implements IPerspectiveAwareModel {
 			public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
 				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 					ItemStack containedStack = ModItems.filledVoidTear.getContainerItem(stack);
-					if (containedStack != null)
-						return Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(containedStack, world, entity);
+					if (containedStack != null) {
+						IBakedModel bakedModel = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(containedStack, world, entity);
+						if (!bakedModel.isBuiltInRenderer())
+							return bakedModel;
+					}
 				}
 
 				return ModelVoidTear.this;
