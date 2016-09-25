@@ -1,10 +1,11 @@
-package xreliquary.util.pedestal;
+package xreliquary.pedestal.wrappers;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalRedstoneItemWrapper;
+import xreliquary.blocks.BlockPedestal;
 import xreliquary.reference.Settings;
 
 import java.util.List;
@@ -39,10 +40,15 @@ public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 		World world = pedestal.getTheWorld();
 		BlockPos thisPos = pedestal.getBlockPos();
 
+		boolean buttonEnabled = pedestal.switchedOn();
+
 		for(BlockPos pos : pedestalsInRange) {
+			if (pos.equals(thisPos))
+				continue;
+
 			IPedestal ped = (IPedestal) world.getTileEntity(pos);
 			if(ped != null) {
-				if(powered || pedestal.getTheWorld().isBlockPowered(pedestal.getBlockPos())) {
+				if(powered || buttonEnabled || pedestal.getTheWorld().isBlockPowered(pedestal.getBlockPos())) {
 					ped.switchOn(thisPos);
 				} else {
 					ped.switchOff(thisPos);

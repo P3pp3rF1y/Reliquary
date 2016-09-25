@@ -4,6 +4,7 @@
 # include important folders
 # need gradle
 !gradle/
+!bintray/
 !gradlew
 !gradlew.bat
 !build.gradle

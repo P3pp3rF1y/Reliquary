@@ -29,6 +29,7 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 	private int pestleUsedCounter;
 	private String customInventoryName;
 	private boolean dataChanged;
+	private long finishCoolDown;
 
 	public TileEntityMortar() {
 		//inventory size
@@ -127,6 +128,7 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 					this.setInventorySlotContents(clearSlot, null);
 				}
 				pestleUsedCounter = 0;
+				this.finishCoolDown = this.worldObj.getTotalWorldTime() + 20; // 1 second cooldown before essence can be put in to prevent insta insert of it
 				if(worldObj.isRemote)
 					return true;
 				ItemStack resultItem = new ItemStack(ModItems.potionEssence, 1, 0);
@@ -143,6 +145,10 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 
 	public void spawnPestleParticles() {
 		worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.getPos().getX() + 0.5D, this.getPos().getY() + 0.15D, this.getPos().getZ() + 0.5D, 0.0D, 0.1D, 0.0D);
+	}
+
+	public boolean isInCooldown() {
+		return this.worldObj.getTotalWorldTime() < finishCoolDown;
 	}
 
 	@Override

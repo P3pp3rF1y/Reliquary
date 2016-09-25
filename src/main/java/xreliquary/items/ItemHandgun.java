@@ -291,6 +291,9 @@ public class ItemHandgun extends ItemBase {
 			ItemStack magazine = player.inventory.mainInventory[slot];
 			setBulletType(handgun, (short) magazine.getMetadata());
 			setPotionEffects(handgun, PotionUtils.getFullEffectsFromItem(magazine));
+			magazine.stackSize--;
+			if (magazine.stackSize == 0)
+				player.inventory.mainInventory[slot] = null;
 		}
 
 		if(getBulletType(handgun) != 0) {

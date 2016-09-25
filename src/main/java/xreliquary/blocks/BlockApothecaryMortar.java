@@ -24,6 +24,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.init.ModBlocks;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 
 import java.util.List;
@@ -100,6 +101,7 @@ public class BlockApothecaryMortar extends BlockBase {
 		if(tileEntity == null || !(tileEntity instanceof TileEntityMortar))
 			return false;
 		TileEntityMortar mortar = (TileEntityMortar) tileEntity;
+
 		if(heldItem == null) {
 			if(player.isSneaking()) {
 				xreliquary.util.InventoryHelper.tryRemovingLastStack(mortar, world, mortar.getPos());
@@ -110,8 +112,14 @@ public class BlockApothecaryMortar extends BlockBase {
 			player.swingArm(hand);
 			return done;
 		}
+
+		//if we're in cooldown prevent player from insta inserting essence that they just got from mortar
+		if (mortar.isInCooldown() && heldItem.getItem() == ModItems.potionEssence)
+			return false;
+
 		ItemStack[] mortarItems = mortar.getItemStacks();
 		boolean putItemInSlot = false;
+
 		for(int slot = 0; slot < mortarItems.length; slot++) {
 			ItemStack item = new ItemStack(heldItem.getItem(), 1, heldItem.getItemDamage());
 			//noinspection ConstantConditions

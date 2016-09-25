@@ -201,10 +201,11 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 					continue;
 				trySides.add(tryOtherSide);
 			}
+			ItemStack torchStack = new ItemStack(Blocks.TORCH);
 			for(EnumFacing side : trySides) {
 				if(!world.canBlockBePlaced(Blocks.TORCH, new BlockPos(xO, yO, zO), false, side, player, stack))
 					continue;
-				if(!(InventoryHelper.consumeItem(Blocks.TORCH, player, 0, 1) || findAndDrainSojournersStaff(player)))
+				if(!(InventoryHelper.consumeItem(torchStack, player, 0, 1) || findAndDrainSojournersStaff(player)))
 					continue;
 				IBlockState torchBlockState = getTorchSideAttempt(world, new BlockPos(xO, yO, zO), side, player);
 

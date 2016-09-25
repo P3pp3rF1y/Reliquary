@@ -29,7 +29,7 @@ import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.StackHelper;
 import xreliquary.util.XRFakePlayerFactory;
-import xreliquary.util.pedestal.PedestalRegistry;
+import xreliquary.pedestal.PedestalRegistry;
 
 import java.util.*;
 
@@ -359,6 +359,11 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			itemData.set(index, data);
 	}
 
+	@Override
+	public boolean switchedOn() {
+		return switchedOn;
+	}
+
 	private void setEnabled(boolean switchedOn) {
 		ModBlocks.pedestal.setEnabled(worldObj, pos, switchedOn);
 		if(!switchedOn)
@@ -618,6 +623,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		else
 			switchOff(null);
 
+		updateRedstone();
 	}
 
 	public boolean isPowered() {

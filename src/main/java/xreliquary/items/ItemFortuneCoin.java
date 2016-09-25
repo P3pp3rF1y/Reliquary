@@ -22,6 +22,7 @@ import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
 import xreliquary.init.ModFluids;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -131,26 +132,29 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 		}
 	}
 
-	private boolean checkForRoom(ItemStack item, EntityPlayer player) {
-		int remaining = item.stackSize;
-		for(ItemStack ist : player.inventory.mainInventory) {
-			if(ist == null) {
+	private boolean checkForRoom(ItemStack stackToPickup, EntityPlayer player) {
+		int remaining = stackToPickup.stackSize;
+		for(ItemStack inventoryStack : player.inventory.mainInventory) {
+			if(inventoryStack == null) {
 				continue;
 			}
-			if(ist.getItem() == item.getItem() && ist.getItemDamage() == item.getItemDamage()) {
-				if(ist.stackSize + remaining <= ist.getMaxStackSize())
+			if(inventoryStack.getItem() == stackToPickup.getItem() && inventoryStack.getItemDamage() == stackToPickup.getItemDamage()) {
+				if(inventoryStack.stackSize + remaining <= inventoryStack.getMaxStackSize())
 					return true;
 				else {
-					int count = ist.stackSize;
-					while(count < ist.getMaxStackSize()) {
+					int count = inventoryStack.stackSize;
+					while(count < inventoryStack.getMaxStackSize()) {
 						count++;
 						remaining--;
 						if(remaining == 0)
 							return true;
 					}
 				}
+			} else if(inventoryStack.getItem() == ModItems.filledVoidTear && ModItems.filledVoidTear.isEnabled(inventoryStack) && ModItems.filledVoidTear.canAbsorbStack(stackToPickup, inventoryStack)) {
+				return true;
 			}
 		}
+
 		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
 			if(player.inventory.mainInventory[slot] == null)
 				return true;

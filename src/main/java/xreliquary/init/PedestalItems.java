@@ -6,8 +6,9 @@ import net.minecraft.item.*;
 import net.minecraftforge.fml.common.Loader;
 import xreliquary.items.ItemHarvestRod;
 import xreliquary.items.ItemRendingGale;
+import xreliquary.pedestal.wrappers.*;
 import xreliquary.reference.Compatibility;
-import xreliquary.util.pedestal.*;
+import xreliquary.pedestal.*;
 
 public class PedestalItems {
 	public static void init() {
