@@ -193,6 +193,8 @@ public class CommonEventHandler {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.MAGMA_CUBE_META);
 		} else if(entity instanceof EntitySlime) {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SLIME_META);
+		} else if(entity instanceof EntityEnderman) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ENDERMAN_META);
 		}
 
 		if(resetTarget) {
