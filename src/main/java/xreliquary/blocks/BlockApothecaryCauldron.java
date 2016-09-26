@@ -34,10 +34,7 @@ public class BlockApothecaryCauldron extends BlockBase {
 	private static final AxisAlignedBB AABB_WALL_WEST = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.125D, 1.0D, 1.0D);
 
 	public BlockApothecaryCauldron() {
-		super(Material.IRON, Names.Blocks.APOTHECARY_CAULDRON);
-		this.setHardness(1.5F);
-		this.setResistance(5.0F);
-		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+		super(Material.IRON, Names.Blocks.APOTHECARY_CAULDRON, 1.5F, 5.0F);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, 0));
 	}
 

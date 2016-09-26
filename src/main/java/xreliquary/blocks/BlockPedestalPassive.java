@@ -35,7 +35,6 @@ public class BlockPedestalPassive extends BlockBase {
 
 	public BlockPedestalPassive() {
 		super(Material.ROCK, Names.Blocks.PEDESTAL_PASSIVE);
-		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
 	@Override

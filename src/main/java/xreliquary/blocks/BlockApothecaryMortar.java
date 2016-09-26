@@ -35,12 +35,9 @@ public class BlockApothecaryMortar extends BlockBase {
 	private static final AxisAlignedBB MORTAR_AABB = new AxisAlignedBB(0.25D, 0.0D, 0.25D, 0.75D, 0.4D, 0.75F);
 
 	public BlockApothecaryMortar() {
-		super(Material.ROCK, Names.Blocks.APOTHECARY_MORTAR);
+		super(Material.ROCK, Names.Blocks.APOTHECARY_MORTAR, 1.5F, 2.0F);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
-		this.setHardness(1.5F);
-		this.setResistance(2.0F);
-		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-	}
+ 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
