@@ -1,5 +1,6 @@
 package xreliquary.init;
 
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fluids.Fluid;
@@ -50,9 +51,15 @@ public class ModFluids {
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onIconLoad(TextureStitchEvent.Pre event) {
-		if(fluidXpJuice != null) {
-			event.getMap().registerSprite(fluidXpJuice.getStill());
-			event.getMap().registerSprite(fluidXpJuice.getFlowing());
+		TextureMap textureMap = event.getMap();
+		registerFluidSprites(textureMap, fluidXpJuice);
+		registerFluidSprites(textureMap, milk);
+	}
+
+	private void registerFluidSprites(TextureMap textureMap, Fluid fluid) {
+		if (fluid != null) {
+			textureMap.registerSprite(fluid.getStill());
+			textureMap.registerSprite(fluid.getFlowing());
 		}
 	}
 }
