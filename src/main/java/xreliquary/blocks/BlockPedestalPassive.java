@@ -223,5 +223,7 @@ public class BlockPedestalPassive extends BlockBase {
 		TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) player.worldObj.getTileEntity(event.getPos());
 
 		pedestal.removeLastPedestalStack();
+
+		event.setCanceled(true);
 	}
 }
