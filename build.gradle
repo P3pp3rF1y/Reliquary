@@ -35,12 +35,6 @@ minecraft {
     //mappings = "stable_12"
 }
 
-jar {
-    manifest {
-        attributes("FMLCorePlugin": "xreliquary.common.asm.DepLoader", "FMLCorePluginContainsFMLMod": "true")
-    }
-}
-
 processResources
 {
     // Replace stuff in mcmod.info and in .lang files, nothing else.
