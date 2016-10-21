@@ -38,7 +38,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		if(tome != null && valid == 1) {
 			AlkahestCraftRecipe recipe;
 			if(Alkahestry.getDictionaryKey(itemStack) == null) {
-				String key = RegistryHelper.getItemRegistryName(itemStack.getItem()) + (itemStack.getItem().getHasSubtypes() ? "|" + itemStack.getMetadata() : "");
+				String key = RegistryHelper.getItemRegistryName(itemStack.getItem()) + "|" + itemStack.getMetadata();
 				recipe = Settings.AlkahestryTome.craftingRecipes.get(key);
 			} else
 				recipe = Alkahestry.getDictionaryKey(itemStack);
@@ -57,7 +57,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 			if(stack != null) {
 				if(!(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome)))) {
 					if(Alkahestry.getDictionaryKey(stack) == null) {
-						String key = RegistryHelper.getItemRegistryName(stack.getItem()) + (stack.getItem().getHasSubtypes() ? "|" + stack.getMetadata() : "");
+						String key = RegistryHelper.getItemRegistryName(stack.getItem()) + "|" + stack.getMetadata();
 						returned = Settings.AlkahestryTome.craftingRecipes.get(key);
 					} else {
 						returned = Alkahestry.getDictionaryKey(stack);
