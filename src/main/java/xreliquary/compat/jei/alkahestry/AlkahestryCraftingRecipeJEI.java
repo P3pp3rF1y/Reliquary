@@ -1,5 +1,7 @@
 package xreliquary.compat.jei.alkahestry;
 
+import com.google.common.collect.ImmutableList;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
@@ -9,24 +11,36 @@ import java.util.List;
 
 class AlkahestryCraftingRecipeJEI extends BlankRecipeWrapper {
 	@Nonnull
-	private final List<Object> inputs;
+	private final ItemStack input;
+
+	private final ItemStack tomeInput;
+
+	private final ItemStack tomeOutput;
 
 	@Nonnull
-	private final List<Object> outputs;
+	private final ItemStack output;
 
 	@SuppressWarnings("unchecked")
-	public AlkahestryCraftingRecipeJEI(@Nonnull Object input, @Nonnull ItemStack tomeInput, @Nonnull Object output, @Nonnull ItemStack tomeOutput) {
-		this.inputs = Arrays.asList(input, tomeInput);
-		this.outputs = Arrays.asList(output, tomeOutput);
+	public AlkahestryCraftingRecipeJEI(@Nonnull ItemStack input, @Nonnull ItemStack tomeInput, @Nonnull ItemStack output, @Nonnull ItemStack tomeOutput) {
+		this.input = input;
+		this.tomeInput = tomeInput;
+		this.output = output;
+		this.tomeOutput = tomeOutput;
+	}
+
+	@Override
+	public void getIngredients(IIngredients ingredients) {
+		ingredients.setInputs(ItemStack.class, ImmutableList.of(input, tomeInput));
+		ingredients.setOutputs(ItemStack.class, ImmutableList.of(output, tomeOutput));
 	}
 
 	@Override
 	public List getInputs() {
-		return inputs;
+		return ImmutableList.of(input, tomeInput);
 	}
 
 	@Override
 	public List getOutputs() {
-		return outputs;
+		return ImmutableList.of(output, tomeOutput);
 	}
 }

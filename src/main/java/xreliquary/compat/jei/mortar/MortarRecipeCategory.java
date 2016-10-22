@@ -3,6 +3,8 @@ package xreliquary.compat.jei.mortar;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.BlankRecipeCategory;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
@@ -13,8 +15,9 @@ import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
-public class MortarRecipeCategory implements IRecipeCategory {
+public class MortarRecipeCategory extends BlankRecipeCategory<MortarRecipeJEI> {
 
 	private static final int INPUT_SLOT_1 = 0;
 	private static final int INPUT_SLOT_2 = 1;
@@ -51,32 +54,21 @@ public class MortarRecipeCategory implements IRecipeCategory {
 	}
 
 	@Override
-	public void drawExtras(Minecraft minecraft) {
-
-	}
-
-	@Override
-	public void drawAnimations(Minecraft minecraft) {
-
-	}
-
-	@Override
-	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper) {
+	public void setRecipe(IRecipeLayout recipeLayout, MortarRecipeJEI recipeWrapper, IIngredients ingredients) {
 		recipeLayout.getItemStacks().init(INPUT_SLOT_1, true, 0, 0);
 		recipeLayout.getItemStacks().init(INPUT_SLOT_2, true, 17, 0);
 		recipeLayout.getItemStacks().init(INPUT_SLOT_3, true, 33, 0);
 		recipeLayout.getItemStacks().init(OUTPUT_SLOT, false, 62, 34);
 		recipeLayout.getItemStacks().init(MORTAR_SLOT, false, 16, 34);
 
-		if(recipeWrapper instanceof MortarRecipeJEI) {
-			MortarRecipeJEI mortarWrapper = (MortarRecipeJEI) recipeWrapper;
-			recipeLayout.getItemStacks().set(INPUT_SLOT_1, (ItemStack) mortarWrapper.getInputs().get(0));
-			recipeLayout.getItemStacks().set(INPUT_SLOT_2, (ItemStack) mortarWrapper.getInputs().get(1));
-			if(mortarWrapper.getInputs().size() == 3)
-				recipeLayout.getItemStacks().set(INPUT_SLOT_3, (ItemStack) mortarWrapper.getInputs().get(2));
-			recipeLayout.getItemStacks().set(OUTPUT_SLOT, (ItemStack) mortarWrapper.getOutputs().get(0));
-			recipeLayout.getItemStacks().set(MORTAR_SLOT, new ItemStack(ModBlocks.apothecaryMortar, 1));
-		}
+		List<List<ItemStack>> ingredientsInputs = ingredients.getInputs(ItemStack.class);
+		ItemStack output = ingredients.getOutputs(ItemStack.class).get(0);
 
+		recipeLayout.getItemStacks().set(INPUT_SLOT_1, ingredientsInputs.get(0));
+		recipeLayout.getItemStacks().set(INPUT_SLOT_2, ingredientsInputs.get(1));
+		if(ingredientsInputs.size() == 3)
+			recipeLayout.getItemStacks().set(INPUT_SLOT_3, ingredientsInputs.get(2));
+		recipeLayout.getItemStacks().set(OUTPUT_SLOT, output);
+		recipeLayout.getItemStacks().set(MORTAR_SLOT, new ItemStack(ModBlocks.apothecaryMortar, 1));
 	}
 }
