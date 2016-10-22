@@ -1,5 +1,6 @@
 package xreliquary.compat.jei.lingering;
 
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 import net.minecraft.item.ItemStack;
@@ -19,6 +20,12 @@ public class ArrowShotRecipeJEI extends BlankRecipeWrapper implements IShapedCra
 	public ArrowShotRecipeJEI(@Nonnull List<ItemStack> inputs, @Nonnull ItemStack output) {
 		this.inputs = inputs;
 		this.output = output;
+	}
+
+	@Override
+	public void getIngredients(IIngredients ingredients) {
+		ingredients.setInputs(ItemStack.class, inputs);
+		ingredients.setOutput(ItemStack.class, output);
 	}
 
 	@Override

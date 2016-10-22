@@ -1,5 +1,6 @@
 package xreliquary.init;
 
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fluids.Fluid;
@@ -19,7 +20,7 @@ public class ModFluids {
 	public static Fluid fluidXpJuice;
 	public static Fluid milk;
 
-	public static void init() {
+	public static void preInit() {
 		if(!Loader.isModLoaded(Compatibility.MOD_ID.OPEN_BLOCKS) && !Loader.isModLoaded(Compatibility.MOD_ID.ENDERIO)) {
 			LogHelper.info("XP Juice registered by Reliquary.");
 			fluidXpJuice = new Fluid(XP_JUICE_FLUID_NAME, new ResourceLocation(Reference.MOD_ID, "fluids/xpjuice_still"), new ResourceLocation(Reference.MOD_ID, "fluids/xpjuice_flowing")).setLuminosity(10).setDensity(800).setViscosity(1500).setUnlocalizedName("xreliquary.xpjuice");
@@ -34,11 +35,11 @@ public class ModFluids {
 		}
 	}
 
-	public static void postInit() {
+	public static void init() {
 		if(fluidXpJuice == null) { //should have been registered by open blocks / Ender IO
 			fluidXpJuice = FluidRegistry.getFluid(XP_JUICE_FLUID_NAME);
 			if(fluidXpJuice == null) {
-				LogHelper.error("Liquid XP Juice registration left to open blocks / Ender IO but could not be found.");
+				LogHelper.error("Liquid XP Juice registration left to Ender IO but could not be found.");
 			}
 		}
 
@@ -50,9 +51,15 @@ public class ModFluids {
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onIconLoad(TextureStitchEvent.Pre event) {
-		if(fluidXpJuice != null) {
-			event.getMap().registerSprite(fluidXpJuice.getStill());
-			event.getMap().registerSprite(fluidXpJuice.getFlowing());
+		TextureMap textureMap = event.getMap();
+		registerFluidSprites(textureMap, fluidXpJuice);
+		registerFluidSprites(textureMap, milk);
+	}
+
+	private void registerFluidSprites(TextureMap textureMap, Fluid fluid) {
+		if (fluid != null) {
+			textureMap.registerSprite(fluid.getStill());
+			textureMap.registerSprite(fluid.getFlowing());
 		}
 	}
 }

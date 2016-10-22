@@ -1,6 +1,7 @@
 package xreliquary.client.render;
 
 import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,9 +23,9 @@ public class MobCharmBeltLayerRenderer implements LayerRenderer<EntityPlayer> {
 	@Override
 	public void doRenderLayer(EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
-			IInventory baubles = BaublesApi.getBaubles(player);
+			IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
 
-			for(int i = 0; i < baubles.getSizeInventory(); i++) {
+			for(int i = 0; i < baubles.getSlots(); i++) {
 				ItemStack bauble = baubles.getStackInSlot(i);
 				if(bauble == null || bauble.getItem() != ModItems.mobCharmBelt)
 					continue;

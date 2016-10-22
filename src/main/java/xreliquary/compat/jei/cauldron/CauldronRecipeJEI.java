@@ -1,5 +1,6 @@
 package xreliquary.compat.jei.cauldron;
 
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
@@ -18,6 +19,12 @@ class CauldronRecipeJEI extends BlankRecipeWrapper {
 	public CauldronRecipeJEI(@Nonnull List<ItemStack> inputs, @Nonnull ItemStack output) {
 		this.inputs = inputs;
 		this.output = output;
+	}
+
+	@Override
+	public void getIngredients(IIngredients ingredients) {
+		ingredients.setInputs(ItemStack.class, inputs);
+		ingredients.setOutput(ItemStack.class, output);
 	}
 
 	@Override

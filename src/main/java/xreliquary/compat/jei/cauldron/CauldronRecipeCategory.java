@@ -3,6 +3,8 @@ package xreliquary.compat.jei.cauldron;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.BlankRecipeCategory;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
@@ -15,7 +17,7 @@ import xreliquary.util.LanguageHelper;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class CauldronRecipeCategory implements IRecipeCategory {
+public class CauldronRecipeCategory extends BlankRecipeCategory<CauldronRecipeJEI> {
 
 	private static final int INPUT_SLOT = 0;
 	private static final int OUTPUT_SLOT = 1;
@@ -51,35 +53,24 @@ public class CauldronRecipeCategory implements IRecipeCategory {
 	}
 
 	@Override
-	public void drawExtras(Minecraft minecraft) {
-
-	}
-
-	@Override
-	public void drawAnimations(Minecraft minecraft) {
-
-	}
-
-	@Override
-	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper) {
+	public void setRecipe(IRecipeLayout recipeLayout, CauldronRecipeJEI recipeWrapper, IIngredients ingredients) {
 		recipeLayout.getItemStacks().init(INPUT_SLOT, true, 0, 33);
 		recipeLayout.getItemStacks().init(OUTPUT_SLOT, false, 90, 33);
 		recipeLayout.getItemStacks().init(CAULDRON_SLOT, false, 44, 33);
 
-		if(recipeWrapper instanceof CauldronRecipeJEI) {
-			CauldronRecipeJEI cauldronWrapper = (CauldronRecipeJEI) recipeWrapper;
-			initAdditionalSlots(recipeLayout, cauldronWrapper.getInputs().size());
-			recipeLayout.getItemStacks().set(INPUT_SLOT, (ItemStack) cauldronWrapper.getInputs().get(0));
-			recipeLayout.getItemStacks().set(OUTPUT_SLOT, (ItemStack) cauldronWrapper.getOutputs().get(0));
-			recipeLayout.getItemStacks().set(CAULDRON_SLOT, new ItemStack(ModBlocks.apothecaryCauldron, 1));
-			setAdditionalSlotContents(recipeLayout, cauldronWrapper.getInputs());
-		}
+		List<List<ItemStack>> ingredientsInputs = ingredients.getInputs(ItemStack.class);
+		ItemStack output = ingredients.getOutputs(ItemStack.class).get(0);
 
+		initAdditionalSlots(recipeLayout, ingredientsInputs.size());
+		recipeLayout.getItemStacks().set(INPUT_SLOT, ingredientsInputs.get(0));
+		recipeLayout.getItemStacks().set(OUTPUT_SLOT, output);
+		recipeLayout.getItemStacks().set(CAULDRON_SLOT, new ItemStack(ModBlocks.apothecaryCauldron, 1));
+		setAdditionalSlotContents(recipeLayout, ingredientsInputs);
 	}
 
-	private void setAdditionalSlotContents(IRecipeLayout recipeLayout, List inputs) {
+	private void setAdditionalSlotContents(IRecipeLayout recipeLayout, List<List<ItemStack>> inputs) {
 		for(int i = 1; i < inputs.size(); i++)
-			recipeLayout.getItemStacks().set((i - 1) + FIRST_ADDITIONAL_SLOT, (ItemStack) inputs.get(i));
+			recipeLayout.getItemStacks().set((i - 1) + FIRST_ADDITIONAL_SLOT, inputs.get(i));
 	}
 
 	private void initAdditionalSlots(IRecipeLayout recipeLayout, int inputCount) {

@@ -3,6 +3,8 @@ package xreliquary.compat.jei.alkahestry;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.BlankRecipeCategory;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
@@ -13,8 +15,9 @@ import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.List;
 
-public class AlkahestryCraftingRecipeCategory implements IRecipeCategory {
+public class AlkahestryCraftingRecipeCategory extends BlankRecipeCategory<AlkahestryCraftingRecipeJEI> {
 
 	private static final int INPUT_SLOT = 0;
 	private static final int TOME_SLOT = 1;
@@ -50,40 +53,21 @@ public class AlkahestryCraftingRecipeCategory implements IRecipeCategory {
 	}
 
 	@Override
-	public void drawExtras(Minecraft minecraft) {
-
-	}
-
-	@Override
-	public void drawAnimations(Minecraft minecraft) {
-
-	}
-
-	@Override
-	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper) {
+	public void setRecipe(IRecipeLayout recipeLayout, AlkahestryCraftingRecipeJEI recipeWrapper, IIngredients ingredients) {
 		recipeLayout.getItemStacks().init(INPUT_SLOT, true, 0, 0);
 		recipeLayout.getItemStacks().init(TOME_SLOT, true, 18, 0);
 		recipeLayout.getItemStacks().init(OUTPUT_SLOT, false, 73, 9);
 		recipeLayout.getItemStacks().init(TOME_OUTPUT_SLOT, false, 18, 59);
 
-		if(recipeWrapper instanceof AlkahestryCraftingRecipeJEI) {
-			AlkahestryCraftingRecipeJEI alkahestryCraftingWrapper = (AlkahestryCraftingRecipeJEI) recipeWrapper;
-			if(alkahestryCraftingWrapper.getInputs().get(0) instanceof Collection) {
-				//noinspection unchecked
-				recipeLayout.getItemStacks().set(INPUT_SLOT, ((Collection<ItemStack>) alkahestryCraftingWrapper.getInputs().get(0)));
-			} else {
-				recipeLayout.getItemStacks().set(INPUT_SLOT, (ItemStack) alkahestryCraftingWrapper.getInputs().get(0));
-			}
-			recipeLayout.getItemStacks().set(TOME_SLOT, (ItemStack) alkahestryCraftingWrapper.getInputs().get(1));
+		List<List<ItemStack>> ingredientsInputs = ingredients.getInputs(ItemStack.class);
+		ItemStack input = ingredientsInputs.get(0).get(0);
+		ItemStack tome = ingredientsInputs.get(1).get(0);
+		ItemStack output = ingredients.getOutputs(ItemStack.class).get(0);
+		ItemStack tomeOutput = ingredients.getOutputs(ItemStack.class).get(1);
 
-			if(alkahestryCraftingWrapper.getOutputs().get(0) instanceof Collection) {
-				//noinspection unchecked
-				recipeLayout.getItemStacks().set(OUTPUT_SLOT, ((Collection<ItemStack>) alkahestryCraftingWrapper.getOutputs().get(0)));
-			} else {
-				recipeLayout.getItemStacks().set(OUTPUT_SLOT, (ItemStack) alkahestryCraftingWrapper.getOutputs().get(0));
-			}
-			recipeLayout.getItemStacks().set(TOME_OUTPUT_SLOT, (ItemStack) alkahestryCraftingWrapper.getOutputs().get(1));
-		}
-
+		recipeLayout.getItemStacks().set(INPUT_SLOT, input);
+		recipeLayout.getItemStacks().set(TOME_SLOT, tome);
+		recipeLayout.getItemStacks().set(OUTPUT_SLOT, output);
+		recipeLayout.getItemStacks().set(TOME_OUTPUT_SLOT, tomeOutput );
 	}
 }

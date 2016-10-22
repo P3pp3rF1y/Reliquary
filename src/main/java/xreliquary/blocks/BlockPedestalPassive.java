@@ -1,5 +1,6 @@
 package xreliquary.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
@@ -19,6 +20,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityPedestalPassive;
 import xreliquary.init.ModBlocks;
@@ -35,7 +39,8 @@ public class BlockPedestalPassive extends BlockBase {
 
 	public BlockPedestalPassive() {
 		super(Material.ROCK, Names.Blocks.PEDESTAL_PASSIVE);
-		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -201,5 +206,24 @@ public class BlockPedestalPassive extends BlockBase {
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		return PEDESTAL_AABB;
+	}
+
+	@SubscribeEvent
+	public void onRightClicked(PlayerInteractEvent.RightClickBlock event) {
+		EntityPlayer player = event.getEntityPlayer();
+
+		//should only really use the event in case that the player is sneaking with something in offhand and empty mainhand
+		if (!player.isSneaking() || player.getHeldItemMainhand() != null || player.getHeldItemOffhand() == null)
+			return;
+
+		Block block = player.worldObj.getBlockState(event.getPos()).getBlock();
+		if (block != this)
+			return;
+
+		TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) player.worldObj.getTileEntity(event.getPos());
+
+		pedestal.removeLastPedestalStack();
+
+		event.setCanceled(true);
 	}
 }

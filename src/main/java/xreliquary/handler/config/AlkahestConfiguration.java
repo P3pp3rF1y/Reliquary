@@ -174,9 +174,11 @@ public class AlkahestConfiguration {
 				} else {
 					ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
 
-					String key = entry.getKey() + (stack.getItem().getHasSubtypes() ? "|" + meta : "");
+					String key = modId + ":" + name + "|" + meta;
 
-					Settings.AlkahestryTome.craftingRecipes.put(key, new AlkahestCraftRecipe(stack, yield, cost));
+					if (stack != null) {
+						Settings.AlkahestryTome.craftingRecipes.put(key, new AlkahestCraftRecipe(stack, yield, cost));
+					}
 				}
 			}
 		}
@@ -237,6 +239,6 @@ public class AlkahestConfiguration {
 	private static void addConfigAlkahestCraftingRecipe(ConfigCategory category, String item, Integer meta, Integer yield, Integer cost) {
 		Property prop = new Property(item + "|" + meta, new String[] {yield.toString(), cost.toString()}, Property.Type.INTEGER);
 
-		category.put(item, prop);
+		category.put(item + "|" + meta, prop);
 	}
 }

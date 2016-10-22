@@ -28,14 +28,10 @@ public class BlockAlkahestryAltar extends BlockBase {
 	private final boolean isActive;
 
 	public BlockAlkahestryAltar(boolean isActive) {
-		super(Material.ROCK, (isActive ? Names.Blocks.ALTAR : Names.Blocks.ALTAR_IDLE));
+		super(Material.ROCK, (isActive ? Names.Blocks.ALTAR : Names.Blocks.ALTAR_IDLE), 1.5F, 5.0F);
 		this.isActive = isActive;
 
-		this.setHardness(1.5F);
-		this.setResistance(5.0F);
-
 		this.setLightLevel(this.isActive ? getAltarActiveLightLevel() : 0.0F);
-		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
 	@SuppressWarnings("deprecation")

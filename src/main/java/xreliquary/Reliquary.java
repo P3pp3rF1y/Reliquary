@@ -47,7 +47,7 @@ public class Reliquary {
 
 		ModItems.init();
 
-		ModFluids.init();
+		ModFluids.preInit();
 
 		ModLoot.init();
 
@@ -72,10 +72,11 @@ public class Reliquary {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		//TODO: put modstats back in when ready
-		//Modstats.instance().getReporter().registerMod(this);
+
+		ModFluids.init();
 
 		PROXY.init();
+
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModCompat.loadCompat(ICompat.InitializationPhase.INIT, null);
@@ -83,13 +84,12 @@ public class Reliquary {
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
+
 		PROXY.postInit();
 
 		ConfigurationHandler.postInit();
 
 		ModCompat.loadCompat(ICompat.InitializationPhase.POST_INIT, null);
-
-		ModFluids.postInit();
 
 		PedestalItems.init();
 

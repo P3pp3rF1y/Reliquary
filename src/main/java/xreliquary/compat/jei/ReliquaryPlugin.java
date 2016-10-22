@@ -1,6 +1,12 @@
 package xreliquary.compat.jei;
 
+import mezz.jei.Internal;
 import mezz.jei.api.*;
+import mezz.jei.api.ingredients.IModIngredientRegistration;
+import mezz.jei.plugins.vanilla.ingredients.ItemStackHelper;
+import mezz.jei.plugins.vanilla.ingredients.ItemStackListFactory;
+import mezz.jei.plugins.vanilla.ingredients.ItemStackRenderer;
+import mezz.jei.util.StackHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,6 +33,17 @@ import javax.annotation.Nullable;
 
 @JEIPlugin
 public class ReliquaryPlugin implements IModPlugin {
+
+	@Override
+	public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
+		subtypeRegistry.useNbtForSubtypes(ModItems.mobCharm, ModItems.potionEssence, ModItems.potion, ModItems.bullet, ModItems.tippedArrow, ModItems.magazine);
+	}
+
+	@Override
+	public void registerIngredients(IModIngredientRegistration registry) {
+		StackHelper stackHelper = Internal.getStackHelper();
+		registry.register(ItemStack.class, ItemStackListFactory.create(stackHelper), new ItemStackHelper(stackHelper), new ItemStackRenderer());
+	}
 
 	@Override
 	public void register(IModRegistry registry) {
@@ -73,26 +90,6 @@ public class ReliquaryPlugin implements IModPlugin {
 		for (byte i=0; i<13; i++) {
 			registry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(new ItemStack(ModItems.heartZhu, 1, i));
 		}
-
-		ISubtypeRegistry nbtRegistry = registry.getJeiHelpers().getSubtypeRegistry();
-
-		nbtRegistry.useNbtForSubtypes(ModItems.mobCharm);
-		nbtRegistry.useNbtForSubtypes(ModItems.potionEssence);
-		nbtRegistry.useNbtForSubtypes(ModItems.bullet);
-		nbtRegistry.useNbtForSubtypes(ModItems.tippedArrow);
-		nbtRegistry.useNbtForSubtypes(ModItems.magazine);
-
-		nbtRegistry.registerNbtInterpreter(ModItems.potion, new ISubtypeRegistry.ISubtypeInterpreter() {
-			@Nullable
-			@Override
-			public String getSubtypeInfo(@Nonnull ItemStack itemStack) {
-				NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
-				if(nbtTagCompound == null || nbtTagCompound.hasNoTags()) {
-					return null;
-				}
-				return nbtTagCompound.toString();
-			}
-		});
 	}
 
 	@Override

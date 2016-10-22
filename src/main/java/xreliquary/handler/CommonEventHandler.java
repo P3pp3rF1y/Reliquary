@@ -1,6 +1,7 @@
 package xreliquary.handler;
 
 import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.enchantment.EnchantmentData;
@@ -150,9 +151,9 @@ public class CommonEventHandler {
 		}
 
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
-			IInventory inventoryBaubles = BaublesApi.getBaubles(player);
+			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 
-			for(int i = 0; i < inventoryBaubles.getSizeInventory(); i++) {
+			for(int i = 0; i < inventoryBaubles.getSlots(); i++) {
 				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
 
 				if(baubleStack == null)
@@ -193,6 +194,8 @@ public class CommonEventHandler {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.MAGMA_CUBE_META);
 		} else if(entity instanceof EntitySlime) {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SLIME_META);
+		} else if(entity instanceof EntityEnderman) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ENDERMAN_META);
 		}
 
 		if(resetTarget) {
@@ -547,9 +550,9 @@ public class CommonEventHandler {
 		}
 
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
-			IInventory inventoryBaubles = BaublesApi.getBaubles(player);
+			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 
-			for(int i = 0; i < inventoryBaubles.getSizeInventory(); i++) {
+			for(int i = 0; i < inventoryBaubles.getSlots(); i++) {
 				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
 				if(baubleStack != null && baubleStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(baubleStack, type))
 					return true;

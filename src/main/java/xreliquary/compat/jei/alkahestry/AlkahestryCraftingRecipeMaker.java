@@ -20,30 +20,22 @@ public class AlkahestryCraftingRecipeMaker {
 		ArrayList<AlkahestryCraftingRecipeJEI> recipes = new ArrayList<>();
 
 		for(AlkahestCraftRecipe recipe : alkahestryCraftingRecipes.values()) {
-			Object input = null;
 			ItemStack inputTome = new ItemStack(ModItems.alkahestryTome, 1, 0);
 			NBTHelper.setInteger("charge", inputTome, Settings.AlkahestryTome.chargeLimit);
-			Object output = null;
 			ItemStack outputTome = new ItemStack(ModItems.alkahestryTome, 1, recipe.cost);
 			NBTHelper.setInteger("charge", outputTome, Settings.AlkahestryTome.chargeLimit - recipe.cost);
 
 			if(recipe.dictionaryName != null) {
 				if(OreDictionary.getOres(recipe.dictionaryName).size() > 0) {
-					ArrayList<ItemStack> outputOres = new ArrayList<>();
-
 					for(ItemStack ore : OreDictionary.getOres(recipe.dictionaryName)) {
 						ItemStack outputOre = ore.copy();
 						outputOre.stackSize = recipe.yield + 1;
-						outputOres.add(outputOre);
+						recipes.add(new AlkahestryCraftingRecipeJEI(ore, inputTome, outputOre, outputTome));
 					}
-					input = OreDictionary.getOres(recipe.dictionaryName);
-					output = outputOres;
 				}
 			} else {
-				input = recipe.item;
-				output = new ItemStack(recipe.item.getItem(), recipe.yield + 1, recipe.item.getMetadata());
-			}
-			if(input != null) {
+				ItemStack input = recipe.item;
+				ItemStack output = new ItemStack(recipe.item.getItem(), recipe.yield + 1, recipe.item.getMetadata());
 				recipes.add(new AlkahestryCraftingRecipeJEI(input, inputTome, output, outputTome));
 			}
 		}
