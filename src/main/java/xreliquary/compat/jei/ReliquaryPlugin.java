@@ -41,8 +41,6 @@ public class ReliquaryPlugin implements IModPlugin {
 
 	@Override
 	public void registerIngredients(IModIngredientRegistration registry) {
-		StackHelper stackHelper = Internal.getStackHelper();
-		registry.register(ItemStack.class, ItemStackListFactory.create(stackHelper), new ItemStackHelper(stackHelper), new ItemStackRenderer());
 	}
 
 	@Override
