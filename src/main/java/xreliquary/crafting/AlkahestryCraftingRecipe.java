@@ -38,7 +38,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		if(tome != null && valid == 1) {
 			AlkahestCraftRecipe recipe;
 			if(Alkahestry.getDictionaryKey(itemStack) == null) {
-				String key = RegistryHelper.getItemRegistryName(itemStack.getItem()) + "|" + itemStack.getMetadata();
+				String key = getItemKey(itemStack);
 				recipe = Settings.AlkahestryTome.craftingRecipes.get(key);
 			} else
 				recipe = Alkahestry.getDictionaryKey(itemStack);
@@ -57,7 +57,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 			if(stack != null) {
 				if(!(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome)))) {
 					if(Alkahestry.getDictionaryKey(stack) == null) {
-						String key = RegistryHelper.getItemRegistryName(stack.getItem()) + "|" + stack.getMetadata();
+						String key = getItemKey(stack);
 						returned = Settings.AlkahestryTome.craftingRecipes.get(key);
 					} else {
 						returned = Alkahestry.getDictionaryKey(stack);
@@ -74,6 +74,11 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		}
 	}
 
+	private String getItemKey(ItemStack stack) {
+
+		return RegistryHelper.getItemRegistryName(stack.getItem()) + "|" + stack.getMetadata();
+	}
+
 	private int getCraftingResultCost(IInventory inv) {
 		AlkahestCraftRecipe returned = null;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
@@ -81,7 +86,7 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 			if(stack != null) {
 				if(!(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome)))) {
 					if(Alkahestry.getDictionaryKey(stack) == null) {
-						String key = RegistryHelper.getItemRegistryName(stack.getItem()) + (stack.getItem().getHasSubtypes() ? "|" + stack.getMetadata() : "");
+						String key = getItemKey(stack);
 						returned = Settings.AlkahestryTome.craftingRecipes.get(key);
 					} else {
 						returned = Alkahestry.getDictionaryKey(stack);

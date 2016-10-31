@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -25,7 +27,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -35,6 +39,7 @@ import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.items.util.VoidTearItemStackHandler;
+import xreliquary.network.PacketContainerItemHandlerSync;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketItemHandlerSync;
 import xreliquary.reference.Names;
@@ -44,8 +49,8 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.StackHelper;
 
-import java.util.List;
-import java.util.Random;
+import java.lang.reflect.Field;
+import java.util.*;
 
 public class ItemVoidTear extends ItemToggleable {
 
@@ -440,5 +445,93 @@ public class ItemVoidTear extends ItemToggleable {
 
 	boolean canAbsorbStack(ItemStack pickedUpStack, ItemStack tearStack) {
 		return StackHelper.isItemAndNbtEqual(this.getContainerItem(tearStack), pickedUpStack) && this.getItemQuantity(tearStack) + pickedUpStack.stackSize <= Settings.VoidTear.itemLimit;
+	}
+
+	private static Map<UUID, VoidTearListener> openListeners = new HashMap<>();
+
+	@SubscribeEvent
+	public void onContainerOpen(PlayerContainerEvent.Open event) {
+
+		EntityPlayer player = event.getEntityPlayer();
+		if (event.getContainer() != player.inventoryContainer) {
+			VoidTearListener listener = new VoidTearListener((EntityPlayerMP) player);
+
+			event.getContainer().addListener(listener);
+			openListeners.put(player.getGameProfile().getId(), listener);
+			listener.updateFullInventory(event.getContainer());
+		}
+	}
+
+	private static final Field LISTENERS = ReflectionHelper.findField(Container.class, "field_75149_d", "listeners");
+
+	private static List<IContainerListener> getListeners(Container container) {
+
+		try {
+			return (List<IContainerListener>) LISTENERS.get(container);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SubscribeEvent
+	public void onContainerClose(PlayerContainerEvent.Close event) {
+
+		EntityPlayer player = event.getEntityPlayer();
+		if (event.getContainer() != player.inventoryContainer) {
+
+			UUID playerId = player.getGameProfile().getId();
+			if (openListeners.keySet().contains(playerId)) {
+
+				getListeners(event.getContainer()).remove(openListeners.get(playerId));
+				openListeners.remove(playerId);
+			}
+		}
+	}
+
+	public class VoidTearListener implements IContainerListener {
+
+		private EntityPlayerMP player;
+
+		public VoidTearListener(EntityPlayerMP player) {
+
+			this.player = player;
+		}
+
+		@Override
+		public void updateCraftingInventory(Container containerToSend, List<ItemStack> itemsList) {
+
+		}
+
+		@Override
+		public void sendSlotContents(Container container, int slot, ItemStack stack) {
+
+			if (stack != null && stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
+				updateFullInventory(container);
+			}
+		}
+
+		private void updateVoidTear(Container container, int slot, ItemStack stack) {
+
+			if (stack == null || stack.getItem() != ModItems.filledVoidTear)
+				return;
+
+			PacketHandler.networkWrapper.sendTo(new PacketContainerItemHandlerSync(slot, getItemHandlerNBT(stack), container.windowId), player);
+		}
+
+		public void updateFullInventory(Container container) {
+
+			for (int slot = 0; slot < container.getInventory().size(); slot++) {
+				updateVoidTear(container, slot, container.getSlot(slot).getStack());
+			}
+		}
+		@Override
+		public void sendProgressBarUpdate(Container containerIn, int varToUpdate, int newValue) {
+
+		}
+
+		@Override
+		public void sendAllWindowProperties(Container containerIn, IInventory inventory) {
+
+		}
 	}
 }
