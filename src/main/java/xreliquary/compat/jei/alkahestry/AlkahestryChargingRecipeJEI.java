@@ -10,33 +10,26 @@ import java.util.Collections;
 import java.util.List;
 
 class AlkahestryChargingRecipeJEI extends BlankRecipeWrapper {
-	@Nonnull
 	private final ItemStack input;
-
 	private final ItemStack tome;
-
-	@Nonnull
 	private final ItemStack output;
 
-	@SuppressWarnings("unchecked")
-	public AlkahestryChargingRecipeJEI(@Nonnull ItemStack input, @Nonnull ItemStack tomeInput, @Nonnull ItemStack output) {
+	AlkahestryChargingRecipeJEI(@Nonnull ItemStack input, @Nonnull ItemStack tomeInput, @Nonnull ItemStack output) {
 		this.input = input;
 		this.tome = tomeInput;
 		this.output = output;
 	}
 
 	@Override
-	public void getIngredients(IIngredients ingredients) {
+	public void getIngredients(@Nonnull IIngredients ingredients) {
 		ingredients.setInputs(ItemStack.class, ImmutableList.of(input, tome));
 		ingredients.setOutput(ItemStack.class, output);
 	}
 
-	@Override
 	public List getInputs() {
 		return Collections.singletonList(input);
 	}
 
-	@Override
 	public List getOutputs() {
 		return Collections.singletonList(output);
 	}

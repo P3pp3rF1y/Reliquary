@@ -21,6 +21,8 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
+
 public class ModItems {
 
 	public static final ItemAlkahestryTome alkahestryTome = new ItemAlkahestryTome();
@@ -124,121 +126,57 @@ public class ModItems {
 		registerItem(witherlessRose, Names.Items.WITHERLESS_ROSE);
 		registerItem(potion, Names.Items.POTION, false);
 
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.potion, new IBehaviorDispenseItem() {
-			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
-				if(!ModItems.potion.getSplash(stack) && !ModItems.potion.getLingering(stack))
-					return new BehaviorDefaultDispenseItem().dispense(source, stack);
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.potion, new BehaviorDefaultProjectileDispense() {
+			@Override
+			ProjectileEntityFactory getProjectileEntityFactory() {
+				return (world, position, stack) -> new EntityThrownXRPotion(world, position.getX(), position.getY(), position.getZ(), stack);
+			}
 
-				return (new BehaviorProjectileDispense() {
-					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-						return new EntityThrownXRPotion(worldIn, position.getX(), position.getY(), position.getZ(), stack);
-					}
-
-					protected float getProjectileInaccuracy() {
-						return super.getProjectileInaccuracy() * 0.5F;
-					}
-
-					protected float getProjectileVelocity() {
-						return super.getProjectileVelocity() * 1.25F;
-					}
-				}).dispense(source, stack);
+			@Override
+			boolean canShoot(ItemStack stack) {
+				return ModItems.potion.getSplash(stack) || ModItems.potion.getLingering(stack);
 			}
 		});
 
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.glowingWater, new IBehaviorDispenseItem() {
-			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
-				return (new BehaviorProjectileDispense() {
-					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-						return new EntityGlowingWater(worldIn, position.getX(), position.getY(), position.getZ());
-					}
-
-					protected float getProjectileInaccuracy() {
-						return super.getProjectileInaccuracy() * 0.5F;
-					}
-
-					protected float getProjectileVelocity() {
-						return super.getProjectileVelocity() * 1.25F;
-					}
-				}).dispense(source, stack);
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.glowingWater, new BehaviorDefaultProjectileDispense() {
+			@Override
+			ProjectileEntityFactory getProjectileEntityFactory() {
+				return (world, position, stack) -> new EntityGlowingWater(world, position.getX(), position.getY(), position.getZ());
 			}
 		});
 
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.attractionPotion, new IBehaviorDispenseItem() {
-			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
-				return (new BehaviorProjectileDispense() {
-					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-						return new EntityAttractionPotion(worldIn, position.getX(), position.getY(), position.getZ());
-					}
-
-					protected float getProjectileInaccuracy() {
-						return super.getProjectileInaccuracy() * 0.5F;
-					}
-
-					protected float getProjectileVelocity() {
-						return super.getProjectileVelocity() * 1.25F;
-					}
-				}).dispense(source, stack);
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.attractionPotion, new BehaviorDefaultProjectileDispense() {
+			@Override
+			ProjectileEntityFactory getProjectileEntityFactory() {
+				return (world, position, stack) -> new EntityAttractionPotion(world, position.getX(), position.getY(), position.getZ());
 			}
 		});
 
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.fertilePotion, new IBehaviorDispenseItem() {
-			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
-				return (new BehaviorProjectileDispense() {
-					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-						return new EntityFertilePotion(worldIn, position.getX(), position.getY(), position.getZ());
-					}
-
-					protected float getProjectileInaccuracy() {
-						return super.getProjectileInaccuracy() * 0.5F;
-					}
-
-					protected float getProjectileVelocity() {
-						return super.getProjectileVelocity() * 1.25F;
-					}
-				}).dispense(source, stack);
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.fertilePotion, new BehaviorDefaultProjectileDispense() {
+			@Override
+			ProjectileEntityFactory getProjectileEntityFactory() {
+				return (world, position, stack) -> new EntityFertilePotion(world, position.getX(), position.getY(), position.getZ());
 			}
 		});
 
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.holyHandGrenade, new IBehaviorDispenseItem() {
-			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
-				return (new BehaviorProjectileDispense() {
-					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-						return new EntityHolyHandGrenade(worldIn, position.getX(), position.getY(), position.getZ(), stackIn.getDisplayName());
-					}
-
-					protected float getProjectileInaccuracy() {
-						return super.getProjectileInaccuracy() * 0.5F;
-					}
-
-					protected float getProjectileVelocity() {
-						return super.getProjectileVelocity() * 1.25F;
-					}
-				}).dispense(source, stack);
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.holyHandGrenade, new BehaviorDefaultProjectileDispense() {
+			@Override
+			ProjectileEntityFactory getProjectileEntityFactory() {
+				return (world, position, stack) -> new EntityHolyHandGrenade(world, position.getX(), position.getY(), position.getZ(), stack.getDisplayName());
 			}
 		});
 
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.holyHandGrenade, new IBehaviorDispenseItem() {
-			public ItemStack dispense(IBlockSource source, final ItemStack stack) {
-				return (new BehaviorProjectileDispense() {
-					protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-						return new EntityHolyHandGrenade(worldIn, position.getX(), position.getY(), position.getZ(), stackIn.getDisplayName());
-					}
-
-					protected float getProjectileInaccuracy() {
-						return super.getProjectileInaccuracy() * 0.5F;
-					}
-
-					protected float getProjectileVelocity() {
-						return super.getProjectileVelocity() * 1.25F;
-					}
-				}).dispense(source, stack);
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.holyHandGrenade, new BehaviorDefaultProjectileDispense() {
+			@Override
+			ProjectileEntityFactory getProjectileEntityFactory() {
+				return (world, position, stack) -> new EntityHolyHandGrenade(world, position.getX(), position.getY(), position.getZ(), stack.getDisplayName());
 			}
 		});
 
 		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.tippedArrow, new BehaviorProjectileDispense() {
-
+			@Nonnull
 			@Override
-			protected IProjectile getProjectileEntity(World world, IPosition position, ItemStack stack) {
+			protected IProjectile getProjectileEntity(@Nonnull World world, @Nonnull IPosition position, @Nonnull ItemStack stack) {
 				EntityXRTippedArrow entitytippedarrow = new EntityXRTippedArrow(world, position.getX(), position.getY(), position.getZ());
 				entitytippedarrow.setPotionEffect(stack);
 				entitytippedarrow.pickupStatus = EntityArrow.PickupStatus.ALLOWED;
@@ -261,6 +199,45 @@ public class ModItems {
 
 		if(registerInJEI)
 			Reliquary.PROXY.registerJEI(item, name);
+	}
+
+	private abstract static class BehaviorDefaultProjectileDispense implements IBehaviorDispenseItem {
+
+		abstract ProjectileEntityFactory getProjectileEntityFactory();
+
+		boolean canShoot(ItemStack stack) {
+			return true;
+		}
+
+		@Nonnull
+		@Override
+		public ItemStack dispense(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+			if(!canShoot(stack)) {
+				return new BehaviorDefaultDispenseItem().dispense(source, stack);
+			}
+
+			return (new BehaviorProjectileDispense() {
+				@Nonnull
+				@Override
+				protected IProjectile getProjectileEntity(@Nonnull World world, @Nonnull IPosition position, @Nonnull ItemStack stack) {
+					return getProjectileEntityFactory().createProjectileEntity(world, position, stack);
+				}
+
+				@Override
+				protected float getProjectileInaccuracy() {
+					return super.getProjectileInaccuracy() * 0.5F;
+				}
+
+				@Override
+				protected float getProjectileVelocity() {
+					return super.getProjectileVelocity() * 1.25F;
+				}
+			}).dispense(source, stack);
+		}
+	}
+
+	private interface ProjectileEntityFactory {
+		IProjectile createProjectileEntity(World world, IPosition position, ItemStack stack);
 	}
 
 }

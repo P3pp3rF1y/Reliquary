@@ -13,13 +13,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.init.ModBlocks;
-import xreliquary.reference.Names;
 import xreliquary.pedestal.PedestalRegistry;
+import xreliquary.reference.Names;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
@@ -32,7 +34,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 	}
 
 	@Override
-	public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+	public void getSubBlocks(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
 		for(int i = 0; i < 16; i++) {
 			list.add(new ItemStack(ModBlocks.pedestal, 1, i));
 		}
@@ -52,16 +54,19 @@ public class BlockPedestal extends BlockPedestalPassive {
 		}
 	}
 
+	@Nonnull
 	@Override
-	public TileEntity createTileEntity(World world, IBlockState state) {
+	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
 		return new TileEntityPedestal();
 	}
 
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return super.getStateFromMeta(meta).withProperty(ENABLED, (meta & 4) != 0);
 	}
 
+	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, FACING, COLOR, ENABLED);
@@ -80,17 +85,20 @@ public class BlockPedestal extends BlockPedestalPassive {
 		return i;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock) {
-		super.neighborChanged(state, worldIn, pos, neighborBlock);
+	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock, BlockPos p_189540_5_) {
+		super.neighborChanged(state, worldIn, pos, neighborBlock, p_189540_5_);
 
 		//noinspection ConstantConditions
 		((TileEntityPedestal) worldIn.getTileEntity(pos)).neighborUpdate();
 	}
 
+	@SuppressWarnings("deprecation")
+	@Nonnull
 	@Override
-	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(ENABLED, false);
+	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+		return super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(ENABLED, false);
 	}
 
 	@Override
@@ -121,20 +129,22 @@ public class BlockPedestal extends BlockPedestalPassive {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float xOff, float yOff, float zOff) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float xOff, float yOff, float zOff) {
+
+		ItemStack heldItem = player.getHeldItem(hand);
 		if(world.isRemote)
-			return player.getHeldItem(hand) != null || player.isSneaking();
+			return !heldItem.isEmpty() || player.isSneaking();
 
 		if(!(world.getTileEntity(pos) instanceof TileEntityPedestal))
 			return false;
 
-		if(heldItem == null && !player.isSneaking() && hand == EnumHand.MAIN_HAND && switchClicked(side, xOff, yOff, zOff)) {
+		if(heldItem.isEmpty() && !player.isSneaking() && hand == EnumHand.MAIN_HAND && switchClicked(side, xOff, yOff, zOff)) {
 			TileEntityPedestal pedestal = (TileEntityPedestal) world.getTileEntity(pos);
 			//noinspection ConstantConditions
 			pedestal.toggleSwitch();
 			return true;
 		} else {
-			return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, xOff, yOff, zOff);
+			return super.onBlockActivated(world, pos, state, player, hand, side, xOff, yOff, zOff);
 		}
 	}
 
@@ -153,7 +163,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
+	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
 		TileEntityPedestal pedestal = (TileEntityPedestal) world.getTileEntity(pos);
 
 		PedestalRegistry.unregisterPosition(world.provider.getDimension(), pos);

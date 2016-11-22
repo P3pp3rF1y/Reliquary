@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -26,11 +27,12 @@ import xreliquary.api.*;
 import xreliquary.blocks.BlockPedestal;
 import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredItemStackHandler;
+import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.StackHelper;
 import xreliquary.util.XRFakePlayerFactory;
-import xreliquary.pedestal.PedestalRegistry;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public class TileEntityPedestal extends TileEntityPedestalPassive implements IPedestal, ITickable {
@@ -68,6 +70,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		updateSpecialItems();
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
@@ -98,32 +101,31 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 	@Override
 	public void onChunkUnload() {
-		if(!this.worldObj.isRemote)
-			PedestalRegistry.unregisterPosition(this.worldObj.provider.getDimension(), this.pos);
+		if(!this.world.isRemote)
+			PedestalRegistry.unregisterPosition(this.world.provider.getDimension(), this.pos);
 
 		super.onChunkUnload();
 	}
 
 	@Override
 	public void onLoad() {
-		if(!this.worldObj.isRemote)
-			PedestalRegistry.registerPosition(this.worldObj.provider.getDimension(), this.pos);
+		if(!this.world.isRemote)
+			PedestalRegistry.registerPosition(this.world.provider.getDimension(), this.pos);
 
 		super.onLoad();
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
 			if(pedestalFluidHandler == null) {
 				pedestalFluidHandler = new PedestalFluidHandler(this);
 			}
-			//noinspection unchecked
 			return (T) pedestalFluidHandler;
 		}
 
@@ -138,29 +140,29 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		redstoneItems.clear();
 		itemHandlers.clear();
 
-		for(int i = 0; i < inventory.length; i++) {
-			ItemStack item = inventory[i];
-			if(item == null)
+		for(int slot = 0; slot < inventory.size(); slot++) {
+			ItemStack item = inventory.get(slot);
+			if(item.isEmpty())
 				continue;
 
 			if(item.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
-				itemHandlers.put(i, item.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null));
+				itemHandlers.put(slot, item.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null));
 			}
 
 			if(item.getItem() instanceof IPedestalActionItem) {
 				tickable = true;
-				actionItems.put(i, (IPedestalActionItem) item.getItem());
+				actionItems.put(slot, (IPedestalActionItem) item.getItem());
 			} else if(item.getItem() instanceof IPedestalRedstoneItem) {
-				redstoneItems.put(i, (IPedestalRedstoneItem) item.getItem());
+				redstoneItems.put(slot, (IPedestalRedstoneItem) item.getItem());
 			} else {
 				IPedestalItemWrapper wrapper = PedestalRegistry.getItemWrapper(item);
 				if(wrapper != null) {
 					if(wrapper instanceof IPedestalActionItemWrapper) {
 						tickable = true;
-						itemWrappers.put(i, (IPedestalActionItemWrapper) wrapper);
+						itemWrappers.put(slot, (IPedestalActionItemWrapper) wrapper);
 					}
 					if(wrapper instanceof IPedestalRedstoneItemWrapper) {
-						redstoneItems.put(i, (IPedestalRedstoneItem) wrapper);
+						redstoneItems.put(slot, (IPedestalRedstoneItem) wrapper);
 					}
 				}
 			}
@@ -170,16 +172,16 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			}
 		}
 
-		actionCooldowns = new int[inventory.length];
+		actionCooldowns = new int[inventory.size()];
 		Arrays.fill(actionCooldowns, 0);
 	}
 
 	@Override
 	public void update() {
-		if(worldObj.isRemote)
+		if(world.isRemote)
 			return;
 
-		IBlockState blockState = worldObj.getBlockState(this.pos);
+		IBlockState blockState = world.getBlockState(this.pos);
 		if(blockState.getBlock() != ModBlocks.pedestal)
 			return;
 
@@ -189,16 +191,16 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		}
 
 		if(tickable && blockState.getValue(BlockPedestal.ENABLED)) {
-			for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
+			for(currentItemIndex = 0; currentItemIndex < inventory.size(); currentItemIndex++) {
 				if(actionCooldowns[currentItemIndex] > 0) {
 					actionCooldowns[currentItemIndex]--;
 				} else {
-					ItemStack item = inventory[currentItemIndex];
+					ItemStack item = inventory.get(currentItemIndex);
 					//TODO refactor to just one actionItems list
 					if(actionItems.containsKey(currentItemIndex)) {
 						actionItems.get(currentItemIndex).update(item, this);
 					} else if(itemWrappers.containsKey(currentItemIndex)) {
-						itemWrappers.get(currentItemIndex).update(inventory[currentItemIndex], this);
+						itemWrappers.get(currentItemIndex).update(inventory.get(currentItemIndex), this);
 					}
 				}
 			}
@@ -206,8 +208,8 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	}
 
 	public void neighborUpdate() {
-		if(powered != worldObj.isBlockPowered(this.pos)) {
-			powered = worldObj.isBlockPowered(this.pos);
+		if(powered != world.isBlockPowered(this.pos)) {
+			powered = world.isBlockPowered(this.pos);
 
 			if(powered)
 				switchOn(null);
@@ -219,9 +221,9 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	}
 
 	public void updateRedstone() {
-		for(int i = 0; i < inventory.length; i++) {
+		for(int i = 0; i < inventory.size(); i++) {
 			if(redstoneItems.containsKey(i)) {
-				redstoneItems.get(i).updateRedstone(inventory[i], this);
+				redstoneItems.get(i).updateRedstone(inventory.get(i), this);
 			}
 		}
 	}
@@ -243,9 +245,9 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			IInventory inventory = getInventoryAtPos(this.getPos().add(facing.getDirectionVec()));
 
 			if(inventory != null) {
-				numberAdded += InventoryHelper.tryToAddToInventory(stack, inventory, stack.stackSize - numberAdded, facing.getOpposite());
+				numberAdded += InventoryHelper.tryToAddToInventory(stack, inventory, stack.getCount() - numberAdded, facing.getOpposite());
 
-				if(numberAdded >= stack.stackSize)
+				if(numberAdded >= stack.getCount())
 					break;
 			}
 		}
@@ -289,17 +291,17 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 	@Override
 	public FakePlayer getFakePlayer() {
-		if(this.worldObj.isRemote)
+		if(this.world.isRemote)
 			return null;
 
-		WorldServer world = (WorldServer) worldObj;
+		WorldServer world = (WorldServer) this.world;
 
 		return XRFakePlayerFactory.get(world);
 	}
 
 	@Override
 	public void destroyCurrentItem() {
-		this.setInventorySlotContents(currentItemIndex, null);
+		this.setInventorySlotContents(currentItemIndex, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -309,7 +311,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 	@Override
 	public List<BlockPos> getPedestalsInRange(int range) {
-		return PedestalRegistry.getPositionsInRange(this.worldObj.provider.getDimension(), this.pos, range);
+		return PedestalRegistry.getPositionsInRange(this.world.provider.getDimension(), this.pos, range);
 	}
 
 	@Override
@@ -319,8 +321,8 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 		setEnabled(true);
 
-		IBlockState blockState = worldObj.getBlockState(pos);
-		worldObj.notifyBlockUpdate(pos, blockState, blockState, 3);
+		IBlockState blockState = world.getBlockState(pos);
+		world.notifyBlockUpdate(pos, blockState, blockState, 3);
 	}
 
 	@Override
@@ -331,8 +333,8 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		if(!switchedOn && !powered && onSwitches.size() == 0) {
 			setEnabled(false);
 		}
-		IBlockState blockState = worldObj.getBlockState(pos);
-		worldObj.notifyBlockUpdate(pos, blockState, blockState, 3);
+		IBlockState blockState = world.getBlockState(pos);
+		world.notifyBlockUpdate(pos, blockState, blockState, 3);
 	}
 
 	@Override
@@ -365,24 +367,24 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	}
 
 	private void setEnabled(boolean switchedOn) {
-		ModBlocks.pedestal.setEnabled(worldObj, pos, switchedOn);
+		ModBlocks.pedestal.setEnabled(world, pos, switchedOn);
 		if(!switchedOn)
-			for(currentItemIndex = 0; currentItemIndex < inventory.length; currentItemIndex++) {
+			for(currentItemIndex = 0; currentItemIndex < inventory.size(); currentItemIndex++) {
 				if(actionItems.containsKey(currentItemIndex)) {
-					actionItems.get(currentItemIndex).stop(inventory[currentItemIndex], this);
+					actionItems.get(currentItemIndex).stop(inventory.get(currentItemIndex), this);
 				} else if(itemWrappers.containsKey(currentItemIndex)) {
-					itemWrappers.get(currentItemIndex).stop(inventory[currentItemIndex], this);
+					itemWrappers.get(currentItemIndex).stop(inventory.get(currentItemIndex), this);
 				}
 			}
 	}
 
 	private IInventory getInventoryAtPos(BlockPos pos) {
-		if(worldObj.getTileEntity(pos) instanceof IInventory) {
-			IInventory inventory = (IInventory) worldObj.getTileEntity(pos);
-			Block block = worldObj.getBlockState(pos).getBlock();
+		if(world.getTileEntity(pos) instanceof IInventory) {
+			IInventory inventory = (IInventory) world.getTileEntity(pos);
+			Block block = world.getBlockState(pos).getBlock();
 
 			if(inventory instanceof TileEntityChest && block instanceof BlockChest) {
-				inventory = ((BlockChest) block).getContainer(worldObj, pos, true);
+				inventory = ((BlockChest) block).getContainer(world, pos, true);
 			}
 
 			return inventory;
@@ -390,7 +392,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		return null;
 	}
 
-	public List<IFluidHandler> getAdjacentTanks() {
+	private List<IFluidHandler> getAdjacentTanks() {
 		List<IFluidHandler> adjacentTanks = new ArrayList<>();
 
 		for(EnumFacing facing : EnumFacing.values()) {
@@ -405,25 +407,26 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	}
 
 	private IFluidHandler getTankAtPos(BlockPos pos, EnumFacing facing) {
-		if(worldObj.getTileEntity(pos) == null)
+		TileEntity te = world.getTileEntity(pos);
+		if(te == null)
 			return null;
 
-		if(worldObj.getTileEntity(pos).hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing))
-			return worldObj.getTileEntity(pos).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
+		if(te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing))
+			return te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
 		return null;
 	}
 
 	public void removeItemsFromLists() {
 		for(Map.Entry<Integer, IPedestalRedstoneItem> item : redstoneItems.entrySet()) {
-			item.getValue().onRemoved(inventory[item.getKey()], this);
+			item.getValue().onRemoved(inventory.get(item.getKey()), this);
 		}
 
 		for(Map.Entry<Integer, IPedestalActionItem> item : actionItems.entrySet()) {
-			item.getValue().onRemoved(inventory[item.getKey()], this);
+			item.getValue().onRemoved(inventory.get(item.getKey()), this);
 		}
 
 		for(Map.Entry<Integer, IPedestalActionItemWrapper> item : itemWrappers.entrySet()) {
-			item.getValue().onRemoved(inventory[item.getKey()], this);
+			item.getValue().onRemoved(inventory.get(item.getKey()), this);
 		}
 	}
 
@@ -438,16 +441,17 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		return slots + itemHandlerSlots;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int slot) {
 		if(slot < slots)
-			return inventory[slot];
+			return inventory.get(slot);
 
 		int adjustedSlot = slot - slots;
 
 		Tuple<IItemHandler, Integer> handlerSlot = getHandlerSlot(adjustedSlot);
 
-		return handlerSlot == null ? null : handlerSlot.getFirst().getStackInSlot(handlerSlot.getSecond());
+		return handlerSlot == null ? ItemStack.EMPTY : handlerSlot.getFirst().getStackInSlot(handlerSlot.getSecond());
 	}
 
 	private Tuple<IItemHandler, Integer> getHandlerSlot(int origSlot) {
@@ -463,6 +467,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		return handlerSlot;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack decrStackSize(int slot, int count) {
 		if(slot < slots) {
@@ -477,60 +482,61 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	}
 
 	private ItemStack decrStackInInventory(int slot, int count) {
-		if(this.inventory[slot] != null) {
+		if(!this.inventory.get(slot).isEmpty()) {
 			ItemStack stack;
 
-			if(this.inventory[slot].stackSize > count) {
-				stack = this.inventory[slot].splitStack(count);
+			if(inventory.get(slot).getCount() > count) {
+				stack = this.inventory.get(slot).splitStack(count);
 			} else {
-				stack = this.inventory[slot];
+				stack = this.inventory.get(slot);
 
 				if(redstoneItems.containsKey(slot)) {
-					redstoneItems.get(slot).onRemoved(inventory[slot], this);
+					redstoneItems.get(slot).onRemoved(inventory.get(slot), this);
 				} else if(actionItems.containsKey(slot)) {
-					actionItems.get(slot).onRemoved(inventory[slot], this);
+					actionItems.get(slot).onRemoved(inventory.get(slot), this);
 				} else if(itemWrappers.containsKey(slot)) {
-					itemWrappers.get(slot).onRemoved(inventory[slot], this);
+					itemWrappers.get(slot).onRemoved(inventory.get(slot), this);
 				}
 
-				this.inventory[slot] = null;
+				this.inventory.set(slot, ItemStack.EMPTY);
 
 				updateItemsAndBlock();
 			}
 
 			return stack;
 		} else {
-			return null;
+			return ItemStack.EMPTY;
 		}
 	}
 
 	private void updateItemsAndBlock() {
 		updateSpecialItems();
 		updateRedstone();
-		IBlockState blockState = worldObj.getBlockState(getPos());
-		worldObj.notifyBlockUpdate(getPos(), blockState, blockState, 3);
+		IBlockState blockState = world.getBlockState(getPos());
+		world.notifyBlockUpdate(getPos(), blockState, blockState, 3);
 	}
 
 	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+	public boolean shouldRefresh(World world, BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState) {
 		return !(oldState.getBlock() == ModBlocks.pedestal && newState.getBlock() == ModBlocks.pedestal);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack removeStackFromSlot(int slot) {
 		ItemStack stack;
 		if(slot < slots) {
-			stack = this.inventory[slot];
+			stack = this.inventory.get(slot);
 
 			if(redstoneItems.containsKey(slot)) {
-				redstoneItems.get(slot).onRemoved(inventory[slot], this);
+				redstoneItems.get(slot).onRemoved(inventory.get(slot), this);
 			} else if(actionItems.containsKey(slot)) {
-				actionItems.get(slot).onRemoved(inventory[slot], this);
+				actionItems.get(slot).onRemoved(inventory.get(slot), this);
 			} else if(itemWrappers.containsKey(slot)) {
-				itemWrappers.get(slot).onRemoved(inventory[slot], this);
+				itemWrappers.get(slot).onRemoved(inventory.get(slot), this);
 			}
 
-			this.inventory[slot] = null;
+			this.inventory.set(slot, ItemStack.EMPTY);
 
 			updateItemsAndBlock();
 
@@ -543,15 +549,15 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 		stack = handlerSlot.getFirst().getStackInSlot(handlerSlot.getSecond());
 
-		return handlerSlot.getFirst().extractItem(handlerSlot.getSecond(), stack.stackSize, false);
+		return handlerSlot.getFirst().extractItem(handlerSlot.getSecond(), stack.getCount(), false);
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) {
+	public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
 		if(slot < slots) {
 			IPedestalRedstoneItem removedRedstoneItem = null;
 			IPedestalActionItem removedActionItem = null;
-			if(stack == null) {
+			if(stack.isEmpty()) {
 				if(redstoneItems.containsKey(slot)) {
 					removedRedstoneItem = redstoneItems.get(slot);
 				} else if(actionItems.containsKey(slot)) {
@@ -561,18 +567,18 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 				}
 			}
 
-			this.inventory[slot] = stack;
-			if(stack != null && stack.stackSize > 1) {
-				stack.stackSize = 1;
+			this.inventory.set(slot, stack);
+			if(!stack.isEmpty() && stack.getCount() > 1) {
+				stack.setCount(1);
 			}
 
 			updateItemsAndBlock();
 
 			if(removedRedstoneItem != null)
-				removedRedstoneItem.onRemoved(inventory[slot], this);
+				removedRedstoneItem.onRemoved(inventory.get(slot), this);
 
 			if(removedActionItem != null)
-				removedActionItem.onRemoved(inventory[slot], this);
+				removedActionItem.onRemoved(inventory.get(slot), this);
 
 			return;
 		}
@@ -586,20 +592,20 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 		ItemStack stackInSlot = itemHandler.getStackInSlot(adjustedSlot);
 
-		if(stackInSlot != null && stack != null && !StackHelper.isItemAndNbtEqual(stack, stackInSlot))
+		if(!stackInSlot.isEmpty() && !stack.isEmpty() && !StackHelper.isItemAndNbtEqual(stack, stackInSlot))
 			return;
 
-		if(stackInSlot != null && (stack == null || stack.stackSize < stackInSlot.stackSize)) {
-			int amount = stackInSlot.stackSize - (stack == null ? 0 : stack.stackSize);
+		if(!stackInSlot.isEmpty() && (stack.isEmpty() || stack.getCount() < stackInSlot.getCount())) {
+			int amount = stackInSlot.getCount() - (stack.isEmpty() ? 0 : stack.getCount());
 			itemHandler.extractItem(adjustedSlot, amount, false);
-		} else if(stack != null && (stackInSlot == null || stack.stackSize > stackInSlot.stackSize)) {
-			stack.stackSize = stack.stackSize - (stackInSlot == null ? 0 : stackInSlot.stackSize);
+		} else if(!stack.isEmpty() && (stackInSlot.isEmpty() || stack.getCount() > stackInSlot.getCount())) {
+			stack.shrink(stackInSlot.isEmpty() ? 0 : stackInSlot.getCount());
 			itemHandler.insertItem(adjustedSlot, stack, false);
 		}
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
+	public boolean isItemValidForSlot(int index, @Nonnull ItemStack stack) {
 		if(super.isItemValidForSlot(index, stack))
 			return true;
 
@@ -612,7 +618,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 		ItemStack returnedStack = itemHandler.insertItem(adjustedSlot, stack, true);
 
-		return returnedStack == null || returnedStack.stackSize != stack.stackSize;
+		return returnedStack.isEmpty() || returnedStack.getCount() != stack.getCount();
 	}
 
 	public void toggleSwitch() {
@@ -638,7 +644,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		return switchedOn;
 	}
 
-	public List<ItemStack> getFluidContainers() {
+	List<ItemStack> getFluidContainers() {
 		return fluidContainers;
 	}
 }

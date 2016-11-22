@@ -15,12 +15,6 @@ public class MagazineRecipeHandler implements IRecipeHandler<MagazineRecipeJEI> 
 
 	@Nonnull
 	@Override
-	public String getRecipeCategoryUid() {
-		return VanillaRecipeCategoryUid.CRAFTING;
-	}
-
-	@Nonnull
-	@Override
 	public String getRecipeCategoryUid(@Nonnull MagazineRecipeJEI recipe) {
 		return VanillaRecipeCategoryUid.CRAFTING;
 	}

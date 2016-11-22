@@ -39,9 +39,9 @@ public class ItemTwilightCloak extends ItemToggleable {
 		EntityPlayer player = (EntityPlayer) e;
 
 		//toggled effect, makes player invisible based on light level (configurable)
-		int playerX = MathHelper.floor_double(player.posX);
-		int playerY = MathHelper.floor_double(player.getEntityBoundingBox().minY);
-		int playerZ = MathHelper.floor_double(player.posZ);
+		int playerX = MathHelper.floor(player.posX);
+		int playerY = MathHelper.floor(player.getEntityBoundingBox().minY);
+		int playerZ = MathHelper.floor(player.posZ);
 
 		if(player.worldObj.getLightFromNeighbors(new BlockPos(playerX, playerY, playerZ)) > Settings.TwilightCloak.maxLightLevel)
 			return;

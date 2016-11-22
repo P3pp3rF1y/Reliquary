@@ -168,7 +168,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 			while(xp > 0) {
 				int j = EntityXPOrb.getXPSplit(xp);
 				xp -= j;
-				world.spawnEntityInWorld(new EntityXPOrb(world, hitPos.getX(), hitPos.getY(), hitPos.getZ(), j));
+				world.spawnEntity(new EntityXPOrb(world, hitPos.getX(), hitPos.getY(), hitPos.getZ(), j));
 			}
 		}
 	}

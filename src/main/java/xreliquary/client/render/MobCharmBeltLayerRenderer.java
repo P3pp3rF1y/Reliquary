@@ -1,3 +1,4 @@
+/* TODO readd with baubles
 package xreliquary.client.render;
 
 import baubles.api.BaublesApi;
@@ -56,3 +57,4 @@ public class MobCharmBeltLayerRenderer implements LayerRenderer<EntityPlayer> {
 		return false;
 	}
 }
+*/

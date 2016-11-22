@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xreliquary.blocks.BlockApothecaryMortar;
@@ -43,25 +44,25 @@ public class DataProviderMortar extends CachedBodyDataProvider {
 		if(mortar == null)
 			return currenttip;
 
-		ItemStack[] ingredients = mortar.getItemStacks();
+		NonNullList<ItemStack> ingredients = mortar.getItemStacks();
 
-		if(ingredients[0] == null)
+		if(ingredients.get(0).isEmpty())
 			return currenttip;
 
-		String ingredient1 = ingredients[0].getDisplayName();
-		String ingredient2 = ingredients[1] == null ? "" : ", " + ingredients[1].getDisplayName();
-		String ingredient3 = ingredients[2] == null ? "" : ", " + ingredients[2].getDisplayName();
+		String ingredient1 = ingredients.get(0).getDisplayName();
+		String ingredient2 = ingredients.get(1).isEmpty() ? "" : ", " + ingredients.get(1).getDisplayName();
+		String ingredient3 = ingredients.get(2).isEmpty() ? "" : ", " + ingredients.get(2).getDisplayName();
 
 		currenttip.add(ingredient1 + ingredient2 + ingredient3);
 
-		if(ingredients[1] == null)
+		if(ingredients.get(1).isEmpty())
 			return currenttip;
 
 		List<PotionIngredient> potionIngredients = new ArrayList<>();
-		potionIngredients.add(XRPotionHelper.getIngredient(ingredients[0]));
-		potionIngredients.add(XRPotionHelper.getIngredient(ingredients[1]));
-		if(ingredients[2] != null)
-			potionIngredients.add(XRPotionHelper.getIngredient(ingredients[2]));
+		potionIngredients.add(XRPotionHelper.getIngredient(ingredients.get(0)));
+		potionIngredients.add(XRPotionHelper.getIngredient(ingredients.get(1)));
+		if(!ingredients.get(2).isEmpty())
+			potionIngredients.add(XRPotionHelper.getIngredient(ingredients.get(2)));
 
 		PotionEssence essence = new PotionEssence(potionIngredients.toArray(new PotionIngredient[potionIngredients.size()]));
 		if(essence.effects.size() > 0) {

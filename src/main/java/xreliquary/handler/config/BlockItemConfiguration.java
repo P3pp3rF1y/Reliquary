@@ -1,10 +1,11 @@
 package xreliquary.handler.config;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IProjectile;
 import net.minecraftforge.common.config.ConfigCategory;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.reference.Names;
@@ -16,17 +17,13 @@ import java.util.List;
 public class BlockItemConfiguration {
 	public static void loadEntitiesSettings() {
 		List<String> entityNames = new ArrayList<>();
-		for(Object o : EntityList.NAME_TO_CLASS.values()) {
-			Class c = (Class) o;
-			if(EntityLiving.class.isAssignableFrom(c)) {
-				entityNames.add(EntityList.CLASS_TO_NAME.get(o));
-			}
-		}
 		List<String> projectileNames = new ArrayList<>();
-		for(Object o : EntityList.NAME_TO_CLASS.values()) {
-			Class c = (Class) o;
-			if(IProjectile.class.isAssignableFrom(c)) {
-				projectileNames.add(EntityList.CLASS_TO_NAME.get(o));
+		for(EntityEntry entry : ForgeRegistries.ENTITIES) {
+			if(EntityLiving.class.isAssignableFrom(entry.getEntityClass())) {
+				entityNames.add(entry.getName());
+			}
+			if(IProjectile.class.isAssignableFrom(entry.getEntityClass())) {
+				projectileNames.add(entry.getName());
 			}
 		}
 

@@ -14,10 +14,10 @@ public class TileEntityPedestalRenderer extends TileEntitySpecialRenderer<TileEn
 
 	@Override
 	public void renderTileEntityAt(TileEntityPedestal te, double x, double y, double z, float partialTicks, int destroyStage) {
-		if(te.getStackInSlot(0) != null) {
+		if(!te.getStackInSlot(0).isEmpty()) {
 			ItemStack stack = te.getStackInSlot(0);
 			EntityItem item = new EntityItem(te.getWorld(), 0.0D, 0.0D, 0.0D, stack);
-			item.getEntityItem().stackSize = 1;
+			item.getEntityItem().setCount(1);
 			item.hoverStart = 0.0F;
 			GlStateManager.pushMatrix();
 			float yDiff = MathHelper.sin((System.currentTimeMillis() % 86400000) / 1000F) * 0.1F + 0.1F;
@@ -29,11 +29,11 @@ public class TileEntityPedestalRenderer extends TileEntitySpecialRenderer<TileEn
 			GlStateManager.popMatrix();
 
 			IPedestalItemRenderer extraRenderer = PedestalClientRegistry.getItemRenderer(stack);
-			if (extraRenderer == null && stack.getItem() instanceof IPedestalItemRenderer) {
+			if(extraRenderer == null && stack.getItem() instanceof IPedestalItemRenderer) {
 				extraRenderer = (IPedestalItemRenderer) stack.getItem();
 			}
 
-			if (extraRenderer != null) {
+			if(extraRenderer != null) {
 				extraRenderer.doRender(this, te, stack, x, y, z, partialTicks, destroyStage);
 			}
 		}

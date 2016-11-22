@@ -74,14 +74,14 @@ public class GuiMobCharmBelt extends GuiBase {
 			GlStateManager.disableBlend();
 			GlStateManager.popAttrib();
 
-			this.inventorySlots.inventorySlots.get(i - 1).xDisplayPosition = x - centerX + 88;
-			this.inventorySlots.inventorySlots.get(i - 1).yDisplayPosition = y - centerY + 40;
+			this.inventorySlots.inventorySlots.get(i - 1).xPos = x - centerX + 88;
+			this.inventorySlots.inventorySlots.get(i - 1).yPos = y - centerY + 40;
 		}
-		this.inventorySlots.inventorySlots.get(slots).xDisplayPosition = 80;
-		this.inventorySlots.inventorySlots.get(slots).yDisplayPosition = -12;
+		this.inventorySlots.inventorySlots.get(slots).xPos = 80;
+		this.inventorySlots.inventorySlots.get(slots).yPos = -12;
 
 		for(int i = slots + 1; i < Reference.MOB_CHARM.COUNT_TYPES + 1; i++) {
-			this.inventorySlots.inventorySlots.get(i).xDisplayPosition = -999;
+			this.inventorySlots.inventorySlots.get(i).xPos = -999;
 		}
 	}
 }

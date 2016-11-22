@@ -42,6 +42,7 @@ import xreliquary.util.InventoryHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.PotionEssence;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,12 +66,12 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	@Override
 	public void update() {
 		//Item addition gets handled by the block's onEntityCollided method.
-		if(getHeatSources().contains(worldObj.getBlockState(getPos().add(0, -1, 0)).getBlock()) && getLiquidLevel() > 0) {
+		if(getHeatSources().contains(world.getBlockState(getPos().add(0, -1, 0)).getBlock()) && getLiquidLevel() > 0) {
 			if(potionEssence != null && hasNetherwart) {
 				if(cookTime < getTotalCookTime())
 					cookTime++;
 			}
-			if(worldObj.isRemote) {
+			if(world.isRemote) {
 				for(int particleCount = 0; particleCount <= 2; ++particleCount)
 					spawnBoilingParticles();
 
@@ -95,10 +96,10 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 
 	@SideOnly(Side.CLIENT)
 	private void spawnBoilingParticles() {
-		if(worldObj.rand.nextInt(getTotalCookTime() * getTotalCookTime()) > cookTime * cookTime)
+		if(world.rand.nextInt(getTotalCookTime() * getTotalCookTime()) > cookTime * cookTime)
 			return;
-		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
-		float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.33F;
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.33F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.33F;
 
 		int color = getColor(potionEssence);
 
@@ -106,15 +107,15 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		float green = (((color >> 8) & 255) / 256F);
 		float blue = ((color & 255) / 256F);
 
-		EntityCauldronBubbleFX bubble = new EntityCauldronBubbleFX(Minecraft.getMinecraft().getTextureManager(), worldObj, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, red, green, blue);
-		EntityCauldronSteamFX steam = new EntityCauldronSteamFX(worldObj, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.05D + 0.02F * getRenderLiquidLevel(), red, green, blue);
+		EntityCauldronBubbleFX bubble = new EntityCauldronBubbleFX(Minecraft.getMinecraft().getTextureManager(), world, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, red, green, blue);
+		EntityCauldronSteamFX steam = new EntityCauldronSteamFX(world, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + 0.01D + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.05D + 0.02F * getRenderLiquidLevel(), red, green, blue);
 		FMLClientHandler.instance().getClient().effectRenderer.addEffect(bubble);
-		if(worldObj.rand.nextInt(6) == 0)
+		if(world.rand.nextInt(6) == 0)
 			FMLClientHandler.instance().getClient().effectRenderer.addEffect(steam);
 	}
 
 	private float getRenderLiquidLevel() {
-		int j = MathHelper.clamp_int(getLiquidLevel(), 0, 3);
+		int j = MathHelper.clamp(getLiquidLevel(), 0, 3);
 		return (float) (6 + 3 * j) / 16.0F;
 	}
 
@@ -124,58 +125,58 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 
 	@SideOnly(Side.CLIENT)
 	private void spawnGunpowderParticles() {
-		if(worldObj.rand.nextInt(8) > 0)
+		if(world.rand.nextInt(8) > 0)
 			return;
-		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
-		float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
-		worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
 	}
 
 	@SideOnly(Side.CLIENT)
 	private void spawnDragonBreathParticles() {
-		if(worldObj.rand.nextInt(8) > 0)
+		if(world.rand.nextInt(8) > 0)
 			return;
-		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
-		float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
-		worldObj.spawnParticle(EnumParticleTypes.DRAGON_BREATH, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		world.spawnParticle(EnumParticleTypes.DRAGON_BREATH, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
 	}
 
 	@SideOnly(Side.CLIENT)
 	private void spawnGlowstoneParticles() {
-		if(worldObj.rand.nextInt(8) > 0)
+		if(world.rand.nextInt(8) > 0)
 			return;
-		double gauss = 0.5D + worldObj.rand.nextFloat() / 2;
-		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
-		float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
-		worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, gauss, gauss, 0.0F);
+		double gauss = 0.5D + world.rand.nextFloat() / 2;
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		world.spawnParticle(EnumParticleTypes.SPELL_MOB, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, gauss, gauss, 0.0F);
 	}
 
 	@SideOnly(Side.CLIENT)
 	private void spawnNetherwartParticles() {
-		if(worldObj.rand.nextInt(8) > 0)
+		if(world.rand.nextInt(8) > 0)
 			return;
-		double gauss = 0.5D + worldObj.rand.nextFloat() / 2;
-		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
-		float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
-		worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, gauss, 0.0F, gauss);
+		double gauss = 0.5D + world.rand.nextFloat() / 2;
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		world.spawnParticle(EnumParticleTypes.SPELL_MOB, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, gauss, 0.0F, gauss);
 	}
 
 	@SideOnly(Side.CLIENT)
 	private void spawnRedstoneParticles() {
-		if(worldObj.rand.nextInt(10) / this.redstoneCount > 0)
+		if(world.rand.nextInt(10) / this.redstoneCount > 0)
 			return;
-		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
-		float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
-		worldObj.spawnParticle(EnumParticleTypes.REDSTONE, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 1D, 0D, 0D);
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		world.spawnParticle(EnumParticleTypes.REDSTONE, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 1D, 0D, 0D);
 	}
 
 	@SideOnly(Side.CLIENT)
 	private void spawnFinishedParticles() {
-		if(worldObj.rand.nextInt(8) > 0)
+		if(world.rand.nextInt(8) > 0)
 			return;
-		float xOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
-		float zOffset = (worldObj.rand.nextFloat() - 0.5F) / 1.66F;
-		worldObj.spawnParticle(EnumParticleTypes.SPELL_WITCH, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0D, 0D, 0D);
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		world.spawnParticle(EnumParticleTypes.SPELL_WITCH, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0D, 0D, 0D);
 	}
 
 	@Override
@@ -193,7 +194,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			this.potionEssence = null;
 	}
 
-	@SuppressWarnings("NullableProblems")
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
@@ -213,7 +214,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return hasNetherwart && potionEssence != null && this.cookTime >= getTotalCookTime() && (!hasDragonBreath || hasGunpowder);
 	}
 
-	public NBTTagCompound removeContainedPotion() {
+	private NBTTagCompound removeContainedPotion() {
 		if(!hasNetherwart || potionEssence == null || getLiquidLevel() <= 0)
 			return null;
 
@@ -232,7 +233,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		NBTTagCompound newTag = new NBTTagCompound();
 		newTag.setTag("effects", effectsList);
 		newTag.setBoolean("hasPotion", true);
-		if (hasDragonBreath) {
+		if(hasDragonBreath) {
 			newTag.setBoolean("lingering", true);
 		} else if(hasGunpowder) {
 			newTag.setBoolean("splash", true);
@@ -249,8 +250,8 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		this.potionEssence = null;
 		this.dataChanged = true;
 		this.hasDragonBreath = false;
-		IBlockState blockState = worldObj.getBlockState(this.getPos());
-		worldObj.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
+		IBlockState blockState = world.getBlockState(this.getPos());
+		world.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
 	}
 
 	@SuppressWarnings("SimplifiableIfStatement")
@@ -285,8 +286,8 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			this.hasDragonBreath = true;
 		}
 
-		IBlockState blockState = worldObj.getBlockState(this.getPos());
-		worldObj.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
+		IBlockState blockState = world.getBlockState(this.getPos());
+		world.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
 	}
 
 	private int getGlowstoneAmpLimit() {
@@ -329,7 +330,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 				if(this.potionEssence == null)
 					return;
 				//apply potion effects when done cooking potion (potion essence and netherwart in and fire below at the minimum)
-				if (finishedCooking()) {
+				if(finishedCooking()) {
 					for(PotionEffect effect : this.potionEssence.getEffects()) {
 						Potion potion = effect.getPotion();
 						if(potion.isInstant() && world.getWorldTime() % 20 != 0)
@@ -340,17 +341,14 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 				}
 
 				if(this.cookTime > 0 && world.getWorldTime() % 10 == 0) {
-					collidingEntity.attackEntityFrom(DamageSource.inFire, 1.0F);
+					collidingEntity.attackEntityFrom(DamageSource.IN_FIRE, 1.0F);
 				}
 			}
 
 			if(collidingEntity instanceof EntityItem) {
 				ItemStack item = ((EntityItem) collidingEntity).getEntityItem();
 				while(this.isItemValidForInput(item)) {
-
 					this.addItem(item);
-					if(--item.stackSize < 1)
-						collidingEntity.setDead();
 				}
 			}
 
@@ -365,9 +363,8 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		return liquidLevel;
 	}
 
-	@SuppressWarnings("NullableProblems")
 	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+	public boolean shouldRefresh(World world, BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState) {
 		return oldState.getBlock() != newState.getBlock();
 	}
 
@@ -380,7 +377,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	public boolean handleBlockActivation(World world, EntityPlayer player) {
 		ItemStack itemStack = player.inventory.getCurrentItem();
 
-		if(itemStack == null)
+		if(itemStack.isEmpty())
 			return false;
 
 		if(getLiquidLevel() < 3 && !finishedCooking()) {
@@ -390,8 +387,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			} else if(itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
 				FluidStack waterStack = new FluidStack(FluidRegistry.WATER, 1000);
 				IFluidHandler fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-				//noinspection ConstantConditions
-				if(!fluidHandler.drain(waterStack, false).equals(waterStack))
+				if(!waterStack.equals(fluidHandler.drain(waterStack, false)))
 					return false;
 
 				if(!player.capabilities.isCreativeMode)
@@ -408,12 +404,12 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 				ItemStack potion = new ItemStack(ModItems.potion, 1, 0);
 				potion.setTagCompound(removeContainedPotion());
 
-				--itemStack.stackSize;
+				itemStack.shrink(1);
 
-				if(itemStack.stackSize <= 0) {
+				if(itemStack.getCount() <= 0) {
 					player.inventory.setInventorySlotContents(player.inventory.currentItem, potion);
 				} else if(!player.inventory.addItemStackToInventory(potion)) {
-					world.spawnEntityInWorld(new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
+					world.spawnEntity(new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
 				}
 
 				return true;
@@ -422,16 +418,13 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			if(isItemValidForInput(itemStack)) {
 				addItem(itemStack);
 
-				if (itemStack.getItem() == Items.DRAGON_BREATH) {
-					if (InventoryHelper.tryToAddToInventory(new ItemStack(Items.GLASS_BOTTLE),player.inventory, 1) != 1) {
+				if(itemStack.getItem() == Items.DRAGON_BREATH) {
+					if(InventoryHelper.tryToAddToInventory(new ItemStack(Items.GLASS_BOTTLE), player.inventory, 1) != 1) {
 						InventoryHelper.spawnItemStack(world, pos.getX() + 0.5f, pos.getY() + 1.5f, pos.getZ() + 0.5f, new ItemStack(Items.GLASS_BOTTLE));
 					}
 				}
 
-				--itemStack.stackSize;
-
-				if(itemStack.stackSize <= 0)
-					player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+				itemStack.shrink(1);
 
 				return true;
 			}
@@ -441,11 +434,11 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 
 	private void setLiquidLevel(int liquidLevel) {
 		this.liquidLevel = liquidLevel;
-		if(this.worldObj != null) {
-			IBlockState blockState = this.worldObj.getBlockState(this.getPos());
+		if(this.world != null) {
+			IBlockState blockState = this.world.getBlockState(this.getPos());
 			blockState = blockState.withProperty(BlockApothecaryCauldron.LEVEL, liquidLevel);
-			this.worldObj.setBlockState(this.getPos(), blockState);
-			this.worldObj.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
+			this.world.setBlockState(this.getPos(), blockState);
+			this.world.updateComparatorOutputLevel(pos, ModBlocks.apothecaryCauldron);
 		}
 	}
 

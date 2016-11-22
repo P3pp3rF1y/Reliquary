@@ -5,9 +5,6 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeCategory;
-import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xreliquary.init.ModBlocks;
@@ -24,9 +21,7 @@ public class CauldronRecipeCategory extends BlankRecipeCategory<CauldronRecipeJE
 	private static final int CAULDRON_SLOT = 3;
 	private static final int FIRST_ADDITIONAL_SLOT = 4;
 
-	@Nonnull
 	private final IDrawable background;
-	@Nonnull
 	private final String localizedName;
 
 	public CauldronRecipeCategory(IGuiHelper guiHelper) {
@@ -53,13 +48,13 @@ public class CauldronRecipeCategory extends BlankRecipeCategory<CauldronRecipeJE
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, CauldronRecipeJEI recipeWrapper, IIngredients ingredients) {
+	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull CauldronRecipeJEI recipeWrapper, @Nonnull IIngredients ingredients) {
 		recipeLayout.getItemStacks().init(INPUT_SLOT, true, 0, 33);
 		recipeLayout.getItemStacks().init(OUTPUT_SLOT, false, 90, 33);
 		recipeLayout.getItemStacks().init(CAULDRON_SLOT, false, 44, 33);
 
 		List<List<ItemStack>> ingredientsInputs = ingredients.getInputs(ItemStack.class);
-		ItemStack output = ingredients.getOutputs(ItemStack.class).get(0);
+		ItemStack output = ingredients.getOutputs(ItemStack.class).get(0).get(0);
 
 		initAdditionalSlots(recipeLayout, ingredientsInputs.size());
 		recipeLayout.getItemStacks().set(INPUT_SLOT, ingredientsInputs.get(0));

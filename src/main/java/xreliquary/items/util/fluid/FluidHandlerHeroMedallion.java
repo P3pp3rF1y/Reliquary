@@ -14,6 +14,7 @@ import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.util.XpHelper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class FluidHandlerHeroMedallion implements IFluidHandler, ICapabilityProvider {
@@ -26,12 +27,12 @@ public class FluidHandlerHeroMedallion implements IFluidHandler, ICapabilityProv
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
 		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
 		//noinspection unchecked
 		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T) this : null;
 	}

@@ -12,6 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.reference.Colors;
 
 public class EntityFertilePotion extends EntityThrownPotion {
+	@SuppressWarnings("unused")
 	public EntityFertilePotion(World par1World) {
 		super(par1World);
 	}
@@ -21,6 +22,7 @@ public class EntityFertilePotion extends EntityThrownPotion {
 	}
 
 	@SideOnly(Side.CLIENT)
+	@SuppressWarnings("unused")
 	public EntityFertilePotion(World par1World, double par2, double par4, double par6, int par8) {
 		this(par1World, par2, par4, par6);
 	}
@@ -45,7 +47,7 @@ public class EntityFertilePotion extends EntityThrownPotion {
 		for(int xD = -1; xD <= 1; xD++) {
 			for(int yD = -2; yD <= 1; yD++) {
 				for(int zD = -1; zD <= 1; zD++) {
-					ItemDye.applyBonemeal(new ItemStack(Items.DYE, 1, 15), worldObj, new BlockPos(x + xD, y + yD, z + zD));
+					ItemDye.applyBonemeal(new ItemStack(Items.DYE, 1, 15), world, new BlockPos(x + xD, y + yD, z + zD));
 				}
 			}
 		}

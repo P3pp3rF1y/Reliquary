@@ -12,22 +12,25 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class EntityStormShot extends EntityShotBase {
+	@SuppressWarnings("unused")
 	public EntityStormShot(World par1World) {
 		super(par1World);
 	}
 
-	public EntityStormShot(World par1World, double par2, double par4, double par6) {
-		super(par1World, par2, par4, par6);
-	}
+	/* TODO remove
+		public EntityStormShot(World par1World, double par2, double par4, double par6) {
+			super(par1World, par2, par4, par6);
+		}
 
+	*/
 	public EntityStormShot(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
 		super(par1World, par2EntityPlayer, hand);
 	}
 
 	@Override
 	void doFiringEffects() {
-		worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
-		worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+		world.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		world.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
 	}
 
 	@Override
@@ -38,8 +41,8 @@ public class EntityStormShot extends EntityShotBase {
 	@Override
 	protected void onImpact(RayTraceResult result) {
 		if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
-			if(worldObj.isRainingAt(result.getBlockPos()) && worldObj.getWorldInfo().isRaining() && worldObj.getWorldInfo().isThundering())
-				worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, result.getBlockPos().getX(), result.getBlockPos().getY(), result.getBlockPos().getZ(), false));
+			if(world.isRainingAt(result.getBlockPos()) && world.getWorldInfo().isRaining() && world.getWorldInfo().isThundering())
+				world.addWeatherEffect(new EntityLightningBolt(world, result.getBlockPos().getX(), result.getBlockPos().getY(), result.getBlockPos().getZ(), false));
 		}
 		super.onImpact(result);
 	}
@@ -52,7 +55,7 @@ public class EntityStormShot extends EntityShotBase {
 	@Override
 	void spawnHitParticles(int i) {
 		for(int particles = 0; particles < i; particles++)
-			worldObj.spawnParticle(EnumParticleTypes.WATER_BUBBLE, posX, posY, posZ, gaussian(motionX), rand.nextFloat() + motionY, gaussian(motionZ));
+			world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, posX, posY, posZ, gaussian(motionX), rand.nextFloat() + motionY, gaussian(motionZ));
 	}
 
 	@Override
@@ -63,10 +66,10 @@ public class EntityStormShot extends EntityShotBase {
 	@Override
 	int getDamageOfShot(EntityLivingBase entity) {
 		if(entity instanceof EntityCreeper)
-			entity.onStruckByLightning(new EntityLightningBolt(worldObj, entity.posX, entity.posY, entity.posZ, false));
-		if(worldObj.isRainingAt(new BlockPos((int) (entity.posX + 0.5F), (int) (entity.posY + 0.5F), (int) (entity.posZ + 0.5F))) && worldObj.getWorldInfo().isRaining() && worldObj.getWorldInfo().isThundering())
-			worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, (int) (entity.posX + 0.5F), (int) (entity.posY + 0.5F), (int) (entity.posZ + 0.5F), false));
-		float f = 1F + (worldObj.isRaining() ? 0.5F : 0F) + (worldObj.isThundering() ? 0.5F : 0F);
+			entity.onStruckByLightning(new EntityLightningBolt(world, entity.posX, entity.posY, entity.posZ, false));
+		if(world.isRainingAt(new BlockPos((int) (entity.posX + 0.5F), (int) (entity.posY + 0.5F), (int) (entity.posZ + 0.5F))) && world.getWorldInfo().isRaining() && world.getWorldInfo().isThundering())
+			world.addWeatherEffect(new EntityLightningBolt(world, (int) (entity.posX + 0.5F), (int) (entity.posY + 0.5F), (int) (entity.posZ + 0.5F), false));
+		float f = 1F + (world.isRaining() ? 0.5F : 0F) + (world.isThundering() ? 0.5F : 0F);
 		return Math.round(9F * f) + d6();
 	}
 }

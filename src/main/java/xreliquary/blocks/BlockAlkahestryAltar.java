@@ -12,7 +12,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.init.ModBlocks;
 import xreliquary.items.ItemAlkahestryTome;
@@ -20,6 +19,7 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class BlockAlkahestryAltar extends BlockBase {
@@ -35,6 +35,7 @@ public class BlockAlkahestryAltar extends BlockBase {
 	}
 
 	@SuppressWarnings("deprecation")
+	@Nonnull
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.MODEL;
@@ -45,8 +46,9 @@ public class BlockAlkahestryAltar extends BlockBase {
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public TileEntity createTileEntity(World world, IBlockState state) {
+	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
 		return new TileEntityAltar();
 	}
 
@@ -54,6 +56,7 @@ public class BlockAlkahestryAltar extends BlockBase {
 		return (float) Settings.Altar.outputLightLevelWhileActive / 16F;
 	}
 
+	@Nonnull
 	@Override
 	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
 		return ItemBlock.getItemFromBlock(ModBlocks.alkahestryAltar);
@@ -74,13 +77,15 @@ public class BlockAlkahestryAltar extends BlockBase {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float xOff, float yOff, float zOff) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float xOff, float yOff, float zOff) {
+
+		ItemStack heldItem = player.getHeldItem(hand);
 		if(isActive)
 			return true;
 		TileEntityAltar altar = (TileEntityAltar) world.getTileEntity(pos);
 		if(altar == null)
 			return true;
-		if(heldItem == null)
+		if(heldItem.isEmpty())
 			return true;
 		if(heldItem.getItem() == Items.REDSTONE) {
 			int slot = getSlotWithRedstoneDust(player);
@@ -108,11 +113,11 @@ public class BlockAlkahestryAltar extends BlockBase {
 	}
 
 	private int getSlotWithRedstoneDust(EntityPlayer player) {
-		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-			if(player.inventory.mainInventory[slot] == null) {
+		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
+			if(player.inventory.mainInventory.get(slot).isEmpty()) {
 				continue;
 			}
-			if(player.inventory.mainInventory[slot].getItem() == Items.REDSTONE)
+			if(player.inventory.mainInventory.get(slot).getItem() == Items.REDSTONE)
 				return slot;
 		}
 		return -1;

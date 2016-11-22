@@ -44,7 +44,7 @@ public class ItemFertilePotion extends ItemBase {
 
 		EntityFertilePotion fertilePotion = new EntityFertilePotion(world, player);
 		fertilePotion.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
-		world.spawnEntityInWorld(fertilePotion);
+		world.spawnEntity(fertilePotion);
 		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 	}
 

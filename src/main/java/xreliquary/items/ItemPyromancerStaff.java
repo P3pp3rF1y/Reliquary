@@ -153,7 +153,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 					fireball.posY += lookVec.yCoord;
 					fireball.posZ += lookVec.zCoord;
 					fireball.posY = player.posY + player.getEyeHeight();
-					player.worldObj.spawnEntityInWorld(fireball);
+					player.worldObj.spawnEntity(fireball);
 				}
 			} else if(getMode(ist).equals("charge")) {
 				if(player.isSwingInProgress)
@@ -171,7 +171,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 					fireball.posY += lookVec.yCoord;
 					fireball.posZ += lookVec.zCoord;
 					fireball.posY = player.posY + player.getEyeHeight();
-					player.worldObj.spawnEntityInWorld(fireball);
+					player.worldObj.spawnEntity(fireball);
 
 				}
 			} else

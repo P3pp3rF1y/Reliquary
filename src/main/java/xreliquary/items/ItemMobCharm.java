@@ -74,12 +74,10 @@ public class ItemMobCharm extends ItemBase {
 			return Reference.MOB_CHARM.ZOMBIE_PIGMAN_META;
 		} else if(entity instanceof EntityZombie) {
 			return Reference.MOB_CHARM.ZOMBIE_META;
-		} else if(entity instanceof EntitySkeleton) {
-			if(((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
-				return Reference.MOB_CHARM.WITHER_SKELETON_META;
-			} else {
-				return Reference.MOB_CHARM.SKELETON_META;
-			}
+		} else if(entity instanceof EntitySkeleton || entity instanceof EntityStray) {
+			return Reference.MOB_CHARM.SKELETON_META;
+		} else if (entity instanceof EntityWitherSkeleton){
+			return Reference.MOB_CHARM.WITHER_SKELETON_META;
 		} else if(entity instanceof EntityCreeper) {
 			return Reference.MOB_CHARM.CREEPER_META;
 		} else if(entity instanceof EntityWitch) {
@@ -92,7 +90,7 @@ public class ItemMobCharm extends ItemBase {
 			return Reference.MOB_CHARM.ENDERMAN_META;
 		} else if(entity instanceof EntityBlaze) {
 			return Reference.MOB_CHARM.BLAZE_META;
-		} else if(entity instanceof EntityGuardian && !((EntityGuardian) entity).isElder()) {
+		} else if(entity instanceof EntityGuardian) {
 			return Reference.MOB_CHARM.GUARDIAN_META;
 		}
 

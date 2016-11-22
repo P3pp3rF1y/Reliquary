@@ -3,21 +3,23 @@ package xreliquary.crafting;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import xreliquary.init.ModItems;
 import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 
+import javax.annotation.Nonnull;
+
 public class AlkahestryDrainRecipe implements IRecipe {
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World world) {
+	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world) {
 		boolean valid = false;
 		boolean foundNonTome = false;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
-			if(stack == null)
+			if(stack.isEmpty())
 				continue;
 			if((stack.getItem() instanceof ItemAlkahestryTome)) {
 				if(!valid)
@@ -29,19 +31,20 @@ public class AlkahestryDrainRecipe implements IRecipe {
 		return !foundNonTome && valid;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv) {
-		ItemStack tome = null;
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
+		ItemStack tome = ItemStack.EMPTY;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
-			if(stack != null) {
+			if(!stack.isEmpty()) {
 				if(stack.getItem() instanceof ItemAlkahestryTome) {
 					tome = stack;
 				}
 			}
 		}
 
-		if(tome != null) {
+		if(!tome.isEmpty()) {
 			int quantity = NBTHelper.getInteger("charge", tome);
 
 			quantity = quantity / Settings.AlkahestryTome.baseItemWorth;
@@ -49,12 +52,12 @@ public class AlkahestryDrainRecipe implements IRecipe {
 			quantity = Math.min(quantity, Settings.AlkahestryTome.baseItem.getMaxStackSize());
 
 			if(quantity == 0)
-				return null;
+				return ItemStack.EMPTY;
 			ItemStack stackToReturn = Settings.AlkahestryTome.baseItem.copy();
-			stackToReturn.stackSize = quantity;
+			stackToReturn.setCount(quantity);
 			return stackToReturn;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -62,30 +65,27 @@ public class AlkahestryDrainRecipe implements IRecipe {
 		return 9;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput() {
-		return new ItemStack(ModItems.alkahestryTome, 1);
+		return ItemStack.EMPTY;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv) {
-		ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
+	public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inv) {
+		NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 
-		for(int i = 0; i < aitemstack.length; ++i) {
-			ItemStack itemstack = inv.getStackInSlot(i);
-			ItemStack stackCopy = itemstack == null ? null : itemstack.copy();
-
-			if(stackCopy != null && stackCopy.getItem() instanceof ItemAlkahestryTome) {
-				NBTHelper.setInteger("charge", stackCopy, NBTHelper.getInteger("charge", stackCopy) - (Settings.AlkahestryTome.baseItemWorth * getCraftingResult(inv).stackSize));
-				stackCopy.setItemDamage(stackCopy.getMaxDamage() - NBTHelper.getInteger("charge", stackCopy));
-			} else {
-				stackCopy = null;
+		for(int slot = 0; slot < remaining.size(); ++slot) {
+			ItemStack itemstack = inv.getStackInSlot(slot);
+			if(!itemstack.isEmpty() && itemstack.getItem() instanceof ItemAlkahestryTome) {
+				ItemStack tomeCopy = itemstack.copy();
+				NBTHelper.setInteger("charge", tomeCopy, NBTHelper.getInteger("charge", tomeCopy) - (Settings.AlkahestryTome.baseItemWorth * getCraftingResult(inv).getCount()));
+				tomeCopy.setItemDamage(tomeCopy.getMaxDamage() - NBTHelper.getInteger("charge", tomeCopy));
 			}
-
-			aitemstack[i] = stackCopy;
 		}
 
-		return aitemstack;
+		return remaining;
 	}
 
 }

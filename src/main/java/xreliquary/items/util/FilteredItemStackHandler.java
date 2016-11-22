@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
@@ -13,36 +14,36 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<NBTTagCompound> {
 	public static final int SLOTS_PER_TYPE = 2;
-	protected ItemStack[] filterStacks;
+	NonNullList<ItemStack> filterStacks;
 	private int[] totalAmounts;
 	private int[] totalLimits;
 	private int[] unitWorth;
 	private boolean dynamicSize = false;
 
-	protected ItemStack[] stacks;
+	private NonNullList<ItemStack> stacks;
 
 	protected FilteredItemStackHandler(int initialSlots) {
-		stacks = new ItemStack[initialSlots * SLOTS_PER_TYPE];
+		stacks = NonNullList.withSize(initialSlots * SLOTS_PER_TYPE, ItemStack.EMPTY);
 		this.totalAmounts = new int[initialSlots];
-		this.filterStacks = new ItemStack[initialSlots];
+		this.filterStacks = NonNullList.withSize(initialSlots, ItemStack.EMPTY);
 	}
 
 	public FilteredItemStackHandler(int[] totalLimits, Item[] items, int[] unitWorth) {
 		this(totalLimits, getItemStacks(items), unitWorth);
 	}
 
-	public FilteredItemStackHandler(int[] totalLimits, ItemStack[] filterStacks, int[] unitWorth) {
-		this(filterStacks.length);
+	public FilteredItemStackHandler(int[] totalLimits, NonNullList<ItemStack> filterStacks, int[] unitWorth) {
+		this(filterStacks.size());
 
 		this.totalLimits = totalLimits;
 		this.filterStacks = filterStacks;
 		this.unitWorth = unitWorth;
 	}
 
-	private static ItemStack[] getItemStacks(Item[] items) {
-		ItemStack[] itemStacks = new ItemStack[items.length];
-		for(int i = 0; i < items.length; i++) {
-			itemStacks[i] = new ItemStack(items[i]);
+	private static NonNullList<ItemStack> getItemStacks(Item[] items) {
+		NonNullList<ItemStack> itemStacks = NonNullList.create();
+		for(Item item : items) {
+			itemStacks.add(new ItemStack(item));
 		}
 		return itemStacks;
 	}
@@ -51,7 +52,6 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		return slot / SLOTS_PER_TYPE;
 	}
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean isInputSlot(int slot) {
 		return !((slot + 1) % SLOTS_PER_TYPE == 0);
 	}
@@ -73,14 +73,9 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	private void addValidItemStack(ItemStack stack) {
 		expandStacks();
 
-		ItemStack[] expandedStacks = new ItemStack[filterStacks.length + 1];
-		System.arraycopy(filterStacks, 0, expandedStacks, 0, filterStacks.length);
-		expandedStacks[filterStacks.length] = stack;
-
-		this.filterStacks = expandedStacks;
+		this.filterStacks.add(stack);
 
 		this.totalAmounts = expandIntArray(this.totalAmounts, 0);
-
 	}
 
 	private int[] expandIntArray(int[] values, int newSize, int def) {
@@ -111,10 +106,9 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 	private void expandStacks() {
 		if(dynamicSize) {
-			ItemStack[] expandedStacks = new ItemStack[stacks.length + SLOTS_PER_TYPE];
-			System.arraycopy(stacks, 0, expandedStacks, 0, stacks.length);
-
-			stacks = expandedStacks;
+			for (int i=0; i<SLOTS_PER_TYPE; i++) {
+				stacks.add(ItemStack.EMPTY);
+			}
 		}
 	}
 
@@ -242,7 +236,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		ItemStack parentSlotStack = getParentSlotStack(parentSlot);
 
 		//we must be on client so let's just skip the rest
-		if (parentSlotStack == null)
+		if(parentSlotStack == null)
 			return;
 
 		int outputSlot = getOutputSlot(parentSlot);
@@ -276,7 +270,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	public void setParentSlotStack(int parentSlot, ItemStack filterStack) {
-		if (filterStacks[parentSlot] == null) {
+		if(filterStacks[parentSlot] == null) {
 			filterStacks[parentSlot] = filterStack.copy();
 		}
 	}
@@ -341,7 +335,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	public ItemStack getStackInParentSlot(int parentSlot) {
-		if (parentSlot >= filterStacks.length)
+		if(parentSlot >= filterStacks.length)
 			return null;
 
 		return filterStacks[parentSlot];
@@ -427,7 +421,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 			if(slot >= 0 && slot < stacks.length) {
 				//fill in null for missing slot numbers in case a slot got deleted
-				while (lastSlot + 1 != slot) {
+				while(lastSlot + 1 != slot) {
 					lastSlot++;
 					stacks[lastSlot] = null;
 				}
@@ -435,7 +429,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 				stacks[slot] = ItemStack.loadItemStackFromNBT(itemTags);
 
-				if (filterStacks.length> getParentSlot(slot)) {
+				if(filterStacks.length > getParentSlot(slot)) {
 					ItemStack filterStack = stacks[slot].copy();
 					filterStack.stackSize = 1;
 					filterStacks[getParentSlot(slot)] = filterStack;
@@ -444,7 +438,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		}
 
 		//fill in nulls at the end of stacks collection
-		while (lastSlot + 1 <stacks.length) {
+		while(lastSlot + 1 < stacks.length) {
 			lastSlot++;
 			stacks[lastSlot] = null;
 		}
@@ -476,13 +470,13 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	private void setSize(int size) {
-		if (stacks.length != size) {
+		if(stacks.length != size) {
 			stacks = new ItemStack[size];
 		}
 	}
 
 	private void setFilterStacksSize(int size) {
-		if (filterStacks.length != size) {
+		if(filterStacks.length != size) {
 			filterStacks = new ItemStack[size];
 
 			totalAmounts = new int[size];

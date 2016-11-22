@@ -1,14 +1,11 @@
 package xreliquary.handler;
 
-import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,7 +13,6 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketPlayerAbilities;
@@ -33,18 +29,15 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import xreliquary.init.ModItems;
-import xreliquary.init.ModPotions;
 import xreliquary.items.ItemToggleable;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketMobCharmDamage;
-import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.XRFakePlayerFactory;
@@ -60,10 +53,10 @@ public class CommonEventHandler {
 
 	@SubscribeEvent
 	public void handleMercyCrossDamage(AttackEntityEvent event) {
-		if(event.getEntityPlayer().worldObj.isRemote || !(event.getTarget() instanceof EntityLivingBase))
+		if(event.getEntityPlayer().world.isRemote || !(event.getTarget() instanceof EntityLivingBase))
 			return;
 
-		if(event.getEntityPlayer().getHeldItemMainhand() == null || event.getEntityPlayer().getHeldItemMainhand().getItem() != ModItems.mercyCross)
+		if(event.getEntityPlayer().getHeldItemMainhand().getItem() != ModItems.mercyCross)
 			return;
 
 		EntityLivingBase target = (EntityLivingBase) event.getTarget();
@@ -71,19 +64,14 @@ public class CommonEventHandler {
 		ModItems.mercyCross.updateAttackDamageModifier(target, event.getEntityPlayer());
 	}
 
-	private boolean isUndead(EntityLivingBase e) {
-		return e.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
-	}
-
-
 	@SubscribeEvent
 	public void preventMendingAndUnbreaking(AnvilUpdateEvent event) {
-		if (event.getLeft() == null || event.getRight() == null)
+		if(event.getLeft().isEmpty() || event.getRight().isEmpty())
 			return;
 
-		if (event.getLeft().getItem() == ModItems.mobCharm || event.getLeft().getItem() == ModItems.alkahestryTome) {
+		if(event.getLeft().getItem() == ModItems.mobCharm || event.getLeft().getItem() == ModItems.alkahestryTome) {
 			ItemStack mendingBook = Items.ENCHANTED_BOOK.getEnchantedItemStack(new EnchantmentData(Enchantments.MENDING, Enchantments.MENDING.getMaxLevel()));
-			if (ItemStack.areItemStacksEqual(event.getRight(), mendingBook)) {
+			if(ItemStack.areItemStacksEqual(event.getRight(), mendingBook)) {
 				event.setCanceled(true);
 			}
 		}
@@ -125,44 +113,44 @@ public class CommonEventHandler {
 	}
 
 	private void damagePlayersMobCharm(EntityPlayer player, Entity entity) {
-		if (player.capabilities.isCreativeMode)
+		if(player.capabilities.isCreativeMode)
 			return;
 
 		byte mobCharmType = ModItems.mobCharm.getMobCharmTypeForEntity(entity);
 
-		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-			if(player.inventory.mainInventory[slot] == null)
-				continue;
-			ItemStack slotStack = player.inventory.mainInventory[slot];
+		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
+			ItemStack stack = player.inventory.mainInventory.get(slot);
 
-			if(slotStack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(slotStack) == mobCharmType) {
-				ItemStack playersMobCharm = player.inventory.mainInventory[slot];
-				if(playersMobCharm.getItemDamage() + Settings.MobCharm.damagePerKill > playersMobCharm.getMaxDamage()) {
-					player.inventory.mainInventory[slot] = null;
-					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, ModItems.mobCharm.getMaxDamage() + 1, slot), (EntityPlayerMP) player);
+			if(stack.isEmpty())
+				continue;
+			if(stack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(stack) == mobCharmType) {
+				if(stack.getItemDamage() + Settings.MobCharm.damagePerKill > stack.getMaxDamage()) {
+					player.inventory.mainInventory.set(slot, ItemStack.EMPTY);
+					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, stack.getMaxDamage() + 1, slot), (EntityPlayerMP) player);
 				} else {
-					playersMobCharm.setItemDamage(playersMobCharm.getItemDamage() + Settings.MobCharm.damagePerKill);
-					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, playersMobCharm.getItemDamage(), slot), (EntityPlayerMP) player);
+					stack.setItemDamage(stack.getItemDamage() + Settings.MobCharm.damagePerKill);
+					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, stack.getItemDamage(), slot), (EntityPlayerMP) player);
 				}
 				return;
 			}
-			if(damageMobCharmInBelt((EntityPlayerMP) player, mobCharmType, slotStack))
+			if(damageMobCharmInBelt((EntityPlayerMP) player, mobCharmType, stack))
 				return;
 		}
 
+/*	TODO readd with baubles
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
 			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 
 			for(int i = 0; i < inventoryBaubles.getSlots(); i++) {
 				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
 
-				if(baubleStack == null)
+				if(baubleStack.isEmpty())
 					continue;
 
 				if(damageMobCharmInBelt((EntityPlayerMP) player, mobCharmType, baubleStack))
 					return;
 			}
-		}
+		}*/
 	}
 
 	private boolean damageMobCharmInBelt(EntityPlayerMP player, byte mobCharmType, ItemStack slotStack) {
@@ -232,12 +220,10 @@ public class CommonEventHandler {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ZOMBIE_PIGMAN_META);
 		} else if(entity instanceof EntityZombie) {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ZOMBIE_META);
-		} else if(entity instanceof EntitySkeleton) {
-			if(((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
-				resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.WITHER_SKELETON_META);
-			} else {
-				resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SKELETON_META);
-			}
+		} else if(entity instanceof EntityWitherSkeleton) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.WITHER_SKELETON_META);
+		} else if(entity instanceof EntitySkeleton || entity instanceof EntityStray) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SKELETON_META);
 		} else if(entity instanceof EntityCreeper) {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.CREEPER_META);
 		} else if(entity instanceof EntityWitch) {
@@ -256,7 +242,7 @@ public class CommonEventHandler {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.MAGMA_CUBE_META);
 		} else if(entity instanceof EntitySlime) {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SLIME_META);
-		}else if(entity instanceof EntityGuardian && !((EntityGuardian) entity).isElder()) {
+		} else if(entity instanceof EntityGuardian) {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.GUARDIAN_META);
 		}
 
@@ -278,7 +264,7 @@ public class CommonEventHandler {
 				return;
 
 			//toggled effect, makes player invisible based on light level (configurable)
-			if(player.worldObj.getLightFromNeighbors(player.getPosition()) > Settings.TwilightCloak.maxLightLevel)
+			if(player.world.getLightFromNeighbors(player.getPosition()) > Settings.TwilightCloak.maxLightLevel)
 				return;
 			if(event.getEntity() instanceof EntityLiving) {
 				((EntityLiving) event.getEntity()).setAttackTarget(null);
@@ -306,7 +292,7 @@ public class CommonEventHandler {
 	private void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!playerHasItem(player, ModItems.infernalClaws, false))
 			return;
-		if(!(event.getSource() == DamageSource.inFire) && !(event.getSource() == DamageSource.onFire))
+		if(!(event.getSource() == DamageSource.IN_FIRE) && !(event.getSource() == DamageSource.ON_FIRE))
 			return;
 		if(player.getFoodStats().getFoodLevel() <= 0)
 			return;
@@ -321,11 +307,11 @@ public class CommonEventHandler {
 		if(!playerHasItem(player, ModItems.infernalChalice, false))
 			return;
 		//TODO: figure out if there's some way to know that the fire was caused by lava, otherwise this is the only way to prevent damage from lava - reason being that most of the damage is from fire caused by lava
-		if(event.getSource() != DamageSource.lava && event.getSource() != DamageSource.onFire && event.getSource() != DamageSource.inFire)
+		if(event.getSource() != DamageSource.LAVA && event.getSource() != DamageSource.ON_FIRE && event.getSource() != DamageSource.IN_FIRE)
 			return;
 		if(player.getFoodStats().getFoodLevel() <= 0)
 			return;
-		if(event.getSource() == DamageSource.lava || event.getSource() == DamageSource.onFire || event.getSource() == DamageSource.inFire) {
+		if(event.getSource() == DamageSource.LAVA || event.getSource() == DamageSource.ON_FIRE || event.getSource() == DamageSource.IN_FIRE) {
 			player.addExhaustion(event.getAmount() * ((float) Settings.InfernalChalice.hungerCostPercent / 100F));
 		}
 
@@ -342,14 +328,14 @@ public class CommonEventHandler {
 		if(!playerHasItem(player, ModItems.angelheartVial, false))
 			return;
 
-		decreaseItemByOne(player);
+		decreaseAngelHeartByOne(player);
 
 		// player should see a vial "shatter" effect and hear the glass break to
 		// let them know they lost a vial.
 		spawnAngelheartVialParticles(player);
 
 		// play some glass breaking effects at the player location
-		player.worldObj.playSound(null, player.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		player.world.playSound(null, player.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, player.world.rand.nextFloat() * 0.1F + 0.9F);
 
 		// gives the player a few hearts, sparing them from death.
 		float amountHealed = player.getMaxHealth() * (float) Settings.AngelHeartVial.healPercentageOfMaxLife / 100F;
@@ -366,9 +352,9 @@ public class CommonEventHandler {
 		double var8 = player.posX;
 		double var10 = player.posY;
 		double var12 = player.posZ;
-		Random var7 = player.worldObj.rand;
+		Random var7 = player.world.rand;
 		for(int var15 = 0; var15 < 8; ++var15) {
-			player.worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.POTIONITEM));
+			player.world.spawnParticle(EnumParticleTypes.ITEM_CRACK, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.POTIONITEM));
 		}
 
 		// purple, for reals.
@@ -382,7 +368,7 @@ public class CommonEventHandler {
 			double var25 = Math.cos(var23) * var39;
 			double var27 = 0.01D + var7.nextDouble() * 0.5D;
 			double var29 = Math.sin(var23) * var39;
-			if(player.worldObj.isRemote) {
+			if(player.world.isRemote) {
 				Particle var31 = Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), var8 + var25 * 0.1D, var10 + 0.3D, var12 + var29 * 0.1D, var25, var27, var29);
 				if(var31 != null) {
 					float var32 = 0.75F + var7.nextFloat() * 0.25F;
@@ -392,7 +378,7 @@ public class CommonEventHandler {
 			}
 		}
 
-		player.worldObj.playSound(null, player.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		player.world.playSound(null, player.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, player.world.rand.nextFloat() * 0.1F + 0.9F);
 
 	}
 
@@ -411,7 +397,7 @@ public class CommonEventHandler {
 		if(!playerHasItem(player, ModItems.phoenixDown, false))
 			return;
 		if(player.getHealth() > Math.round(event.getAmount())) {
-			if(!(event.getSource() == DamageSource.fall))
+			if(!(event.getSource() == DamageSource.FALL))
 				return;
 			if(player.getFoodStats().getFoodLevel() <= 0)
 				return;
@@ -436,9 +422,9 @@ public class CommonEventHandler {
 				removeNegativeStatusEffects(player);
 
 			// added bonus, has some extra effects when drowning or dying to lava
-			if(event.getSource() == DamageSource.lava && Settings.PhoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou)
+			if(event.getSource() == DamageSource.LAVA && Settings.PhoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou)
 				player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 200, 0));
-			if(event.getSource() == DamageSource.drown && Settings.PhoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou) {
+			if(event.getSource() == DamageSource.DROWN && Settings.PhoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou) {
 				player.setAir(10);
 				player.addPotionEffect(new PotionEffect(MobEffects.WATER_BREATHING, 200, 0));
 			}
@@ -460,14 +446,14 @@ public class CommonEventHandler {
 
 	private void spawnPhoenixResurrectionParticles(EntityPlayer player) {
 		for(int particles = 0; particles <= 400; particles++) {
-			player.worldObj.spawnParticle(EnumParticleTypes.FLAME, player.posX, player.posY, player.posZ, player.worldObj.rand.nextGaussian() * 8, player.worldObj.rand.nextGaussian() * 8, player.worldObj.rand.nextGaussian() * 8);
+			player.world.spawnParticle(EnumParticleTypes.FLAME, player.posX, player.posY, player.posZ, player.world.rand.nextGaussian() * 8, player.world.rand.nextGaussian() * 8, player.world.rand.nextGaussian() * 8);
 		}
 	}
 
 	private void handleAngelicFeatherCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!playerHasItem(player, ModItems.angelicFeather, false))
 			return;
-		if(!(event.getSource() == DamageSource.fall))
+		if(!(event.getSource() == DamageSource.FALL))
 			return;
 		if(player.getFoodStats().getFoodLevel() <= 0)
 			return;
@@ -487,7 +473,7 @@ public class CommonEventHandler {
 			return;
 
 		// player absorbs drowning damage in exchange for hunger, at a relatively low rate.
-		if(event.getSource() == DamageSource.drown) {
+		if(event.getSource() == DamageSource.DROWN) {
 			float hungerDamage = event.getAmount() * ((float) Settings.KrakenShell.hungerCostPercent / 100F);
 			player.addExhaustion(hungerDamage);
 			event.setCanceled(true);
@@ -495,41 +481,24 @@ public class CommonEventHandler {
 	}
 
 	private void revertPhoenixDownToAngelicFeather(EntityPlayer player) {
-		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-			if(player.inventory.mainInventory[slot] == null)
+		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
+			if(player.inventory.mainInventory.get(slot).isEmpty())
 				continue;
-			if(player.inventory.mainInventory[slot].getItem() == ModItems.phoenixDown) {
-				player.inventory.mainInventory[slot] = new ItemStack(ModItems.angelicFeather);
+			if(player.inventory.mainInventory.get(slot).getItem() == ModItems.phoenixDown) {
+				player.inventory.mainInventory.set(slot, new ItemStack(ModItems.angelicFeather));
 				return;
 			}
 		}
 	}
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean playerHasItem(EntityPlayer player, Item item, boolean checkEnabled) {
-		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-			if(player.inventory.mainInventory[slot] == null)
+		for(ItemStack stack : player.inventory.mainInventory) {
+			if(stack.isEmpty())
 				continue;
-			if(player.inventory.mainInventory[slot].getItem() == item) {
+			if(stack.getItem() == item) {
 				if(checkEnabled) {
-					if(player.inventory.mainInventory[slot].getItem() instanceof ItemToggleable) {
-						return ((ItemToggleable) player.inventory.mainInventory[slot].getItem()).isEnabled(player.inventory.mainInventory[slot]);
-					}
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean playerHasItem(EntityPlayer player, ItemStack ist, boolean checkEnabled) {
-		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-			if(player.inventory.mainInventory[slot] == null)
-				continue;
-			if(player.inventory.mainInventory[slot].isItemEqual(ist)) {
-				if(checkEnabled) {
-					if(player.inventory.mainInventory[slot].getItem() instanceof ItemToggleable) {
-						return ((ItemToggleable) player.inventory.mainInventory[slot].getItem()).isEnabled(player.inventory.mainInventory[slot]);
+					if(stack.getItem() instanceof ItemToggleable) {
+						return ((ItemToggleable) stack.getItem()).isEnabled(stack);
 					}
 				}
 				return true;
@@ -539,16 +508,17 @@ public class CommonEventHandler {
 	}
 
 	private boolean playerHasMobCharm(EntityPlayer player, byte type) {
-		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-			if(player.inventory.mainInventory[slot] == null)
+
+		for(ItemStack slotStack : player.inventory.mainInventory) {
+			if(slotStack.isEmpty())
 				continue;
-			ItemStack slotStack = player.inventory.mainInventory[slot];
 			if(slotStack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(slotStack) == type)
 				return true;
 			if(slotStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(slotStack, type))
 				return true;
 		}
 
+/*	TODO readd with baubles
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
 			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 
@@ -558,20 +528,17 @@ public class CommonEventHandler {
 					return true;
 			}
 		}
+*/
 
 		return false;
 	}
 
-	private boolean areItemStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2) {
-		return ItemStack.areItemsEqualIgnoreDurability(stack1, stack2) && ItemStack.areItemStackTagsEqual(stack1, stack2);
-	}
-
 	// pretty much the same as above, specific to angelheart vial. finds it and breaks one.
-	private void decreaseItemByOne(EntityPlayer player) {
-		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-			if(player.inventory.mainInventory[slot] == null)
+	private void decreaseAngelHeartByOne(EntityPlayer player) {
+		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
+			if(player.inventory.mainInventory.get(slot).isEmpty())
 				continue;
-			if(player.inventory.mainInventory[slot].getItem() == ModItems.angelheartVial) {
+			if(player.inventory.mainInventory.get(slot).getItem() == ModItems.angelheartVial) {
 				player.inventory.decrStackSize(slot, 1);
 				return;
 			}
@@ -591,7 +558,7 @@ public class CommonEventHandler {
 
 		EntityPlayer player = event.player;
 
-		if(player.isHandActive() && player.getActiveItemStack() != null && player.getActiveItemStack().getItem() == ModItems.rendingGale && ModItems.rendingGale.isFlightMode(player.getActiveItemStack()) && ModItems.rendingGale.hasFlightCharge(player, player.getActiveItemStack())) {
+		if(player.isHandActive() && player.getActiveItemStack().getItem() == ModItems.rendingGale && ModItems.rendingGale.isFlightMode(player.getActiveItemStack()) && ModItems.rendingGale.hasFlightCharge(player, player.getActiveItemStack())) {
 			playersFlightStatus.put(player.getGameProfile().getId(), true);
 			player.capabilities.allowFlying = true;
 			((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));

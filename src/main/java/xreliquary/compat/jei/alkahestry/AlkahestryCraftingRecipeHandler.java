@@ -16,12 +16,6 @@ public class AlkahestryCraftingRecipeHandler implements IRecipeHandler<Alkahestr
 
 	@Nonnull
 	@Override
-	public String getRecipeCategoryUid() {
-		return Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING;
-	}
-
-	@Nonnull
-	@Override
 	public String getRecipeCategoryUid(@Nonnull AlkahestryCraftingRecipeJEI recipe) {
 		return Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING;
 	}

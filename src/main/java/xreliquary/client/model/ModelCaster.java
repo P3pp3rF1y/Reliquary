@@ -1,3 +1,4 @@
+/*
 package xreliquary.client.model;
 
 import net.minecraft.client.model.ModelBase;
@@ -288,3 +289,4 @@ public class ModelCaster extends ModelBase {
 	}
 
 }
+*/

@@ -2,6 +2,7 @@ package xreliquary.common;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -16,6 +17,7 @@ import xreliquary.entities.shot.*;
 import xreliquary.handler.CommonEventHandler;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.init.*;
+import xreliquary.reference.Reference;
 
 public class CommonProxy {
 
@@ -48,24 +50,24 @@ public class CommonProxy {
 	}
 
 	private void registerEntities() {
-		EntityRegistry.registerModEntity(EntityHolyHandGrenade.class, "entityHGrenade", 0, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityGlowingWater.class, "entityHolyWater", 1, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntitySpecialSnowball.class, "entitySpecialSnowball", 2, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityNeutralShot.class, "entityNeutralShot", 3, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityExorcismShot.class, "entityExorcismShot", 4, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityBlazeShot.class, "entityBlazeShot", 5, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityEnderShot.class, "entityEnderShot", 6, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityConcussiveShot.class, "entityConcussiveShot", 7, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityBusterShot.class, "entityBusterShot", 8, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntitySeekerShot.class, "entitySeekerShot", 9, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntitySandShot.class, "entitySandShot", 10, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityStormShot.class, "entityStormShot", 11, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityAttractionPotion.class, "entitySplashAphrodite", 12, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityThrownXRPotion.class, "entityThrownXRPotion", 13, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityFertilePotion.class, "entitySplashFertility", 21, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityKrakenSlime.class, "entityKSlime", 22, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityEnderStaffProjectile.class, "entityEnderStaffProjectile", 23, Reliquary.INSTANCE, 128, 5, true);
-		EntityRegistry.registerModEntity(EntityXRTippedArrow.class, "entityTippedArrow", 24, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "hand_grenade"), EntityHolyHandGrenade.class, "entityHGrenade", 0, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "holy_water"), EntityGlowingWater.class, "entityHolyWater", 1, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "special_snowball"), EntitySpecialSnowball.class, "entitySpecialSnowball", 2, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "neutral_shot"), EntityNeutralShot.class, "entityNeutralShot", 3, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "exorcism_shot"), EntityExorcismShot.class, "entityExorcismShot", 4, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "blaze_shot"), EntityBlazeShot.class, "entityBlazeShot", 5, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "ender_shot"), EntityEnderShot.class, "entityEnderShot", 6, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "concussive_shot"), EntityConcussiveShot.class, "entityConcussiveShot", 7, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "buster_shot"), EntityBusterShot.class, "entityBusterShot", 8, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "seeker_shot"), EntitySeekerShot.class, "entitySeekerShot", 9, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "sand_shot"), EntitySandShot.class, "entitySandShot", 10, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "storm_shot"), EntityStormShot.class, "entityStormShot", 11, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "thrown_aphrodite"), EntityAttractionPotion.class, "entitySplashAphrodite", 12, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "thrown_potion"), EntityThrownXRPotion.class, "entityThrownXRPotion", 13, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "thrown_fertility"), EntityFertilePotion.class, "entitySplashFertility", 21, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "kraken_slime"), EntityKrakenSlime.class, "entityKSlime", 22, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "ender_staff_projectile"), EntityEnderStaffProjectile.class, "entityEnderStaffProjectile", 23, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "tipped arrow"), EntityXRTippedArrow.class, "entityTippedArrow", 24, Reliquary.INSTANCE, 128, 5, true);
 	}
 
 	public void initColors() {
@@ -74,8 +76,6 @@ public class CommonProxy {
 	public void registerJEI(Item item, String name) {
 	}
 
-	public void registerJEI(Block block, String name) {
-	}
 	public void registerJEI(Block block, String name, boolean oneDescription) {
 
 	}

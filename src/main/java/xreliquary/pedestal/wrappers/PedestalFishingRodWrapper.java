@@ -215,7 +215,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		World world = pedestal.getTheWorld();
 		world.playSound(null, pedestal.getBlockPos(), SoundEvents.ENTITY_BOBBER_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (rand.nextFloat() * 0.4F + 0.8F));
 
-		world.spawnEntityInWorld(new EntityFishHook(world, fakePlayer));
+		world.spawnEntity(new EntityFishHook(world, fakePlayer));
 	}
 
 	private void syncHookData(IPedestal pedestal) {

@@ -5,12 +5,15 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
+import javax.annotation.Nullable;
+
 public class ModelWitchHat extends ModelBiped {
 
 	public static ModelWitchHat self = new ModelWitchHat();
 
-	public static ModelRenderer witchHat;
+	private static ModelRenderer witchHat;
 
+	@SuppressWarnings("WeakerAccess")
 	public ModelWitchHat() {
 		super();
 		witchHat = (new ModelRenderer(this)).setTextureSize(64, 128);
@@ -25,8 +28,8 @@ public class ModelWitchHat extends ModelBiped {
 	}
 
 	@Override
-	public void render(Entity par1Entity, float f, float f1, float f2, float f3, float f4, float f5) {
-		setRotationAngles(f, f1, f2, f3, f4, f5, par1Entity);
+	public void render(@Nullable Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+		setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
 		witchHat.rotateAngleY = this.bipedHead.rotateAngleY;
 		witchHat.rotateAngleX = this.bipedHead.rotateAngleX;
 
@@ -36,7 +39,7 @@ public class ModelWitchHat extends ModelBiped {
 			witchHat.rotationPointY = 0.0F;
 
 		GlStateManager.pushMatrix();
-		witchHat.render(f5);
+		witchHat.render(scale);
 		GlStateManager.popMatrix();
 	}
 }

@@ -51,7 +51,7 @@ public class ItemRodOfLyssa extends ItemBase {
 			world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
 			if(!world.isRemote) {
-				world.spawnEntityInWorld(new EntityLyssaHook(world, player));
+				world.spawnEntity(new EntityLyssaHook(world, player));
 			}
 
 			player.swingArm(hand);

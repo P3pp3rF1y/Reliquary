@@ -8,12 +8,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class EntityHolyHandGrenade extends EntityThrowable {
 
 	private int count = 0;
 	private EntityPlayer playerThrower;
 	private String customName;
 
+	@SuppressWarnings("unused")
 	public EntityHolyHandGrenade(World par1World) {
 		super(par1World);
 	}
@@ -25,6 +28,7 @@ public class EntityHolyHandGrenade extends EntityThrowable {
 	}
 
 	@SideOnly(Side.CLIENT)
+	@SuppressWarnings("unused")
 	public EntityHolyHandGrenade(World par1World, double par2, double par4, double par6, int par8) {
 		this(par1World, par2, par4, par6, "");
 	}
@@ -47,7 +51,7 @@ public class EntityHolyHandGrenade extends EntityThrowable {
 		super.onUpdate();
 		if(count == 2) {
 			for(int particles = 0; particles < rand.nextInt(2) + 1; particles++) {
-				worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB, posX + worldObj.rand.nextDouble(), posY + worldObj.rand.nextDouble(), posZ + worldObj.rand.nextDouble(), 0D, 0D, 0D);
+				world.spawnParticle(EnumParticleTypes.SPELL_MOB, posX + world.rand.nextDouble(), posY + world.rand.nextDouble(), posZ + world.rand.nextDouble(), 0D, 0D, 0D);
 			}
 			count = 0;
 		} else {
@@ -59,13 +63,13 @@ public class EntityHolyHandGrenade extends EntityThrowable {
 	 * Called when this EntityThrowable hits a block or entity.
 	 */
 	@Override
-	protected void onImpact(RayTraceResult result) {
+	protected void onImpact(@Nonnull RayTraceResult result) {
 		this.setDead();
 
 		ConcussiveExplosion.customConcussiveExplosion(this, playerThrower, posX, posY, posZ, 4.0F, false);
 	}
 
-	public String getCustomName() {
+	String getCustomName() {
 		return customName;
 	}
 }

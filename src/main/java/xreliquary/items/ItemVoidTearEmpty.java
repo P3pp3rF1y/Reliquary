@@ -76,7 +76,7 @@ public class ItemVoidTearEmpty extends ItemBase {
 				return;
 			}
 		}
-		player.worldObj.spawnEntityInWorld(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, ist));
+		player.worldObj.spawnEntity(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, ist));
 	}
 
 	protected ItemStack buildTear(ItemStack ist, EntityPlayer player, IInventory inventory, boolean isPlayerInventory) {

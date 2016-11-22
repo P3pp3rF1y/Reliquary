@@ -2,6 +2,7 @@ package xreliquary.compat.jei.descriptions;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
@@ -22,7 +23,7 @@ public class JEIDescriptionRegistry {
 	public static void register(Item item, String name) {
 		if(item.getCreativeTab() != null) {
 			if(item.getHasSubtypes()) {
-				ArrayList<ItemStack> subItems = new ArrayList<>();
+				NonNullList<ItemStack> subItems = NonNullList.create();
 				item.getSubItems(item, item.getCreativeTab(), subItems);
 
 				Set<Integer> addedMeta = new HashSet<>();

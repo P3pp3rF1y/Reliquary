@@ -74,9 +74,9 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 
 			//TODO this is where we'll be placing our algorithm for darkness detection and placing torches!
 
-			int playerX = MathHelper.floor_double(player.posX);
-			int playerY = MathHelper.floor_double(player.getEntityBoundingBox().minY);
-			int playerZ = MathHelper.floor_double(player.posZ);
+			int playerX = MathHelper.floor(player.posX);
+			int playerY = MathHelper.floor(player.getEntityBoundingBox().minY);
+			int playerZ = MathHelper.floor(player.posZ);
 
 			placement:
 			for(int xDiff = -getRange(); xDiff <= getRange(); xDiff++) {
@@ -171,7 +171,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 		}
 
 		if(Blocks.TORCH.canPlaceBlockAt(world, new BlockPos(xO, yO, zO))) {
-			int rotation = ((MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3) + 2) % 4;
+			int rotation = ((MathHelper.floor((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3) + 2) % 4;
 			EnumFacing trySide = EnumFacing.DOWN;
 			switch(rotation) {
 				case (0):

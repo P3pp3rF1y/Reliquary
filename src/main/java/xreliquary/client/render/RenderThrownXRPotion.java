@@ -10,12 +10,15 @@ import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.init.ModItems;
 import xreliquary.util.NBTHelper;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class RenderThrownXRPotion extends RenderSnowball<EntityThrownXRPotion> {
 	public RenderThrownXRPotion(RenderManager renderManager, RenderItem itemRenderer) {
 		super(renderManager, ModItems.potion, itemRenderer);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getStackToRender(EntityThrownXRPotion entityIn) {
 		ItemStack potion = new ItemStack(this.item, 1);

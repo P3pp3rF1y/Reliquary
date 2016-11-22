@@ -43,7 +43,7 @@ public class ItemAttractionPotion extends ItemBase {
 		world.playSound(null, player.getPosition(), SoundEvents.BLOCK_DISPENSER_LAUNCH, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 		EntityAttractionPotion attractionPotion = new EntityAttractionPotion(world, player);
 		attractionPotion.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
-		world.spawnEntityInWorld(attractionPotion);
+		world.spawnEntity(attractionPotion);
 		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 	}
 

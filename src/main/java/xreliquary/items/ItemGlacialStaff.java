@@ -80,9 +80,9 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 		if(player == null)
 			return;
 
-		int x = MathHelper.floor_double(player.posX);
-		int y = MathHelper.floor_double(player.getEntityBoundingBox().minY) - 1;
-		int z = MathHelper.floor_double(player.posZ);
+		int x = MathHelper.floor(player.posX);
+		int y = MathHelper.floor(player.getEntityBoundingBox().minY) - 1;
+		int z = MathHelper.floor(player.posZ);
 
 		if(this.isEnabled(ist)) {
 			for(int xOff = -2; xOff <= 2; xOff++) {
@@ -96,9 +96,9 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 
 		if (!world.isRemote) {
 			for(BlockPos pos : getBlockLocations(ist)) {
-				int xOff = Math.abs(MathHelper.floor_double(player.posX) - pos.getX());
-				int yOff = Math.abs(MathHelper.floor_double(player.posY) - pos.getY());
-				int zOff = Math.abs(MathHelper.floor_double(player.posZ) - pos.getZ());
+				int xOff = Math.abs(MathHelper.floor(player.posX) - pos.getX());
+				int yOff = Math.abs(MathHelper.floor(player.posY) - pos.getY());
+				int zOff = Math.abs(MathHelper.floor(player.posZ) - pos.getZ());
 
 				if(xOff < 3 && yOff < 3 && zOff < 3 && !(xOff == 2 && zOff == 2))
 					continue;

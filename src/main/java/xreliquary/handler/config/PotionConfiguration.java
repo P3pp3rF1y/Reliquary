@@ -151,7 +151,7 @@ public class PotionConfiguration {
 
 		for(PotionEffect effectA : a) {
 			boolean found = false;
-			for(PotionEffect effectB : b) {//TODO verify that getEffectName comparison is the same as getPotionId previously
+			for(PotionEffect effectB : b) {
 				if(effectA.getEffectName().equals(effectB.getEffectName()) && (!compareDuration || effectA.getDuration() == effectB.getDuration()) && (!comparePotency || effectA.getAmplifier() == effectB.getAmplifier())) {
 					found = true;
 					break;

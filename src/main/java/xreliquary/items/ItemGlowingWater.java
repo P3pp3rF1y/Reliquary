@@ -54,7 +54,7 @@ public class ItemGlowingWater extends ItemBase {
 
 		EntityGlowingWater glowingWater = new EntityGlowingWater(world, player);
 		glowingWater.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
-		world.spawnEntityInWorld(glowingWater);
+		world.spawnEntity(glowingWater);
 
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}

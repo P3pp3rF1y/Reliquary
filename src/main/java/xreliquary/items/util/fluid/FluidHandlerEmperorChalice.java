@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import xreliquary.init.ModItems;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class FluidHandlerEmperorChalice implements IFluidHandler, ICapabilityProvider {
@@ -55,12 +56,12 @@ public class FluidHandlerEmperorChalice implements IFluidHandler, ICapabilityPro
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
 		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
 		//noinspection unchecked
 		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T) this : null;
 	}

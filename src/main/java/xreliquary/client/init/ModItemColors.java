@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.util.ResourceLocation;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Reference;
@@ -56,52 +57,7 @@ public class ModItemColors {
 					return -1;
 
 				int type = ModItems.mobCharm.getType(stack);
-				String entityName = "";
-				switch(type) {
-					case Reference.MOB_CHARM.ZOMBIE_META:
-						entityName = "Zombie";
-						break;
-					case Reference.MOB_CHARM.SKELETON_META:
-						entityName = "Skeleton";
-						break;
-					case Reference.MOB_CHARM.WITHER_SKELETON_META:
-						return tintIndex == 1 ? Integer.parseInt(Colors.WITHER_COLOR, 16) : Integer.parseInt(Colors.LIGHT_GRAY, 16);
-					case Reference.MOB_CHARM.CREEPER_META:
-						entityName = "Creeper";
-						break;
-					case Reference.MOB_CHARM.WITCH_META:
-						entityName = "Witch";
-						break;
-					case Reference.MOB_CHARM.ZOMBIE_PIGMAN_META:
-						entityName = "PigZombie";
-						break;
-					case Reference.MOB_CHARM.CAVE_SPIDER_META:
-						entityName = "CaveSpider";
-						break;
-					case Reference.MOB_CHARM.SPIDER_META:
-						entityName = "Spider";
-						break;
-					case Reference.MOB_CHARM.ENDERMAN_META:
-						entityName = "Enderman";
-						break;
-					case Reference.MOB_CHARM.GHAST_META:
-						entityName = "Ghast";
-						break;
-					case Reference.MOB_CHARM.SLIME_META:
-						entityName = "Slime";
-						break;
-					case Reference.MOB_CHARM.MAGMA_CUBE_META:
-						entityName = "LavaSlime";
-						break;
-					case Reference.MOB_CHARM.BLAZE_META:
-						entityName = "Blaze";
-						break;
-					case Reference.MOB_CHARM.GUARDIAN_META:
-						entityName = "Guardian";
-						break;
-				}
-
-				EntityList.EntityEggInfo eggInfo = EntityList.ENTITY_EGGS.get(entityName);
+				EntityList.EntityEggInfo eggInfo = getEntityEggInfo(type);
 
 				if(eggInfo != null) {
 					return tintIndex == 1 ? eggInfo.primaryColor : eggInfo.secondaryColor;
@@ -109,67 +65,6 @@ public class ModItemColors {
 
 				return -1;
 			}, ModItems.mobCharm);
-		}
-
-		if(isEnabled(ModItems.mobCharmFragment) && isEnabled(ModItems.mobCharm)) {
-			itemColors.registerItemColorHandler((stack, tintIndex) -> {
-				if(tintIndex < 0 || tintIndex > 1)
-					return -1;
-
-				int type = stack.getMetadata();
-				String entityName = "";
-				switch(type) {
-					case Reference.MOB_CHARM.ZOMBIE_META:
-						entityName = "Zombie";
-						break;
-					case Reference.MOB_CHARM.SKELETON_META:
-						entityName = "Skeleton";
-						break;
-					case Reference.MOB_CHARM.WITHER_SKELETON_META:
-						return tintIndex == 0 ? Integer.parseInt(Colors.WITHER_COLOR, 16) : Integer.parseInt(Colors.LIGHT_GRAY, 16);
-					case Reference.MOB_CHARM.CREEPER_META:
-						entityName = "Creeper";
-						break;
-					case Reference.MOB_CHARM.WITCH_META:
-						entityName = "Witch";
-						break;
-					case Reference.MOB_CHARM.ZOMBIE_PIGMAN_META:
-						entityName = "PigZombie";
-						break;
-					case Reference.MOB_CHARM.CAVE_SPIDER_META:
-						entityName = "CaveSpider";
-						break;
-					case Reference.MOB_CHARM.SPIDER_META:
-						entityName = "Spider";
-						break;
-					case Reference.MOB_CHARM.ENDERMAN_META:
-						entityName = "Enderman";
-						break;
-					case Reference.MOB_CHARM.GHAST_META:
-						entityName = "Ghast";
-						break;
-					case Reference.MOB_CHARM.SLIME_META:
-						entityName = "Slime";
-						break;
-					case Reference.MOB_CHARM.MAGMA_CUBE_META:
-						entityName = "LavaSlime";
-						break;
-					case Reference.MOB_CHARM.BLAZE_META:
-						entityName = "Blaze";
-						break;
-					case Reference.MOB_CHARM.GUARDIAN_META:
-						entityName = "Guardian";
-						break;
-				}
-
-				EntityList.EntityEggInfo eggInfo = EntityList.ENTITY_EGGS.get(entityName);
-
-				if(eggInfo != null) {
-					return tintIndex == 0 ? eggInfo.primaryColor : eggInfo.secondaryColor;
-				}
-
-				return -1;
-			}, ModItems.mobCharmFragment);
 		}
 
 		if(isEnabled(ModItems.magazine) && isEnabled(ModItems.bullet)) {
@@ -232,6 +127,56 @@ public class ModItemColors {
 		if(isEnabled(ModItems.tippedArrow)) {
 			itemColors.registerItemColorHandler((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromStack(stack)) : -1, ModItems.tippedArrow);
 		}
+	}
+
+	private static EntityList.EntityEggInfo getEntityEggInfo(int type) {
+		String entityName = "";
+		switch(type) {
+			case Reference.MOB_CHARM.ZOMBIE_META:
+				entityName = "zombie";
+				break;
+			case Reference.MOB_CHARM.SKELETON_META:
+				entityName = "skeleton";
+				break;
+			case Reference.MOB_CHARM.WITHER_SKELETON_META:
+				entityName = "wither_skeleton";
+				break;
+			case Reference.MOB_CHARM.CREEPER_META:
+				entityName = "creeper";
+				break;
+			case Reference.MOB_CHARM.WITCH_META:
+				entityName = "witch";
+				break;
+			case Reference.MOB_CHARM.ZOMBIE_PIGMAN_META:
+				entityName = "zombie_pigman";
+				break;
+			case Reference.MOB_CHARM.CAVE_SPIDER_META:
+				entityName = "cave_spider";
+				break;
+			case Reference.MOB_CHARM.SPIDER_META:
+				entityName = "spider";
+				break;
+			case Reference.MOB_CHARM.ENDERMAN_META:
+				entityName = "enderman";
+				break;
+			case Reference.MOB_CHARM.GHAST_META:
+				entityName = "ghast";
+				break;
+			case Reference.MOB_CHARM.SLIME_META:
+				entityName = "slime";
+				break;
+			case Reference.MOB_CHARM.MAGMA_CUBE_META:
+				entityName = "magma_cube";
+				break;
+			case Reference.MOB_CHARM.BLAZE_META:
+				entityName = "blaze";
+				break;
+			case Reference.MOB_CHARM.GUARDIAN_META:
+				entityName = "guardian";
+				break;
+		}
+
+		return EntityList.ENTITY_EGGS.get(new ResourceLocation(entityName));
 	}
 
 	private static boolean isEnabled(Item item) {

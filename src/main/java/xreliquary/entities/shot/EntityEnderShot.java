@@ -9,22 +9,25 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class EntityEnderShot extends EntityShotBase {
+	@SuppressWarnings("unused")
 	public EntityEnderShot(World par1World) {
 		super(par1World);
 	}
 
+/* TODO remove
 	public EntityEnderShot(World par1World, double par2, double par4, double par6) {
 		super(par1World, par2, par4, par6);
 	}
 
+*/
 	public EntityEnderShot(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
 		super(par1World, par2EntityPlayer, hand);
 	}
 
 	private void doPortalExplosion() {
 		for(int particles = 0; particles < 3; particles++) {
-			worldObj.spawnParticle(EnumParticleTypes.PORTAL, posX, posY - 1, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
-			worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, 0, 0, 0);
+			world.spawnParticle(EnumParticleTypes.PORTAL, posX, posY - 1, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, 0, 0, 0);
 		}
 		this.setDead();
 	}
@@ -37,8 +40,8 @@ public class EntityEnderShot extends EntityShotBase {
 
 	@Override
 	void doFiringEffects() {
-		worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
-		worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+		world.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		world.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
 	}
 
 	@Override
@@ -71,7 +74,7 @@ public class EntityEnderShot extends EntityShotBase {
 	@Override
 	void doFlightEffects() {
 		if(ticksInAir % 3 == 0)
-			worldObj.spawnParticle(EnumParticleTypes.PORTAL, posX, posY - 1, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+			world.spawnParticle(EnumParticleTypes.PORTAL, posX, posY - 1, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
 
 		// housed in the base class
 		seekTarget();
@@ -85,7 +88,7 @@ public class EntityEnderShot extends EntityShotBase {
 	@Override
 	void spawnHitParticles(int i) {
 		for(int particles = 0; particles < i; particles++) {
-			worldObj.spawnParticle(EnumParticleTypes.SPELL_WITCH, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+			world.spawnParticle(EnumParticleTypes.SPELL_WITCH, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
 		}
 	}
 

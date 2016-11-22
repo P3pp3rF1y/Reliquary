@@ -2,18 +2,17 @@ package xreliquary.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -39,7 +38,6 @@ import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
@@ -49,22 +47,16 @@ import xreliquary.util.potions.XRPotionHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 //TODO refactor proxy so that it has functionally named methods that get called from main mod class
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
 	@Override
-	public void registerJEI(Block block, String name) {
-		registerJEI(block, name, false);
-	}
-
-	@Override
 	public void registerJEI(Block block, String name, boolean oneDescription) {
 		if(Loader.isModLoaded(Compatibility.MOD_ID.JEI)) {
 			if(oneDescription) {
-				List<ItemStack> subBlocks = new ArrayList<>();
+				NonNullList<ItemStack> subBlocks = NonNullList.create();
 
 				//noinspection ConstantConditions
 				block.getSubBlocks(Item.getItemFromBlock(block), null, subBlocks);
@@ -193,10 +185,12 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	private void RegisterBeltRender() {
+/* 		TODO readded with baubles
 		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
 		RenderPlayer render;
 		render = skinMap.get("default");
 		render.addLayer(new MobCharmBeltLayerRenderer());
+*/
 	}
 
 	private void registerRenderers() {

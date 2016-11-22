@@ -4,7 +4,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionUtils;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
-import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
@@ -22,11 +21,12 @@ public class ArrowShotRecipeMaker {
 
 			ItemStack potion = new ItemStack(ModItems.potion);
 			potion.setTagCompound(essence.writeToNBT());
+			//noinspection ConstantConditions
 			potion.getTagCompound().setBoolean("lingering", true);
 			potion.getTagCompound().setBoolean("hasPotion", true);
 
 			ItemStack output = itemStack.copy();
-			output.stackSize = 8;
+			output.setCount(8);
 			PotionUtils.appendEffects(output, XRPotionHelper.changeDuration(essence.getEffects(), durationFactor));
 
 			recipes.add(new ArrowShotRecipeJEI(Arrays.asList(itemStack, itemStack, itemStack, itemStack, potion, itemStack, itemStack, itemStack, itemStack), output));

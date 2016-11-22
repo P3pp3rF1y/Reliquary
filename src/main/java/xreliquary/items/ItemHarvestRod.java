@@ -285,7 +285,7 @@ public class ItemHarvestRod extends ItemToggleable {
 				double d2 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
 				EntityItem entityitem = new EntityItem(player.worldObj, (double) pos.getX() + d, (double) pos.getY() + d1, (double) pos.getZ() + d2, stack);
 				entityitem.setPickupDelay(10);
-				player.worldObj.spawnEntityInWorld(entityitem);
+				player.worldObj.spawnEntity(entityitem);
 			}
 
 			player.worldObj.setBlockState(pos, Blocks.AIR.getDefaultState());

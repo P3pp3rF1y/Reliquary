@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -23,12 +24,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityPedestalPassive;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,14 +45,16 @@ public class BlockPedestalPassive extends BlockBase {
 	}
 
 	@Override
-	public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+	public void getSubBlocks(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
 		for(int i = 0; i < 16; i++) {
 			list.add(new ItemStack(ModBlocks.pedestalPassive, 1, i));
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	@Nonnull
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		EnumDyeColor color = EnumDyeColor.RED;
 
 		if(worldIn.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
@@ -64,11 +67,12 @@ public class BlockPedestalPassive extends BlockBase {
 		return state.withProperty(COLOR, color);
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+	public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player) {
 		int meta = 0;
 
-		if (world.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
+		if(world.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
 			TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) world.getTileEntity(pos);
 
 			//noinspection ConstantConditions
@@ -79,39 +83,45 @@ public class BlockPedestalPassive extends BlockBase {
 		return new ItemStack(Item.getItemFromBlock(this), 1, meta);
 	}
 
+	@Nonnull
 	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, @Nonnull IBlockState state, int fortune) {
 		List<ItemStack> list = new ArrayList<>();
 
-		Item item = this.getItemDropped(state,((World) world).rand, fortune);
+		Item item = this.getItemDropped(state, ((World) world).rand, fortune);
 
 		int meta = 0;
-		if (world.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
+		if(world.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
 			TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) world.getTileEntity(pos);
 
 			//noinspection ConstantConditions
 			meta = pedestal.getClothColor().getMetadata();
 		}
 
-		//noinspection ConstantConditions
 		list.add(new ItemStack(item, 1, meta));
 
 		return list;
 	}
 
+	@SuppressWarnings("deprecation")
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		EnumFacing enumfacing = EnumFacing.getHorizontal(meta & 3);
 		return this.getDefaultState().withProperty(FACING, enumfacing);
 	}
 
+	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, FACING, COLOR);
 	}
 
+	@Nonnull
 	@Override
-	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+	public IBlockState getStateForPlacement(
+			@Nonnull World world,
+			@Nonnull BlockPos pos, @Nonnull EnumFacing facing, float hitX, float hitY, float hitZ, int meta, @Nonnull EntityLivingBase placer, EnumHand hand) {
 		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing()).withProperty(COLOR, EnumDyeColor.byMetadata(meta));
 	}
 
@@ -127,7 +137,7 @@ public class BlockPedestalPassive extends BlockBase {
 	}
 
 	@Override
-	public String getHarvestTool(IBlockState state) {
+	public String getHarvestTool(@Nonnull IBlockState state) {
 		return "pickaxe";
 	}
 
@@ -137,16 +147,18 @@ public class BlockPedestalPassive extends BlockBase {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+
+		ItemStack heldItem = player.getHeldItem(hand);
 		if(world.isRemote)
-			return player.getHeldItem(hand) != null || player.isSneaking();
+			return !heldItem.isEmpty() || player.isSneaking();
 
 		if(!(world.getTileEntity(pos) instanceof TileEntityPedestalPassive))
 			return false;
 
 		TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) world.getTileEntity(pos);
 
-		if(heldItem == null) {
+		if(heldItem.isEmpty()) {
 			if(player.isSneaking()) {
 				//noinspection ConstantConditions
 				pedestal.removeLastPedestalStack();
@@ -160,7 +172,7 @@ public class BlockPedestalPassive extends BlockBase {
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
+	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
 		TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) world.getTileEntity(pos);
 
 		if(pedestal != null) {
@@ -171,23 +183,24 @@ public class BlockPedestalPassive extends BlockBase {
 	}
 
 	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+	public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest) {
 		//If it will harvest, delay deletion of the block until after getDrops
-		return willHarvest || super.removedByPlayer(state, world, pos, player, willHarvest);
+		return willHarvest || super.removedByPlayer(state, world, pos, player, false);
 	}
 
 	@Override
-	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te, ItemStack tool)
-	{
+	public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos, @Nonnull IBlockState state, TileEntity te, ItemStack tool) {
 		super.harvestBlock(world, player, pos, state, te, tool);
 		world.setBlockToAir(pos);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isFullCube(IBlockState state) {
 		return false;
@@ -198,11 +211,14 @@ public class BlockPedestalPassive extends BlockBase {
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public TileEntity createTileEntity(World world, IBlockState state) {
+	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
 		return new TileEntityPedestalPassive();
 	}
 
+	@SuppressWarnings("deprecation")
+	@Nonnull
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		return PEDESTAL_AABB;
@@ -213,16 +229,18 @@ public class BlockPedestalPassive extends BlockBase {
 		EntityPlayer player = event.getEntityPlayer();
 
 		//should only really use the event in case that the player is sneaking with something in offhand and empty mainhand
-		if (!player.isSneaking() || player.getHeldItemMainhand() != null || player.getHeldItemOffhand() == null)
+		if(!player.isSneaking() || !player.getHeldItemMainhand().isEmpty() || player.getHeldItemOffhand().isEmpty())
 			return;
 
-		Block block = player.worldObj.getBlockState(event.getPos()).getBlock();
-		if (block != this)
+		Block block = player.world.getBlockState(event.getPos()).getBlock();
+		if(block != this)
 			return;
 
-		TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) player.worldObj.getTileEntity(event.getPos());
+		TileEntityPedestalPassive pedestal = (TileEntityPedestalPassive) player.world.getTileEntity(event.getPos());
 
-		pedestal.removeLastPedestalStack();
+		if(pedestal != null) {
+			pedestal.removeLastPedestalStack();
+		}
 
 		event.setCanceled(true);
 	}

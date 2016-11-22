@@ -7,6 +7,8 @@ import net.minecraft.util.ITickable;
 import xreliquary.blocks.BlockAlkahestryAltar;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityAltar extends TileEntityBase implements ITickable {
 	private int cycleTime;
 	private boolean isActive;
@@ -19,26 +21,26 @@ public class TileEntityAltar extends TileEntityBase implements ITickable {
 
 	@Override
 	public void update() {
-		if(this.worldObj.isRemote)
+		if(this.world.isRemote)
 			return;
 		if(!isActive)
 			return;
-		int worldTime = (int) (worldObj.getWorldTime() % 24000);
+		int worldTime = (int) (world.getWorldTime() % 24000);
 		if(worldTime >= 12000)
 			return;
-		if(!worldObj.canSeeSky(getPos().add(0, 1, 0)))
+		if(!world.canSeeSky(getPos().add(0, 1, 0)))
 			return;
 		if(cycleTime > 0) {
 			cycleTime--;
 			if(cycleTime % 20 == 0) {
-				IBlockState blockState = worldObj.getBlockState(this.getPos());
-				worldObj.notifyBlockUpdate(this.pos, blockState, blockState, 3);
+				IBlockState blockState = world.getBlockState(this.getPos());
+				world.notifyBlockUpdate(this.pos, blockState, blockState, 3);
 
 			}
 		} else {
 			isActive = false;
-			worldObj.setBlockState(getPos().add(0, 1, 0), Blocks.GLOWSTONE.getDefaultState());
-			BlockAlkahestryAltar.updateAltarBlockState(isActive(), worldObj, getPos());
+			world.setBlockState(getPos().add(0, 1, 0), Blocks.GLOWSTONE.getDefaultState());
+			BlockAlkahestryAltar.updateAltarBlockState(isActive(), world, getPos());
 		}
 	}
 
@@ -46,7 +48,7 @@ public class TileEntityAltar extends TileEntityBase implements ITickable {
 		//grabs the cycle time from the configs
 		int defaultCycleTime = Settings.Altar.timeInMinutes * 60 * 20;
 		int maximumVariance = Settings.Altar.maximumTimeVarianceInMinutes * 60 * 20;
-		cycleTime = (int) (defaultCycleTime + (double) maximumVariance * worldObj.rand.nextGaussian());
+		cycleTime = (int) (defaultCycleTime + (double) maximumVariance * world.rand.nextGaussian());
 		redstoneCount = 0;
 		isActive = true;
 	}
@@ -59,6 +61,7 @@ public class TileEntityAltar extends TileEntityBase implements ITickable {
 		isActive = par1NBTTagCompound.getBoolean("isActive");
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
@@ -72,15 +75,15 @@ public class TileEntityAltar extends TileEntityBase implements ITickable {
 	public void addRedstone() {
 		redstoneCount++;
 		if(redstoneCount >= getRedstoneCost()) {
-			BlockAlkahestryAltar.updateAltarBlockState(true, worldObj, getPos());
+			BlockAlkahestryAltar.updateAltarBlockState(true, world, getPos());
 		}
 
-		IBlockState blockState = worldObj.getBlockState(this.getPos());
+		IBlockState blockState = world.getBlockState(this.getPos());
 
-		worldObj.notifyBlockUpdate(this.pos, blockState, blockState, 3);
+		world.notifyBlockUpdate(this.pos, blockState, blockState, 3);
 	}
 
-	public static int getRedstoneCost() {
+	private static int getRedstoneCost() {
 		return Settings.Altar.redstoneCost;
 	}
 

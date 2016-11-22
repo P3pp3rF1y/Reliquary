@@ -174,7 +174,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 				} else if(stack.stackSize > 1) {
 					stack.stackSize--;
 					EntityItem entity = new EntityItem(world, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, new ItemStack(Items.MILK_BUCKET));
-					world.spawnEntityInWorld(entity);
+					world.spawnEntity(entity);
 				}
 			}
 		}

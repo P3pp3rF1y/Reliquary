@@ -318,31 +318,31 @@ public class ItemHandgun extends ItemBase {
 				case 0:
 					return;
 				case Reference.NEUTRAL_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityNeutralShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					worldObj.spawnEntity(new EntityNeutralShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.EXORCISM_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityExorcismShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					worldObj.spawnEntity(new EntityExorcismShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.BLAZE_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityBlazeShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					worldObj.spawnEntity(new EntityBlazeShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.ENDER_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityEnderShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					worldObj.spawnEntity(new EntityEnderShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.CONCUSSIVE_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityConcussiveShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					worldObj.spawnEntity(new EntityConcussiveShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.BUSTER_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityBusterShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					worldObj.spawnEntity(new EntityBusterShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.SEEKER_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntitySeekerShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					worldObj.spawnEntity(new EntitySeekerShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.SAND_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntitySandShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					worldObj.spawnEntity(new EntitySandShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.STORM_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityStormShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					worldObj.spawnEntity(new EntityStormShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 			}
 

@@ -22,9 +22,11 @@ import xreliquary.network.PacketFXThrownPotionImpact;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Colors;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class EntityGlowingWater extends EntityThrowable {
+	@SuppressWarnings("unused")
 	public EntityGlowingWater(World par1World) {
 		super(par1World);
 	}
@@ -34,6 +36,7 @@ public class EntityGlowingWater extends EntityThrowable {
 	}
 
 	@SideOnly(Side.CLIENT)
+	@SuppressWarnings("unused")
 	public EntityGlowingWater(World par1World, double par2, double par4, double par6, int par8) {
 		this(par1World, par2, par4, par6);
 	}
@@ -58,23 +61,21 @@ public class EntityGlowingWater extends EntityThrowable {
 	 * Called when this EntityThrowable hits a block or entity.
 	 */
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		if(!worldObj.isRemote) {
+	protected void onImpact(@Nonnull RayTraceResult result) {
+		if(!world.isRemote) {
 			this.spawnParticles();
 			AxisAlignedBB bb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
-			List<EntityLiving> eList = worldObj.getEntitiesWithinAABB(EntityLiving.class, bb);
-			for(EntityLiving e : eList) {
-				if(isUndead(e)) {
-					float amount = 18 + rand.nextInt(17);
-					if(this.getThrower() != null && this.getThrower() instanceof EntityPlayer) {
-						e.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) this.getThrower()), amount);
-					} else {
-						e.attackEntityFrom(DamageSource.magic, amount);
-					}
+			List<EntityLiving> eList = world.getEntitiesWithinAABB(EntityLiving.class, bb);
+			eList.stream().filter(this::isUndead).forEach(e -> {
+				float amount = 18 + rand.nextInt(17);
+				if(this.getThrower() != null && this.getThrower() instanceof EntityPlayer) {
+					e.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) this.getThrower()), amount);
+				} else {
+					e.attackEntityFrom(DamageSource.MAGIC, amount);
 				}
-			}
+			});
 
-			worldObj.playEvent(2002, new BlockPos(this), 0);
+			world.playEvent(2002, new BlockPos(this), 0);
 			this.setDead();
 		}
 	}
@@ -85,10 +86,10 @@ public class EntityGlowingWater extends EntityThrowable {
 		double z = posZ;
 
 		for(int particleNum = 0; particleNum < 8; ++particleNum) {
-			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, Item.getIdFromItem(ModItems.glowingWater));
+			world.spawnParticle(EnumParticleTypes.ITEM_CRACK, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, Item.getIdFromItem(ModItems.glowingWater));
 		}
 
-		worldObj.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		world.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
 		PacketHandler.networkWrapper.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), this.posX, this.posY, this.posZ), new NetworkRegistry.TargetPoint(this.dimension, this.posX, this.posY, this.posZ, 32.0D));
 
 	}

@@ -106,7 +106,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 			double d2 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
 			EntityItem entityitem = new EntityItem(world, (double) pos.getX() + d, (double) pos.getY() + d1, (double) pos.getZ() + d2, stack);
 			entityitem.setPickupDelay(10);
-			world.spawnEntityInWorld(entityitem);
+			world.spawnEntity(entityitem);
 		}
 
 		world.setBlockState(pos, Blocks.AIR.getDefaultState());

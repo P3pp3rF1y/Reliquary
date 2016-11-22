@@ -6,6 +6,7 @@ import net.minecraftforge.fml.client.IModGuiFactory;
 
 import java.util.Set;
 
+@SuppressWarnings("unused")
 public class GuiFactory implements IModGuiFactory {
 	@Override
 	public void initialize(Minecraft minecraft) {
@@ -21,6 +22,7 @@ public class GuiFactory implements IModGuiFactory {
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
 		return null;

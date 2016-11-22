@@ -10,27 +10,29 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import xreliquary.entities.ConcussiveExplosion;
 
 public class EntitySandShot extends EntityShotBase {
+	@SuppressWarnings("unused")
 	public EntitySandShot(World par1World) {
 		super(par1World);
 	}
 
-	public EntitySandShot(World par1World, double par2, double par4, double par6) {
-		super(par1World, par2, par4, par6);
-	}
+	/* TODO remove
+		public EntitySandShot(World par1World, double par2, double par4, double par6) {
+			super(par1World, par2, par4, par6);
+		}
 
+	*/
 	public EntitySandShot(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
 		super(par1World, par2EntityPlayer, hand);
 	}
 
 	@Override
 	void doFiringEffects() {
-		worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
-		worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
+		world.spawnParticle(EnumParticleTypes.SPELL_MOB_AMBIENT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		world.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
 	}
 
 	@Override
@@ -47,7 +49,7 @@ public class EntitySandShot extends EntityShotBase {
 	@Override
 	void spawnHitParticles(int i) {
 		for(int particles = 0; particles < i; particles++) {
-			worldObj.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, 0.7F, 0.7F, 0.3F);
+			world.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, 0.7F, 0.7F, 0.3F);
 		}
 	}
 
@@ -62,7 +64,7 @@ public class EntitySandShot extends EntityShotBase {
 		// it also causes blinding
 		if(e instanceof EntityLiving)
 			e.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 200, 1));
-		return (worldObj.getWorldInfo().isRaining() ? 4 : 8) + d6();
+		return (world.getWorldInfo().isRaining() ? 4 : 8) + d6();
 	}
 
 	@Override

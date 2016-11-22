@@ -17,6 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 import xreliquary.init.ModItems;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.util.List;
@@ -29,6 +30,7 @@ public class ModelVoidTear implements IPerspectiveAwareModel {
 		this.originalModel = originalModel;
 	}
 
+	@Nonnull
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
 		return originalModel.getQuads(state, side, rand);
@@ -49,26 +51,31 @@ public class ModelVoidTear implements IPerspectiveAwareModel {
 		return originalModel.isBuiltInRenderer();
 	}
 
+	@Nonnull
 	@Override
 	public TextureAtlasSprite getParticleTexture() {
 		return originalModel.getParticleTexture();
 	}
 
+	@Nonnull
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms() {
+		//noinspection deprecation
 		return originalModel.getItemCameraTransforms();
 	}
 
+	@Nonnull
 	@Override
 	public ItemOverrideList getOverrides() {
 		return new ItemOverrideList(ImmutableList.of()) {
+			@Nonnull
 			@Override
-			public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
+			public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, @Nonnull World world, @Nonnull EntityLivingBase entity) {
 				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 					ItemStack containedStack = ModItems.filledVoidTear.getContainerItem(stack);
-					if (containedStack != null) {
+					if(containedStack != null) {
 						IBakedModel bakedModel = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(containedStack, world, entity);
-						if (!bakedModel.isBuiltInRenderer())
+						if(!bakedModel.isBuiltInRenderer())
 							return bakedModel;
 					}
 				}

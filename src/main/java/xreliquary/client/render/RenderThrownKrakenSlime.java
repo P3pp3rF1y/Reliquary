@@ -12,6 +12,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.entities.EntityKrakenSlime;
 import xreliquary.reference.Reference;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class RenderThrownKrakenSlime extends Render<EntityKrakenSlime> {
 
@@ -21,7 +23,7 @@ public class RenderThrownKrakenSlime extends Render<EntityKrakenSlime> {
 		super(renderManagerIn);
 	}
 
-	public void doRender(EntityKrakenSlime entity, double x, double y, double z, float entityYaw, float partialTicks) {
+	public void doRender(@Nonnull EntityKrakenSlime entity, double x, double y, double z, float entityYaw, float partialTicks) {
 		GlStateManager.pushMatrix();
 		this.bindEntityTexture(entity);
 		GlStateManager.translate((float) x, (float) y, (float) z);
@@ -31,7 +33,9 @@ public class RenderThrownKrakenSlime extends Render<EntityKrakenSlime> {
 		VertexBuffer worldrenderer = tessellator.getBuffer();
 		float f = (float) (TEXTURE_INDEX % 16 * 16) / 256.0F;
 		float f1 = (float) (TEXTURE_INDEX % 16 * 16 + 16) / 256.0F;
+		//noinspection PointlessArithmeticExpression
 		float f2 = (float) (TEXTURE_INDEX / 16 * 16 + 0) / 256.0F;
+		//noinspection PointlessArithmeticExpression
 		float f3 = (float) (TEXTURE_INDEX / 16 * 16 + 16) / 256.0F;
 		float f4 = 1.0F;
 		float f5 = 0.5F;
@@ -52,7 +56,7 @@ public class RenderThrownKrakenSlime extends Render<EntityKrakenSlime> {
 	/**
 	 * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
 	 */
-	protected ResourceLocation getEntityTexture(EntityKrakenSlime entity) {
+	protected ResourceLocation getEntityTexture(@Nonnull EntityKrakenSlime entity) {
 		return new ResourceLocation(Reference.MOD_ID, Reference.ART_PATH_ENTITIES + Reference.THROWN_ITEM_SPRITES);
 	}
 

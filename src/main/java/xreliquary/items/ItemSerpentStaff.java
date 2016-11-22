@@ -52,7 +52,7 @@ public class ItemSerpentStaff extends ItemBase {
 
 		EntityKrakenSlime krakenSlime = new EntityKrakenSlime(player.worldObj, player);
 		krakenSlime.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0F, 1.5F, 1.0F);
-		player.worldObj.spawnEntityInWorld(krakenSlime);
+		player.worldObj.spawnEntity(krakenSlime);
 		item.damageItem(1, player);
 	}
 

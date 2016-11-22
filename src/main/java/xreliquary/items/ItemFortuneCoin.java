@@ -259,7 +259,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 					xpOrb.setDead();
 
 					if(amountToTransfer > amountAdded) {
-						world.spawnEntityInWorld(new EntityXPOrb(world, pos.getX(), pos.getY(), pos.getZ(), XpHelper.liquidToExperience(amountToTransfer - amountAdded)));
+						world.spawnEntity(new EntityXPOrb(world, pos.getX(), pos.getY(), pos.getZ(), XpHelper.liquidToExperience(amountToTransfer - amountAdded)));
 					}
 				} else {
 					pedestal.setActionCoolDown(20);

@@ -164,7 +164,7 @@ public class ItemInfernalTear extends ItemToggleable {
 	protected void addTearToInventory(EntityPlayer player, ItemStack stack) {
 		if(!player.inventory.addItemStackToInventory(stack)) {
 			EntityItem entity = new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, stack);
-			player.worldObj.spawnEntityInWorld(entity);
+			player.worldObj.spawnEntity(entity);
 		}
 	}
 

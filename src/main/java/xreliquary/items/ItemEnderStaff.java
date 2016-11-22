@@ -248,7 +248,7 @@ public class ItemEnderStaff extends ItemToggleable {
 				if(!player.worldObj.isRemote) {
 					EntityEnderStaffProjectile enderStaffProjectile = new EntityEnderStaffProjectile(player.worldObj, player, !getMode(ist).equals("long_cast"));
 					enderStaffProjectile.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
-					player.worldObj.spawnEntityInWorld(enderStaffProjectile);
+					player.worldObj.spawnEntity(enderStaffProjectile);
 					if(!player.capabilities.isCreativeMode)
 						setPearlCount(ist, player, hand, getPearlCount(ist) - getEnderStaffPearlCost());
 				}

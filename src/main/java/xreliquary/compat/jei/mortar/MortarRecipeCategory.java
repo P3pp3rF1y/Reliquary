@@ -5,9 +5,6 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeCategory;
-import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xreliquary.init.ModBlocks;
@@ -25,9 +22,7 @@ public class MortarRecipeCategory extends BlankRecipeCategory<MortarRecipeJEI> {
 	private static final int OUTPUT_SLOT = 3;
 	private static final int MORTAR_SLOT = 4;
 
-	@Nonnull
 	private final IDrawable background;
-	@Nonnull
 	private final String localizedName;
 
 	public MortarRecipeCategory(IGuiHelper guiHelper) {
@@ -54,7 +49,7 @@ public class MortarRecipeCategory extends BlankRecipeCategory<MortarRecipeJEI> {
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, MortarRecipeJEI recipeWrapper, IIngredients ingredients) {
+	public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull MortarRecipeJEI recipeWrapper, @Nonnull IIngredients ingredients) {
 		recipeLayout.getItemStacks().init(INPUT_SLOT_1, true, 0, 0);
 		recipeLayout.getItemStacks().init(INPUT_SLOT_2, true, 17, 0);
 		recipeLayout.getItemStacks().init(INPUT_SLOT_3, true, 33, 0);
@@ -62,7 +57,7 @@ public class MortarRecipeCategory extends BlankRecipeCategory<MortarRecipeJEI> {
 		recipeLayout.getItemStacks().init(MORTAR_SLOT, false, 16, 34);
 
 		List<List<ItemStack>> ingredientsInputs = ingredients.getInputs(ItemStack.class);
-		ItemStack output = ingredients.getOutputs(ItemStack.class).get(0);
+		ItemStack output = ingredients.getOutputs(ItemStack.class).get(0).get(0);
 
 		recipeLayout.getItemStacks().set(INPUT_SLOT_1, ingredientsInputs.get(0));
 		recipeLayout.getItemStacks().set(INPUT_SLOT_2, ingredientsInputs.get(1));

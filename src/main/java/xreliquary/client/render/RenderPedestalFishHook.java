@@ -80,9 +80,9 @@ public class RenderPedestalFishHook implements IPedestalItemRenderer {
 	}
 
 	public static class HookRenderingData {
-		public final double hookX;
-		public final double hookY;
-		public final double hookZ;
+		final double hookX;
+		final double hookY;
+		final double hookZ;
 
 		public HookRenderingData(double hookX, double hookY, double hookZ) {
 

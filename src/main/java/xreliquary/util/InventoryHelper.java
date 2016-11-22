@@ -39,7 +39,7 @@ public class InventoryHelper {
 			entityitem.motionX = rnd.nextGaussian() * (double) f3;
 			entityitem.motionY = rnd.nextGaussian() * (double) f3 + 0.20000000298023224D;
 			entityitem.motionZ = rnd.nextGaussian() * (double) f3;
-			worldIn.spawnEntityInWorld(entityitem);
+			worldIn.spawnEntity(entityitem);
 		}
 	}
 
@@ -267,7 +267,7 @@ public class InventoryHelper {
 					return;
 				inventory.markDirty();
 				EntityItem itemEntity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, stack);
-				worldObj.spawnEntityInWorld(itemEntity);
+				worldObj.spawnEntity(itemEntity);
 				break;
 			}
 		}

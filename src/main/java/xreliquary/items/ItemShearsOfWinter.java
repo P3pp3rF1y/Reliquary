@@ -271,7 +271,7 @@ public class ItemShearsOfWinter extends ItemShears {
 							double d2 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
 							EntityItem entityitem = new EntityItem(player.worldObj, (double) x + d, (double) y + d1, (double) z + d2, stack);
 							entityitem.setPickupDelay(10);
-							player.worldObj.spawnEntityInWorld(entityitem);
+							player.worldObj.spawnEntity(entityitem);
 						}
 
 						player.worldObj.setBlockState(new BlockPos(x, y, z), Blocks.AIR.getDefaultState());

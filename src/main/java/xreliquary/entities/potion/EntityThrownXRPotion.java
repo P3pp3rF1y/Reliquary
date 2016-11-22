@@ -23,13 +23,13 @@ import xreliquary.network.PacketFXThrownPotionImpact;
 import xreliquary.network.PacketHandler;
 import xreliquary.util.potions.PotionEssence;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by Xeno on 11/9/2014.
- */
 public class EntityThrownXRPotion extends EntityThrowable implements IEntityAdditionalSpawnData {
+
+	@SuppressWarnings("unused")
 	public EntityThrownXRPotion(World world) {
 		super(world);
 	}
@@ -68,10 +68,11 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	/**
 	 * Called when this EntityThrowable hits a block or entity.
 	 */
-	protected void onImpact(RayTraceResult result) {
-		if(!this.worldObj.isRemote) {
+	@Override
+	protected void onImpact(@Nonnull RayTraceResult result) {
+		if(!this.world.isRemote) {
 			if (this.lingering) {
-				EntityAreaEffectCloud entityareaeffectcloud = new EntityAreaEffectCloud(this.worldObj, this.posX, this.posY, this.posZ);
+				EntityAreaEffectCloud entityareaeffectcloud = new EntityAreaEffectCloud(this.world, this.posX, this.posY, this.posZ);
 				entityareaeffectcloud.setOwner(this.getThrower());
 				entityareaeffectcloud.setRadius(3.0F);
 				entityareaeffectcloud.setRadiusOnUse(-0.5F);
@@ -84,13 +85,13 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 					entityareaeffectcloud.addEffect(new PotionEffect(potioneffect.getPotion(), potioneffect.getDuration(), potioneffect.getAmplifier()));
 				}
 
-				this.worldObj.spawnEntityInWorld(entityareaeffectcloud);
+				this.world.spawnEntity(entityareaeffectcloud);
 			} else {
 				List<PotionEffect> list = essence.getEffects();
 
 				if(list != null && !list.isEmpty()) {
 					AxisAlignedBB axisalignedbb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
-					List<EntityLivingBase> livingEntities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
+					List<EntityLivingBase> livingEntities = this.world.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
 					if(!livingEntities.isEmpty()) {
 
@@ -133,19 +134,20 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 
 	// most of these are the same in every potion, the only thing that isn't is
 	// the coloration of the particles.
-	protected void spawnParticles() {
-		if(worldObj.isRemote)
+	private void spawnParticles() {
+		if(world.isRemote)
 			return;
 
 		Random var7 = rand;
 		for(int var15 = 0; var15 < 8; ++var15) {
-			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.POTIONITEM));
+			world.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D, Item.getIdFromItem(Items.POTIONITEM));
 		}
 
-		worldObj.playSound(null, this.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		world.playSound(null, this.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
 		PacketHandler.networkWrapper.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), this.posX, this.posY, this.posZ), new NetworkRegistry.TargetPoint(this.dimension, this.posX, this.posY, this.posZ, 32.0D));
 	}
 
+	@Override
 	public void readEntityFromNBT(NBTTagCompound tag) {
 		super.readEntityFromNBT(tag);
 		this.essence = new PotionEssence(tag);
@@ -155,6 +157,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 			this.setDead();
 	}
 
+	@Override
 	public void writeEntityToNBT(NBTTagCompound tag) {
 		super.writeEntityToNBT(tag);
 		tag.setTag("potion", essence == null ? new NBTTagCompound() : essence.writeToNBT());
@@ -178,7 +181,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 		this.lingering = additionalData.readBoolean();
 	}
 
-	public void setRenderColor(int renderColor) {
+	private void setRenderColor(int renderColor) {
 		this.renderColor = renderColor;
 	}
 

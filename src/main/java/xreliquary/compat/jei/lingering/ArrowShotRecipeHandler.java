@@ -15,12 +15,6 @@ public class ArrowShotRecipeHandler implements IRecipeHandler<ArrowShotRecipeJEI
 
 	@Nonnull
 	@Override
-	public String getRecipeCategoryUid() {
-		return VanillaRecipeCategoryUid.CRAFTING;
-	}
-
-	@Nonnull
-	@Override
 	public String getRecipeCategoryUid(@Nonnull ArrowShotRecipeJEI recipe) {
 		return VanillaRecipeCategoryUid.CRAFTING;
 	}

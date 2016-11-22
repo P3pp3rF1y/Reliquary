@@ -9,31 +9,26 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
-public class MagazineRecipeJEI extends BlankRecipeWrapper implements ICraftingRecipeWrapper {
-	@Nonnull
-	private final List<ItemStack> inputs;
+class MagazineRecipeJEI extends BlankRecipeWrapper implements ICraftingRecipeWrapper {
 
-	@Nonnull
+	private final List<ItemStack> inputs;
 	private final ItemStack output;
 
-	@SuppressWarnings("unchecked")
-	public MagazineRecipeJEI(@Nonnull List<ItemStack> inputs, @Nonnull ItemStack output) {
+	MagazineRecipeJEI(@Nonnull List<ItemStack> inputs, @Nonnull ItemStack output) {
 		this.inputs = inputs;
 		this.output = output;
 	}
 
 	@Override
-	public void getIngredients(IIngredients ingredients) {
+	public void getIngredients(@Nonnull IIngredients ingredients) {
 		ingredients.setInputs(ItemStack.class, inputs);
 		ingredients.setOutput(ItemStack.class, output);
 	}
 
-	@Override
 	public List getInputs() {
 		return inputs;
 	}
 
-	@Override
 	public List getOutputs() {
 		return Collections.singletonList(output);
 	}

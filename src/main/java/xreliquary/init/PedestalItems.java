@@ -1,14 +1,13 @@
 package xreliquary.init;
 
-import WayofTime.bloodmagic.item.ItemDaggerOfSacrifice;
 import net.minecraft.block.BlockCompressedPowered;
 import net.minecraft.item.*;
 import net.minecraftforge.fml.common.Loader;
 import xreliquary.items.ItemHarvestRod;
 import xreliquary.items.ItemRendingGale;
+import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.pedestal.wrappers.*;
 import xreliquary.reference.Compatibility;
-import xreliquary.pedestal.*;
 
 public class PedestalItems {
 	public static void init() {
@@ -23,37 +22,21 @@ public class PedestalItems {
 		PedestalRegistry.registerItemWrapper(ItemFishingRod.class, PedestalFishingRodWrapper.class);
 
 		if(Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
-			if (classExists("slimeknights.tconstruct.tools.item.BroadSword")) {
-				try {
-					PedestalRegistry.registerItemWrapper((Class<? extends Item>) Class.forName("slimeknights.tconstruct.tools.item.Cleaver"), PedestalMeleeWeaponWrapper.class);
-					PedestalRegistry.registerItemWrapper((Class<? extends Item>) Class.forName("slimeknights.tconstruct.tools.item.BroadSword"), PedestalMeleeWeaponWrapper.class);
-				}
-				catch(ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-			} else if (classExists("slimeknights.tconstruct.library.tools.SwordCore")) {
-				try {
-					PedestalRegistry.registerItemWrapper((Class<? extends Item>) Class.forName("slimeknights.tconstruct.library.tools.SwordCore"), PedestalMeleeWeaponWrapper.class);
-				}
-				catch(ClassNotFoundException e) {
-					e.printStackTrace();
-				}
+			try {
+				//noinspection unchecked
+				PedestalRegistry.registerItemWrapper((Class<? extends Item>) Class.forName("slimeknights.tconstruct.library.tools.SwordCore"), PedestalMeleeWeaponWrapper.class);
 			}
-			//not implemented currently in TiCon
+			catch(ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			// TODO add in next iteration with tinkers
 			//PedestalRegistry.registerItemWrapper(BattleAxe.class, new PedestalMeleeWeaponWrapper());
 			//PedestalRegistry.registerItemWrapper(Scythe.class, new PedestalMeleeWeaponWrapper());
 		}
+/* TODO readd with blood magic
 		if (Loader.isModLoaded(Compatibility.MOD_ID.BLOOD_MAGIC)) {
 			PedestalRegistry.registerItemWrapper(ItemDaggerOfSacrifice.class, PedestalMeleeWeaponWrapper.class);
 		}
-	}
-
-	private static boolean classExists(String className) {
-		try  {
-			Class.forName(className);
-			return true;
-		}  catch (final ClassNotFoundException e) {
-			return false;
-		}
+*/
 	}
 }
