@@ -16,6 +16,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -33,12 +34,10 @@ import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by Xeno on 10/11/2014.
- */
 public class ItemShearsOfWinter extends ItemShears {
 	public ItemShearsOfWinter() {
 		this.setUnlocalizedName(Names.Items.SHEARS_OF_WINTER);
@@ -49,7 +48,7 @@ public class ItemShearsOfWinter extends ItemShears {
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState blockState, BlockPos pos, EntityLivingBase player) {
+	public boolean onBlockDestroyed(@Nonnull ItemStack stack, World world, IBlockState blockState, BlockPos pos, @Nonnull EntityLivingBase player) {
 		//noinspection SimplifiableIfStatement
 		if(blockState.getMaterial() != Material.LEAVES && blockState.getBlock() != Blocks.WEB && blockState.getBlock() != Blocks.TALLGRASS && blockState.getBlock() != Blocks.VINE && blockState.getBlock() != Blocks.TRIPWIRE && !(blockState.getBlock() instanceof IShearable)) {
 			return super.onBlockDestroyed(stack, world, blockState, pos, player);
@@ -73,15 +72,17 @@ public class ItemShearsOfWinter extends ItemShears {
 		return 2500;
 	}
 
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack ist) {
 		return EnumAction.BLOCK;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
 		player.setActiveHand(hand);
-		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
+		return new ActionResult<>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 
 	@Override
@@ -121,13 +122,14 @@ public class ItemShearsOfWinter extends ItemShears {
 			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", null, list);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
-	public String getItemStackDisplayName(ItemStack stack) {
+	public String getItemStackDisplayName(@Nonnull ItemStack stack) {
 		return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
 	}
 
-	public void doPositiveXCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
+	private void doPositiveXCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
 		boolean firedOnce = false;
 
 		for(int x = 0; x < (int) (lookVector.xCoord * 10D); x++) {
@@ -148,7 +150,7 @@ public class ItemShearsOfWinter extends ItemShears {
 		}
 	}
 
-	public void doNegativeXCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
+	private void doNegativeXCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
 		boolean firedOnce = false;
 
 		for(int x = 0; x > (int) (lookVector.xCoord * 10D); x--) {
@@ -169,7 +171,7 @@ public class ItemShearsOfWinter extends ItemShears {
 		}
 	}
 
-	public void doPositiveYCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x) {
+	private void doPositiveYCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x) {
 		boolean firedOnce = false;
 
 		for(int y = 0; y < (int) (lookVector.yCoord * 10D); y++) {
@@ -190,7 +192,7 @@ public class ItemShearsOfWinter extends ItemShears {
 		}
 	}
 
-	public void doNegativeYCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x) {
+	private void doNegativeYCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x) {
 		boolean firedOnce = false;
 
 		for(int y = 0; y > (int) (lookVector.yCoord * 10D); y--) {
@@ -211,7 +213,7 @@ public class ItemShearsOfWinter extends ItemShears {
 		}
 	}
 
-	public void doPositiveZCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x, int y) {
+	private void doPositiveZCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x, int y) {
 		boolean firedOnce = false;
 
 		for(int z = 0; z < (int) (lookVector.zCoord * 10D); z++) {
@@ -225,7 +227,7 @@ public class ItemShearsOfWinter extends ItemShears {
 		}
 	}
 
-	public void doNegativeZCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x, int y) {
+	private void doNegativeZCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x, int y) {
 		boolean firedOnce = false;
 
 		for(int z = 0; z > (int) (lookVector.zCoord * 10D); z--) {
@@ -239,7 +241,7 @@ public class ItemShearsOfWinter extends ItemShears {
 		}
 	}
 
-	public void checkAndBreakBlockAt(int x, int y, int z, EntityPlayer player, ItemStack ist) {
+	private void checkAndBreakBlockAt(int x, int y, int z, EntityPlayer player, ItemStack ist) {
 		x += (int) player.posX;
 		y += (int) (player.posY + player.getEyeHeight());
 		z += (int) player.posZ;
@@ -260,7 +262,7 @@ public class ItemShearsOfWinter extends ItemShears {
 					Random rand = new Random();
 
 					if(player.world.isRemote) {
-						if(block.getMaterial(blockState) != Material.AIR)
+						if(blockState.getMaterial() != Material.AIR)
 							player.world.playEvent(player, 2001, new BlockPos(x, y, z), Block.getStateId(player.world.getBlockState(new BlockPos(x, y, z))));
 
 					} else {
@@ -275,7 +277,10 @@ public class ItemShearsOfWinter extends ItemShears {
 						}
 
 						player.world.setBlockState(new BlockPos(x, y, z), Blocks.AIR.getDefaultState());
-						player.addStat(StatList.getBlockStats(block));
+						StatBase stats = StatList.getBlockStats(block);
+						if(stats != null) {
+							player.addStat(stats);
+						}
 						player.addExhaustion(0.01F);
 					}
 				}
@@ -283,7 +288,7 @@ public class ItemShearsOfWinter extends ItemShears {
 		}
 	}
 
-	public void doEntityShearableCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
+	private void doEntityShearableCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
 		if(player.world.isRemote)
 			return;
 		double lowerX = Math.min(player.posX, player.posX + lookVector.xCoord * 10D);
@@ -308,6 +313,7 @@ public class ItemShearsOfWinter extends ItemShears {
 					Random rand = new Random();
 					for(ItemStack stack : drops) {
 						EntityItem ent = e.entityDropItem(stack, 1.0F);
+						//noinspection ConstantConditions
 						ent.motionY += rand.nextFloat() * 0.05F;
 						ent.motionX += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
 						ent.motionZ += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
@@ -319,14 +325,14 @@ public class ItemShearsOfWinter extends ItemShears {
 		}
 	}
 
-	public void spawnBlizzardParticles(Vec3d lookVector, EntityPlayer player) {
+	private void spawnBlizzardParticles(Vec3d lookVector, EntityPlayer player) {
 		//spawn a whole mess of particles every tick.
 		for(int i = 0; i < 16; ++i) {
 			float randX = 10F * (player.world.rand.nextFloat() - 0.5F);
 			float randY = 10F * (player.world.rand.nextFloat() - 0.5F);
 			float randZ = 10F * (player.world.rand.nextFloat() - 0.5F);
 
-			player.world.spawnParticle(EnumParticleTypes.BLOCK_DUST, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5, Block.getStateId(Blocks.SNOW_LAYER.getStateFromMeta(0)));
+			player.world.spawnParticle(EnumParticleTypes.BLOCK_DUST, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
 
 		}
 

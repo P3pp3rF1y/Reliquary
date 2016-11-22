@@ -14,6 +14,8 @@ import xreliquary.Reliquary;
 import xreliquary.entities.EntityKrakenSlime;
 import xreliquary.reference.Names;
 
+import javax.annotation.Nonnull;
+
 public class ItemSerpentStaff extends ItemBase {
 
 	public ItemSerpentStaff() {
@@ -36,6 +38,7 @@ public class ItemSerpentStaff extends ItemBase {
 		return true;
 	}
 
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack par1ItemStack) {
 		return EnumAction.BLOCK;
@@ -72,10 +75,11 @@ public class ItemSerpentStaff extends ItemBase {
 		return 11;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
 		player.setActiveHand(hand);
-		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+		return new ActionResult<>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 
 }

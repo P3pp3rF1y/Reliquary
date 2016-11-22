@@ -21,6 +21,7 @@ import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemSalamanderEye extends ItemBase {
@@ -33,6 +34,7 @@ public class ItemSalamanderEye extends ItemBase {
 		canRepair = false;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -51,7 +53,7 @@ public class ItemSalamanderEye extends ItemBase {
 			return;
 		EntityPlayer player = (EntityPlayer) e;
 
-		if((player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == ModItems.salamanderEye) || (player.getHeldItem(EnumHand.OFF_HAND) != null && player.getHeldItem(EnumHand.OFF_HAND).getItem() == ModItems.salamanderEye)) {
+		if(player.getHeldItem(EnumHand.MAIN_HAND).getItem() == ModItems.salamanderEye || player.getHeldItem(EnumHand.OFF_HAND).getItem() == ModItems.salamanderEye) {
 			doFireballEffect(player);
 			doExtinguishEffect(player);
 		}

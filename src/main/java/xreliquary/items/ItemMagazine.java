@@ -33,6 +33,7 @@ public class ItemMagazine extends ItemBase {
 		this.setHasSubtypes(true);
 		this.addPropertyOverride(new ResourceLocation("empty"), new IItemPropertyGetter() {
 
+			@Override
 			@SideOnly(Side.CLIENT)
 			public float apply(@Nonnull ItemStack stack, World worldIn, EntityLivingBase entityIn) {
 				return stack.getMetadata() == 0 ? 1 : 0;
@@ -40,6 +41,7 @@ public class ItemMagazine extends ItemBase {
 		});
 		this.addPropertyOverride(new ResourceLocation("potion"), new IItemPropertyGetter() {
 
+			@Override
 			@SideOnly(Side.CLIENT)
 			public float apply(@Nonnull ItemStack stack, World worldIn, EntityLivingBase entityIn) {
 				return ModItems.magazine.isPotionAttached(stack) ? 1 : 0;

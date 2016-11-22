@@ -3,10 +3,12 @@ package xreliquary.items;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -22,14 +24,15 @@ public class ItemMobCharmFragment extends ItemBase {
 		canRepair = false;
 	}
 
+	@Nonnull
 	@Override
-	public String getUnlocalizedName(ItemStack ist) {
-		return "item.mob_charm_fragment_" + ist.getItemDamage();
+	public String getUnlocalizedName(ItemStack stack) {
+		return "item.mob_charm_fragment_" + stack.getItemDamage();
 	}
 
 	@Override
-	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {
+	public void getSubItems(@Nonnull Item item, CreativeTabs creativeTab, NonNullList<ItemStack> list) {
 		for(int i = 0; i < Reference.MOB_CHARM.COUNT_TYPES; i++)
-			par3List.add(new ItemStack(par1, 1, i));
+			list.add(new ItemStack(item, 1, i));
 	}
 }

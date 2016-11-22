@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,6 +31,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 		canRepair = false;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -84,11 +87,10 @@ public class ItemSojournerStaff extends ItemToggleable {
 		ItemStack vanillaTorch = new ItemStack(Blocks.TORCH, 1, 0);
 		items.add(vanillaTorch);
 
+		//TODO fix the check
 		torches.stream().filter(torch -> !items.contains(RegistryHelper.getItemFromName(torch))).forEach(torch -> items.add(new ItemStack(RegistryHelper.getItemFromName(torch))));
 
-		items.stream().filter(item -> !isInternalStorageFullOfItem(ist, item.getItem()) && InventoryHelper.consumeItem(item, player)).forEach(item -> {
-			addItemToInternalStorage(ist, item.getItem());
-		});
+		items.stream().filter(item -> !isInternalStorageFullOfItem(ist, item.getItem()) && InventoryHelper.consumeItem(item, player)).forEach(item -> addItemToInternalStorage(ist, item.getItem()));
 	}
 
 	private void addItemToInternalStorage(ItemStack ist, Item item) {
@@ -97,8 +99,6 @@ public class ItemSojournerStaff extends ItemToggleable {
 			tagCompound = new NBTTagCompound();
 		}
 
-		if(tagCompound.getTag("Items") == null)
-			tagCompound.setTag("Items", new NBTTagList());
 		NBTTagList tagList = tagCompound.getTagList("Items", 10);
 
 		boolean added = false;
@@ -163,6 +163,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 		return false;
 	}
 
+	//TODO refactor these as they seem needlessly complicated
 	public String getTorchPlacementMode(ItemStack ist) {
 		if(NBTHelper.getTag(ist) == null) {
 			return null;
@@ -173,17 +174,16 @@ public class ItemSojournerStaff extends ItemToggleable {
 
 		NBTTagList tagList = tagCompound.getTagList("Items", 10);
 
-		if(torchToPlace != null) {
-			for(int i = 0; i < tagList.tagCount(); ++i) {
-				NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
-				String itemName = tagItemData.getString("Name");
-				if(itemName.equals(torchToPlace)) {
-					int quantity = tagItemData.getInteger("Quantity");
-					if(quantity <= 0)
-						torchToPlace = null;
-				}
+		for(int i = 0; i < tagList.tagCount(); ++i) {
+			NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
+			String itemName = tagItemData.getString("Name");
+			if(itemName.equals(torchToPlace)) {
+				int quantity = tagItemData.getInteger("Quantity");
+				if(quantity <= 0)
+					torchToPlace = null;
 			}
 		}
+
 		if(torchToPlace == null || torchToPlace.isEmpty()) {
 			for(int i = 0; i < tagList.tagCount(); ++i) {
 				NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
@@ -209,17 +209,15 @@ public class ItemSojournerStaff extends ItemToggleable {
 
 		NBTTagList tagList = tagCompound.getTagList("Items", 10);
 
-		if(torchToPlace != null) {
-			for(int i = 0; i < tagList.tagCount(); ++i) {
-				NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
-				String itemName = tagItemData.getString("Name");
-				if(itemName.equals(torchToPlace)) {
-					int quantity = tagItemData.getInteger("Quantity");
-					if(quantity <= 0)
-						torchToPlace = null;
-					else
-						return quantity;
-				}
+		for(int i = 0; i < tagList.tagCount(); ++i) {
+			NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
+			String itemName = tagItemData.getString("Name");
+			if(itemName.equals(torchToPlace)) {
+				int quantity = tagItemData.getInteger("Quantity");
+				if(quantity <= 0)
+					torchToPlace = null;
+				else
+					return quantity;
 			}
 		}
 		if(torchToPlace == null || torchToPlace.isEmpty()) {
@@ -333,20 +331,22 @@ public class ItemSojournerStaff extends ItemToggleable {
 		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}
 
+	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float xOff, float yOff, float zOff) {
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float xOff, float yOff, float zOff) {
+		ItemStack stack = player.getHeldItem(hand);
 		if(player.isSwingInProgress)
 			return EnumActionResult.PASS;
 		player.swingArm(hand);
 		if(world.isRemote)
 			return EnumActionResult.SUCCESS;
-		if(!player.canPlayerEdit(pos, side, ist))
+		if(!player.canPlayerEdit(pos, side, stack))
 			return EnumActionResult.PASS;
 		if(player.isSneaking())
 			return EnumActionResult.PASS;
-		if(getTorchPlacementMode(ist) == null)
+		if(getTorchPlacementMode(stack) == null)
 			return EnumActionResult.FAIL;
-		Block blockAttemptingPlacement = Block.getBlockFromName(getTorchPlacementMode(ist));
+		Block blockAttemptingPlacement = Block.getBlockFromName(getTorchPlacementMode(stack));
 		if(blockAttemptingPlacement == null)
 			return EnumActionResult.FAIL;
 
@@ -355,39 +355,40 @@ public class ItemSojournerStaff extends ItemToggleable {
 
 		if(RegistryHelper.blocksEqual(blockTargetted, Blocks.SNOW)) {
 			side = EnumFacing.UP;
-		} else if(!RegistryHelper.blocksEqual(blockTargetted, Blocks.VINE) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.TALLGRASS) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.DEADBUSH) && (blockTargetted == null || !blockTargetted.isReplaceable(world, pos))) {
+		} else if(!RegistryHelper.blocksEqual(blockTargetted, Blocks.VINE) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.TALLGRASS) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.DEADBUSH) && !blockTargetted.isReplaceable(world, pos)) {
 			placeBlockAt = pos.offset(side);
 		}
 
 		if(blockAttemptingPlacement.canPlaceBlockAt(world, placeBlockAt)) {
-			if(world.canBlockBePlaced(blockAttemptingPlacement, placeBlockAt, false, side, player, ist)) {
+			if(world.mayPlace(blockAttemptingPlacement, placeBlockAt, false, side, player)) {
 				if(!player.capabilities.isCreativeMode) {
 					int cost = 1;
 					int distance = (int) player.getDistance(placeBlockAt.getX(), placeBlockAt.getY(), placeBlockAt.getZ());
 					for(; distance > Settings.SojournerStaff.tilePerCostMultiplier; distance -= Settings.SojournerStaff.tilePerCostMultiplier) {
 						cost++;
 					}
-					if(!removeItemFromInternalStorage(ist, Item.getItemFromBlock(blockAttemptingPlacement), cost, player))
+					if(!removeItemFromInternalStorage(stack, Item.getItemFromBlock(blockAttemptingPlacement), cost, player))
 						return EnumActionResult.FAIL;
 				}
-				IBlockState torchBlockState = attemptSide(world, placeBlockAt, side, blockAttemptingPlacement, player);
-				if(placeBlockAt(ist, player, world, placeBlockAt, torchBlockState)) {
+				IBlockState torchBlockState = attemptSide(world, placeBlockAt, side, blockAttemptingPlacement, player, hand);
+				if(placeBlockAt(stack, player, world, placeBlockAt, torchBlockState)) {
 					blockAttemptingPlacement.onBlockAdded(world, placeBlockAt, torchBlockState);
 					double gauss = 0.5D + world.rand.nextFloat() / 2;
 					world.spawnParticle(EnumParticleTypes.SPELL_MOB, placeBlockAt.getX() + 0.5D, placeBlockAt.getY() + 0.5D, placeBlockAt.getZ() + 0.5D, gauss, gauss, 0.0F);
-					world.playSound(null, placeBlockAt, blockAttemptingPlacement.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (blockAttemptingPlacement.getSoundType().getVolume() + 1.0F) / 2.0F, blockAttemptingPlacement.getSoundType().getPitch() * 0.8F);
+					SoundType soundType = blockAttemptingPlacement.getSoundType(torchBlockState, world, placeBlockAt, player);
+					world.playSound(null, placeBlockAt, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
 				}
 			}
 		}
 		return EnumActionResult.SUCCESS;
 	}
 
-	private IBlockState attemptSide(World world, BlockPos pos, EnumFacing side, Block block, EntityPlayer player) {
-		return block.onBlockPlaced(world, pos, side, pos.getX(), pos.getY(), pos.getZ(), 0, player);
+	private IBlockState attemptSide(World world, BlockPos pos, EnumFacing side, Block block, EntityPlayer player, EnumHand hand) {
+		return block.getStateForPlacement(world, pos, side, pos.getX(), pos.getY(), pos.getZ(), 0, player, hand);
 	}
 
 	//a longer ranged version of "getMovingObjectPositionFromPlayer" basically
-	public RayTraceResult getBlockTarget(World world, EntityPlayer player) {
+	private RayTraceResult getBlockTarget(World world, EntityPlayer player) {
 		float f = 1.0F;
 		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
 		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
@@ -422,8 +423,9 @@ public class ItemSojournerStaff extends ItemToggleable {
 	}
 
 	//I named the vars in this method weird crap cos I have no idea what they do. This was stolen from the bucket code, I think.
+	@Nonnull
 	@Override
-	protected RayTraceResult rayTrace(World world, EntityPlayer player, boolean weirdBucketBoolean) {
+	protected RayTraceResult rayTrace(World world, EntityPlayer player, boolean useLiquids) {
 		float movementCoefficient = 1.0F;
 		float pitchOff = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * movementCoefficient;
 		float yawOff = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * movementCoefficient;
@@ -439,15 +441,16 @@ public class ItemSojournerStaff extends ItemToggleable {
 		float pythagoraStuff2 = cosTraceYaw * cosTracePitch;
 		double distCoeff = 32.0D;
 		Vec3d rayTraceVector = playerVector.addVector(pythagoraStuff * distCoeff, sinTracePitch * distCoeff, pythagoraStuff2 * distCoeff);
-		return world.rayTraceBlocks(playerVector, rayTraceVector, weirdBucketBoolean);
+		return world.rayTraceBlocks(playerVector, rayTraceVector, useLiquids);
 	}
 
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, IBlockState torchBlockState) {
+	private boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, IBlockState torchBlockState) {
 		if(!world.setBlockState(pos, torchBlockState, 3))
 			return false;
 
 		if(RegistryHelper.blocksEqual(torchBlockState.getBlock(), Blocks.TORCH)) {
-			Blocks.TORCH.neighborChanged(torchBlockState, world, pos, torchBlockState.getBlock());
+			//noinspection deprecation
+			Blocks.TORCH.neighborChanged(torchBlockState, world, pos, torchBlockState.getBlock(), pos);
 			Blocks.TORCH.onBlockPlacedBy(world, pos, torchBlockState, player, stack);
 		}
 

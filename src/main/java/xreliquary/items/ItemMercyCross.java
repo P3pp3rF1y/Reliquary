@@ -19,6 +19,7 @@ import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemMercyCross extends ItemSword {
@@ -32,12 +33,14 @@ public class ItemMercyCross extends ItemSword {
 		this.setUnlocalizedName(Names.Items.MERCY_CROSS);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
-	public String getItemStackDisplayName(ItemStack stack) {
+	public String getItemStackDisplayName(@Nonnull ItemStack stack) {
 		return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -69,13 +72,14 @@ public class ItemMercyCross extends ItemSword {
 		return blockState.getBlock() == Blocks.WEB ? 15.0F : 1.5F;
 	}
 
+	@Nonnull
 	@Override
 	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot) {
 		Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
 
 		if(equipmentSlot == EntityEquipmentSlot.MAINHAND) {
-			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) 6, 0));
-			multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, 0));
+			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) 6, 0));
+			multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, 0));
 		}
 
 		return multimap;
@@ -83,9 +87,11 @@ public class ItemMercyCross extends ItemSword {
 
 	public void updateAttackDamageModifier(EntityLivingBase target, EntityPlayer player) {
 		double dmg = isUndead(target) ? 12 : 6;
-		IAttributeInstance attackAttribute = player.getAttributeMap().getAttributeInstanceByName(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName());
+		IAttributeInstance attackAttribute = player.getAttributeMap().getAttributeInstanceByName(SharedMonsterAttributes.ATTACK_DAMAGE.getName());
 
-		if(attackAttribute.getModifier(ATTACK_DAMAGE_MODIFIER) == null || attackAttribute.getModifier(ATTACK_DAMAGE_MODIFIER).getAmount() != dmg) {
+		//noinspection ConstantConditions
+		if(attackAttribute != null &&
+				(attackAttribute.getModifier(ATTACK_DAMAGE_MODIFIER) == null || attackAttribute.getModifier(ATTACK_DAMAGE_MODIFIER).getAmount() != dmg)) {
 			attackAttribute.removeModifier(ATTACK_DAMAGE_MODIFIER);
 			attackAttribute.applyModifier(new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", dmg, 0));
 		}

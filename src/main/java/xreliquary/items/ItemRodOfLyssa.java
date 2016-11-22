@@ -13,9 +13,8 @@ import xreliquary.Reliquary;
 import xreliquary.entities.EntityLyssaHook;
 import xreliquary.reference.Names;
 
-/**
- * Created by Xeno on 10/11/2014.
- */
+import javax.annotation.Nonnull;
+
 public class ItemRodOfLyssa extends ItemBase {
 	public ItemRodOfLyssa() {
 		super(Names.Items.ROD_OF_LYSSA);
@@ -24,8 +23,9 @@ public class ItemRodOfLyssa extends ItemBase {
 		this.setMaxStackSize(1);
 		canRepair = false;
 		this.addPropertyOverride(new ResourceLocation("cast"), new IItemPropertyGetter() {
+			@Override
 			@SideOnly(Side.CLIENT)
-			public float apply(ItemStack stack, World worldIn, EntityLivingBase entityIn) {
+			public float apply(@Nonnull ItemStack stack, World worldIn, EntityLivingBase entityIn) {
 				return entityIn == null ? 0.0F : (entityIn.getHeldItemMainhand() == stack && entityIn instanceof EntityPlayer && ((EntityPlayer) entityIn).fishEntity != null ? 1.0F : 0.0F);
 			}
 		});
@@ -35,6 +35,7 @@ public class ItemRodOfLyssa extends ItemBase {
 	 * Returns true if this item should be rotated by 180 degrees around the Y axis when being held in an entities
 	 * hands.
 	 */
+	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean shouldRotateAroundWhenRendering() {
 		return true;

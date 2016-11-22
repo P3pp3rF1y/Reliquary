@@ -29,12 +29,10 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Xeno on 10/11/2014.
- */
 public class ItemPyromancerStaff extends ItemToggleable {
 	public ItemPyromancerStaff() {
 		super(Names.Items.PYROMANCER_STAFF);
@@ -92,6 +90,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		return 11;
 	}
 
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack ist) {
 		return EnumAction.BLOCK;
@@ -104,11 +103,11 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		return NBTHelper.getString("mode", ist);
 	}
 
-	public void setMode(ItemStack ist, String s) {
+	private void setMode(ItemStack ist, String s) {
 		NBTHelper.setString("mode", ist, s);
 	}
 
-	public void cycleMode(ItemStack ist) {
+	private void cycleMode(ItemStack ist) {
 		if(getMode(ist).equals("blaze"))
 			setMode(ist, "charge");
 		else if(getMode(ist).equals("charge"))
@@ -181,7 +180,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 	}
 
 	//a longer ranged version of "getMovingObjectPositionFromPlayer" basically
-	public RayTraceResult getEruptionBlockTarget(World world, EntityPlayer player) {
+	private RayTraceResult getEruptionBlockTarget(World world, EntityPlayer player) {
 		float f = 1.0F;
 		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
 		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
@@ -225,8 +224,10 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		}
 	}
 
+	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float hitX, float hitY, float hitZ) {
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float hitX, float hitY, float hitZ) {
+		ItemStack stack = player.getHeldItem(hand);
 		if(getMode(stack).equals("flint_and_steel")) {
 			BlockPos placeFireAt = pos.offset(sideHit);
 			if(!player.canPlayerEdit(placeFireAt, sideHit, stack)) {
@@ -242,7 +243,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		return EnumActionResult.PASS;
 	}
 
-	public void doEruptionAuxEffects(EntityPlayer player, int soundX, int soundY, int soundZ) {
+	private void doEruptionAuxEffects(EntityPlayer player, int soundX, int soundY, int soundZ) {
 		player.world.playSound((double) soundX + 0.5D, (double) soundY + 0.5D, (double) soundZ + 0.5D, SoundEvents.ENTITY_GHAST_SHOOT, SoundCategory.NEUTRAL, 0.2F, 0.03F + (0.07F * itemRand.nextFloat()), false);
 
 		for(int particleCount = 0; particleCount < 2; ++particleCount) {
@@ -275,40 +276,33 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		}
 	}
 
-	public void doEruptionEffect(EntityPlayer player, int x, int y, int z) {
+	private void doEruptionEffect(EntityPlayer player, int x, int y, int z) {
 		double lowerX = x - 5D + 0.5D;
 		double lowerZ = z - 5D + 0.5D;
 		double upperX = x + 5D + 0.5D;
 		double upperY = y + 5D;
 		double upperZ = z + 5D + 0.5D;
-		List<EntityLiving> eList = player.world.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, y, lowerZ, upperX, upperY, upperZ));
+		List<EntityLiving> entities = player.world.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, y, lowerZ, upperX, upperY, upperZ));
 
-		for(EntityLiving e : eList) {
-			if(!e.isEntityEqual(player)) {
-				e.setFire(40);
-				if(!e.isImmuneToFire())
-					e.attackEntityFrom(DamageSource.causePlayerDamage(player), 4F);
-			}
-		}
+		entities.stream().filter(e -> !e.isEntityEqual(player)).forEach(e -> {
+			e.setFire(40);
+			if(!e.isImmuneToFire())
+				e.attackEntityFrom(DamageSource.causePlayerDamage(player), 4F);
+		});
 	}
 
-	private void scanForFireChargeAndBlazePowder(ItemStack ist, EntityPlayer player) {
+	private void scanForFireChargeAndBlazePowder(ItemStack staff, EntityPlayer player) {
 		List<ItemStack> absorbItems = new ArrayList<>();
 		absorbItems.add(new ItemStack(Items.FIRE_CHARGE));
 		absorbItems.add(new ItemStack(Items.BLAZE_POWDER));
-		for(ItemStack absorbItem : absorbItems) {
-			if(!isInternalStorageFullOfItem(ist, absorbItem.getItem()) && InventoryHelper.consumeItem(absorbItem, player)) {
-				addItemToInternalStorage(ist, absorbItem.getItem(), false);
-			}
-		}
+		absorbItems.stream().filter(absorbItem -> !isInternalStorageFullOfItem(staff, absorbItem.getItem()) && InventoryHelper.consumeItem(absorbItem, player))
+				.forEach(absorbItem -> addItemToInternalStorage(staff, absorbItem.getItem(), false));
 	}
 
 	private void addItemToInternalStorage(ItemStack ist, Item item, boolean isAbsorb) {
 		int quantityIncrease = item == Items.FIRE_CHARGE ? (isAbsorb ? getGhastAbsorbWorth() : getFireChargeWorth()) : (isAbsorb ? getBlazeAbsorbWorth() : getBlazePowderWorth());
 		NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 
-		if(tagCompound.getTag("Items") == null)
-			tagCompound.setTag("Items", new NBTTagList());
 		NBTTagList tagList = tagCompound.getTagList("Items", 10);
 
 		boolean added = false;
@@ -333,7 +327,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		NBTHelper.setTag(ist, tagCompound);
 	}
 
-	public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, boolean simulate, EntityPlayer player) {
+	private boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, boolean simulate, EntityPlayer player) {
 		if(player.capabilities.isCreativeMode)
 			return true;
 		if(hasItemInInternalStorage(ist, item, cost)) {

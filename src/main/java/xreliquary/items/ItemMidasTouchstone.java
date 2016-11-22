@@ -18,6 +18,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemMidasTouchstone extends ItemToggleable {
@@ -39,6 +40,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -73,60 +75,54 @@ public class ItemMidasTouchstone extends ItemToggleable {
 		//list of customizable items added through configs that can be repaired by the touchstone.
 		List<String> goldItems = Settings.MidasTouchstone.goldItems;
 
-		for(int slot = 0; slot < player.inventory.armorInventory.length; slot++) {
-			if(player.inventory.armorInventory[slot] == null) {
-				continue;
-			}
-			if(!(player.inventory.armorInventory[slot].getItem() instanceof ItemArmor)) {
-				continue;
-			}
-			ItemArmor armor = (ItemArmor) player.inventory.armorInventory[slot].getItem();
+		for(int slot = 0; slot < player.inventory.armorInventory.size(); slot++) {
+			ItemStack armorStack = player.inventory.armorInventory.get(slot);
+			ItemArmor armor = (ItemArmor) armorStack.getItem();
 			if(armor.getArmorMaterial() != ItemArmor.ArmorMaterial.GOLD && !goldItems.contains(RegistryHelper.getItemRegistryName(armor))) {
 				continue;
 			}
-			if(player.inventory.armorInventory[slot].getItemDamage() <= 0) {
+			if(armorStack.getItemDamage() <= 0) {
 				continue;
 			}
 			if(decrementTouchStoneCharge(ist, player)) {
-				player.inventory.armorInventory[slot].setItemDamage(player.inventory.armorInventory[slot].getItemDamage() - 1);
+				armorStack.setItemDamage(armorStack.getItemDamage() - 1);
 			}
 		}
-		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-			if(player.inventory.mainInventory[slot] == null) {
-				continue;
-			}
-			if(player.inventory.mainInventory[slot].getItem() instanceof ItemSword) {
-				ItemSword sword = (ItemSword) player.inventory.mainInventory[slot].getItem();
+		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
+			ItemStack stack = player.inventory.mainInventory.get(slot);
+			Item item = stack.getItem();
+
+			if(item instanceof ItemSword) {
+				ItemSword sword = (ItemSword) item;
 				if(!ItemSword.ToolMaterial.GOLD.name().equals(sword.getToolMaterialName()) && !goldItems.contains(RegistryHelper.getItemRegistryName(sword))) {
 					continue;
 				}
-				if(player.inventory.mainInventory[slot].getItemDamage() <= 0) {
+				if(stack.getItemDamage() <= 0) {
 					continue;
 				}
 				if(decrementTouchStoneCharge(ist, player)) {
-					player.inventory.mainInventory[slot].setItemDamage(player.inventory.mainInventory[slot].getItemDamage() - 1);
+					stack.setItemDamage(stack.getItemDamage() - 1);
 				}
-			} else if(player.inventory.mainInventory[slot].getItem() instanceof ItemTool) {
-				ItemTool tool = (ItemTool) player.inventory.mainInventory[slot].getItem();
+			} else if(item instanceof ItemTool) {
+				ItemTool tool = (ItemTool) item;
 				if(!ItemSword.ToolMaterial.GOLD.name().equals(tool.getToolMaterialName()) && !goldItems.contains(RegistryHelper.getItemRegistryName(tool))) {
 					continue;
 				}
-				if(player.inventory.mainInventory[slot].getItemDamage() <= 0) {
+				if(stack.getItemDamage() <= 0) {
 					continue;
 				}
 				if(decrementTouchStoneCharge(ist, player)) {
-					player.inventory.mainInventory[slot].setItemDamage(player.inventory.mainInventory[slot].getItemDamage() - 1);
+					stack.setItemDamage(stack.getItemDamage() - 1);
 				}
 			} else {
-				Item item = player.inventory.mainInventory[slot].getItem();
 				if(!goldItems.contains(RegistryHelper.getItemRegistryName(item))) {
 					continue;
 				}
-				if(player.inventory.mainInventory[slot].getItemDamage() <= 0 || !item.isDamageable()) {
+				if(stack.getItemDamage() <= 0 || !item.isDamageable()) {
 					continue;
 				}
 				if(decrementTouchStoneCharge(ist, player)) {
-					player.inventory.mainInventory[slot].setItemDamage(player.inventory.mainInventory[slot].getItemDamage() - 1);
+					stack.setItemDamage(stack.getItemDamage() - 1);
 				}
 			}
 		}
