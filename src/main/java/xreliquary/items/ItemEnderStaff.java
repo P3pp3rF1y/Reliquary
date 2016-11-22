@@ -38,6 +38,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemEnderStaff extends ItemToggleable {
@@ -49,6 +50,7 @@ public class ItemEnderStaff extends ItemToggleable {
 		canRepair = false;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -82,11 +84,11 @@ public class ItemEnderStaff extends ItemToggleable {
 		return NBTHelper.getString("mode", ist);
 	}
 
-	public void setMode(ItemStack ist, String s) {
+	private void setMode(ItemStack ist, String s) {
 		NBTHelper.setString("mode", ist, s);
 	}
 
-	public void cycleMode(ItemStack ist) {
+	private void cycleMode(ItemStack ist) {
 		if(getMode(ist).equals("cast"))
 			setMode(ist, "long_cast");
 		else if(getMode(ist).equals("long_cast"))
@@ -97,7 +99,7 @@ public class ItemEnderStaff extends ItemToggleable {
 
 	@Override
 	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
-		if(entityLiving.worldObj.isRemote)
+		if(entityLiving.world.isRemote)
 			return true;
 		if(!(entityLiving instanceof EntityPlayer))
 			return true;
@@ -139,9 +141,9 @@ public class ItemEnderStaff extends ItemToggleable {
 		if(player == null)
 			return;
 
-		if(player.inventory.getStackInSlot(slotNumber) != null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.enderStaff && isSelected) {
+		if(player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.enderStaff && isSelected) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
-		} else if(player.inventory.offHandInventory[0] != null && player.inventory.offHandInventory[0].getItem() == ModItems.enderStaff) {
+		} else if(player.getHeldItemOffhand().getItem() == ModItems.enderStaff) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 		}
 
@@ -154,17 +156,17 @@ public class ItemEnderStaff extends ItemToggleable {
 		}
 	}
 
-	private void setPearlCount(ItemStack ist, EntityPlayer player, EnumHand hand, int count) {
+	private void setPearlCount(@Nonnull ItemStack ist, EntityPlayer player, EnumHand hand, int count) {
 		setPearlCount(ist, count);
 		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(hand, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 	}
 
-	private void setPearlCount(ItemStack ist, EntityPlayer player, int slotNumber, int count) {
+	private void setPearlCount(@Nonnull ItemStack ist, EntityPlayer player, int slotNumber, int count) {
 		setPearlCount(ist, count);
 		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 	}
 
-	private void setPearlCount(ItemStack ist, int count) {
+	private void setPearlCount(@Nonnull ItemStack ist, int count) {
 		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -176,7 +178,7 @@ public class ItemEnderStaff extends ItemToggleable {
 
 	}
 
-	private NBTTagCompound getItemHandlerNBT(ItemStack ist) {
+	private NBTTagCompound getItemHandlerNBT(@Nonnull ItemStack ist) {
 		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -187,7 +189,7 @@ public class ItemEnderStaff extends ItemToggleable {
 		return filteredHandler.serializeNBT();
 	}
 
-	public int getPearlCount(ItemStack ist) {
+	public int getPearlCount(@Nonnull ItemStack ist) {
 		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -199,20 +201,21 @@ public class ItemEnderStaff extends ItemToggleable {
 	}
 
 	@Override
-	public void onUsingTick(ItemStack ist, EntityLivingBase entityLivingBase, int unadjustedCount) {
+	public void onUsingTick(ItemStack stack, EntityLivingBase entityLivingBase, int unadjustedCount) {
 		if(!(entityLivingBase instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) entityLivingBase;
 
 		for(int particles = 0; particles < 2; particles++) {
-			player.worldObj.spawnParticle(EnumParticleTypes.PORTAL, player.posX, player.posY, player.posZ, player.worldObj.rand.nextGaussian(), player.worldObj.rand.nextGaussian(), player.worldObj.rand.nextGaussian());
+			player.world.spawnParticle(EnumParticleTypes.PORTAL, player.posX, player.posY, player.posZ, player.world.rand.nextGaussian(), player.world.rand.nextGaussian(), player.world.rand.nextGaussian());
 		}
 		if(unadjustedCount == 1) {
 			player.stopActiveHand();
 		}
 	}
 
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack ist) {
 		return EnumAction.BLOCK;
@@ -231,7 +234,7 @@ public class ItemEnderStaff extends ItemToggleable {
 		EntityPlayer player = (EntityPlayer) entityLiving;
 
 		if(timeLeft == 1) {
-			doWraithNodeWarpCheck(stack, player.worldObj, player);
+			doWraithNodeWarpCheck(stack, player.world, player);
 		}
 	}
 
@@ -244,11 +247,11 @@ public class ItemEnderStaff extends ItemToggleable {
 				player.swingArm(hand);
 				if(getPearlCount(ist) < getEnderStaffPearlCost() && !player.capabilities.isCreativeMode)
 					return new ActionResult<>(EnumActionResult.FAIL, ist);
-				player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_ENDERPEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-				if(!player.worldObj.isRemote) {
-					EntityEnderStaffProjectile enderStaffProjectile = new EntityEnderStaffProjectile(player.worldObj, player, !getMode(ist).equals("long_cast"));
+				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ENDERPEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+				if(!player.world.isRemote) {
+					EntityEnderStaffProjectile enderStaffProjectile = new EntityEnderStaffProjectile(player.world, player, !getMode(ist).equals("long_cast"));
 					enderStaffProjectile.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
-					player.worldObj.spawnEntity(enderStaffProjectile);
+					player.world.spawnEntity(enderStaffProjectile);
 					if(!player.capabilities.isCreativeMode)
 						setPearlCount(ist, player, hand, getPearlCount(ist) - getEnderStaffPearlCost());
 				}
@@ -265,13 +268,13 @@ public class ItemEnderStaff extends ItemToggleable {
 
 		if(stack.getTagCompound() != null && stack.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(player))) {
 			if(!world.isRemote) {
-				player.addChatComponentMessage(new TextComponentString(TextFormatting.DARK_RED + "Out of range!"));
+				player.sendMessage(new TextComponentString(TextFormatting.DARK_RED + "Out of range!"));
 			}
 		} else if(stack.getTagCompound() != null && RegistryHelper.blocksEqual(world.getBlockState(new BlockPos(stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))).getBlock(), ModBlocks.wraithNode)) {
 			if(canTeleport(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
 				teleportPlayer(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
 				//setCooldown(ist);
-				if(!player.capabilities.isCreativeMode && !player.worldObj.isRemote)
+				if(!player.capabilities.isCreativeMode && !player.world.isRemote)
 					setPearlCount(stack, player, player.getActiveHand(), getPearlCount(stack) - getEnderStaffNodeWarpCost());
 			}
 		} else if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("dimensionID")) {
@@ -281,7 +284,7 @@ public class ItemEnderStaff extends ItemToggleable {
 			stack.getTagCompound().removeTag("nodeZ");
 			stack.getTagCompound().removeTag("cooldown");
 			if(!world.isRemote) {
-				player.addChatComponentMessage(new TextComponentString(TextFormatting.DARK_RED + "Node dosen't exist!"));
+				player.sendMessage(new TextComponentString(TextFormatting.DARK_RED + "Node dosen't exist!"));
 			} else {
 				player.playSound(SoundEvents.ENTITY_ENDERMEN_DEATH, 1.0f, 1.0f);
 			}
@@ -322,32 +325,34 @@ public class ItemEnderStaff extends ItemToggleable {
 		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}
 
+	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+		ItemStack stack = player.getHeldItem(hand);
+
 		// if right clicking on a wraith node, bind the eye to that wraith node.
-		if((ist.getTagCompound() == null || !(ist.getTagCompound().hasKey("dimensionID"))) && RegistryHelper.blocksEqual(world.getBlockState(pos).getBlock(), ModBlocks.wraithNode)) {
-			setWraithNode(ist, pos, Integer.valueOf(getWorld(player)), player);
+		if((stack.getTagCompound() == null || !(stack.getTagCompound().hasKey("dimensionID"))) && RegistryHelper.blocksEqual(world.getBlockState(pos).getBlock(), ModBlocks.wraithNode)) {
+			setWraithNode(stack, pos, Integer.valueOf(getWorld(player)), player);
 
 			player.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0f, 1.0f);
 			for(int particles = 0; particles < 12; particles++) {
 				world.spawnParticle(EnumParticleTypes.PORTAL, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
 			}
-			//setCooldown(ist);
+			//setCooldown(stack);
 			return EnumActionResult.SUCCESS;
 		} else {
 			return EnumActionResult.PASS;
 		}
 	}
 
-	public void setWraithNode(ItemStack eye, BlockPos pos, int dimensionID, EntityPlayer player) {
+	private void setWraithNode(ItemStack eye, BlockPos pos, int dimensionID, EntityPlayer player) {
 		NBTHelper.setInteger("nodeX" + getWorld(player), eye, pos.getX());
 		NBTHelper.setInteger("nodeY" + getWorld(player), eye, pos.getY());
 		NBTHelper.setInteger("nodeZ" + getWorld(player), eye, pos.getZ());
 		NBTHelper.setInteger("dimensionID", eye, dimensionID);
 	}
 
-	public String getWorld(EntityPlayer player) {
-		return Integer.valueOf(player.worldObj.provider.getDimension()).toString();
+	private String getWorld(EntityPlayer player) {
+		return Integer.valueOf(player.world.provider.getDimension()).toString();
 	}
-
 }

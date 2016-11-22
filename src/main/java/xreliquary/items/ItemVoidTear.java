@@ -49,6 +49,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.StackHelper;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -63,7 +64,6 @@ public class ItemVoidTear extends ItemToggleable {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	@SuppressWarnings("NullableProblems")
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
 		return new ICapabilitySerializable<NBTTagCompound>() {
@@ -134,7 +134,7 @@ public class ItemVoidTear extends ItemToggleable {
 				return super.onItemRightClick(voidTear, world, player, hand);
 
 			if(this.attemptToEmptyIntoInventory(voidTear, player, player.inventory)) {
-				player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
 				NBTHelper.resetTag(voidTear);
 				return new ActionResult<>(EnumActionResult.SUCCESS, new ItemStack(ModItems.emptyVoidTear, 1, 0));
 			}
@@ -293,10 +293,10 @@ public class ItemVoidTear extends ItemToggleable {
 
 		setItemQuantity(ist, quantity);
 		if(quantity == 0) {
-			player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.8F));
+			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.8F));
 			return true;
 		} else {
-			player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
 			return false;
 		}
 	}
@@ -310,12 +310,13 @@ public class ItemVoidTear extends ItemToggleable {
 		if(!(quantityDrained > 0))
 			return;
 
-		player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+		player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
 
 		setItemQuantity(ist, quantity + quantityDrained);
 	}
 
-	public ItemStack getContainerItem(ItemStack voidTear) {
+	@Nonnull
+	public ItemStack getContainerItem(@Nonnull ItemStack voidTear) {
 		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -363,7 +364,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@Override
 	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack voidTear) {
-		if(entityLiving.worldObj.isRemote || !(entityLiving instanceof EntityPlayer))
+		if(entityLiving.world.isRemote || !(entityLiving instanceof EntityPlayer))
 			return false;
 
 		EntityPlayer player = (EntityPlayer) entityLiving;
@@ -432,7 +433,7 @@ public class ItemVoidTear extends ItemToggleable {
 						this.setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.stackSize);
 						if(!itemEntity.isSilent()) {
 							Random rand = new Random();
-							itemEntity.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+							itemEntity.world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 						}
 						itemEntity.setDead();
 						event.setCanceled(true);
@@ -453,7 +454,7 @@ public class ItemVoidTear extends ItemToggleable {
 	public void onContainerOpen(PlayerContainerEvent.Open event) {
 
 		EntityPlayer player = event.getEntityPlayer();
-		if (event.getContainer() != player.inventoryContainer) {
+		if(event.getContainer() != player.inventoryContainer) {
 			VoidTearListener listener = new VoidTearListener((EntityPlayerMP) player);
 
 			event.getContainer().addListener(listener);
@@ -468,7 +469,8 @@ public class ItemVoidTear extends ItemToggleable {
 
 		try {
 			return (List<IContainerListener>) LISTENERS.get(container);
-		} catch (IllegalAccessException e) {
+		}
+		catch(IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -477,10 +479,10 @@ public class ItemVoidTear extends ItemToggleable {
 	public void onContainerClose(PlayerContainerEvent.Close event) {
 
 		EntityPlayer player = event.getEntityPlayer();
-		if (event.getContainer() != player.inventoryContainer) {
+		if(event.getContainer() != player.inventoryContainer) {
 
 			UUID playerId = player.getGameProfile().getId();
-			if (openListeners.keySet().contains(playerId)) {
+			if(openListeners.keySet().contains(playerId)) {
 
 				getListeners(event.getContainer()).remove(openListeners.get(playerId));
 				openListeners.remove(playerId);
@@ -505,14 +507,14 @@ public class ItemVoidTear extends ItemToggleable {
 		@Override
 		public void sendSlotContents(Container container, int slot, ItemStack stack) {
 
-			if (stack != null && stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
+			if(stack != null && stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
 				updateFullInventory(container);
 			}
 		}
 
 		private void updateVoidTear(Container container, int slot, ItemStack stack) {
 
-			if (stack == null || stack.getItem() != ModItems.filledVoidTear)
+			if(stack == null || stack.getItem() != ModItems.filledVoidTear)
 				return;
 
 			PacketHandler.networkWrapper.sendTo(new PacketContainerItemHandlerSync(slot, getItemHandlerNBT(stack), container.windowId), player);
@@ -520,10 +522,11 @@ public class ItemVoidTear extends ItemToggleable {
 
 		public void updateFullInventory(Container container) {
 
-			for (int slot = 0; slot < container.getInventory().size(); slot++) {
+			for(int slot = 0; slot < container.getInventory().size(); slot++) {
 				updateVoidTear(container, slot, container.getSlot(slot).getStack());
 			}
 		}
+
 		@Override
 		public void sendProgressBarUpdate(Container containerIn, int varToUpdate, int newValue) {
 

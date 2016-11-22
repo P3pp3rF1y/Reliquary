@@ -86,4 +86,10 @@ public class NBTHelper {
 		NBTTagCompound tagCompound = getTag(ist);
 		return tagCompound.getCompoundTag(s);
 	}
+
+	public static void removeTag(NBTTagCompound nbt, String tagName) {
+		if (nbt!= null) {
+			nbt.removeTag(tagName);
+		}
+	}
 }

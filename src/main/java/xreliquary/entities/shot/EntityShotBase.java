@@ -287,7 +287,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	/**
 	 * (abstract) Protected helper method to write subclass entity data to NBT.
 	 */
-	@SuppressWarnings("NullableProblems")
+
 	@Override
 	public void writeEntityToNBT(NBTTagCompound compound) {
 		compound.setShort("xTile", (short) xTile);
@@ -300,7 +300,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	/**
 	 * (abstract) Protected helper method to read subclass entity data from NBT.
 	 */
-	@SuppressWarnings("NullableProblems")
+
 	@Override
 	public void readEntityFromNBT(NBTTagCompound compound) {
 		xTile = compound.getShort("xTile");

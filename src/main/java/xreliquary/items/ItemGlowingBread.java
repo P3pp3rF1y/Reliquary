@@ -18,6 +18,8 @@ import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 
+import javax.annotation.Nonnull;
+
 public class ItemGlowingBread extends ItemFood {
 
 	public ItemGlowingBread() {
@@ -29,30 +31,33 @@ public class ItemGlowingBread extends ItemFood {
 		this.setUnlocalizedName(Names.Items.GLOWING_BREAD);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
-	public String getItemStackDisplayName(ItemStack stack) {
+	public String getItemStackDisplayName(@Nonnull ItemStack stack) {
 		return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.RARE;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack onItemUseFinish(ItemStack ist, World world, EntityLivingBase entityLiving) {
+	public ItemStack onItemUseFinish(@Nonnull ItemStack stack, @Nonnull World world, EntityLivingBase entityLiving) {
 		if(!(entityLiving instanceof EntityPlayer))
-			return ist;
+			return stack;
 
 		EntityPlayer player = (EntityPlayer) entityLiving;
 
-		--ist.stackSize;
+		stack.shrink(1);
 		player.getFoodStats().addStats(20, 1.0F);
 		world.playSound(null, player.getPosition(), SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 0.5F, world.rand.nextFloat() * 0.1F + 0.9F);
-		this.onFoodEaten(ist, world, player);
-		return ist;
+		this.onFoodEaten(stack, world, player);
+		return stack;
 	}
 
 	/**
@@ -67,8 +72,9 @@ public class ItemGlowingBread extends ItemFood {
 	 * returns the action that specifies what animation to play when the items
 	 * is being used
 	 */
+	@Nonnull
 	@Override
-	public EnumAction getItemUseAction(ItemStack par1ItemStack) {
+	public EnumAction getItemUseAction(ItemStack stack) {
 		return EnumAction.EAT;
 	}
 
@@ -76,8 +82,11 @@ public class ItemGlowingBread extends ItemFood {
 	 * Called whenever this item is equipped and the right mouse button is
 	 * pressed. Args: itemStack, world, entityPlayer
 	 */
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+
 		if(player.canEat(false)) {
 			player.setActiveHand(hand);
 			return new ActionResult<>(EnumActionResult.SUCCESS, stack);

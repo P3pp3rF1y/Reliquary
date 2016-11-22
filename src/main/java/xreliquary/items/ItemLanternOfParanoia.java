@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -26,12 +27,10 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.RegistryHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Xeno on 5/15/14.
- */
 public class ItemLanternOfParanoia extends ItemToggleable {
 
 	public ItemLanternOfParanoia() {
@@ -41,11 +40,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 		canRepair = false;
 	}
 
-	// so it can be extended by phoenix down
-	protected ItemLanternOfParanoia(String name) {
-		super(name);
-	}
-
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -66,13 +61,6 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 			return;
 		if(e instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) e;
-			if(e instanceof EntityPlayer) {
-				player = (EntityPlayer) e;
-			}
-			if(player == null)
-				return;
-
-			//TODO this is where we'll be placing our algorithm for darkness detection and placing torches!
 
 			int playerX = MathHelper.floor(player.posX);
 			int playerY = MathHelper.floor(player.getEntityBoundingBox().minY);
@@ -85,9 +73,9 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 						int x = playerX + xDiff;
 						int y = playerY + yDiff;
 						int z = playerZ + zDiff;
-						if(!player.worldObj.isAirBlock(new BlockPos(x, y, z)))
+						if(!player.world.isAirBlock(new BlockPos(x, y, z)))
 							continue;
-						int lightLevel = player.worldObj.getLightFromNeighbors(new BlockPos(x, y, z));
+						int lightLevel = player.world.getLightFromNeighbors(new BlockPos(x, y, z));
 						if(lightLevel > Settings.LanternOfParanoia.minLightLevel)
 							continue;
 						if(tryToPlaceTorchAround(stack, x, y, z, player, world))
@@ -101,9 +89,9 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 		}
 	}
 
-	//
+	//	TODO review torch placement if it needs changes otherwise just remove all of this commented out code
 	//    public void attemptPlacementByLookVector(EntityPlayer player) {
-	//        RayTraceResult mop = getMovingObjectPositionFromPlayer(player.worldObj, player, false);
+	//        RayTraceResult mop = getMovingObjectPositionFromPlayer(player.world, player, false);
 	//        if (!player.canPlayerEdit(x, y, z, side, ist))
 	//            return;
 	//
@@ -131,22 +119,21 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 	//    }
 	//
 	private boolean findAndDrainSojournersStaff(EntityPlayer player) {
-		Item staffItem = ModItems.sojournerStaff;
 		if(player.capabilities.isCreativeMode)
 			return true;
 		for(int slot = 0; slot < player.inventory.getSizeInventory(); slot++) {
-			if(player.inventory.getStackInSlot(slot) == null)
+			if(player.inventory.getStackInSlot(slot).isEmpty())
 				continue;
-			if(!(staffItem == player.inventory.getStackInSlot(slot).getItem()))
+			if(!(player.inventory.getStackInSlot(slot).getItem() == ModItems.sojournerStaff))
 				continue;
 			Item torch = ItemBlock.getItemFromBlock(Blocks.TORCH);
-			if(((ItemSojournerStaff) staffItem).removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch, 1, player))
+			if(ItemSojournerStaff.removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch, 1, player))
 				return true;
 		}
 		return false;
 	}
 
-	public boolean tryToPlaceTorchAround(ItemStack stack, int xO, int yO, int zO, EntityPlayer player, World world) {
+	private boolean tryToPlaceTorchAround(@Nonnull ItemStack stack, int xO, int yO, int zO, EntityPlayer player, World world) {
 
 		double playerEyeHeight = player.posY + player.getEyeHeight();
 
@@ -161,10 +148,9 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 
 					if(rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
 						IBlockState blockState = world.getBlockState(rayTraceResult.getBlockPos());
-						if(blockState.getBlock().getBoundingBox(blockState, world, rayTraceResult.getBlockPos()) != null) {
-							if(blockState.getBlock().canCollideCheck(blockState, false))
-								return false;
-						}
+
+						if(blockState.getBlock().canCollideCheck(blockState, false))
+							return false;
 					}
 				}
 			}
@@ -203,7 +189,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 			}
 			ItemStack torchStack = new ItemStack(Blocks.TORCH);
 			for(EnumFacing side : trySides) {
-				if(!world.canBlockBePlaced(Blocks.TORCH, new BlockPos(xO, yO, zO), false, side, player, stack))
+				if(!world.mayPlace(Blocks.TORCH, new BlockPos(xO, yO, zO), false, side, player))
 					continue;
 				if(!(InventoryHelper.consumeItem(torchStack, player, 0, 1) || findAndDrainSojournersStaff(player)))
 					continue;
@@ -213,7 +199,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 					Blocks.TORCH.onBlockAdded(world, new BlockPos(xO, yO, zO), torchBlockState);
 					double gauss = 0.5D + world.rand.nextFloat() / 2;
 					world.spawnParticle(EnumParticleTypes.SPELL_MOB, xO + 0.5D, yO + 0.5D, zO + 0.5D, gauss, gauss, 0.0F);
-					SoundType torchSoundType = Blocks.TORCH.getSoundType();
+					SoundType torchSoundType = Blocks.TORCH.getSoundType(torchBlockState, world, new BlockPos(xO, yO, zO), null);
 					world.playSound(null, new BlockPos(xO, yO, zO), torchSoundType.getStepSound(), SoundCategory.BLOCKS, (torchSoundType.getVolume() + 1.0F) / 2.0F, torchSoundType.getPitch() * 0.8F);
 					return true;
 				}
@@ -223,15 +209,16 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 	}
 
 	private IBlockState getTorchSideAttempt(World world, BlockPos pos, EnumFacing side, EntityPlayer player) {
-		return Blocks.TORCH.onBlockPlaced(world, pos, side, pos.getX(), pos.getY(), pos.getZ(), 0, player);
+		return Blocks.TORCH.getStateForPlacement(world, pos, side, pos.getX(), pos.getY(), pos.getZ(), 0, player, EnumHand.MAIN_HAND);
 	}
 
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, IBlockState torchBlockState) {
+	private boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, IBlockState torchBlockState) {
 		if(!world.setBlockState(pos, torchBlockState, 3))
 			return false;
 
 		if(RegistryHelper.blocksEqual(torchBlockState.getBlock(), Blocks.TORCH)) {
-			Blocks.TORCH.neighborChanged(torchBlockState, world, pos, torchBlockState.getBlock());
+			//noinspection deprecation
+			Blocks.TORCH.neighborChanged(torchBlockState, world, pos, torchBlockState.getBlock(), pos);
 			Blocks.TORCH.onBlockPlacedBy(world, pos, torchBlockState, player, stack);
 		}
 

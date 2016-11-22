@@ -67,29 +67,29 @@ public class ItemSalamanderEye extends ItemBase {
 		for(int xOff = -3; xOff <= 3; xOff++) {
 			for(int yOff = -3; yOff <= 3; yOff++) {
 				for(int zOff = -3; zOff <= 3; zOff++)
-					if(player.worldObj.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock() == Blocks.FIRE) {
-						player.worldObj.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.AIR.getDefaultState());
-						player.worldObj.playSound(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
+					if(player.world.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock() == Blocks.FIRE) {
+						player.world.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.AIR.getDefaultState());
+						player.world.playSound(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.8F, false);
 					}
 			}
 		}
 	}
 
 	private void doFireballEffect(EntityPlayer player) {
-		List<EntityLargeFireball> ghastFireballs = player.worldObj.getEntitiesWithinAABB(EntityLargeFireball.class, new AxisAlignedBB(player.posX - 5, player.posY - 5, player.posZ - 5, player.posX + 5, player.posY + 5, player.posZ + 5));
+		List<EntityLargeFireball> ghastFireballs = player.world.getEntitiesWithinAABB(EntityLargeFireball.class, new AxisAlignedBB(player.posX - 5, player.posY - 5, player.posZ - 5, player.posX + 5, player.posY + 5, player.posZ + 5));
 		for(EntityLargeFireball fireball : ghastFireballs) {
 			if(player.getDistanceToEntity(fireball) < 4) {
 				fireball.setDead();
 			}
 			fireball.attackEntityFrom(DamageSource.causePlayerDamage(player), 1);
-			player.worldObj.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
+			player.world.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.8F, false);
 		}
-		List<EntitySmallFireball> blazeFireballs = player.worldObj.getEntitiesWithinAABB(EntitySmallFireball.class, new AxisAlignedBB(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));
+		List<EntitySmallFireball> blazeFireballs = player.world.getEntitiesWithinAABB(EntitySmallFireball.class, new AxisAlignedBB(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));
 		for(EntitySmallFireball fireball : blazeFireballs) {
 			for(int particles = 0; particles < 4; particles++) {
-				player.worldObj.spawnParticle(EnumParticleTypes.REDSTONE, fireball.posX, fireball.posY, fireball.posZ, 0.0D, 1.0D, 1.0D);
+				player.world.spawnParticle(EnumParticleTypes.REDSTONE, fireball.posX, fireball.posY, fireball.posZ, 0.0D, 1.0D, 1.0D);
 			}
-			player.worldObj.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
+			player.world.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.8F, false);
 			fireball.setDead();
 		}
 	}

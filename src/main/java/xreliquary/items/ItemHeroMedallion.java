@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
@@ -31,7 +32,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.XpHelper;
 
-import java.util.ArrayList;
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemHeroMedallion extends ItemToggleable implements IPedestalActionItem {
@@ -44,7 +45,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 		canRepair = false;
 	}
 
-	@SuppressWarnings("NullableProblems")
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -143,6 +144,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 
 		RayTraceResult rayTraceResult = this.rayTrace(world, player, true);
 
+		//noinspection ConstantConditions
 		if(rayTraceResult == null || rayTraceResult.typeOfHit != RayTraceResult.Type.BLOCK) {
 			int playerLevel = player.experienceLevel;
 			while(player.experienceLevel < getExperienceMaximum() && playerLevel == player.experienceLevel && (getExperience(ist) > 0 || player.capabilities.isCreativeMode)) {
@@ -173,7 +175,6 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 		}
 	}
 
-	@SuppressWarnings("NullableProblems")
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
 		return new FluidHandlerHeroMedallion(stack);
@@ -202,13 +203,13 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 	}
 
 	private List<ItemStack> getMendingItemsForRepair(IInventory inventory) {
-		List<ItemStack> stacksToReturn = new ArrayList<>();
+		NonNullList<ItemStack> stacksToReturn = NonNullList.create();
 
 		for(int slot = 0; slot < inventory.getSizeInventory(); slot++) {
 			ItemStack stack = inventory.getStackInSlot(slot);
 
 			//only getting items that are more than 1 damaged to not waste xp
-			if(stack != null && stack.isItemDamaged() && stack.getItemDamage() > 1 && EnchantmentHelper.getEnchantmentLevel(Enchantments.MENDING, stack) > 0) {
+			if(stack.isItemDamaged() && stack.getItemDamage() > 1 && EnchantmentHelper.getEnchantmentLevel(Enchantments.MENDING, stack) > 0) {
 				stacksToReturn.add(stack);
 			}
 		}

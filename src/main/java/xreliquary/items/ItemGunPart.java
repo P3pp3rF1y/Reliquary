@@ -3,10 +3,11 @@ package xreliquary.items;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 
-import java.util.List;
+import javax.annotation.Nonnull;
 
 public class ItemGunPart extends ItemBase {
 
@@ -20,12 +21,13 @@ public class ItemGunPart extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {
-		par3List.add(new ItemStack(par1, 1, 0));
-		par3List.add(new ItemStack(par1, 1, 1));
-		par3List.add(new ItemStack(par1, 1, 2));
+	public void getSubItems(@Nonnull Item item, CreativeTabs creativeTab, NonNullList<ItemStack> list) {
+		list.add(new ItemStack(item, 1, 0));
+		list.add(new ItemStack(item, 1, 1));
+		list.add(new ItemStack(item, 1, 2));
 	}
 
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
 		if(stack.getItemDamage() > 2) {

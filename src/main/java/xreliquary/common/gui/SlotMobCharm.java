@@ -7,13 +7,12 @@ import net.minecraft.item.ItemStack;
 import xreliquary.init.ModItems;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-public class SlotMobCharm extends Slot {
+class SlotMobCharm extends Slot {
 	private static IInventory emptyInventory = new InventoryBasic("[Null]", true, 0);
 	private ItemStack belt;
 
-	public SlotMobCharm(ItemStack belt, int index, int xPosition, int yPosition) {
+	SlotMobCharm(ItemStack belt, int index, int xPosition, int yPosition) {
 		super(emptyInventory, index, xPosition, yPosition);
 
 		this.belt = belt;
@@ -26,7 +25,7 @@ public class SlotMobCharm extends Slot {
 	}
 
 	@Override
-	public void putStack(@Nullable ItemStack stack) {
+	public void putStack(@Nonnull ItemStack stack) {
 		ModItems.mobCharmBelt.putMobCharmInSlot(belt, this.getSlotIndex(), stack);
 	}
 

@@ -27,9 +27,6 @@ import xreliquary.util.NBTHelper;
 
 import java.util.List;
 
-/**
- * Created by Xeno on 10/11/2014.
- */
 public class ItemInfernalChalice extends ItemToggleable {
 	public ItemInfernalChalice() {
 		super(Names.Items.INFERNAL_CHALICE);
@@ -51,13 +48,10 @@ public class ItemInfernalChalice extends ItemToggleable {
 			return super.onItemRightClick(stack, world, player, hand);
 		}
 
-		float movementThresholdCoefficient = 1.0F;
-		double xOffset = player.prevPosX + (player.posX - player.prevPosX) * movementThresholdCoefficient;
-		double yOffset = player.prevPosY + (player.posY - player.prevPosY) * movementThresholdCoefficient + player.getEyeHeight();
-		double zOffset = player.prevPosZ + (player.posZ - player.prevPosZ) * movementThresholdCoefficient;
 		boolean isInDrainMode = this.isEnabled(stack);
 		RayTraceResult result = this.rayTrace(world, player, isInDrainMode);
 
+		//noinspection ConstantConditions
 		if(result == null) {
 			return new ActionResult<>(EnumActionResult.PASS, stack);
 		} else {
@@ -88,7 +82,7 @@ public class ItemInfernalChalice extends ItemToggleable {
 						if(!player.canPlayerEdit(adjustedPos, result.sideHit, stack))
 							return new ActionResult<>(EnumActionResult.PASS, stack);
 
-						if(this.tryPlaceContainedLiquid(world, stack, xOffset, yOffset, zOffset, adjustedPos) && !player.capabilities.isCreativeMode) {
+						if(this.tryPlaceContainedLiquid(world, adjustedPos) && !player.capabilities.isCreativeMode) {
 							fluidHandler.drain(new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME), true);
 							return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 						}
@@ -107,7 +101,7 @@ public class ItemInfernalChalice extends ItemToggleable {
 		return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
 	}
 
-	public boolean tryPlaceContainedLiquid(World world, ItemStack ist, double par2, double par4, double par6, BlockPos pos) {
+	private boolean tryPlaceContainedLiquid(World world, BlockPos pos) {
 		IBlockState blockState = world.getBlockState(pos);
 		Material material = blockState.getMaterial();
 		if(!world.isAirBlock(pos) && material.isSolid())

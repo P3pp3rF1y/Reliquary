@@ -31,7 +31,7 @@ public class ItemVoidTearEmpty extends ItemBase {
 			ItemStack createdTear = buildTear(ist, player, player.inventory, true);
 			if(createdTear != null) {
 				--ist.stackSize;
-				player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
 				if(ist.stackSize == 0)
 					return new ActionResult<>(EnumActionResult.SUCCESS, createdTear);
 				else {
@@ -57,7 +57,7 @@ public class ItemVoidTearEmpty extends ItemBase {
 				ItemStack createdTear = buildTear(ist, player, inventory, false);
 				if(createdTear != null) {
 					--ist.stackSize;
-					player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+					player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
 					if(ist.stackSize == 0)
 						player.inventory.setInventorySlotContents(player.inventory.currentItem, createdTear);
 					else
@@ -76,7 +76,7 @@ public class ItemVoidTearEmpty extends ItemBase {
 				return;
 			}
 		}
-		player.worldObj.spawnEntity(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, ist));
+		player.world.spawnEntity(new EntityItem(player.world, player.posX, player.posY, player.posZ, ist));
 	}
 
 	protected ItemStack buildTear(ItemStack ist, EntityPlayer player, IInventory inventory, boolean isPlayerInventory) {

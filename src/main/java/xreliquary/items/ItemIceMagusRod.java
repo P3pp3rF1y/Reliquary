@@ -25,6 +25,7 @@ import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemIceMagusRod extends ItemToggleable {
@@ -46,22 +47,22 @@ public class ItemIceMagusRod extends ItemToggleable {
 		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}
 
-	public ItemIceMagusRod(String langName) {
+	ItemIceMagusRod(String langName) {
 		super(langName);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;
 	}
 
-	public int getSnowballCap() {
+	private int getSnowballCap() {
 		return this instanceof ItemGlacialStaff ? Settings.GlacialStaff.snowballLimit : Settings.IceMagusRod.snowballLimit;
 	}
 
-	public int getSnowballCost() {
+	int getSnowballCost() {
 		return this instanceof ItemGlacialStaff ? Settings.GlacialStaff.snowballCost : Settings.IceMagusRod.snowballCost;
 	}
 
-	public int getSnowballWorth() {
+	private int getSnowballWorth() {
 		return this instanceof ItemGlacialStaff ? Settings.GlacialStaff.snowballWorth : Settings.IceMagusRod.snowballWorth;
 	}
 
@@ -89,6 +90,7 @@ public class ItemIceMagusRod extends ItemToggleable {
 		return super.onItemRightClick(ist, world, player, hand);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {

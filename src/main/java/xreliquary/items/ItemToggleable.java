@@ -28,7 +28,7 @@ public class ItemToggleable extends ItemBase {
 	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 		if(!world.isRemote && player.isSneaking()) {
 			toggleEnabled(stack);
-			player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 1.2F));
+			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
 			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);

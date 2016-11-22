@@ -258,16 +258,16 @@ public class InventoryHelper {
 		return numberAdded;
 	}
 
-	public static void tryRemovingLastStack(IInventory inventory, World worldObj, BlockPos pos) {
+	public static void tryRemovingLastStack(IInventory inventory, World world, BlockPos pos) {
 		for(int i = inventory.getSizeInventory() - 1; i >= 0; i--) {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if(stack != null) {
 				inventory.setInventorySlotContents(i, null);
-				if(worldObj.isRemote)
+				if(world.isRemote)
 					return;
 				inventory.markDirty();
-				EntityItem itemEntity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, stack);
-				worldObj.spawnEntity(itemEntity);
+				EntityItem itemEntity = new EntityItem(world, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, stack);
+				world.spawnEntity(itemEntity);
 				break;
 			}
 		}

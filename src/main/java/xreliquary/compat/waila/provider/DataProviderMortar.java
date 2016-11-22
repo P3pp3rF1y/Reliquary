@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xreliquary.blocks.BlockApothecaryMortar;
 import xreliquary.blocks.tile.TileEntityMortar;
+import xreliquary.init.ModBlocks;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
@@ -24,7 +25,7 @@ import java.util.List;
 public class DataProviderMortar extends CachedBodyDataProvider {
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return null;
+		return new ItemStack(ModBlocks.apothecaryMortar);
 	}
 
 	@Override

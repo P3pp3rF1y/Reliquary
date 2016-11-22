@@ -29,13 +29,13 @@ public class ItemMobCharm extends ItemBase {
 		this.canRepair = false;
 	}
 
-	@SuppressWarnings("NullableProblems")
+
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
 		return "item." + Names.Items.MOB_CHARM + "_" + getType(ist);
 	}
 
-	@SuppressWarnings("NullableProblems")
+
 	@Override
 	public void getSubItems(Item item, CreativeTabs creativeTab, List<ItemStack> subItems) {
 		for(byte i = 0; i < Reference.MOB_CHARM.COUNT_TYPES; i++) {

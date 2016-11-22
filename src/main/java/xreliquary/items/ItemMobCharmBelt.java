@@ -20,6 +20,8 @@ import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
+
 public class ItemMobCharmBelt extends ItemBauble {
 	private static final String SLOTS_TAG = "Slots";
 	private static final String TYPE_TAG = "Type";
@@ -42,7 +44,7 @@ public class ItemMobCharmBelt extends ItemBauble {
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {
-		if(player.worldObj.isRemote)
+		if(player.world.isRemote)
 			player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1F, 1F);
 	}
 
@@ -55,7 +57,8 @@ public class ItemMobCharmBelt extends ItemBauble {
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
-	public ItemStack getMobCharmInSlot(ItemStack belt, int slotIndex) {
+	@Nonnull
+	public ItemStack getMobCharmInSlot(@Nonnull ItemStack belt, int slotIndex) {
 		NBTTagCompound nbt = belt.getTagCompound();
 
 		if(nbt == null || !nbt.hasKey(SLOTS_TAG))

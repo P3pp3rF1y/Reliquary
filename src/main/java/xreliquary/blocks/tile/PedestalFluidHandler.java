@@ -49,7 +49,6 @@ public class PedestalFluidHandler implements IFluidHandler {
 		return totalFilled;
 	}
 
-	@Nullable
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain) {
 		int totalDrained = 0;
@@ -68,7 +67,6 @@ public class PedestalFluidHandler implements IFluidHandler {
 		return new FluidStack(resource.getFluid(), totalDrained);
 	}
 
-	@Nullable
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain) {
 		List<ItemStack> fluidContainers = pedestal.getFluidContainers();

@@ -13,16 +13,19 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xreliquary.blocks.BlockAlkahestryAltar;
 import xreliquary.blocks.tile.TileEntityAltar;
+import xreliquary.init.ModBlocks;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 
+import javax.annotation.Nonnull;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class DataProviderAltar implements IWailaDataProvider {
+	@Nonnull
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return null;
+		return new ItemStack(ModBlocks.alkahestryAltar);
 	}
 
 	@Override

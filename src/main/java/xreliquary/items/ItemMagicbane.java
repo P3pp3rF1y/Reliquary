@@ -76,7 +76,7 @@ public class ItemMagicbane extends ItemSword {
 	@Override
 	public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase e, EntityLivingBase par3EntityLivingBase) {
 		if(e != null) {
-			int random = e.worldObj.rand.nextInt(16);
+			int random = e.world.rand.nextInt(16);
 			switch(random) {
 				case 0:
 				case 1:

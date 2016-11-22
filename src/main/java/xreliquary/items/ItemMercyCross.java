@@ -95,7 +95,7 @@ public class ItemMercyCross extends ItemSword {
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity monster) {
 		if(monster instanceof EntityLiving) {
 			if(isUndead((EntityLiving) monster)) {
-				monster.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, monster.posX + (itemRand.nextFloat() - 0.5F), monster.posY + (itemRand.nextFloat() - 0.5F) + (monster.height / 2), monster.posZ + (itemRand.nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
+				monster.world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, monster.posX + (itemRand.nextFloat() - 0.5F), monster.posY + (itemRand.nextFloat() - 0.5F) + (monster.height / 2), monster.posZ + (itemRand.nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
 			}
 		}
 		return super.onLeftClickEntity(stack, player, monster);

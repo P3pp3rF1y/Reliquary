@@ -1,6 +1,6 @@
+/* TODO add elsewhereflask
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemElsewhereFlask extends ItemBase {
@@ -32,10 +33,12 @@ public class ItemElsewhereFlask extends ItemBase {
 	// instead of one.
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
 
 	}
 
+*/
+/*
 	// due to the added complexity of the flask's tooltip, we need to piggyback
 	// on the formatTooltip method
 	// to make it easier for localization to rename the potion effects that show
@@ -63,10 +66,14 @@ public class ItemElsewhereFlask extends ItemBase {
 		// list.add(descriptionLine);
 		// }
 	}
+*//*
 
+
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.EPIC;
 	}
 }
+*/

@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class PotionIngredient {
 		this(new ItemStack(item, 1, meta));
 	}
 
-	public PotionIngredient(ItemStack ist) {
+	public PotionIngredient(@Nonnull ItemStack ist) {
 		this.item = ist;
 	}
 

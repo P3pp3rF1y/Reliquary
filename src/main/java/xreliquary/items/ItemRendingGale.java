@@ -102,7 +102,7 @@ public class ItemRendingGale extends ItemToggleable {
 		double y = lookVec.yCoord;
 		double z = lookVec.zCoord;
 
-		RayTraceResult rayTrace =  this.rayTrace(player.worldObj, player, true);
+		RayTraceResult rayTrace =  this.rayTrace(player.world, player, true);
 
 		double slowDownFactor = 1.0;
 
@@ -186,13 +186,13 @@ public class ItemRendingGale extends ItemToggleable {
 
 	@Override
 	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
-		if(entityLiving.worldObj.isRemote)
+		if(entityLiving.world.isRemote)
 			return false;
 		if(!(entityLiving instanceof EntityPlayer))
 			return false;
 		EntityPlayer player = (EntityPlayer) entityLiving;
 		if(player.isSneaking()) {
-			cycleMode(ist, player.worldObj.isRaining());
+			cycleMode(ist, player.world.isRaining());
 			return true;
 		}
 		return false;
@@ -253,23 +253,23 @@ public class ItemRendingGale extends ItemToggleable {
 
 		if(isFlightMode(ist)) {
 			attemptFlight(player);
-			spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player);
+			spawnFlightParticles(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, player);
 		} else if(isPushMode(ist)) {
-			doRadialPush(player.worldObj, player.posX, player.posY, player.posZ, player, false);
+			doRadialPush(player.world, player.posX, player.posY, player.posZ, player, false);
 		} else if(isPullMode(ist)) {
-			doRadialPush(player.worldObj, player.posX, player.posY, player.posZ, player, true);
+			doRadialPush(player.world, player.posX, player.posY, player.posZ, player, true);
 		} else if(isBoltMode(ist)) {
 
-			RayTraceResult mop = this.getCycloneBlockTarget(player.worldObj, player);
+			RayTraceResult mop = this.getCycloneBlockTarget(player.world, player);
 
 			if(mop != null) {
 				if(ticksInUse % 8 == 0) {
 					int attemptedY = mop.getBlockPos().getY();
-					if(!player.worldObj.isRainingAt(mop.getBlockPos())) {
+					if(!player.world.isRainingAt(mop.getBlockPos())) {
 						attemptedY++;
 					}
-					if(!player.worldObj.isRemote && player.worldObj.isRainingAt(new BlockPos(mop.getBlockPos().getX(), attemptedY, mop.getBlockPos().getZ()))) {
-						player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, (double) mop.getBlockPos().getX(), (double) mop.getBlockPos().getY(), (double) mop.getBlockPos().getZ(), false));
+					if(!player.world.isRemote && player.world.isRainingAt(new BlockPos(mop.getBlockPos().getX(), attemptedY, mop.getBlockPos().getZ()))) {
+						player.world.addWeatherEffect(new EntityLightningBolt(player.world, (double) mop.getBlockPos().getX(), (double) mop.getBlockPos().getY(), (double) mop.getBlockPos().getZ(), false));
 					}
 				}
 			}
@@ -370,10 +370,10 @@ public class ItemRendingGale extends ItemToggleable {
 		filteredHandler.setTotalAmount(0, featherCount);
 	}
 
-	public void doRadialPush(World worldObj, double posX, double posY, double posZ, EntityPlayer player, boolean pull) {
+	public void doRadialPush(World world, double posX, double posY, double posZ, EntityPlayer player, boolean pull) {
 		//push effect free at the moment, if you restore cost, remember to change this to getFeatherCount
-		spawnRadialHurricaneParticles(worldObj, posX, posY, posZ, player, pull);
-		if(worldObj.isRemote)
+		spawnRadialHurricaneParticles(world, posX, posY, posZ, player, pull);
+		if(world.isRemote)
 			return;
 
 		double lowerX = posX - getRadialPushRadius();
@@ -386,7 +386,7 @@ public class ItemRendingGale extends ItemToggleable {
 		List<String> entitiesThatCanBePushed = Settings.RendingGale.entitiesThatCanBePushed;
 		List<String> projectilesThatCanBePushed = Settings.RendingGale.projectilesThatCanBePushed;
 
-		List<Entity> eList = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
+		List<Entity> eList = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 
 		for(Entity e : eList) {
 			Class entityClass = e.getClass();
@@ -432,11 +432,11 @@ public class ItemRendingGale extends ItemToggleable {
 		}
 	}
 
-	public void spawnRadialHurricaneParticles(World worldObj, double posX, double posY, double posZ, EntityPlayer player, boolean pull) {
+	public void spawnRadialHurricaneParticles(World world, double posX, double posY, double posZ, EntityPlayer player, boolean pull) {
 		//spawn a whole mess of particles every tick.
 		for(int i = 0; i < 3; ++i) {
-			float randX = worldObj.rand.nextFloat() - 0.5F;
-			float randZ = worldObj.rand.nextFloat() - 0.5F;
+			float randX = world.rand.nextFloat() - 0.5F;
+			float randZ = world.rand.nextFloat() - 0.5F;
 			float motX = randX * 10F;
 			float motZ = randZ * 10F;
 			if(pull) {
@@ -448,7 +448,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 			double posYAdjusted = player == null ? posY : (posY + player.getEyeHeight()) - (player.height / 2);
 
-			worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.SNOW_LAYER.getStateFromMeta(0)));
+			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.SNOW_LAYER.getStateFromMeta(0)));
 		}
 	}
 }

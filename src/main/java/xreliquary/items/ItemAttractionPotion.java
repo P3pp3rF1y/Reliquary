@@ -13,6 +13,8 @@ import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 
+import javax.annotation.Nonnull;
+
 public class ItemAttractionPotion extends ItemBase {
 
 	public ItemAttractionPotion() {
@@ -28,23 +30,27 @@ public class ItemAttractionPotion extends ItemBase {
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getContainerItem(ItemStack ist) {
+	public ItemStack getContainerItem(@Nonnull ItemStack stack) {
 		return new ItemStack(ModItems.potion, 1, 0);
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+
+		ItemStack stack = player.getHeldItem(hand);
 		if(world.isRemote)
-			return new ActionResult<>(EnumActionResult.PASS, ist);
+			return new ActionResult<>(EnumActionResult.PASS, stack);
 		if(!player.capabilities.isCreativeMode) {
-			--ist.stackSize;
+			stack.shrink(1);
 		}
 		world.playSound(null, player.getPosition(), SoundEvents.BLOCK_DISPENSER_LAUNCH, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 		EntityAttractionPotion attractionPotion = new EntityAttractionPotion(world, player);
 		attractionPotion.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
 		world.spawnEntity(attractionPotion);
-		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
+		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
 }

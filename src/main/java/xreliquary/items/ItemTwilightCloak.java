@@ -43,11 +43,11 @@ public class ItemTwilightCloak extends ItemToggleable {
 		int playerY = MathHelper.floor(player.getEntityBoundingBox().minY);
 		int playerZ = MathHelper.floor(player.posZ);
 
-		if(player.worldObj.getLightFromNeighbors(new BlockPos(playerX, playerY, playerZ)) > Settings.TwilightCloak.maxLightLevel)
+		if(player.world.getLightFromNeighbors(new BlockPos(playerX, playerY, playerZ)) > Settings.TwilightCloak.maxLightLevel)
 			return;
 
 		//        if (Reliquary.CONFIG.getBool(Names.twilight_cloak, "only_works_at_night")) {
-		//            long worldTime = player.worldObj.getWorldTime() % 24000;
+		//            long worldTime = player.world.getWorldTime() % 24000;
 		//            if (worldTime > 13187 && worldTime < 22812)
 		//                return;
 		//        }

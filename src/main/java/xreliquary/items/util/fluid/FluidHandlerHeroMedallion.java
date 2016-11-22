@@ -15,7 +15,6 @@ import xreliquary.init.ModItems;
 import xreliquary.util.XpHelper;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class FluidHandlerHeroMedallion implements IFluidHandler, ICapabilityProvider {
 
@@ -27,12 +26,12 @@ public class FluidHandlerHeroMedallion implements IFluidHandler, ICapabilityProv
 	}
 
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 	}
 
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability,  EnumFacing facing) {
 		//noinspection unchecked
 		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T) this : null;
 	}
@@ -54,7 +53,6 @@ public class FluidHandlerHeroMedallion implements IFluidHandler, ICapabilityProv
 		return resource.amount;
 	}
 
-	@Nullable
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain) {
 		if (resource.getFluid() != ModFluids.fluidXpJuice)
@@ -69,7 +67,6 @@ public class FluidHandlerHeroMedallion implements IFluidHandler, ICapabilityProv
 		return new FluidStack(ModFluids.fluidXpJuice, XpHelper.experienceToLiquid(experienceToRemove));
 	}
 
-	@Nullable
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain) {
 		return drain(new FluidStack(ModFluids.fluidXpJuice, maxDrain), doDrain);

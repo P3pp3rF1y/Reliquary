@@ -67,7 +67,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 
 	@Override
 	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
-		if(entityLiving.worldObj.isRemote)
+		if(entityLiving.world.isRemote)
 			return false;
 		if(entityLiving.isSneaking()) {
 			cycleTorchMode(ist);
@@ -123,7 +123,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 		NBTHelper.setTag(ist, tagCompound);
 	}
 
-	private boolean hasItemInInternalStorage(ItemStack ist, Item item, int cost) {
+	private static boolean hasItemInInternalStorage(ItemStack ist, Item item, int cost) {
 		NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 		if(tagCompound == null) {
 			tagCompound = new NBTTagCompound();
@@ -273,7 +273,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 		return Settings.SojournerStaff.maxCapacityPerItemType;
 	}
 
-	public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, EntityPlayer player) {
+	static boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, EntityPlayer player) {
 		if(player.capabilities.isCreativeMode)
 			return true;
 		if(hasItemInInternalStorage(ist, item, cost)) {

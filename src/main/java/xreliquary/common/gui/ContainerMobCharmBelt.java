@@ -119,6 +119,7 @@ public class ContainerMobCharmBelt extends Container {
 		return true;
 	}
 
+	@Nonnull
 	public ItemStack getBelt() {
 		return belt;
 	}

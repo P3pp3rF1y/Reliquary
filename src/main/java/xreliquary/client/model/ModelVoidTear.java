@@ -18,7 +18,6 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.init.ModItems;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class ModelVoidTear implements IPerspectiveAwareModel {
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
 		return originalModel.getQuads(state, side, rand);
 	}
 
@@ -73,7 +72,7 @@ public class ModelVoidTear implements IPerspectiveAwareModel {
 			public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, @Nonnull World world, @Nonnull EntityLivingBase entity) {
 				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 					ItemStack containedStack = ModItems.filledVoidTear.getContainerItem(stack);
-					if(containedStack != null) {
+					if(!containedStack.isEmpty()) {
 						IBakedModel bakedModel = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(containedStack, world, entity);
 						if(!bakedModel.isBuiltInRenderer())
 							return bakedModel;

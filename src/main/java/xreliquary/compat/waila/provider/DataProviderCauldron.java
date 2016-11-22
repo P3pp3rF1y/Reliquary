@@ -17,11 +17,13 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class DataProviderCauldron extends CachedBodyDataProvider {
+	@Nonnull
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		return new ItemStack(ModBlocks.apothecaryCauldron);
