@@ -335,6 +335,10 @@ public class ItemSojournerStaff extends ItemToggleable {
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float xOff, float yOff, float zOff) {
 		ItemStack stack = player.getHeldItem(hand);
+		return placeTorch(player, world, pos, hand, side, stack);
+	}
+
+	private EnumActionResult placeTorch(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, ItemStack stack) {
 		if(player.isSwingInProgress)
 			return EnumActionResult.PASS;
 		player.swingArm(hand);
@@ -413,35 +417,35 @@ public class ItemSojournerStaff extends ItemToggleable {
 		if(!player.isSneaking()) {
 			RayTraceResult mop = this.getBlockTarget(world, player);
 			if(mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK) {
-				float xOff = (float) (mop.getBlockPos().getX() - player.posX);
-				float yOff = (float) (mop.getBlockPos().getY() - player.posY);
-				float zOff = (float) (mop.getBlockPos().getZ() - player.posZ);
-				this.onItemUse(ist, player, world, mop.getBlockPos(), hand, mop.sideHit, xOff, yOff, zOff);
+				placeTorch(player, world, mop.getBlockPos(), hand, mop.sideHit, ist);
 			}
 		}
 		return super.onItemRightClick(ist, world, player, hand);
 	}
 
-	//I named the vars in this method weird crap cos I have no idea what they do. This was stolen from the bucket code, I think.
 	@Nonnull
 	@Override
 	protected RayTraceResult rayTrace(World world, EntityPlayer player, boolean useLiquids) {
-		float movementCoefficient = 1.0F;
-		float pitchOff = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * movementCoefficient;
-		float yawOff = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * movementCoefficient;
-		double xOff = player.prevPosX + (player.posX - player.prevPosX) * movementCoefficient;
-		double yOff = player.prevPosY + (player.posY - player.prevPosY) * movementCoefficient + player.getEyeHeight();
-		double zOff = player.prevPosZ + (player.posZ - player.prevPosZ) * movementCoefficient;
-		Vec3d playerVector = new Vec3d(xOff, yOff, zOff);
-		float cosTraceYaw = MathHelper.cos(-yawOff * 0.017453292F - (float) Math.PI);
-		float sinTraceYaw = MathHelper.sin(-yawOff * 0.017453292F - (float) Math.PI);
-		float cosTracePitch = -MathHelper.cos(-pitchOff * 0.017453292F);
-		float sinTracePitch = MathHelper.sin(-pitchOff * 0.017453292F);
-		float pythagoraStuff = sinTraceYaw * cosTracePitch;
-		float pythagoraStuff2 = cosTraceYaw * cosTracePitch;
-		double distCoeff = 32.0D;
-		Vec3d rayTraceVector = playerVector.addVector(pythagoraStuff * distCoeff, sinTracePitch * distCoeff, pythagoraStuff2 * distCoeff);
-		return world.rayTraceBlocks(playerVector, rayTraceVector, useLiquids);
+		float f = player.rotationPitch;
+		float f1 = player.rotationYaw;
+		double d0 = player.posX;
+		double d1 = player.posY + (double)player.getEyeHeight();
+		double d2 = player.posZ;
+		Vec3d vec3d = new Vec3d(d0, d1, d2);
+		float f2 = MathHelper.cos(-f1 * 0.017453292F - (float)Math.PI);
+		float f3 = MathHelper.sin(-f1 * 0.017453292F - (float)Math.PI);
+		float f4 = -MathHelper.cos(-f * 0.017453292F);
+		float f5 = MathHelper.sin(-f * 0.017453292F);
+		float f6 = f3 * f4;
+		float f7 = f2 * f4;
+		double d3 = 32.0D;
+		if (player instanceof net.minecraft.entity.player.EntityPlayerMP)
+		{
+			d3 = ((net.minecraft.entity.player.EntityPlayerMP)player).interactionManager.getBlockReachDistance();
+		}
+		Vec3d vec3d1 = vec3d.addVector((double)f6 * d3, (double)f5 * d3, (double)f7 * d3);
+		//noinspection ConstantConditions
+		return world.rayTraceBlocks(vec3d, vec3d1, useLiquids, !useLiquids, false);
 	}
 
 	private boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, IBlockState torchBlockState) {
