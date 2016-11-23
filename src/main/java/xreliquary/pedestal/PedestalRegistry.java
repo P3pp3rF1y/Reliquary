@@ -74,7 +74,7 @@ public class PedestalRegistry {
 		return getPositionsInRange(dimensionId, startPos, range, range, range);
 	}
 
-	public static List<BlockPos> getPositionsInRange(int dimensionId, BlockPos startPos, int xRange, int yRange, int zRange) {
+	private static List<BlockPos> getPositionsInRange(int dimensionId, BlockPos startPos, int xRange, int yRange, int zRange) {
 		List<BlockPos> positionsInRange = new ArrayList<>();
 		for(Map.Entry<LocationKey, BlockPos> position : positions.entrySet()) {
 			if(position.getKey().getDimensionId() != dimensionId)
@@ -96,7 +96,7 @@ public class PedestalRegistry {
 		private int dimensionId;
 		private long location;
 
-		public LocationKey(int dimensionId, long location) {
+		LocationKey(int dimensionId, long location) {
 			this.dimensionId = dimensionId;
 			this.location = location;
 		}
@@ -117,7 +117,7 @@ public class PedestalRegistry {
 			return this.getDimensionId() == key2.getDimensionId() && this.getLocation() == key2.getLocation();
 		}
 
-		public int getDimensionId() {
+		int getDimensionId() {
 			return dimensionId;
 		}
 

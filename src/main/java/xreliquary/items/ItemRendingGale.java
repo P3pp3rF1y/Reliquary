@@ -214,10 +214,12 @@ public class ItemRendingGale extends ItemToggleable {
 		return EnumAction.BLOCK;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack ist = player.getHeldItem(hand);
 		if(player.isSneaking()) {
-			super.onItemRightClick(ist, world, player, hand);
+			super.onItemRightClick(world, player, hand);
 		} else {
 			player.setActiveHand(hand);
 		}

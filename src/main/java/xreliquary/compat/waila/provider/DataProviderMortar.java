@@ -71,7 +71,7 @@ public class DataProviderMortar extends CachedBodyDataProvider {
 
 			List<String> effectLines = new ArrayList<>();
 
-			XRPotionHelper.addPotionInfo(essence, effectLines, false);
+			XRPotionHelper.addPotionInfo(essence, effectLines);
 
 			StringBuilder sb = new StringBuilder();
 			int effectsInLine = 0;

@@ -131,18 +131,20 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
 		if(player.isSneaking())
-			super.onItemRightClick(ist, world, player, hand);
+			super.onItemRightClick(world, player, hand);
 		else {
-			if(getMode(ist).equals("blaze")) {
+			if(getMode(stack).equals("blaze")) {
 				if(player.isSwingInProgress)
-					return new ActionResult<>(EnumActionResult.PASS, ist);
+					return new ActionResult<>(EnumActionResult.PASS, stack);
 				player.swingArm(hand);
 				Vec3d lookVec = player.getLookVec();
 				//blaze fireball!
-				if(removeItemFromInternalStorage(ist, Items.BLAZE_POWDER, getBlazePowderCost(), player.world.isRemote, player)) {
+				if(removeItemFromInternalStorage(stack, Items.BLAZE_POWDER, getBlazePowderCost(), player.world.isRemote, player)) {
 					player.world.playEvent(player, 1018, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
 					EntitySmallFireball fireball = new EntitySmallFireball(player.world, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
 					fireball.accelerationX = lookVec.xCoord;
@@ -154,13 +156,13 @@ public class ItemPyromancerStaff extends ItemToggleable {
 					fireball.posY = player.posY + player.getEyeHeight();
 					player.world.spawnEntity(fireball);
 				}
-			} else if(getMode(ist).equals("charge")) {
+			} else if(getMode(stack).equals("charge")) {
 				if(player.isSwingInProgress)
-					return new ActionResult<>(EnumActionResult.PASS, ist);
+					return new ActionResult<>(EnumActionResult.PASS, stack);
 				player.swingArm(hand);
 				Vec3d lookVec = player.getLookVec();
 				//ghast fireball!
-				if(removeItemFromInternalStorage(ist, Items.FIRE_CHARGE, getFireChargeCost(), player.world.isRemote, player)) {
+				if(removeItemFromInternalStorage(stack, Items.FIRE_CHARGE, getFireChargeCost(), player.world.isRemote, player)) {
 					player.world.playEvent(player, 1016, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
 					EntityLargeFireball fireball = new EntityLargeFireball(player.world, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
 					fireball.accelerationX = lookVec.xCoord;
@@ -176,7 +178,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 			} else
 				player.setActiveHand(hand);
 		}
-		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
+		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
 	//a longer ranged version of "getMovingObjectPositionFromPlayer" basically

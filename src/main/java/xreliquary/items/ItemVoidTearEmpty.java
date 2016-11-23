@@ -17,6 +17,8 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.NBTHelper;
 
+import javax.annotation.Nonnull;
+
 public class ItemVoidTearEmpty extends ItemBase {
 	public ItemVoidTearEmpty() {
 		super(Names.Items.VOID_TEAR_EMPTY);
@@ -25,26 +27,30 @@ public class ItemVoidTearEmpty extends ItemBase {
 		canRepair = false;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote) {
-			ItemStack createdTear = buildTear(ist, player, player.inventory, true);
-			if(createdTear != null) {
-				--ist.stackSize;
+			ItemStack createdTear = buildTear(stack, player, player.inventory, true);
+			if(!createdTear.isEmpty()) {
+				stack.shrink(1);
 				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
-				if(ist.stackSize == 0)
+				if(stack.getCount() == 0)
 					return new ActionResult<>(EnumActionResult.SUCCESS, createdTear);
 				else {
 					addItemToInventory(player, createdTear);
-					return new ActionResult<>(EnumActionResult.SUCCESS, ist);
+					return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 				}
 			}
 		}
-		return new ActionResult<>(EnumActionResult.PASS, ist);
+		return new ActionResult<>(EnumActionResult.PASS, stack);
 	}
 
+	@Nonnull
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack ist, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+		ItemStack ist = player.getHeldItem(hand);
 		if(!world.isRemote) {
 
 			if(world.getTileEntity(pos) instanceof IInventory) {
@@ -55,10 +61,10 @@ public class ItemVoidTearEmpty extends ItemBase {
 				}
 
 				ItemStack createdTear = buildTear(ist, player, inventory, false);
-				if(createdTear != null) {
-					--ist.stackSize;
+				if(!createdTear.isEmpty()) {
+					ist.shrink(1);
 					player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
-					if(ist.stackSize == 0)
+					if(ist.getCount() == 0)
 						player.inventory.setInventorySlotContents(player.inventory.currentItem, createdTear);
 					else
 						addItemToInventory(player, createdTear);
@@ -69,9 +75,9 @@ public class ItemVoidTearEmpty extends ItemBase {
 		return EnumActionResult.PASS;
 	}
 
-	protected void addItemToInventory(EntityPlayer player, ItemStack ist) {
-		for(int i = 0; i < player.inventory.mainInventory.length; ++i) {
-			if(player.inventory.getStackInSlot(i) == null) {
+	private void addItemToInventory(EntityPlayer player, ItemStack ist) {
+		for(int i = 0; i < player.inventory.mainInventory.size(); ++i) {
+			if(player.inventory.getStackInSlot(i).isEmpty()) {
 				player.inventory.setInventorySlotContents(i, ist);
 				return;
 			}
@@ -79,10 +85,11 @@ public class ItemVoidTearEmpty extends ItemBase {
 		player.world.spawnEntity(new EntityItem(player.world, player.posX, player.posY, player.posZ, ist));
 	}
 
-	protected ItemStack buildTear(ItemStack ist, EntityPlayer player, IInventory inventory, boolean isPlayerInventory) {
+	@Nonnull
+	private ItemStack buildTear(ItemStack ist, EntityPlayer player, IInventory inventory, boolean isPlayerInventory) {
 		ItemStack target = InventoryHelper.getTargetItem(ist, inventory, false);
-		if(target == null)
-			return null;
+		if(target.isEmpty())
+			return ItemStack.EMPTY;
 		ItemStack filledTear = new ItemStack(ModItems.filledVoidTear, 1, 0);
 
 		ModItems.filledVoidTear.setItemStack(filledTear, target);

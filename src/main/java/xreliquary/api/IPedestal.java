@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public interface IPedestal {
@@ -13,7 +14,7 @@ public interface IPedestal {
 
 	BlockPos getBlockPos();
 
-	int addToConnectedInventory(ItemStack stack);
+	int addToConnectedInventory(@Nonnull ItemStack stack);
 
 	int fillConnectedTank(FluidStack fluidStack, boolean doFill);
 
@@ -25,7 +26,7 @@ public interface IPedestal {
 
 	void destroyCurrentItem();
 
-	void replaceCurrentItem(ItemStack stack);
+	void replaceCurrentItem(@Nonnull ItemStack stack);
 	List<BlockPos> getPedestalsInRange(int range);
 	void switchOn(BlockPos switchedOnFrom);
 	void switchOff(BlockPos switchedOffFrom);

@@ -16,41 +16,6 @@ public class ModItemColors {
 	public static void init() {
 		ItemColors itemColors = Minecraft.getMinecraft().getItemColors();
 
-		if(isEnabled(ModItems.mobCharmFragment) && isEnabled(ModItems.heartZhu) && isEnabled(ModItems.mobCharm)) {
-			itemColors.registerItemColorHandler((stack, tintIndex) -> {
-				int meta = stack.getItemDamage();
-				switch(meta) {
-					case Reference.MOB_CHARM.ZOMBIE_META:
-						return Integer.parseInt(Colors.HEART_ZHU.ZOMBIE, 16);
-					case Reference.MOB_CHARM.SKELETON_META:
-						return Integer.parseInt(Colors.HEART_ZHU.SKELETON, 16);
-					case Reference.MOB_CHARM.WITHER_SKELETON_META:
-						return Integer.parseInt(Colors.HEART_ZHU.WITHER_SKELETON, 16);
-					case Reference.MOB_CHARM.CREEPER_META:
-						return Integer.parseInt(Colors.HEART_ZHU.CREEPER, 16);
-					case Reference.MOB_CHARM.WITCH_META:
-						return Integer.parseInt(Colors.HEART_ZHU.WITCH, 16);
-					case Reference.MOB_CHARM.ZOMBIE_PIGMAN_META:
-						return Integer.parseInt(Colors.HEART_ZHU.ZOMBIE_PIGMAN, 16);
-					case Reference.MOB_CHARM.CAVE_SPIDER_META:
-						return Integer.parseInt(Colors.HEART_ZHU.CAVE_SPIDER, 16);
-					case Reference.MOB_CHARM.SPIDER_META:
-						return Integer.parseInt(Colors.HEART_ZHU.SPIDER, 16);
-					case Reference.MOB_CHARM.ENDERMAN_META:
-						return Integer.parseInt(Colors.HEART_ZHU.ENDERMAN, 16);
-					case Reference.MOB_CHARM.GHAST_META:
-						return Integer.parseInt(Colors.HEART_ZHU.GHAST, 16);
-					case Reference.MOB_CHARM.SLIME_META:
-						return Integer.parseInt(Colors.HEART_ZHU.SLIME, 16);
-					case Reference.MOB_CHARM.MAGMA_CUBE_META:
-						return Integer.parseInt(Colors.HEART_ZHU.MAGMA_CUBE, 16);
-					case Reference.MOB_CHARM.BLAZE_META:
-						return Integer.parseInt(Colors.HEART_ZHU.BLAZE, 16);
-				}
-				return Integer.parseInt(Colors.PURE, 16);
-			}, ModItems.heartZhu);
-		}
-
 		if(isEnabled(ModItems.mobCharmFragment) && isEnabled(ModItems.mobCharm)) {
 			itemColors.registerItemColorHandler((stack, tintIndex) -> {
 				if(tintIndex < 1 || tintIndex > 2)
@@ -64,7 +29,7 @@ public class ModItemColors {
 				}
 
 				return -1;
-			}, ModItems.mobCharm);
+			}, ModItems.mobCharm, ModItems.mobCharmFragment);
 		}
 
 		if(isEnabled(ModItems.magazine) && isEnabled(ModItems.bullet)) {

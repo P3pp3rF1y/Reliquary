@@ -12,7 +12,12 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -36,7 +41,6 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
-import xreliquary.util.RegistryHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -238,8 +242,10 @@ public class ItemEnderStaff extends ItemToggleable {
 		}
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack ist = player.getHeldItem(hand);
 		if(!player.isSneaking()) {
 			if(getMode(ist).equals("cast") || getMode(ist).equals("long_cast")) {
 				if(player.isSwingInProgress)
@@ -259,7 +265,7 @@ public class ItemEnderStaff extends ItemToggleable {
 				player.setActiveHand(hand);
 			}
 		}
-		return super.onItemRightClick(ist, world, player, hand);
+		return super.onItemRightClick(world, player, hand);
 	}
 
 	private ItemStack doWraithNodeWarpCheck(ItemStack stack, World world, EntityPlayer player) {
@@ -270,7 +276,7 @@ public class ItemEnderStaff extends ItemToggleable {
 			if(!world.isRemote) {
 				player.sendMessage(new TextComponentString(TextFormatting.DARK_RED + "Out of range!"));
 			}
-		} else if(stack.getTagCompound() != null && RegistryHelper.blocksEqual(world.getBlockState(new BlockPos(stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))).getBlock(), ModBlocks.wraithNode)) {
+		} else if(stack.getTagCompound() != null && world.getBlockState(new BlockPos(stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))).getBlock() == ModBlocks.wraithNode) {
 			if(canTeleport(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
 				teleportPlayer(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
 				//setCooldown(ist);
@@ -331,7 +337,7 @@ public class ItemEnderStaff extends ItemToggleable {
 		ItemStack stack = player.getHeldItem(hand);
 
 		// if right clicking on a wraith node, bind the eye to that wraith node.
-		if((stack.getTagCompound() == null || !(stack.getTagCompound().hasKey("dimensionID"))) && RegistryHelper.blocksEqual(world.getBlockState(pos).getBlock(), ModBlocks.wraithNode)) {
+		if((stack.getTagCompound() == null || !(stack.getTagCompound().hasKey("dimensionID"))) && world.getBlockState(pos).getBlock() == ModBlocks.wraithNode) {
 			setWraithNode(stack, pos, Integer.valueOf(getWorld(player)), player);
 
 			player.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0f, 1.0f);

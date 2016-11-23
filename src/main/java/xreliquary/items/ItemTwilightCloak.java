@@ -15,6 +15,8 @@ import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
+
 public class ItemTwilightCloak extends ItemToggleable {
 
 	public ItemTwilightCloak() {
@@ -24,6 +26,7 @@ public class ItemTwilightCloak extends ItemToggleable {
 		canRepair = false;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -45,12 +48,6 @@ public class ItemTwilightCloak extends ItemToggleable {
 
 		if(player.world.getLightFromNeighbors(new BlockPos(playerX, playerY, playerZ)) > Settings.TwilightCloak.maxLightLevel)
 			return;
-
-		//        if (Reliquary.CONFIG.getBool(Names.twilight_cloak, "only_works_at_night")) {
-		//            long worldTime = player.world.getWorldTime() % 24000;
-		//            if (worldTime > 13187 && worldTime < 22812)
-		//                return;
-		//        }
 
 		//checks if the effect would do anything. Literally all this does is make the player invisible. It doesn't interfere with mob AI.
 		//for that, we're attempting to use an event handler.

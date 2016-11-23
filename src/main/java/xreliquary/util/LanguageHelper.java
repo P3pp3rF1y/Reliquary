@@ -1,7 +1,6 @@
 package xreliquary.util;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -55,8 +54,10 @@ public class LanguageHelper {
 	}
 
 	private static String getLocalization(String key, boolean fallback) {
+		//noinspection deprecation
 		String localization = I18n.translateToLocal(Reference.MOD_ID + "." + key);
 		if(localization.equals(key) && fallback) {
+			//noinspection deprecation
 			localization = I18n.translateToFallback(Reference.MOD_ID + "." + key);
 		}
 		return localization;

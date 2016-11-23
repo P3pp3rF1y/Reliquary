@@ -46,7 +46,6 @@ public class ModItems {
 	public static final ItemHandgun handgun = new ItemHandgun();
 	public static final ItemHarvestRod harvestRod = new ItemHarvestRod();
 	public static final ItemMobCharmFragment mobCharmFragment = new ItemMobCharmFragment();
-	public static final ItemHeartZhu heartZhu = new ItemHeartZhu();
 	public static final ItemHeroMedallion heroMedallion = new ItemHeroMedallion();
 	public static final ItemIceMagusRod iceMagusRod = new ItemIceMagusRod();
 	public static final ItemInfernalChalice infernalChalice = new ItemInfernalChalice();
@@ -95,7 +94,6 @@ public class ModItems {
 		registerItem(handgun, Names.Items.HANDGUN);
 		registerItem(harvestRod, Names.Items.HARVEST_ROD);
 		registerItem(mobCharmFragment, Names.Items.MOB_CHARM_FRAGMENT);
-		registerItem(heartZhu, Names.Items.HEART_ZHU, false);
 		registerItem(heroMedallion, Names.Items.HERO_MEDALLION);
 		registerItem(holyHandGrenade, Names.Items.HOLY_HAND_GRENADE);
 		registerItem(iceMagusRod, Names.Items.ICE_MAGUS_ROD);

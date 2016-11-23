@@ -85,7 +85,7 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 	private void addEffectsInfo(List<String> currenttip, PotionEssence essence) {
 		List<String> effectLines = new ArrayList<>();
 
-		XRPotionHelper.addPotionInfo(essence, effectLines, false);
+		XRPotionHelper.addPotionInfo(essence, effectLines);
 
 		StringBuilder sb = new StringBuilder();
 		int effectsInLine = 0;

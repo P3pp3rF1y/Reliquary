@@ -11,13 +11,15 @@ import net.minecraft.util.ResourceLocation;
 import xreliquary.api.client.IPedestalItemRenderer;
 import xreliquary.blocks.tile.TileEntityPedestal;
 
+import javax.annotation.Nonnull;
+
 public class RenderPedestalFishHook implements IPedestalItemRenderer {
 
 	private static final ResourceLocation FISH_PARTICLES = new ResourceLocation("textures/particle/particles.png");
 	private static RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
 	@Override
-	public void doRender(TileEntityPedestalRenderer tesr, TileEntityPedestal te, ItemStack stack, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void doRender(TileEntityPedestalRenderer tesr, TileEntityPedestal te, @Nonnull ItemStack stack, double x, double y, double z, float partialTicks, int destroyStage) {
 		Object itemData = te.getItemData(0);
 
 		if(itemData == null || !(itemData instanceof HookRenderingData))

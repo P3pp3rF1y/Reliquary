@@ -134,12 +134,14 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 		NBTHelper.setInteger("experience", stack, i);
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack ist = player.getHeldItem(hand);
 		if(world.isRemote)
 			return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 		if(player.isSneaking())
-			return super.onItemRightClick(ist, world, player, hand);
+			return super.onItemRightClick(world, player, hand);
 		//turn it on/off.
 
 		RayTraceResult rayTraceResult = this.rayTrace(world, player, true);
@@ -181,7 +183,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 	}
 
 	@Override
-	public void update(ItemStack stack, IPedestal pedestal) {
+	public void update(@Nonnull ItemStack stack, IPedestal pedestal) {
 		List<BlockPos> posInRange = pedestal.getPedestalsInRange(Settings.HeroMedallion.pedestalRange);
 		World world = pedestal.getTheWorld();
 
@@ -218,12 +220,12 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 	}
 
 	@Override
-	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+	public void onRemoved(@Nonnull ItemStack stack, IPedestal pedestal) {
 		//nothing needed
 	}
 
 	@Override
-	public void stop(ItemStack stack, IPedestal pedestal) {
+	public void stop(@Nonnull ItemStack stack, IPedestal pedestal) {
 		//nothing needed
 	}
 }

@@ -28,12 +28,4 @@ public class RegistryHelper {
 		}
 		return null;
 	}
-
-	public static boolean blocksEqual(Block block1, Block block2) {
-		return getBlockRegistryName(block1).equals(getBlockRegistryName(block2));
-	}
-
-	public static boolean itemsEqual(Item item1, Item item2) {
-		return getItemRegistryName(item1).equals(getItemRegistryName(item2));
-	}
 }

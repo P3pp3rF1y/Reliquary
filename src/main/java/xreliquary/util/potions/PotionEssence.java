@@ -17,8 +17,8 @@ import java.util.Map;
  */
 public class PotionEssence extends PotionIngredient {
 
-	public static int MAX_DURATION = 36000;
-	public static int MAX_AMPLIFIER = 4;
+	private static int MAX_DURATION = 36000;
+	private static int MAX_AMPLIFIER = 4;
 
 	public List<PotionIngredient> ingredients = new ArrayList<>();
 
@@ -32,7 +32,11 @@ public class PotionEssence extends PotionIngredient {
 
 		for(int tagIndex = 0; tagIndex < tag.getTagList("effects", 10).tagCount(); ++tagIndex) {
 			NBTTagCompound effect = tag.getTagList("effects", 10).getCompoundTagAt(tagIndex);
-			effects.add(new PotionEffect(Potion.getPotionById(effect.getInteger("id")), effect.getInteger("duration"), effect.getInteger("potency")));
+
+			Potion potion = Potion.getPotionById(effect.getInteger("id"));
+			if (potion != null) {
+				effects.add(new PotionEffect(potion, effect.getInteger("duration"), effect.getInteger("potency")));
+			}
 		}
 	}
 
@@ -71,7 +75,10 @@ public class PotionEssence extends PotionIngredient {
 			if(duration == 0)
 				continue;
 
-			this.effects.add(new PotionEffect(Potion.getPotionById(potionID), duration, amplifier));
+			Potion potion = Potion.getPotionById(potionID);
+			if(potion != null) {
+				this.effects.add(new PotionEffect(potion, duration, amplifier));
+			}
 		}
 		this.effects.sort(new EffectComparator());
 	}
@@ -151,8 +158,6 @@ public class PotionEssence extends PotionIngredient {
 
 	public NBTTagCompound writeToNBT() {
 		NBTTagCompound tag = new NBTTagCompound();
-		if(tag.getTagList("effects", 10) == null)
-			return null;
 		NBTTagList effectList = tag.getTagList("effects", 10);
 		for(PotionEffect object : effects) {
 			NBTTagCompound effect = new NBTTagCompound();

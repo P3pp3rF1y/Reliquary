@@ -7,11 +7,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ClientReference {
 
 	@SideOnly(Side.CLIENT)
-	public static final ResourceLocation HANDGUN_TEXTURE = new ResourceLocation(Reference.MOD_ID, Reference.MODEL_TEXTURE_PATH + "handgun.png");
-	@SideOnly(Side.CLIENT)
-	public static final ResourceLocation MORTAR_TEXTURE = new ResourceLocation(Reference.MOD_ID, Reference.MODEL_TEXTURE_PATH + "mortar.png");
-
-	@SideOnly(Side.CLIENT)
 	public static final ResourceLocation NEUTRAL = new ResourceLocation(Reference.MOD_ID, Reference.ART_PATH_ENTITIES + "neutralShot.png");
 	@SideOnly(Side.CLIENT)
 	public static final ResourceLocation EXORCISM = new ResourceLocation(Reference.MOD_ID, Reference.ART_PATH_ENTITIES + "exorcismShot.png");

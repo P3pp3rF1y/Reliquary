@@ -114,9 +114,11 @@ public class ItemInfernalTear extends ItemToggleable {
 		return EnumRarity.EPIC;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
-		ActionResult<ItemStack> actionResult = super.onItemRightClick(stack, world, player, hand);
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+		ActionResult<ItemStack> actionResult = super.onItemRightClick(world, player, hand);
 		if(player.isSneaking() && !this.isEnabled(stack))
 			return actionResult;
 

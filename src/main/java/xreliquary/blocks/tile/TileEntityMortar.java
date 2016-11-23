@@ -14,7 +14,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Reference;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
 import xreliquary.util.potions.XRPotionHelper;
@@ -25,6 +24,7 @@ import java.util.List;
 
 public class TileEntityMortar extends TileEntityInventory implements IWailaDataChangeIndicator {
 
+	private static final int PESTLE_USAGE_MAX = 5; // the number of times you have to use the pestle
 	// counts the number of times the player has right clicked the block
 	// arbitrarily setting the number of times the player needs to grind the
 	// materials to five.
@@ -111,7 +111,7 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 			pestleUsedCounter++;
 			spawnPestleParticles();
 		}
-		if(pestleUsedCounter >= Reference.PESTLE_USAGE_MAX) {
+		if(pestleUsedCounter >= PESTLE_USAGE_MAX) {
 			//we've "maxed" the pestle counter and we need to see if the essence would contain potion effects.
 			//if it doesn't, just return the ingredients to the player, we are nice like that.
 			PotionEssence resultEssence = new PotionEssence(potionIngredients.toArray(new PotionIngredient[potionIngredients.size()]));

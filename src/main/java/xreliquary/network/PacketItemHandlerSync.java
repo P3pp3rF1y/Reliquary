@@ -69,7 +69,14 @@ public class PacketItemHandlerSync implements IMessage, IMessageHandler<PacketIt
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IMessage onMessage(PacketItemHandlerSync message, MessageContext ctx) {
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+		Minecraft.getMinecraft().addScheduledTask(() -> handleMessage(message));
+
+		return null;
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void handleMessage(PacketItemHandlerSync message) {
+		EntityPlayer player = Minecraft.getMinecraft().player;
 
 		ItemStack stack;
 		if(message.playerSlotNumber > INVALID_SLOT) {
@@ -78,18 +85,14 @@ public class PacketItemHandlerSync implements IMessage, IMessageHandler<PacketIt
 			stack = player.getHeldItem(message.hand);
 		}
 
-		if(stack != null) {
+		if(stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
 			IItemHandler itemHandler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 			if(itemHandler != null && itemHandler instanceof FilteredItemStackHandler) {
 
 				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 
-				if (filteredHandler != null) {
-					filteredHandler.deserializeNBT(message.itemHandlerNBT);
-				}
+				filteredHandler.deserializeNBT(message.itemHandlerNBT);
 			}
 		}
-
-		return null;
 	}
 }

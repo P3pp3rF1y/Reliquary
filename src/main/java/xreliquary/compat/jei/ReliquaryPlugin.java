@@ -78,9 +78,6 @@ public class ReliquaryPlugin implements IModPlugin {
 
 		//blacklisted items
 		registry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(new ItemStack(ModItems.filledVoidTear));
-		for(byte i = 0; i < 13; i++) {
-			registry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(new ItemStack(ModItems.heartZhu, 1, i));
-		}
 	}
 
 	@Override

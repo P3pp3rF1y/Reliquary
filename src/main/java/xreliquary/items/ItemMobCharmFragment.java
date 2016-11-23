@@ -9,11 +9,7 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
-/**
- * Created by Xeno on 10/11/2014.
- */
 public class ItemMobCharmFragment extends ItemBase {
 	public ItemMobCharmFragment() {
 		super(Names.Items.MOB_CHARM_FRAGMENT);

@@ -77,50 +77,44 @@ public class ItemEmperorChalice extends ItemToggleable {
 		return stack;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack ist = player.getHeldItem(hand);
 		if(player.isSneaking())
-			return super.onItemRightClick(ist, world, player, hand);
+			return super.onItemRightClick(world, player, hand);
 		boolean isInDrainMode = this.isEnabled(ist);
 		RayTraceResult result = this.rayTrace(world, player, isInDrainMode);
 
-		if(result == null) {
+		if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
+
+			if(!world.isBlockModifiable(player, result.getBlockPos()))
+				return new ActionResult<>(EnumActionResult.FAIL, ist);
+
+			if(!player.canPlayerEdit(result.getBlockPos(), result.sideHit, ist))
+				return new ActionResult<>(EnumActionResult.FAIL, ist);
+
 			if(!this.isEnabled(ist)) {
-				player.setActiveHand(hand);
-			}
-			return new ActionResult<>(EnumActionResult.SUCCESS, ist);
-		} else {
+				BlockPos waterPlacementPos = result.getBlockPos().offset(result.sideHit);
 
-			if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
-
-				if(!world.isBlockModifiable(player, result.getBlockPos()))
+				if(!player.canPlayerEdit(waterPlacementPos, result.sideHit, ist))
 					return new ActionResult<>(EnumActionResult.FAIL, ist);
 
-				if(!player.canPlayerEdit(result.getBlockPos(), result.sideHit, ist))
-					return new ActionResult<>(EnumActionResult.FAIL, ist);
+				if(this.tryPlaceContainedLiquid(world, ist, waterPlacementPos))
+					return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 
-				if(!this.isEnabled(ist)) {
-					BlockPos waterPlacementPos = result.getBlockPos().offset(result.sideHit);
+			} else {
+				String ident = RegistryHelper.getBlockRegistryName(world.getBlockState(result.getBlockPos()).getBlock());
+				//noinspection ConstantConditions
+				if((ident.equals(RegistryHelper.getBlockRegistryName(Blocks.FLOWING_WATER)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.WATER))) && world.getBlockState(result.getBlockPos()).getValue(BlockLiquid.LEVEL) == 0) {
+					world.setBlockState(result.getBlockPos(), Blocks.AIR.getDefaultState());
 
-					if(!player.canPlayerEdit(waterPlacementPos, result.sideHit, ist))
-						return new ActionResult<>(EnumActionResult.FAIL, ist);
-
-					if(this.tryPlaceContainedLiquid(world, ist, waterPlacementPos))
-						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
-
-				} else {
-					String ident = RegistryHelper.getBlockRegistryName(world.getBlockState(result.getBlockPos()).getBlock());
-					//noinspection ConstantConditions
-					if((ident.equals(RegistryHelper.getBlockRegistryName(Blocks.FLOWING_WATER)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.WATER))) && world.getBlockState(result.getBlockPos()).getValue(BlockLiquid.LEVEL) == 0) {
-						world.setBlockState(result.getBlockPos(), Blocks.AIR.getDefaultState());
-
-						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
-					}
+					return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 				}
 			}
-
-			return new ActionResult<>(EnumActionResult.PASS, ist);
 		}
+
+		return new ActionResult<>(EnumActionResult.PASS, ist);
 	}
 
 	private boolean tryPlaceContainedLiquid(World world, @Nonnull ItemStack stack, BlockPos pos) {

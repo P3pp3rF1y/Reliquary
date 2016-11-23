@@ -1,9 +1,12 @@
 package xreliquary.network;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.handler.ClientEventHandler;
 
 public class PacketMobCharmDamage implements IMessage, IMessageHandler<PacketMobCharmDamage, IMessage> {
@@ -11,6 +14,7 @@ public class PacketMobCharmDamage implements IMessage, IMessageHandler<PacketMob
 	private int damage;
 	private int slot;
 
+	@SuppressWarnings("unused")
 	public PacketMobCharmDamage() {}
 
 	public PacketMobCharmDamage(byte type, int damage, int slot){
@@ -34,9 +38,15 @@ public class PacketMobCharmDamage implements IMessage, IMessageHandler<PacketMob
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IMessage onMessage(PacketMobCharmDamage message, MessageContext ctx) {
-		ClientEventHandler.addCharmToDraw(message.type, message.damage, message.slot);
+		Minecraft.getMinecraft().addScheduledTask(() -> handleMessage(message));
 
 		return null;
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void handleMessage(PacketMobCharmDamage message) {
+		ClientEventHandler.addCharmToDraw(message.type, message.damage, message.slot);
 	}
 }

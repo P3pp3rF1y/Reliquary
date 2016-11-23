@@ -36,11 +36,6 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
-		return super.onItemRightClick(ist, world, player, hand);
-	}
-
-	@Override
 	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;

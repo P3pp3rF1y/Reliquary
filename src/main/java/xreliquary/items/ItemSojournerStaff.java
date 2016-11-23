@@ -13,7 +13,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -318,7 +323,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 
 			//add "currently placing: blah blah blah" to the tooltip.
 			Item placingItem = null;
-			if (getTorchPlacementMode(ist) != null)
+			if(getTorchPlacementMode(ist) != null)
 				placingItem = RegistryHelper.getItemFromName(getTorchPlacementMode(ist));
 
 			if(placingItem != null) {
@@ -357,9 +362,9 @@ public class ItemSojournerStaff extends ItemToggleable {
 		Block blockTargetted = world.getBlockState(pos).getBlock();
 		BlockPos placeBlockAt = pos;
 
-		if(RegistryHelper.blocksEqual(blockTargetted, Blocks.SNOW)) {
+		if(blockTargetted == Blocks.SNOW) {
 			side = EnumFacing.UP;
-		} else if(!RegistryHelper.blocksEqual(blockTargetted, Blocks.VINE) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.TALLGRASS) && !RegistryHelper.blocksEqual(blockTargetted, Blocks.DEADBUSH) && !blockTargetted.isReplaceable(world, pos)) {
+		} else if(blockTargetted != Blocks.VINE && blockTargetted != Blocks.TALLGRASS && blockTargetted != Blocks.DEADBUSH && !blockTargetted.isReplaceable(world, pos)) {
 			placeBlockAt = pos.offset(side);
 		}
 
@@ -411,8 +416,10 @@ public class ItemSojournerStaff extends ItemToggleable {
 		return world.rayTraceBlocks(vec3, vec31, true, false, false);
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack ist = player.getHeldItem(hand);
 		//calls onItemUse so all of the functionality we'd normally have to do preventative checks on gets handled there.
 		if(!player.isSneaking()) {
 			RayTraceResult mop = this.getBlockTarget(world, player);
@@ -420,7 +427,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 				placeTorch(player, world, mop.getBlockPos(), hand, mop.sideHit, ist);
 			}
 		}
-		return super.onItemRightClick(ist, world, player, hand);
+		return super.onItemRightClick(world, player, hand);
 	}
 
 	@Nonnull
@@ -429,21 +436,20 @@ public class ItemSojournerStaff extends ItemToggleable {
 		float f = player.rotationPitch;
 		float f1 = player.rotationYaw;
 		double d0 = player.posX;
-		double d1 = player.posY + (double)player.getEyeHeight();
+		double d1 = player.posY + (double) player.getEyeHeight();
 		double d2 = player.posZ;
 		Vec3d vec3d = new Vec3d(d0, d1, d2);
-		float f2 = MathHelper.cos(-f1 * 0.017453292F - (float)Math.PI);
-		float f3 = MathHelper.sin(-f1 * 0.017453292F - (float)Math.PI);
+		float f2 = MathHelper.cos(-f1 * 0.017453292F - (float) Math.PI);
+		float f3 = MathHelper.sin(-f1 * 0.017453292F - (float) Math.PI);
 		float f4 = -MathHelper.cos(-f * 0.017453292F);
 		float f5 = MathHelper.sin(-f * 0.017453292F);
 		float f6 = f3 * f4;
 		float f7 = f2 * f4;
 		double d3 = 32.0D;
-		if (player instanceof net.minecraft.entity.player.EntityPlayerMP)
-		{
-			d3 = ((net.minecraft.entity.player.EntityPlayerMP)player).interactionManager.getBlockReachDistance();
+		if(player instanceof net.minecraft.entity.player.EntityPlayerMP) {
+			d3 = ((net.minecraft.entity.player.EntityPlayerMP) player).interactionManager.getBlockReachDistance();
 		}
-		Vec3d vec3d1 = vec3d.addVector((double)f6 * d3, (double)f5 * d3, (double)f7 * d3);
+		Vec3d vec3d1 = vec3d.addVector((double) f6 * d3, (double) f5 * d3, (double) f7 * d3);
 		//noinspection ConstantConditions
 		return world.rayTraceBlocks(vec3d, vec3d1, useLiquids, !useLiquids, false);
 	}
@@ -452,7 +458,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 		if(!world.setBlockState(pos, torchBlockState, 3))
 			return false;
 
-		if(RegistryHelper.blocksEqual(torchBlockState.getBlock(), Blocks.TORCH)) {
+		if(torchBlockState.getBlock() == Blocks.TORCH) {
 			//noinspection deprecation
 			Blocks.TORCH.neighborChanged(torchBlockState, world, pos, torchBlockState.getBlock(), pos);
 			Blocks.TORCH.onBlockPlacedBy(world, pos, torchBlockState, player, stack);

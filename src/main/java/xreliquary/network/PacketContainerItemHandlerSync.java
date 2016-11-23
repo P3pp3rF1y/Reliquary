@@ -27,8 +27,7 @@ public class PacketContainerItemHandlerSync implements IMessage, IMessageHandler
 	private NBTTagCompound itemHandlerNBT;
 	private int windowId;
 
-	private static final int INVALID_SLOT = -1;
-
+	@SuppressWarnings("unused")
 	public PacketContainerItemHandlerSync() {
 	}
 
@@ -65,34 +64,29 @@ public class PacketContainerItemHandlerSync implements IMessage, IMessageHandler
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IMessage onMessage(PacketContainerItemHandlerSync message, MessageContext ctx) {
-
-		Minecraft.getMinecraft().addScheduledTask(() -> handleMessage(message, ctx));
+		Minecraft.getMinecraft().addScheduledTask(() -> handleMessage(message));
 
 		return null;
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void handleMessage(PacketContainerItemHandlerSync message, MessageContext ctx) {
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+	private void handleMessage(PacketContainerItemHandlerSync message) {
+		EntityPlayer player = Minecraft.getMinecraft().player;
 
 		if (player.openContainer == null || player.openContainer.windowId != message.windowId)
 			return;
 
 		Slot s = player.openContainer.getSlot(message.slot);
-		if (s == null)
-			return;
 
 		ItemStack stack = s.getStack();
 
-		if(stack != null) {
+		if(!stack.isEmpty()) {
 			IItemHandler itemHandler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 			if(itemHandler != null && itemHandler instanceof FilteredItemStackHandler) {
 
 				FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 
-				if (filteredHandler != null) {
-					filteredHandler.deserializeNBT(message.itemHandlerNBT);
-				}
+				filteredHandler.deserializeNBT(message.itemHandlerNBT);
 			}
 		}
 	}

@@ -216,7 +216,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 		if(!world.setBlockState(pos, torchBlockState, 3))
 			return false;
 
-		if(RegistryHelper.blocksEqual(torchBlockState.getBlock(), Blocks.TORCH)) {
+		if(torchBlockState.getBlock() == Blocks.TORCH) {
 			//noinspection deprecation
 			Blocks.TORCH.neighborChanged(torchBlockState, world, pos, torchBlockState.getBlock(), pos);
 			Blocks.TORCH.onBlockPlacedBy(world, pos, torchBlockState, player, stack);

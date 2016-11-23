@@ -71,8 +71,10 @@ public class ItemIceMagusRod extends ItemToggleable {
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack ist = player.getHeldItem(hand);
 		//acts as a cooldown.
 		if(player.isSwingInProgress)
 			return new ActionResult<>(EnumActionResult.PASS, ist);
@@ -87,7 +89,7 @@ public class ItemIceMagusRod extends ItemToggleable {
 					NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
 			}
 		}
-		return super.onItemRightClick(ist, world, player, hand);
+		return super.onItemRightClick(world, player, hand);
 	}
 
 	@Nonnull

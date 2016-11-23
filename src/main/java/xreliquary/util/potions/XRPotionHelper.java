@@ -15,13 +15,11 @@ import net.minecraft.util.text.translation.I18n;
 import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Created by Xeno on 11/8/2014.
- */
 public class XRPotionHelper {
 
 	public static boolean isItemEssence(ItemStack ist) {
@@ -39,7 +37,16 @@ public class XRPotionHelper {
 	}
 
 	public static int getPotionIdByName(String name) {
-		return Potion.getIdFromPotion(Potion.getPotionFromResourceLocation(name)); //TODO verify this works
+		return Potion.getIdFromPotion(getPotionByName(name));
+	}
+
+	@Nonnull
+	private static Potion getPotionByName(String name) {
+		Potion potion = Potion.getPotionFromResourceLocation(name);
+
+		assert potion != null;
+
+		return potion;
 	}
 
 	public static PotionIngredient getIngredient(ItemStack ist) {
@@ -59,7 +66,7 @@ public class XRPotionHelper {
 			MobEffects.NIGHT_VISION,
 			MobEffects.WATER_BREATHING};
 
-	public static boolean isAugmentablePotionEffect(PotionEffect effect) {
+	static boolean isAugmentablePotionEffect(PotionEffect effect) {
 		for(Potion nonAugmentableEffect : nonAugmentableEffects) {
 			if(nonAugmentableEffect == effect.getPotion())
 				return false;
@@ -69,13 +76,10 @@ public class XRPotionHelper {
 	}
 
 	public static void addPotionInfo(PotionEssence essence, List<String> list) {
-		addPotionInfo(essence, list, true);
-	}
-
-	public static void addPotionInfo(PotionEssence essence, List<String> list, boolean addEffectDescription) {
 		if(essence.getEffects().size() > 0) {
 			List<Tuple<String, AttributeModifier>> list1 = Lists.newArrayList();
 			for(PotionEffect potioneffect : essence.getEffects()) {
+				//noinspection deprecation
 				String s1 = I18n.translateToLocal(potioneffect.getEffectName()).trim();
 				Potion potion = potioneffect.getPotion();
 				Map<IAttribute, AttributeModifier> map = potion.getAttributeModifierMap();
@@ -84,11 +88,12 @@ public class XRPotionHelper {
 					for(Map.Entry<IAttribute, AttributeModifier> entry : map.entrySet()) {
 						AttributeModifier attributemodifier = entry.getValue();
 						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.getAttributeModifierAmount(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
-						list1.add(new Tuple<>(entry.getKey().getAttributeUnlocalizedName(), attributemodifier1));
+						list1.add(new Tuple<>(entry.getKey().getName(), attributemodifier1));
 					}
 				}
 
 				if(potioneffect.getAmplifier() > 0) {
+					//noinspection deprecation
 					s1 = s1 + " " + I18n.translateToLocal("potion.potency." + potioneffect.getAmplifier()).trim();
 				}
 
@@ -105,6 +110,7 @@ public class XRPotionHelper {
 
 			if(!list1.isEmpty()) {
 				list.add("");
+				//noinspection deprecation
 				list.add(TextFormatting.DARK_PURPLE + I18n.translateToLocal("potion.whenDrank"));
 
 				for(Tuple<String, AttributeModifier> tuple : list1) {
@@ -119,9 +125,11 @@ public class XRPotionHelper {
 					}
 
 					if(d0 > 0.0D) {
+						//noinspection deprecation
 						list.add(TextFormatting.BLUE + I18n.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.translateToLocal("attribute.name." + tuple.getFirst())));
 					} else if(d0 < 0.0D) {
 						d1 = d1 * -1.0D;
+						//noinspection deprecation
 						list.add(TextFormatting.RED + I18n.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.translateToLocal("attribute.name." + tuple.getFirst())));
 					}
 				}
@@ -134,7 +142,7 @@ public class XRPotionHelper {
 	}
 
 	public static void appendEffectsToNBT(NBTTagCompound compound, List<PotionEffect> potionEffects) {
-		if (potionEffects == null || potionEffects.size() == 0)
+		if(potionEffects == null || potionEffects.size() == 0)
 			return;
 
 		NBTTagList nbttaglist = compound.getTagList("CustomPotionEffects", 9);

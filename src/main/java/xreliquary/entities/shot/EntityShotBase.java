@@ -21,6 +21,7 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.potions.XRPotionHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -289,7 +290,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 */
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound compound) {
+	public void writeEntityToNBT(@Nonnull NBTTagCompound compound) {
 		compound.setShort("xTile", (short) xTile);
 		compound.setShort("yTile", (short) yTile);
 		compound.setShort("zTile", (short) zTile);
@@ -302,7 +303,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 */
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound compound) {
+	public void readEntityFromNBT(@Nonnull NBTTagCompound compound) {
 		xTile = compound.getShort("xTile");
 		yTile = compound.getShort("yTile");
 		zTile = compound.getShort("zTile");

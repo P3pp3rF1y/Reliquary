@@ -73,7 +73,7 @@ public class ClientProxy extends CommonProxy {
 		if(!Loader.isModLoaded(Compatibility.MOD_ID.JEI))
 			return;
 
-		List<ItemStack> subItems = new ArrayList<>();
+		NonNullList<ItemStack> subItems = NonNullList.create();
 		ModItems.potionEssence.getSubItems(ModItems.potionEssence, ModItems.potionEssence.getCreativeTab(), subItems);
 		JEIDescriptionRegistry.register(subItems, Names.Items.POTION_ESSENCE);
 
@@ -119,7 +119,7 @@ public class ClientProxy extends CommonProxy {
 		JEIDescriptionRegistry.register(potionShots, "bullet1_potion");
 		JEIDescriptionRegistry.register(potionMagazines, "magazine1_potion");
 
-		List<ItemStack> mobCharms = new ArrayList<>();
+		NonNullList<ItemStack> mobCharms = NonNullList.create();
 		ModItems.mobCharm.getSubItems(ModItems.mobCharm, Reliquary.CREATIVE_TAB, mobCharms);
 
 		int meta = 0;

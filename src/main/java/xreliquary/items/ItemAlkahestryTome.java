@@ -41,9 +41,11 @@ public class ItemAlkahestryTome extends ItemToggleable {
 		this.canRepair = false;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
-		ItemStack newStack = super.onItemRightClick(stack, world, player, hand).getResult();
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+		ItemStack newStack = super.onItemRightClick(world, player, hand).getResult();
 		if(player.isSneaking())
 			return new ActionResult<>(EnumActionResult.SUCCESS, newStack);
 

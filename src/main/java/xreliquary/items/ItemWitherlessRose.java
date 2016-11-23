@@ -12,6 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class ItemWitherlessRose extends ItemBase {
@@ -24,6 +25,7 @@ public class ItemWitherlessRose extends ItemBase {
 		canRepair = false;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {

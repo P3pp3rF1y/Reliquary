@@ -5,13 +5,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalRedstoneItemWrapper;
-import xreliquary.blocks.BlockPedestal;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
-	boolean powered;
+	private boolean powered;
 
 	public static class AlwaysOn extends PedestalRedstoneWrapper {
 
@@ -26,16 +26,17 @@ public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public PedestalRedstoneWrapper() {
 		this(false);
 	}
 
-	public PedestalRedstoneWrapper(boolean powered) {
+	private PedestalRedstoneWrapper(boolean powered) {
 		this.powered = powered;
 	}
 
 	@Override
-	public void updateRedstone(ItemStack stack, IPedestal pedestal) {
+	public void updateRedstone(@Nonnull ItemStack stack, IPedestal pedestal) {
 		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(Settings.Pedestal.redstoneWrapperRange);
 		World world = pedestal.getTheWorld();
 		BlockPos thisPos = pedestal.getBlockPos();
@@ -43,7 +44,7 @@ public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 		boolean buttonEnabled = pedestal.switchedOn();
 
 		for(BlockPos pos : pedestalsInRange) {
-			if (pos.equals(thisPos))
+			if(pos.equals(thisPos))
 				continue;
 
 			IPedestal ped = (IPedestal) world.getTileEntity(pos);
@@ -58,14 +59,16 @@ public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 	}
 
 	@Override
-	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+	public void onRemoved(@Nonnull ItemStack stack, IPedestal pedestal) {
 		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(Settings.Pedestal.redstoneWrapperRange);
 		World world = pedestal.getTheWorld();
 		BlockPos thisPos = pedestal.getBlockPos();
 
 		for(BlockPos pos : pedestalsInRange) {
 			IPedestal ped = (IPedestal) world.getTileEntity(pos);
-			ped.switchOff(thisPos);
+			if(ped != null) {
+				ped.switchOff(thisPos);
+			}
 		}
 	}
 }

@@ -31,6 +31,10 @@ import java.util.List;
 
 public class ItemHandgun extends ItemBase {
 
+	private static final int PLAYER_HANDGUN_SKILL_MAXIMUM = 20;
+	private static final int HANDGUN_RELOAD_SKILL_OFFSET = 10;
+	private static final int HANDGUN_COOLDOWN_SKILL_OFFSET = 5;
+
 	public ItemHandgun() {
 		super(Names.Items.HANDGUN);
 		this.setMaxStackSize(1);
@@ -281,7 +285,7 @@ public class ItemHandgun extends ItemBase {
 		// fire bullet
 		if(getBulletCount(handgun) > 0) {
 			if(!isInCooldown(handgun)) {
-				setCooldown(handgun, worldIn.getWorldTime() + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM));
+				setCooldown(handgun, worldIn.getWorldTime() + PLAYER_HANDGUN_SKILL_MAXIMUM + HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, PLAYER_HANDGUN_SKILL_MAXIMUM));
 				setInCooldown(handgun, true);
 
 				fireBullet(handgun, worldIn, player, handgun == player.getHeldItemMainhand() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
@@ -316,7 +320,7 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	private int getItemUseDuration() {
-		return Reference.HANDGUN_RELOAD_SKILL_OFFSET + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM;
+		return HANDGUN_RELOAD_SKILL_OFFSET + PLAYER_HANDGUN_SKILL_MAXIMUM;
 	}
 
 	private void fireBullet(ItemStack handgun, World world, EntityPlayer player, EnumHand hand) {
@@ -402,6 +406,6 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	private int getPlayerReloadDelay(EntityPlayer player) {
-		return Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_RELOAD_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM);
+		return PLAYER_HANDGUN_SKILL_MAXIMUM + HANDGUN_RELOAD_SKILL_OFFSET - Math.min(player.experienceLevel, PLAYER_HANDGUN_SKILL_MAXIMUM);
 	}
 }

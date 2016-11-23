@@ -16,9 +16,11 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 
+import javax.annotation.Nonnull;
+
 public class ItemWitchHat extends ItemArmor {
 
-	public static final ItemArmor.ArmorMaterial hatMaterial = EnumHelper.addArmorMaterial("hat_material", Reference.DOMAIN + Names.Items.WITCH_HAT, 0, new int[] {0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0.0F);
+	private static final ItemArmor.ArmorMaterial hatMaterial = EnumHelper.addArmorMaterial("hat_material", Reference.DOMAIN + Names.Items.WITCH_HAT, 0, new int[] {0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0.0F);
 
 	public ItemWitchHat() {
 		super(hatMaterial, 0, EntityEquipmentSlot.HEAD);
@@ -27,9 +29,10 @@ public class ItemWitchHat extends ItemArmor {
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
-	public String getItemStackDisplayName(ItemStack stack) {
+	public String getItemStackDisplayName(@Nonnull ItemStack stack) {
 		return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
 	}
 
@@ -38,6 +41,7 @@ public class ItemWitchHat extends ItemArmor {
 		return armorType == EntityEquipmentSlot.HEAD;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack stack, EntityEquipmentSlot slotID, ModelBiped _default) {

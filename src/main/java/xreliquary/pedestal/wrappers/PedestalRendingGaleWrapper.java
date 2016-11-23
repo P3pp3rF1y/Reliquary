@@ -13,6 +13,7 @@ import xreliquary.init.ModPotions;
 import xreliquary.items.ItemRendingGale;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
@@ -23,7 +24,7 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 	private int pushPullCheckCoolDown;
 
 	@Override
-	public void update(ItemStack stack, IPedestal pedestal) {
+	public void update(@Nonnull ItemStack stack, IPedestal pedestal) {
 		World world = pedestal.getTheWorld();
 		BlockPos pos = pedestal.getBlockPos();
 		ItemRendingGale rendingGale = (ItemRendingGale) stack.getItem();
@@ -64,10 +65,10 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 	}
 
 	@Override
-	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+	public void onRemoved(@Nonnull ItemStack stack, IPedestal pedestal) {
 	}
 
 	@Override
-	public void stop(ItemStack stack, IPedestal pedestal) {
+	public void stop(@Nonnull ItemStack stack, IPedestal pedestal) {
 	}
 }

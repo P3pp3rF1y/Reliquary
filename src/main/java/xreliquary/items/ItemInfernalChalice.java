@@ -25,6 +25,7 @@ import xreliquary.items.util.fluid.FluidHandlerInfernalChalice;
 import xreliquary.reference.Names;
 import xreliquary.util.NBTHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemInfernalChalice extends ItemToggleable {
@@ -42,10 +43,12 @@ public class ItemInfernalChalice extends ItemToggleable {
 		this.formatTooltip(ImmutableMap.of("amount", amount), ist, list);
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
 		if(player.isSneaking()) {
-			return super.onItemRightClick(stack, world, player, hand);
+			return super.onItemRightClick(world, player, hand);
 		}
 
 		boolean isInDrainMode = this.isEnabled(stack);
