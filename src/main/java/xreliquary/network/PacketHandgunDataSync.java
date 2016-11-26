@@ -97,6 +97,7 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 		return null;
 	}
 
+	@SideOnly(Side.CLIENT)
 	private void handleMessage(PacketHandgunDataSync message) {
 		EntityPlayer player = Minecraft.getMinecraft().player;
 

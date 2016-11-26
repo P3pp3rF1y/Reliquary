@@ -77,6 +77,8 @@ public class ItemMidasTouchstone extends ItemToggleable {
 
 		for(int slot = 0; slot < player.inventory.armorInventory.size(); slot++) {
 			ItemStack armorStack = player.inventory.armorInventory.get(slot);
+			if (armorStack.isEmpty())
+				continue;
 			ItemArmor armor = (ItemArmor) armorStack.getItem();
 			if(armor.getArmorMaterial() != ItemArmor.ArmorMaterial.GOLD && !goldItems.contains(RegistryHelper.getItemRegistryName(armor))) {
 				continue;
