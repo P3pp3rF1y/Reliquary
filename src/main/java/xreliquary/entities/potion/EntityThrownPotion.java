@@ -17,28 +17,21 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.network.PacketFXThrownPotionImpact;
 import xreliquary.network.PacketHandler;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by Xeno on 3/11/14.
- */
-public abstract class EntityThrownPotion extends EntityThrowable {
-	public EntityThrownPotion(World par1World) {
-		super(par1World);
+abstract class EntityThrownPotion extends EntityThrowable {
+	EntityThrownPotion(World world) {
+		super(world);
 	}
 
-	public EntityThrownPotion(World par1World, EntityPlayer par2EntityPlayer) {
-		super(par1World, par2EntityPlayer);
+	EntityThrownPotion(World world, EntityPlayer player) {
+		super(world, player);
 	}
 
-	@SideOnly(Side.CLIENT)
-	public EntityThrownPotion(World par1World, double par2, double par4, double par6, int par8) {
-		this(par1World, par2, par4, par6);
-	}
-
-	public EntityThrownPotion(World par1World, double par2, double par4, double par6) {
-		super(par1World, par2, par4, par6);
+	EntityThrownPotion(World world, double x, double y, double z) {
+		super(world, x, y, z);
 	}
 
 	/**
@@ -46,29 +39,31 @@ public abstract class EntityThrownPotion extends EntityThrowable {
 	 */
 	@Override
 	protected float getGravityVelocity() {
-		return 0.07F;
+		return 0.05F;
 	}
 
 	/**
 	 * Called when this EntityThrowable hits a block or entity.
 	 */
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		this.spawnParticles();
-		this.doSplashEffect();
-		this.setDead();
+	protected void onImpact(@Nonnull RayTraceResult result) {
+		if (!world.isRemote) {
+			this.spawnParticles();
+			this.doSplashEffect();
+			this.setDead();
+		}
 	}
 
 	// called by the splashEffect so that it can skip the bounding box and
 	// entity iteration, just keeps things moving.
 	abstract boolean hasLivingEntityEffect();
 
-	protected void doSplashEffect() {
+	private void doSplashEffect() {
 		this.doGroundSplashEffect();
 		if(!this.hasLivingEntityEffect())
 			return;
 		AxisAlignedBB bb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
-		List<EntityLivingBase> eList = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, bb);
+		List<EntityLivingBase> eList = world.getEntitiesWithinAABB(EntityLivingBase.class, bb);
 		eList.forEach(this::doLivingSplashEffect);
 	}
 
@@ -78,16 +73,16 @@ public abstract class EntityThrownPotion extends EntityThrowable {
 
 	// most of these are the same in every potion, the only thing that isn't is
 	// the coloration of the particles.
-	protected void spawnParticles() {
-		if(worldObj.isRemote)
+	private void spawnParticles() {
+		if(world.isRemote)
 			return;
 
 		Random rand = this.rand;
 		for(int i = 0; i < 8; ++i) {
-			worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, Item.getIdFromItem(Items.POTIONITEM));
+			world.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D, Item.getIdFromItem(Items.POTIONITEM));
 		}
 
-		worldObj.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		world.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
 
 		PacketHandler.networkWrapper.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), this.posX, this.posY, this.posZ), new NetworkRegistry.TargetPoint(this.dimension, this.posX, this.posY, this.posZ, 32.0D));
 	}

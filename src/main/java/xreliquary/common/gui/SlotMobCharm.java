@@ -6,26 +6,26 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import xreliquary.init.ModItems;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
-public class SlotMobCharm extends Slot {
+class SlotMobCharm extends Slot {
 	private static IInventory emptyInventory = new InventoryBasic("[Null]", true, 0);
 	private ItemStack belt;
 
-	public SlotMobCharm(ItemStack belt, int index, int xPosition, int yPosition) {
+	SlotMobCharm(ItemStack belt, int index, int xPosition, int yPosition) {
 		super(emptyInventory, index, xPosition, yPosition);
 
 		this.belt = belt;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public ItemStack getStack() {
 		return ModItems.mobCharmBelt.getMobCharmInSlot(belt, this.getSlotIndex());
 	}
 
 	@Override
-	public void putStack(@Nullable ItemStack stack) {
+	public void putStack(@Nonnull ItemStack stack) {
 		ModItems.mobCharmBelt.putMobCharmInSlot(belt, this.getSlotIndex(), stack);
 	}
 
@@ -38,10 +38,11 @@ public class SlotMobCharm extends Slot {
 		return 1;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack decrStackSize(int amount) {
 		if(amount > 1)
-			return null;
+			return ItemStack.EMPTY;
 
 		ItemStack mobCharm = ModItems.mobCharmBelt.getMobCharmInSlot(belt, getSlotIndex());
 
@@ -51,7 +52,7 @@ public class SlotMobCharm extends Slot {
 	}
 
 	@Override
-	public boolean isItemValid(@Nullable ItemStack stack) {
+	public boolean isItemValid(ItemStack stack) {
 		return stack.getItem() == ModItems.mobCharm;
 	}
 
@@ -60,7 +61,7 @@ public class SlotMobCharm extends Slot {
 		return other instanceof SlotMobCharm && ((SlotMobCharm) other).getBelt() == this.belt;
 	}
 
-	public ItemStack getBelt() {
+	private ItemStack getBelt() {
 		return belt;
 	}
 }

@@ -35,11 +35,13 @@ public class Reliquary {
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
 	public static CommonProxy PROXY;
 
-	public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID());
+	public static CreativeTabs CREATIVE_TAB;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+
+ 		CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID());
 
 		PROXY.initColors();
 
@@ -100,12 +102,12 @@ public class Reliquary {
 	public void onMessage(IMCEvent event) {
 		event.getMessages().stream().filter(message -> message.key.equals("Alkahest")).forEach(message -> {
 			NBTTagCompound tag = message.getNBTValue();
-			if(tag != null && ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")) != null && tag.hasKey("yield") && tag.hasKey("cost")) {
+			if(tag != null && !new ItemStack(tag.getCompoundTag("item")).isEmpty() && tag.hasKey("yield") && tag.hasKey("cost")) {
 				if(tag.hasKey("dictionaryName"))
 					Settings.AlkahestryTome.craftingRecipes.put("OreDictionary:" + tag.getString("dictionaryName"), new AlkahestCraftRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
 				else
-					Settings.AlkahestryTome.craftingRecipes.put(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem().getRegistryName().toString(), new AlkahestCraftRecipe(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
-				LogHelper.info("[IMC] Added AlkahestRecipe ID: " + Item.REGISTRY.getNameForObject(ItemStack.loadItemStackFromNBT(tag.getCompoundTag("item")).getItem()) + " from " + message.getSender() + " to registry.");
+					Settings.AlkahestryTome.craftingRecipes.put(new ItemStack(tag.getCompoundTag("item")).getItem().getRegistryName().toString(), new AlkahestCraftRecipe(new ItemStack(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
+				LogHelper.info("[IMC] Added AlkahestRecipe ID: " + Item.REGISTRY.getNameForObject(new ItemStack(tag.getCompoundTag("item")).getItem()) + " from " + message.getSender() + " to registry.");
 			} else {
 				LogHelper.warn("[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");
 			}

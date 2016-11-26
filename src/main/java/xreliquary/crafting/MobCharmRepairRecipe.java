@@ -4,13 +4,14 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 
 public class MobCharmRepairRecipe implements IRecipe {
@@ -35,16 +36,16 @@ public class MobCharmRepairRecipe implements IRecipe {
 	}
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World worldIn) {
-		ItemStack ingredient = null;
+	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World worldIn) {
+		ItemStack ingredient = ItemStack.EMPTY;
 		int numberIngredients = 0;
-		ItemStack mobCharm = null;
+		ItemStack mobCharm = ItemStack.EMPTY;
 
 		for(int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack currentStack = inv.getStackInSlot(i);
-			if(currentStack != null) {
+			if(!currentStack.isEmpty()) {
 				if(currentStack.getItem() == ModItems.mobCharm) {
-					if(mobCharm != null || !REPAIR_INGREDIENTS.keySet().contains(ModItems.mobCharm.getType(currentStack)))
+					if(!mobCharm.isEmpty() || !REPAIR_INGREDIENTS.keySet().contains(ModItems.mobCharm.getType(currentStack)))
 						return false;
 					mobCharm = currentStack;
 					continue;
@@ -53,7 +54,7 @@ public class MobCharmRepairRecipe implements IRecipe {
 				if(!isRepairIngredient(currentStack))
 					return false;
 
-				if(ingredient == null) {
+				if(ingredient.isEmpty()) {
 					ingredient = currentStack;
 				} else {
 					if(!ingredient.isItemEqual(currentStack))
@@ -63,11 +64,7 @@ public class MobCharmRepairRecipe implements IRecipe {
 			}
 		}
 
-		//noinspection SimplifiableIfStatement
-		if (mobCharm == null || ingredient == null || !REPAIR_INGREDIENTS.get(ModItems.mobCharm.getType(mobCharm)).isItemEqual(ingredient))
-			return false;
-
-		return mobCharm.getItemDamage() >= (Settings.MobCharm.dropDurabilityRepair * (numberIngredients - 1));
+		return !(mobCharm.isEmpty() || ingredient.isEmpty() || !REPAIR_INGREDIENTS.get(ModItems.mobCharm.getType(mobCharm)).isItemEqual(ingredient)) && mobCharm.getItemDamage() >= (Settings.MobCharm.dropDurabilityRepair * (numberIngredients - 1));
 
 	}
 
@@ -79,21 +76,21 @@ public class MobCharmRepairRecipe implements IRecipe {
 		return false;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv) {
-		ItemStack ingredient = null;
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
+		ItemStack ingredient = ItemStack.EMPTY;
 		int numberIngredients = 0;
-		ItemStack mobCharm = null;
+		ItemStack mobCharm = ItemStack.EMPTY;
 
 		for(int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack currentStack = inv.getStackInSlot(i);
-			if(currentStack != null) {
+			if(!currentStack.isEmpty()) {
 				if(currentStack.getItem() == ModItems.mobCharm) {
 					mobCharm = currentStack;
 					continue;
 				}
-				if(ingredient == null) {
+				if(ingredient.isEmpty()) {
 					ingredient = currentStack;
 				}
 				numberIngredients++;
@@ -112,14 +109,15 @@ public class MobCharmRepairRecipe implements IRecipe {
 		return 9;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput() {
-		return null;
+		return ItemStack.EMPTY;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv) {
-		return new ItemStack[inv.getSizeInventory()];
+	public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inv) {
+		return NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 	}
 }

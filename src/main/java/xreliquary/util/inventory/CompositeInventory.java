@@ -4,7 +4,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +25,13 @@ class CompositeInventory implements IInventory {
 	}
 
 	@Override
+	public boolean isEmpty() {
+		//TODO implement
+		return false;
+	}
+
+	@Nonnull
+	@Override
 	public ItemStack getStackInSlot(int index) {
 		Iterator<IInventory> iterator = childInventories.iterator();
 
@@ -39,21 +48,23 @@ class CompositeInventory implements IInventory {
 		if(inventory != null)
 			return inventory.getStackInSlot(index - currentMax);
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		return null;
+		return ItemStack.EMPTY;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
+	public void setInventorySlotContents(int index, @Nonnull ItemStack stack) {
 
 	}
 
@@ -68,22 +79,22 @@ class CompositeInventory implements IInventory {
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
+	public boolean isUsableByPlayer(@Nonnull EntityPlayer player) {
 		return false;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {
+	public void openInventory(@Nonnull EntityPlayer player) {
 
 	}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {
+	public void closeInventory(@Nonnull EntityPlayer player) {
 
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
+	public boolean isItemValidForSlot(int index, @Nonnull ItemStack stack) {
 		return false;
 	}
 
@@ -107,9 +118,10 @@ class CompositeInventory implements IInventory {
 
 	}
 
+	@Nonnull
 	@Override
 	public String getName() {
-		return null;
+		return "";
 	}
 
 	@Override
@@ -117,8 +129,9 @@ class CompositeInventory implements IInventory {
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	public ITextComponent getDisplayName() {
-		return null;
+		return new TextComponentString(getName());
 	}
 }

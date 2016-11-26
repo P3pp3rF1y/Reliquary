@@ -13,11 +13,13 @@ public class PedestalClientRegistry {
 
 	private Map<Class<? extends Item>, Class<? extends IPedestalItemRenderer>> itemRenderers = new HashMap<>();
 
-	private PedestalClientRegistry() {}
+	private PedestalClientRegistry() {
+	}
 
 	public static void registerItemRenderer(Class<? extends Item> itemClass, Class<? extends IPedestalItemRenderer> rendererClass) {
 		INSTANCE.itemRenderers.put(itemClass, rendererClass);
 	}
+
 	public static IPedestalItemRenderer getItemRenderer(ItemStack item) {
 		for(Class<? extends Item> itemClass : INSTANCE.itemRenderers.keySet()) {
 			if(itemClass.isInstance(item.getItem()))

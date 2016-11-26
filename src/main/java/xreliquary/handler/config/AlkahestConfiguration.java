@@ -5,6 +5,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Property;
@@ -15,8 +16,6 @@ import xreliquary.util.StackHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class AlkahestConfiguration {
@@ -64,28 +63,28 @@ public class AlkahestConfiguration {
 			if(name.contains("|")) {
 				nameParts = name.split("\\|");
 				name = nameParts[0];
-				if ("*".equals(nameParts[1]))
+				if("*".equals(nameParts[1]))
 					allSubitems = true;
 				else
 					meta = Integer.parseInt(nameParts[1]);
-			} else if (values.length > 1){
+			} else if(values.length > 1) {
 				meta = values[0];
 			}
 
 			//using last because of legacy configs that have meta as first
 			int charge = values[values.length - 1];
 
-			if (allSubitems) {
+			if(allSubitems) {
 				Item item = Item.REGISTRY.getObject(new ResourceLocation(modId, name));
 				Block block = Block.REGISTRY.getObject(new ResourceLocation(modId, name));
-				List<ItemStack> subItems = new ArrayList<>();
-				if (item != null) {
+				NonNullList<ItemStack> subItems = NonNullList.create();
+				if(item != null) {
 					item.getSubItems(item, null, subItems);
 				} else {
 					block.getSubBlocks(Item.getItemFromBlock(block), null, subItems);
 				}
 
-				for (ItemStack stack : subItems) {
+				for(ItemStack stack : subItems) {
 					Settings.AlkahestryTome.chargingRecipes.put(entry.getKey().replace("*", String.valueOf(stack.getMetadata())), new AlkahestChargeRecipe(stack, charge));
 				}
 			} else {
@@ -106,11 +105,6 @@ public class AlkahestConfiguration {
 	}
 
 	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item, Integer charge) {
-		addConfigAlkahestChargingRecipe(category, item, 0, charge);
-	}
-
-	private static void addConfigAlkahestChargingRecipe(ConfigCategory category, String item,
-			@SuppressWarnings("SameParameterValue") Integer meta, Integer charge) {
 		Property prop = new Property(item, new String[] {charge.toString()}, Property.Type.INTEGER);
 
 		category.put(item, prop);
@@ -145,11 +139,11 @@ public class AlkahestConfiguration {
 			if(name.contains("|")) {
 				nameParts = name.split("\\|");
 				name = nameParts[0];
-				if ("*".equals(nameParts[1]))
+				if("*".equals(nameParts[1]))
 					allSubitems = true;
 				else
 					meta = Integer.parseInt(nameParts[1]);
-			} else if (values.length > 2) {
+			} else if(values.length > 2) {
 				meta = values[0];
 			}
 			int yield = values[values.length - 2];
@@ -158,17 +152,17 @@ public class AlkahestConfiguration {
 			if(modId.toLowerCase().equals("oredictionary")) {
 				Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(name, yield, cost));
 			} else {
-				if (allSubitems) {
+				if(allSubitems) {
 					Item item = Item.REGISTRY.getObject(new ResourceLocation(modId, name));
 					Block block = Block.REGISTRY.getObject(new ResourceLocation(modId, name));
-					List<ItemStack> subItems = new ArrayList<>();
-					if (item != null) {
+					NonNullList<ItemStack> subItems = NonNullList.create();
+					if(item != null) {
 						item.getSubItems(item, null, subItems);
 					} else {
 						block.getSubBlocks(Item.getItemFromBlock(block), null, subItems);
 					}
 
-					for (ItemStack stack : subItems) {
+					for(ItemStack stack : subItems) {
 						Settings.AlkahestryTome.craftingRecipes.put(entry.getKey().replace("*", String.valueOf(stack.getMetadata())), new AlkahestCraftRecipe(stack, yield, cost));
 					}
 				} else {
@@ -176,7 +170,7 @@ public class AlkahestConfiguration {
 
 					String key = modId + ":" + name + "|" + meta;
 
-					if (stack != null) {
+					if(stack != null) {
 						Settings.AlkahestryTome.craftingRecipes.put(key, new AlkahestCraftRecipe(stack, yield, cost));
 					}
 				}

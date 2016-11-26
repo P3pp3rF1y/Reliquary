@@ -14,7 +14,7 @@ public class GUIHandler implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		switch (ID) {
+		switch(ID) {
 			case ALKAHESTRY_TOME:
 				return new ContainerAlkahestTome();
 			case MOB_CHARM_BELT:
@@ -36,7 +36,7 @@ public class GUIHandler implements IGuiHandler {
 
 	private ItemStack getBeltFromEitherHand(EntityPlayer player) {
 		ItemStack belt = player.getHeldItemMainhand();
-		if (belt == null || belt.getItem() != ModItems.mobCharmBelt)
+		if(belt.isEmpty() || belt.getItem() != ModItems.mobCharmBelt)
 			belt = player.getHeldItemOffhand();
 
 		return belt;

@@ -14,7 +14,7 @@ public class XRFakePlayerFactory {
 	}
 
 	public static void unloadWorld(WorldServer world) {
-		if(fakePlayer != null && fakePlayer.worldObj == world)
+		if(fakePlayer != null && fakePlayer.world == world)
 			fakePlayer = null;
 	}
 

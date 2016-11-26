@@ -49,7 +49,6 @@ public class PedestalFluidHandler implements IFluidHandler {
 		return totalFilled;
 	}
 
-	@Nullable
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain) {
 		int totalDrained = 0;
@@ -68,7 +67,6 @@ public class PedestalFluidHandler implements IFluidHandler {
 		return new FluidStack(resource.getFluid(), totalDrained);
 	}
 
-	@Nullable
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain) {
 		List<ItemStack> fluidContainers = pedestal.getFluidContainers();
@@ -85,10 +83,16 @@ public class PedestalFluidHandler implements IFluidHandler {
 	}
 
 	private IFluidHandler getFluidCapFromContainer(ItemStack container) {
-		if(!container.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+		if(!container.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null) && !container.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null))
 			return null;
 
-		return container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+		IFluidHandler fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+
+		if (fluidHandler == null) {
+			fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+		}
+
+		return fluidHandler;
 	}
 
 	private IFluidTankProperties[] getContainerTankProperties(ItemStack container) {

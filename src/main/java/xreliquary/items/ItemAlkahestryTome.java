@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,6 +28,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
@@ -39,9 +41,11 @@ public class ItemAlkahestryTome extends ItemToggleable {
 		this.canRepair = false;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
-		ItemStack newStack = super.onItemRightClick(stack, world, player, hand).getResult();
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+		ItemStack newStack = super.onItemRightClick(world, player, hand).getResult();
 		if(player.isSneaking())
 			return new ActionResult<>(EnumActionResult.SUCCESS, newStack);
 
@@ -85,6 +89,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
 		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -92,10 +97,10 @@ public class ItemAlkahestryTome extends ItemToggleable {
 	}
 
 	@Override
-	public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+	public void getSubItems(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
 
 		ItemStack stack = new ItemStack(ModItems.alkahestryTome);
-		stack.setItemDamage(ModItems.alkahestryTome.getMaxDamage());
+		stack.setItemDamage(stack.getMaxDamage());
 		subItems.add(stack);
 	}
 

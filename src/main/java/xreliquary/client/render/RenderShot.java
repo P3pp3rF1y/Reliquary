@@ -11,6 +11,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.entities.shot.EntityShotBase;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class RenderShot<T extends EntityShotBase> extends Render<T> {
 
@@ -18,7 +20,7 @@ public class RenderShot<T extends EntityShotBase> extends Render<T> {
 		super(renderManager);
 	}
 
-	public void doRenderShot(T entityShot, double x, double y, double z, float entityYaw, float partialTicks) {
+	private void doRenderShot(T entityShot, double x, double y, double z, float entityYaw, float partialTicks) {
 		GlStateManager.pushMatrix();
 		this.bindEntityTexture(entityShot);
 		GlStateManager.translate((float) x, (float) y, (float) z);
@@ -40,12 +42,12 @@ public class RenderShot<T extends EntityShotBase> extends Render<T> {
 	}
 
 	@Override
-	public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks) {
+	public void doRender(@Nonnull T entity, double x, double y, double z, float entityYaw, float partialTicks) {
 		this.doRenderShot(entity, x, y, z, entityYaw, partialTicks);
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(T entityShot) {
+	protected ResourceLocation getEntityTexture(@Nonnull T entityShot) {
 		return entityShot.getShotTexture();
 	}
 }

@@ -1,12 +1,8 @@
 package xreliquary.entities.shot;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,9 +21,11 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.potions.XRPotionHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class EntityShotBase extends Entity implements IProjectile {
 	private static final DataParameter<Byte> CRITICAL = EntityDataManager.createKey(EntityShotBase.class, DataSerializers.BYTE);
@@ -47,23 +45,23 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	private int ricochetCounter = 0;
 	private boolean scheduledForDeath = false;
 
-	public EntityShotBase(World par1World) {
-		super(par1World);
+	public EntityShotBase(World world) {
+		super(world);
 		this.setSize(0.01F, 0.01F);
 	}
 
-	public EntityShotBase(World par1World, double par2, double par4, double par6) {
-		this(par1World);
-		this.setPosition(par2, par4, par6);
+	public EntityShotBase(World world, double x, double y, double z) {
+		this(world);
+		this.setPosition(x, y, z);
 	}
 
-	public EntityShotBase(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
-		this(par1World);
-		shootingEntity = par2EntityPlayer;
+	public EntityShotBase(World world, EntityPlayer player, EnumHand hand) {
+		this(world);
+		shootingEntity = player;
 		float par3 = 0.8F;
-		this.setLocationAndAngles(par2EntityPlayer.posX, par2EntityPlayer.posY + par2EntityPlayer.getEyeHeight(), par2EntityPlayer.posZ, par2EntityPlayer.rotationYaw, par2EntityPlayer.rotationPitch);
+		this.setLocationAndAngles(player.posX, player.posY + player.getEyeHeight(), player.posZ, player.rotationYaw, player.rotationPitch);
 		posX -= MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * (hand == EnumHand.MAIN_HAND ? 1 : -1) * 0.16F;
-		posY -= 0.1D;
+		posY -= 0.2D;
 		posZ -= MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * (hand == EnumHand.MAIN_HAND ? 1 : -1) * 0.16F;
 		this.setPosition(posX, posY, posZ);
 		motionX = -MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0F * (float) Math.PI);
@@ -79,11 +77,9 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	}
 
 	public EntityShotBase addPotionEffects(List<PotionEffect> potionEffects) {
-		if (potionEffects!=null && !potionEffects.isEmpty()) {
+		if(potionEffects != null && !potionEffects.isEmpty()) {
 			this.potionEffects = new ArrayList<>();
-			for (PotionEffect potionEffect : potionEffects) {
-				this.potionEffects.add(new PotionEffect(potionEffect));
-			}
+			this.potionEffects.addAll(potionEffects.stream().map(PotionEffect::new).collect(Collectors.toList()));
 
 			this.dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(potionEffects));
 		}
@@ -97,7 +93,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 */
 	@Override
 	public void setThrowableHeading(double var1, double var3, double var5, float var7, float var8) {
-		float var9 = MathHelper.sqrt_double(var1 * var1 + var3 * var3 + var5 * var5);
+		float var9 = MathHelper.sqrt(var1 * var1 + var3 * var3 + var5 * var5);
 		var1 /= var9;
 		var3 /= var9;
 		var5 /= var9;
@@ -110,7 +106,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		motionX = var1;
 		motionY = var3;
 		motionZ = var5;
-		float var10 = MathHelper.sqrt_double(var1 * var1 + var5 * var5);
+		float var10 = MathHelper.sqrt(var1 * var1 + var5 * var5);
 		prevRotationYaw = rotationYaw = (float) (Math.atan2(var1, var5) * 180.0D / Math.PI);
 		prevRotationPitch = rotationPitch = (float) (Math.atan2(var3, var10) * 180.0D / Math.PI);
 	}
@@ -137,7 +133,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		motionZ = par5;
 
 		if(prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
-			float var7 = MathHelper.sqrt_double(par1 * par1 + par5 * par5);
+			float var7 = MathHelper.sqrt(par1 * par1 + par5 * par5);
 			prevRotationYaw = rotationYaw = (float) (Math.atan2(par1, par5) * 180.0D / Math.PI);
 			prevRotationPitch = rotationPitch = (float) (Math.atan2(par3, var7) * 180.0D / Math.PI);
 			prevRotationPitch = rotationPitch;
@@ -152,9 +148,9 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	// that
 	// require an originating player. Consider deprecating this.
 	//TODO look into replacing this with just the player property of entity
-	protected void ensurePlayerShooterEntity() {
+	private void ensurePlayerShooterEntity() {
 		if(shootingEntity == null) {
-			List players = worldObj.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(posX - 1, posY - 1, posZ - 1, posX + 1, posY + 1, posZ + 1));
+			List players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(posX - 1, posY - 1, posZ - 1, posX + 1, posY + 1, posZ + 1));
 			Iterator i = players.iterator();
 			double closestDistance = Double.MAX_VALUE;
 			EntityPlayer closestPlayer = null;
@@ -184,24 +180,23 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			this.setDead();
 		ensurePlayerShooterEntity();
 
-
-		if(this.worldObj.isRemote) {
+		if(this.world.isRemote) {
 			this.spawnPotionParticles();
 		}
 		if(prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
-			float pythingy = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
+			float pythingy = MathHelper.sqrt(motionX * motionX + motionZ * motionZ);
 			//noinspection SuspiciousNameCombination
 			prevRotationYaw = rotationYaw = (float) (Math.atan2(motionX, motionZ) * 180.0D / Math.PI);
 			prevRotationPitch = rotationPitch = (float) (Math.atan2(motionY, pythingy) * 180.0D / Math.PI);
 		}
 
-		IBlockState blockState = this.worldObj.getBlockState(new BlockPos(this.xTile, this.yTile, this.zTile));
+		IBlockState blockState = this.world.getBlockState(new BlockPos(this.xTile, this.yTile, this.zTile));
 		Block block = blockState.getBlock();
 
 		if(block != Blocks.AIR) {
-			AxisAlignedBB axisalignedbb = blockState.getBoundingBox(this.worldObj, new BlockPos(this.xTile, this.yTile, this.zTile));
+			AxisAlignedBB axisalignedbb = blockState.getBoundingBox(this.world, new BlockPos(this.xTile, this.yTile, this.zTile));
 
-			if(axisalignedbb != null && axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
+			if(axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
 				this.inGround = true;
 
 		}
@@ -209,7 +204,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		if(!inGround) {
 			++ticksInAir;
 			if(ticksInAir > 1 && ticksInAir < 3) {
-				worldObj.spawnParticle(EnumParticleTypes.FLAME, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0D, 0D, 0D);
+				world.spawnParticle(EnumParticleTypes.FLAME, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0D, 0D, 0D);
 				for(int particles = 0; particles < 3; particles++)
 					this.doFiringEffects();
 
@@ -218,15 +213,10 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 
 			Vec3d posVector = new Vec3d(posX, posY, posZ);
 			Vec3d approachVector = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
-			RayTraceResult objectStruckByVector = worldObj.rayTraceBlocks(posVector, approachVector, false, true, false);
-			posVector = new Vec3d(posX, posY, posZ);
-			approachVector = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
-
-			if(objectStruckByVector != null)
-				approachVector = new Vec3d(objectStruckByVector.hitVec.xCoord, objectStruckByVector.hitVec.yCoord, objectStruckByVector.hitVec.zCoord);
+			RayTraceResult objectStruckByVector = world.rayTraceBlocks(posVector, approachVector, false, true, false);
 
 			Entity hitEntity = null;
-			List struckEntitiesInAABB = worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
+			List struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
 			double var7 = 0.0D;
 			Iterator struckEntityIterator = struckEntitiesInAABB.iterator();
 			float var11;
@@ -259,20 +249,20 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 					this.setDead();
 			}
 
-			this.moveEntity(motionX, motionY, motionZ);
+			this.move(MoverType.SELF, motionX, motionY, motionZ);
 		}
 	}
 
 	private void spawnPotionParticles() {
 		int color = this.getColor();
 
-		if(color != 0 ) {
+		if(color != 0) {
 			double d0 = (double) (color >> 16 & 255) / 255.0D;
 			double d1 = (double) (color >> 8 & 255) / 255.0D;
 			double d2 = (double) (color & 255) / 255.0D;
 
 			for(int j = 0; j < 2; ++j) {
-				this.worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB, this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.posY + this.rand.nextDouble() * (double) this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width, d0, d1, d2);
+				this.world.spawnParticle(EnumParticleTypes.SPELL_MOB, this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.posY + this.rand.nextDouble() * (double) this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width, d0, d1, d2);
 			}
 		}
 	}
@@ -293,9 +283,9 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	/**
 	 * (abstract) Protected helper method to write subclass entity data to NBT.
 	 */
-	@SuppressWarnings("NullableProblems")
+
 	@Override
-	public void writeEntityToNBT(NBTTagCompound compound) {
+	public void writeEntityToNBT(@Nonnull NBTTagCompound compound) {
 		compound.setShort("xTile", (short) xTile);
 		compound.setShort("yTile", (short) yTile);
 		compound.setShort("zTile", (short) zTile);
@@ -306,9 +296,9 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	/**
 	 * (abstract) Protected helper method to read subclass entity data from NBT.
 	 */
-	@SuppressWarnings("NullableProblems")
+
 	@Override
-	public void readEntityFromNBT(NBTTagCompound compound) {
+	public void readEntityFromNBT(@Nonnull NBTTagCompound compound) {
 		xTile = compound.getShort("xTile");
 		yTile = compound.getShort("yTile");
 		zTile = compound.getShort("zTile");
@@ -328,12 +318,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean isInRangeToRenderDist(double distance) {
-		double d0 = this.getEntityBoundingBox().getAverageEdgeLength() * 4.0D;
-		if(Double.isNaN(d0)) {
-			d0 = 4.0D;
-		}
-
-		d0 *= 64.0D;
+		double d0 = 64.0D;
 		return distance < d0 * d0;
 	}
 
@@ -382,7 +367,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 * @return a negative or positive value with limits of 50% of d
 	 */
 	protected double smallGauss(double d) {
-		return (worldObj.rand.nextFloat() - 0.5D) * d;
+		return (world.rand.nextFloat() - 0.5D) * d;
 	}
 
 	/**
@@ -429,13 +414,13 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 				break;
 			case WEST:
 			case EAST:
-				// westHit, eastHit, reflect Z
-				motionZ = motionZ * -1;
+				// westHit, eastHit, reflect x
+				motionX = motionX * -1;
 				break;
 			case SOUTH:
 			case NORTH:
-				// southHit, northHit, reflect X
-				motionX = motionX * -1;
+				// southHit, northHit, reflect z
+				motionZ = motionZ * -1;
 				break;
 		}
 		ricochetCounter++;
@@ -445,22 +430,22 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			for(int particles = 0; particles < 4; particles++) {
 				switch(sideHit) {
 					case DOWN:
-						worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, gaussian(0.1D), -gaussian(0.1D), gaussian(0.1D));
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, gaussian(0.1D), -gaussian(0.1D), gaussian(0.1D));
 						break;
 					case UP:
-						worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
 						break;
 					case NORTH:
-						worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), -gaussian(0.1D));
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), -gaussian(0.1D));
 						break;
 					case SOUTH:
-						worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
 						break;
 					case WEST:
-						worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, -gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, -gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
 						break;
 					case EAST:
-						worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
 						break;
 				}
 			}
@@ -475,14 +460,13 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	void seekTarget() {
 		Entity closestTarget = null;
 		List<String> entitiesThatCanBeHunted = Settings.SeekerShot.entitiesThatCanBeHunted;
-		List targetsList = worldObj.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5));
+		List targetsList = world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5));
 		Iterator iTarget = targetsList.iterator();
 		double closestDistance = Double.MAX_VALUE;
 		while(iTarget.hasNext()) {
 			Entity currentTarget = (Entity) iTarget.next();
 
-			Class entityClass = currentTarget.getClass();
-			String entityName = EntityList.CLASS_TO_NAME.get(entityClass);
+			String entityName = EntityList.getEntityString(currentTarget);
 			if(!entitiesThatCanBeHunted.contains(entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead))
 				continue;
 			// goes for the closest thing it can
@@ -511,7 +495,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			this.motionX = seekVector.xCoord * 0.4D;
 			this.motionY = seekVector.yCoord * 0.4D;
 			this.motionZ = seekVector.zCoord * 0.4D;
-			if(worldObj.isRemote) {
+			if(world.isRemote) {
 				this.setVelocity(motionX, motionY, motionZ);
 			}
 		}
@@ -539,11 +523,13 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 * @param entityLiving the entity being struck
 	 */
 	protected void onImpact(EntityLivingBase entityLiving) {
-		if(entityLiving != shootingEntity || ticksInAir > 3) {
-			doDamage(entityLiving);
+		if (!world.isRemote) {
+			if(entityLiving != shootingEntity || ticksInAir > 3) {
+				doDamage(entityLiving);
+			}
+			spawnHitParticles(8);
+			this.setDead();
 		}
-		spawnHitParticles(8);
-		this.setDead();
 	}
 
 	protected void onImpact(RayTraceResult result) {

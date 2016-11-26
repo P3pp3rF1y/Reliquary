@@ -15,6 +15,8 @@ import xreliquary.Reliquary;
 import xreliquary.entities.EntityHolyHandGrenade;
 import xreliquary.reference.Names;
 
+import javax.annotation.Nonnull;
+
 public class ItemHolyHandGrenade extends ItemBase {
 
 	public ItemHolyHandGrenade() {
@@ -25,6 +27,7 @@ public class ItemHolyHandGrenade extends ItemBase {
 		canRepair = false;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -37,19 +40,22 @@ public class ItemHolyHandGrenade extends ItemBase {
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+
 		if(world.isRemote)
 			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 
 		if(!player.capabilities.isCreativeMode) {
-			--stack.stackSize;
+			stack.shrink(1);
 		}
 
 		world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 		EntityHolyHandGrenade grenade = new EntityHolyHandGrenade(world, player, stack.getDisplayName());
-		grenade.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -5.0F, 0.9F, 1.0F);
-		world.spawnEntityInWorld(grenade);
+		grenade.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.9F, 1.0F);
+		world.spawnEntity(grenade);
 
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}

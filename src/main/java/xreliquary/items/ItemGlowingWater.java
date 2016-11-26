@@ -15,6 +15,8 @@ import xreliquary.entities.EntityGlowingWater;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 
+import javax.annotation.Nonnull;
+
 public class ItemGlowingWater extends ItemBase {
 
 	public ItemGlowingWater() {
@@ -25,8 +27,9 @@ public class ItemGlowingWater extends ItemBase {
 		canRepair = false;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getContainerItem(ItemStack ist) {
+	public ItemStack getContainerItem(@Nonnull ItemStack stack) {
 		return new ItemStack(ModItems.potion, 1, 0);
 	}
 
@@ -42,19 +45,21 @@ public class ItemGlowingWater extends ItemBase {
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
 		if(world.isRemote)
 			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		if(!player.capabilities.isCreativeMode) {
-			--stack.stackSize;
+			stack.shrink(1);
 		}
 
 		world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
 		EntityGlowingWater glowingWater = new EntityGlowingWater(world, player);
 		glowingWater.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
-		world.spawnEntityInWorld(glowingWater);
+		world.spawnEntity(glowingWater);
 
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}

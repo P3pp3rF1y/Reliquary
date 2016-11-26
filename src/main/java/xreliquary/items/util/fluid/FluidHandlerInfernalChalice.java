@@ -40,7 +40,6 @@ public class FluidHandlerInfernalChalice extends FluidHandlerItemStack {
 		container.getTagCompound().setInteger("fluidStacks", fluid.amount);
 	}
 
-	@Nullable
 	@Override
 	public FluidStack getFluid() {
 		NBTTagCompound tagCompound = container.getTagCompound();

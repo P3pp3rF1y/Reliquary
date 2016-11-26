@@ -14,6 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import xreliquary.init.ModPotions;
 import xreliquary.reference.Reference;
 
+import javax.annotation.Nonnull;
+
 public class PotionFlight extends Potion {
 	private static final ResourceLocation ICON = new ResourceLocation(Reference.MOD_ID, "textures/gui/flight_effect.png");
 
@@ -45,8 +47,8 @@ public class PotionFlight extends Potion {
 	}
 
 	@Override
-	public void performEffect(EntityLivingBase entityLivingBase, int p_76394_2_) {
-		if (entityLivingBase.worldObj.isRemote || !(entityLivingBase instanceof EntityPlayer))
+	public void performEffect(@Nonnull EntityLivingBase entityLivingBase, int p_76394_2_) {
+		if (entityLivingBase.world.isRemote || !(entityLivingBase instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) entityLivingBase;
@@ -59,7 +61,7 @@ public class PotionFlight extends Potion {
 	}
 
 	@Override
-	public void removeAttributesModifiersFromEntity(EntityLivingBase entityLivingBase, AbstractAttributeMap attributeMap, int amplifier) {
+	public void removeAttributesModifiersFromEntity(EntityLivingBase entityLivingBase, @Nonnull AbstractAttributeMap attributeMap, int amplifier) {
 		super.removeAttributesModifiersFromEntity(entityLivingBase, attributeMap, amplifier);
 
 		if (!(entityLivingBase instanceof EntityPlayer))

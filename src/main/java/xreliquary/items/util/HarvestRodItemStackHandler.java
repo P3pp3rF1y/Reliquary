@@ -13,7 +13,7 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 	public HarvestRodItemStackHandler() {
 		super(1);
 		this.setDynamicSize(true);
-		this.getFilterStacks()[BONEMEAL_SLOT] = new ItemStack(Items.DYE, 1, Reference.WHITE_DYE_META);
+		this.getFilterStacks().set(BONEMEAL_SLOT, new ItemStack(Items.DYE, 1, Reference.WHITE_DYE_META));
 	}
 
 	@Override
@@ -41,6 +41,6 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 	protected boolean isItemStackValidForParentSlot(ItemStack stack, int parentSlot) {
 		if (parentSlot == BONEMEAL_SLOT)
 			return stack.getItem() == Items.DYE && stack.getItemDamage() == Reference.WHITE_DYE_META;
-		return (stack.getItem() instanceof IPlantable && (filterStacks.length <= parentSlot || ItemHandlerHelper.canItemStacksStack(stack, filterStacks[parentSlot])));
+		return (stack.getItem() instanceof IPlantable && (filterStacks.size() <= parentSlot || ItemHandlerHelper.canItemStacksStack(stack, filterStacks.get(parentSlot))));
 	}
 }

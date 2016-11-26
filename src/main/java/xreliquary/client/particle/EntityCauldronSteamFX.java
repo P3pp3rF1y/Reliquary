@@ -36,7 +36,7 @@ public class EntityCauldronSteamFX extends ParticleRedstone {
 
 		this.setParticleTextureIndex(7 - this.particleAge * 8 / this.particleMaxAge);
 		this.setAlphaF((1F - ((float) this.particleAge / (float) this.particleMaxAge)) / 2F);
-		this.moveEntity(this.motionX, this.motionY, this.motionZ);
+		this.move(this.motionX, this.motionY, this.motionZ);
 
 		if(this.posY == this.prevPosY) {
 			this.motionX *= 1.1D;

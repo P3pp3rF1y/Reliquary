@@ -7,6 +7,8 @@ import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 
+import javax.annotation.Nonnull;
+
 public class ItemAngelheartVial extends ItemBase {
 
 	public ItemAngelheartVial() {
@@ -23,8 +25,9 @@ public class ItemAngelheartVial extends ItemBase {
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getContainerItem(ItemStack ist) {
+	public ItemStack getContainerItem(@Nonnull ItemStack stack) {
 		return new ItemStack(ModItems.potion, 1, 0);
 	}
 

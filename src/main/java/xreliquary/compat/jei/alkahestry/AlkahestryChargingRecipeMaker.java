@@ -9,9 +9,9 @@ import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AlkahestryChargingRecipeMaker {
 	@Nonnull
@@ -27,9 +27,8 @@ public class AlkahestryChargingRecipeMaker {
 			NBTHelper.setInteger("charge", outputTome, recipe.charge);
 
 			if(recipe.dictionaryName != null) {
-				for (ItemStack input : OreDictionary.getOres(recipe.dictionaryName)) {
-					recipes.add(new AlkahestryChargingRecipeJEI(input, inputTome, outputTome));
-				}
+				recipes.addAll(OreDictionary.getOres(recipe.dictionaryName).stream()
+						.map(input -> new AlkahestryChargingRecipeJEI(input, inputTome, outputTome)).collect(Collectors.toList()));
 			} else {
 				ItemStack input = recipe.item;
 				recipes.add(new AlkahestryChargingRecipeJEI(input, inputTome, outputTome));

@@ -8,21 +8,23 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Reference;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
 import xreliquary.util.potions.XRPotionHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TileEntityMortar extends TileEntityInventory implements IWailaDataChangeIndicator {
 
+	private static final int PESTLE_USAGE_MAX = 5; // the number of times you have to use the pestle
 	// counts the number of times the player has right clicked the block
 	// arbitrarily setting the number of times the player needs to grind the
 	// materials to five.
@@ -47,14 +49,14 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 		NBTTagList items = tag.getTagList("Items", 10);
-		this.inventory = new ItemStack[this.getSizeInventory()];
+		this.inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
 
 		for(int i = 0; i < items.tagCount(); ++i) {
 			NBTTagCompound item = items.getCompoundTagAt(i);
 			byte b0 = item.getByte("Slot");
 
-			if(b0 >= 0 && b0 < this.inventory.length) {
-				this.inventory[b0] = ItemStack.loadItemStackFromNBT(item);
+			if(b0 >= 0 && b0 < this.getSizeInventory()) {
+				this.inventory.set(b0, new ItemStack(item));
 			}
 		}
 
@@ -65,17 +67,18 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 		}
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 		compound.setShort("pestleUsed", (short) this.pestleUsedCounter);
 		NBTTagList items = new NBTTagList();
 
-		for(int i = 0; i < this.inventory.length; ++i) {
-			if(this.inventory[i] != null) {
+		for(int slot = 0; slot < this.inventory.size(); ++slot) {
+			if(!this.inventory.get(slot).isEmpty()) {
 				NBTTagCompound item = new NBTTagCompound();
-				this.inventory[i].writeToNBT(item);
-				item.setByte("Slot", (byte) i);
+				this.inventory.get(slot).writeToNBT(item);
+				item.setByte("Slot", (byte) slot);
 				items.appendTag(item);
 			}
 		}
@@ -90,7 +93,7 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 	}
 
 	// gets the contents of the tile entity as an array of inventory
-	public ItemStack[] getItemStacks() {
+	public NonNullList<ItemStack> getItemStacks() {
 		return inventory;
 	}
 
@@ -99,7 +102,7 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 		int itemCount = 0;
 		List<PotionIngredient> potionIngredients = new ArrayList<>();
 		for(ItemStack item : this.getItemStacks()) {
-			if(item == null)
+			if(item.isEmpty())
 				continue;
 			++itemCount;
 			potionIngredients.add(XRPotionHelper.getIngredient(item));
@@ -108,34 +111,34 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 			pestleUsedCounter++;
 			spawnPestleParticles();
 		}
-		if(pestleUsedCounter >= Reference.PESTLE_USAGE_MAX) {
+		if(pestleUsedCounter >= PESTLE_USAGE_MAX) {
 			//we've "maxed" the pestle counter and we need to see if the essence would contain potion effects.
 			//if it doesn't, just return the ingredients to the player, we are nice like that.
 			PotionEssence resultEssence = new PotionEssence(potionIngredients.toArray(new PotionIngredient[potionIngredients.size()]));
 			if(resultEssence.getEffects().size() == 0) {
 				pestleUsedCounter = 0;
 				for(int clearSlot = 0; clearSlot < this.getSizeInventory(); ++clearSlot) {
-					if(this.getStackInSlot(clearSlot) == null)
+					if(this.getStackInSlot(clearSlot).isEmpty())
 						continue;
-					if(!this.worldObj.isRemote) {
-						EntityItem itemEntity = new EntityItem(worldObj, this.getPos().getX() + 0.5D, this.getPos().getY() + 0.5D, this.getPos().getZ() + 0.5D, this.getStackInSlot(clearSlot).copy());
-						worldObj.spawnEntityInWorld(itemEntity);
+					if(!this.world.isRemote) {
+						EntityItem itemEntity = new EntityItem(world, this.getPos().getX() + 0.5D, this.getPos().getY() + 0.5D, this.getPos().getZ() + 0.5D, this.getStackInSlot(clearSlot).copy());
+						world.spawnEntity(itemEntity);
 					}
-					this.setInventorySlotContents(clearSlot, null);
+					this.setInventorySlotContents(clearSlot, ItemStack.EMPTY);
 				}
 			} else {
 				for(int clearSlot = 0; clearSlot < this.getSizeInventory(); ++clearSlot) {
-					this.setInventorySlotContents(clearSlot, null);
+					this.setInventorySlotContents(clearSlot, ItemStack.EMPTY);
 				}
 				pestleUsedCounter = 0;
-				this.finishCoolDown = this.worldObj.getTotalWorldTime() + 20; // 1 second cooldown before essence can be put in to prevent insta insert of it
-				if(worldObj.isRemote)
+				this.finishCoolDown = this.world.getTotalWorldTime() + 20; // 1 second cooldown before essence can be put in to prevent insta insert of it
+				if(world.isRemote)
 					return true;
 				ItemStack resultItem = new ItemStack(ModItems.potionEssence, 1, 0);
 				resultItem.setTagCompound(resultEssence.writeToNBT());
 
-				EntityItem itemEntity = new EntityItem(worldObj, this.getPos().getX() + 0.5D, this.getPos().getY() + 0.5D, this.getPos().getZ() + 0.5D, resultItem);
-				worldObj.spawnEntityInWorld(itemEntity);
+				EntityItem itemEntity = new EntityItem(world, this.getPos().getX() + 0.5D, this.getPos().getY() + 0.5D, this.getPos().getZ() + 0.5D, resultItem);
+				world.spawnEntity(itemEntity);
 			}
 			markDirty();
 			return true;
@@ -143,16 +146,16 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 		return false;
 	}
 
-	public void spawnPestleParticles() {
-		worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.getPos().getX() + 0.5D, this.getPos().getY() + 0.15D, this.getPos().getZ() + 0.5D, 0.0D, 0.1D, 0.0D);
+	private void spawnPestleParticles() {
+		world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.getPos().getX() + 0.5D, this.getPos().getY() + 0.15D, this.getPos().getZ() + 0.5D, 0.0D, 0.1D, 0.0D);
 	}
 
 	public boolean isInCooldown() {
-		return this.worldObj.getTotalWorldTime() < finishCoolDown;
+		return this.world.getTotalWorldTime() < finishCoolDown;
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) {
+	public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
 		super.setInventorySlotContents(slot, stack);
 		this.dataChanged = true;
 	}
@@ -163,26 +166,26 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer var1) {
-		return this.worldObj.getTileEntity(this.getPos()) == this && var1.getDistanceSq((double) this.getPos().getX() + 0.5D, (double) this.getPos().getY() + 0.5D, (double) this.getPos().getZ() + 0.5D) <= 64.0D;
+	public boolean isUsableByPlayer(@Nonnull EntityPlayer player) {
+		return this.world.getTileEntity(this.getPos()) == this && player.getDistanceSq((double) this.getPos().getX() + 0.5D, (double) this.getPos().getY() + 0.5D, (double) this.getPos().getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {
+	public void openInventory(@Nonnull EntityPlayer player) {
 	}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {
+	public void closeInventory(@Nonnull EntityPlayer player) {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack ist) {
+	public boolean isItemValidForSlot(int slot, @Nonnull ItemStack ist) {
 		// don't allow essence/items in slots after the third one.
 		//only allow valid potion items
 
 		//also now doesn't allow the same item twice.
 		for(int i = 0; i < this.getSizeInventory(); ++i) {
-			if(this.getStackInSlot(i) == null)
+			if(this.getStackInSlot(i).isEmpty())
 				continue;
 			if(this.getStackInSlot(i).isItemEqual(ist))
 				return false;
@@ -204,6 +207,7 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 		return 0;
 	}
 
+	@Nonnull
 	@Override
 	public String getName() {
 		return this.hasCustomName() ? this.customInventoryName : "container.tile_entity_mortar";
@@ -214,6 +218,7 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 		return customInventoryName != null;
 	}
 
+	@Nonnull
 	@Override
 	public ITextComponent getDisplayName() {
 		return this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName());

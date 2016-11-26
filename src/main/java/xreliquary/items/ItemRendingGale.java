@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -37,11 +38,9 @@ import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
-/**
- * Created by Xeno on 10/11/2014.
- */
 public class ItemRendingGale extends ItemToggleable {
 	public ItemRendingGale() {
 		super(Names.Items.RENDING_GALE);
@@ -90,7 +89,7 @@ public class ItemRendingGale extends ItemToggleable {
 		return Settings.RendingGale.canPushProjectiles;
 	}
 
-	public void attemptFlight(EntityLivingBase entityLiving) {
+	private void attemptFlight(EntityLivingBase entityLiving) {
 		if(!(entityLiving instanceof EntityPlayer))
 			return;
 
@@ -102,10 +101,11 @@ public class ItemRendingGale extends ItemToggleable {
 		double y = lookVec.yCoord;
 		double z = lookVec.zCoord;
 
-		RayTraceResult rayTrace =  this.rayTrace(player.worldObj, player, true);
+		RayTraceResult rayTrace =  this.rayTrace(player.world, player, true);
 
 		double slowDownFactor = 1.0;
 
+		//noinspection ConstantConditions
 		if(rayTrace != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
 			double distance = player.getPosition().distanceSq(rayTrace.getBlockPos());
 			if(distance < 20) {
@@ -117,33 +117,33 @@ public class ItemRendingGale extends ItemToggleable {
 		player.motionY = y * slowDownFactor;
 		player.motionZ = z * slowDownFactor;
 
-		player.moveEntity(player.motionX, player.motionY, player.motionZ);
+		player.move(MoverType.SELF, player.motionX, player.motionY, player.motionZ);
 
 		player.fallDistance = 0.0F;
 
 	}
 
 	@Override
-	public void onUpdate(ItemStack ist, World world, Entity e, int slotNumber, boolean isSelected) {
+	public void onUpdate(ItemStack rendingGale, World world, Entity e, int slotNumber, boolean isSelected) {
 		if(world.isRemote || !(e instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) e;
 
-		if(this.isEnabled(ist)) {
-			if(getFeatherCount(ist) + getFeathersWorth() <= getChargeLimit()) {
+		if(this.isEnabled(rendingGale)) {
+			if(getFeatherCount(rendingGale) + getFeathersWorth() <= getChargeLimit()) {
 				if(InventoryHelper.consumeItem(new ItemStack(Items.FEATHER), player)) {
-					setFeatherCount(ist, player, slotNumber, getFeatherCount(ist) + getFeathersWorth());
+					setFeatherCount(rendingGale, getFeatherCount(rendingGale) + getFeathersWorth());
 				}
 			}
 		}
 
-		if(player.getHeldItemMainhand() == ist) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.MAIN_HAND, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
-		} else if(player.getHeldItemOffhand() == ist) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
-		} else if(player.inventory.getStackInSlot(slotNumber) != null && player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.rendingGale) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
+		if(player.getHeldItemMainhand() == rendingGale) {
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.MAIN_HAND, getItemHandlerNBT(rendingGale)), (EntityPlayerMP) player);
+		} else if(player.getHeldItemOffhand() == rendingGale) {
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(rendingGale)), (EntityPlayerMP) player);
+		} else if(player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.rendingGale) {
+			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(rendingGale)), (EntityPlayerMP) player);
 		}
 	}
 
@@ -165,11 +165,11 @@ public class ItemRendingGale extends ItemToggleable {
 		return NBTHelper.getString("mode", ist);
 	}
 
-	public void setMode(ItemStack ist, String s) {
+	private void setMode(ItemStack ist, String s) {
 		NBTHelper.setString("mode", ist, s);
 	}
 
-	public void cycleMode(ItemStack ist, boolean isRaining) {
+	private void cycleMode(ItemStack ist, boolean isRaining) {
 		if(isFlightMode(ist))
 			setMode(ist, "push");
 		else if(isPushMode(ist))
@@ -186,13 +186,13 @@ public class ItemRendingGale extends ItemToggleable {
 
 	@Override
 	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
-		if(entityLiving.worldObj.isRemote)
+		if(entityLiving.world.isRemote)
 			return false;
 		if(!(entityLiving instanceof EntityPlayer))
 			return false;
 		EntityPlayer player = (EntityPlayer) entityLiving;
 		if(player.isSneaking()) {
-			cycleMode(ist, player.worldObj.isRaining());
+			cycleMode(ist, player.world.isRaining());
 			return true;
 		}
 		return false;
@@ -208,15 +208,18 @@ public class ItemRendingGale extends ItemToggleable {
 		return 6000;
 	}
 
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack ist) {
 		return EnumAction.BLOCK;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack ist = player.getHeldItem(hand);
 		if(player.isSneaking()) {
-			super.onItemRightClick(ist, world, player, hand);
+			super.onItemRightClick(world, player, hand);
 		} else {
 			player.setActiveHand(hand);
 		}
@@ -253,23 +256,23 @@ public class ItemRendingGale extends ItemToggleable {
 
 		if(isFlightMode(ist)) {
 			attemptFlight(player);
-			spawnFlightParticles(player.worldObj, player.posX, player.posY + player.getEyeHeight(), player.posZ, player);
+			spawnFlightParticles(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, player);
 		} else if(isPushMode(ist)) {
-			doRadialPush(player.worldObj, player.posX, player.posY, player.posZ, player, false);
+			doRadialPush(player.world, player.posX, player.posY, player.posZ, player, false);
 		} else if(isPullMode(ist)) {
-			doRadialPush(player.worldObj, player.posX, player.posY, player.posZ, player, true);
+			doRadialPush(player.world, player.posX, player.posY, player.posZ, player, true);
 		} else if(isBoltMode(ist)) {
 
-			RayTraceResult mop = this.getCycloneBlockTarget(player.worldObj, player);
+			RayTraceResult mop = this.getCycloneBlockTarget(player.world, player);
 
 			if(mop != null) {
 				if(ticksInUse % 8 == 0) {
 					int attemptedY = mop.getBlockPos().getY();
-					if(!player.worldObj.isRainingAt(mop.getBlockPos())) {
+					if(!player.world.isRainingAt(mop.getBlockPos())) {
 						attemptedY++;
 					}
-					if(!player.worldObj.isRemote && player.worldObj.isRainingAt(new BlockPos(mop.getBlockPos().getX(), attemptedY, mop.getBlockPos().getZ()))) {
-						player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, (double) mop.getBlockPos().getX(), (double) mop.getBlockPos().getY(), (double) mop.getBlockPos().getZ(), false));
+					if(!player.world.isRemote && player.world.isRainingAt(new BlockPos(mop.getBlockPos().getX(), attemptedY, mop.getBlockPos().getZ()))) {
+						player.world.addWeatherEffect(new EntityLightningBolt(player.world, (double) mop.getBlockPos().getX(), (double) mop.getBlockPos().getY(), (double) mop.getBlockPos().getZ(), false));
 					}
 				}
 			}
@@ -291,10 +294,10 @@ public class ItemRendingGale extends ItemToggleable {
 		if(ticksInUse > 0) {
 			if(isFlightMode(stack)) {
 				if(!player.capabilities.isCreativeMode)
-					setFeatherCount(stack, player, player.getActiveHand(), (getFeatherCount(stack) - (getChargeCost() * ticksInUse)) > 0 ? (getFeatherCount(stack) - (getChargeCost() * ticksInUse)) : 0);
+					setFeatherCount(stack, (getFeatherCount(stack) - (getChargeCost() * ticksInUse)) > 0 ? (getFeatherCount(stack) - (getChargeCost() * ticksInUse)) : 0);
 			} else if(isBoltMode(stack)) {
 				if(!player.capabilities.isCreativeMode)
-					setFeatherCount(stack, player, player.getActiveHand(), (getFeatherCount(stack) - (getBoltChargeCost() * (ticksInUse / 8))) > 0 ? (getFeatherCount(stack) - (getBoltChargeCost() * (ticksInUse / 8))) : 0);
+					setFeatherCount(stack, (getFeatherCount(stack) - (getBoltChargeCost() * (ticksInUse / 8))) > 0 ? (getFeatherCount(stack) - (getBoltChargeCost() * (ticksInUse / 8))) : 0);
 			}
 		}
 	}
@@ -321,7 +324,7 @@ public class ItemRendingGale extends ItemToggleable {
 	}
 
 	//a longer ranged version of "getMovingObjectPositionFromPlayer" basically
-	public RayTraceResult getCycloneBlockTarget(World world, EntityPlayer player) {
+	private RayTraceResult getCycloneBlockTarget(World world, EntityPlayer player) {
 		float f = 1.0F;
 		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
 		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
@@ -351,14 +354,6 @@ public class ItemRendingGale extends ItemToggleable {
 		return filteredHandler.getTotalAmount(0);
 	}
 
-	private void setFeatherCount(ItemStack ist, EntityPlayer player, int slotNumber, int featherCount) {
-		setFeatherCount(ist, featherCount);
-	}
-
-	private void setFeatherCount(ItemStack ist, EntityPlayer player, EnumHand hand, int featherCount) {
-		setFeatherCount(ist, featherCount);
-	}
-
 	public void setFeatherCount(ItemStack ist, int featherCount) {
 		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
@@ -370,10 +365,10 @@ public class ItemRendingGale extends ItemToggleable {
 		filteredHandler.setTotalAmount(0, featherCount);
 	}
 
-	public void doRadialPush(World worldObj, double posX, double posY, double posZ, EntityPlayer player, boolean pull) {
+	public void doRadialPush(World world, double posX, double posY, double posZ, EntityPlayer player, boolean pull) {
 		//push effect free at the moment, if you restore cost, remember to change this to getFeatherCount
-		spawnRadialHurricaneParticles(worldObj, posX, posY, posZ, player, pull);
-		if(worldObj.isRemote)
+		spawnRadialHurricaneParticles(world, posX, posY, posZ, player, pull);
+		if(world.isRemote)
 			return;
 
 		double lowerX = posX - getRadialPushRadius();
@@ -386,27 +381,26 @@ public class ItemRendingGale extends ItemToggleable {
 		List<String> entitiesThatCanBePushed = Settings.RendingGale.entitiesThatCanBePushed;
 		List<String> projectilesThatCanBePushed = Settings.RendingGale.projectilesThatCanBePushed;
 
-		List<Entity> eList = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 
-		for(Entity e : eList) {
-			Class entityClass = e.getClass();
-			String entityName = EntityList.CLASS_TO_NAME.get(entityClass);
+		for(Entity entity : entities) {
+			String entityName = EntityList.getEntityString(entity);
 			if(entitiesThatCanBePushed.contains(entityName) || (!pull && canPushProjectiles() && projectilesThatCanBePushed.contains(entityName))) {
-				double distance = getDistanceToEntity(posX, posY, posZ, e);
+				double distance = getDistanceToEntity(posX, posY, posZ, entity);
 				if(distance >= getRadialPushRadius())
 					continue;
 
-				if(e.equals(player))
+				if(entity.equals(player))
 					continue;
 				Vec3d pushVector;
 				if(pull) {
-					pushVector = new Vec3d(posX - e.posX, posY - e.posY, posZ - e.posZ);
+					pushVector = new Vec3d(posX - entity.posX, posY - entity.posY, posZ - entity.posZ);
 				} else {
-					pushVector = new Vec3d(e.posX - posX, e.posY - posY, e.posZ - posZ);
+					pushVector = new Vec3d(entity.posX - posX, entity.posY - posY, entity.posZ - posZ);
 				}
 				pushVector = pushVector.normalize();
-				e.moveEntity(0.0D, 0.2D, 0.0D);
-				e.moveEntity(pushVector.xCoord, Math.min(pushVector.yCoord, 0.1D) * 1.5D, pushVector.zCoord);
+				entity.move(MoverType.PLAYER, 0.0D, 0.2D, 0.0D);
+				entity.move(MoverType.PLAYER, pushVector.xCoord, Math.min(pushVector.yCoord, 0.1D) * 1.5D, pushVector.zCoord);
 			}
 		}
 	}
@@ -415,10 +409,10 @@ public class ItemRendingGale extends ItemToggleable {
 		float f = (float) (posX - entityIn.posX);
 		float f1 = (float) (posY - entityIn.posY);
 		float f2 = (float) (posZ - entityIn.posZ);
-		return MathHelper.sqrt_float(f * f + f1 * f1 + f2 * f2);
+		return MathHelper.sqrt(f * f + f1 * f1 + f2 * f2);
 	}
 
-	public void spawnFlightParticles(World world, double x, double y, double z, EntityPlayer player) {
+	private void spawnFlightParticles(World world, double x, double y, double z, EntityPlayer player) {
 		Vec3d lookVector = player.getLookVec();
 		double factor = (player.motionX / lookVector.xCoord + player.motionY / lookVector.yCoord + player.motionZ / lookVector.zCoord) / 3d;
 
@@ -432,11 +426,11 @@ public class ItemRendingGale extends ItemToggleable {
 		}
 	}
 
-	public void spawnRadialHurricaneParticles(World worldObj, double posX, double posY, double posZ, EntityPlayer player, boolean pull) {
+	private void spawnRadialHurricaneParticles(World world, double posX, double posY, double posZ, EntityPlayer player, boolean pull) {
 		//spawn a whole mess of particles every tick.
 		for(int i = 0; i < 3; ++i) {
-			float randX = worldObj.rand.nextFloat() - 0.5F;
-			float randZ = worldObj.rand.nextFloat() - 0.5F;
+			float randX = world.rand.nextFloat() - 0.5F;
+			float randZ = world.rand.nextFloat() - 0.5F;
 			float motX = randX * 10F;
 			float motZ = randZ * 10F;
 			if(pull) {
@@ -448,7 +442,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 			double posYAdjusted = player == null ? posY : (posY + player.getEyeHeight()) - (player.height / 2);
 
-			worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.SNOW_LAYER.getStateFromMeta(0)));
+			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
 		}
 	}
 }

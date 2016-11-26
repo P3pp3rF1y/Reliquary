@@ -8,7 +8,7 @@ public class DescriptionEntry {
 	private final String lang;
 	private final List<ItemStack> itemStacks;
 
-	public DescriptionEntry(List<ItemStack> itemStack, String langKey) {
+	DescriptionEntry(List<ItemStack> itemStack, String langKey) {
 
 		this.itemStacks = itemStack;
 		this.lang = langKey;

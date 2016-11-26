@@ -1,3 +1,4 @@
+/*
 package xreliquary.compat.waila;
 
 import mcp.mobius.waila.api.IWailaRegistrar;
@@ -21,3 +22,4 @@ public class WailaCallbackHandler {
 		registrar.registerStackProvider(new DataProviderPedestal(), BlockPedestal.class);
 	}
 }
+*/

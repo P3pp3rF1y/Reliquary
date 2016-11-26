@@ -16,16 +16,17 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
-import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
 public class BlockFertileLilypad extends BlockBush {
 	private static final AxisAlignedBB LILY_PAD_AABB = new AxisAlignedBB(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.09375D, 0.9375D);
 
+	@Nonnull
 	@Override
 	public EnumPlantType getPlantType(IBlockAccess world, BlockPos pos) {
 		return EnumPlantType.Water;
@@ -37,7 +38,7 @@ public class BlockFertileLilypad extends BlockBush {
 	}
 
 	@Override
-	public void updateTick(World world, BlockPos pos, IBlockState state, Random par5Random) {
+	public void updateTick(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state, Random par5Random) {
 
 		this.growCropsNearby(world, pos, state);
 	}
@@ -94,7 +95,8 @@ public class BlockFertileLilypad extends BlockBush {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
+	public void addCollisionBoxToList(IBlockState state,
+			@Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB mask, @Nonnull List<AxisAlignedBB> list, Entity collidingEntity) {
 		if(!(collidingEntity instanceof EntityBoat)) {
 			addCollisionBoxToList(pos, mask, list, LILY_PAD_AABB);
 		}
@@ -108,9 +110,10 @@ public class BlockFertileLilypad extends BlockBush {
 	@Override
 	public boolean canBlockStay(World world, BlockPos pos, IBlockState state) {
 		IBlockState blockBelowState = world.getBlockState(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()));
-		return pos.getY() >= 0 && pos.getY() < 256 && blockBelowState.getBlock().getMaterial(blockBelowState) == Material.WATER && blockBelowState.getValue(BlockLiquid.LEVEL) == 0;
+		return pos.getY() >= 0 && pos.getY() < 256 && blockBelowState.getMaterial() == Material.WATER && blockBelowState.getValue(BlockLiquid.LEVEL) == 0;
 	}
 
+	@Nonnull
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		return LILY_PAD_AABB;

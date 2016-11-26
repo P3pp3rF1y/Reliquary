@@ -13,6 +13,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class EntityEnderStaffProjectile extends EntityThrowable {
@@ -58,18 +59,18 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 			--throwableShake;
 		}
 
-		if(ticksInAir % 4 == worldObj.rand.nextInt(5)) {
-			worldObj.spawnParticle(EnumParticleTypes.PORTAL, posX, posY, posZ, 0.0D, 0.0D, 1.0D);
+		if(ticksInAir % 4 == world.rand.nextInt(5)) {
+			world.spawnParticle(EnumParticleTypes.PORTAL, posX, posY, posZ, 0.0D, 0.0D, 1.0D);
 		}
 
 		int xTile = (int) Math.round(posX);
 		int yTile = (int) Math.round(posY);
 		int zTile = (int) Math.round(posZ);
 
-		IBlockState inTile = worldObj.getBlockState(new BlockPos(xTile, yTile, zTile));
+		IBlockState inTile = world.getBlockState(new BlockPos(xTile, yTile, zTile));
 
 		if(inGround) {
-			IBlockState var1 = worldObj.getBlockState(new BlockPos(xTile, yTile, zTile));
+			IBlockState var1 = world.getBlockState(new BlockPos(xTile, yTile, zTile));
 
 			//TODO: ?? maybe I am blind but why do we check this when these two get initialized to the same block?
 			if(var1 == inTile) {
@@ -94,7 +95,7 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 
 		Vec3d var16 = new Vec3d(posX, posY, posZ);
 		Vec3d var2 = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
-		RayTraceResult var3 = worldObj.rayTraceBlocks(var16, var2, false, true, false);
+		RayTraceResult var3 = world.rayTraceBlocks(var16, var2, false, true, false);
 		var16 = new Vec3d(posX, posY, posZ);
 		var2 = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
 
@@ -102,9 +103,9 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 			var2 = new Vec3d(var3.hitVec.xCoord, var3.hitVec.yCoord, var3.hitVec.zCoord);
 		}
 
-		if(!worldObj.isRemote) {
+		if(!world.isRemote) {
 			Entity var4 = null;
-			List<Entity> var5 = worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
+			List<Entity> var5 = world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
 			double var6 = 0.0D;
 			EntityLivingBase var8 = this.getThrower();
 
@@ -131,7 +132,7 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 		}
 
 		if(var3 != null) {
-			if(var3.typeOfHit == RayTraceResult.Type.BLOCK && worldObj.getBlockState(var3.getBlockPos()).getBlock() == Blocks.PORTAL) {
+			if(var3.typeOfHit == RayTraceResult.Type.BLOCK && world.getBlockState(var3.getBlockPos()).getBlock() == Blocks.PORTAL) {
 				this.setPortal(var3.getBlockPos());
 			} else {
 				this.onImpact(var3);
@@ -141,7 +142,7 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 		posX += motionX;
 		posY += motionY;
 		posZ += motionZ;
-		float var17 = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
+		float var17 = MathHelper.sqrt(motionX * motionX + motionZ * motionZ);
 		//noinspection SuspiciousNameCombination
 		rotationYaw = (float) (Math.atan2(motionX, motionZ) * 180.0D / Math.PI);
 
@@ -180,20 +181,19 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
+	protected void onImpact(@Nonnull RayTraceResult result) {
 		onThrowableCollision(result);
 	}
 
 	private void onThrowableCollision(RayTraceResult result) {
 		if(result != null && result.entityHit != null) {
-			if(!result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, getThrower()), 0))
-				;
+			result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, getThrower()), 0);
 		}
 		for(int i = 0; i < 32; i++) {
-			worldObj.spawnParticle(EnumParticleTypes.PORTAL, posX, posY + rand.nextDouble() * 2D, posZ, rand.nextGaussian(), 0.0D, rand.nextGaussian());
+			world.spawnParticle(EnumParticleTypes.PORTAL, posX, posY + rand.nextDouble() * 2D, posZ, rand.nextGaussian(), 0.0D, rand.nextGaussian());
 		}
 
-		if(!worldObj.isRemote) {
+		if(!world.isRemote) {
 			// zombies are too stupid to bend the fabric of space and time.
 			if(this.getThrower() != null && getThrower() instanceof EntityPlayer) {
 				getThrower().fallDistance = 0.0F;

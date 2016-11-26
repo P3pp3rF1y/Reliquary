@@ -21,6 +21,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemDestructionCatalyst extends ItemToggleable {
@@ -44,8 +45,10 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}
 
+	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+		ItemStack stack = player.getHeldItem(hand);
 		if(NBTHelper.getInteger("gunpowder", stack) > gunpowderCost() || player.capabilities.isCreativeMode) {
 			doExplosion(world, pos, side, player, stack);
 			return EnumActionResult.SUCCESS;
@@ -73,19 +76,19 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 		}
 	}
 
-	public int getExplosionRadius() {
+	private int getExplosionRadius() {
 		return Settings.DestructionCatalyst.explosionRadius;
 	}
 
-	public boolean centeredExplosion() {
+	private boolean centeredExplosion() {
 		return Settings.DestructionCatalyst.centeredExplosion;
 	}
 
-	public boolean perfectCube() {
+	private boolean perfectCube() {
 		return Settings.DestructionCatalyst.perfectCube;
 	}
 
-	public void doExplosion(World world, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack ist) {
+	private void doExplosion(World world, BlockPos pos, EnumFacing side, EntityPlayer player, @Nonnull ItemStack stack) {
 		boolean destroyedSomething = false;
 		boolean playOnce = true;
 		int x = pos.getX();
@@ -123,11 +126,11 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 			}
 		}
 		if(destroyedSomething && !player.capabilities.isCreativeMode) {
-			NBTHelper.setInteger("gunpowder", ist, NBTHelper.getInteger("gunpowder", ist) - gunpowderCost());
+			NBTHelper.setInteger("gunpowder", stack, NBTHelper.getInteger("gunpowder", stack) - gunpowderCost());
 		}
 	}
 
-	public boolean isBreakable(String id) {
+	private boolean isBreakable(String id) {
 		return Settings.DestructionCatalyst.mundaneBlocks.indexOf(id) != -1;
 	}
 

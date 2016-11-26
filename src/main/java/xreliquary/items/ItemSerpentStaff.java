@@ -14,6 +14,8 @@ import xreliquary.Reliquary;
 import xreliquary.entities.EntityKrakenSlime;
 import xreliquary.reference.Names;
 
+import javax.annotation.Nonnull;
+
 public class ItemSerpentStaff extends ItemBase {
 
 	public ItemSerpentStaff() {
@@ -36,6 +38,7 @@ public class ItemSerpentStaff extends ItemBase {
 		return true;
 	}
 
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack par1ItemStack) {
 		return EnumAction.BLOCK;
@@ -43,23 +46,23 @@ public class ItemSerpentStaff extends ItemBase {
 
 	@Override
 	public void onUsingTick(ItemStack item, EntityLivingBase entity, int count) {
-		if(entity.worldObj.isRemote || !(entity instanceof EntityPlayer) || count % 3 != 0)
+		if(entity.world.isRemote || !(entity instanceof EntityPlayer) || count % 3 != 0)
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		player.worldObj.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+		player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
-		EntityKrakenSlime krakenSlime = new EntityKrakenSlime(player.worldObj, player);
+		EntityKrakenSlime krakenSlime = new EntityKrakenSlime(player.world, player);
 		krakenSlime.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0F, 1.5F, 1.0F);
-		player.worldObj.spawnEntityInWorld(krakenSlime);
+		player.world.spawnEntity(krakenSlime);
 		item.damageItem(1, player);
 	}
 
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
 		//drain effect
-		int drain = player.worldObj.rand.nextInt(4);
+		int drain = player.world.rand.nextInt(4);
 		if(entity.attackEntityFrom(DamageSource.causePlayerDamage(player), drain)) {
 			player.heal(drain);
 			stack.damageItem(1, player);
@@ -72,10 +75,11 @@ public class ItemSerpentStaff extends ItemBase {
 		return 11;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
 		player.setActiveHand(hand);
-		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+		return new ActionResult<>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 
 }

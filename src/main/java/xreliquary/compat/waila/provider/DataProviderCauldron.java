@@ -1,3 +1,4 @@
+/*
 package xreliquary.compat.waila.provider;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -17,11 +18,13 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class DataProviderCauldron extends CachedBodyDataProvider {
+	@Nonnull
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		return new ItemStack(ModBlocks.apothecaryCauldron);
@@ -83,7 +86,7 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 	private void addEffectsInfo(List<String> currenttip, PotionEssence essence) {
 		List<String> effectLines = new ArrayList<>();
 
-		XRPotionHelper.addPotionInfo(essence, effectLines, false);
+		XRPotionHelper.addPotionInfo(essence, effectLines);
 
 		StringBuilder sb = new StringBuilder();
 		int effectsInLine = 0;
@@ -118,3 +121,4 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		return null;
 	}
 }
+*/

@@ -12,14 +12,12 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.blocks.BlockApothecaryCauldron;
-import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
@@ -28,12 +26,10 @@ import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Xeno on 11/9/2014.
- */
 public class ItemXRPotion extends ItemBase {
 
 	public ItemXRPotion() {
@@ -57,18 +53,19 @@ public class ItemXRPotion extends ItemBase {
 		XRPotionHelper.addPotionInfo(essence, list);
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack onItemUseFinish(ItemStack ist, World world, EntityLivingBase entity) {
+	public ItemStack onItemUseFinish(@Nonnull ItemStack stack, World world, EntityLivingBase entity) {
 		if(!(entity instanceof EntityPlayer) || world.isRemote)
-			return ist;
+			return stack;
 
 		EntityPlayer player = (EntityPlayer) entity;
 
 		if(!player.capabilities.isCreativeMode) {
-			--ist.stackSize;
+			stack.shrink(1);
 		}
 
-		for(PotionEffect effect : new PotionEssence(ist.getTagCompound()).getEffects()) {
+		for(PotionEffect effect : new PotionEssence(stack.getTagCompound()).getEffects()) {
 			if(effect == null)
 				continue;
 			player.addPotionEffect(new PotionEffect(effect.getPotion(), effect.getDuration(), effect.getAmplifier(), false, false));
@@ -77,12 +74,12 @@ public class ItemXRPotion extends ItemBase {
 		if(!player.capabilities.isCreativeMode) {
 			ItemStack emptyVial = new ItemStack(ModItems.potion);
 			emptyVial.setTagCompound(new NBTTagCompound()); //doing this as without this vials dropped on ground and picked up wouldn't stack properly - they get empty NBT assigned
-			if(ist.stackSize <= 0)
+			if(stack.getCount() <= 0)
 				return emptyVial;
 			else
 				player.inventory.addItemStackToInventory(emptyVial);
 		}
-		return ist;
+		return stack;
 	}
 
 	public boolean getSplash(ItemStack ist) {
@@ -102,7 +99,7 @@ public class ItemXRPotion extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+	public void getSubItems(@Nonnull Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
 		subItems.add(new ItemStack(ModItems.potion)); //just an empty one
 
 		List<ItemStack> splashPotions = new ArrayList<>();
@@ -130,6 +127,7 @@ public class ItemXRPotion extends ItemBase {
 	 * returns the action that specifies what animation to play when the items
 	 * is being used
 	 */
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack ist) {
 		if(!getSplash(ist) && new PotionEssence(ist.getTagCompound()).getEffects().size() > 0)
@@ -137,13 +135,15 @@ public class ItemXRPotion extends ItemBase {
 		return EnumAction.NONE;
 	}
 
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
-		if (!stack.hasTagCompound() || stack.getTagCompound().hasNoTags()) {
+		//noinspection ConstantConditions
+		if(!stack.hasTagCompound() || stack.getTagCompound().hasNoTags()) {
 			return "item.potion_empty";
-		} else if (getLingering(stack)) {
+		} else if(getLingering(stack)) {
 			return "item.potion_lingering";
-		} else if (getSplash(stack)) {
+		} else if(getSplash(stack)) {
 			return "item.potion_splash";
 		}
 
@@ -155,28 +155,30 @@ public class ItemXRPotion extends ItemBase {
 	 * pressed. Args: itemStack, world, entityPlayer
 	 */
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
-		if(!getSplash(ist) && !getLingering(ist)) {
-			PotionEssence essence = new PotionEssence(ist.getTagCompound());
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+		if(!getSplash(stack) && !getLingering(stack)) {
+			PotionEssence essence = new PotionEssence(stack.getTagCompound());
 			if(essence.getEffects().size() > 0) {
 				player.setActiveHand(hand);
-				return new ActionResult<>(EnumActionResult.SUCCESS, ist);
+				return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 			} else {
-				return new ActionResult<>(EnumActionResult.PASS, ist);
+				return new ActionResult<>(EnumActionResult.PASS, stack);
 			}
 		} else {
 			if(world.isRemote)
-				return new ActionResult<>(EnumActionResult.PASS, ist);
-			EntityThrownXRPotion e = new EntityThrownXRPotion(world, player, ist);
+				return new ActionResult<>(EnumActionResult.PASS, stack);
+			EntityThrownXRPotion e = new EntityThrownXRPotion(world, player, stack);
 			e.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.5F, 1.0F);
 
 			if(!player.capabilities.isCreativeMode) {
-				--ist.stackSize;
+				stack.shrink(1);
 			}
 			world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-			world.spawnEntityInWorld(e);
+			world.spawnEntity(e);
 		}
-		return new ActionResult<>(EnumActionResult.PASS, ist);
+		return new ActionResult<>(EnumActionResult.PASS, stack);
 	}
 }

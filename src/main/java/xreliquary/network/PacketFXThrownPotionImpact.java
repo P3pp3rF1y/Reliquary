@@ -8,6 +8,8 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
@@ -17,6 +19,7 @@ public class PacketFXThrownPotionImpact implements IMessage, IMessageHandler<Pac
 	private double posY;
 	private double posZ;
 
+	@SuppressWarnings("unused")
 	public PacketFXThrownPotionImpact() {
 	}
 
@@ -44,7 +47,15 @@ public class PacketFXThrownPotionImpact implements IMessage, IMessageHandler<Pac
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IMessage onMessage(PacketFXThrownPotionImpact message, MessageContext ctx) {
+		Minecraft.getMinecraft().addScheduledTask(() -> handleMessage(message));
+
+		return null;
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void handleMessage(PacketFXThrownPotionImpact message) {
 		Minecraft mc = FMLClientHandler.instance().getClient();
 		int color = message.color;
 		Random rand = new Random();
@@ -66,7 +77,5 @@ public class PacketFXThrownPotionImpact implements IMessage, IMessageHandler<Pac
 				var31.multiplyVelocity((float) var39);
 			}
 		}
-
-		return null;
 	}
 }

@@ -3,6 +3,7 @@ package xreliquary.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+@SuppressWarnings("unused")
 public class NBTHelper {
 
 	public static int getShort(String s, ItemStack ist) {
@@ -85,5 +86,11 @@ public class NBTHelper {
 	public static NBTTagCompound getTagCompound(String s, ItemStack ist) {
 		NBTTagCompound tagCompound = getTag(ist);
 		return tagCompound.getCompoundTag(s);
+	}
+
+	public static void removeTag(NBTTagCompound nbt, String tagName) {
+		if (nbt!= null) {
+			nbt.removeTag(tagName);
+		}
 	}
 }

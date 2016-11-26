@@ -27,19 +27,12 @@ import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
-/**
- * Created by Xeno on 10/11/2014.
- */
 public class ItemGlacialStaff extends ItemIceMagusRod {
 	public ItemGlacialStaff() {
 		super(Names.Items.GLACIAL_STAFF);
-	}
-
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
-		return super.onItemRightClick(ist, world, player, hand);
 	}
 
 	@Override
@@ -61,7 +54,9 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 			//if the creature is slowed already, refresh the duration and increase the amplifier by 1.
 			//5 hits is all it takes to max out the amplitude.
 			if(livingBase.getActivePotionEffect(MobEffects.SLOWNESS) != null)
-				slow = new PotionEffect(MobEffects.SLOWNESS, Math.min(livingBase.getActivePotionEffect(MobEffects.SLOWNESS).getDuration() + 30, 300), Math.min(livingBase.getActivePotionEffect(MobEffects.SLOWNESS).getAmplifier() + 1, 4));
+				//noinspection ConstantConditions
+				slow = new PotionEffect(MobEffects.SLOWNESS, Math.min(livingBase.getActivePotionEffect(MobEffects.SLOWNESS).getDuration() + 30, 300),
+						Math.min(livingBase.getActivePotionEffect(MobEffects.SLOWNESS).getAmplifier() + 1, 4));
 
 			((EntityLivingBase) e).addPotionEffect(slow);
 			e.attackEntityFrom(DamageSource.causePlayerDamage(player), slow.getAmplifier());
@@ -80,9 +75,9 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 		if(player == null)
 			return;
 
-		int x = MathHelper.floor_double(player.posX);
-		int y = MathHelper.floor_double(player.getEntityBoundingBox().minY) - 1;
-		int z = MathHelper.floor_double(player.posZ);
+		int x = MathHelper.floor(player.posX);
+		int y = MathHelper.floor(player.getEntityBoundingBox().minY) - 1;
+		int z = MathHelper.floor(player.posZ);
 
 		if(this.isEnabled(ist)) {
 			for(int xOff = -2; xOff <= 2; xOff++) {
@@ -96,9 +91,9 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 
 		if (!world.isRemote) {
 			for(BlockPos pos : getBlockLocations(ist)) {
-				int xOff = Math.abs(MathHelper.floor_double(player.posX) - pos.getX());
-				int yOff = Math.abs(MathHelper.floor_double(player.posY) - pos.getY());
-				int zOff = Math.abs(MathHelper.floor_double(player.posZ) - pos.getZ());
+				int xOff = Math.abs(MathHelper.floor(player.posX) - pos.getX());
+				int yOff = Math.abs(MathHelper.floor(player.posY) - pos.getY());
+				int zOff = Math.abs(MathHelper.floor(player.posZ) - pos.getZ());
 
 				if(xOff < 3 && yOff < 3 && zOff < 3 && !(xOff == 2 && zOff == 2))
 					continue;
@@ -114,7 +109,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 			tagCompound = new NBTTagCompound();
 		}
 
-		if(tagCompound.getTag("BlockLocations") == null)
+		if(!tagCompound.hasKey("BlockLocations"))
 			tagCompound.setTag("BlockLocations", new NBTTagList());
 		NBTTagList tagList = tagCompound.getTagList("BlockLocations", 10);
 
@@ -128,11 +123,11 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 		return locations;
 	}
 
-	public void doFreezeCheck(ItemStack ist, int x, int y, int z, World world, int xOff, int zOff) {
+	private void doFreezeCheck(@Nonnull ItemStack ist, int x, int y, int z, World world, int xOff, int zOff) {
 		x += xOff;
 		z += zOff;
 		IBlockState blockState = world.getBlockState(new BlockPos(x, y, z));
-		if(blockState.getBlock().getMaterial(blockState) == Material.WATER && blockState.getValue(BlockLiquid.LEVEL) == 0 && world.isAirBlock(new BlockPos(x, y + 1, z))) {
+		if(blockState.getMaterial() == Material.WATER && blockState.getValue(BlockLiquid.LEVEL) == 0 && world.isAirBlock(new BlockPos(x, y + 1, z))) {
 			addFrozenBlockToList(ist, x, y, z);
 			world.setBlockState(new BlockPos(x, y, z), Blocks.PACKED_ICE.getDefaultState());
 
@@ -142,7 +137,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 				float zVel = world.rand.nextFloat();
 				world.spawnParticle(EnumParticleTypes.REDSTONE, x + xVel, y + yVel, z + zVel, 0.75F, 0.75F, 1.0F);
 			}
-		} else if(blockState.getBlock().getMaterial(blockState) == Material.LAVA && blockState.getValue(BlockLiquid.LEVEL) == 0) {
+		} else if(blockState.getMaterial() == Material.LAVA && blockState.getValue(BlockLiquid.LEVEL) == 0) {
 			addFrozenBlockToList(ist, x, y, z);
 			world.setBlockState(new BlockPos(x, y, z), Blocks.OBSIDIAN.getDefaultState());
 			for(int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
@@ -156,7 +151,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 		}
 	}
 
-	public void doThawCheck(ItemStack ist, int x, int y, int z, World world) {
+	private void doThawCheck(@Nonnull ItemStack ist, int x, int y, int z, World world) {
 		IBlockState blockState = world.getBlockState(new BlockPos(x, y, z));
 		if(blockState == Blocks.PACKED_ICE.getDefaultState()) {
 			if(removeFrozenBlockFromList(ist, x, y, z)) {
@@ -193,7 +188,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 			tagCompound = new NBTTagCompound();
 		}
 
-		if(tagCompound.getTag("BlockLocations") == null)
+		if(!tagCompound.hasKey("BlockLocations"))
 			tagCompound.setTag("BlockLocations", new NBTTagList());
 		NBTTagList tagList = tagCompound.getTagList("BlockLocations", 10);
 
@@ -215,7 +210,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 			tagCompound = new NBTTagCompound();
 		}
 
-		if(tagCompound.getTag("BlockLocations") == null)
+		if(!tagCompound.hasKey("BlockLocations"))
 			tagCompound.setTag("BlockLocations", new NBTTagList());
 		NBTTagList tagList = tagCompound.getTagList("BlockLocations", 10);
 

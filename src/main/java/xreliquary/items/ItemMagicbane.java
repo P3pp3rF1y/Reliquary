@@ -18,6 +18,7 @@ import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemMagicbane extends ItemSword {
@@ -31,12 +32,14 @@ public class ItemMagicbane extends ItemSword {
 		this.setUnlocalizedName(Names.Items.MAGICBANE);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
-	public String getItemStackDisplayName(ItemStack stack) {
+	public String getItemStackDisplayName(@Nonnull ItemStack stack) {
 		return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -74,51 +77,51 @@ public class ItemMagicbane extends ItemSword {
 	 * entry argument beside ev. They just raise the damage on the stack.
 	 */
 	@Override
-	public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase e, EntityLivingBase par3EntityLivingBase) {
-		if(e != null) {
-			int random = e.worldObj.rand.nextInt(16);
+	public boolean hitEntity(ItemStack stack, EntityLivingBase target, @Nonnull EntityLivingBase attacker) {
+		if(target != null) {
+			int random = target.world.rand.nextInt(16);
 			switch(random) {
 				case 0:
 				case 1:
 				case 2:
 				case 3:
 				case 4:
-					e.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 100, 2));
+					target.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 100, 2));
 				case 5:
 				case 6:
 				case 7:
 				case 8:
-					e.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 100, 2));
+					target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 100, 2));
 					break;
 				case 9:
 				case 10:
 				case 11:
-					e.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 100, 2));
+					target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 100, 2));
 					break;
 				case 12:
 				case 13:
-					e.addPotionEffect(new PotionEffect(MobEffects.POISON, 100, 2));
-					e.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 100, 2));
+					target.addPotionEffect(new PotionEffect(MobEffects.POISON, 100, 2));
+					target.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 100, 2));
 					break;
 				case 14:
-					e.addPotionEffect(new PotionEffect(MobEffects.WITHER, 100, 2));
-					e.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 100, 2));
+					target.addPotionEffect(new PotionEffect(MobEffects.WITHER, 100, 2));
+					target.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 100, 2));
 					break;
 				default:
 					break;
 			}
-		}
-		if(par3EntityLivingBase instanceof EntityPlayer) {
-			NBTTagList enchants = par1ItemStack.getEnchantmentTagList();
-			int bonus = 0;
-			if(enchants != null) {
-				for(int enchant = 0; enchant < enchants.tagCount(); enchant++) {
-					bonus += enchants.getCompoundTagAt(enchant).getShort("lvl");
+			if(attacker instanceof EntityPlayer) {
+				NBTTagList enchants = stack.getEnchantmentTagList();
+				int bonus = 0;
+				if(enchants != null) {
+					for(int enchant = 0; enchant < enchants.tagCount(); enchant++) {
+						bonus += enchants.getCompoundTagAt(enchant).getShort("lvl");
+					}
 				}
+				target.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker), bonus + 4);
 			}
-			e.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) par3EntityLivingBase), bonus + 4);
+			stack.damageItem(1, attacker);
 		}
-		par1ItemStack.damageItem(1, par3EntityLivingBase);
 		return true;
 	}
 }

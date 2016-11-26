@@ -16,6 +16,8 @@ import xreliquary.items.util.handgun.HandgunDataStorage;
 import xreliquary.items.util.handgun.IHandgunData;
 import xreliquary.reference.Reference;
 
+import javax.annotation.Nonnull;
+
 public class ModCapabilities {
 	@CapabilityInject(IHarvestRodCache.class)
 	public final static Capability<IHarvestRodCache> HARVEST_ROD_CACHE = null;
@@ -29,17 +31,20 @@ public class ModCapabilities {
 
 	@SubscribeEvent
 	public void onItemStackConstruct(AttachCapabilitiesEvent.Item evt) {
-		if (evt.getItem() == ModItems.harvestRod) {
+		if (evt.getItemStack().getItem() == ModItems.harvestRod) {
 			evt.addCapability(new ResourceLocation(Reference.MOD_ID, "IHarvestRodCache"), new ICapabilityProvider() {
+				@SuppressWarnings("ConstantConditions")
 				IHarvestRodCache instance = HARVEST_ROD_CACHE.getDefaultInstance();
 
 				@Override
-				public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+				public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+					//noinspection ConstantConditions
 					return capability == HARVEST_ROD_CACHE;
 				}
 
 				@Override
-				public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+				public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+					//noinspection ConstantConditions
 					return capability == HARVEST_ROD_CACHE ? HARVEST_ROD_CACHE.<T>cast(instance) : null;
 				}
 			});

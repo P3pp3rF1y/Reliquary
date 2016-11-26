@@ -6,17 +6,15 @@ import net.minecraft.entity.monster.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
-import java.util.List;
+import javax.annotation.Nonnull;
 
-/**
- * Created by Xeno on 10/11/2014.
- */
 public class ItemMobCharm extends ItemBase {
 	private static final String TYPE_TAG = "type";
 
@@ -29,15 +27,14 @@ public class ItemMobCharm extends ItemBase {
 		this.canRepair = false;
 	}
 
-	@SuppressWarnings("NullableProblems")
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
 		return "item." + Names.Items.MOB_CHARM + "_" + getType(ist);
 	}
 
-	@SuppressWarnings("NullableProblems")
 	@Override
-	public void getSubItems(Item item, CreativeTabs creativeTab, List<ItemStack> subItems) {
+	public void getSubItems(@Nonnull Item item, CreativeTabs creativeTab, NonNullList<ItemStack> subItems) {
 		for(byte i = 0; i < Reference.MOB_CHARM.COUNT_TYPES; i++) {
 			ItemStack subItem = new ItemStack(item);
 			setType(subItem, i);
@@ -74,12 +71,10 @@ public class ItemMobCharm extends ItemBase {
 			return Reference.MOB_CHARM.ZOMBIE_PIGMAN_META;
 		} else if(entity instanceof EntityZombie) {
 			return Reference.MOB_CHARM.ZOMBIE_META;
-		} else if(entity instanceof EntitySkeleton) {
-			if(((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
-				return Reference.MOB_CHARM.WITHER_SKELETON_META;
-			} else {
-				return Reference.MOB_CHARM.SKELETON_META;
-			}
+		} else if(entity instanceof EntitySkeleton || entity instanceof EntityStray) {
+			return Reference.MOB_CHARM.SKELETON_META;
+		} else if(entity instanceof EntityWitherSkeleton) {
+			return Reference.MOB_CHARM.WITHER_SKELETON_META;
 		} else if(entity instanceof EntityCreeper) {
 			return Reference.MOB_CHARM.CREEPER_META;
 		} else if(entity instanceof EntityWitch) {
@@ -92,7 +87,7 @@ public class ItemMobCharm extends ItemBase {
 			return Reference.MOB_CHARM.ENDERMAN_META;
 		} else if(entity instanceof EntityBlaze) {
 			return Reference.MOB_CHARM.BLAZE_META;
-		} else if(entity instanceof EntityGuardian && !((EntityGuardian) entity).isElder()) {
+		} else if(entity instanceof EntityGuardian) {
 			return Reference.MOB_CHARM.GUARDIAN_META;
 		}
 

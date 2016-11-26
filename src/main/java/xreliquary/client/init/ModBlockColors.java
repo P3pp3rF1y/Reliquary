@@ -11,7 +11,7 @@ public class ModBlockColors {
 
 		if(ModBlocks.apothecaryCauldron.getRegistryName() != null) {
 			blockColors.registerBlockColorHandler((state, world, pos, tintIndex) -> {
-				if(pos != null) {
+				if(world !=null && pos != null) {
 					TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
 					if(cauldron != null) {
 						return cauldron.getColorMultiplier();

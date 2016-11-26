@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 
 public class AlkahestCraftRecipe {
 
-	public ItemStack item = null;
+	public ItemStack item = ItemStack.EMPTY;
 	public int yield = 0;
 	public int cost = 0;
 

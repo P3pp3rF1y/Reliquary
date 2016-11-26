@@ -14,6 +14,7 @@ import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
@@ -24,7 +25,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 	private Queue<BlockPos> blockQueue = new ArrayDeque<>();
 
 	@Override
-	public void update(ItemStack stack, IPedestal pedestal) {
+	public void update(@Nonnull ItemStack stack, IPedestal pedestal) {
 		World world = pedestal.getTheWorld();
 		BlockPos pos = pedestal.getBlockPos();
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
@@ -41,16 +42,16 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 			pedestal.setActionCoolDown(Settings.Pedestal.shearsWrapperCooldown);
 		}
 
-		if(stack.stackSize == 0)
+		if(stack.getCount() == 0)
 			pedestal.destroyCurrentItem();
 	}
 
 	@Override
-	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+	public void onRemoved(@Nonnull ItemStack stack, IPedestal pedestal) {
 	}
 
 	@Override
-	public void stop(ItemStack stack, IPedestal pedestal) {
+	public void stop(@Nonnull ItemStack stack, IPedestal pedestal) {
 	}
 
 	private boolean shearBlocks(ItemStack stack, World world, IPedestal pedestal, FakePlayer fakePlayer, BlockPos pos, int shearsRange) {
@@ -65,7 +66,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 			blockPosBeingSheared = blockQueue.remove();
 			IBlockState blockState = world.getBlockState(blockPosBeingSheared);
 			if(blockState.getBlock() instanceof IShearable && ((IShearable) blockState.getBlock()).isShearable(stack, world, blockPosBeingSheared)) {
-				float hardness = blockState.getBlock().getBlockHardness(blockState, world, blockPosBeingSheared);
+				float hardness = blockState.getBlockHardness(world, blockPosBeingSheared);
 				float digSpeed = stack.getItem().getStrVsBlock(stack, blockState);
 
 				pedestal.setActionCoolDown((int) ((hardness * 1.5f * 20f) / digSpeed));
@@ -102,7 +103,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 		for(EntityAnimal animal : entities) {
 			if(animal instanceof IShearable && ((IShearable) animal).isShearable(stack, world, animal.getPosition())) {
 				fakePlayer.setHeldItem(EnumHand.MAIN_HAND, stack);
-				fakePlayer.interact(animal, stack, EnumHand.MAIN_HAND);
+				fakePlayer.interactOn(animal, EnumHand.MAIN_HAND);
 				return true;
 			}
 		}

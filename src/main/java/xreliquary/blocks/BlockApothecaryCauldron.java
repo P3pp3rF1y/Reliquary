@@ -16,11 +16,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
@@ -38,12 +38,14 @@ public class BlockApothecaryCauldron extends BlockBase {
 		this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, 0));
 	}
 
+	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, LEVEL);
 	}
 
 	@SuppressWarnings("deprecation")
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return getDefaultState().withProperty(LEVEL, meta);
@@ -56,7 +58,8 @@ public class BlockApothecaryCauldron extends BlockBase {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collisionEntity) {
+	public void addCollisionBoxToList(IBlockState state,
+			@Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB mask, @Nonnull List<AxisAlignedBB> list, Entity collisionEntity) {
 		addCollisionBoxToList(pos, mask, list, AABB_LEGS);
 		addCollisionBoxToList(pos, mask, list, AABB_WALL_WEST);
 		addCollisionBoxToList(pos, mask, list, AABB_WALL_NORTH);
@@ -82,6 +85,7 @@ public class BlockApothecaryCauldron extends BlockBase {
 	}
 
 	@SuppressWarnings("deprecation")
+	@Nonnull
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		return FULL_BLOCK_AABB;
@@ -104,12 +108,12 @@ public class BlockApothecaryCauldron extends BlockBase {
 	 * Called upon block activation (right click on the block.)
 	 */
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float xOff, float yOff, float zOff) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float xOff, float yOff, float zOff) {
 		if(world.isRemote) {
 			return true;
 		} else {
-			ItemStack itemstack = player.inventory.getCurrentItem();
-			if(itemstack == null) {
+			ItemStack heldItem = player.getHeldItem(hand);
+			if(heldItem.isEmpty()) {
 				return true;
 			} else {
 				TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
@@ -131,6 +135,7 @@ public class BlockApothecaryCauldron extends BlockBase {
 		}
 	}
 
+	@Nonnull
 	@Override
 	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
 		// this might destroy the universe
@@ -142,7 +147,8 @@ public class BlockApothecaryCauldron extends BlockBase {
 	 * use the value from getComparatorInputOverride instead of the actual
 	 * redstone signal strength.
 	 */
-	public boolean hasComparatorInputOverride() {
+	@SuppressWarnings("deprecation")
+	public boolean hasComparatorInputOverride(IBlockState state) {
 		return true;
 	}
 
@@ -151,7 +157,8 @@ public class BlockApothecaryCauldron extends BlockBase {
 	 * used instead of the redstone signal strength when this block inputs to a
 	 * comparator.
 	 */
-	public int getComparatorInputOverride(World world, BlockPos pos) {
+	@SuppressWarnings("deprecation")
+	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
 		TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
 		if(cauldron != null) {
 			return cauldron.getLiquidLevel();
@@ -164,8 +171,9 @@ public class BlockApothecaryCauldron extends BlockBase {
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public TileEntity createTileEntity(World world, IBlockState state) {
+	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
 		return new TileEntityCauldron();
 	}
 }

@@ -29,12 +29,10 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Xeno on 10/11/2014.
- */
 public class ItemPyromancerStaff extends ItemToggleable {
 	public ItemPyromancerStaff() {
 		super(Names.Items.PYROMANCER_STAFF);
@@ -92,6 +90,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		return 11;
 	}
 
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack ist) {
 		return EnumAction.BLOCK;
@@ -104,11 +103,11 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		return NBTHelper.getString("mode", ist);
 	}
 
-	public void setMode(ItemStack ist, String s) {
+	private void setMode(ItemStack ist, String s) {
 		NBTHelper.setString("mode", ist, s);
 	}
 
-	public void cycleMode(ItemStack ist) {
+	private void cycleMode(ItemStack ist) {
 		if(getMode(ist).equals("blaze"))
 			setMode(ist, "charge");
 		else if(getMode(ist).equals("charge"))
@@ -121,7 +120,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
 	@Override
 	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack ist) {
-		if(entityLiving.worldObj.isRemote)
+		if(entityLiving.world.isRemote)
 			return true;
 		if(!(entityLiving instanceof EntityPlayer))
 			return true;
@@ -132,20 +131,22 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
 		if(player.isSneaking())
-			super.onItemRightClick(ist, world, player, hand);
+			super.onItemRightClick(world, player, hand);
 		else {
-			if(getMode(ist).equals("blaze")) {
+			if(getMode(stack).equals("blaze")) {
 				if(player.isSwingInProgress)
-					return new ActionResult<>(EnumActionResult.PASS, ist);
+					return new ActionResult<>(EnumActionResult.PASS, stack);
 				player.swingArm(hand);
 				Vec3d lookVec = player.getLookVec();
 				//blaze fireball!
-				if(removeItemFromInternalStorage(ist, Items.BLAZE_POWDER, getBlazePowderCost(), player.worldObj.isRemote, player)) {
-					player.worldObj.playEvent(player, 1018, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
-					EntitySmallFireball fireball = new EntitySmallFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
+				if(removeItemFromInternalStorage(stack, Items.BLAZE_POWDER, getBlazePowderCost(), player.world.isRemote, player)) {
+					player.world.playEvent(player, 1018, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
+					EntitySmallFireball fireball = new EntitySmallFireball(player.world, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
 					fireball.accelerationX = lookVec.xCoord;
 					fireball.accelerationY = lookVec.yCoord;
 					fireball.accelerationZ = lookVec.zCoord;
@@ -153,17 +154,17 @@ public class ItemPyromancerStaff extends ItemToggleable {
 					fireball.posY += lookVec.yCoord;
 					fireball.posZ += lookVec.zCoord;
 					fireball.posY = player.posY + player.getEyeHeight();
-					player.worldObj.spawnEntityInWorld(fireball);
+					player.world.spawnEntity(fireball);
 				}
-			} else if(getMode(ist).equals("charge")) {
+			} else if(getMode(stack).equals("charge")) {
 				if(player.isSwingInProgress)
-					return new ActionResult<>(EnumActionResult.PASS, ist);
+					return new ActionResult<>(EnumActionResult.PASS, stack);
 				player.swingArm(hand);
 				Vec3d lookVec = player.getLookVec();
 				//ghast fireball!
-				if(removeItemFromInternalStorage(ist, Items.FIRE_CHARGE, getFireChargeCost(), player.worldObj.isRemote, player)) {
-					player.worldObj.playEvent(player, 1016, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
-					EntityLargeFireball fireball = new EntityLargeFireball(player.worldObj, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
+				if(removeItemFromInternalStorage(stack, Items.FIRE_CHARGE, getFireChargeCost(), player.world.isRemote, player)) {
+					player.world.playEvent(player, 1016, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
+					EntityLargeFireball fireball = new EntityLargeFireball(player.world, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
 					fireball.accelerationX = lookVec.xCoord;
 					fireball.accelerationY = lookVec.yCoord;
 					fireball.accelerationZ = lookVec.zCoord;
@@ -171,17 +172,17 @@ public class ItemPyromancerStaff extends ItemToggleable {
 					fireball.posY += lookVec.yCoord;
 					fireball.posZ += lookVec.zCoord;
 					fireball.posY = player.posY + player.getEyeHeight();
-					player.worldObj.spawnEntityInWorld(fireball);
+					player.world.spawnEntity(fireball);
 
 				}
 			} else
 				player.setActiveHand(hand);
 		}
-		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
+		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
 	//a longer ranged version of "getMovingObjectPositionFromPlayer" basically
-	public RayTraceResult getEruptionBlockTarget(World world, EntityPlayer player) {
+	private RayTraceResult getEruptionBlockTarget(World world, EntityPlayer player) {
 		float f = 1.0F;
 		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
 		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
@@ -208,7 +209,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		EntityPlayer player = (EntityPlayer) entity;
 
 		//mop call and fakes onItemUse, getting read to do the eruption effect. If the item is enabled, it just sets a bunch of fires!
-		RayTraceResult rayTraceResult = this.getEruptionBlockTarget(player.worldObj, player);
+		RayTraceResult rayTraceResult = this.getEruptionBlockTarget(player.world, player);
 
 		if(rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
 			if(getMode(ist).equals("eruption")) {
@@ -217,7 +218,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 
 				doEruptionAuxEffects(player, rayTraceResult.getBlockPos().getX(), rayTraceResult.getBlockPos().getY(), rayTraceResult.getBlockPos().getZ());
 				if(count % 10 == 0) {
-					if(removeItemFromInternalStorage(ist, Items.BLAZE_POWDER, getBlazePowderCost(), player.worldObj.isRemote, player)) {
+					if(removeItemFromInternalStorage(ist, Items.BLAZE_POWDER, getBlazePowderCost(), player.world.isRemote, player)) {
 						doEruptionEffect(player, rayTraceResult.getBlockPos().getX(), rayTraceResult.getBlockPos().getY(), rayTraceResult.getBlockPos().getZ());
 					}
 				}
@@ -225,8 +226,10 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		}
 	}
 
+	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float hitX, float hitY, float hitZ) {
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing sideHit, float hitX, float hitY, float hitZ) {
+		ItemStack stack = player.getHeldItem(hand);
 		if(getMode(stack).equals("flint_and_steel")) {
 			BlockPos placeFireAt = pos.offset(sideHit);
 			if(!player.canPlayerEdit(placeFireAt, sideHit, stack)) {
@@ -242,73 +245,66 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		return EnumActionResult.PASS;
 	}
 
-	public void doEruptionAuxEffects(EntityPlayer player, int soundX, int soundY, int soundZ) {
-		player.worldObj.playSound((double) soundX + 0.5D, (double) soundY + 0.5D, (double) soundZ + 0.5D, SoundEvents.ENTITY_GHAST_SHOOT, SoundCategory.NEUTRAL, 0.2F, 0.03F + (0.07F * itemRand.nextFloat()), false);
+	private void doEruptionAuxEffects(EntityPlayer player, int soundX, int soundY, int soundZ) {
+		player.world.playSound((double) soundX + 0.5D, (double) soundY + 0.5D, (double) soundZ + 0.5D, SoundEvents.ENTITY_GHAST_SHOOT, SoundCategory.NEUTRAL, 0.2F, 0.03F + (0.07F * itemRand.nextFloat()), false);
 
 		for(int particleCount = 0; particleCount < 2; ++particleCount) {
-			double randX = (soundX + 0.5D) + (player.worldObj.rand.nextFloat() - 0.5F) * 5D;
-			double randZ = (soundZ + 0.5D) + (player.worldObj.rand.nextFloat() - 0.5F) * 5D;
+			double randX = (soundX + 0.5D) + (player.world.rand.nextFloat() - 0.5F) * 5D;
+			double randZ = (soundZ + 0.5D) + (player.world.rand.nextFloat() - 0.5F) * 5D;
 			if(Math.abs(randX - (soundX + 0.5D)) >= 4.0D && Math.abs(randZ - (soundZ + 0.5D)) >= 4.0D)
 				continue;
-			player.worldObj.spawnParticle(EnumParticleTypes.LAVA, randX, soundY + 1D, randZ, 0D, 0D, 0D);
+			player.world.spawnParticle(EnumParticleTypes.LAVA, randX, soundY + 1D, randZ, 0D, 0D, 0D);
 		}
 		for(int particleCount = 0; particleCount < 4; ++particleCount) {
-			double randX = soundX + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * 5D / 2D;
-			double randZ = soundZ + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * 5D / 2D;
+			double randX = soundX + 0.5D + (player.world.rand.nextFloat() - 0.5F) * 5D / 2D;
+			double randZ = soundZ + 0.5D + (player.world.rand.nextFloat() - 0.5F) * 5D / 2D;
 			if(Math.abs(randX - (soundX + 0.5D)) >= 4.0D && Math.abs(randZ - (soundZ + 0.5D)) >= 4.0D)
 				continue;
-			player.worldObj.spawnParticle(EnumParticleTypes.LAVA, randX, soundY + 1D, randZ, 0D, 0D, 0D);
+			player.world.spawnParticle(EnumParticleTypes.LAVA, randX, soundY + 1D, randZ, 0D, 0D, 0D);
 		}
 		for(int particleCount = 0; particleCount < 6; ++particleCount) {
-			double randX = soundX + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * 5D;
-			double randZ = soundZ + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * 5D;
+			double randX = soundX + 0.5D + (player.world.rand.nextFloat() - 0.5F) * 5D;
+			double randZ = soundZ + 0.5D + (player.world.rand.nextFloat() - 0.5F) * 5D;
 			if(Math.abs(randX - (soundX + 0.5D)) >= 4.0D && Math.abs(randZ - (soundZ + 0.5D)) >= 4.0D)
 				continue;
-			player.worldObj.spawnParticle(EnumParticleTypes.FLAME, randX, soundY + 1D, randZ, player.worldObj.rand.nextGaussian() * 0.2D, player.worldObj.rand.nextGaussian() * 0.2D, player.worldObj.rand.nextGaussian() * 0.2D);
+			player.world.spawnParticle(EnumParticleTypes.FLAME, randX, soundY + 1D, randZ, player.world.rand.nextGaussian() * 0.2D, player.world.rand.nextGaussian() * 0.2D, player.world.rand.nextGaussian() * 0.2D);
 		}
 		for(int particleCount = 0; particleCount < 8; ++particleCount) {
-			double randX = soundX + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * 5D / 2D;
-			double randZ = soundZ + 0.5D + (player.worldObj.rand.nextFloat() - 0.5F) * 5D / 2D;
+			double randX = soundX + 0.5D + (player.world.rand.nextFloat() - 0.5F) * 5D / 2D;
+			double randZ = soundZ + 0.5D + (player.world.rand.nextFloat() - 0.5F) * 5D / 2D;
 			if(Math.abs(randX - (soundX + 0.5D)) >= 4.0D && Math.abs(randZ - (soundZ + 0.5D)) >= 4.0D)
 				continue;
-			player.worldObj.spawnParticle(EnumParticleTypes.FLAME, randX, soundY + 1D, randZ, player.worldObj.rand.nextGaussian() * 0.2D, player.worldObj.rand.nextGaussian() * 0.2D, player.worldObj.rand.nextGaussian() * 0.2D);
+			player.world.spawnParticle(EnumParticleTypes.FLAME, randX, soundY + 1D, randZ, player.world.rand.nextGaussian() * 0.2D, player.world.rand.nextGaussian() * 0.2D, player.world.rand.nextGaussian() * 0.2D);
 		}
 	}
 
-	public void doEruptionEffect(EntityPlayer player, int x, int y, int z) {
+	private void doEruptionEffect(EntityPlayer player, int x, int y, int z) {
 		double lowerX = x - 5D + 0.5D;
 		double lowerZ = z - 5D + 0.5D;
 		double upperX = x + 5D + 0.5D;
 		double upperY = y + 5D;
 		double upperZ = z + 5D + 0.5D;
-		List<EntityLiving> eList = player.worldObj.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, y, lowerZ, upperX, upperY, upperZ));
+		List<EntityLiving> entities = player.world.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, y, lowerZ, upperX, upperY, upperZ));
 
-		for(EntityLiving e : eList) {
-			if(!e.isEntityEqual(player)) {
-				e.setFire(40);
-				if(!e.isImmuneToFire())
-					e.attackEntityFrom(DamageSource.causePlayerDamage(player), 4F);
-			}
-		}
+		entities.stream().filter(e -> !e.isEntityEqual(player)).forEach(e -> {
+			e.setFire(40);
+			if(!e.isImmuneToFire())
+				e.attackEntityFrom(DamageSource.causePlayerDamage(player), 4F);
+		});
 	}
 
-	private void scanForFireChargeAndBlazePowder(ItemStack ist, EntityPlayer player) {
+	private void scanForFireChargeAndBlazePowder(ItemStack staff, EntityPlayer player) {
 		List<ItemStack> absorbItems = new ArrayList<>();
 		absorbItems.add(new ItemStack(Items.FIRE_CHARGE));
 		absorbItems.add(new ItemStack(Items.BLAZE_POWDER));
-		for(ItemStack absorbItem : absorbItems) {
-			if(!isInternalStorageFullOfItem(ist, absorbItem.getItem()) && InventoryHelper.consumeItem(absorbItem, player)) {
-				addItemToInternalStorage(ist, absorbItem.getItem(), false);
-			}
-		}
+		absorbItems.stream().filter(absorbItem -> !isInternalStorageFullOfItem(staff, absorbItem.getItem()) && InventoryHelper.consumeItem(absorbItem, player))
+				.forEach(absorbItem -> addItemToInternalStorage(staff, absorbItem.getItem(), false));
 	}
 
 	private void addItemToInternalStorage(ItemStack ist, Item item, boolean isAbsorb) {
 		int quantityIncrease = item == Items.FIRE_CHARGE ? (isAbsorb ? getGhastAbsorbWorth() : getFireChargeWorth()) : (isAbsorb ? getBlazeAbsorbWorth() : getBlazePowderWorth());
 		NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 
-		if(tagCompound.getTag("Items") == null)
-			tagCompound.setTag("Items", new NBTTagList());
 		NBTTagList tagList = tagCompound.getTagList("Items", 10);
 
 		boolean added = false;
@@ -333,7 +329,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		NBTHelper.setTag(ist, tagCompound);
 	}
 
-	public boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, boolean simulate, EntityPlayer player) {
+	private boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, boolean simulate, EntityPlayer player) {
 		if(player.capabilities.isCreativeMode)
 			return true;
 		if(hasItemInInternalStorage(ist, item, cost)) {
@@ -442,10 +438,10 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		for(int xOff = -3; xOff <= 3; xOff++) {
 			for(int yOff = -3; yOff <= 3; yOff++) {
 				for(int zOff = -3; zOff <= 3; zOff++) {
-					Block block = player.worldObj.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock();
+					Block block = player.world.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock();
 					if(block == Blocks.FIRE) {
-						player.worldObj.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.AIR.getDefaultState());
-						player.worldObj.playSound(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
+						player.world.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.AIR.getDefaultState());
+						player.world.playSound(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.8F, false);
 					}
 				}
 			}
@@ -453,26 +449,26 @@ public class ItemPyromancerStaff extends ItemToggleable {
 	}
 
 	private void doFireballAbsorbEffect(ItemStack ist, EntityPlayer player) {
-		List<EntityLargeFireball> ghastFireballs = player.worldObj.getEntitiesWithinAABB(EntityLargeFireball.class, new AxisAlignedBB(player.posX - 5, player.posY - 5, player.posZ - 5, player.posX + 5, player.posY + 5, player.posZ + 5));
+		List<EntityLargeFireball> ghastFireballs = player.world.getEntitiesWithinAABB(EntityLargeFireball.class, new AxisAlignedBB(player.posX - 5, player.posY - 5, player.posZ - 5, player.posX + 5, player.posY + 5, player.posZ + 5));
 		for(EntityLargeFireball fireball : ghastFireballs) {
 			if(fireball.shootingEntity == player)
 				continue;
 			if(player.getDistanceToEntity(fireball) < 4) {
 				if(!isInternalStorageFullOfItem(ist, Items.FIRE_CHARGE) && InventoryHelper.consumeItem(new ItemStack(Items.FIRE_CHARGE), player)) {
 					addItemToInternalStorage(ist, Items.FIRE_CHARGE, true);
-					player.worldObj.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
+					player.world.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.8F, false);
 				}
 				fireball.setDead();
 			}
 		}
-		List<EntitySmallFireball> blazeFireballs = player.worldObj.getEntitiesWithinAABB(EntitySmallFireball.class, new AxisAlignedBB(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));
+		List<EntitySmallFireball> blazeFireballs = player.world.getEntitiesWithinAABB(EntitySmallFireball.class, new AxisAlignedBB(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));
 		for(EntitySmallFireball fireball : blazeFireballs) {
 			if(fireball.shootingEntity == player)
 				continue;
 			for(int particles = 0; particles < 4; particles++) {
-				player.worldObj.spawnParticle(EnumParticleTypes.REDSTONE, fireball.posX, fireball.posY, fireball.posZ, 0.0D, 1.0D, 1.0D);
+				player.world.spawnParticle(EnumParticleTypes.REDSTONE, fireball.posX, fireball.posY, fireball.posZ, 0.0D, 1.0D, 1.0D);
 			}
-			player.worldObj.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.8F, false);
+			player.world.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.8F, false);
 
 			if(!isInternalStorageFullOfItem(ist, Items.BLAZE_POWDER) && InventoryHelper.consumeItem(new ItemStack(Items.BLAZE_POWDER), player)) {
 				addItemToInternalStorage(ist, Items.BLAZE_POWDER, true);

@@ -5,18 +5,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
-import xreliquary.util.potions.PotionEssence;
-import xreliquary.util.potions.XRPotionHelper;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 public class MagazineRecipe implements IRecipe {
-	private static final ItemStack[] EMPTY_ITEMS = new ItemStack[9];
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World worldIn) {
+	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World worldIn) {
 		if(inv.getWidth() != 3 || inv.getHeight() != 3)
 			return false;
 
@@ -27,7 +25,7 @@ public class MagazineRecipe implements IRecipe {
 		for(int slot = 0; slot < inv.getSizeInventory(); slot++) {
 			ItemStack stack = inv.getStackInSlot(slot);
 
-			if(stack == null)
+			if(stack.isEmpty())
 				return false;
 
 			if(stack.getItem() == ModItems.bullet) {
@@ -54,23 +52,23 @@ public class MagazineRecipe implements IRecipe {
 		return hasMagazine;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv) {
-		ItemStack bullet = null;
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
+		ItemStack bullet = ItemStack.EMPTY;
 
 		//in the first two slots there must be a bullet so no need to iterate further
 		for(int slot = 0; slot < 2; slot++) {
 			ItemStack stack = inv.getStackInSlot(slot);
 
-			if (stack.getItem()==ModItems.bullet) {
+			if(stack.getItem() == ModItems.bullet) {
 				bullet = stack.copy();
 				break;
 			}
 		}
 
-		if (bullet == null)
-			return null;
+		if(bullet.isEmpty())
+			return ItemStack.EMPTY;
 
 		ItemStack magazine = new ItemStack(ModItems.magazine, 1, bullet.getMetadata());
 		PotionUtils.appendEffects(magazine, PotionUtils.getEffectsFromStack(bullet));
@@ -83,14 +81,15 @@ public class MagazineRecipe implements IRecipe {
 		return 9;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput() {
-		return null;
+		return ItemStack.EMPTY;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv) {
-		return EMPTY_ITEMS;
+	public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inv) {
+		return NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 	}
 }

@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,6 +21,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemXRTippedArrow extends ItemArrow {
@@ -29,21 +31,23 @@ public class ItemXRTippedArrow extends ItemArrow {
 		this.setUnlocalizedName(Names.Items.TIPPED_ARROW);
 	}
 
+	@Nonnull
 	@Override
-	public EntityArrow createArrow(World worldIn, ItemStack stack, EntityLivingBase shooter) {
-		EntityXRTippedArrow entitytippedarrow = new EntityXRTippedArrow(worldIn, shooter);
+	public EntityArrow createArrow(@Nonnull World world, @Nonnull ItemStack stack, EntityLivingBase shooter) {
+		EntityXRTippedArrow entitytippedarrow = new EntityXRTippedArrow(world, shooter);
 		entitytippedarrow.setPotionEffect(stack);
 		return entitytippedarrow;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
-	public String getItemStackDisplayName(ItemStack stack) {
+	public String getItemStackDisplayName(@Nonnull ItemStack stack) {
 		return LanguageHelper.getLocalization("item." + Names.Items.TIPPED_ARROW + ".name");
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> subItems) {
+	public void getSubItems(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
 		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
 			ItemStack tippedArrow = new ItemStack(ModItems.tippedArrow);
 			PotionUtils.appendEffects(tippedArrow, XRPotionHelper.changeDuration(essence.getEffects(), 0.125F));

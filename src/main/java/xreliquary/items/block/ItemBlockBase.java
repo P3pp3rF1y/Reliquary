@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.util.LanguageHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public class ItemBlockBase extends ItemBlock {
 	 * formatTooltip() directly and DO NOT call super.addInformation().
 	 */
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean whatDoesThisEvenDo) {
+	public void addInformation(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, @Nonnull List<String> list, boolean whatDoesThisEvenDo) {
 		this.formatTooltip(stack, list);
 	}
 
@@ -46,13 +47,14 @@ public class ItemBlockBase extends ItemBlock {
 			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", null, list);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
-	public String getItemStackDisplayName(ItemStack stack) {
+	public String getItemStackDisplayName(@Nonnull ItemStack stack) {
 		return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
 	}
 
-	protected boolean showTooltipsAlways() {
+	private boolean showTooltipsAlways() {
 		return false;
 	}
 }

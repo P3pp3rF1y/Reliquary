@@ -10,8 +10,11 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class EntityKrakenSlime extends EntityThrowable {
 
+	@SuppressWarnings("unused")
 	public EntityKrakenSlime(World world) {
 		super(world);
 	}
@@ -21,8 +24,8 @@ public class EntityKrakenSlime extends EntityThrowable {
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		if(this.worldObj.isRemote)
+	protected void onImpact(@Nonnull RayTraceResult result) {
+		if(this.world.isRemote)
 			return;
 		if(result.typeOfHit == RayTraceResult.Type.ENTITY && result.entityHit instanceof EntityLiving) {
 			EntityLiving living = (EntityLiving) result.entityHit;
@@ -32,9 +35,9 @@ public class EntityKrakenSlime extends EntityThrowable {
 
 		for(int count = 0; count < 6; ++count) {
 			float amplifier = 0.25F;
-			worldObj.spawnParticle(EnumParticleTypes.SLIME, posX - motionX * amplifier + worldObj.rand.nextDouble(), posY - motionY * amplifier + worldObj.rand.nextDouble(), posZ - motionZ * amplifier + worldObj.rand.nextDouble(), motionX, motionY, motionZ);
+			world.spawnParticle(EnumParticleTypes.SLIME, posX - motionX * amplifier + world.rand.nextDouble(), posY - motionY * amplifier + world.rand.nextDouble(), posZ - motionZ * amplifier + world.rand.nextDouble(), motionX, motionY, motionZ);
 		}
-		this.worldObj.playSound(null, getPosition(), SoundEvents.ENTITY_SLIME_JUMP, SoundCategory.NEUTRAL, 0.5F, 0.4F / (worldObj.rand.nextFloat() * 0.4F + 0.8F));
+		this.world.playSound(null, getPosition(), SoundEvents.ENTITY_SLIME_JUMP, SoundCategory.NEUTRAL, 0.5F, 0.4F / (world.rand.nextFloat() * 0.4F + 0.8F));
 		this.setDead();
 	}
 
@@ -49,10 +52,10 @@ public class EntityKrakenSlime extends EntityThrowable {
 
 		for(int count = 0; count < 2; ++count) {
 			float amplifier = 0.25F;
-			worldObj.spawnParticle(EnumParticleTypes.SLIME, posX - motionX * amplifier, posY - motionY * amplifier, posZ - motionZ * amplifier, motionX, motionY, motionZ);
+			world.spawnParticle(EnumParticleTypes.SLIME, posX - motionX * amplifier, posY - motionY * amplifier, posZ - motionZ * amplifier, motionX, motionY, motionZ);
 		}
 
-		if(this.worldObj.isRemote)
+		if(this.world.isRemote)
 			return;
 
 		if(this.motionX < 0.5 && this.motionY == 0 && this.motionZ == 0) {
@@ -60,7 +63,7 @@ public class EntityKrakenSlime extends EntityThrowable {
 			return;
 		}
 
-		if(this.posY > this.worldObj.getHeight() || this.posY <= 0) {
+		if(this.posY > this.world.getHeight() || this.posY <= 0) {
 			this.setDead();
 		}
 

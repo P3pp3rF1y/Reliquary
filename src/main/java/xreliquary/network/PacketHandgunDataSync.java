@@ -36,16 +36,8 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 
 	private static final int INVALID_SLOT = -1;
 
+	@SuppressWarnings("unused")
 	public PacketHandgunDataSync() {
-	}
-
-	public PacketHandgunDataSync(int playerSlotNumber, short bulletCount, short bulletType, boolean isInCooldown, long cooldownTime, List<PotionEffect> potionEffects) {
-		this.playerSlotNumber = playerSlotNumber;
-		this.bulletCount = bulletCount;
-		this.bulletType = bulletType;
-		this.isInCooldown = isInCooldown;
-		this.cooldownTime = cooldownTime;
-		this.potionEffects = potionEffects;
 	}
 
 	public PacketHandgunDataSync(EnumHand hand, short bulletCount, short bulletType, boolean isInCooldown, long cooldownTime, List<PotionEffect> potionEffects) {
@@ -100,7 +92,14 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IMessage onMessage(PacketHandgunDataSync message, MessageContext ctx) {
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+		Minecraft.getMinecraft().addScheduledTask(() -> handleMessage(message));
+
+		return null;
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void handleMessage(PacketHandgunDataSync message) {
+		EntityPlayer player = Minecraft.getMinecraft().player;
 
 		ItemStack stack;
 		if(message.playerSlotNumber > INVALID_SLOT) {
@@ -109,7 +108,9 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 			stack = player.getHeldItem(message.hand);
 		}
 
-		if(stack != null) {
+		//noinspection ConstantConditions
+		if(stack.hasCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null)) {
+			//noinspection ConstantConditions
 			IHandgunData data = stack.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
 
 			if(data != null) {
@@ -120,7 +121,5 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 				data.setPotionEffects(message.potionEffects);
 			}
 		}
-
-		return null;
 	}
 }

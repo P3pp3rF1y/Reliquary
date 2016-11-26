@@ -19,12 +19,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.init.ModItems;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class EntityXRTippedArrow extends EntityArrow {
-	private static final DataParameter<Integer> COLOR = EntityDataManager.<Integer>createKey(EntityTippedArrow.class, DataSerializers.VARINT);
-	private final Set<PotionEffect> customPotionEffects = Sets.<PotionEffect>newHashSet();
+	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityTippedArrow.class, DataSerializers.VARINT);
+	private final Set<PotionEffect> customPotionEffects = Sets.newHashSet();
 
 	public EntityXRTippedArrow(World worldIn) {
 		super(worldIn);
@@ -41,9 +43,7 @@ public class EntityXRTippedArrow extends EntityArrow {
 	public void setPotionEffect(ItemStack stack) {
 		Collection<PotionEffect> collection = PotionUtils.getFullEffectsFromItem(stack);
 
-		for(PotionEffect potioneffect : collection) {
-			this.customPotionEffects.add(new PotionEffect(potioneffect));
-		}
+		this.customPotionEffects.addAll(collection.stream().map(PotionEffect::new).collect(Collectors.toList()));
 
 		this.dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(collection));
 	}
@@ -53,6 +53,7 @@ public class EntityXRTippedArrow extends EntityArrow {
 		this.getDataManager().set(COLOR, PotionUtils.getPotionColorFromEffectList(this.customPotionEffects));
 	}
 
+	@Override
 	protected void entityInit() {
 		super.entityInit();
 		this.dataManager.register(COLOR, 0);
@@ -61,10 +62,11 @@ public class EntityXRTippedArrow extends EntityArrow {
 	/**
 	 * Called to update the entity's position/logic.
 	 */
+	@Override
 	public void onUpdate() {
 		super.onUpdate();
 
-		if(this.worldObj.isRemote) {
+		if(this.world.isRemote) {
 			if(this.inGround) {
 				if(this.timeInGround % 5 == 0) {
 					this.spawnPotionParticles(1);
@@ -73,7 +75,7 @@ public class EntityXRTippedArrow extends EntityArrow {
 				this.spawnPotionParticles(2);
 			}
 		} else if(this.inGround && this.timeInGround != 0 && !this.customPotionEffects.isEmpty() && this.timeInGround >= 600) {
-			this.worldObj.setEntityState(this, (byte) 0);
+			this.world.setEntityState(this, (byte) 0);
 			this.customPotionEffects.clear();
 			this.dataManager.set(COLOR, 0);
 		}
@@ -88,7 +90,7 @@ public class EntityXRTippedArrow extends EntityArrow {
 			double d2 = (double) (i & 255) / 255.0D;
 
 			for(int j = 0; j < particleCount; ++j) {
-				this.worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB, this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.posY + this.rand.nextDouble() * (double) this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width, d0, d1, d2);
+				this.world.spawnParticle(EnumParticleTypes.SPELL_MOB, this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.posY + this.rand.nextDouble() * (double) this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width, d0, d1, d2);
 			}
 		}
 	}
@@ -100,6 +102,7 @@ public class EntityXRTippedArrow extends EntityArrow {
 	/**
 	 * (abstract) Protected helper method to write subclass entity data to NBT.
 	 */
+	@Override
 	public void writeEntityToNBT(NBTTagCompound compound) {
 		super.writeEntityToNBT(compound);
 
@@ -117,12 +120,11 @@ public class EntityXRTippedArrow extends EntityArrow {
 	/**
 	 * (abstract) Protected helper method to read subclass entity data from NBT.
 	 */
+	@Override
 	public void readEntityFromNBT(NBTTagCompound compound) {
 		super.readEntityFromNBT(compound);
 
-		for(PotionEffect potioneffect : PotionUtils.getFullEffectsFromTag(compound)) {
-			this.addEffect(potioneffect);
-		}
+		PotionUtils.getFullEffectsFromTag(compound).forEach(this::addEffect);
 
 		if(!this.customPotionEffects.isEmpty()) {
 			this.dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(this.customPotionEffects));
@@ -134,12 +136,12 @@ public class EntityXRTippedArrow extends EntityArrow {
 		super.arrowHit(living);
 
 		if(!this.customPotionEffects.isEmpty()) {
-			for(PotionEffect potioneffect1 : this.customPotionEffects) {
-				living.addPotionEffect(potioneffect1);
-			}
+			this.customPotionEffects.forEach(living::addPotionEffect);
 		}
 	}
 
+	@Nonnull
+	@Override
 	protected ItemStack getArrowStack() {
 		if(this.customPotionEffects.isEmpty()) {
 			return new ItemStack(Items.ARROW);
@@ -150,6 +152,7 @@ public class EntityXRTippedArrow extends EntityArrow {
 		}
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void handleStatusUpdate(byte id) {
 		if(id == 0) {
@@ -161,7 +164,7 @@ public class EntityXRTippedArrow extends EntityArrow {
 				double d2 = (double) (i & 255) / 255.0D;
 
 				for(int j = 0; j < 20; ++j) {
-					this.worldObj.spawnParticle(EnumParticleTypes.SPELL_MOB, this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.posY + this.rand.nextDouble() * (double) this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width, d0, d1, d2);
+					this.world.spawnParticle(EnumParticleTypes.SPELL_MOB, this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width, this.posY + this.rand.nextDouble() * (double) this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width, d0, d1, d2);
 				}
 			}
 		} else {

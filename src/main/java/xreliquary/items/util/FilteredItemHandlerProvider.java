@@ -7,8 +7,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class FilteredItemHandlerProvider implements ICapabilitySerializable<NBTTagCompound> {
-	FilteredItemStackHandler itemHandler;
+	private FilteredItemStackHandler itemHandler;
 
 	public FilteredItemHandlerProvider(int[] limits, Item[] items, int[] unitWorth) {
 		itemHandler = new FilteredItemStackHandler(limits, items, unitWorth);
@@ -25,12 +27,12 @@ public class FilteredItemHandlerProvider implements ICapabilitySerializable<NBTT
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			//noinspection unchecked
 			return (T) itemHandler;

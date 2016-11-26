@@ -1,9 +1,6 @@
 package xreliquary.items;
 
-import baubles.api.BaubleType;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -11,14 +8,14 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Optional;
 import xreliquary.Reliquary;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
-import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+
+import javax.annotation.Nonnull;
 
 public class ItemMobCharmBelt extends ItemBauble {
 	private static final String SLOTS_TAG = "Slots";
@@ -30,6 +27,7 @@ public class ItemMobCharmBelt extends ItemBauble {
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
+/* TODO readd with baubles
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public BaubleType getBaubleType(ItemStack stack) {
@@ -42,12 +40,16 @@ public class ItemMobCharmBelt extends ItemBauble {
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {
-		if(player.worldObj.isRemote)
+		if(player.world.isRemote)
 			player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1F, 1F);
 	}
+*/
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+
 		if(player.isSneaking())
 			return new ActionResult<>(EnumActionResult.PASS, stack);
 
@@ -55,22 +57,23 @@ public class ItemMobCharmBelt extends ItemBauble {
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
-	public ItemStack getMobCharmInSlot(ItemStack belt, int slotIndex) {
+	@Nonnull
+	public ItemStack getMobCharmInSlot(@Nonnull ItemStack belt, int slotIndex) {
 		NBTTagCompound nbt = belt.getTagCompound();
 
 		if(nbt == null || !nbt.hasKey(SLOTS_TAG))
-			return null;
+			return ItemStack.EMPTY;
 
 		NBTTagList mobCharms = nbt.getTagList(SLOTS_TAG, 10);
 
 		if(mobCharms.tagCount() <= slotIndex)
-			return null;
+			return ItemStack.EMPTY;
 
 		NBTTagCompound mobCharmNbt = (NBTTagCompound) mobCharms.get(slotIndex);
 
-		if (!mobCharmNbt.hasKey(TYPE_TAG) || !mobCharmNbt.hasKey(DAMAGE_TAG)) {
+		if(!mobCharmNbt.hasKey(TYPE_TAG) || !mobCharmNbt.hasKey(DAMAGE_TAG)) {
 			removeMobCharmInSlot(belt, slotIndex);
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		ItemStack mobCharm = XRRecipes.mobCharm(mobCharmNbt.getByte(TYPE_TAG));
@@ -80,7 +83,7 @@ public class ItemMobCharmBelt extends ItemBauble {
 	}
 
 	public void putMobCharmInSlot(ItemStack belt, int slotIndex, ItemStack mobCharm) {
-		if (mobCharm == null) {
+		if(mobCharm.isEmpty()) {
 			removeMobCharmInSlot(belt, slotIndex);
 			return;
 		}
@@ -132,7 +135,7 @@ public class ItemMobCharmBelt extends ItemBauble {
 
 		NBTTagList mobCharms = nbt.getTagList(SLOTS_TAG, 10);
 
-		return mobCharms == null ? 0 : mobCharms.tagCount();
+		return mobCharms.tagCount();
 	}
 
 	public boolean hasCharmType(ItemStack belt, byte type) {
@@ -143,14 +146,14 @@ public class ItemMobCharmBelt extends ItemBauble {
 
 		NBTTagList mobCharms = nbt.getTagList(SLOTS_TAG, 10);
 
-		for (int i=mobCharms.tagCount() - 1; i>=0; i--) {
+		for(int i = mobCharms.tagCount() - 1; i >= 0; i--) {
 			NBTTagCompound mobCharmNbt = (NBTTagCompound) mobCharms.get(i);
 
-			if (!mobCharmNbt.hasKey(TYPE_TAG) || !mobCharmNbt.hasKey(DAMAGE_TAG)) {
+			if(!mobCharmNbt.hasKey(TYPE_TAG) || !mobCharmNbt.hasKey(DAMAGE_TAG)) {
 				removeMobCharmInSlot(belt, i);
 			}
 
-			if (mobCharmNbt.getByte(TYPE_TAG) == type)
+			if(mobCharmNbt.getByte(TYPE_TAG) == type)
 				return true;
 		}
 
@@ -165,18 +168,18 @@ public class ItemMobCharmBelt extends ItemBauble {
 
 		NBTTagList mobCharms = nbt.getTagList(SLOTS_TAG, 10);
 
-		for (int i=mobCharms.tagCount() - 1; i>=0; i--) {
+		for(int i = mobCharms.tagCount() - 1; i >= 0; i--) {
 			NBTTagCompound mobCharmNbt = (NBTTagCompound) mobCharms.get(i);
 
-			if (!mobCharmNbt.hasKey(TYPE_TAG) || !mobCharmNbt.hasKey(DAMAGE_TAG)) {
+			if(!mobCharmNbt.hasKey(TYPE_TAG) || !mobCharmNbt.hasKey(DAMAGE_TAG)) {
 				removeMobCharmInSlot(belt, i);
 			}
 
-			if (mobCharmNbt.getByte(TYPE_TAG) == type) {
+			if(mobCharmNbt.getByte(TYPE_TAG) == type) {
 				int damage = mobCharmNbt.getInteger(DAMAGE_TAG);
-				if (damage + Settings.MobCharm.damagePerKill > ModItems.mobCharm.getMaxDamage()) {
+				if(damage + Settings.MobCharm.damagePerKill > ModItems.mobCharm.getMaxDamage(ItemStack.EMPTY)) {
 					removeMobCharmInSlot(belt, i);
-					return ModItems.mobCharm.getMaxDamage() + 1;
+					return ModItems.mobCharm.getMaxDamage(ItemStack.EMPTY) + 1;
 				} else {
 					damage += Settings.MobCharm.damagePerKill;
 					mobCharmNbt.setInteger(DAMAGE_TAG, damage);

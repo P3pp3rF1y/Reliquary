@@ -13,9 +13,9 @@ import xreliquary.util.LanguageHelper;
  *
  * @author TheMike
  */
-public abstract class GuiBase extends GuiContainer {
+abstract class GuiBase extends GuiContainer {
 
-	public GuiBase(Container container) {
+	GuiBase(Container container) {
 		super(container);
 	}
 
@@ -28,7 +28,7 @@ public abstract class GuiBase extends GuiContainer {
 	 * @param baseY    The base Y position. This will be modified by 9 each new line.
 	 * @param color    The color value.
 	 */
-	public void drawPositionedString(FontRenderer renderer, String values, int x, int baseY, int color) {
+	void drawPositionedString(FontRenderer renderer, String values, int x, int baseY, int color) {
 		if(!LanguageHelper.getLocalization(values).equals(values)) {
 			values = LanguageHelper.getLocalization(values);
 		}
@@ -49,7 +49,7 @@ public abstract class GuiBase extends GuiContainer {
 	 * @param baseY    The base Y position. This will be modified by 9 each new line.
 	 * @param color    The color value.
 	 */
-	public void drawCenteredPositionedString(FontRenderer renderer, String values, int xLimit, int baseY, int color) {
+	void drawCenteredPositionedString(FontRenderer renderer, String values, int xLimit, int baseY, int color) {
 		if(!LanguageHelper.getLocalization(values).equals(values)) {
 			values = LanguageHelper.getLocalization(values);
 		}
@@ -67,7 +67,7 @@ public abstract class GuiBase extends GuiContainer {
 	 *
 	 * @param location The location of the texture.
 	 */
-	public void bindTexture(ResourceLocation location) {
+	void bindTexture(ResourceLocation location) {
 		this.mc.renderEngine.bindTexture(location);
 	}
 
@@ -78,12 +78,16 @@ public abstract class GuiBase extends GuiContainer {
 	 * @param x     Where the stack will be placed on the x axis.
 	 * @param y     Where the stack will be placed on the y axis.
 	 */
-	public void drawItemStack(ItemStack stack, int x, int y) {
+	void drawItemStack(ItemStack stack, int x, int y) {
+		FontRenderer fr = stack.getItem().getFontRenderer(stack);
+		if(fr == null)
+			fr = fontRendererObj;
+
 		GlStateManager.disableLighting();
 		this.zLevel = 200.0F;
 		itemRender.zLevel = 200.0F;
 		itemRender.renderItemAndEffectIntoGUI(stack, x, y);
-		itemRender.renderItemOverlayIntoGUI(stack.getItem().getFontRenderer(stack), stack, x, y, null);
+		itemRender.renderItemOverlayIntoGUI(fr, stack, x, y, null);
 		this.zLevel = 0.0F;
 		itemRender.zLevel = 0.0F;
 		GlStateManager.enableLighting();

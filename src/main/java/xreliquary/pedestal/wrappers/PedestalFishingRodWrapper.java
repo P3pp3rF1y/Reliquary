@@ -22,6 +22,7 @@ import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketPedestalFishHook;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -40,7 +41,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	private boolean retractFail = false;
 
 	@Override
-	public void update(ItemStack stack, IPedestal pedestal) {
+	public void update(@Nonnull ItemStack stack, IPedestal pedestal) {
 		ticksSinceLastThrow++;
 
 		if(fakePlayer != null && fakePlayer.fishEntity != null) {
@@ -61,7 +62,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		}
 	}
 
-	private void handleHookStates(ItemStack stack, IPedestal pedestal) {
+	private void handleHookStates(@Nonnull ItemStack stack, IPedestal pedestal) {
 		if(retractFail) {
 			//take care of failed retract
 			if(getTicksCatchable(fakePlayer.fishEntity) == 0) {
@@ -70,6 +71,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			}
 		} else if(!badThrowChecked && ticksSinceLastThrow > BAD_THROW_TIMEOUT) {
 			//when hook doesn't land in water retract it after some time
+			//noinspection ConstantConditions
 			if(!fakePlayer.fishEntity.isInWater()) {
 				retractHook(pedestal, stack);
 			} else {
@@ -78,18 +80,19 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		} else if(ticksSinceLastThrow > ABSOLUTE_TIMEOUT) {
 			//sometimes hook can get stuck in a bad state so take care of that
 			retractHook(pedestal, stack);
-		} else if(getTicksCatchable(fakePlayer.fishEntity) > 0 || fakePlayer.fishEntity.caughtEntity != null) {
-			if(rand.nextInt(100) <= Settings.Pedestal.fishingWrapperSuccessRate) {
-				retractHook(pedestal, stack);
-			} else {
-				retractFail = true;
+		} else //noinspection ConstantConditions
+			if(getTicksCatchable(fakePlayer.fishEntity) > 0 || fakePlayer.fishEntity.caughtEntity != null) {
+				if(rand.nextInt(100) <= Settings.Pedestal.fishingWrapperSuccessRate) {
+					retractHook(pedestal, stack);
+				} else {
+					retractFail = true;
+				}
 			}
-		}
 	}
 
-	private void updateHeldItem(ItemStack fishingRod) {
+	private void updateHeldItem(@Nonnull ItemStack fishingRod) {
 		ItemStack heldItem = fakePlayer.getHeldItemMainhand();
-		if(heldItem == null) {
+		if(heldItem.isEmpty()) {
 			fakePlayer.setHeldItem(EnumHand.MAIN_HAND, fishingRod);
 			return;
 		}
@@ -98,10 +101,11 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void retractHook(IPedestal pedestal, ItemStack stack) {
+		//noinspection ConstantConditions
 		int i = fakePlayer.fishEntity.handleHookRetraction();
 		stack.damageItem(i, fakePlayer);
 		//destroy the item when it gets used up
-		if(stack.stackSize == 0)
+		if(stack.getCount() == 0)
 			pedestal.destroyCurrentItem();
 
 		pedestal.setActionCoolDown(Settings.Pedestal.fishingWrapperRetractDelay * 20);
@@ -158,7 +162,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 
 					int sqDistance = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff;
 
-					if (sqDistance < closestSqDistance) {
+					if(sqDistance < closestSqDistance) {
 						closestSqDistance = sqDistance;
 						closestBlockInLargestGroup = waterPos;
 					}
@@ -199,13 +203,13 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 					BlockPos neighborPos = blockPos.offset(facing);
 					//no search outside of the range
 					if(neighborPos.getX() <= pedestalX + RANGE && neighborPos.getX() >= pedestalX - RANGE && neighborPos.getY() <= pedestalY + RANGE && neighborPos.getY() >= pedestalY - RANGE)
-						addNeighboringWater(pedestal, visitedBlocks, group, pedestalX, pedestalY, pedestalZ, neighborPos.getX(), neighborPos.getY(), neighborPos.getZ(), neighborPos);
+						addNeighboringWater(pedestal, visitedBlocks, group, pedestalX, pedestalY, pedestalZ, neighborPos);
 				}
 			}
 		}
 	}
 
-	private void addNeighboringWater(IPedestal pedestal, List<BlockPos> visitedBlocks, List<BlockPos> group, double pedestalX, double pedestalY, double pedestalZ, int x, int y, int z, BlockPos blockPos) {
+	private void addNeighboringWater(IPedestal pedestal, List<BlockPos> visitedBlocks, List<BlockPos> group, double pedestalX, double pedestalY, double pedestalZ, BlockPos blockPos) {
 		if(!visitedBlocks.contains(blockPos)) {
 			checkForWaterAndSearchNeighbors(pedestal, visitedBlocks, pedestalX, pedestalY, pedestalZ, blockPos, group);
 		}
@@ -215,7 +219,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		World world = pedestal.getTheWorld();
 		world.playSound(null, pedestal.getBlockPos(), SoundEvents.ENTITY_BOBBER_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (rand.nextFloat() * 0.4F + 0.8F));
 
-		world.spawnEntityInWorld(new EntityFishHook(world, fakePlayer));
+		world.spawnEntity(new EntityFishHook(world, fakePlayer));
 	}
 
 	private void syncHookData(IPedestal pedestal) {
@@ -230,15 +234,15 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	@Override
-	public void onRemoved(ItemStack stack, IPedestal pedestal) {
-		if(fakePlayer !=null && fakePlayer.fishEntity != null) {
+	public void onRemoved(@Nonnull ItemStack stack, IPedestal pedestal) {
+		if(fakePlayer != null && fakePlayer.fishEntity != null) {
 			fakePlayer.fishEntity.setDead();
 		}
 	}
 
 	@Override
-	public void stop(ItemStack stack, IPedestal pedestal) {
-		if(fakePlayer !=null && fakePlayer.fishEntity != null) {
+	public void stop(@Nonnull ItemStack stack, IPedestal pedestal) {
+		if(fakePlayer != null && fakePlayer.fishEntity != null) {
 			fakePlayer.fishEntity.setDead();
 			syncHookData(pedestal);
 		}

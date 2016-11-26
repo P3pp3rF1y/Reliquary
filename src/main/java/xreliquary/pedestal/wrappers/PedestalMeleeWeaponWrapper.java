@@ -11,29 +11,24 @@ import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 
-	public class Slow extends PedestalMeleeWeaponWrapper {
-		//TODO: may not be needed if Tinker's will use getCooldownPeriod - check when adding Tinker's support
-		public Slow() {
-			super((byte) 10);
-		}
-	}
-
 	private byte cooldownAfterSwing;
 
+	@SuppressWarnings("unused")
 	public PedestalMeleeWeaponWrapper() {
 		this(Settings.Pedestal.meleeWrapperCooldown);
 	}
 
-	public PedestalMeleeWeaponWrapper(byte cooldownAfterSwing) {
+	private PedestalMeleeWeaponWrapper(byte cooldownAfterSwing) {
 		this.cooldownAfterSwing = cooldownAfterSwing;
 	}
 
 	@Override
-	public void update(ItemStack stack, IPedestal pedestal) {
+	public void update(@Nonnull ItemStack stack, IPedestal pedestal) {
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
 
 		World world = pedestal.getTheWorld();
@@ -65,15 +60,15 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 		pedestal.setActionCoolDown((int) fakePlayer.getCooldownPeriod() + cooldownAfterSwing);
 
 		//destroy the item when it gets used up
-		if(stack.stackSize == 0)
+		if(stack.getCount() == 0)
 			pedestal.destroyCurrentItem();
 	}
 
 	@Override
-	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+	public void onRemoved(@Nonnull ItemStack stack, IPedestal pedestal) {
 	}
 
 	@Override
-	public void stop(ItemStack stack, IPedestal pedestal) {
+	public void stop(@Nonnull ItemStack stack, IPedestal pedestal) {
 	}
 }

@@ -8,6 +8,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.api.IPedestal;
 import xreliquary.client.render.RenderPedestalFishHook;
 
@@ -18,8 +20,8 @@ public class PacketPedestalFishHook implements IMessage, IMessageHandler<PacketP
 	private double hookX;
 	private double hookY;
 	private double hookZ;
-	private float yawOffset;
 
+	@SuppressWarnings("unused")
 	public PacketPedestalFishHook() {
 	}
 
@@ -51,12 +53,20 @@ public class PacketPedestalFishHook implements IMessage, IMessageHandler<PacketP
 		buf.writeDouble(hookX);
 		buf.writeDouble(hookY);
 		buf.writeDouble(hookZ);
-		buf.writeFloat(yawOffset);
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IMessage onMessage(PacketPedestalFishHook message, MessageContext ctx) {
-		WorldClient world = Minecraft.getMinecraft().theWorld;
+
+		Minecraft.getMinecraft().addScheduledTask(() -> handleMessage(message));
+
+		return null;
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void handleMessage(PacketPedestalFishHook message) {
+		WorldClient world = Minecraft.getMinecraft().world;
 		TileEntity te = world.getTileEntity(message.pedestalPos);
 
 		if(te != null && te instanceof IPedestal) {
@@ -68,7 +78,5 @@ public class PacketPedestalFishHook implements IMessage, IMessageHandler<PacketP
 
 			pedestal.setItemData(message.itemIndex, data);
 		}
-
-		return null;
 	}
 }

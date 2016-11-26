@@ -15,6 +15,7 @@ public class PacketFXConcussiveExplosion implements IMessage, IMessageHandler<Pa
 	private double posY;
 	private double posZ;
 
+	@SuppressWarnings("unused")
 	public PacketFXConcussiveExplosion() {
 	}
 
@@ -45,10 +46,15 @@ public class PacketFXConcussiveExplosion implements IMessage, IMessageHandler<Pa
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IMessage onMessage(PacketFXConcussiveExplosion message, MessageContext ctx) {
-		ConcussiveExplosion explosion = new ConcussiveExplosion(Minecraft.getMinecraft().theWorld, null, null, message.posX, message.posY, message.posZ, message.size, false, true);
-
-		explosion.doExplosionB(false);
+		Minecraft.getMinecraft().addScheduledTask(() -> handleMessage(message));
 
 		return null;
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void handleMessage(PacketFXConcussiveExplosion message) {
+		ConcussiveExplosion explosion = new ConcussiveExplosion(Minecraft.getMinecraft().world, null, null, message.posX, message.posY, message.posZ, message.size, false, true);
+
+		explosion.doExplosionB(false);
 	}
 }

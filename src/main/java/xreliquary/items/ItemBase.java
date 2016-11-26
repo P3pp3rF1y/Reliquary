@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.util.LanguageHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -19,17 +20,10 @@ import java.util.List;
  */
 public class ItemBase extends Item {
 
-	//defaults to only showing the tooltip when shift is pressed. you can override this behavior at the item level by setting the item's showTooltipsAlways bool to true.
-	private boolean showTooltipsAlways = false;
-
 	public ItemBase(String langName) {
 		this.setUnlocalizedName(langName);
 	}
 
-	/**
-	 * Just a call to formatTooltip(). If you are overriding this function, call
-	 * formatTooltip() directly and DO NOT call super.addInformation().
-	 */
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean whatDoesThisEvenDo) {
@@ -53,17 +47,15 @@ public class ItemBase extends Item {
 			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", toFormat, list);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
-	public String getItemStackDisplayName(ItemStack stack) {
+	public String getItemStackDisplayName(@Nonnull ItemStack stack) {
 		return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
 	}
 
 	protected boolean showTooltipsAlways() {
-		return this.showTooltipsAlways;
-	}
-
-	protected void showTooltipsAlways(boolean b) {
-		this.showTooltipsAlways = b;
+		return false;
 	}
 }
+

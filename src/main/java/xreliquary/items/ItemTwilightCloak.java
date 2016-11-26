@@ -15,6 +15,8 @@ import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
+
 public class ItemTwilightCloak extends ItemToggleable {
 
 	public ItemTwilightCloak() {
@@ -24,6 +26,7 @@ public class ItemTwilightCloak extends ItemToggleable {
 		canRepair = false;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
@@ -39,18 +42,12 @@ public class ItemTwilightCloak extends ItemToggleable {
 		EntityPlayer player = (EntityPlayer) e;
 
 		//toggled effect, makes player invisible based on light level (configurable)
-		int playerX = MathHelper.floor_double(player.posX);
-		int playerY = MathHelper.floor_double(player.getEntityBoundingBox().minY);
-		int playerZ = MathHelper.floor_double(player.posZ);
+		int playerX = MathHelper.floor(player.posX);
+		int playerY = MathHelper.floor(player.getEntityBoundingBox().minY);
+		int playerZ = MathHelper.floor(player.posZ);
 
-		if(player.worldObj.getLightFromNeighbors(new BlockPos(playerX, playerY, playerZ)) > Settings.TwilightCloak.maxLightLevel)
+		if(player.world.getLightFromNeighbors(new BlockPos(playerX, playerY, playerZ)) > Settings.TwilightCloak.maxLightLevel)
 			return;
-
-		//        if (Reliquary.CONFIG.getBool(Names.twilight_cloak, "only_works_at_night")) {
-		//            long worldTime = player.worldObj.getWorldTime() % 24000;
-		//            if (worldTime > 13187 && worldTime < 22812)
-		//                return;
-		//        }
 
 		//checks if the effect would do anything. Literally all this does is make the player invisible. It doesn't interfere with mob AI.
 		//for that, we're attempting to use an event handler.

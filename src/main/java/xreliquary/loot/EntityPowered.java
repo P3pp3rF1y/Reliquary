@@ -14,6 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.properties.EntityProperty;
 import net.minecraftforge.fml.common.Optional;
 import xreliquary.reference.Compatibility;
+
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 @Optional.Interface(iface = "jeresources.api.conditionals.ICustomEntityProperty", modid = Compatibility.MOD_ID.JER, striprefs = true)
@@ -21,12 +23,12 @@ public class EntityPowered implements EntityProperty, ICustomEntityProperty {
 
 	private final boolean powered;
 
-	public EntityPowered(boolean powered) {
+	private EntityPowered(boolean powered) {
 		this.powered = powered;
 	}
 
 	@Override
-	public boolean testProperty(Random random, Entity entityIn) {
+	public boolean testProperty(@Nonnull Random random, @Nonnull Entity entityIn) {
 		if (!(entityIn instanceof EntityCreeper))
 			return false;
 
@@ -47,13 +49,15 @@ public class EntityPowered implements EntityProperty, ICustomEntityProperty {
 			super(new ResourceLocation("powered"), EntityPowered.class);
 		}
 
+		@Nonnull
 		@Override
-		public JsonElement serialize(EntityPowered property, JsonSerializationContext serializationContext) {
+		public JsonElement serialize(@Nonnull EntityPowered property, @Nonnull JsonSerializationContext serializationContext) {
 			return new JsonPrimitive(property.powered);
 		}
 
+		@Nonnull
 		@Override
-		public EntityPowered deserialize(JsonElement element, JsonDeserializationContext deserializationContext) {
+		public EntityPowered deserialize(@Nonnull JsonElement element, @Nonnull JsonDeserializationContext deserializationContext) {
 			return new EntityPowered(JsonUtils.getBoolean(element, "powered"));
 		}
 	}

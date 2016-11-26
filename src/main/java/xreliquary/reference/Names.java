@@ -30,7 +30,6 @@ public class Names {
 		public static final String INFERNAL_CLAWS = "infernal_claws";
 		public static final String INFERNAL_CHALICE = "infernal_chalice";
 		public static final String KRAKEN_SHELL = "kraken_shell";
-		public static final String ELSEWHERE_FLASK = "elsewhere_flask";
 		public static final String SERPENT_STAFF = "serpent_staff";
 		public static final String WITCH_HAT = "witch_hat";
 		public static final String INFERNAL_TEAR = "infernal_tear";
@@ -45,7 +44,6 @@ public class Names {
 		public static final String MOB_CHARM_FRAGMENT = "mob_charm_fragment";
 		public static final String HEART_ZHU = "heart_zhu";
 		public static final String SEEKER_SHOT = "seeker_shot";
-		public static final String RIB_BONE = "rib_bone";
 		public static final String FERTILE_ESSENCE = "fertile_essence";
 		public static final String MOB_CHARM_BELT = "mob_charm_belt";
 		public static final String MOB_CHARM = "mob_charm";

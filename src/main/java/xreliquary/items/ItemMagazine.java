@@ -7,6 +7,7 @@ import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -19,7 +20,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemMagazine extends ItemBase {
@@ -31,16 +32,18 @@ public class ItemMagazine extends ItemBase {
 		canRepair = false;
 		this.setHasSubtypes(true);
 		this.addPropertyOverride(new ResourceLocation("empty"), new IItemPropertyGetter() {
-			@SuppressWarnings("NullableProblems")
+
+			@Override
 			@SideOnly(Side.CLIENT)
-			public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
+			public float apply(@Nonnull ItemStack stack, World worldIn, EntityLivingBase entityIn) {
 				return stack.getMetadata() == 0 ? 1 : 0;
 			}
 		});
 		this.addPropertyOverride(new ResourceLocation("potion"), new IItemPropertyGetter() {
-			@SuppressWarnings("NullableProblems")
+
+			@Override
 			@SideOnly(Side.CLIENT)
-			public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
+			public float apply(@Nonnull ItemStack stack, World worldIn, EntityLivingBase entityIn) {
 				return ModItems.magazine.isPotionAttached(stack) ? 1 : 0;
 			}
 		});
@@ -56,15 +59,14 @@ public class ItemMagazine extends ItemBase {
 			PotionUtils.addPotionTooltip(stack, list, 1F);
 	}
 
-	@SuppressWarnings("NullableProblems")
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
 		return "item." + Names.Items.MAGAZINE + "_" + ist.getItemDamage();
 	}
 
-	@SuppressWarnings("NullableProblems")
 	@Override
-	public void getSubItems(Item item, CreativeTabs creativeTabs, List<ItemStack> subItems) {
+	public void getSubItems(@Nonnull Item item, CreativeTabs creativeTabs, NonNullList<ItemStack> subItems) {
 		for(int meta = 0; meta <= 9; meta++) {
 			subItems.add(new ItemStack(item, 1, meta));
 		}
@@ -78,8 +80,8 @@ public class ItemMagazine extends ItemBase {
 		}
 	}
 
-	@SuppressWarnings("ConstantConditions")
-	public boolean isPotionAttached(ItemStack stack) {
+	private boolean isPotionAttached(ItemStack stack) {
+		//noinspection ConstantConditions
 		return stack.hasTagCompound() && stack.getTagCompound().hasKey("CustomPotionEffects");
 	}
 }

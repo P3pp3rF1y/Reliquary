@@ -25,6 +25,7 @@ import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemIceMagusRod extends ItemToggleable {
@@ -46,22 +47,22 @@ public class ItemIceMagusRod extends ItemToggleable {
 		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}
 
-	public ItemIceMagusRod(String langName) {
+	ItemIceMagusRod(String langName) {
 		super(langName);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;
 	}
 
-	public int getSnowballCap() {
+	private int getSnowballCap() {
 		return this instanceof ItemGlacialStaff ? Settings.GlacialStaff.snowballLimit : Settings.IceMagusRod.snowballLimit;
 	}
 
-	public int getSnowballCost() {
+	int getSnowballCost() {
 		return this instanceof ItemGlacialStaff ? Settings.GlacialStaff.snowballCost : Settings.IceMagusRod.snowballCost;
 	}
 
-	public int getSnowballWorth() {
+	private int getSnowballWorth() {
 		return this instanceof ItemGlacialStaff ? Settings.GlacialStaff.snowballWorth : Settings.IceMagusRod.snowballWorth;
 	}
 
@@ -70,8 +71,10 @@ public class ItemIceMagusRod extends ItemToggleable {
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack ist = player.getHeldItem(hand);
 		//acts as a cooldown.
 		if(player.isSwingInProgress)
 			return new ActionResult<>(EnumActionResult.PASS, ist);
@@ -80,15 +83,16 @@ public class ItemIceMagusRod extends ItemToggleable {
 			if(NBTHelper.getInteger("snowballs", ist) >= getSnowballCost() || player.capabilities.isCreativeMode) {
 				world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 				EntitySpecialSnowball snowball = new EntitySpecialSnowball(world, player, this instanceof ItemGlacialStaff);
-				snowball.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.2F, 1.0F);
-				world.spawnEntityInWorld(snowball);
+				snowball.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 2.4F, 1.0F);
+				world.spawnEntity(snowball);
 				if(!player.capabilities.isCreativeMode)
 					NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());
 			}
 		}
-		return super.onItemRightClick(ist, world, player, hand);
+		return super.onItemRightClick(world, player, hand);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {

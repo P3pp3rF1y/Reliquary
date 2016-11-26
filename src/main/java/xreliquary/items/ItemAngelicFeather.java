@@ -13,9 +13,8 @@ import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
-/**
- * Created by Xeno on 5/15/14.
- */
+import javax.annotation.Nonnull;
+
 public class ItemAngelicFeather extends ItemBase {
 
 	public ItemAngelicFeather() {
@@ -26,10 +25,11 @@ public class ItemAngelicFeather extends ItemBase {
 	}
 
 	// so it can be extended by phoenix down
-	protected ItemAngelicFeather(String name) {
+	ItemAngelicFeather(String name) {
 		super(name);
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {

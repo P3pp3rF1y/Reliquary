@@ -24,6 +24,8 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.RegistryHelper;
 
+import javax.annotation.Nonnull;
+
 public class ItemEmperorChalice extends ItemToggleable {
 
 	public ItemEmperorChalice() {
@@ -45,19 +47,22 @@ public class ItemEmperorChalice extends ItemToggleable {
 		return new FluidHandlerEmperorChalice(stack);
 	}
 
+	@Nonnull
 	@Override
-	public EnumAction getItemUseAction(ItemStack par1ItemStack) {
+	public EnumAction getItemUseAction(ItemStack stack) {
 		return EnumAction.DRINK;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.EPIC;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase entityLiving) {
+	public ItemStack onItemUseFinish(@Nonnull ItemStack stack, World world, EntityLivingBase entityLiving) {
 		if(world.isRemote)
 			return stack;
 
@@ -68,63 +73,54 @@ public class ItemEmperorChalice extends ItemToggleable {
 
 		int multiplier = Settings.EmperorChalice.hungerSatiationMultiplier;
 		player.getFoodStats().addStats(1, (float) (multiplier / 2));
-		player.attackEntityFrom(DamageSource.drown, multiplier);
+		player.attackEntityFrom(DamageSource.DROWN, multiplier);
 		return stack;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack ist = player.getHeldItem(hand);
 		if(player.isSneaking())
-			return super.onItemRightClick(ist, world, player, hand);
-		float coeff = 1.0F;
-		double xOff = player.prevPosX + (player.posX - player.prevPosX) * coeff;
-		double yOff = player.prevPosY + (player.posY - player.prevPosY) * coeff + player.getEyeHeight();
-		double zOff = player.prevPosZ + (player.posZ - player.prevPosZ) * coeff;
+			return super.onItemRightClick(world, player, hand);
 		boolean isInDrainMode = this.isEnabled(ist);
 		RayTraceResult result = this.rayTrace(world, player, isInDrainMode);
 
-		if(result == null) {
+		//noinspection ConstantConditions
+		if(result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
+
+			if(!world.isBlockModifiable(player, result.getBlockPos()))
+				return new ActionResult<>(EnumActionResult.FAIL, ist);
+
+			if(!player.canPlayerEdit(result.getBlockPos(), result.sideHit, ist))
+				return new ActionResult<>(EnumActionResult.FAIL, ist);
+
 			if(!this.isEnabled(ist)) {
-				player.setActiveHand(hand);
-			}
-			return new ActionResult<>(EnumActionResult.SUCCESS, ist);
-		} else {
+				BlockPos waterPlacementPos = result.getBlockPos().offset(result.sideHit);
 
-			if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
-
-				if(!world.isBlockModifiable(player, result.getBlockPos()))
+				if(!player.canPlayerEdit(waterPlacementPos, result.sideHit, ist))
 					return new ActionResult<>(EnumActionResult.FAIL, ist);
 
-				if(!player.canPlayerEdit(result.getBlockPos(), result.sideHit, ist))
-					return new ActionResult<>(EnumActionResult.FAIL, ist);
+				if(this.tryPlaceContainedLiquid(world, ist, waterPlacementPos))
+					return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 
-				if(!this.isEnabled(ist)) {
-					BlockPos waterPlacementPos = result.getBlockPos().offset(result.sideHit);
+			} else {
+				String ident = RegistryHelper.getBlockRegistryName(world.getBlockState(result.getBlockPos()).getBlock());
+				//noinspection ConstantConditions
+				if((ident.equals(RegistryHelper.getBlockRegistryName(Blocks.FLOWING_WATER)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.WATER))) && world.getBlockState(result.getBlockPos()).getValue(BlockLiquid.LEVEL) == 0) {
+					world.setBlockState(result.getBlockPos(), Blocks.AIR.getDefaultState());
 
-					if(!player.canPlayerEdit(waterPlacementPos, result.sideHit, ist))
-						return new ActionResult<>(EnumActionResult.FAIL, ist);
-
-					if(this.tryPlaceContainedLiquid(world, ist, xOff, yOff, zOff, waterPlacementPos))
-						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
-
-				} else {
-					String ident = RegistryHelper.getBlockRegistryName(world.getBlockState(result.getBlockPos()).getBlock());
-					//noinspection ConstantConditions
-					if((ident.equals(RegistryHelper.getBlockRegistryName(Blocks.FLOWING_WATER)) || ident.equals(RegistryHelper.getBlockRegistryName(Blocks.WATER))) && world.getBlockState(result.getBlockPos()).getValue(BlockLiquid.LEVEL) == 0) {
-						world.setBlockState(result.getBlockPos(), Blocks.AIR.getDefaultState());
-
-						return new ActionResult<>(EnumActionResult.SUCCESS, ist);
-					}
+					return new ActionResult<>(EnumActionResult.SUCCESS, ist);
 				}
 			}
-
-			return new ActionResult<>(EnumActionResult.PASS, ist);
 		}
+
+		return new ActionResult<>(EnumActionResult.PASS, ist);
 	}
 
-	public boolean tryPlaceContainedLiquid(World world, ItemStack stack, double posX, double posY, double posZ, BlockPos pos) {
+	private boolean tryPlaceContainedLiquid(World world, @Nonnull ItemStack stack, BlockPos pos) {
 		IBlockState blockState = world.getBlockState(pos);
-		Material material = blockState.getBlock().getMaterial(blockState);
+		Material material = blockState.getMaterial();
 
 		if(this.isEnabled(stack))
 			return false;

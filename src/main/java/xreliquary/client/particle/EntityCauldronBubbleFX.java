@@ -15,9 +15,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
-/**
- * Created by Xeno on 11/9/2014.
- */
 @SideOnly(Side.CLIENT)
 public class EntityCauldronBubbleFX extends Particle {
 	private static ResourceLocation bubbleTexture = new ResourceLocation(Reference.MOD_ID + ":textures/particles/" + Names.Blocks.CAULDRON_BUBBLE + ".png");
@@ -28,7 +25,7 @@ public class EntityCauldronBubbleFX extends Particle {
 		super(world, x, y, z, 0D, 0D, 0D);
 		this.setSize(0.02F, 0.02F);
 		theRenderEngine = renderEngine;
-		this.particleScale = 0.5F + (worldObj.rand.nextFloat() - 0.5F) * 0.4F;
+		this.particleScale = 0.5F + (world.rand.nextFloat() - 0.5F) * 0.4F;
 		this.motionX = 0D;
 		this.motionY = 0D;
 		this.motionZ = 0D;

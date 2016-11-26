@@ -27,7 +27,6 @@ public class Settings {
 		public static List<PotionEssence> potionCombinations = new ArrayList<>();
 		public static List<PotionEssence> uniquePotionEssences = new ArrayList<>();
 		public static List<PotionEssence> uniquePotions = new ArrayList<>();
-		public static int flightPotionID;
 	}
 
 	public static class HudPositions {
@@ -35,7 +34,6 @@ public class Settings {
 		public static int handgun;
 		public static int alkahestryTome;
 		public static int destructionCatalyst;
-		public static int elsewhereFlask;
 		public static int enderStaff;
 		public static int iceMagusRod;
 		public static int glacialStaff;

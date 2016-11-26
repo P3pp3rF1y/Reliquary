@@ -3,10 +3,11 @@ package xreliquary.items;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 
-import java.util.List;
+import javax.annotation.Nonnull;
 
 /**
  * Created by Xeno on 10/11/2014.
@@ -26,14 +27,15 @@ public class ItemMobIngredient extends ItemBase {
 		this.setHasSubtypes(true);
 	}
 
+	@Nonnull
 	@Override
 	public String getUnlocalizedName(ItemStack ist) {
 		return "item.mob_ingredient_" + ist.getItemDamage();
 	}
 
 	@Override
-	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {
+	public void getSubItems(@Nonnull Item item, CreativeTabs creativeTab, NonNullList<ItemStack> list) {
 		for(int i = 0; i <= 16; i++)
-			par3List.add(new ItemStack(par1, 1, i));
+			list.add(new ItemStack(item, 1, i));
 	}
 }

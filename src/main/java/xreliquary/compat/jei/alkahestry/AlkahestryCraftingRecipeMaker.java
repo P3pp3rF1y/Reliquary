@@ -29,7 +29,7 @@ public class AlkahestryCraftingRecipeMaker {
 				if(OreDictionary.getOres(recipe.dictionaryName).size() > 0) {
 					for(ItemStack ore : OreDictionary.getOres(recipe.dictionaryName)) {
 						ItemStack outputOre = ore.copy();
-						outputOre.stackSize = recipe.yield + 1;
+						outputOre.setCount(recipe.yield + 1);
 						recipes.add(new AlkahestryCraftingRecipeJEI(ore, inputTome, outputOre, outputTome));
 					}
 				}
@@ -42,5 +42,4 @@ public class AlkahestryCraftingRecipeMaker {
 
 		return recipes;
 	}
-
 }

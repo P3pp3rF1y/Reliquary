@@ -26,9 +26,14 @@ import xreliquary.network.PacketHandler;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemHandgun extends ItemBase {
+
+	private static final int PLAYER_HANDGUN_SKILL_MAXIMUM = 20;
+	private static final int HANDGUN_RELOAD_SKILL_OFFSET = 10;
+	private static final int HANDGUN_COOLDOWN_SKILL_OFFSET = 5;
 
 	public ItemHandgun() {
 		super(Names.Items.HANDGUN);
@@ -55,12 +60,14 @@ public class ItemHandgun extends ItemBase {
 			}
 
 			@Override
-			public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+				//noinspection ConstantConditions
 				return capability == ModCapabilities.HANDGUN_DATA_CAPABILITY;
 			}
 
 			@Override
-			public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+				//noinspection ConstantConditions
 				if(capability == ModCapabilities.HANDGUN_DATA_CAPABILITY)
 					//noinspection unchecked
 					return (T) handgunData;
@@ -79,10 +86,11 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	private IHandgunData getHandgunData(ItemStack handgun) {
+		//noinspection ConstantConditions
 		return handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
 	}
 
-	public void setBulletCount(ItemStack handgun, short bulletCount) {
+	private void setBulletCount(ItemStack handgun, short bulletCount) {
 		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
@@ -99,7 +107,7 @@ public class ItemHandgun extends ItemBase {
 		return 0;
 	}
 
-	public void setBulletType(ItemStack handgun, short bulletType) {
+	private void setBulletType(ItemStack handgun, short bulletType) {
 		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
@@ -107,13 +115,13 @@ public class ItemHandgun extends ItemBase {
 		}
 	}
 
-	public boolean isInCooldown(ItemStack handgun) {
+	private boolean isInCooldown(ItemStack handgun) {
 		IHandgunData data = getHandgunData(handgun);
 
 		return data != null && data.isInCoolDown();
 	}
 
-	public void setInCooldown(ItemStack handgun, boolean inCooldown) {
+	private void setInCooldown(ItemStack handgun, boolean inCooldown) {
 		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
@@ -130,7 +138,7 @@ public class ItemHandgun extends ItemBase {
 		return 0;
 	}
 
-	public void setCooldown(ItemStack handgun, long coolDownTime) {
+	private void setCooldown(ItemStack handgun, long coolDownTime) {
 		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
@@ -146,7 +154,7 @@ public class ItemHandgun extends ItemBase {
 		return null;
 	}
 
-	public void setPotionEffects(ItemStack handgun, List<PotionEffect> potionEffects) {
+	private void setPotionEffects(ItemStack handgun, List<PotionEffect> potionEffects) {
 		IHandgunData data = getHandgunData(handgun);
 
 		if(data != null) {
@@ -154,6 +162,7 @@ public class ItemHandgun extends ItemBase {
 		}
 	}
 
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack handgun) {
 		if(getBulletCount(handgun) > 0)
@@ -163,17 +172,17 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-		return oldStack == null || newStack == null || !(oldStack.getItem() == ModItems.handgun && newStack.getItem() == ModItems.handgun);
+	public boolean shouldCauseReequipAnimation(@Nonnull ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged) {
+		return oldStack.getItem() != newStack.getItem();
 
 	}
 
 	@Override
-	public void onUpdate(ItemStack handgun, World worldObj, Entity entity, int slotNumber, boolean isSelected) {
-		if(worldObj.isRemote)
+	public void onUpdate(ItemStack handgun, World world, Entity entity, int slotNumber, boolean isSelected) {
+		if(world.isRemote)
 			return;
 
-		if(isInCooldown(handgun) && (isCooldownOver(worldObj, handgun) || !isValidCooldownTime(worldObj, handgun))) {
+		if(isInCooldown(handgun) && (isCooldownOver(world, handgun) || !isValidCooldownTime(world, handgun))) {
 			setInCooldown(handgun, false);
 		}
 
@@ -189,16 +198,19 @@ public class ItemHandgun extends ItemBase {
 		}
 	}
 
-	private boolean isCooldownOver(World worldObj, ItemStack handgun) {
-		return getCooldown(handgun) < worldObj.getWorldTime() && worldObj.getWorldTime() - getCooldown(handgun) < 12000;
+	private boolean isCooldownOver(World world, ItemStack handgun) {
+		return getCooldown(handgun) < world.getWorldTime() && world.getWorldTime() - getCooldown(handgun) < 12000;
 	}
 
-	private boolean isValidCooldownTime(World worldObj, ItemStack handgun) {
-		return Math.min(Math.abs(worldObj.getWorldTime() - getCooldown(handgun)), Math.abs(worldObj.getWorldTime() - 23999 - getCooldown(handgun))) <= getMaxItemUseDuration(handgun);
+	private boolean isValidCooldownTime(World world, ItemStack handgun) {
+		return Math.min(Math.abs(world.getWorldTime() - getCooldown(handgun)), Math.abs(world.getWorldTime() - 23999 - getCooldown(handgun))) <= getMaxItemUseDuration(handgun);
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack handgun, World worldObj, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack handgun = player.getHeldItem(hand);
+
 		if((hasFilledMagazine(player) && getBulletCount(handgun) == 0) || (getBulletCount(handgun) > 0 && (!hasHandgunInSecondHand(player, hand) || cooledMoreThanSecondHandgun(handgun, player, hand)))) {
 			player.setActiveHand(hand);
 			return new ActionResult<>(EnumActionResult.SUCCESS, handgun);
@@ -228,17 +240,16 @@ public class ItemHandgun extends ItemBase {
 
 	}
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean hasHandgunInSecondHand(EntityPlayer player, EnumHand hand) {
 		if(hand == EnumHand.MAIN_HAND)
-			return player.getHeldItemOffhand() != null && player.getHeldItemOffhand().getItem() == ModItems.handgun;
+			return player.getHeldItemOffhand().getItem() == ModItems.handgun;
 
-		return (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ModItems.handgun);
+		return player.getHeldItemMainhand().getItem() == ModItems.handgun;
 	}
 
 	@Override
 	public void onUsingTick(ItemStack handgun, EntityLivingBase entity, int unadjustedCount) {
-		if(entity.worldObj.isRemote || !(entity instanceof EntityPlayer))
+		if(entity.world.isRemote || !(entity instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity;
@@ -254,7 +265,7 @@ public class ItemHandgun extends ItemBase {
 		}
 
 		//loaded and ready to fire
-		if(!isInCooldown(handgun) && getBulletCount(handgun) > 0 && (!hasHandgunInSecondHand(player, player.getActiveHand()) || secondHandgunCooledEnough(player.worldObj, player, player.getActiveHand()))) {
+		if(!isInCooldown(handgun) && getBulletCount(handgun) > 0 && (!hasHandgunInSecondHand(player, player.getActiveHand()) || secondHandgunCooledEnough(player.world, player, player.getActiveHand()))) {
 			player.stopActiveHand();
 		}
 	}
@@ -274,7 +285,7 @@ public class ItemHandgun extends ItemBase {
 		// fire bullet
 		if(getBulletCount(handgun) > 0) {
 			if(!isInCooldown(handgun)) {
-				setCooldown(handgun, worldIn.getWorldTime() + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM));
+				setCooldown(handgun, worldIn.getWorldTime() + PLAYER_HANDGUN_SKILL_MAXIMUM + HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, PLAYER_HANDGUN_SKILL_MAXIMUM));
 				setInCooldown(handgun, true);
 
 				fireBullet(handgun, worldIn, player, handgun == player.getHeldItemMainhand() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
@@ -283,24 +294,24 @@ public class ItemHandgun extends ItemBase {
 		}
 
 		//arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
-		setCooldown(handgun, player.worldObj.getWorldTime() + 12);
+		setCooldown(handgun, player.world.getWorldTime() + 12);
 		setInCooldown(handgun, true);
 
 		int slot = getMagazineSlot(player);
 		if(slot != -1) {
-			ItemStack magazine = player.inventory.mainInventory[slot];
+			ItemStack magazine = player.inventory.mainInventory.get(slot);
 			setBulletType(handgun, (short) magazine.getMetadata());
 			setPotionEffects(handgun, PotionUtils.getFullEffectsFromItem(magazine));
-			magazine.stackSize--;
-			if (magazine.stackSize == 0)
-				player.inventory.mainInventory[slot] = null;
+			magazine.shrink(1);
+			if (magazine.isEmpty())
+				player.inventory.mainInventory.set(slot, ItemStack.EMPTY);
 		}
 
 		if(getBulletType(handgun) != 0) {
 			player.swingArm(player.getActiveHand());
 			this.spawnEmptyMagazine(player);
 			setBulletCount(handgun, (short) 8);
-			player.worldObj.playSound(null, player.getPosition(), ModSounds.xload, SoundCategory.PLAYERS, 0.25F, 1.0F);
+			player.world.playSound(null, player.getPosition(), ModSounds.xload, SoundCategory.PLAYERS, 0.25F, 1.0F);
 		}
 		if(getBulletCount(handgun) == 0) {
 			setBulletType(handgun, (short) 0);
@@ -309,44 +320,44 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	private int getItemUseDuration() {
-		return Reference.HANDGUN_RELOAD_SKILL_OFFSET + Reference.PLAYER_HANDGUN_SKILL_MAXIMUM;
+		return HANDGUN_RELOAD_SKILL_OFFSET + PLAYER_HANDGUN_SKILL_MAXIMUM;
 	}
 
-	private void fireBullet(ItemStack handgun, World worldObj, EntityPlayer player, EnumHand hand) {
-		if(!worldObj.isRemote) {
+	private void fireBullet(ItemStack handgun, World world, EntityPlayer player, EnumHand hand) {
+		if(!world.isRemote) {
 			switch(getBulletType(handgun)) {
 				case 0:
 					return;
 				case Reference.NEUTRAL_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityNeutralShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					world.spawnEntity(new EntityNeutralShot(world, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.EXORCISM_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityExorcismShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					world.spawnEntity(new EntityExorcismShot(world, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.BLAZE_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityBlazeShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					world.spawnEntity(new EntityBlazeShot(world, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.ENDER_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityEnderShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					world.spawnEntity(new EntityEnderShot(world, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.CONCUSSIVE_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityConcussiveShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					world.spawnEntity(new EntityConcussiveShot(world, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.BUSTER_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityBusterShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					world.spawnEntity(new EntityBusterShot(world, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.SEEKER_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntitySeekerShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					world.spawnEntity(new EntitySeekerShot(world, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.SAND_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntitySandShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					world.spawnEntity(new EntitySandShot(world, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 				case Reference.STORM_SHOT_INDEX:
-					worldObj.spawnEntityInWorld(new EntityStormShot(worldObj, player, hand).addPotionEffects(getPotionEffects(handgun)));
+					world.spawnEntity(new EntityStormShot(world, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
 			}
 
-			worldObj.playSound(null, player.getPosition(), ModSounds.xshot, SoundCategory.PLAYERS, 0.5F, 1.2F);
+			world.playSound(null, player.getPosition(), ModSounds.xshot, SoundCategory.PLAYERS, 0.5F, 1.2F);
 
 			setBulletCount(handgun, (short) (getBulletCount(handgun) - 1));
 			if(getBulletCount(handgun) == 0) {
@@ -380,30 +391,9 @@ public class ItemHandgun extends ItemBase {
 		return false;
 	}
 
-	private short getMagazineTypeAndRemoveOne(EntityPlayer player, List<PotionEffect> effects) {
-		short bulletFound = 0;
-		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-			if(player.inventory.mainInventory[slot] == null) {
-				continue;
-			}
-			if(player.inventory.mainInventory[slot].getItem() == ModItems.magazine && player.inventory.mainInventory[slot].getItemDamage() != 0) {
-				ItemStack magazine = player.inventory.mainInventory[slot];
-				bulletFound = (short) magazine.getItemDamage();
-				if(ModItems.magazine.isPotionAttached(magazine))
-					effects = PotionUtils.getEffectsFromStack(magazine);
-				player.inventory.decrStackSize(slot, 1);
-				return bulletFound;
-			}
-		}
-		return bulletFound;
-	}
-
 	private int getMagazineSlot(EntityPlayer player) {
-		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-			if(player.inventory.mainInventory[slot] == null) {
-				continue;
-			}
-			if(player.inventory.mainInventory[slot].getItem() == ModItems.magazine && player.inventory.mainInventory[slot].getItemDamage() != 0) {
+		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
+			if(player.inventory.mainInventory.get(slot).getItem() == ModItems.magazine && player.inventory.mainInventory.get(slot).getItemDamage() != 0) {
 				return slot;
 			}
 		}
@@ -416,6 +406,6 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	private int getPlayerReloadDelay(EntityPlayer player) {
-		return Reference.PLAYER_HANDGUN_SKILL_MAXIMUM + Reference.HANDGUN_RELOAD_SKILL_OFFSET - Math.min(player.experienceLevel, Reference.PLAYER_HANDGUN_SKILL_MAXIMUM);
+		return PLAYER_HANDGUN_SKILL_MAXIMUM + HANDGUN_RELOAD_SKILL_OFFSET - Math.min(player.experienceLevel, PLAYER_HANDGUN_SKILL_MAXIMUM);
 	}
 }

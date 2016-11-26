@@ -9,41 +9,40 @@ import net.minecraft.item.ItemStack;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 public class ContainerMobCharmBelt extends Container {
 	private ItemStack belt;
 	private static final int PLAYER_INV_INDEX = Reference.MOB_CHARM.COUNT_TYPES + 1;
 
-	@Nullable
 	@Override
+	@Nonnull
 	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
 		Slot slot = null;
 		if(slotId >= 0 && slotId < this.inventorySlots.size())
 			slot = this.inventorySlots.get(slotId);
-		ItemStack slotStack = slot == null ? null : slot.getStack();
+		ItemStack slotStack = slot == null ? ItemStack.EMPTY : slot.getStack();
 
 		//prevent moving belt out of its slot
-		if(slot != null && slotStack != null && slotStack.getItem() == ModItems.mobCharmBelt && slotStack == player.getHeldItemMainhand())
-			return null;
+		if(slot != null && !slotStack.isEmpty() && slotStack.getItem() == ModItems.mobCharmBelt && slotStack == player.getHeldItemMainhand())
+			return ItemStack.EMPTY;
 
 		//overriden here so that on shift click it doesn't retry and thus move more charms out of belt
 		if(slotId >= 0 && slotId < PLAYER_INV_INDEX && clickTypeIn == ClickType.QUICK_MOVE && (dragType == 0 || dragType == 1)) {
 			if(slotId < 0) {
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			ItemStack itemstack = null;
+			ItemStack itemstack = ItemStack.EMPTY;
 
 			if(slot != null && slot.canTakeStack(player)) {
-				if(slotStack != null && slotStack.stackSize <= 0) {
+				if(!slotStack.isEmpty()) {
 					itemstack = slotStack.copy();
-					slot.putStack(null);
 				}
 
 				ItemStack transferredStack = this.transferStackInSlot(player, slotId);
 
-				if(transferredStack != null) {
+				if(!transferredStack.isEmpty()) {
 					itemstack = transferredStack.copy();
 				}
 			}
@@ -53,10 +52,10 @@ public class ContainerMobCharmBelt extends Container {
 		return super.slotClick(slotId, dragType, clickTypeIn, player);
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-		ItemStack copiedStack = null;
+		ItemStack copiedStack = ItemStack.EMPTY;
 		Slot slot = this.inventorySlots.get(index);
 
 		if(slot != null && slot.getHasStack()) {
@@ -66,35 +65,35 @@ public class ContainerMobCharmBelt extends Container {
 
 			if(index < PLAYER_INV_INDEX) {
 				if(!this.mergeItemStack(originalStack, PLAYER_INV_INDEX, PLAYER_INV_INDEX + 36, true)) {
-					return null;
+					return ItemStack.EMPTY;
 				}
 
 				slot.onSlotChange(originalStack, copiedStack);
 			} else if(index >= PLAYER_INV_INDEX && index < PLAYER_INV_INDEX + 36) {
 				if(originalStack.getItem() == ModItems.mobCharm) {
 					if(!this.mergeItemStack(originalStack, 0, PLAYER_INV_INDEX, false)) {
-						return null;
+						return ItemStack.EMPTY;
 					}
 				} else if(index >= PLAYER_INV_INDEX && index < PLAYER_INV_INDEX + 27) {
 					if(!this.mergeItemStack(originalStack, PLAYER_INV_INDEX + 27, PLAYER_INV_INDEX + 36, false)) {
-						return null;
+						return ItemStack.EMPTY;
 					}
 				} else if(index >= PLAYER_INV_INDEX + 27 && index < PLAYER_INV_INDEX + 36 && !this.mergeItemStack(originalStack, PLAYER_INV_INDEX, PLAYER_INV_INDEX + 27, false)) {
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 
-			if(originalStack.stackSize == 0) {
-				slot.putStack(null);
+			if (originalStack.isEmpty()) {
+				slot.putStack(ItemStack.EMPTY);
 			} else {
 				slot.onSlotChanged();
 			}
 
-			if(originalStack.stackSize == copiedStack.stackSize) {
-				return null;
+			if(originalStack.getCount() == copiedStack.getCount()) {
+				return ItemStack.EMPTY;
 			}
 
-			slot.onPickupFromSlot(playerIn, originalStack);
+			slot.onTake(playerIn, originalStack);
 		}
 
 		return copiedStack;
@@ -119,10 +118,11 @@ public class ContainerMobCharmBelt extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer playerIn) {
+	public boolean canInteractWith(@Nonnull EntityPlayer playerIn) {
 		return true;
 	}
 
+	@Nonnull
 	public ItemStack getBelt() {
 		return belt;
 	}

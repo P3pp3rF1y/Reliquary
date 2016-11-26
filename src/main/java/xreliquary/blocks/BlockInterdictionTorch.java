@@ -15,10 +15,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
@@ -33,10 +33,12 @@ public class BlockInterdictionTorch extends BlockTorch {
 		this.blockSoundType = SoundType.WOOD;
 	}
 
+	@Nonnull
 	@Override
-	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+	public IBlockState getStateForPlacement(
+			@Nonnull World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 		world.scheduleBlockUpdate(pos, this, tickRate(), 1);
-		return super.onBlockPlaced(world, pos, facing, hitX, hitY, hitZ, meta, placer);
+		return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
 	}
 
 	@Override
@@ -54,8 +56,7 @@ public class BlockInterdictionTorch extends BlockTorch {
 		for(Entity entity : entities) {
 			if(entity instanceof EntityPlayer)
 				continue;
-			Class entityClass = entity.getClass();
-			String entityName = EntityList.CLASS_TO_NAME.get(entityClass);
+			String entityName = EntityList.getEntityString(entity);
 			if(entitiesThatCanBePushed.contains(entityName) || (projectilesThatCanBePushed.contains(entityName) && Settings.InterdictionTorch.canPushProjectiles)) {
 				double distance = entity.getDistance((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
 				if(distance >= radius || distance == 0)

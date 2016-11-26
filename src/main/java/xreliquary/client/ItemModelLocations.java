@@ -21,7 +21,6 @@ public class ItemModelLocations {
 
 	public static int INFERNAL_TEAR = 0;
 	public static int INFERNAL_TEAR_EMPTY = 1;
-	public static int ROD_OF_LYSSA = 2;
 	public static int ROD_OF_LYSSA_CAST = 3;
 	public static final int POTION = 4;
 	public static final int POTION_SPLASH = 5;

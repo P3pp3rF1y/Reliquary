@@ -18,50 +18,52 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Settings;
 
+import javax.annotation.Nonnull;
+
 public class ItemFertileLilyPad extends ItemBlockBase {
 	public ItemFertileLilyPad() {
 		super(ModBlocks.fertileLilypad);
 	}
 
 	@Override
+	@Nonnull
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.EPIC;
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+	@Nonnull
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
 		RayTraceResult result = this.rayTrace(world, player, true);
 
-		if (result == null)
-			return new ActionResult<>(EnumActionResult.PASS, stack);
-
-		if(TryPlacingLilyPad(stack, world, player, result)) {
+		ItemStack stack = player.getHeldItem(hand);
+		if(TryPlacingLilyPad(stack, world, player, result, hand)) {
 			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}
 		return new ActionResult<>(EnumActionResult.FAIL, stack);
 	}
 
-	private boolean TryPlacingLilyPad(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, RayTraceResult result) {
-		if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
+	private boolean TryPlacingLilyPad(ItemStack itemStack, World worldIn, EntityPlayer playerIn, RayTraceResult result, EnumHand hand) {
+		if(result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
 			BlockPos blockpos = result.getBlockPos();
 
 			if(!worldIn.isBlockModifiable(playerIn, blockpos)) {
 				return true;
 			}
 
-			if(!playerIn.canPlayerEdit(blockpos.offset(result.sideHit), result.sideHit, itemStackIn)) {
+			if(!playerIn.canPlayerEdit(blockpos.offset(result.sideHit), result.sideHit, itemStack)) {
 				return true;
 			}
 
 			BlockPos blockpos1 = blockpos.up();
 			IBlockState iblockstate = worldIn.getBlockState(blockpos);
 
-			if(iblockstate.getBlock().getMaterial(iblockstate) == Material.WATER && iblockstate.getValue(BlockLiquid.LEVEL) == 0 && worldIn.isAirBlock(blockpos1)) {
+			if(iblockstate.getMaterial() == Material.WATER && iblockstate.getValue(BlockLiquid.LEVEL) == 0 && worldIn.isAirBlock(blockpos1)) {
 				// special case for handling block placement with water lilies
 				net.minecraftforge.common.util.BlockSnapshot blocksnapshot = net.minecraftforge.common.util.BlockSnapshot.getBlockSnapshot(worldIn, blockpos1);
 				worldIn.setBlockState(blockpos1, ModBlocks.fertileLilypad.getDefaultState());
-				if(net.minecraftforge.event.ForgeEventFactory.onPlayerBlockPlace(playerIn, blocksnapshot, EnumFacing.UP).isCanceled()) {
+				if(net.minecraftforge.event.ForgeEventFactory.onPlayerBlockPlace(playerIn, blocksnapshot, EnumFacing.UP, hand).isCanceled()) {
 					blocksnapshot.restore(true, false);
 					return false;
 				}
@@ -70,7 +72,7 @@ public class ItemFertileLilyPad extends ItemBlockBase {
 				worldIn.scheduleBlockUpdate(blockpos1, ModBlocks.fertileLilypad, secondsBetweenGrowthTicks * 20, 1);
 
 				if(!playerIn.capabilities.isCreativeMode) {
-					--itemStackIn.stackSize;
+					itemStack.shrink(1);
 				}
 
 			}

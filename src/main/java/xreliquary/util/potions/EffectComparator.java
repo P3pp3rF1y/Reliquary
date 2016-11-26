@@ -1,7 +1,6 @@
 package xreliquary.util.potions;
 
 import net.minecraft.potion.PotionEffect;
-import xreliquary.util.LanguageHelper;
 
 import java.util.Comparator;
 
