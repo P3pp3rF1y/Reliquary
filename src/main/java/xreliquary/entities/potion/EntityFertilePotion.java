@@ -13,22 +13,16 @@ import xreliquary.reference.Colors;
 
 public class EntityFertilePotion extends EntityThrownPotion {
 	@SuppressWarnings("unused")
-	public EntityFertilePotion(World par1World) {
-		super(par1World);
+	public EntityFertilePotion(World world) {
+		super(world);
 	}
 
-	public EntityFertilePotion(World par1World, EntityPlayer par2EntityPlayer) {
-		super(par1World, par2EntityPlayer);
+	public EntityFertilePotion(World world, EntityPlayer player) {
+		super(world, player);
 	}
 
-	@SideOnly(Side.CLIENT)
-	@SuppressWarnings("unused")
-	public EntityFertilePotion(World par1World, double par2, double par4, double par6, int par8) {
-		this(par1World, par2, par4, par6);
-	}
-
-	public EntityFertilePotion(World par1World, double par2, double par4, double par6) {
-		super(par1World, par2, par4, par6);
+	public EntityFertilePotion(World world, double x, double y, double z) {
+		super(world, x, y, z);
 	}
 
 	@Override

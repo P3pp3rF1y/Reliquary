@@ -38,6 +38,7 @@ import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.XpHelper;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -284,14 +285,15 @@ public class ClientEventHandler {
 		return null;
 	}
 
+	@Nonnull
 	private ItemStack getCorrectItemFromEitherHand(EntityPlayer player, Item item) {
 		if(player == null)
-			return null;
+			return ItemStack.EMPTY;
 
 		EnumHand itemInHand = getHandHoldingCorrectItem(player, item);
 
 		if(itemInHand == null)
-			return null;
+			return ItemStack.EMPTY;
 
 		return player.getHeldItem(itemInHand);
 	}
@@ -301,7 +303,7 @@ public class ClientEventHandler {
 
 		ItemStack tomeStack = getCorrectItemFromEitherHand(player, ModItems.alkahestryTome);
 
-		if(tomeStack == null)
+		if(tomeStack.isEmpty())
 			return;
 
 		ItemStack chargeStack = Settings.AlkahestryTome.baseItem.copy();
@@ -314,7 +316,7 @@ public class ClientEventHandler {
 
 		ItemStack destructionCatalystStack = getCorrectItemFromEitherHand(player, ModItems.destructionCatalyst);
 
-		if(destructionCatalystStack == null)
+		if(destructionCatalystStack.isEmpty())
 			return;
 
 		ItemStack gunpowderStack = new ItemStack(Items.GUNPOWDER, NBTHelper.getInteger("gunpowder", destructionCatalystStack), 0);
@@ -326,7 +328,7 @@ public class ClientEventHandler {
 
 		ItemStack enderStaffStack = getCorrectItemFromEitherHand(player, ModItems.enderStaff);
 
-		if(enderStaffStack == null)
+		if(enderStaffStack.isEmpty())
 			return;
 
 		ItemEnderStaff enderStaffItem = ModItems.enderStaff;
@@ -345,7 +347,7 @@ public class ClientEventHandler {
 
 		ItemStack iceRodStack = getCorrectItemFromEitherHand(player, ModItems.iceMagusRod);
 
-		if(iceRodStack == null)
+		if(iceRodStack.isEmpty())
 			return;
 
 		ItemStack snowballStack = new ItemStack(Items.SNOWBALL, NBTHelper.getInteger("snowballs", iceRodStack), 0);
@@ -359,7 +361,7 @@ public class ClientEventHandler {
 
 		ItemStack glacialStaff = getCorrectItemFromEitherHand(player, ModItems.glacialStaff);
 
-		if(glacialStaff == null)
+		if(glacialStaff.isEmpty())
 			return;
 
 		ItemStack snowballStack = new ItemStack(Items.SNOWBALL, NBTHelper.getInteger("snowballs", glacialStaff), 0);
@@ -373,7 +375,7 @@ public class ClientEventHandler {
 
 		ItemStack voidTearStack = getCorrectItemFromEitherHand(player, ModItems.filledVoidTear);
 
-		if(voidTearStack == null)
+		if(voidTearStack.isEmpty())
 			return;
 
 		ItemVoidTear voidTearItem = (ItemVoidTear) voidTearStack.getItem();
@@ -387,7 +389,7 @@ public class ClientEventHandler {
 
 		ItemStack midasTouchstoneStack = getCorrectItemFromEitherHand(player, ModItems.midasTouchstone);
 
-		if(midasTouchstoneStack == null)
+		if(midasTouchstoneStack.isEmpty())
 			return;
 
 		ItemStack glowstoneStack = new ItemStack(Items.GLOWSTONE_DUST, NBTHelper.getInteger("glowstone", midasTouchstoneStack), 0);
@@ -399,15 +401,15 @@ public class ClientEventHandler {
 
 		ItemStack harvestRodStack = getCorrectItemFromEitherHand(player, ModItems.harvestRod);
 
-		if(harvestRodStack == null)
+		if(harvestRodStack.isEmpty())
 			return;
 
-		ItemStack secondaryStack = null;
+		ItemStack secondaryStack = ItemStack.EMPTY;
 		ItemHarvestRod harvestRod = ModItems.harvestRod;
 		if(harvestRod.getMode(harvestRodStack).equals(ItemHarvestRod.PLANTABLE_MODE)) {
 			ItemStack currenPlantable = harvestRod.getCurrentPlantable(harvestRodStack);
 
-			if(currenPlantable != null) {
+			if(!currenPlantable.isEmpty()) {
 				secondaryStack = currenPlantable.copy();
 
 				secondaryStack.setCount(harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableSlot(harvestRodStack)));
@@ -428,7 +430,7 @@ public class ClientEventHandler {
 
 		ItemStack infernalChaliceStack = getCorrectItemFromEitherHand(player, ModItems.infernalChalice);
 
-		if(infernalChaliceStack == null)
+		if(infernalChaliceStack.isEmpty())
 			return;
 
 		ItemStack lavaStack = new ItemStack(Items.LAVA_BUCKET, NBTHelper.getInteger("fluidStacks", infernalChaliceStack), 0);
@@ -440,7 +442,7 @@ public class ClientEventHandler {
 
 		ItemStack heroMedallionStack = getCorrectItemFromEitherHand(player, ModItems.heroMedallion);
 
-		if(heroMedallionStack == null)
+		if(heroMedallionStack.isEmpty())
 			return;
 
 		int experience = NBTHelper.getInteger("experience", heroMedallionStack);
@@ -449,7 +451,7 @@ public class ClientEventHandler {
 		int maxBarExperience = XpHelper.getExperienceLimitOnLevel(level);
 
 		renderHeroXpBar(mc, remainingExperience, maxBarExperience, Settings.HudPositions.heroMedallion);
-		renderStandardTwoItemHUD(mc, heroMedallionStack, null, Settings.HudPositions.heroMedallion, Colors.get(Colors.GREEN), level, 20);
+		renderStandardTwoItemHUD(mc, heroMedallionStack, ItemStack.EMPTY, Settings.HudPositions.heroMedallion, Colors.get(Colors.GREEN), level, 20);
 	}
 
 	private static final ResourceLocation XP_BAR = new ResourceLocation(Reference.MOD_ID, "textures/gui/xp_bar.png");
@@ -528,7 +530,7 @@ public class ClientEventHandler {
 
 		ItemStack pyromancerStaffStack = getCorrectItemFromEitherHand(player, ModItems.pyromancerStaff);
 
-		if(pyromancerStaffStack == null)
+		if(pyromancerStaffStack.isEmpty())
 			return;
 
 		int charge = 0;
@@ -557,7 +559,7 @@ public class ClientEventHandler {
 		renderPyromancerStaffHUD(mc, pyromancerStaffStack, fireChargeStack, blazePowderStack, staffMode);
 	}
 
-	private static void renderPyromancerStaffHUD(Minecraft minecraft, ItemStack hudStack, ItemStack secondaryStack, ItemStack tertiaryStack, String staffMode) {
+	private static void renderPyromancerStaffHUD(Minecraft minecraft, @Nonnull ItemStack hudStack, @Nonnull ItemStack secondaryStack, @Nonnull ItemStack tertiaryStack, String staffMode) {
 		int color = Colors.get(Colors.PURE);
 
 		float overlayScale = 2.5F;
@@ -608,10 +610,10 @@ public class ClientEventHandler {
 		if(staffMode.equals("eruption"))
 			friendlyStaffMode = "ERUPT";
 
-		if(secondaryStack != null && (staffMode.equals("charge"))) {
+		if(!secondaryStack.isEmpty() && (staffMode.equals("charge"))) {
 			renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(secondaryStack.getCount()).length() * 6))), hudOverlayY + 24);
 			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(secondaryStack.getCount()), hudOverlayX + (leftSide ? 16 : -(Integer.toString(secondaryStack.getCount()).length() * 6)), hudOverlayY + 30, color);
-		} else if(tertiaryStack != null && (staffMode.equals("eruption") || staffMode.equals("blaze"))) {
+		} else if(!tertiaryStack.isEmpty() && (staffMode.equals("eruption") || staffMode.equals("blaze"))) {
 			renderItem.renderItemAndEffectIntoGUI(tertiaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(tertiaryStack.getCount()).length() * 6))), hudOverlayY + 24);
 			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(tertiaryStack.getCount()), hudOverlayX + (leftSide ? 16 : -(Integer.toString(tertiaryStack.getCount()).length() * 6)), hudOverlayY + 30, color);
 			if(staffMode.equals("eruption"))
@@ -630,7 +632,7 @@ public class ClientEventHandler {
 
 		ItemStack rendingGaleStack = getCorrectItemFromEitherHand(player, ModItems.rendingGale);
 
-		if(rendingGaleStack == null)
+		if(rendingGaleStack.isEmpty())
 			return;
 
 		int currentCost = 0;
@@ -657,15 +659,15 @@ public class ClientEventHandler {
 		ItemStack mainHandgunStack = (player.getHeldItemMainhand().getItem() == ModItems.handgun) ? player.getHeldItemMainhand() : ItemStack.EMPTY;
 		ItemStack offHandgunStack = (player.getHeldItemOffhand().getItem() == ModItems.handgun) ? player.getHeldItemOffhand() : ItemStack.EMPTY;
 
-		if(mainHandgunStack == null && offHandgunStack == null)
+		if(mainHandgunStack.isEmpty() && offHandgunStack.isEmpty())
 			return;
 
-		ItemStack mainBulletStack = null;
-		if(mainHandgunStack != null) {
+		ItemStack mainBulletStack = ItemStack.EMPTY;
+		if(!mainHandgunStack.isEmpty()) {
 			mainBulletStack = getBulletStackFromHandgun(mainHandgunStack);
 		}
-		ItemStack offBulletStack = null;
-		if(offHandgunStack != null) {
+		ItemStack offBulletStack = ItemStack.EMPTY;
+		if(!offHandgunStack.isEmpty()) {
 			offBulletStack = getBulletStackFromHandgun(offHandgunStack);
 		}
 		renderHandgunHUD(mc, mainHandgunStack, mainBulletStack, offHandgunStack, offBulletStack);
@@ -681,7 +683,7 @@ public class ClientEventHandler {
 		return bulletStack;
 	}
 
-	private static void renderHandgunHUD(Minecraft minecraft, ItemStack mainHandgunStack, ItemStack mainBulletStack, ItemStack offHandgunStack, ItemStack offBulletStack) {
+	private static void renderHandgunHUD(Minecraft minecraft, @Nonnull ItemStack mainHandgunStack, @Nonnull ItemStack mainBulletStack, @Nonnull ItemStack offHandgunStack, @Nonnull ItemStack offBulletStack) {
 		float overlayScale = 2.5F;
 		float segmentHeight = 6 * overlayScale;
 
@@ -704,7 +706,7 @@ public class ClientEventHandler {
 
 		int hudOverlayX = (int) (16 * overlayScale);
 		int hudOverlayY = (int) (6 * overlayScale);
-		boolean twoHandguns = mainHandgunStack != null && offHandgunStack != null;
+		boolean twoHandguns = !mainHandgunStack.isEmpty() && !offHandgunStack.isEmpty();
 
 		switch(Settings.HudPositions.handgun) {
 			case 0: {
@@ -730,13 +732,13 @@ public class ClientEventHandler {
 			}
 		}
 
-		if(mainHandgunStack != null) {
+		if(!mainHandgunStack.isEmpty()) {
 			renderHandgunAndBullets(EnumHand.MAIN_HAND, mainHandgunStack, mainBulletStack, overlayScale, hudOverlayX, hudOverlayY);
 
 			hudOverlayY += segmentHeight;
 		}
 
-		if(offHandgunStack != null)
+		if(!offHandgunStack.isEmpty())
 			renderHandgunAndBullets(EnumHand.OFF_HAND, offHandgunStack, offBulletStack, overlayScale, hudOverlayX, hudOverlayY);
 
 		GlStateManager.disableLighting();
@@ -744,7 +746,7 @@ public class ClientEventHandler {
 		GlStateManager.popMatrix();
 	}
 
-	private static void renderHandgunAndBullets(EnumHand hand, ItemStack handgunStack, ItemStack bulletStack, float overlayScale, int hudOverlayX, int hudOverlayY) {
+	private static void renderHandgunAndBullets(EnumHand hand, @Nonnull ItemStack handgunStack, @Nonnull ItemStack bulletStack, float overlayScale, int hudOverlayX, int hudOverlayY) {
 		renderItemIntoGUI(handgunStack, hudOverlayX - (hand == EnumHand.OFF_HAND ? 100 : 0), hudOverlayY);
 
 		int adjustedHudOverlayX = hand == EnumHand.MAIN_HAND ? (int) (hudOverlayX - 6 * overlayScale) : (int) (hudOverlayX - 2 * overlayScale);
@@ -775,7 +777,7 @@ public class ClientEventHandler {
 
 		ItemStack sojournerStack = getCorrectItemFromEitherHand(player, ModItems.sojournerStaff);
 
-		if(sojournerStack == null)
+		if(sojournerStack.isEmpty())
 			return;
 
 		ItemSojournerStaff sojournerItem = (ItemSojournerStaff) sojournerStack.getItem();
@@ -786,22 +788,22 @@ public class ClientEventHandler {
 		if(placementItemName != null)
 			placementItem = RegistryHelper.getItemFromName(placementItemName);
 
-		ItemStack placementStack = null;
+		ItemStack placementStack = ItemStack.EMPTY;
 		if(placementItem != null) {
 			placementStack = new ItemStack(placementItem, amountOfItem, 0);
 		}
 		renderStandardTwoItemHUD(mc, sojournerStack, placementStack, Settings.HudPositions.sojournerStaff, 0, 0);
 	}
 
-	private static void renderStandardTwoItemHUD(Minecraft minecraft, ItemStack hudStack, ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride) {
+	private static void renderStandardTwoItemHUD(Minecraft minecraft, @Nonnull ItemStack hudStack, @Nonnull ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride) {
 		renderStandardTwoItemHUD(minecraft, hudStack, secondaryStack, hudPosition, colorOverride, stackSizeOverride, 0);
 	}
 
-	private static void renderStandardTwoItemHUD(Minecraft minecraft, ItemStack hudStack, ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride, int xOffset) {
+	private static void renderStandardTwoItemHUD(Minecraft minecraft, @Nonnull ItemStack hudStack, @Nonnull ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride, int xOffset) {
 		renderStandardTwoItemHUD(minecraft, hudStack, secondaryStack, hudPosition, colorOverride, stackSizeOverride, xOffset, null);
 	}
 
-	private static void renderStandardTwoItemHUD(Minecraft minecraft, ItemStack hudStack, ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride, int xOffset, String additionalText) {
+	private static void renderStandardTwoItemHUD(Minecraft minecraft, @Nonnull ItemStack hudStack, @Nonnull ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride, int xOffset, String additionalText) {
 		int stackSize = 0;
 		if(stackSizeOverride > 0)
 			stackSize = stackSizeOverride;
@@ -876,7 +878,7 @@ public class ClientEventHandler {
 			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(additionalText, hudOverlayX - (leftSide ? 0 : additionalText.length() * 6), hudOverlayY + 18, color);
 		}
 
-		if(secondaryStack != null) {
+		if(!secondaryStack.isEmpty()) {
 			if(stackSize == 0)
 				stackSize = secondaryStack.getCount();
 			renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX - (leftSide ? 0 : 16 + (Integer.toString(stackSize).length() * 6)), hudOverlayY + 25);

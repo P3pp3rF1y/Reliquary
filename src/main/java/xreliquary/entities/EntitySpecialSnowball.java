@@ -23,19 +23,14 @@ public class EntitySpecialSnowball extends EntitySnowball {
 	private boolean fromGlacialStaff;
 
 	@SuppressWarnings("unused")
-	public EntitySpecialSnowball(World par1World) {
-		super(par1World);
+	public EntitySpecialSnowball(World world) {
+		super(world);
 	}
 
-	public EntitySpecialSnowball(World par1World, EntityLivingBase par2EntityLiving, boolean b) {
-		super(par1World, par2EntityLiving);
+	public EntitySpecialSnowball(World world, EntityLivingBase par2EntityLiving, boolean b) {
+		super(world, par2EntityLiving);
 		this.setSize(0.01F, 0.01F);
 		this.fromGlacialStaff = b;
-	}
-
-	@SuppressWarnings("unused")
-	public EntitySpecialSnowball(World par1World, double par2, double par4, double par6) {
-		super(par1World, par2, par4, par6);
 	}
 
 	private int getSnowballDamage() {
@@ -55,27 +50,26 @@ public class EntitySpecialSnowball extends EntitySnowball {
 	 */
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		if(result.entityHit != null) {
-			int damage = getSnowballDamage();
-			if(result.entityHit.isImmuneToFire())
-				damage += getSnowballDamageFireImmuneBonus();
-			if(result.entityHit instanceof EntityBlaze) {
-				damage += getSnowballDamageBlazeBonus();
-			}
-
-			result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), damage);
-		}
-
-		if(result.typeOfHit == RayTraceResult.Type.BLOCK && world.getBlockState(result.getBlockPos()).getBlock() == Blocks.FIRE) {
-			world.playSound(null, result.getBlockPos().up(), SoundEvents.ENTITY_GENERIC_BURN, SoundCategory.NEUTRAL, 0.5F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
-			world.setBlockState(new BlockPos(result.getBlockPos().getX(), result.getBlockPos().getY() + 1, result.getBlockPos().getZ()), Blocks.AIR.getDefaultState());
-		}
-
 		for(int var3 = 0; var3 < 8; ++var3) {
 			world.spawnParticle(EnumParticleTypes.SNOWBALL, posX, posY, posZ, 0.0D, 0.0D, 0.0D);
 		}
 
-		if(!world.isRemote) {
+		if (!world.isRemote) {
+			if(result.entityHit != null) {
+				int damage = getSnowballDamage();
+				if(result.entityHit.isImmuneToFire())
+					damage += getSnowballDamageFireImmuneBonus();
+				if(result.entityHit instanceof EntityBlaze) {
+					damage += getSnowballDamageBlazeBonus();
+				}
+
+				result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), damage);
+			}
+
+			if(result.typeOfHit == RayTraceResult.Type.BLOCK && world.getBlockState(result.getBlockPos().up()).getBlock() == Blocks.FIRE) {
+				world.playSound(null, result.getBlockPos().up(), SoundEvents.ENTITY_GENERIC_BURN, SoundCategory.NEUTRAL, 0.5F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+				world.setBlockState(new BlockPos(result.getBlockPos().getX(), result.getBlockPos().getY() + 1, result.getBlockPos().getZ()), Blocks.AIR.getDefaultState());
+			}
 			this.setDead();
 		}
 	}
@@ -88,7 +82,7 @@ public class EntitySpecialSnowball extends EntitySnowball {
 		lastTickPosX = posX;
 		lastTickPosY = posY;
 		lastTickPosZ = posZ;
-		super.onUpdate();
+		//super.onUpdate();
 
 		if(throwableShake > 0) {
 			--throwableShake;
@@ -142,7 +136,7 @@ public class EntitySpecialSnowball extends EntitySnowball {
 			EntityLivingBase var8 = this.getThrower();
 
 			for(Entity var10 : var5) {
-				if(var10.canBeCollidedWith() && (var10 != var8 || ticksInAir >= 5)) {
+				if(var10.canBeCollidedWith() && var10 != this.getThrower() && (var10 != var8 || ticksInAir >= 5)) {
 					float var11 = 0.1F;
 					AxisAlignedBB var12 = var10.getEntityBoundingBox().expand(var11, var11, var11);
 					RayTraceResult var13 = var12.calculateIntercept(var16, var2);

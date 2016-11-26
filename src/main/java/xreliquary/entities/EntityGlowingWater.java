@@ -27,22 +27,16 @@ import java.util.List;
 
 public class EntityGlowingWater extends EntityThrowable {
 	@SuppressWarnings("unused")
-	public EntityGlowingWater(World par1World) {
-		super(par1World);
+	public EntityGlowingWater(World world) {
+		super(world);
 	}
 
-	public EntityGlowingWater(World par1World, EntityPlayer par2EntityPlayer) {
-		super(par1World, par2EntityPlayer);
+	public EntityGlowingWater(World world, EntityPlayer player) {
+		super(world, player);
 	}
 
-	@SideOnly(Side.CLIENT)
-	@SuppressWarnings("unused")
-	public EntityGlowingWater(World par1World, double par2, double par4, double par6, int par8) {
-		this(par1World, par2, par4, par6);
-	}
-
-	public EntityGlowingWater(World par1World, double par2, double par4, double par6) {
-		super(par1World, par2, par4, par6);
+	public EntityGlowingWater(World world, double x, double y, double z) {
+		super(world, x, y, z);
 	}
 
 	/**
@@ -50,7 +44,7 @@ public class EntityGlowingWater extends EntityThrowable {
 	 */
 	@Override
 	protected float getGravityVelocity() {
-		return 0.03F;
+		return 0.05F;
 	}
 
 	private boolean isUndead(EntityLivingBase e) {

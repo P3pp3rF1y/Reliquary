@@ -83,7 +83,7 @@ public class ItemMobCharmBelt extends ItemBauble {
 	}
 
 	public void putMobCharmInSlot(ItemStack belt, int slotIndex, ItemStack mobCharm) {
-		if(mobCharm == null) {
+		if(mobCharm.isEmpty()) {
 			removeMobCharmInSlot(belt, slotIndex);
 			return;
 		}

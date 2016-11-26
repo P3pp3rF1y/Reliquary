@@ -15,18 +15,12 @@ import net.minecraft.world.World;
 
 public class EntityBlazeShot extends EntityShotBase {
 	@SuppressWarnings("unused")
-	public EntityBlazeShot(World par1World) {
-		super(par1World);
+	public EntityBlazeShot(World world) {
+		super(world);
 	}
 
-/* TODO remove
-	public EntityBlazeShot(World par1World, double par2, double par4, double par6) {
-		super(par1World);
-	}
-
-*/
-	public EntityBlazeShot(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
-		super(par1World, par2EntityPlayer, hand);
+	public EntityBlazeShot(World world, EntityPlayer player, EnumHand hand) {
+		super(world, player, hand);
 	}
 
 	@Override

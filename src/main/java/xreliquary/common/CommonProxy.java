@@ -64,6 +64,7 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "storm_shot"), EntityStormShot.class, "entityStormShot", 11, Reliquary.INSTANCE, 128, 5, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "thrown_aphrodite"), EntityAttractionPotion.class, "entitySplashAphrodite", 12, Reliquary.INSTANCE, 128, 5, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "thrown_potion"), EntityThrownXRPotion.class, "entityThrownXRPotion", 13, Reliquary.INSTANCE, 128, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "lyssa_hook"), EntityLyssaHook.class, "entityLyssaHook", 14, Reliquary.INSTANCE, 128, 5, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "thrown_fertility"), EntityFertilePotion.class, "entitySplashFertility", 21, Reliquary.INSTANCE, 128, 5, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "kraken_slime"), EntityKrakenSlime.class, "entityKSlime", 22, Reliquary.INSTANCE, 128, 5, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "ender_staff_projectile"), EntityEnderStaffProjectile.class, "entityEnderStaffProjectile", 23, Reliquary.INSTANCE, 128, 5, true);

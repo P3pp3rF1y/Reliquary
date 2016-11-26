@@ -26,9 +26,9 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	private NonNullList<ItemStack> stacks;
 
 	protected FilteredItemStackHandler(int initialSlots) {
-		stacks = NonNullList.withSize(initialSlots * SLOTS_PER_TYPE, ItemStack.EMPTY);
+		stacks = getDefaultSizedList(initialSlots * SLOTS_PER_TYPE);
 		this.totalAmounts = new int[initialSlots];
-		this.filterStacks = NonNullList.withSize(initialSlots, ItemStack.EMPTY);
+		this.filterStacks = getDefaultSizedList(initialSlots);
 	}
 
 	public FilteredItemStackHandler(int[] totalLimits, Item[] items, int[] unitWorth) {
@@ -109,9 +109,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 	private void expandStacks() {
 		if(dynamicSize) {
-			for (int i=0; i<SLOTS_PER_TYPE; i++) {
-				stacks.add(ItemStack.EMPTY);
-			}
+			addEmptyStacks(stacks, SLOTS_PER_TYPE);
 		}
 	}
 
@@ -449,13 +447,24 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 	private void setSize(int size) {
 		if(stacks.size() != size) {
-			stacks = NonNullList.withSize(size, ItemStack.EMPTY);
+			stacks = getDefaultSizedList(size);
 		}
+	}
+
+	private static NonNullList<ItemStack> getDefaultSizedList(int size) {
+		return addEmptyStacks(NonNullList.create(), size);
+	}
+	private static NonNullList<ItemStack> addEmptyStacks(NonNullList<ItemStack> list, int count) {
+		for (int i=0; i<count; i++) {
+			list.add(ItemStack.EMPTY);
+		}
+
+		return list;
 	}
 
 	private void setFilterStacksSize(int size) {
 		if(filterStacks.size() != size) {
-			filterStacks = NonNullList.withSize(size, ItemStack.EMPTY);
+			filterStacks = getDefaultSizedList(size);
 
 			totalAmounts = new int[size];
 		}

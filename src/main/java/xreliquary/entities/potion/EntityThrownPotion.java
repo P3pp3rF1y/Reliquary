@@ -22,22 +22,16 @@ import java.util.List;
 import java.util.Random;
 
 abstract class EntityThrownPotion extends EntityThrowable {
-	EntityThrownPotion(World par1World) {
-		super(par1World);
+	EntityThrownPotion(World world) {
+		super(world);
 	}
 
-	EntityThrownPotion(World par1World, EntityPlayer par2EntityPlayer) {
-		super(par1World, par2EntityPlayer);
+	EntityThrownPotion(World world, EntityPlayer player) {
+		super(world, player);
 	}
 
-	@SideOnly(Side.CLIENT)
-	@SuppressWarnings("unused")
-	public EntityThrownPotion(World par1World, double par2, double par4, double par6, int par8) {
-		this(par1World, par2, par4, par6);
-	}
-
-	EntityThrownPotion(World par1World, double par2, double par4, double par6) {
-		super(par1World, par2, par4, par6);
+	EntityThrownPotion(World world, double x, double y, double z) {
+		super(world, x, y, z);
 	}
 
 	/**
@@ -45,7 +39,7 @@ abstract class EntityThrownPotion extends EntityThrowable {
 	 */
 	@Override
 	protected float getGravityVelocity() {
-		return 0.07F;
+		return 0.05F;
 	}
 
 	/**
@@ -53,9 +47,11 @@ abstract class EntityThrownPotion extends EntityThrowable {
 	 */
 	@Override
 	protected void onImpact(@Nonnull RayTraceResult result) {
-		this.spawnParticles();
-		this.doSplashEffect();
-		this.setDead();
+		if (!world.isRemote) {
+			this.spawnParticles();
+			this.doSplashEffect();
+			this.setDead();
+		}
 	}
 
 	// called by the splashEffect so that it can skip the bounding box and

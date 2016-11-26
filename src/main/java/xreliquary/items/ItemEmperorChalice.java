@@ -86,7 +86,8 @@ public class ItemEmperorChalice extends ItemToggleable {
 		boolean isInDrainMode = this.isEnabled(ist);
 		RayTraceResult result = this.rayTrace(world, player, isInDrainMode);
 
-		if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
+		//noinspection ConstantConditions
+		if(result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
 
 			if(!world.isBlockModifiable(player, result.getBlockPos()))
 				return new ActionResult<>(EnumActionResult.FAIL, ist);

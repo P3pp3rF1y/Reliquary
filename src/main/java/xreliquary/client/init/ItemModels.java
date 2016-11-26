@@ -76,7 +76,7 @@ public class ItemModels {
 		registerItemModelForAllVariants(ModItems.mobCharm, Names.Items.MOB_CHARM, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MOB_CHARM, "inventory"));
 		registerItemModelForAllVariants(ModItems.potionEssence, Names.Items.POTION_ESSENCE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.POTION_ESSENCE, "inventory"));
 		registerItemModelForAllVariants(ModItems.infernalTear, Names.Items.INFERNAL_TEAR_EMPTY, stack -> {
-			if(ModItems.infernalTear.getStackFromTear(stack) != null) {
+			if(!ModItems.infernalTear.getStackFromTear(stack).isEmpty()) {
 				return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR);
 			}
 			return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR_EMPTY);

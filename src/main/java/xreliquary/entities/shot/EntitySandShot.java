@@ -15,18 +15,12 @@ import xreliquary.entities.ConcussiveExplosion;
 
 public class EntitySandShot extends EntityShotBase {
 	@SuppressWarnings("unused")
-	public EntitySandShot(World par1World) {
-		super(par1World);
+	public EntitySandShot(World world) {
+		super(world);
 	}
 
-	/* TODO remove
-		public EntitySandShot(World par1World, double par2, double par4, double par6) {
-			super(par1World, par2, par4, par6);
-		}
-
-	*/
-	public EntitySandShot(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
-		super(par1World, par2EntityPlayer, hand);
+	public EntitySandShot(World world, EntityPlayer player, EnumHand hand) {
+		super(world, player, hand);
 	}
 
 	@Override

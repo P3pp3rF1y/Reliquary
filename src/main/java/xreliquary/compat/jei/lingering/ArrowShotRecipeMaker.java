@@ -13,8 +13,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ArrowShotRecipeMaker {
+
 	@Nonnull
-	public static List<ArrowShotRecipeJEI> getRecipes(ItemStack itemStack, float durationFactor) {
+	public static List<ArrowShotRecipeJEI> getRecipes(ItemStack output, float durationFactor) {
+		return getRecipes(output, output, durationFactor);
+	}
+
+	@Nonnull
+	public static List<ArrowShotRecipeJEI> getRecipes(ItemStack output, ItemStack itemStack, float durationFactor) {
 		ArrayList<ArrowShotRecipeJEI> recipes = new ArrayList<>();
 
 		for(PotionEssence essence : Settings.Potions.uniquePotions) {
@@ -25,11 +31,11 @@ public class ArrowShotRecipeMaker {
 			potion.getTagCompound().setBoolean("lingering", true);
 			potion.getTagCompound().setBoolean("hasPotion", true);
 
-			ItemStack output = itemStack.copy();
-			output.setCount(8);
-			PotionUtils.appendEffects(output, XRPotionHelper.changeDuration(essence.getEffects(), durationFactor));
+			ItemStack outputCopy = output.copy();
+			outputCopy.setCount(8);
+			PotionUtils.appendEffects(outputCopy, XRPotionHelper.changeDuration(essence.getEffects(), durationFactor));
 
-			recipes.add(new ArrowShotRecipeJEI(Arrays.asList(itemStack, itemStack, itemStack, itemStack, potion, itemStack, itemStack, itemStack, itemStack), output));
+			recipes.add(new ArrowShotRecipeJEI(Arrays.asList(itemStack, itemStack, itemStack, itemStack, potion, itemStack, itemStack, itemStack, itemStack), outputCopy));
 		}
 
 		return recipes;

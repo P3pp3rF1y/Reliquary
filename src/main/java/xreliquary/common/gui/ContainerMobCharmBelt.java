@@ -21,7 +21,7 @@ public class ContainerMobCharmBelt extends Container {
 		Slot slot = null;
 		if(slotId >= 0 && slotId < this.inventorySlots.size())
 			slot = this.inventorySlots.get(slotId);
-		ItemStack slotStack = slot == null ? null : slot.getStack();
+		ItemStack slotStack = slot == null ? ItemStack.EMPTY : slot.getStack();
 
 		//prevent moving belt out of its slot
 		if(slot != null && !slotStack.isEmpty() && slotStack.getItem() == ModItems.mobCharmBelt && slotStack == player.getHeldItemMainhand())
@@ -38,7 +38,6 @@ public class ContainerMobCharmBelt extends Container {
 			if(slot != null && slot.canTakeStack(player)) {
 				if(!slotStack.isEmpty()) {
 					itemstack = slotStack.copy();
-					slot.putStack(ItemStack.EMPTY);
 				}
 
 				ItemStack transferredStack = this.transferStackInSlot(player, slotId);
@@ -84,7 +83,11 @@ public class ContainerMobCharmBelt extends Container {
 				}
 			}
 
-			slot.onSlotChanged();
+			if (originalStack.isEmpty()) {
+				slot.putStack(ItemStack.EMPTY);
+			} else {
+				slot.onSlotChanged();
+			}
 
 			if(originalStack.getCount() == copiedStack.getCount()) {
 				return ItemStack.EMPTY;

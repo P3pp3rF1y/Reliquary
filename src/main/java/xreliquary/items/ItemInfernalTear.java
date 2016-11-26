@@ -25,6 +25,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
+import xreliquary.util.alkahestry.Alkahestry;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -56,12 +57,13 @@ public class ItemInfernalTear extends ItemToggleable {
 			return;
 		}
 
-		if(Settings.AlkahestryTome.craftingRecipes.containsKey(ident)) {
-			AlkahestCraftRecipe recipe = Settings.AlkahestryTome.craftingRecipes.get(ident);
+		ItemStack targetStack = this.getStackFromTear(ist);
+		AlkahestCraftRecipe recipe = Alkahestry.getCraftingRecipe(targetStack);
+		if(recipe != null) {
 			// You need above Cobblestone level to get XP.
 			if(!(recipe.yield == 32 && recipe.cost == 4)) {
-				if(InventoryHelper.consumeItem(this.getStackFromTear(ist), player)) {
-					player.addExperience((int) (Math.ceil((((double) recipe.cost) / (double) recipe.yield) / 256d * 500d)));
+				if(InventoryHelper.consumeItem(targetStack, player)) {
+					player.addExperience((int) (Math.ceil((double) recipe.cost / (double) recipe.yield)));
 				}
 			}
 		}
@@ -159,8 +161,8 @@ public class ItemInfernalTear extends ItemToggleable {
 		ItemStack target = getTargetAlkahestItem(stack, inventory);
 		if(target.isEmpty())
 			return ItemStack.EMPTY;
-		String itemID = RegistryHelper.getItemRegistryName(target.getItem()) + (target.getItem().getHasSubtypes() ? "|" + target.getMetadata() : "");
-		NBTHelper.setString("itemID", tear, itemID);
+
+		NBTHelper.setString("itemID", tear, Alkahestry.getStackKey(target));
 
 		if(Settings.InfernalTear.absorbWhenCreated)
 			NBTHelper.setBoolean("enabled", stack, true);
@@ -187,10 +189,12 @@ public class ItemInfernalTear extends ItemToggleable {
 			if(stack.getTagCompound() != null) {
 				continue;
 			}
-			String key = RegistryHelper.getItemRegistryName(stack.getItem()) + (stack.getItem().getHasSubtypes() ? "|" + stack.getMetadata() : "");
-			if(!Settings.AlkahestryTome.craftingRecipes.containsKey(key)) {
+
+			AlkahestCraftRecipe recipe = Alkahestry.getCraftingRecipe(stack);
+			if (recipe == null || (recipe.yield == 32 && recipe.cost == 4)) {
 				continue;
 			}
+
 			if(InventoryHelper.getItemQuantity(stack, inventory) > itemQuantity) {
 				itemQuantity = InventoryHelper.getItemQuantity(stack, inventory);
 				targetItem = stack.copy();

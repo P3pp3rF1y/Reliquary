@@ -13,18 +13,12 @@ import net.minecraft.world.World;
 
 public class EntityStormShot extends EntityShotBase {
 	@SuppressWarnings("unused")
-	public EntityStormShot(World par1World) {
-		super(par1World);
+	public EntityStormShot(World world) {
+		super(world);
 	}
 
-	/* TODO remove
-		public EntityStormShot(World par1World, double par2, double par4, double par6) {
-			super(par1World, par2, par4, par6);
-		}
-
-	*/
-	public EntityStormShot(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
-		super(par1World, par2EntityPlayer, hand);
+	public EntityStormShot(World world, EntityPlayer player, EnumHand hand) {
+		super(world, player, hand);
 	}
 
 	@Override

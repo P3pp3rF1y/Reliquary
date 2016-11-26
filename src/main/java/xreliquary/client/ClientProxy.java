@@ -146,6 +146,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	private void registerEntityRenderers() {
+		RenderingRegistry.registerEntityRenderingHandler(EntityLyssaHook.class, RenderLyssaHook::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBlazeShot.class, RenderShot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBusterShot.class, RenderShot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityConcussiveShot.class, RenderShot::new);

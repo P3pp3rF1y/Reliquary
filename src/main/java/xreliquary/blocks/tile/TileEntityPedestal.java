@@ -167,7 +167,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 				}
 			}
 
-			if(item.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+			if(item.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null) || item.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)) {
 				fluidContainers.add(item);
 			}
 		}

@@ -35,11 +35,13 @@ public class Reliquary {
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
 	public static CommonProxy PROXY;
 
-	public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID());
+	public static CreativeTabs CREATIVE_TAB;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+
+ 		CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID());
 
 		PROXY.initColors();
 

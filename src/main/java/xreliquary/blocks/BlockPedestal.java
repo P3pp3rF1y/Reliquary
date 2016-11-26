@@ -94,11 +94,12 @@ public class BlockPedestal extends BlockPedestalPassive {
 		((TileEntityPedestal) worldIn.getTileEntity(pos)).neighborUpdate();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer).withProperty(ENABLED, false);
+	public IBlockState getStateForPlacement(
+			@Nonnull World world,
+			@Nonnull BlockPos pos, @Nonnull EnumFacing facing, float hitX, float hitY, float hitZ, int meta, @Nonnull EntityLivingBase placer, EnumHand hand) {
+		return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand).withProperty(ENABLED, false);
 	}
 
 	@Override

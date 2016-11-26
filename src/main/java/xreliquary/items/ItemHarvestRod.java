@@ -441,7 +441,10 @@ public class ItemHarvestRod extends ItemToggleable {
 		ItemStack fakePlantableStack = getCurrentPlantable(harvestRod).copy();
 		fakePlantableStack.setCount(1);
 
-		if(fakePlantableStack.onItemUse(player, player.world, pos, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0) == EnumActionResult.SUCCESS) {
+		EntityXRFakePlayer fakePlayer = XRFakePlayerFactory.get((WorldServer) player.world);
+		fakePlayer.setHeldItem(hand, fakePlantableStack);
+
+		if(fakePlantableStack.onItemUse(fakePlayer, player.world, pos, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0) == EnumActionResult.SUCCESS) {
 			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
 
 			if(!player.capabilities.isCreativeMode) {

@@ -3,6 +3,7 @@ package xreliquary.compat.jei;
 import mezz.jei.api.*;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import xreliquary.compat.jei.alkahestry.*;
 import xreliquary.compat.jei.cauldron.CauldronRecipeCategory;
@@ -69,8 +70,8 @@ public class ReliquaryPlugin implements IModPlugin {
 
 		registry.addRecipes(MortarRecipeMaker.getRecipes());
 		registry.addRecipes(CauldronRecipeMaker.getRecipes());
-		registry.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.bullet, 1, 1), 0.2F));
-		registry.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.tippedArrow), 0.125F));
+		registry.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.bullet, 1, 1),  0.2F));
+		registry.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.tippedArrow), new ItemStack(Items.ARROW), 0.125F));
 		registry.addRecipes(MagazineRecipeMaker.getRecipes());
 
 		for(DescriptionEntry entry : JEIDescriptionRegistry.entrySet())

@@ -38,8 +38,13 @@ public class ItemToggleable extends ItemBase {
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
-	public boolean isEnabled(ItemStack ist) {
-		return NBTHelper.getBoolean("enabled", ist);
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged) {
+		return oldStack.getItem() != newStack.getItem() || oldStack.hasEffect() != newStack.hasEffect();
+	}
+
+	public boolean isEnabled(ItemStack stack) {
+		return NBTHelper.getBoolean("enabled", stack);
 	}
 
 	void toggleEnabled(ItemStack ist) {

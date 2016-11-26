@@ -122,18 +122,14 @@ public class ConcussiveExplosion extends Explosion {
 	 * Does the second part of the explosion (sounds, particles, drop spawn)
 	 */
 	@Override
-	public void doExplosionB(boolean par1) {
+	public void doExplosionB(boolean spawnParticles) {
 		world.playSound(null, new BlockPos(explosionX, explosionY, explosionZ), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
 
-		/*
-	  whether or not the explosion sets fire to blocks around it
-	 */
 		if(explosionSize >= 2.0F) {
 			world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);
 		} else {
 			world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);
 		}
-
 	}
 
 	@Override
@@ -141,10 +137,10 @@ public class ConcussiveExplosion extends Explosion {
 		return this.playerKnockbackMap;
 	}
 
-	public static void customBusterExplosion(Entity par1Entity, double par2, double par4, double par6, float par8) {
+	public static void customBusterExplosion(Entity par1Entity, double x, double y, double z, float par8) {
 		if(par1Entity.world.isRemote)
 			return;
-		par1Entity.world.newExplosion(par1Entity, par2, par4, par6, par8, false, true);
+		par1Entity.world.newExplosion(par1Entity, x, y, z, par8, false, true);
 	}
 
 	public static ConcussiveExplosion customConcussiveExplosion(Entity entity, EntityPlayer player, double explosionX, double explosionY, double explosionZ, float size, boolean isFlaming) {

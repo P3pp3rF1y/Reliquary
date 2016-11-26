@@ -16,7 +16,7 @@ public class Reference {
 	public static final String COMMON_PROXY = "xreliquary.common.CommonProxy";
 
 	public static final String ART_PATH_ENTITIES = "textures/entities/";
-	public static final String THROWN_ITEM_SPRITES = "thrownItemsSheet.png";
+	public static final String THROWN_ITEM_SPRITES = "thrown_items_sheet.png";
 
 	public static class MOB_CHARM {
 		public static final byte ZOMBIE_META = 0;

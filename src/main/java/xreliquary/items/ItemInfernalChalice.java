@@ -98,10 +98,10 @@ public class ItemInfernalChalice extends ItemToggleable {
 	}
 
 	private IFluidHandler getFluidHandler(ItemStack stack) {
-		if(!stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+		if(!stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null))
 			return null;
 
-		return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+		return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 	}
 
 	private boolean tryPlaceContainedLiquid(World world, BlockPos pos) {
@@ -110,7 +110,6 @@ public class ItemInfernalChalice extends ItemToggleable {
 		if(!world.isAirBlock(pos) && material.isSolid())
 			return false;
 		else {
-
 			world.setBlockState(pos, Blocks.FLOWING_LAVA.getDefaultState(), 3);
 			return true;
 		}

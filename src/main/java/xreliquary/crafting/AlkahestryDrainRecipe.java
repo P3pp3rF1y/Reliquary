@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import xreliquary.init.ModItems;
 import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
@@ -21,7 +22,7 @@ public class AlkahestryDrainRecipe implements IRecipe {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(stack.isEmpty())
 				continue;
-			if((stack.getItem() instanceof ItemAlkahestryTome)) {
+			if((stack.getItem() == ModItems.alkahestryTome)) {
 				if(!valid)
 					valid = NBTHelper.getInteger("charge", stack) > 0;
 			} else {
@@ -38,7 +39,7 @@ public class AlkahestryDrainRecipe implements IRecipe {
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(!stack.isEmpty()) {
-				if(stack.getItem() instanceof ItemAlkahestryTome) {
+				if(stack.getItem() == ModItems.alkahestryTome) {
 					tome = stack;
 				}
 			}
@@ -78,10 +79,11 @@ public class AlkahestryDrainRecipe implements IRecipe {
 
 		for(int slot = 0; slot < remaining.size(); ++slot) {
 			ItemStack itemstack = inv.getStackInSlot(slot);
-			if(!itemstack.isEmpty() && itemstack.getItem() instanceof ItemAlkahestryTome) {
+			if(!itemstack.isEmpty() && itemstack.getItem() == ModItems.alkahestryTome) {
 				ItemStack tomeCopy = itemstack.copy();
 				NBTHelper.setInteger("charge", tomeCopy, NBTHelper.getInteger("charge", tomeCopy) - (Settings.AlkahestryTome.baseItemWorth * getCraftingResult(inv).getCount()));
 				tomeCopy.setItemDamage(tomeCopy.getMaxDamage() - NBTHelper.getInteger("charge", tomeCopy));
+				remaining.set(slot, tomeCopy);
 			}
 		}
 

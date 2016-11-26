@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 class CreativeTabXR extends CreativeTabs {
 
-	private static final ItemStack TAB_ICON = new ItemStack(ModItems.mercyCross);
+	private static ItemStack TAB_ICON;
 
 	CreativeTabXR(int ID) {
 		super(ID, Reference.MOD_ID);
@@ -21,6 +21,9 @@ class CreativeTabXR extends CreativeTabs {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public ItemStack getTabIconItem() {
+		if (TAB_ICON == null) {
+			TAB_ICON = new ItemStack(ModItems.mercyCross);
+		}
 		return TAB_ICON;
 	}
 

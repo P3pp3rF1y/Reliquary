@@ -45,23 +45,23 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	private int ricochetCounter = 0;
 	private boolean scheduledForDeath = false;
 
-	public EntityShotBase(World par1World) {
-		super(par1World);
+	public EntityShotBase(World world) {
+		super(world);
 		this.setSize(0.01F, 0.01F);
 	}
 
-	public EntityShotBase(World par1World, double par2, double par4, double par6) {
-		this(par1World);
-		this.setPosition(par2, par4, par6);
+	public EntityShotBase(World world, double x, double y, double z) {
+		this(world);
+		this.setPosition(x, y, z);
 	}
 
-	public EntityShotBase(World par1World, EntityPlayer par2EntityPlayer, EnumHand hand) {
-		this(par1World);
-		shootingEntity = par2EntityPlayer;
+	public EntityShotBase(World world, EntityPlayer player, EnumHand hand) {
+		this(world);
+		shootingEntity = player;
 		float par3 = 0.8F;
-		this.setLocationAndAngles(par2EntityPlayer.posX, par2EntityPlayer.posY + par2EntityPlayer.getEyeHeight(), par2EntityPlayer.posZ, par2EntityPlayer.rotationYaw, par2EntityPlayer.rotationPitch);
+		this.setLocationAndAngles(player.posX, player.posY + player.getEyeHeight(), player.posZ, player.rotationYaw, player.rotationPitch);
 		posX -= MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * (hand == EnumHand.MAIN_HAND ? 1 : -1) * 0.16F;
-		posY -= 0.1D;
+		posY -= 0.2D;
 		posZ -= MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * (hand == EnumHand.MAIN_HAND ? 1 : -1) * 0.16F;
 		this.setPosition(posX, posY, posZ);
 		motionX = -MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0F * (float) Math.PI);
@@ -214,11 +214,6 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			Vec3d posVector = new Vec3d(posX, posY, posZ);
 			Vec3d approachVector = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
 			RayTraceResult objectStruckByVector = world.rayTraceBlocks(posVector, approachVector, false, true, false);
-			posVector = new Vec3d(posX, posY, posZ);
-			approachVector = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
-
-			if(objectStruckByVector != null)
-				approachVector = new Vec3d(objectStruckByVector.hitVec.xCoord, objectStruckByVector.hitVec.yCoord, objectStruckByVector.hitVec.zCoord);
 
 			Entity hitEntity = null;
 			List struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
@@ -323,12 +318,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean isInRangeToRenderDist(double distance) {
-		double d0 = this.getEntityBoundingBox().getAverageEdgeLength() * 4.0D;
-		if(Double.isNaN(d0)) {
-			d0 = 4.0D;
-		}
-
-		d0 *= 64.0D;
+		double d0 = 64.0D;
 		return distance < d0 * d0;
 	}
 
@@ -424,13 +414,13 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 				break;
 			case WEST:
 			case EAST:
-				// westHit, eastHit, reflect Z
-				motionZ = motionZ * -1;
+				// westHit, eastHit, reflect x
+				motionX = motionX * -1;
 				break;
 			case SOUTH:
 			case NORTH:
-				// southHit, northHit, reflect X
-				motionX = motionX * -1;
+				// southHit, northHit, reflect z
+				motionZ = motionZ * -1;
 				break;
 		}
 		ricochetCounter++;
@@ -533,11 +523,13 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 * @param entityLiving the entity being struck
 	 */
 	protected void onImpact(EntityLivingBase entityLiving) {
-		if(entityLiving != shootingEntity || ticksInAir > 3) {
-			doDamage(entityLiving);
+		if (!world.isRemote) {
+			if(entityLiving != shootingEntity || ticksInAir > 3) {
+				doDamage(entityLiving);
+			}
+			spawnHitParticles(8);
+			this.setDead();
 		}
-		spawnHitParticles(8);
-		this.setDead();
 	}
 
 	protected void onImpact(RayTraceResult result) {

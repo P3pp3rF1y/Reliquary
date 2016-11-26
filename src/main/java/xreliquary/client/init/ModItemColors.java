@@ -29,7 +29,23 @@ public class ModItemColors {
 				}
 
 				return -1;
-			}, ModItems.mobCharm, ModItems.mobCharmFragment);
+			}, ModItems.mobCharm);
+		}
+
+		if(isEnabled(ModItems.mobCharmFragment) && isEnabled(ModItems.mobCharm)) {
+			itemColors.registerItemColorHandler((stack, tintIndex) -> {
+				if(tintIndex < 0 || tintIndex > 1)
+					return -1;
+
+				int type = stack.getMetadata();
+				EntityList.EntityEggInfo eggInfo = getEntityEggInfo(type);
+
+				if(eggInfo != null) {
+					return tintIndex == 0 ? eggInfo.primaryColor : eggInfo.secondaryColor;
+				}
+
+				return -1;
+			}, ModItems.mobCharmFragment);
 		}
 
 		if(isEnabled(ModItems.magazine) && isEnabled(ModItems.bullet)) {

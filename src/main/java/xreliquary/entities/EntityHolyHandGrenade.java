@@ -3,6 +3,7 @@ package xreliquary.entities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -17,24 +18,28 @@ public class EntityHolyHandGrenade extends EntityThrowable {
 	private String customName;
 
 	@SuppressWarnings("unused")
-	public EntityHolyHandGrenade(World par1World) {
-		super(par1World);
+	public EntityHolyHandGrenade(World world) {
+		super(world);
 	}
 
-	public EntityHolyHandGrenade(World par1World, EntityPlayer par2EntityPlayer, String customName) {
-		super(par1World, par2EntityPlayer);
-		playerThrower = par2EntityPlayer;
+	public EntityHolyHandGrenade(World world, EntityPlayer player, String customName) {
+		super(world, player);
+		//offSetGrenade(player);
+		playerThrower = player;
 		this.customName = customName;
 	}
 
-	@SideOnly(Side.CLIENT)
-	@SuppressWarnings("unused")
-	public EntityHolyHandGrenade(World par1World, double par2, double par4, double par6, int par8) {
-		this(par1World, par2, par4, par6, "");
+	private void offSetGrenade(EntityPlayer player) {
+		float pitch = MathHelper.sin(player.rotationPitch * 0.017453292F);
+		float yOffset = - 2F * pitch;
+		float xOffset = (- 2F * MathHelper.sin(player.rotationYawHead * 0.017453292F)) * MathHelper.sqrt((1F - MathHelper.abs(pitch)) / 1F) * 2;
+		float zOffset = 2F * MathHelper.cos(player.rotationYawHead * 0.017453292F) * MathHelper.sqrt((1F - MathHelper.abs(pitch)) / 1F) * 2;
+
+		this.setPosition(posX + xOffset, posY + yOffset, posZ + zOffset);
 	}
 
-	public EntityHolyHandGrenade(World par1World, double par2, double par4, double par6, String customName) {
-		super(par1World, par2, par4, par6);
+	public EntityHolyHandGrenade(World world, double x, double y, double z, String customName) {
+		super(world, x, y, z);
 		this.customName = customName;
 	}
 
@@ -64,9 +69,12 @@ public class EntityHolyHandGrenade extends EntityThrowable {
 	 */
 	@Override
 	protected void onImpact(@Nonnull RayTraceResult result) {
-		this.setDead();
+		if (!world.isRemote)
+			this.setDead();
 
-		ConcussiveExplosion.customConcussiveExplosion(this, playerThrower, posX, posY, posZ, 4.0F, false);
+		//just making sure that player doesn't see the particles on client when the grenade is thrown
+		if (!world.isRemote || ticksExisted > 3 || result.typeOfHit != RayTraceResult.Type.ENTITY || !(result.entityHit instanceof EntityPlayer))
+			ConcussiveExplosion.customConcussiveExplosion(this, playerThrower, posX, posY, posZ, 4.0F, false);
 	}
 
 	String getCustomName() {

@@ -45,7 +45,7 @@ public class ItemFertileLilyPad extends ItemBlockBase {
 	}
 
 	private boolean TryPlacingLilyPad(ItemStack itemStack, World worldIn, EntityPlayer playerIn, RayTraceResult result, EnumHand hand) {
-		if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
+		if(result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
 			BlockPos blockpos = result.getBlockPos();
 
 			if(!worldIn.isBlockModifiable(playerIn, blockpos)) {

@@ -105,7 +105,7 @@ public class BlockApothecaryMortar extends BlockBase {
 			return false;
 		TileEntityMortar mortar = (TileEntityMortar) tileEntity;
 
-		if(!heldItem.isEmpty()) {
+		if(heldItem.isEmpty()) {
 			if(player.isSneaking()) {
 				xreliquary.util.InventoryHelper.tryRemovingLastStack(mortar, world, mortar.getPos());
 				return true;

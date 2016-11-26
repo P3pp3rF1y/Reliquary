@@ -83,10 +83,16 @@ public class PedestalFluidHandler implements IFluidHandler {
 	}
 
 	private IFluidHandler getFluidCapFromContainer(ItemStack container) {
-		if(!container.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+		if(!container.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null) && !container.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null))
 			return null;
 
-		return container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+		IFluidHandler fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+
+		if (fluidHandler == null) {
+			fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+		}
+
+		return fluidHandler;
 	}
 
 	private IFluidTankProperties[] getContainerTankProperties(ItemStack container) {

@@ -61,7 +61,7 @@ dependencies {
     //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     //deobfCompile "info.amerifrance.guideapi:Guide-API:${guideapi_version}"
-    compile "mcp.mobius.waila:Waila:${waila_version}:dev"
+    //compile "mcp.mobius.waila:Waila:${waila_version}:dev"
     compile name: 'JustEnoughResources', version: jer_version, ext: 'jar'
     //compile name: 'Baubles', version: baubles_version, ext: 'jar'
     //compile name: 'BloodMagic', version: blood_magic_version, ext: 'jar'

@@ -349,6 +349,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 				ItemStack item = ((EntityItem) collidingEntity).getEntityItem();
 				while(this.isItemValidForInput(item)) {
 					this.addItem(item);
+					item.shrink(1);
 				}
 			}
 

@@ -12,6 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityLyssaHook;
 import xreliquary.reference.Names;
+import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nonnull;
 
@@ -26,7 +27,8 @@ public class ItemRodOfLyssa extends ItemBase {
 			@Override
 			@SideOnly(Side.CLIENT)
 			public float apply(@Nonnull ItemStack stack, World worldIn, EntityLivingBase entityIn) {
-				return entityIn == null ? 0.0F : (entityIn.getHeldItemMainhand() == stack && entityIn instanceof EntityPlayer && ((EntityPlayer) entityIn).fishEntity != null ? 1.0F : 0.0F);
+				return entityIn == null ? 0.0F :
+						((entityIn.getHeldItemMainhand() == stack || entityIn.getHeldItemOffhand() == stack) && getHookEntityId(stack) > 0 ? 1.0F : 0.0F);
 			}
 		});
 	}
@@ -44,21 +46,38 @@ public class ItemRodOfLyssa extends ItemBase {
 	/**
 	 * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
 	 */
-	public ActionResult<ItemStack> onItemRightClick(ItemStack ist, World world, EntityPlayer player, EnumHand hand) {
-		if(player.fishEntity != null) {
+	@Nonnull
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+		int entityId = getHookEntityId(stack);
+		if(entityId != 0 && world.getEntityByID(entityId) instanceof EntityLyssaHook) {
+			EntityLyssaHook hook = (EntityLyssaHook) world.getEntityByID(entityId);
 			player.swingArm(hand);
-			player.fishEntity.handleHookRetraction();
+			hook.handleHookRetraction();
+			setHookEntityId(stack, 0);
 		} else {
 			world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
 			if(!world.isRemote) {
-				world.spawnEntity(new EntityLyssaHook(world, player));
+				EntityLyssaHook hook = new EntityLyssaHook(world, player);
+				world.spawnEntity(hook);
+
+				setHookEntityId(stack, hook.getEntityId());
 			}
 
 			player.swingArm(hand);
 		}
 
-		return new ActionResult<>(EnumActionResult.SUCCESS, ist);
+		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+	}
+
+	private void setHookEntityId(ItemStack stack, int entityId) {
+		NBTHelper.setInteger("hookEntityId", stack, entityId);
+	}
+
+	private int getHookEntityId(ItemStack stack) {
+		return NBTHelper.getInteger("hookEntityId", stack);
 	}
 
 }

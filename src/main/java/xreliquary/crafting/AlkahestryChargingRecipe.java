@@ -25,7 +25,7 @@ public class AlkahestryChargingRecipe implements IRecipe {
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(!stack.isEmpty()) {
-				if(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome))) {
+				if(stack.getItem() == ModItems.alkahestryTome) {
 					tome = stack.copy();
 				} else {
 					boolean isChargingItem = false;
@@ -57,7 +57,7 @@ public class AlkahestryChargingRecipe implements IRecipe {
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(!stack.isEmpty()) {
-				if(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome))) {
+				if(stack.getItem() == ModItems.alkahestryTome) {
 					tome = stack.copy();
 				} else {
 					for(Map.Entry<String, AlkahestChargeRecipe> entry : Settings.AlkahestryTome.chargingRecipes.entrySet()) {

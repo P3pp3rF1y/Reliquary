@@ -133,7 +133,8 @@ public class ItemVoidTear extends ItemToggleable {
 			RayTraceResult rayTraceResult = this.rayTrace(world, player, false);
 
 			//not letting logic go through if player was sneak clicking inventory or was trying to place a block
-			if(rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK && (world.getTileEntity(rayTraceResult.getBlockPos()) instanceof IInventory && player.isSneaking() || getContainerItem(voidTear).getItem() instanceof ItemBlock))
+			//noinspection ConstantConditions
+			if(rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK && (world.getTileEntity(rayTraceResult.getBlockPos()) instanceof IInventory && player.isSneaking() || getContainerItem(voidTear).getItem() instanceof ItemBlock))
 				return new ActionResult<>(EnumActionResult.PASS, voidTear);
 
 			if(player.isSneaking())

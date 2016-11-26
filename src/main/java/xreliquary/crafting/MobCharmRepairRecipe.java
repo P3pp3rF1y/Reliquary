@@ -45,7 +45,7 @@ public class MobCharmRepairRecipe implements IRecipe {
 			ItemStack currentStack = inv.getStackInSlot(i);
 			if(!currentStack.isEmpty()) {
 				if(currentStack.getItem() == ModItems.mobCharm) {
-					if(mobCharm != null || !REPAIR_INGREDIENTS.keySet().contains(ModItems.mobCharm.getType(currentStack)))
+					if(!mobCharm.isEmpty() || !REPAIR_INGREDIENTS.keySet().contains(ModItems.mobCharm.getType(currentStack)))
 						return false;
 					mobCharm = currentStack;
 					continue;
@@ -54,7 +54,7 @@ public class MobCharmRepairRecipe implements IRecipe {
 				if(!isRepairIngredient(currentStack))
 					return false;
 
-				if(ingredient == null) {
+				if(ingredient.isEmpty()) {
 					ingredient = currentStack;
 				} else {
 					if(!ingredient.isItemEqual(currentStack))
