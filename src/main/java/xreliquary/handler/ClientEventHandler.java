@@ -610,16 +610,19 @@ public class ClientEventHandler {
 		if(staffMode.equals("eruption"))
 			friendlyStaffMode = "ERUPT";
 
-		if(!secondaryStack.isEmpty() && (staffMode.equals("charge"))) {
-			renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(secondaryStack.getCount()).length() * 6))), hudOverlayY + 24);
-			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(secondaryStack.getCount()), hudOverlayX + (leftSide ? 16 : -(Integer.toString(secondaryStack.getCount()).length() * 6)), hudOverlayY + 30, color);
-		} else if(!tertiaryStack.isEmpty() && (staffMode.equals("eruption") || staffMode.equals("blaze"))) {
-			renderItem.renderItemAndEffectIntoGUI(tertiaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(tertiaryStack.getCount()).length() * 6))), hudOverlayY + 24);
-			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(tertiaryStack.getCount()), hudOverlayX + (leftSide ? 16 : -(Integer.toString(tertiaryStack.getCount()).length() * 6)), hudOverlayY + 30, color);
-			if(staffMode.equals("eruption"))
-				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(friendlyStaffMode, hudOverlayX - (leftSide ? 0 : (friendlyStaffMode.length() * 6)), hudOverlayY + 18, color);
-		} else if(staffMode.equals("flint_and_steel")) {
-			renderItem.renderItemAndEffectIntoGUI(new ItemStack(Items.FLINT_AND_STEEL, 1, 0), hudOverlayX - (leftSide ? 0 : 15), hudOverlayY + 24);
+		//noinspection ConstantConditions
+		if (minecraft.getRenderManager().getFontRenderer() != null) {
+			if(!secondaryStack.isEmpty() && (staffMode.equals("charge"))) {
+				renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(secondaryStack.getCount()).length() * 6))), hudOverlayY + 24);
+				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(secondaryStack.getCount()), hudOverlayX + (leftSide ? 16 : -(Integer.toString(secondaryStack.getCount()).length() * 6)), hudOverlayY + 30, color);
+			} else if(!tertiaryStack.isEmpty() && (staffMode.equals("eruption") || staffMode.equals("blaze"))) {
+				renderItem.renderItemAndEffectIntoGUI(tertiaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(tertiaryStack.getCount()).length() * 6))), hudOverlayY + 24);
+				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(tertiaryStack.getCount()), hudOverlayX + (leftSide ? 16 : -(Integer.toString(tertiaryStack.getCount()).length() * 6)), hudOverlayY + 30, color);
+				if(staffMode.equals("eruption"))
+					minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(friendlyStaffMode, hudOverlayX - (leftSide ? 0 : (friendlyStaffMode.length() * 6)), hudOverlayY + 18, color);
+			} else if(staffMode.equals("flint_and_steel")) {
+				renderItem.renderItemAndEffectIntoGUI(new ItemStack(Items.FLINT_AND_STEEL, 1, 0), hudOverlayX - (leftSide ? 0 : 15), hudOverlayY + 24);
+			}
 		}
 
 		GlStateManager.disableLighting();
@@ -875,7 +878,9 @@ public class ClientEventHandler {
 						break;
 				}
 			}
-			minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(additionalText, hudOverlayX - (leftSide ? 0 : additionalText.length() * 6), hudOverlayY + 18, color);
+			if (minecraft.getRenderManager().getFontRenderer() != null) {
+				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(additionalText, hudOverlayX - (leftSide ? 0 : additionalText.length() * 6), hudOverlayY + 18, color);
+			}
 		}
 
 		if(!secondaryStack.isEmpty()) {
