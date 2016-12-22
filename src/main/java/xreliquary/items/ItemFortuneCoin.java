@@ -49,9 +49,10 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {
+/*	TODO add back if baubles stops triggering this on every GUI open
 		if(player.worldObj.isRemote)
 			player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, 0.1F, 0.5F * ((player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.7F + 2.2F));
-
+*/
 	}
 
 	@SuppressWarnings("NullableProblems")
