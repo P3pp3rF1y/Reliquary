@@ -19,6 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import vazkii.botania.common.block.subtile.functional.SubTileSolegnolia;
 import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
@@ -130,6 +131,10 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 			return false;
 		if (isInDisabledRange(item, disablePositions))
 			return false;
+		if (Compatibility.isLoaded(Compatibility.MOD_ID.BOTANIA)) {
+			if (SubTileSolegnolia.hasSolegnoliaAround(item))
+				return false;
+		}
 		return true;
 	}
 
