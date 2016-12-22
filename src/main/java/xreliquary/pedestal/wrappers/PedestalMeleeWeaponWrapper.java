@@ -49,12 +49,20 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 			pedestal.setActionCoolDown(40);
 			return;
 		}
-
+		
 		EntityLiving entityToAttack = entities.get(world.rand.nextInt(entities.size()));
+		
+		while (entities.size() > 0 && !canAttackEntity(entityToAttack)) {
+			entities.remove(entityToAttack);
+			if (entities.size() > 0)
+				entityToAttack = entities.get(world.rand.nextInt(entities.size()));
+		}
 
-		if(!canAttackEntity(entityToAttack))
+		if(entities.size() == 0) {
+			pedestal.setActionCoolDown(40);
 			return;
-
+		}
+		
 		//set position so that entities get knocked back away from the altar
 		fakePlayer.setPosition(pos.getX(), 0, pos.getZ());
 
