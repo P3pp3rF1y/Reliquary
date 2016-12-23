@@ -147,9 +147,6 @@ public class TileEntityPedestalPassive extends TileEntityBase implements IInvent
 	public void setInventorySlotContents(int index, @Nonnull ItemStack stack) {
 		if(index < slots) {
 			this.inventory.set(index, stack);
-			if(!stack.isEmpty() && stack.getCount() > 1) {
-				stack.setCount(1);
-			}
 
 			notifyBlock();
 		}

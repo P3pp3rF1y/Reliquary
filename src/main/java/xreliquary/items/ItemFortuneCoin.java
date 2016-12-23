@@ -9,6 +9,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -23,13 +24,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
+import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
+import xreliquary.pedestal.PedestalRegistry;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.XpHelper;
 
+import java.util.ArrayList;
 import javax.annotation.Nonnull;
 import java.util.List;
 
@@ -47,9 +52,10 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {
+/*	TODO add back if baubles stops triggering this on every GUI open
 		if(player.world.isRemote)
 			player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 2.2F));
-
+*/
 	}
 */
 
@@ -93,10 +99,11 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 	}
 
 	private void scanForEntitiesInRange(World world, EntityPlayer player, double d) {
+		List<BlockPos> disablePositions = getDisablePositions(world, player.getPosition());
 		List<EntityItem> iList = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(player.posX - d, player.posY - d, player.posZ - d, player.posX + d, player.posY + d, player.posZ + d));
 		for(EntityItem item : iList) {
 			//if entity is marked not to be picked up by magnets leave it alone - IE thing but may be more than that
-			if(item.getEntityData().getBoolean("PreventRemoteMovement")) {
+			if(!canPickupItem(item, disablePositions)) {
 				continue;
 			}
 
@@ -122,6 +129,48 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 			teleportEntityToPlayer(item, player);
 			break;
 		}
+	}
+
+	private boolean canPickupItem(EntityItem item, List<BlockPos> disablePositions) {
+		if (item.getEntityData().getBoolean("PreventRemoteMovement"))
+			return false;
+		if (isInDisabledRange(item, disablePositions))
+			return false;
+		if (Compatibility.isLoaded(Compatibility.MOD_ID.BOTANIA)) {
+			if (SubTileSolegnolia.hasSolegnoliaAround(item))
+				return false;
+		}
+		return true;
+	}
+
+	private boolean isInDisabledRange(EntityItem item, List<BlockPos> disablePositions) {
+		for (BlockPos disablePos : disablePositions) {
+			if (Math.abs(item.getPosition().getX() - disablePos.getX()) < 5
+				&& Math.abs(item.getPosition().getY() - disablePos.getY()) < 5
+				&& Math.abs(item.getPosition().getZ() - disablePos.getZ()) < 5)
+				return true;
+		}
+		return false;
+	}
+	
+	private List<BlockPos> getDisablePositions(World world, BlockPos coinPos) {
+		List<BlockPos> disablePositions = new ArrayList<>();
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(world.provider.getDimension(), coinPos, 10);
+		
+		for (BlockPos pos : pedestalPositions) {
+			TileEntity te = world.getTileEntity(pos);
+			if (te instanceof TileEntityPedestal) {
+				TileEntityPedestal pedestal = (TileEntityPedestal) te;
+				
+				if (pedestal.switchedOn()) {
+					ItemStack stack = pedestal.getStackInSlot(0);
+					if (stack != null && stack.getItem() == this && !isEnabled(stack)) {
+						disablePositions.add(pos);
+					}
+				}
+			}
+		}
+		return disablePositions;
 	}
 
 	private void teleportEntityToPlayer(Entity item, EntityPlayer player) {
@@ -229,11 +278,12 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 			BlockPos pos = pedestal.getBlockPos();
 			double d = getStandardPullDistance();
 
+			List<BlockPos> disablePositions = getDisablePositions(world, pos);
 			List<EntityItem> entities = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
 			for(EntityItem entityItem : entities) {
 
 				//if entity is marked not to be picked up by magnets leave it alone - IE thing but may be more than that
-				if(entityItem.getEntityData().getBoolean("PreventRemoteMovement")) {
+				if(!canPickupItem(entityItem, disablePositions)) {
 					continue;
 				}
 
