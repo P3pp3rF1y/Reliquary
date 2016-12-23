@@ -81,7 +81,10 @@ public class CommonEventHandler {
 		if (event.getLeft() == null || event.getRight() == null)
 			return;
 
-		if (event.getLeft().getItem() == ModItems.mobCharm || event.getLeft().getItem() == ModItems.alkahestryTome) {
+		if (event.getLeft().getItem() == ModItems.mobCharm)
+			event.setCanceled(true);
+		
+		if (event.getLeft().getItem() == ModItems.alkahestryTome) {
 			ItemStack mendingBook = Items.ENCHANTED_BOOK.getEnchantedItemStack(new EnchantmentData(Enchantments.MENDING, Enchantments.MENDING.getMaxLevel()));
 			if (ItemStack.areItemStacksEqual(event.getRight(), mendingBook)) {
 				event.setCanceled(true);

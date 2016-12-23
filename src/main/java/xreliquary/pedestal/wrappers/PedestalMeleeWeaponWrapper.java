@@ -1,6 +1,9 @@
 package xreliquary.pedestal.wrappers;
 
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -46,13 +49,20 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 			pedestal.setActionCoolDown(40);
 			return;
 		}
-
+		
 		EntityLiving entityToAttack = entities.get(world.rand.nextInt(entities.size()));
+		
+		while (entities.size() > 0 && !canAttackEntity(entityToAttack)) {
+			entities.remove(entityToAttack);
+			if (entities.size() > 0)
+				entityToAttack = entities.get(world.rand.nextInt(entities.size()));
+		}
 
-		//don't want players to use this to kill bosses
-		if(!entityToAttack.isNonBoss())
+		if(entities.size() == 0) {
+			pedestal.setActionCoolDown(40);
 			return;
-
+		}
+		
 		//set position so that entities get knocked back away from the altar
 		fakePlayer.setPosition(pos.getX(), 0, pos.getZ());
 
@@ -67,6 +77,23 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 		//destroy the item when it gets used up
 		if(stack.stackSize == 0)
 			pedestal.destroyCurrentItem();
+	}
+
+	private boolean canAttackEntity(EntityLiving entityToAttack) {
+		//don't want players to use this to kill bosses
+		if(!entityToAttack.isNonBoss())
+			return false;
+		
+		if(entityToAttack instanceof EntityAnimal && entityToAttack.isChild())
+			return false;
+		
+		if(entityToAttack instanceof EntityHorse && ((EntityHorse) entityToAttack).isTame())
+			return false;
+		
+		if(entityToAttack instanceof EntityTameable && ((EntityTameable) entityToAttack).isTamed())
+			return false;
+		
+		return true;
 	}
 
 	@Override

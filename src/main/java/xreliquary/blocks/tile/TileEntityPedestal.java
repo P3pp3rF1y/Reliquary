@@ -562,9 +562,6 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			}
 
 			this.inventory[slot] = stack;
-			if(stack != null && stack.stackSize > 1) {
-				stack.stackSize = 1;
-			}
 
 			updateItemsAndBlock();
 

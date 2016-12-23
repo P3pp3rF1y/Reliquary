@@ -12,6 +12,7 @@ xreliquary.item.alkahestry_tome.tooltip={{!colors.rose}}Charge: {{chargeAmount}}
 xreliquary.tile.altar_idle.name=Altar of Light
 xreliquary.tile.altar_idle.tooltip=Feed it redstone and;it will grow glowstone.
 xreliquary.tile.altar.name=Altar of Light
+xreliquary.tile.altar.tooltip=Feed it redstone and;it will grow glowstone.
 
 xreliquary.item.angelheart_vial.name=Angelheart Vial
 xreliquary.item.angelheart_vial.tooltip=Resurrects you;once and breaks.
@@ -25,7 +26,9 @@ xreliquary.tile.apothecary_mortar.name=Apothecary Mortar
 xreliquary.tile.apothecary_mortar.tooltip=Used to grind ingredients;into potion essence.
 
 xreliquary.tile.pedestal.name=Pedestal
+xreliquary.tile.pedestal.tooltip=Automates stuff and things placed in it
 xreliquary.tile.pedestal_passive.name=Pedestal (Display only)
+xreliquary.tile.pedestal_passive.name=Used as a fancy display of items
 
 xreliquary.item.attraction_potion.name=Aphrodite's Serum
 xreliquary.item.attraction_potion.tooltip=Makes animals mate.
@@ -77,8 +80,11 @@ xreliquary.item.glowing_bread.name=Glowing Bread
 xreliquary.item.glowing_bread.tooltip=Completely restores hunger.
 
 xreliquary.item.gun_part_0.name=Grip Assembly
+xreliquary.item.gun_part_0.tooltip=Handgun part
 xreliquary.item.gun_part_1.name=Barrel Assembly
+xreliquary.item.gun_part_1.tooltip=Handgun part
 xreliquary.item.gun_part_2.name=Hammer Assembly
+xreliquary.item.gun_part_2.tooltip=Handgun part
 
 xreliquary.item.handgun.name=Hunter's Handgun
 xreliquary.item.handgun.tooltip=For great justice.;Right click fires, hold to reload.
@@ -157,6 +163,7 @@ xreliquary.item.lantern_of_paranoia.name={{!colors.yellow}}Lantern Of Paranoia
 xreliquary.item.lantern_of_paranoia.tooltip=Places torches in unlit;areas automatically.;Shift + Right-Click to activate.
 
 xreliquary.tile.fertile_lilypad.name=Lilypad of Fertility
+xreliquary.tile.fertile_lilypad.tooltip=Speeds up growth of crops
 
 xreliquary.item.magicbane.name=Magicbane
 xreliquary.item.magicbane.tooltip=Increases its strength;with each enchantment.
@@ -179,22 +186,39 @@ xreliquary.item.midas_touchstone.name=Touchstone of Midas
 xreliquary.item.midas_touchstone.tooltip=Repairs gold items.;{{!colors.yellow}}Charge: {{charge}}
 
 xreliquary.item.mob_ingredient_0.name=Rib Bone
+xreliquary.item.mob_ingredient_0.tooltip=Skeleton drop
 xreliquary.item.mob_ingredient_1.name=Withered Rib
+xreliquary.item.mob_ingredient_1.tooltip=Wither Skeleton drop
 xreliquary.item.mob_ingredient_2.name=Chelicerae
+xreliquary.item.mob_ingredient_2.tooltip=Spider drop
 xreliquary.item.mob_ingredient_3.name=Catalyzing Gland
+xreliquary.item.mob_ingredient_3.tooltip=Creeper/Ghast drop
 xreliquary.item.mob_ingredient_4.name=Slime Pearl
+xreliquary.item.mob_ingredient_4.tooltip=Slime drop
 xreliquary.item.mob_ingredient_5.name=Bat Wing
+xreliquary.item.mob_ingredient_5.tooltip=Bat drop
 xreliquary.item.mob_ingredient_6.name=Zombie Heart
+xreliquary.item.mob_ingredient_6.tooltip=Zombie/Pigman drop
 xreliquary.item.mob_ingredient_7.name=Molten Core
+xreliquary.item.mob_ingredient_7.tooltip=Blaze/Magma Cube drop
 xreliquary.item.mob_ingredient_8.name=Eye of the Storm
+xreliquary.item.mob_ingredient_8.tooltip=Charged Creeper drop
 xreliquary.item.mob_ingredient_9.name=Fertile Essence
+xreliquary.item.mob_ingredient_9.tooltip=Crafting ingredient
 xreliquary.item.mob_ingredient_10.name=Frozen Core
+xreliquary.item.mob_ingredient_10.tooltip=Snowman drop
 xreliquary.item.mob_ingredient_11.name=Nebulous Heart
+xreliquary.item.mob_ingredient_11.tooltip=Enderman drop
 xreliquary.item.mob_ingredient_12.name=Squid Beak
+xreliquary.item.mob_ingredient_12.tooltip=Squid drop
 xreliquary.item.mob_ingredient_13.name=Infernal Claw
+xreliquary.item.mob_ingredient_13.tooltip=Crafting ingredient
 xreliquary.item.mob_ingredient_14.name=Kraken Shell Fragment
+xreliquary.item.mob_ingredient_14.tooltip=Crafting ingredient
 xreliquary.item.mob_ingredient_15.name=Crimson Cloth
+xreliquary.item.mob_ingredient_15.tooltip=Crafting ingredient
 xreliquary.item.mob_ingredient_16.name=Guardian Spike
+xreliquary.item.mob_ingredient_16.tooltip=Guardian drop
 
 xreliquary.item.mob_charm_0.name={{!colors.light_green}}Zombie Charm
 xreliquary.item.mob_charm_0.tooltip=Zombies can't see you with this.
@@ -225,6 +249,7 @@ xreliquary.item.mob_charm_12.tooltip=Blazes can't see you with this.
 xreliquary.item.mob_charm_13.name={{!colors.light_green}}Guardian Charm
 xreliquary.item.mob_charm_13.tooltip=Guardians can't see you with this.
 xreliquary.item.mob_charm_belt.name=Charm Belt
+xreliquary.item.mob_charm_belt.tooltip=Holds all the mob charms
 
 xreliquary.item.phoenix_down.name=Phoenix Down
 xreliquary.item.phoenix_down.tooltip=Resurrects you once with;full health and reverts;to an Angelic Feather.
@@ -280,6 +305,7 @@ xreliquary.item.witherless_rose.name=Witherless Rose
 xreliquary.item.witherless_rose.tooltip=With the Nether Stars enchanting this rose;the holder is protected from Withering.
 
 xreliquary.tile.wraith_node.name=Wraith Node
+xreliquary.tile.wraith_node.tooltip=Used as a destination for;Ender Staff in wraith node mode
 
 xreliquary.config.title1=Reliquary settings
 xreliquary.config.general.label=General settings
@@ -563,6 +589,7 @@ xreliquary.jei.descriptions.mob_charm_fragment10=Slime Charm Fragment is a craft
 xreliquary.jei.descriptions.mob_charm_fragment11=Magma Cube Charm Fragment is a crafting component of Magma Cube Charm
 xreliquary.jei.descriptions.mob_charm_fragment12=Blaze Charm Fragment is a crafting component of Blaze Charm
 xreliquary.jei.descriptions.mob_charm_fragment13=Guardian Charm Fragment is a crafting component of Guardian Charm
+xreliquary.jei.descriptions.mob_charm_belt=Stores mob charms which still work the same way inside it. Right clicking the belt opens its GUI where charms can be put inside it. Can be put in Bauble's belt slot.
 xreliquary.jei.descriptions.mob_charm0=Makes zombies ignore the player even when hit by them.
 xreliquary.jei.descriptions.mob_charm1=Makes skeletons ignore the player even when hit by them.
 xreliquary.jei.descriptions.mob_charm2=Makes wither skeletons ignore the player even when hit by them.
@@ -636,7 +663,7 @@ xreliquary.jei.descriptions.void_tear_empty=Right clicking makes the crystal abs
 xreliquary.jei.descriptions.witch_hat=Dropped by witches. Allows you to craft the Tome of Aklahestry. Also you can wear it if you want to look like a leprechaun.
 xreliquary.jei.descriptions.witherless_rose=While this is in your inventory, you are immune to the wither ailment.
 xreliquary.jei.descriptions.wraith_node=Right-click it with the Ender Staff and it will bind your Ender Staff to it, allowing you to return there at will for a price of Ender Pearls.\n\nNote that it will not work across different dimensions.
-xreliquary.jei.descriptions.pedestal=Pedestal is a fancy way of displaying your items, but at the same time it also allows some automation.\n\nTry putting these items on pedestal and see the results of that:\nCoin of fortune - I guess items won't be lying around if there's where to put them\nHero's medallion - together with coin of fortune next to it you will get rid of those xp orbs on the ground. And your mending items in nearby pedestals will like it as well\nSword - mobs won't like this\nBucket - perhaps milking cows and picking up liquids doesn't need to be that manual\nShears - down with all that wool and leaves\nFishing Rod - this is what I call fishing\nTo turn on pedestal functionality either empty hand right click the switch or provide redstone signal or provide power remotely using redstone block or dust in another pedestal
+xreliquary.jei.descriptions.pedestal=Pedestal is a fancy way of displaying your items, but at the same time it also allows some automation.\n\nCoin of fortune - When active picks up items and XP and puts these in containers beside the pedestal, when inactive prevents players and pedestals with fortune coin from picking up items in its range\nHero's medallion - Acts as a tank for XP also when activated searches nearby pedestals for mending items and repairs those with its XP\nSword - Attacks mobs in its range (ignores bosses, tamed and child animals)\nBucket - milks cows and picks up fluids in the world and puts these in containers beside the pedestal\nShears - shears all shearable blocks and entities in its range\nFishing Rod - fishes for the player, doesn't pick up items or xp, you need to use something else for that\nTo turn on pedestal functionality either empty hand right click the switch or provide redstone signal or provide power remotely using redstone block or dust in another pedestal
 xreliquary.jei.descriptions.pedestal_passive=Display only pedestal is exactly that - fancy way of displaying items, but doesn't have any of the regular pedestal's functionality for the items put into it
 
 xreliquary.waila.xreliquary.mortar.ingredients=Ingredients:

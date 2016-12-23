@@ -42,8 +42,10 @@ public class ItemMobCharmBelt extends ItemBauble {
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {
+/*	TODO add back if baubles stops triggering this on every GUI open
 		if(player.worldObj.isRemote)
 			player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1F, 1F);
+*/
 	}
 
 	@Override

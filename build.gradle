@@ -44,10 +44,11 @@ repositories {
         name "BloodMagic"
         artifactPattern "http://addons-origin.cursecdn.com/files/${blood_magic_cf}/[module]-[revision].[ext]"
     }
+    ivy {
+        name "Botania"
+        artifactPattern "http://botaniamod.net/files/deobf/[module] r[revision]-deobf.[ext]"
+    }
 }
-
-
-
 
 group = 'xreliquary' // Your main package.
 version = "${minecraft_version}-${mod_version}.${getBuildNumber()}${getStable()}"
@@ -65,6 +66,7 @@ dependencies {
     compile name: 'JustEnoughResources', version: jer_version, ext: 'jar'
     compile name: 'Baubles', version: baubles_version, ext: 'jar'
     compile name: 'BloodMagic', version: blood_magic_version, ext: 'jar'
+    compile name: 'Botania', version: botania_version, ext: 'jar'
     //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
     //compile name:'TConstruct', version: tconstruct_version, ext: 'jar'
 
