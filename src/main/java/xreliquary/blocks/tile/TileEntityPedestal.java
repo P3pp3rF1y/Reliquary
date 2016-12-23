@@ -126,6 +126,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			if(pedestalFluidHandler == null) {
 				pedestalFluidHandler = new PedestalFluidHandler(this);
 			}
+			//noinspection unchecked
 			return (T) pedestalFluidHandler;
 		}
 
@@ -239,7 +240,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	}
 
 	@Override
-	public int addToConnectedInventory(ItemStack stack) {
+	public int addToConnectedInventory(@Nonnull ItemStack stack) {
 		int numberAdded = 0;
 		for(EnumFacing facing : EnumFacing.VALUES) {
 			IInventory inventory = getInventoryAtPos(this.getPos().add(facing.getDirectionVec()));
@@ -305,7 +306,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	}
 
 	@Override
-	public void replaceCurrentItem(ItemStack stack) {
+	public void replaceCurrentItem(@Nonnull ItemStack stack) {
 		this.setInventorySlotContents(currentItemIndex, stack);
 	}
 

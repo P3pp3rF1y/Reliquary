@@ -74,6 +74,7 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 			pedestal.destroyCurrentItem();
 	}
 
+	@SuppressWarnings("RedundantIfStatement")
 	private boolean canAttackEntity(EntityLiving entityToAttack) {
 		//don't want players to use this to kill bosses
 		if(!entityToAttack.isNonBoss())

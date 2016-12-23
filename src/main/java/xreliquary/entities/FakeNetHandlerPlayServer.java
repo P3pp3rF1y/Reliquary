@@ -20,7 +20,11 @@ public class FakeNetHandlerPlayServer extends NetHandlerPlayServer {
 	}
 
 	@Override
-	public void kickPlayerFromServer(String p_147360_1_) {
+	public void processTryUseItemOnBlock(CPacketPlayerTryUseItemOnBlock packetIn) {
+	}
+
+	@Override
+	public void processTryUseItem(CPacketPlayerTryUseItem packetIn) {
 	}
 
 	@Override
@@ -37,10 +41,6 @@ public class FakeNetHandlerPlayServer extends NetHandlerPlayServer {
 
 	@Override
 	public void processPlayerDigging(CPacketPlayerDigging p_147345_1_) {
-	}
-
-	@Override
-	public void processPlayerBlockPlacement(CPacketPlayerTryUseItem packetIn) {
 	}
 
 	@Override

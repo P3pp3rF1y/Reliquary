@@ -9,12 +9,8 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -28,14 +24,13 @@ import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.pedestal.PedestalRegistry;
-import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.XpHelper;
 
-import java.util.ArrayList;
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
@@ -52,10 +47,9 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {
-/*	TODO add back if baubles stops triggering this on every GUI open
+//	TODO add back if baubles stops triggering this on every GUI open
 		if(player.world.isRemote)
 			player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 2.2F));
-*/
 	}
 */
 
@@ -136,10 +130,12 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 			return false;
 		if (isInDisabledRange(item, disablePositions))
 			return false;
+/* TODO add back with Botania
 		if (Compatibility.isLoaded(Compatibility.MOD_ID.BOTANIA)) {
 			if (SubTileSolegnolia.hasSolegnoliaAround(item))
 				return false;
 		}
+*/
 		return true;
 	}
 
@@ -164,7 +160,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 				
 				if (pedestal.switchedOn()) {
 					ItemStack stack = pedestal.getStackInSlot(0);
-					if (stack != null && stack.getItem() == this && !isEnabled(stack)) {
+					if (!stack.isEmpty() && stack.getItem() == this && !isEnabled(stack)) {
 						disablePositions.add(pos);
 					}
 				}
