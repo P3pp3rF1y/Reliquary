@@ -12,7 +12,7 @@ public class Compatibility {
 	public static class MOD_ID {
 		public static final String JEI = "jei";
 		public static final String JER = "jeresources";
-		public static final String BAUBLES = "Baubles";
+		public static final String BAUBLES = "baubles";
 		//public static final String BOTANIA = "Botania";
 		//public static final String THAUMCRAFT = "Thaumcraft";
 		public static final String WAILA = "Waila";

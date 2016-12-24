@@ -2,6 +2,7 @@ package xreliquary.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -47,6 +48,7 @@ import xreliquary.util.potions.XRPotionHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 //TODO refactor proxy so that it has functionally named methods that get called from main mod class
 @SideOnly(Side.CLIENT)
@@ -186,12 +188,10 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	private void RegisterBeltRender() {
-/* 		TODO readded with baubles
 		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
 		RenderPlayer render;
 		render = skinMap.get("default");
 		render.addLayer(new MobCharmBeltLayerRenderer());
-*/
 	}
 
 	private void registerRenderers() {

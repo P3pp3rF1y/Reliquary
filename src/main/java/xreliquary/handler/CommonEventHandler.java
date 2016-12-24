@@ -1,5 +1,7 @@
 package xreliquary.handler;
 
+import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.enchantment.EnchantmentData;
@@ -29,6 +31,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -38,6 +41,7 @@ import xreliquary.init.ModItems;
 import xreliquary.items.ItemToggleable;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketMobCharmDamage;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.XRFakePlayerFactory;
@@ -140,7 +144,6 @@ public class CommonEventHandler {
 				return;
 		}
 
-/*	TODO readd with baubles
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
 			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 
@@ -153,7 +156,7 @@ public class CommonEventHandler {
 				if(damageMobCharmInBelt((EntityPlayerMP) player, mobCharmType, baubleStack))
 					return;
 			}
-		}*/
+		}
 	}
 
 	private boolean damageMobCharmInBelt(EntityPlayerMP player, byte mobCharmType, ItemStack slotStack) {
@@ -521,17 +524,15 @@ public class CommonEventHandler {
 				return true;
 		}
 
-/*	TODO readd with baubles
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
 			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 
 			for(int i = 0; i < inventoryBaubles.getSlots(); i++) {
 				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
-				if(baubleStack != null && baubleStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(baubleStack, type))
+				if(!baubleStack.isEmpty() && baubleStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(baubleStack, type))
 					return true;
 			}
 		}
-*/
 
 		return false;
 	}

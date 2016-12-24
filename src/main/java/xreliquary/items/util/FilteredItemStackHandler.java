@@ -213,6 +213,11 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		return stacks.size();
 	}
 
+	@Override
+	public int getSlotLimit(int slot) {
+		return 64;
+	}
+
 	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int slot) {

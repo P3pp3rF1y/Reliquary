@@ -1,4 +1,3 @@
-/* TODO readd with baubles
 package xreliquary.client.render;
 
 import baubles.api.BaublesApi;
@@ -8,7 +7,6 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
@@ -16,19 +14,21 @@ import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 
+import javax.annotation.Nonnull;
+
 public class MobCharmBeltLayerRenderer implements LayerRenderer<EntityPlayer> {
 
 	private static ModelBiped model;
 	private static final ResourceLocation ON_BODY_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/models/armor/mob_charm_belt.png");
 
 	@Override
-	public void doRenderLayer(EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+	public void doRenderLayer(@Nonnull EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
 			IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
 
 			for(int i = 0; i < baubles.getSlots(); i++) {
 				ItemStack bauble = baubles.getStackInSlot(i);
-				if(bauble == null || bauble.getItem() != ModItems.mobCharmBelt)
+				if(bauble.isEmpty() || bauble.getItem() != ModItems.mobCharmBelt)
 					continue;
 
 				GlStateManager.pushMatrix();
@@ -57,4 +57,3 @@ public class MobCharmBeltLayerRenderer implements LayerRenderer<EntityPlayer> {
 		return false;
 	}
 }
-*/

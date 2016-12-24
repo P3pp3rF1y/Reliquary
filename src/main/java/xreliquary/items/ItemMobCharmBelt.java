@@ -1,6 +1,9 @@
 package xreliquary.items;
 
+import baubles.api.BaubleType;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -8,10 +11,12 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 import xreliquary.Reliquary;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
@@ -27,7 +32,6 @@ public class ItemMobCharmBelt extends ItemBauble {
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
-/* TODO readd with baubles
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public BaubleType getBaubleType(ItemStack stack) {
@@ -40,12 +44,11 @@ public class ItemMobCharmBelt extends ItemBauble {
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {
-//	TODO add back if baubles stops triggering this on every GUI open
+/*	TODO add back if baubles stops triggering this on every GUI open
 		if(player.world.isRemote)
 			player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1F, 1F);
-
-	}
 */
+	}
 
 	@Nonnull
 	@Override

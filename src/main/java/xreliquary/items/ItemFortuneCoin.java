@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import baubles.api.BaubleType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -15,6 +16,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
@@ -24,6 +26,7 @@ import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.pedestal.PedestalRegistry;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
@@ -43,15 +46,14 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 		canRepair = false;
 	}
 
-/* TODO readd with baubles
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {
-//	TODO add back if baubles stops triggering this on every GUI open
+/*	TODO add back if baubles stops triggering this on every GUI open
 		if(player.world.isRemote)
 			player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 2.2F));
-	}
 */
+	}
 
 	@Nonnull
 	@Override
@@ -246,7 +248,6 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
-/*	TODO readd with baubles
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public BaubleType getBaubleType(ItemStack stack) {
@@ -258,7 +259,6 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 	public void onWornTick(ItemStack stack, EntityLivingBase player) {
 		this.onUpdate(stack, player.world, player, 0, false);
 	}
-*/
 
 	private boolean disabledAudio() {
 		return Settings.FortuneCoin.disableAudio;
