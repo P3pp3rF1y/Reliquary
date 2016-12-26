@@ -542,7 +542,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 		void updateFullInventory(Container container) {
 
-			for(int slot = 0; slot < container.getInventory().size(); slot++) {
+			for (int slot = 0; slot < container.inventorySlots.size(); slot++) {
 				updateVoidTear(container, slot, container.getSlot(slot).getStack());
 			}
 		}
