@@ -391,7 +391,8 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 				FluidStack waterStack = new FluidStack(FluidRegistry.WATER, 1000);
 				IFluidHandler fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
 				//noinspection ConstantConditions
-				if(!fluidHandler.drain(waterStack, false).equals(waterStack))
+				FluidStack drainedStack = fluidHandler.drain(waterStack, false);
+				if(drainedStack == null || !drainedStack.equals(waterStack))
 					return false;
 
 				if(!player.capabilities.isCreativeMode)
