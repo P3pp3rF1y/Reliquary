@@ -1,4 +1,4 @@
-Reliquary [![Build Status](https://travis-ci.org/P3pp3rF1y/Reliquary.svg?branch=1.11.2-dev)](https://travis-ci.org/P3pp3rF1y/Reliquary/branches)
+Reliquary [![Build Status](https://travis-ci.org/P3pp3rF1y/Reliquary.svg?branch=1.11.2)](https://travis-ci.org/P3pp3rF1y/Reliquary/branches)
 =========
 
 Description
