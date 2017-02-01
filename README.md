@@ -1,4 +1,4 @@
-Reliquary [![Build Status](https://travis-ci.org/P3pp3rF1y/Reliquary.svg?branch=1.10.2-dev)](https://drone.io/github.com/P3pp3rF1y/Reliquary/latest)
+Reliquary [![Build Status](https://travis-ci.org/P3pp3rF1y/Reliquary.svg?branch=1.10.2-dev)](https://travis-ci.org/P3pp3rF1y/Reliquary/branches)
 =========
 
 Description
