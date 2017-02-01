@@ -22,16 +22,12 @@ public class PedestalItems {
 		PedestalRegistry.registerItemWrapper(ItemFishingRod.class, PedestalFishingRodWrapper.class);
 
 		if(Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
-			try {
-				//noinspection unchecked
-				PedestalRegistry.registerItemWrapper((Class<? extends Item>) Class.forName("slimeknights.tconstruct.library.tools.SwordCore"), PedestalMeleeWeaponWrapper.class);
-			}
-			catch(ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-			// TODO add in next iteration with tinkers
+			//TODO readd with TiCon
+			//PedestalRegistry.registerItemWrapper(SwordCore.class, PedestalMeleeWeaponWrapper.class);
+			//PedestalRegistry.registerItemWrapper(Scythe.class, PedestalMeleeWeaponWrapper.class);
+
+			//not implemented currently in TiCon
 			//PedestalRegistry.registerItemWrapper(BattleAxe.class, new PedestalMeleeWeaponWrapper());
-			//PedestalRegistry.registerItemWrapper(Scythe.class, new PedestalMeleeWeaponWrapper());
 		}
 /* TODO readd with blood magic
 		if (Loader.isModLoaded(Compatibility.MOD_ID.BLOOD_MAGIC)) {
