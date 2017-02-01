@@ -52,7 +52,6 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 	private int luckOfTheSeaLevel;
 
 	@SuppressWarnings("unused")
-	@SideOnly(Side.CLIENT)
 	public EntityLyssaHook(World world) {
 		super(world);
 		this.prevPosX = this.posX;
