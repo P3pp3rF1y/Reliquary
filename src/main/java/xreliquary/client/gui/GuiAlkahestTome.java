@@ -19,7 +19,7 @@ public class GuiAlkahestTome extends GuiBase {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int x, int y) {
 		this.drawCenteredPositionedString(this.mc.standardGalacticFontRenderer, "Perform basic,;intermediate or;advanced Alkahestry.", 146, 4, 0);
-		this.drawPositionedString(this.fontRendererObj, "gui.tome.text", 16, 36, 0);
+		this.drawPositionedString(this.fontRenderer, "gui.tome.text", 16, 36, 0);
 	}
 
 	@Override

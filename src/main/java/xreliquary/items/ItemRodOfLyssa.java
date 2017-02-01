@@ -1,7 +1,9 @@
 package xreliquary.items;
 
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
@@ -54,13 +56,19 @@ public class ItemRodOfLyssa extends ItemBase {
 		if(entityId != 0 && world.getEntityByID(entityId) instanceof EntityLyssaHook) {
 			EntityLyssaHook hook = (EntityLyssaHook) world.getEntityByID(entityId);
 			player.swingArm(hand);
+			//noinspection ConstantConditions
 			hook.handleHookRetraction();
 			setHookEntityId(stack, 0);
 		} else {
 			world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
 			if(!world.isRemote) {
-				EntityLyssaHook hook = new EntityLyssaHook(world, player);
+				
+				int lureLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.LURE, stack);
+				int luckOfTheSeaLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.LUCK_OF_THE_SEA, stack);
+				
+				
+				EntityLyssaHook hook = new EntityLyssaHook(world, player, lureLevel, luckOfTheSeaLevel);
 				world.spawnEntity(hook);
 
 				setHookEntityId(stack, hook.getEntityId());

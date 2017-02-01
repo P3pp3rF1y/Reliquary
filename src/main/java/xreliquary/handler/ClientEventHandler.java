@@ -891,7 +891,7 @@ public class ClientEventHandler {
 		}
 
 		GlStateManager.disableLighting();
-		minecraft.fontRendererObj.drawStringWithShadow(Integer.toString(stackSize), hudOverlayX - (leftSide ? 0 : (Integer.toString(stackSize).length() * 6)), hudOverlayY + 29, color);
+		minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize), hudOverlayX - (leftSide ? 0 : (Integer.toString(stackSize).length() * 6)), hudOverlayY + 29, color);
 		GlStateManager.popMatrix();
 		GlStateManager.popMatrix();
 	}

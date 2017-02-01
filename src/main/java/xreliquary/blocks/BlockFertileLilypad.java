@@ -95,8 +95,8 @@ public class BlockFertileLilypad extends BlockBush {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void addCollisionBoxToList(IBlockState state,
-			@Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB mask, @Nonnull List<AxisAlignedBB> list, Entity collidingEntity) {
+	public void addCollisionBoxToList(IBlockState state,@Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB mask, 
+			@Nonnull List<AxisAlignedBB> list, Entity collidingEntity, boolean p_185477_7_) {
 		if(!(collidingEntity instanceof EntityBoat)) {
 			addCollisionBoxToList(pos, mask, list, LILY_PAD_AABB);
 		}

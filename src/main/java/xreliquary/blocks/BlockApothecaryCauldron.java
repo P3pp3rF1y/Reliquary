@@ -21,6 +21,7 @@ import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -59,7 +60,7 @@ public class BlockApothecaryCauldron extends BlockBase {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void addCollisionBoxToList(IBlockState state,
-			@Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB mask, @Nonnull List<AxisAlignedBB> list, Entity collisionEntity) {
+			@Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB mask, @Nonnull List<AxisAlignedBB> list, Entity collisionEntity, boolean p_185477_7_) {
 		addCollisionBoxToList(pos, mask, list, AABB_LEGS);
 		addCollisionBoxToList(pos, mask, list, AABB_WALL_WEST);
 		addCollisionBoxToList(pos, mask, list, AABB_WALL_NORTH);

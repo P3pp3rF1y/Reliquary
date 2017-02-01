@@ -5,7 +5,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
@@ -49,6 +48,8 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 	private float fishApproachAngle;
 	private Entity caughtEntity;
 	private State currentState = State.FLYING;
+	private int lureLevel;
+	private int luckOfTheSeaLevel;
 
 	@SuppressWarnings("unused")
 	@SideOnly(Side.CLIENT)
@@ -59,8 +60,10 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 		this.prevPosZ = this.posZ;
 	}
 
-	public EntityLyssaHook(World worldIn, EntityPlayer fishingPlayer) {
+	public EntityLyssaHook(World worldIn, EntityPlayer fishingPlayer, int lureLevel, int luckOfTheSeaLevel) {
 		super(worldIn);
+		this.lureLevel = lureLevel;
+		this.luckOfTheSeaLevel = luckOfTheSeaLevel;
 		this.init(fishingPlayer);
 		this.shoot();
 
@@ -382,7 +385,7 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 			}
 		} else {
 			this.ticksCaughtDelay = MathHelper.getInt(this.rand, 100, 600);
-			this.ticksCaughtDelay -= EnchantmentHelper.getLureModifier(this.angler) * 20 * 5;
+			this.ticksCaughtDelay -= lureLevel * 20 * 5;
 		}
 	}
 
@@ -466,7 +469,7 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 				i = this.caughtEntity instanceof EntityItem ? 3 : 5;
 			} else if(this.ticksCatchable > 0) {
 				LootContext.Builder lootcontext$builder = new LootContext.Builder((WorldServer) this.world);
-				lootcontext$builder.withLuck((float) EnchantmentHelper.getLuckOfSeaModifier(this.angler) + this.angler.getLuck());
+				lootcontext$builder.withLuck((float) luckOfTheSeaLevel + this.angler.getLuck());
 
 				for(ItemStack itemstack : this.world.getLootTableManager().getLootTableFromLocation(LootTableList.GAMEPLAY_FISHING).generateLootForPools(this.rand, lootcontext$builder.build())) {
 					EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY, this.posZ, itemstack);

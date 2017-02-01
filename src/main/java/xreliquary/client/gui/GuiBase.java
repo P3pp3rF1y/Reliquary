@@ -81,7 +81,7 @@ abstract class GuiBase extends GuiContainer {
 	void drawItemStack(ItemStack stack, int x, int y) {
 		FontRenderer fr = stack.getItem().getFontRenderer(stack);
 		if(fr == null)
-			fr = fontRendererObj;
+			fr = fontRenderer;
 
 		GlStateManager.disableLighting();
 		this.zLevel = 200.0F;

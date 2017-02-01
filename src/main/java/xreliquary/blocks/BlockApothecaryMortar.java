@@ -41,7 +41,7 @@ public class BlockApothecaryMortar extends BlockBase {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void addCollisionBoxToList(IBlockState state,
-			@Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB mask, @Nonnull List list, Entity collidingEntity) {
+			@Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB mask, @Nonnull List list, Entity collidingEntity, boolean p_185477_7_) {
 		//noinspection unchecked
 		addCollisionBoxToList(pos, mask, list, MORTAR_AABB);
 	}
