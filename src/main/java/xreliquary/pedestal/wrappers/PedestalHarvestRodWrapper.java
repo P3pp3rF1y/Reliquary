@@ -212,9 +212,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 					if(block instanceof IPlantable || block instanceof BlockCrops || block == Blocks.MELON_BLOCK || block == Blocks.PUMPKIN) {
 						if(block instanceof BlockFertileLilypad || block == Blocks.PUMPKIN_STEM || block == Blocks.MELON_STEM)
 							continue;
-						if(block instanceof BlockBeetroot && state.getValue(BlockBeetroot.BEETROOT_AGE) < 3)
-							continue;
-						if(!(block instanceof BlockBeetroot) && block instanceof BlockCrops && state.getValue(BlockCrops.AGE) < 7)
+						if(block instanceof BlockCrops && ((BlockCrops) block).canGrow(world, pos, state, false))
 							continue;
 						if(block instanceof BlockNetherWart && state.getValue(BlockNetherWart.AGE) < 3)
 							continue;
