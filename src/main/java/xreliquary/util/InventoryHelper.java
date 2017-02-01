@@ -277,8 +277,11 @@ public class InventoryHelper {
 		if(inventory.getStackInSlot(0) != null)
 			return false;
 
+		ItemStack stack = player.getHeldItem(hand).copy();
+		stack.stackSize = 1;
+
 		//noinspection ConstantConditions
-		inventory.setInventorySlotContents(0, player.getHeldItem(hand).copy());
+		inventory.setInventorySlotContents(0, stack);
 
 		player.getHeldItem(hand).stackSize--;
 

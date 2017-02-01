@@ -46,7 +46,7 @@ repositories {
     }
     ivy {
         name "Botania"
-        artifactPattern "http://botaniamod.net/files/deobf/[module] r[revision]-deobf.[ext]"
+        artifactPattern "http://botaniamod.net/files/[module] r[revision].[ext]"
     }
 }
 
@@ -136,7 +136,7 @@ bintray {
     }
     pkg {
         version {
-            name = "${mod_version}"
+            name = "${getBuildNumber()}"
             released = new Date()
         }
         repo = 'maven'
