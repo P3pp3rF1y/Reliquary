@@ -136,7 +136,7 @@ bintray {
     }
     pkg {
         version {
-            name = "${getBuildNumber()}"
+            name = "${project.version}"
             released = new Date()
         }
         repo = 'maven'
