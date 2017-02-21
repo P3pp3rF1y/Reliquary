@@ -57,7 +57,7 @@ public class AlkahestryCraftingRecipeCategory extends BlankRecipeCategory<Alkahe
 		ItemStack input = ingredientsInputs.get(0).get(0);
 		ItemStack tome = ingredientsInputs.get(1).get(0);
 		ItemStack output = ingredients.getOutputs(ItemStack.class).get(0).get(0);
-		ItemStack tomeOutput = ingredients.getOutputs(ItemStack.class).get(0).get(1);
+		ItemStack tomeOutput = ingredients.getOutputs(ItemStack.class).get(1).get(0);
 
 		recipeLayout.getItemStacks().set(INPUT_SLOT, input);
 		recipeLayout.getItemStacks().set(TOME_SLOT, tome);
