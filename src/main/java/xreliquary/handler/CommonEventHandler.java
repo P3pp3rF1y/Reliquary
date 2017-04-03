@@ -327,8 +327,14 @@ public class CommonEventHandler {
 		// check
 		handlePhoenixDownCheck(player, event);
 		handleAngelheartVialCheck(player, event);
+		handleWitherlessRose(player, event);
 		if(event.isCanceled())
 			event.setResult(null);
+	}
+
+	private void handleWitherlessRose(EntityPlayer player, LivingAttackEvent event) {
+		if(event.getSource() == DamageSource.wither && playerHasItem(player, ModItems.witherlessRose, false))
+			event.setCanceled(true);
 	}
 
 	private void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {
