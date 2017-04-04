@@ -8,6 +8,8 @@ import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -36,6 +38,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemToggleable;
@@ -46,6 +49,7 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.XRFakePlayerFactory;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -190,14 +194,39 @@ public class CommonEventHandler {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SLIME_META);
 		} else if(entity instanceof EntityEnderman) {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ENDERMAN_META);
+		} else if(entity instanceof EntityPigZombie) {
+			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ZOMBIE_PIGMAN_META);
 		}
 
 		if(resetTarget) {
 			entity.setAttackTarget(null);
 			entity.setRevengeTarget(null);
-		}
+			if(entity instanceof EntityPigZombie) {
+				//need to reset ai task because it doesn't get reset with setAttackTarget or setRevengeTarget and keeps player as target
+				for (EntityAITasks.EntityAITaskEntry aiTask : entity.targetTasks.taskEntries) {
+					if (aiTask.action instanceof EntityAIHurtByTarget) {
+						aiTask.action.resetTask();
+						break;
+					}
+				}
 
+				//also need to reset anger target because apparently setRevengeTarget doesn't set this to null
+				resetAngerTarget((EntityPigZombie) entity);
+			}
+		}
 	}
+
+	private static final Field SET_ANGER_TARGET = ReflectionHelper.findField(EntityPigZombie.class, "field_175459_bn", "angerTargetUUID");
+
+	private void resetAngerTarget(EntityPigZombie zombiePigman) {
+		try {
+			SET_ANGER_TARGET.set(zombiePigman, null);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+
+
 	//TODO figure out if this needs to be added for serpent staff
 	//
 	//    @SubscribeEvent
@@ -222,9 +251,7 @@ public class CommonEventHandler {
 		boolean resetTarget = false;
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
-		if(entity instanceof EntityPigZombie) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ZOMBIE_PIGMAN_META);
-		} else if(entity instanceof EntityZombie) {
+		if(entity instanceof EntityZombie) {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ZOMBIE_META);
 		} else if(entity instanceof EntityWitherSkeleton) {
 			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.WITHER_SKELETON_META);
@@ -291,8 +318,14 @@ public class CommonEventHandler {
 		// check
 		handlePhoenixDownCheck(player, event);
 		handleAngelheartVialCheck(player, event);
+		handleWitherlessRose(player, event);
 		if(event.isCanceled())
 			event.setResult(null);
+	}
+
+	private void handleWitherlessRose(EntityPlayer player, LivingAttackEvent event) {
+		if(event.getSource() == DamageSource.wither && playerHasItem(player, ModItems.witherlessRose, false))
+			event.setCanceled(true);
 	}
 
 	private void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {

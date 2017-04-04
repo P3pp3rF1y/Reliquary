@@ -28,7 +28,7 @@ xreliquary.tile.apothecary_mortar.tooltip=Used to grind ingredients;into potion 
 xreliquary.tile.pedestal.name=Pedestal
 xreliquary.tile.pedestal.tooltip=Automates stuff and things placed in it
 xreliquary.tile.pedestal_passive.name=Pedestal (Display only)
-xreliquary.tile.pedestal_passive.name=Used as a fancy display of items
+xreliquary.tile.pedestal_passive.tooltip=Used as a fancy display of items
 
 xreliquary.item.attraction_potion.name=Aphrodite's Serum
 xreliquary.item.attraction_potion.tooltip=Makes animals mate.

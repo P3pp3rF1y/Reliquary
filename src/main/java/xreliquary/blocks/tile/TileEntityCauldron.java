@@ -258,6 +258,10 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	private boolean isItemValidForInput(ItemStack ist) {
 		if(ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null)
 			return true;
+
+		if(potionEssence == null)
+			return false;
+
 		if(ist.getItem() == Items.GUNPOWDER && !this.hasGunpowder)
 			return true;
 		if(ist.getItem() == Items.GLOWSTONE_DUST && this.glowstoneCount < getGlowstoneAmpLimit())
