@@ -324,7 +324,7 @@ public class CommonEventHandler {
 	}
 
 	private void handleWitherlessRose(EntityPlayer player, LivingAttackEvent event) {
-		if(event.getSource() == DamageSource.wither && playerHasItem(player, ModItems.witherlessRose, false))
+		if(event.getSource() == DamageSource.WITHER && playerHasItem(player, ModItems.witherlessRose, false))
 			event.setCanceled(true);
 	}
 
