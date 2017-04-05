@@ -2,7 +2,6 @@ package xreliquary.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import slimeknights.mantle.client.CreativeTab;
 import xreliquary.Reliquary;
 
 public class BlockBase extends Block {
