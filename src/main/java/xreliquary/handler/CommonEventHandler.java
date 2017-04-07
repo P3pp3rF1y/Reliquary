@@ -1,16 +1,11 @@
 package xreliquary.handler;
 
-import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAITasks;
-import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Enchantments;
@@ -25,31 +20,22 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemToggleable;
-import xreliquary.network.PacketHandler;
-import xreliquary.network.PacketMobCharmDamage;
-import xreliquary.reference.Compatibility;
-import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.XRFakePlayerFactory;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -104,127 +90,13 @@ public class CommonEventHandler {
 	public void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
 		doTwilightCloakCheck(event);
 		//doPacifiedDebuffCheck(event);
-		doMobCharmCheckOnSetTarget(event);
 	}
 
 	@SubscribeEvent
 	public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
 		doTwilightCloakCheck(event);
-		doMobCharmCheckOnUpdate(event);
 	}
 
-	@SubscribeEvent
-	public void onLivingDeath(LivingDeathEvent event) {
-		if(event.getSource() == null || event.getSource().getEntity() == null || !(event.getSource().getEntity() instanceof EntityPlayer))
-			return;
-
-		EntityPlayer player = (EntityPlayer) event.getSource().getEntity();
-
-		damagePlayersMobCharm(player, event.getEntity());
-	}
-
-	private void damagePlayersMobCharm(EntityPlayer player, Entity entity) {
-		if(player.capabilities.isCreativeMode)
-			return;
-
-		byte mobCharmType = ModItems.mobCharm.getMobCharmTypeForEntity(entity);
-
-		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
-			ItemStack stack = player.inventory.mainInventory.get(slot);
-
-			if(stack.isEmpty())
-				continue;
-			if(stack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(stack) == mobCharmType) {
-				if(stack.getItemDamage() + Settings.MobCharm.damagePerKill > stack.getMaxDamage()) {
-					player.inventory.mainInventory.set(slot, ItemStack.EMPTY);
-					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, stack.getMaxDamage() + 1, slot), (EntityPlayerMP) player);
-				} else {
-					stack.setItemDamage(stack.getItemDamage() + Settings.MobCharm.damagePerKill);
-					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, stack.getItemDamage(), slot), (EntityPlayerMP) player);
-				}
-				return;
-			}
-			if(damageMobCharmInBelt((EntityPlayerMP) player, mobCharmType, stack))
-				return;
-		}
-
-		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
-			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
-
-			for(int i = 0; i < inventoryBaubles.getSlots(); i++) {
-				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
-
-				if(baubleStack.isEmpty())
-					continue;
-
-				if(damageMobCharmInBelt((EntityPlayerMP) player, mobCharmType, baubleStack))
-					return;
-			}
-		}
-	}
-
-	private boolean damageMobCharmInBelt(EntityPlayerMP player, byte mobCharmType, ItemStack slotStack) {
-		if(slotStack.getItem() == ModItems.mobCharmBelt) {
-			int damage = ModItems.mobCharmBelt.damageCharmType(slotStack, mobCharmType);
-
-			if(damage > -1) {
-				PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, damage, -mobCharmType), player);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private void doMobCharmCheckOnUpdate(LivingEvent event) {
-		if(!(event.getEntity() instanceof EntityLiving))
-			return;
-		EntityLiving entity = (EntityLiving) event.getEntity();
-
-		if(entity.getAttackTarget() == null || !(entity.getAttackTarget() instanceof EntityPlayer) || entity.getAttackTarget() instanceof FakePlayer)
-			return;
-
-		EntityPlayer player = (EntityPlayer) entity.getAttackTarget();
-		boolean resetTarget = false;
-
-		if(entity instanceof EntityGhast) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.GHAST_META);
-		} else if(entity instanceof EntityMagmaCube) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.MAGMA_CUBE_META);
-		} else if(entity instanceof EntitySlime) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SLIME_META);
-		} else if(entity instanceof EntityEnderman) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ENDERMAN_META);
-		} else if(entity instanceof EntityPigZombie) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ZOMBIE_PIGMAN_META);
-		}
-
-		if(resetTarget) {
-			entity.setAttackTarget(null);
-			entity.setRevengeTarget(null);
-			if(entity instanceof EntityPigZombie) {
-				//need to reset ai task because it doesn't get reset with setAttackTarget or setRevengeTarget and keeps player as target
-				for (EntityAITasks.EntityAITaskEntry aiTask : entity.targetTasks.taskEntries) {
-					if (aiTask.action instanceof EntityAIHurtByTarget) {
-						aiTask.action.resetTask();
-						break;
-					}
-				}
-
-				//also need to reset anger target because apparently setRevengeTarget doesn't set this to null
-				resetAngerTarget((EntityPigZombie) entity);
-			}
-		}
-	}
-
-	private static final Field SET_ANGER_TARGET = ReflectionHelper.findField(EntityPigZombie.class, "field_175459_bn", "angerTargetUUID");
-
-	private void resetAngerTarget(EntityPigZombie zombiePigman) {
-		try {
-			SET_ANGER_TARGET.set(zombiePigman, null);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-	}
 
 
 	//TODO figure out if this needs to be added for serpent staff
@@ -238,52 +110,6 @@ public class CommonEventHandler {
 	//            return;
 	//        }
 	//    }
-
-	private void doMobCharmCheckOnSetTarget(LivingSetAttackTargetEvent event) {
-		if(event.getTarget() == null)
-			return;
-		if(!(event.getTarget() instanceof EntityPlayer) || event.getTarget() instanceof FakePlayer)
-			return;
-		if(!(event.getEntity() instanceof EntityLiving))
-			return;
-
-		EntityPlayer player = (EntityPlayer) event.getTarget();
-		boolean resetTarget = false;
-		EntityLiving entity = (EntityLiving) event.getEntity();
-
-		if(entity instanceof EntityZombie) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ZOMBIE_META);
-		} else if(entity instanceof EntityWitherSkeleton) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.WITHER_SKELETON_META);
-		} else if(entity instanceof EntitySkeleton || entity instanceof EntityStray) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SKELETON_META);
-		} else if(entity instanceof EntityCreeper) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.CREEPER_META);
-		} else if(entity instanceof EntityWitch) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.WITCH_META);
-		} else if(entity instanceof EntityCaveSpider) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.CAVE_SPIDER_META);
-		} else if(entity instanceof EntitySpider) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SPIDER_META);
-		} else if(entity instanceof EntityEnderman) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.ENDERMAN_META);
-		} else if(entity instanceof EntityBlaze) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.BLAZE_META);
-		} else if(entity instanceof EntityGhast) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.GHAST_META);
-		} else if(entity instanceof EntityMagmaCube) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.MAGMA_CUBE_META);
-		} else if(entity instanceof EntitySlime) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.SLIME_META);
-		} else if(entity instanceof EntityGuardian) {
-			resetTarget = playerHasMobCharm(player, Reference.MOB_CHARM.GUARDIAN_META);
-		}
-
-		if(resetTarget) {
-			entity.setAttackTarget(null);
-			entity.setRevengeTarget(null);
-		}
-	}
 
 	private void doTwilightCloakCheck(LivingEvent event) {
 		if(event.getEntity() instanceof EntityLiving) {
@@ -543,30 +369,6 @@ public class CommonEventHandler {
 				return true;
 			}
 		}
-		return false;
-	}
-
-	private boolean playerHasMobCharm(EntityPlayer player, byte type) {
-
-		for(ItemStack slotStack : player.inventory.mainInventory) {
-			if(slotStack.isEmpty())
-				continue;
-			if(slotStack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(slotStack) == type)
-				return true;
-			if(slotStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(slotStack, type))
-				return true;
-		}
-
-		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
-			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
-
-			for(int i = 0; i < inventoryBaubles.getSlots(); i++) {
-				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
-				if(!baubleStack.isEmpty() && baubleStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(baubleStack, type))
-					return true;
-			}
-		}
-
 		return false;
 	}
 
