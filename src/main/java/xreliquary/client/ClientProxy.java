@@ -37,6 +37,7 @@ import xreliquary.entities.shot.*;
 import xreliquary.handler.ClientEventHandler;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
+import xreliquary.items.ItemFortuneCoin;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -179,6 +180,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new ModFluids());
 		MinecraftForge.EVENT_BUS.register(new ItemModels());
 		this.registerRenderers();
+		ClientRegistry.registerKeyBinding(ItemFortuneCoin.TOGGLE_KEYBIND);
 	}
 
 	@Override
