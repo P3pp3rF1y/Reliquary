@@ -678,6 +678,9 @@ xreliquary.waila.xreliquary.altar.active=Active
 xreliquary.waila.xreliquary.altar.time_remaining=Time remaining: %s
 xreliquary.waila.xreliquary.shift_for_more=Hold shift for more info
 
+xreliquary.keybind.category=Reliquary
+xreliquary.keybind.fortune_coin=Enable/Disable Fortune Coin
+
 potion.potency.3=IV
 potion.potency.4=V
 potion.potency.5=VI

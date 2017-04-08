@@ -20,6 +20,8 @@ public class PacketFortuneCoinTogglePressed implements IMessage, IMessageHandler
 	private InventoryType inventoryType;
 	private int slot;
 
+	public PacketFortuneCoinTogglePressed() {}
+
 	public PacketFortuneCoinTogglePressed(InventoryType inventoryType, int slot) {
 		this.inventoryType = inventoryType;
 		this.slot = slot;
@@ -38,7 +40,6 @@ public class PacketFortuneCoinTogglePressed implements IMessage, IMessageHandler
 	}
 
 	@Override
-	@SideOnly(Side.SERVER)
 	public IMessage onMessage(PacketFortuneCoinTogglePressed message, MessageContext ctx) {
 		((WorldServer) ctx.getServerHandler().player.world).addScheduledTask(() -> handleMessage(message, ctx.getServerHandler().player));
 
