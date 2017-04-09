@@ -4,7 +4,6 @@ import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -27,11 +26,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
 import xreliquary.blocks.tile.TileEntityPedestal;
+import xreliquary.client.ClientProxy;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.network.PacketFortuneCoinTogglePressed;
@@ -336,13 +335,11 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 		NBTHelper.setBoolean("enabled", stack, !isEnabled(stack));
 	}
 
-	public static final KeyBinding TOGGLE_KEYBIND = new KeyBinding("xreliquary.keybind.fortune_coin", Keyboard.KEY_NONE, "xreliquary.keybind.category");
-
 	/* EVENT HANDLING */
 	@SubscribeEvent
 	@SideOnly (Side.CLIENT)
 	public void handleKeyInputEvent(TickEvent.ClientTickEvent event) {
-		if(TOGGLE_KEYBIND.isPressed()) {
+		if(ClientProxy.FORTUNE_COIN_TOGGLE_KEYBIND.isPressed()) {
 			EntityPlayer player = Minecraft.getMinecraft().player;
 			for (int slot=0; slot < player.inventory.mainInventory.size(); slot++) {
 				ItemStack stack = player.inventory.mainInventory.get(slot);
