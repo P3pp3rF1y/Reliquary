@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSnowball;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishingRod;
@@ -17,6 +18,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.blocks.tile.TileEntityPedestal;
@@ -53,6 +55,8 @@ import java.util.Map;
 //TODO refactor proxy so that it has functionally named methods that get called from main mod class
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
+
+	public static final KeyBinding FORTUNE_COIN_TOGGLE_KEYBIND = new KeyBinding("xreliquary.keybind.fortune_coin", Keyboard.KEY_NONE, "xreliquary.keybind.category");
 
 	@Override
 	public void registerJEI(Block block, String name, boolean oneDescription) {
@@ -179,6 +183,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new ModFluids());
 		MinecraftForge.EVENT_BUS.register(new ItemModels());
 		this.registerRenderers();
+		ClientRegistry.registerKeyBinding(FORTUNE_COIN_TOGGLE_KEYBIND);
 	}
 
 	@Override

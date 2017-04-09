@@ -4,6 +4,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityTameable;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -79,7 +80,10 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 		//don't want players to use this to kill bosses
 		if(!entityToAttack.isNonBoss())
 			return false;
-		
+
+		if(entityToAttack instanceof EntityVillager)
+			return false;
+
 		if(entityToAttack instanceof EntityAnimal && entityToAttack.isChild())
 			return false;
 		

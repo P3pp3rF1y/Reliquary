@@ -1,6 +1,9 @@
 package xreliquary.items;
 
 import baubles.api.BaubleType;
+import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -15,16 +18,23 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
 import xreliquary.blocks.tile.TileEntityPedestal;
+import xreliquary.client.ClientProxy;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
+import xreliquary.network.PacketFortuneCoinTogglePressed;
+import xreliquary.network.PacketHandler;
 import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
@@ -44,6 +54,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		canRepair = false;
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -241,7 +252,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 			if(!disabledAudio()) {
 				NBTHelper.setShort("soundTimer", stack, 6);
 			}
-			NBTHelper.setBoolean("enabled", stack, !isEnabled(stack));
+			toggle(stack);
 		} else {
 			player.setActiveHand(hand);
 		}
@@ -318,5 +329,45 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 
 	@Override
 	public void stop(@Nonnull ItemStack stack, IPedestal pedestal) {
+	}
+
+	public void toggle(ItemStack stack) {
+		NBTHelper.setBoolean("enabled", stack, !isEnabled(stack));
+	}
+
+	/* EVENT HANDLING */
+	@SubscribeEvent
+	@SideOnly (Side.CLIENT)
+	public void handleKeyInputEvent(TickEvent.ClientTickEvent event) {
+		if(ClientProxy.FORTUNE_COIN_TOGGLE_KEYBIND.isPressed()) {
+			EntityPlayer player = Minecraft.getMinecraft().player;
+			for (int slot=0; slot < player.inventory.mainInventory.size(); slot++) {
+				ItemStack stack = player.inventory.mainInventory.get(slot);
+				if(stack.getItem() == this) {
+					PacketHandler.networkWrapper.sendToServer(new PacketFortuneCoinTogglePressed(PacketFortuneCoinTogglePressed.InventoryType.MAIN, slot));
+
+					toggle(stack);
+					return;
+				}
+			}
+			if(player.inventory.offHandInventory.get(0).getItem() == this) {
+				PacketHandler.networkWrapper.sendToServer(new PacketFortuneCoinTogglePressed(PacketFortuneCoinTogglePressed.InventoryType.OFF_HAND, 0));
+				toggle(player.inventory.offHandInventory.get(0));
+				return;
+			}
+
+			if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
+				IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
+
+				for(int slot = 0; slot < inventoryBaubles.getSlots(); slot++) {
+					ItemStack baubleStack = inventoryBaubles.getStackInSlot(slot);
+
+					if (baubleStack.getItem() == this) {
+						PacketHandler.networkWrapper.sendToServer(new PacketFortuneCoinTogglePressed(PacketFortuneCoinTogglePressed.InventoryType.BAUBLES, slot));
+						return;
+					}
+				}
+			}
+		}
 	}
 }

@@ -6,6 +6,7 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
@@ -28,12 +29,14 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnData {
@@ -574,7 +577,7 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 
 	public int handleHookRetraction() {
 		if(!this.world.isRemote) {
-			if(this.caughtEntity != null && this.getAngler().isSneaking() && this.caughtEntity instanceof EntityLivingBase) {
+			if(this.caughtEntity != null && this.getAngler().isSneaking() && this.caughtEntity instanceof EntityLiving) {
 				stealFromLivingEntity();
 				this.setDead();
 			} else {
@@ -603,50 +606,68 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 	}
 
 	private void stealFromLivingEntity() {
-		EntityLivingBase livingBase = (EntityLivingBase) this.caughtEntity;
-		if(!(livingBase instanceof EntityPlayer)) {
-			EntityEquipmentSlot slotBeingStolenFrom = EntityEquipmentSlot.values()[world.rand.nextInt(EntityEquipmentSlot.values().length)];
+		EntityLiving livingEntity = (EntityLiving) this.caughtEntity;
+		EntityEquipmentSlot slotBeingStolenFrom = EntityEquipmentSlot.values()[world.rand.nextInt(EntityEquipmentSlot.values().length)];
 
-			ItemStack stolenStack = livingBase.getItemStackFromSlot(slotBeingStolenFrom);
-			if(stolenStack.isEmpty() && Settings.RodOfLyssa.stealFromVacantSlots) {
-				for(EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
-					stolenStack = livingBase.getItemStackFromSlot(slot);
-					if(!stolenStack.isEmpty()) {
-						slotBeingStolenFrom = slot;
-						break;
-					}
+		ItemStack stolenStack = livingEntity.getItemStackFromSlot(slotBeingStolenFrom);
+		if(stolenStack.isEmpty() && Settings.RodOfLyssa.stealFromVacantSlots) {
+			for(EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+				stolenStack = livingEntity.getItemStackFromSlot(slot);
+				if(!stolenStack.isEmpty() && canDropFromSlot(livingEntity, slot)) {
+					slotBeingStolenFrom = slot;
+					break;
 				}
 			}
+		}
 
-			float failProbabilityFactor;
+		float failProbabilityFactor;
 
-			if(Settings.RodOfLyssa.useLeveledFailureRate)
-				failProbabilityFactor = 1F / ((float) Math.sqrt((double) Math.max(1, Math.min(getAngler().experienceLevel, Settings.RodOfLyssa.levelCapForLeveledFormula))) * 2);
-			else
-				failProbabilityFactor = Settings.RodOfLyssa.flatStealFailurePercentRate / 100F;
+		if(Settings.RodOfLyssa.useLeveledFailureRate)
+			failProbabilityFactor = 1F / ((float) Math.sqrt((double) Math.max(1, Math.min(getAngler().experienceLevel, Settings.RodOfLyssa.levelCapForLeveledFormula))) * 2);
+		else
+			failProbabilityFactor = Settings.RodOfLyssa.flatStealFailurePercentRate / 100F;
 
-			if(rand.nextFloat() <= failProbabilityFactor || (stolenStack.isEmpty() && Settings.RodOfLyssa.failStealFromVacantSlots)) {
-				if(Settings.RodOfLyssa.angerOnStealFailure)
-					livingBase.attackEntityFrom(DamageSource.causePlayerDamage(this.getAngler()), 0.0F);
-			}
-			if(!stolenStack.isEmpty()) {
-				int randomItemDamage = world.rand.nextInt(3);
-				stolenStack.damageItem(randomItemDamage, livingBase);
-				EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY, this.posZ, stolenStack);
-				double d1 = this.getAngler().posX - this.posX;
-				double d3 = this.getAngler().posY - this.posY;
-				double d5 = this.getAngler().posZ - this.posZ;
-				double d7 = (double) MathHelper.sqrt(d1 * d1 + d3 * d3 + d5 * d5);
-				double d9 = 0.1D;
-				entityitem.motionX = d1 * d9;
-				entityitem.motionY = d3 * d9 + (double) MathHelper.sqrt(d7) * 0.08D;
-				entityitem.motionZ = d5 * d9;
-				this.world.spawnEntity(entityitem);
+		if(rand.nextFloat() <= failProbabilityFactor || (stolenStack.isEmpty() && Settings.RodOfLyssa.failStealFromVacantSlots)) {
+			if(Settings.RodOfLyssa.angerOnStealFailure)
+				livingEntity.attackEntityFrom(DamageSource.causePlayerDamage(this.getAngler()), 0.0F);
+		}
+		if(!stolenStack.isEmpty()) {
+			int randomItemDamage = world.rand.nextInt(3);
+			stolenStack.damageItem(randomItemDamage, livingEntity);
+			EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY, this.posZ, stolenStack);
+			entityitem.setPickupDelay(5);
+			double d1 = this.getAngler().posX - this.posX;
+			double d3 = this.getAngler().posY - this.posY;
+			double d5 = this.getAngler().posZ - this.posZ;
+			double d7 = (double) MathHelper.sqrt(d1 * d1 + d3 * d3 + d5 * d5);
+			double d9 = 0.1D;
+			entityitem.motionX = d1 * d9;
+			entityitem.motionY = d3 * d9 + (double) MathHelper.sqrt(d7) * 0.08D;
+			entityitem.motionZ = d5 * d9;
+			this.world.spawnEntity(entityitem);
 
-				livingBase.setItemStackToSlot(slotBeingStolenFrom, ItemStack.EMPTY);
-			}
+			livingEntity.setItemStackToSlot(slotBeingStolenFrom, ItemStack.EMPTY);
 		}
 	}
+
+	private boolean canDropFromSlot(EntityLiving livingEntity, EntityEquipmentSlot slot) {
+		try {
+			if(slot.getSlotType() == EntityEquipmentSlot.Type.HAND) {
+				return float[].class.cast(HANDS_CHANCES.get(livingEntity))[slot.getIndex()] > -1;
+			} else {
+				return float[].class.cast(ARMOR_CHANCES.get(livingEntity))[slot.getIndex()] > -1;
+			}
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	private static Field HANDS_CHANCES = ReflectionHelper.findField(EntityLiving.class, "field_82174_bp", "inventoryHandsDropChances");
+	private static Field ARMOR_CHANCES = ReflectionHelper.findField(EntityLiving.class, "field_184655_bs", "inventoryArmorDropChances");
+
+
 
 	@Override
 	public void writeSpawnData(ByteBuf buffer) {

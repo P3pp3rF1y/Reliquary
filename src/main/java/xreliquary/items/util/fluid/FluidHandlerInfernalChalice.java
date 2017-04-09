@@ -22,6 +22,7 @@ public class FluidHandlerInfernalChalice extends FluidHandlerItemStack {
 
 	@Override
 	protected void setContainerToEmpty() {
+		setFluid(new FluidStack(FluidRegistry.LAVA, 0));
 	}
 
 	@Override
