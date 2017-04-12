@@ -431,19 +431,29 @@ public class XRRecipes {
 	}
 
 	private static void addMobDropUncraftingRecipes() {
-
 		addRecipe(true, new ItemStack(Items.BONE, 5), RIB_BONE);
 		addRecipe(true, new ItemStack(Items.SKULL, 1, 1), WITHER_RIB, WITHER_RIB, WITHER_RIB, new ItemStack(Items.SKULL));
 		addRecipe(true, new ItemStack(Items.ENDER_PEARL, 3), NEBULOUS_HEART);
 		addRecipe(true, new ItemStack(Items.DYE, 6), SQUID_BEAK);
 		addRecipe(true, new ItemStack(Items.STRING, 6), CHELICERAE);
+		addRecipe(true, new ItemStack(Items.SPIDER_EYE, 2), CHELICERAE, CHELICERAE);
 		addRecipe(true, new ItemStack(Items.GUNPOWDER, 6), CREEPER_GLAND);
+		addRecipe(true, new ItemStack(Items.GHAST_TEAR), CREEPER_GLAND, CREEPER_GLAND, CREEPER_GLAND);
 		addRecipe(true, new ItemStack(Items.SLIME_BALL, 6), SLIME_PEARL);
 		addRecipe(true, new ItemStack(Items.ROTTEN_FLESH, 6), ZOMBIE_HEART);
+		addRecipe(true, new ItemStack(Items.GOLD_NUGGET, 6), ZOMBIE_HEART, ZOMBIE_HEART);
 		addRecipe(true, new ItemStack(Items.MAGMA_CREAM, 3), MOLTEN_CORE);
+		addRecipe(true, new ItemStack(Items.BLAZE_ROD, 4), MOLTEN_CORE, MOLTEN_CORE);
 		addRecipe(true, new ItemStack(Items.GUNPOWDER, 10), STORM_EYE);
 		addRecipe(true, new ItemStack(Items.SNOWBALL, 5), FROZEN_CORE);
 		addRecipe(true, new ItemStack(Items.PRISMARINE_SHARD, 5), GUARDIAN_SPIKE);
+		addRecipe(true, new ItemStack(Items.PRISMARINE_CRYSTALS, 10), GUARDIAN_SPIKE, GUARDIAN_SPIKE);
+		addRecipe(false, new ItemStack(Items.GUNPOWDER, 6), "w  ", "w  ", "w  ", 'w', ModItems.witchHat);
+		addRecipe(false, new ItemStack(Items.REDSTONE, 6), " w ", " w ", " w ", 'w', ModItems.witchHat);
+		addRecipe(false, new ItemStack(Items.GLOWSTONE_DUST, 6), "  w", "  w", "  w", 'w', ModItems.witchHat);
+		addRecipe(false, new ItemStack(Items.SUGAR, 6), "www", "   ", "   ", 'w', ModItems.witchHat);
+		addRecipe(false, new ItemStack(Items.GLASS_BOTTLE, 6), "   ", "w w", " w ", 'w', ModItems.witchHat);
+		addRecipe(true, new ItemStack(Items.STICK, 4), ModItems.witchHat);
 	}
 
 	private static final ItemStack EMPTY_VOID_TEAR = new ItemStack(ModItems.emptyVoidTear, 1, 0);
