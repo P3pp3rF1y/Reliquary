@@ -29,5 +29,7 @@ public class PacketHandler {
 		networkWrapper.registerMessage(PacketPedestalFishHook.class, PacketPedestalFishHook.class, idx, Side.CLIENT);
 		idx++;
 		networkWrapper.registerMessage(PacketContainerItemHandlerSync.class, PacketContainerItemHandlerSync.class, idx, Side.CLIENT);
+		idx++;
+		networkWrapper.registerMessage(PacketFortuneCoinTogglePressed.class, PacketFortuneCoinTogglePressed.class, idx, Side.SERVER);
 	}
 }
