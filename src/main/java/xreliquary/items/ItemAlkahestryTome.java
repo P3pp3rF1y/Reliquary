@@ -26,6 +26,7 @@ import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
+import xreliquary.util.alkahestry.AlkahestRecipeType;
 
 import java.util.List;
 import java.util.Map;
@@ -66,12 +67,20 @@ public class ItemAlkahestryTome extends ItemToggleable {
 
 		for(Map.Entry<String, AlkahestChargeRecipe> entry : Settings.AlkahestryTome.chargingRecipes.entrySet()) {
 			AlkahestChargeRecipe recipe = entry.getValue();
-			if(NBTHelper.getInteger("charge", ist) + recipe.charge <= getChargeLimit() && InventoryHelper.consumeItem(recipe.item, player)) {
+			if(NBTHelper.getInteger("charge", ist) + recipe.charge <= getChargeLimit() && consumeItem(recipe, player)) {
 				NBTHelper.setInteger("charge", ist, NBTHelper.getInteger("charge", ist) + recipe.charge);
 			}
 		}
 
 		ist.setItemDamage(ist.getMaxDamage() - NBTHelper.getInteger("charge", ist));
+	}
+
+	private boolean consumeItem(AlkahestChargeRecipe recipe, EntityPlayer player) {
+		if(recipe.type == AlkahestRecipeType.OREDICT) {
+			return InventoryHelper.consumeOreDictItem(recipe.name, player);
+		} else {
+			return InventoryHelper.consumeItem(recipe.name, recipe.meta, recipe.type == AlkahestRecipeType.WILDCARD, player);
+		}
 	}
 
 	@Override

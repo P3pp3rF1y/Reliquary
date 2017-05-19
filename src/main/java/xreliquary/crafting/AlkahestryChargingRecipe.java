@@ -9,6 +9,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
+import xreliquary.util.alkahestry.Alkahestry;
 
 import java.util.Map;
 
@@ -18,7 +19,6 @@ public class AlkahestryChargingRecipe implements IRecipe {
 	public boolean matches(InventoryCrafting inv, World world) {
 		ItemStack tome = null;
 		int amount = 0;
-		int valid = 0;
 
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
@@ -26,25 +26,18 @@ public class AlkahestryChargingRecipe implements IRecipe {
 				if(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome))) {
 					tome = stack.copy();
 				} else {
-					boolean isChargingItem = false;
-					for(Map.Entry<String, AlkahestChargeRecipe> entry : Settings.AlkahestryTome.chargingRecipes.entrySet()) {
-						AlkahestChargeRecipe recipe = entry.getValue();
-						if(stack.getItem() == recipe.item.getItem() && stack.getMetadata() == recipe.item.getMetadata()) {
-							if(valid == 0)
-								valid = 1;
-							amount += recipe.charge;
-							isChargingItem = true;
-							break;
-						}
-					}
+					AlkahestChargeRecipe recipe = Alkahestry.matchChargeRecipe(stack);
 
-					if(!isChargingItem) {
-						valid = 2;
+					if(recipe != null) {
+						amount += recipe.charge;
+					} else {
+						return false;
 					}
 				}
 			}
 		}
-		return tome != null && valid == 1 && NBTHelper.getInteger("charge", tome) + amount <= Settings.AlkahestryTome.chargeLimit;
+
+		return tome != null && NBTHelper.getInteger("charge", tome) + amount <= Settings.AlkahestryTome.chargeLimit;
 	}
 
 	@Override
@@ -57,12 +50,9 @@ public class AlkahestryChargingRecipe implements IRecipe {
 				if(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome))) {
 					tome = stack.copy();
 				} else {
-					for(Map.Entry<String, AlkahestChargeRecipe> entry : Settings.AlkahestryTome.chargingRecipes.entrySet()) {
-						AlkahestChargeRecipe recipe = entry.getValue();
-						if(stack.getItem() == recipe.item.getItem() && stack.getMetadata() == recipe.item.getMetadata()) {
-							amount += recipe.charge;
-							break;
-						}
+					AlkahestChargeRecipe recipe = Alkahestry.matchChargeRecipe(stack);
+					if(recipe != null) {
+						amount += recipe.charge;
 					}
 				}
 			}

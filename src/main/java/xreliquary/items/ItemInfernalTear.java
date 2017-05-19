@@ -26,6 +26,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
+import xreliquary.util.alkahestry.Alkahestry;
 
 import java.util.List;
 
@@ -49,21 +50,28 @@ public class ItemInfernalTear extends ItemToggleable {
 		String ident = ist.getTagCompound().getString("itemID");
 
 		if(ident.isEmpty()) {
-			NBTTagCompound tag = ist.getTagCompound();
-			tag.removeTag("itemID");
-			tag.removeTag("enabled");
+			resetTear(ist);
 			return;
 		}
 
-		if(Settings.AlkahestryTome.craftingRecipes.containsKey(ident)) {
-			AlkahestCraftRecipe recipe = Settings.AlkahestryTome.craftingRecipes.get(ident);
-			// You need above Cobblestone level to get XP.
-			if(!(recipe.yield == 32 && recipe.cost == 4)) {
-				if(InventoryHelper.consumeItem(this.getStackFromTear(ist), player)) {
-					player.addExperience((int) (Math.ceil((((double) recipe.cost) / (double) recipe.yield) / 256d * 500d)));
-				}
+		AlkahestCraftRecipe recipe = Alkahestry.matchCraftRecipe(getStackFromTear(ist));
+		if(recipe == null) {
+			resetTear(ist);
+			return;
+		}
+
+		// You need above Cobblestone level to get XP.
+		if(!(recipe.yield == 32 && recipe.cost == 4)) {
+			if(InventoryHelper.consumeItem(this.getStackFromTear(ist), player)) {
+				player.addExperience((int) (Math.ceil((((double) recipe.cost) / (double) recipe.yield) / 256d * 500d)));
 			}
 		}
+	}
+
+	private void resetTear(ItemStack ist) {
+		NBTTagCompound tag = ist.getTagCompound();
+		tag.removeTag("itemID");
+		tag.removeTag("enabled");
 	}
 
 	@Override
@@ -186,10 +194,8 @@ public class ItemInfernalTear extends ItemToggleable {
 			if(stack.getTagCompound() != null) {
 				continue;
 			}
-			String key = RegistryHelper.getItemRegistryName(stack.getItem()) + (stack.getItem().getHasSubtypes() ? "|" + stack.getMetadata() : "");
-			if(!Settings.AlkahestryTome.craftingRecipes.containsKey(key)) {
+			if(Alkahestry.matchCraftRecipe(stack) == null)
 				continue;
-			}
 			if(InventoryHelper.getItemQuantity(stack, inventory) > itemQuantity) {
 				itemQuantity = InventoryHelper.getItemQuantity(stack, inventory);
 				targetItem = stack.copy();
