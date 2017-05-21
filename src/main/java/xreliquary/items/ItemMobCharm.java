@@ -176,7 +176,7 @@ public class ItemMobCharm extends ItemBase {
 	}
 
 	@SubscribeEvent
-	public void onLivingUpdate(LivingEvent event) {
+	public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
 		if(!(event.getEntity() instanceof EntityLiving))
 			return;
 		EntityLiving entity = (EntityLiving) event.getEntity();
