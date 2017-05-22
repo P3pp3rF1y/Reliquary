@@ -1,15 +1,17 @@
 package xreliquary.compat.jei.alkahestry;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
+import xreliquary.util.alkahestry.AlkahestRecipeType;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -26,13 +28,27 @@ public class AlkahestryChargingRecipeMaker {
 			ItemStack outputTome = new ItemStack(ModItems.alkahestryTome, 1, Settings.AlkahestryTome.chargeLimit - recipe.charge);
 			NBTHelper.setInteger("charge", outputTome, recipe.charge);
 
-			if(recipe.dictionaryName != null) {
-				for (ItemStack input : OreDictionary.getOres(recipe.dictionaryName)) {
-					recipes.add(new AlkahestryChargingRecipeJEI(input, inputTome, outputTome));
+			if(recipe.type == AlkahestRecipeType.OREDICT) {
+				if(OreDictionary.getOres(recipe.name).size() > 0) {
+					for(ItemStack ore : OreDictionary.getOres(recipe.name)) {
+						recipes.add(new AlkahestryChargingRecipeJEI(ore, inputTome, outputTome));
+					}
 				}
 			} else {
-				ItemStack input = recipe.item;
-				recipes.add(new AlkahestryChargingRecipeJEI(input, inputTome, outputTome));
+				Item item = Item.REGISTRY.getObject(new ResourceLocation(recipe.name));
+				if(item != null) {
+					if (recipe.type == AlkahestRecipeType.WILDCARD) {
+						List<ItemStack> subItems = new ArrayList<>();
+
+						item.getSubItems(item, null, subItems);
+						for (ItemStack input : subItems) {
+							recipes.add(new AlkahestryChargingRecipeJEI(input, inputTome, outputTome));
+						}
+					} else {
+						ItemStack input = new ItemStack(item, 1, recipe.meta);
+						recipes.add(new AlkahestryChargingRecipeJEI(input, inputTome, outputTome));
+					}
+				}
 			}
 		}
 

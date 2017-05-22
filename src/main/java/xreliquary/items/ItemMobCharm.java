@@ -139,7 +139,7 @@ public class ItemMobCharm extends ItemBase {
 		boolean resetTarget = false;
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
-		if(entity instanceof EntityZombie) {
+		if(entity instanceof EntityZombie && !(entity instanceof EntityPigZombie)) {
 			resetTarget = isMobCharmPresent(player, Reference.MOB_CHARM.ZOMBIE_META);
 		} else if(entity instanceof EntitySkeleton) {
 			if(((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER) {
@@ -176,7 +176,7 @@ public class ItemMobCharm extends ItemBase {
 	}
 
 	@SubscribeEvent
-	public void onLivingUpdate(LivingEvent event) {
+	public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
 		if(!(event.getEntity() instanceof EntityLiving))
 			return;
 		EntityLiving entity = (EntityLiving) event.getEntity();
