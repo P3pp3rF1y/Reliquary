@@ -1,11 +1,14 @@
 package xreliquary.compat.jei.alkahestry;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
+import xreliquary.util.alkahestry.AlkahestRecipeType;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -25,18 +28,35 @@ public class AlkahestryCraftingRecipeMaker {
 			ItemStack outputTome = new ItemStack(ModItems.alkahestryTome, 1, recipe.cost);
 			NBTHelper.setInteger("charge", outputTome, Settings.AlkahestryTome.chargeLimit - recipe.cost);
 
-			if(recipe.dictionaryName != null) {
-				if(OreDictionary.getOres(recipe.dictionaryName).size() > 0) {
-					for(ItemStack ore : OreDictionary.getOres(recipe.dictionaryName)) {
+			if(recipe.type == AlkahestRecipeType.OREDICT) {
+				if(OreDictionary.getOres(recipe.name).size() > 0) {
+					for(ItemStack ore : OreDictionary.getOres(recipe.name)) {
 						ItemStack outputOre = ore.copy();
 						outputOre.setCount(recipe.yield + 1);
 						recipes.add(new AlkahestryCraftingRecipeJEI(ore, inputTome, outputOre, outputTome));
 					}
 				}
 			} else {
-				ItemStack input = recipe.item;
-				ItemStack output = new ItemStack(recipe.item.getItem(), recipe.yield + 1, recipe.item.getMetadata());
-				recipes.add(new AlkahestryCraftingRecipeJEI(input, inputTome, output, outputTome));
+				Item item = Item.REGISTRY.getObject(new ResourceLocation(recipe.name));
+				if(item != null) {
+					if (recipe.type == AlkahestRecipeType.WILDCARD) {
+						List<ItemStack> subItems = new ArrayList<>();
+
+						item.getSubItems(item, null, subItems);
+						for (ItemStack input : subItems) {
+							ItemStack output = input.copy();
+							output.stackSize = recipe.yield + 1;
+
+							recipes.add(new AlkahestryCraftingRecipeJEI(input, inputTome, output, outputTome));
+						}
+					} else {
+						ItemStack input = new ItemStack(item, 1, recipe.meta);
+						ItemStack output = input.copy();
+						output.stackSize = recipe.yield + 1;
+						recipes.add(new AlkahestryCraftingRecipeJEI(input, inputTome, output, outputTome));
+					}
+				}
+
 			}
 		}
 

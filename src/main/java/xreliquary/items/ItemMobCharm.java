@@ -135,7 +135,7 @@ public class ItemMobCharm extends ItemBase {
 		boolean resetTarget = false;
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
-		if(entity instanceof EntityZombie) {
+		if(entity instanceof EntityZombie && !(entity instanceof EntityPigZombie)) {
 			resetTarget = isMobCharmPresent(player, Reference.MOB_CHARM.ZOMBIE_META);
 		} else if(entity instanceof EntityWitherSkeleton) {
 			resetTarget = isMobCharmPresent(player, Reference.MOB_CHARM.WITHER_SKELETON_META);

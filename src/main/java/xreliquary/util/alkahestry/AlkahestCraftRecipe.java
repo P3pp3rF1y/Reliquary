@@ -1,25 +1,29 @@
 package xreliquary.util.alkahestry;
 
-import net.minecraft.item.ItemStack;
+import static xreliquary.util.alkahestry.AlkahestRecipeType.*;
 
-public class AlkahestCraftRecipe {
+public class AlkahestCraftRecipe extends AlkahestRecipe {
 
-	public ItemStack item = ItemStack.EMPTY;
 	public int yield = 0;
 	public int cost = 0;
 
-	public String dictionaryName = null;
+	public AlkahestCraftRecipe(String name, AlkahestRecipeType type, int yield, int cost) {
+		this(name, yield, cost);
 
-	public AlkahestCraftRecipe(ItemStack stack, int yield, int cost) {
-		this.item = stack;
+		if (type == META) throw new IllegalArgumentException("This constructor isn't meant for specific meta items");
+
+		this.type = type;
+	}
+
+	public AlkahestCraftRecipe(String name, int meta, int yield, int cost) {
+		this(name, yield, cost);
+		this.meta = meta;
+	}
+
+	private AlkahestCraftRecipe(String name, int yield, int cost) {
+
+		super(name);
 		this.yield = yield;
 		this.cost = cost;
 	}
-
-	public AlkahestCraftRecipe(String dictionaryName, int yield, int cost) {
-		this.dictionaryName = dictionaryName;
-		this.yield = yield;
-		this.cost = cost;
-	}
-
 }

@@ -10,6 +10,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -90,7 +91,50 @@ public class InventoryHelper {
 		return itemQuantity;
 	}
 
-	public static boolean consumeItem(@Nonnull ItemStack item, EntityPlayer player) {
+	public static boolean consumeOreDictItem(String oredictName, EntityPlayer player) {
+		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+			if(player.inventory.mainInventory[slot] == null) {
+				continue;
+			}
+
+			ItemStack slotStack = player.inventory.mainInventory[slot];
+			for(ItemStack ore : OreDictionary.getOres(oredictName)) {
+				if(OreDictionary.itemMatches(ore, slotStack, false)) {
+					int stackSize = slotStack.stackSize;
+					if(stackSize > 0) {
+						slotStack.stackSize--;
+						if (slotStack.stackSize <= 0) {
+							player.inventory.mainInventory[slot] = null;
+						}
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	public static boolean consumeItem(String itemName, int meta, boolean ignoreMeta, EntityPlayer player) {
+		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+			if(player.inventory.mainInventory[slot] == null) {
+				continue;
+			}
+
+			ItemStack slotStack = player.inventory.mainInventory[slot];
+			if(slotStack.getItem().getRegistryName().toString().equals(itemName) && (ignoreMeta || slotStack.getMetadata() == meta)) {
+				int stackSize = slotStack.stackSize;
+				if(stackSize > 0) {
+					slotStack.stackSize--;
+					if (slotStack.stackSize <= 0) {
+						player.inventory.mainInventory[slot] = null;
+					}
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean consumeItem(ItemStack item, EntityPlayer player) {
 		return consumeItem(item, player, 0, 1);
 	}
 

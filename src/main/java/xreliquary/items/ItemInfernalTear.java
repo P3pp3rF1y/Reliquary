@@ -51,22 +51,28 @@ public class ItemInfernalTear extends ItemToggleable {
 		String ident = ist.hasTagCompound() ? ist.getTagCompound().getString("itemID") : "";
 
 		if(ident.isEmpty()) {
-			NBTTagCompound tag = ist.getTagCompound();
-			tag.removeTag("itemID");
-			tag.removeTag("enabled");
+			resetTear(ist);
 			return;
 		}
 
-		ItemStack targetStack = this.getStackFromTear(ist);
-		AlkahestCraftRecipe recipe = Alkahestry.getCraftingRecipe(targetStack);
-		if(recipe != null) {
-			// You need above Cobblestone level to get XP.
-			if(!(recipe.yield == 32 && recipe.cost == 4)) {
-				if(InventoryHelper.consumeItem(targetStack, player)) {
-					player.addExperience((int) (Math.ceil((double) recipe.cost / (double) recipe.yield)));
-				}
+		AlkahestCraftRecipe recipe = Alkahestry.matchCraftRecipe(getStackFromTear(ist));
+		if(recipe == null) {
+			resetTear(ist);
+			return;
+		}
+
+		// You need above Cobblestone level to get XP.
+		if(!(recipe.yield == 32 && recipe.cost == 4)) {
+			if(InventoryHelper.consumeItem(this.getStackFromTear(ist), player)) {
+				player.addExperience((int) (Math.ceil((((double) recipe.cost) / (double) recipe.yield) / 256d * 500d)));
 			}
 		}
+	}
+
+	private void resetTear(ItemStack ist) {
+		NBTTagCompound tag = ist.getTagCompound();
+		tag.removeTag("itemID");
+		tag.removeTag("enabled");
 	}
 
 	@Override
@@ -189,12 +195,8 @@ public class ItemInfernalTear extends ItemToggleable {
 			if(stack.getTagCompound() != null) {
 				continue;
 			}
-
-			AlkahestCraftRecipe recipe = Alkahestry.getCraftingRecipe(stack);
-			if (recipe == null || (recipe.yield == 32 && recipe.cost == 4)) {
+			if(Alkahestry.matchCraftRecipe(stack) == null)
 				continue;
-			}
-
 			if(InventoryHelper.getItemQuantity(stack, inventory) > itemQuantity) {
 				itemQuantity = InventoryHelper.getItemQuantity(stack, inventory);
 				targetItem = stack.copy();

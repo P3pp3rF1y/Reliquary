@@ -1,12 +1,7 @@
 package xreliquary.handler.config;
 
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Property;
 import xreliquary.handler.ConfigurationHandler;
@@ -15,6 +10,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.StackHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
+import xreliquary.util.alkahestry.AlkahestRecipeType;
 
 import java.util.Map;
 
@@ -74,24 +70,13 @@ public class AlkahestConfiguration {
 			//using last because of legacy configs that have meta as first
 			int charge = values[values.length - 1];
 
-			if(allSubitems) {
-				Item item = Item.REGISTRY.getObject(new ResourceLocation(modId, name));
-				Block block = Block.REGISTRY.getObject(new ResourceLocation(modId, name));
-				NonNullList<ItemStack> subItems = NonNullList.create();
-				if(item != null) {
-					item.getSubItems(item, null, subItems);
-				} else {
-					block.getSubBlocks(Item.getItemFromBlock(block), null, subItems);
-				}
-
-				for(ItemStack stack : subItems) {
-					Settings.AlkahestryTome.chargingRecipes.put(entry.getKey().replace("*", String.valueOf(stack.getMetadata())), new AlkahestChargeRecipe(stack, charge));
-				}
+			if(modId.toLowerCase().equals("oredictionary")) {
+				Settings.AlkahestryTome.chargingRecipes.put(entry.getKey(), new AlkahestChargeRecipe(name, AlkahestRecipeType.OREDICT, charge));
 			} else {
-				ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
-
-				if(stack != null) {
-					Settings.AlkahestryTome.chargingRecipes.put(entry.getKey(), new AlkahestChargeRecipe(stack, charge));
+				if (allSubitems) {
+					Settings.AlkahestryTome.chargingRecipes.put(entry.getKey(), new AlkahestChargeRecipe(modId + ":" + name, AlkahestRecipeType.WILDCARD, charge));
+				} else {
+					Settings.AlkahestryTome.chargingRecipes.put(entry.getKey(), new AlkahestChargeRecipe(modId + ":" + name, meta, charge));
 				}
 			}
 		}
@@ -150,29 +135,12 @@ public class AlkahestConfiguration {
 			int cost = values[values.length - 1];
 
 			if(modId.toLowerCase().equals("oredictionary")) {
-				Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(name, yield, cost));
+				Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(name, AlkahestRecipeType.OREDICT, yield, cost));
 			} else {
-				if(allSubitems) {
-					Item item = Item.REGISTRY.getObject(new ResourceLocation(modId, name));
-					Block block = Block.REGISTRY.getObject(new ResourceLocation(modId, name));
-					NonNullList<ItemStack> subItems = NonNullList.create();
-					if(item != null) {
-						item.getSubItems(item, null, subItems);
-					} else {
-						block.getSubBlocks(Item.getItemFromBlock(block), null, subItems);
-					}
-
-					for(ItemStack stack : subItems) {
-						Settings.AlkahestryTome.craftingRecipes.put(entry.getKey().replace("*", String.valueOf(stack.getMetadata())), new AlkahestCraftRecipe(stack, yield, cost));
-					}
+				if (allSubitems) {
+					Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(modId + ":" + name, AlkahestRecipeType.WILDCARD, yield, cost));
 				} else {
-					ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
-
-					String key = modId + ":" + name + "|" + meta;
-
-					if(stack != null) {
-						Settings.AlkahestryTome.craftingRecipes.put(key, new AlkahestCraftRecipe(stack, yield, cost));
-					}
+					Settings.AlkahestryTome.craftingRecipes.put(entry.getKey(), new AlkahestCraftRecipe(modId + ":" + name, meta, yield, cost));
 				}
 			}
 		}

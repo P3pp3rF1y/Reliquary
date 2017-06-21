@@ -3,42 +3,41 @@ package xreliquary.util.alkahestry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import xreliquary.reference.Settings;
-import xreliquary.util.RegistryHelper;
+
+import static xreliquary.util.alkahestry.AlkahestRecipeType.*;
 
 public class Alkahestry {
-
-	public static AlkahestCraftRecipe getCraftingRecipe(ItemStack stack) {
-		String key = getStackKey(stack);
-
-		for(String recipeKey : Settings.AlkahestryTome.craftingRecipes.keySet()) {
-			AlkahestCraftRecipe recipe = Settings.AlkahestryTome.craftingRecipes.get(recipeKey);
-			if(recipe.dictionaryName == null) {
-				if (recipeKey.equals(key)) {
-					return recipe;
-				}
-			} else {
-				for(ItemStack dict : OreDictionary.getOres(recipe.dictionaryName)) {
-					if(OreDictionary.itemMatches(dict, stack, false))
-						return recipe;
-				}
-			}
+	public static AlkahestChargeRecipe matchChargeRecipe(ItemStack stack) {
+		for(AlkahestChargeRecipe recipe : Settings.AlkahestryTome.chargingRecipes.values()) {
+			if(itemMatchesRecipe(stack, recipe))
+				return recipe;
 		}
 		return null;
 	}
 
-	public static String getStackKey(ItemStack stack) {
-		return RegistryHelper.getItemRegistryName(stack.getItem()) + "|" + stack.getMetadata();
-	}
-
-	public static AlkahestCraftRecipe getRecipeByDictionaryKey(ItemStack stack) {
+	public static AlkahestCraftRecipe matchCraftRecipe(ItemStack stack) {
 		for(AlkahestCraftRecipe recipe : Settings.AlkahestryTome.craftingRecipes.values()) {
-			if(recipe.dictionaryName == null)
-				continue;
-			for(ItemStack dict : OreDictionary.getOres(recipe.dictionaryName)) {
-				if(OreDictionary.itemMatches(dict, stack, false))
-					return recipe;
-			}
+			if(itemMatchesRecipe(stack, recipe))
+				return recipe;
 		}
 		return null;
+	}
+
+	private static boolean itemMatchesRecipe(ItemStack stack, AlkahestRecipe recipe) {
+		String itemName = stack.getItem().getRegistryName().toString();
+		int meta = stack.getMetadata();
+		if(recipe.type == META) {
+			if(recipe.name.equals(itemName) && recipe.meta == meta)
+				return true;
+		} else if(recipe.type == WILDCARD) {
+			if(recipe.name.equals(itemName))
+				return true;
+		} else {
+			for(ItemStack dict : OreDictionary.getOres(recipe.name)) {
+				if(OreDictionary.itemMatches(dict, stack, false))
+					return true;
+			}
+		}
+		return false;
 	}
 }
