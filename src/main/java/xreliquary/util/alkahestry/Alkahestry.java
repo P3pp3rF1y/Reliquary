@@ -3,6 +3,7 @@ package xreliquary.util.alkahestry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 
 import static xreliquary.util.alkahestry.AlkahestRecipeType.*;
 
@@ -24,6 +25,7 @@ public class Alkahestry {
 	}
 
 	private static boolean itemMatchesRecipe(ItemStack stack, AlkahestRecipe recipe) {
+		//noinspection ConstantConditions
 		String itemName = stack.getItem().getRegistryName().toString();
 		int meta = stack.getMetadata();
 		if(recipe.type == META) {
@@ -39,5 +41,9 @@ public class Alkahestry {
 			}
 		}
 		return false;
+	}
+
+	public static String getStackKey(ItemStack stack) {
+		return RegistryHelper.getItemRegistryName(stack.getItem()) + "|" + stack.getMetadata();
 	}
 }

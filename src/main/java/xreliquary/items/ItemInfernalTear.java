@@ -195,7 +195,8 @@ public class ItemInfernalTear extends ItemToggleable {
 			if(stack.getTagCompound() != null) {
 				continue;
 			}
-			if(Alkahestry.matchCraftRecipe(stack) == null)
+			AlkahestCraftRecipe recipe = Alkahestry.matchCraftRecipe(stack);
+			if(recipe == null || (recipe.yield == 32 && recipe.cost == 4))
 				continue;
 			if(InventoryHelper.getItemQuantity(stack, inventory) > itemQuantity) {
 				itemQuantity = InventoryHelper.getItemQuantity(stack, inventory);

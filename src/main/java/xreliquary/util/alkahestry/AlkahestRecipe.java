@@ -8,7 +8,7 @@ public abstract class AlkahestRecipe {
 	public int meta = 0;
 	public AlkahestRecipeType type = META;
 
-	public AlkahestRecipe(String name) {
+	AlkahestRecipe(String name) {
 
 		this.name = name;
 	}

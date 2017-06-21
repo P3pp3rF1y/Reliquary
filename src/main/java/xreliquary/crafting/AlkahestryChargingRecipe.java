@@ -8,18 +8,16 @@ import net.minecraft.world.World;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
-import xreliquary.util.RegistryHelper;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 
 public class AlkahestryChargingRecipe implements IRecipe {
 
 	@Override
 	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world) {
-		ItemStack tome = null;
+		ItemStack tome = ItemStack.EMPTY;
 		int amount = 0;
 
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
@@ -39,13 +37,13 @@ public class AlkahestryChargingRecipe implements IRecipe {
 			}
 		}
 
-		return tome != null && NBTHelper.getInteger("charge", tome) + amount <= Settings.AlkahestryTome.chargeLimit;
+		return !tome.isEmpty() && NBTHelper.getInteger("charge", tome) + amount <= Settings.AlkahestryTome.chargeLimit;
 	}
 
 	@Nonnull
 	@Override
 	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
-		ItemStack tome = null;
+		ItemStack tome = ItemStack.EMPTY;
 		int amount = 0;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
