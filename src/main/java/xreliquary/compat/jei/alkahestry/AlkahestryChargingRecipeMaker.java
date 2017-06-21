@@ -2,6 +2,7 @@ package xreliquary.compat.jei.alkahestry;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import xreliquary.init.ModItems;
@@ -38,7 +39,7 @@ public class AlkahestryChargingRecipeMaker {
 				Item item = Item.REGISTRY.getObject(new ResourceLocation(recipe.name));
 				if(item != null) {
 					if (recipe.type == AlkahestRecipeType.WILDCARD) {
-						List<ItemStack> subItems = new ArrayList<>();
+						NonNullList<ItemStack> subItems = NonNullList.create();
 
 						item.getSubItems(item, null, subItems);
 						for (ItemStack input : subItems) {

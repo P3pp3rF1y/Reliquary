@@ -46,7 +46,7 @@ public class InventoryHelper {
 	}
 
 	@Nonnull
-	public static ItemStack getTargetItem(@Nonnull ItemStack self, IInventory inventory, boolean disposeOfItem) {
+	public static ItemStack getTargetItem(@Nonnull ItemStack self, IInventory inventory) {
 		if (self.isEmpty())
 			return ItemStack.EMPTY;
 
@@ -63,10 +63,6 @@ public class InventoryHelper {
 			if(getItemQuantity(stack, inventory) > itemQuantity) {
 				itemQuantity = getItemQuantity(stack, inventory);
 				targetItem = stack.copy();
-
-				if(disposeOfItem) {
-					inventory.decrStackSize(slot, 1);
-				}
 			}
 		}
 		inventory.markDirty();
@@ -74,15 +70,11 @@ public class InventoryHelper {
 	}
 
 	public static int getItemQuantity(@Nonnull ItemStack stack, IInventory inventory) {
-		return InventoryHelper.getItemQuantity(stack, inventory, 0);
-	}
-
-	private static int getItemQuantity(@Nonnull ItemStack stack, IInventory inventory, int limit) {
 		if (stack.isEmpty())
 			return 0;
 
 		int itemQuantity = 0;
-		for(int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
+		for(int slot = 0; slot < inventory.getSizeInventory(); slot++) {
 			ItemStack newStack = inventory.getStackInSlot(slot);
 			if(StackHelper.isItemAndNbtEqual(stack, newStack)) {
 				itemQuantity += newStack.getCount();
@@ -92,19 +84,19 @@ public class InventoryHelper {
 	}
 
 	public static boolean consumeOreDictItem(String oredictName, EntityPlayer player) {
-		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-			if(player.inventory.mainInventory[slot] == null) {
+		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
+			if(player.inventory.mainInventory.get(slot).isEmpty()) {
 				continue;
 			}
 
-			ItemStack slotStack = player.inventory.mainInventory[slot];
+			ItemStack slotStack = player.inventory.mainInventory.get(slot);
 			for(ItemStack ore : OreDictionary.getOres(oredictName)) {
 				if(OreDictionary.itemMatches(ore, slotStack, false)) {
-					int stackSize = slotStack.stackSize;
+					int stackSize = slotStack.getCount();
 					if(stackSize > 0) {
-						slotStack.stackSize--;
-						if (slotStack.stackSize <= 0) {
-							player.inventory.mainInventory[slot] = null;
+						slotStack.shrink(1);
+						if (slotStack.getCount() <= 0) {
+							player.inventory.mainInventory.set(slot, ItemStack.EMPTY);
 						}
 						return true;
 					}
@@ -114,18 +106,19 @@ public class InventoryHelper {
 		return false;
 	}
 	public static boolean consumeItem(String itemName, int meta, boolean ignoreMeta, EntityPlayer player) {
-		for(int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-			if(player.inventory.mainInventory[slot] == null) {
+		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
+			if(player.inventory.mainInventory.get(slot).isEmpty()) {
 				continue;
 			}
 
-			ItemStack slotStack = player.inventory.mainInventory[slot];
+			ItemStack slotStack = player.inventory.mainInventory.get(slot);
+			//noinspection ConstantConditions
 			if(slotStack.getItem().getRegistryName().toString().equals(itemName) && (ignoreMeta || slotStack.getMetadata() == meta)) {
-				int stackSize = slotStack.stackSize;
+				int stackSize = slotStack.getCount();
 				if(stackSize > 0) {
-					slotStack.stackSize--;
-					if (slotStack.stackSize <= 0) {
-						player.inventory.mainInventory[slot] = null;
+					slotStack.shrink(1);
+					if (slotStack.getCount() <= 0) {
+						player.inventory.mainInventory.set(slot, ItemStack.EMPTY);
 					}
 					return true;
 				}
@@ -165,7 +158,7 @@ public class InventoryHelper {
 
 		//fill stacks based on which ones have the highest sizes
 		if(itemCount >= countToConsume) {
-			Collections.sort(slotCounts, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+			slotCounts.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
 			int countToFill = itemCount - countToConsume;
 

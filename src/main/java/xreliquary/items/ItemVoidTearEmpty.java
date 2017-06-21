@@ -87,7 +87,7 @@ public class ItemVoidTearEmpty extends ItemBase {
 
 	@Nonnull
 	private ItemStack buildTear(ItemStack ist, EntityPlayer player, IInventory inventory, boolean isPlayerInventory) {
-		ItemStack target = InventoryHelper.getTargetItem(ist, inventory, false);
+		ItemStack target = InventoryHelper.getTargetItem(ist, inventory);
 		if(target.isEmpty())
 			return ItemStack.EMPTY;
 		ItemStack filledTear = new ItemStack(ModItems.filledVoidTear, 1, 0);
