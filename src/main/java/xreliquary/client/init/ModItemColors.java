@@ -1,11 +1,14 @@
 package xreliquary.client.init;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Reference;
@@ -107,6 +110,18 @@ public class ModItemColors {
 		}
 		if(isEnabled(ModItems.tippedArrow)) {
 			itemColors.registerItemColorHandler((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromStack(stack)) : -1, ModItems.tippedArrow);
+		}
+
+		if(isEnabled(ModItems.filledVoidTear)) {
+			itemColors.registerItemColorHandler((stack, tintIndex) -> {
+				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+					ItemStack containedStack = ModItems.filledVoidTear.getContainerItem(stack);
+					if(!containedStack.isEmpty()) {
+						return itemColors.getColorFromItemstack(containedStack, tintIndex);
+					}
+				}
+				return -1;
+			}, ModItems.filledVoidTear);
 		}
 	}
 
