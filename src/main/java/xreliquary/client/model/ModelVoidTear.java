@@ -69,7 +69,7 @@ public class ModelVoidTear implements IPerspectiveAwareModel {
 		return new ItemOverrideList(ImmutableList.of()) {
 			@Nonnull
 			@Override
-			public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, @Nonnull World world, @Nonnull EntityLivingBase entity) {
+			public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
 				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 					ItemStack containedStack = ModItems.filledVoidTear.getContainerItem(stack);
 					if(!containedStack.isEmpty()) {
