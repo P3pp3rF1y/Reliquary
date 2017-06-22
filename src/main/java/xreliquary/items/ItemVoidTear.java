@@ -165,15 +165,6 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@Override
 	public void onUpdate(ItemStack voidTear, World world, Entity entity, int slotNumber, boolean isSelected) {
-		if(voidTear.getTagCompound() != null && voidTear.getTagCompound().hasKey("item")) {
-
-			setItemStack(voidTear, new ItemStack(NBTHelper.getTagCompound("item", voidTear)));
-			setItemQuantity(voidTear, NBTHelper.getInteger("itemQuantity", voidTear));
-
-			voidTear.getTagCompound().removeTag("item");
-			voidTear.getTagCompound().removeTag("itemQuantity");
-		}
-
 		if(!world.isRemote) {
 			if(!(entity instanceof EntityPlayer))
 				return;
