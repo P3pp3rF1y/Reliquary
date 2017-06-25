@@ -4,9 +4,9 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import xreliquary.compat.jei.ReliquaryRecipeCategory;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
@@ -14,7 +14,7 @@ import xreliquary.util.LanguageHelper;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class CauldronRecipeCategory extends BlankRecipeCategory<CauldronRecipeJEI> {
+public class CauldronRecipeCategory extends ReliquaryRecipeCategory<CauldronRecipeJEI> {
 
 	private static final int INPUT_SLOT = 0;
 	private static final int OUTPUT_SLOT = 1;
@@ -39,6 +39,12 @@ public class CauldronRecipeCategory extends BlankRecipeCategory<CauldronRecipeJE
 	@Override
 	public String getTitle() {
 		return localizedName;
+	}
+
+	@Nonnull
+	@Override
+	public String getModName() {
+		return Reference.MOD_NAME;
 	}
 
 	@Nonnull

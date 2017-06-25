@@ -97,9 +97,9 @@ public class ItemRendingGale extends ItemToggleable {
 
 		Vec3d lookVec = player.getLook(0.66F);
 
-		double x = lookVec.xCoord;
-		double y = lookVec.yCoord;
-		double z = lookVec.zCoord;
+		double x = lookVec.x;
+		double y = lookVec.y;
+		double z = lookVec.z;
 
 		RayTraceResult rayTrace =  this.rayTrace(player.world, player, true);
 
@@ -400,7 +400,7 @@ public class ItemRendingGale extends ItemToggleable {
 				}
 				pushVector = pushVector.normalize();
 				entity.move(MoverType.PLAYER, 0.0D, 0.2D, 0.0D);
-				entity.move(MoverType.PLAYER, pushVector.xCoord, Math.min(pushVector.yCoord, 0.1D) * 1.5D, pushVector.zCoord);
+				entity.move(MoverType.PLAYER, pushVector.x, Math.min(pushVector.y, 0.1D) * 1.5D, pushVector.z);
 			}
 		}
 	}
@@ -414,7 +414,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 	private void spawnFlightParticles(World world, double x, double y, double z, EntityPlayer player) {
 		Vec3d lookVector = player.getLookVec();
-		double factor = (player.motionX / lookVector.xCoord + player.motionY / lookVector.yCoord + player.motionZ / lookVector.zCoord) / 3d;
+		double factor = (player.motionX / lookVector.x + player.motionY / lookVector.y + player.motionZ / lookVector.z) / 3d;
 
 		//spawn a whole mess of particles every tick.
 		for(int i = 0; i < 8 * factor; ++i) {
@@ -422,7 +422,7 @@ public class ItemRendingGale extends ItemToggleable {
 			float randY = 10F * (itemRand.nextFloat() - 0.5F);
 			float randZ = 10F * (itemRand.nextFloat() - 0.5F);
 
-			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX + lookVector.xCoord * 20 * factor, y + randY + lookVector.yCoord * 20 * factor, z + randZ + lookVector.zCoord * 20 * factor, -lookVector.xCoord * 5 * factor, -lookVector.yCoord * 5 * factor, -lookVector.zCoord * 5 * factor, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
+			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX + lookVector.x * 20 * factor, y + randY + lookVector.y * 20 * factor, z + randZ + lookVector.z * 20 * factor, -lookVector.x * 5 * factor, -lookVector.y * 5 * factor, -lookVector.z * 5 * factor, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
 		}
 	}
 

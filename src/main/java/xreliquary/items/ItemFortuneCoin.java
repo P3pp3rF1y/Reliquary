@@ -114,7 +114,7 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 				continue;
 			}
 
-			if(!checkForRoom(item.getEntityItem(), player)) {
+			if(!checkForRoom(item.getItem(), player)) {
 				continue;
 			}
 
@@ -185,9 +185,9 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 	private void teleportEntityToPlayer(Entity item, EntityPlayer player) {
 		player.world.spawnParticle(EnumParticleTypes.SPELL_MOB, item.posX + 0.5D + player.world.rand.nextGaussian() / 8, item.posY + 0.2D, item.posZ + 0.5D + player.world.rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
 		player.getLookVec();
-		double x = player.posX + player.getLookVec().xCoord * 0.2D;
+		double x = player.posX + player.getLookVec().x * 0.2D;
 		double y = player.posY;
-		double z = player.posZ + player.getLookVec().zCoord * 0.2D;
+		double z = player.posZ + player.getLookVec().z * 0.2D;
 		item.setPosition(x, y, z);
 		if(!disabledAudio()) {
 			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.8F));
@@ -294,11 +294,11 @@ public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
 					continue;
 				}
 
-				int numberAdded = pedestal.addToConnectedInventory(entityItem.getEntityItem().copy());
+				int numberAdded = pedestal.addToConnectedInventory(entityItem.getItem().copy());
 				if(numberAdded > 0) {
-					entityItem.getEntityItem().setCount(entityItem.getEntityItem().getCount() - numberAdded);
+					entityItem.getItem().setCount(entityItem.getItem().getCount() - numberAdded);
 
-					if(entityItem.getEntityItem().getCount() <= 0)
+					if(entityItem.getItem().getCount() <= 0)
 						entityItem.setDead();
 				} else {
 					pedestal.setActionCoolDown(20);

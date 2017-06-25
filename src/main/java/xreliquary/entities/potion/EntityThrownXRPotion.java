@@ -90,7 +90,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 				List<PotionEffect> list = essence.getEffects();
 
 				if(list != null && !list.isEmpty()) {
-					AxisAlignedBB axisalignedbb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
+					AxisAlignedBB axisalignedbb = this.getEntityBoundingBox().grow(4.0D, 2.0D, 4.0D);
 					List<EntityLivingBase> livingEntities = this.world.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
 					if(!livingEntities.isEmpty()) {

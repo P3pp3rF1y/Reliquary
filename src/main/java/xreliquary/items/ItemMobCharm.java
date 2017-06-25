@@ -213,10 +213,10 @@ public class ItemMobCharm extends ItemBase {
 
 	@SubscribeEvent
 	public void onLivingDeath(LivingDeathEvent event) {
-		if(event.getSource() == null || event.getSource().getEntity() == null || !(event.getSource().getEntity() instanceof EntityPlayer))
+		if(event.getSource() == null || event.getSource().getTrueSource() == null || !(event.getSource().getTrueSource() instanceof EntityPlayer))
 			return;
 
-		EntityPlayer player = (EntityPlayer) event.getSource().getEntity();
+		EntityPlayer player = (EntityPlayer) event.getSource().getTrueSource();
 
 		if (!damagePlayersMobCharm(player, event.getEntity()))
 			damageMobCharmInPedestal(player, event.getEntity());

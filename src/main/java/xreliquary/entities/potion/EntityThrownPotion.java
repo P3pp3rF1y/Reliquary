@@ -62,7 +62,7 @@ abstract class EntityThrownPotion extends EntityThrowable {
 		this.doGroundSplashEffect();
 		if(!this.hasLivingEntityEffect())
 			return;
-		AxisAlignedBB bb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
+		AxisAlignedBB bb = this.getEntityBoundingBox().grow(4.0D, 2.0D, 4.0D);
 		List<EntityLivingBase> eList = world.getEntitiesWithinAABB(EntityLivingBase.class, bb);
 		eList.forEach(this::doLivingSplashEffect);
 	}

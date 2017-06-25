@@ -17,7 +17,7 @@ public class TileEntityPedestalRenderer extends TileEntitySpecialRenderer<TileEn
 		if(!te.getStackInSlot(0).isEmpty()) {
 			ItemStack stack = te.getStackInSlot(0);
 			EntityItem item = new EntityItem(te.getWorld(), 0.0D, 0.0D, 0.0D, stack);
-			item.getEntityItem().setCount(1);
+			item.getItem().setCount(1);
 			item.hoverStart = 0.0F;
 			GlStateManager.pushMatrix();
 			float yDiff = MathHelper.sin((System.currentTimeMillis() % 86400000) / 1000F) * 0.1F + 0.1F;

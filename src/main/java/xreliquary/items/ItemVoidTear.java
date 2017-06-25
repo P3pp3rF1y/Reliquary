@@ -319,6 +319,7 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	@Nonnull
+	@Override
 	public ItemStack getContainerItem(@Nonnull ItemStack voidTear) {
 		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
@@ -428,7 +429,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@SubscribeEvent
 	public void onItemPickup(EntityItemPickupEvent event) {
-		ItemStack pickedUpStack = event.getItem().getEntityItem();
+		ItemStack pickedUpStack = event.getItem().getItem();
 		EntityPlayer player = event.getEntityPlayer();
 		EntityItem itemEntity = event.getItem();
 
@@ -511,7 +512,7 @@ public class ItemVoidTear extends ItemToggleable {
 		}
 
 		@Override
-		public void updateCraftingInventory(@Nonnull Container containerToSend, @Nonnull NonNullList<ItemStack> itemsList) {
+		public void sendAllContents(@Nonnull Container containerToSend, @Nonnull NonNullList<ItemStack> itemsList) {
 
 		}
 
@@ -539,7 +540,7 @@ public class ItemVoidTear extends ItemToggleable {
 		}
 
 		@Override
-		public void sendProgressBarUpdate(@Nonnull Container container, int varToUpdate, int newValue) {
+		public void sendWindowProperty(@Nonnull Container container, int varToUpdate, int newValue) {
 
 		}
 

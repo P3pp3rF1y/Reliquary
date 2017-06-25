@@ -13,7 +13,7 @@ public class TileEntityPedestalPassiveRenderer extends TileEntitySpecialRenderer
 	public void renderTileEntityAt(TileEntityPedestalPassive te, double x, double y, double z, float partialTicks, int destroyStage) {
 		if(!te.getStackInSlot(0).isEmpty()) {
 			EntityItem item = new EntityItem(te.getWorld(), 0.0D, 0.0D, 0.0D, te.getStackInSlot(0));
-			item.getEntityItem().setCount(1);
+			item.getItem().setCount(1);
 			item.hoverStart = 0.0F;
 			GlStateManager.pushMatrix();
 			float yDiff = MathHelper.sin((System.currentTimeMillis() % 86400000) / 1000F) * 0.1F + 0.1F;

@@ -196,7 +196,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		if(block != Blocks.AIR) {
 			AxisAlignedBB axisalignedbb = blockState.getBoundingBox(this.world, new BlockPos(this.xTile, this.yTile, this.zTile));
 
-			if(axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
+			if(axisalignedbb.contains(new Vec3d(this.posX, this.posY, this.posZ)))
 				this.inGround = true;
 
 		}
@@ -216,7 +216,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			RayTraceResult objectStruckByVector = world.rayTraceBlocks(posVector, approachVector, false, true, false);
 
 			Entity hitEntity = null;
-			List struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
+			List struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(motionX, motionY, motionZ).grow(1.0D, 1.0D, 1.0D));
 			double var7 = 0.0D;
 			Iterator struckEntityIterator = struckEntitiesInAABB.iterator();
 			float var11;
@@ -225,7 +225,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 				Entity struckEntity = (Entity) struckEntityIterator.next();
 				if(struckEntity.canBeCollidedWith() && (struckEntity != shootingEntity || ticksInAir >= 5)) {
 					var11 = 0.5F;
-					AxisAlignedBB var12 = struckEntity.getEntityBoundingBox().expand(var11, var11, var11);
+					AxisAlignedBB var12 = struckEntity.getEntityBoundingBox().grow(var11, var11, var11);
 					RayTraceResult var13 = var12.calculateIntercept(posVector, approachVector);
 
 					if(var13 != null) {
@@ -492,9 +492,9 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			Vec3d seekVector = new Vec3d(x - trueX, y - trueY, z - trueZ);
 			seekVector = seekVector.normalize();
 
-			this.motionX = seekVector.xCoord * 0.4D;
-			this.motionY = seekVector.yCoord * 0.4D;
-			this.motionZ = seekVector.zCoord * 0.4D;
+			this.motionX = seekVector.x * 0.4D;
+			this.motionY = seekVector.y * 0.4D;
+			this.motionZ = seekVector.z * 0.4D;
 			if(world.isRemote) {
 				this.setVelocity(motionX, motionY, motionZ);
 			}

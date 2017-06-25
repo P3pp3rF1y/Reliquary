@@ -4,7 +4,6 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xreliquary.reference.Reference;
@@ -13,7 +12,7 @@ import xreliquary.util.LanguageHelper;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class AlkahestryChargingRecipeCategory extends BlankRecipeCategory<AlkahestryChargingRecipeJEI> {
+public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<AlkahestryChargingRecipeJEI> {
 
 	private static final int INPUT_SLOT = 0;
 	private static final int TOME_SLOT = 1;
@@ -23,6 +22,7 @@ public class AlkahestryChargingRecipeCategory extends BlankRecipeCategory<Alkahe
 	private final String localizedName;
 
 	public AlkahestryChargingRecipeCategory(IGuiHelper guiHelper) {
+		super(guiHelper);
 		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/alkahest_charging.png"), 0, 0, 95, 36);
 		localizedName = LanguageHelper.getLocalization("jei.recipe.alkahest_charging");
 	}
@@ -60,5 +60,4 @@ public class AlkahestryChargingRecipeCategory extends BlankRecipeCategory<Alkahe
 		recipeLayout.getItemStacks().set(TOME_SLOT, tome);
 		recipeLayout.getItemStacks().set(OUTPUT_SLOT, output);
 	}
-
 }

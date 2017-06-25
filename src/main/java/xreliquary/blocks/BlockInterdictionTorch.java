@@ -82,9 +82,9 @@ public class BlockInterdictionTorch extends BlockTorch {
 				Vec3d angleOfAttack = new Vec3d(entity.posX - (pos.getX() + 0.5D), entity.posY - pos.getY(), entity.posZ - (pos.getZ() + 0.5D));
 
 				// we use the resultant vector to determine the force to apply.
-				double xForce = angleOfAttack.xCoord * knockbackMultiplier * reductionCoefficient;
-				double yForce = angleOfAttack.yCoord * knockbackMultiplier * reductionCoefficient;
-				double zForce = angleOfAttack.zCoord * knockbackMultiplier * reductionCoefficient;
+				double xForce = angleOfAttack.x * knockbackMultiplier * reductionCoefficient;
+				double yForce = angleOfAttack.y * knockbackMultiplier * reductionCoefficient;
+				double zForce = angleOfAttack.z * knockbackMultiplier * reductionCoefficient;
 				entity.motionX += xForce;
 				entity.motionY += yForce;
 				entity.motionZ += zForce;

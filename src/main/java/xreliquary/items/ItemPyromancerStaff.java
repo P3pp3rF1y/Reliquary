@@ -146,13 +146,13 @@ public class ItemPyromancerStaff extends ItemToggleable {
 				//blaze fireball!
 				if(removeItemFromInternalStorage(stack, Items.BLAZE_POWDER, getBlazePowderCost(), player.world.isRemote, player)) {
 					player.world.playEvent(player, 1018, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
-					EntitySmallFireball fireball = new EntitySmallFireball(player.world, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
-					fireball.accelerationX = lookVec.xCoord;
-					fireball.accelerationY = lookVec.yCoord;
-					fireball.accelerationZ = lookVec.zCoord;
-					fireball.posX += lookVec.xCoord;
-					fireball.posY += lookVec.yCoord;
-					fireball.posZ += lookVec.zCoord;
+					EntitySmallFireball fireball = new EntitySmallFireball(player.world, player, lookVec.x, lookVec.y, lookVec.z);
+					fireball.accelerationX = lookVec.x;
+					fireball.accelerationY = lookVec.y;
+					fireball.accelerationZ = lookVec.z;
+					fireball.posX += lookVec.x;
+					fireball.posY += lookVec.y;
+					fireball.posZ += lookVec.z;
 					fireball.posY = player.posY + player.getEyeHeight();
 					player.world.spawnEntity(fireball);
 				}
@@ -164,13 +164,13 @@ public class ItemPyromancerStaff extends ItemToggleable {
 				//ghast fireball!
 				if(removeItemFromInternalStorage(stack, Items.FIRE_CHARGE, getFireChargeCost(), player.world.isRemote, player)) {
 					player.world.playEvent(player, 1016, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
-					EntityLargeFireball fireball = new EntityLargeFireball(player.world, player, lookVec.xCoord, lookVec.yCoord, lookVec.zCoord);
-					fireball.accelerationX = lookVec.xCoord;
-					fireball.accelerationY = lookVec.yCoord;
-					fireball.accelerationZ = lookVec.zCoord;
-					fireball.posX += lookVec.xCoord;
-					fireball.posY += lookVec.yCoord;
-					fireball.posZ += lookVec.zCoord;
+					EntityLargeFireball fireball = new EntityLargeFireball(player.world, player, lookVec.x, lookVec.y, lookVec.z);
+					fireball.accelerationX = lookVec.x;
+					fireball.accelerationY = lookVec.y;
+					fireball.accelerationZ = lookVec.z;
+					fireball.posX += lookVec.x;
+					fireball.posY += lookVec.y;
+					fireball.posZ += lookVec.z;
 					fireball.posY = player.posY + player.getEyeHeight();
 					player.world.spawnEntity(fireball);
 

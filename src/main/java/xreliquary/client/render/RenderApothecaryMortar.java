@@ -24,7 +24,7 @@ public class RenderApothecaryMortar extends TileEntitySpecialRenderer<TileEntity
 
 		if(!mortarItems.get(0).isEmpty()) {
 			EntityItem item = new EntityItem(tile.getWorld(), 0.0D, 0.0D, 0.0D, mortarItems.get(0));
-			item.getEntityItem().setCount(1);
+			item.getItem().setCount(1);
 			item.hoverStart = 0.0F;
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(-0.02F, 0F, 0F);
@@ -37,7 +37,7 @@ public class RenderApothecaryMortar extends TileEntitySpecialRenderer<TileEntity
 
 		if(!mortarItems.get(1).isEmpty()) {
 			EntityItem item = new EntityItem(tile.getWorld(), 0.0D, 0.0D, 0.0D, mortarItems.get(1));
-			item.getEntityItem().setCount(1);
+			item.getItem().setCount(1);
 			item.hoverStart = 0.0F;
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0F, 0F, 0.02F);
@@ -50,7 +50,7 @@ public class RenderApothecaryMortar extends TileEntitySpecialRenderer<TileEntity
 
 		if(!mortarItems.get(2).isEmpty()) {
 			EntityItem item = new EntityItem(tile.getWorld(), 0.0D, 0.0D, 0.0D, mortarItems.get(2));
-			item.getEntityItem().setCount(1);
+			item.getItem().setCount(1);
 			item.hoverStart = 0.0F;
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0.02F, 0F, 0F);
