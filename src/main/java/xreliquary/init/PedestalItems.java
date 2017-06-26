@@ -1,8 +1,12 @@
 package xreliquary.init;
 
+import WayofTime.bloodmagic.item.ItemDaggerOfSacrifice;
 import net.minecraft.block.BlockCompressedPowered;
 import net.minecraft.item.*;
 import net.minecraftforge.fml.common.Loader;
+import slimeknights.tconstruct.library.tools.SwordCore;
+import slimeknights.tconstruct.tools.melee.item.BattleAxe;
+import slimeknights.tconstruct.tools.tools.Scythe;
 import xreliquary.items.ItemHarvestRod;
 import xreliquary.items.ItemRendingGale;
 import xreliquary.pedestal.PedestalRegistry;
@@ -22,17 +26,14 @@ public class PedestalItems {
 		PedestalRegistry.registerItemWrapper(ItemFishingRod.class, PedestalFishingRodWrapper.class);
 
 		if(Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
-			//TODO readd with TiCon
-			//PedestalRegistry.registerItemWrapper(SwordCore.class, PedestalMeleeWeaponWrapper.class);
-			//PedestalRegistry.registerItemWrapper(Scythe.class, PedestalMeleeWeaponWrapper.class);
+			PedestalRegistry.registerItemWrapper(SwordCore.class, PedestalMeleeWeaponWrapper.class);
+			PedestalRegistry.registerItemWrapper(Scythe.class, PedestalMeleeWeaponWrapper.class);
 
 			//not implemented currently in TiCon
-			//PedestalRegistry.registerItemWrapper(BattleAxe.class, new PedestalMeleeWeaponWrapper());
+			PedestalRegistry.registerItemWrapper(BattleAxe.class, PedestalMeleeWeaponWrapper.class);
 		}
-/* TODO readd with blood magic
 		if (Loader.isModLoaded(Compatibility.MOD_ID.BLOOD_MAGIC)) {
 			PedestalRegistry.registerItemWrapper(ItemDaggerOfSacrifice.class, PedestalMeleeWeaponWrapper.class);
 		}
-*/
 	}
 }
