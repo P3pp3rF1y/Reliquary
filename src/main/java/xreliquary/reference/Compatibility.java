@@ -15,7 +15,7 @@ public class Compatibility {
 		public static final String BAUBLES = "baubles";
 		public static final String BOTANIA = "botania";
 		//public static final String THAUMCRAFT = "Thaumcraft";
-		public static final String WAILA = "Waila";
+		public static final String WAILA = "waila";
 		public static final String TINKERS_CONSTRUCT = "tconstruct";
 		public static final String ENDERIO = "EnderIO";
 		//public static final String BLOOD_MAGIC = "BloodMagic";
