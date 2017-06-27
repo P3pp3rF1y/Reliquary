@@ -28,12 +28,7 @@ public class PedestalItems {
 		if(Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
 			PedestalRegistry.registerItemWrapper(SwordCore.class, PedestalMeleeWeaponWrapper.class);
 			PedestalRegistry.registerItemWrapper(Scythe.class, PedestalMeleeWeaponWrapper.class);
-
-			//not implemented currently in TiCon
-			PedestalRegistry.registerItemWrapper(BattleAxe.class, PedestalMeleeWeaponWrapper.class);
-		}
-		if (Loader.isModLoaded(Compatibility.MOD_ID.BLOOD_MAGIC)) {
-			PedestalRegistry.registerItemWrapper(ItemDaggerOfSacrifice.class, PedestalMeleeWeaponWrapper.class);
+			//PedestalRegistry.registerItemWrapper(BattleAxe.class, PedestalMeleeWeaponWrapper.class); not implemented yet in TiCon
 		}
 	}
 }

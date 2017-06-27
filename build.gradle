@@ -41,10 +41,6 @@ repositories {
         artifactPattern "http://addons-origin.cursecdn.com/files/${thaumcraft_cf}/[module]-[revision].[ext]"
     }
     ivy {
-        name "BloodMagic"
-        artifactPattern "http://addons-origin.cursecdn.com/files/${blood_magic_cf}/[module]-[revision].[ext]"
-    }
-    ivy {
         name "Botania"
         artifactPattern "http://botaniamod.net/files/[module] r[revision].[ext]"
     }
@@ -73,7 +69,6 @@ dependencies {
     deobfCompile "mcp.mobius.waila:Waila:${waila_version}"
     deobfCompile name: 'JustEnoughResources', version: jer_version, ext: 'jar'
     deobfCompile name: 'Baubles', version: baubles_version, ext: 'jar'
-    deobfCompile name: 'BloodMagic', version: blood_magic_version, ext: 'jar'
     deobfCompile name: 'Botania', version: botania_version, ext: 'jar'
     deobfCompile name: 'Mantle', version: mantle_version, ext: 'jar'
     deobfCompile name: 'TConstruct', version: tconstruct_version, ext: 'jar'
