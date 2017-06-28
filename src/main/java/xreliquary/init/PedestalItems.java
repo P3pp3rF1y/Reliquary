@@ -1,11 +1,9 @@
 package xreliquary.init;
 
-import WayofTime.bloodmagic.item.ItemDaggerOfSacrifice;
 import net.minecraft.block.BlockCompressedPowered;
 import net.minecraft.item.*;
 import net.minecraftforge.fml.common.Loader;
 import slimeknights.tconstruct.library.tools.SwordCore;
-import slimeknights.tconstruct.tools.melee.item.BattleAxe;
 import slimeknights.tconstruct.tools.tools.Scythe;
 import xreliquary.items.ItemHarvestRod;
 import xreliquary.items.ItemRendingGale;
