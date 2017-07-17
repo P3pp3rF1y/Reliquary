@@ -1,4 +1,3 @@
-/*
 package xreliquary.compat.waila.provider;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -121,4 +120,3 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		return null;
 	}
 }
-*/
