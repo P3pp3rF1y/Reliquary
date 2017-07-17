@@ -1,7 +1,6 @@
 package xreliquary.entities;
 
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.MobEffects;
@@ -13,7 +12,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import xreliquary.init.ModPotions;
-import xreliquary.potions.PotionPacification;
 
 import javax.annotation.Nonnull;
 
@@ -39,8 +37,7 @@ public class EntityKrakenSlime extends EntityThrowable {
 			EntityLiving living = (EntityLiving) result.entityHit;
 			living.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 5.0f);
 			living.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 20 * 20, 2));
-			if (living instanceof EntityLiving)
-				living.addPotionEffect(new PotionEffect(ModPotions.potionPacification, 15 * 20));
+			living.addPotionEffect(new PotionEffect(ModPotions.potionPacification, 15 * 20));
 		}
 
 		for(int count = 0; count < 6; ++count) {
