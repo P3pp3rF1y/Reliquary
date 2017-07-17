@@ -1,4 +1,4 @@
-package xreliquary.util.potions;
+package xreliquary.potions;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

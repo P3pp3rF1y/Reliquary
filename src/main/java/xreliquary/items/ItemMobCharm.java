@@ -37,6 +37,7 @@ import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.MobHelper;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
@@ -164,8 +165,7 @@ public class ItemMobCharm extends ItemBase {
 		}
 
 		if(resetTarget) {
-			entity.setAttackTarget(null);
-			entity.setRevengeTarget(null);
+			MobHelper.resetTarget(entity);
 		}
 	}
 
@@ -194,20 +194,7 @@ public class ItemMobCharm extends ItemBase {
 		}
 
 		if(resetTarget) {
-			entity.setAttackTarget(null);
-			entity.setRevengeTarget(null);
-			if(entity instanceof EntityPigZombie) {
-				//need to reset ai task because it doesn't get reset with setAttackTarget or setRevengeTarget and keeps player as target
-				for (EntityAITasks.EntityAITaskEntry aiTask : entity.targetTasks.taskEntries) {
-					if (aiTask.action instanceof EntityAIHurtByTarget) {
-						aiTask.action.resetTask();
-						break;
-					}
-				}
-
-				//also need to reset anger target because apparently setRevengeTarget doesn't set this to null
-				resetAngerTarget((EntityPigZombie) entity);
-			}
+			MobHelper.resetTarget(entity, true);
 		}
 	}
 
@@ -308,16 +295,6 @@ public class ItemMobCharm extends ItemBase {
 			}
 		}
 		return false;
-	}
-
-	private static final Field SET_ANGER_TARGET = ReflectionHelper.findField(EntityPigZombie.class, "field_175459_bn", "angerTargetUUID");
-
-	private void resetAngerTarget(EntityPigZombie zombiePigman) {
-		try {
-			SET_ANGER_TARGET.set(zombiePigman, null);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private boolean isMobCharmPresent(EntityPlayer player, byte type) {
