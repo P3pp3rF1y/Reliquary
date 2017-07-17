@@ -459,7 +459,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 */
 	void seekTarget() {
 		Entity closestTarget = null;
-		List<String> entitiesThatCanBeHunted = Settings.SeekerShot.entitiesThatCanBeHunted;
+		List<String> huntableEntitiesBlacklist = Settings.SeekerShot.huntableEntitiesBlacklist;
 		List targetsList = world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5));
 		Iterator iTarget = targetsList.iterator();
 		double closestDistance = Double.MAX_VALUE;
@@ -467,7 +467,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			Entity currentTarget = (Entity) iTarget.next();
 
 			String entityName = EntityList.getEntityString(currentTarget);
-			if(!entitiesThatCanBeHunted.contains(entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead))
+			if(huntableEntitiesBlacklist.contains(entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead))
 				continue;
 			// goes for the closest thing it can
 			if(this.getDistanceToEntity(currentTarget) < closestDistance) {

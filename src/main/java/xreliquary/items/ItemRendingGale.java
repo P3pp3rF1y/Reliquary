@@ -378,14 +378,14 @@ public class ItemRendingGale extends ItemToggleable {
 		double upperY = posY + (double) getRadialPushRadius() / 2D;
 		double upperZ = posZ + getRadialPushRadius();
 
-		List<String> entitiesThatCanBePushed = Settings.RendingGale.entitiesThatCanBePushed;
-		List<String> projectilesThatCanBePushed = Settings.RendingGale.projectilesThatCanBePushed;
+		List<String> pushableEntitiesBlacklist = Settings.RendingGale.pushableEntitiesBlacklist;
+		List<String> pushableProjectilesBlacklist = Settings.RendingGale.pushableProjectilesBlacklist;
 
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 
 		for(Entity entity : entities) {
 			String entityName = EntityList.getEntityString(entity);
-			if(entitiesThatCanBePushed.contains(entityName) || (!pull && canPushProjectiles() && projectilesThatCanBePushed.contains(entityName))) {
+			if(!pushableEntitiesBlacklist.contains(entityName) || (!pull && canPushProjectiles() && !pushableProjectilesBlacklist.contains(entityName))) {
 				double distance = getDistanceToEntity(posX, posY, posZ, entity);
 				if(distance >= getRadialPushRadius())
 					continue;

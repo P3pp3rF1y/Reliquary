@@ -189,8 +189,8 @@ public class Settings {
 	public static class InterdictionTorch {
 		public static int pushRadius;
 		public static boolean canPushProjectiles;
-		public static List<String> entitiesThatCanBePushed;
-		public static List<String> projectilesThatCanBePushed;
+		public static List<String> pushableEntitiesBlacklist;
+		public static List<String> pushableProjectilesBlacklist;
 	}
 
 	public static class KrakenShell {
@@ -247,8 +247,8 @@ public class Settings {
 		public static int blockTargetRange;
 		public static int pushPullRadius;
 		public static boolean canPushProjectiles;
-		public static List<String> entitiesThatCanBePushed;
-		public static List<String> projectilesThatCanBePushed;
+		public static List<String> pushableEntitiesBlacklist;
+		public static List<String> pushableProjectilesBlacklist;
 		public static int pedestalFlightRange;
 		public static int pedestalCostPerSecond;
 	}
@@ -279,7 +279,7 @@ public class Settings {
 	}
 
 	public static class SeekerShot {
-		public static List<String> entitiesThatCanBeHunted;
+		public static List<String> huntableEntitiesBlacklist;
 	}
 
 	public static class InfernalTear {
