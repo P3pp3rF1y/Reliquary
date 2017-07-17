@@ -21,7 +21,7 @@ public class PotionFlight extends Potion {
 
 	public PotionFlight() {
 		super(false, 0);
-		this.setPotionName("flight");
+		this.setPotionName("xreliquary.potion.flight");
 		this.setIconIndex(0, 0);
 		this.setRegistryName(Reference.MOD_ID, "flight_potion");
 	}

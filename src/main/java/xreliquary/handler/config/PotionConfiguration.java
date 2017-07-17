@@ -197,7 +197,7 @@ public class PotionConfiguration {
 	private static void addDefaultPotionMap(ConfigCategory category) {
 		//TIER ONE INGREDIENTS, these are always 0 potency and have minimal durations (3 for positive, 1 for negative or super-positive)
 		addPotionConfig(category, Items.SUGAR, speed(3, 0), haste(3, 0));
-		addPotionConfig(category, Items.APPLE, heal(0), hboost(3, 0));
+		addPotionConfig(category, Items.APPLE, heal(0), hboost(3, 0), cure(1, 0));
 		addPotionConfig(category, Items.COAL, blind(1, 0), absorb(3, 0));
 		addPotionConfig(category, Items.COAL, 1, invis(1, 0), wither(0, 0));
 		addPotionConfig(category, Items.FEATHER, jump(3, 0), weak(1, 0));
@@ -250,8 +250,8 @@ public class PotionConfiguration {
 		addPotionConfig(category, Items.GHAST_TEAR, regen(3, 0), absorb(5, 0));
 		addPotionConfig(category, Items.FERMENTED_SPIDER_EYE, vision(4, 0), poison(2, 0), speed(3, 0), haste(3, 0)); //combo
 		addPotionConfig(category, Items.GOLDEN_CARROT, dboost(3, 0), haste(3, 0), hboost(3, 0), vision(3, 0)); //combo
-		addPotionConfig(category, Items.GOLD_INGOT, dboost(4, 0), haste(4, 0)); //combo
-		addPotionConfig(category, XRRecipes.RIB_BONE, weak(3, 0), fatigue(3, 0));
+		addPotionConfig(category, Items.GOLD_INGOT, dboost(4, 0), haste(4, 0), cure(1, 0)); //combo
+		addPotionConfig(category, XRRecipes.RIB_BONE, weak(3, 0), fatigue(3, 0), cure(1, 0));
 		addPotionConfig(category, Items.ENDER_PEARL, invis(5, 0), speed(5, 0));
 		addPotionConfig(category, Items.BLAZE_ROD, dboost(8, 0), harm(0));
 		addPotionConfig(category, Items.FIRE_CHARGE, dboost(4, 0), harm(0), blind(1, 0), absorb(3, 0)); //combo
@@ -260,16 +260,18 @@ public class PotionConfiguration {
 		addPotionConfig(category, XRRecipes.SLIME_PEARL, resist(5, 0), absorb(5, 0));
 		addPotionConfig(category, XRRecipes.SHELL_FRAGMENT, absorb(5, 0), breath(5, 0));
 		addPotionConfig(category, XRRecipes.BAT_WING, jump(5, 0), weak(3, 0));
+		addPotionConfig(category, Items.GOLDEN_APPLE, cure(1, 1));
+		addPotionConfig(category, Items.GOLDEN_APPLE, 1, cure(1, 2));
 
 		//TIER FOUR INGREDIENTS, these carry multiple one-potency effects and have the most duration for any given effect.
-		addPotionConfig(category, Items.DIAMOND, resist(6, 1), absorb(6, 1), fireres(6, 0));
-		addPotionConfig(category, XRRecipes.WITHER_RIB, wither(2, 1), weak(3, 1), slow(3, 1), fatigue(3, 1));
+		addPotionConfig(category, Items.DIAMOND, resist(6, 1), absorb(6, 1), fireres(6, 0), cure(1, 0));
+		addPotionConfig(category, XRRecipes.WITHER_RIB, wither(2, 1), weak(3, 1), slow(3, 1), fatigue(3, 1), cure(1, 0));
 		addPotionConfig(category, Items.ENDER_EYE, dboost(6, 1), invis(6, 0), speed(6, 1), harm(1));
-		addPotionConfig(category, Items.EMERALD, haste(6, 1), speed(6, 1), hboost(6, 1));
-		addPotionConfig(category, Items.NETHER_STAR, hboost(24, 1), regen(24, 1), absorb(24, 1)); //nether star is holy stonk
+		addPotionConfig(category, Items.EMERALD, haste(6, 1), speed(6, 1), hboost(6, 1), cure(1, 1));
+		addPotionConfig(category, Items.NETHER_STAR, hboost(24, 1), regen(24, 1), absorb(24, 1), cure(1, 2)); //nether star is holy stonk
 		addPotionConfig(category, XRRecipes.MOLTEN_CORE, dboost(6, 1), fireres(6, 0), harm(1));
-		addPotionConfig(category, XRRecipes.STORM_EYE, haste(24, 1), speed(24, 1), jump(24, 1), harm(1));
-		addPotionConfig(category, XRRecipes.FERTILE_ESSENCE, hboost(8, 1), regen(3, 1), heal(1), satur(1), weak(9, 1), fatigue(9, 1));
+		addPotionConfig(category, XRRecipes.STORM_EYE, haste(24, 1), speed(24, 1), jump(24, 1), harm(1), cure(1, 1));
+		addPotionConfig(category, XRRecipes.FERTILE_ESSENCE, hboost(8, 1), regen(3, 1), heal(1), satur(1), weak(9, 1), fatigue(9, 1), cure(1, 0));
 		addPotionConfig(category, XRRecipes.FROZEN_CORE, absorb(6, 1), slow(3, 1), fatigue(3, 1), harm(1), fireres(6, 0));
 		addPotionConfig(category, XRRecipes.NEBULOUS_HEART, vision(6, 0), invis(6, 0), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
 		addPotionConfig(category, XRRecipes.INFERNAL_CLAW, harm(1), resist(6, 1), fireres(6, 0), dboost(6, 1), satur(1), heal(1));
@@ -365,6 +367,10 @@ public class PotionConfiguration {
 
 	private static String blind(int duration, int potency) {
 		return effectString(Reference.BLIND, Integer.toString(duration), Integer.toString(potency));
+	}
+
+	private static String cure(int duration, int potency) {
+		return effectString(Reference.CURE, Integer.toString(duration), Integer.toString(potency));
 	}
 
 	private static String effectString(String name, String duration, String potency) {

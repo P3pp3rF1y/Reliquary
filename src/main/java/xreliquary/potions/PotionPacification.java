@@ -13,7 +13,7 @@ public class PotionPacification extends Potion {
 
 	public PotionPacification() {
 		super(false, 0);
-		this.setPotionName("pacification");
+		this.setPotionName("xreliquary.potion.pacification");
 		this.setIconIndex(0, 0);
 		this.setRegistryName(Reference.MOD_ID, "pacification_potion");
 	}

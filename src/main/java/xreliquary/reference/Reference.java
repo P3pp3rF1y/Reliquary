@@ -101,6 +101,9 @@ public class Reference {
 	public static final String WITHER = "wither";
 	public static final String BLIND = "blindness";
 
+	//reliquary potion names
+	public static final String CURE = MOD_ID + ":cure_potion";
+
 	public static final String JEI_CATEGORY_ALKAHESTRY_CRAFTING = DOMAIN + "alkahestryCrafting";
 	public static final String JEI_CATEGORY_ALKAHESTRY_CHARGING = DOMAIN + "alkahestryCharging";
 	public static final String JEI_CATEGORY_MORTAR = DOMAIN + "mortar";
