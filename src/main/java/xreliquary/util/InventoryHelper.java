@@ -1,16 +1,23 @@
 package xreliquary.util;
 
+import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.oredict.OreDictionary;
+import xreliquary.init.ModItems;
+import xreliquary.items.ItemToggleable;
+import xreliquary.reference.Compatibility;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -325,5 +332,42 @@ public class InventoryHelper {
 
 		player.inventory.markDirty();
 		return true;
+	}
+
+	public static boolean playerHasItem(EntityPlayer player, Item item) {
+		return playerHasItem(player, item, false);
+	}
+
+	public static boolean playerHasItem(EntityPlayer player, Item item, boolean checkEnabled) {
+		for(ItemStack stack : player.inventory.mainInventory) {
+			if(stack.isEmpty())
+				continue;
+			if(stack.getItem() == item) {
+				if(checkEnabled) {
+					if(stack.getItem() instanceof ItemToggleable) {
+						return ((ItemToggleable) stack.getItem()).isEnabled(stack);
+					}
+				}
+				return true;
+			}
+		}
+
+		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
+			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
+
+			for(int i = 0; i < inventoryBaubles.getSlots(); i++) {
+				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
+				if(!baubleStack.isEmpty() && baubleStack.getItem() == item) {
+					if(checkEnabled) {
+						if(baubleStack.getItem() instanceof ItemToggleable) {
+							return ((ItemToggleable) baubleStack.getItem()).isEnabled(baubleStack);
+						}
+					}
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }

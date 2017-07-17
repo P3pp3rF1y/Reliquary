@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
+import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -47,7 +48,8 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemFortuneCoin extends ItemBauble implements IPedestalActionItem {
+@Optional.Interface(iface = "baubles.api.IBauble", modid = Compatibility.MOD_ID.BAUBLES, striprefs = true)
+public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IBauble {
 
 	public ItemFortuneCoin() {
 		super(Names.Items.FORTUNE_COIN);

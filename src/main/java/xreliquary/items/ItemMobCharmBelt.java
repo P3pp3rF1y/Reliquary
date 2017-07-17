@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -22,7 +23,8 @@ import xreliquary.reference.Settings;
 
 import javax.annotation.Nonnull;
 
-public class ItemMobCharmBelt extends ItemBauble {
+@Optional.Interface(iface = "baubles.api.IBauble", modid = Compatibility.MOD_ID.BAUBLES, striprefs = true)
+public class ItemMobCharmBelt extends ItemBase implements IBauble {
 	private static final String SLOTS_TAG = "Slots";
 	private static final String TYPE_TAG = "Type";
 	private static final String DAMAGE_TAG = "Damage";
