@@ -6,7 +6,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -59,13 +58,12 @@ public class ItemBullet extends ItemBase {
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
 		if(stack.getMetadata() >= 2)
 			LanguageHelper.formatTooltip("item." + Names.Items.BULLET + "_" + stack.getMetadata() + ".tooltip", null, list);
-		if(isPotionAttached(stack))
-			PotionUtils.addPotionTooltip(stack, list, 1F);
+		XRPotionHelper.addPotionTooltip(stack, list);
 	}
 
 	private boolean isPotionAttached(ItemStack stack) {
 		//noinspection ConstantConditions
-		return stack.hasTagCompound() && stack.getTagCompound().hasKey("CustomPotionEffects");
+		return !XRPotionHelper.getPotionEffectsFromStack(stack).isEmpty();
 	}
 
 	@Override
@@ -77,7 +75,7 @@ public class ItemBullet extends ItemBase {
 		//adding just basic bullets with potions here even though all bullet types can have potions attached
 		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
 			ItemStack neutralBulletWithPotion = new ItemStack(ModItems.bullet, 1, 1);
-			PotionUtils.appendEffects(neutralBulletWithPotion, XRPotionHelper.changeDuration(essence.getEffects(), 0.2F));
+			XRPotionHelper.addPotionEffectsToStack(neutralBulletWithPotion, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F));
 
 			subItems.add(neutralBulletWithPotion);
 		}

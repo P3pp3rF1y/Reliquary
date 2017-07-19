@@ -4,11 +4,9 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
-import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
@@ -61,7 +59,7 @@ public class PotionBulletsRecipe implements IRecipe {
 
 		if(!potion.isEmpty() && potion.getItem() == ModItems.potion && ModItems.potion.getLingering(potion)) {
 			ItemStack potionBullets = new ItemStack(ModItems.bullet, 8, bullet.getMetadata());
-			PotionUtils.appendEffects(potionBullets, XRPotionHelper.changeDuration(new PotionEssence(potion.getTagCompound()).getEffects(), 0.2F));
+			XRPotionHelper.addPotionEffectsToStack(potionBullets, XRPotionHelper.changePotionEffectsDuration(XRPotionHelper.getPotionEffectsFromStack(potion), 0.2F));
 			return potionBullets;
 		} else {
 			return ItemStack.EMPTY;

@@ -1,13 +1,12 @@
 package xreliquary.entities;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -18,15 +17,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.init.ModItems;
+import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public class EntityXRTippedArrow extends EntityArrow {
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityTippedArrow.class, DataSerializers.VARINT);
-	private final Set<PotionEffect> customPotionEffects = Sets.newHashSet();
+	private List<PotionEffect> effects = Lists.newArrayList();
 
 	public EntityXRTippedArrow(World worldIn) {
 		super(worldIn);
@@ -41,16 +39,9 @@ public class EntityXRTippedArrow extends EntityArrow {
 	}
 
 	public void setPotionEffect(ItemStack stack) {
-		Collection<PotionEffect> collection = PotionUtils.getFullEffectsFromItem(stack);
+		effects = XRPotionHelper.getPotionEffectsFromStack(stack);
 
-		this.customPotionEffects.addAll(collection.stream().map(PotionEffect::new).collect(Collectors.toList()));
-
-		this.dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(collection));
-	}
-
-	private void addEffect(PotionEffect effect) {
-		this.customPotionEffects.add(effect);
-		this.getDataManager().set(COLOR, PotionUtils.getPotionColorFromEffectList(this.customPotionEffects));
+		this.dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(effects));
 	}
 
 	@Override
@@ -74,9 +65,9 @@ public class EntityXRTippedArrow extends EntityArrow {
 			} else {
 				this.spawnPotionParticles(2);
 			}
-		} else if(this.inGround && this.timeInGround != 0 && !this.customPotionEffects.isEmpty() && this.timeInGround >= 600) {
+		} else if(this.inGround && this.timeInGround != 0 && !this.effects.isEmpty() && this.timeInGround >= 600) {
 			this.world.setEntityState(this, (byte) 0);
-			this.customPotionEffects.clear();
+			this.effects.clear();
 			this.dataManager.set(COLOR, 0);
 		}
 	}
@@ -106,15 +97,7 @@ public class EntityXRTippedArrow extends EntityArrow {
 	public void writeEntityToNBT(NBTTagCompound compound) {
 		super.writeEntityToNBT(compound);
 
-		if(!this.customPotionEffects.isEmpty()) {
-			NBTTagList nbttaglist = new NBTTagList();
-
-			for(PotionEffect potioneffect : this.customPotionEffects) {
-				nbttaglist.appendTag(potioneffect.writeCustomPotionEffectToNBT(new NBTTagCompound()));
-			}
-
-			compound.setTag("CustomPotionEffects", nbttaglist);
-		}
+		XRPotionHelper.addPotionEffectsToCompoundTag(compound, effects);
 	}
 
 	/**
@@ -124,10 +107,10 @@ public class EntityXRTippedArrow extends EntityArrow {
 	public void readEntityFromNBT(NBTTagCompound compound) {
 		super.readEntityFromNBT(compound);
 
-		PotionUtils.getFullEffectsFromTag(compound).forEach(this::addEffect);
+		effects = XRPotionHelper.getPotionEffectsFromCompoundTag(compound);
 
-		if(!this.customPotionEffects.isEmpty()) {
-			this.dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(this.customPotionEffects));
+		if(!effects.isEmpty()) {
+			this.dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(effects));
 		}
 	}
 
@@ -135,19 +118,17 @@ public class EntityXRTippedArrow extends EntityArrow {
 	protected void arrowHit(EntityLivingBase living) {
 		super.arrowHit(living);
 
-		if(!this.customPotionEffects.isEmpty()) {
-			this.customPotionEffects.forEach(living::addPotionEffect);
-		}
+		XRPotionHelper.applyEffectsToEntity(effects, this, this.shootingEntity, living);
 	}
 
 	@Nonnull
 	@Override
 	protected ItemStack getArrowStack() {
-		if(this.customPotionEffects.isEmpty()) {
+		if(this.effects.isEmpty()) {
 			return new ItemStack(Items.ARROW);
 		} else {
 			ItemStack itemstack = new ItemStack(ModItems.tippedArrow);
-			PotionUtils.appendEffects(itemstack, this.customPotionEffects);
+			XRPotionHelper.addPotionEffectsToStack(itemstack, effects);
 			return itemstack;
 		}
 	}

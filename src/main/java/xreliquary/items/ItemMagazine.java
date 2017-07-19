@@ -6,7 +6,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -55,8 +54,7 @@ public class ItemMagazine extends ItemBase {
 		//taking tooltip from bullets as it's the same text for magazines
 		if(stack.getMetadata() >= 2)
 			LanguageHelper.formatTooltip("item." + Names.Items.BULLET + "_" + stack.getMetadata() + ".tooltip", null, list);
-		if(isPotionAttached(stack))
-			PotionUtils.addPotionTooltip(stack, list, 1F);
+		XRPotionHelper.addPotionTooltip(stack, list);
 	}
 
 	@Nonnull
@@ -74,7 +72,7 @@ public class ItemMagazine extends ItemBase {
 		//similar to bullets adding just basic magazines with potions here even though all magazine types can have potions attached
 		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
 			ItemStack neutralMagazineWithPotion = new ItemStack(ModItems.magazine, 1, 1);
-			PotionUtils.appendEffects(neutralMagazineWithPotion, XRPotionHelper.changeDuration(essence.getEffects(), 0.2F));
+			XRPotionHelper.addPotionEffectsToStack(neutralMagazineWithPotion, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F));
 
 			subItems.add(neutralMagazineWithPotion);
 		}
@@ -82,6 +80,6 @@ public class ItemMagazine extends ItemBase {
 
 	private boolean isPotionAttached(ItemStack stack) {
 		//noinspection ConstantConditions
-		return stack.hasTagCompound() && stack.getTagCompound().hasKey("CustomPotionEffects");
+		return !XRPotionHelper.getPotionEffectsFromStack(stack).isEmpty();
 	}
 }

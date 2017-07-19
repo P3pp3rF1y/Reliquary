@@ -31,7 +31,7 @@ public class ItemPotionEssence extends ItemBase {
 
 		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
 			ItemStack essenceItem = new ItemStack(ModItems.potionEssence, 1);
-			essenceItem.setTagCompound(essence.writeToNBT());
+			XRPotionHelper.addPotionEffectsToStack(essenceItem, essence.getEffects());
 
 			subItems.add(essenceItem);
 		}
@@ -40,7 +40,6 @@ public class ItemPotionEssence extends ItemBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean flag) {
-		PotionEssence essence = new PotionEssence(stack.getTagCompound());
-		XRPotionHelper.addPotionInfo(essence, list);
+		XRPotionHelper.addPotionTooltip(stack, list);
 	}
 }

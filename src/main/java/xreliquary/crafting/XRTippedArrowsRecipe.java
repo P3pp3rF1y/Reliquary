@@ -5,11 +5,9 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
-import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
@@ -55,7 +53,7 @@ public class XRTippedArrowsRecipe implements IRecipe {
 
 		if(!itemstack.isEmpty() && itemstack.getItem() == ModItems.potion && ModItems.potion.getLingering(itemstack)) {
 			ItemStack tippedArrows = new ItemStack(ModItems.tippedArrow, 8);
-			PotionUtils.appendEffects(tippedArrows, XRPotionHelper.changeDuration(new PotionEssence(itemstack.getTagCompound()).getEffects(), 0.125F));
+			XRPotionHelper.addPotionEffectsToStack(tippedArrows, XRPotionHelper.changePotionEffectsDuration(XRPotionHelper.getPotionEffectsFromStack(itemstack), 0.125F));
 			return tippedArrows;
 		} else {
 			return ItemStack.EMPTY;

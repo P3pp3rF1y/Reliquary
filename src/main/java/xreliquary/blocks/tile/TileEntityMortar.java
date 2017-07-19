@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
@@ -14,7 +15,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import xreliquary.init.ModItems;
-import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
 import xreliquary.util.potions.XRPotionHelper;
 
@@ -114,8 +114,8 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 		if(pestleUsedCounter >= PESTLE_USAGE_MAX) {
 			//we've "maxed" the pestle counter and we need to see if the essence would contain potion effects.
 			//if it doesn't, just return the ingredients to the player, we are nice like that.
-			PotionEssence resultEssence = new PotionEssence(potionIngredients.toArray(new PotionIngredient[potionIngredients.size()]));
-			if(resultEssence.getEffects().size() == 0) {
+			List<PotionEffect> resultEffects = XRPotionHelper.combineIngredients(potionIngredients);
+			if(resultEffects.isEmpty()) {
 				pestleUsedCounter = 0;
 				for(int clearSlot = 0; clearSlot < this.getSizeInventory(); ++clearSlot) {
 					if(this.getStackInSlot(clearSlot).isEmpty())
@@ -135,7 +135,7 @@ public class TileEntityMortar extends TileEntityInventory implements IWailaDataC
 				if(world.isRemote)
 					return true;
 				ItemStack resultItem = new ItemStack(ModItems.potionEssence, 1, 0);
-				resultItem.setTagCompound(resultEssence.writeToNBT());
+				XRPotionHelper.addPotionEffectsToStack(resultItem, resultEffects);
 
 				EntityItem itemEntity = new EntityItem(world, this.getPos().getX() + 0.5D, this.getPos().getY() + 0.5D, this.getPos().getZ() + 0.5D, resultItem);
 				world.spawnEntity(itemEntity);

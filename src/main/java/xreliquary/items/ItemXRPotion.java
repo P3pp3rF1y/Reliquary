@@ -43,14 +43,13 @@ public class ItemXRPotion extends ItemBase {
 	// the base potion types.
 	@Override
 	public boolean hasContainerItem(ItemStack ist) {
-		PotionEssence essence = new PotionEssence(ist.getTagCompound());
-		return essence.getEffects().size() > 0;
+		return XRPotionHelper.getPotionEffectsFromStack(ist).size() > 0;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean flag) {
-		PotionEssence essence = new PotionEssence(ist.getTagCompound());
-		XRPotionHelper.addPotionInfo(essence, list);
+		XRPotionHelper.addPotionTooltip(ist, list);
 	}
 
 	@Nonnull
@@ -65,7 +64,7 @@ public class ItemXRPotion extends ItemBase {
 			stack.shrink(1);
 		}
 
-		for(PotionEffect effect : new PotionEssence(stack.getTagCompound()).getEffects()) {
+		for(PotionEffect effect : XRPotionHelper.getPotionEffectsFromStack(stack)) {
 			if(effect == null)
 				continue;
 			player.addPotionEffect(new PotionEffect(effect.getPotion(), effect.getDuration(), effect.getAmplifier(), false, false));
@@ -106,7 +105,7 @@ public class ItemXRPotion extends ItemBase {
 		List<ItemStack> lingeringPotions = new ArrayList<>();
 		for(PotionEssence essence : Settings.Potions.uniquePotions) {
 			ItemStack potion = new ItemStack(ModItems.potion, 1);
-			potion.setTagCompound(essence.writeToNBT());
+			XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());
 			NBTHelper.setBoolean("hasPotion", potion, true);
 
 			ItemStack splashPotion = potion.copy();
@@ -130,7 +129,7 @@ public class ItemXRPotion extends ItemBase {
 	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack ist) {
-		if(!getSplash(ist) && new PotionEssence(ist.getTagCompound()).getEffects().size() > 0)
+		if(!getSplash(ist) && XRPotionHelper.getPotionEffectsFromStack(ist).size() > 0)
 			return EnumAction.DRINK;
 		return EnumAction.NONE;
 	}
@@ -160,8 +159,7 @@ public class ItemXRPotion extends ItemBase {
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		if(!getSplash(stack) && !getLingering(stack)) {
-			PotionEssence essence = new PotionEssence(stack.getTagCompound());
-			if(essence.getEffects().size() > 0) {
+			if(XRPotionHelper.getPotionEffectsFromStack(stack).size() > 0) {
 				player.setActiveHand(hand);
 				return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 			} else {

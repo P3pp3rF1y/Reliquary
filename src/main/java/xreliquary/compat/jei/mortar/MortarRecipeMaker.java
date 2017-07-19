@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -17,10 +18,10 @@ public class MortarRecipeMaker {
 
 		for(PotionEssence essence : Settings.Potions.potionCombinations) {
 
-			List<ItemStack> inputs = essence.ingredients.stream().map(ingredient -> ingredient.item).collect(Collectors.toList());
+			List<ItemStack> inputs = essence.getIngredients().stream().map(ingredient -> ingredient.item).collect(Collectors.toList());
 
 			ItemStack output = new ItemStack(ModItems.potionEssence, 1);
-			output.setTagCompound(essence.writeToNBT());
+			XRPotionHelper.addPotionEffectsToStack(output, essence.getEffects());
 
 			recipes.add(new MortarRecipeJEI(inputs, output));
 		}

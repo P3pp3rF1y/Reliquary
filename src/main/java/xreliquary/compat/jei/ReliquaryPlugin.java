@@ -70,7 +70,7 @@ public class ReliquaryPlugin implements IModPlugin {
 
 		registry.addRecipes(MortarRecipeMaker.getRecipes(), Reference.JEI_CATEGORY_MORTAR);
 		registry.addRecipes(CauldronRecipeMaker.getRecipes(), Reference.JEI_CATEGORY_CAULDRON);
-		registry.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.bullet, 1, 1),  0.2F), VanillaRecipeCategoryUid.CRAFTING);
+		registry.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.bullet, 1, 1)), VanillaRecipeCategoryUid.CRAFTING);
 		registry.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.tippedArrow), new ItemStack(Items.ARROW), 0.125F), VanillaRecipeCategoryUid.CRAFTING);
 		registry.addRecipes(MagazineRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
 

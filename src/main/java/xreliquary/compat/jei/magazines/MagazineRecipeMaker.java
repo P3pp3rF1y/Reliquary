@@ -2,7 +2,6 @@ package xreliquary.compat.jei.magazines;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionUtils;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
@@ -28,14 +27,14 @@ public class MagazineRecipeMaker {
 
 		//now add potion variants for the neutral one
 		for(PotionEssence essence : Settings.Potions.uniquePotions) {
-			List<PotionEffect> effects = XRPotionHelper.changeDuration(essence.getEffects(), 0.2F);
+			List<PotionEffect> effects = XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F);
 
 			List<ItemStack> inputs = new ArrayList<>();
 			inputs.add(new ItemStack(ModItems.magazine, 1, 0));
 			inputs = addShots(inputs, 1, effects);
 
 			ItemStack output = new ItemStack(ModItems.magazine, 1, 1);
-			PotionUtils.appendEffects(output, effects);
+			XRPotionHelper.addPotionEffectsToStack(output, effects);
 
 			recipes.add(new MagazineRecipeJEI(inputs, output));
 		}
@@ -47,7 +46,7 @@ public class MagazineRecipeMaker {
 		ItemStack shot = new ItemStack(ModItems.bullet, 1, meta);
 
 		if(effects != null && !effects.isEmpty()) {
-			PotionUtils.appendEffects(shot, effects);
+			XRPotionHelper.addPotionEffectsToStack(shot, effects);
 		}
 
 		for(int i = 0; i < 8; i++) {

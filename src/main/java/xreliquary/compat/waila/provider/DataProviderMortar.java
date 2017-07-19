@@ -1,25 +1,24 @@
 package xreliquary.compat.waila.provider;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import xreliquary.blocks.BlockApothecaryMortar;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.init.ModBlocks;
 import xreliquary.util.LanguageHelper;
-import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
 import xreliquary.util.potions.XRPotionHelper;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class DataProviderMortar extends CachedBodyDataProvider {
@@ -65,35 +64,11 @@ public class DataProviderMortar extends CachedBodyDataProvider {
 		if(!ingredients.get(2).isEmpty())
 			potionIngredients.add(XRPotionHelper.getIngredient(ingredients.get(2)));
 
-		PotionEssence essence = new PotionEssence(potionIngredients.toArray(new PotionIngredient[potionIngredients.size()]));
-		if(essence.effects.size() > 0) {
-			currenttip.add(ChatFormatting.WHITE + LanguageHelper.getLocalization("waila.xreliquary.mortar.result") + ChatFormatting.RESET);
+		List<PotionEffect> effects = XRPotionHelper.combineIngredients(potionIngredients);
+		if(!effects.isEmpty()) {
+			currenttip.add(TextFormatting.WHITE + LanguageHelper.getLocalization("waila.xreliquary.mortar.result") + TextFormatting.RESET);
 
-			List<String> effectLines = new ArrayList<>();
-
-			XRPotionHelper.addPotionInfo(essence, effectLines);
-
-			StringBuilder sb = new StringBuilder();
-			int effectsInLine = 0;
-			Iterator<String> iterator = effectLines.iterator();
-			while(iterator.hasNext()) {
-				effectsInLine++;
-				String line = iterator.next();
-				sb.append(line);
-
-				//display 2 effects per line
-				if(effectsInLine == 2) {
-					effectsInLine = 0;
-					currenttip.add(sb.toString());
-					sb = new StringBuilder();
-					continue;
-				}
-				if(iterator.hasNext())
-					sb.append(", ");
-
-			}
-			if(sb.length() > 0)
-				currenttip.add(sb.toString());
+			XRPotionHelper.addPotionTooltip(effects, currenttip, false, false);
 		}
 		return currenttip;
 	}

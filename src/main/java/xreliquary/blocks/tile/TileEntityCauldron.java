@@ -1,5 +1,6 @@
 package xreliquary.blocks.tile;
 
+import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -11,7 +12,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.potion.Potion;
@@ -40,17 +40,16 @@ import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.RegistryHelper;
-import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class TileEntityCauldron extends TileEntityBase implements IWailaDataChangeIndicator, ITickable {
 
 	public int redstoneCount = 0;
-	public PotionEssence potionEssence = null;
+	@Nonnull public List<PotionEffect> effects = Lists.newArrayList();
 	public int glowstoneCount = 0;
 	public boolean hasGunpowder = false;
 	public boolean hasNetherwart = false;
@@ -67,7 +66,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	public void update() {
 		//Item addition gets handled by the block's onEntityCollided method.
 		if(getHeatSources().contains(world.getBlockState(getPos().add(0, -1, 0)).getBlock()) && getLiquidLevel() > 0) {
-			if(potionEssence != null && hasNetherwart) {
+			if(!effects.isEmpty() && hasNetherwart) {
 				if(cookTime < getTotalCookTime())
 					cookTime++;
 			}
@@ -101,7 +100,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.33F;
 		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.33F;
 
-		int color = getColor(potionEssence);
+		int color = PotionUtils.getPotionColorFromEffectList(effects);
 
 		float red = (((color >> 16) & 255) / 256F);
 		float green = (((color >> 8) & 255) / 256F);
@@ -117,10 +116,6 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	private float getRenderLiquidLevel() {
 		int j = MathHelper.clamp(getLiquidLevel(), 0, 3);
 		return (float) (6 + 3 * j) / 16.0F;
-	}
-
-	private int getColor(PotionEssence essence) {
-		return PotionUtils.getPotionColorFromEffectList(essence == null || essence.getEffects() == null ? Collections.emptyList() : essence.getEffects());
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -189,9 +184,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		this.hasDragonBreath = tag.getBoolean("hasDragonBreath");
 		this.redstoneCount = tag.getInteger("redstoneCount");
 		this.cookTime = tag.getInteger("cookTime");
-		this.potionEssence = new PotionEssence((NBTTagCompound) tag.getTag("potionEssence"));
-		if(potionEssence.getEffects().size() == 0)
-			this.potionEssence = null;
+		this.effects = XRPotionHelper.getPotionEffectsFromCompoundTag(tag);
 	}
 
 	@Nonnull
@@ -205,17 +198,17 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		compound.setBoolean("hasGunpowder", hasGunpowder);
 		compound.setBoolean("hasDragonBreath", hasDragonBreath);
 		compound.setBoolean("hasNetherwart", hasNetherwart);
-		compound.setTag("potionEssence", potionEssence == null ? new NBTTagCompound() : potionEssence.writeToNBT());
+		XRPotionHelper.addPotionEffectsToCompoundTag(compound, effects);
 
 		return compound;
 	}
 
 	private boolean finishedCooking() {
-		return hasNetherwart && potionEssence != null && this.cookTime >= getTotalCookTime() && (!hasDragonBreath || hasGunpowder);
+		return hasNetherwart && !effects.isEmpty() && this.cookTime >= getTotalCookTime() && (!hasDragonBreath || hasGunpowder);
 	}
 
 	private NBTTagCompound removeContainedPotion() {
-		if(!hasNetherwart || potionEssence == null || getLiquidLevel() <= 0)
+		if(!hasNetherwart || effects.isEmpty() || getLiquidLevel() <= 0)
 			return null;
 
 		setLiquidLevel(getLiquidLevel() - 1);
@@ -228,17 +221,15 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	private NBTTagCompound getFinishedPotion() {
-		NBTTagCompound tag = potionEssence.writeToNBT();
-		NBTTagList effectsList = tag.getTagList("effects", 10);
-		NBTTagCompound newTag = new NBTTagCompound();
-		newTag.setTag("effects", effectsList);
-		newTag.setBoolean("hasPotion", true);
+		NBTTagCompound tag = new NBTTagCompound();
+		XRPotionHelper.addPotionEffectsToCompoundTag(tag, XRPotionHelper.augmentPotionEffects(effects, redstoneCount, glowstoneCount));
+		tag.setBoolean("hasPotion", true);
 		if(hasDragonBreath) {
-			newTag.setBoolean("lingering", true);
+			tag.setBoolean("lingering", true);
 		} else if(hasGunpowder) {
-			newTag.setBoolean("splash", true);
+			tag.setBoolean("splash", true);
 		}
-		return newTag;
+		return tag;
 	}
 
 	private void clearAllFields() {
@@ -247,7 +238,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		this.hasGunpowder = false;
 		this.hasNetherwart = false;
 		this.redstoneCount = 0;
-		this.potionEssence = null;
+		this.effects.clear();
 		this.dataChanged = true;
 		this.hasDragonBreath = false;
 		IBlockState blockState = world.getBlockState(this.getPos());
@@ -256,10 +247,10 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 
 	@SuppressWarnings("SimplifiableIfStatement")
 	private boolean isItemValidForInput(ItemStack ist) {
-		if(ist.getItem() instanceof ItemPotionEssence && this.potionEssence == null)
+		if(ist.getItem() instanceof ItemPotionEssence && this.effects.isEmpty())
 			return true;
 
-		if(potionEssence == null)
+		if(effects.isEmpty())
 			return false;
 
 		if(ist.getItem() == Items.GUNPOWDER && !this.hasGunpowder)
@@ -275,15 +266,13 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 
 	private void addItem(ItemStack ist) {
 		if(ist.getItem() instanceof ItemPotionEssence) {
-			potionEssence = new PotionEssence(ist.getTagCompound());
+			effects = XRPotionHelper.getPotionEffectsFromStack(ist);
 		} else if(ist.getItem() == Items.GUNPOWDER) {
 			this.hasGunpowder = true;
 		} else if(ist.getItem() == Items.GLOWSTONE_DUST) {
 			++this.glowstoneCount;
-			potionEssence.addGlowstone(this.glowstoneCount);
 		} else if(ist.getItem() == Items.REDSTONE) {
 			++this.redstoneCount;
-			potionEssence.addRedstone(this.redstoneCount);
 		} else if(ist.getItem() == Items.NETHER_WART) {
 			this.hasNetherwart = true;
 		} else if(ist.getItem() == Items.DRAGON_BREATH) {
@@ -331,11 +320,11 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 				collidingEntity.extinguish();
 			}
 			if(collidingEntity instanceof EntityLivingBase) {
-				if(this.potionEssence == null)
+				if(this.effects.isEmpty())
 					return;
 				//apply potion effects when done cooking potion (potion essence and netherwart in and fire below at the minimum)
 				if(finishedCooking()) {
-					for(PotionEffect effect : this.potionEssence.getEffects()) {
+					for(PotionEffect effect : this.effects) {
 						Potion potion = effect.getPotion();
 						if(potion.isInstant() && world.getWorldTime() % 20 != 0)
 							continue;
@@ -361,7 +350,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	public int getColorMultiplier() {
-		return PotionUtils.getPotionColorFromEffectList(potionEssence == null ? new ArrayList<>() : potionEssence.getEffects());
+		return PotionUtils.getPotionColorFromEffectList(effects);
 	}
 
 	public int getLiquidLevel() {
@@ -392,6 +381,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			} else if(itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
 				FluidStack waterStack = new FluidStack(FluidRegistry.WATER, 1000);
 				IFluidHandler fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+				//noinspection ConstantConditions
 				if(!waterStack.equals(fluidHandler.drain(waterStack, false)))
 					return false;
 

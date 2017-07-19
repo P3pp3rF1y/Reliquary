@@ -11,7 +11,6 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -60,7 +59,7 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 		cooldownTime = buf.readLong();
 		if (buf.readBoolean()) {
 			try {
-				potionEffects = PotionUtils.getFullEffectsFromTag(CompressedStreamTools.read(new ByteBufInputStream(buf), new NBTSizeTracker(2097152L)));
+				potionEffects = XRPotionHelper.getPotionEffectsFromCompoundTag(CompressedStreamTools.read(new ByteBufInputStream(buf), new NBTSizeTracker(2097152L)));
 			}
 			catch(IOException e) {
 				throw new EncoderException(e);
@@ -76,10 +75,10 @@ public class PacketHandgunDataSync implements IMessage, IMessageHandler<PacketHa
 		buf.writeShort(bulletType);
 		buf.writeBoolean(isInCooldown);
 		buf.writeLong(cooldownTime);
-		buf.writeBoolean(potionEffects!=null && potionEffects.size()>0);
-		if (potionEffects!=null && potionEffects.size() > 0) {
+		buf.writeBoolean(potionEffects!=null && !potionEffects.isEmpty());
+		if (potionEffects!=null && !potionEffects.isEmpty()) {
 			NBTTagCompound potionTag = new NBTTagCompound();
-			XRPotionHelper.appendEffectsToNBT(potionTag, potionEffects);
+			XRPotionHelper.addPotionEffectsToCompoundTag(potionTag, potionEffects);
 			try {
 				CompressedStreamTools.write(potionTag, new ByteBufOutputStream(buf));
 			}
