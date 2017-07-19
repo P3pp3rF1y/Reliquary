@@ -25,14 +25,6 @@ class ArrowShotRecipeJEI extends BlankRecipeWrapper implements IShapedCraftingRe
 		ingredients.setOutput(ItemStack.class, output);
 	}
 
-	public List getInputs() {
-		return inputs;
-	}
-
-	public List getOutputs() {
-		return Collections.singletonList(output);
-	}
-
 	@Override
 	public int getWidth() {
 		return 3;

@@ -22,12 +22,4 @@ class MortarRecipeJEI extends BlankRecipeWrapper {
 		ingredients.setInputs(ItemStack.class, inputs);
 		ingredients.setOutput(ItemStack.class, output);
 	}
-
-	public List getInputs() {
-		return inputs;
-	}
-
-	public List getOutputs() {
-		return Collections.singletonList(output);
-	}
 }
