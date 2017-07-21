@@ -9,7 +9,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,14 +27,37 @@ import xreliquary.client.init.ItemModels;
 import xreliquary.client.init.ModBlockColors;
 import xreliquary.client.init.ModItemColors;
 import xreliquary.client.registry.PedestalClientRegistry;
-import xreliquary.client.render.*;
+import xreliquary.client.render.MobCharmBeltLayerRenderer;
+import xreliquary.client.render.RenderApothecaryMortar;
+import xreliquary.client.render.RenderLyssaHook;
+import xreliquary.client.render.RenderPedestalFishHook;
+import xreliquary.client.render.RenderShot;
+import xreliquary.client.render.RenderThrownKrakenSlime;
+import xreliquary.client.render.RenderThrownXRPotion;
+import xreliquary.client.render.RenderXRTippedArrow;
+import xreliquary.client.render.TileEntityPedestalPassiveRenderer;
+import xreliquary.client.render.TileEntityPedestalRenderer;
 import xreliquary.common.CommonProxy;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
-import xreliquary.entities.*;
+import xreliquary.entities.EntityEnderStaffProjectile;
+import xreliquary.entities.EntityGlowingWater;
+import xreliquary.entities.EntityHolyHandGrenade;
+import xreliquary.entities.EntityKrakenSlime;
+import xreliquary.entities.EntityLyssaHook;
+import xreliquary.entities.EntitySpecialSnowball;
+import xreliquary.entities.EntityXRTippedArrow;
 import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.entities.potion.EntityThrownXRPotion;
-import xreliquary.entities.shot.*;
+import xreliquary.entities.shot.EntityBlazeShot;
+import xreliquary.entities.shot.EntityBusterShot;
+import xreliquary.entities.shot.EntityConcussiveShot;
+import xreliquary.entities.shot.EntityEnderShot;
+import xreliquary.entities.shot.EntityExorcismShot;
+import xreliquary.entities.shot.EntityNeutralShot;
+import xreliquary.entities.shot.EntitySandShot;
+import xreliquary.entities.shot.EntitySeekerShot;
+import xreliquary.entities.shot.EntityStormShot;
 import xreliquary.handler.ClientEventHandler;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
@@ -94,7 +116,7 @@ public class ClientProxy extends CommonProxy {
 
 		for(PotionEssence essence : Settings.Potions.uniquePotions) {
 			ItemStack potion = new ItemStack(ModItems.potion, 1);
-			potion.setTagCompound(essence.writeToNBT());
+			XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());
 			NBTHelper.setBoolean("hasPotion", potion, true);
 			potions.add(potion);
 
@@ -107,15 +129,15 @@ public class ClientProxy extends CommonProxy {
 			lingeringPotions.add(lingeringPotion);
 
 			ItemStack tippedArrow = new ItemStack(ModItems.tippedArrow);
-			PotionUtils.appendEffects(tippedArrow, XRPotionHelper.changeDuration(essence.getEffects(), 0.125F));
+			XRPotionHelper.addPotionEffectsToStack(tippedArrow, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.125F));
 			tippedArrows.add(tippedArrow);
 
 			ItemStack potionShot = new ItemStack(ModItems.bullet, 1, 1);
-			PotionUtils.appendEffects(potionShot, XRPotionHelper.changeDuration(essence.getEffects(), 0.2F));
+			XRPotionHelper.addPotionEffectsToStack(potionShot, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F));
 			potionShots.add(potionShot);
 
 			ItemStack potionMagazine = new ItemStack(ModItems.magazine, 1, 1);
-			PotionUtils.appendEffects(potionMagazine, XRPotionHelper.changeDuration(essence.getEffects(), 0.2F));
+			XRPotionHelper.addPotionEffectsToStack(potionMagazine, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F));
 			potionMagazines.add(potionMagazine);
 		}
 		JEIDescriptionRegistry.register(potions, Names.Items.POTION);

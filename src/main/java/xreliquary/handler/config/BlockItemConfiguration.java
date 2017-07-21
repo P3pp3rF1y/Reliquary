@@ -1,11 +1,7 @@
 package xreliquary.handler.config;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.IProjectile;
 import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import xreliquary.handler.ConfigurationHandler;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.reference.Names;
@@ -18,22 +14,14 @@ public class BlockItemConfiguration {
 	public static void loadEntitiesSettings() {
 		List<String> entityNames = new ArrayList<>();
 		List<String> projectileNames = new ArrayList<>();
-		for(EntityEntry entry : ForgeRegistries.ENTITIES) {
-			if(EntityLiving.class.isAssignableFrom(entry.getEntityClass())) {
-				entityNames.add(entry.getName());
-			}
-			if(IProjectile.class.isAssignableFrom(entry.getEntityClass())) {
-				projectileNames.add(entry.getName());
-			}
-		}
 
-		Settings.InterdictionTorch.entitiesThatCanBePushed = ConfigurationHandler.getStringList("entities_that_can_be_pushed", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Blocks.INTERDICTION_TORCH, entityNames, "List of entities that can be pushed by the torch");
-		Settings.InterdictionTorch.projectilesThatCanBePushed = ConfigurationHandler.getStringList("projectiles_that_can_be_pushed", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Blocks.INTERDICTION_TORCH, projectileNames, "List of projectiles that can be pushed by the torch");
+		Settings.InterdictionTorch.pushableEntitiesBlacklist = ConfigurationHandler.getStringList("pushable_entities_blacklist", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Blocks.INTERDICTION_TORCH, entityNames, "List of entities that are banned from being pushed by the torch");
+		Settings.InterdictionTorch.pushableProjectilesBlacklist = ConfigurationHandler.getStringList("pushable_projectiles_blacklist", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Blocks.INTERDICTION_TORCH, projectileNames, "List of projectiles that are banned from being pushed by the torch");
 
-		Settings.RendingGale.entitiesThatCanBePushed = ConfigurationHandler.getStringList("entities_that_can_be_pushed", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.RENDING_GALE, entityNames, "List of entities that can be pushed by Rending Gale");
-		Settings.RendingGale.projectilesThatCanBePushed = ConfigurationHandler.getStringList("projectiles_that_can_be_pushed", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.RENDING_GALE, projectileNames, "List of projectiles that can be pushed by Rending Gale");
+		Settings.RendingGale.pushableEntitiesBlacklist = ConfigurationHandler.getStringList("pushable_entities_blacklist", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.RENDING_GALE, entityNames, "List of entities that are banned from being pushed by Rending Gale");
+		Settings.RendingGale.pushableProjectilesBlacklist = ConfigurationHandler.getStringList("pushable_projectiles_blacklist", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.RENDING_GALE, projectileNames, "List of projectiles are banned from being pushed by Rending Gale");
 
-		Settings.SeekerShot.entitiesThatCanBeHunted = ConfigurationHandler.getStringList("entities_that_can_be_hunted", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.SEEKER_SHOT, entityNames, "Entities that can be tracked by seeker shot");
+		Settings.SeekerShot.huntableEntitiesBlacklist = ConfigurationHandler.getStringList("huntable_entities_blacklist", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.SEEKER_SHOT, entityNames, "Entities that are banned from being tracked by seeker shot");
 
 		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.SEEKER_SHOT);
 

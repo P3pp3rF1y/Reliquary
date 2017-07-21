@@ -6,6 +6,7 @@ import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class CauldronRecipeMaker {
 			List<ItemStack> inputs = new ArrayList<>();
 
 			ItemStack potionEssence = new ItemStack(ModItems.potionEssence, 1);
-			potionEssence.setTagCompound(essence.getPreAugmentationNBT());
+			XRPotionHelper.addPotionEffectsToStack(potionEssence, essence.getEffects());
 
 			inputs.add(potionEssence);
 
@@ -48,7 +49,7 @@ public class CauldronRecipeMaker {
 			lingeringInputs.add(new ItemStack(ModItems.potion, 3));
 
 			ItemStack output = new ItemStack(ModItems.potion, 3);
-			output.setTagCompound(essence.writeToNBT());
+			XRPotionHelper.addPotionEffectsToStack(output, essence.getEffects());
 			NBTHelper.setBoolean("hasPotion", output, true);
 
 			ItemStack outputSplash = output.copy();

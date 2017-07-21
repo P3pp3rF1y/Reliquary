@@ -1,5 +1,6 @@
 package xreliquary.init;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -30,8 +31,8 @@ public class ModCapabilities {
 	}
 
 	@SubscribeEvent
-	public void onItemStackConstruct(AttachCapabilitiesEvent.Item evt) {
-		if (evt.getItemStack().getItem() == ModItems.harvestRod) {
+	public void onItemStackConstruct(AttachCapabilitiesEvent<ItemStack> evt) {
+		if (evt.getObject().getItem() == ModItems.harvestRod) {
 			evt.addCapability(new ResourceLocation(Reference.MOD_ID, "IHarvestRodCache"), new ICapabilityProvider() {
 				@SuppressWarnings("ConstantConditions")
 				IHarvestRodCache instance = HARVEST_ROD_CACHE.getDefaultInstance();

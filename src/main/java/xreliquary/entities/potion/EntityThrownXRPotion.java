@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import xreliquary.init.ModItems;
 import xreliquary.network.PacketFXThrownPotionImpact;
 import xreliquary.network.PacketHandler;
-import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -36,22 +36,22 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 
 	private int renderColor;
 	private boolean lingering = false;
-	public PotionEssence essence = null;
+	private List<PotionEffect> effects;
 
 	public EntityThrownXRPotion(World world, double x, double y, double z, ItemStack potion) {
 		super(world, x, y, z);
-		setEssence(potion);
+		setEffects(potion);
 		this.lingering = ModItems.potion.getLingering(potion);
 	}
 
-	private void setEssence(ItemStack ist) {
-		this.essence = new PotionEssence(ist.getTagCompound());
+	private void setEffects(ItemStack ist) {
+		this.effects = XRPotionHelper.getPotionEffectsFromStack(ist);
 		setRenderColor(getColor());
 	}
 
 	public EntityThrownXRPotion(World world, EntityLivingBase elb, ItemStack potion) {
 		super(world, elb);
-		setEssence(potion);
+		setEffects(potion);
 		this.lingering = ModItems.potion.getLingering(potion);
 	}
 
@@ -80,17 +80,15 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 				entityareaeffectcloud.setRadiusPerTick(-entityareaeffectcloud.getRadius() / (float)entityareaeffectcloud.getDuration());
 				entityareaeffectcloud.setColor(this.renderColor);
 
-				for (PotionEffect potioneffect : this.essence.getEffects())
+				for (PotionEffect potioneffect : this.effects)
 				{
 					entityareaeffectcloud.addEffect(new PotionEffect(potioneffect.getPotion(), potioneffect.getDuration(), potioneffect.getAmplifier()));
 				}
 
 				this.world.spawnEntity(entityareaeffectcloud);
 			} else {
-				List<PotionEffect> list = essence.getEffects();
-
-				if(list != null && !list.isEmpty()) {
-					AxisAlignedBB axisalignedbb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
+				if(effects != null && !effects.isEmpty()) {
+					AxisAlignedBB axisalignedbb = this.getEntityBoundingBox().grow(4.0D, 2.0D, 4.0D);
 					List<EntityLivingBase> livingEntities = this.world.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
 					if(!livingEntities.isEmpty()) {
@@ -105,17 +103,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 									d1 = 1.0D;
 								}
 
-								for(PotionEffect potioneffect : list) {
-									if(potioneffect.getPotion().isInstant()) {
-										potioneffect.getPotion().affectEntity(this, this.getThrower(), entitylivingbase, potioneffect.getAmplifier(), d1);
-									} else {
-										int j = (int) (d1 * (double) potioneffect.getDuration() + 0.5D);
-
-										if(j > 20) {
-											entitylivingbase.addPotionEffect(new PotionEffect(potioneffect.getPotion(), j, potioneffect.getAmplifier(), false, false));
-										}
-									}
-								}
+								XRPotionHelper.applyEffectsToEntity(effects, this, this.getThrower(), entitylivingbase, d1);
 							}
 						}
 					}
@@ -129,7 +117,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 
 	public int getColor() {
 		//basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
-		return essence == null ? getRenderColor() : PotionUtils.getPotionColorFromEffectList(essence.getEffects());
+		return effects == null ? getRenderColor() : PotionUtils.getPotionColorFromEffectList(effects);
 	}
 
 	// most of these are the same in every potion, the only thing that isn't is
@@ -150,17 +138,17 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	@Override
 	public void readEntityFromNBT(NBTTagCompound tag) {
 		super.readEntityFromNBT(tag);
-		this.essence = new PotionEssence(tag);
+		this.effects = XRPotionHelper.getPotionEffectsFromCompoundTag(tag);
 		setRenderColor(tag.getInteger("color"));
 		this.lingering = tag.getBoolean("lingering");
-		if(this.essence.getEffects().size() == 0)
+		if(this.effects.isEmpty())
 			this.setDead();
 	}
 
 	@Override
 	public void writeEntityToNBT(NBTTagCompound tag) {
 		super.writeEntityToNBT(tag);
-		tag.setTag("potion", essence == null ? new NBTTagCompound() : essence.writeToNBT());
+		XRPotionHelper.addPotionEffectsToCompoundTag(tag, effects);
 		tag.setInteger("color", getRenderColor());
 		tag.setBoolean("lingering", this.lingering);
 	}

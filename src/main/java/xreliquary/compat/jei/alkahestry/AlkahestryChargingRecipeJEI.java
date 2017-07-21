@@ -25,12 +25,4 @@ class AlkahestryChargingRecipeJEI extends BlankRecipeWrapper {
 		ingredients.setInputs(ItemStack.class, ImmutableList.of(input, tome));
 		ingredients.setOutput(ItemStack.class, output);
 	}
-
-	public List getInputs() {
-		return Collections.singletonList(input);
-	}
-
-	public List getOutputs() {
-		return Collections.singletonList(output);
-	}
 }

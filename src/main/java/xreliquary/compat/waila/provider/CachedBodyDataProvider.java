@@ -1,4 +1,3 @@
-/*
 package xreliquary.compat.waila.provider;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -41,4 +40,4 @@ abstract class CachedBodyDataProvider implements IWailaDataProvider {
 	}
 
 	abstract List<String> getWailaBodyToCache(ItemStack itemStack, IWailaDataAccessor accessor, IWailaConfigHandler config);
-}*/
+}

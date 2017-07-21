@@ -21,12 +21,12 @@ public class ModFluids {
 	public static Fluid milk;
 
 	public static void preInit() {
-		if(!Loader.isModLoaded(Compatibility.MOD_ID.OPEN_BLOCKS) && !Loader.isModLoaded(Compatibility.MOD_ID.ENDERIO)) {
+		if(!Loader.isModLoaded(Compatibility.MOD_ID.ENDERIO)) {
 			LogHelper.info("XP Juice registered by Reliquary.");
 			fluidXpJuice = new Fluid(XP_JUICE_FLUID_NAME, new ResourceLocation(Reference.MOD_ID, "fluids/xpjuice_still"), new ResourceLocation(Reference.MOD_ID, "fluids/xpjuice_flowing")).setLuminosity(10).setDensity(800).setViscosity(1500).setUnlocalizedName("xreliquary.xpjuice");
 			FluidRegistry.registerFluid(fluidXpJuice);
 		} else {
-			LogHelper.info("XP Juice registration left to Open Blocks / Ender IO.");
+			LogHelper.info("XP Juice registration left to Ender IO.");
 		}
 
 		if(!Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT) && !FluidRegistry.isFluidRegistered(MILK_FLUID_NAME)) {

@@ -165,15 +165,6 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@Override
 	public void onUpdate(ItemStack voidTear, World world, Entity entity, int slotNumber, boolean isSelected) {
-		if(voidTear.getTagCompound() != null && voidTear.getTagCompound().hasKey("item")) {
-
-			setItemStack(voidTear, new ItemStack(NBTHelper.getTagCompound("item", voidTear)));
-			setItemQuantity(voidTear, NBTHelper.getInteger("itemQuantity", voidTear));
-
-			voidTear.getTagCompound().removeTag("item");
-			voidTear.getTagCompound().removeTag("itemQuantity");
-		}
-
 		if(!world.isRemote) {
 			if(!(entity instanceof EntityPlayer))
 				return;
@@ -328,6 +319,7 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	@Nonnull
+	@Override
 	public ItemStack getContainerItem(@Nonnull ItemStack voidTear) {
 		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
@@ -437,7 +429,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@SubscribeEvent
 	public void onItemPickup(EntityItemPickupEvent event) {
-		ItemStack pickedUpStack = event.getItem().getEntityItem();
+		ItemStack pickedUpStack = event.getItem().getItem();
 		EntityPlayer player = event.getEntityPlayer();
 		EntityItem itemEntity = event.getItem();
 
@@ -520,7 +512,7 @@ public class ItemVoidTear extends ItemToggleable {
 		}
 
 		@Override
-		public void updateCraftingInventory(@Nonnull Container containerToSend, @Nonnull NonNullList<ItemStack> itemsList) {
+		public void sendAllContents(@Nonnull Container containerToSend, @Nonnull NonNullList<ItemStack> itemsList) {
 
 		}
 
@@ -548,7 +540,7 @@ public class ItemVoidTear extends ItemToggleable {
 		}
 
 		@Override
-		public void sendProgressBarUpdate(@Nonnull Container container, int varToUpdate, int newValue) {
+		public void sendWindowProperty(@Nonnull Container container, int varToUpdate, int newValue) {
 
 		}
 

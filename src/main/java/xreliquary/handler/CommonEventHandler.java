@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,8 +21,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -32,8 +29,8 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import xreliquary.init.ModItems;
-import xreliquary.items.ItemToggleable;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
 import xreliquary.util.XRFakePlayerFactory;
 
 import java.util.HashMap;
@@ -86,51 +83,6 @@ public class CommonEventHandler {
 		}
 	}
 
-	@SubscribeEvent
-	public void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
-		doTwilightCloakCheck(event);
-		//doPacifiedDebuffCheck(event);
-	}
-
-	@SubscribeEvent
-	public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
-		doTwilightCloakCheck(event);
-	}
-
-
-
-	//TODO figure out if this needs to be added for serpent staff
-	//
-	//    @SubscribeEvent
-	//    public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
-	//        if (!event.entityLiving.isPotionActive(PotionSerpentStaff.mobPacificationDebuff))
-	//            return;
-	//        if (event.entityLiving.getActivePotionEffect(PotionSerpentStaff.mobPacificationDebuff).getDuration()==0) {
-	//            event.entityLiving.removePotionEffect(PotionSerpentStaff.mobPacificationDebuff.id);
-	//            return;
-	//        }
-	//    }
-
-	private void doTwilightCloakCheck(LivingEvent event) {
-		if(event.getEntity() instanceof EntityLiving) {
-			EntityLiving entityLiving = ((EntityLiving) event.getEntity());
-			if(entityLiving.getAttackTarget() == null)
-				return;
-			if(!(entityLiving.getAttackTarget() instanceof EntityPlayer))
-				return;
-			EntityPlayer player = (EntityPlayer) entityLiving.getAttackTarget();
-			if(!playerHasItem(player, ModItems.twilightCloak, true))
-				return;
-
-			//toggled effect, makes player invisible based on light level (configurable)
-			if(player.world.getLightFromNeighbors(player.getPosition()) > Settings.TwilightCloak.maxLightLevel)
-				return;
-			if(event.getEntity() instanceof EntityLiving) {
-				((EntityLiving) event.getEntity()).setAttackTarget(null);
-			}
-		}
-	}
-
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void beforePlayerHurt(LivingAttackEvent event) {
 		Entity entity = event.getEntity();
@@ -150,12 +102,12 @@ public class CommonEventHandler {
 	}
 
 	private void handleWitherlessRose(EntityPlayer player, LivingAttackEvent event) {
-		if(event.getSource() == DamageSource.WITHER && playerHasItem(player, ModItems.witherlessRose, false))
+		if(event.getSource() == DamageSource.WITHER && InventoryHelper.playerHasItem(player, ModItems.witherlessRose))
 			event.setCanceled(true);
 	}
 
 	private void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {
-		if(!playerHasItem(player, ModItems.infernalClaws, false))
+		if(!InventoryHelper.playerHasItem(player, ModItems.infernalClaws))
 			return;
 		if(!(event.getSource() == DamageSource.IN_FIRE) && !(event.getSource() == DamageSource.ON_FIRE))
 			return;
@@ -169,7 +121,7 @@ public class CommonEventHandler {
 	}
 
 	private void handleInfernalChaliceCheck(EntityPlayer player, LivingAttackEvent event) {
-		if(!playerHasItem(player, ModItems.infernalChalice, false))
+		if(!InventoryHelper.playerHasItem(player, ModItems.infernalChalice))
 			return;
 		//TODO: figure out if there's some way to know that the fire was caused by lava, otherwise this is the only way to prevent damage from lava - reason being that most of the damage is from fire caused by lava
 		if(event.getSource() != DamageSource.LAVA && event.getSource() != DamageSource.ON_FIRE && event.getSource() != DamageSource.IN_FIRE)
@@ -190,7 +142,7 @@ public class CommonEventHandler {
 		// indentation shallow.
 		if(player.getHealth() > Math.round(event.getAmount()))
 			return;
-		if(!playerHasItem(player, ModItems.angelheartVial, false))
+		if(!InventoryHelper.playerHasItem(player, ModItems.angelheartVial))
 			return;
 
 		decreaseAngelHeartByOne(player);
@@ -259,7 +211,7 @@ public class CommonEventHandler {
 	}
 
 	private void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
-		if(!playerHasItem(player, ModItems.phoenixDown, false))
+		if(!InventoryHelper.playerHasItem(player, ModItems.phoenixDown))
 			return;
 		if(player.getHealth() > Math.round(event.getAmount())) {
 			if(!(event.getSource() == DamageSource.FALL))
@@ -316,7 +268,7 @@ public class CommonEventHandler {
 	}
 
 	private void handleAngelicFeatherCheck(EntityPlayer player, LivingAttackEvent event) {
-		if(!playerHasItem(player, ModItems.angelicFeather, false))
+		if(!InventoryHelper.playerHasItem(player, ModItems.angelicFeather))
 			return;
 		if(!(event.getSource() == DamageSource.FALL))
 			return;
@@ -332,7 +284,7 @@ public class CommonEventHandler {
 	}
 
 	private void handleKrakenEyeCheck(EntityPlayer player, LivingAttackEvent event) {
-		if(!playerHasItem(player, ModItems.krakenShell, false))
+		if(!InventoryHelper.playerHasItem(player, ModItems.krakenShell))
 			return;
 		if(player.getFoodStats().getFoodLevel() <= 0)
 			return;
@@ -354,22 +306,6 @@ public class CommonEventHandler {
 				return;
 			}
 		}
-	}
-
-	private boolean playerHasItem(EntityPlayer player, Item item, boolean checkEnabled) {
-		for(ItemStack stack : player.inventory.mainInventory) {
-			if(stack.isEmpty())
-				continue;
-			if(stack.getItem() == item) {
-				if(checkEnabled) {
-					if(stack.getItem() instanceof ItemToggleable) {
-						return ((ItemToggleable) stack.getItem()).isEnabled(stack);
-					}
-				}
-				return true;
-			}
-		}
-		return false;
 	}
 
 	// pretty much the same as above, specific to angelheart vial. finds it and breaks one.

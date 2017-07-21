@@ -330,12 +330,12 @@ xreliquary.config.hud_positions.hero_medallion.label=Hero Medallion
 xreliquary.config.hud_positions.pyromancer_staff.label=Pyromancer Staff
 xreliquary.config.hud_positions.rending_gale.label=Rending Gale
 xreliquary.config.item_and_block_settings.label=Item and block settings
-xreliquary.config.item_and_block_settings.interdiction_torch.entities_that_can_be_pushed.label=Entities that can be pushed
-xreliquary.config.item_and_block_settings.interdiction_torch.projectiles_that_can_be_pushed.label=Projectiles that can be pushed
-xreliquary.config.item_and_block_settings.rending_gale.entities_that_can_be_pushed.label=Entities that can be pushed
-xreliquary.config.item_and_block_settings.rending_gale.projectiles_that_can_be_pushed.label=Projectiles that can be pushed
+xreliquary.config.item_and_block_settings.interdiction_torch.pushable_entities_blacklist.label=Entities that are banned from being pushed
+xreliquary.config.item_and_block_settings.interdiction_torch.pushable_projectiles_blacklist.label=Projectiles that are banned from being pushed
+xreliquary.config.item_and_block_settings.rending_gale.pushable_entities_blacklist.label=Entities that are banned from being pushed
+xreliquary.config.item_and_block_settings.rending_gale.pushable_projectiles_blacklist.label=Projectiles that are banned from being pushed
 xreliquary.config.item_and_block_settings.seeker_shot.label=Seeker Shot
-xreliquary.config.item_and_block_settings.seeker_shot.entities_that_can_be_hunted.label=Entities that can be hunted
+xreliquary.config.item_and_block_settings.seeker_shot.huntable_entities_blacklist.label=Entities that are banned from being hunted
 xreliquary.config.item_and_block_settings.alkahestry_tome.label=Alkahestry Tome
 xreliquary.config.item_and_block_settings.alkahestry_tome.charge_limit.label=Charge limit
 xreliquary.config.item_and_block_settings.alkahestry_tome.crafting_recipes.label=Crafting Recipes
@@ -651,7 +651,7 @@ xreliquary.jei.descriptions.potion_essence=Potion essence of many varieties. It 
 xreliquary.jei.descriptions.potion_splash=Splash potion that can be of many different kinds. See potion essences for a bit more info.
 xreliquary.jei.descriptions.potion_lingering=Lingering potion variant of the Reliquary potions. See potion essence for a bit more info on making potions.
 xreliquary.jei.descriptions.pyromancer_staff=Pyromancer staff shoots blaze and ghast fireballs. It charges with blaze powder and fire charges. \n\nIn addition to this it prevents the player from being hit by the fireballs (fired by ghast or blaze). Also it extinguishes fires around the player when turned off.\n\nAnd last but not least you can use it as a flint and steel.
-xreliquary.jei.descriptions.rending_gale=Allows the player to fly by pointing at the direction they want to go. Note that it doesn't have feather fall, but pointing it towards ground and keeping the button pressed cancels the fall damage.\n\nIt also allows pushing or pulling entities and spawning bolts during thunderstorm where the player points. You can cycle through these modes by shift left-clicking.
+xreliquary.jei.descriptions.rending_gale=Allows the player to fly by pointing at the direction they want to go. Note that it doesn't have feather fall, but pointing it towards ground and keeping the button pressed cancels the fall damage.\n\nIt also allows pushing or pulling entities and spawning bolts during thunderstorm where the player points. You can cycle through these modes by shift left-clicking.\n\nCharge the Rending Gale with feathers to fly or spawn lightning.
 xreliquary.jei.descriptions.rod_of_lyssa=An upgraded fishing rod. Can pull entities much higher and while sneaking allows player to steal stuff from entities. Also pulls items.
 xreliquary.jei.descriptions.salamander_eye=While held, nearby flames (and you, if applicable) are extinguished and Ghast fireballs are automatically repelled in the direction you are looking. Blaze fireballs are also automatically doused, although Blazes can still harm you if nearby.
 xreliquary.jei.descriptions.serpent_staff=Spews rapid-fire poison globs at your foes. When struck, the mob will be debuffed, and rendered passive (harmless) for 15 seconds.
@@ -681,6 +681,8 @@ xreliquary.waila.xreliquary.shift_for_more=Hold shift for more info
 xreliquary.keybind.category=Reliquary
 xreliquary.keybind.fortune_coin=Enable/Disable Fortune Coin
 
+xreliquary.potion.cure=Cure
+
 potion.potency.3=IV
 potion.potency.4=V
 potion.potency.5=VI
@@ -691,3 +693,5 @@ potion.potency.9=X
 
 fluid.xreliquary.xpjuice=XP Juice
 fluid.milk=Milk
+
+xreliquary.potion.flight=Flight

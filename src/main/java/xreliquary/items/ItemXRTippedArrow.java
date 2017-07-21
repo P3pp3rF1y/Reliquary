@@ -7,7 +7,6 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -50,7 +49,7 @@ public class ItemXRTippedArrow extends ItemArrow {
 	public void getSubItems(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
 		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
 			ItemStack tippedArrow = new ItemStack(ModItems.tippedArrow);
-			PotionUtils.appendEffects(tippedArrow, XRPotionHelper.changeDuration(essence.getEffects(), 0.125F));
+			XRPotionHelper.addPotionEffectsToStack(tippedArrow, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.125F));
 
 			subItems.add(tippedArrow);
 		}
@@ -58,6 +57,6 @@ public class ItemXRTippedArrow extends ItemArrow {
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
-		PotionUtils.addPotionTooltip(stack, tooltip, 1F);
+		XRPotionHelper.addPotionTooltip(stack, tooltip);
 	}
 }

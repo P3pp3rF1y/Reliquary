@@ -4,13 +4,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Reference;
 import xreliquary.util.NBTHelper;
-import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.XRPotionHelper;
+
+import java.util.List;
 
 public class ModItemColors {
 	public static void init() {
@@ -75,7 +80,7 @@ public class ModItemColors {
 					}
 					return Integer.parseInt(Colors.DARKEST, 16);
 				} else if(tintIndex == 2) {
-					return PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromStack(stack));
+					return PotionUtils.getPotionColorFromEffectList(XRPotionHelper.getPotionEffectsFromStack(stack));
 				}
 				return Integer.parseInt(Colors.DARKER, 16);
 			}, ModItems.magazine, ModItems.bullet);
@@ -84,7 +89,7 @@ public class ModItemColors {
 		if(isEnabled(ModItems.potionEssence)) {
 			itemColors.registerItemColorHandler((stack, tintIndex) -> {
 				//basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
-				return PotionUtils.getPotionColorFromEffectList(new PotionEssence(stack.getTagCompound()).getEffects());
+				return PotionUtils.getPotionColorFromEffectList(XRPotionHelper.getPotionEffectsFromStack(stack));
 			}, ModItems.potionEssence);
 		}
 		if(isEnabled(ModItems.potion)) {
@@ -95,18 +100,29 @@ public class ModItemColors {
 					if(NBTHelper.getInteger("renderColor", stack) > 0)
 						return NBTHelper.getInteger("renderColor", stack);
 
-					PotionEssence essence = new PotionEssence(stack.getTagCompound());
-					boolean hasEffect = essence.getEffects().size() > 0;
-					if(!hasEffect)
+					List<PotionEffect> effects = XRPotionHelper.getPotionEffectsFromStack(stack);
+					if(effects.isEmpty())
 						return Integer.parseInt(Colors.PURE, 16);
 
-					return PotionUtils.getPotionColorFromEffectList(new PotionEssence(stack.getTagCompound()).getEffects());
+					return PotionUtils.getPotionColorFromEffectList(effects);
 				} else
 					return Integer.parseInt(Colors.PURE, 16);
 			}, ModItems.potion);
 		}
 		if(isEnabled(ModItems.tippedArrow)) {
-			itemColors.registerItemColorHandler((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromStack(stack)) : -1, ModItems.tippedArrow);
+			itemColors.registerItemColorHandler((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getPotionColorFromEffectList(XRPotionHelper.getPotionEffectsFromStack(stack)) : -1, ModItems.tippedArrow);
+		}
+
+		if(isEnabled(ModItems.filledVoidTear)) {
+			itemColors.registerItemColorHandler((stack, tintIndex) -> {
+				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+					ItemStack containedStack = ModItems.filledVoidTear.getContainerItem(stack);
+					if(!containedStack.isEmpty()) {
+						return itemColors.getColorFromItemstack(containedStack, tintIndex);
+					}
+				}
+				return -1;
+			}, ModItems.filledVoidTear);
 		}
 	}
 

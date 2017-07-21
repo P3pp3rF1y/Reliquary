@@ -7,7 +7,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
@@ -19,8 +18,8 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 
 	@Override
 	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world) {
-		ItemStack tome = null;
-		ItemStack itemStack = null;
+		ItemStack tome = ItemStack.EMPTY;
+		ItemStack itemStack = ItemStack.EMPTY;
 		int valid = 0;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
@@ -37,13 +36,9 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 				}
 			}
 		}
-		if(tome != null && valid == 1) {
-			AlkahestCraftRecipe recipe;
-			if(Alkahestry.getRecipeByDictionaryKey(itemStack) == null) {
-				String key = getItemKey(itemStack);
-				recipe = Settings.AlkahestryTome.craftingRecipes.get(key);
-			} else
-				recipe = Alkahestry.getRecipeByDictionaryKey(itemStack);
+		if(!tome.isEmpty() && valid == 1) {
+			AlkahestCraftRecipe recipe = Alkahestry.matchCraftRecipe(itemStack);
+
 			return recipe != null && (NBTHelper.getInteger("charge", tome) - recipe.cost >= 0);
 		} else {
 			return false;
@@ -53,34 +48,23 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 	@Nonnull
 	@Override
 	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
-		AlkahestCraftRecipe returned = null;
-		ItemStack dictStack = ItemStack.EMPTY;
+		AlkahestCraftRecipe returned;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(!stack.isEmpty()) {
-				if(stack.getItem() != ModItems.alkahestryTome) {
-					if(Alkahestry.getRecipeByDictionaryKey(stack) == null) {
-						String key = getItemKey(stack);
-						returned = Settings.AlkahestryTome.craftingRecipes.get(key);
-					} else {
-						returned = Alkahestry.getRecipeByDictionaryKey(stack);
-						dictStack = stack;
-					}
+				if(!(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome)))) {
+					returned = Alkahestry.matchCraftRecipe(stack);
+
+					ItemStack resultStack = stack.copy();
+					//noinspection ConstantConditions
+					resultStack.setCount(returned.yield + 1);
+
+					return resultStack;
 				}
 			}
 		}
 
-		//TODO this dictStack stuff seems wrong, refactor !!
-		if(dictStack.isEmpty()) {
-			return new ItemStack(returned.item.getItem(), returned.yield + 1, returned.item.getItemDamage());
-		} else {
-			return new ItemStack(dictStack.getItem(), returned.yield + 1, dictStack.getItemDamage());
-		}
-	}
-
-	private String getItemKey(ItemStack stack) {
-
-		return RegistryHelper.getItemRegistryName(stack.getItem()) + "|" + stack.getMetadata();
+		return ItemStack.EMPTY;
 	}
 
 	private int getCraftingResultCost(IInventory inv) {
@@ -88,13 +72,8 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
 			ItemStack stack = inv.getStackInSlot(count);
 			if(!stack.isEmpty()) {
-				if(stack.getItem() != ModItems.alkahestryTome) {
-					if(Alkahestry.getRecipeByDictionaryKey(stack) == null) {
-						String key = getItemKey(stack);
-						returned = Settings.AlkahestryTome.craftingRecipes.get(key);
-					} else {
-						returned = Alkahestry.getRecipeByDictionaryKey(stack);
-					}
+				if(!(RegistryHelper.getItemRegistryName(stack.getItem()).equals(RegistryHelper.getItemRegistryName(ModItems.alkahestryTome)))) {
+					returned = Alkahestry.matchCraftRecipe(stack);
 				}
 			}
 		}

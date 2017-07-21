@@ -7,6 +7,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import xreliquary.compat.jei.ReliquaryRecipeCategory;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
@@ -14,7 +15,7 @@ import xreliquary.util.LanguageHelper;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class MortarRecipeCategory extends BlankRecipeCategory<MortarRecipeJEI> {
+public class MortarRecipeCategory extends ReliquaryRecipeCategory<MortarRecipeJEI> {
 
 	private static final int INPUT_SLOT_1 = 0;
 	private static final int INPUT_SLOT_2 = 1;
@@ -40,6 +41,12 @@ public class MortarRecipeCategory extends BlankRecipeCategory<MortarRecipeJEI> {
 	@Override
 	public String getTitle() {
 		return localizedName;
+	}
+
+	@Nonnull
+	@Override
+	public String getModName() {
+		return Reference.MOD_NAME;
 	}
 
 	@Nonnull

@@ -58,7 +58,7 @@ public class EntityGlowingWater extends EntityThrowable {
 	protected void onImpact(@Nonnull RayTraceResult result) {
 		if(!world.isRemote) {
 			this.spawnParticles();
-			AxisAlignedBB bb = this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D);
+			AxisAlignedBB bb = this.getEntityBoundingBox().grow(4.0D, 2.0D, 4.0D);
 			List<EntityLiving> eList = world.getEntitiesWithinAABB(EntityLiving.class, bb);
 			eList.stream().filter(this::isUndead).forEach(e -> {
 				float amount = 18 + rand.nextInt(17);

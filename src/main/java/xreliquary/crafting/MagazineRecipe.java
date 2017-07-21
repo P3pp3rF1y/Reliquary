@@ -4,10 +4,10 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
+import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
 
@@ -71,7 +71,7 @@ public class MagazineRecipe implements IRecipe {
 			return ItemStack.EMPTY;
 
 		ItemStack magazine = new ItemStack(ModItems.magazine, 1, bullet.getMetadata());
-		PotionUtils.appendEffects(magazine, PotionUtils.getEffectsFromStack(bullet));
+		XRPotionHelper.addPotionEffectsToStack(magazine, XRPotionHelper.getPotionEffectsFromStack(bullet));
 
 		return magazine;
 	}

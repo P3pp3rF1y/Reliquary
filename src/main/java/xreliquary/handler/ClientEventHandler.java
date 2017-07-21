@@ -3,7 +3,11 @@ package xreliquary.handler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -16,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
@@ -28,7 +31,12 @@ import org.lwjgl.opengl.GL11;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
-import xreliquary.items.*;
+import xreliquary.items.ItemEnderStaff;
+import xreliquary.items.ItemHarvestRod;
+import xreliquary.items.ItemPyromancerStaff;
+import xreliquary.items.ItemRendingGale;
+import xreliquary.items.ItemSojournerStaff;
+import xreliquary.items.ItemVoidTear;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
@@ -37,6 +45,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.XpHelper;
+import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -679,8 +688,8 @@ public class ClientEventHandler {
 	private ItemStack getBulletStackFromHandgun(ItemStack handgun) {
 		ItemStack bulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(handgun), ModItems.handgun.getBulletType(handgun));
 		List<PotionEffect> potionEffects = ModItems.handgun.getPotionEffects(handgun);
-		if(potionEffects != null && potionEffects.size() > 0) {
-			PotionUtils.appendEffects(bulletStack, potionEffects);
+		if(potionEffects != null && !potionEffects.isEmpty()) {
+			XRPotionHelper.addPotionEffectsToStack(bulletStack, potionEffects);
 		}
 
 		return bulletStack;

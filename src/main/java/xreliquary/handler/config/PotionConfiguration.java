@@ -46,7 +46,7 @@ public class PotionConfiguration {
 		for(PotionEssence essence : Settings.Potions.potionCombinations) {
 			boolean found = false;
 			for(PotionEssence uniqueEssence : Settings.Potions.uniquePotionEssences) {
-				if(effectsEqual(essence.effects, uniqueEssence.effects)) {
+				if(effectsEqual(essence.getEffects(), uniqueEssence.getEffects())) {
 					found = true;
 					break;
 				}
@@ -65,17 +65,20 @@ public class PotionConfiguration {
 		Settings.Potions.uniquePotions.add(essence);
 
 		if(Settings.Potions.redstoneAndGlowstone) {
-			PotionEssence redstone = new PotionEssence(essence.writeToNBT());
-			redstone.addRedstone(1);
+			PotionEssence redstone = essence.copy();
+			redstone.setEffects(XRPotionHelper.augmentPotionEffects(redstone.getEffects(), 1, 0));
+			redstone.setRedstoneCount(1);
 			Settings.Potions.uniquePotions.add(redstone);
 
-			PotionEssence glowstone = new PotionEssence(essence.writeToNBT());
-			glowstone.addGlowstone(1);
+			PotionEssence glowstone = essence.copy();
+			glowstone.setEffects(XRPotionHelper.augmentPotionEffects(redstone.getEffects(), 0, 1));
+			glowstone.setGlowstoneCount(1);
 			Settings.Potions.uniquePotions.add(glowstone);
 
-			PotionEssence redstoneGlowstone = new PotionEssence(essence.writeToNBT());
-			redstoneGlowstone.addRedstone(1);
-			redstoneGlowstone.addGlowstone(1);
+			PotionEssence redstoneGlowstone = essence.copy();
+			redstoneGlowstone.setEffects(XRPotionHelper.augmentPotionEffects(redstone.getEffects(), 1, 1));
+			redstoneGlowstone.setRedstoneCount(1);
+			redstoneGlowstone.setGlowstoneCount(1);
 			Settings.Potions.uniquePotions.add(redstoneGlowstone);
 		}
 
@@ -88,16 +91,20 @@ public class PotionConfiguration {
 		for(PotionIngredient ingredient1 : Settings.Potions.potionMap) {
 			for(PotionIngredient ingredient2 : Settings.Potions.potionMap) {
 				if(ingredient1.item.getItem() != ingredient2.item.getItem() || ingredient1.item.getMetadata() != ingredient2.item.getMetadata()) {
-					PotionEssence twoEssence = new PotionEssence(ingredient1, ingredient2);
-					if(twoEssence.effects.size() > 0 && twoEssence.effects.size() <= Settings.Potions.maxEffectCount) {
+					PotionEssence twoEssence = new PotionEssence.Builder()
+							.setIngredients(ingredient1, ingredient2)
+							.setEffects(XRPotionHelper.combineIngredients(ingredient1, ingredient2)).build();
+					if(twoEssence.getEffects().size() > 0 && twoEssence.getEffects().size() <= Settings.Potions.maxEffectCount) {
 						addPotionCombination(twoEssence);
 
 						if(Settings.Potions.threeIngredients) {
 							for(PotionIngredient ingredient3 : Settings.Potions.potionMap) {
 								if((ingredient3.item.getItem() != ingredient1.item.getItem() || ingredient3.item.getMetadata() != ingredient1.item.getMetadata()) && (ingredient3.item.getItem() != ingredient2.item.getItem() || ingredient3.item.getMetadata() != ingredient2.item.getMetadata())) {
-									PotionEssence threeEssence = new PotionEssence(ingredient1, ingredient2, ingredient3);
+									PotionEssence threeEssence = new PotionEssence.Builder()
+										.setIngredients(ingredient1, ingredient2, ingredient3)
+											.setEffects(XRPotionHelper.combineIngredients(ingredient1, ingredient2, ingredient3)).build();
 
-									if(!effectsEqual(twoEssence.effects, threeEssence.effects)) {
+									if(!effectsEqual(twoEssence.getEffects(), threeEssence.getEffects())) {
 										addPotionCombination(threeEssence);
 									}
 								}
@@ -112,11 +119,11 @@ public class PotionConfiguration {
 	private static void addPotionCombination(PotionEssence newEssence) {
 		for(PotionEssence essence : Settings.Potions.potionCombinations) {
 			//exactly same ingredients in a different order are not to be added here
-			if(ingredientsEqual(essence.ingredients, newEssence.ingredients)) {
+			if(ingredientsEqual(essence.getIngredients(), newEssence.getIngredients())) {
 				return;
 			}
 			//the same effect potion id with different duration is turned on by config option
-			if(effectsEqual(essence.effects, newEssence.effects, Settings.Potions.differentDurations, true) && !effectsEqual(essence.effects, newEssence.effects)) {
+			if(effectsEqual(essence.getEffects(), newEssence.getEffects(), Settings.Potions.differentDurations, true) && !effectsEqual(essence.getEffects(), newEssence.getEffects())) {
 				return;
 			}
 		}
@@ -180,14 +187,14 @@ public class PotionConfiguration {
 				PotionIngredient ingredient = new PotionIngredient(stack);
 				for(String effect : effects) {
 					String[] effectValues = effect.split("\\|");
-					int potionId = XRPotionHelper.getPotionIdByName(effectValues[0]);
-					if(potionId > 0) {
+					String potionName = effectValues[0];
+					if(!potionName.isEmpty()) {
 						short durationWeight = Short.parseShort(effectValues[1]);
 						short ampWeight = Short.parseShort(effectValues[2]);
-						ingredient.addEffect(potionId, durationWeight, ampWeight);
+						ingredient.addEffect(potionName, durationWeight, ampWeight);
 					}
 				}
-				if(ingredient.effects.size() > 0) {
+				if(!ingredient.effects.isEmpty()) {
 					Settings.Potions.potionMap.add(ingredient);
 				}
 			}
@@ -197,9 +204,9 @@ public class PotionConfiguration {
 	private static void addDefaultPotionMap(ConfigCategory category) {
 		//TIER ONE INGREDIENTS, these are always 0 potency and have minimal durations (3 for positive, 1 for negative or super-positive)
 		addPotionConfig(category, Items.SUGAR, speed(3, 0), haste(3, 0));
-		addPotionConfig(category, Items.APPLE, heal(0), hboost(3, 0));
-		addPotionConfig(category, Items.COAL, blind(1, 0), absorb(3, 0));
-		addPotionConfig(category, Items.COAL, 1, invis(1, 0), wither(0, 0));
+		addPotionConfig(category, Items.APPLE, heal(0), hboost(3, 0), cure(0));
+		addPotionConfig(category, Items.COAL, blind(1), absorb(3, 0));
+		addPotionConfig(category, Items.COAL, 1, invis(1), wither(0, 0));
 		addPotionConfig(category, Items.FEATHER, jump(3, 0), weak(1, 0));
 		addPotionConfig(category, Items.WHEAT_SEEDS, harm(0), hboost(3, 0));
 		addPotionConfig(category, Items.WHEAT, heal(0), hboost(3, 0));
@@ -212,67 +219,70 @@ public class PotionConfiguration {
 		addPotionConfig(category, Items.DYE, Reference.YELLOW_DYE_META, jump(3, 0), weak(1, 0)); //dandellion yellow
 		addPotionConfig(category, Items.DYE, Reference.GREEN_DYE_META, resist(3, 0), absorb(3, 0)); //cactus green
 		addPotionConfig(category, Items.DYE, Reference.WHITE_DYE_META, weak(1, 0), fatigue(1, 0)); //bone meal
-		addPotionConfig(category, Items.PUMPKIN_SEEDS, invis(1, 0), fireres(1, 0));
+		addPotionConfig(category, Items.PUMPKIN_SEEDS, invis(1), fireres(1));
 		addPotionConfig(category, Items.BEEF, slow(1, 0), satur(0));
-		addPotionConfig(category, Items.CHICKEN, nausea(1, 0), poison(1, 0));
-		addPotionConfig(category, Items.ROTTEN_FLESH, nausea(1, 0), hunger(1, 0), wither(0, 0));
+		addPotionConfig(category, Items.CHICKEN, nausea(1), poison(1));
+		addPotionConfig(category, Items.ROTTEN_FLESH, nausea(1), hunger(1), wither(0, 0));
 		addPotionConfig(category, Items.GOLD_NUGGET, dboost(0, 0), haste(0, 0));
-		addPotionConfig(category, Items.CARROT, vision(3, 0), hboost(3, 0));
+		addPotionConfig(category, Items.CARROT, vision(3), hboost(3, 0));
 		addPotionConfig(category, Items.POTATO, hboost(3, 0), satur(0));
-		addPotionConfig(category, Items.FISH, satur(0), breath(1, 0));
+		addPotionConfig(category, Items.FISH, satur(0), breath(1));
 
 		//TIER TWO INGREDIENTS, one of the effects of each will always be a one, slightly increased duration vs. TIER ONE
-		addPotionConfig(category, Items.SPIDER_EYE, vision(4, 0), poison(2, 0));
+		addPotionConfig(category, Items.SPIDER_EYE, vision(4), poison(2));
 		addPotionConfig(category, Items.BLAZE_POWDER, dboost(4, 0), harm(0));
 		addPotionConfig(category, Items.IRON_INGOT, resist(4, 0), slow(2, 0));
 		addPotionConfig(category, Items.STRING, slow(2, 0), fatigue(2, 0));
 		addPotionConfig(category, Items.BREAD, hboost(4, 0), satur(0));
 		addPotionConfig(category, Items.COOKED_PORKCHOP, fatigue(2, 0), satur(0));
-		addPotionConfig(category, Items.SLIME_BALL, resist(4, 0), fireres(2, 0));
-		addPotionConfig(category, Items.COOKED_FISH, satur(0), breath(2, 0));
+		addPotionConfig(category, Items.SLIME_BALL, resist(4, 0), fireres(2));
+		addPotionConfig(category, Items.COOKED_FISH, satur(0), breath(2));
 		addPotionConfig(category, Items.DYE, Reference.BLUE_DYE_META, haste(4, 0), dboost(4, 0));  //lapis lazuli
-		addPotionConfig(category, Items.DYE, Reference.BLACK_DYE_META, blind(2, 0), invis(2, 0)); //ink
+		addPotionConfig(category, Items.DYE, Reference.BLACK_DYE_META, blind(2), invis(2)); //ink
 		addPotionConfig(category, Items.BONE, weak(2, 0), fatigue(2, 0));
 		addPotionConfig(category, Items.COOKIE, heal(0), satur(0));
 		addPotionConfig(category, Items.MELON, heal(0), speed(4, 0));
 		addPotionConfig(category, Items.COOKED_BEEF, resist(4, 0), satur(0));
 		addPotionConfig(category, Items.COOKED_CHICKEN, jump(4, 0), satur(0));
 		addPotionConfig(category, Items.BAKED_POTATO, satur(0), regen(1, 0));
-		addPotionConfig(category, Items.POISONOUS_POTATO, poison(2, 0), wither(1, 0));
+		addPotionConfig(category, Items.POISONOUS_POTATO, poison(2), wither(1, 0));
 		addPotionConfig(category, Items.QUARTZ, harm(0), dboost(4, 0));
-		addPotionConfig(category, XRRecipes.ZOMBIE_HEART, nausea(2, 0), hunger(2, 0), wither(1, 0));
-		addPotionConfig(category, XRRecipes.SQUID_BEAK, hunger(2, 0), breath(2, 0));
+		addPotionConfig(category, XRRecipes.ZOMBIE_HEART, nausea(2), hunger(2), wither(1, 0));
+		addPotionConfig(category, XRRecipes.SQUID_BEAK, hunger(2), breath(2));
 
 		//TIER THREE INGREDIENTS, these are closer to vanilla durations, carry many effects or a slightly increased duration. Some/most are combos.
-		addPotionConfig(category, Items.PUMPKIN_PIE, invis(1, 0), fireres(1, 0), speed(3, 0), haste(3, 0), absorb(3, 0), regen(0, 0)); //combination of ingredients, strong.
-		addPotionConfig(category, Items.MAGMA_CREAM, dboost(4, 0), harm(0), resist(4, 0), fireres(2, 0)); //also a combo, strong.
+		addPotionConfig(category, Items.PUMPKIN_PIE, invis(1), fireres(1), speed(3, 0), haste(3, 0), absorb(3, 0), regen(0, 0)); //combination of ingredients, strong.
+		addPotionConfig(category, Items.MAGMA_CREAM, dboost(4, 0), harm(0), resist(4, 0), fireres(2)); //also a combo, strong.
 		addPotionConfig(category, Items.SPECKLED_MELON, dboost(3, 0), haste(3, 0), heal(0), speed(4, 0)); //combo
 		addPotionConfig(category, Items.GHAST_TEAR, regen(3, 0), absorb(5, 0));
-		addPotionConfig(category, Items.FERMENTED_SPIDER_EYE, vision(4, 0), poison(2, 0), speed(3, 0), haste(3, 0)); //combo
-		addPotionConfig(category, Items.GOLDEN_CARROT, dboost(3, 0), haste(3, 0), hboost(3, 0), vision(3, 0)); //combo
-		addPotionConfig(category, Items.GOLD_INGOT, dboost(4, 0), haste(4, 0)); //combo
-		addPotionConfig(category, XRRecipes.RIB_BONE, weak(3, 0), fatigue(3, 0));
-		addPotionConfig(category, Items.ENDER_PEARL, invis(5, 0), speed(5, 0));
+		addPotionConfig(category, Items.FERMENTED_SPIDER_EYE, vision(4), poison(2), speed(3, 0), haste(3, 0)); //combo
+		addPotionConfig(category, Items.GOLDEN_CARROT, dboost(3, 0), haste(3, 0), hboost(3, 0), vision(3)); //combo
+		addPotionConfig(category, Items.GOLD_INGOT, dboost(4, 0), haste(4, 0), cure(0)); //combo
+		addPotionConfig(category, XRRecipes.RIB_BONE, weak(3, 0), fatigue(3, 0), cure(0));
+		addPotionConfig(category, Items.ENDER_PEARL, invis(5), speed(5, 0));
 		addPotionConfig(category, Items.BLAZE_ROD, dboost(8, 0), harm(0));
-		addPotionConfig(category, Items.FIRE_CHARGE, dboost(4, 0), harm(0), blind(1, 0), absorb(3, 0)); //combo
+		addPotionConfig(category, Items.FIRE_CHARGE, dboost(4, 0), harm(0), blind(1), absorb(3, 0)); //combo
 		addPotionConfig(category, XRRecipes.CREEPER_GLAND, regen(3, 0), hboost(5, 0));
-		addPotionConfig(category, XRRecipes.CHELICERAE, poison(3, 0), weak(3, 0));
+		addPotionConfig(category, XRRecipes.CHELICERAE, poison(3), weak(3, 0));
 		addPotionConfig(category, XRRecipes.SLIME_PEARL, resist(5, 0), absorb(5, 0));
-		addPotionConfig(category, XRRecipes.SHELL_FRAGMENT, absorb(5, 0), breath(5, 0));
+		addPotionConfig(category, XRRecipes.SHELL_FRAGMENT, absorb(5, 0), breath(5));
 		addPotionConfig(category, XRRecipes.BAT_WING, jump(5, 0), weak(3, 0));
+		addPotionConfig(category, Items.GOLDEN_APPLE, cure(1));
+		addPotionConfig(category, Items.GOLDEN_APPLE, 1, cure(2));
 
 		//TIER FOUR INGREDIENTS, these carry multiple one-potency effects and have the most duration for any given effect.
-		addPotionConfig(category, Items.DIAMOND, resist(6, 1), absorb(6, 1), fireres(6, 0));
-		addPotionConfig(category, XRRecipes.WITHER_RIB, wither(2, 1), weak(3, 1), slow(3, 1), fatigue(3, 1));
-		addPotionConfig(category, Items.ENDER_EYE, dboost(6, 1), invis(6, 0), speed(6, 1), harm(1));
-		addPotionConfig(category, Items.EMERALD, haste(6, 1), speed(6, 1), hboost(6, 1));
-		addPotionConfig(category, Items.NETHER_STAR, hboost(24, 1), regen(24, 1), absorb(24, 1)); //nether star is holy stonk
-		addPotionConfig(category, XRRecipes.MOLTEN_CORE, dboost(6, 1), fireres(6, 0), harm(1));
-		addPotionConfig(category, XRRecipes.STORM_EYE, haste(24, 1), speed(24, 1), jump(24, 1), harm(1));
-		addPotionConfig(category, XRRecipes.FERTILE_ESSENCE, hboost(8, 1), regen(3, 1), heal(1), satur(1), weak(9, 1), fatigue(9, 1));
-		addPotionConfig(category, XRRecipes.FROZEN_CORE, absorb(6, 1), slow(3, 1), fatigue(3, 1), harm(1), fireres(6, 0));
-		addPotionConfig(category, XRRecipes.NEBULOUS_HEART, vision(6, 0), invis(6, 0), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
-		addPotionConfig(category, XRRecipes.INFERNAL_CLAW, harm(1), resist(6, 1), fireres(6, 0), dboost(6, 1), satur(1), heal(1));
+		addPotionConfig(category, Items.DIAMOND, resist(6, 1), absorb(6, 1), fireres(6), cure(0));
+		addPotionConfig(category, XRRecipes.WITHER_RIB, wither(2, 1), weak(3, 1), slow(3, 1), fatigue(3, 1), cure(0));
+		addPotionConfig(category, Items.ENDER_EYE, dboost(6, 1), invis(6), speed(6, 1), harm(1));
+		addPotionConfig(category, Items.EMERALD, haste(6, 1), speed(6, 1), hboost(6, 1), cure(1));
+		addPotionConfig(category, Items.NETHER_STAR, hboost(24, 1), regen(24, 1), absorb(24, 1), cure(2)); //nether star is holy stonk
+		addPotionConfig(category, XRRecipes.MOLTEN_CORE, dboost(6, 1), fireres(6), harm(1));
+		addPotionConfig(category, XRRecipes.STORM_EYE, haste(24, 1), speed(24, 1), jump(24, 1), harm(1), cure(1));
+		addPotionConfig(category, XRRecipes.FERTILE_ESSENCE, hboost(8, 1), regen(3, 1), heal(1), satur(1), weak(9, 1), fatigue(9, 1), cure(
+				0));
+		addPotionConfig(category, XRRecipes.FROZEN_CORE, absorb(6, 1), slow(3, 1), fatigue(3, 1), harm(1), fireres(6));
+		addPotionConfig(category, XRRecipes.NEBULOUS_HEART, vision(6), invis(6), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
+		addPotionConfig(category, XRRecipes.INFERNAL_CLAW, harm(1), resist(6, 1), fireres(6), dboost(6, 1), satur(1), heal(1));
 	}
 
 	private static String harm(int potency) {
@@ -287,8 +297,8 @@ public class PotionConfiguration {
 		return effectString(Reference.SATURATION, Integer.toString(0), Integer.toString(potency));
 	}
 
-	private static String invis(int duration, int potency) {
-		return effectString(Reference.INVIS, Integer.toString(duration), Integer.toString(potency));
+	private static String invis(int duration) {
+		return effectString(Reference.INVIS, Integer.toString(duration), Integer.toString(0));
 	}
 
 	private static String absorb(int duration, int potency) {
@@ -319,20 +329,20 @@ public class PotionConfiguration {
 		return effectString(Reference.FATIGUE, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	private static String breath(int duration, int potency) {
-		return effectString(Reference.BREATH, Integer.toString(duration), Integer.toString(potency));
+	private static String breath(int duration) {
+		return effectString(Reference.BREATH, Integer.toString(duration), Integer.toString(0));
 	}
 
-	private static String vision(int duration, int potency) {
-		return effectString(Reference.VISION, Integer.toString(duration), Integer.toString(potency));
+	private static String vision(int duration) {
+		return effectString(Reference.VISION, Integer.toString(duration), Integer.toString(0));
 	}
 
 	private static String resist(int duration, int potency) {
 		return effectString(Reference.RESIST, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	private static String fireres(int duration, int potency) {
-		return effectString(Reference.FRESIST, Integer.toString(duration), Integer.toString(potency));
+	private static String fireres(int duration) {
+		return effectString(Reference.FRESIST, Integer.toString(duration), Integer.toString(0));
 	}
 
 	private static String weak(int duration, int potency) {
@@ -343,28 +353,32 @@ public class PotionConfiguration {
 		return effectString(Reference.JUMP, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	private static String nausea(int duration, int potency) {
-		return effectString(Reference.NAUSEA, Integer.toString(duration), Integer.toString(potency));
+	private static String nausea(int duration) {
+		return effectString(Reference.NAUSEA, Integer.toString(duration), Integer.toString(0));
 	}
 
-	private static String hunger(int duration, int potency) {
-		return effectString(Reference.HUNGER, Integer.toString(duration), Integer.toString(potency));
+	private static String hunger(int duration) {
+		return effectString(Reference.HUNGER, Integer.toString(duration), Integer.toString(0));
 	}
 
 	private static String regen(int duration, int potency) {
 		return effectString(Reference.REGEN, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	private static String poison(int duration, int potency) {
-		return effectString(Reference.POISON, Integer.toString(duration), Integer.toString(potency));
+	private static String poison(int duration) {
+		return effectString(Reference.POISON, Integer.toString(duration), Integer.toString(0));
 	}
 
 	private static String wither(int duration, int potency) {
 		return effectString(Reference.WITHER, Integer.toString(duration), Integer.toString(potency));
 	}
 
-	private static String blind(int duration, int potency) {
-		return effectString(Reference.BLIND, Integer.toString(duration), Integer.toString(potency));
+	private static String blind(int duration) {
+		return effectString(Reference.BLIND, Integer.toString(duration), Integer.toString(0));
+	}
+
+	private static String cure(int potency) {
+		return effectString(Reference.CURE, Integer.toString(1), Integer.toString(potency));
 	}
 
 	private static String effectString(String name, String duration, String potency) {

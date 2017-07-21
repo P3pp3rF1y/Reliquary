@@ -8,14 +8,25 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import xreliquary.Reliquary;
-import xreliquary.entities.shot.*;
+import xreliquary.entities.shot.EntityBlazeShot;
+import xreliquary.entities.shot.EntityBusterShot;
+import xreliquary.entities.shot.EntityConcussiveShot;
+import xreliquary.entities.shot.EntityEnderShot;
+import xreliquary.entities.shot.EntityExorcismShot;
+import xreliquary.entities.shot.EntityNeutralShot;
+import xreliquary.entities.shot.EntitySandShot;
+import xreliquary.entities.shot.EntitySeekerShot;
+import xreliquary.entities.shot.EntityStormShot;
 import xreliquary.init.ModCapabilities;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModSounds;
@@ -25,6 +36,7 @@ import xreliquary.network.PacketHandgunDataSync;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -301,7 +313,7 @@ public class ItemHandgun extends ItemBase {
 		if(slot != -1) {
 			ItemStack magazine = player.inventory.mainInventory.get(slot);
 			setBulletType(handgun, (short) magazine.getMetadata());
-			setPotionEffects(handgun, PotionUtils.getFullEffectsFromItem(magazine));
+			setPotionEffects(handgun, XRPotionHelper.getPotionEffectsFromStack(magazine));
 			magazine.shrink(1);
 			if (magazine.isEmpty())
 				player.inventory.mainInventory.set(slot, ItemStack.EMPTY);

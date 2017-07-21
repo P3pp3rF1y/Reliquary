@@ -1,15 +1,23 @@
 package xreliquary.util;
 
+import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.oredict.OreDictionary;
+import xreliquary.init.ModItems;
+import xreliquary.items.ItemToggleable;
+import xreliquary.reference.Compatibility;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -45,7 +53,7 @@ public class InventoryHelper {
 	}
 
 	@Nonnull
-	public static ItemStack getTargetItem(@Nonnull ItemStack self, IInventory inventory, boolean disposeOfItem) {
+	public static ItemStack getTargetItem(@Nonnull ItemStack self, IInventory inventory) {
 		if (self.isEmpty())
 			return ItemStack.EMPTY;
 
@@ -62,10 +70,6 @@ public class InventoryHelper {
 			if(getItemQuantity(stack, inventory) > itemQuantity) {
 				itemQuantity = getItemQuantity(stack, inventory);
 				targetItem = stack.copy();
-
-				if(disposeOfItem) {
-					inventory.decrStackSize(slot, 1);
-				}
 			}
 		}
 		inventory.markDirty();
@@ -73,15 +77,11 @@ public class InventoryHelper {
 	}
 
 	public static int getItemQuantity(@Nonnull ItemStack stack, IInventory inventory) {
-		return InventoryHelper.getItemQuantity(stack, inventory, 0);
-	}
-
-	private static int getItemQuantity(@Nonnull ItemStack stack, IInventory inventory, int limit) {
 		if (stack.isEmpty())
 			return 0;
 
 		int itemQuantity = 0;
-		for(int slot = 0; slot < Math.min(inventory.getSizeInventory(), (limit > 0 ? limit : inventory.getSizeInventory())); slot++) {
+		for(int slot = 0; slot < inventory.getSizeInventory(); slot++) {
 			ItemStack newStack = inventory.getStackInSlot(slot);
 			if(StackHelper.isItemAndNbtEqual(stack, newStack)) {
 				itemQuantity += newStack.getCount();
@@ -90,7 +90,51 @@ public class InventoryHelper {
 		return itemQuantity;
 	}
 
-	public static boolean consumeItem(@Nonnull ItemStack item, EntityPlayer player) {
+	public static boolean consumeOreDictItem(String oredictName, EntityPlayer player) {
+		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
+			if(player.inventory.mainInventory.get(slot).isEmpty()) {
+				continue;
+			}
+
+			ItemStack slotStack = player.inventory.mainInventory.get(slot);
+			for(ItemStack ore : OreDictionary.getOres(oredictName)) {
+				if(OreDictionary.itemMatches(ore, slotStack, false)) {
+					int stackSize = slotStack.getCount();
+					if(stackSize > 0) {
+						slotStack.shrink(1);
+						if (slotStack.getCount() <= 0) {
+							player.inventory.mainInventory.set(slot, ItemStack.EMPTY);
+						}
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	public static boolean consumeItem(String itemName, int meta, boolean ignoreMeta, EntityPlayer player) {
+		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
+			if(player.inventory.mainInventory.get(slot).isEmpty()) {
+				continue;
+			}
+
+			ItemStack slotStack = player.inventory.mainInventory.get(slot);
+			//noinspection ConstantConditions
+			if(slotStack.getItem().getRegistryName().toString().equals(itemName) && (ignoreMeta || slotStack.getMetadata() == meta)) {
+				int stackSize = slotStack.getCount();
+				if(stackSize > 0) {
+					slotStack.shrink(1);
+					if (slotStack.getCount() <= 0) {
+						player.inventory.mainInventory.set(slot, ItemStack.EMPTY);
+					}
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean consumeItem(ItemStack item, EntityPlayer player) {
 		return consumeItem(item, player, 0, 1);
 	}
 
@@ -121,7 +165,7 @@ public class InventoryHelper {
 
 		//fill stacks based on which ones have the highest sizes
 		if(itemCount >= countToConsume) {
-			Collections.sort(slotCounts, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+			slotCounts.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
 			int countToFill = itemCount - countToConsume;
 
@@ -288,5 +332,42 @@ public class InventoryHelper {
 
 		player.inventory.markDirty();
 		return true;
+	}
+
+	public static boolean playerHasItem(EntityPlayer player, Item item) {
+		return playerHasItem(player, item, false);
+	}
+
+	public static boolean playerHasItem(EntityPlayer player, Item item, boolean checkEnabled) {
+		for(ItemStack stack : player.inventory.mainInventory) {
+			if(stack.isEmpty())
+				continue;
+			if(stack.getItem() == item) {
+				if(checkEnabled) {
+					if(stack.getItem() instanceof ItemToggleable) {
+						return ((ItemToggleable) stack.getItem()).isEnabled(stack);
+					}
+				}
+				return true;
+			}
+		}
+
+		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
+			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
+
+			for(int i = 0; i < inventoryBaubles.getSlots(); i++) {
+				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
+				if(!baubleStack.isEmpty() && baubleStack.getItem() == item) {
+					if(checkEnabled) {
+						if(baubleStack.getItem() instanceof ItemToggleable) {
+							return ((ItemToggleable) baubleStack.getItem()).isEnabled(baubleStack);
+						}
+					}
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }

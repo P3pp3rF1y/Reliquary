@@ -2,7 +2,11 @@ package xreliquary.entities.shot;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,8 +15,16 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,10 +34,8 @@ import xreliquary.reference.Settings;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class EntityShotBase extends Entity implements IProjectile {
 	private static final DataParameter<Byte> CRITICAL = EntityDataManager.createKey(EntityShotBase.class, DataSerializers.BYTE);
@@ -76,12 +86,10 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		dataManager.register(COLOR, 0);
 	}
 
-	public EntityShotBase addPotionEffects(List<PotionEffect> potionEffects) {
-		if(potionEffects != null && !potionEffects.isEmpty()) {
-			this.potionEffects = new ArrayList<>();
-			this.potionEffects.addAll(potionEffects.stream().map(PotionEffect::new).collect(Collectors.toList()));
-
-			this.dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(potionEffects));
+	public EntityShotBase addPotionEffects(List<PotionEffect> effects) {
+		if(effects != null && !effects.isEmpty()) {
+			this.potionEffects = effects;
+			this.dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(effects));
 		}
 
 		return this;
@@ -196,7 +204,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		if(block != Blocks.AIR) {
 			AxisAlignedBB axisalignedbb = blockState.getBoundingBox(this.world, new BlockPos(this.xTile, this.yTile, this.zTile));
 
-			if(axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
+			if(axisalignedbb.contains(new Vec3d(this.posX, this.posY, this.posZ)))
 				this.inGround = true;
 
 		}
@@ -216,7 +224,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			RayTraceResult objectStruckByVector = world.rayTraceBlocks(posVector, approachVector, false, true, false);
 
 			Entity hitEntity = null;
-			List struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
+			List struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(motionX, motionY, motionZ).grow(1.0D, 1.0D, 1.0D));
 			double var7 = 0.0D;
 			Iterator struckEntityIterator = struckEntitiesInAABB.iterator();
 			float var11;
@@ -225,7 +233,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 				Entity struckEntity = (Entity) struckEntityIterator.next();
 				if(struckEntity.canBeCollidedWith() && (struckEntity != shootingEntity || ticksInAir >= 5)) {
 					var11 = 0.5F;
-					AxisAlignedBB var12 = struckEntity.getEntityBoundingBox().expand(var11, var11, var11);
+					AxisAlignedBB var12 = struckEntity.getEntityBoundingBox().grow(var11, var11, var11);
 					RayTraceResult var13 = var12.calculateIntercept(posVector, approachVector);
 
 					if(var13 != null) {
@@ -275,7 +283,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		if(objectStruckByVector.typeOfHit == RayTraceResult.Type.ENTITY) {
 			if(objectStruckByVector.entityHit instanceof EntityLivingBase && potionEffects != null && !potionEffects.isEmpty()) {
 				EntityLivingBase living = (EntityLivingBase) objectStruckByVector.entityHit;
-				this.potionEffects.forEach(living::addPotionEffect);
+				XRPotionHelper.applyEffectsToEntity(potionEffects, this, this.shootingEntity, living);
 			}
 		}
 	}
@@ -290,7 +298,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		compound.setShort("yTile", (short) yTile);
 		compound.setShort("zTile", (short) zTile);
 		compound.setByte("inGround", (byte) (inGround ? 1 : 0));
-		XRPotionHelper.appendEffectsToNBT(compound, potionEffects);
+		XRPotionHelper.addPotionEffectsToCompoundTag(compound, potionEffects);
 	}
 
 	/**
@@ -303,7 +311,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		yTile = compound.getShort("yTile");
 		zTile = compound.getShort("zTile");
 		inGround = compound.getByte("inGround") == 1;
-		potionEffects = PotionUtils.getFullEffectsFromTag(compound);
+		potionEffects = XRPotionHelper.getPotionEffectsFromCompoundTag(compound);
 	}
 
 	/**
@@ -459,7 +467,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 */
 	void seekTarget() {
 		Entity closestTarget = null;
-		List<String> entitiesThatCanBeHunted = Settings.SeekerShot.entitiesThatCanBeHunted;
+		List<String> huntableEntitiesBlacklist = Settings.SeekerShot.huntableEntitiesBlacklist;
 		List targetsList = world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5));
 		Iterator iTarget = targetsList.iterator();
 		double closestDistance = Double.MAX_VALUE;
@@ -467,7 +475,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			Entity currentTarget = (Entity) iTarget.next();
 
 			String entityName = EntityList.getEntityString(currentTarget);
-			if(!entitiesThatCanBeHunted.contains(entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead))
+			if(huntableEntitiesBlacklist.contains(entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead))
 				continue;
 			// goes for the closest thing it can
 			if(this.getDistanceToEntity(currentTarget) < closestDistance) {
@@ -492,9 +500,9 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			Vec3d seekVector = new Vec3d(x - trueX, y - trueY, z - trueZ);
 			seekVector = seekVector.normalize();
 
-			this.motionX = seekVector.xCoord * 0.4D;
-			this.motionY = seekVector.yCoord * 0.4D;
-			this.motionZ = seekVector.zCoord * 0.4D;
+			this.motionX = seekVector.x * 0.4D;
+			this.motionY = seekVector.y * 0.4D;
+			this.motionZ = seekVector.z * 0.4D;
 			if(world.isRemote) {
 				this.setVelocity(motionX, motionY, motionZ);
 			}

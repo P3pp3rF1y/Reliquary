@@ -25,6 +25,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 import xreliquary.pedestal.PedestalRegistry;
+import xreliquary.util.alkahestry.AlkahestRecipeType;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS, dependencies = Reference.DEPENDENCIES)
 public class Reliquary {
@@ -104,9 +105,13 @@ public class Reliquary {
 			NBTTagCompound tag = message.getNBTValue();
 			if(tag != null && !new ItemStack(tag.getCompoundTag("item")).isEmpty() && tag.hasKey("yield") && tag.hasKey("cost")) {
 				if(tag.hasKey("dictionaryName"))
-					Settings.AlkahestryTome.craftingRecipes.put("OreDictionary:" + tag.getString("dictionaryName"), new AlkahestCraftRecipe(tag.getString("dictionaryName"), tag.getInteger("yield"), tag.getInteger("cost")));
-				else
-					Settings.AlkahestryTome.craftingRecipes.put(new ItemStack(tag.getCompoundTag("item")).getItem().getRegistryName().toString(), new AlkahestCraftRecipe(new ItemStack(tag.getCompoundTag("item")), tag.getInteger("yield"), tag.getInteger("cost")));
+					Settings.AlkahestryTome.craftingRecipes.put("OreDictionary:" + tag.getString("dictionaryName"), new AlkahestCraftRecipe(tag.getString("dictionaryName"), AlkahestRecipeType.OREDICT, tag.getInteger("yield"), tag.getInteger("cost")));
+				else {
+					ItemStack stack = new ItemStack(tag.getCompoundTag("item"));
+					String name = stack.getItem().getRegistryName().toString();
+					Settings.AlkahestryTome.craftingRecipes.put(name,
+							new AlkahestCraftRecipe(name, stack.getMetadata(), tag.getInteger("yield"), tag.getInteger("cost")));
+				}
 				LogHelper.info("[IMC] Added AlkahestRecipe ID: " + Item.REGISTRY.getNameForObject(new ItemStack(tag.getCompoundTag("item")).getItem()) + " from " + message.getSender() + " to registry.");
 			} else {
 				LogHelper.warn("[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");

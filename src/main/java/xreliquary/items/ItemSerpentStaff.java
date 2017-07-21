@@ -45,18 +45,27 @@ public class ItemSerpentStaff extends ItemBase {
 	}
 
 	@Override
-	public void onUsingTick(ItemStack item, EntityLivingBase entity, int count) {
+	public void onUsingTick(ItemStack serpentStaff, EntityLivingBase entity, int count) {
 		if(entity.world.isRemote || !(entity instanceof EntityPlayer) || count % 3 != 0)
 			return;
 
-		EntityPlayer player = (EntityPlayer) entity;
+		shootKrakenSlime(serpentStaff, (EntityPlayer) entity);
+	}
 
+	private void shootKrakenSlime(ItemStack serpentStaff, EntityPlayer player) {
 		player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
 		EntityKrakenSlime krakenSlime = new EntityKrakenSlime(player.world, player);
 		krakenSlime.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0F, 1.5F, 1.0F);
 		player.world.spawnEntity(krakenSlime);
-		item.damageItem(1, player);
+		serpentStaff.damageItem(1, player);
+	}
+
+	@Override
+	public void onPlayerStoppedUsing(ItemStack serpentStaff, World worldIn, EntityLivingBase entityLiving, int timeLeft) {
+
+		if (!entityLiving.world.isRemote && timeLeft + 2 >= serpentStaff.getMaxItemUseDuration() && entityLiving instanceof EntityPlayer)
+			shootKrakenSlime(serpentStaff, (EntityPlayer) entityLiving);
 	}
 
 	@Override

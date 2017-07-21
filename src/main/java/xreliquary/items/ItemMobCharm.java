@@ -37,6 +37,7 @@ import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.MobHelper;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
@@ -135,7 +136,7 @@ public class ItemMobCharm extends ItemBase {
 		boolean resetTarget = false;
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
-		if(entity instanceof EntityZombie) {
+		if(entity instanceof EntityZombie && !(entity instanceof EntityPigZombie)) {
 			resetTarget = isMobCharmPresent(player, Reference.MOB_CHARM.ZOMBIE_META);
 		} else if(entity instanceof EntityWitherSkeleton) {
 			resetTarget = isMobCharmPresent(player, Reference.MOB_CHARM.WITHER_SKELETON_META);
@@ -164,8 +165,7 @@ public class ItemMobCharm extends ItemBase {
 		}
 
 		if(resetTarget) {
-			entity.setAttackTarget(null);
-			entity.setRevengeTarget(null);
+			MobHelper.resetTarget(entity);
 		}
 	}
 
@@ -194,29 +194,16 @@ public class ItemMobCharm extends ItemBase {
 		}
 
 		if(resetTarget) {
-			entity.setAttackTarget(null);
-			entity.setRevengeTarget(null);
-			if(entity instanceof EntityPigZombie) {
-				//need to reset ai task because it doesn't get reset with setAttackTarget or setRevengeTarget and keeps player as target
-				for (EntityAITasks.EntityAITaskEntry aiTask : entity.targetTasks.taskEntries) {
-					if (aiTask.action instanceof EntityAIHurtByTarget) {
-						aiTask.action.resetTask();
-						break;
-					}
-				}
-
-				//also need to reset anger target because apparently setRevengeTarget doesn't set this to null
-				resetAngerTarget((EntityPigZombie) entity);
-			}
+			MobHelper.resetTarget(entity, true);
 		}
 	}
 
 	@SubscribeEvent
 	public void onLivingDeath(LivingDeathEvent event) {
-		if(event.getSource() == null || event.getSource().getEntity() == null || !(event.getSource().getEntity() instanceof EntityPlayer))
+		if(event.getSource() == null || event.getSource().getTrueSource() == null || !(event.getSource().getTrueSource() instanceof EntityPlayer))
 			return;
 
-		EntityPlayer player = (EntityPlayer) event.getSource().getEntity();
+		EntityPlayer player = (EntityPlayer) event.getSource().getTrueSource();
 
 		if (!damagePlayersMobCharm(player, event.getEntity()))
 			damageMobCharmInPedestal(player, event.getEntity());
@@ -308,16 +295,6 @@ public class ItemMobCharm extends ItemBase {
 			}
 		}
 		return false;
-	}
-
-	private static final Field SET_ANGER_TARGET = ReflectionHelper.findField(EntityPigZombie.class, "field_175459_bn", "angerTargetUUID");
-
-	private void resetAngerTarget(EntityPigZombie zombiePigman) {
-		try {
-			SET_ANGER_TARGET.set(zombiePigman, null);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private boolean isMobCharmPresent(EntityPlayer player, byte type) {

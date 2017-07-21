@@ -103,7 +103,7 @@ public class ItemShearsOfWinter extends ItemShears {
 			return;
 
 		doEntityShearableCheck(ist, player, lookVector);
-		if(lookVector.xCoord > 0)
+		if(lookVector.x > 0)
 			doPositiveXCheck(ist, player, lookVector);
 		else
 			doNegativeXCheck(ist, player, lookVector);
@@ -132,9 +132,9 @@ public class ItemShearsOfWinter extends ItemShears {
 	private void doPositiveXCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
 		boolean firedOnce = false;
 
-		for(int x = 0; x < (int) (lookVector.xCoord * 10D); x++) {
+		for(int x = 0; x < (int) (lookVector.x * 10D); x++) {
 			firedOnce = true;
-			if(lookVector.yCoord > 0)
+			if(lookVector.y > 0)
 				doPositiveYCheck(ist, player, lookVector, x);
 			else
 				doNegativeYCheck(ist, player, lookVector, x);
@@ -142,7 +142,7 @@ public class ItemShearsOfWinter extends ItemShears {
 
 		if(!firedOnce) {
 			for(int x = -2; x <= 2; x++) {
-				if(lookVector.yCoord > 0)
+				if(lookVector.y > 0)
 					doPositiveYCheck(ist, player, lookVector, x);
 				else
 					doNegativeYCheck(ist, player, lookVector, x);
@@ -153,9 +153,9 @@ public class ItemShearsOfWinter extends ItemShears {
 	private void doNegativeXCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
 		boolean firedOnce = false;
 
-		for(int x = 0; x > (int) (lookVector.xCoord * 10D); x--) {
+		for(int x = 0; x > (int) (lookVector.x * 10D); x--) {
 			firedOnce = true;
-			if(lookVector.yCoord > 0)
+			if(lookVector.y > 0)
 				doPositiveYCheck(ist, player, lookVector, x);
 			else
 				doNegativeYCheck(ist, player, lookVector, x);
@@ -163,7 +163,7 @@ public class ItemShearsOfWinter extends ItemShears {
 
 		if(!firedOnce) {
 			for(int x = -2; x <= 2; x++) {
-				if(lookVector.yCoord > 0)
+				if(lookVector.y > 0)
 					doPositiveYCheck(ist, player, lookVector, x);
 				else
 					doNegativeYCheck(ist, player, lookVector, x);
@@ -174,9 +174,9 @@ public class ItemShearsOfWinter extends ItemShears {
 	private void doPositiveYCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x) {
 		boolean firedOnce = false;
 
-		for(int y = 0; y < (int) (lookVector.yCoord * 10D); y++) {
+		for(int y = 0; y < (int) (lookVector.y * 10D); y++) {
 			firedOnce = true;
-			if(lookVector.zCoord > 0)
+			if(lookVector.z > 0)
 				doPositiveZCheck(ist, player, lookVector, x, y);
 			else
 				doNegativeZCheck(ist, player, lookVector, x, y);
@@ -184,7 +184,7 @@ public class ItemShearsOfWinter extends ItemShears {
 
 		if(!firedOnce) {
 			for(int y = -2; y <= 2; y++) {
-				if(lookVector.zCoord > 0)
+				if(lookVector.z > 0)
 					doPositiveZCheck(ist, player, lookVector, x, y);
 				else
 					doNegativeZCheck(ist, player, lookVector, x, y);
@@ -195,9 +195,9 @@ public class ItemShearsOfWinter extends ItemShears {
 	private void doNegativeYCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x) {
 		boolean firedOnce = false;
 
-		for(int y = 0; y > (int) (lookVector.yCoord * 10D); y--) {
+		for(int y = 0; y > (int) (lookVector.y * 10D); y--) {
 			firedOnce = true;
-			if(lookVector.zCoord > 0)
+			if(lookVector.z > 0)
 				doPositiveZCheck(ist, player, lookVector, x, y);
 			else
 				doNegativeZCheck(ist, player, lookVector, x, y);
@@ -205,7 +205,7 @@ public class ItemShearsOfWinter extends ItemShears {
 
 		if(!firedOnce) {
 			for(int y = -2; y <= 2; y++) {
-				if(lookVector.zCoord > 0)
+				if(lookVector.z > 0)
 					doPositiveZCheck(ist, player, lookVector, x, y);
 				else
 					doNegativeZCheck(ist, player, lookVector, x, y);
@@ -216,7 +216,7 @@ public class ItemShearsOfWinter extends ItemShears {
 	private void doPositiveZCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x, int y) {
 		boolean firedOnce = false;
 
-		for(int z = 0; z < (int) (lookVector.zCoord * 10D); z++) {
+		for(int z = 0; z < (int) (lookVector.z * 10D); z++) {
 			firedOnce = true;
 			checkAndBreakBlockAt(x, y, z, player, ist);
 		}
@@ -230,7 +230,7 @@ public class ItemShearsOfWinter extends ItemShears {
 	private void doNegativeZCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector, int x, int y) {
 		boolean firedOnce = false;
 
-		for(int z = 0; z > (int) (lookVector.zCoord * 10D); z--) {
+		for(int z = 0; z > (int) (lookVector.z * 10D); z--) {
 			firedOnce = true;
 			checkAndBreakBlockAt(x, y, z, player, ist);
 		}
@@ -291,12 +291,12 @@ public class ItemShearsOfWinter extends ItemShears {
 	private void doEntityShearableCheck(ItemStack ist, EntityPlayer player, Vec3d lookVector) {
 		if(player.world.isRemote)
 			return;
-		double lowerX = Math.min(player.posX, player.posX + lookVector.xCoord * 10D);
-		double lowerY = Math.min(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.yCoord * 10D);
-		double lowerZ = Math.min(player.posZ, player.posZ + lookVector.zCoord * 10D);
-		double upperX = Math.max(player.posX, player.posX + lookVector.xCoord * 10D);
-		double upperY = Math.max(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.yCoord * 10D);
-		double upperZ = Math.max(player.posZ, player.posZ + lookVector.zCoord * 10D);
+		double lowerX = Math.min(player.posX, player.posX + lookVector.x * 10D);
+		double lowerY = Math.min(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.y * 10D);
+		double lowerZ = Math.min(player.posZ, player.posZ + lookVector.z * 10D);
+		double upperX = Math.max(player.posX, player.posX + lookVector.x * 10D);
+		double upperY = Math.max(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.y * 10D);
+		double upperZ = Math.max(player.posZ, player.posZ + lookVector.z * 10D);
 		List<EntityLiving> eList = player.world.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 		for(EntityLiving e : eList) {
 			int distance = (int) player.getDistanceToEntity(e);
@@ -332,7 +332,7 @@ public class ItemShearsOfWinter extends ItemShears {
 			float randY = 10F * (player.world.rand.nextFloat() - 0.5F);
 			float randZ = 10F * (player.world.rand.nextFloat() - 0.5F);
 
-			player.world.spawnParticle(EnumParticleTypes.BLOCK_DUST, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.xCoord * 5, lookVector.yCoord * 5, lookVector.zCoord * 5, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
+			player.world.spawnParticle(EnumParticleTypes.BLOCK_DUST, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.x * 5, lookVector.y * 5, lookVector.z * 5, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
 
 		}
 

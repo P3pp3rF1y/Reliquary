@@ -1,4 +1,3 @@
-/*
 package xreliquary.compat.waila.provider;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -70,4 +69,3 @@ public class DataProviderPedestal implements IWailaDataProvider {
 		return null;
 	}
 }
-*/

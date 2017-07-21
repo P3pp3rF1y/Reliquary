@@ -49,15 +49,15 @@ public class BlockInterdictionTorch extends BlockTorch {
 			return;
 		int radius = Settings.InterdictionTorch.pushRadius;
 
-		List<String> entitiesThatCanBePushed = Settings.InterdictionTorch.entitiesThatCanBePushed;
-		List<String> projectilesThatCanBePushed = Settings.InterdictionTorch.projectilesThatCanBePushed;
+		List<String> pushableEntitiesBlacklist = Settings.InterdictionTorch.pushableEntitiesBlacklist;
+		List<String> pushableProjectilesBlacklist = Settings.InterdictionTorch.pushableProjectilesBlacklist;
 
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius, pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius));
 		for(Entity entity : entities) {
 			if(entity instanceof EntityPlayer)
 				continue;
 			String entityName = EntityList.getEntityString(entity);
-			if(entitiesThatCanBePushed.contains(entityName) || (projectilesThatCanBePushed.contains(entityName) && Settings.InterdictionTorch.canPushProjectiles)) {
+			if(!pushableEntitiesBlacklist.contains(entityName) || (Settings.InterdictionTorch.canPushProjectiles && !pushableProjectilesBlacklist.contains(entityName))) {
 				double distance = entity.getDistance((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
 				if(distance >= radius || distance == 0)
 					continue;
@@ -82,9 +82,9 @@ public class BlockInterdictionTorch extends BlockTorch {
 				Vec3d angleOfAttack = new Vec3d(entity.posX - (pos.getX() + 0.5D), entity.posY - pos.getY(), entity.posZ - (pos.getZ() + 0.5D));
 
 				// we use the resultant vector to determine the force to apply.
-				double xForce = angleOfAttack.xCoord * knockbackMultiplier * reductionCoefficient;
-				double yForce = angleOfAttack.yCoord * knockbackMultiplier * reductionCoefficient;
-				double zForce = angleOfAttack.zCoord * knockbackMultiplier * reductionCoefficient;
+				double xForce = angleOfAttack.x * knockbackMultiplier * reductionCoefficient;
+				double yForce = angleOfAttack.y * knockbackMultiplier * reductionCoefficient;
+				double zForce = angleOfAttack.z * knockbackMultiplier * reductionCoefficient;
 				entity.motionX += xForce;
 				entity.motionY += yForce;
 				entity.motionZ += zForce;

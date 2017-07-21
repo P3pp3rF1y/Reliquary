@@ -20,8 +20,13 @@ public class PotionIngredient {
 		this.item = ist;
 	}
 
-	public PotionIngredient addEffect(int id, int durationWeight, int ampWeight) {
-		return this.addEffect(new WeightedPotionEffect(id, durationWeight, ampWeight));
+	public PotionIngredient(@Nonnull ItemStack stack, List<PotionEffect> effects) {
+		this.item = stack;
+		this.effects = effects;
+	}
+
+	public PotionIngredient addEffect(String potionName, int durationWeight, int ampWeight) {
+		return this.addEffect(new WeightedPotionEffect(potionName, durationWeight, ampWeight));
 	}
 
 	private PotionIngredient addEffect(WeightedPotionEffect effect) {

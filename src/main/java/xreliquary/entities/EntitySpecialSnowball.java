@@ -126,12 +126,12 @@ public class EntitySpecialSnowball extends EntitySnowball {
 		var2 = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
 
 		if(var3 != null) {
-			var2 = new Vec3d(var3.hitVec.xCoord, var3.hitVec.yCoord, var3.hitVec.zCoord);
+			var2 = new Vec3d(var3.hitVec.x, var3.hitVec.y, var3.hitVec.z);
 		}
 
 		if(!world.isRemote) {
 			Entity var4 = null;
-			List<Entity> var5 = world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
+			List<Entity> var5 = world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(motionX, motionY, motionZ).grow(1.0D, 1.0D, 1.0D));
 			double var6 = 0.0D;
 			EntityLivingBase var8 = this.getThrower();
 

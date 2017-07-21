@@ -262,16 +262,16 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 		vec3d1 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
 		if(raytraceresult != null) {
-			vec3d1 = new Vec3d(raytraceresult.hitVec.xCoord, raytraceresult.hitVec.yCoord, raytraceresult.hitVec.zCoord);
+			vec3d1 = new Vec3d(raytraceresult.hitVec.x, raytraceresult.hitVec.y, raytraceresult.hitVec.z);
 		}
 
 		Entity entity = null;
-		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expandXyz(1.0D));
+		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0D));
 		double d0 = 0.0D;
 
 		for(Entity entity1 : list) {
 			if(this.canBeHooked(entity1) && (entity1 != this.angler || this.ticksInAir >= 5)) {
-				AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expandXyz(0.30000001192092896D);
+				AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(0.30000001192092896D);
 				RayTraceResult raytraceresult1 = axisalignedbb.calculateIntercept(vec3d, vec3d1);
 
 				if(raytraceresult1 != null) {
@@ -551,13 +551,13 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 			}
 
 			if(f <= 0F) {
-				List<Entity> list = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expandXyz(3.0D));
+				List<Entity> list = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(3.0D));
 
 				for(Entity e : list) {
 					Vec3d pullVector = new Vec3d(this.posX - e.posX, this.posY - e.posY, this.posZ - e.posZ).normalize();
-					e.motionX = pullVector.xCoord * 0.4D;
-					e.motionY = pullVector.yCoord * 0.4D;
-					e.motionZ = pullVector.zCoord * 0.4D;
+					e.motionX = pullVector.x * 0.4D;
+					e.motionY = pullVector.y * 0.4D;
+					e.motionZ = pullVector.z * 0.4D;
 				}
 			}
 		}
@@ -591,7 +591,7 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 	}
 
 	private void pullItemEntitiesWithHook() {
-		List<EntityItem> pullingItemsList = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+		List<EntityItem> pullingItemsList = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0D, 1.0D, 1.0D));
 
 		for(EntityItem e : pullingItemsList) {
 			double d1 = this.getAngler().posX - this.posX;

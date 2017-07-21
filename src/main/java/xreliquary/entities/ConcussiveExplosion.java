@@ -107,7 +107,7 @@ public class ConcussiveExplosion extends Explosion {
 					d9 /= var33;
 					double var32 = world.getBlockDensity(var30, entity.getEntityBoundingBox());
 					double d10 = (1.0D - var13) * var32;
-					entity.attackEntityFrom(DamageSource.causePlayerDamage(shootingEntity), (int) ((d10 * d10 + d10) * 6.0D * (explosionSize * 2) + 3.0D));
+					entity.attackEntityFrom(DamageSource.causeThrownDamage(exploder, shootingEntity), (int) ((d10 * d10 + d10) * 6.0D * (explosionSize * 2) + 3.0D));
 					entity.motionX += d5 * d10;
 					entity.motionY += d7 * d10;
 					entity.motionZ += d9 * d10;

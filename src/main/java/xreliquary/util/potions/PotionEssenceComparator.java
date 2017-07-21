@@ -8,14 +8,14 @@ public class PotionEssenceComparator implements Comparator<PotionEssence> {
 
 		int ret = 0;
 
-		for(int i = 0; i < Math.min(o1.effects.size(), o2.effects.size()); i++) {
-			ret = new EffectComparator().compare(o1.effects.get(i), o2.effects.get(i));
+		for(int i = 0; i < Math.min(o1.getEffects().size(), o2.getEffects().size()); i++) {
+			ret = new EffectComparator().compare(o1.getEffects().get(i), o2.getEffects().get(i));
 			if(ret != 0)
 				break;
 		}
 
 		if(ret == 0)
-			ret = Integer.compare(o1.effects.size(), o2.effects.size());
+			ret = Integer.compare(o1.getEffects().size(), o2.getEffects().size());
 
 		return ret;
 	}

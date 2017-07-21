@@ -26,12 +26,4 @@ class AlkahestryCraftingRecipeJEI extends BlankRecipeWrapper {
 		ingredients.setInputs(ItemStack.class, ImmutableList.of(input, tomeInput));
 		ingredients.setOutputs(ItemStack.class, ImmutableList.of(output, tomeOutput));
 	}
-
-	public List getInputs() {
-		return ImmutableList.of(input, tomeInput);
-	}
-
-	public List getOutputs() {
-		return ImmutableList.of(output, tomeOutput);
-	}
 }
