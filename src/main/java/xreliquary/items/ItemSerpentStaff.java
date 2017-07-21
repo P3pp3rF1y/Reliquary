@@ -64,7 +64,7 @@ public class ItemSerpentStaff extends ItemBase {
 	@Override
 	public void onPlayerStoppedUsing(ItemStack serpentStaff, World worldIn, EntityLivingBase entityLiving, int timeLeft) {
 
-		if (timeLeft + 2 >= serpentStaff.getMaxItemUseDuration() && entityLiving instanceof EntityPlayer)
+		if (!entityLiving.world.isRemote && timeLeft + 2 >= serpentStaff.getMaxItemUseDuration() && entityLiving instanceof EntityPlayer)
 			shootKrakenSlime(serpentStaff, (EntityPlayer) entityLiving);
 	}
 
