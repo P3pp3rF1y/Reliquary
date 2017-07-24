@@ -7,11 +7,16 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
+import xreliquary.reference.Reference;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
 
-public class PotionBulletsRecipe implements IRecipe {
+public class PotionBulletsRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+
+	public PotionBulletsRecipe() {
+		setRegistryName(Reference.MOD_ID, "potion_bullets");
+	}
 
 	@Override
 	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World worldIn) {
@@ -67,8 +72,8 @@ public class PotionBulletsRecipe implements IRecipe {
 	}
 
 	@Override
-	public int getRecipeSize() {
-		return 9;
+	public boolean canFit(int width, int height) {
+		return width >= 3 && height >= 3;
 	}
 
 	@Nonnull

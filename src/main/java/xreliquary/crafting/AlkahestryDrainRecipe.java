@@ -6,13 +6,17 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
-import xreliquary.items.ItemAlkahestryTome;
+import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nonnull;
 
-public class AlkahestryDrainRecipe implements IRecipe {
+public class AlkahestryDrainRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+
+	public AlkahestryDrainRecipe() {
+		setRegistryName(Reference.MOD_ID, "alkahestry_drain");
+	}
 
 	@Override
 	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world) {
@@ -62,8 +66,8 @@ public class AlkahestryDrainRecipe implements IRecipe {
 	}
 
 	@Override
-	public int getRecipeSize() {
-		return 9;
+	public boolean canFit(int width, int height) {
+		return width >= 1 && height >= 1;
 	}
 
 	@Nonnull

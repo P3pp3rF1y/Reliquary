@@ -7,6 +7,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
+import xreliquary.reference.Reference;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
@@ -14,7 +15,11 @@ import xreliquary.util.alkahestry.Alkahestry;
 
 import javax.annotation.Nonnull;
 
-public class AlkahestryCraftingRecipe implements IRecipe {
+public class AlkahestryCraftingRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+
+	public AlkahestryCraftingRecipe() {
+		setRegistryName(Reference.MOD_ID, "alkahestry_crafting");
+	}
 
 	@Override
 	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world) {
@@ -67,6 +72,11 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		return ItemStack.EMPTY;
 	}
 
+	@Override
+	public boolean canFit(int width, int height) {
+		return width >= 2 && height >= 2;
+	}
+
 	private int getCraftingResultCost(IInventory inv) {
 		AlkahestCraftRecipe returned = null;
 		for(int count = 0; count < inv.getSizeInventory(); count++) {
@@ -80,11 +90,6 @@ public class AlkahestryCraftingRecipe implements IRecipe {
 		if(returned == null)
 			return 0;
 		return returned.cost;
-	}
-
-	@Override
-	public int getRecipeSize() {
-		return 9;
 	}
 
 	@Nonnull

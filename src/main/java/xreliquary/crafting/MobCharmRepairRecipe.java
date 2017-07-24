@@ -14,8 +14,12 @@ import xreliquary.reference.Settings;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 
-public class MobCharmRepairRecipe implements IRecipe {
+public class MobCharmRepairRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 	private static final HashMap<Byte, ItemStack> REPAIR_INGREDIENTS;
+
+	public MobCharmRepairRecipe() {
+		setRegistryName(Reference.MOD_ID, "mob_charm_repair");
+	}
 
 	static {
 		REPAIR_INGREDIENTS = new HashMap<>();
@@ -105,8 +109,8 @@ public class MobCharmRepairRecipe implements IRecipe {
 	}
 
 	@Override
-	public int getRecipeSize() {
-		return 9;
+	public boolean canFit(int width, int height) {
+		return width >= 2 && height >= 2;
 	}
 
 	@Nonnull

@@ -8,11 +8,16 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
+import xreliquary.reference.Reference;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
 
-public class XRTippedArrowsRecipe implements IRecipe {
+public class XRTippedArrowsRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+
+	public XRTippedArrowsRecipe() {
+		setRegistryName(Reference.MOD_ID, "tipped_arrows");
+	}
 
 	@Override
 	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World worldIn) {
@@ -60,12 +65,9 @@ public class XRTippedArrowsRecipe implements IRecipe {
 		}
 	}
 
-	/**
-	 * Returns the size of the recipe area
-	 */
 	@Override
-	public int getRecipeSize() {
-		return 9;
+	public boolean canFit(int width, int height) {
+		return width >= 3 && height >= 3;
 	}
 
 	@Nonnull
