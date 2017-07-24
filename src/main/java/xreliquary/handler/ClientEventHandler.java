@@ -3,11 +3,11 @@ package xreliquary.handler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -525,12 +525,12 @@ public class ClientEventHandler {
 		double maxV = 1D;
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
-		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-		vertexbuffer.pos(x, y, 0).tex(minU, maxV).endVertex();
-		vertexbuffer.pos(x + width, y, 0).tex(maxU, maxV).endVertex();
-		vertexbuffer.pos(x + width, y - height, 0).tex(maxU, minV).endVertex();
-		vertexbuffer.pos(x, y - height, 0).tex(minU, minV).endVertex();
+		BufferBuilder builder = tessellator.getBuffer();
+		builder.begin(7, DefaultVertexFormats.POSITION_TEX);
+		builder.pos(x, y, 0).tex(minU, maxV).endVertex();
+		builder.pos(x + width, y, 0).tex(maxU, maxV).endVertex();
+		builder.pos(x + width, y - height, 0).tex(maxU, minV).endVertex();
+		builder.pos(x, y - height, 0).tex(minU, minV).endVertex();
 		tessellator.draw();
 	}
 

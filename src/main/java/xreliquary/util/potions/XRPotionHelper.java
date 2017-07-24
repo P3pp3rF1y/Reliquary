@@ -1,6 +1,6 @@
 package xreliquary.util.potions;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -192,7 +192,7 @@ public class XRPotionHelper {
 	}
 
 	public static void addPotionEffectsToStack(ItemStack itemstack, List<PotionEffect> effects) {
-		NBTTagCompound tag = Objects.firstNonNull(itemstack.getTagCompound(), new NBTTagCompound());
+		NBTTagCompound tag = MoreObjects.firstNonNull(itemstack.getTagCompound(), new NBTTagCompound());
 		addPotionEffectsToCompoundTag(tag, effects);
 		itemstack.setTagCompound(tag);
 	}

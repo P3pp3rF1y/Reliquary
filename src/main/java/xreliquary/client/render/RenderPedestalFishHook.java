@@ -1,9 +1,9 @@
 package xreliquary.client.render;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
@@ -19,7 +19,8 @@ public class RenderPedestalFishHook implements IPedestalItemRenderer {
 	private static RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
 	@Override
-	public void doRender(TileEntityPedestalRenderer tesr, TileEntityPedestal te, @Nonnull ItemStack stack, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void doRender(TileEntityPedestalRenderer tesr, TileEntityPedestal te,
+			@Nonnull ItemStack stack, double x, double y, double z, float partialTicks, int destroyStage) {
 		Object itemData = te.getItemData(0);
 
 		if(itemData == null || !(itemData instanceof HookRenderingData))
@@ -37,16 +38,16 @@ public class RenderPedestalFishHook implements IPedestalItemRenderer {
 		GlStateManager.scale(0.5F, 0.5F, 0.5F);
 		renderManager.renderEngine.bindTexture(FISH_PARTICLES);
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		BufferBuilder builder = tessellator.getBuffer();
 
 		GlStateManager.rotate(180.0F - renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
 		GlStateManager.rotate((float) (renderManager.options.thirdPersonView == 2 ? -1 : 1) * -renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
 
-		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
-		vertexbuffer.pos(-0.5D, -0.5D, 0.0D).tex(0.0625D, 0.1875D).normal(0.0F, 1.0F, 0.0F).endVertex();
-		vertexbuffer.pos(0.5D, -0.5D, 0.0D).tex(0.125D, 0.1875D).normal(0.0F, 1.0F, 0.0F).endVertex();
-		vertexbuffer.pos(0.5D, 0.5D, 0.0D).tex(0.125D, 0.125D).normal(0.0F, 1.0F, 0.0F).endVertex();
-		vertexbuffer.pos(-0.5D, 0.5D, 0.0D).tex(0.0625D, 0.125D).normal(0.0F, 1.0F, 0.0F).endVertex();
+		builder.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
+		builder.pos(-0.5D, -0.5D, 0.0D).tex(0.0625D, 0.1875D).normal(0.0F, 1.0F, 0.0F).endVertex();
+		builder.pos(0.5D, -0.5D, 0.0D).tex(0.125D, 0.1875D).normal(0.0F, 1.0F, 0.0F).endVertex();
+		builder.pos(0.5D, 0.5D, 0.0D).tex(0.125D, 0.125D).normal(0.0F, 1.0F, 0.0F).endVertex();
+		builder.pos(-0.5D, 0.5D, 0.0D).tex(0.0625D, 0.125D).normal(0.0F, 1.0F, 0.0F).endVertex();
 		tessellator.draw();
 
 		GlStateManager.disableRescaleNormal();
@@ -69,11 +70,11 @@ public class RenderPedestalFishHook implements IPedestalItemRenderer {
 		double d12 = (double) ((float) (d6 - d9));
 		GlStateManager.disableTexture2D();
 		GlStateManager.disableLighting();
-		vertexbuffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
+		builder.begin(3, DefaultVertexFormats.POSITION_COLOR);
 
 		for(int i1 = 0; i1 <= 16; ++i1) {
 			float f10 = (float) i1 / 16.0F;
-			vertexbuffer.pos(translateX + d10 * (double) f10, translateY + d11 * (double) (f10 * f10 + f10) * 0.5D + 0.25D, translateZ + d12 * (double) f10).color(0, 0, 0, 255).endVertex();
+			builder.pos(translateX + d10 * (double) f10, translateY + d11 * (double) (f10 * f10 + f10) * 0.5D + 0.25D, translateZ + d12 * (double) f10).color(0, 0, 0, 255).endVertex();
 		}
 
 		tessellator.draw();
