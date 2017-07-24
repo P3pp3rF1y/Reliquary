@@ -43,7 +43,8 @@ public class AlkahestryCraftingRecipeMaker {
 					if (recipe.type == AlkahestRecipeType.WILDCARD) {
 						NonNullList<ItemStack> subItems = NonNullList.create();
 
-						item.getSubItems(item, null, subItems);
+						//noinspection ConstantConditions
+						item.getSubItems(item.getCreativeTab(), subItems);
 						for (ItemStack input : subItems) {
 							ItemStack output = input.copy();
 							output.setCount(recipe.yield + 1);

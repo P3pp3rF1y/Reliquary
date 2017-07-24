@@ -525,12 +525,12 @@ public class ClientEventHandler {
 		double maxV = 1D;
 
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder builder = tessellator.getBuffer();
-		builder.begin(7, DefaultVertexFormats.POSITION_TEX);
-		builder.pos(x, y, 0).tex(minU, maxV).endVertex();
-		builder.pos(x + width, y, 0).tex(maxU, maxV).endVertex();
-		builder.pos(x + width, y - height, 0).tex(maxU, minV).endVertex();
-		builder.pos(x, y - height, 0).tex(minU, minV).endVertex();
+		BufferBuilder buffer = tessellator.getBuffer();
+		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+		buffer.pos(x, y, 0).tex(minU, maxV).endVertex();
+		buffer.pos(x + width, y, 0).tex(maxU, maxV).endVertex();
+		buffer.pos(x + width, y - height, 0).tex(maxU, minV).endVertex();
+		buffer.pos(x, y - height, 0).tex(minU, minV).endVertex();
 		tessellator.draw();
 	}
 

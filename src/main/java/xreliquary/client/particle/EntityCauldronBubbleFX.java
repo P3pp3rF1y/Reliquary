@@ -1,10 +1,10 @@
 package xreliquary.client.particle;
 
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -42,7 +42,7 @@ public class EntityCauldronBubbleFX extends Particle {
 	}
 
 	@Override
-	public void renderParticle(VertexBuffer worldRenderer, Entity entity, float subTick, float rotX, float rotZ, float rotY_Z, float rotX_Y, float rotX_Z) {
+	public void renderParticle(BufferBuilder buffer, Entity entity, float subTick, float rotX, float rotZ, float rotY_Z, float rotX_Y, float rotX_Z) {
 		this.theRenderEngine.bindTexture(bubbleTexture);
 		float uMin = (float) this.particleTextureIndexX / 1F; // 1 is number of textures on the sheet (X)
 		float uMax = uMin + 1F; // always 1 / number of textures X
@@ -62,11 +62,11 @@ public class EntityCauldronBubbleFX extends Particle {
 		int k = i / 65536;
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
 
-		worldRenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-		worldRenderer.pos(x - rotX * scale - rotX_Y * scale, y - rotZ * scale, z - rotY_Z * scale - rotX_Z * scale).tex(uMax, vMax).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).endVertex(); //.lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
-		worldRenderer.pos(x - rotX * scale + rotX_Y * scale, y + rotZ * scale, z - rotY_Z * scale + rotX_Z * scale).tex(uMax, vMin).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).endVertex(); //.lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
-		worldRenderer.pos(x + rotX * scale + rotX_Y * scale, y + rotZ * scale, z + rotY_Z * scale + rotX_Z * scale).tex(uMin, vMin).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).endVertex(); //.lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
-		worldRenderer.pos(x + rotX * scale - rotX_Y * scale, y - rotZ * scale, z + rotY_Z * scale - rotX_Z * scale).tex(uMin, vMax).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).endVertex(); //.lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
+		buffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+		buffer.pos(x - rotX * scale - rotX_Y * scale, y - rotZ * scale, z - rotY_Z * scale - rotX_Z * scale).tex(uMax, vMax).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).endVertex(); //.lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
+		buffer.pos(x - rotX * scale + rotX_Y * scale, y + rotZ * scale, z - rotY_Z * scale + rotX_Z * scale).tex(uMax, vMin).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).endVertex(); //.lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
+		buffer.pos(x + rotX * scale + rotX_Y * scale, y + rotZ * scale, z + rotY_Z * scale + rotX_Z * scale).tex(uMin, vMin).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).endVertex(); //.lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
+		buffer.pos(x + rotX * scale - rotX_Y * scale, y - rotZ * scale, z + rotY_Z * scale - rotX_Z * scale).tex(uMin, vMax).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).endVertex(); //.lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
 		tessellator.draw();
 
 		GlStateManager.depthMask(true);

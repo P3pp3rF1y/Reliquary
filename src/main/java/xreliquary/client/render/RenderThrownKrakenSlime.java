@@ -1,8 +1,8 @@
 package xreliquary.client.render;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -30,7 +30,7 @@ public class RenderThrownKrakenSlime extends Render<EntityKrakenSlime> {
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.scale(0.5F, 0.5F, 0.5F);
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldrenderer = tessellator.getBuffer();
+		BufferBuilder buffer = tessellator.getBuffer();
 		float f = (float) (TEXTURE_INDEX % 16 * 16) / 256.0F;
 		float f1 = (float) (TEXTURE_INDEX % 16 * 16 + 16) / 256.0F;
 		//noinspection PointlessArithmeticExpression
@@ -42,11 +42,11 @@ public class RenderThrownKrakenSlime extends Render<EntityKrakenSlime> {
 		float f6 = 0.25F;
 		GlStateManager.rotate(180.0F - this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
 		GlStateManager.rotate(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-		worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
-		worldrenderer.pos((double) (0.0F - f5), (double) (0.0F - f6), 0.0D).tex((double) f, (double) f3).normal(0.0F, 1.0F, 0.0F).endVertex();
-		worldrenderer.pos((double) (f4 - f5), (double) (0.0F - f6), 0.0D).tex((double) f1, (double) f3).normal(0.0F, 1.0F, 0.0F).endVertex();
-		worldrenderer.pos((double) (f4 - f5), (double) (1.0F - f6), 0.0D).tex((double) f1, (double) f2).normal(0.0F, 1.0F, 0.0F).endVertex();
-		worldrenderer.pos((double) (0.0F - f5), (double) (1.0F - f6), 0.0D).tex((double) f, (double) f2).normal(0.0F, 1.0F, 0.0F).endVertex();
+		buffer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
+		buffer.pos((double) (0.0F - f5), (double) (0.0F - f6), 0.0D).tex((double) f, (double) f3).normal(0.0F, 1.0F, 0.0F).endVertex();
+		buffer.pos((double) (f4 - f5), (double) (0.0F - f6), 0.0D).tex((double) f1, (double) f3).normal(0.0F, 1.0F, 0.0F).endVertex();
+		buffer.pos((double) (f4 - f5), (double) (1.0F - f6), 0.0D).tex((double) f1, (double) f2).normal(0.0F, 1.0F, 0.0F).endVertex();
+		buffer.pos((double) (0.0F - f5), (double) (1.0F - f6), 0.0D).tex((double) f, (double) f2).normal(0.0F, 1.0F, 0.0F).endVertex();
 		tessellator.draw();
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.popMatrix();

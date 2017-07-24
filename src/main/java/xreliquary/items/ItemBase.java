@@ -1,15 +1,17 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -26,8 +28,8 @@ public class ItemBase extends Item {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean whatDoesThisEvenDo) {
-		this.formatTooltip(null, stack, list);
+	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag) {
+		this.formatTooltip(null, stack, tooltip);
 	}
 
 	/**
@@ -43,7 +45,7 @@ public class ItemBase extends Item {
 	 */
 	@SideOnly(Side.CLIENT)
 	public void formatTooltip(ImmutableMap<String, String> toFormat, ItemStack stack, List<String> list) {
-		if(showTooltipsAlways() || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", toFormat, list);
 	}
 
@@ -52,10 +54,6 @@ public class ItemBase extends Item {
 	@SideOnly(Side.CLIENT)
 	public String getItemStackDisplayName(@Nonnull ItemStack stack) {
 		return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
-	}
-
-	protected boolean showTooltipsAlways() {
-		return false;
 	}
 }
 

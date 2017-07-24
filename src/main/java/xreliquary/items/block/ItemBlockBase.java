@@ -1,15 +1,17 @@
 package xreliquary.items.block;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -31,8 +33,8 @@ public class ItemBlockBase extends ItemBlock {
 	 * formatTooltip() directly and DO NOT call super.addInformation().
 	 */
 	@Override
-	public void addInformation(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, @Nonnull List<String> list, boolean whatDoesThisEvenDo) {
-		this.formatTooltip(stack, list);
+	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<String> tooltip, @Nullable ITooltipFlag flag) {
+		this.formatTooltip(stack, tooltip);
 	}
 
 	/**
@@ -43,7 +45,7 @@ public class ItemBlockBase extends ItemBlock {
 	 * @param list     List of description lines passed from addInformation.
 	 */
 	public void formatTooltip(ItemStack stack, List<String> list) {
-		if(showTooltipsAlways() || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", null, list);
 	}
 
@@ -52,9 +54,5 @@ public class ItemBlockBase extends ItemBlock {
 	@SideOnly(Side.CLIENT)
 	public String getItemStackDisplayName(@Nonnull ItemStack stack) {
 		return LanguageHelper.getLocalization(this.getUnlocalizedNameInefficiently(stack) + ".name");
-	}
-
-	private boolean showTooltipsAlways() {
-		return false;
 	}
 }

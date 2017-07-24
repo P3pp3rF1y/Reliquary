@@ -12,6 +12,7 @@ import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketPlayerAbilities;
 import net.minecraft.potion.PotionEffect;
@@ -64,7 +65,8 @@ public class CommonEventHandler {
 			event.setCanceled(true);
 		
 		if (event.getLeft().getItem() == ModItems.alkahestryTome) {
-			ItemStack mendingBook = Items.ENCHANTED_BOOK.getEnchantedItemStack(new EnchantmentData(Enchantments.MENDING, Enchantments.MENDING.getMaxLevel()));
+			ItemStack mendingBook = new ItemStack(Items.ENCHANTED_BOOK);
+			ItemEnchantedBook.addEnchantment(mendingBook, new EnchantmentData(Enchantments.MENDING, Enchantments.MENDING.getMaxLevel()));
 			if(ItemStack.areItemStacksEqual(event.getRight(), mendingBook)) {
 				event.setCanceled(true);
 			}

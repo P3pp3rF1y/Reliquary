@@ -1,9 +1,5 @@
 package xreliquary.items;
 
-import baubles.api.BaubleType;
-import baubles.api.BaublesApi;
-import baubles.api.IBauble;
-import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,13 +17,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import vazkii.botania.common.block.subtile.functional.SubTileSolegnolia;
 import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
@@ -49,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = Compatibility.MOD_ID.BAUBLES, striprefs = true)
-public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IBauble {
+public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem/* TODO readd with baubles, IBauble*/ {
 
 	public ItemFortuneCoin() {
 		super(Names.Items.FORTUNE_COIN);
@@ -60,14 +54,33 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IB
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
+/*
+ TODO baubles
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {
-/*	TODO add back if baubles stops triggering this on every GUI open
+	*/
+/*
+	TODO add back if baubles stops triggering this on every GUI open
 		if(player.world.isRemote)
 			player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 2.2F));
 */
+/*
+
 	}
+
+	@Override
+	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
+	public BaubleType getBaubleType(ItemStack stack) {
+		return BaubleType.AMULET;
+	}
+
+	@Override
+	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
+	public void onWornTick(ItemStack stack, EntityLivingBase player) {
+		this.onUpdate(stack, player.world, player, 0, false);
+	}
+*/
 
 	@Nonnull
 	@Override
@@ -146,10 +159,12 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IB
 			return false;
 		if (isInDisabledRange(item, disablePositions))
 			return false;
+/* TODO Botania
 		if (Compatibility.isLoaded(Compatibility.MOD_ID.BOTANIA)) {
 			if (SubTileSolegnolia.hasSolegnoliaAround(item))
 				return false;
 		}
+*/
 		return true;
 	}
 
@@ -162,16 +177,16 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IB
 		}
 		return false;
 	}
-	
+
 	private List<BlockPos> getDisablePositions(World world, BlockPos coinPos) {
 		List<BlockPos> disablePositions = new ArrayList<>();
 		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(world.provider.getDimension(), coinPos, 10);
-		
+
 		for (BlockPos pos : pedestalPositions) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof TileEntityPedestal) {
 				TileEntityPedestal pedestal = (TileEntityPedestal) te;
-				
+
 				if (pedestal.switchedOn()) {
 					ItemStack stack = pedestal.getStackInSlot(0);
 					if (!stack.isEmpty() && stack.getItem() == this && !isEnabled(stack)) {
@@ -260,18 +275,6 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IB
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
-	@Override
-	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
-	public BaubleType getBaubleType(ItemStack stack) {
-		return BaubleType.AMULET;
-	}
-
-	@Override
-	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
-	public void onWornTick(ItemStack stack, EntityLivingBase player) {
-		this.onUpdate(stack, player.world, player, 0, false);
-	}
-
 	private boolean disabledAudio() {
 		return Settings.FortuneCoin.disableAudio;
 	}
@@ -357,6 +360,7 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IB
 				return;
 			}
 
+/* TODO Baubles
 			if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
 				IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 
@@ -369,6 +373,7 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IB
 					}
 				}
 			}
+*/
 		}
 	}
 }

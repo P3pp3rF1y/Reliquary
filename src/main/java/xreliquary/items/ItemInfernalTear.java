@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -23,11 +24,11 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
-import xreliquary.util.RegistryHelper;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 import xreliquary.util.alkahestry.Alkahestry;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemInfernalTear extends ItemToggleable {
@@ -71,30 +72,32 @@ public class ItemInfernalTear extends ItemToggleable {
 
 	private void resetTear(ItemStack ist) {
 		NBTTagCompound tag = ist.getTagCompound();
-		tag.removeTag("itemID");
-		tag.removeTag("enabled");
+		if (tag != null) {
+			tag.removeTag("itemID");
+			tag.removeTag("enabled");
+		}
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
-		this.formatTooltip(null, stack, list);
+		this.formatTooltip(null, stack, tooltip);
 
 		if(this.getStackFromTear(stack).isEmpty()) {
-			LanguageHelper.formatTooltip("tooltip.infernal_tear.tear_empty", null, list);
+			LanguageHelper.formatTooltip("tooltip.infernal_tear.tear_empty", null, tooltip);
 		} else {
 			ItemStack contents = this.getStackFromTear(stack);
 			String itemName = contents.getDisplayName();
 
-			LanguageHelper.formatTooltip("tooltip.tear", ImmutableMap.of("item", itemName), list);
+			LanguageHelper.formatTooltip("tooltip.tear", ImmutableMap.of("item", itemName), tooltip);
 
 			if(this.isEnabled(stack)) {
-				LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + itemName), list);
+				LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + itemName), tooltip);
 			}
-			list.add(LanguageHelper.getLocalization("tooltip.absorb"));
-			list.add(LanguageHelper.getLocalization("tooltip.infernal_tear.absorb_unset"));
+			tooltip.add(LanguageHelper.getLocalization("tooltip.absorb"));
+			tooltip.add(LanguageHelper.getLocalization("tooltip.infernal_tear.absorb_unset"));
 		}
 	}
 
@@ -108,8 +111,10 @@ public class ItemInfernalTear extends ItemToggleable {
 		String[] nameParts = NBTHelper.getString("itemID", tear).split("\\|");
 		ItemStack stack;
 		if(nameParts.length > 1)
+			//noinspection ConstantConditions
 			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(nameParts[0])), 1, Integer.parseInt(nameParts[1]));
 		else
+			//noinspection ConstantConditions
 			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(nameParts[0])));
 
 		return stack;

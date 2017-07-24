@@ -87,7 +87,7 @@ public class ClientProxy extends CommonProxy {
 				NonNullList<ItemStack> subBlocks = NonNullList.create();
 
 				//noinspection ConstantConditions
-				block.getSubBlocks(Item.getItemFromBlock(block), null, subBlocks);
+				block.getSubBlocks(null, subBlocks);
 
 				JEIDescriptionRegistry.register(subBlocks, name);
 			} else {
@@ -102,8 +102,11 @@ public class ClientProxy extends CommonProxy {
 			return;
 
 		NonNullList<ItemStack> subItems = NonNullList.create();
-		ModItems.potionEssence.getSubItems(ModItems.potionEssence, ModItems.potionEssence.getCreativeTab(), subItems);
-		JEIDescriptionRegistry.register(subItems, Names.Items.POTION_ESSENCE);
+		if (ModItems.potionEssence != null) {
+			//noinspection ConstantConditions
+			ModItems.potionEssence.getSubItems(ModItems.potionEssence.getCreativeTab(), subItems);
+			JEIDescriptionRegistry.register(subItems, Names.Items.POTION_ESSENCE);
+		}
 
 		JEIDescriptionRegistry.register(Collections.singletonList(new ItemStack(ModItems.potion)), "potion0");
 
@@ -148,7 +151,7 @@ public class ClientProxy extends CommonProxy {
 		JEIDescriptionRegistry.register(potionMagazines, "magazine1_potion");
 
 		NonNullList<ItemStack> mobCharms = NonNullList.create();
-		ModItems.mobCharm.getSubItems(ModItems.mobCharm, Reliquary.CREATIVE_TAB, mobCharms);
+		ModItems.mobCharm.getSubItems(Reliquary.CREATIVE_TAB, mobCharms);
 
 		int meta = 0;
 		for(ItemStack mobCharm : mobCharms) {

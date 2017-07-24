@@ -10,7 +10,7 @@ import xreliquary.blocks.tile.TileEntityPedestalPassive;
 public class TileEntityPedestalPassiveRenderer extends TileEntitySpecialRenderer<TileEntityPedestalPassive> {
 
 	@Override
-	public void renderTileEntityAt(TileEntityPedestalPassive te, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void render(TileEntityPedestalPassive te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		if(!te.getStackInSlot(0).isEmpty()) {
 			EntityItem item = new EntityItem(te.getWorld(), 0.0D, 0.0D, 0.0D, te.getStackInSlot(0));
 			item.getItem().setCount(1);

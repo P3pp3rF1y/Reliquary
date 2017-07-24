@@ -1,9 +1,9 @@
 package xreliquary.client.render;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -40,7 +40,7 @@ public class RenderLyssaHook extends Render<EntityLyssaHook> {
 			GlStateManager.scale(0.5F, 0.5F, 0.5F);
 			this.bindEntityTexture(entity);
 			Tessellator tessellator = Tessellator.getInstance();
-			VertexBuffer vertexbuffer = tessellator.getBuffer();
+			BufferBuilder buffer = tessellator.getBuffer();
 			GlStateManager.rotate(180.0F - this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
 			GlStateManager.rotate((float) (this.renderManager.options.thirdPersonView == 2 ? -1 : 1) * -this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
 
@@ -49,11 +49,11 @@ public class RenderLyssaHook extends Render<EntityLyssaHook> {
 				GlStateManager.enableOutlineMode(this.getTeamColor(entity));
 			}
 
-			vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
-			vertexbuffer.pos(-0.5D, -0.5D, 0.0D).tex(0.0625D, 0.1875D).normal(0.0F, 1.0F, 0.0F).endVertex();
-			vertexbuffer.pos(0.5D, -0.5D, 0.0D).tex(0.125D, 0.1875D).normal(0.0F, 1.0F, 0.0F).endVertex();
-			vertexbuffer.pos(0.5D, 0.5D, 0.0D).tex(0.125D, 0.125D).normal(0.0F, 1.0F, 0.0F).endVertex();
-			vertexbuffer.pos(-0.5D, 0.5D, 0.0D).tex(0.0625D, 0.125D).normal(0.0F, 1.0F, 0.0F).endVertex();
+			buffer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
+			buffer.pos(-0.5D, -0.5D, 0.0D).tex(0.0625D, 0.1875D).normal(0.0F, 1.0F, 0.0F).endVertex();
+			buffer.pos(0.5D, -0.5D, 0.0D).tex(0.125D, 0.1875D).normal(0.0F, 1.0F, 0.0F).endVertex();
+			buffer.pos(0.5D, 0.5D, 0.0D).tex(0.125D, 0.125D).normal(0.0F, 1.0F, 0.0F).endVertex();
+			buffer.pos(-0.5D, 0.5D, 0.0D).tex(0.0625D, 0.125D).normal(0.0F, 1.0F, 0.0F).endVertex();
 			tessellator.draw();
 
 			if(this.renderOutlines) {
@@ -108,11 +108,11 @@ public class RenderLyssaHook extends Render<EntityLyssaHook> {
 			double d12 = (double) ((float) (d6 - d9));
 			GlStateManager.disableTexture2D();
 			GlStateManager.disableLighting();
-			vertexbuffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
+			buffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
 
 			for(int i1 = 0; i1 <= 16; ++i1) {
 				float f11 = (float) i1 / 16.0F;
-				vertexbuffer.pos(x + d10 * (double) f11, y + d11 * (double) (f11 * f11 + f11) * 0.5D + 0.25D, z + d12 * (double) f11).color(0, 0, 0, 255).endVertex();
+				buffer.pos(x + d10 * (double) f11, y + d11 * (double) (f11 * f11 + f11) * 0.5D + 0.25D, z + d12 * (double) f11).color(0, 0, 0, 255).endVertex();
 			}
 
 			tessellator.draw();

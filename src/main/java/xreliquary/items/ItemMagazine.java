@@ -1,10 +1,9 @@
 package xreliquary.items;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.IItemPropertyGetter;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -20,6 +19,7 @@ import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemMagazine extends ItemBase {
@@ -50,11 +50,11 @@ public class ItemMagazine extends ItemBase {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		//taking tooltip from bullets as it's the same text for magazines
 		if(stack.getMetadata() >= 2)
-			LanguageHelper.formatTooltip("item." + Names.Items.BULLET + "_" + stack.getMetadata() + ".tooltip", null, list);
-		XRPotionHelper.addPotionTooltip(stack, list);
+			LanguageHelper.formatTooltip("item." + Names.Items.BULLET + "_" + stack.getMetadata() + ".tooltip", null, tooltip);
+		XRPotionHelper.addPotionTooltip(stack, tooltip);
 	}
 
 	@Nonnull
@@ -64,9 +64,9 @@ public class ItemMagazine extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull Item item, CreativeTabs creativeTabs, NonNullList<ItemStack> subItems) {
+	public void getSubItems(@Nonnull CreativeTabs creativeTabs, @Nonnull NonNullList<ItemStack> subItems) {
 		for(int meta = 0; meta <= 9; meta++) {
-			subItems.add(new ItemStack(item, 1, meta));
+			subItems.add(new ItemStack(this, 1, meta));
 		}
 
 		//similar to bullets adding just basic magazines with potions here even though all magazine types can have potions attached

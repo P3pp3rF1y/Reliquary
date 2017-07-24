@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,11 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
@@ -57,6 +54,7 @@ import xreliquary.util.NBTHelper;
 import xreliquary.util.XRFakePlayerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -77,13 +75,13 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
+	public void addInformation(ItemStack ist, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
-		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(getBoneMealCount(ist))), ist, list);
+		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(getBoneMealCount(ist))), ist, tooltip);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.WHITE + Items.DYE.getItemStackDisplayName(new ItemStack(Items.DYE, 1, Reference.WHITE_DYE_META))), list);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.WHITE + Items.DYE.getItemStackDisplayName(new ItemStack(Items.DYE, 1, Reference.WHITE_DYE_META))), tooltip);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Nonnull
@@ -208,8 +206,7 @@ public class ItemHarvestRod extends ItemToggleable {
 			for(int xOff = -getBreakRadius(); xOff <= getBreakRadius(); xOff++) {
 				for(int yOff = -getBreakRadius(); yOff <= getBreakRadius(); yOff++) {
 					for(int zOff = -getBreakRadius(); zOff <= getBreakRadius(); zOff++) {
-						doHarvestBlockBreak(block, ist, pos, player, xOff, yOff, zOff);
-						brokenBlock = true;
+						brokenBlock |= doHarvestBlockBreak(block, ist, pos, player, xOff, yOff, zOff);
 					}
 				}
 			}
@@ -236,7 +233,8 @@ public class ItemHarvestRod extends ItemToggleable {
 			for(int particles = 0; particles <= 8; particles++)
 				player.world.playEvent(player, 2001, pos, Block.getStateId(blockState));
 		} else {
-			List<ItemStack> drops = blockState.getBlock().getDrops(player.world, pos, blockState, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, ist));
+			NonNullList<ItemStack> drops = NonNullList.create();
+			blockState.getBlock().getDrops(drops, player.world, pos, blockState, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, ist));
 			Random rand = new Random();
 
 			for(ItemStack stack : drops) {

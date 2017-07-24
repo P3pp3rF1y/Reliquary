@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,6 +44,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemEnderStaff extends ItemToggleable {
@@ -254,17 +256,17 @@ public class ItemEnderStaff extends ItemToggleable {
 		return super.onItemRightClick(world, player, hand);
 	}
 
-	private ItemStack doWraithNodeWarpCheck(ItemStack stack, World world, EntityPlayer player) {
+	private void doWraithNodeWarpCheck(ItemStack stack, World world, EntityPlayer player) {
 		if(getPearlCount(stack) < getEnderStaffNodeWarpCost() && !player.capabilities.isCreativeMode)
-			return stack;
+			return;
 
-		if(stack.getTagCompound() != null && stack.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(player))) {
+		if(stack.getTagCompound() != null && stack.getTagCompound().getInteger("dimensionID") != getDimension(world)) {
 			if(!world.isRemote) {
 				player.sendMessage(new TextComponentString(TextFormatting.DARK_RED + "Out of range!"));
 			}
-		} else if(stack.getTagCompound() != null && world.getBlockState(new BlockPos(stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))).getBlock() == ModBlocks.wraithNode) {
-			if(canTeleport(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)))) {
-				teleportPlayer(world, stack.getTagCompound().getInteger("nodeX" + getWorld(player)), stack.getTagCompound().getInteger("nodeY" + getWorld(player)), stack.getTagCompound().getInteger("nodeZ" + getWorld(player)), player);
+		} else if(stack.getTagCompound() != null && world.getBlockState(new BlockPos(stack.getTagCompound().getInteger("nodeX" + getDimension(world)), stack.getTagCompound().getInteger("nodeY" + getDimension(world)), stack.getTagCompound().getInteger("nodeZ" + getDimension(world)))).getBlock() == ModBlocks.wraithNode) {
+			if(canTeleport(world, stack.getTagCompound().getInteger("nodeX" + getDimension(world)), stack.getTagCompound().getInteger("nodeY" + getDimension(world)), stack.getTagCompound().getInteger("nodeZ" + getDimension(world)))) {
+				teleportPlayer(world, stack.getTagCompound().getInteger("nodeX" + getDimension(world)), stack.getTagCompound().getInteger("nodeY" + getDimension(world)), stack.getTagCompound().getInteger("nodeZ" + getDimension(world)), player);
 				//setCooldown(ist);
 				if(!player.capabilities.isCreativeMode && !player.world.isRemote)
 					setPearlCount(stack, player, player.getActiveHand(), getPearlCount(stack) - getEnderStaffNodeWarpCost());
@@ -281,7 +283,6 @@ public class ItemEnderStaff extends ItemToggleable {
 				player.playSound(SoundEvents.ENTITY_ENDERMEN_DEATH, 1.0f, 1.0f);
 			}
 		}
-		return stack;
 	}
 
 	private boolean canTeleport(World world, int x, int y, int z) {
@@ -297,24 +298,24 @@ public class ItemEnderStaff extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean flag) {
+	public void addInformation(ItemStack ist, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		//added spacing here to make sure the tooltips didn't come out with weird punctuation derps.
 		String charge = Integer.toString(getPearlCount(ist));
 		String phrase = "Currently bound to ";
 		String position = "";
-		if(ist.getTagCompound() != null && ist.getTagCompound().getInteger("dimensionID") != Integer.valueOf(getWorld(player))) {
+		if(ist.getTagCompound() != null && ist.getTagCompound().getInteger("dimensionID") != getDimension(world)) {
 			phrase = "Out of range!";
-		} else if(ist.getTagCompound() != null && ist.getTagCompound().hasKey("nodeX" + getWorld(player)) && ist.getTagCompound().hasKey("nodeY" + getWorld(player)) && ist.getTagCompound().hasKey("nodeZ" + getWorld(player))) {
-			position = "X: " + ist.getTagCompound().getInteger("nodeX" + getWorld(player)) + " Y: " + ist.getTagCompound().getInteger("nodeY" + getWorld(player)) + " Z: " + ist.getTagCompound().getInteger("nodeZ" + getWorld(player));
+		} else if(ist.getTagCompound() != null && ist.getTagCompound().hasKey("nodeX" + getDimension(world)) && ist.getTagCompound().hasKey("nodeY" + getDimension(world)) && ist.getTagCompound().hasKey("nodeZ" + getDimension(world))) {
+			position = "X: " + ist.getTagCompound().getInteger("nodeX" + getDimension(world)) + " Y: " + ist.getTagCompound().getInteger("nodeY" + getDimension(world)) + " Z: " + ist.getTagCompound().getInteger("nodeZ" + getDimension(world));
 		} else {
 			position = "nowhere.";
 		}
-		this.formatTooltip(ImmutableMap.of("phrase", phrase, "position", position, "charge", charge), ist, list);
+		this.formatTooltip(ImmutableMap.of("phrase", phrase, "position", position, "charge", charge), ist, tooltip);
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + Items.ENDER_PEARL.getItemStackDisplayName(new ItemStack(Items.ENDER_PEARL))), list);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + Items.ENDER_PEARL.getItemStackDisplayName(new ItemStack(Items.ENDER_PEARL))), tooltip);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Nonnull
@@ -324,7 +325,7 @@ public class ItemEnderStaff extends ItemToggleable {
 
 		// if right clicking on a wraith node, bind the eye to that wraith node.
 		if((stack.getTagCompound() == null || !(stack.getTagCompound().hasKey("dimensionID"))) && world.getBlockState(pos).getBlock() == ModBlocks.wraithNode) {
-			setWraithNode(stack, pos, Integer.valueOf(getWorld(player)), player);
+			setWraithNode(stack, pos, getDimension(world));
 
 			player.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0f, 1.0f);
 			for(int particles = 0; particles < 12; particles++) {
@@ -337,14 +338,14 @@ public class ItemEnderStaff extends ItemToggleable {
 		}
 	}
 
-	private void setWraithNode(ItemStack eye, BlockPos pos, int dimensionID, EntityPlayer player) {
-		NBTHelper.setInteger("nodeX" + getWorld(player), eye, pos.getX());
-		NBTHelper.setInteger("nodeY" + getWorld(player), eye, pos.getY());
-		NBTHelper.setInteger("nodeZ" + getWorld(player), eye, pos.getZ());
-		NBTHelper.setInteger("dimensionID", eye, dimensionID);
+	private int getDimension(@Nullable World world) {
+		return world != null ? world.provider.getDimension() : 0;
 	}
 
-	private String getWorld(EntityPlayer player) {
-		return Integer.valueOf(player.world.provider.getDimension()).toString();
+	private void setWraithNode(ItemStack eye, BlockPos pos, int dimensionID) {
+		NBTHelper.setInteger("nodeX" + dimensionID, eye, pos.getX());
+		NBTHelper.setInteger("nodeY" + dimensionID, eye, pos.getY());
+		NBTHelper.setInteger("nodeZ" + dimensionID, eye, pos.getZ());
+		NBTHelper.setInteger("dimensionID", eye, dimensionID);
 	}
 }

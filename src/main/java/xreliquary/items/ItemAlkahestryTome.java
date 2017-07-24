@@ -1,12 +1,12 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -30,6 +30,7 @@ import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestRecipeType;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
@@ -88,14 +89,14 @@ public class ItemAlkahestryTome extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
+	public void addInformation(ItemStack ist, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
-		this.formatTooltip(ImmutableMap.of("chargeAmount", String.valueOf(NBTHelper.getInteger("charge", ist)), "chargeLimit", String.valueOf(getChargeLimit())), ist, list);
+		this.formatTooltip(ImmutableMap.of("chargeAmount", String.valueOf(NBTHelper.getInteger("charge", ist)), "chargeLimit", String.valueOf(getChargeLimit())), ist, tooltip);
 
 		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + Items.REDSTONE.getItemStackDisplayName(Settings.AlkahestryTome.baseItem)), list);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + Items.REDSTONE.getItemStackDisplayName(Settings.AlkahestryTome.baseItem)), tooltip);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Nonnull
@@ -106,7 +107,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> subItems) {
 
 		ItemStack stack = new ItemStack(ModItems.alkahestryTome);
 		stack.setItemDamage(stack.getMaxDamage());

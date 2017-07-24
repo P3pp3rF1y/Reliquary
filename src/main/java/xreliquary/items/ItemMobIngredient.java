@@ -1,7 +1,6 @@
 package xreliquary.items;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import xreliquary.Reliquary;
@@ -34,8 +33,8 @@ public class ItemMobIngredient extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull Item item, CreativeTabs creativeTab, NonNullList<ItemStack> list) {
+	public void getSubItems(@Nonnull CreativeTabs creativeTab, @Nonnull NonNullList<ItemStack> list) {
 		for(int i = 0; i <= 16; i++)
-			list.add(new ItemStack(item, 1, i));
+			list.add(new ItemStack(this, 1, i));
 	}
 }

@@ -1,3 +1,4 @@
+/*
 package xreliquary.compat.waila.provider;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -83,3 +84,4 @@ public class DataProviderMortar extends CachedBodyDataProvider {
 		return null;
 	}
 }
+*/

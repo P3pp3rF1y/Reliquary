@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import com.google.common.collect.Multimap;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -12,6 +13,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -20,6 +22,7 @@ import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemMercyCross extends ItemSword {
@@ -48,13 +51,13 @@ public class ItemMercyCross extends ItemSword {
 	}
 
 	@Override
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		String value = LanguageHelper.getLocalization("item." + Names.Items.MERCY_CROSS + ".tooltip");
 		for(String descriptionLine : value.split(";")) {
 			if(descriptionLine != null && descriptionLine.length() > 0)
-				list.add(descriptionLine);
+				tooltip.add(descriptionLine);
 		}
 	}
 

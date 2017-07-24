@@ -41,7 +41,8 @@ public class AlkahestryChargingRecipeMaker {
 					if (recipe.type == AlkahestRecipeType.WILDCARD) {
 						NonNullList<ItemStack> subItems = NonNullList.create();
 
-						item.getSubItems(item, null, subItems);
+						//noinspection ConstantConditions
+						item.getSubItems(item.getCreativeTab(), subItems);
 						for (ItemStack input : subItems) {
 							recipes.add(new AlkahestryChargingRecipeJEI(input, inputTome, outputTome));
 						}

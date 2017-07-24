@@ -1,8 +1,8 @@
 package xreliquary.client.render;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -27,14 +27,14 @@ public class RenderShot<T extends EntityShotBase> extends Render<T> {
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.scale(0.1F, 0.1F, 0.1F);
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldrenderer = tessellator.getBuffer();
+		BufferBuilder buffer = tessellator.getBuffer();
 		GlStateManager.rotate(180.0F - renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
 		GlStateManager.rotate(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-		worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
-		worldrenderer.pos(-0.5F, -0.25F, 0.0D).tex(0, 1).normal(0.0F, 1.0F, 0.0F).endVertex();
-		worldrenderer.pos(0.5F, -0.25F, 0.0D).tex(1, 1).normal(0.0F, 1.0F, 0.0F).endVertex();
-		worldrenderer.pos(0.5F, 0.75F, 0.0D).tex(1, 0).normal(0.0F, 1.0F, 0.0F).endVertex();
-		worldrenderer.pos(-0.5F, 0.75F, 0.0D).tex(0, 0).normal(0.0F, 1.0F, 0.0F).endVertex();
+		buffer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
+		buffer.pos(-0.5F, -0.25F, 0.0D).tex(0, 1).normal(0.0F, 1.0F, 0.0F).endVertex();
+		buffer.pos(0.5F, -0.25F, 0.0D).tex(1, 1).normal(0.0F, 1.0F, 0.0F).endVertex();
+		buffer.pos(0.5F, 0.75F, 0.0D).tex(1, 0).normal(0.0F, 1.0F, 0.0F).endVertex();
+		buffer.pos(-0.5F, 0.75F, 0.0D).tex(0, 0).normal(0.0F, 1.0F, 0.0F).endVertex();
 		tessellator.draw();
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.popMatrix();

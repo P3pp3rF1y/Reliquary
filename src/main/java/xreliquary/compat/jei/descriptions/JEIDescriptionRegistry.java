@@ -24,7 +24,7 @@ public class JEIDescriptionRegistry {
 		if(item.getCreativeTab() != null) {
 			if(item.getHasSubtypes()) {
 				NonNullList<ItemStack> subItems = NonNullList.create();
-				item.getSubItems(item, item.getCreativeTab(), subItems);
+				item.getSubItems(item.getCreativeTab(), subItems);
 
 				Set<Integer> addedMeta = new HashSet<>();
 

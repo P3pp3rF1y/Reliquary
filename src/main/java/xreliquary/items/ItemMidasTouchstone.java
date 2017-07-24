@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -19,6 +20,7 @@ import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemMidasTouchstone extends ItemToggleable {
@@ -31,11 +33,11 @@ public class ItemMidasTouchstone extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
+	public void addInformation(ItemStack touchstone, @Nullable World world, List<String> list, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
-		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("glowstone", ist))), ist, list);
-		if(this.isEnabled(ist))
+		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("glowstone", touchstone))), touchstone, list);
+		if(this.isEnabled(touchstone))
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + Items.GLOWSTONE_DUST.getItemStackDisplayName(new ItemStack(Items.GLOWSTONE_DUST))), list);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
 	}

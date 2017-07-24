@@ -12,7 +12,7 @@ import xreliquary.blocks.tile.TileEntityMortar;
 public class RenderApothecaryMortar extends TileEntitySpecialRenderer<TileEntityMortar> {
 
 	@Override
-	public void renderTileEntityAt(TileEntityMortar tile, double x, double y, double z, float var8, int i) {
+	public void render(TileEntityMortar tile, double x, double y, double z, float partialTick, int destoryStage, float alpha) {
 		EnumFacing facing = EnumFacing.getHorizontal(tile.getBlockMetadata());
 		float horizontalRotation = facing == EnumFacing.UP ? 0f : facing.getHorizontalIndex() * 90f;
 

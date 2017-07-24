@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -11,6 +12,7 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -19,6 +21,7 @@ import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemMagicbane extends ItemSword {
@@ -53,13 +56,13 @@ public class ItemMagicbane extends ItemSword {
 	}
 
 	@Override
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
+	public void addInformation(ItemStack magicBane, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		String value = LanguageHelper.getLocalization("item." + Names.Items.MAGICBANE + ".tooltip");
 		for(String descriptionLine : value.split(";")) {
 			if(descriptionLine != null && descriptionLine.length() > 0)
-				list.add(descriptionLine);
+				tooltip.add(descriptionLine);
 		}
 	}
 
@@ -113,10 +116,8 @@ public class ItemMagicbane extends ItemSword {
 			if(attacker instanceof EntityPlayer) {
 				NBTTagList enchants = stack.getEnchantmentTagList();
 				int bonus = 0;
-				if(enchants != null) {
-					for(int enchant = 0; enchant < enchants.tagCount(); enchant++) {
-						bonus += enchants.getCompoundTagAt(enchant).getShort("lvl");
-					}
+				for(int enchant = 0; enchant < enchants.tagCount(); enchant++) {
+					bonus += enchants.getCompoundTagAt(enchant).getShort("lvl");
 				}
 				target.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker), bonus + 4);
 			}

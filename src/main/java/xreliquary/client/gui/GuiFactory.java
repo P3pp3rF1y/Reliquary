@@ -22,19 +22,9 @@ public class GuiFactory implements IModGuiFactory {
 		return new ModGuiConfig(parentScreen);
 	}
 
-	@Override
-	public Class<? extends GuiScreen> mainConfigGuiClass() {
-		return ModGuiConfig.class;
-	}
 
 	@Override
 	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-		return null;
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
 		return null;
 	}
 }

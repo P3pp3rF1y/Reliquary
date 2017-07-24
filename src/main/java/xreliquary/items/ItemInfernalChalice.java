@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -26,6 +27,7 @@ import xreliquary.reference.Names;
 import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemInfernalChalice extends ItemToggleable {
@@ -37,10 +39,10 @@ public class ItemInfernalChalice extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
+	public void addInformation(ItemStack ist, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		//String fluid = "lava.";
 		String amount = Integer.toString(NBTHelper.getInteger("fluidStacks", ist));
-		this.formatTooltip(ImmutableMap.of("amount", amount), ist, list);
+		this.formatTooltip(ImmutableMap.of("amount", amount), ist, tooltip);
 	}
 
 	@Nonnull

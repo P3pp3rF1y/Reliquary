@@ -30,8 +30,6 @@ import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlockPedestalPassive extends BlockBase {
 	static final PropertyEnum<EnumDyeColor> COLOR = PropertyEnum.create("color", EnumDyeColor.class);
@@ -45,7 +43,7 @@ public class BlockPedestalPassive extends BlockBase {
 	}
 
 	@Override
-	public void getSubBlocks(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
 		for(int i = 0; i < 16; i++) {
 			list.add(new ItemStack(ModBlocks.pedestalPassive, 1, i));
 		}
@@ -83,11 +81,8 @@ public class BlockPedestalPassive extends BlockBase {
 		return new ItemStack(Item.getItemFromBlock(this), 1, meta);
 	}
 
-	@Nonnull
 	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, @Nonnull IBlockState state, int fortune) {
-		List<ItemStack> list = new ArrayList<>();
-
+	public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state, int fortune) {
 		Item item = this.getItemDropped(state, ((World) world).rand, fortune);
 
 		int meta = 0;
@@ -98,9 +93,7 @@ public class BlockPedestalPassive extends BlockBase {
 			meta = pedestal.getClothColor().getMetadata();
 		}
 
-		list.add(new ItemStack(item, 1, meta));
-
-		return list;
+		drops.add(new ItemStack(item, 1, meta));
 	}
 
 	@SuppressWarnings("deprecation")

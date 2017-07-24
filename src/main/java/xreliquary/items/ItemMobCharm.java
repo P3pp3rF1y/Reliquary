@@ -1,17 +1,12 @@
 package xreliquary.items;
 
-import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -23,9 +18,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import xreliquary.Reliquary;
 import xreliquary.blocks.BlockPedestal;
 import xreliquary.blocks.tile.TileEntityPedestal;
@@ -33,14 +26,12 @@ import xreliquary.init.ModItems;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketMobCharmDamage;
 import xreliquary.pedestal.PedestalRegistry;
-import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.MobHelper;
 
 import javax.annotation.Nonnull;
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class ItemMobCharm extends ItemBase {
@@ -63,9 +54,9 @@ public class ItemMobCharm extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull Item item, CreativeTabs creativeTab, NonNullList<ItemStack> subItems) {
+	public void getSubItems(@Nonnull CreativeTabs creativeTab, @Nonnull NonNullList<ItemStack> subItems) {
 		for(byte i = 0; i < Reference.MOB_CHARM.COUNT_TYPES; i++) {
-			ItemStack subItem = new ItemStack(item);
+			ItemStack subItem = new ItemStack(this);
 			setType(subItem, i);
 			subItems.add(subItem);
 		}
@@ -268,6 +259,7 @@ public class ItemMobCharm extends ItemBase {
 				return true;
 		}
 
+/* TODO Baubles
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
 			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 
@@ -281,6 +273,7 @@ public class ItemMobCharm extends ItemBase {
 					return true;
 			}
 		}
+*/
 
 		return false;
 	}
@@ -312,6 +305,7 @@ public class ItemMobCharm extends ItemBase {
 				return true;
 		}
 
+/* TODO Baubles
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
 			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 
@@ -321,6 +315,7 @@ public class ItemMobCharm extends ItemBase {
 					return true;
 			}
 		}
+*/
 
 		return false;
 	}

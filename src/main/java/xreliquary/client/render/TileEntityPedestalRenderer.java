@@ -13,7 +13,7 @@ import xreliquary.client.registry.PedestalClientRegistry;
 public class TileEntityPedestalRenderer extends TileEntitySpecialRenderer<TileEntityPedestal> {
 
 	@Override
-	public void renderTileEntityAt(TileEntityPedestal te, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void render(TileEntityPedestal te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		if(!te.getStackInSlot(0).isEmpty()) {
 			ItemStack stack = te.getStackInSlot(0);
 			EntityItem item = new EntityItem(te.getWorld(), 0.0D, 0.0D, 0.0D, stack);

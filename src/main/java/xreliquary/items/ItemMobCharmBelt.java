@@ -1,10 +1,6 @@
 package xreliquary.items;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -24,7 +20,7 @@ import xreliquary.reference.Settings;
 import javax.annotation.Nonnull;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = Compatibility.MOD_ID.BAUBLES, striprefs = true)
-public class ItemMobCharmBelt extends ItemBase implements IBauble {
+public class ItemMobCharmBelt extends ItemBase /*implements IBauble*/ {
 	private static final String SLOTS_TAG = "Slots";
 	private static final String TYPE_TAG = "Type";
 	private static final String DAMAGE_TAG = "Damage";
@@ -34,6 +30,7 @@ public class ItemMobCharmBelt extends ItemBase implements IBauble {
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
+/* TODO Baubles
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public BaubleType getBaubleType(ItemStack stack) {
@@ -46,11 +43,14 @@ public class ItemMobCharmBelt extends ItemBase implements IBauble {
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public void onEquipped(ItemStack stack, EntityLivingBase player) {
+*/
 /*	TODO add back if baubles stops triggering this on every GUI open
 		if(player.world.isRemote)
 			player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1F, 1F);
-*/
+*//*
+
 	}
+*/
 
 	@Nonnull
 	@Override
@@ -145,7 +145,7 @@ public class ItemMobCharmBelt extends ItemBase implements IBauble {
 		return mobCharms.tagCount();
 	}
 
-	public boolean hasCharmType(ItemStack belt, byte type) {
+	boolean hasCharmType(ItemStack belt, byte type) {
 		NBTTagCompound nbt = belt.getTagCompound();
 
 		if(nbt == null || !nbt.hasKey(SLOTS_TAG))
@@ -167,7 +167,7 @@ public class ItemMobCharmBelt extends ItemBase implements IBauble {
 		return false;
 	}
 
-	public int damageCharmType(ItemStack belt, byte type) {
+	int damageCharmType(ItemStack belt, byte type) {
 		NBTTagCompound nbt = belt.getTagCompound();
 
 		if(nbt == null || !nbt.hasKey(SLOTS_TAG))

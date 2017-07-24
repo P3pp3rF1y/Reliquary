@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.client.ItemModelLocations;
@@ -123,7 +122,7 @@ public class ItemModels {
 	@SubscribeEvent
 	public void onModelBake(ModelBakeEvent event) {
 		ModelResourceLocation key = new ModelResourceLocation(new ResourceLocation(Reference.MOD_ID, Names.Items.VOID_TEAR), "inventory");
-		ModelVoidTear voidTearModel = new ModelVoidTear((IPerspectiveAwareModel) event.getModelRegistry().getObject(key));
+		ModelVoidTear voidTearModel = new ModelVoidTear(event.getModelRegistry().getObject(key));
 
 		event.getModelRegistry().putObject(key, voidTearModel);
 	}
