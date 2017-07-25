@@ -16,7 +16,6 @@ public class Settings {
 	public static boolean wailaShiftForInfo;
 	public static boolean dropCraftingRecipesEnabled;
 	public static boolean mobDropsEnabled;
-	public static List<String> disabledItemsBlocks;
 
 	public static class Potions {
 		public static int maxEffectCount;
@@ -263,7 +262,7 @@ public class Settings {
 	}
 
 	public static class SojournerStaff {
-		public static List<String> torches;
+		public static List<ItemStack> torches;
 		public static int maxCapacityPerItemType;
 		public static int maxRange;
 		public static int tilePerCostMultiplier;

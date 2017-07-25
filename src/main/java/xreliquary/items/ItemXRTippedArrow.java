@@ -1,10 +1,9 @@
 package xreliquary.items;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -21,6 +20,7 @@ import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemXRTippedArrow extends ItemArrow {
@@ -46,7 +46,7 @@ public class ItemXRTippedArrow extends ItemArrow {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> subItems) {
 		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
 			ItemStack tippedArrow = new ItemStack(ModItems.tippedArrow);
 			XRPotionHelper.addPotionEffectsToStack(tippedArrow, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.125F));
@@ -56,7 +56,7 @@ public class ItemXRTippedArrow extends ItemArrow {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
-		XRPotionHelper.addPotionTooltip(stack, tooltip);
+	public void addInformation(ItemStack arrow, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+		XRPotionHelper.addPotionTooltip(arrow, tooltip);
 	}
 }

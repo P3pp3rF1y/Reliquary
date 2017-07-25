@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,6 +31,7 @@ import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,13 +58,13 @@ public class ItemPyromancerStaff extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
+	public void addInformation(ItemStack staff, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		//maps the contents of the Pyromancer's staff to a tooltip, so the player can review the torches stored within.
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		String charges = "0";
 		String blaze = "0";
-		NBTTagCompound tagCompound = NBTHelper.getTag(ist);
+		NBTTagCompound tagCompound = NBTHelper.getTag(staff);
 		if(tagCompound != null) {
 			NBTTagList tagList = tagCompound.getTagList("Items", 10);
 			for(int i = 0; i < tagList.tagCount(); ++i) {
@@ -78,11 +80,11 @@ public class ItemPyromancerStaff extends ItemToggleable {
 				}
 			}
 		}
-		this.formatTooltip(ImmutableMap.of("charges", charges, "blaze", blaze), ist, list);
-		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + Items.BLAZE_POWDER.getItemStackDisplayName(new ItemStack(Items.BLAZE_POWDER)) + TextFormatting.WHITE + " & " + TextFormatting.RED + Items.FIRE_CHARGE.getItemStackDisplayName(new ItemStack(Items.FIRE_CHARGE))), list);
+		this.formatTooltip(ImmutableMap.of("charges", charges, "blaze", blaze), staff, tooltip);
+		if(this.isEnabled(staff))
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + Items.BLAZE_POWDER.getItemStackDisplayName(new ItemStack(Items.BLAZE_POWDER)) + TextFormatting.WHITE + " & " + TextFormatting.RED + Items.FIRE_CHARGE.getItemStackDisplayName(new ItemStack(Items.FIRE_CHARGE))), tooltip);
 
-		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import xreliquary.handler.ConfigurationHandler;
 import xreliquary.items.ItemDestructionCatalyst;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -312,8 +313,8 @@ public class BlockItemConfiguration {
 
 		//sojourners staff configs
 		categoryKey = Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.SOJOURNER_STAFF;
-		List<String> torches = ImmutableList.of();
-		Settings.SojournerStaff.torches = ConfigurationHandler.getStringList("torches", categoryKey, torches, "List of torches that are supported by the staff in addition to the default minecraft torch");
+		List<String> torches = ImmutableList.of("minecraft:torch");
+		Settings.SojournerStaff.torches = RegistryHelper.getItemStacksFromNames(ConfigurationHandler.getStringList("torches", categoryKey, torches, "List of torches that are supported by the staff in addition to the default minecraft torch"));
 		Settings.SojournerStaff.maxCapacityPerItemType = ConfigurationHandler.getInt("max_capacity_per_item_type", categoryKey, 1500, 1, itemCap, "Number of items the staff can store per item type");
 		Settings.SojournerStaff.maxRange = ConfigurationHandler.getInt("max_range", categoryKey, 30, 1, 30, "Maximum range at which torches can be placed");
 		Settings.SojournerStaff.tilePerCostMultiplier = ConfigurationHandler.getInt("tile_per_cost_multiplier", categoryKey, 6, 6, 30, "Distance after which there is an additional cost for torch placement. The additional cost is the number of times this distance fits in the distance at which the torch is being placed.");

@@ -16,12 +16,13 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -36,7 +37,7 @@ public class BlockApothecaryCauldron extends BlockBase {
 
 	public BlockApothecaryCauldron() {
 		super(Material.IRON, Names.Blocks.APOTHECARY_CAULDRON, 1.5F, 5.0F);
-		this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, 0));
+		setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, 0));
 	}
 
 	@Nonnull

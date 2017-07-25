@@ -2,6 +2,7 @@ package xreliquary.handler;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.handler.config.*;
 import xreliquary.reference.Names;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ConfigurationHandler {
 
 	public static Configuration configuration;
@@ -36,8 +38,6 @@ public class ConfigurationHandler {
 		configuration.getCategory("general").get(Names.Configs.MOB_DROP_CRAFTING_RECIPES_ENABLED).setRequiresMcRestart(true);
 		Settings.mobDropsEnabled = getBoolean(Names.Configs.MOB_DROPS_ENABLED, "general", true, "Whether mobs drop the Reliquary mob drops. This won't remove mob drop items from registry and replace them with something else, but allows to turn off the additional drops when mobs are killed by player. If this is turned off the mob drop crafting recipes turned on by the other setting can be used.");
 		configuration.getCategory("general").get(Names.Configs.MOB_DROPS_ENABLED).setRequiresMcRestart(true);
-		Settings.disabledItemsBlocks = ConfigurationHandler.getStringList(Names.Configs.DISABLED_ITEMS_BLOCKS, "general", Collections.emptyList(), "List of items and blocks that are supposed to be disabled. By default this is empty, but you can use the names of the blocks and items (e.g. \"fertile_lilypad\", \"wraith_node\", \"glacial_staff\") in this list and mod will not register those. It will also not register any recipes that include whatever is disabled.");
-		configuration.getCategory("general").get(Names.Configs.DISABLED_ITEMS_BLOCKS).setRequiresMcRestart(true);
 	}
 
 	public static void postInit() {
@@ -80,7 +80,7 @@ public class ConfigurationHandler {
 	}
 
 	@SubscribeEvent
-	public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
+	public static void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
 		if(event.getModID().equalsIgnoreCase(Reference.MOD_ID)) {
 			loadConfiguration();
 			postInit();

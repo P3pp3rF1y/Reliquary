@@ -8,6 +8,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.items.util.HarvestRodCache;
 import xreliquary.items.util.HarvestRodCacheStorage;
@@ -19,6 +20,7 @@ import xreliquary.reference.Reference;
 
 import javax.annotation.Nonnull;
 
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ModCapabilities {
 	@CapabilityInject(IHarvestRodCache.class)
 	public final static Capability<IHarvestRodCache> HARVEST_ROD_CACHE = null;
@@ -31,7 +33,7 @@ public class ModCapabilities {
 	}
 
 	@SubscribeEvent
-	public void onItemStackConstruct(AttachCapabilitiesEvent<ItemStack> evt) {
+	public static void onItemStackConstruct(AttachCapabilitiesEvent<ItemStack> evt) {
 		if (evt.getObject().getItem() == ModItems.harvestRod) {
 			evt.addCapability(new ResourceLocation(Reference.MOD_ID, "IHarvestRodCache"), new ICapabilityProvider() {
 				@SuppressWarnings("ConstantConditions")

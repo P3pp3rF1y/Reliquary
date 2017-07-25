@@ -6,6 +6,7 @@ import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.properties.EntityPropertyManager;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.loot.EntityPowered;
 import xreliquary.reference.Reference;
@@ -13,6 +14,7 @@ import xreliquary.reference.Settings;
 
 import java.util.List;
 
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ModLoot {
 	private static final List<String> CHEST_TABLES = ImmutableList.of("abandoned_mineshaft", "desert_pyramid", "end_city_treasure", "igloo_chest", "jungle_temple", "nether_bridge", "simple_dungeon", "stronghold_corridor", "stronghold_crossing", "stronghold_library", "village_blacksmith");
 
@@ -35,7 +37,7 @@ public class ModLoot {
 	}
 
 	@SubscribeEvent
-	public void lootLoad(LootTableLoadEvent evt) {
+	public static void lootLoad(LootTableLoadEvent evt) {
 		String chests_prefix = "minecraft:chests/";
 		String entities_prefix = "minecraft:entities/";
 		String name = evt.getName().toString();
@@ -47,11 +49,11 @@ public class ModLoot {
 		}
 	}
 
-	private LootPool getInjectPool(String entryName) {
-		return new LootPool(new LootEntry[] {getInjectEntry(entryName, 1)}, new LootCondition[0], new RandomValueRange(1), new RandomValueRange(0, 1), "xreliquary_inject_pool");
+	private static LootPool getInjectPool(String entryName) {
+		return new LootPool(new LootEntry[] {getInjectEntry(entryName)}, new LootCondition[0], new RandomValueRange(1), new RandomValueRange(0, 1), "xreliquary_inject_pool");
 	}
 
-	private LootEntryTable getInjectEntry(String name, int weight) {
-		return new LootEntryTable(new ResourceLocation(Reference.MOD_ID, "inject/" + name), weight, 0, new LootCondition[0], "xreliquary_inject_entry");
+	private static LootEntryTable getInjectEntry(String name) {
+		return new LootEntryTable(new ResourceLocation(Reference.MOD_ID, "inject/" + name), 1, 0, new LootCondition[0], "xreliquary_inject_entry");
 	}
 }

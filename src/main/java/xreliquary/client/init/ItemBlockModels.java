@@ -25,17 +25,11 @@ public class ItemBlockModels {
 	}
 
 	private static void registerBlockItemModel(Block block, String resourceName) {
-		if(Settings.disabledItemsBlocks.contains(resourceName))
-			return;
-
 		//noinspection ConstantConditions
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(Reference.DOMAIN + resourceName, "inventory"));
 	}
 
 	private static void registerPedestalBlockItemModels(BlockPedestalPassive block, String resourceName) {
-		if(Settings.disabledItemsBlocks.contains(resourceName))
-			return;
-
 		//noinspection ConstantConditions
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(Reference.DOMAIN + resourceName, "inventory"));
 

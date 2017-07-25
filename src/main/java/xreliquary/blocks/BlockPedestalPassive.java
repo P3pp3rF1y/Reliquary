@@ -24,9 +24,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.blocks.tile.TileEntityPedestalPassive;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 import xreliquary.util.InventoryHelper;
 
 import javax.annotation.Nonnull;
@@ -37,8 +40,10 @@ public class BlockPedestalPassive extends BlockBase {
 	private static final AxisAlignedBB PEDESTAL_AABB = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.6875D, 0.875D);
 
 	public BlockPedestalPassive() {
-		super(Material.ROCK, Names.Blocks.PEDESTAL_PASSIVE);
-
+		this(Names.Blocks.PEDESTAL_PASSIVE);
+	}
+	public BlockPedestalPassive(String name) {
+		super(Material.ROCK, name);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

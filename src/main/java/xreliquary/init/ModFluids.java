@@ -6,6 +6,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -13,6 +14,7 @@ import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 import xreliquary.util.LogHelper;
 
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ModFluids {
 	private static final String XP_JUICE_FLUID_NAME = "xpjuice";
 	private static final String MILK_FLUID_NAME = "milk";
@@ -50,13 +52,13 @@ public class ModFluids {
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void onIconLoad(TextureStitchEvent.Pre event) {
+	public static void onIconLoad(TextureStitchEvent.Pre event) {
 		TextureMap textureMap = event.getMap();
 		registerFluidSprites(textureMap, fluidXpJuice);
 		registerFluidSprites(textureMap, milk);
 	}
 
-	private void registerFluidSprites(TextureMap textureMap, Fluid fluid) {
+	private static void registerFluidSprites(TextureMap textureMap, Fluid fluid) {
 		if (fluid != null) {
 			textureMap.registerSprite(fluid.getStill());
 			textureMap.registerSprite(fluid.getFlowing());

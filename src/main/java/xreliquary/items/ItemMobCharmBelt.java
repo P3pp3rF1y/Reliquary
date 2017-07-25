@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.Optional;
 import xreliquary.Reliquary;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.init.ModItems;
-import xreliquary.init.XRRecipes;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -83,7 +82,7 @@ public class ItemMobCharmBelt extends ItemBase /*implements IBauble*/ {
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack mobCharm = XRRecipes.mobCharm(mobCharmNbt.getByte(TYPE_TAG));
+		ItemStack mobCharm = ItemMobCharm.getCharmStack(mobCharmNbt.getByte(TYPE_TAG));
 		mobCharm.setItemDamage(mobCharmNbt.getInteger(DAMAGE_TAG));
 
 		return mobCharm;

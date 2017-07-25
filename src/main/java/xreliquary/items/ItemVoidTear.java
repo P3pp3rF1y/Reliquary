@@ -3,6 +3,7 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -53,6 +54,7 @@ import xreliquary.util.StackHelper;
 import xreliquary.util.XRFakePlayerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -105,19 +107,19 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
-		this.formatTooltip(null, stack, list);
+	public void addInformation(ItemStack tear, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+		this.formatTooltip(null, tear, tooltip);
 
-		ItemStack contents = this.getContainerItem(stack);
+		ItemStack contents = this.getContainerItem(tear);
 
 		if(contents.isEmpty())
 			return;
 
-		if(this.isEnabled(stack)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName()), list);
-			list.add(LanguageHelper.getLocalization("tooltip.absorb_tear"));
+		if(this.isEnabled(tear)) {
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName()), tooltip);
+			tooltip.add(LanguageHelper.getLocalization("tooltip.absorb_tear"));
 		}
-		LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(getItemQuantity(stack))), list);
+		LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(getItemQuantity(tear))), tooltip);
 	}
 
 	@Nonnull

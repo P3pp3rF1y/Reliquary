@@ -313,7 +313,6 @@ xreliquary.config.general.chest_loot_enabled.label=Chest loot enabled
 xreliquary.config.general.waila_shift_for_info.label=Shift for more waila info
 xreliquary.config.general.mob_drop_crafting_recipes_enabled.label=Drop crafting recipes enabled
 xreliquary.config.general.mob_drops_enabled.label=Mob drops enabled
-xreliquary.config.general.disabled_items_blocks.label=Disabled items and blocks
 xreliquary.config.hud_positions.label=HUD positions
 xreliquary.config.hud_positions.sojourner_staff.label=Sojouner Staff
 xreliquary.config.hud_positions.handgun.label=Handgun

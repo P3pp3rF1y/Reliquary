@@ -69,7 +69,7 @@ public class ItemMobCharm extends ItemBase {
 		return stack.getTagCompound().getByte(TYPE_TAG);
 	}
 
-	public void setType(ItemStack stack, byte type) {
+	private void setType(ItemStack stack, byte type) {
 		NBTTagCompound compound = stack.getTagCompound();
 
 		if(compound == null)
@@ -78,6 +78,14 @@ public class ItemMobCharm extends ItemBase {
 		compound.setByte(TYPE_TAG, type);
 
 		stack.setTagCompound(compound);
+	}
+
+	public static ItemStack getCharmStack(byte meta) {
+		ItemStack mobCharm = new ItemStack(ModItems.mobCharm);
+
+		ModItems.mobCharm.setType(mobCharm, meta);
+
+		return mobCharm;
 	}
 
 	private byte getMobCharmTypeForEntity(Entity entity) {

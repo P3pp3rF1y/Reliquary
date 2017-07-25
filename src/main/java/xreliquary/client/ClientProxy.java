@@ -11,10 +11,13 @@ import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -63,6 +66,7 @@ import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
@@ -76,6 +80,7 @@ import java.util.Map;
 
 //TODO refactor proxy so that it has functionally named methods that get called from main mod class
 @SideOnly(Side.CLIENT)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ClientProxy extends CommonProxy {
 
 	public static final KeyBinding FORTUNE_COIN_TOGGLE_KEYBIND = new KeyBinding("xreliquary.keybind.fortune_coin", Keyboard.KEY_NONE, "xreliquary.keybind.category");
@@ -86,8 +91,7 @@ public class ClientProxy extends CommonProxy {
 			if(oneDescription) {
 				NonNullList<ItemStack> subBlocks = NonNullList.create();
 
-				//noinspection ConstantConditions
-				block.getSubBlocks(null, subBlocks);
+				block.getSubBlocks(Reliquary.CREATIVE_TAB, subBlocks);
 
 				JEIDescriptionRegistry.register(subBlocks, name);
 			} else {
@@ -167,16 +171,14 @@ public class ClientProxy extends CommonProxy {
 			JEIDescriptionRegistry.register(item, name);
 	}
 
-	@Override
-	public void preInit() {
-		super.preInit();
-
+	@SubscribeEvent
+	public static void registerModels(ModelRegistryEvent event) {
 		ItemBlockModels.registerItemBlockModels();
 		ItemModels.registerItemModels();
 		registerEntityRenderers();
 	}
 
-	private void registerEntityRenderers() {
+	private static void registerEntityRenderers() {
 		RenderingRegistry.registerEntityRenderingHandler(EntityLyssaHook.class, RenderLyssaHook::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBlazeShot.class, RenderShot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBusterShot.class, RenderShot::new);
@@ -204,9 +206,6 @@ public class ClientProxy extends CommonProxy {
 		ModItemColors.init();
 		ModBlockColors.init();
 		RegisterBeltRender();
-		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
-		MinecraftForge.EVENT_BUS.register(new ModFluids());
-		MinecraftForge.EVENT_BUS.register(new ItemModels());
 		this.registerRenderers();
 		ClientRegistry.registerKeyBinding(FORTUNE_COIN_TOGGLE_KEYBIND);
 	}

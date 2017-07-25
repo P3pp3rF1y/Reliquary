@@ -20,10 +20,12 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -35,7 +37,7 @@ public class BlockApothecaryMortar extends BlockBase {
 
 	public BlockApothecaryMortar() {
 		super(Material.ROCK, Names.Blocks.APOTHECARY_MORTAR, 1.5F, 2.0F);
-		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+		setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	}
 
 	@SuppressWarnings("deprecation")

@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.client.ItemModelLocations;
 import xreliquary.client.model.ModelVoidTear;
@@ -14,6 +15,7 @@ import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ItemModels {
 	public static void registerItemModels() {
 		registerItemModel(ModItems.alkahestryTome, Names.Items.ALKAHESTRY_TOME);
@@ -120,7 +122,7 @@ public class ItemModels {
 	}
 
 	@SubscribeEvent
-	public void onModelBake(ModelBakeEvent event) {
+	public static void onModelBake(ModelBakeEvent event) {
 		ModelResourceLocation key = new ModelResourceLocation(new ResourceLocation(Reference.MOD_ID, Names.Items.VOID_TEAR), "inventory");
 		ModelVoidTear voidTearModel = new ModelVoidTear(event.getModelRegistry().getObject(key));
 

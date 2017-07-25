@@ -19,6 +19,28 @@ import java.util.Arrays;
 
 public class XRRecipes {
 
+	private static ItemStack ingredient(int amount, int m) {
+		return new ItemStack(ModItems.mobIngredient, amount, m);
+	}
+
+	public static final ItemStack NEBULOUS_HEART = ingredient(1, Reference.ENDER_INGREDIENT_META);
+	public static final ItemStack CREEPER_GLAND = ingredient(1, Reference.CREEPER_INGREDIENT_META);
+	public static final ItemStack SLIME_PEARL = ingredient(1, Reference.SLIME_INGREDIENT_META);
+	public static final ItemStack BAT_WING = ingredient(1, Reference.BAT_INGREDIENT_META);
+	public static final ItemStack RIB_BONE = ingredient(1, Reference.SKELETON_INGREDIENT_META);
+	public static final ItemStack WITHER_RIB = ingredient(1, Reference.WITHER_INGREDIENT_META);
+	public static final ItemStack STORM_EYE = ingredient(1, Reference.STORM_INGREDIENT_META);
+	public static final ItemStack FERTILE_ESSENCE = ingredient(1, Reference.FERTILE_INGREDIENT_META);
+	public static final ItemStack FROZEN_CORE = ingredient(1, Reference.FROZEN_INGREDIENT_META);
+	public static final ItemStack MOLTEN_CORE = ingredient(1, Reference.MOLTEN_INGREDIENT_META);
+	public static final ItemStack ZOMBIE_HEART = ingredient(1, Reference.ZOMBIE_INGREDIENT_META);
+	public static final ItemStack INFERNAL_CLAW = ingredient(1, Reference.CLAW_INGREDIENT_META);
+	public static final ItemStack SHELL_FRAGMENT = ingredient(1, Reference.SHELL_INGREDIENT_META);
+	public static final ItemStack SQUID_BEAK = ingredient(1, Reference.SQUID_INGREDIENT_META);
+	public static final ItemStack CHELICERAE = ingredient(1, Reference.SPIDER_INGREDIENT_META);
+	public static final ItemStack GUARDIAN_SPIKE = ingredient(1, Reference.GUARDIAN_INGREDIENT_META);
+
+/*
 	//this version of the addRecipe method checks first to see if the recipe is disabled in our automated recipe-disabler config
 	//if any component of the item is in the recipe disabler list, it will ALSO block the recipe automatically.
 	//override disabler forces the recipe to evaluate anyway. This occurs for items that don't fall into XR scope, and thus shouldn't be evaluated.
@@ -345,7 +367,8 @@ public class XRRecipes {
 		// mob charm belt
 		addRecipe(false, new ItemStack(ModItems.mobCharmBelt), "lll", "f f", "fff", 'l', Items.LEATHER, 'f', new ItemStack(ModItems.mobCharmFragment, 1, OreDictionary.WILDCARD_VALUE));
 
-		/* potions and splash potions */
+ potions and splash potions
+
 
 		// empty vial
 		addRecipe(false, new ItemStack(ModItems.potion, 1, 0), "g g", "g g", " g ", 'g', Blocks.GLASS_PANE);
@@ -455,11 +478,11 @@ public class XRRecipes {
 		addRecipe(false, new ItemStack(Items.GLASS_BOTTLE, 6), "   ", "w w", " w ", 'w', ModItems.witchHat);
 		addRecipe(true, new ItemStack(Items.STICK, 4), ModItems.witchHat);
 	}
-
 	private static final ItemStack EMPTY_VOID_TEAR = new ItemStack(ModItems.emptyVoidTear, 1, 0);
 	private static final ItemStack WITHER_SKULL = new ItemStack(Items.SKULL, 1, 1);
 	private static final ItemStack ROSE_BUSH = new ItemStack(Blocks.DOUBLE_PLANT, 1, 4);
 	private static final ItemStack BLACK_WOOL = new ItemStack(Blocks.WOOL, 1, Reference.BLACK_WOOL_META);
+
 	private static final ItemStack LAPIS = new ItemStack(Items.DYE, 1, 4);
 
 	private static ItemStack gunPart(int amount, int meta) {
@@ -474,37 +497,8 @@ public class XRRecipes {
 		return new ItemStack(ModItems.bullet, amount, meta);
 	}
 
-	private static ItemStack ingredient(int amount, int m) {
-		return new ItemStack(ModItems.mobIngredient, amount, m);
-	}
-
-	public static final ItemStack NEBULOUS_HEART = ingredient(1, Reference.ENDER_INGREDIENT_META);
-	public static final ItemStack CREEPER_GLAND = ingredient(1, Reference.CREEPER_INGREDIENT_META);
-	public static final ItemStack SLIME_PEARL = ingredient(1, Reference.SLIME_INGREDIENT_META);
-	public static final ItemStack BAT_WING = ingredient(1, Reference.BAT_INGREDIENT_META);
-	public static final ItemStack RIB_BONE = ingredient(1, Reference.SKELETON_INGREDIENT_META);
-	public static final ItemStack WITHER_RIB = ingredient(1, Reference.WITHER_INGREDIENT_META);
-	public static final ItemStack STORM_EYE = ingredient(1, Reference.STORM_INGREDIENT_META);
-	public static final ItemStack FERTILE_ESSENCE = ingredient(1, Reference.FERTILE_INGREDIENT_META);
-	public static final ItemStack FROZEN_CORE = ingredient(1, Reference.FROZEN_INGREDIENT_META);
-	public static final ItemStack MOLTEN_CORE = ingredient(1, Reference.MOLTEN_INGREDIENT_META);
-	public static final ItemStack ZOMBIE_HEART = ingredient(1, Reference.ZOMBIE_INGREDIENT_META);
-	public static final ItemStack INFERNAL_CLAW = ingredient(1, Reference.CLAW_INGREDIENT_META);
-	public static final ItemStack SHELL_FRAGMENT = ingredient(1, Reference.SHELL_INGREDIENT_META);
-	public static final ItemStack SQUID_BEAK = ingredient(1, Reference.SQUID_INGREDIENT_META);
-	public static final ItemStack CHELICERAE = ingredient(1, Reference.SPIDER_INGREDIENT_META);
-	public static final ItemStack GUARDIAN_SPIKE = ingredient(1, Reference.GUARDIAN_INGREDIENT_META);
-
 	private static ItemStack charmFragment(int meta) {
 		return new ItemStack(ModItems.mobCharmFragment, 1, meta);
 	}
-
-	public static ItemStack mobCharm(byte meta) {
-		ItemStack mobCharm = new ItemStack(ModItems.mobCharm);
-
-		ModItems.mobCharm.setType(mobCharm, meta);
-
-		return mobCharm;
-	}
-
+*/
 }

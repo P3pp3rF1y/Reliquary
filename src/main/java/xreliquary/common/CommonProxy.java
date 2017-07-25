@@ -23,24 +23,10 @@ public class CommonProxy {
 
 	//TODO: rewrite proxy to the EE style so that it has area specific method names rather than generic preInit/init/postInit
 	public void preInit() {
-		try {
-			XRRecipes.init();
-
-			ModBlocks.initTileEntities();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			FMLCommonHandler.instance().raiseException(e, "Reliquary failed to initiate recipes.", true);
-		}
 	}
 
 	public void init() {
-		MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
 		NetworkRegistry.INSTANCE.registerGuiHandler(Reliquary.INSTANCE, new GUIHandler());
-		MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
-		MinecraftForge.EVENT_BUS.register(new ModCompat());
-		MinecraftForge.EVENT_BUS.register(new ModCapabilities());
-		MinecraftForge.EVENT_BUS.register(new ModLoot());
 
 		this.registerEntities();
 	}

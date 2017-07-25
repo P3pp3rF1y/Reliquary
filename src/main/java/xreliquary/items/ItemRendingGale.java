@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -39,6 +40,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemRendingGale extends ItemToggleable {
@@ -50,15 +52,15 @@ public class ItemRendingGale extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
+	public void addInformation(ItemStack rendingGale, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 
-		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(getFeatherCount(ist))), ist, list);
+		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(getFeatherCount(rendingGale))), rendingGale, tooltip);
 
-		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.WHITE + Items.FEATHER.getItemStackDisplayName(new ItemStack(Items.FEATHER))), list);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
+		if(this.isEnabled(rendingGale))
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.WHITE + Items.FEATHER.getItemStackDisplayName(new ItemStack(Items.FEATHER))), tooltip);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	private static int getChargeLimit() {

@@ -22,7 +22,6 @@ import xreliquary.compat.jei.mortar.MortarRecipeMaker;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
-import xreliquary.reference.Settings;
 
 import javax.annotation.Nonnull;
 
@@ -41,13 +40,9 @@ public class ReliquaryPlugin implements IModPlugin {
 	@Override
 	public void registerCategories(@Nonnull IRecipeCategoryRegistration registry) {
 		IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
-		//noinspection ConstantConditions
-		boolean tomeEnabled = ModItems.alkahestryTome.getRegistryName() != null && !Settings.disabledItemsBlocks.contains(ModItems.alkahestryTome.getRegistryName().getResourcePath());
 
-		if(tomeEnabled) {
-			registry.addRecipeCategories(new AlkahestryCraftingRecipeCategory(guiHelper));
-			registry.addRecipeCategories(new AlkahestryChargingRecipeCategory(guiHelper));
-		}
+		registry.addRecipeCategories(new AlkahestryCraftingRecipeCategory(guiHelper));
+		registry.addRecipeCategories(new AlkahestryChargingRecipeCategory(guiHelper));
 
 		registry.addRecipeCategories(new MortarRecipeCategory(guiHelper));
 		registry.addRecipeCategories(new CauldronRecipeCategory(guiHelper));
@@ -55,15 +50,10 @@ public class ReliquaryPlugin implements IModPlugin {
 
 	@Override
 	public void register(@Nonnull IModRegistry registry) {
-		//noinspection ConstantConditions
-		boolean tomeEnabled = ModItems.alkahestryTome.getRegistryName() != null && !Settings.disabledItemsBlocks.contains(ModItems.alkahestryTome.getRegistryName().getResourcePath());
+		registry.addRecipes(AlkahestryCraftingRecipeMaker.getRecipes(), Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING);
+		registry.addRecipes(AlkahestryChargingRecipeMaker.getRecipes(), Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING);
 
-		if(tomeEnabled) {
-			registry.addRecipes(AlkahestryCraftingRecipeMaker.getRecipes(), Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING);
-			registry.addRecipes(AlkahestryChargingRecipeMaker.getRecipes(), Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING);
-
-			registry.addRecipeCatalyst(new ItemStack(Blocks.CRAFTING_TABLE), Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING, Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING);
-		}
+		registry.addRecipeCatalyst(new ItemStack(Blocks.CRAFTING_TABLE), Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING, Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING);
 
 		registry.addRecipeCatalyst(new ItemStack(ModBlocks.apothecaryMortar), Reference.JEI_CATEGORY_MORTAR);
 		registry.addRecipeCatalyst(new ItemStack(ModBlocks.apothecaryCauldron), Reference.JEI_CATEGORY_CAULDRON);

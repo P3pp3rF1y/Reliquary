@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,9 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -28,6 +27,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemGlacialStaff extends ItemIceMagusRod {
@@ -36,13 +36,13 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
+	public void addInformation(ItemStack staff, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
-		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("snowballs", ist))), ist, list);
-		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.SNOWBALL.getItemStackDisplayName(new ItemStack(Items.SNOWBALL))), list);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
+		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("snowballs", staff))), staff, tooltip);
+		if(this.isEnabled(staff))
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.SNOWBALL.getItemStackDisplayName(new ItemStack(Items.SNOWBALL))), tooltip);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Override

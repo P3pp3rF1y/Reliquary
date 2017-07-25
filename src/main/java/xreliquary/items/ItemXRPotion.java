@@ -1,11 +1,11 @@
 package xreliquary.items;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
@@ -27,6 +27,7 @@ import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,8 +49,8 @@ public class ItemXRPotion extends ItemBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean flag) {
-		XRPotionHelper.addPotionTooltip(ist, list);
+	public void addInformation(ItemStack potion, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+		XRPotionHelper.addPotionTooltip(potion, tooltip);
 	}
 
 	@Nonnull
@@ -98,7 +99,7 @@ public class ItemXRPotion extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> subItems) {
 		subItems.add(new ItemStack(ModItems.potion)); //just an empty one
 
 		List<ItemStack> splashPotions = new ArrayList<>();

@@ -12,10 +12,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.init.ModBlocks;
 import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 
@@ -31,7 +33,7 @@ public class BlockAlkahestryAltar extends BlockBase {
 		super(Material.ROCK, (isActive ? Names.Blocks.ALTAR : Names.Blocks.ALTAR_IDLE), 1.5F, 5.0F);
 		this.isActive = isActive;
 
-		this.setLightLevel(this.isActive ? getAltarActiveLightLevel() : 0.0F);
+		setLightLevel(this.isActive ? getAltarActiveLightLevel() : 0.0F);
 	}
 
 	@SuppressWarnings("deprecation")

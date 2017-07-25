@@ -7,7 +7,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -16,10 +15,12 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.init.ModBlocks;
 import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -29,12 +30,12 @@ public class BlockPedestal extends BlockPedestalPassive {
 	public static final PropertyBool ENABLED = PropertyBool.create("enabled");
 
 	public BlockPedestal() {
-		super();
+		super(Names.Blocks.PEDESTAL);
 		this.setUnlocalizedName(Names.Blocks.PEDESTAL);
 	}
 
 	@Override
-	public void getSubBlocks(@Nonnull Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
+	public void getSubBlocks(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> list) {
 		for(int i = 0; i < 16; i++) {
 			list.add(new ItemStack(ModBlocks.pedestal, 1, i));
 		}

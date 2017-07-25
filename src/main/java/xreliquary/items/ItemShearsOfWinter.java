@@ -3,6 +3,7 @@ package xreliquary.items;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,6 +23,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -35,6 +37,7 @@ import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -112,8 +115,8 @@ public class ItemShearsOfWinter extends ItemShears {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean whatDoesThisEvenDo) {
-		this.formatTooltip(stack, list);
+	public void addInformation(ItemStack shears, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+		this.formatTooltip(shears, tooltip);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -254,11 +257,9 @@ public class ItemShearsOfWinter extends ItemShears {
 			Block block = blockState.getBlock();
 			if(block instanceof IShearable) {
 				IShearable target = (IShearable) block;
-				if(target.isShearable(new ItemStack(Items.SHEARS, 1, 0), player.world, new BlockPos(x, y, z))) {
-					//this commented portion causes the item to be sheared instead of just broken.
-					//ArrayList<ItemStack> drops = target.onSheared(new ItemStack(Items.shears, 1, 0), player.world, x, y, z,
-					//        EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, ist));
-					List<ItemStack> drops = block.getDrops(player.world, new BlockPos(x, y, z), player.world.getBlockState(new BlockPos(x, y, z)), EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, ist));
+				ItemStack dummyShears = new ItemStack(Items.SHEARS, 1, 0);
+				if(target.isShearable(dummyShears, player.world, new BlockPos(x, y, z))) {
+					List<ItemStack> drops = target.onSheared(dummyShears, player.world, new BlockPos(x, y, z), EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, ist));
 					Random rand = new Random();
 
 					if(player.world.isRemote) {

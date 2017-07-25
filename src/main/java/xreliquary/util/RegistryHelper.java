@@ -1,8 +1,12 @@
 package xreliquary.util;
 
+import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.List;
 
 public class RegistryHelper {
 	public static Item getItemFromName(String registryName) {
@@ -27,5 +31,15 @@ public class RegistryHelper {
 			return block.getRegistryName().toString();
 		}
 		return null;
+	}
+
+	public static List<ItemStack> getItemStacksFromNames(List<String> torches) {
+		List<ItemStack> torchStacks = Lists.newArrayList();
+		for(String torch : torches) {
+			Item item = Item.getByNameOrId(torch);
+			if (item != null)
+			torchStacks.add(new ItemStack(item));
+		}
+		return  torchStacks;
 	}
 }

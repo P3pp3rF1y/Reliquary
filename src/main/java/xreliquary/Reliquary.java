@@ -36,36 +36,19 @@ public class Reliquary {
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
 	public static CommonProxy PROXY;
 
-	public static CreativeTabs CREATIVE_TAB;
+	public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID());
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
 
- 		CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID());
-
 		PROXY.initColors();
-
-		ModBlocks.init();
-
-		ModItems.init();
 
 		ModFluids.preInit();
 
-		ModLoot.init();
-
-		ModPotions.init();
-
 		ModCapabilities.init();
 
-		ModSounds.init();
-
 		PROXY.preInit();
-
-		//TODO figure out a better way to handle this if possible
-		PotionConfiguration.loadPotionMap();
-
-		PROXY.initSpecialJEIDescriptions();
 
 		PacketHandler.init();
 
@@ -75,6 +58,13 @@ public class Reliquary {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
+
+		ModLoot.init();
+
+		//TODO figure out a better way to handle this if possible
+		PotionConfiguration.loadPotionMap();
+
+		PROXY.initSpecialJEIDescriptions();
 
 		ModFluids.init();
 

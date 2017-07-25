@@ -10,9 +10,11 @@ import xreliquary.reference.Reference;
 import xreliquary.util.LogHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Random;
+import java.util.UUID;
 
 public class PotionCure extends Potion {
 
@@ -28,8 +30,8 @@ public class PotionCure extends Potion {
 	}
 
 	private static final Method START_CONVERTING = ReflectionHelper
-			.findMethod(EntityZombieVillager.class, "startConverting", "func_190734_b", int.class);
-	private static void startConverting(EntityZombieVillager zombieVillager, int conversionTime) {
+			.findMethod(EntityZombieVillager.class, "startConverting", "func_191991_a", UUID.class, int.class);
+	private static void startConverting(EntityZombieVillager zombieVillager, @Nullable UUID conversionStarterIn, int conversionTime) {
 		try {
 			START_CONVERTING.invoke(zombieVillager, conversionTime);
 		} catch (InvocationTargetException|IllegalAccessException e) {
@@ -41,7 +43,7 @@ public class PotionCure extends Potion {
 	public void performEffect(@Nonnull EntityLivingBase entityLivingBase, int potency) {
 		if (entityLivingBase instanceof EntityZombieVillager) {
 			if (!((EntityZombieVillager) entityLivingBase).isConverting() && entityLivingBase.isPotionActive(MobEffects.WEAKNESS)) {
-				startConverting((EntityZombieVillager) entityLivingBase, ((new Random()).nextInt(2401) + 3600) / (potency + 2));
+				startConverting((EntityZombieVillager) entityLivingBase, null, ((new Random()).nextInt(2401) + 3600) / (potency + 2));
 				entityLivingBase.removePotionEffect(ModPotions.potionCure);
 			}
 		} else {

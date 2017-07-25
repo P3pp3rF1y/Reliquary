@@ -24,12 +24,14 @@ import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import xreliquary.init.ModItems;
+import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.XRFakePlayerFactory;
@@ -39,12 +41,13 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class CommonEventHandler {
 
-	private Map<UUID, Boolean> playersFlightStatus = new HashMap<>();
+	private static Map<UUID, Boolean> playersFlightStatus = new HashMap<>();
 
 	@SubscribeEvent
-	public void handleMercyCrossDamage(AttackEntityEvent event) {
+	public static void handleMercyCrossDamage(AttackEntityEvent event) {
 		if(event.getEntityPlayer().world.isRemote || !(event.getTarget() instanceof EntityLivingBase))
 			return;
 
@@ -57,7 +60,7 @@ public class CommonEventHandler {
 	}
 
 	@SubscribeEvent
-	public void preventMendingAndUnbreaking(AnvilUpdateEvent event) {
+	public static void preventMendingAndUnbreaking(AnvilUpdateEvent event) {
 		if(event.getLeft().isEmpty() || event.getRight().isEmpty())
 			return;
 
@@ -74,7 +77,7 @@ public class CommonEventHandler {
 	}
 
 	@SubscribeEvent
-	public void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
+	public static void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
 		// Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
 		if(event.player.getGameProfile().getName().equals("Drullkus")) {
 			if(!event.player.getEntityData().hasKey("gift")) {
@@ -86,7 +89,7 @@ public class CommonEventHandler {
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public void beforePlayerHurt(LivingAttackEvent event) {
+	public static void beforePlayerHurt(LivingAttackEvent event) {
 		Entity entity = event.getEntity();
 		if(entity == null || !(entity instanceof EntityPlayer))
 			return;
@@ -103,12 +106,12 @@ public class CommonEventHandler {
 			event.setResult(null);
 	}
 
-	private void handleWitherlessRose(EntityPlayer player, LivingAttackEvent event) {
+	private static void handleWitherlessRose(EntityPlayer player, LivingAttackEvent event) {
 		if(event.getSource() == DamageSource.WITHER && InventoryHelper.playerHasItem(player, ModItems.witherlessRose))
 			event.setCanceled(true);
 	}
 
-	private void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {
+	private static void handleInfernalClawsCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!InventoryHelper.playerHasItem(player, ModItems.infernalClaws))
 			return;
 		if(!(event.getSource() == DamageSource.IN_FIRE) && !(event.getSource() == DamageSource.ON_FIRE))
@@ -122,7 +125,7 @@ public class CommonEventHandler {
 		event.setCanceled(true);
 	}
 
-	private void handleInfernalChaliceCheck(EntityPlayer player, LivingAttackEvent event) {
+	private static void handleInfernalChaliceCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!InventoryHelper.playerHasItem(player, ModItems.infernalChalice))
 			return;
 		//TODO: figure out if there's some way to know that the fire was caused by lava, otherwise this is the only way to prevent damage from lava - reason being that most of the damage is from fire caused by lava
@@ -137,7 +140,7 @@ public class CommonEventHandler {
 		event.setCanceled(true);
 	}
 
-	private void handleAngelheartVialCheck(EntityPlayer player, LivingAttackEvent event) {
+	private static void handleAngelheartVialCheck(EntityPlayer player, LivingAttackEvent event) {
 		// I'm rounding because I'm not 100% on whether the health value being a
 		// fraction matters for determining death
 		// Rounding would be worst case. I'm doing an early abort to keep my
@@ -167,7 +170,7 @@ public class CommonEventHandler {
 		event.setCanceled(true);
 	}
 
-	private void spawnAngelheartVialParticles(EntityPlayer player) {
+	private static void spawnAngelheartVialParticles(EntityPlayer player) {
 		double var8 = player.posX;
 		double var10 = player.posY;
 		double var12 = player.posZ;
@@ -201,7 +204,7 @@ public class CommonEventHandler {
 
 	}
 
-	private void removeNegativeStatusEffects(EntityPlayer player) {
+	private static void removeNegativeStatusEffects(EntityPlayer player) {
 		player.removePotionEffect(MobEffects.WITHER);
 		player.removePotionEffect(MobEffects.HUNGER);
 		player.removePotionEffect(MobEffects.POISON);
@@ -212,7 +215,7 @@ public class CommonEventHandler {
 		player.removePotionEffect(MobEffects.WEAKNESS);
 	}
 
-	private void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
+	private static void handlePhoenixDownCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!InventoryHelper.playerHasItem(player, ModItems.phoenixDown))
 			return;
 		if(player.getHealth() > Math.round(event.getAmount())) {
@@ -263,13 +266,13 @@ public class CommonEventHandler {
 		}
 	}
 
-	private void spawnPhoenixResurrectionParticles(EntityPlayer player) {
+	private static void spawnPhoenixResurrectionParticles(EntityPlayer player) {
 		for(int particles = 0; particles <= 400; particles++) {
 			player.world.spawnParticle(EnumParticleTypes.FLAME, player.posX, player.posY, player.posZ, player.world.rand.nextGaussian() * 8, player.world.rand.nextGaussian() * 8, player.world.rand.nextGaussian() * 8);
 		}
 	}
 
-	private void handleAngelicFeatherCheck(EntityPlayer player, LivingAttackEvent event) {
+	private static void handleAngelicFeatherCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!InventoryHelper.playerHasItem(player, ModItems.angelicFeather))
 			return;
 		if(!(event.getSource() == DamageSource.FALL))
@@ -285,7 +288,7 @@ public class CommonEventHandler {
 		event.setCanceled(true);
 	}
 
-	private void handleKrakenEyeCheck(EntityPlayer player, LivingAttackEvent event) {
+	private static void handleKrakenEyeCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!InventoryHelper.playerHasItem(player, ModItems.krakenShell))
 			return;
 		if(player.getFoodStats().getFoodLevel() <= 0)
@@ -299,7 +302,7 @@ public class CommonEventHandler {
 		}
 	}
 
-	private void revertPhoenixDownToAngelicFeather(EntityPlayer player) {
+	private static void revertPhoenixDownToAngelicFeather(EntityPlayer player) {
 		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
 			if(player.inventory.mainInventory.get(slot).isEmpty())
 				continue;
@@ -311,7 +314,7 @@ public class CommonEventHandler {
 	}
 
 	// pretty much the same as above, specific to angelheart vial. finds it and breaks one.
-	private void decreaseAngelHeartByOne(EntityPlayer player) {
+	private static void decreaseAngelHeartByOne(EntityPlayer player) {
 		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
 			if(player.inventory.mainInventory.get(slot).isEmpty())
 				continue;
@@ -323,13 +326,13 @@ public class CommonEventHandler {
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
-	public void onDimensionUnload(WorldEvent.Unload event) {
+	public static void onDimensionUnload(WorldEvent.Unload event) {
 		if(event.getWorld() instanceof WorldServer)
 			XRFakePlayerFactory.unloadWorld((WorldServer) event.getWorld());
 	}
 
 	@SubscribeEvent
-	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		if(event.side == Side.CLIENT)
 			return;
 

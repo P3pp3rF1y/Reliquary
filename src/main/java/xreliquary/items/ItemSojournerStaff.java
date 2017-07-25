@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,7 +38,7 @@ import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemSojournerStaff extends ItemToggleable {
@@ -85,17 +86,11 @@ public class ItemSojournerStaff extends ItemToggleable {
 	}
 
 	private void scanForMatchingTorchesToFillInternalStorage(ItemStack ist, EntityPlayer player) {
-		List<String> torches = Settings.SojournerStaff.torches;
-		List<ItemStack> items = new ArrayList<>();
-
-		//default to always work with vanilla torches
-		ItemStack vanillaTorch = new ItemStack(Blocks.TORCH, 1, 0);
-		items.add(vanillaTorch);
-
-		//TODO fix the check
-		torches.stream().filter(torch -> !items.contains(RegistryHelper.getItemFromName(torch))).forEach(torch -> items.add(new ItemStack(RegistryHelper.getItemFromName(torch))));
-
-		items.stream().filter(item -> !isInternalStorageFullOfItem(ist, item.getItem()) && InventoryHelper.consumeItem(item, player)).forEach(item -> addItemToInternalStorage(ist, item.getItem()));
+		for(ItemStack torch : Settings.SojournerStaff.torches) {
+			if(!isInternalStorageFullOfItem(ist, torch.getItem()) && InventoryHelper.consumeItem(torch, player)) {
+				addItemToInternalStorage(ist, torch.getItem());
+			}
+		}
 	}
 
 	private void addItemToInternalStorage(ItemStack ist, Item item) {
@@ -304,13 +299,13 @@ public class ItemSojournerStaff extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, EntityPlayer player, List<String> list, boolean par4) {
+	public void addInformation(ItemStack staff, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		//maps the contents of the Sojourner's staff to a tooltip, so the player can review the torches stored within.
 		String phrase = "Nothing.";
 		String placing = "Nothing.";
-		NBTTagCompound tagCompound = NBTHelper.getTag(ist);
+		NBTTagCompound tagCompound = NBTHelper.getTag(staff);
 		if(tagCompound != null) {
 			NBTTagList tagList = tagCompound.getTagList("Items", 10);
 			for(int i = 0; i < tagList.tagCount(); ++i) {
@@ -323,17 +318,17 @@ public class ItemSojournerStaff extends ItemToggleable {
 
 			//add "currently placing: blah blah blah" to the tooltip.
 			Item placingItem = null;
-			if(getTorchPlacementMode(ist) != null)
-				placingItem = RegistryHelper.getItemFromName(getTorchPlacementMode(ist));
+			if(getTorchPlacementMode(staff) != null)
+				placingItem = RegistryHelper.getItemFromName(getTorchPlacementMode(staff));
 
 			if(placingItem != null) {
 				placing = new ItemStack(placingItem, 1, 0).getDisplayName();
 			}
 		}
-		this.formatTooltip(ImmutableMap.of("phrase", phrase, "placing", placing), ist, list);
-		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + getItemStackDisplayName(new ItemStack(Blocks.TORCH))), list);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
+		this.formatTooltip(ImmutableMap.of("phrase", phrase, "placing", placing), staff, tooltip);
+		if(this.isEnabled(staff))
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + getItemStackDisplayName(new ItemStack(Blocks.TORCH))), tooltip);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Nonnull
