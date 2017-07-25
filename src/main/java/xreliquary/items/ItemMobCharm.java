@@ -224,7 +224,7 @@ public class ItemMobCharm extends ItemBase {
 						ItemStack slotStack = pedestal.getStackInSlot(slot);
 						if(slotStack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(slotStack) == mobCharmType) {
 							if(slotStack.getItemDamage() + Settings.MobCharm.damagePerKill > slotStack.getMaxDamage()) {
-								player.inventory.mainInventory.set(slot, ItemStack.EMPTY);
+								((TileEntityPedestal) te).setInventorySlotContents(slot, ItemStack.EMPTY);
 							} else {
 								slotStack.setItemDamage(slotStack.getItemDamage() + Settings.MobCharm.damagePerKill);
 							}

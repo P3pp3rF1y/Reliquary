@@ -85,7 +85,7 @@ public class XRRecipes {
 
 		//misc recipes
 		//frozen cores to make packed ice.
-		addRecipe(true, new ItemStack(Blocks.PACKED_ICE, 1, 0), Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, FROZEN_CORE);
+		DONE addRecipe(true, new ItemStack(Blocks.PACKED_ICE, 1, 0), Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, FROZEN_CORE);
 
 		//apothecary mortar recipe
 		addRecipe(false, new ItemStack(ModBlocks.apothecaryMortar, 1, 0), "gng", "ngn", "nnn", 'n', Blocks.QUARTZ_BLOCK, 'g', CREEPER_GLAND);
@@ -94,15 +94,9 @@ public class XRRecipes {
 		addRecipe(false, new ItemStack(ModBlocks.apothecaryCauldron, 1, 0), "gng", "ici", "nmn", 'g', CREEPER_GLAND, 'n', NEBULOUS_HEART, 'i', INFERNAL_CLAW, 'c', Items.CAULDRON, 'm', MOLTEN_CORE);
 
 		//alkahestry tome
-		if(Settings.EasyModeRecipes.alkahestryTome)
-			addRecipe(true, new ItemStack(ModItems.alkahestryTome, 1, ModItems.alkahestryTome.getMaxDamage(ItemStack.EMPTY)), Items.BOOK, ModItems.witchHat, MOLTEN_CORE, WITHER_SKULL);
-		else
 			addRecipe(true, new ItemStack(ModItems.alkahestryTome, 1, ModItems.alkahestryTome.getMaxDamage(ItemStack.EMPTY)), MOLTEN_CORE, ModItems.witchHat, STORM_EYE, CREEPER_GLAND, Items.BOOK, SLIME_PEARL, CHELICERAE, WITHER_SKULL, NEBULOUS_HEART);
 
 		//glowstone altar
-		if(Settings.EasyModeRecipes.altar)
-			addRecipe(true, new ItemStack(ModBlocks.alkahestryAltar, 1), Blocks.OBSIDIAN, Blocks.REDSTONE_LAMP, NEBULOUS_HEART, CREEPER_GLAND);
-		else
 			addRecipe(false, new ItemStack(ModBlocks.alkahestryAltar, 1), "dnd", "olo", "dgd", 'd', Items.GLOWSTONE_DUST, 'n', NEBULOUS_HEART, 'o', Blocks.OBSIDIAN, 'l', Blocks.REDSTONE_LAMP, 'g', CREEPER_GLAND);
 
 		//fertile_lilypad
@@ -112,18 +106,12 @@ public class XRRecipes {
 		addRecipe(true, new ItemStack(ModBlocks.wraithNode, 1), NEBULOUS_HEART, Items.EMERALD);
 
 		//interdiction torch
-		if(Settings.EasyModeRecipes.interdictionTorch)
-			addRecipe(false, new ItemStack(ModBlocks.interdictionTorch, 4, 0), "bm", "nr", 'b', BAT_WING, 'm', MOLTEN_CORE, 'n', NEBULOUS_HEART, 'r', Items.BLAZE_ROD);
-		else
 			addRecipe(false, new ItemStack(ModBlocks.interdictionTorch, 4, 0), " n ", "mdm", "bwb", 'n', NEBULOUS_HEART, 'm', MOLTEN_CORE, 'd', Items.DIAMOND, 'b', Items.BLAZE_ROD, 'w', BAT_WING);
 
 		// glowy bread
 		addRecipe(true, new ItemStack(ModItems.glowingBread, 3), Items.BREAD, Items.BREAD, Items.BREAD, ModItems.glowingWater);
 
 		//fertile essence
-		if(Settings.EasyModeRecipes.fertileEssence)
-			addRecipe(true, FERTILE_ESSENCE, RIB_BONE, CREEPER_GLAND, new ItemStack(Items.DYE, 1, Reference.GREEN_DYE_META), SLIME_PEARL);
-		else
 			addRecipe(false, FERTILE_ESSENCE, "gbg", "scs", "gbg", 'g', CREEPER_GLAND, 'b', RIB_BONE, 's', SLIME_PEARL, 'c', new ItemStack(Items.DYE, 1, Reference.GREEN_DYE_META));
 
 		// bullets...
@@ -142,9 +130,6 @@ public class XRRecipes {
 		// buster
 		addRecipe(true, bullet(8, 6), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), CREEPER_GLAND);
 		// seeker, the only thing with an easy mode recipe
-		if(Settings.EasyModeRecipes.seekerShot)
-			addRecipe(true, bullet(8, 7), LAPIS, Items.GOLD_NUGGET, Items.GOLD_NUGGET, Items.GUNPOWDER);
-		else
 			addRecipe(true, bullet(4, 7), LAPIS, SLIME_PEARL, Items.GOLD_NUGGET, Items.GUNPOWDER);
 		// sand
 		addRecipe(true, bullet(8, 8), Blocks.SANDSTONE, Items.GOLD_NUGGET, Items.GOLD_NUGGET, Items.GUNPOWDER);
@@ -174,9 +159,6 @@ public class XRRecipes {
 		addRecipe(false, new ItemStack(ModItems.handgun, 1, 0), "bim", "isi", "igi", 'i', Items.IRON_INGOT, 'b', gunPart(1, 1), 'm', gunPart(1, 2), 'g', gunPart(1, 0), 's', SLIME_PEARL);
 
 		// fortune coin
-		if(Settings.EasyModeRecipes.fortuneCoin)
-			addRecipe(true, new ItemStack(ModItems.fortuneCoin, 1), NEBULOUS_HEART, Items.GOLD_NUGGET, SLIME_PEARL, BAT_WING);
-		else
 			addRecipe(false, new ItemStack(ModItems.fortuneCoin, 1), "ege", "gng", "ege", 'e', Items.ENDER_EYE, 'g', Items.GOLD_INGOT, 'n', NEBULOUS_HEART);
 
 		// cross of mercy
@@ -186,90 +168,51 @@ public class XRRecipes {
 		addRecipe(true, new ItemStack(ModItems.holyHandGrenade, 4), ModItems.glowingWater, Items.GOLD_NUGGET, Blocks.TNT, CREEPER_GLAND);
 
 		// sojourner's staff
-		if(Settings.EasyModeRecipes.sojournerStaff)
-			addRecipe(true, new ItemStack(ModItems.sojournerStaff, 1), MOLTEN_CORE, Items.GOLD_INGOT, Items.BLAZE_ROD, EMPTY_VOID_TEAR);
-		else
 			addRecipe(false, new ItemStack(ModItems.sojournerStaff, 1), "gcm", "itc", "big", 'g', Items.GOLD_NUGGET, 'c', Items.MAGMA_CREAM, 'm', MOLTEN_CORE, 'i', Items.GOLD_INGOT, 't', ModItems.infernalTear, 'b', Items.BLAZE_ROD);
 
 		// lantern of paranoia
-		if(Settings.EasyModeRecipes.lanternOfParanoia)
-			addRecipe(false, new ItemStack(ModItems.lanternOfParanoia, 1), "isi", "gmg", " i ", 'i', Items.IRON_INGOT, 's', SLIME_PEARL, 'g', Blocks.GLASS, 'm', MOLTEN_CORE);
-		else
 			addRecipe(false, new ItemStack(ModItems.lanternOfParanoia, 1), "imi", "gtg", "ili", 'i', Items.IRON_INGOT, 'm', MOLTEN_CORE, 'g', Blocks.GLASS, 't', ModBlocks.interdictionTorch, 'l', CREEPER_GLAND);
 
 		// midas touchstone
 		addRecipe(true, new ItemStack(ModItems.midasTouchstone, 1, 0), Blocks.ANVIL, Blocks.GOLD_BLOCK, Blocks.GOLD_BLOCK, MOLTEN_CORE, MOLTEN_CORE, MOLTEN_CORE, CREEPER_GLAND, CREEPER_GLAND, EMPTY_VOID_TEAR);
 
 		// emperor's chalice
-		if(Settings.EasyModeRecipes.emperorChalice)
-			addRecipe(true, new ItemStack(ModItems.emperorChalice, 1, 0), Items.EMERALD, Items.GOLD_INGOT, Items.BUCKET, EMPTY_VOID_TEAR);
-		else
 			addRecipe(false, new ItemStack(ModItems.emperorChalice, 1, 0), "ses", "ivi", "lbl", 's', SLIME_PEARL, 'e', Items.EMERALD, 'i', Items.GOLD_INGOT, 'v', EMPTY_VOID_TEAR, 'l', LAPIS, 'b', Items.BUCKET);
 
 		// infernal chalice
-		if(Settings.EasyModeRecipes.infernalChalice)
-			addRecipe(true, new ItemStack(ModItems.infernalChalice, 1), ModItems.infernalClaws, ModItems.emperorChalice, ModItems.infernalTear, MOLTEN_CORE);
-		else
 			addRecipe(false, new ItemStack(ModItems.infernalChalice, 1), "imi", "wcw", "mtm", 'i', ModItems.infernalClaws, 'm', MOLTEN_CORE, 'w', WITHER_RIB, 'c', ModItems.emperorChalice, 't', ModItems.infernalTear);
 
 		// salamander's eye
-		if(Settings.EasyModeRecipes.salamanderEye)
-			addRecipe(true, new ItemStack(ModItems.salamanderEye, 1), Items.ENDER_EYE, MOLTEN_CORE, FROZEN_CORE, NEBULOUS_HEART);
-		else
 			addRecipe(false, new ItemStack(ModItems.salamanderEye, 1), "fnm", "geg", "mnf", 'f', FROZEN_CORE, 'n', NEBULOUS_HEART, 'm', MOLTEN_CORE, 'g', Items.GHAST_TEAR, 'e', Items.ENDER_EYE);
 
 		// ice rod
-		if(Settings.EasyModeRecipes.iceMagusRod)
-			addRecipe(false, new ItemStack(ModItems.iceMagusRod, 1, 0), " df", " vd", "i  ", 'd', Items.DIAMOND, 'f', FROZEN_CORE, 'i', Items.IRON_INGOT, 'v', EMPTY_VOID_TEAR);
-		else
 			addRecipe(false, new ItemStack(ModItems.iceMagusRod, 1, 0), "fdf", "ptd", "ipf", 'f', FROZEN_CORE, 'd', Items.DIAMOND, 'p', Blocks.PACKED_ICE, 't', EMPTY_VOID_TEAR, 'i', Items.IRON_INGOT);
 
 		//glacial staff
-		if(Settings.EasyModeRecipes.glacialStaff)
-			addRecipe(true, new ItemStack(ModItems.glacialStaff, 1, 0), ModItems.iceMagusRod, EMPTY_VOID_TEAR, FROZEN_CORE, ModItems.shearsOfWinter);
-		else
 			addRecipe(false, new ItemStack(ModItems.glacialStaff, 1, 0), "fds", "fvd", "iff", 'f', FROZEN_CORE, 'd', Items.DIAMOND, 's', ModItems.shearsOfWinter, 'v', EMPTY_VOID_TEAR, 'i', ModItems.iceMagusRod);
 
 		// ender staff
-		if(Settings.EasyModeRecipes.enderStaff)
-			addRecipe(false, new ItemStack(ModItems.enderStaff, 1, 0), " be", "nvb", "sn ", 'v', ModItems.emptyVoidTear, 'e', Items.ENDER_EYE, 's', Items.STICK, 'n', NEBULOUS_HEART, 'b', BAT_WING);
-		else
 			addRecipe(false, new ItemStack(ModItems.enderStaff, 1, 0), "nbe", "nvb", "rnn", 'n', NEBULOUS_HEART, 'b', BAT_WING, 'e', Items.ENDER_EYE, 'v', EMPTY_VOID_TEAR, 'r', Items.BLAZE_ROD);
 
 		// rending gale
-		if(Settings.EasyModeRecipes.rendingGale)
-			addRecipe(false, new ItemStack(ModItems.rendingGale, 1, 0), " be", "gvb", "sg ", 'b', BAT_WING, 'e', STORM_EYE, 'g', Items.GOLD_INGOT, 'v', EMPTY_VOID_TEAR, 's', Items.STICK);
-		else
 			addRecipe(false, new ItemStack(ModItems.rendingGale, 1, 0), "ebe", "fvb", "rfe", 'e', STORM_EYE, 'b', BAT_WING, 'f', ModItems.angelicFeather, 'v', EMPTY_VOID_TEAR, 'r', Items.BLAZE_ROD);
 
 		// harvest rod
 		addRecipe(false, new ItemStack(ModItems.harvestRod, 1, 0), " rf", "vtr", "sv ", 'r', ROSE_BUSH, 'f', FERTILE_ESSENCE, 'v', Blocks.VINE, 't', EMPTY_VOID_TEAR, 's', Items.STICK);
 
 		// pyromancer staff
-		if(Settings.EasyModeRecipes.pyromancerStaff)
-			addRecipe(true, new ItemStack(ModItems.pyromancerStaff, 1, 0), ModItems.infernalClaws, Items.BLAZE_ROD, ModItems.infernalTear, ModItems.salamanderEye);
-		else
 			addRecipe(false, new ItemStack(ModItems.pyromancerStaff, 1, 0), "mcs", "mic", "rmm", 'm', MOLTEN_CORE, 'c', ModItems.infernalClaws, 's', ModItems.salamanderEye, 'i', ModItems.infernalTear, 'r', Items.BLAZE_ROD);
 
 		// serpent staff
-		if(Settings.EasyModeRecipes.serpentStaff)
-			addRecipe(false, new ItemStack(ModItems.serpentStaff, 1), " ce", " kc", "s  ", 'c', CHELICERAE, 'e', Items.ENDER_EYE, 'k', SHELL_FRAGMENT, 'b', Items.STICK);
-		else
 			addRecipe(false, new ItemStack(ModItems.serpentStaff, 1), "coe", "pko", "bpc", 'c', CHELICERAE, 'o', Blocks.OBSIDIAN, 'e', Items.ENDER_EYE, 'p', SLIME_PEARL, 'k', SHELL_FRAGMENT, 'b', Items.BLAZE_ROD);
 
 		// rod of lyssa
-		if(Settings.EasyModeRecipes.rodOfLyssa)
-			addRecipe(true, new ItemStack(ModItems.rodOfLyssa, 1, 0), INFERNAL_CLAW, BAT_WING, NEBULOUS_HEART, Items.FISHING_ROD);
-		else
 			addRecipe(false, new ItemStack(ModItems.rodOfLyssa, 1, 0), " br", "nms", "r i", 'b', BAT_WING, 'r', Items.BLAZE_ROD, 'n', NEBULOUS_HEART, 'm', MOLTEN_CORE, 's', Items.STRING, 'i', INFERNAL_CLAW);
 
 		// shears of winter
 		addRecipe(true, new ItemStack(ModItems.shearsOfWinter, 1, 0), FROZEN_CORE, Items.SHEARS, Items.DIAMOND, Items.DIAMOND);
 
 		// magicbane
-		if(Settings.EasyModeRecipes.magicBane)
-			addRecipe(false, new ItemStack(ModItems.magicbane, 1, 0), "ng", "in", 'g', Items.GOLD_INGOT, 'i', Items.IRON_INGOT, 'n', NEBULOUS_HEART);
-		else
 			addRecipe(false, new ItemStack(ModItems.magicbane, 1, 0), "een", "nge", "ine", 'e', Items.ENDER_EYE, 'n', NEBULOUS_HEART, 'g', Items.GOLD_INGOT, 'i', Items.IRON_INGOT);
 
 		// witherless rose
@@ -282,21 +225,12 @@ public class XRRecipes {
 		addRecipe(false, new ItemStack(ModItems.twilightCloak, 1), "ici", "bcb", "bcb", 'i', Items.IRON_INGOT, 'b', BLACK_WOOL, 'c', ingredient(1, Reference.CLOTH_INGREDIENT_META));
 
 		// void tear
-		if(Settings.EasyModeRecipes.voidTear)
-			addRecipe(true, EMPTY_VOID_TEAR, Items.GHAST_TEAR, NEBULOUS_HEART, SLIME_PEARL, LAPIS);
-		else
 			addRecipe(false, EMPTY_VOID_TEAR, "lel", "pgp", "lnl", 'l', LAPIS, 'e', Items.ENDER_PEARL, 'p', SLIME_PEARL, 'g', Items.GHAST_TEAR, 'n', NEBULOUS_HEART);
 
 		// infernal tear
-		if(Settings.EasyModeRecipes.infernalTear)
-			addRecipe(true, new ItemStack(ModItems.infernalTear, 1, 0), EMPTY_VOID_TEAR, ModItems.witchHat, MOLTEN_CORE, INFERNAL_CLAW);
-		else
 			addRecipe(false, new ItemStack(ModItems.infernalTear, 1, 0), "php", "mtm", "pcp", 'p', Items.BLAZE_POWDER, 'h', ModItems.witchHat, 'm', MOLTEN_CORE, 't', EMPTY_VOID_TEAR, 'c', INFERNAL_CLAW);
 
 		// angelic feather
-		if(Settings.EasyModeRecipes.angelicFeather)
-			addRecipe(true, new ItemStack(ModItems.angelicFeather, 1), Items.FEATHER, NEBULOUS_HEART, BAT_WING, FERTILE_ESSENCE);
-		else
 			addRecipe(false, new ItemStack(ModItems.angelicFeather, 1), "dgd", "bfb", "ene", 'd', Items.GLOWSTONE_DUST, 'g', Items.GOLD_INGOT, 'b', BAT_WING, 'e', FERTILE_ESSENCE, 'n', NEBULOUS_HEART, 'f', Items.FEATHER);
 
 		// phoenix down
@@ -306,30 +240,18 @@ public class XRRecipes {
 		addRecipe(true, INFERNAL_CLAW, Items.LEATHER, MOLTEN_CORE, RIB_BONE, SLIME_PEARL);
 
 		// infernal claws
-		if(Settings.EasyModeRecipes.infernalClaws)
-			addRecipe(true, new ItemStack(ModItems.infernalClaws, 1), INFERNAL_CLAW, INFERNAL_CLAW, INFERNAL_CLAW, SLIME_PEARL);
-		else
 			addRecipe(false, new ItemStack(ModItems.infernalClaws, 1), "ccc", "cpc", "mlm", 'c', INFERNAL_CLAW, 'p', SLIME_PEARL, 'm', MOLTEN_CORE, 'l', Items.LEATHER);
 
 		// kraken shell fragment
 		addRecipe(true, SHELL_FRAGMENT, SQUID_BEAK, SQUID_BEAK, SQUID_BEAK, SLIME_PEARL);
 
 		// kraken shell
-		if(Settings.EasyModeRecipes.krakenShell)
-			addRecipe(true, new ItemStack(ModItems.krakenShell, 1, 0), SHELL_FRAGMENT, SHELL_FRAGMENT, SHELL_FRAGMENT, NEBULOUS_HEART);
-		else
 			addRecipe(false, new ItemStack(ModItems.krakenShell, 1, 0), "nfn", "epe", "fnf", 'n', NEBULOUS_HEART, 'f', SHELL_FRAGMENT, 'e', Items.ENDER_EYE, 'p', SLIME_PEARL);
 
 		// hero medallion - any meta fortune coin for people with "grandfathered" fortune coins (pre-Enabled NBT used item damage)
-		if(Settings.EasyModeRecipes.heroMedallion)
-			addRecipe(true, new ItemStack(ModItems.heroMedallion, 1), NEBULOUS_HEART, new ItemStack(ModItems.fortuneCoin, 1, -1), ModItems.witchHat, ModItems.infernalTear);
-		else
 			addRecipe(false, new ItemStack(ModItems.heroMedallion, 1), "nie", "iti", "fin", 'n', NEBULOUS_HEART, 'i', Items.IRON_INGOT, 'e', Items.ENDER_EYE, 't', ModItems.infernalTear, 'f', new ItemStack(ModItems.fortuneCoin, 1, -1));
 
 		// destruction catalyst
-		if(Settings.EasyModeRecipes.destructionCatalyst)
-			addRecipe(true, new ItemStack(ModItems.destructionCatalyst, 1, 0), Items.FLINT_AND_STEEL, MOLTEN_CORE, CREEPER_GLAND, ModItems.infernalTear);
-		else
 			addRecipe(false, new ItemStack(ModItems.destructionCatalyst, 1, 0), "tmc", "gim", "fgt", 't', Blocks.TNT, 'm', MOLTEN_CORE, 'c', CREEPER_GLAND, 'g', Items.GOLD_INGOT, 'i', ModItems.infernalTear, 'f', Items.FLINT_AND_STEEL);
 
 		// mob charm fragments

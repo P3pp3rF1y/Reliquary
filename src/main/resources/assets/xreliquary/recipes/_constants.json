@@ -1,0 +1,121 @@
+[
+    {
+        "name": "RIB_BONE",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 0
+        }
+    },
+    {
+        "name": "WITHER_RIB",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 1
+        }
+    },
+    {
+        "name": "CHELICERAE",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 2
+        }
+    },
+    {
+        "name": "CREEPER_GLAND",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 3
+        }
+    },
+    {
+        "name": "SLIME_PEARL",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 4
+        }
+    },
+    {
+        "name": "BAT_WING",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 5
+        }
+    },
+    {
+        "name": "ZOMBIE_HEART",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 6
+        }
+    },
+    {
+        "name": "MOLTEN_CORE",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 7
+        }
+    },
+    {
+        "name": "STORM_EYE",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 8
+        }
+    },
+    {
+        "name": "FERTILE_ESSENCE",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 9
+        }
+    },
+    {
+        "name": "FROZEN_CORE",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 10
+        }
+    },
+    {
+        "name": "NEBULOUS_HEART",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 11
+        }
+    },
+    {
+        "name": "SQUID_BEAK",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 12
+        }
+    },
+    {
+        "name": "INFERNAL_CLAW",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 13
+        }
+    },
+    {
+        "name": "SHELL_FRAGMENT",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 14
+        }
+    },
+    {
+        "name": "CRIMSON_CLOTH",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 15
+        }
+    },
+    {
+        "name": "GUARDIAN_SPIKE",
+        "ingredient": {
+            "item": "xreliquary:mob_ingredient",
+            "data": 16
+        }
+    }
+]

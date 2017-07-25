@@ -28,7 +28,6 @@ public class ConfigurationHandler {
 
 	private static void loadConfiguration() {
 		HudConfiguration.loadHudPositions();
-		EasyModeConfiguration.loadEasyModeSettings();
 		BlockItemConfiguration.loadBlockAndItemSettings();
 
 		Settings.chestLootEnabled = getBoolean(Names.Configs.CHEST_LOOT_ENABLED, "general", true, "Determines whether Reliquary items will be generated in chest loot (mostly mob drops, very rarely some lower level items)");
