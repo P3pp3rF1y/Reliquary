@@ -1,44 +1,79 @@
 package xreliquary.init;
 
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.init.PotionTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.RecipeSorter;
-import xreliquary.crafting.*;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
-import xreliquary.reference.Settings;
 
-import java.util.Arrays;
-
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class XRRecipes {
 
-	private static ItemStack ingredient(int amount, int m) {
-		return new ItemStack(ModItems.mobIngredient, amount, m);
+	private static ItemStack ingredient(int m) {
+		return new ItemStack(ModItems.mobIngredient, 1, m);
 	}
 
-	public static final ItemStack NEBULOUS_HEART = ingredient(1, Reference.ENDER_INGREDIENT_META);
-	public static final ItemStack CREEPER_GLAND = ingredient(1, Reference.CREEPER_INGREDIENT_META);
-	public static final ItemStack SLIME_PEARL = ingredient(1, Reference.SLIME_INGREDIENT_META);
-	public static final ItemStack BAT_WING = ingredient(1, Reference.BAT_INGREDIENT_META);
-	public static final ItemStack RIB_BONE = ingredient(1, Reference.SKELETON_INGREDIENT_META);
-	public static final ItemStack WITHER_RIB = ingredient(1, Reference.WITHER_INGREDIENT_META);
-	public static final ItemStack STORM_EYE = ingredient(1, Reference.STORM_INGREDIENT_META);
-	public static final ItemStack FERTILE_ESSENCE = ingredient(1, Reference.FERTILE_INGREDIENT_META);
-	public static final ItemStack FROZEN_CORE = ingredient(1, Reference.FROZEN_INGREDIENT_META);
-	public static final ItemStack MOLTEN_CORE = ingredient(1, Reference.MOLTEN_INGREDIENT_META);
-	public static final ItemStack ZOMBIE_HEART = ingredient(1, Reference.ZOMBIE_INGREDIENT_META);
-	public static final ItemStack INFERNAL_CLAW = ingredient(1, Reference.CLAW_INGREDIENT_META);
-	public static final ItemStack SHELL_FRAGMENT = ingredient(1, Reference.SHELL_INGREDIENT_META);
-	public static final ItemStack SQUID_BEAK = ingredient(1, Reference.SQUID_INGREDIENT_META);
-	public static final ItemStack CHELICERAE = ingredient(1, Reference.SPIDER_INGREDIENT_META);
-	public static final ItemStack GUARDIAN_SPIKE = ingredient(1, Reference.GUARDIAN_INGREDIENT_META);
+	public static ItemStack NEBULOUS_HEART;
+	public static ItemStack CREEPER_GLAND;
+	public static ItemStack SLIME_PEARL;
+	public static ItemStack BAT_WING;
+	public static ItemStack RIB_BONE;
+	public static ItemStack WITHER_RIB;
+	public static ItemStack STORM_EYE;
+	public static ItemStack FERTILE_ESSENCE;
+	public static ItemStack FROZEN_CORE;
+	public static ItemStack MOLTEN_CORE;
+	public static ItemStack ZOMBIE_HEART;
+	public static ItemStack INFERNAL_CLAW;
+	public static ItemStack SHELL_FRAGMENT;
+	public static ItemStack SQUID_BEAK;
+	public static ItemStack CHELICERAE;
+	public static ItemStack GUARDIAN_SPIKE;
+	private static ItemStack WITHER_SKULL;
+
+	@SubscribeEvent
+	public static void register(RegistryEvent.Register<IRecipe> event) {
+		initConstants();
+
+		addRecipe(new ItemStack(ModItems.alkahestryTome, 1, ModItems.alkahestryTome.getMaxDamage(ItemStack.EMPTY)), MOLTEN_CORE, new ItemStack(ModItems.witchHat), STORM_EYE, CREEPER_GLAND, new ItemStack(Items.BOOK), SLIME_PEARL, CHELICERAE, WITHER_SKULL, NEBULOUS_HEART);
+	}
+
+	private static void initConstants() {
+		NEBULOUS_HEART = ingredient(Reference.ENDER_INGREDIENT_META);
+		CREEPER_GLAND = ingredient(Reference.CREEPER_INGREDIENT_META);
+		SLIME_PEARL = ingredient(Reference.SLIME_INGREDIENT_META);
+		BAT_WING = ingredient(Reference.BAT_INGREDIENT_META);
+		RIB_BONE = ingredient(Reference.SKELETON_INGREDIENT_META);
+		WITHER_RIB = ingredient(Reference.WITHER_INGREDIENT_META);
+		STORM_EYE = ingredient(Reference.STORM_INGREDIENT_META);
+		FERTILE_ESSENCE = ingredient(Reference.FERTILE_INGREDIENT_META);
+		FROZEN_CORE = ingredient(Reference.FROZEN_INGREDIENT_META);
+		MOLTEN_CORE = ingredient(Reference.MOLTEN_INGREDIENT_META);
+		ZOMBIE_HEART = ingredient(Reference.ZOMBIE_INGREDIENT_META);
+		INFERNAL_CLAW = ingredient(Reference.CLAW_INGREDIENT_META);
+		SHELL_FRAGMENT = ingredient(Reference.SHELL_INGREDIENT_META);
+		SQUID_BEAK = ingredient(Reference.SQUID_INGREDIENT_META);
+		CHELICERAE = ingredient(Reference.SPIDER_INGREDIENT_META);
+		GUARDIAN_SPIKE = ingredient(Reference.GUARDIAN_INGREDIENT_META);
+		WITHER_SKULL = new ItemStack(Items.SKULL, 1, 1);
+	}
+
+	private static void addRecipe(ItemStack result, ItemStack... stacks) {
+		NonNullList<Ingredient> ingredients = NonNullList.create();
+		for(ItemStack stack : stacks) {
+			ingredients.add(Ingredient.fromStacks(stack));
+		}
+
+		ForgeRegistries.RECIPES.register(new ShapelessRecipes(Reference.MOD_NAME, result, ingredients).setRegistryName(result.getItem().getRegistryName()));
+	}
 
 /*
 	//this version of the addRecipe method checks first to see if the recipe is disabled in our automated recipe-disabler config
@@ -83,27 +118,11 @@ public class XRRecipes {
 		// lingering potion related recipes - arrows / shots
 		addLingeringPotionRecipes();
 
-		//misc recipes
-		//frozen cores to make packed ice.
-		DONE addRecipe(true, new ItemStack(Blocks.PACKED_ICE, 1, 0), Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, Blocks.ICE, FROZEN_CORE);
-
-		//apothecary mortar recipe
-		addRecipe(false, new ItemStack(ModBlocks.apothecaryMortar, 1, 0), "gng", "ngn", "nnn", 'n', Blocks.QUARTZ_BLOCK, 'g', CREEPER_GLAND);
-
-		//apothecary cauldron recipe
-		addRecipe(false, new ItemStack(ModBlocks.apothecaryCauldron, 1, 0), "gng", "ici", "nmn", 'g', CREEPER_GLAND, 'n', NEBULOUS_HEART, 'i', INFERNAL_CLAW, 'c', Items.CAULDRON, 'm', MOLTEN_CORE);
-
-		//alkahestry tome
-			addRecipe(true, new ItemStack(ModItems.alkahestryTome, 1, ModItems.alkahestryTome.getMaxDamage(ItemStack.EMPTY)), MOLTEN_CORE, ModItems.witchHat, STORM_EYE, CREEPER_GLAND, Items.BOOK, SLIME_PEARL, CHELICERAE, WITHER_SKULL, NEBULOUS_HEART);
-
-		//glowstone altar
-			addRecipe(false, new ItemStack(ModBlocks.alkahestryAltar, 1), "dnd", "olo", "dgd", 'd', Items.GLOWSTONE_DUST, 'n', NEBULOUS_HEART, 'o', Blocks.OBSIDIAN, 'l', Blocks.REDSTONE_LAMP, 'g', CREEPER_GLAND);
-
 		//fertile_lilypad
-		addRecipe(true, new ItemStack(ModBlocks.fertileLilypad, 1), FERTILE_ESSENCE, FERTILE_ESSENCE, FERTILE_ESSENCE, Blocks.WATERLILY);
+		TEST addRecipe(true, new ItemStack(ModBlocks.fertileLilypad, 1), FERTILE_ESSENCE, FERTILE_ESSENCE, FERTILE_ESSENCE, Blocks.WATERLILY);
 
 		//wraith node
-		addRecipe(true, new ItemStack(ModBlocks.wraithNode, 1), NEBULOUS_HEART, Items.EMERALD);
+		TEST addRecipe(true, new ItemStack(ModBlocks.wraithNode, 1), NEBULOUS_HEART, Items.EMERALD);
 
 		//interdiction torch
 			addRecipe(false, new ItemStack(ModBlocks.interdictionTorch, 4, 0), " n ", "mdm", "bwb", 'n', NEBULOUS_HEART, 'm', MOLTEN_CORE, 'd', Items.DIAMOND, 'b', Items.BLAZE_ROD, 'w', BAT_WING);

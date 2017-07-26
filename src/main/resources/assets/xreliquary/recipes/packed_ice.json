@@ -1,34 +1,18 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "III",
+        "ICI",
+        "III"
+    ],
+    "key": {
+        "I": {
             "item": "minecraft:ice"
         },
-        {
-            "item": "minecraft:ice"
-        },
-        {
-            "item": "minecraft:ice"
-        },
-        {
-            "item": "minecraft:ice"
-        },
-        {
-            "item": "minecraft:ice"
-        },
-        {
-            "item": "minecraft:ice"
-        },
-        {
-            "item": "minecraft:ice"
-        },
-        {
-            "item": "minecraft:ice"
-        },
-        {
+        "C": {
             "item": "#FROZEN_CORE"
         }
-    ],
+    },
     "result": {
         "item": "minecraft:packed_ice"
     }

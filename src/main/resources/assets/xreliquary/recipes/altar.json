@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "DND",
+        "OLO",
+        "DGD"
+    ],
+    "key": {
+        "D": {
+            "item": "minecraft:glowstone_dust"
+        },
+        "N": {
+            "item": "#NEBULOUS_HEART"
+        },
+        "O": {
+            "item": "minecraft:obsidian"
+        },
+        "L": {
+            "item": "minecraft:redstone_lamp"
+        },
+        "G": {
+            "item": "#CREEPER_GLAND"
+        }
+    },
+    "result": {
+        "item": "xreliquary:altar"
+    }
+}

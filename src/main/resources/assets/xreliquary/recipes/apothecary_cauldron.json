@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GNG",
+        "ICI",
+        "NMN"
+    ],
+    "key": {
+        "G": {
+            "item": "#CREEPER_GLAND"
+        },
+        "N": {
+            "item": "#NEBULOUS_HEART"
+        },
+        "I": {
+            "item": "#INFERNAL_CLAW"
+        },
+        "C": {
+            "item": "minecraft:cauldron"
+        },
+        "M": {
+            "item": "#MOLTEN_CORE"
+        }
+    },
+    "result": {
+        "item": "xreliquary:apothecary_cauldron"
+    }
+}
