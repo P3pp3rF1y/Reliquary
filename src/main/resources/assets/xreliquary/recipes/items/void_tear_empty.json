@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "LEL",
+        "PGP",
+        "LNL"
+    ],
+    "key": {
+        "L": {
+            "item": "minecraft:dye",
+            "data": 4
+        },
+        "E": {
+            "item": "minecraft:ender_pearl"
+        },
+        "P": {
+            "item": "#SLIME_PEARL"
+        },
+        "G": {
+            "item": "minecraft:ghast_tear"
+        },
+        "N": {
+            "item": "#NEBULOUS_HEART"
+        }
+    },
+    "result": {
+        "item": "xreliquary:void_tear_empty"
+    }
+}

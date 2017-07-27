@@ -31,7 +31,7 @@ public class ItemPotionEssence extends ItemBase {
 	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> subItems) {
 
 		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
-			ItemStack essenceItem = new ItemStack(ModItems.potionEssence, 1);
+			ItemStack essenceItem = new ItemStack(this, 1);
 			XRPotionHelper.addPotionEffectsToStack(essenceItem, essence.getEffects());
 
 			subItems.add(essenceItem);

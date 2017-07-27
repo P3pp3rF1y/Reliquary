@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "NBE",
+        "NVB",
+        "RNN"
+    ],
+    "key": {
+        "N": {
+            "item": "#NEBULOUS_HEART"
+        },
+        "B": {
+            "item": "#BAT_WING"
+        },
+        "E": {
+            "item": "minecraft:ender_eye"
+        },
+        "V": {
+            "item": "xreliquary:void_tear_empty"
+        },
+        "R": {
+            "item": "minecraft:blaze_rod"
+        }
+    },
+    "result": {
+        "item": "xreliquary:ender_staff"
+    }
+}

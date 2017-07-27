@@ -57,7 +57,6 @@ import java.util.Map;
 //TODO refactor this whole thing into smaller parts
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ClientEventHandler {
-	private static RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 	private static int time;
 
 	private static final HashMap<Integer, CharmToDraw> charmsToDraw = new HashMap<>();
@@ -219,7 +218,7 @@ public class ClientEventHandler {
 		for(CharmToDraw charmToDraw : charmsToDrawCopy.values()) {
 			ItemStack stackToRender = ItemMobCharm.getCharmStack(charmToDraw.type);
 			stackToRender.setItemDamage(charmToDraw.damage);
-			IBakedModel bakedModel = renderItem.getItemModelWithOverrides(stackToRender, null, null);
+			IBakedModel bakedModel = renderItem().getItemModelWithOverrides(stackToRender, null, null);
 			GlStateManager.pushMatrix();
 			TextureManager textureManager = minecraft.getTextureManager();
 			textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -235,14 +234,14 @@ public class ClientEventHandler {
 			GlStateManager.scale(16.0F, 16.0F, 16.0F);
 
 			bakedModel = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(bakedModel, ItemCameraTransforms.TransformType.GUI, false);
-			renderItem.renderItem(stackToRender, bakedModel);
+			renderItem().renderItem(stackToRender, bakedModel);
 			GlStateManager.disableAlpha();
 			GlStateManager.disableRescaleNormal();
 			GlStateManager.disableLighting();
 			GlStateManager.popMatrix();
 			textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 			textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
-			renderItem.renderItemOverlayIntoGUI(minecraft.getRenderManager().getFontRenderer(), stackToRender, hudOverlayX, hudOverlayY, null);
+			renderItem().renderItemOverlayIntoGUI(minecraft.getRenderManager().getFontRenderer(), stackToRender, hudOverlayX, hudOverlayY, null);
 
 			if(displayPosition == 1 || displayPosition == 3)
 				hudOverlayY += itemSize + itemSpacing;
@@ -252,6 +251,10 @@ public class ClientEventHandler {
 		GlStateManager.disableBlend();
 		GlStateManager.disableLighting();
 		GlStateManager.popMatrix();
+	}
+
+	private static RenderItem renderItem() {
+		return Minecraft.getMinecraft().getRenderItem();
 	}
 
 	private static void removeExpiredMobCharms() {
@@ -624,15 +627,15 @@ public class ClientEventHandler {
 		//noinspection ConstantConditions
 		if (minecraft.getRenderManager().getFontRenderer() != null) {
 			if(!secondaryStack.isEmpty() && (staffMode.equals("charge"))) {
-				renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(secondaryStack.getCount()).length() * 6))), hudOverlayY + 24);
+				renderItem().renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(secondaryStack.getCount()).length() * 6))), hudOverlayY + 24);
 				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(secondaryStack.getCount()), hudOverlayX + (leftSide ? 16 : -(Integer.toString(secondaryStack.getCount()).length() * 6)), hudOverlayY + 30, color);
 			} else if(!tertiaryStack.isEmpty() && (staffMode.equals("eruption") || staffMode.equals("blaze"))) {
-				renderItem.renderItemAndEffectIntoGUI(tertiaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(tertiaryStack.getCount()).length() * 6))), hudOverlayY + 24);
+				renderItem().renderItemAndEffectIntoGUI(tertiaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(tertiaryStack.getCount()).length() * 6))), hudOverlayY + 24);
 				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(tertiaryStack.getCount()), hudOverlayX + (leftSide ? 16 : -(Integer.toString(tertiaryStack.getCount()).length() * 6)), hudOverlayY + 30, color);
 				if(staffMode.equals("eruption"))
 					minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(friendlyStaffMode, hudOverlayX - (leftSide ? 0 : (friendlyStaffMode.length() * 6)), hudOverlayY + 18, color);
 			} else if(staffMode.equals("flint_and_steel")) {
-				renderItem.renderItemAndEffectIntoGUI(new ItemStack(Items.FLINT_AND_STEEL, 1, 0), hudOverlayX - (leftSide ? 0 : 15), hudOverlayY + 24);
+				renderItem().renderItemAndEffectIntoGUI(new ItemStack(Items.FLINT_AND_STEEL, 1, 0), hudOverlayX - (leftSide ? 0 : 15), hudOverlayY + 24);
 			}
 		}
 
@@ -897,7 +900,7 @@ public class ClientEventHandler {
 		if(!secondaryStack.isEmpty()) {
 			if(stackSize == 0)
 				stackSize = secondaryStack.getCount();
-			renderItem.renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX - (leftSide ? 0 : 16 + (Integer.toString(stackSize).length() * 6)), hudOverlayY + 25);
+			renderItem().renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX - (leftSide ? 0 : 16 + (Integer.toString(stackSize).length() * 6)), hudOverlayY + 25);
 			hudOverlayX = hudOverlayX + (leftSide ? 16 : 0);
 		}
 
@@ -908,6 +911,6 @@ public class ClientEventHandler {
 	}
 
 	private static void renderItemIntoGUI(ItemStack itemStack, int x, int y) {
-		renderItem.renderItemIntoGUI(itemStack, x, y);
+		renderItem().renderItemIntoGUI(itemStack, x, y);
 	}
 }

@@ -1,0 +1,31 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "COE",
+        "PKO",
+        "BPC"
+    ],
+    "key": {
+        "C": {
+            "item": "#CHELICERAE"
+        },
+        "O": {
+            "item": "minecraft:obsidian"
+        },
+        "E": {
+            "item": "minecraft:ender_eye"
+        },
+        "P": {
+            "item": "#SLIME_PEARL"
+        },
+        "K": {
+            "item": "#SHELL_FRAGMENT"
+        },
+        "B": {
+            "item": "minecraft:blaze_rod"
+        }
+    },
+    "result": {
+        "item": "xreliquary:serpent_staff"
+    }
+}

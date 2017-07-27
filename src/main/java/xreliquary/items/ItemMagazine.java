@@ -43,7 +43,7 @@ public class ItemMagazine extends ItemBase {
 			@Override
 			@SideOnly(Side.CLIENT)
 			public float apply(@Nonnull ItemStack stack, World worldIn, EntityLivingBase entityIn) {
-				return ModItems.magazine.isPotionAttached(stack) ? 1 : 0;
+				return isPotionAttached(stack) ? 1 : 0;
 			}
 		});
 
@@ -71,7 +71,7 @@ public class ItemMagazine extends ItemBase {
 
 		//similar to bullets adding just basic magazines with potions here even though all magazine types can have potions attached
 		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
-			ItemStack neutralMagazineWithPotion = new ItemStack(ModItems.magazine, 1, 1);
+			ItemStack neutralMagazineWithPotion = new ItemStack(this, 1, 1);
 			XRPotionHelper.addPotionEffectsToStack(neutralMagazineWithPotion, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F));
 
 			subItems.add(neutralMagazineWithPotion);

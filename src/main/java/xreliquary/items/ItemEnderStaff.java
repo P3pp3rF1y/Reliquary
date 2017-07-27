@@ -133,9 +133,9 @@ public class ItemEnderStaff extends ItemToggleable {
 		if(player == null)
 			return;
 
-		if(player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.enderStaff && isSelected) {
+		if(player.inventory.getStackInSlot(slotNumber).getItem() == this && isSelected) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
-		} else if(player.getHeldItemOffhand().getItem() == ModItems.enderStaff) {
+		} else if(player.getHeldItemOffhand().getItem() == this) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 		}
 

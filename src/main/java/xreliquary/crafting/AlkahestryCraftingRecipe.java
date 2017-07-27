@@ -115,4 +115,9 @@ public class AlkahestryCraftingRecipe extends net.minecraftforge.registries.IFor
 
 		return remaining;
 	}
+
+	@Override
+	public boolean isHidden() {
+		return true;
+	}
 }

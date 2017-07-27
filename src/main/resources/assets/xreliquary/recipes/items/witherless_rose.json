@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "FNF",
+        "NRN",
+        "FNF"
+    ],
+    "key": {
+        "F": {
+            "item": "#FERTILE_ESSENCE"
+        },
+        "N": {
+            "item": "minecraft:nether_star"
+        },
+        "R": {
+            "item": "minecraft:double_plant",
+            "data": 4
+        }
+    },
+    "result": {
+        "item": "xreliquary:witherless_rose"
+    }
+}

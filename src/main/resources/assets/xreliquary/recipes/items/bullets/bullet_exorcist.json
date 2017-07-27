@@ -1,0 +1,45 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "xreliquary:bullet",
+            "data": 1
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 1
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 1
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 1
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 1
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 1
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 1
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 1
+        },
+        {
+            "item": "#ZOMBIE_HEART"
+        }
+    ],
+    "result": {
+        "item": "xreliquary:bullet",
+        "data": 2,
+        "count": 8
+    }
+}

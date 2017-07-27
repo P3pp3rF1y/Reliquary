@@ -1,0 +1,31 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "DGD",
+        "BFB",
+        "ENE"
+    ],
+    "key": {
+        "D": {
+            "item": "minecraft:glowstone_dust"
+        },
+        "G": {
+            "item": "minecraft:gold_ingot"
+        },
+        "B": {
+            "item": "#BAT_WING"
+        },
+        "E": {
+            "item": "#FERTILE_ESSENCE"
+        },
+        "N": {
+            "item": "#NEBULOUS_HEART"
+        },
+        "F": {
+            "item": "minecraft:feather"
+        }
+    },
+    "result": {
+        "item": "xreliquary:angelic_feather"
+    }
+}

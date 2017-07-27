@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "STS",
+        "PPP"
+    ],
+    "key": {
+        "P": {
+            "item": "#NEBULOUS_HEART"
+        },
+        "S": {
+            "item": "minecraft:ender_pearl"
+        },
+        "T": {
+            "item": "#NEBULOUS_HEART"
+        }
+    },
+    "result": {
+        "item": "xreliquary:mob_charm_fragment",
+        "data": 8
+    }
+}

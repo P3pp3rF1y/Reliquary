@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "STS",
+        "PPP"
+    ],
+    "key": {
+        "P": {
+            "item": "#GUARDIAN_SPIKE"
+        },
+        "S": {
+            "item": "minecraft:prismarine_shard"
+        },
+        "T": {
+            "item": "minecraft:fish",
+            "data": 0
+        }
+    },
+    "result": {
+        "item": "xreliquary:mob_charm_fragment",
+        "data": 13
+    }
+}

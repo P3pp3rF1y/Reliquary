@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "STS",
+        "PPP"
+    ],
+    "key": {
+        "P": {
+            "item": "#CHELICERAE"
+        },
+        "S": {
+            "item": "minecraft:string"
+        },
+        "T": {
+            "item": "minecraft:spider_eye"
+        }
+    },
+    "result": {
+        "item": "xreliquary:mob_charm_fragment",
+        "data": 7
+    }
+}

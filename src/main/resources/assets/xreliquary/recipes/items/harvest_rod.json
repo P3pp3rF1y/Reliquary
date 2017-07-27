@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " RF",
+        "VTR",
+        "SV "
+    ],
+    "key": {
+        "R": {
+            "item": "minecraft:double_plant",
+            "data": 4
+        },
+        "F": {
+            "item": "#FERTILE_ESSENCE"
+        },
+        "V": {
+            "item": "minecraft:vine"
+        },
+        "T": {
+            "item": "xreliquary:void_tear_empty"
+        },
+        "S": {
+            "item": "minecraft:stick"
+        }
+    },
+    "result": {
+        "item": "xreliquary:harvest_rod"
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " N ",
+        "MDM",
+        "BWB"
+    ],
+    "key": {
+        "N": {
+            "item": "#NEBULOUS_HEART"
+        },
+        "M": {
+            "item": "#MOLTEN_CORE"
+        },
+        "D": {
+            "item": "minecraft:diamond"
+        },
+        "B": {
+            "item": "minecraft:blaze_rod"
+        },
+        "W": {
+            "item": "#BAT_WING"
+        }
+    },
+    "result": {
+        "item": "xreliquary:interdiction_torch",
+        "count": 4
+    }
+}

@@ -102,7 +102,7 @@ public class ItemTwilightCloak extends ItemToggleable/* implements IBauble*/ {
 			if(!(entityLiving.getAttackTarget() instanceof EntityPlayer))
 				return;
 			EntityPlayer player = (EntityPlayer) entityLiving.getAttackTarget();
-			if(!InventoryHelper.playerHasItem(player, ModItems.twilightCloak, true))
+			if(!InventoryHelper.playerHasItem(player, this, true))
 				return;
 
 			//toggled effect, makes player invisible based on light level (configurable)

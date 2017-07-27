@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "CCC",
+        "CPC",
+        "MLM"
+    ],
+    "key": {
+        "C": {
+            "item": "#INFERNAL_CLAW"
+        },
+        "P": {
+            "item": "#SLIME_PEARL"
+        },
+        "M": {
+            "item": "#MOLTEN_CORE"
+        },
+        "L": {
+            "item": "minecraft:leather"
+        }
+    },
+    "result": {
+        "item": "xreliquary:infernal_claws"
+    }
+}

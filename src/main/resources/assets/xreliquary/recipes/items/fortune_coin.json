@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "EGE",
+        "GNG",
+        "EGE"
+    ],
+    "key": {
+        "E": {
+            "item": "minecraft:ender_eye"
+        },
+        "G": {
+            "item": "minecraft:gold_ingot"
+        },
+        "N": {
+            "item": "#NEBULOUS_HEART"
+        }
+    },
+    "result": {
+        "item": "xreliquary:fortune_coin"
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "SSS",
+        "PPP"
+    ],
+    "key": {
+        "P": {
+            "item": "#SLIME_PEARL"
+        },
+        "S": {
+            "item": "minecraft:slime_ball"
+        }
+    },
+    "result": {
+        "item": "xreliquary:mob_charm_fragment",
+        "data": 10
+    }
+}

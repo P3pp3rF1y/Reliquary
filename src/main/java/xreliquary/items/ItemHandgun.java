@@ -254,9 +254,9 @@ public class ItemHandgun extends ItemBase {
 
 	private boolean hasHandgunInSecondHand(EntityPlayer player, EnumHand hand) {
 		if(hand == EnumHand.MAIN_HAND)
-			return player.getHeldItemOffhand().getItem() == ModItems.handgun;
+			return player.getHeldItemOffhand().getItem() == this;
 
-		return player.getHeldItemMainhand().getItem() == ModItems.handgun;
+		return player.getHeldItemMainhand().getItem() == this;
 	}
 
 	@Override

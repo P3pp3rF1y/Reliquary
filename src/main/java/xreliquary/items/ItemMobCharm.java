@@ -63,7 +63,7 @@ public class ItemMobCharm extends ItemBase {
 	}
 
 	public byte getType(ItemStack stack) {
-		if(stack.getItem() != ModItems.mobCharm || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TYPE_TAG))
+		if(stack.getItem() != this || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TYPE_TAG))
 			return -1;
 
 		return stack.getTagCompound().getByte(TYPE_TAG);
@@ -210,7 +210,7 @@ public class ItemMobCharm extends ItemBase {
 
 	private void damageMobCharmInPedestal(EntityPlayer player, Entity entity) {
 		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.dimension, player.getPosition(), Settings.MobCharm.pedestalRange);
-		byte mobCharmType = ModItems.mobCharm.getMobCharmTypeForEntity(entity);
+		byte mobCharmType = getMobCharmTypeForEntity(entity);
 		World world = player.getEntityWorld();
 
 		for(BlockPos pos : pedestalPositions) {
@@ -222,7 +222,7 @@ public class ItemMobCharm extends ItemBase {
 				if (blockState.getValue(BlockPedestal.ENABLED)) { //TODO this needs a field / method in TEPedestal instead of having to load blockstate
 					for(int slot = 0; slot < pedestal.getSizeInventory(); slot++) {
 						ItemStack slotStack = pedestal.getStackInSlot(slot);
-						if(slotStack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(slotStack) == mobCharmType) {
+						if(slotStack.getItem() == this && getType(slotStack) == mobCharmType) {
 							if(slotStack.getItemDamage() + Settings.MobCharm.damagePerKill > slotStack.getMaxDamage()) {
 								((TileEntityPedestal) te).setInventorySlotContents(slot, ItemStack.EMPTY);
 							} else {
@@ -246,14 +246,14 @@ public class ItemMobCharm extends ItemBase {
 		if(player.capabilities.isCreativeMode)
 			return true;
 
-		byte mobCharmType = ModItems.mobCharm.getMobCharmTypeForEntity(entity);
+		byte mobCharmType = getMobCharmTypeForEntity(entity);
 
 		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
 			ItemStack stack = player.inventory.mainInventory.get(slot);
 
 			if(stack.isEmpty())
 				continue;
-			if(stack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(stack) == mobCharmType) {
+			if(stack.getItem() == this && getType(stack) == mobCharmType) {
 				if(stack.getItemDamage() + Settings.MobCharm.damagePerKill > stack.getMaxDamage()) {
 					player.inventory.mainInventory.set(slot, ItemStack.EMPTY);
 					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, stack.getMaxDamage() + 1, slot), (EntityPlayerMP) player);
@@ -307,7 +307,7 @@ public class ItemMobCharm extends ItemBase {
 		for(ItemStack slotStack : player.inventory.mainInventory) {
 			if(slotStack.isEmpty())
 				continue;
-			if(slotStack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(slotStack) == type)
+			if(slotStack.getItem() == this && getType(slotStack) == type)
 				return true;
 			if(slotStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(slotStack, type))
 				return true;
@@ -341,7 +341,7 @@ public class ItemMobCharm extends ItemBase {
 				if (blockState.getValue(BlockPedestal.ENABLED)) { //TODO this needs a field / method in TEPedestal instead of having to load blockstate
 					for(int slot = 0; slot < pedestal.getSizeInventory(); slot++) {
 						ItemStack slotStack = pedestal.getStackInSlot(slot);
-						if(slotStack.getItem() == ModItems.mobCharm && ModItems.mobCharm.getType(slotStack) == type)
+						if(slotStack.getItem() == this && getType(slotStack) == type)
 							return true;
 						if(slotStack.getItem() == ModItems.mobCharmBelt && ModItems.mobCharmBelt.hasCharmType(slotStack, type))
 							return true;

@@ -1,0 +1,45 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "xreliquary:bullet",
+            "data": 5
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 5
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 5
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 5
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 5
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 5
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 5
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 5
+        },
+        {
+            "item": "#CREEPER_GLAND"
+        }
+    ],
+    "result": {
+        "item": "xreliquary:bullet",
+        "data": 6,
+        "count": 8
+    }
+}

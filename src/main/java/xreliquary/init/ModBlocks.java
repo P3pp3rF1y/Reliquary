@@ -53,47 +53,44 @@ public class ModBlocks {
 		fertileLilypad = registerBlock(registry, new BlockFertileLilypad(), Names.Blocks.FERTILE_LILYPAD);
 		interdictionTorch = registerBlock(registry, new BlockInterdictionTorch(), Names.Blocks.INTERDICTION_TORCH);
 		wraithNode = registerBlock(registry, new BlockWraithNode(), Names.Blocks.WRAITH_NODE);
-		pedestal = registerBlock(registry, new BlockPedestal(), Names.Blocks.PEDESTAL, TileEntityPedestal.class, true);
-		pedestalPassive = registerBlock(registry, new BlockPedestalPassive(), Names.Blocks.PEDESTAL_PASSIVE, TileEntityPedestalPassive.class, true);
+		pedestal = registerBlock(registry, new BlockPedestal(), Names.Blocks.PEDESTAL, TileEntityPedestal.class);
+		pedestalPassive = registerBlock(registry, new BlockPedestalPassive(), Names.Blocks.PEDESTAL_PASSIVE, TileEntityPedestalPassive.class);
 	}
 
 	@SubscribeEvent
 	public static void registerItemBlocks(RegistryEvent.Register<Item> event) {
 		IForgeRegistry<Item> registry = event.getRegistry();
 
-		registerItemBlock(registry, apothecaryCauldron);
-		registerItemBlock(registry, alkahestryAltar);
-		registerItemBlock(registry, alkahestryAltarActive);
-		registerItemBlock(registry, apothecaryMortar);
-		registerItemBlock(registry, fertileLilypad, new ItemFertileLilyPad());
-		registerItemBlock(registry, interdictionTorch);
-		registerItemBlock(registry, wraithNode);
-		registerItemBlock(registry, pedestal, new ItemBlockPedestal(pedestal));
-		registerItemBlock(registry, pedestalPassive, new ItemBlockPedestal(pedestalPassive));
+		registerItemBlock(registry, apothecaryCauldron, Names.Blocks.APOTHECARY_CAULDRON);
+		registerItemBlock(registry, alkahestryAltar, Names.Blocks.ALTAR_IDLE);
+		registerItemBlock(registry, alkahestryAltarActive, Names.Blocks.ALTAR);
+		registerItemBlock(registry, apothecaryMortar, Names.Blocks.APOTHECARY_MORTAR);
+		registerItemBlock(registry, fertileLilypad, new ItemFertileLilyPad(), Names.Blocks.FERTILE_LILYPAD, false);
+		registerItemBlock(registry, interdictionTorch, Names.Blocks.INTERDICTION_TORCH);
+		registerItemBlock(registry, wraithNode, Names.Blocks.WRAITH_NODE);
+		registerItemBlock(registry, pedestal, new ItemBlockPedestal(pedestal), Names.Blocks.PEDESTAL, true);
+		registerItemBlock(registry, pedestalPassive, new ItemBlockPedestal(pedestalPassive), Names.Blocks.PEDESTAL_PASSIVE, true);
 	}
 
 	private static <T extends Block> T registerBlock(IForgeRegistry<Block> registry, T block, String name) {
 		return registerBlock(registry, block, name, null);
 	}
 	private static <T extends Block> T registerBlock(IForgeRegistry<Block> registry, T block, String name, Class<? extends TileEntity> tileClass) {
-		return registerBlock(registry, block, name, tileClass, false);
-	}
-	private static <T extends Block> T registerBlock(IForgeRegistry<Block> registry, T block, String name, Class<? extends TileEntity> tileClass, boolean jeiOneDescription) {
 		registry.register(block);
 
 		if (tileClass != null)
 			GameRegistry.registerTileEntity(tileClass, Reference.MOD_ID + ":tile_" + name);
 
-		Reliquary.PROXY.registerJEI(block, name, jeiOneDescription);
-
 		return block;
 	}
 
-	private static void registerItemBlock(IForgeRegistry<Item> registry, Block block) {
-		registerItemBlock(registry, block, new ItemBlockBase(block));
+	private static void registerItemBlock(IForgeRegistry<Item> registry, Block block, String name) {
+		registerItemBlock(registry, block, new ItemBlockBase(block), name, false);
 	}
-	private static void registerItemBlock(IForgeRegistry<Item> registry, Block block, ItemBlockBase itemBlock) {
+	private static void registerItemBlock(IForgeRegistry<Item> registry, Block block, ItemBlockBase itemBlock, String name, boolean jeiOneDescription) {
 		//noinspection ConstantConditions
 		registry.register(itemBlock.setRegistryName(block.getRegistryName()));
+
+		Reliquary.PROXY.registerJEI(block, name, jeiOneDescription);
 	}
 }

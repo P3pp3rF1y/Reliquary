@@ -1,0 +1,25 @@
+{
+    "conditions": [
+        {
+            "type": "xreliquary:mob_drops_craftable"
+        }
+    ],
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GGG",
+        "GFG",
+        "GGG"
+    ],
+    "key": {
+        "F": {
+            "item": "minecraft:feather"
+        },
+        "G": {
+            "item": "minecraft:gold_ingot"
+        }
+    },
+    "result": {
+        "item": "xreliquary:mob_ingredient",
+        "data": 5
+    }
+}

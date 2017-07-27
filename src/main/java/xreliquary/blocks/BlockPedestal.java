@@ -37,7 +37,7 @@ public class BlockPedestal extends BlockPedestalPassive {
 	@Override
 	public void getSubBlocks(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> list) {
 		for(int i = 0; i < 16; i++) {
-			list.add(new ItemStack(ModBlocks.pedestal, 1, i));
+			list.add(new ItemStack(this, 1, i));
 		}
 	}
 

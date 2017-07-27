@@ -53,7 +53,7 @@ public class ItemSalamanderEye extends ItemBase {
 			return;
 		EntityPlayer player = (EntityPlayer) e;
 
-		if(player.getHeldItem(EnumHand.MAIN_HAND).getItem() == ModItems.salamanderEye || player.getHeldItem(EnumHand.OFF_HAND).getItem() == ModItems.salamanderEye) {
+		if(player.getHeldItem(EnumHand.MAIN_HAND).getItem() == this || player.getHeldItem(EnumHand.OFF_HAND).getItem() == this) {
 			doFireballEffect(player);
 			doExtinguishEffect(player);
 		}

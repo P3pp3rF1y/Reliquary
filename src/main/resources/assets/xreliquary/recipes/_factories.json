@@ -1,0 +1,5 @@
+{
+    "conditions": {
+        "mob_drops_craftable": "xreliquary.crafting.MobDropsCraftableCondition"
+    }
+}

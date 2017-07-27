@@ -1,0 +1,30 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GBG",
+        "GFG",
+        "RGC"
+    ],
+    "key": {
+        "G": {
+            "item": "minecraft:glass_pane"
+        },
+        "B": {
+            "item": "minecraft:water_bucket"
+        },
+        "F": {
+            "item": "#FERTILE_ESSENCE"
+        },
+        "R": {
+            "item": "minecraft:dye",
+            "data": 1
+        },
+        "C": {
+            "item": "minecraft:dye",
+            "data": 3
+        }
+    },
+    "result": {
+        "item": "xreliquary:attraction_potion"
+    }
+}

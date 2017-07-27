@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GBG",
+        "GDG",
+        "NGP"
+    ],
+    "key": {
+        "G": {
+            "item": "minecraft:glass_pane"
+        },
+        "B": {
+            "item": "minecraft:water_bucket"
+        },
+        "D": {
+            "item": "minecraft:glowstone_dust"
+        },
+        "P": {
+            "item": "minecraft:gunpowder"
+        },
+        "N": {
+            "item": "minecraft:nether_wart"
+        }
+    },
+    "result": {
+        "item": "xreliquary:glowing_water"
+    }
+}

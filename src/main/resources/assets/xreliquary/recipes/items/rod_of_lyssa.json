@@ -1,0 +1,31 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " BR",
+        "NMS",
+        "R I"
+    ],
+    "key": {
+        "B": {
+            "item": "#BAT_WING"
+        },
+        "R": {
+            "item": "minecraft:blaze_rod"
+        },
+        "N": {
+            "item": "#NEBULOUS_HEART"
+        },
+        "M": {
+            "item": "#MOLTEN_CORE"
+        },
+        "S": {
+            "item": "minecraft:string"
+        },
+        "I": {
+            "item": "#INFERNAL_CLAW"
+        }
+    },
+    "result": {
+        "item": "xreliquary:rod_of_lyssa"
+    }
+}

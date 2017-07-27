@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "STS",
+        "PPP"
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:ghast_tear"
+        },
+        "S": {
+            "item": "minecraft:gunpowder"
+        },
+        "T": {
+            "item": "#CREEPER_GLAND"
+        }
+    },
+    "result": {
+        "item": "xreliquary:mob_charm_fragment",
+        "data": 9
+    }
+}

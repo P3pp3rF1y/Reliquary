@@ -1,0 +1,32 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "SES",
+        "IVI",
+        "LBL"
+    ],
+    "key": {
+        "S": {
+            "item": "#SLIME_PEARL"
+        },
+        "E": {
+            "item": "minecraft:emerald"
+        },
+        "I": {
+            "item": "minecraft:gold_ingot"
+        },
+        "V": {
+            "item": "xreliquary:void_tear_empty"
+        },
+        "L": {
+            "item": "minecraft:dye",
+            "data": 4
+        },
+        "B": {
+            "item": "minecraft:bucket"
+        }
+    },
+    "result": {
+        "item": "xreliquary:emperor_chalice"
+    }
+}

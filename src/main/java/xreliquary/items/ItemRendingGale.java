@@ -144,7 +144,7 @@ public class ItemRendingGale extends ItemToggleable {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.MAIN_HAND, getItemHandlerNBT(rendingGale)), (EntityPlayerMP) player);
 		} else if(player.getHeldItemOffhand() == rendingGale) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(rendingGale)), (EntityPlayerMP) player);
-		} else if(player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.rendingGale) {
+		} else if(player.inventory.getStackInSlot(slotNumber).getItem() == this) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(rendingGale)), (EntityPlayerMP) player);
 		}
 	}

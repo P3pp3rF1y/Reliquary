@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IMI",
+        "WCW",
+        "MTM"
+    ],
+    "key": {
+        "I": {
+            "item": "xreliquary:infernal_claws"
+        },
+        "M": {
+            "item": "#MOLTEN_CORE"
+        },
+        "W": {
+            "item": "#WITHER_RIB"
+        },
+        "C": {
+            "item": "xreliquary:emperor_chalice"
+        },
+        "T": {
+            "item": "xreliquary:infernal_tear"
+        }
+    },
+    "result": {
+        "item": "xreliquary:infernal_chalice"
+    }
+}

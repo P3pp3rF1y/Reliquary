@@ -124,4 +124,9 @@ public class MobCharmRepairRecipe extends net.minecraftforge.registries.IForgeRe
 	public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inv) {
 		return NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 	}
+
+	@Override
+	public boolean isHidden() {
+		return true;
+	}
 }

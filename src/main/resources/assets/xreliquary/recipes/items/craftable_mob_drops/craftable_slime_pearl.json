@@ -1,0 +1,25 @@
+{
+    "conditions": [
+        {
+            "type": "xreliquary:mob_drops_craftable"
+        }
+    ],
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "III",
+        "ISI",
+        "III"
+    ],
+    "key": {
+        "S": {
+            "item": "minecraft:slime_ball"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "result": {
+        "item": "xreliquary:mob_ingredient",
+        "data": 4
+    }
+}

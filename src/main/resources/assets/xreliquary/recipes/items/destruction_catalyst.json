@@ -1,0 +1,31 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "TMC",
+        "GIM",
+        "FGT"
+    ],
+    "key": {
+        "T": {
+            "item": "minecraft:tnt"
+        },
+        "M": {
+            "item": "#MOLTEN_CORE"
+        },
+        "C": {
+            "item": "#CREEPER_GLAND"
+        },
+        "G": {
+            "item": "minecraft:gold_ingot"
+        },
+        "I": {
+            "item": "xreliquary:infernal_tear"
+        },
+        "F": {
+            "item": "minecraft:flint_and_steel"
+        }
+    },
+    "result": {
+        "item": "xreliquary:destruction_catalyst"
+    }
+}

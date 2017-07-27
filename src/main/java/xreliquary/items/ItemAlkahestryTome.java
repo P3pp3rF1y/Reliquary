@@ -109,7 +109,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
 	@Override
 	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> subItems) {
 
-		ItemStack stack = new ItemStack(ModItems.alkahestryTome);
+		ItemStack stack = new ItemStack(this);
 		stack.setItemDamage(stack.getMaxDamage());
 		subItems.add(stack);
 	}

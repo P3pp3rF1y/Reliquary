@@ -1,0 +1,25 @@
+{
+    "conditions": [
+        {
+            "type": "xreliquary:mob_drops_craftable"
+        }
+    ],
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GGG",
+        "GMG",
+        "GGG"
+    ],
+    "key": {
+        "M": {
+            "item": "minecraft:magma_cream"
+        },
+        "G": {
+            "item": "minecraft:gold_ingot"
+        }
+    },
+    "result": {
+        "item": "xreliquary:mob_ingredient",
+        "data": 7
+    }
+}

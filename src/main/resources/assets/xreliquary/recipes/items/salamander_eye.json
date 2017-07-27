@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "FNM",
+        "GEG",
+        "MNF"
+    ],
+    "key": {
+        "F": {
+            "item": "#FROZEN_CORE"
+        },
+        "N": {
+            "item": "#NEBULOUS_HEART"
+        },
+        "M": {
+            "item": "#MOLTEN_CORE"
+        },
+        "G": {
+            "item": "minecraft:ghast_tear"
+        },
+        "E": {
+            "item": "minecraft:ender_eye"
+        }
+    },
+    "result": {
+        "item": "xreliquary:salamander_eye"
+    }
+}

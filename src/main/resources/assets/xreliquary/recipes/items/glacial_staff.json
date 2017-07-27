@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "FDS",
+        "FVD",
+        "IFF"
+    ],
+    "key": {
+        "F": {
+            "item": "#FROZEN_CORE"
+        },
+        "D": {
+            "item": "minecraft:diamond"
+        },
+        "S": {
+            "item": "xreliquary:shears_of_winter"
+        },
+        "V": {
+            "item": "xreliquary:void_tear_empty"
+        },
+        "I": {
+            "item": "xreliquary:ice_magus_rod"
+        }
+    },
+    "result": {
+        "item": "xreliquary:glacial_staff"
+    }
+}

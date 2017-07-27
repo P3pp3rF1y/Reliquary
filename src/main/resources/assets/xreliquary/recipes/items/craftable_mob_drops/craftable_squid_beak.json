@@ -1,0 +1,26 @@
+{
+    "conditions": [
+        {
+            "type": "xreliquary:mob_drops_craftable"
+        }
+    ],
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GGG",
+        "GIG",
+        "GGG"
+    ],
+    "key": {
+        "I": {
+            "item": "minecraft:dye",
+            "data": 0
+        },
+        "G": {
+            "item": "minecraft:gold_ingot"
+        }
+    },
+    "result": {
+        "item": "xreliquary:mob_ingredient",
+        "data": 12
+    }
+}

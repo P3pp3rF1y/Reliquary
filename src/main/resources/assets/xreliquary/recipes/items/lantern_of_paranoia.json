@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IMI",
+        "GTG",
+        "ILI"
+    ],
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "M": {
+            "item": "#MOLTEN_CORE"
+        },
+        "G": {
+            "item": "minecraft:glass"
+        },
+        "T": {
+            "item": "xreliquary:interdiction_torch"
+        },
+        "L": {
+            "item": "#CREEPER_GLAND"
+        }
+    },
+    "result": {
+        "item": "xreliquary:lantern_of_paranoia"
+    }
+}

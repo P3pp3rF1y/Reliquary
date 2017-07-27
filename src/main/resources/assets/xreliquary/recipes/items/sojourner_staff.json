@@ -1,0 +1,31 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GCM",
+        "ITC",
+        "BIG"
+    ],
+    "key": {
+        "G": {
+            "item": "minecraft:gold_nugget"
+        },
+        "C": {
+            "item": "minecraft:magma_cream"
+        },
+        "M": {
+            "item": "#MOLTEN_CORE"
+        },
+        "I": {
+            "item": "minecraft:gold_ingot"
+        },
+        "T": {
+            "item": "xreliquary:infernal_tear"
+        },
+        "B": {
+            "item": "minecraft:blaze_rod"
+        }
+    },
+    "result": {
+        "item": "xreliquary:sojourner_staff"
+    }
+}

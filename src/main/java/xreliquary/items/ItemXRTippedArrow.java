@@ -48,7 +48,7 @@ public class ItemXRTippedArrow extends ItemArrow {
 	@Override
 	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> subItems) {
 		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
-			ItemStack tippedArrow = new ItemStack(ModItems.tippedArrow);
+			ItemStack tippedArrow = new ItemStack(this);
 			XRPotionHelper.addPotionEffectsToStack(tippedArrow, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.125F));
 
 			subItems.add(tippedArrow);

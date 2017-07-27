@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "FDF",
+        "PTD",
+        "IPF"
+    ],
+    "key": {
+        "F": {
+            "item": "#FROZEN_CORE"
+        },
+        "D": {
+            "item": "minecraft:diamond"
+        },
+        "P": {
+            "item": "minecraft:packed_ice"
+        },
+        "T": {
+            "item": "xreliquary:void_tear_empty"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "result": {
+        "item": "xreliquary:ice_magus_rod"
+    }
+}

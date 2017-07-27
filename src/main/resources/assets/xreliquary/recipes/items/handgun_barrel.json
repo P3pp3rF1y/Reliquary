@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "III",
+        "EME",
+        "III"
+    ],
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "E": {
+            "item": "#NEBULOUS_HEART"
+        },
+        "M": {
+            "item": "minecraft:magma_cream"
+        }
+    },
+    "result": {
+        "item": "xreliquary:gun_part",
+        "data": 1
+    }
+}

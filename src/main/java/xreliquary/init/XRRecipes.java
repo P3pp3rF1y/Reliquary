@@ -1,18 +1,31 @@
 package xreliquary.init;
 
+import com.google.gson.JsonObject;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.IConditionFactory;
+import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import xreliquary.reference.Compatibility;
+import xreliquary.crafting.AlkahestryChargingRecipe;
+import xreliquary.crafting.AlkahestryCraftingRecipe;
+import xreliquary.crafting.AlkahestryDrainRecipe;
+import xreliquary.crafting.MagazineRecipe;
+import xreliquary.crafting.MobCharmRepairRecipe;
+import xreliquary.crafting.PotionBulletsRecipe;
+import xreliquary.crafting.XRTippedArrowsRecipe;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
+
+import java.util.function.BooleanSupplier;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class XRRecipes {
@@ -43,7 +56,19 @@ public class XRRecipes {
 	public static void register(RegistryEvent.Register<IRecipe> event) {
 		initConstants();
 
+		registerCustomRecipes();
+
 		addRecipe(new ItemStack(ModItems.alkahestryTome, 1, ModItems.alkahestryTome.getMaxDamage(ItemStack.EMPTY)), MOLTEN_CORE, new ItemStack(ModItems.witchHat), STORM_EYE, CREEPER_GLAND, new ItemStack(Items.BOOK), SLIME_PEARL, CHELICERAE, WITHER_SKULL, NEBULOUS_HEART);
+	}
+
+	private static void registerCustomRecipes() {
+		ForgeRegistries.RECIPES.register(new AlkahestryDrainRecipe());
+		ForgeRegistries.RECIPES.register(new AlkahestryChargingRecipe());
+		ForgeRegistries.RECIPES.register(new AlkahestryCraftingRecipe());
+		ForgeRegistries.RECIPES.register(new MobCharmRepairRecipe());
+		ForgeRegistries.RECIPES.register(new XRTippedArrowsRecipe());
+		ForgeRegistries.RECIPES.register(new PotionBulletsRecipe());
+		ForgeRegistries.RECIPES.register(new MagazineRecipe());
 	}
 
 	private static void initConstants() {
@@ -72,107 +97,12 @@ public class XRRecipes {
 			ingredients.add(Ingredient.fromStacks(stack));
 		}
 
+		//noinspection ConstantConditions
 		ForgeRegistries.RECIPES.register(new ShapelessRecipes(Reference.MOD_NAME, result, ingredients).setRegistryName(result.getItem().getRegistryName()));
 	}
 
 /*
-	//this version of the addRecipe method checks first to see if the recipe is disabled in our automated recipe-disabler config
-	//if any component of the item is in the recipe disabler list, it will ALSO block the recipe automatically.
-	//override disabler forces the recipe to evaluate anyway. This occurs for items that don't fall into XR scope, and thus shouldn't be evaluated.
-	private static void addRecipe(boolean isShapeless, ItemStack result, Object... params) {
-		if(result.getItem().getRegistryName() == null || Arrays.asList(params).contains(null))
-			return;
-
-		ResourceLocation rl = result.getItem().getRegistryName();
-		if(Settings.disabledItemsBlocks.contains(rl.getResourcePath()))
-			return;
-
-		for(Object o : params) {
-			if(!(o instanceof Block || o instanceof Item || o instanceof ItemStack))
-				continue;
-
-			if(o instanceof Block) {
-				rl = ((Block) o).getRegistryName();
-			} else if(o instanceof Item && ((Item) o).getRegistryName() != null) {
-				rl = ((Item) o).getRegistryName();
-			} else if(o instanceof ItemStack) {
-				rl = ((ItemStack) o).getItem().getRegistryName();
-			}
-			if(Settings.disabledItemsBlocks.contains(rl.getResourcePath()))
-				return;
-		}
-
-		if(!isShapeless)
-			GameRegistry.addRecipe(result, params);
-		else
-			GameRegistry.addShapelessRecipe(result, params);
-	}
-
 	public static void init() {
-		// tome and alkahestry recipes
-		addTomeRecipeHandlers();
-
-		// mob charm data fix and repair recipes
-		addMobCharmRecipeHandlers();
-
-		// lingering potion related recipes - arrows / shots
-		addLingeringPotionRecipes();
-
-		//fertile_lilypad
-		TEST addRecipe(true, new ItemStack(ModBlocks.fertileLilypad, 1), FERTILE_ESSENCE, FERTILE_ESSENCE, FERTILE_ESSENCE, Blocks.WATERLILY);
-
-		//wraith node
-		TEST addRecipe(true, new ItemStack(ModBlocks.wraithNode, 1), NEBULOUS_HEART, Items.EMERALD);
-
-		//interdiction torch
-			addRecipe(false, new ItemStack(ModBlocks.interdictionTorch, 4, 0), " n ", "mdm", "bwb", 'n', NEBULOUS_HEART, 'm', MOLTEN_CORE, 'd', Items.DIAMOND, 'b', Items.BLAZE_ROD, 'w', BAT_WING);
-
-		// glowy bread
-		addRecipe(true, new ItemStack(ModItems.glowingBread, 3), Items.BREAD, Items.BREAD, Items.BREAD, ModItems.glowingWater);
-
-		//fertile essence
-			addRecipe(false, FERTILE_ESSENCE, "gbg", "scs", "gbg", 'g', CREEPER_GLAND, 'b', RIB_BONE, 's', SLIME_PEARL, 'c', new ItemStack(Items.DYE, 1, Reference.GREEN_DYE_META));
-
-		// bullets...
-		// empty cases back into nuggets
-		addRecipe(true, new ItemStack(Items.GOLD_NUGGET, 1), bullet(1, 0), bullet(1, 0), bullet(1, 0), bullet(1, 0));
-		// neutral
-		addRecipe(true, bullet(8, 1), Items.FLINT, Items.GOLD_NUGGET, Items.GOLD_NUGGET, Items.GUNPOWDER);
-		// exorcist
-		addRecipe(true, bullet(8, 2), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), bullet(1, 1), ZOMBIE_HEART);
-		// blaze
-		addRecipe(true, bullet(8, 3), Items.BLAZE_POWDER, Items.BLAZE_ROD, Items.GOLD_NUGGET, Items.GOLD_NUGGET);
-		// ender
-		addRecipe(true, bullet(8, 4), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), bullet(1, 7), NEBULOUS_HEART);
-		// concussive
-		addRecipe(true, bullet(8, 5), Items.SLIME_BALL, Items.GOLD_NUGGET, Items.GOLD_NUGGET, Items.GUNPOWDER);
-		// buster
-		addRecipe(true, bullet(8, 6), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), bullet(1, 5), CREEPER_GLAND);
-		// seeker, the only thing with an easy mode recipe
-			addRecipe(true, bullet(4, 7), LAPIS, SLIME_PEARL, Items.GOLD_NUGGET, Items.GUNPOWDER);
-		// sand
-		addRecipe(true, bullet(8, 8), Blocks.SANDSTONE, Items.GOLD_NUGGET, Items.GOLD_NUGGET, Items.GUNPOWDER);
-		// storm
-		addRecipe(true, bullet(8, 9), CREEPER_GLAND, CREEPER_GLAND, Items.GOLD_NUGGET, Items.GOLD_NUGGET, Items.GUNPOWDER);
-		// frozen shot TODO
-		// venom shot TODO
-		// fertile shot TODO
-		// rage shot TODO
-		// traitor shot TODO
-		// calm shot TODO
-		// molten shot TODO
-
-		// magazines...
-		addRecipe(false, magazine(5, 0), "i i", "igi", "sis", 's', Blocks.STONE, 'i', Items.IRON_INGOT, 'g', Blocks.GLASS);
-
-		//special magazines recipe because of all the potion combinations
-		GameRegistry.addRecipe(new MagazineRecipe());
-		RecipeSorter.register(Reference.MOD_ID + ":magazines", MagazineRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-
-		// gunpart 0 = grip, 1 = barrel, 2 = mechanism
-		addRecipe(false, gunPart(1, 0), "iii", "imi", "ici", 'i', Items.IRON_INGOT, 'c', magazine(1, 0), 'm', Items.MAGMA_CREAM);
-		addRecipe(false, gunPart(1, 1), "iii", "eme", "iii", 'i', Items.IRON_INGOT, 'e', NEBULOUS_HEART, 'm', Items.MAGMA_CREAM);
-		addRecipe(false, gunPart(1, 2), "iib", "rmi", "iii", 'i', Items.IRON_INGOT, 'b', Blocks.STONE_BUTTON, 'r', Items.BLAZE_ROD, 'm', MOLTEN_CORE);
 
 		// handgun
 		addRecipe(false, new ItemStack(ModItems.handgun, 1, 0), "bim", "isi", "igi", 'i', Items.IRON_INGOT, 'b', gunPart(1, 1), 'm', gunPart(1, 2), 'g', gunPart(1, 0), 's', SLIME_PEARL);
@@ -343,33 +273,6 @@ public class XRRecipes {
 			addMobDropCraftingRecipes();
 	}
 
-	private static void addLingeringPotionRecipes() {
-		GameRegistry.addRecipe(new XRTippedArrowsRecipe());
-		GameRegistry.addRecipe(new PotionBulletsRecipe());
-
-		RecipeSorter.register(Reference.MOD_ID + ":tipped_arrows", XRTippedArrowsRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-		RecipeSorter.register(Reference.MOD_ID + ":potion_bullets", PotionBulletsRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-
-	}
-
-	private static void addTomeRecipeHandlers() {
-		if(ModItems.alkahestryTome.getRegistryName() == null || Settings.disabledItemsBlocks.contains(ModItems.alkahestryTome.getRegistryName().getResourcePath()))
-			return;
-
-		GameRegistry.addRecipe(new AlkahestryDrainRecipe());
-		GameRegistry.addRecipe(new AlkahestryChargingRecipe());
-		GameRegistry.addRecipe(new AlkahestryCraftingRecipe());
-
-		RecipeSorter.register(Reference.MOD_ID + ":alkahest_crafting", AlkahestryCraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:minecraft:shaped");
-		RecipeSorter.register(Reference.MOD_ID + ":alkahest_charge", AlkahestryChargingRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_crafting");
-		RecipeSorter.register(Reference.MOD_ID + ":alkahest_drain", AlkahestryDrainRecipe.class, RecipeSorter.Category.SHAPELESS, "before:" + Reference.MOD_ID + ":alkahest_charge");
-	}
-
-	private static void addMobCharmRecipeHandlers() {
-		GameRegistry.addRecipe(new MobCharmRepairRecipe());
-
-		RecipeSorter.register(Reference.MOD_ID + ":mob_charm_repair", MobCharmRepairRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-	}
 
 	private static void addMobCharmRecipe(byte type) {
 		ItemStack mobCharm = mobCharm(type);

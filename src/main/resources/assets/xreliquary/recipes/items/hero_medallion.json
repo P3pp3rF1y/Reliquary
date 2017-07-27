@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "NIE",
+        "ITI",
+        "FIN"
+    ],
+    "key": {
+        "N": {
+            "item": "#NEBULOUS_HEART"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "E": {
+            "item": "minecraft:ender_eye"
+        },
+        "T": {
+            "item": "xreliquary:infernal_tear"
+        },
+        "F": {
+            "item": "xreliquary:fortune_coin"
+        }
+    },
+    "result": {
+        "item": "xreliquary:hero_medallion"
+    }
+}

@@ -72,7 +72,7 @@ public class ItemXRPotion extends ItemBase {
 		}
 
 		if(!player.capabilities.isCreativeMode) {
-			ItemStack emptyVial = new ItemStack(ModItems.potion);
+			ItemStack emptyVial = new ItemStack(this);
 			emptyVial.setTagCompound(new NBTTagCompound()); //doing this as without this vials dropped on ground and picked up wouldn't stack properly - they get empty NBT assigned
 			if(stack.getCount() <= 0)
 				return emptyVial;
@@ -100,12 +100,12 @@ public class ItemXRPotion extends ItemBase {
 
 	@Override
 	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> subItems) {
-		subItems.add(new ItemStack(ModItems.potion)); //just an empty one
+		subItems.add(new ItemStack(this)); //just an empty one
 
 		List<ItemStack> splashPotions = new ArrayList<>();
 		List<ItemStack> lingeringPotions = new ArrayList<>();
 		for(PotionEssence essence : Settings.Potions.uniquePotions) {
-			ItemStack potion = new ItemStack(ModItems.potion, 1);
+			ItemStack potion = new ItemStack(this, 1);
 			XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());
 			NBTHelper.setBoolean("hasPotion", potion, true);
 

@@ -1,0 +1,45 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "xreliquary:bullet",
+            "data": 7
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 7
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 7
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 7
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 7
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 7
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 7
+        },
+        {
+            "item": "xreliquary:bullet",
+            "data": 7
+        },
+        {
+            "item": "#NEBULOUS_HEART"
+        }
+    ],
+    "result": {
+        "item": "xreliquary:bullet",
+        "data": 4,
+        "count": 8
+    }
+}

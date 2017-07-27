@@ -1,0 +1,25 @@
+{
+    "conditions": [
+        {
+            "type": "xreliquary:mob_drops_craftable"
+        }
+    ],
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GGG",
+        "GSG",
+        "GGG"
+    ],
+    "key": {
+        "S": {
+            "item": "minecraft:string"
+        },
+        "G": {
+            "item": "minecraft:gold_ingot"
+        }
+    },
+    "result": {
+        "item": "xreliquary:mob_ingredient",
+        "data": 2
+    }
+}

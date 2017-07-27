@@ -94,4 +94,8 @@ public class AlkahestryDrainRecipe extends net.minecraftforge.registries.IForgeR
 		return remaining;
 	}
 
+	@Override
+	public boolean isHidden() {
+		return true;
+	}
 }

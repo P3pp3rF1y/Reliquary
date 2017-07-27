@@ -166,9 +166,9 @@ public class ItemHarvestRod extends ItemToggleable {
 			consumePlantables(ist, player, slotNumber);
 		}
 
-		if(player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.harvestRod && isSelected) {
+		if(player.inventory.getStackInSlot(slotNumber).getItem() == this && isSelected) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
-		} else if(player.inventory.offHandInventory.get(0).getItem() == ModItems.harvestRod) {
+		} else if(player.inventory.offHandInventory.get(0).getItem() == this) {
 			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 		}
 	}
