@@ -19,7 +19,6 @@ public class ModGuiConfig extends GuiConfig {
 
 	private static List<IConfigElement> getConfigElements() {
 		ArrayList<IConfigElement> elements = new ArrayList<>();
-		elements.add(getCategory(Names.Configs.EASY_MODE_RECIPES));
 		elements.add(getCategory(Names.Configs.ITEM_AND_BLOCK_SETTINGS));
 		elements.add(getCategory(Names.Configs.HUD_POSITIONS));
 		elements.add(getCategory(Names.Configs.POTION_MAP));

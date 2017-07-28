@@ -1,24 +1,19 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "NFN",
-        "EPE",
-        "FNF"
-    ],
-    "key": {
-        "N": {
-            "item": "#NEBULOUS_HEART"
-        },
-        "F": {
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
             "item": "#SHELL_FRAGMENT"
         },
-        "E": {
-            "item": "minecraft:ender_eye"
+        {
+            "item": "#SHELL_FRAGMENT"
         },
-        "P": {
-            "item": "#SLIME_PEARL"
+        {
+            "item": "#SHELL_FRAGMENT"
+        },
+        {
+            "item": "#NEBULOUS_HEART"
         }
-    },
+    ],
     "result": {
         "item": "xreliquary:kraken_shell"
     }

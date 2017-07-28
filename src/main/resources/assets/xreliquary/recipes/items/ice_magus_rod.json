@@ -1,21 +1,18 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "FDF",
-        "PTD",
-        "IPF"
+        " DF",
+        " VD",
+        "I  "
     ],
     "key": {
-        "F": {
-            "item": "#FROZEN_CORE"
-        },
         "D": {
             "item": "minecraft:diamond"
         },
-        "P": {
-            "item": "minecraft:packed_ice"
+        "F": {
+            "item": "#FROZEN_CORE"
         },
-        "T": {
+        "V": {
             "item": "xreliquary:void_tear_empty"
         },
         "I": {

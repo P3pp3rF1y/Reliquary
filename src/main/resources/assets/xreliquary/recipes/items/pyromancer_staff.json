@@ -1,27 +1,19 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "MCS",
-        "MIC",
-        "RMM"
-    ],
-    "key": {
-        "M": {
-            "item": "#MOLTEN_CORE"
-        },
-        "C": {
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
             "item": "xreliquary:infernal_claws"
         },
-        "S": {
-            "item": "xreliquary:salamander_eye"
+        {
+            "item": "minecraft:blaze_rod"
         },
-        "I": {
+        {
             "item": "xreliquary:infernal_tear"
         },
-        "R": {
-            "item": "minecraft:blaze_rod"
+        {
+            "item": "xreliquary:salamander_eye"
         }
-    },
+    ],
     "result": {
         "item": "xreliquary:pyromancer_staff"
     }

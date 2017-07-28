@@ -2,19 +2,20 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "minecraft:obsidian"
+            "item": "xreliquary:glowing_water"
         },
         {
-            "item": "minecraft:redstone_lamp"
+            "item": "minecraft:gold_nugget"
         },
         {
-            "item": "#NEBULOUS_HEART"
+            "item": "minecraft:tnt"
         },
         {
             "item": "#CREEPER_GLAND"
         }
     ],
     "result": {
-        "item": "xreliquary:altar"
+        "item": "xreliquary:holy_hand_grenade",
+        "count": 4
     }
 }

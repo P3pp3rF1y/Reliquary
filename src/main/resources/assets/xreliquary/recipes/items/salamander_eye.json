@@ -1,27 +1,19 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "FNM",
-        "GEG",
-        "MNF"
-    ],
-    "key": {
-        "F": {
-            "item": "#FROZEN_CORE"
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:ender_eye"
         },
-        "N": {
-            "item": "#NEBULOUS_HEART"
-        },
-        "M": {
+        {
             "item": "#MOLTEN_CORE"
         },
-        "G": {
-            "item": "minecraft:ghast_tear"
+        {
+            "item": "#FROZEN_CORE"
         },
-        "E": {
-            "item": "minecraft:ender_eye"
+        {
+            "item": "#NEBULOUS_HEART"
         }
-    },
+    ],
     "result": {
         "item": "xreliquary:salamander_eye"
     }

@@ -2,19 +2,21 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "#INFERNAL_CLAW"
+            "item": "#RIB_BONE"
         },
         {
-            "item": "#INFERNAL_CLAW"
+            "item": "#CREEPER_GLAND"
         },
         {
-            "item": "#INFERNAL_CLAW"
+            "item": "minecraft:dye",
+            "data": 2
         },
         {
             "item": "#SLIME_PEARL"
         }
     ],
     "result": {
-        "item": "xreliquary:infernal_claws"
+        "item": "xreliquary:mob_ingredient",
+        "data": 9
     }
 }

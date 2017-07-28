@@ -74,7 +74,6 @@ public class Names {
 
 	public static class Configs {
 		public static final String HUD_POSITIONS = "hud_positions";
-		public static final String EASY_MODE_RECIPES = "easy_mode_recipes";
 		public static final String ITEM_AND_BLOCK_SETTINGS = "item_and_block_settings";
 		public static final String CRAFTING_RECIPES = "crafting_recipes";
 		public static final String CHARGING_RECIPES = "charging_recipes";
@@ -89,7 +88,6 @@ public class Names {
 		public static final String WAILA_SHIFT_FOR_INFO = "waila_shift_for_info";
 		public static final String MOB_DROP_CRAFTING_RECIPES_ENABLED = "mob_drop_crafting_recipes_enabled";
 		public static final String MOB_DROPS_ENABLED = "mob_drops_enabled";
-		public static final String DISABLED_ITEMS_BLOCKS = "disabled_items_blocks";
 		public static final String MELEE_WRAPPER_RANGE = "melee_wrapper_range";
 		public static final String MELEE_WRAPPER_COOLDOWN = "melee_wrapper_cooldown";
 		public static final String BUCKET_WRAPPER_RANGE = "bucket_wrapper_range";

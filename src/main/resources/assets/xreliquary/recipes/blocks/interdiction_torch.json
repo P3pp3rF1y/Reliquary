@@ -1,25 +1,21 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        " N ",
-        "MDM",
-        "BWB"
+        "BM",
+        "NR"
     ],
     "key": {
-        "N": {
-            "item": "#NEBULOUS_HEART"
+        "B": {
+            "item": "#BAT_WING"
+        },
+        "R": {
+            "item": "minecraft:blaze_rod"
         },
         "M": {
             "item": "#MOLTEN_CORE"
         },
-        "D": {
-            "item": "minecraft:diamond"
-        },
-        "B": {
-            "item": "minecraft:blaze_rod"
-        },
-        "W": {
-            "item": "#BAT_WING"
+        "N": {
+            "item": "#NEBULOUS_HEART"
         }
     },
     "result": {

@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "xreliquary:witch_hat"
+        }
+    ],
+    "result": {
+        "item": "minecraft:stick",
+        "count": 4
+    }
+}

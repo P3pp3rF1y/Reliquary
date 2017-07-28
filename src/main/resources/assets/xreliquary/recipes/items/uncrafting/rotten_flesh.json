@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "#ZOMBIE_HEART"
+        }
+    ],
+    "result": {
+        "item": "minecraft:rotten_flesh",
+        "count": 6
+    }
+}

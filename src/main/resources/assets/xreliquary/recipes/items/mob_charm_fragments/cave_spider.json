@@ -7,14 +7,18 @@
     ],
     "key": {
         "P": {
-            "item": "#CHELICERAE"
+            "item": "xreliquary:mob_ingredient",
+            "data": 2
         },
         "S": {
             "item": "minecraft:string"
         },
         "T": {
+            "type": "minecraft:item_nbt",
             "item": "minecraft:potion",
-            "nbt": "{Potion:\"minecraft:poison\"}"
+            "nbt": {
+                "Potion": "minecraft:poison"
+            }
         }
     },
     "result": {

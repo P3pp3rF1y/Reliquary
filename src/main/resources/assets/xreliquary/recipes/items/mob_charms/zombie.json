@@ -8,7 +8,7 @@
     "key": {
         "F": {
             "item": "xreliquary:mob_charm_fragment",
-            "data": 12
+            "data": 0
         },
         "L": {
             "item": "minecraft:leather"
@@ -18,7 +18,9 @@
         }
     },
     "result": {
+        "type": "minecraft:item_nbt",
         "item": "xreliquary:mob_charm",
-        "data": 12
+        "data": 0,
+        "nbt": "{type:0b}"
     }
 }

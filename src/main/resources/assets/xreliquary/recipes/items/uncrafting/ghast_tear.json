@@ -2,19 +2,16 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "minecraft:obsidian"
+            "item": "#CREEPER_GLAND"
         },
         {
-            "item": "minecraft:redstone_lamp"
-        },
-        {
-            "item": "#NEBULOUS_HEART"
+            "item": "#CREEPER_GLAND"
         },
         {
             "item": "#CREEPER_GLAND"
         }
     ],
     "result": {
-        "item": "xreliquary:altar"
+        "item": "minecraft:ghast_tear"
     }
 }

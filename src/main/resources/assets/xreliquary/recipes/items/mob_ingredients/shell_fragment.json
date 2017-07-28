@@ -2,19 +2,20 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "#INFERNAL_CLAW"
+            "item": "#SQUID_BEAK"
         },
         {
-            "item": "#INFERNAL_CLAW"
+            "item": "#SQUID_BEAK"
         },
         {
-            "item": "#INFERNAL_CLAW"
+            "item": "#SQUID_BEAK"
         },
         {
             "item": "#SLIME_PEARL"
         }
     ],
     "result": {
-        "item": "xreliquary:infernal_claws"
+        "item": "xreliquary:mob_ingredient",
+        "data": 14
     }
 }

@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "#WITHER_RIB"
+        },
+        {
+            "item": "#WITHER_RIB"
+        },
+        {
+            "item": "#WITHER_RIB"
+        },
+        {
+            "item": "minecraft:skull",
+            "data": 0
+        }
+    ],
+    "result": {
+        "item": "minecraft:skull",
+        "data": 1
+    }
+}

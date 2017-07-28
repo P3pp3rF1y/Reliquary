@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "xreliquary:mob_ingredient",
+            "data": 2
+        },
+        {
+            "item": "xreliquary:mob_ingredient",
+            "data": 2
+        }
+    ],
+    "result": {
+        "item": "minecraft:spider_eye",
+        "count": 2
+    }
+}

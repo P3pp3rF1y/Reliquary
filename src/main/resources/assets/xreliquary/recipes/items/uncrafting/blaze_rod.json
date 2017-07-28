@@ -1,0 +1,15 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "#MOLTEN_CORE"
+        },
+        {
+            "item": "#MOLTEN_CORE"
+        }
+    ],
+    "result": {
+        "item": "minecraft:blaze_rod",
+        "count": 4
+    }
+}

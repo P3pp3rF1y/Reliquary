@@ -1,25 +1,25 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "EBE",
-        "FVB",
-        "RFE"
+        " BE",
+        "GVB",
+        "SG "
     ],
     "key": {
-        "E": {
-            "item": "#STORM_EYE"
-        },
         "B": {
             "item": "#BAT_WING"
         },
-        "F": {
-            "item": "xreliquary:angelic_feather"
+        "S": {
+            "item": "minecraft:stick"
+        },
+        "E": {
+            "item": "#STORM_EYE"
         },
         "V": {
             "item": "xreliquary:void_tear_empty"
         },
-        "R": {
-            "item": "minecraft:blaze_rod"
+        "G": {
+            "item": "minecraft:gold_ingot"
         }
     },
     "result": {

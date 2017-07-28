@@ -2,19 +2,20 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "minecraft:flint_and_steel"
+            "item": "minecraft:leather"
         },
         {
             "item": "#MOLTEN_CORE"
         },
         {
-            "item": "#CREEPER_GLAND"
+            "item": "#RIB_BONE"
         },
         {
-            "item": "xreliquary:infernal_tear"
+            "item": "#SLIME_PEARL"
         }
     ],
     "result": {
-        "item": "xreliquary:destruction_catalyst"
+        "item": "xreliquary:mob_ingredient",
+        "data": 13
     }
 }

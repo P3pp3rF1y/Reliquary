@@ -1,0 +1,36 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:anvil",
+            "data": 0
+        },
+        {
+            "item": "minecraft:gold_block"
+        },
+        {
+            "item": "minecraft:gold_block"
+        },
+        {
+            "item": "#MOLTEN_CORE"
+        },
+        {
+            "item": "#MOLTEN_CORE"
+        },
+        {
+            "item": "#MOLTEN_CORE"
+        },
+        {
+            "item": "#CREEPER_GLAND"
+        },
+        {
+            "item": "#CREEPER_GLAND"
+        },
+        {
+            "item": "xreliquary:void_tear_empty"
+        }
+    ],
+    "result": {
+        "item": "xreliquary:midas_touchstone"
+    }
+}

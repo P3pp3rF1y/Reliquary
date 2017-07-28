@@ -1,27 +1,19 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "PHP",
-        "MTM",
-        "PCP"
-    ],
-    "key": {
-        "P": {
-            "item": "minecraft:blaze_powder"
-        },
-        "H": {
-            "item": "xreliquary:witch_hat"
-        },
-        "M": {
-            "item": "#MOLTEN_CORE"
-        },
-        "T": {
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
             "item": "xreliquary:void_tear_empty"
         },
-        "C": {
+        {
+            "item": "xreliquary:witch_hat"
+        },
+        {
+            "item": "#MOLTEN_CORE"
+        },
+        {
             "item": "#INFERNAL_CLAW"
         }
-    },
+    ],
     "result": {
         "item": "xreliquary:infernal_tear"
     }

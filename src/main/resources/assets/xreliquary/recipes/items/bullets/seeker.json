@@ -6,7 +6,7 @@
             "data": 4
         },
         {
-            "item": "minecraft:slime_ball"
+            "item": "minecraft:gold_nugget"
         },
         {
             "item": "minecraft:gold_nugget"
@@ -18,6 +18,6 @@
     "result": {
         "item": "xreliquary:bullet",
         "data": 7,
-        "count": 4
+        "count": 8
     }
 }

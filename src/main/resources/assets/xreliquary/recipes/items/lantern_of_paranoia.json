@@ -1,25 +1,22 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "IMI",
-        "GTG",
-        "ILI"
+        "ISI",
+        "GMG",
+        " I "
     ],
     "key": {
+        "S": {
+            "item": "#SLIME_PEARL"
+        },
+        "G": {
+            "item": "minecraft:glass"
+        },
         "I": {
             "item": "minecraft:iron_ingot"
         },
         "M": {
             "item": "#MOLTEN_CORE"
-        },
-        "G": {
-            "item": "minecraft:glass"
-        },
-        "T": {
-            "item": "xreliquary:interdiction_torch"
-        },
-        "L": {
-            "item": "#CREEPER_GLAND"
         }
     },
     "result": {

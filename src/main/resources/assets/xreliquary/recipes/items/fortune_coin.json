@@ -1,21 +1,19 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "EGE",
-        "GNG",
-        "EGE"
-    ],
-    "key": {
-        "E": {
-            "item": "minecraft:ender_eye"
-        },
-        "G": {
-            "item": "minecraft:gold_ingot"
-        },
-        "N": {
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
             "item": "#NEBULOUS_HEART"
+        },
+        {
+            "item": "minecraft:gold_nugget"
+        },
+        {
+            "item": "#SLIME_PEARL"
+        },
+        {
+            "item": "#BAT_WING"
         }
-    },
+    ],
     "result": {
         "item": "xreliquary:fortune_coin"
     }
