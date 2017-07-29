@@ -28,6 +28,7 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
@@ -55,7 +56,7 @@ import java.util.List;
 import java.util.Map;
 
 //TODO refactor this whole thing into smaller parts
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Side.CLIENT)
 public class ClientEventHandler {
 	private static int time;
 

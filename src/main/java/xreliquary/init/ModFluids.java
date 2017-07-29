@@ -58,6 +58,7 @@ public class ModFluids {
 		registerFluidSprites(textureMap, milk);
 	}
 
+	@SideOnly(Side.CLIENT)
 	private static void registerFluidSprites(TextureMap textureMap, Fluid fluid) {
 		if (fluid != null) {
 			textureMap.registerSprite(fluid.getStill());

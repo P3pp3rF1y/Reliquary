@@ -80,7 +80,7 @@ import java.util.Map;
 
 //TODO refactor proxy so that it has functionally named methods that get called from main mod class
 @SideOnly(Side.CLIENT)
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
 	public static final KeyBinding FORTUNE_COIN_TOGGLE_KEYBIND = new KeyBinding("xreliquary.keybind.fortune_coin", Keyboard.KEY_NONE, "xreliquary.keybind.category");

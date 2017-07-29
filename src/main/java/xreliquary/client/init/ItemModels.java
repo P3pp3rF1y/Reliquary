@@ -9,13 +9,14 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import xreliquary.client.ItemModelLocations;
 import xreliquary.client.model.ModelVoidTear;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Side.CLIENT)
 public class ItemModels {
 	public static void registerItemModels() {
 		registerItemModel(ModItems.alkahestryTome, Names.Items.ALKAHESTRY_TOME);
