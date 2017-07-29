@@ -1,16 +1,10 @@
-/*
 package xreliquary.compat.waila.provider;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import xreliquary.blocks.BlockApothecaryCauldron;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.init.ModBlocks;
@@ -26,11 +20,6 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		return new ItemStack(ModBlocks.apothecaryCauldron);
-	}
-
-	@Override
-	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return null;
 	}
 
 	@Override
@@ -80,15 +69,4 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 
 		return currenttip;
 	}
-
-	@Override
-	public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return null;
-	}
-
-	@Override
-	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
-		return null;
-	}
 }
-*/

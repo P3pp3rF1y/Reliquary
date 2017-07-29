@@ -1,4 +1,3 @@
-/*
 package xreliquary.compat.waila.provider;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -16,20 +15,18 @@ import xreliquary.blocks.BlockPedestal;
 import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.init.ModBlocks;
 
+import javax.annotation.Nonnull;
 import java.text.MessageFormat;
 import java.util.List;
 
 public class DataProviderPedestal implements IWailaDataProvider {
+	@Nonnull
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		return new ItemStack(ModBlocks.pedestal);
 	}
 
-	@Override
-	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return null;
-	}
-
+	@Nonnull
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		if(!(accessor.getBlock() instanceof BlockPedestal && accessor.getTileEntity() instanceof TileEntityPedestal))
@@ -59,15 +56,4 @@ public class DataProviderPedestal implements IWailaDataProvider {
 
 		return currenttip;
 	}
-
-	@Override
-	public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return null;
-	}
-
-	@Override
-	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
-		return null;
-	}
 }
-*/

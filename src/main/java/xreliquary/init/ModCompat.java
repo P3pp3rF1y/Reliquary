@@ -6,6 +6,8 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.compat.ICompat;
+import xreliquary.compat.waila.WailaCompat;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 
 import java.util.ArrayList;
@@ -16,7 +18,13 @@ public class ModCompat {
 
 	public static void registerModCompat() {
 		//compats.add(new TCCompat()); // TODO add back when TC is updated
-		//compats.add(new WailaCompat()); TODO waila
+		compats.add(new WailaCompat());
+		compats.add(new WailaCompat(){
+			@Override
+			public String getModId() {
+				return Compatibility.MOD_ID.HWYLA;
+			}
+		});
 	}
 
 	public static void loadCompat(ICompat.InitializationPhase phase, World world) {

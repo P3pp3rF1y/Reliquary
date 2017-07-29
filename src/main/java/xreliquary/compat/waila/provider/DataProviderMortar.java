@@ -1,17 +1,11 @@
-/*
 package xreliquary.compat.waila.provider;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import xreliquary.blocks.BlockApothecaryMortar;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.init.ModBlocks;
@@ -19,18 +13,15 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionIngredient;
 import xreliquary.util.potions.XRPotionHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataProviderMortar extends CachedBodyDataProvider {
+	@Nonnull
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		return new ItemStack(ModBlocks.apothecaryMortar);
-	}
-
-	@Override
-	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return null;
 	}
 
 	@Override
@@ -73,15 +64,4 @@ public class DataProviderMortar extends CachedBodyDataProvider {
 		}
 		return currenttip;
 	}
-
-	@Override
-	public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return null;
-	}
-
-	@Override
-	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
-		return null;
-	}
 }
-*/

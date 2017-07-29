@@ -67,6 +67,7 @@ dependencies {
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     //deobfCompile "info.amerifrance.guideapi:Guide-API:${guideapi_version}"
     //deobfCompile "mcp.mobius.waila:Waila:${waila_version}"
+    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}_${minecraft_version}"
     deobfCompile name: 'JustEnoughResources', version: jer_version, ext: 'jar'
     //deobfCompile name: 'Baubles', version: baubles_version, ext: 'jar'
     //deobfCompile name: 'Botania', version: botania_version, ext: 'jar'
