@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class PedestalFluidHandler implements IFluidHandler {
+	private static final IFluidTankProperties[] EMPTY_TANK_PROPERTIES = new IFluidTankProperties[0];
+
 	TileEntityPedestal pedestal;
 
 	public PedestalFluidHandler(TileEntityPedestal pedestal) {
@@ -23,7 +25,7 @@ public class PedestalFluidHandler implements IFluidHandler {
 	public IFluidTankProperties[] getTankProperties() {
 		List<ItemStack> fluidContainers = pedestal.getFluidContainers();
 		if(fluidContainers.size() == 0)
-			return null;
+			return EMPTY_TANK_PROPERTIES;
 
 		List<IFluidTankProperties> props = new ArrayList<>();
 		for(ItemStack container : fluidContainers) {
