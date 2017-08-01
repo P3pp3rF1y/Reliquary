@@ -1,6 +1,7 @@
 package xreliquary.reference;
 
 import net.minecraft.item.ItemStack;
+import xreliquary.client.gui.hud.HUDPosition;
 import xreliquary.util.alkahestry.AlkahestChargeRecipe;
 import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 import xreliquary.util.potions.PotionEssence;
@@ -29,20 +30,20 @@ public class Settings {
 	}
 
 	public static class HudPositions {
-		public static int sojournerStaff;
-		public static int handgun;
-		public static int alkahestryTome;
-		public static int destructionCatalyst;
-		public static int enderStaff;
-		public static int iceMagusRod;
-		public static int glacialStaff;
-		public static int voidTear;
-		public static int midasTouchstone;
-		public static int harvestRod;
-		public static int infernalChalice;
-		public static int heroMedallion;
-		public static int pyromancerStaff;
-		public static int rendingGale;
+		public static HUDPosition sojournerStaff;
+		public static HUDPosition handgun;
+		public static HUDPosition alkahestryTome;
+		public static HUDPosition destructionCatalyst;
+		public static HUDPosition enderStaff;
+		public static HUDPosition iceMagusRod;
+		public static HUDPosition glacialStaff;
+		public static HUDPosition voidTear;
+		public static HUDPosition midasTouchstone;
+		public static HUDPosition harvestRod;
+		public static HUDPosition infernalChalice;
+		public static HUDPosition heroMedallion;
+		public static HUDPosition pyromancerStaff;
+		public static HUDPosition rendingGale;
 	}
 
 	public static class EasyModeRecipes {

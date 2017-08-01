@@ -12,8 +12,11 @@ public class ItemStackCountPane extends Component {
 	}
 
 	public ItemStackCountPane(ItemStack itemStack, int count, int textColor) {
+		this(Box.Layout.HORIZONTAL, itemStack, count, textColor);
+	}
+	public ItemStackCountPane(Box.Layout layout, ItemStack itemStack, int count, int textColor) {
 		countPane = new TextPane(String.valueOf(count), textColor);
-		box = Box.createVertical(Box.Alignment.MIDDLE, new ItemStackPane(itemStack), countPane);
+		box = new Box(layout, layout == Box.Layout.VERTICAL ? Box.Alignment.MIDDLE : Box.Alignment.BOTTOM, new ItemStackPane(itemStack), countPane);
 	}
 
 	public void setCount(int count) {
@@ -33,6 +36,11 @@ public class ItemStackCountPane extends Component {
 	@Override
 	protected void refresh() {
 		box.refresh();
+	}
+
+	@Override
+	public int getPadding() {
+		return box.getPadding();
 	}
 
 	@Override

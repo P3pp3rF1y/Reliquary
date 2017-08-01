@@ -31,6 +31,10 @@ public abstract class Component {
 	protected void setChanged(boolean changed) {
 	}
 
+	public boolean shouldRender() {
+		return true;
+	}
+
 	public abstract int getHeightInternal();
 	public abstract int getWidthInternal();
 	public abstract void renderInternal(int x, int y);

@@ -7,7 +7,7 @@ public class Box extends Component {
 	private int height;
 	private int width;
 
-	private Box(Layout layout, Alignment alignment, Component... components) {
+	public Box(Layout layout, Alignment alignment, Component... components) {
 		this.layout = layout;
 		this.alignment = alignment;
 		this.components = components;
@@ -58,6 +58,11 @@ public class Box extends Component {
 	}
 
 	@Override
+	public int getPadding() {
+		return 0;
+	}
+
+	@Override
 	protected boolean hasChanged() {
 		for(Component component : components) {
 			if (component.hasChanged())
@@ -75,6 +80,9 @@ public class Box extends Component {
 
 	@Override
 	protected void refresh() {
+		for(Component component : components) {
+			component.refresh();
+		}
 		updateDimensions();
 	}
 

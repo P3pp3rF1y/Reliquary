@@ -1,4 +1,4 @@
-package xreliquary.client.gui;
+package xreliquary.client.gui.hud;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -8,13 +8,14 @@ import org.lwjgl.opengl.GL11;
 import xreliquary.client.gui.components.Component;
 
 public class HUDRenderrer {
-	public static void render(Component component, DisplayPosition position) {
-		Minecraft mc = Minecraft.getMinecraft();
-		ScaledResolution sr = new ScaledResolution(mc);
-		Tuple<Integer, Integer>	xy = getXYPosition(sr, component, position);
+	public static void render(Component component, HUDPosition position) {
+		if (component.shouldRender()) {
+			Minecraft mc = Minecraft.getMinecraft();
+			ScaledResolution sr = new ScaledResolution(mc);
+			Tuple<Integer, Integer>	xy = getXYPosition(sr, component, position);
 
-		renderComponent(sr, xy.getFirst(), xy.getSecond(), component);
-
+			renderComponent(sr, xy.getFirst(), xy.getSecond(), component);
+		}
 	}
 
 	private static void renderComponent(ScaledResolution sr, int x, int y, Component component) {
@@ -29,17 +30,15 @@ public class HUDRenderrer {
 		GlStateManager.translate(0.0F, 0.0F, -2000.0F);
 
 		GlStateManager.disableLighting();
-		GlStateManager.enableBlend();
 
 		component.render(x, y);
 
-		GlStateManager.disableBlend();
 		GlStateManager.enableLighting();
 		GlStateManager.popAttrib();
 		GlStateManager.popMatrix();
 	}
 
-	private static Tuple<Integer, Integer> getXYPosition(ScaledResolution sr, Component component, DisplayPosition position) {
+	private static Tuple<Integer, Integer> getXYPosition(ScaledResolution sr, Component component, HUDPosition position) {
 		switch(position) {
 			case BOTTOM_LEFT:
 				return new Tuple<>(0, sr.getScaledHeight() - component.getHeight());
@@ -59,13 +58,4 @@ public class HUDRenderrer {
 		}
 	}
 
-	public enum DisplayPosition {
-		BOTTOM_LEFT,
-		LEFT,
-		TOP_LEFT,
-		TOP,
-		TOP_RIGHT,
-		RIGHT,
-		BOTTOM_RIGHT
-	}
 }

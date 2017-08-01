@@ -1,5 +1,6 @@
 package xreliquary.handler;
 
+import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
@@ -23,13 +24,22 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
+import xreliquary.client.gui.hud.ChargeableItemPane;
+import xreliquary.client.gui.hud.HUDPosition;
+import xreliquary.client.gui.hud.HUDRenderrer;
+import xreliquary.client.gui.components.Box;
+import xreliquary.client.gui.components.Component;
+import xreliquary.client.gui.components.ItemStackCountPane;
+import xreliquary.client.gui.components.ItemStackPane;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemEnderStaff;
@@ -155,29 +165,63 @@ public class ClientEventHandler {
 		return cooldownTime - world.getWorldTime() <= ModItems.handgun.getMaxItemUseDuration(handgun) && cooldownTime >= world.getWorldTime();
 	}
 
+	private static final List<Tuple<Component, HUDPosition>> hudComponents = Lists.newArrayList();
+
 	@SubscribeEvent
 	public static void onRenderTick(TickEvent.RenderTickEvent event) {
 		Minecraft mc = Minecraft.getMinecraft();
 		if(!Minecraft.isGuiEnabled() || !mc.inGameHasFocus)
 			return;
 
+		if (hudComponents.isEmpty()) {
+			initHUDComponents();
+		}
+
+		renderHUDComponents();
+
 		handleTickIncrement(event);
 		handleHandgunHUDCheck(mc);
 		handleSojournerHUDCheck(mc);
-		handleTomeHUDCheck(mc);
-		handleDestructionCatalystHUDCheck(mc);
 		handleEnderStaffHUDCheck(mc);
 		handleGlacialStaffHUDCheck(mc);
 		handleIceMagusRodHUDCheck(mc);
 		handleVoidTearHUDCheck(mc);
-		handleMidasTouchstoneHUDCheck(mc);
 		handleHarvestRodHUDCheck(mc);
-		handleInfernalChaliceHUDCheck(mc);
 		handleHeroMedallionHUDCheck(mc);
 		handlePyromancerStaffHUDCheck(mc);
 		handleRendingGaleHUDCheck(mc);
 
 		handleMobCharmDisplay(mc);
+	}
+
+	@SubscribeEvent
+	public static void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
+		hudComponents.clear();
+	}
+
+	private static void renderHUDComponents() {
+		for (Tuple<Component, HUDPosition> component : hudComponents) {
+			HUDRenderrer.render(component.getFirst(), component.getSecond());
+		}
+	}
+
+	private static void initHUDComponents() {
+		hudComponents.add(new Tuple<>(new ChargeableItemPane(ModItems.alkahestryTome, new ItemStack(Items.REDSTONE),
+				Settings.HudPositions.alkahestryTome, is -> NBTHelper.getInteger("charge", is)),
+				Settings.HudPositions.alkahestryTome));
+
+		hudComponents.add(new Tuple<>(new ChargeableItemPane(ModItems.destructionCatalyst, new ItemStack(Items.GUNPOWDER),
+				Settings.HudPositions.destructionCatalyst, is -> NBTHelper.getInteger("gunpowder", is)),
+				Settings.HudPositions.destructionCatalyst));
+
+		hudComponents.add(new Tuple<>(new ChargeableItemPane(ModItems.midasTouchstone, new ItemStack(Items.GLOWSTONE_DUST),
+				Settings.HudPositions.midasTouchstone, is -> NBTHelper.getInteger("glowstone", is)),
+				Settings.HudPositions.midasTouchstone));
+
+		hudComponents.add(new Tuple<>(new ChargeableItemPane(ModItems.infernalChalice, new ItemStack(Items.LAVA_BUCKET),
+				Settings.HudPositions.infernalChalice, is -> NBTHelper.getInteger("fluidStacks", is) / 1000),
+				Settings.HudPositions.infernalChalice));
+
 	}
 
 	private static void handleMobCharmDisplay(Minecraft minecraft) {
@@ -313,29 +357,14 @@ public class ClientEventHandler {
 		return player.getHeldItem(itemInHand);
 	}
 
-	private static void handleTomeHUDCheck(Minecraft mc) {
-		EntityPlayer player = mc.player;
+	//TODO ConfigChangedEvent to clear the cached HUD pieces
 
-		ItemStack tomeStack = getCorrectItemFromEitherHand(player, ModItems.alkahestryTome);
-
-		if(tomeStack.isEmpty())
-			return;
-
-		ItemStack chargeStack = Settings.AlkahestryTome.baseItem.copy();
-		chargeStack.setCount(NBTHelper.getInteger("charge", tomeStack));
-		renderStandardTwoItemHUD(mc, tomeStack, chargeStack, Settings.HudPositions.alkahestryTome, 0, 0);
-	}
-
-	private static void handleDestructionCatalystHUDCheck(Minecraft mc) {
-		EntityPlayer player = mc.player;
-
-		ItemStack destructionCatalystStack = getCorrectItemFromEitherHand(player, ModItems.destructionCatalyst);
-
-		if(destructionCatalystStack.isEmpty())
-			return;
-
-		ItemStack gunpowderStack = new ItemStack(Items.GUNPOWDER, NBTHelper.getInteger("gunpowder", destructionCatalystStack), 0);
-		renderStandardTwoItemHUD(mc, destructionCatalystStack, gunpowderStack, Settings.HudPositions.destructionCatalyst, 0, 0);
+	private static Box.Alignment getMainStackAlignment(HUDPosition position) {
+		Box.Alignment alignment = position == HUDPosition.TOP ? Box.Alignment.MIDDLE : Box.Alignment.LEFT;
+		if (position.isRightSide()) {
+			alignment = Box.Alignment.RIGHT;
+		}
+		return alignment;
 	}
 
 	private static void handleEnderStaffHUDCheck(Minecraft mc) {
@@ -354,7 +383,7 @@ public class ClientEventHandler {
 		} else if(staffMode.equals("long_cast")) {
 			displayItemStack = new ItemStack(Items.ENDER_EYE, enderStaffItem.getPearlCount(enderStaffStack), 0);
 		}
-		renderStandardTwoItemHUD(mc, enderStaffStack, displayItemStack, Settings.HudPositions.enderStaff, 0, 0);
+		renderStandardTwoItemHUD(mc, enderStaffStack, displayItemStack, Settings.HudPositions.enderStaff.ordinal(), 0, 0);
 	}
 
 	private static void handleIceMagusRodHUDCheck(Minecraft mc) {
@@ -367,7 +396,7 @@ public class ClientEventHandler {
 
 		ItemStack snowballStack = new ItemStack(Items.SNOWBALL, NBTHelper.getInteger("snowballs", iceRodStack), 0);
 		//still allows for differing HUD positions, like a baws.
-		int hudPosition = Settings.HudPositions.iceMagusRod;
+		int hudPosition = Settings.HudPositions.iceMagusRod.ordinal();
 		renderStandardTwoItemHUD(mc, iceRodStack, snowballStack, hudPosition, 0, NBTHelper.getInteger("snowballs", iceRodStack));
 	}
 
@@ -381,7 +410,7 @@ public class ClientEventHandler {
 
 		ItemStack snowballStack = new ItemStack(Items.SNOWBALL, NBTHelper.getInteger("snowballs", glacialStaff), 0);
 		//still allows for differing HUD positions, like a baws.
-		int hudPosition = Settings.HudPositions.glacialStaff;
+		int hudPosition = Settings.HudPositions.glacialStaff.ordinal();
 		renderStandardTwoItemHUD(mc, glacialStaff, snowballStack, hudPosition, 0, NBTHelper.getInteger("snowballs", glacialStaff));
 	}
 
@@ -396,7 +425,7 @@ public class ClientEventHandler {
 		ItemVoidTear voidTearItem = (ItemVoidTear) voidTearStack.getItem();
 		ItemStack containedItemStack = voidTearItem.getContainerItem(voidTearStack);
 		String mode = LanguageHelper.getLocalization("item." + Names.Items.VOID_TEAR + ".mode." + ModItems.filledVoidTear.getMode(voidTearStack).toString().toLowerCase());
-		renderStandardTwoItemHUD(mc, voidTearStack, containedItemStack, Settings.HudPositions.voidTear, 0, 0, 0, mode);
+		renderStandardTwoItemHUD(mc, voidTearStack, containedItemStack, Settings.HudPositions.voidTear.ordinal(), 0, 0, 0, mode);
 	}
 
 	private static void handleMidasTouchstoneHUDCheck(Minecraft mc) {
@@ -408,7 +437,7 @@ public class ClientEventHandler {
 			return;
 
 		ItemStack glowstoneStack = new ItemStack(Items.GLOWSTONE_DUST, NBTHelper.getInteger("glowstone", midasTouchstoneStack), 0);
-		renderStandardTwoItemHUD(mc, midasTouchstoneStack, glowstoneStack, Settings.HudPositions.midasTouchstone, 0, 0);
+		renderStandardTwoItemHUD(mc, midasTouchstoneStack, glowstoneStack, Settings.HudPositions.midasTouchstone.ordinal(), 0, 0);
 	}
 
 	private static void handleHarvestRodHUDCheck(Minecraft mc) {
@@ -437,7 +466,7 @@ public class ClientEventHandler {
 			secondaryStack = new ItemStack(Items.WOODEN_HOE);
 		}
 
-		renderStandardTwoItemHUD(mc, harvestRodStack, secondaryStack, Settings.HudPositions.harvestRod, 0, 0);
+		renderStandardTwoItemHUD(mc, harvestRodStack, secondaryStack, Settings.HudPositions.harvestRod.ordinal(), 0, 0);
 	}
 
 	private static void handleInfernalChaliceHUDCheck(Minecraft mc) {
@@ -449,7 +478,7 @@ public class ClientEventHandler {
 			return;
 
 		ItemStack lavaStack = new ItemStack(Items.LAVA_BUCKET, NBTHelper.getInteger("fluidStacks", infernalChaliceStack), 0);
-		renderStandardTwoItemHUD(mc, infernalChaliceStack, lavaStack, Settings.HudPositions.infernalChalice, Colors.get(Colors.BLOOD_RED_COLOR), lavaStack.getCount() / 1000);
+		renderStandardTwoItemHUD(mc, infernalChaliceStack, lavaStack, Settings.HudPositions.infernalChalice.ordinal(), Colors.get(Colors.BLOOD_RED_COLOR), lavaStack.getCount() / 1000);
 	}
 
 	private static void handleHeroMedallionHUDCheck(Minecraft mc) {
@@ -465,8 +494,8 @@ public class ClientEventHandler {
 		int remainingExperience = experience - XpHelper.getExperienceForLevel(level);
 		int maxBarExperience = XpHelper.getExperienceLimitOnLevel(level);
 
-		renderHeroXpBar(mc, remainingExperience, maxBarExperience, Settings.HudPositions.heroMedallion);
-		renderStandardTwoItemHUD(mc, heroMedallionStack, ItemStack.EMPTY, Settings.HudPositions.heroMedallion, Colors.get(Colors.GREEN), level, 20);
+		renderHeroXpBar(mc, remainingExperience, maxBarExperience, Settings.HudPositions.heroMedallion.ordinal());
+		renderStandardTwoItemHUD(mc, heroMedallionStack, ItemStack.EMPTY, Settings.HudPositions.heroMedallion.ordinal(), Colors.get(Colors.GREEN), level, 20);
 	}
 
 	private static final ResourceLocation XP_BAR = new ResourceLocation(Reference.MOD_ID, "textures/gui/xp_bar.png");
@@ -599,8 +628,8 @@ public class ClientEventHandler {
 		int hudOverlayX = 8;
 		int hudOverlayY = 8;
 
-		boolean leftSide = Settings.HudPositions.pyromancerStaff == 0 || Settings.HudPositions.pyromancerStaff == 2;
-		switch(Settings.HudPositions.pyromancerStaff) {
+		boolean leftSide = Settings.HudPositions.pyromancerStaff.ordinal() == 0 || Settings.HudPositions.pyromancerStaff.ordinal() == 2;
+		switch(Settings.HudPositions.pyromancerStaff.ordinal()) {
 			case 1: {
 				hudOverlayX = sr.getScaledWidth() - 8;
 				break;
@@ -667,7 +696,7 @@ public class ClientEventHandler {
 
 		ItemStack featherStack = new ItemStack(Items.FEATHER, ModItems.rendingGale.getFeatherCount(rendingGaleStack) - currentCost, 0);
 
-		renderStandardTwoItemHUD(mc, rendingGaleStack, featherStack, Settings.HudPositions.rendingGale, 0, Math.max(featherStack.getCount() / 100, 0));
+		renderStandardTwoItemHUD(mc, rendingGaleStack, featherStack, Settings.HudPositions.rendingGale.ordinal(), 0, Math.max(featherStack.getCount() / 100, 0));
 	}
 
 	private static void handleHandgunHUDCheck(Minecraft mc) {
@@ -726,7 +755,7 @@ public class ClientEventHandler {
 		int hudOverlayY = (int) (6 * overlayScale);
 		boolean twoHandguns = !mainHandgunStack.isEmpty() && !offHandgunStack.isEmpty();
 
-		switch(Settings.HudPositions.handgun) {
+		switch(Settings.HudPositions.handgun.ordinal()) {
 			case 0: {
 				hudOverlayX = (int) (44 * overlayScale);
 				break;
@@ -810,7 +839,7 @@ public class ClientEventHandler {
 		if(placementItem != null) {
 			placementStack = new ItemStack(placementItem, amountOfItem, 0);
 		}
-		renderStandardTwoItemHUD(mc, sojournerStack, placementStack, Settings.HudPositions.sojournerStaff, 0, 0);
+		renderStandardTwoItemHUD(mc, sojournerStack, placementStack, Settings.HudPositions.sojournerStaff.ordinal(), 0, 0);
 	}
 
 	private static void renderStandardTwoItemHUD(Minecraft minecraft, @Nonnull ItemStack hudStack, @Nonnull ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride) {
