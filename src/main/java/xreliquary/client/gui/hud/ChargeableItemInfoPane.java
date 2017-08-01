@@ -15,12 +15,12 @@ import java.util.function.Function;
 public class ChargeableItemInfoPane extends Component {
 	private Item mainItem;
 	private Box mainPanel;
-	private Map<String, ChargePane> modePanes = Maps.newHashMap();
+	private Map<String, Component> modePanes = Maps.newHashMap();
 	private HUDPosition hudPosition;
 	private String lastMode;
 	private Function<ItemStack, String> getMode;
 
-	public ChargeableItemInfoPane(Item mainItem, HUDPosition hudPosition, Function<ItemStack, String> getMode, Map<String, ChargePane> modePanes) {
+	public ChargeableItemInfoPane(Item mainItem, HUDPosition hudPosition, Function<ItemStack, String> getMode, Map<String, Component> modePanes) {
 		this(mainItem, getMode, hudPosition);
 		this.modePanes = modePanes;
 
@@ -38,10 +38,10 @@ public class ChargeableItemInfoPane extends Component {
 		this.hudPosition = hudPosition;
 	}
 
-	private void updateCurrentPane(ChargePane chargePane, String currentMode) {
+	private void updateCurrentPane(Component modePane, String currentMode) {
 		this.lastMode = currentMode;
 		Box.Alignment alignment = getMainStackAlignment(this.hudPosition);
-		mainPanel = Box.createVertical(alignment, new ItemStackPane(new ItemStack(mainItem)), chargePane);
+		mainPanel = Box.createVertical(alignment, new ItemStackPane(new ItemStack(mainItem)), modePane);
 	}
 
 	@Override
@@ -52,6 +52,11 @@ public class ChargeableItemInfoPane extends Component {
 	@Override
 	public int getWidthInternal() {
 		return mainPanel.getWidth();
+	}
+
+	@Override
+	public int getPadding() {
+		return 1;
 	}
 
 	@Override

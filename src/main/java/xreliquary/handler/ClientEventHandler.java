@@ -1,5 +1,6 @@
 package xreliquary.handler;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -33,6 +34,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
+import xreliquary.client.gui.components.ItemStackPane;
+import xreliquary.client.gui.components.TextPane;
 import xreliquary.client.gui.hud.ChargePane;
 import xreliquary.client.gui.hud.ChargeableItemInfoPane;
 import xreliquary.client.gui.hud.HUDPosition;
@@ -181,13 +184,9 @@ public class ClientEventHandler {
 		handleTickIncrement(event);
 		handleHandgunHUDCheck(mc);
 		handleSojournerHUDCheck(mc);
-		handleEnderStaffHUDCheck(mc);
-		handleGlacialStaffHUDCheck(mc);
-		handleIceMagusRodHUDCheck(mc);
 		handleVoidTearHUDCheck(mc);
 		handleHarvestRodHUDCheck(mc);
 		handleHeroMedallionHUDCheck(mc);
-		handlePyromancerStaffHUDCheck(mc);
 		handleRendingGaleHUDCheck(mc);
 
 		handleMobCharmDisplay(mc);
@@ -217,6 +216,31 @@ public class ClientEventHandler {
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.infernalChalice, Settings.HudPositions.infernalChalice, new ItemStack(Items.LAVA_BUCKET), is -> NBTHelper.getInteger("fluidStacks", is) / 1000),
 				Settings.HudPositions.infernalChalice));
 
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.iceMagusRod, Settings.HudPositions.iceMagusRod, new ItemStack(Items.SNOWBALL), is -> NBTHelper.getInteger("snowballs", is)),
+				Settings.HudPositions.iceMagusRod));
+
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.glacialStaff, Settings.HudPositions.glacialStaff, new ItemStack(Items.SNOWBALL), is -> NBTHelper.getInteger("snowballs", is)),
+				Settings.HudPositions.glacialStaff));
+
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.enderStaff, Settings.HudPositions.enderStaff, is -> ModItems.enderStaff.getMode(is),
+				ImmutableMap.of(
+						"cast", new ChargePane(ModItems.enderStaff, new ItemStack(Items.ENDER_PEARL), is -> ModItems.enderStaff.getPearlCount(is)),
+						"node_warp", new ChargePane(ModItems.enderStaff, new ItemStack(ModBlocks.wraithNode), is -> ModItems.enderStaff.getPearlCount(is)),
+						"long_cast", new ChargePane(ModItems.enderStaff, new ItemStack(Items.ENDER_EYE), is -> ModItems.enderStaff.getPearlCount(is))
+						)),	Settings.HudPositions.enderStaff));
+
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.pyromancerStaff, Settings.HudPositions.pyromancerStaff, is -> ModItems.enderStaff.getMode(is),
+				ImmutableMap.of(
+						"blaze", new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.BLAZE_POWDER), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.BLAZE_POWDER)),
+						"charge", new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.FIRE_CHARGE), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.FIRE_CHARGE)),
+						"eruption", Box.createVertical(Box.Alignment.RIGHT, new TextPane("ERUPT") {
+							@Override
+							public int getPadding() {
+								return 0;
+							}
+						}, new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.BLAZE_POWDER), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.BLAZE_POWDER))),
+						"flint_and_steel", new ItemStackPane(new ItemStack(Items.FLINT_AND_STEEL))
+				)),	Settings.HudPositions.pyromancerStaff));
 	}
 
 	private static void handleMobCharmDisplay(Minecraft minecraft) {
@@ -377,34 +401,6 @@ public class ClientEventHandler {
 			displayItemStack = new ItemStack(Items.ENDER_EYE, enderStaffItem.getPearlCount(enderStaffStack), 0);
 		}
 		renderStandardTwoItemHUD(mc, enderStaffStack, displayItemStack, Settings.HudPositions.enderStaff.ordinal(), 0, 0);
-	}
-
-	private static void handleIceMagusRodHUDCheck(Minecraft mc) {
-		EntityPlayer player = mc.player;
-
-		ItemStack iceRodStack = getCorrectItemFromEitherHand(player, ModItems.iceMagusRod);
-
-		if(iceRodStack.isEmpty())
-			return;
-
-		ItemStack snowballStack = new ItemStack(Items.SNOWBALL, NBTHelper.getInteger("snowballs", iceRodStack), 0);
-		//still allows for differing HUD positions, like a baws.
-		int hudPosition = Settings.HudPositions.iceMagusRod.ordinal();
-		renderStandardTwoItemHUD(mc, iceRodStack, snowballStack, hudPosition, 0, NBTHelper.getInteger("snowballs", iceRodStack));
-	}
-
-	private static void handleGlacialStaffHUDCheck(Minecraft mc) {
-		EntityPlayer player = mc.player;
-
-		ItemStack glacialStaff = getCorrectItemFromEitherHand(player, ModItems.glacialStaff);
-
-		if(glacialStaff.isEmpty())
-			return;
-
-		ItemStack snowballStack = new ItemStack(Items.SNOWBALL, NBTHelper.getInteger("snowballs", glacialStaff), 0);
-		//still allows for differing HUD positions, like a baws.
-		int hudPosition = Settings.HudPositions.glacialStaff.ordinal();
-		renderStandardTwoItemHUD(mc, glacialStaff, snowballStack, hudPosition, 0, NBTHelper.getInteger("snowballs", glacialStaff));
 	}
 
 	private static void handleVoidTearHUDCheck(Minecraft mc) {

@@ -20,7 +20,6 @@ public class HUDRenderrer {
 
 	private static void renderComponent(ScaledResolution sr, int x, int y, Component component) {
 		GlStateManager.pushMatrix();
-		GlStateManager.pushAttrib();
 		GlStateManager.clear(256);
 		GlStateManager.matrixMode(GL11.GL_PROJECTION);
 		GlStateManager.loadIdentity();
@@ -29,12 +28,13 @@ public class HUDRenderrer {
 		GlStateManager.loadIdentity();
 		GlStateManager.translate(0.0F, 0.0F, -2000.0F);
 
-		GlStateManager.disableLighting();
+		GlStateManager.enableRescaleNormal();
+		GlStateManager.enableColorMaterial();
+		GlStateManager.enableLighting();
 
 		component.render(x, y);
 
-		GlStateManager.enableLighting();
-		GlStateManager.popAttrib();
+		GlStateManager.disableLighting();
 		GlStateManager.popMatrix();
 	}
 

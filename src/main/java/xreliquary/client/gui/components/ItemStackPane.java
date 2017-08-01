@@ -1,6 +1,7 @@
 package xreliquary.client.gui.components;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 
 public class ItemStackPane extends Component {
@@ -28,6 +29,7 @@ public class ItemStackPane extends Component {
 
 	@Override
 	public void renderInternal(int x, int y) {
+		RenderHelper.enableGUIStandardItemLighting();
 		if (renderEffect) {
 			Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(itemStack, x, y);
 		} else {

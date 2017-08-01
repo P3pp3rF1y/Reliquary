@@ -2,7 +2,7 @@ package xreliquary.client.gui.components;
 
 public abstract class Component {
 	public int getPadding() {
-		return 2;
+		return 1;
 	}
 
 	public int getHeight() {

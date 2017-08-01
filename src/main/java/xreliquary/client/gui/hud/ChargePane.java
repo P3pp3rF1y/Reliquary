@@ -35,6 +35,11 @@ public class ChargePane extends Component {
 	}
 
 	@Override
+	public int getPadding() {
+		return chargeablePane.getPadding();
+	}
+
+	@Override
 	public void renderInternal(int x, int y) {
 		EntityPlayer player = Minecraft.getMinecraft().player;
 		ItemStack tomeStack = InventoryHelper.getCorrectItemFromEitherHand(player, mainItem);

@@ -398,6 +398,20 @@ public class ItemPyromancerStaff extends ItemToggleable {
 		return false;
 	}
 
+	public int getInternalStorageItemCount(ItemStack staff, Item item) {
+		NBTTagCompound tagCompound = NBTHelper.getTag(staff);
+		NBTTagList tagList = tagCompound.getTagList("Items", 10);
+
+		for(int i = 0; i < tagList.tagCount(); ++i) {
+			NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
+			String itemName = tagItemData.getString("Name");
+			if(itemName.equals(RegistryHelper.getItemRegistryName(item))) {
+				return tagItemData.getInteger("Quantity");
+			}
+		}
+		return 0;
+	}
+
 	private int getFireChargeWorth() {
 		return Settings.PyromancerStaff.fireChargeWorth;
 	}
