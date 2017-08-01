@@ -367,4 +367,28 @@ public class InventoryHelper {
 
 		return false;
 	}
+
+	@Nonnull
+	public static ItemStack getCorrectItemFromEitherHand(EntityPlayer player, Item item) {
+		if(player == null)
+			return ItemStack.EMPTY;
+
+		EnumHand itemInHand = getHandHoldingCorrectItem(player, item);
+
+		if(itemInHand == null)
+			return ItemStack.EMPTY;
+
+		return player.getHeldItem(itemInHand);
+	}
+
+	private static EnumHand getHandHoldingCorrectItem(EntityPlayer player, Item item) {
+		if(player.getHeldItemMainhand().getItem() == item) {
+			return EnumHand.MAIN_HAND;
+		}
+
+		if(player.getHeldItemOffhand().getItem() == item) {
+			return EnumHand.OFF_HAND;
+		}
+		return null;
+	}
 }

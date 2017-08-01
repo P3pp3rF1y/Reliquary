@@ -33,13 +33,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
-import xreliquary.client.gui.hud.ChargeableItemPane;
+import xreliquary.client.gui.hud.ChargePane;
+import xreliquary.client.gui.hud.ChargeableItemInfoPane;
 import xreliquary.client.gui.hud.HUDPosition;
 import xreliquary.client.gui.hud.HUDRenderrer;
 import xreliquary.client.gui.components.Box;
 import xreliquary.client.gui.components.Component;
-import xreliquary.client.gui.components.ItemStackCountPane;
-import xreliquary.client.gui.components.ItemStackPane;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemEnderStaff;
@@ -206,20 +205,16 @@ public class ClientEventHandler {
 	}
 
 	private static void initHUDComponents() {
-		hudComponents.add(new Tuple<>(new ChargeableItemPane(ModItems.alkahestryTome, new ItemStack(Items.REDSTONE),
-				Settings.HudPositions.alkahestryTome, is -> NBTHelper.getInteger("charge", is)),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.alkahestryTome, Settings.HudPositions.alkahestryTome, new ItemStack(Items.REDSTONE), is -> NBTHelper.getInteger("charge", is)),
 				Settings.HudPositions.alkahestryTome));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemPane(ModItems.destructionCatalyst, new ItemStack(Items.GUNPOWDER),
-				Settings.HudPositions.destructionCatalyst, is -> NBTHelper.getInteger("gunpowder", is)),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.destructionCatalyst, Settings.HudPositions.destructionCatalyst, new ItemStack(Items.GUNPOWDER), is -> NBTHelper.getInteger("gunpowder", is)),
 				Settings.HudPositions.destructionCatalyst));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemPane(ModItems.midasTouchstone, new ItemStack(Items.GLOWSTONE_DUST),
-				Settings.HudPositions.midasTouchstone, is -> NBTHelper.getInteger("glowstone", is)),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.midasTouchstone, Settings.HudPositions.midasTouchstone, new ItemStack(Items.GLOWSTONE_DUST), is -> NBTHelper.getInteger("glowstone", is)),
 				Settings.HudPositions.midasTouchstone));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemPane(ModItems.infernalChalice, new ItemStack(Items.LAVA_BUCKET),
-				Settings.HudPositions.infernalChalice, is -> NBTHelper.getInteger("fluidStacks", is) / 1000),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.infernalChalice, Settings.HudPositions.infernalChalice, new ItemStack(Items.LAVA_BUCKET), is -> NBTHelper.getInteger("fluidStacks", is) / 1000),
 				Settings.HudPositions.infernalChalice));
 
 	}
@@ -356,8 +351,6 @@ public class ClientEventHandler {
 
 		return player.getHeldItem(itemInHand);
 	}
-
-	//TODO ConfigChangedEvent to clear the cached HUD pieces
 
 	private static Box.Alignment getMainStackAlignment(HUDPosition position) {
 		Box.Alignment alignment = position == HUDPosition.TOP ? Box.Alignment.MIDDLE : Box.Alignment.LEFT;
