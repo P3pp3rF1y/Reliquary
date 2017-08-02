@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import xreliquary.reference.Colors;
 
 public class ItemStackCountPane extends Component {
+	private final ItemStackPane itemStackPane;
 	private TextPane countPane;
 	private Box box;
 
@@ -16,11 +17,16 @@ public class ItemStackCountPane extends Component {
 	}
 	public ItemStackCountPane(Box.Layout layout, ItemStack itemStack, int count, int textColor) {
 		countPane = new TextPane(String.valueOf(count), textColor);
-		box = new Box(layout, layout == Box.Layout.VERTICAL ? Box.Alignment.MIDDLE : Box.Alignment.MIDDLE, new ItemStackPane(itemStack), countPane);
+		itemStackPane = new ItemStackPane(itemStack);
+		box = new Box(layout, layout == Box.Layout.VERTICAL ? Box.Alignment.MIDDLE : Box.Alignment.MIDDLE, itemStackPane, countPane);
 	}
 
 	public void setCount(int count) {
 		countPane.setText(String.valueOf(count));
+	}
+
+	public void setItemStack(ItemStack itemStack) {
+		itemStackPane.setItemStack(itemStack);
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
@@ -38,6 +39,7 @@ import xreliquary.client.gui.components.ItemStackPane;
 import xreliquary.client.gui.components.TextPane;
 import xreliquary.client.gui.hud.ChargePane;
 import xreliquary.client.gui.hud.ChargeableItemInfoPane;
+import xreliquary.client.gui.hud.DynamicChargePane;
 import xreliquary.client.gui.hud.HUDPosition;
 import xreliquary.client.gui.hud.HUDRenderrer;
 import xreliquary.init.ModBlocks;
@@ -45,13 +47,9 @@ import xreliquary.init.ModItems;
 import xreliquary.items.ItemHarvestRod;
 import xreliquary.items.ItemMobCharm;
 import xreliquary.items.ItemRendingGale;
-import xreliquary.items.ItemSojournerStaff;
-import xreliquary.items.ItemVoidTear;
 import xreliquary.reference.Colors;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
-import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.XpHelper;
@@ -179,9 +177,6 @@ public class ClientEventHandler {
 
 		handleTickIncrement(event);
 		handleHandgunHUDCheck(mc);
-		handleSojournerHUDCheck(mc);
-		handleVoidTearHUDCheck(mc);
-		handleHarvestRodHUDCheck(mc);
 		handleHeroMedallionHUDCheck(mc);
 
 		handleMobCharmDisplay(mc);
@@ -240,6 +235,24 @@ public class ClientEventHandler {
 						"bolt", Box.createVertical(Box.Alignment.RIGHT, new TextPane("BOLT") , rendingGaleFeatherPane),
 						"flight", Box.createVertical(Box.Alignment.RIGHT, new TextPane("FLIGHT") , rendingGaleFeatherPane)
 				)),	Settings.HudPositions.rendingGale));
+
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.filledVoidTear, Settings.HudPositions.voidTear, is -> ChargeableItemInfoPane.DYNAMIC_PANE,
+				ImmutableMap.of(
+						ChargeableItemInfoPane.DYNAMIC_PANE, new DynamicChargePane(ModItems.filledVoidTear,
+								is -> ModItems.filledVoidTear.getContainerItem(is), is -> ModItems.filledVoidTear.getContainerItem(is).getCount())
+				)),	Settings.HudPositions.voidTear));
+
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.harvestRod, Settings.HudPositions.harvestRod, is -> ModItems.harvestRod.getMode(is),
+				ImmutableMap.of(
+						ItemHarvestRod.BONE_MEAL_MODE, new ChargePane(ModItems.harvestRod, new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()), is -> ModItems.harvestRod.getBoneMealCount(is)),
+						ItemHarvestRod.HOE_MODE, new ItemStackPane(new ItemStack(Items.WOODEN_HOE)),
+						ChargeableItemInfoPane.DYNAMIC_PANE, new DynamicChargePane(ModItems.harvestRod, is -> ModItems.harvestRod.getCurrentPlantable(is), is -> ModItems.harvestRod.getPlantableQuantity(is, ModItems.harvestRod.getCurrentPlantableSlot(is)))
+				)),	Settings.HudPositions.harvestRod));
+
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.sojournerStaff, Settings.HudPositions.sojournerStaff, is -> ChargeableItemInfoPane.DYNAMIC_PANE,
+				ImmutableMap.of(
+						ChargeableItemInfoPane.DYNAMIC_PANE, new DynamicChargePane(ModItems.sojournerStaff, is -> new ItemStack(RegistryHelper.getItemFromName(ModItems.sojournerStaff.getTorchPlacementMode(is))), is -> ModItems.sojournerStaff.getTorchCount(is))
+				)),	Settings.HudPositions.sojournerStaff));
 	}
 
 	private static void handleMobCharmDisplay(Minecraft minecraft) {
@@ -375,49 +388,6 @@ public class ClientEventHandler {
 		return player.getHeldItem(itemInHand);
 	}
 
-	private static void handleVoidTearHUDCheck(Minecraft mc) {
-		EntityPlayer player = mc.player;
-
-		ItemStack voidTearStack = getCorrectItemFromEitherHand(player, ModItems.filledVoidTear);
-
-		if(voidTearStack.isEmpty())
-			return;
-
-		ItemVoidTear voidTearItem = (ItemVoidTear) voidTearStack.getItem();
-		ItemStack containedItemStack = voidTearItem.getContainerItem(voidTearStack);
-		String mode = LanguageHelper.getLocalization("item." + Names.Items.VOID_TEAR + ".mode." + ModItems.filledVoidTear.getMode(voidTearStack).toString().toLowerCase());
-		renderStandardTwoItemHUD(mc, voidTearStack, containedItemStack, Settings.HudPositions.voidTear.ordinal(), 0, 0, 0, mode);
-	}
-
-	private static void handleHarvestRodHUDCheck(Minecraft mc) {
-		EntityPlayer player = mc.player;
-
-		ItemStack harvestRodStack = getCorrectItemFromEitherHand(player, ModItems.harvestRod);
-
-		if(harvestRodStack.isEmpty())
-			return;
-
-		ItemStack secondaryStack = ItemStack.EMPTY;
-		ItemHarvestRod harvestRod = ModItems.harvestRod;
-		if(harvestRod.getMode(harvestRodStack).equals(ItemHarvestRod.PLANTABLE_MODE)) {
-			ItemStack currenPlantable = harvestRod.getCurrentPlantable(harvestRodStack);
-
-			if(!currenPlantable.isEmpty()) {
-				secondaryStack = currenPlantable.copy();
-
-				secondaryStack.setCount(harvestRod.getPlantableQuantity(harvestRodStack, harvestRod.getCurrentPlantableSlot(harvestRodStack)));
-			}
-		} else if(harvestRod.getMode(harvestRodStack).equals(ItemHarvestRod.BONE_MEAL_MODE)) {
-			int boneMealCount = harvestRod.getBoneMealCount(harvestRodStack);
-
-			secondaryStack = new ItemStack(Items.DYE, boneMealCount, Reference.WHITE_DYE_META);
-		} else {
-			secondaryStack = new ItemStack(Items.WOODEN_HOE);
-		}
-
-		renderStandardTwoItemHUD(mc, harvestRodStack, secondaryStack, Settings.HudPositions.harvestRod.ordinal(), 0, 0);
-	}
-
 	private static void handleHeroMedallionHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.player;
 
@@ -504,31 +474,6 @@ public class ClientEventHandler {
 		buffer.pos(x + width, y - height, 0).tex(maxU, minV).endVertex();
 		buffer.pos(x, y - height, 0).tex(minU, minV).endVertex();
 		tessellator.draw();
-	}
-
-	private static void handleRendingGaleHUDCheck(Minecraft mc) {
-		EntityPlayer player = mc.player;
-
-		ItemStack rendingGaleStack = getCorrectItemFromEitherHand(player, ModItems.rendingGale);
-
-		if(rendingGaleStack.isEmpty())
-			return;
-
-		int currentCost = 0;
-
-		if(!player.capabilities.isCreativeMode && player.isHandActive()) {
-			int ticksInUse = ModItems.rendingGale.getMaxItemUseDuration(rendingGaleStack) - player.getItemInUseCount();
-
-			if(ModItems.rendingGale.isFlightMode(rendingGaleStack)) {
-				currentCost = ItemRendingGale.getChargeCost() * ticksInUse;
-			} else if(ModItems.rendingGale.isBoltMode(rendingGaleStack)) {
-				currentCost = ItemRendingGale.getBoltChargeCost() * (ticksInUse / 8);
-			}
-		}
-
-		ItemStack featherStack = new ItemStack(Items.FEATHER, ModItems.rendingGale.getFeatherCount(rendingGaleStack) - currentCost, 0);
-
-		renderStandardTwoItemHUD(mc, rendingGaleStack, featherStack, Settings.HudPositions.rendingGale.ordinal(), 0, Math.max(featherStack.getCount() / 100, 0));
 	}
 
 	private static void handleHandgunHUDCheck(Minecraft mc) {
@@ -648,34 +593,6 @@ public class ClientEventHandler {
 				renderItemIntoGUI(bulletStack, (int) (adjustedHudOverlayX - ((xOffset * 4) * overlayScale)), hudOverlayY);
 			}
 		}
-	}
-
-	private static void handleSojournerHUDCheck(Minecraft mc) {
-		// handles rendering the hud for the sojourner's staff so we don't have to use chat messages, because annoying.
-		EntityPlayer player = mc.player;
-
-		ItemStack sojournerStack = getCorrectItemFromEitherHand(player, ModItems.sojournerStaff);
-
-		if(sojournerStack.isEmpty())
-			return;
-
-		ItemSojournerStaff sojournerItem = (ItemSojournerStaff) sojournerStack.getItem();
-		String placementItemName = sojournerItem.getTorchPlacementMode(sojournerStack);
-		//for use with font renderer, hopefully.
-		int amountOfItem = sojournerItem.getTorchCount(sojournerStack);
-		Item placementItem = null;
-		if(placementItemName != null)
-			placementItem = RegistryHelper.getItemFromName(placementItemName);
-
-		ItemStack placementStack = ItemStack.EMPTY;
-		if(placementItem != null) {
-			placementStack = new ItemStack(placementItem, amountOfItem, 0);
-		}
-		renderStandardTwoItemHUD(mc, sojournerStack, placementStack, Settings.HudPositions.sojournerStaff.ordinal(), 0, 0);
-	}
-
-	private static void renderStandardTwoItemHUD(Minecraft minecraft, @Nonnull ItemStack hudStack, @Nonnull ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride) {
-		renderStandardTwoItemHUD(minecraft, hudStack, secondaryStack, hudPosition, colorOverride, stackSizeOverride, 0);
 	}
 
 	private static void renderStandardTwoItemHUD(Minecraft minecraft, @Nonnull ItemStack hudStack, @Nonnull ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride, int xOffset) {

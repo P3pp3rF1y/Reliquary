@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class ChargeableItemInfoPane extends Component {
+	public static final String DYNAMIC_PANE = "dynamic";
 	private Item mainItem;
 	private Box mainPanel;
 	private Map<String, Component> modePanes = Maps.newHashMap();
@@ -27,10 +28,12 @@ public class ChargeableItemInfoPane extends Component {
 		String mode = modePanes.keySet().iterator().next();
 		updateCurrentPane(modePanes.get(mode), mode);
 	}
+
 	public ChargeableItemInfoPane(Item mainItem, HUDPosition hudPosition, ItemStack chargeItem, Function<ItemStack, Integer> getCount) {
 		this(mainItem, is -> "single", hudPosition);
 		updateCurrentPane(new ChargePane(mainItem, chargeItem, getCount), "single");
 	}
+
 	public ChargeableItemInfoPane(Item mainItem, HUDPosition hudPosition, ItemStack chargeItem, Function<ItemStack, Integer> getCount, int textColor) {
 		this(mainItem, is -> "single", hudPosition);
 		updateCurrentPane(new ChargePane(mainItem, chargeItem, getCount, textColor), "single");
@@ -74,7 +77,11 @@ public class ChargeableItemInfoPane extends Component {
 
 		String mode = getMode.apply(mainStack);
 		if (!lastMode.equals(mode)) {
-			updateCurrentPane(modePanes.get(mode), mode);
+			if (modePanes.keySet().contains(mode)) {
+				updateCurrentPane(modePanes.get(mode), mode);
+			} else if (modePanes.keySet().contains(DYNAMIC_PANE)) {
+				updateCurrentPane(modePanes.get(DYNAMIC_PANE), DYNAMIC_PANE);
+			}
 		}
 
 		mainPanel.render(x, y);

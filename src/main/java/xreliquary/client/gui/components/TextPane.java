@@ -34,8 +34,6 @@ public class TextPane extends Component {
 
 	@Override
 	public void renderInternal(int x, int y) {
-
-
 		Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(text, x, y, textColor);
 	}
 }

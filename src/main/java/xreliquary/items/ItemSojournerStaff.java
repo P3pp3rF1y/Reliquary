@@ -196,7 +196,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 				}
 			}
 		}
-		return torchToPlace;
+		return torchToPlace.isEmpty() && Settings.SojournerStaff.torches.size() > 0 ? RegistryHelper.getItemRegistryName(Settings.SojournerStaff.torches.get(0).getItem()) : torchToPlace;
 	}
 
 	public int getTorchCount(ItemStack ist) {

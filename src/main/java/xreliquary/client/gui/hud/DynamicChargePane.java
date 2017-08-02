@@ -6,26 +6,24 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.client.gui.components.Component;
 import xreliquary.client.gui.components.ItemStackCountPane;
-import xreliquary.reference.Colors;
 import xreliquary.util.InventoryHelper;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Function;
 
 @ParametersAreNonnullByDefault
-public class ChargePane extends Component {
+public class DynamicChargePane extends Component {
 	private Item mainItem;
 	private ItemStackCountPane chargeablePane;
+	private Function<ItemStack, ItemStack> getChargeItem;
 	private Function<ItemStack, Integer> getCount;
 
-	public ChargePane(Item mainItem, ItemStack chargeItem, Function<ItemStack, Integer> getCount) {
-		this(mainItem, chargeItem, getCount, Colors.get(Colors.PURE));
-	}
-	public ChargePane(Item mainItem, ItemStack chargeItem, Function<ItemStack, Integer> getCount, int textColor) {
+	public DynamicChargePane(Item mainItem, Function<ItemStack, ItemStack> getChargeItem, Function<ItemStack, Integer> getCount) {
 		this.mainItem = mainItem;
+		this.getChargeItem = getChargeItem;
 		this.getCount = getCount;
 
-		chargeablePane = new ItemStackCountPane(chargeItem, 0, textColor);
+		chargeablePane = new ItemStackCountPane(ItemStack.EMPTY, 0);
 	}
 
 	@Override
@@ -51,6 +49,7 @@ public class ChargePane extends Component {
 		if(itemStack.isEmpty())
 			return;
 
+		chargeablePane.setItemStack(getChargeItem.apply(itemStack));
 		chargeablePane.setCount(getCount.apply(itemStack));
 		chargeablePane.render(x, y);
 	}

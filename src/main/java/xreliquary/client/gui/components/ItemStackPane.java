@@ -17,6 +17,10 @@ public class ItemStackPane extends Component {
 		this.renderEffect = renderEffect;
 	}
 
+	public void setItemStack(ItemStack itemStack) {
+		this.itemStack = itemStack;
+	}
+
 	@Override
 	public int getHeightInternal() {
 		return 16;
