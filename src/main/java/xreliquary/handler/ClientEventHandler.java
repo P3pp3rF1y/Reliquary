@@ -19,8 +19,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
@@ -44,10 +42,8 @@ import xreliquary.client.gui.hud.HUDPosition;
 import xreliquary.client.gui.hud.HUDRenderrer;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
-import xreliquary.items.ItemEnderStaff;
 import xreliquary.items.ItemHarvestRod;
 import xreliquary.items.ItemMobCharm;
-import xreliquary.items.ItemPyromancerStaff;
 import xreliquary.items.ItemRendingGale;
 import xreliquary.items.ItemSojournerStaff;
 import xreliquary.items.ItemVoidTear;
@@ -187,7 +183,6 @@ public class ClientEventHandler {
 		handleVoidTearHUDCheck(mc);
 		handleHarvestRodHUDCheck(mc);
 		handleHeroMedallionHUDCheck(mc);
-		handleRendingGaleHUDCheck(mc);
 
 		handleMobCharmDisplay(mc);
 	}
@@ -236,6 +231,15 @@ public class ClientEventHandler {
 						"eruption", Box.createVertical(Box.Alignment.RIGHT, new TextPane("ERUPT") , new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.BLAZE_POWDER), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.BLAZE_POWDER))),
 						"flint_and_steel", new ItemStackPane(new ItemStack(Items.FLINT_AND_STEEL))
 				)),	Settings.HudPositions.pyromancerStaff));
+
+		ChargePane rendingGaleFeatherPane = new ChargePane(ModItems.rendingGale, new ItemStack(Items.FEATHER), is -> ModItems.rendingGale.getFeatherCount(is) / 100);
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.rendingGale, Settings.HudPositions.rendingGale, is -> ModItems.rendingGale.getMode(is),
+				ImmutableMap.of(
+						"push", Box.createVertical(Box.Alignment.RIGHT, new TextPane("PUSH") , rendingGaleFeatherPane),
+						"pull", Box.createVertical(Box.Alignment.RIGHT, new TextPane("PULL") , rendingGaleFeatherPane),
+						"bolt", Box.createVertical(Box.Alignment.RIGHT, new TextPane("BOLT") , rendingGaleFeatherPane),
+						"flight", Box.createVertical(Box.Alignment.RIGHT, new TextPane("FLIGHT") , rendingGaleFeatherPane)
+				)),	Settings.HudPositions.rendingGale));
 	}
 
 	private static void handleMobCharmDisplay(Minecraft minecraft) {
@@ -371,33 +375,6 @@ public class ClientEventHandler {
 		return player.getHeldItem(itemInHand);
 	}
 
-	private static Box.Alignment getMainStackAlignment(HUDPosition position) {
-		Box.Alignment alignment = position == HUDPosition.TOP ? Box.Alignment.MIDDLE : Box.Alignment.LEFT;
-		if (position.isRightSide()) {
-			alignment = Box.Alignment.RIGHT;
-		}
-		return alignment;
-	}
-
-	private static void handleEnderStaffHUDCheck(Minecraft mc) {
-		EntityPlayer player = mc.player;
-
-		ItemStack enderStaffStack = getCorrectItemFromEitherHand(player, ModItems.enderStaff);
-
-		if(enderStaffStack.isEmpty())
-			return;
-
-		ItemEnderStaff enderStaffItem = ModItems.enderStaff;
-		String staffMode = enderStaffItem.getMode(enderStaffStack);
-		ItemStack displayItemStack = new ItemStack(Items.ENDER_PEARL, enderStaffItem.getPearlCount(enderStaffStack), 0);
-		if(staffMode.equals("node_warp")) {
-			displayItemStack = new ItemStack(ModBlocks.wraithNode, enderStaffItem.getPearlCount(enderStaffStack), 0);
-		} else if(staffMode.equals("long_cast")) {
-			displayItemStack = new ItemStack(Items.ENDER_EYE, enderStaffItem.getPearlCount(enderStaffStack), 0);
-		}
-		renderStandardTwoItemHUD(mc, enderStaffStack, displayItemStack, Settings.HudPositions.enderStaff.ordinal(), 0, 0);
-	}
-
 	private static void handleVoidTearHUDCheck(Minecraft mc) {
 		EntityPlayer player = mc.player;
 
@@ -410,18 +387,6 @@ public class ClientEventHandler {
 		ItemStack containedItemStack = voidTearItem.getContainerItem(voidTearStack);
 		String mode = LanguageHelper.getLocalization("item." + Names.Items.VOID_TEAR + ".mode." + ModItems.filledVoidTear.getMode(voidTearStack).toString().toLowerCase());
 		renderStandardTwoItemHUD(mc, voidTearStack, containedItemStack, Settings.HudPositions.voidTear.ordinal(), 0, 0, 0, mode);
-	}
-
-	private static void handleMidasTouchstoneHUDCheck(Minecraft mc) {
-		EntityPlayer player = mc.player;
-
-		ItemStack midasTouchstoneStack = getCorrectItemFromEitherHand(player, ModItems.midasTouchstone);
-
-		if(midasTouchstoneStack.isEmpty())
-			return;
-
-		ItemStack glowstoneStack = new ItemStack(Items.GLOWSTONE_DUST, NBTHelper.getInteger("glowstone", midasTouchstoneStack), 0);
-		renderStandardTwoItemHUD(mc, midasTouchstoneStack, glowstoneStack, Settings.HudPositions.midasTouchstone.ordinal(), 0, 0);
 	}
 
 	private static void handleHarvestRodHUDCheck(Minecraft mc) {
@@ -451,18 +416,6 @@ public class ClientEventHandler {
 		}
 
 		renderStandardTwoItemHUD(mc, harvestRodStack, secondaryStack, Settings.HudPositions.harvestRod.ordinal(), 0, 0);
-	}
-
-	private static void handleInfernalChaliceHUDCheck(Minecraft mc) {
-		EntityPlayer player = mc.player;
-
-		ItemStack infernalChaliceStack = getCorrectItemFromEitherHand(player, ModItems.infernalChalice);
-
-		if(infernalChaliceStack.isEmpty())
-			return;
-
-		ItemStack lavaStack = new ItemStack(Items.LAVA_BUCKET, NBTHelper.getInteger("fluidStacks", infernalChaliceStack), 0);
-		renderStandardTwoItemHUD(mc, infernalChaliceStack, lavaStack, Settings.HudPositions.infernalChalice.ordinal(), Colors.get(Colors.BLOOD_RED_COLOR), lavaStack.getCount() / 1000);
 	}
 
 	private static void handleHeroMedallionHUDCheck(Minecraft mc) {
@@ -551,111 +504,6 @@ public class ClientEventHandler {
 		buffer.pos(x + width, y - height, 0).tex(maxU, minV).endVertex();
 		buffer.pos(x, y - height, 0).tex(minU, minV).endVertex();
 		tessellator.draw();
-	}
-
-	private static void handlePyromancerStaffHUDCheck(Minecraft mc) {
-		EntityPlayer player = mc.player;
-
-		ItemStack pyromancerStaffStack = getCorrectItemFromEitherHand(player, ModItems.pyromancerStaff);
-
-		if(pyromancerStaffStack.isEmpty())
-			return;
-
-		int charge = 0;
-		int blaze = 0;
-		NBTTagCompound tagCompound = NBTHelper.getTag(pyromancerStaffStack);
-		if(tagCompound != null) {
-			NBTTagList tagList = tagCompound.getTagList("Items", 10);
-			for(int i = 0; i < tagList.tagCount(); ++i) {
-				NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
-				String itemName = tagItemData.getString("Name");
-				Item containedItem = RegistryHelper.getItemFromName(itemName);
-				int quantity = tagItemData.getInteger("Quantity");
-
-				if(containedItem == Items.BLAZE_POWDER) {
-					blaze = quantity;
-				} else if(containedItem == Items.FIRE_CHARGE) {
-					charge = quantity;
-				}
-			}
-		}
-
-		String staffMode = ((ItemPyromancerStaff) pyromancerStaffStack.getItem()).getMode(pyromancerStaffStack);
-
-		ItemStack fireChargeStack = new ItemStack(Items.FIRE_CHARGE, charge, 0);
-		ItemStack blazePowderStack = new ItemStack(Items.BLAZE_POWDER, blaze, 0);
-		renderPyromancerStaffHUD(mc, pyromancerStaffStack, fireChargeStack, blazePowderStack, staffMode);
-	}
-
-	private static void renderPyromancerStaffHUD(Minecraft minecraft, @Nonnull ItemStack hudStack, @Nonnull ItemStack secondaryStack, @Nonnull ItemStack tertiaryStack, String staffMode) {
-		int color = Colors.get(Colors.PURE);
-
-		float overlayScale = 2.5F;
-
-		GlStateManager.pushMatrix();
-		ScaledResolution sr = new ScaledResolution(minecraft);
-		GlStateManager.clear(256);
-		GlStateManager.matrixMode(5889);
-		GlStateManager.loadIdentity();
-		GlStateManager.ortho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
-		GlStateManager.matrixMode(5888);
-		GlStateManager.loadIdentity();
-		GlStateManager.translate(0.0F, 0.0F, -2000.0F);
-
-		GlStateManager.pushMatrix();
-		RenderHelper.enableGUIStandardItemLighting();
-		GlStateManager.disableLighting();
-		GlStateManager.enableRescaleNormal();
-		GlStateManager.enableColorMaterial();
-		GlStateManager.enableLighting();
-
-		int hudOverlayX = 8;
-		int hudOverlayY = 8;
-
-		boolean leftSide = Settings.HudPositions.pyromancerStaff.ordinal() == 0 || Settings.HudPositions.pyromancerStaff.ordinal() == 2;
-		switch(Settings.HudPositions.pyromancerStaff.ordinal()) {
-			case 1: {
-				hudOverlayX = sr.getScaledWidth() - 8;
-				break;
-			}
-			case 2: {
-				hudOverlayY = (int) (sr.getScaledHeight() - 18 * overlayScale);
-				break;
-			}
-			case 3: {
-				hudOverlayX = sr.getScaledWidth() - 8;
-				hudOverlayY = (int) (sr.getScaledHeight() - 18 * overlayScale);
-				break;
-			}
-			default: {
-				break;
-			}
-		}
-
-		renderItemIntoGUI(hudStack, hudOverlayX - (leftSide ? 0 : 15), hudOverlayY);
-
-		String friendlyStaffMode = "";
-		if(staffMode.equals("eruption"))
-			friendlyStaffMode = "ERUPT";
-
-		//noinspection ConstantConditions
-		if (minecraft.getRenderManager().getFontRenderer() != null) {
-			if(!secondaryStack.isEmpty() && (staffMode.equals("charge"))) {
-				renderItem().renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(secondaryStack.getCount()).length() * 6))), hudOverlayY + 24);
-				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(secondaryStack.getCount()), hudOverlayX + (leftSide ? 16 : -(Integer.toString(secondaryStack.getCount()).length() * 6)), hudOverlayY + 30, color);
-			} else if(!tertiaryStack.isEmpty() && (staffMode.equals("eruption") || staffMode.equals("blaze"))) {
-				renderItem().renderItemAndEffectIntoGUI(tertiaryStack, hudOverlayX + (leftSide ? 0 : -(16 + (Integer.toString(tertiaryStack.getCount()).length() * 6))), hudOverlayY + 24);
-				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(Integer.toString(tertiaryStack.getCount()), hudOverlayX + (leftSide ? 16 : -(Integer.toString(tertiaryStack.getCount()).length() * 6)), hudOverlayY + 30, color);
-				if(staffMode.equals("eruption"))
-					minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(friendlyStaffMode, hudOverlayX - (leftSide ? 0 : (friendlyStaffMode.length() * 6)), hudOverlayY + 18, color);
-			} else if(staffMode.equals("flint_and_steel")) {
-				renderItem().renderItemAndEffectIntoGUI(new ItemStack(Items.FLINT_AND_STEEL, 1, 0), hudOverlayX - (leftSide ? 0 : 15), hudOverlayY + 24);
-			}
-		}
-
-		GlStateManager.disableLighting();
-		GlStateManager.popMatrix();
-		GlStateManager.popMatrix();
 	}
 
 	private static void handleRendingGaleHUDCheck(Minecraft mc) {

@@ -63,31 +63,9 @@ public class Box extends Component {
 	}
 
 	@Override
-	public boolean hasChanged() {
-		for(Component component : components) {
-			if (component.hasChanged())
-				return true;
-		}
-		return false;
-	}
-
-	@Override
-	public void setChanged(boolean changed) {
-		for(Component component : components) {
-			component.setChanged(changed);
-		}
-	}
-
-	@Override
-	protected void refresh() {
-		for(Component component : components) {
-			component.refresh();
-		}
-		updateDimensions();
-	}
-
-	@Override
 	public void renderInternal(int x, int y) {
+		updateDimensions();
+
 		for(Component component : components) {
 			int componentX = x;
 			int componentY = y;

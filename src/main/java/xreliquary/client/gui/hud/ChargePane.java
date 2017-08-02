@@ -44,11 +44,6 @@ public class ChargePane extends Component {
 	}
 
 	@Override
-	public boolean hasChanged() {
-		return chargeablePane.hasChanged();
-	}
-
-	@Override
 	public void renderInternal(int x, int y) {
 		EntityPlayer player = Minecraft.getMinecraft().player;
 		ItemStack tomeStack = InventoryHelper.getCorrectItemFromEitherHand(player, mainItem);
@@ -58,6 +53,5 @@ public class ChargePane extends Component {
 
 		chargeablePane.setCount(getCount.apply(tomeStack));
 		chargeablePane.render(x, y);
-		chargeablePane.setChanged(true);
 	}
 }

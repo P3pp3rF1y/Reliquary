@@ -7,7 +7,6 @@ public class TextPane extends Component {
 	private String text;
 	private int width;
 	private final int textColor;
-	private boolean changed = false;
 
 	public TextPane(String text) {
 		this(text, Colors.get(Colors.PURE));
@@ -20,23 +19,7 @@ public class TextPane extends Component {
 
 	public void setText(String text) {
 		this.text = text;
-		changed = true;
-	}
-
-	@Override
-	protected void refresh() {
-		this.width = text.length() * 6;
-		changed = false;
-	}
-
-	@Override
-	public boolean hasChanged() {
-		return changed;
-	}
-
-	@Override
-	public void setChanged(boolean changed) {
-		this.changed = changed;
+		width = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
 	}
 
 	@Override
@@ -51,6 +34,8 @@ public class TextPane extends Component {
 
 	@Override
 	public void renderInternal(int x, int y) {
+
+
 		Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(text, x, y, textColor);
 	}
 }

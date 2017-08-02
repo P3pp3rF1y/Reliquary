@@ -21,21 +21,7 @@ public abstract class Component {
 
 	public void render(int x, int y) {
 		// drawTexturedModalRect(x, y, 5, 170, getWidth(), getHeight());
-		if (hasChanged()) {
-			refresh();
-			setChanged(false);
-		}
 		renderInternal(x + getPadding(), y + getPadding());
-	}
-
-	protected void refresh() {
-	}
-
-	public boolean hasChanged() {
-		return false;
-	}
-
-	public void setChanged(boolean changed) {
 	}
 
 	public boolean shouldRender() {

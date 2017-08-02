@@ -24,21 +24,6 @@ public class ItemStackCountPane extends Component {
 	}
 
 	@Override
-	public boolean hasChanged() {
-		return box.hasChanged();
-	}
-
-	@Override
-	public void setChanged(boolean changed) {
-		box.setChanged(changed);
-	}
-
-	@Override
-	protected void refresh() {
-		box.refresh();
-	}
-
-	@Override
 	public int getPadding() {
 		return box.getPadding();
 	}
