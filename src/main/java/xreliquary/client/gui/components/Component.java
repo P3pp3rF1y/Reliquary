@@ -24,11 +24,11 @@ public abstract class Component {
 	protected void refresh() {
 	}
 
-	protected boolean hasChanged() {
+	public boolean hasChanged() {
 		return false;
 	}
 
-	protected void setChanged(boolean changed) {
+	public void setChanged(boolean changed) {
 	}
 
 	public boolean shouldRender() {

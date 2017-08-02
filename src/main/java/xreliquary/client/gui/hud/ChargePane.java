@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.client.gui.components.Component;
 import xreliquary.client.gui.components.ItemStackCountPane;
+import xreliquary.reference.Colors;
 import xreliquary.util.InventoryHelper;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -18,10 +19,13 @@ public class ChargePane extends Component {
 	private Function<ItemStack, Integer> getCount;
 
 	public ChargePane(Item mainItem, ItemStack chargeItem, Function<ItemStack, Integer> getCount) {
+		this(mainItem, chargeItem, getCount, Colors.get(Colors.PURE));
+	}
+	public ChargePane(Item mainItem, ItemStack chargeItem, Function<ItemStack, Integer> getCount, int textColor) {
 		this.mainItem = mainItem;
 		this.getCount = getCount;
 
-		chargeablePane = new ItemStackCountPane(chargeItem, 0);
+		chargeablePane = new ItemStackCountPane(chargeItem, 0, textColor);
 	}
 
 	@Override
@@ -40,6 +44,11 @@ public class ChargePane extends Component {
 	}
 
 	@Override
+	public boolean hasChanged() {
+		return chargeablePane.hasChanged();
+	}
+
+	@Override
 	public void renderInternal(int x, int y) {
 		EntityPlayer player = Minecraft.getMinecraft().player;
 		ItemStack tomeStack = InventoryHelper.getCorrectItemFromEitherHand(player, mainItem);
@@ -49,5 +58,6 @@ public class ChargePane extends Component {
 
 		chargeablePane.setCount(getCount.apply(tomeStack));
 		chargeablePane.render(x, y);
+		chargeablePane.setChanged(true);
 	}
 }

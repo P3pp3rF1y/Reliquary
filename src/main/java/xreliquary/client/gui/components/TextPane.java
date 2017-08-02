@@ -26,15 +26,16 @@ public class TextPane extends Component {
 	@Override
 	protected void refresh() {
 		this.width = text.length() * 6;
+		changed = false;
 	}
 
 	@Override
-	protected boolean hasChanged() {
+	public boolean hasChanged() {
 		return changed;
 	}
 
 	@Override
-	protected void setChanged(boolean changed) {
+	public void setChanged(boolean changed) {
 		this.changed = changed;
 	}
 

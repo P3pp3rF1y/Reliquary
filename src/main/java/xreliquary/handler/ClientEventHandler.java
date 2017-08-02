@@ -213,7 +213,7 @@ public class ClientEventHandler {
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.midasTouchstone, Settings.HudPositions.midasTouchstone, new ItemStack(Items.GLOWSTONE_DUST), is -> NBTHelper.getInteger("glowstone", is)),
 				Settings.HudPositions.midasTouchstone));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.infernalChalice, Settings.HudPositions.infernalChalice, new ItemStack(Items.LAVA_BUCKET), is -> NBTHelper.getInteger("fluidStacks", is) / 1000),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.infernalChalice, Settings.HudPositions.infernalChalice, new ItemStack(Items.LAVA_BUCKET), is -> NBTHelper.getInteger("fluidStacks", is) / 1000, Colors.get(Colors.RED)),
 				Settings.HudPositions.infernalChalice));
 
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.iceMagusRod, Settings.HudPositions.iceMagusRod, new ItemStack(Items.SNOWBALL), is -> NBTHelper.getInteger("snowballs", is)),
@@ -229,7 +229,7 @@ public class ClientEventHandler {
 						"long_cast", new ChargePane(ModItems.enderStaff, new ItemStack(Items.ENDER_EYE), is -> ModItems.enderStaff.getPearlCount(is))
 						)),	Settings.HudPositions.enderStaff));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.pyromancerStaff, Settings.HudPositions.pyromancerStaff, is -> ModItems.enderStaff.getMode(is),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.pyromancerStaff, Settings.HudPositions.pyromancerStaff, is -> ModItems.pyromancerStaff.getMode(is),
 				ImmutableMap.of(
 						"blaze", new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.BLAZE_POWDER), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.BLAZE_POWDER)),
 						"charge", new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.FIRE_CHARGE), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.FIRE_CHARGE)),

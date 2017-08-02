@@ -63,7 +63,7 @@ public class Box extends Component {
 	}
 
 	@Override
-	protected boolean hasChanged() {
+	public boolean hasChanged() {
 		for(Component component : components) {
 			if (component.hasChanged())
 				return true;
@@ -72,7 +72,7 @@ public class Box extends Component {
 	}
 
 	@Override
-	protected void setChanged(boolean changed) {
+	public void setChanged(boolean changed) {
 		for(Component component : components) {
 			component.setChanged(changed);
 		}

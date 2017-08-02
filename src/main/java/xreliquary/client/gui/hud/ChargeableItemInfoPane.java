@@ -31,6 +31,10 @@ public class ChargeableItemInfoPane extends Component {
 		this(mainItem, is -> "single", hudPosition);
 		updateCurrentPane(new ChargePane(mainItem, chargeItem, getCount), "single");
 	}
+	public ChargeableItemInfoPane(Item mainItem, HUDPosition hudPosition, ItemStack chargeItem, Function<ItemStack, Integer> getCount, int textColor) {
+		this(mainItem, is -> "single", hudPosition);
+		updateCurrentPane(new ChargePane(mainItem, chargeItem, getCount, textColor), "single");
+	}
 
 	private ChargeableItemInfoPane(Item mainItem, Function<ItemStack, String> getMode, HUDPosition hudPosition) {
 		this.mainItem = mainItem;

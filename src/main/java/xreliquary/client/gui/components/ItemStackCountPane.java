@@ -24,12 +24,12 @@ public class ItemStackCountPane extends Component {
 	}
 
 	@Override
-	protected boolean hasChanged() {
+	public boolean hasChanged() {
 		return box.hasChanged();
 	}
 
 	@Override
-	protected void setChanged(boolean changed) {
+	public void setChanged(boolean changed) {
 		box.setChanged(changed);
 	}
 
