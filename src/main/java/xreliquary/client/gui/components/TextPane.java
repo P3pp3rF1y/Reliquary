@@ -41,7 +41,7 @@ public class TextPane extends Component {
 
 	@Override
 	public int getHeightInternal() {
-		return 12;
+		return 7;
 	}
 
 	@Override

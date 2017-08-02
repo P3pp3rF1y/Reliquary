@@ -34,14 +34,14 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
+import xreliquary.client.gui.components.Box;
+import xreliquary.client.gui.components.Component;
 import xreliquary.client.gui.components.ItemStackPane;
 import xreliquary.client.gui.components.TextPane;
 import xreliquary.client.gui.hud.ChargePane;
 import xreliquary.client.gui.hud.ChargeableItemInfoPane;
 import xreliquary.client.gui.hud.HUDPosition;
 import xreliquary.client.gui.hud.HUDRenderrer;
-import xreliquary.client.gui.components.Box;
-import xreliquary.client.gui.components.Component;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemEnderStaff;
@@ -233,12 +233,7 @@ public class ClientEventHandler {
 				ImmutableMap.of(
 						"blaze", new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.BLAZE_POWDER), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.BLAZE_POWDER)),
 						"charge", new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.FIRE_CHARGE), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.FIRE_CHARGE)),
-						"eruption", Box.createVertical(Box.Alignment.RIGHT, new TextPane("ERUPT") {
-							@Override
-							public int getPadding() {
-								return 0;
-							}
-						}, new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.BLAZE_POWDER), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.BLAZE_POWDER))),
+						"eruption", Box.createVertical(Box.Alignment.RIGHT, new TextPane("ERUPT") , new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.BLAZE_POWDER), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.BLAZE_POWDER))),
 						"flint_and_steel", new ItemStackPane(new ItemStack(Items.FLINT_AND_STEEL))
 				)),	Settings.HudPositions.pyromancerStaff));
 	}
