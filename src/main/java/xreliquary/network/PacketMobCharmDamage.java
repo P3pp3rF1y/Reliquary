@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xreliquary.handler.ClientEventHandler;
+import xreliquary.client.gui.hud.CharmPane;
 
 public class PacketMobCharmDamage implements IMessage, IMessageHandler<PacketMobCharmDamage, IMessage> {
 	private byte type;
@@ -47,6 +47,6 @@ public class PacketMobCharmDamage implements IMessage, IMessageHandler<PacketMob
 
 	@SideOnly(Side.CLIENT)
 	private void handleMessage(PacketMobCharmDamage message) {
-		ClientEventHandler.addCharmToDraw(message.type, message.damage, message.slot);
+		CharmPane.addCharmToDraw(message.type, message.damage, message.slot);
 	}
 }

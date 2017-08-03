@@ -3,27 +3,13 @@ package xreliquary.handler;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -32,79 +18,31 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import org.lwjgl.opengl.GL11;
 import xreliquary.client.gui.components.Box;
 import xreliquary.client.gui.components.Component;
 import xreliquary.client.gui.components.ItemStackPane;
 import xreliquary.client.gui.components.TextPane;
 import xreliquary.client.gui.hud.ChargePane;
 import xreliquary.client.gui.hud.ChargeableItemInfoPane;
+import xreliquary.client.gui.hud.CharmPane;
 import xreliquary.client.gui.hud.DynamicChargePane;
 import xreliquary.client.gui.hud.HUDPosition;
 import xreliquary.client.gui.hud.HUDRenderrer;
+import xreliquary.client.gui.hud.HandgunPane;
 import xreliquary.client.gui.hud.HeroMedallionPane;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemHarvestRod;
-import xreliquary.items.ItemMobCharm;
-import xreliquary.items.ItemRendingGale;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
-import xreliquary.util.XpHelper;
-import xreliquary.util.potions.XRPotionHelper;
 
-import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-//TODO refactor this whole thing into smaller parts
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Side.CLIENT)
 public class ClientEventHandler {
-	private static int time;
-
-	private static final HashMap<Integer, CharmToDraw> charmsToDraw = new HashMap<>();
-
-	private static synchronized HashMap<Integer, CharmToDraw> getCharmsToDraw() {
-		return charmsToDraw;
-	}
-
-	private static class CharmToDraw {
-		CharmToDraw(byte type, int damage, long time) {
-			this.type = type;
-			this.damage = damage;
-			this.time = time;
-		}
-
-		byte type;
-		int damage;
-		long time;
-	}
-
-	public static void addCharmToDraw(byte type, int damage, int slot) {
-		int maxMobCharmsToDisplay = Settings.MobCharm.maxCharmsToDisplay;
-		synchronized(charmsToDraw) {
-			if(charmsToDraw.size() == maxMobCharmsToDisplay) {
-				charmsToDraw.remove(0);
-			}
-
-			if(charmsToDraw.keySet().contains(slot)) {
-				charmsToDraw.remove(slot);
-			}
-
-			if(damage > ModItems.mobCharm.getMaxDamage(ItemStack.EMPTY))
-				charmsToDraw.remove(slot);
-
-			if(damage <= ModItems.mobCharm.getMaxDamage(ItemStack.EMPTY))
-				charmsToDraw.put(slot, new CharmToDraw(type, damage, System.currentTimeMillis()));
-
-		}
-	}
-
 	@SubscribeEvent
 	public static void onRenderLiving(RenderLivingEvent.Pre event) {
 		if(event.getEntity() instanceof EntityPlayer) {
@@ -173,13 +111,7 @@ public class ClientEventHandler {
 		if (hudComponents.isEmpty()) {
 			initHUDComponents();
 		}
-
 		renderHUDComponents();
-
-		handleTickIncrement(event);
-		handleHandgunHUDCheck(mc);
-
-		handleMobCharmDisplay(mc);
 	}
 
 	@SubscribeEvent
@@ -224,7 +156,7 @@ public class ClientEventHandler {
 						"blaze", new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.BLAZE_POWDER), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.BLAZE_POWDER)),
 						"charge", new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.FIRE_CHARGE), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.FIRE_CHARGE)),
 						"eruption", Box.createVertical(Box.Alignment.RIGHT, new TextPane("ERUPT") , new ChargePane(ModItems.pyromancerStaff, new ItemStack(Items.BLAZE_POWDER), is -> ModItems.pyromancerStaff.getInternalStorageItemCount(is, Items.BLAZE_POWDER))),
-						"flint_and_steel", new ItemStackPane(new ItemStack(Items.FLINT_AND_STEEL))
+						"flint_and_steel", new ItemStackPane(Items.FLINT_AND_STEEL)
 				)),	Settings.HudPositions.pyromancerStaff));
 
 		ChargePane rendingGaleFeatherPane = new ChargePane(ModItems.rendingGale, new ItemStack(Items.FEATHER), is -> ModItems.rendingGale.getFeatherCount(is) / 100);
@@ -245,7 +177,7 @@ public class ClientEventHandler {
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.harvestRod, Settings.HudPositions.harvestRod, is -> ModItems.harvestRod.getMode(is),
 				ImmutableMap.of(
 						ItemHarvestRod.BONE_MEAL_MODE, new ChargePane(ModItems.harvestRod, new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()), is -> ModItems.harvestRod.getBoneMealCount(is)),
-						ItemHarvestRod.HOE_MODE, new ItemStackPane(new ItemStack(Items.WOODEN_HOE)),
+						ItemHarvestRod.HOE_MODE, new ItemStackPane(Items.WOODEN_HOE),
 						ChargeableItemInfoPane.DYNAMIC_PANE, new DynamicChargePane(ModItems.harvestRod, is -> ModItems.harvestRod.getCurrentPlantable(is), is -> ModItems.harvestRod.getPlantableQuantity(is, ModItems.harvestRod.getCurrentPlantableSlot(is)))
 				)),	Settings.HudPositions.harvestRod));
 
@@ -256,443 +188,8 @@ public class ClientEventHandler {
 
 		hudComponents.add(new Tuple<>(new HeroMedallionPane(), Settings.HudPositions.heroMedallion));
 
-	}
+		hudComponents.add(new Tuple<>(Box.createVertical(Box.Alignment.RIGHT, new HandgunPane(EnumHand.OFF_HAND), new HandgunPane(EnumHand.MAIN_HAND)), Settings.HudPositions.handgun));
 
-	private static void handleMobCharmDisplay(Minecraft minecraft) {
-		int hudOverlayX;
-		int hudOverlayY;
-		int numberItems = getCharmsToDraw().size();
-		int itemSize = 16;
-		int borderSpacing = 8;
-		int itemSpacing = 2;
-		int displayPosition = Settings.MobCharm.displayPosition;
-
-		if(numberItems <= 0)
-			return;
-
-		removeExpiredMobCharms();
-
-		ScaledResolution sr = new ScaledResolution(minecraft);
-
-		GlStateManager.pushMatrix();
-		RenderHelper.enableGUIStandardItemLighting();
-		GlStateManager.disableLighting();
-		GlStateManager.enableRescaleNormal();
-		GlStateManager.enableLighting();
-
-		if(displayPosition == 1 || displayPosition == 3) {
-			hudOverlayY = sr.getScaledHeight() / 2 - (itemSize / 2) - (Math.max(0, (numberItems - 1) * (itemSize + itemSpacing) / 2));
-
-			if(displayPosition == 1) {
-				hudOverlayX = sr.getScaledWidth() - (itemSize + borderSpacing);
-			} else {
-				hudOverlayX = borderSpacing;
-			}
-		} else {
-			hudOverlayY = borderSpacing;
-			hudOverlayX = sr.getScaledWidth() / 2 - (itemSize / 2) - (Math.max(0, (numberItems - 1) * (itemSize + itemSpacing) / 2));
-		}
-
-		HashMap<Integer, CharmToDraw> charmsToDrawCopy = new HashMap<>(getCharmsToDraw());
-		for(CharmToDraw charmToDraw : charmsToDrawCopy.values()) {
-			ItemStack stackToRender = ItemMobCharm.getCharmStack(charmToDraw.type);
-			stackToRender.setItemDamage(charmToDraw.damage);
-			IBakedModel bakedModel = renderItem().getItemModelWithOverrides(stackToRender, null, null);
-			GlStateManager.pushMatrix();
-			TextureManager textureManager = minecraft.getTextureManager();
-			textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-			textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
-			GlStateManager.enableRescaleNormal();
-			GlStateManager.disableAlpha();
-			GlStateManager.enableBlend();
-			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			GlStateManager.translate((float) hudOverlayX, (float) hudOverlayY, 100.0F);
-			GlStateManager.translate(8.0F, 8.0F, 0.0F);
-			GlStateManager.scale(1.0F, -1.0F, 1.0F);
-			GlStateManager.scale(16.0F, 16.0F, 16.0F);
-
-			bakedModel = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(bakedModel, ItemCameraTransforms.TransformType.GUI, false);
-			renderItem().renderItem(stackToRender, bakedModel);
-			GlStateManager.disableAlpha();
-			GlStateManager.disableRescaleNormal();
-			GlStateManager.disableLighting();
-			GlStateManager.popMatrix();
-			textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-			textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
-			renderItem().renderItemOverlayIntoGUI(minecraft.getRenderManager().getFontRenderer(), stackToRender, hudOverlayX, hudOverlayY, null);
-
-			if(displayPosition == 1 || displayPosition == 3)
-				hudOverlayY += itemSize + itemSpacing;
-			else
-				hudOverlayX += itemSize + itemSpacing;
-		}
-		GlStateManager.disableBlend();
-		GlStateManager.disableLighting();
-		GlStateManager.popMatrix();
-	}
-
-	private static RenderItem renderItem() {
-		return Minecraft.getMinecraft().getRenderItem();
-	}
-
-	private static void removeExpiredMobCharms() {
-		int secondsToExpire = 4;
-		synchronized(charmsToDraw) {
-			for(Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext(); ) {
-				Map.Entry<Integer, CharmToDraw> entry = iterator.next();
-				if(Settings.MobCharm.keepAlmostDestroyedDisplayed && entry.getValue().damage >= (ModItems.mobCharm.getMaxDamage(ItemStack.EMPTY) * 0.9))
-					continue;
-
-				if(entry.getValue().time + secondsToExpire * 1000 < System.currentTimeMillis()) {
-					iterator.remove();
-				}
-			}
-		}
-	}
-
-	private static void handleTickIncrement(TickEvent.RenderTickEvent event) {
-		// this is currently used for nothing but the blinking magazine in the handgun HUD renderer
-		if(event.phase != TickEvent.Phase.END)
-			return;
-		//4096 is just an arbitrary stopping point, I didn't need it to go that high, honestly. left in case we need something weird.
-		if(getTime() > 4096) {
-			time = 0;
-		} else {
-			time++;
-		}
-	}
-
-	private static int getTime() {
-		return time;
-	}
-
-	private static EnumHand getHandHoldingCorrectItem(EntityPlayer player, Item item) {
-		if(player.getHeldItemMainhand().getItem() == item) {
-			return EnumHand.MAIN_HAND;
-		}
-
-		if(player.getHeldItemOffhand().getItem() == item) {
-			return EnumHand.OFF_HAND;
-		}
-		return null;
-	}
-
-	@Nonnull
-	private static ItemStack getCorrectItemFromEitherHand(EntityPlayer player, Item item) {
-		if(player == null)
-			return ItemStack.EMPTY;
-
-		EnumHand itemInHand = getHandHoldingCorrectItem(player, item);
-
-		if(itemInHand == null)
-			return ItemStack.EMPTY;
-
-		return player.getHeldItem(itemInHand);
-	}
-
-	private static void handleHeroMedallionHUDCheck(Minecraft mc) {
-		EntityPlayer player = mc.player;
-
-		ItemStack heroMedallionStack = getCorrectItemFromEitherHand(player, ModItems.heroMedallion);
-
-		if(heroMedallionStack.isEmpty())
-			return;
-
-		int experience = NBTHelper.getInteger("experience", heroMedallionStack);
-		int level = XpHelper.getLevelForExperience(experience);
-		int remainingExperience = experience - XpHelper.getExperienceForLevel(level);
-		int maxBarExperience = XpHelper.getExperienceLimitOnLevel(level);
-
-		renderHeroXpBar(mc, remainingExperience, maxBarExperience, Settings.HudPositions.heroMedallion.ordinal());
-		renderStandardTwoItemHUD(mc, heroMedallionStack, ItemStack.EMPTY, Settings.HudPositions.heroMedallion.ordinal(), Colors.get(Colors.GREEN), level, 20);
-	}
-
-	private static final ResourceLocation XP_BAR = new ResourceLocation(Reference.MOD_ID, "textures/gui/xp_bar.png");
-
-	private static void renderHeroXpBar(Minecraft mc, int partialExperience, int experienceLimit, int hudPosition) {
-		mc.renderEngine.bindTexture(XP_BAR);
-		ScaledResolution sr = new ScaledResolution(mc);
-
-		int hudOverlayX = 10;
-		int hudOverlayY = 84;
-		switch(hudPosition) {
-			case 1: {
-				hudOverlayX = sr.getScaledWidth() - 19;
-				break;
-			}
-			case 2: {
-				hudOverlayY = sr.getScaledHeight() - 8;
-				break;
-			}
-			case 3: {
-				hudOverlayX = sr.getScaledWidth() - 19;
-				hudOverlayY = sr.getScaledHeight() - 8;
-				break;
-			}
-			default: {
-				break;
-			}
-		}
-
-		float experience = ((float) partialExperience) / ((float) experienceLimit);
-
-		int k = (int) (experience * 74.0F);
-		GlStateManager.pushMatrix();
-		GlStateManager.pushAttrib();
-		GlStateManager.clear(256);
-		GlStateManager.matrixMode(GL11.GL_PROJECTION);
-		GlStateManager.loadIdentity();
-		GlStateManager.ortho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
-		GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-		GlStateManager.loadIdentity();
-		GlStateManager.translate(0.0F, 0.0F, -2000.0F);
-
-		GlStateManager.disableLighting();
-		GlStateManager.enableBlend();
-
-		drawTexturedModalRect(hudOverlayX, hudOverlayY, 0, 0, 11, 74);
-
-		if(k > 0) {
-			drawTexturedModalRect(hudOverlayX, hudOverlayY, 11, 0, 11, k);
-		}
-
-		GlStateManager.disableBlend();
-		GlStateManager.enableLighting();
-		GlStateManager.popAttrib();
-		GlStateManager.popMatrix();
-	}
-
-	private static void drawTexturedModalRect(double x, double y, double textureX, double textureY, double width, double height) {
-		double minU = textureX / 22D;
-		double maxU = (textureX + width) / 22D;
-		double minV = textureY + (74D - height) / 74D;
-		double maxV = 1D;
-
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buffer = tessellator.getBuffer();
-		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-		buffer.pos(x, y, 0).tex(minU, maxV).endVertex();
-		buffer.pos(x + width, y, 0).tex(maxU, maxV).endVertex();
-		buffer.pos(x + width, y - height, 0).tex(maxU, minV).endVertex();
-		buffer.pos(x, y - height, 0).tex(minU, minV).endVertex();
-		tessellator.draw();
-	}
-
-	private static void handleHandgunHUDCheck(Minecraft mc) {
-		// handles rendering the hud for the handgun, WIP
-		EntityPlayer player = mc.player;
-
-		ItemStack mainHandgunStack = (player.getHeldItemMainhand().getItem() == ModItems.handgun) ? player.getHeldItemMainhand() : ItemStack.EMPTY;
-		ItemStack offHandgunStack = (player.getHeldItemOffhand().getItem() == ModItems.handgun) ? player.getHeldItemOffhand() : ItemStack.EMPTY;
-
-		if(mainHandgunStack.isEmpty() && offHandgunStack.isEmpty())
-			return;
-
-		ItemStack mainBulletStack = ItemStack.EMPTY;
-		if(!mainHandgunStack.isEmpty()) {
-			mainBulletStack = getBulletStackFromHandgun(mainHandgunStack);
-		}
-		ItemStack offBulletStack = ItemStack.EMPTY;
-		if(!offHandgunStack.isEmpty()) {
-			offBulletStack = getBulletStackFromHandgun(offHandgunStack);
-		}
-		renderHandgunHUD(mc, mainHandgunStack, mainBulletStack, offHandgunStack, offBulletStack);
-	}
-
-	private static ItemStack getBulletStackFromHandgun(ItemStack handgun) {
-		ItemStack bulletStack = new ItemStack(ModItems.bullet, ModItems.handgun.getBulletCount(handgun), ModItems.handgun.getBulletType(handgun));
-		List<PotionEffect> potionEffects = ModItems.handgun.getPotionEffects(handgun);
-		if(potionEffects != null && !potionEffects.isEmpty()) {
-			XRPotionHelper.addPotionEffectsToStack(bulletStack, potionEffects);
-		}
-
-		return bulletStack;
-	}
-
-	private static void renderHandgunHUD(Minecraft minecraft, @Nonnull ItemStack mainHandgunStack, @Nonnull ItemStack mainBulletStack, @Nonnull ItemStack offHandgunStack, @Nonnull ItemStack offBulletStack) {
-		float overlayScale = 2.5F;
-		float segmentHeight = 6 * overlayScale;
-
-		GlStateManager.pushMatrix();
-		ScaledResolution sr = new ScaledResolution(minecraft);
-		GlStateManager.clear(256);
-		GlStateManager.matrixMode(5889);
-		GlStateManager.loadIdentity();
-		GlStateManager.ortho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
-		GlStateManager.matrixMode(5888);
-		GlStateManager.loadIdentity();
-		GlStateManager.translate(0.0F, 0.0F, -2000.0F);
-
-		GlStateManager.pushMatrix();
-		RenderHelper.enableGUIStandardItemLighting();
-		GlStateManager.disableLighting();
-		GlStateManager.enableRescaleNormal();
-		GlStateManager.enableColorMaterial();
-		GlStateManager.enableLighting();
-
-		int hudOverlayX = (int) (16 * overlayScale);
-		int hudOverlayY = (int) (6 * overlayScale);
-		boolean twoHandguns = !mainHandgunStack.isEmpty() && !offHandgunStack.isEmpty();
-
-		switch(Settings.HudPositions.handgun.ordinal()) {
-			case 0: {
-				hudOverlayX = (int) (44 * overlayScale);
-				break;
-			}
-			case 1: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 12 * overlayScale);
-				break;
-			}
-			case 2: {
-				hudOverlayX = (int) (44 * overlayScale);
-				hudOverlayY = (int) (sr.getScaledHeight() - (16 * overlayScale + (twoHandguns ? segmentHeight : 0)));
-				break;
-			}
-			case 3: {
-				hudOverlayX = (int) (sr.getScaledWidth() - 12 * overlayScale);
-				hudOverlayY = (int) (sr.getScaledHeight() - (16 * overlayScale + (twoHandguns ? segmentHeight : 0)));
-				break;
-			}
-			default: {
-				break;
-			}
-		}
-
-		if(!mainHandgunStack.isEmpty()) {
-			renderHandgunAndBullets(EnumHand.MAIN_HAND, mainHandgunStack, mainBulletStack, overlayScale, hudOverlayX, hudOverlayY);
-
-			hudOverlayY += segmentHeight;
-		}
-
-		if(!offHandgunStack.isEmpty())
-			renderHandgunAndBullets(EnumHand.OFF_HAND, offHandgunStack, offBulletStack, overlayScale, hudOverlayX, hudOverlayY);
-
-		GlStateManager.disableLighting();
-		GlStateManager.popMatrix();
-		GlStateManager.popMatrix();
-	}
-
-	private static void renderHandgunAndBullets(EnumHand hand, @Nonnull ItemStack handgunStack, @Nonnull ItemStack bulletStack, float overlayScale, int hudOverlayX, int hudOverlayY) {
-		renderItemIntoGUI(handgunStack, hudOverlayX - (hand == EnumHand.OFF_HAND ? 100 : 0), hudOverlayY);
-
-		int adjustedHudOverlayX = hand == EnumHand.MAIN_HAND ? (int) (hudOverlayX - 6 * overlayScale) : (int) (hudOverlayX - 2 * overlayScale);
-
-		// if the gun is empty, displays a blinking empty magazine instead.
-		if(bulletStack.getCount() == 0) {
-			if(getTime() % 32 > 16) {
-				// offsets it a little to the left, it looks silly if you put it
-				// over the gun.
-				renderItemIntoGUI(new ItemStack(ModItems.magazine, 1, 0), adjustedHudOverlayX, hudOverlayY);
-			}
-		} else {
-			adjustedHudOverlayX = adjustedHudOverlayX - (hand == EnumHand.OFF_HAND ? 10 : 0);
-
-			// renders the number of bullets onto the screen.
-			for(int xOffset = 0; xOffset < bulletStack.getCount(); xOffset++) {
-				// xOffset * 6 makes the bullets line up, -16 moves them all to
-				// the left by a bit
-
-				renderItemIntoGUI(bulletStack, (int) (adjustedHudOverlayX - ((xOffset * 4) * overlayScale)), hudOverlayY);
-			}
-		}
-	}
-
-	private static void renderStandardTwoItemHUD(Minecraft minecraft, @Nonnull ItemStack hudStack, @Nonnull ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride, int xOffset) {
-		renderStandardTwoItemHUD(minecraft, hudStack, secondaryStack, hudPosition, colorOverride, stackSizeOverride, xOffset, null);
-	}
-
-	private static void renderStandardTwoItemHUD(Minecraft minecraft, @Nonnull ItemStack hudStack, @Nonnull ItemStack secondaryStack, int hudPosition, int colorOverride, int stackSizeOverride, int xOffset, String additionalText) {
-		int stackSize = 0;
-		if(stackSizeOverride > 0)
-			stackSize = stackSizeOverride;
-		int color = Colors.get(Colors.PURE);
-		if(colorOverride > 0)
-			color = colorOverride;
-		float overlayScale = 2.5F;
-
-		GlStateManager.pushMatrix();
-		ScaledResolution sr = new ScaledResolution(minecraft);
-		GlStateManager.clear(256);
-		GlStateManager.matrixMode(GL11.GL_PROJECTION);
-		GlStateManager.loadIdentity();
-		GlStateManager.ortho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
-		GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-		GlStateManager.loadIdentity();
-		GlStateManager.translate(0.0F, 0.0F, -2000.0F);
-
-		GlStateManager.pushMatrix();
-		RenderHelper.enableGUIStandardItemLighting();
-		GlStateManager.disableLighting();
-		GlStateManager.enableRescaleNormal();
-		GlStateManager.enableColorMaterial();
-		GlStateManager.enableLighting();
-
-		int hudOverlayX = 8 + xOffset;
-		int hudOverlayY = 8;
-
-		boolean leftSide = hudPosition == 0 || hudPosition == 2;
-		switch(hudPosition) {
-			case 1: {
-				hudOverlayX = sr.getScaledWidth() - (8 + xOffset);
-				break;
-			}
-			case 2: {
-				hudOverlayY = (int) (sr.getScaledHeight() - (18 * overlayScale));
-				break;
-			}
-			case 3: {
-				hudOverlayX = sr.getScaledWidth() - (8 + xOffset);
-				hudOverlayY = (int) (sr.getScaledHeight() - (18 * overlayScale));
-				break;
-			}
-			default: {
-				break;
-			}
-		}
-
-		renderItemIntoGUI(hudStack, hudOverlayX - (leftSide ? 0 : 15), hudOverlayY);
-
-		//TODO add rending gale modes translations
-		//special item conditions are handled on a per-item-type basis:
-		if(hudStack.getItem() == ModItems.rendingGale || (additionalText != null && !additionalText.isEmpty())) {
-			if(hudStack.getItem() == ModItems.rendingGale) {
-				ItemRendingGale staffItem = (ItemRendingGale) hudStack.getItem();
-				String staffMode = staffItem.getMode(hudStack);
-				switch(staffMode) {
-					case "flight":
-						additionalText = "FLIGHT";
-						break;
-					case "push":
-						additionalText = "PUSH";
-						break;
-					case "pull":
-						additionalText = "PULL";
-						break;
-					default:
-						additionalText = "BOLT";
-						break;
-				}
-			}
-			if (minecraft.getRenderManager().getFontRenderer() != null) {
-				minecraft.getRenderManager().getFontRenderer().drawStringWithShadow(additionalText, hudOverlayX - (leftSide ? 0 : additionalText.length() * 6), hudOverlayY + 18, color);
-			}
-		}
-
-		if(!secondaryStack.isEmpty()) {
-			if(stackSize == 0)
-				stackSize = secondaryStack.getCount();
-			renderItem().renderItemAndEffectIntoGUI(secondaryStack, hudOverlayX - (leftSide ? 0 : 16 + (Integer.toString(stackSize).length() * 6)), hudOverlayY + 25);
-			hudOverlayX = hudOverlayX + (leftSide ? 16 : 0);
-		}
-
-		GlStateManager.disableLighting();
-		minecraft.fontRenderer.drawStringWithShadow(Integer.toString(stackSize), hudOverlayX - (leftSide ? 0 : (Integer.toString(stackSize).length() * 6)), hudOverlayY + 29, color);
-		GlStateManager.popMatrix();
-		GlStateManager.popMatrix();
-	}
-
-	private static void renderItemIntoGUI(ItemStack itemStack, int x, int y) {
-		renderItem().renderItemIntoGUI(itemStack, x, y);
+		hudComponents.add(new Tuple<>(new CharmPane(), Settings.HudPositions.mobCharm));
 	}
 }

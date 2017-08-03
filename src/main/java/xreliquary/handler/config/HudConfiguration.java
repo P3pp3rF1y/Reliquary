@@ -22,6 +22,7 @@ public class HudConfiguration {
 		Settings.HudPositions.heroMedallion = HUDPosition.values()[ConfigurationHandler.getInt(Names.Items.HERO_MEDALLION, Names.Configs.HUD_POSITIONS, 6, 0, 6, "Position of Hero Medallion HUD")];
 		Settings.HudPositions.pyromancerStaff = HUDPosition.values()[ConfigurationHandler.getInt(Names.Items.PYROMANCER_STAFF, Names.Configs.HUD_POSITIONS, 6, 0, 6, "Position of Pyromancer Staff HUD")];
 		Settings.HudPositions.rendingGale = HUDPosition.values()[ConfigurationHandler.getInt(Names.Items.RENDING_GALE, Names.Configs.HUD_POSITIONS, 6, 0, 6, "Position of Rending Gale HUD")];
+		Settings.HudPositions.mobCharm = HUDPosition.values()[ConfigurationHandler.getInt(Names.Items.MOB_CHARM, Names.Configs.HUD_POSITIONS, 6, 0, 6, "Position of Mob Charm HUD")];
 
 		ConfigCategory category = ConfigurationHandler.configuration.getCategory(Names.Configs.HUD_POSITIONS);
 		category.setLanguageKey(ConfigurationHandler.getCategoryLangRef(Names.Configs.HUD_POSITIONS));

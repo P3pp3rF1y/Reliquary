@@ -48,7 +48,7 @@ public class ChargeableItemInfoPane extends Component {
 	private void updateCurrentPane(Component modePane, String currentMode) {
 		this.lastMode = currentMode;
 		Box.Alignment alignment = getMainStackAlignment(this.hudPosition);
-		mainPanel = Box.createVertical(alignment, new ItemStackPane(new ItemStack(mainItem)), modePane);
+		mainPanel = Box.createVertical(alignment, new ItemStackPane(mainItem), modePane);
 	}
 
 	@Override

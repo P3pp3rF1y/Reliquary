@@ -248,7 +248,6 @@ public class BlockItemConfiguration {
 		Settings.MobCharm.damagePerKill = ConfigurationHandler.getInt("damage_per_kill", categoryKey, 1, 0, 40, "Damage that Mob Charm takes when player kills mob it protects them from");
 		Settings.MobCharm.dropDurabilityRepair = ConfigurationHandler.getInt("drop_durability_repair", categoryKey, 20, 1, 200, "Sets how much durability of Mob Charm gets repaired per special drop");
 		Settings.MobCharm.maxCharmsToDisplay = ConfigurationHandler.getInt("max_charms_to_display", categoryKey, 6, 1, 20, "Maximum charms that will get displayed in HUD");
-		Settings.MobCharm.displayPosition = ConfigurationHandler.getInt("display_position", categoryKey, 1, 1, 3, "Display position 1-right, 2-top, 3-left");
 		Settings.MobCharm.pedestalRange = ConfigurationHandler.getInt("pedestal_range", categoryKey, 21, 10, 100, "Range in which mob charm or belt in pedestal will keep monsters from attacking players");
 		Settings.MobCharm.keepAlmostDestroyedDisplayed = ConfigurationHandler.getBoolean("keep_almost_destroyed_displayed", categoryKey, true, "Determines if almost destroyed charms stay displayed in the hud");
 		category = ConfigurationHandler.configuration.getCategory(categoryKey);

@@ -2,19 +2,29 @@ package xreliquary.client.gui.components;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ItemStackPane extends Component {
 	private ItemStack itemStack;
 	private boolean renderEffect;
+	private boolean renderOverlay;
 
+	public ItemStackPane(Item item) {
+		this(new ItemStack(item));
+	}
 	public ItemStackPane(ItemStack itemStack) {
-		this(itemStack, false);
+		this(itemStack, false, false);
 	}
 
-	public ItemStackPane(ItemStack itemStack, boolean renderEffect) {
+	public ItemStackPane(ItemStack itemStack, boolean renderEffect, boolean renderOverlay) {
 		this.itemStack = itemStack;
 		this.renderEffect = renderEffect;
+		this.renderOverlay = renderOverlay;
+	}
+
+	public void setItem(Item item) {
+		this.itemStack = new ItemStack(item);
 	}
 
 	public void setItemStack(ItemStack itemStack) {
@@ -34,10 +44,14 @@ public class ItemStackPane extends Component {
 	@Override
 	public void renderInternal(int x, int y) {
 		RenderHelper.enableGUIStandardItemLighting();
+		Minecraft mc = Minecraft.getMinecraft();
 		if (renderEffect) {
-			Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(itemStack, x, y);
+			mc.getRenderItem().renderItemAndEffectIntoGUI(itemStack, x, y);
 		} else {
-			Minecraft.getMinecraft().getRenderItem().renderItemIntoGUI(itemStack, x, y);
+			mc.getRenderItem().renderItemIntoGUI(itemStack, x, y);
+		}
+		if (renderOverlay) {
+			mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, x, y, null);
 		}
 	}
 }

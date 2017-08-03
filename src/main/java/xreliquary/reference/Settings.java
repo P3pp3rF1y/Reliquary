@@ -44,36 +44,7 @@ public class Settings {
 		public static HUDPosition heroMedallion;
 		public static HUDPosition pyromancerStaff;
 		public static HUDPosition rendingGale;
-	}
-
-	public static class EasyModeRecipes {
-		public static boolean fortuneCoin;
-		public static boolean altar;
-		public static boolean infernalChalice;
-		public static boolean enderStaff;
-		public static boolean salamanderEye;
-		public static boolean rodOfLyssa;
-		public static boolean serpentStaff;
-		public static boolean rendingGale;
-		public static boolean pyromancerStaff;
-		public static boolean magicBane;
-		public static boolean lanternOfParanoia;
-		public static boolean alkahestryTome;
-		public static boolean wraithNode;
-		public static boolean glacialStaff;
-		public static boolean sojournerStaff;
-		public static boolean krakenShell;
-		public static boolean angelicFeather;
-		public static boolean emperorChalice;
-		public static boolean heroMedallion;
-		public static boolean iceMagusRod;
-		public static boolean infernalClaws;
-		public static boolean destructionCatalyst;
-		public static boolean interdictionTorch;
-		public static boolean voidTear;
-		public static boolean infernalTear;
-		public static boolean fertileEssence;
-		public static boolean seekerShot;
+		public static HUDPosition mobCharm;
 	}
 
 	public static class AlkahestryTome {
@@ -303,7 +274,6 @@ public class Settings {
 		public static int damagePerKill;
 		public static int dropDurabilityRepair;
 		public static int maxCharmsToDisplay;
-		public static int displayPosition;
 		public static int pedestalRange;
 		public static boolean keepAlmostDestroyedDisplayed;
 	}
