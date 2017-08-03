@@ -19,7 +19,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.common.gui.GUIHandler;
-import xreliquary.init.ModItems;
 import xreliquary.init.ModSounds;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -108,6 +107,8 @@ public class ItemAlkahestryTome extends ItemToggleable {
 
 	@Override
 	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> subItems) {
+		if (!isInCreativeTab(tab))
+			return;
 
 		ItemStack stack = new ItemStack(this);
 		stack.setItemDamage(stack.getMaxDamage());

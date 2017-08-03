@@ -11,7 +11,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
@@ -64,7 +63,10 @@ public class ItemMagazine extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull CreativeTabs creativeTabs, @Nonnull NonNullList<ItemStack> subItems) {
+	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> subItems) {
+		if (!isInCreativeTab(tab))
+			return;
+
 		for(int meta = 0; meta <= 9; meta++) {
 			subItems.add(new ItemStack(this, 1, meta));
 		}

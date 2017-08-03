@@ -20,7 +20,10 @@ public class ItemGunPart extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull CreativeTabs creativeTab, @Nonnull NonNullList<ItemStack> list) {
+	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> list) {
+		if (!isInCreativeTab(tab))
+			return;
+
 		list.add(new ItemStack(this, 1, 0));
 		list.add(new ItemStack(this, 1, 1));
 		list.add(new ItemStack(this, 1, 2));

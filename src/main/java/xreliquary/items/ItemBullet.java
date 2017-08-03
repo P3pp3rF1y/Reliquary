@@ -69,7 +69,10 @@ public class ItemBullet extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull CreativeTabs creativeTabs, @Nonnull NonNullList<ItemStack> subItems) {
+	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> subItems) {
+		if (!isInCreativeTab(tab))
+			return;
+
 		for(int meta = 0; meta <= 9; meta++) {
 			subItems.add(new ItemStack(this, 1, meta));
 		}

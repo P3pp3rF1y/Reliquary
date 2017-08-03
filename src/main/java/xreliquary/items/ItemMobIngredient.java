@@ -33,7 +33,10 @@ public class ItemMobIngredient extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull CreativeTabs creativeTab, @Nonnull NonNullList<ItemStack> list) {
+	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> list) {
+		if (!isInCreativeTab(tab))
+			return;
+
 		for(int i = 0; i <= 16; i++)
 			list.add(new ItemStack(this, 1, i));
 	}

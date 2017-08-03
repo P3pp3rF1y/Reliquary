@@ -19,7 +19,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.entities.potion.EntityThrownXRPotion;
-import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
@@ -100,6 +99,9 @@ public class ItemXRPotion extends ItemBase {
 
 	@Override
 	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> subItems) {
+		if (!isInCreativeTab(tab))
+			return;
+
 		subItems.add(new ItemStack(this)); //just an empty one
 
 		List<ItemStack> splashPotions = new ArrayList<>();

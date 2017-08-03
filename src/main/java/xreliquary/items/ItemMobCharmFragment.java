@@ -34,7 +34,10 @@ public class ItemMobCharmFragment extends ItemBase {
 	}
 
 	@Override
-	public void getSubItems(@Nonnull CreativeTabs creativeTab, @Nonnull NonNullList<ItemStack> list) {
+	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> list) {
+		if (!isInCreativeTab(tab))
+			return;
+
 		for(int i = 0; i < Reference.MOB_CHARM.COUNT_TYPES; i++)
 			list.add(new ItemStack(this, 1, i));
 	}

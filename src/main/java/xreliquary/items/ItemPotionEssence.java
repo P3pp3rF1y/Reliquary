@@ -8,7 +8,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
@@ -29,6 +28,8 @@ public class ItemPotionEssence extends ItemBase {
 
 	@Override
 	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> subItems) {
+		if (!isInCreativeTab(tab))
+			return;
 
 		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
 			ItemStack essenceItem = new ItemStack(this, 1);
