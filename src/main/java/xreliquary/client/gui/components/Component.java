@@ -1,7 +1,5 @@
 package xreliquary.client.gui.components;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -20,7 +18,8 @@ public abstract class Component {
 	}
 
 	public void render(int x, int y) {
-		// drawTexturedModalRect(x, y, 5, 170, getWidth(), getHeight());
+		//Minecraft.getMinecraft().renderEngine.bindTexture(GuiContainer.INVENTORY_BACKGROUND);
+		//drawTexturedModalRect(x, y, 5, 170, getWidth(), getHeight());
 		renderInternal(x + getPadding(), y + getPadding());
 	}
 
@@ -32,19 +31,24 @@ public abstract class Component {
 	public abstract int getWidthInternal();
 	public abstract void renderInternal(int x, int y);
 
-	private void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height)
+	protected void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height) {
+		drawTexturedModalRect(x, y, textureX, textureY, width, height, 256, 256);
+	}
+
+	protected void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height, double textureWidth, double textureHeight)
 	{
-		Minecraft.getMinecraft().renderEngine.bindTexture(GuiContainer.INVENTORY_BACKGROUND);
-		float f = 0.00390625F;
-		float f1 = 0.00390625F;
-		double z = 0.0D;
+		double minU = textureX / textureWidth;
+		double maxU = (textureX + width) / textureWidth;
+		double minV = textureY / textureHeight;
+		double maxV = (textureY + height) / textureHeight;
+
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-		bufferbuilder.pos((double)(x + 0), (double)(y + height), z).tex((double)((float)(textureX + 0) * 0.00390625F), (double)((float)(textureY + height) * 0.00390625F)).endVertex();
-		bufferbuilder.pos((double)(x + width), (double)(y + height), z).tex((double)((float)(textureX + width) * 0.00390625F), (double)((float)(textureY + height) * 0.00390625F)).endVertex();
-		bufferbuilder.pos((double)(x + width), (double)(y + 0), z).tex((double)((float)(textureX + width) * 0.00390625F), (double)((float)(textureY + 0) * 0.00390625F)).endVertex();
-		bufferbuilder.pos((double)(x + 0), (double)(y + 0), z).tex((double)((float)(textureX + 0) * 0.00390625F), (double)((float)(textureY + 0) * 0.00390625F)).endVertex();
+		BufferBuilder buffer = tessellator.getBuffer();
+		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+		buffer.pos(x, y + height, 0).tex(minU, maxV).endVertex();
+		buffer.pos(x + width, y + height, 0).tex(maxU, maxV).endVertex();
+		buffer.pos(x + width, y, 0).tex(maxU, minV).endVertex();
+		buffer.pos(x, y, 0).tex(minU, minV).endVertex();
 		tessellator.draw();
 	}
 }

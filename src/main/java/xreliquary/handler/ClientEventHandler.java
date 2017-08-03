@@ -42,6 +42,7 @@ import xreliquary.client.gui.hud.ChargeableItemInfoPane;
 import xreliquary.client.gui.hud.DynamicChargePane;
 import xreliquary.client.gui.hud.HUDPosition;
 import xreliquary.client.gui.hud.HUDRenderrer;
+import xreliquary.client.gui.hud.HeroMedallionPane;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemHarvestRod;
@@ -177,7 +178,6 @@ public class ClientEventHandler {
 
 		handleTickIncrement(event);
 		handleHandgunHUDCheck(mc);
-		handleHeroMedallionHUDCheck(mc);
 
 		handleMobCharmDisplay(mc);
 	}
@@ -253,6 +253,9 @@ public class ClientEventHandler {
 				ImmutableMap.of(
 						ChargeableItemInfoPane.DYNAMIC_PANE, new DynamicChargePane(ModItems.sojournerStaff, is -> new ItemStack(RegistryHelper.getItemFromName(ModItems.sojournerStaff.getTorchPlacementMode(is))), is -> ModItems.sojournerStaff.getTorchCount(is))
 				)),	Settings.HudPositions.sojournerStaff));
+
+		hudComponents.add(new Tuple<>(new HeroMedallionPane(), Settings.HudPositions.heroMedallion));
+
 	}
 
 	private static void handleMobCharmDisplay(Minecraft minecraft) {

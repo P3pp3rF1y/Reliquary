@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.Tuple;
-import org.lwjgl.opengl.GL11;
 import xreliquary.client.gui.components.Component;
 
 public class HUDRenderrer {
@@ -20,7 +19,7 @@ public class HUDRenderrer {
 
 	private static void renderComponent(ScaledResolution sr, int x, int y, Component component) {
 		GlStateManager.pushMatrix();
-		GlStateManager.clear(256);
+/*		GlStateManager.clear(256);
 		GlStateManager.matrixMode(GL11.GL_PROJECTION);
 		GlStateManager.loadIdentity();
 		GlStateManager.ortho(0.0D, sr.getScaledWidth_double(), sr.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
@@ -30,11 +29,13 @@ public class HUDRenderrer {
 
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.enableColorMaterial();
-		GlStateManager.enableLighting();
 
+		GlStateManager.pushMatrix();*/
 		component.render(x, y);
+/*
+		GlStateManager.popMatrix();
+*/
 
-		GlStateManager.disableLighting();
 		GlStateManager.popMatrix();
 	}
 
