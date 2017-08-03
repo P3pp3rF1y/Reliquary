@@ -34,7 +34,7 @@ public class CharmPane extends Component {
 	public boolean shouldRender() {
 		removeExpiredMobCharms();
 
-		return super.shouldRender();
+		return getCharmsToDraw().size() > 0;
 	}
 
 	private static void updateCharmsPane() {
@@ -53,7 +53,6 @@ public class CharmPane extends Component {
 	@Override
 	public void renderInternal(int x, int y) {
 		mainPane.render(x, y);
-
 	}
 
 	private static final HashMap<Integer, CharmToDraw> charmsToDraw = new HashMap<>();
