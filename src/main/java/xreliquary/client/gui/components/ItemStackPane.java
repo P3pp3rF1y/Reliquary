@@ -43,6 +43,9 @@ public class ItemStackPane extends Component {
 
 	@Override
 	public void renderInternal(int x, int y) {
+		if (itemStack.isEmpty())
+			return;
+
 		RenderHelper.enableGUIStandardItemLighting();
 		Minecraft mc = Minecraft.getMinecraft();
 		if (renderEffect) {
