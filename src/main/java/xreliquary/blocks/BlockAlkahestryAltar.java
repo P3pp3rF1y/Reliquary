@@ -1,6 +1,8 @@
 package xreliquary.blocks;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -9,15 +11,18 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.blocks.tile.TileEntityAltar;
 import xreliquary.init.ModBlocks;
 import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 
@@ -25,15 +30,31 @@ import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class BlockAlkahestryAltar extends BlockBase {
+	public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
-	//TODO: implement Property instead of this and use 2 variants of the block state
-	private final boolean isActive;
+	public BlockAlkahestryAltar() {
+		super(Material.ROCK, Names.Blocks.ALTAR, 1.5F, 5.0F);
+		setDefaultState(this.blockState.getBaseState().withProperty(ACTIVE, false));
+	}
 
-	public BlockAlkahestryAltar(boolean isActive) {
-		super(Material.ROCK, (isActive ? Names.Blocks.ALTAR : Names.Blocks.ALTAR_IDLE), 1.5F, 5.0F);
-		this.isActive = isActive;
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return getDefaultState().withProperty(ACTIVE, (meta & 1) == 1);
+	}
 
-		setLightLevel(this.isActive ? getAltarActiveLightLevel() : 0.0F);
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(ACTIVE) ? 1 : 0;
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, ACTIVE);
+	}
+
+	@Override
+	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+		return state.getValue(ACTIVE) ? getAltarActiveLightLevel() : 0;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -54,8 +75,8 @@ public class BlockAlkahestryAltar extends BlockBase {
 		return new TileEntityAltar();
 	}
 
-	private float getAltarActiveLightLevel() {
-		return (float) Settings.Altar.outputLightLevelWhileActive / 16F;
+	private int getAltarActiveLightLevel() {
+		return (int) ((float) Settings.Altar.outputLightLevelWhileActive / 16F);
 	}
 
 	@Nonnull
@@ -66,7 +87,7 @@ public class BlockAlkahestryAltar extends BlockBase {
 
 	@Override
 	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand) {
-		if(!isActive)
+		if(!state.getValue(ACTIVE))
 			return;
 		int worldTime = (int) (world.getWorldTime() % 24000);
 		if(worldTime >= 12000)
@@ -82,7 +103,7 @@ public class BlockAlkahestryAltar extends BlockBase {
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float xOff, float yOff, float zOff) {
 
 		ItemStack heldItem = player.getHeldItem(hand);
-		if(isActive)
+		if(state.getValue(ACTIVE))
 			return true;
 		TileEntityAltar altar = (TileEntityAltar) world.getTileEntity(pos);
 		if(altar == null)
@@ -126,16 +147,14 @@ public class BlockAlkahestryAltar extends BlockBase {
 	}
 
 	public static void updateAltarBlockState(boolean active, World world, BlockPos pos) {
-		//TODO: replace sandstone logic with proper BlockState handling
-		if(active) {
-			world.setBlockState(pos, ModBlocks.alkahestryAltarActive.getDefaultState());
-
-			TileEntityAltar te = (TileEntityAltar) world.getTileEntity(pos);
-			if(te != null) {
+		world.setBlockState(pos, world.getBlockState(pos).withProperty(ACTIVE, active));
+		TileEntityAltar te = (TileEntityAltar) world.getTileEntity(pos);
+		if(te != null) {
+			if(active) {
 				te.startCycle();
+			} else {
+				te.stopCycle();
 			}
-		} else {
-			world.setBlockState(pos, ModBlocks.alkahestryAltar.getDefaultState());
 		}
 	}
 }

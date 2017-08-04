@@ -9,14 +9,13 @@ import xreliquary.blocks.BlockPedestalPassive;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
-import xreliquary.reference.Settings;
 
 public class ItemBlockModels {
 	public static void registerItemBlockModels() {
 		registerBlockItemModel(ModBlocks.apothecaryCauldron, Names.Blocks.APOTHECARY_CAULDRON);
 		registerBlockItemModel(ModBlocks.apothecaryMortar, Names.Blocks.APOTHECARY_MORTAR);
 		registerBlockItemModel(ModBlocks.alkahestryAltar, Names.Blocks.ALTAR_IDLE);
-		registerBlockItemModel(ModBlocks.alkahestryAltarActive, Names.Blocks.ALTAR);
+		registerBlockItemModel(ModBlocks.alkahestryAltar, Names.Blocks.ALTAR);
 		registerBlockItemModel(ModBlocks.interdictionTorch, Names.Blocks.INTERDICTION_TORCH);
 		registerBlockItemModel(ModBlocks.wraithNode, Names.Blocks.WRAITH_NODE);
 		registerBlockItemModel(ModBlocks.fertileLilypad, Names.Blocks.FERTILE_LILYPAD);

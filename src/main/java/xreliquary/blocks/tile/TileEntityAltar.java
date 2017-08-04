@@ -53,6 +53,10 @@ public class TileEntityAltar extends TileEntityBase implements ITickable {
 		isActive = true;
 	}
 
+	public void stopCycle() {
+		isActive = false;
+	}
+
 	@Override
 	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
 		super.readFromNBT(par1NBTTagCompound);

@@ -34,7 +34,6 @@ public class ModBlocks {
 
 	public static BlockApothecaryCauldron apothecaryCauldron;
 	public static BlockAlkahestryAltar alkahestryAltar;
-	public static BlockAlkahestryAltar alkahestryAltarActive;
 	public static BlockBase apothecaryMortar;
 	public static BlockFertileLilypad fertileLilypad;
 	public static BlockInterdictionTorch interdictionTorch;
@@ -47,8 +46,7 @@ public class ModBlocks {
 		IForgeRegistry<Block> registry = event.getRegistry();
 
 		apothecaryCauldron = registerBlock(registry, new BlockApothecaryCauldron(), Names.Blocks.APOTHECARY_CAULDRON, TileEntityCauldron.class);
-		alkahestryAltar = registerBlock(registry, new BlockAlkahestryAltar(false), Names.Blocks.ALTAR_IDLE);
-		alkahestryAltarActive = registerBlock(registry, new BlockAlkahestryAltar(true), Names.Blocks.ALTAR, TileEntityAltar.class);
+		alkahestryAltar = registerBlock(registry, new BlockAlkahestryAltar(), Names.Blocks.ALTAR, TileEntityAltar.class);
 		apothecaryMortar = registerBlock(registry, new BlockApothecaryMortar(), Names.Blocks.APOTHECARY_MORTAR, TileEntityMortar.class);
 		fertileLilypad = registerBlock(registry, new BlockFertileLilypad(), Names.Blocks.FERTILE_LILYPAD);
 		interdictionTorch = registerBlock(registry, new BlockInterdictionTorch(), Names.Blocks.INTERDICTION_TORCH);
@@ -62,8 +60,7 @@ public class ModBlocks {
 		IForgeRegistry<Item> registry = event.getRegistry();
 
 		registerItemBlock(registry, apothecaryCauldron, Names.Blocks.APOTHECARY_CAULDRON);
-		registerItemBlock(registry, alkahestryAltar, Names.Blocks.ALTAR_IDLE);
-		registerItemBlock(registry, alkahestryAltarActive, Names.Blocks.ALTAR);
+		registerItemBlock(registry, alkahestryAltar, Names.Blocks.ALTAR);
 		registerItemBlock(registry, apothecaryMortar, Names.Blocks.APOTHECARY_MORTAR);
 		registerItemBlock(registry, fertileLilypad, new ItemFertileLilyPad(), Names.Blocks.FERTILE_LILYPAD, false);
 		registerItemBlock(registry, interdictionTorch, Names.Blocks.INTERDICTION_TORCH);
