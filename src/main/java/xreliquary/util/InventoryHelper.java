@@ -15,7 +15,11 @@ import net.minecraftforge.oredict.OreDictionary;
 import xreliquary.items.ItemToggleable;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class InventoryHelper {
 
@@ -390,5 +394,15 @@ public class InventoryHelper {
 			return EnumHand.OFF_HAND;
 		}
 		return null;
+	}
+
+	public static void addItemToPlayerInventory(EntityPlayer player, ItemStack ist) {
+		for(int i = 0; i < player.inventory.mainInventory.size(); ++i) {
+			if(player.inventory.getStackInSlot(i).isEmpty()) {
+				player.inventory.setInventorySlotContents(i, ist);
+				return;
+			}
+		}
+		player.world.spawnEntity(new EntityItem(player.world, player.posX, player.posY, player.posZ, ist));
 	}
 }

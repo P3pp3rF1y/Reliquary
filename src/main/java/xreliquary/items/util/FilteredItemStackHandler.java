@@ -263,9 +263,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	public void setParentSlotStack(int parentSlot, ItemStack filterStack) {
-		if(filterStacks.get(parentSlot).isEmpty()) {
-			filterStacks.set(parentSlot, filterStack.copy());
-		}
+		filterStacks.set(parentSlot, filterStack.copy());
 	}
 
 	protected boolean isItemStackValidForParentSlot(ItemStack stack, int parentSlot) {

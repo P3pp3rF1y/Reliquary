@@ -42,7 +42,6 @@ public class NBTHelper {
 	public static boolean getBoolean(String s, ItemStack ist) {
 		NBTTagCompound tagCompound = getTag(ist);
 		return tagCompound.getBoolean(s);
-
 	}
 
 	public static void setBoolean(String s, ItemStack ist, boolean b) {

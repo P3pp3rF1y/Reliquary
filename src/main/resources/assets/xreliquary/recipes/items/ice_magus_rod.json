@@ -13,7 +13,8 @@
             "item": "#FROZEN_CORE"
         },
         "V": {
-            "item": "xreliquary:void_tear_empty"
+            "type": "xreliquary:item_empty_nbt",
+            "item": "xreliquary:void_tear"
         },
         "I": {
             "item": "minecraft:iron_ingot"

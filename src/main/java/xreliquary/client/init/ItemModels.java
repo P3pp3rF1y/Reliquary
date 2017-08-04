@@ -53,9 +53,6 @@ public class ItemModels {
 		registerItemModel(ModItems.tippedArrow, Names.Items.TIPPED_ARROW);
 		registerItemModel(ModItems.twilightCloak, Names.Items.TWILIGHT_CLOAK);
 
-		registerItemModel(ModItems.emptyVoidTear, Names.Items.VOID_TEAR_EMPTY);
-		registerItemModel(ModItems.filledVoidTear, Names.Items.VOID_TEAR);
-
 		registerItemModel(ModItems.witchHat, Names.Items.WITCH_HAT);
 		registerItemModel(ModItems.witherlessRose, Names.Items.WITHERLESS_ROSE);
 
@@ -84,6 +81,14 @@ public class ItemModels {
 			return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR_EMPTY);
 		});
 		ModelBakery.registerItemVariants(ModItems.infernalTear, ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR));
+
+		registerItemModelForAllVariants(ModItems.voidTear, Names.Items.VOID_TEAR_EMPTY, stack -> {
+			if(!ModItems.voidTear.isEmpty(stack)) {
+				return ItemModelLocations.VOID_TEAR;
+			}
+			return ItemModelLocations.VOID_TEAR_EMPTY;
+		});
+		ModelBakery.registerItemVariants(ModItems.voidTear, ItemModelLocations.VOID_TEAR);
 
 		registerItemModelForAllVariants(ModItems.potion, Names.Items.POTION, stack -> {
 			if(ModItems.potion.getSplash(stack)) {

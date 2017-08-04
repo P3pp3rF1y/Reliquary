@@ -113,16 +113,16 @@ public class ModItemColors {
 			itemColors.registerItemColorHandler((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getPotionColorFromEffectList(XRPotionHelper.getPotionEffectsFromStack(stack)) : -1, ModItems.tippedArrow);
 		}
 
-		if(isEnabled(ModItems.filledVoidTear)) {
+		if(isEnabled(ModItems.voidTear)) {
 			itemColors.registerItemColorHandler((stack, tintIndex) -> {
 				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-					ItemStack containedStack = ModItems.filledVoidTear.getContainerItem(stack);
+					ItemStack containedStack = ModItems.voidTear.getContainerItem(stack);
 					if(!containedStack.isEmpty()) {
 						return itemColors.getColorFromItemstack(containedStack, tintIndex);
 					}
 				}
 				return -1;
-			}, ModItems.filledVoidTear);
+			}, ModItems.voidTear);
 		}
 	}
 

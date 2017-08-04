@@ -14,32 +14,35 @@ import java.util.function.Function;
 
 public class ChargeableItemInfoPane extends Component {
 	public static final String DYNAMIC_PANE = "dynamic";
-	private Item mainItem;
+	private ItemStack mainItem;
 	private Box mainPanel;
 	private Map<String, Component> modePanes = Maps.newHashMap();
 	private HUDPosition hudPosition;
 	private String lastMode;
 	private Function<ItemStack, String> getMode;
 
-	public ChargeableItemInfoPane(Item mainItem, HUDPosition hudPosition, Function<ItemStack, String> getMode, Map<String, Component> modePanes) {
+	public ChargeableItemInfoPane(ItemStack mainItem, HUDPosition hudPosition, Function<ItemStack, String> getMode, Map<String, Component> modePanes) {
 		this(mainItem, getMode, hudPosition);
 		this.modePanes = modePanes;
 
 		String mode = modePanes.keySet().iterator().next();
 		updateCurrentPane(modePanes.get(mode), mode);
 	}
+	public ChargeableItemInfoPane(Item mainItem, HUDPosition hudPosition, Function<ItemStack, String> getMode, Map<String, Component> modePanes) {
+		this(new ItemStack(mainItem), hudPosition, getMode, modePanes);
+	}
 
 	public ChargeableItemInfoPane(Item mainItem, HUDPosition hudPosition, ItemStack chargeItem, Function<ItemStack, Integer> getCount) {
-		this(mainItem, is -> "single", hudPosition);
+		this(new ItemStack(mainItem), is -> "single", hudPosition);
 		updateCurrentPane(new ChargePane(mainItem, chargeItem, getCount), "single");
 	}
 
 	public ChargeableItemInfoPane(Item mainItem, HUDPosition hudPosition, ItemStack chargeItem, Function<ItemStack, Integer> getCount, int textColor) {
-		this(mainItem, is -> "single", hudPosition);
+		this(new ItemStack(mainItem), is -> "single", hudPosition);
 		updateCurrentPane(new ChargePane(mainItem, chargeItem, getCount, textColor), "single");
 	}
 
-	private ChargeableItemInfoPane(Item mainItem, Function<ItemStack, String> getMode, HUDPosition hudPosition) {
+	private ChargeableItemInfoPane(ItemStack mainItem, Function<ItemStack, String> getMode, HUDPosition hudPosition) {
 		this.mainItem = mainItem;
 		this.getMode = getMode;
 		this.hudPosition = hudPosition;
@@ -68,12 +71,12 @@ public class ChargeableItemInfoPane extends Component {
 
 	@Override
 	public boolean shouldRender() {
-		return !InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, mainItem).isEmpty();
+		return !InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, mainItem.getItem()).isEmpty();
 	}
 
 	@Override
 	public void renderInternal(int x, int y) {
-		ItemStack mainStack = InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, mainItem);
+		ItemStack mainStack = InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, mainItem.getItem());
 
 		String mode = getMode.apply(mainStack);
 		if (!lastMode.equals(mode)) {

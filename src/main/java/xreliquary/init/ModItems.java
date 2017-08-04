@@ -66,14 +66,12 @@ import xreliquary.items.ItemShearsOfWinter;
 import xreliquary.items.ItemSojournerStaff;
 import xreliquary.items.ItemTwilightCloak;
 import xreliquary.items.ItemVoidTear;
-import xreliquary.items.ItemVoidTearEmpty;
 import xreliquary.items.ItemWitchHat;
 import xreliquary.items.ItemWitherlessRose;
 import xreliquary.items.ItemXRPotion;
 import xreliquary.items.ItemXRTippedArrow;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
-import xreliquary.reference.Settings;
 
 import javax.annotation.Nonnull;
 
@@ -121,8 +119,7 @@ public class ModItems {
 	public static ItemSojournerStaff sojournerStaff;
 	public static ItemXRTippedArrow tippedArrow;
 	public static ItemTwilightCloak twilightCloak;
-	public static ItemVoidTearEmpty emptyVoidTear;
-	public static ItemVoidTear filledVoidTear;
+	public static ItemVoidTear voidTear;
 	public static ItemWitchHat witchHat;
 	public static ItemWitherlessRose witherlessRose;
 	public static ItemXRPotion potion;
@@ -172,8 +169,7 @@ public class ModItems {
 		shearsOfWinter = registerItem(registry, new ItemShearsOfWinter(), Names.Items.SHEARS_OF_WINTER);
 		sojournerStaff = registerItem(registry, new ItemSojournerStaff(), Names.Items.SOJOURNER_STAFF);
 		twilightCloak = registerItem(registry, new ItemTwilightCloak(), Names.Items.TWILIGHT_CLOAK);
-		emptyVoidTear = registerItem(registry, new ItemVoidTearEmpty(), Names.Items.VOID_TEAR_EMPTY);
-		filledVoidTear = registerItem(registry, new ItemVoidTear(), Names.Items.VOID_TEAR);
+		voidTear = registerItem(registry, new ItemVoidTear(), Names.Items.VOID_TEAR);
 		witchHat = registerItem(registry, new ItemWitchHat(), Names.Items.WITCH_HAT);
 		witherlessRose = registerItem(registry, new ItemWitherlessRose(), Names.Items.WITHERLESS_ROSE);
 		potionEssence = registerItem(registry, new ItemPotionEssence(), Names.Items.POTION_ESSENCE, false);

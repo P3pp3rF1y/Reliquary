@@ -33,9 +33,12 @@ import xreliquary.client.gui.hud.HeroMedallionPane;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.ItemHarvestRod;
+import xreliquary.items.ItemVoidTear;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RegistryHelper;
 
@@ -168,11 +171,21 @@ public class ClientEventHandler {
 						"flight", Box.createVertical(Box.Alignment.RIGHT, new TextPane("FLIGHT") , rendingGaleFeatherPane)
 				)),	Settings.HudPositions.rendingGale));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.filledVoidTear, Settings.HudPositions.voidTear, is -> ChargeableItemInfoPane.DYNAMIC_PANE,
+		ItemStack voidTear = new ItemStack(ModItems.voidTear);
+		NBTHelper.setBoolean("enabled", voidTear, false);
+		Component contentsPane = new DynamicChargePane(ModItems.voidTear,
+				is -> ModItems.voidTear.getContainerItem(is), is -> ModItems.voidTear.getContainerItem(is).getCount());
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(voidTear, Settings.HudPositions.voidTear, is -> ModItems.voidTear.getMode(is).getName(),
 				ImmutableMap.of(
-						ChargeableItemInfoPane.DYNAMIC_PANE, new DynamicChargePane(ModItems.filledVoidTear,
-								is -> ModItems.filledVoidTear.getContainerItem(is), is -> ModItems.filledVoidTear.getContainerItem(is).getCount())
-				)),	Settings.HudPositions.voidTear));
+						ItemVoidTear.Mode.FULL_INVENTORY.getName(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization("item.void_tear.mode." + ItemVoidTear.Mode.FULL_INVENTORY.getName().toLowerCase())) , contentsPane),
+						ItemVoidTear.Mode.NO_REFILL.getName(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization("item.void_tear.mode." + ItemVoidTear.Mode.NO_REFILL.getName().toLowerCase())) , contentsPane),
+						ItemVoidTear.Mode.ONE_STACK.getName(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization("item.void_tear.mode." + ItemVoidTear.Mode.ONE_STACK.getName().toLowerCase())) , contentsPane)
+				)) {
+			@Override
+			public boolean shouldRender() {
+				return !ModItems.voidTear.isEmpty(InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, ModItems.voidTear));
+			}
+		},	Settings.HudPositions.voidTear));
 
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.harvestRod, Settings.HudPositions.harvestRod, is -> ModItems.harvestRod.getMode(is),
 				ImmutableMap.of(

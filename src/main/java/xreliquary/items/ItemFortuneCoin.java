@@ -11,7 +11,11 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -222,7 +226,7 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem/* T
 				else {
 					remaining -= (inventoryStack.getMaxStackSize() - inventoryStack.getCount());
 				}
-			} else if(inventoryStack.getItem() == ModItems.filledVoidTear && ModItems.filledVoidTear.isEnabled(inventoryStack) && ModItems.filledVoidTear.canAbsorbStack(stackToPickup, inventoryStack)) {
+			} else if(inventoryStack.getItem() == ModItems.voidTear && ModItems.voidTear.isEnabled(inventoryStack) && ModItems.voidTear.canAbsorbStack(stackToPickup, inventoryStack)) {
 				return true;
 			}
 		}

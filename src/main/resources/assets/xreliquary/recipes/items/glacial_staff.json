@@ -5,7 +5,8 @@
             "item": "xreliquary:ice_magus_rod"
         },
         {
-            "item": "xreliquary:void_tear_empty"
+            "type": "xreliquary:item_empty_nbt",
+            "item": "xreliquary:void_tear"
         },
         {
             "item": "#FROZEN_CORE"

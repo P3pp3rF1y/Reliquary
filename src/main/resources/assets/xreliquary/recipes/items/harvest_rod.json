@@ -17,7 +17,8 @@
             "item": "minecraft:vine"
         },
         "T": {
-            "item": "xreliquary:void_tear_empty"
+            "type": "xreliquary:item_empty_nbt",
+            "item": "xreliquary:void_tear"
         },
         "S": {
             "item": "minecraft:stick"

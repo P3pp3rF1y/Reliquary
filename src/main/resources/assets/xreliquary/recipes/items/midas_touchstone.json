@@ -27,7 +27,8 @@
             "item": "#CREEPER_GLAND"
         },
         {
-            "item": "xreliquary:void_tear_empty"
+            "type": "xreliquary:item_empty_nbt",
+            "item": "xreliquary:void_tear"
         }
     ],
     "result": {

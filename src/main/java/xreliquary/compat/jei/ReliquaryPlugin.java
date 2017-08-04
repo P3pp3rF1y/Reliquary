@@ -1,6 +1,11 @@
 package xreliquary.compat.jei;
 
-import mezz.jei.api.*;
+import mezz.jei.api.IGuiHelper;
+import mezz.jei.api.IJeiRuntime;
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.IModRegistry;
+import mezz.jei.api.ISubtypeRegistry;
+import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
@@ -66,9 +71,6 @@ public class ReliquaryPlugin implements IModPlugin {
 
 		for(DescriptionEntry entry : JEIDescriptionRegistry.entrySet())
 			registry.addIngredientInfo(entry.itemStacks(), ItemStack.class, entry.langKey());
-
-		//blacklisted items
-		registry.getJeiHelpers().getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(ModItems.filledVoidTear));
 	}
 
 	@Override

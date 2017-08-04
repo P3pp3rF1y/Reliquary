@@ -18,7 +18,13 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
@@ -37,6 +43,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.input.Keyboard;
+import xreliquary.Reliquary;
 import xreliquary.entities.EntityXRFakePlayer;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
@@ -56,17 +63,27 @@ import xreliquary.util.XRFakePlayerFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 public class ItemVoidTear extends ItemToggleable {
-
 	public ItemVoidTear() {
 		super(Names.Items.VOID_TEAR);
-		setMaxStackSize(1);
-		setNoRepair();
-		//noinspection ConstantConditions
-		this.setCreativeTab(null);
+		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	@Override
+	public String getUnlocalizedName(ItemStack stack) {
+		return isEmpty(stack) ? "item.void_tear_empty" : "item.void_tear";
+	}
+
+	@Override
+	public int getItemStackLimit(ItemStack stack) {
+		return isEmpty(stack) ? 16 : 1;
 	}
 
 	@Override
@@ -107,19 +124,20 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack tear, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		this.formatTooltip(null, tear, tooltip);
-
-		ItemStack contents = this.getContainerItem(tear);
-
-		if(contents.isEmpty())
+	public void addInformation(ItemStack voidTear, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 
-		if(this.isEnabled(tear)) {
+		ItemStack contents = this.getContainerItem(voidTear);
+
+		if(isEmpty(voidTear))
+			return;
+
+		if(this.isEnabled(voidTear)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName()), tooltip);
 			tooltip.add(LanguageHelper.getLocalization("tooltip.absorb_tear"));
 		}
-		LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(getItemQuantity(tear))), tooltip);
+		LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(getItemQuantity(voidTear))), tooltip);
 	}
 
 	@Nonnull
@@ -128,10 +146,6 @@ public class ItemVoidTear extends ItemToggleable {
 		ItemStack voidTear = player.getHeldItem(hand);
 
 		if(!world.isRemote) {
-
-			if(getItemQuantity(voidTear) == 0)
-				return new ActionResult<>(EnumActionResult.SUCCESS, new ItemStack(ModItems.emptyVoidTear, 1, 0));
-
 			RayTraceResult rayTraceResult = this.rayTrace(world, player, false);
 
 			//not letting logic go through if player was sneak clicking inventory or was trying to place a block
@@ -139,18 +153,69 @@ public class ItemVoidTear extends ItemToggleable {
 			if(rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK && (world.getTileEntity(rayTraceResult.getBlockPos()) instanceof IInventory && player.isSneaking() || getContainerItem(voidTear).getItem() instanceof ItemBlock))
 				return new ActionResult<>(EnumActionResult.PASS, voidTear);
 
+			if (isEmpty(voidTear)) {
+				return rightClickEmpty(voidTear, player);
+			}
+
+			if(getItemQuantity(voidTear) == 0) {
+				setEmpty(voidTear);
+				return new ActionResult<>(EnumActionResult.SUCCESS, voidTear);
+			}
+
 			if(player.isSneaking())
 				return super.onItemRightClick(world, player, hand);
 
 			if(this.attemptToEmptyIntoInventory(voidTear, player, player.inventory)) {
 				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
-				NBTHelper.resetTag(voidTear);
-				return new ActionResult<>(EnumActionResult.SUCCESS, new ItemStack(ModItems.emptyVoidTear, 1, 0));
+				setEmpty(voidTear);
+				return new ActionResult<>(EnumActionResult.SUCCESS, voidTear);
+			}
+		}
+		return new ActionResult<>(EnumActionResult.PASS, voidTear);
+	}
+
+	private ActionResult<ItemStack> rightClickEmpty(ItemStack emptyVoidTear, EntityPlayer player) {
+		ItemStack target = InventoryHelper.getTargetItem(emptyVoidTear, player.inventory);
+		if(!target.isEmpty()) {
+			ItemStack filledTear;
+			if (emptyVoidTear.getCount() > 1) {
+				emptyVoidTear.shrink(1);
+				filledTear = new ItemStack(this);
+			} else {
+				filledTear = emptyVoidTear;
+			}
+			buildTear(filledTear, target, player, player.inventory, true);
+			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
+			if(emptyVoidTear.getCount() == 1)
+				return new ActionResult<>(EnumActionResult.SUCCESS, filledTear);
+			else {
+				InventoryHelper.addItemToPlayerInventory(player, filledTear);
+				return new ActionResult<>(EnumActionResult.SUCCESS, emptyVoidTear);
 			}
 		}
 
-		player.inventoryContainer.detectAndSendChanges();
-		return new ActionResult<>(EnumActionResult.PASS, voidTear);
+		return new ActionResult<>(EnumActionResult.PASS, emptyVoidTear);
+	}
+
+	private void buildTear(ItemStack voidTear, ItemStack target, EntityPlayer player, IInventory inventory, boolean isPlayerInventory) {
+		setItemStack(voidTear, target);
+
+		int quantity = InventoryHelper.getItemQuantity(target, inventory);
+		if(isPlayerInventory) {
+			if((quantity - target.getMaxStackSize()) > 0) {
+				InventoryHelper.consumeItem(target, player, target.getMaxStackSize(), quantity - target.getMaxStackSize());
+				quantity = quantity - target.getMaxStackSize();
+			} else {
+				InventoryHelper.consumeItem(target, player, 0, 1);
+				quantity = 1;
+			}
+		} else {
+			quantity = InventoryHelper.tryToRemoveFromInventory(target, inventory, Settings.VoidTear.itemLimit);
+		}
+		setItemQuantity(voidTear, quantity);
+
+		//configurable auto-drain when created.
+		NBTHelper.setBoolean("enabled", voidTear, Settings.VoidTear.absorbWhenCreated);
 	}
 
 	private boolean canPlaceBlockOnSide(World worldIn, Block blockToPlace, BlockPos pos, EnumFacing side, EntityPlayer player) {
@@ -194,9 +259,9 @@ public class ItemVoidTear extends ItemToggleable {
 			}
 
 			//noinspection ConstantConditions
-			if(player.inventory.getStackInSlot(slotNumber).getItem() == ModItems.filledVoidTear && (isSelected || quantityUpdated)) {
+			if(player.inventory.getStackInSlot(slotNumber).getItem() == this && (isSelected || quantityUpdated)) {
 				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(voidTear)), (EntityPlayerMP) player);
-			} else if(player.getHeldItemOffhand().getItem() == ModItems.filledVoidTear) {
+			} else if(player.getHeldItemOffhand().getItem() == this) {
 				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(voidTear)), (EntityPlayerMP) player);
 			}
 
@@ -252,9 +317,12 @@ public class ItemVoidTear extends ItemToggleable {
 		if(world.getTileEntity(pos) instanceof IInventory) {
 			if(!world.isRemote) {
 				IInventory inventory = (IInventory) world.getTileEntity(pos);
-
 				if(inventory instanceof TileEntityChest && world.getBlockState(pos).getBlock() instanceof BlockChest) {
 					inventory = ((BlockChest) world.getBlockState(pos).getBlock()).getLockableContainer(world, pos);
+				}
+
+				if (isEmpty(voidTear)) {
+					return onItemUseFirstEmpty(voidTear, inventory, player, hand);
 				}
 
 				//enabled == drinking mode, we're going to drain the inventory of items.
@@ -263,12 +331,13 @@ public class ItemVoidTear extends ItemToggleable {
 				} else {
 					//disabled == placement mode, try and stuff the tear's contents into the inventory
 					this.attemptToEmptyIntoInventory(voidTear, player, inventory);
-					if(!player.isSneaking() && !(getItemQuantity(voidTear) > 0)) {
-						player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(ModItems.emptyVoidTear, 1, 0));
+					if(getItemQuantity(voidTear) <= 0) {
+						setEmpty(voidTear);
+						player.setHeldItem(hand, voidTear);
 					}
 				}
-				return EnumActionResult.SUCCESS;
 			}
+			return EnumActionResult.SUCCESS;
 		} else if(getContainerItem(voidTear).getItem() instanceof ItemBlock) {
 			ItemStack containerItem = getContainerItem(voidTear);
 			ItemBlock itemBlock = (ItemBlock) containerItem.getItem();
@@ -287,8 +356,31 @@ public class ItemVoidTear extends ItemToggleable {
 		return EnumActionResult.PASS;
 	}
 
+	private EnumActionResult onItemUseFirstEmpty(ItemStack emptyVoidTear, IInventory inventory, EntityPlayer player, EnumHand hand) {
+		ItemStack target = InventoryHelper.getTargetItem(emptyVoidTear, inventory);
+		if(!target.isEmpty()) {
+			ItemStack filledTear;
+			if (emptyVoidTear.getCount() > 1) {
+				emptyVoidTear.shrink(1);
+				filledTear = new ItemStack(this);
+			} else {
+				filledTear = emptyVoidTear;
+			}
+			buildTear(filledTear, target, player, inventory, false);
+
+			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
+			if(emptyVoidTear.getCount() == 1)
+				player.setHeldItem(hand, filledTear);
+			else
+				InventoryHelper.addItemToPlayerInventory(player, filledTear);
+			return EnumActionResult.SUCCESS;
+		}
+
+		return EnumActionResult.PASS;
+	}
+
 	private boolean attemptToEmptyIntoInventory(ItemStack ist, EntityPlayer player, IInventory inventory) {
-		ItemStack contents = this.getContainerItem(ist);
+		ItemStack contents = this.getContainerItem(ist).copy();
 		contents.setCount(1);
 
 		int quantity = getItemQuantity(ist);
@@ -338,7 +430,7 @@ public class ItemVoidTear extends ItemToggleable {
 		return stackToReturn;
 	}
 
-	void setItemStack(ItemStack voidTear, ItemStack stack) {
+	private void setItemStack(ItemStack voidTear, ItemStack stack) {
 		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -348,7 +440,7 @@ public class ItemVoidTear extends ItemToggleable {
 		filteredHandler.setParentSlotStack(0, stack);
 	}
 
-	void setItemQuantity(ItemStack voidTear, int quantity) {
+	private void setItemQuantity(ItemStack voidTear, int quantity) {
 		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -404,6 +496,9 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	private void cycleMode(ItemStack voidTear) {
+		if (isEmpty(voidTear))
+			return;
+
 		Mode mode = getMode(voidTear);
 		switch(mode) {
 			case ONE_STACK:
@@ -461,6 +556,17 @@ public class ItemVoidTear extends ItemToggleable {
 		return StackHelper.isItemAndNbtEqual(this.getContainerItem(tearStack), pickedUpStack) && this.getItemQuantity(tearStack) + pickedUpStack.getCount() <= Settings.VoidTear.itemLimit;
 	}
 
+	public boolean isEmpty(ItemStack voidTear) {
+		return voidTear.getTagCompound() == null || voidTear.getTagCompound().getKeySet().isEmpty();
+	}
+
+	private void setEmpty(ItemStack voidTear) {
+		voidTear.setTagCompound(null);
+		setItemStack(voidTear, ItemStack.EMPTY);
+		setItemQuantity(voidTear, 0);
+	}
+
+	//TODO get rid of this once there's getsharetag in place
 	private static Map<UUID, VoidTearListener> openListeners = new HashMap<>();
 
 	@SubscribeEvent
@@ -528,7 +634,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 		private void updateVoidTear(Container container, int slot, ItemStack stack) {
 
-			if(stack == null || stack.getItem() != ModItems.filledVoidTear)
+			if(stack == null || stack.getItem() != ModItems.voidTear)
 				return;
 
 			PacketHandler.networkWrapper.sendTo(new PacketContainerItemHandlerSync(slot, getItemHandlerNBT(stack), container.windowId), player);

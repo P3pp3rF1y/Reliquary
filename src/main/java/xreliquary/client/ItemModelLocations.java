@@ -7,6 +7,9 @@ import xreliquary.reference.Reference;
 import java.util.ArrayList;
 
 public class ItemModelLocations {
+	public static final ModelResourceLocation VOID_TEAR = new ModelResourceLocation(Reference.DOMAIN + Names.Items.VOID_TEAR, "inventory");
+	public static final ModelResourceLocation VOID_TEAR_EMPTY = new ModelResourceLocation(Reference.DOMAIN + Names.Items.VOID_TEAR_EMPTY, "inventory");
+
 	private static ItemModelLocations instance;
 
 	public static ItemModelLocations getInstance() {

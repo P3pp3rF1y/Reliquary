@@ -2,7 +2,8 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "xreliquary:void_tear_empty"
+            "type": "xreliquary:item_empty_nbt",
+            "item": "xreliquary:void_tear"
         },
         {
             "item": "xreliquary:witch_hat"

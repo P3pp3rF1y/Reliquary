@@ -1,5 +1,8 @@
 {
     "conditions": {
         "mob_drops_craftable": "xreliquary.crafting.MobDropsCraftableCondition"
+    },
+    "ingredients": {
+        "item_empty_nbt": "xreliquary.crafting.EmptyNBTIngredient"
     }
 }
