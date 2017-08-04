@@ -60,7 +60,7 @@ public class ItemModels {
 
 		registerItemModel(ModItems.rodOfLyssa, Names.Items.ROD_OF_LYSSA);
 
-		ModelBakery.registerItemVariants(ModItems.rodOfLyssa, ItemModelLocations.getInstance().getModel(ItemModelLocations.ROD_OF_LYSSA_CAST));
+		ModelBakery.registerItemVariants(ModItems.rodOfLyssa, ItemModelLocations.ROD_OF_LYSSA_CAST);
 
 		for(int i = 0; i < 17; i++) {
 			registerItemModel(ModItems.mobIngredient, Names.Items.MOB_INGREDIENT, i, true);
@@ -76,11 +76,11 @@ public class ItemModels {
 		registerItemModelForAllVariants(ModItems.potionEssence, Names.Items.POTION_ESSENCE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.POTION_ESSENCE, "inventory"));
 		registerItemModelForAllVariants(ModItems.infernalTear, Names.Items.INFERNAL_TEAR_EMPTY, stack -> {
 			if(!ModItems.infernalTear.getStackFromTear(stack).isEmpty()) {
-				return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR);
+				return ItemModelLocations.INFERNAL_TEAR;
 			}
-			return ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR_EMPTY);
+			return ItemModelLocations.INFERNAL_TEAR_EMPTY;
 		});
-		ModelBakery.registerItemVariants(ModItems.infernalTear, ItemModelLocations.getInstance().getModel(ItemModelLocations.INFERNAL_TEAR));
+		ModelBakery.registerItemVariants(ModItems.infernalTear, ItemModelLocations.INFERNAL_TEAR);
 
 		registerItemModelForAllVariants(ModItems.voidTear, Names.Items.VOID_TEAR_EMPTY, stack -> {
 			if(!ModItems.voidTear.isEmpty(stack)) {
@@ -92,14 +92,14 @@ public class ItemModels {
 
 		registerItemModelForAllVariants(ModItems.potion, Names.Items.POTION, stack -> {
 			if(ModItems.potion.getSplash(stack)) {
-				return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_SPLASH);
+				return ItemModelLocations.POTION_SPLASH;
 			} else if(ModItems.potion.getLingering(stack)) {
-				return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_LINGERING);
+				return ItemModelLocations.POTION_LINGERING;
 			}
-			return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION);
+			return ItemModelLocations.POTION;
 		});
-		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_SPLASH));
-		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_LINGERING));
+		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.POTION_SPLASH);
+		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.POTION_LINGERING);
 
 		registerItemModelForAllVariants(ModItems.magazine, Names.Items.MAGAZINE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MAGAZINE, "inventory"));
 	}
