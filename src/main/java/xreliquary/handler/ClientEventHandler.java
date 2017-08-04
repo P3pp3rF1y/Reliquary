@@ -174,7 +174,7 @@ public class ClientEventHandler {
 		ItemStack voidTear = new ItemStack(ModItems.voidTear);
 		NBTHelper.setBoolean("enabled", voidTear, false);
 		Component contentsPane = new DynamicChargePane(ModItems.voidTear,
-				is -> ModItems.voidTear.getContainerItem(is), is -> ModItems.voidTear.getContainerItem(is).getCount());
+				is -> ModItems.voidTear.getContainerItemClient(is), is -> ModItems.voidTear.getContainerItemClient(is).getCount());
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(voidTear, Settings.HudPositions.voidTear, is -> ModItems.voidTear.getMode(is).getName(),
 				ImmutableMap.of(
 						ItemVoidTear.Mode.FULL_INVENTORY.getName(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization("item.void_tear.mode." + ItemVoidTear.Mode.FULL_INVENTORY.getName().toLowerCase())) , contentsPane),
@@ -183,7 +183,7 @@ public class ClientEventHandler {
 				)) {
 			@Override
 			public boolean shouldRender() {
-				return !ModItems.voidTear.isEmpty(InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, ModItems.voidTear));
+				return !ModItems.voidTear.isEmptyClient(InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, ModItems.voidTear));
 			}
 		},	Settings.HudPositions.voidTear));
 
