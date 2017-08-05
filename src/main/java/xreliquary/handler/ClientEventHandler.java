@@ -149,9 +149,9 @@ public class ClientEventHandler {
 
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.enderStaff, Settings.HudPositions.enderStaff, is -> ModItems.enderStaff.getMode(is),
 				ImmutableMap.of(
-						"cast", new ChargePane(ModItems.enderStaff, new ItemStack(Items.ENDER_PEARL), is -> ModItems.enderStaff.getPearlCount(is)),
-						"node_warp", new ChargePane(ModItems.enderStaff, new ItemStack(ModBlocks.wraithNode), is -> ModItems.enderStaff.getPearlCount(is)),
-						"long_cast", new ChargePane(ModItems.enderStaff, new ItemStack(Items.ENDER_EYE), is -> ModItems.enderStaff.getPearlCount(is))
+						"cast", new ChargePane(ModItems.enderStaff, new ItemStack(Items.ENDER_PEARL), is -> ModItems.enderStaff.getPearlCountClient(is)),
+						"node_warp", new ChargePane(ModItems.enderStaff, new ItemStack(ModBlocks.wraithNode), is -> ModItems.enderStaff.getPearlCountClient(is)),
+						"long_cast", new ChargePane(ModItems.enderStaff, new ItemStack(Items.ENDER_EYE), is -> ModItems.enderStaff.getPearlCountClient(is))
 						)),	Settings.HudPositions.enderStaff));
 
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.pyromancerStaff, Settings.HudPositions.pyromancerStaff, is -> ModItems.pyromancerStaff.getMode(is),

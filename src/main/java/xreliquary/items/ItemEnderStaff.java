@@ -32,7 +32,6 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.init.ModBlocks;
-import xreliquary.init.ModItems;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.network.PacketHandler;
@@ -133,12 +132,6 @@ public class ItemEnderStaff extends ItemToggleable {
 		if(player == null)
 			return;
 
-		if(player.inventory.getStackInSlot(slotNumber).getItem() == this && isSelected) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
-		} else if(player.getHeldItemOffhand().getItem() == this) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
-		}
-
 		if(!this.isEnabled(ist))
 			return;
 		if(getPearlCount(ist) + getEnderPearlWorth() <= getEnderPearlLimit()) {
@@ -181,7 +174,7 @@ public class ItemEnderStaff extends ItemToggleable {
 		return filteredHandler.serializeNBT();
 	}
 
-	public int getPearlCount(@Nonnull ItemStack ist) {
+	private int getPearlCount(@Nonnull ItemStack ist) {
 		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -298,11 +291,12 @@ public class ItemEnderStaff extends ItemToggleable {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack ist, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		//added spacing here to make sure the tooltips didn't come out with weird punctuation derps.
-		String charge = Integer.toString(getPearlCount(ist));
+		String charge = Integer.toString(getPearlCountClient(ist));
 		String phrase = "Currently bound to ";
 		String position = "";
 		if(ist.getTagCompound() != null && ist.getTagCompound().getInteger("dimensionID") != getDimension(world)) {
@@ -347,5 +341,28 @@ public class ItemEnderStaff extends ItemToggleable {
 		NBTHelper.setInteger("nodeY" + dimensionID, eye, pos.getY());
 		NBTHelper.setInteger("nodeZ" + dimensionID, eye, pos.getZ());
 		NBTHelper.setInteger("dimensionID", eye, dimensionID);
+	}
+
+	@Nullable
+	@Override
+	public NBTTagCompound getNBTShareTag(ItemStack staff) {
+		NBTTagCompound nbt = super.getNBTShareTag(staff);
+		if (nbt == null) {
+			nbt = new NBTTagCompound();
+		}
+		nbt.setInteger("count", getPearlCount(staff));
+
+		return super.getNBTShareTag(staff);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public int getPearlCountClient(ItemStack staff) {
+		NBTTagCompound tag = staff.getTagCompound();
+
+		if (tag == null || !tag.hasKey("count")) {
+			return 0;
+		}
+
+		return tag.getInteger("count");
 	}
 }
