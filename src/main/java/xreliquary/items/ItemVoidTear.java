@@ -366,7 +366,6 @@ public class ItemVoidTear extends ItemToggleable {
 		return nbt;
 	}
 
-	@SideOnly(Side.CLIENT)
 	public ItemStack getContainerItemClient(ItemStack voidTear) {
 		NBTTagCompound nbt = voidTear.getTagCompound();
 		if (nbt == null || !nbt.hasKey("contents")) {
