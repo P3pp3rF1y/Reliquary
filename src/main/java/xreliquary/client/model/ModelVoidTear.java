@@ -70,7 +70,7 @@ public class ModelVoidTear implements IBakedModel {
 			@Override
 			public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
 				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-					ItemStack containedStack = ModItems.voidTear.getContainerItemClient(stack);
+					ItemStack containedStack = ModItems.voidTear.getContainerItem(stack, true);
 					if(!containedStack.isEmpty()) {
 						IBakedModel bakedModel = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(containedStack, world, entity);
 						if(!bakedModel.isBuiltInRenderer())

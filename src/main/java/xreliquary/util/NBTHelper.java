@@ -3,14 +3,15 @@ package xreliquary.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-@SuppressWarnings("unused")
 public class NBTHelper {
 
+	@SuppressWarnings("SameParameterValue")
 	public static int getShort(String s, ItemStack ist) {
 		NBTTagCompound tagCompound = getTag(ist);
 		return tagCompound.getShort(s);
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	public static void setShort(String s, ItemStack ist, int i) {
 		NBTTagCompound tagCompound = getTag(ist);
 		tagCompound.setShort(s, (short) i);
@@ -28,11 +29,13 @@ public class NBTHelper {
 		setTag(ist, tagCompound);
 	}
 
+	@SuppressWarnings("unused")
 	public static long getLong(String s, ItemStack ist) {
 		NBTTagCompound tagCompound = getTag(ist);
 		return tagCompound.getLong(s);
 	}
 
+	@SuppressWarnings("unused")
 	public static void setLong(String s, ItemStack ist, long i) {
 		NBTTagCompound tagCompound = getTag(ist);
 		tagCompound.setLong(s, i);
@@ -64,16 +67,12 @@ public class NBTHelper {
 
 	public static NBTTagCompound getTag(ItemStack ist) {
 		if(ist.getTagCompound() == null)
-			resetTag(ist);
+			return new NBTTagCompound();
 		return ist.getTagCompound();
 	}
 
 	public static void setTag(ItemStack ist, NBTTagCompound nbt) {
 		ist.setTagCompound(nbt);
-	}
-
-	public static void resetTag(ItemStack ist) {
-		setTag(ist, new NBTTagCompound());
 	}
 
 	public static void setTagCompound(String s, ItemStack ist, NBTTagCompound tc) {

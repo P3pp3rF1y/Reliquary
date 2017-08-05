@@ -149,9 +149,9 @@ public class ClientEventHandler {
 
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.enderStaff, Settings.HudPositions.enderStaff, is -> ModItems.enderStaff.getMode(is),
 				ImmutableMap.of(
-						"cast", new ChargePane(ModItems.enderStaff, new ItemStack(Items.ENDER_PEARL), is -> ModItems.enderStaff.getPearlCountClient(is)),
-						"node_warp", new ChargePane(ModItems.enderStaff, new ItemStack(ModBlocks.wraithNode), is -> ModItems.enderStaff.getPearlCountClient(is)),
-						"long_cast", new ChargePane(ModItems.enderStaff, new ItemStack(Items.ENDER_EYE), is -> ModItems.enderStaff.getPearlCountClient(is))
+						"cast", new ChargePane(ModItems.enderStaff, new ItemStack(Items.ENDER_PEARL), is -> ModItems.enderStaff.getPearlCount(is, true)),
+						"node_warp", new ChargePane(ModItems.enderStaff, new ItemStack(ModBlocks.wraithNode), is -> ModItems.enderStaff.getPearlCount(is, true)),
+						"long_cast", new ChargePane(ModItems.enderStaff, new ItemStack(Items.ENDER_EYE), is -> ModItems.enderStaff.getPearlCount(is, true))
 						)),	Settings.HudPositions.enderStaff));
 
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.pyromancerStaff, Settings.HudPositions.pyromancerStaff, is -> ModItems.pyromancerStaff.getMode(is),
@@ -162,7 +162,7 @@ public class ClientEventHandler {
 						"flint_and_steel", new ItemStackPane(Items.FLINT_AND_STEEL)
 				)),	Settings.HudPositions.pyromancerStaff));
 
-		ChargePane rendingGaleFeatherPane = new ChargePane(ModItems.rendingGale, new ItemStack(Items.FEATHER), is -> ModItems.rendingGale.getFeatherCount(is) / 100);
+		ChargePane rendingGaleFeatherPane = new ChargePane(ModItems.rendingGale, new ItemStack(Items.FEATHER), is -> ModItems.rendingGale.getFeatherCountClient(is, Minecraft.getMinecraft().player) / 100);
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.rendingGale, Settings.HudPositions.rendingGale, is -> ModItems.rendingGale.getMode(is),
 				ImmutableMap.of(
 						"push", Box.createVertical(Box.Alignment.RIGHT, new TextPane("PUSH") , rendingGaleFeatherPane),
@@ -171,11 +171,9 @@ public class ClientEventHandler {
 						"flight", Box.createVertical(Box.Alignment.RIGHT, new TextPane("FLIGHT") , rendingGaleFeatherPane)
 				)),	Settings.HudPositions.rendingGale));
 
-		ItemStack voidTear = new ItemStack(ModItems.voidTear);
-		NBTHelper.setBoolean("enabled", voidTear, false);
 		Component contentsPane = new DynamicChargePane(ModItems.voidTear,
-				is -> ModItems.voidTear.getContainerItemClient(is), is -> ModItems.voidTear.getContainerItemClient(is).getCount());
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(voidTear, Settings.HudPositions.voidTear, is -> ModItems.voidTear.getMode(is).getName(),
+				is -> ModItems.voidTear.getContainerItem(is, true), is -> ModItems.voidTear.getContainerItem(is, true).getCount());
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.voidTear, Settings.HudPositions.voidTear, is -> ModItems.voidTear.getMode(is).getName(),
 				ImmutableMap.of(
 						ItemVoidTear.Mode.FULL_INVENTORY.getName(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization("item.void_tear.mode." + ItemVoidTear.Mode.FULL_INVENTORY.getName().toLowerCase())) , contentsPane),
 						ItemVoidTear.Mode.NO_REFILL.getName(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization("item.void_tear.mode." + ItemVoidTear.Mode.NO_REFILL.getName().toLowerCase())) , contentsPane),
@@ -183,7 +181,7 @@ public class ClientEventHandler {
 				)) {
 			@Override
 			public boolean shouldRender() {
-				return !ModItems.voidTear.isEmptyClient(InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, ModItems.voidTear));
+				return !ModItems.voidTear.isEmpty(InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, ModItems.voidTear), true);
 			}
 		},	Settings.HudPositions.voidTear));
 

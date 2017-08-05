@@ -9,7 +9,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
@@ -20,19 +19,22 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
-import xreliquary.init.ModItems;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
-import xreliquary.network.PacketHandler;
-import xreliquary.network.PacketItemHandlerSync;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -52,11 +54,12 @@ public class ItemRendingGale extends ItemToggleable {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack rendingGale, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 
-		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(getFeatherCount(rendingGale))), rendingGale, tooltip);
+		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(getFeatherCount(rendingGale, true) / 100)), rendingGale, tooltip);
 
 		if(this.isEnabled(rendingGale))
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.WHITE + Items.FEATHER.getItemStackDisplayName(new ItemStack(Items.FEATHER))), tooltip);
@@ -75,7 +78,7 @@ public class ItemRendingGale extends ItemToggleable {
 		return Settings.RendingGale.chargeFeatherWorth;
 	}
 
-	public static int getBoltChargeCost() {
+	private static int getBoltChargeCost() {
 		return Settings.RendingGale.boltChargeCost;
 	}
 
@@ -135,29 +138,10 @@ public class ItemRendingGale extends ItemToggleable {
 		if(this.isEnabled(rendingGale)) {
 			if(getFeatherCount(rendingGale) + getFeathersWorth() <= getChargeLimit()) {
 				if(InventoryHelper.consumeItem(new ItemStack(Items.FEATHER), player)) {
-					setFeatherCount(rendingGale, getFeatherCount(rendingGale) + getFeathersWorth());
+					setFeatherCount(rendingGale, getFeatherCount(rendingGale) + getFeathersWorth(), !player.isHandActive());
 				}
 			}
 		}
-
-		if(player.getHeldItemMainhand() == rendingGale) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.MAIN_HAND, getItemHandlerNBT(rendingGale)), (EntityPlayerMP) player);
-		} else if(player.getHeldItemOffhand() == rendingGale) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(rendingGale)), (EntityPlayerMP) player);
-		} else if(player.inventory.getStackInSlot(slotNumber).getItem() == this) {
-			PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(rendingGale)), (EntityPlayerMP) player);
-		}
-	}
-
-	private NBTTagCompound getItemHandlerNBT(ItemStack ist) {
-		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-
-		if(!(itemHandler instanceof FilteredItemStackHandler))
-			return null;
-
-		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
-
-		return filteredHandler.serializeNBT();
 	}
 
 	public String getMode(ItemStack ist) {
@@ -229,79 +213,53 @@ public class ItemRendingGale extends ItemToggleable {
 	}
 
 	@Override
-	public void onUsingTick(ItemStack ist, EntityLivingBase entity, int count) {
+	public void onUsingTick(ItemStack rendingGale, EntityLivingBase entity, int count) {
 		if(!(entity instanceof EntityPlayer))
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		int totalCost = -1;
-		int ticksInUse = getMaxItemUseDuration(ist) - count;
-
-		if(ticksInUse < 0) {
+		if(getFeatherCount(rendingGale, player.world.isRemote) <= 0) {
 			player.stopActiveHand();
 			return;
 		}
 
-		if(!player.capabilities.isCreativeMode) {
-			if(isFlightMode(ist)) {
-				totalCost = ticksInUse * getChargeCost();
-			} else if(isBoltMode(ist)) {
-				totalCost = (ticksInUse / 8) * getBoltChargeCost();
-			}
-		}
-
-		if(getFeatherCount(ist) <= totalCost) {
-			player.stopActiveHand();
-			return;
-		}
-
-		if(isFlightMode(ist)) {
-			attemptFlight(player);
-			spawnFlightParticles(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, player);
-		} else if(isPushMode(ist)) {
-			doRadialPush(player.world, player.posX, player.posY, player.posZ, player, false);
-		} else if(isPullMode(ist)) {
-			doRadialPush(player.world, player.posX, player.posY, player.posZ, player, true);
-		} else if(isBoltMode(ist)) {
-
+		if(isBoltMode(rendingGale)) {
 			RayTraceResult mop = this.getCycloneBlockTarget(player.world, player);
 
 			if(mop != null) {
-				if(ticksInUse % 8 == 0) {
+				if(count % 8 == 0) {
 					int attemptedY = mop.getBlockPos().getY();
 					if(!player.world.isRainingAt(mop.getBlockPos())) {
 						attemptedY++;
 					}
 					if(!player.world.isRemote && player.world.isRainingAt(new BlockPos(mop.getBlockPos().getX(), attemptedY, mop.getBlockPos().getZ()))) {
 						player.world.addWeatherEffect(new EntityLightningBolt(player.world, (double) mop.getBlockPos().getX(), (double) mop.getBlockPos().getY(), (double) mop.getBlockPos().getZ(), false));
+						setFeatherCount(rendingGale,Math.max(0, getFeatherCount(rendingGale) - (getBoltChargeCost())), false);
 					}
 				}
+			}
+		} else {
+			if(isFlightMode(rendingGale)) {
+				attemptFlight(player);
+				spawnFlightParticles(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, player);
+			} else if(isPushMode(rendingGale)) {
+				doRadialPush(player.world, player.posX, player.posY, player.posZ, player, false);
+			} else if(isPullMode(rendingGale)) {
+				doRadialPush(player.world, player.posX, player.posY, player.posZ, player, true);
+			}
+			if (!player.world.isRemote) {
+				setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - getChargeCost()), false);
 			}
 		}
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft) {
-		if(!(entityLiving instanceof EntityPlayer))
+	public void onPlayerStoppedUsing(ItemStack rendingGale, World world, EntityLivingBase entityLiving, int timeLeft) {
+		if(world.isRemote)
 			return;
 
-		EntityPlayer player = (EntityPlayer) entityLiving;
-
-		if(worldIn.isRemote)
-			return;
-
-		int ticksInUse = getMaxItemUseDuration(stack) - timeLeft;
-
-		if(ticksInUse > 0) {
-			if(isFlightMode(stack)) {
-				if(!player.capabilities.isCreativeMode)
-					setFeatherCount(stack, (getFeatherCount(stack) - (getChargeCost() * ticksInUse)) > 0 ? (getFeatherCount(stack) - (getChargeCost() * ticksInUse)) : 0);
-			} else if(isBoltMode(stack)) {
-				if(!player.capabilities.isCreativeMode)
-					setFeatherCount(stack, (getFeatherCount(stack) - (getBoltChargeCost() * (ticksInUse / 8))) > 0 ? (getFeatherCount(stack) - (getBoltChargeCost() * (ticksInUse / 8))) : 0);
-			}
-		}
+		NBTHelper.setInteger("count", rendingGale, getFeatherCount(rendingGale));
 	}
 
 	private boolean isPushMode(ItemStack ist) {
@@ -321,7 +279,7 @@ public class ItemRendingGale extends ItemToggleable {
 		return remainingCharge > 0;
 	}
 
-	public boolean isBoltMode(ItemStack stack) {
+	private boolean isBoltMode(ItemStack stack) {
 		return getMode(stack).equals("bolt");
 	}
 
@@ -345,8 +303,16 @@ public class ItemRendingGale extends ItemToggleable {
 		return world.rayTraceBlocks(vec3, vec31, true, false, false);
 	}
 
-	public int getFeatherCount(ItemStack ist) {
-		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+	public int getFeatherCount(ItemStack rendingGale) {
+		return getFeatherCount(rendingGale, false);
+	}
+
+	private int getFeatherCount(ItemStack rendingGale, boolean isClient) {
+		if (isClient) {
+			return NBTHelper.getInteger("count", rendingGale);
+		}
+
+		IItemHandler itemHandler = rendingGale.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
 			return 0;
@@ -356,7 +322,7 @@ public class ItemRendingGale extends ItemToggleable {
 		return filteredHandler.getTotalAmount(0);
 	}
 
-	public void setFeatherCount(ItemStack ist, int featherCount) {
+	public void setFeatherCount(ItemStack ist, int featherCount, boolean updateNBT) {
 		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -365,6 +331,10 @@ public class ItemRendingGale extends ItemToggleable {
 		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 
 		filteredHandler.setTotalAmount(0, featherCount);
+
+		if (updateNBT) {
+			NBTHelper.setInteger("count", ist, featherCount);
+		}
 	}
 
 	public void doRadialPush(World world, double posX, double posY, double posZ, EntityPlayer player, boolean pull) {
@@ -446,5 +416,15 @@ public class ItemRendingGale extends ItemToggleable {
 
 			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
 		}
+	}
+
+	public int getFeatherCountClient(ItemStack rendingGale, EntityPlayer player) {
+		int featherCount = getFeatherCount(rendingGale, true);
+		String mode = getMode(rendingGale);
+		int ticksInUse = getMaxItemUseDuration(rendingGale) - player.getItemInUseCount();
+		if (player.isHandActive()) {
+			featherCount = Math.max(0, featherCount - (mode.equals("bolt") ? getBoltChargeCost() * (ticksInUse / 8) : (getChargeCost() * ticksInUse)));
+		}
+		return featherCount;
 	}
 }

@@ -32,6 +32,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -66,7 +67,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
-		return isEmptyClient(stack) ? "item.void_tear_empty" : "item.void_tear";
+		return isEmpty(stack, FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) ? "item.void_tear_empty" : "item.void_tear";
 	}
 
 	@Override
@@ -116,9 +117,9 @@ public class ItemVoidTear extends ItemToggleable {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 
-		ItemStack contents = this.getContainerItemClient(voidTear);
+		ItemStack contents = this.getContainerItem(voidTear, true);
 
-		if(isEmptyClient(voidTear))
+		if(isEmpty(voidTear, true))
 			return;
 
 		if(this.isEnabled(voidTear)) {
@@ -239,8 +240,39 @@ public class ItemVoidTear extends ItemToggleable {
 						}
 					}
 				}
+				if(getMode(voidTear) != Mode.NO_REFILL) {
+					attemptToReplenish(player, voidTear);
+				}
 			}
 		}
+	}
+
+	private boolean attemptToReplenish(EntityPlayer player, ItemStack voidTear) {
+		IInventory inventory = player.inventory;
+		for(int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+			ItemStack stackFound = inventory.getStackInSlot(slot);
+
+			if(StackHelper.isItemAndNbtEqual(stackFound, getContainerItem(voidTear))) {
+				int quantityToDecrease = Math.min(stackFound.getMaxStackSize() - stackFound.getCount(), getItemQuantity(voidTear) - 1);
+				stackFound.grow(quantityToDecrease);
+				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
+				if(getMode(voidTear) != Mode.FULL_INVENTORY)
+					return true;
+			}
+		}
+
+		int slot;
+		while(getItemQuantity(voidTear) > 1 && (slot = player.inventory.getFirstEmptyStack()) != -1) {
+			ItemStack newStack = getContainerItem(voidTear).copy();
+			int quantityToDecrease = Math.min(newStack.getMaxStackSize(), getItemQuantity(voidTear) - 1);
+			newStack.setCount(quantityToDecrease);
+			player.inventory.setInventorySlotContents(slot, newStack);
+			setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
+			if(getMode(voidTear) != Mode.FULL_INVENTORY)
+				return true;
+		}
+
+		return false;
 	}
 
 	@Nonnull
@@ -366,21 +398,23 @@ public class ItemVoidTear extends ItemToggleable {
 		return nbt;
 	}
 
-	public ItemStack getContainerItemClient(ItemStack voidTear) {
-		NBTTagCompound nbt = voidTear.getTagCompound();
-		if (nbt == null || !nbt.hasKey("contents")) {
-			return ItemStack.EMPTY;
-		}
-		ItemStack contents = new ItemStack(nbt.getCompoundTag("contents"));
-		contents.setCount(nbt.getInteger("count"));
-
-		return contents;
-	}
-
-
 	@Nonnull
 	@Override
 	public ItemStack getContainerItem(@Nonnull ItemStack voidTear) {
+		return getContainerItem(voidTear, false);
+	}
+	public ItemStack getContainerItem(@Nonnull ItemStack voidTear, boolean isClient) {
+		if (isClient) {
+			NBTTagCompound nbt = voidTear.getTagCompound();
+			if (nbt == null || !nbt.hasKey("contents")) {
+				return ItemStack.EMPTY;
+			}
+			ItemStack contents = new ItemStack(nbt.getCompoundTag("contents"));
+			contents.setCount(nbt.getInteger("count"));
+
+			return contents;
+		}
+
 		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -523,11 +557,15 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	public boolean isEmpty(ItemStack voidTear) {
-		return voidTear.getTagCompound() == null || voidTear.getTagCompound().getKeySet().isEmpty();
+		return isEmpty(voidTear, false);
 	}
 
-	public boolean isEmptyClient(ItemStack voidTear) {
-		return getContainerItemClient(voidTear).isEmpty();
+	public boolean isEmpty(ItemStack voidTear, boolean isClient) {
+		if (isClient) {
+			return getContainerItem(voidTear, true).isEmpty();
+		}
+
+		return voidTear.getTagCompound() == null || voidTear.getTagCompound().getKeySet().isEmpty();
 	}
 
 	private void setEmpty(ItemStack voidTear) {

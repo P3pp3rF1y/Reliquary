@@ -5,7 +5,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
@@ -34,8 +33,6 @@ import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
-import xreliquary.network.PacketHandler;
-import xreliquary.network.PacketItemHandlerSync;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -136,19 +133,9 @@ public class ItemEnderStaff extends ItemToggleable {
 			return;
 		if(getPearlCount(ist) + getEnderPearlWorth() <= getEnderPearlLimit()) {
 			if(InventoryHelper.consumeItem(new ItemStack(Items.ENDER_PEARL), player)) {
-				setPearlCount(ist, player, slotNumber, getPearlCount(ist) + getEnderPearlWorth());
+				setPearlCount(ist, getPearlCount(ist) + getEnderPearlWorth());
 			}
 		}
-	}
-
-	private void setPearlCount(@Nonnull ItemStack ist, EntityPlayer player, EnumHand hand, int count) {
-		setPearlCount(ist, count);
-		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(hand, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
-	}
-
-	private void setPearlCount(@Nonnull ItemStack ist, EntityPlayer player, int slotNumber, int count) {
-		setPearlCount(ist, count);
-		PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(ist)), (EntityPlayerMP) player);
 	}
 
 	private void setPearlCount(@Nonnull ItemStack ist, int count) {
@@ -163,19 +150,16 @@ public class ItemEnderStaff extends ItemToggleable {
 
 	}
 
-	private NBTTagCompound getItemHandlerNBT(@Nonnull ItemStack ist) {
-		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-
-		if(!(itemHandler instanceof FilteredItemStackHandler))
-			return null;
-
-		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
-
-		return filteredHandler.serializeNBT();
+	private int getPearlCount(@Nonnull ItemStack staff) {
+		return getPearlCount(staff, false);
 	}
 
-	private int getPearlCount(@Nonnull ItemStack ist) {
-		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+	public int getPearlCount(@Nonnull ItemStack staff, boolean isClient) {
+		if (isClient) {
+			return NBTHelper.getInteger("count", staff);
+		}
+
+		IItemHandler itemHandler = staff.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
 			return 0;
@@ -240,7 +224,7 @@ public class ItemEnderStaff extends ItemToggleable {
 					enderStaffProjectile.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
 					player.world.spawnEntity(enderStaffProjectile);
 					if(!player.capabilities.isCreativeMode)
-						setPearlCount(ist, player, hand, getPearlCount(ist) - getEnderStaffPearlCost());
+						setPearlCount(ist, getPearlCount(ist) - getEnderStaffPearlCost());
 				}
 			} else {
 				player.setActiveHand(hand);
@@ -262,7 +246,7 @@ public class ItemEnderStaff extends ItemToggleable {
 				teleportPlayer(world, stack.getTagCompound().getInteger("nodeX" + getDimension(world)), stack.getTagCompound().getInteger("nodeY" + getDimension(world)), stack.getTagCompound().getInteger("nodeZ" + getDimension(world)), player);
 				//setCooldown(ist);
 				if(!player.capabilities.isCreativeMode && !player.world.isRemote)
-					setPearlCount(stack, player, player.getActiveHand(), getPearlCount(stack) - getEnderStaffNodeWarpCost());
+					setPearlCount(stack, getPearlCount(stack) - getEnderStaffNodeWarpCost());
 			}
 		} else if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("dimensionID")) {
 			stack.getTagCompound().removeTag("dimensionID");
@@ -296,7 +280,7 @@ public class ItemEnderStaff extends ItemToggleable {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 		//added spacing here to make sure the tooltips didn't come out with weird punctuation derps.
-		String charge = Integer.toString(getPearlCountClient(ist));
+		String charge = Integer.toString(getPearlCount(ist, true));
 		String phrase = "Currently bound to ";
 		String position = "";
 		if(ist.getTagCompound() != null && ist.getTagCompound().getInteger("dimensionID") != getDimension(world)) {
@@ -352,17 +336,6 @@ public class ItemEnderStaff extends ItemToggleable {
 		}
 		nbt.setInteger("count", getPearlCount(staff));
 
-		return super.getNBTShareTag(staff);
-	}
-
-	@SideOnly(Side.CLIENT)
-	public int getPearlCountClient(ItemStack staff) {
-		NBTTagCompound tag = staff.getTagCompound();
-
-		if (tag == null || !tag.hasKey("count")) {
-			return 0;
-		}
-
-		return tag.getInteger("count");
+		return nbt;
 	}
 }

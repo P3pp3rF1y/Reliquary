@@ -83,7 +83,7 @@ public class ItemModels {
 		ModelBakery.registerItemVariants(ModItems.infernalTear, ItemModelLocations.INFERNAL_TEAR);
 
 		registerItemModelForAllVariants(ModItems.voidTear, Names.Items.VOID_TEAR_EMPTY, stack -> {
-			if(!ModItems.voidTear.isEmptyClient(stack)) {
+			if(!ModItems.voidTear.isEmpty(stack, true)) {
 				return ItemModelLocations.VOID_TEAR;
 			}
 			return ItemModelLocations.VOID_TEAR_EMPTY;
