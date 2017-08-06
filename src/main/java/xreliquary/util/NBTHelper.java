@@ -5,18 +5,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
+@SuppressWarnings("SameParameterValue")
 public class NBTHelper {
 
-	@SuppressWarnings("SameParameterValue")
-	public static int getShort(String s, ItemStack ist) {
+	public static short getShort(String s, ItemStack ist) {
 		NBTTagCompound tagCompound = getTag(ist);
 		return tagCompound.getShort(s);
 	}
 
-	@SuppressWarnings("SameParameterValue")
-	public static void setShort(String s, ItemStack ist, int i) {
+	public static void setShort(String s, ItemStack ist, short i) {
 		NBTTagCompound tagCompound = getTag(ist);
-		tagCompound.setShort(s, (short) i);
+		tagCompound.setShort(s, i);
 		setTag(ist, tagCompound);
 	}
 
@@ -31,13 +30,11 @@ public class NBTHelper {
 		setTag(ist, tagCompound);
 	}
 
-	@SuppressWarnings("unused")
 	public static long getLong(String s, ItemStack ist) {
 		NBTTagCompound tagCompound = getTag(ist);
 		return tagCompound.getLong(s);
 	}
 
-	@SuppressWarnings("unused")
 	public static void setLong(String s, ItemStack ist, long i) {
 		NBTTagCompound tagCompound = getTag(ist);
 		tagCompound.setLong(s, i);

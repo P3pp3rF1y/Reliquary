@@ -3,20 +3,14 @@ package xreliquary.items;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import xreliquary.Reliquary;
 import xreliquary.entities.shot.EntityBlazeShot;
 import xreliquary.entities.shot.EntityBusterShot;
@@ -27,15 +21,11 @@ import xreliquary.entities.shot.EntityNeutralShot;
 import xreliquary.entities.shot.EntitySandShot;
 import xreliquary.entities.shot.EntitySeekerShot;
 import xreliquary.entities.shot.EntityStormShot;
-import xreliquary.init.ModCapabilities;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModSounds;
-import xreliquary.items.util.handgun.HandgunData;
-import xreliquary.items.util.handgun.IHandgunData;
-import xreliquary.network.PacketHandgunDataSync;
-import xreliquary.network.PacketHandler;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
@@ -55,123 +45,44 @@ public class ItemHandgun extends ItemBase {
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 	}
 
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-		return new ICapabilitySerializable<NBTTagCompound>() {
-
-			private IHandgunData handgunData = new HandgunData();
-
-			@Override
-			public NBTTagCompound serializeNBT() {
-				return handgunData.serializeNBT();
-			}
-
-			@Override
-			public void deserializeNBT(NBTTagCompound nbt) {
-				handgunData.deserializeNBT(nbt);
-			}
-
-			@Override
-			public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-				//noinspection ConstantConditions
-				return capability == ModCapabilities.HANDGUN_DATA_CAPABILITY;
-			}
-
-			@Override
-			public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
-				//noinspection ConstantConditions
-				if(capability == ModCapabilities.HANDGUN_DATA_CAPABILITY)
-					//noinspection unchecked
-					return (T) handgunData;
-				return null;
-			}
-		};
-	}
-
 	public short getBulletCount(ItemStack handgun) {
-		IHandgunData data = getHandgunData(handgun);
-
-		if(data != null) {
-			return data.getBulletCount();
-		}
-		return 0;
-	}
-
-	private IHandgunData getHandgunData(ItemStack handgun) {
-		//noinspection ConstantConditions
-		return handgun.getCapability(ModCapabilities.HANDGUN_DATA_CAPABILITY, null);
+		return NBTHelper.getShort("bulletCount", handgun);
 	}
 
 	private void setBulletCount(ItemStack handgun, short bulletCount) {
-		IHandgunData data = getHandgunData(handgun);
-
-		if(data != null) {
-			data.setBulletCount(bulletCount);
-		}
+		NBTHelper.setShort("bulletCount", handgun, bulletCount);
 	}
 
 	public short getBulletType(ItemStack handgun) {
-		IHandgunData data = getHandgunData(handgun);
-
-		if(data != null) {
-			return data.getBulletType();
-		}
-		return 0;
+		return NBTHelper.getShort("bulletType", handgun);
 	}
 
 	private void setBulletType(ItemStack handgun, short bulletType) {
-		IHandgunData data = getHandgunData(handgun);
-
-		if(data != null) {
-			data.setBulletType(bulletType);
-		}
+		NBTHelper.setShort("bulletType", handgun, bulletType);
 	}
 
 	private boolean isInCooldown(ItemStack handgun) {
-		IHandgunData data = getHandgunData(handgun);
-
-		return data != null && data.isInCoolDown();
+		return NBTHelper.getBoolean("inCoolDown", handgun);
 	}
 
 	private void setInCooldown(ItemStack handgun, boolean inCooldown) {
-		IHandgunData data = getHandgunData(handgun);
-
-		if(data != null) {
-			data.setInCoolDown(inCooldown);
-		}
+		NBTHelper.setBoolean("inCoolDown", handgun, inCooldown);
 	}
 
 	public long getCooldown(ItemStack handgun) {
-		IHandgunData data = getHandgunData(handgun);
-
-		if(data != null) {
-			return data.getCoolDownTime();
-		}
-		return 0;
+		return NBTHelper.getLong("coolDownTime", handgun);
 	}
 
 	private void setCooldown(ItemStack handgun, long coolDownTime) {
-		IHandgunData data = getHandgunData(handgun);
-
-		if(data != null) {
-			data.setCoolDownTime(coolDownTime);
-		}
+		NBTHelper.setLong("coolDownTime", handgun, coolDownTime);
 	}
 
 	public List<PotionEffect> getPotionEffects(ItemStack handgun) {
-		IHandgunData data = getHandgunData(handgun);
-		if(data != null) {
-			return data.getPotionEffects();
-		}
-		return null;
+		return XRPotionHelper.getPotionEffectsFromStack(handgun);
 	}
 
 	private void setPotionEffects(ItemStack handgun, List<PotionEffect> potionEffects) {
-		IHandgunData data = getHandgunData(handgun);
-
-		if(data != null) {
-			data.setPotionEffects(potionEffects);
-		}
+		XRPotionHelper.addPotionEffectsToStack(handgun, potionEffects);
 	}
 
 	@Nonnull
@@ -196,17 +107,6 @@ public class ItemHandgun extends ItemBase {
 
 		if(isInCooldown(handgun) && (isCooldownOver(world, handgun) || !isValidCooldownTime(world, handgun))) {
 			setInCooldown(handgun, false);
-		}
-
-		if(!(entity instanceof EntityPlayer))
-			return;
-
-		EntityPlayer player = (EntityPlayer) entity;
-
-		if(handgun == player.getHeldItemMainhand()) {
-			PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(EnumHand.MAIN_HAND, getBulletCount(handgun), getBulletType(handgun), isInCooldown(handgun), getCooldown(handgun), getPotionEffects(handgun)), (EntityPlayerMP) player);
-		} else if(handgun == player.getHeldItemOffhand()) {
-			PacketHandler.networkWrapper.sendTo(new PacketHandgunDataSync(EnumHand.OFF_HAND, getBulletCount(handgun), getBulletType(handgun), isInCooldown(handgun), getCooldown(handgun), getPotionEffects(handgun)), (EntityPlayerMP) player);
 		}
 	}
 

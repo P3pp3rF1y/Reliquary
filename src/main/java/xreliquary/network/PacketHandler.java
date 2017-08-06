@@ -22,8 +22,6 @@ public class PacketHandler {
 		idx++;
 		networkWrapper.registerMessage(PacketCountSync.class, PacketCountSync.class, idx, Side.CLIENT);
 		idx++;
-		networkWrapper.registerMessage(PacketHandgunDataSync.class, PacketHandgunDataSync.class, idx, Side.CLIENT);
-		idx++;
 		networkWrapper.registerMessage(PacketMobCharmDamage.class, PacketMobCharmDamage.class, idx, Side.CLIENT);
 		idx++;
 		networkWrapper.registerMessage(PacketPedestalFishHook.class, PacketPedestalFishHook.class, idx, Side.CLIENT);
