@@ -51,7 +51,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		return itemStacks;
 	}
 
-	private int getParentSlot(int slot) {
+	public int getParentSlot(int slot) {
 		return slot / SLOTS_PER_TYPE;
 	}
 

@@ -2,6 +2,8 @@ package xreliquary.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 
 public class NBTHelper {
 
@@ -90,5 +92,65 @@ public class NBTHelper {
 		if (nbt!= null) {
 			nbt.removeTag(tagName);
 		}
+	}
+
+	public static void updateContainedStack(ItemStack container, short slot, ItemStack stackToSave, int count) {
+		updateContainedStack(container, slot, stackToSave, count, false);
+	}
+
+	public static void updateContainedStack(ItemStack container, short slot, ItemStack stackToSave, int count, boolean updateCountOnly) {
+		NBTTagCompound tag = getTag(container);
+
+		NBTTagList slots = tag.getTagList("Slots", Constants.NBT.TAG_COMPOUND);
+
+		if (slot > slots.tagCount()) {
+			return;
+		}
+
+		NBTTagCompound slotTag;
+		if (slot == slots.tagCount()) {
+			if (updateCountOnly) {
+				return;
+			}
+			slotTag = new NBTTagCompound();
+			slots.appendTag(slotTag);
+		} else {
+			slotTag = (NBTTagCompound) slots.get(slot);
+		}
+
+		if (!updateCountOnly) {
+			slotTag.setTag("Stack", stackToSave.writeToNBT(new NBTTagCompound()));
+		}
+		slotTag.setInteger("Count", count);
+		slots.set(slot, slotTag);
+
+		tag.setTag("Slots", slots);
+		container.setTagCompound(tag);
+	}
+
+	public static int getContainedStackCount(ItemStack container, int slot) {
+		NBTTagCompound tag = getTag(container);
+
+		NBTTagList slots = tag.getTagList("Slots", Constants.NBT.TAG_COMPOUND);
+
+		if (slot < slots.tagCount()) {
+			NBTTagCompound slotTag = (NBTTagCompound) slots.get(slot);
+			return slotTag.getInteger("Count");
+		}
+
+		return 0;
+	}
+	public static ItemStack getContainedStack(ItemStack container, int slot) {
+		NBTTagCompound tag = getTag(container);
+
+		NBTTagList slots = tag.getTagList("Slots", Constants.NBT.TAG_COMPOUND);
+
+		if (slot < slots.tagCount()) {
+			NBTTagCompound slotTag = (NBTTagCompound) slots.get(slot);
+			ItemStack ret = new ItemStack((NBTTagCompound) slotTag.getTag("Stack"));
+			ret.setCount(slotTag.getInteger("Count"));
+			return ret;
+		}
+		return ItemStack.EMPTY;
 	}
 }

@@ -187,9 +187,9 @@ public class ClientEventHandler {
 
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.harvestRod, Settings.HudPositions.harvestRod, is -> ModItems.harvestRod.getMode(is),
 				ImmutableMap.of(
-						ItemHarvestRod.BONE_MEAL_MODE, new ChargePane(ModItems.harvestRod, new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()), is -> ModItems.harvestRod.getBoneMealCount(is)),
+						ItemHarvestRod.BONE_MEAL_MODE, new ChargePane(ModItems.harvestRod, new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()), is -> ModItems.harvestRod.getBoneMealCount(is, true)),
 						ItemHarvestRod.HOE_MODE, new ItemStackPane(Items.WOODEN_HOE),
-						ChargeableItemInfoPane.DYNAMIC_PANE, new DynamicChargePane(ModItems.harvestRod, is -> ModItems.harvestRod.getCurrentPlantable(is), is -> ModItems.harvestRod.getPlantableQuantity(is, ModItems.harvestRod.getCurrentPlantableSlot(is)))
+						ChargeableItemInfoPane.DYNAMIC_PANE, new DynamicChargePane(ModItems.harvestRod, is -> ModItems.harvestRod.getCurrentPlantable(is, true), is -> ModItems.harvestRod.getPlantableQuantity(is, ModItems.harvestRod.getCurrentPlantableSlot(is), true))
 				)),	Settings.HudPositions.harvestRod));
 
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.sojournerStaff, Settings.HudPositions.sojournerStaff, is -> ChargeableItemInfoPane.DYNAMIC_PANE,
