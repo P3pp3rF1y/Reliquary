@@ -41,7 +41,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	public EntityThrownXRPotion(World world, double x, double y, double z, ItemStack potion) {
 		super(world, x, y, z);
 		setEffects(potion);
-		this.lingering = ModItems.potion.getLingering(potion);
+		this.lingering = ModItems.potion.isLingering(potion);
 	}
 
 	private void setEffects(ItemStack ist) {
@@ -52,7 +52,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 	public EntityThrownXRPotion(World world, EntityLivingBase elb, ItemStack potion) {
 		super(world, elb);
 		setEffects(potion);
-		this.lingering = ModItems.potion.getLingering(potion);
+		this.lingering = ModItems.potion.isLingering(potion);
 	}
 
 	/**

@@ -81,11 +81,11 @@ public class ItemXRPotion extends ItemBase {
 		return stack;
 	}
 
-	public boolean getSplash(ItemStack ist) {
+	public boolean isSplash(ItemStack ist) {
 		return NBTHelper.getBoolean("splash", ist);
 	}
 
-	public boolean getLingering(ItemStack ist) {
+	public boolean isLingering(ItemStack ist) {
 		return NBTHelper.getBoolean("lingering", ist);
 	}
 
@@ -132,7 +132,7 @@ public class ItemXRPotion extends ItemBase {
 	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack ist) {
-		if(!getSplash(ist) && XRPotionHelper.getPotionEffectsFromStack(ist).size() > 0)
+		if(!isSplash(ist) && XRPotionHelper.getPotionEffectsFromStack(ist).size() > 0)
 			return EnumAction.DRINK;
 		return EnumAction.NONE;
 	}
@@ -143,9 +143,9 @@ public class ItemXRPotion extends ItemBase {
 		//noinspection ConstantConditions
 		if(!stack.hasTagCompound() || stack.getTagCompound().hasNoTags()) {
 			return "item.potion_empty";
-		} else if(getLingering(stack)) {
+		} else if(isLingering(stack)) {
 			return "item.potion_lingering";
-		} else if(getSplash(stack)) {
+		} else if(isSplash(stack)) {
 			return "item.potion_splash";
 		}
 
@@ -161,7 +161,7 @@ public class ItemXRPotion extends ItemBase {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if(!getSplash(stack) && !getLingering(stack)) {
+		if(!isSplash(stack) && !isLingering(stack)) {
 			if(XRPotionHelper.getPotionEffectsFromStack(stack).size() > 0) {
 				player.setActiveHand(hand);
 				return new ActionResult<>(EnumActionResult.SUCCESS, stack);

@@ -34,7 +34,7 @@ public class PotionBulletsRecipe extends net.minecraftforge.registries.IForgeReg
 					Item item = itemstack.getItem();
 
 					if(i == 1 && j == 1) {
-						if(item != ModItems.potion || !ModItems.potion.getLingering(itemstack)) {
+						if(item != ModItems.potion || !ModItems.potion.isLingering(itemstack)) {
 							return false;
 						}
 					} else {
@@ -62,7 +62,7 @@ public class PotionBulletsRecipe extends net.minecraftforge.registries.IForgeReg
 		ItemStack potion = inv.getStackInRowAndColumn(1, 1);
 		ItemStack bullet = inv.getStackInRowAndColumn(0, 0);
 
-		if(!potion.isEmpty() && potion.getItem() == ModItems.potion && ModItems.potion.getLingering(potion)) {
+		if(!potion.isEmpty() && potion.getItem() == ModItems.potion && ModItems.potion.isLingering(potion)) {
 			ItemStack potionBullets = new ItemStack(ModItems.bullet, 8, bullet.getMetadata());
 			XRPotionHelper.addPotionEffectsToStack(potionBullets, XRPotionHelper.changePotionEffectsDuration(XRPotionHelper.getPotionEffectsFromStack(potion), 0.2F));
 			return potionBullets;

@@ -186,7 +186,7 @@ public class ModItems {
 
 			@Override
 			boolean canShoot(ItemStack stack) {
-				return ModItems.potion.getSplash(stack) || ModItems.potion.getLingering(stack);
+				return ModItems.potion.isSplash(stack) || ModItems.potion.isLingering(stack);
 			}
 		});
 

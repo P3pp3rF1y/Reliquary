@@ -91,9 +91,9 @@ public class ItemModels {
 		ModelBakery.registerItemVariants(ModItems.voidTear, ItemModelLocations.VOID_TEAR);
 
 		registerItemModelForAllVariants(ModItems.potion, Names.Items.POTION, stack -> {
-			if(ModItems.potion.getSplash(stack)) {
+			if(ModItems.potion.isSplash(stack)) {
 				return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_SPLASH);
-			} else if(ModItems.potion.getLingering(stack)) {
+			} else if(ModItems.potion.isLingering(stack)) {
 				return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION_LINGERING);
 			}
 			return ItemModelLocations.getInstance().getModel(ItemModelLocations.POTION);

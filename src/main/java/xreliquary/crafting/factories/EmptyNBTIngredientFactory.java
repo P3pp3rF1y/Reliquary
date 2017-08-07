@@ -1,4 +1,4 @@
-package xreliquary.crafting;
+package xreliquary.crafting.factories;
 
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
@@ -10,22 +10,17 @@ import net.minecraftforge.common.crafting.JsonContext;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class EmptyNBTIngredient implements IIngredientFactory {
+public class EmptyNBTIngredientFactory implements IIngredientFactory {
 	@Nonnull
 	@Override
 	public Ingredient parse(JsonContext context, JsonObject json) {
-		return new EmptyNBTIngredientData(CraftingHelper.getItemStack(json, context)) {
-
-		};
+		return new EmptyNBTIngredient(CraftingHelper.getItemStack(json, context));
 	}
 
-	private class EmptyNBTIngredientData extends Ingredient {
-		private ItemStack itemStack;
+	private class EmptyNBTIngredient extends Ingredient {
 
-		EmptyNBTIngredientData(ItemStack itemStack) {
+		EmptyNBTIngredient(ItemStack itemStack) {
 			super(itemStack);
-
-			this.itemStack = itemStack;
 		}
 
 		@Override

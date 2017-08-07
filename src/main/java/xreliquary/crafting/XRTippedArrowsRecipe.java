@@ -33,7 +33,7 @@ public class XRTippedArrowsRecipe extends net.minecraftforge.registries.IForgeRe
 					Item item = itemstack.getItem();
 
 					if(i == 1 && j == 1) {
-						if(item != ModItems.potion || !ModItems.potion.getLingering(itemstack)) {
+						if(item != ModItems.potion || !ModItems.potion.isLingering(itemstack)) {
 							return false;
 						}
 					} else if(item != Items.ARROW) {
@@ -56,7 +56,7 @@ public class XRTippedArrowsRecipe extends net.minecraftforge.registries.IForgeRe
 	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
 		ItemStack itemstack = inv.getStackInRowAndColumn(1, 1);
 
-		if(!itemstack.isEmpty() && itemstack.getItem() == ModItems.potion && ModItems.potion.getLingering(itemstack)) {
+		if(!itemstack.isEmpty() && itemstack.getItem() == ModItems.potion && ModItems.potion.isLingering(itemstack)) {
 			ItemStack tippedArrows = new ItemStack(ModItems.tippedArrow, 8);
 			XRPotionHelper.addPotionEffectsToStack(tippedArrows, XRPotionHelper.changePotionEffectsDuration(XRPotionHelper.getPotionEffectsFromStack(itemstack), 0.125F));
 			return tippedArrows;
