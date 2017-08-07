@@ -13,9 +13,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.items.util.HarvestRodCache;
 import xreliquary.items.util.HarvestRodCacheStorage;
 import xreliquary.items.util.IHarvestRodCache;
-import xreliquary.items.util.handgun.HandgunData;
-import xreliquary.items.util.handgun.HandgunDataStorage;
-import xreliquary.items.util.handgun.IHandgunData;
 import xreliquary.reference.Reference;
 
 import javax.annotation.Nonnull;
@@ -24,12 +21,9 @@ import javax.annotation.Nonnull;
 public class ModCapabilities {
 	@CapabilityInject(IHarvestRodCache.class)
 	public final static Capability<IHarvestRodCache> HARVEST_ROD_CACHE = null;
-	@CapabilityInject(IHandgunData.class)
-	public final static Capability<IHandgunData> HANDGUN_DATA_CAPABILITY = null;
 
 	public static void init() {
 		CapabilityManager.INSTANCE.register(IHarvestRodCache.class, new HarvestRodCacheStorage(), HarvestRodCache.class);
-		CapabilityManager.INSTANCE.register(IHandgunData.class, new HandgunDataStorage(), HandgunData.class);
 	}
 
 	@SubscribeEvent

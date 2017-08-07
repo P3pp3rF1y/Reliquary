@@ -18,6 +18,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -368,8 +369,8 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		}
 	}
 
-	public boolean handleBlockActivation(World world, EntityPlayer player) {
-		ItemStack itemStack = player.inventory.getCurrentItem();
+	public boolean handleBlockActivation(World world, EntityPlayer player, EnumHand hand) {
+		ItemStack itemStack = player.getHeldItem(hand);
 
 		if(itemStack.isEmpty())
 			return false;
@@ -377,7 +378,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		if(getLiquidLevel() < 3 && !finishedCooking()) {
 			if(itemStack.getItem() == Items.WATER_BUCKET) {
 				if(!player.capabilities.isCreativeMode)
-					player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.BUCKET));
+					player.setHeldItem(hand, new ItemStack(Items.BUCKET));
 			} else if(itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
 				FluidStack waterStack = new FluidStack(FluidRegistry.WATER, 1000);
 				IFluidHandler fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
@@ -402,7 +403,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 				itemStack.shrink(1);
 
 				if(itemStack.getCount() <= 0) {
-					player.inventory.setInventorySlotContents(player.inventory.currentItem, potion);
+					player.setHeldItem(hand, potion);
 				} else if(!player.inventory.addItemStackToInventory(potion)) {
 					world.spawnEntity(new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
 				}

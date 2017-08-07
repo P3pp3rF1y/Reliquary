@@ -67,6 +67,10 @@ public class Box extends Component {
 		updateDimensions();
 
 		for(Component component : components) {
+			if (!component.shouldRender()) {
+				continue;
+			}
+
 			int componentX = x;
 			int componentY = y;
 

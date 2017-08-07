@@ -112,7 +112,7 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem/* T
 				if(NBTHelper.getShort("soundTimer", ist) % 2 == 0) {
 					world.playSound(null, entity.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
 				}
-				NBTHelper.setShort("soundTimer", ist, NBTHelper.getShort("soundTimer", ist) - 1);
+				NBTHelper.setShort("soundTimer", ist, (short) (NBTHelper.getShort("soundTimer", ist) - 1));
 			}
 		if(!isEnabled(ist))
 			return;
@@ -270,7 +270,7 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem/* T
 
 		if(player.isSneaking()) {
 			if(!disabledAudio()) {
-				NBTHelper.setShort("soundTimer", stack, 6);
+				NBTHelper.setShort("soundTimer", stack, (short) 6);
 			}
 			toggle(stack);
 		} else {

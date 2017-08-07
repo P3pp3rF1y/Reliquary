@@ -2,18 +2,20 @@ package xreliquary.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 
-@SuppressWarnings("unused")
+@SuppressWarnings("SameParameterValue")
 public class NBTHelper {
 
-	public static int getShort(String s, ItemStack ist) {
+	public static short getShort(String s, ItemStack ist) {
 		NBTTagCompound tagCompound = getTag(ist);
 		return tagCompound.getShort(s);
 	}
 
-	public static void setShort(String s, ItemStack ist, int i) {
+	public static void setShort(String s, ItemStack ist, short i) {
 		NBTTagCompound tagCompound = getTag(ist);
-		tagCompound.setShort(s, (short) i);
+		tagCompound.setShort(s, i);
 		setTag(ist, tagCompound);
 	}
 
@@ -64,16 +66,12 @@ public class NBTHelper {
 
 	public static NBTTagCompound getTag(ItemStack ist) {
 		if(ist.getTagCompound() == null)
-			resetTag(ist);
+			return new NBTTagCompound();
 		return ist.getTagCompound();
 	}
 
 	public static void setTag(ItemStack ist, NBTTagCompound nbt) {
 		ist.setTagCompound(nbt);
-	}
-
-	public static void resetTag(ItemStack ist) {
-		setTag(ist, new NBTTagCompound());
 	}
 
 	public static void setTagCompound(String s, ItemStack ist, NBTTagCompound tc) {
@@ -91,5 +89,65 @@ public class NBTHelper {
 		if (nbt!= null) {
 			nbt.removeTag(tagName);
 		}
+	}
+
+	public static void updateContainedStack(ItemStack container, short slot, ItemStack stackToSave, int count) {
+		updateContainedStack(container, slot, stackToSave, count, false);
+	}
+
+	public static void updateContainedStack(ItemStack container, short slot, ItemStack stackToSave, int count, boolean updateCountOnly) {
+		NBTTagCompound tag = getTag(container);
+
+		NBTTagList slots = tag.getTagList("Slots", Constants.NBT.TAG_COMPOUND);
+
+		if (slot > slots.tagCount()) {
+			return;
+		}
+
+		NBTTagCompound slotTag;
+		if (slot == slots.tagCount()) {
+			if (updateCountOnly) {
+				return;
+			}
+			slotTag = new NBTTagCompound();
+			slots.appendTag(slotTag);
+		} else {
+			slotTag = (NBTTagCompound) slots.get(slot);
+		}
+
+		if (!updateCountOnly) {
+			slotTag.setTag("Stack", stackToSave.writeToNBT(new NBTTagCompound()));
+		}
+		slotTag.setInteger("Count", count);
+		slots.set(slot, slotTag);
+
+		tag.setTag("Slots", slots);
+		container.setTagCompound(tag);
+	}
+
+	public static int getContainedStackCount(ItemStack container, int slot) {
+		NBTTagCompound tag = getTag(container);
+
+		NBTTagList slots = tag.getTagList("Slots", Constants.NBT.TAG_COMPOUND);
+
+		if (slot < slots.tagCount()) {
+			NBTTagCompound slotTag = (NBTTagCompound) slots.get(slot);
+			return slotTag.getInteger("Count");
+		}
+
+		return 0;
+	}
+	public static ItemStack getContainedStack(ItemStack container, int slot) {
+		NBTTagCompound tag = getTag(container);
+
+		NBTTagList slots = tag.getTagList("Slots", Constants.NBT.TAG_COMPOUND);
+
+		if (slot < slots.tagCount()) {
+			NBTTagCompound slotTag = (NBTTagCompound) slots.get(slot);
+			ItemStack ret = new ItemStack((NBTTagCompound) slotTag.getTag("Stack"));
+			ret.setCount(slotTag.getInteger("Count"));
+			return ret;
+		}
+		return ItemStack.EMPTY;
 	}
 }

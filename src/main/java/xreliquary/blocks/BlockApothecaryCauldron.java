@@ -16,11 +16,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.blocks.tile.TileEntityCauldron;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -111,17 +109,17 @@ public class BlockApothecaryCauldron extends BlockBase {
 	 */
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float xOff, float yOff, float zOff) {
+		ItemStack heldItem = player.getHeldItem(hand);
 		if(world.isRemote) {
-			return true;
+			return !heldItem.isEmpty();
 		} else {
-			ItemStack heldItem = player.getHeldItem(hand);
 			if(heldItem.isEmpty()) {
 				return true;
 			} else {
 				TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
 
 				if(cauldron != null)
-					return cauldron.handleBlockActivation(world, player);
+					return cauldron.handleBlockActivation(world, player, hand);
 			}
 		}
 		return true;

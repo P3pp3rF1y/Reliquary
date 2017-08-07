@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.client.util.ITooltipFlag;
@@ -8,11 +9,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -23,7 +21,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -35,9 +32,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -46,12 +42,8 @@ import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityXRFakePlayer;
 import xreliquary.init.ModBlocks;
-import xreliquary.init.ModItems;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.items.util.VoidTearItemStackHandler;
-import xreliquary.network.PacketContainerItemHandlerSync;
-import xreliquary.network.PacketHandler;
-import xreliquary.network.PacketItemHandlerSync;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -62,13 +54,10 @@ import xreliquary.util.XRFakePlayerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 
+@MethodsReturnNonnullByDefault
 public class ItemVoidTear extends ItemToggleable {
 	public ItemVoidTear() {
 		super(Names.Items.VOID_TEAR);
@@ -78,7 +67,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
-		return isEmpty(stack) ? "item.void_tear_empty" : "item.void_tear";
+		return isEmpty(stack, FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) ? "item.void_tear_empty" : "item.void_tear";
 	}
 
 	@Override
@@ -128,16 +117,16 @@ public class ItemVoidTear extends ItemToggleable {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
 
-		ItemStack contents = this.getContainerItem(voidTear);
+		ItemStack contents = this.getContainerItem(voidTear, true);
 
-		if(isEmpty(voidTear))
+		if(isEmpty(voidTear, true))
 			return;
 
 		if(this.isEnabled(voidTear)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName()), tooltip);
 			tooltip.add(LanguageHelper.getLocalization("tooltip.absorb_tear"));
 		}
-		LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(getItemQuantity(voidTear))), tooltip);
+		LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName(), "amount", Integer.toString(contents.getCount())), tooltip);
 	}
 
 	@Nonnull
@@ -238,7 +227,6 @@ public class ItemVoidTear extends ItemToggleable {
 
 			EntityPlayer player = (EntityPlayer) entity;
 
-			boolean quantityUpdated = false;
 			if(this.isEnabled(voidTear)) {
 				ItemStack contents = this.getContainerItem(voidTear);
 
@@ -249,34 +237,14 @@ public class ItemVoidTear extends ItemToggleable {
 						//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
 						if(!player.capabilities.isCreativeMode) {
 							setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - getKeepQuantity(voidTear));
-							quantityUpdated = true;
 						}
 					}
-
-					if(getMode(voidTear) != Mode.NO_REFILL && attemptToReplenish(player, voidTear))
-						quantityUpdated = true;
+				}
+				if(getMode(voidTear) != Mode.NO_REFILL) {
+					attemptToReplenish(player, voidTear);
 				}
 			}
-
-			//noinspection ConstantConditions
-			if(player.inventory.getStackInSlot(slotNumber).getItem() == this && (isSelected || quantityUpdated)) {
-				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(slotNumber, getItemHandlerNBT(voidTear)), (EntityPlayerMP) player);
-			} else if(player.getHeldItemOffhand().getItem() == this) {
-				PacketHandler.networkWrapper.sendTo(new PacketItemHandlerSync(EnumHand.OFF_HAND, getItemHandlerNBT(voidTear)), (EntityPlayerMP) player);
-			}
-
 		}
-	}
-
-	private NBTTagCompound getItemHandlerNBT(ItemStack ist) {
-		IItemHandler itemHandler = ist.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-
-		if(!(itemHandler instanceof FilteredItemStackHandler))
-			return null;
-
-		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
-
-		return filteredHandler.serializeNBT();
 	}
 
 	private boolean attemptToReplenish(EntityPlayer player, ItemStack voidTear) {
@@ -412,9 +380,41 @@ public class ItemVoidTear extends ItemToggleable {
 		setItemQuantity(ist, quantity + quantityDrained);
 	}
 
+	@Nullable
+	@Override
+	public NBTTagCompound getNBTShareTag(ItemStack voidTear) {
+		NBTTagCompound nbt = super.getNBTShareTag(voidTear);
+
+		if (isEmpty(voidTear)) {
+			return nbt;
+		}
+
+		if (nbt == null) {
+			nbt = new NBTTagCompound();
+		}
+		nbt.setInteger("count", getItemQuantity(voidTear));
+		nbt.setTag("contents", getContainerItem(voidTear).writeToNBT(new NBTTagCompound()));
+
+		return nbt;
+	}
+
 	@Nonnull
 	@Override
 	public ItemStack getContainerItem(@Nonnull ItemStack voidTear) {
+		return getContainerItem(voidTear, false);
+	}
+	public ItemStack getContainerItem(@Nonnull ItemStack voidTear, boolean isClient) {
+		if (isClient) {
+			NBTTagCompound nbt = voidTear.getTagCompound();
+			if (nbt == null || !nbt.hasKey("contents")) {
+				return ItemStack.EMPTY;
+			}
+			ItemStack contents = new ItemStack(nbt.getCompoundTag("contents"));
+			contents.setCount(nbt.getInteger("count"));
+
+			return contents;
+		}
+
 		IItemHandler itemHandler = voidTear.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -557,6 +557,14 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	public boolean isEmpty(ItemStack voidTear) {
+		return isEmpty(voidTear, false);
+	}
+
+	public boolean isEmpty(ItemStack voidTear, boolean isClient) {
+		if (isClient) {
+			return getContainerItem(voidTear, true).isEmpty();
+		}
+
 		return voidTear.getTagCompound() == null || voidTear.getTagCompound().getKeySet().isEmpty();
 	}
 
@@ -564,97 +572,5 @@ public class ItemVoidTear extends ItemToggleable {
 		voidTear.setTagCompound(null);
 		setItemStack(voidTear, ItemStack.EMPTY);
 		setItemQuantity(voidTear, 0);
-	}
-
-	//TODO get rid of this once there's getsharetag in place
-	private static Map<UUID, VoidTearListener> openListeners = new HashMap<>();
-
-	@SubscribeEvent
-	public void onContainerOpen(PlayerContainerEvent.Open event) {
-
-		EntityPlayer player = event.getEntityPlayer();
-		if(event.getContainer() != player.inventoryContainer) {
-			VoidTearListener listener = new VoidTearListener((EntityPlayerMP) player);
-
-			event.getContainer().addListener(listener);
-			openListeners.put(player.getGameProfile().getId(), listener);
-			listener.updateFullInventory(event.getContainer());
-		}
-	}
-
-	private static final Field LISTENERS = ReflectionHelper.findField(Container.class, "field_75149_d", "listeners");
-
-	private static List<IContainerListener> getListeners(Container container) {
-
-		try {
-			//noinspection unchecked
-			return (List<IContainerListener>) LISTENERS.get(container);
-		}
-		catch(IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@SubscribeEvent
-	public void onContainerClose(PlayerContainerEvent.Close event) {
-
-		EntityPlayer player = event.getEntityPlayer();
-		if(event.getContainer() != player.inventoryContainer) {
-
-			UUID playerId = player.getGameProfile().getId();
-			if(openListeners.keySet().contains(playerId)) {
-
-				getListeners(event.getContainer()).remove(openListeners.get(playerId));
-				openListeners.remove(playerId);
-			}
-		}
-	}
-
-	private class VoidTearListener implements IContainerListener {
-
-		private EntityPlayerMP player;
-
-		VoidTearListener(EntityPlayerMP player) {
-
-			this.player = player;
-		}
-
-		@Override
-		public void sendAllContents(@Nonnull Container containerToSend, @Nonnull NonNullList<ItemStack> itemsList) {
-
-		}
-
-		@Override
-		public void sendSlotContents(@Nonnull Container container, int slot, @Nonnull ItemStack stack) {
-
-			if(stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
-				updateFullInventory(container);
-			}
-		}
-
-		private void updateVoidTear(Container container, int slot, ItemStack stack) {
-
-			if(stack == null || stack.getItem() != ModItems.voidTear)
-				return;
-
-			PacketHandler.networkWrapper.sendTo(new PacketContainerItemHandlerSync(slot, getItemHandlerNBT(stack), container.windowId), player);
-		}
-
-		void updateFullInventory(Container container) {
-
-			for (int slot = 0; slot < container.inventorySlots.size(); slot++) {
-				updateVoidTear(container, slot, container.getSlot(slot).getStack());
-			}
-		}
-
-		@Override
-		public void sendWindowProperty(@Nonnull Container container, int varToUpdate, int newValue) {
-
-		}
-
-		@Override
-		public void sendAllWindowProperties(@Nonnull Container container, @Nonnull IInventory inventory) {
-
-		}
 	}
 }

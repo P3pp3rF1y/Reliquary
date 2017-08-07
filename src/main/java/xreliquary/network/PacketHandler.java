@@ -20,9 +20,7 @@ public class PacketHandler {
 		idx++;
 		networkWrapper.registerMessage(PacketFXConcussiveExplosion.class, PacketFXConcussiveExplosion.class, idx, Side.CLIENT);
 		idx++;
-		networkWrapper.registerMessage(PacketItemHandlerSync.class, PacketItemHandlerSync.class, idx, Side.CLIENT);
-		idx++;
-		networkWrapper.registerMessage(PacketHandgunDataSync.class, PacketHandgunDataSync.class, idx, Side.CLIENT);
+		networkWrapper.registerMessage(PacketCountSync.class, PacketCountSync.class, idx, Side.CLIENT);
 		idx++;
 		networkWrapper.registerMessage(PacketMobCharmDamage.class, PacketMobCharmDamage.class, idx, Side.CLIENT);
 		idx++;
