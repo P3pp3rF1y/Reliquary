@@ -56,10 +56,10 @@ public class ItemAlkahestryTome extends ItemToggleable {
 	}
 
 	@Override
-	public void onUpdate(ItemStack ist, World world, Entity entity, int i, boolean f) {
+	public void onUpdate(ItemStack tome, World world, Entity entity, int i, boolean f) {
 		if(world.isRemote)
 			return;
-		if(!this.isEnabled(ist))
+		if(!this.isEnabled(tome))
 			return;
 
 		EntityPlayer player;
@@ -71,12 +71,10 @@ public class ItemAlkahestryTome extends ItemToggleable {
 
 		for(Map.Entry<String, AlkahestChargeRecipe> entry : Settings.AlkahestryTome.chargingRecipes.entrySet()) {
 			AlkahestChargeRecipe recipe = entry.getValue();
-			if(NBTHelper.getInteger("charge", ist) + recipe.charge <= getChargeLimit() && consumeItem(recipe, player)) {
-				NBTHelper.setInteger("charge", ist, NBTHelper.getInteger("charge", ist) + recipe.charge);
+			if(getCharge(tome) + recipe.charge <= getChargeLimit() && consumeItem(recipe, player)) {
+				addCharge(tome, recipe.charge);
 			}
 		}
-
-		ist.setItemDamage(ist.getMaxDamage() - NBTHelper.getInteger("charge", ist));
 	}
 
 	private boolean consumeItem(AlkahestChargeRecipe recipe, EntityPlayer player) {
@@ -88,12 +86,13 @@ public class ItemAlkahestryTome extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack tome, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 			return;
-		this.formatTooltip(ImmutableMap.of("chargeAmount", String.valueOf(NBTHelper.getInteger("charge", ist)), "chargeLimit", String.valueOf(getChargeLimit())), ist, tooltip);
+		this.formatTooltip(ImmutableMap.of("chargeAmount", String.valueOf(getCharge(tome)), "chargeLimit", String.valueOf(getChargeLimit())), tome, tooltip);
 
-		if(this.isEnabled(ist))
+		if(this.isEnabled(tome))
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + Items.REDSTONE.getItemStackDisplayName(Settings.AlkahestryTome.baseItem)), tooltip);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
@@ -115,8 +114,25 @@ public class ItemAlkahestryTome extends ItemToggleable {
 		subItems.add(stack);
 	}
 
-	private static int getChargeLimit() {
+	public static int getChargeLimit() {
 		return Settings.AlkahestryTome.chargeLimit;
 	}
 
+	public void setCharge(ItemStack tome, int charge) {
+		NBTHelper.setInteger("charge", tome, charge);
+
+		tome.setItemDamage(tome.getMaxDamage() - charge);
+	}
+
+	public int getCharge(ItemStack tome) {
+		return NBTHelper.getInteger("charge", tome);
+	}
+
+	public void addCharge(ItemStack tome, int chageToAdd) {
+		setCharge(tome, getCharge(tome) + chageToAdd);
+	}
+
+	public void useCharge(ItemStack tome, int chargeToUse) {
+		addCharge(tome, -chargeToUse);
+	}
 }

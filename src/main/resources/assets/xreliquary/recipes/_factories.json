@@ -1,6 +1,10 @@
 {
+    "recipes": {
+        "alkahestry_crafting": "xreliquary.crafting.factories.AlkahestryCraftingRecipeFactory"
+    },
     "conditions": {
-        "mob_drops_craftable": "xreliquary.crafting.factories.MobDropsCraftableConditionFactory"
+        "mob_drops_craftable": "xreliquary.crafting.factories.MobDropsCraftableConditionFactory",
+        "ore_exists": "xreliquary.crafting.factories.OreExistsConditionFactory"
     },
     "ingredients": {
         "item_empty_nbt": "xreliquary.crafting.factories.EmptyNBTIngredientFactory"

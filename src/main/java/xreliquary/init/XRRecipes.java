@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import xreliquary.crafting.AlkahestryChargingRecipe;
-import xreliquary.crafting.AlkahestryCraftingRecipe;
 import xreliquary.crafting.AlkahestryDrainRecipe;
 import xreliquary.crafting.MagazineRecipe;
 import xreliquary.crafting.MobCharmRepairRecipe;
@@ -56,7 +55,7 @@ public class XRRecipes {
 	private static void registerCustomRecipes() {
 		ForgeRegistries.RECIPES.register(new AlkahestryDrainRecipe());
 		ForgeRegistries.RECIPES.register(new AlkahestryChargingRecipe());
-		ForgeRegistries.RECIPES.register(new AlkahestryCraftingRecipe());
+		//ForgeRegistries.RECIPES.register(new AlkahestryCraftingRecipe());
 		ForgeRegistries.RECIPES.register(new MobCharmRepairRecipe());
 		ForgeRegistries.RECIPES.register(new XRTippedArrowsRecipe());
 		ForgeRegistries.RECIPES.register(new PotionBulletsRecipe());

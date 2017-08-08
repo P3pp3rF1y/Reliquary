@@ -1,0 +1,10 @@
+{
+    "type": "xreliquary:alkahestry_crafting",
+    "charge": 64,
+    "ingredients": [
+        {
+            "item": "minecraft:diamond"
+        }
+    ],
+    "result_count": 2
+}

@@ -1,0 +1,17 @@
+{
+    "conditions": [
+        {
+            "type": "xreliquary:ore_exists",
+            "ore": "ingotSteel"
+        }
+    ],
+    "type": "xreliquary:alkahestry_crafting",
+    "charge": 32,
+    "ingredients": [
+        {
+            "type": "forge:ore_dict",
+            "ore": "ingotSteel"
+        }
+    ],
+    "result_count": 2
+}

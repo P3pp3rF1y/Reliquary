@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeCategory;
 import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeMaker;
 import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeCategory;
-import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeMaker;
+import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeRegistry;
 import xreliquary.compat.jei.cauldron.CauldronRecipeCategory;
 import xreliquary.compat.jei.cauldron.CauldronRecipeMaker;
 import xreliquary.compat.jei.descriptions.DescriptionEntry;
@@ -55,7 +55,7 @@ public class ReliquaryPlugin implements IModPlugin {
 
 	@Override
 	public void register(@Nonnull IModRegistry registry) {
-		registry.addRecipes(AlkahestryCraftingRecipeMaker.getRecipes(), Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING);
+		registry.addRecipes(AlkahestryCraftingRecipeRegistry.getRecipes(registry.getJeiHelpers().getStackHelper()), Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING);
 		registry.addRecipes(AlkahestryChargingRecipeMaker.getRecipes(), Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING);
 
 		registry.addRecipeCatalyst(new ItemStack(Blocks.CRAFTING_TABLE), Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING, Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING);

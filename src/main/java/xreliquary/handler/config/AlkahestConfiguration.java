@@ -15,10 +15,7 @@ import xreliquary.util.alkahestry.AlkahestRecipeType;
 import java.util.Map;
 
 public class AlkahestConfiguration {
-	private static final int TOME_COST_LOW_TIER = 4;
-	private static final int TOME_COST_MIDDLE_TIER = 8;
-	private static final int TOME_COST_HIGH_TIER = 32;
-	private static final int TOME_COST_UBER_TIER = 64;
+
 
 	public static void loadAlkahestBaseItem() {
 		String registryName = ConfigurationHandler.getString("base_item", Names.Configs.ITEM_AND_BLOCK_SETTINGS + "." + Names.Items.ALKAHESTRY_TOME, Items.REDSTONE.getRegistryName().toString(), "Base Item name in format \"ModId:item\"");
@@ -148,7 +145,10 @@ public class AlkahestConfiguration {
 
 	private static void addDefaultAlkahestCraftingRecipes(ConfigCategory category) {
 
-		addConfigAlkahestCraftingRecipe(category, Blocks.DIRT.getRegistryName().toString(), 32, TOME_COST_LOW_TIER);
+		final int TOME_COST_LOW_TIER = 4;
+		final int TOME_COST_MIDDLE_TIER = 8;
+		final int TOME_COST_HIGH_TIER = 32;
+		final int TOME_COST_UBER_TIER = 64;		addConfigAlkahestCraftingRecipe(category, Blocks.DIRT.getRegistryName().toString(), 32, TOME_COST_LOW_TIER);
 
 		addConfigAlkahestCraftingRecipe(category, Blocks.COBBLESTONE.getRegistryName().toString(), 32, TOME_COST_LOW_TIER);
 		addConfigAlkahestCraftingRecipe(category, Blocks.SAND.getRegistryName().toString(), 32, TOME_COST_LOW_TIER);

@@ -1,0 +1,10 @@
+{
+    "type": "xreliquary:alkahestry_crafting",
+    "charge": 8,
+    "ingredients": [
+        {
+            "item": "minecraft:end_stone"
+        }
+    ],
+    "result_count": 17
+}

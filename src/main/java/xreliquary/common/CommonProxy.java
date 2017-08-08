@@ -2,21 +2,31 @@ package xreliquary.common;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import xreliquary.Reliquary;
 import xreliquary.common.gui.GUIHandler;
-import xreliquary.entities.*;
+import xreliquary.entities.EntityEnderStaffProjectile;
+import xreliquary.entities.EntityGlowingWater;
+import xreliquary.entities.EntityHolyHandGrenade;
+import xreliquary.entities.EntityKrakenSlime;
+import xreliquary.entities.EntityLyssaHook;
+import xreliquary.entities.EntitySpecialSnowball;
+import xreliquary.entities.EntityXRTippedArrow;
 import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.entities.potion.EntityThrownXRPotion;
-import xreliquary.entities.shot.*;
-import xreliquary.handler.CommonEventHandler;
-import xreliquary.handler.ConfigurationHandler;
-import xreliquary.init.*;
+import xreliquary.entities.shot.EntityBlazeShot;
+import xreliquary.entities.shot.EntityBusterShot;
+import xreliquary.entities.shot.EntityConcussiveShot;
+import xreliquary.entities.shot.EntityEnderShot;
+import xreliquary.entities.shot.EntityExorcismShot;
+import xreliquary.entities.shot.EntityNeutralShot;
+import xreliquary.entities.shot.EntitySandShot;
+import xreliquary.entities.shot.EntitySeekerShot;
+import xreliquary.entities.shot.EntityStormShot;
 import xreliquary.reference.Reference;
 
 public class CommonProxy {
@@ -64,8 +74,11 @@ public class CommonProxy {
 	}
 
 	public void registerJEI(Block block, String name, boolean oneDescription) {
-
 	}
+
+	public void registerJEI(IRecipe recipe) {
+	}
+
 	public void initSpecialJEIDescriptions() {
 	}
 }

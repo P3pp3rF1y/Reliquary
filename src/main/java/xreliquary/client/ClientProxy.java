@@ -9,10 +9,10 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
@@ -41,6 +41,7 @@ import xreliquary.client.render.RenderXRTippedArrow;
 import xreliquary.client.render.TileEntityPedestalPassiveRenderer;
 import xreliquary.client.render.TileEntityPedestalRenderer;
 import xreliquary.common.CommonProxy;
+import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeRegistry;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.entities.EntityGlowingWater;
@@ -61,8 +62,6 @@ import xreliquary.entities.shot.EntityNeutralShot;
 import xreliquary.entities.shot.EntitySandShot;
 import xreliquary.entities.shot.EntitySeekerShot;
 import xreliquary.entities.shot.EntityStormShot;
-import xreliquary.handler.ClientEventHandler;
-import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
@@ -169,6 +168,15 @@ public class ClientProxy extends CommonProxy {
 	public void registerJEI(Item item, String name) {
 		if(Loader.isModLoaded(Compatibility.MOD_ID.JEI))
 			JEIDescriptionRegistry.register(item, name);
+	}
+
+	@Override
+	public void registerJEI(IRecipe recipe) {
+		if(!Loader.isModLoaded(Compatibility.MOD_ID.JEI)) {
+			return;
+		}
+
+		AlkahestryCraftingRecipeRegistry.register(recipe);
 	}
 
 	@SubscribeEvent

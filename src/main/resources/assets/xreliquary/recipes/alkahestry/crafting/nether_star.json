@@ -1,0 +1,10 @@
+{
+    "type": "xreliquary:alkahestry_crafting",
+    "charge": 256,
+    "ingredients": [
+        {
+            "item": "minecraft:nether_star"
+        }
+    ],
+    "result_count": 2
+}

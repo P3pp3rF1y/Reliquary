@@ -1,0 +1,11 @@
+{
+    "type": "xreliquary:alkahestry_crafting",
+    "charge": 4,
+    "ingredients": [
+        {
+            "item": "minecraft:sand",
+            "data": 0
+        }
+    ],
+    "result_count": 33
+}
