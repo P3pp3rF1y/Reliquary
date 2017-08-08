@@ -13,9 +13,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeCategory;
-import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeMaker;
 import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeCategory;
-import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeRegistry;
+import xreliquary.compat.jei.alkahestry.AlkahestryRecipeRegistry;
 import xreliquary.compat.jei.cauldron.CauldronRecipeCategory;
 import xreliquary.compat.jei.cauldron.CauldronRecipeMaker;
 import xreliquary.compat.jei.descriptions.DescriptionEntry;
@@ -26,7 +25,6 @@ import xreliquary.compat.jei.mortar.MortarRecipeCategory;
 import xreliquary.compat.jei.mortar.MortarRecipeMaker;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Reference;
 
 import javax.annotation.Nonnull;
 
@@ -55,16 +53,16 @@ public class ReliquaryPlugin implements IModPlugin {
 
 	@Override
 	public void register(@Nonnull IModRegistry registry) {
-		registry.addRecipes(AlkahestryCraftingRecipeRegistry.getRecipes(registry.getJeiHelpers().getStackHelper()), Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING);
-		registry.addRecipes(AlkahestryChargingRecipeMaker.getRecipes(), Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING);
+		registry.addRecipes(AlkahestryRecipeRegistry.getRecipes(JEICategory.ALKAHESTRY_CRAFTING, registry.getJeiHelpers().getStackHelper()), JEICategory.ALKAHESTRY_CRAFTING.getUid());
+		registry.addRecipes(AlkahestryRecipeRegistry.getRecipes(JEICategory.ALKAHESTRY_CHARGING, registry.getJeiHelpers().getStackHelper()), JEICategory.ALKAHESTRY_CHARGING.getUid());
 
-		registry.addRecipeCatalyst(new ItemStack(Blocks.CRAFTING_TABLE), Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING, Reference.JEI_CATEGORY_ALKAHESTRY_CRAFTING);
+		registry.addRecipeCatalyst(new ItemStack(Blocks.CRAFTING_TABLE), JEICategory.ALKAHESTRY_CHARGING.getUid(), JEICategory.ALKAHESTRY_CRAFTING.getUid());
 
-		registry.addRecipeCatalyst(new ItemStack(ModBlocks.apothecaryMortar), Reference.JEI_CATEGORY_MORTAR);
-		registry.addRecipeCatalyst(new ItemStack(ModBlocks.apothecaryCauldron), Reference.JEI_CATEGORY_CAULDRON);
+		registry.addRecipeCatalyst(new ItemStack(ModBlocks.apothecaryMortar), JEICategory.MORTAR.getUid());
+		registry.addRecipeCatalyst(new ItemStack(ModBlocks.apothecaryCauldron), JEICategory.CAULDRON.getUid());
 
-		registry.addRecipes(MortarRecipeMaker.getRecipes(), Reference.JEI_CATEGORY_MORTAR);
-		registry.addRecipes(CauldronRecipeMaker.getRecipes(), Reference.JEI_CATEGORY_CAULDRON);
+		registry.addRecipes(MortarRecipeMaker.getRecipes(), JEICategory.MORTAR.getUid());
+		registry.addRecipes(CauldronRecipeMaker.getRecipes(), JEICategory.CAULDRON.getUid());
 		registry.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.bullet, 1, 1)), VanillaRecipeCategoryUid.CRAFTING);
 		registry.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.tippedArrow), new ItemStack(Items.ARROW), 0.125F), VanillaRecipeCategoryUid.CRAFTING);
 		registry.addRecipes(MagazineRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);

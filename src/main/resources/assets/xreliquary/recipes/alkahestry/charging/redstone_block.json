@@ -1,0 +1,9 @@
+{
+    "type": "xreliquary:alkahestry_charging",
+    "charge": 9,
+    "ingredients": [
+        {
+            "item": "minecraft:redstone_block"
+        }
+    ]
+}

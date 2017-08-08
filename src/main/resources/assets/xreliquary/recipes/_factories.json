@@ -1,6 +1,7 @@
 {
     "recipes": {
-        "alkahestry_crafting": "xreliquary.crafting.factories.AlkahestryCraftingRecipeFactory"
+        "alkahestry_crafting": "xreliquary.crafting.factories.AlkahestryCraftingRecipeFactory",
+        "alkahestry_charging": "xreliquary.crafting.factories.AlkahestryChargingRecipeFactory"
     },
     "conditions": {
         "mob_drops_craftable": "xreliquary.crafting.factories.MobDropsCraftableConditionFactory",

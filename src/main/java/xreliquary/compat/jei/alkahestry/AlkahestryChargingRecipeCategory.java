@@ -6,6 +6,7 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import xreliquary.compat.jei.JEICategory;
 import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 
@@ -30,7 +31,7 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 	@Nonnull
 	@Override
 	public String getUid() {
-		return Reference.JEI_CATEGORY_ALKAHESTRY_CHARGING;
+		return JEICategory.ALKAHESTRY_CHARGING.getUid();
 	}
 
 	@Nonnull

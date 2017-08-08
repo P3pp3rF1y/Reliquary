@@ -6,6 +6,7 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import xreliquary.compat.jei.JEICategory;
 import xreliquary.compat.jei.ReliquaryRecipeCategory;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Reference;
@@ -15,7 +16,6 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class CauldronRecipeCategory extends ReliquaryRecipeCategory<CauldronRecipeJEI> {
-
 	private static final int INPUT_SLOT = 0;
 	private static final int OUTPUT_SLOT = 1;
 	private static final int CAULDRON_SLOT = 3;
@@ -32,7 +32,7 @@ public class CauldronRecipeCategory extends ReliquaryRecipeCategory<CauldronReci
 	@Nonnull
 	@Override
 	public String getUid() {
-		return Reference.JEI_CATEGORY_CAULDRON;
+		return JEICategory.CAULDRON.getUid();
 	}
 
 	@Nonnull

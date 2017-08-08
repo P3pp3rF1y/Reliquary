@@ -4,9 +4,9 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import xreliquary.compat.jei.JEICategory;
 import xreliquary.compat.jei.ReliquaryRecipeCategory;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Reference;
@@ -16,7 +16,6 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class MortarRecipeCategory extends ReliquaryRecipeCategory<MortarRecipeJEI> {
-
 	private static final int INPUT_SLOT_1 = 0;
 	private static final int INPUT_SLOT_2 = 1;
 	private static final int INPUT_SLOT_3 = 2;
@@ -34,7 +33,7 @@ public class MortarRecipeCategory extends ReliquaryRecipeCategory<MortarRecipeJE
 	@Nonnull
 	@Override
 	public String getUid() {
-		return Reference.JEI_CATEGORY_MORTAR;
+		return JEICategory.MORTAR.getUid();
 	}
 
 	@Nonnull

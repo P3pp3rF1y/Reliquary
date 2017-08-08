@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import xreliquary.Reliquary;
 import xreliquary.common.gui.GUIHandler;
+import xreliquary.compat.jei.JEICategory;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.entities.EntityGlowingWater;
 import xreliquary.entities.EntityHolyHandGrenade;
@@ -76,7 +77,7 @@ public class CommonProxy {
 	public void registerJEI(Block block, String name, boolean oneDescription) {
 	}
 
-	public void registerJEI(IRecipe recipe) {
+	public void registerJEI(JEICategory category, IRecipe recipe) {
 	}
 
 	public void initSpecialJEIDescriptions() {

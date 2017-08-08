@@ -41,7 +41,8 @@ import xreliquary.client.render.RenderXRTippedArrow;
 import xreliquary.client.render.TileEntityPedestalPassiveRenderer;
 import xreliquary.client.render.TileEntityPedestalRenderer;
 import xreliquary.common.CommonProxy;
-import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeRegistry;
+import xreliquary.compat.jei.JEICategory;
+import xreliquary.compat.jei.alkahestry.AlkahestryRecipeRegistry;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.entities.EntityGlowingWater;
@@ -171,12 +172,12 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void registerJEI(IRecipe recipe) {
+	public void registerJEI(JEICategory category, IRecipe recipe) {
 		if(!Loader.isModLoaded(Compatibility.MOD_ID.JEI)) {
 			return;
 		}
 
-		AlkahestryCraftingRecipeRegistry.register(recipe);
+		AlkahestryRecipeRegistry.register(category, recipe);
 	}
 
 	@SubscribeEvent
