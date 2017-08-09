@@ -12,15 +12,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.entities.shot.EntityBlazeShot;
-import xreliquary.entities.shot.EntityBusterShot;
-import xreliquary.entities.shot.EntityConcussiveShot;
-import xreliquary.entities.shot.EntityEnderShot;
-import xreliquary.entities.shot.EntityExorcismShot;
-import xreliquary.entities.shot.EntityNeutralShot;
-import xreliquary.entities.shot.EntitySandShot;
-import xreliquary.entities.shot.EntitySeekerShot;
-import xreliquary.entities.shot.EntityStormShot;
+import xreliquary.entities.shot.*;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModSounds;
 import xreliquary.reference.Names;
@@ -82,6 +74,7 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	private void setPotionEffects(ItemStack handgun, List<PotionEffect> potionEffects) {
+		XRPotionHelper.cleanPotionEffects(handgun);
 		XRPotionHelper.addPotionEffectsToStack(handgun, potionEffects);
 	}
 

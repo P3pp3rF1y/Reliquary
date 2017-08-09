@@ -7,15 +7,15 @@ import xreliquary.init.ModItems;
 import javax.annotation.Nullable;
 
 public class AlkahestryTomeIngredient extends Ingredient {
-	private int chargeNeeded;
+	private int charge;
 
-	public AlkahestryTomeIngredient(ItemStack tome, int chargeNeeded) {
+	public AlkahestryTomeIngredient(ItemStack tome, int charge) {
 		super(tome);
-		this.chargeNeeded = chargeNeeded;
+		this.charge = charge;
 	}
 
 	@Override
 	public boolean apply(@Nullable ItemStack inventoryStack) {
-		return inventoryStack != null && inventoryStack.getItem() == ModItems.alkahestryTome && ModItems.alkahestryTome.getCharge(inventoryStack) >= chargeNeeded;
+		return inventoryStack != null && inventoryStack.getItem() == ModItems.alkahestryTome && ModItems.alkahestryTome.getCharge(inventoryStack) >= charge;
 	}
 }

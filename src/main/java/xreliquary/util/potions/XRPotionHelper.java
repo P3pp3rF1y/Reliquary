@@ -23,12 +23,7 @@ import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Settings;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class XRPotionHelper {
 
@@ -195,6 +190,18 @@ public class XRPotionHelper {
 		NBTTagCompound tag = MoreObjects.firstNonNull(itemstack.getTagCompound(), new NBTTagCompound());
 		addPotionEffectsToCompoundTag(tag, effects);
 		itemstack.setTagCompound(tag);
+	}
+
+	public static void cleanPotionEffects(ItemStack stack) {
+		NBTTagCompound tag = stack.getTagCompound();
+
+		if (tag == null) {
+			return;
+		}
+
+		if (tag.hasKey("effects")) {
+			tag.removeTag("effects");
+		}
 	}
 
 	@SuppressWarnings("SameParameterValue")

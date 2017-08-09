@@ -10,10 +10,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import xreliquary.crafting.MagazineRecipe;
 import xreliquary.crafting.MobCharmRepairRecipe;
-import xreliquary.crafting.PotionBulletsRecipe;
-import xreliquary.crafting.XRTippedArrowsRecipe;
 import xreliquary.reference.Reference;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
@@ -47,14 +44,13 @@ public class XRRecipes {
 
 		registerCustomRecipes();
 
-		addRecipe(new ItemStack(ModItems.alkahestryTome, 1, ModItems.alkahestryTome.getMaxDamage(ItemStack.EMPTY)), MOLTEN_CORE, new ItemStack(ModItems.witchHat), STORM_EYE, CREEPER_GLAND, new ItemStack(Items.BOOK), SLIME_PEARL, CHELICERAE, WITHER_SKULL, NEBULOUS_HEART);
+		ItemStack tome = new ItemStack(ModItems.alkahestryTome);
+		ModItems.alkahestryTome.setCharge(tome, 0);
+		addRecipe(tome, MOLTEN_CORE, new ItemStack(ModItems.witchHat), STORM_EYE, CREEPER_GLAND, new ItemStack(Items.BOOK), SLIME_PEARL, CHELICERAE, WITHER_SKULL, NEBULOUS_HEART);
 	}
 
 	private static void registerCustomRecipes() {
 		ForgeRegistries.RECIPES.register(new MobCharmRepairRecipe());
-		ForgeRegistries.RECIPES.register(new XRTippedArrowsRecipe());
-		ForgeRegistries.RECIPES.register(new PotionBulletsRecipe());
-		ForgeRegistries.RECIPES.register(new MagazineRecipe());
 	}
 
 	private static void initConstants() {

@@ -1,0 +1,21 @@
+{
+    "type": "xreliquary:use_meta_effects",
+    "pattern": [
+        "AAA",
+        "APA",
+        "AAA"
+    ],
+    "key": {
+        "A": {
+            "item": "minecraft:arrow"
+        },
+        "P": {
+            "type": "xreliquary:lingering_potion",
+            "duration_factor": 0.125
+        }
+    },
+    "result": {
+        "item": "xreliquary:tipped_arrow",
+        "count": 8
+    }
+}
