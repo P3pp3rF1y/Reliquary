@@ -10,7 +10,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import xreliquary.crafting.AlkahestryDrainRecipe;
 import xreliquary.crafting.MagazineRecipe;
 import xreliquary.crafting.MobCharmRepairRecipe;
 import xreliquary.crafting.PotionBulletsRecipe;
@@ -52,7 +51,6 @@ public class XRRecipes {
 	}
 
 	private static void registerCustomRecipes() {
-		ForgeRegistries.RECIPES.register(new AlkahestryDrainRecipe());
 		ForgeRegistries.RECIPES.register(new MobCharmRepairRecipe());
 		ForgeRegistries.RECIPES.register(new XRTippedArrowsRecipe());
 		ForgeRegistries.RECIPES.register(new PotionBulletsRecipe());

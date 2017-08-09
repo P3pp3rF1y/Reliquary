@@ -12,7 +12,6 @@ import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
@@ -24,10 +23,12 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Iterator;
 
 @SuppressWarnings("unused")
 @MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class AlkahestryCraftingRecipeFactory implements IRecipeFactory {
 	@Override
 	public IRecipe parse(JsonContext context, JsonObject json) {
@@ -82,7 +83,7 @@ public class AlkahestryCraftingRecipeFactory implements IRecipeFactory {
 
 		@Override
 		public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
-			NonNullList<ItemStack> remainingItems = ForgeHooks.defaultRecipeGetRemainingItems(inv);
+			NonNullList<ItemStack> remainingItems = IRecipe.super.getRemainingItems(inv);
 
 			addTomeWithUsedCharge(remainingItems, inv);
 
