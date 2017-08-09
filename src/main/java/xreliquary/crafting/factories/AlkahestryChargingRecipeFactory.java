@@ -18,6 +18,7 @@ import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import xreliquary.Reliquary;
 import xreliquary.compat.jei.JEICategory;
+import xreliquary.crafting.AlkahestryTomeIngredient;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 

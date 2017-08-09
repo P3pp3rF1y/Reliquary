@@ -1,4 +1,4 @@
-package xreliquary.crafting.factories;
+package xreliquary.crafting;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -12,10 +12,6 @@ public class AlkahestryTomeIngredient extends Ingredient {
 	public AlkahestryTomeIngredient(ItemStack tome, int chargeNeeded) {
 		super(tome);
 		this.chargeNeeded = chargeNeeded;
-	}
-
-	public int getChargeNeeded() {
-		return chargeNeeded;
 	}
 
 	@Override
