@@ -6,26 +6,23 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
+import xreliquary.crafting.factories.AlkahestryCraftingRecipeFactory.AlkahestryCraftingRecipe;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
-import xreliquary.util.alkahestry.AlkahestCraftRecipe;
-import xreliquary.util.alkahestry.Alkahestry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,32 +45,38 @@ public class ItemInfernalTear extends ItemToggleable {
 			return;
 
 		EntityPlayer player = (EntityPlayer) e;
-		//noinspection ConstantConditions
-		String ident = ist.hasTagCompound() ? ist.getTagCompound().getString("itemID") : "";
 
-		if(ident.isEmpty()) {
+		if(getStackFromTear(ist).isEmpty()) {
 			resetTear(ist);
 			return;
 		}
 
-		AlkahestCraftRecipe recipe = Alkahestry.matchCraftRecipe(getStackFromTear(ist));
+		AlkahestryCraftingRecipe recipe = matchAlkahestryRecipe(getStackFromTear(ist));
 		if(recipe == null) {
 			resetTear(ist);
 			return;
 		}
 
 		// You need above Cobblestone level to get XP.
-		if(!(recipe.yield == 32 && recipe.cost == 4)) {
+		if(!(recipe.getRecipeOutput().getCount() == 33 && recipe.getChargeNeeded() == 4)) {
 			if(InventoryHelper.consumeItem(this.getStackFromTear(ist), player)) {
-				player.addExperience((int) (Math.ceil((((double) recipe.cost) / (double) recipe.yield) / 256d * 500d)));
+				player.addExperience((int) (Math.ceil((((double) recipe.getChargeNeeded()) / (double) (recipe.getRecipeOutput().getCount() - 1)) / 256d * 500d)));
 			}
 		}
+	}
+
+	private AlkahestryCraftingRecipe matchAlkahestryRecipe(ItemStack stack) {
+		for(AlkahestryCraftingRecipe recipe : Settings.AlkahestryTome.craftingRecipes) {
+			if(recipe.getInput().apply(stack))
+				return recipe;
+		}
+		return null;
 	}
 
 	private void resetTear(ItemStack ist) {
 		NBTTagCompound tag = ist.getTagCompound();
 		if (tag != null) {
-			tag.removeTag("itemID");
+			tag.removeTag("item");
 			tag.removeTag("enabled");
 		}
 	}
@@ -103,21 +106,11 @@ public class ItemInfernalTear extends ItemToggleable {
 
 	@Nonnull
 	public ItemStack getStackFromTear(@Nonnull ItemStack tear) {
-		//something awful happened. We either lost data or this is an invalid tear by some other means. Either way, not great.
-		if(NBTHelper.getString("itemID", tear).equals(""))
+		NBTTagCompound itemNBT = NBTHelper.getTagCompound("item", tear);
+		if(itemNBT.hasNoTags())
 			return ItemStack.EMPTY;
 
-		//TODO refactor to regular NBT stored item
-		String[] nameParts = NBTHelper.getString("itemID", tear).split("\\|");
-		ItemStack stack;
-		if(nameParts.length > 1)
-			//noinspection ConstantConditions
-			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(nameParts[0])), 1, Integer.parseInt(nameParts[1]));
-		else
-			//noinspection ConstantConditions
-			stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(nameParts[0])));
-
-		return stack;
+		return new ItemStack(itemNBT);
 	}
 
 	@Nonnull
@@ -140,7 +133,7 @@ public class ItemInfernalTear extends ItemToggleable {
 		//empty the tear if player is not sneaking and the tear is not empty
 		NBTTagCompound nbt = itemStack.getTagCompound();
 		if(!player.isSneaking() && !getStackFromTear(itemStack).isEmpty()) {
-			NBTHelper.removeTag(nbt, "itemID");
+			NBTHelper.removeTag(nbt, "item");
 			NBTHelper.removeTag(nbt, "enabled");
 
 			return actionResult;
@@ -173,7 +166,7 @@ public class ItemInfernalTear extends ItemToggleable {
 		if(target.isEmpty())
 			return ItemStack.EMPTY;
 
-		NBTHelper.setString("itemID", tear, Alkahestry.getStackKey(target));
+		NBTHelper.setTagCompound("item", tear, target.writeToNBT(new NBTTagCompound()));
 
 		if(Settings.InfernalTear.absorbWhenCreated)
 			NBTHelper.setBoolean("enabled", stack, true);
@@ -181,9 +174,8 @@ public class ItemInfernalTear extends ItemToggleable {
 		return tear;
 	}
 
-	//TODO: possibly figure out a better way to pass the condition to inventory helper
 	@Nonnull
-	private static ItemStack getTargetAlkahestItem(@Nonnull ItemStack self, IInventory inventory) {
+	private ItemStack getTargetAlkahestItem(@Nonnull ItemStack self, IInventory inventory) {
 		ItemStack targetItem = ItemStack.EMPTY;
 		int itemQuantity = 0;
 		for(int slot = 0; slot < inventory.getSizeInventory(); slot++) {
@@ -200,8 +192,8 @@ public class ItemInfernalTear extends ItemToggleable {
 			if(stack.getTagCompound() != null) {
 				continue;
 			}
-			AlkahestCraftRecipe recipe = Alkahestry.matchCraftRecipe(stack);
-			if(recipe == null || (recipe.yield == 32 && recipe.cost == 4))
+			AlkahestryCraftingRecipe recipe = matchAlkahestryRecipe(stack);
+			if(recipe == null || (recipe.getRecipeOutput().getCount() == 33 && recipe.getChargeNeeded() == 4))
 				continue;
 			if(InventoryHelper.getItemQuantity(stack, inventory) > itemQuantity) {
 				itemQuantity = InventoryHelper.getItemQuantity(stack, inventory);

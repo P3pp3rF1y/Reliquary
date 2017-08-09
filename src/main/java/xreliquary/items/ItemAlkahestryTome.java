@@ -19,19 +19,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.common.gui.GUIHandler;
+import xreliquary.crafting.factories.AlkahestryChargingRecipeFactory.AlkahestryChargingRecipe;
 import xreliquary.init.ModSounds;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
-import xreliquary.util.alkahestry.AlkahestChargeRecipe;
-import xreliquary.util.alkahestry.AlkahestRecipeType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
 
 public class ItemAlkahestryTome extends ItemToggleable {
 	public ItemAlkahestryTome() {
@@ -69,20 +67,15 @@ public class ItemAlkahestryTome extends ItemToggleable {
 			return;
 		}
 
-		for(Map.Entry<String, AlkahestChargeRecipe> entry : Settings.AlkahestryTome.chargingRecipes.entrySet()) {
-			AlkahestChargeRecipe recipe = entry.getValue();
-			if(getCharge(tome) + recipe.charge <= getChargeLimit() && consumeItem(recipe, player)) {
-				addCharge(tome, recipe.charge);
+		for(AlkahestryChargingRecipe recipe : Settings.AlkahestryTome.chargingRecipes) {
+			if(getCharge(tome) + recipe.getChargeToAdd() <= getChargeLimit() && consumeItem(recipe, player)) {
+				addCharge(tome, recipe.getChargeToAdd());
 			}
 		}
 	}
 
-	private boolean consumeItem(AlkahestChargeRecipe recipe, EntityPlayer player) {
-		if(recipe.type == AlkahestRecipeType.OREDICT) {
-			return InventoryHelper.consumeOreDictItem(recipe.name, player);
-		} else {
-			return InventoryHelper.consumeItem(recipe.name, recipe.meta, recipe.type == AlkahestRecipeType.WILDCARD, player);
-		}
+	private boolean consumeItem(AlkahestryChargingRecipe recipe, EntityPlayer player) {
+		return InventoryHelper.consumeItem(is -> recipe.getChargingIngredient().apply(is), player);
 	}
 
 	@Override
@@ -114,7 +107,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
 		subItems.add(stack);
 	}
 
-	public static int getChargeLimit() {
+	private static int getChargeLimit() {
 		return Settings.AlkahestryTome.chargeLimit;
 	}
 

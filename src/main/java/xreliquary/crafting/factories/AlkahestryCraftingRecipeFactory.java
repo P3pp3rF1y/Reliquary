@@ -16,8 +16,6 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import xreliquary.Reliquary;
-import xreliquary.compat.jei.JEICategory;
 import xreliquary.crafting.AlkahestryTomeIngredient;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
@@ -49,20 +47,20 @@ public class AlkahestryCraftingRecipeFactory implements IRecipeFactory {
 		ItemStack result = ingredients.get(0).getMatchingStacks()[0].copy();
 		result.setCount(resultCount);
 
-		ItemStack tome = new ItemStack(ModItems.alkahestryTome);
-		ModItems.alkahestryTome.setCharge(tome, Settings.AlkahestryTome.chargeLimit);
-
-		ingredients.add(new AlkahestryTomeIngredient(tome, chargeNeeded));
-
-		return new AlkahestryCraftingRecipe(new ResourceLocation(Reference.MOD_ID, "alkahestry_crafting"), ingredients, result, resultCount, chargeNeeded);
+		return new AlkahestryCraftingRecipe(new ResourceLocation(Reference.MOD_ID, "alkahestry_crafting"), ingredients.get(0), result, resultCount, chargeNeeded);
 	}
 
 	public static class AlkahestryCraftingRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 		private final int chargeNeeded;
 		private final ResourceLocation group;
-		private final NonNullList<Ingredient> input;
+		private final NonNullList<Ingredient> ingredients;
+		private final Ingredient input;
 		private final ItemStack result;
 		private final int resultCount;
+
+		public Ingredient getInput() {
+			return input;
+		}
 
 		public int getResultCount() {
 			return resultCount;
@@ -72,14 +70,19 @@ public class AlkahestryCraftingRecipeFactory implements IRecipeFactory {
 			return chargeNeeded;
 		}
 
-		public AlkahestryCraftingRecipe(ResourceLocation group, NonNullList<Ingredient> input, ItemStack result, int resultCount, int chargeNeeded) {
+		public AlkahestryCraftingRecipe(ResourceLocation group, Ingredient input, ItemStack result, int resultCount, int chargeNeeded) {
 			this.group = group;
-			this.input = input;
 			this.result = result;
 			this.resultCount = resultCount;
 			this.chargeNeeded = chargeNeeded;
+			this.input = input;
 
-			Reliquary.PROXY.registerJEI(JEICategory.ALKAHESTRY_CRAFTING, this);
+			ItemStack tome = new ItemStack(ModItems.alkahestryTome);
+			ModItems.alkahestryTome.setCharge(tome, Settings.AlkahestryTome.chargeLimit);
+
+			this.ingredients = NonNullList.from(Ingredient.EMPTY, input, new AlkahestryTomeIngredient(tome, chargeNeeded));
+
+			Settings.AlkahestryTome.craftingRecipes.add(this);
 		}
 
 		@Override
@@ -93,7 +96,7 @@ public class AlkahestryCraftingRecipeFactory implements IRecipeFactory {
 
 		@Override
 		public NonNullList<Ingredient> getIngredients() {
-			return input;
+			return ingredients;
 		}
 
 		@Override
@@ -118,7 +121,7 @@ public class AlkahestryCraftingRecipeFactory implements IRecipeFactory {
 		@Override
 		public boolean matches(InventoryCrafting inv, World worldIn) {
 			NonNullList<Ingredient> required = NonNullList.create();
-			required.addAll(input);
+			required.addAll(ingredients);
 
 			for (int x = 0; x < inv.getSizeInventory(); x++)
 			{

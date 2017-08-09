@@ -1,16 +1,15 @@
 package xreliquary.reference;
 
+import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import xreliquary.client.gui.hud.HUDPosition;
-import xreliquary.util.alkahestry.AlkahestChargeRecipe;
-import xreliquary.util.alkahestry.AlkahestCraftRecipe;
+import xreliquary.crafting.factories.AlkahestryChargingRecipeFactory.AlkahestryChargingRecipe;
+import xreliquary.crafting.factories.AlkahestryCraftingRecipeFactory.AlkahestryCraftingRecipe;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Settings {
 	public static boolean chestLootEnabled;
@@ -49,8 +48,8 @@ public class Settings {
 
 	public static class AlkahestryTome {
 		public static int chargeLimit;
-		public static Map<String, AlkahestCraftRecipe> craftingRecipes = new HashMap<>();
-		public static Map<String, AlkahestChargeRecipe> chargingRecipes = new HashMap<>();
+		public static List<AlkahestryCraftingRecipe> craftingRecipes = Lists.newArrayList();
+		public static List<AlkahestryChargingRecipe> chargingRecipes = Lists.newArrayList();
 		public static ItemStack baseItem;
 		public static int baseItemWorth;
 	}

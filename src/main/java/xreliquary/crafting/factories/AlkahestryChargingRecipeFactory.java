@@ -16,11 +16,10 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import xreliquary.Reliquary;
-import xreliquary.compat.jei.JEICategory;
 import xreliquary.crafting.AlkahestryTomeIngredient;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -69,7 +68,7 @@ public class AlkahestryChargingRecipeFactory implements IRecipeFactory {
 			result = new ItemStack(ModItems.alkahestryTome);
 			ModItems.alkahestryTome.addCharge(result, chargeToAdd);
 
-			Reliquary.PROXY.registerJEI(JEICategory.ALKAHESTRY_CHARGING, this);
+			Settings.AlkahestryTome.chargingRecipes.add(this);
 		}
 
 		@Override
@@ -135,6 +134,10 @@ public class AlkahestryChargingRecipeFactory implements IRecipeFactory {
 		@Override
 		public NonNullList<Ingredient> getIngredients() {
 			return NonNullList.from(Ingredient.EMPTY, chargingIngredient, tomeIngredient);
+		}
+
+		public Ingredient getChargingIngredient() {
+			return chargingIngredient;
 		}
 	}
 }

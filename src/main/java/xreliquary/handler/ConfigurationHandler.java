@@ -4,14 +4,14 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import xreliquary.handler.config.*;
+import xreliquary.handler.config.BlockItemConfiguration;
+import xreliquary.handler.config.HudConfiguration;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
@@ -42,12 +42,6 @@ public class ConfigurationHandler {
 	public static void postInit() {
 
 		BlockItemConfiguration.loadEntitiesSettings();
-
-		//loading here to allow for recipes with items from other mods
-		// probably could be done earlier, but what do I know about when mods are loading stuff
-		AlkahestConfiguration.loadAlkahestCraftingRecipes();
-		AlkahestConfiguration.loadAlkahestChargingRecipes();
-		AlkahestConfiguration.loadAlkahestBaseItem();
 
 		if(configuration.hasChanged()) {
 			configuration.save();

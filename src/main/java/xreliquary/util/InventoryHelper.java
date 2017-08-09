@@ -15,11 +15,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import xreliquary.items.ItemToggleable;
 
 import javax.annotation.Nonnull;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.function.Function;
 
 public class InventoryHelper {
 
@@ -111,7 +108,13 @@ public class InventoryHelper {
 		}
 		return false;
 	}
+
+
 	public static boolean consumeItem(String itemName, int meta, boolean ignoreMeta, EntityPlayer player) {
+		return consumeItem(is -> is.getItem().getRegistryName().toString().equals(itemName) && (ignoreMeta || is.getMetadata() == meta), player);
+	}
+
+	public static boolean consumeItem(Function<ItemStack, Boolean> itemMatches, EntityPlayer player) {
 		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
 			if(player.inventory.mainInventory.get(slot).isEmpty()) {
 				continue;
@@ -119,7 +122,7 @@ public class InventoryHelper {
 
 			ItemStack slotStack = player.inventory.mainInventory.get(slot);
 			//noinspection ConstantConditions
-			if(slotStack.getItem().getRegistryName().toString().equals(itemName) && (ignoreMeta || slotStack.getMetadata() == meta)) {
+			if(itemMatches.apply(slotStack)) {
 				int stackSize = slotStack.getCount();
 				if(stackSize > 0) {
 					slotStack.shrink(1);

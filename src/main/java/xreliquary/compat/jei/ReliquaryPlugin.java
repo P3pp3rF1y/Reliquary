@@ -1,11 +1,6 @@
 package xreliquary.compat.jei;
 
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.IJeiRuntime;
-import mezz.jei.api.IModPlugin;
-import mezz.jei.api.IModRegistry;
-import mezz.jei.api.ISubtypeRegistry;
-import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.*;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
@@ -13,8 +8,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeCategory;
+import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeMaker;
 import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeCategory;
-import xreliquary.compat.jei.alkahestry.AlkahestryRecipeRegistry;
+import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeMaker;
 import xreliquary.compat.jei.cauldron.CauldronRecipeCategory;
 import xreliquary.compat.jei.cauldron.CauldronRecipeMaker;
 import xreliquary.compat.jei.descriptions.DescriptionEntry;
@@ -53,8 +49,8 @@ public class ReliquaryPlugin implements IModPlugin {
 
 	@Override
 	public void register(@Nonnull IModRegistry registry) {
-		registry.addRecipes(AlkahestryRecipeRegistry.getRecipes(JEICategory.ALKAHESTRY_CRAFTING, registry.getJeiHelpers().getStackHelper()), JEICategory.ALKAHESTRY_CRAFTING.getUid());
-		registry.addRecipes(AlkahestryRecipeRegistry.getRecipes(JEICategory.ALKAHESTRY_CHARGING, registry.getJeiHelpers().getStackHelper()), JEICategory.ALKAHESTRY_CHARGING.getUid());
+		registry.addRecipes(AlkahestryCraftingRecipeMaker.getRecipes(registry.getJeiHelpers().getStackHelper()), JEICategory.ALKAHESTRY_CRAFTING.getUid());
+		registry.addRecipes(AlkahestryChargingRecipeMaker.getRecipes(registry.getJeiHelpers().getStackHelper()), JEICategory.ALKAHESTRY_CHARGING.getUid());
 
 		registry.addRecipeCatalyst(new ItemStack(Blocks.CRAFTING_TABLE), JEICategory.ALKAHESTRY_CHARGING.getUid(), JEICategory.ALKAHESTRY_CRAFTING.getUid());
 

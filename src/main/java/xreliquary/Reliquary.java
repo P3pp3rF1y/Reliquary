@@ -1,16 +1,12 @@
 package xreliquary;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
@@ -20,12 +16,9 @@ import xreliquary.handler.ConfigurationHandler;
 import xreliquary.handler.config.PotionConfiguration;
 import xreliquary.init.*;
 import xreliquary.network.PacketHandler;
-import xreliquary.reference.Reference;
-import xreliquary.reference.Settings;
-import xreliquary.util.LogHelper;
-import xreliquary.util.alkahestry.AlkahestCraftRecipe;
 import xreliquary.pedestal.PedestalRegistry;
-import xreliquary.util.alkahestry.AlkahestRecipeType;
+import xreliquary.reference.Reference;
+import xreliquary.util.LogHelper;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS, dependencies = Reference.DEPENDENCIES)
 public class Reliquary {
@@ -56,6 +49,7 @@ public class Reliquary {
 		ModCompat.loadCompat(ICompat.InitializationPhase.PRE_INIT, null);
 	}
 
+	@SuppressWarnings("unused")
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 
@@ -75,6 +69,7 @@ public class Reliquary {
 		ModCompat.loadCompat(ICompat.InitializationPhase.INIT, null);
 	}
 
+	@SuppressWarnings("unused")
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 
@@ -89,26 +84,7 @@ public class Reliquary {
 		LogHelper.info("Loaded successfully!");
 	}
 
-	@EventHandler
-	public void onMessage(IMCEvent event) {
-		event.getMessages().stream().filter(message -> message.key.equals("Alkahest")).forEach(message -> {
-			NBTTagCompound tag = message.getNBTValue();
-			if(tag != null && !new ItemStack(tag.getCompoundTag("item")).isEmpty() && tag.hasKey("yield") && tag.hasKey("cost")) {
-				if(tag.hasKey("dictionaryName"))
-					Settings.AlkahestryTome.craftingRecipes.put("OreDictionary:" + tag.getString("dictionaryName"), new AlkahestCraftRecipe(tag.getString("dictionaryName"), AlkahestRecipeType.OREDICT, tag.getInteger("yield"), tag.getInteger("cost")));
-				else {
-					ItemStack stack = new ItemStack(tag.getCompoundTag("item"));
-					String name = stack.getItem().getRegistryName().toString();
-					Settings.AlkahestryTome.craftingRecipes.put(name,
-							new AlkahestCraftRecipe(name, stack.getMetadata(), tag.getInteger("yield"), tag.getInteger("cost")));
-				}
-				LogHelper.info("[IMC] Added AlkahestRecipe ID: " + Item.REGISTRY.getNameForObject(new ItemStack(tag.getCompoundTag("item")).getItem()) + " from " + message.getSender() + " to registry.");
-			} else {
-				LogHelper.warn("[IMC] Invalid AlkahestRecipe from " + message.getSender() + "! Please contact the mod author if you see this error occurring.");
-			}
-		});
-	}
-
+	@SuppressWarnings("unused")
 	@EventHandler
 	public void serverStopping(FMLServerStoppingEvent event) {
 		PedestalRegistry.clearPositions();

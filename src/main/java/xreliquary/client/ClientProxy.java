@@ -9,7 +9,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -30,39 +29,14 @@ import xreliquary.client.init.ItemModels;
 import xreliquary.client.init.ModBlockColors;
 import xreliquary.client.init.ModItemColors;
 import xreliquary.client.registry.PedestalClientRegistry;
-import xreliquary.client.render.MobCharmBeltLayerRenderer;
-import xreliquary.client.render.RenderApothecaryMortar;
-import xreliquary.client.render.RenderLyssaHook;
-import xreliquary.client.render.RenderPedestalFishHook;
-import xreliquary.client.render.RenderShot;
-import xreliquary.client.render.RenderThrownKrakenSlime;
-import xreliquary.client.render.RenderThrownXRPotion;
-import xreliquary.client.render.RenderXRTippedArrow;
-import xreliquary.client.render.TileEntityPedestalPassiveRenderer;
-import xreliquary.client.render.TileEntityPedestalRenderer;
+import xreliquary.client.render.*;
 import xreliquary.common.CommonProxy;
-import xreliquary.compat.jei.JEICategory;
-import xreliquary.compat.jei.alkahestry.AlkahestryRecipeRegistry;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
-import xreliquary.entities.EntityEnderStaffProjectile;
-import xreliquary.entities.EntityGlowingWater;
-import xreliquary.entities.EntityHolyHandGrenade;
-import xreliquary.entities.EntityKrakenSlime;
-import xreliquary.entities.EntityLyssaHook;
-import xreliquary.entities.EntitySpecialSnowball;
-import xreliquary.entities.EntityXRTippedArrow;
+import xreliquary.entities.*;
 import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.entities.potion.EntityThrownXRPotion;
-import xreliquary.entities.shot.EntityBlazeShot;
-import xreliquary.entities.shot.EntityBusterShot;
-import xreliquary.entities.shot.EntityConcussiveShot;
-import xreliquary.entities.shot.EntityEnderShot;
-import xreliquary.entities.shot.EntityExorcismShot;
-import xreliquary.entities.shot.EntityNeutralShot;
-import xreliquary.entities.shot.EntitySandShot;
-import xreliquary.entities.shot.EntitySeekerShot;
-import xreliquary.entities.shot.EntityStormShot;
+import xreliquary.entities.shot.*;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
@@ -169,15 +143,6 @@ public class ClientProxy extends CommonProxy {
 	public void registerJEI(Item item, String name) {
 		if(Loader.isModLoaded(Compatibility.MOD_ID.JEI))
 			JEIDescriptionRegistry.register(item, name);
-	}
-
-	@Override
-	public void registerJEI(JEICategory category, IRecipe recipe) {
-		if(!Loader.isModLoaded(Compatibility.MOD_ID.JEI)) {
-			return;
-		}
-
-		AlkahestryRecipeRegistry.register(category, recipe);
 	}
 
 	@SubscribeEvent
