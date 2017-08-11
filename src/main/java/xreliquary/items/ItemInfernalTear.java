@@ -18,6 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.crafting.factories.AlkahestryCraftingRecipeFactory.AlkahestryCraftingRecipe;
+import xreliquary.init.XRRecipes;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -66,7 +67,7 @@ public class ItemInfernalTear extends ItemToggleable {
 	}
 
 	private AlkahestryCraftingRecipe matchAlkahestryRecipe(ItemStack stack) {
-		for(AlkahestryCraftingRecipe recipe : Settings.AlkahestryTome.craftingRecipes) {
+		for(AlkahestryCraftingRecipe recipe : XRRecipes.craftingRecipes) {
 			if(recipe.getInput().apply(stack))
 				return recipe;
 		}
@@ -168,7 +169,7 @@ public class ItemInfernalTear extends ItemToggleable {
 
 		NBTHelper.setTagCompound("item", tear, target.writeToNBT(new NBTTagCompound()));
 
-		if(Settings.InfernalTear.absorbWhenCreated)
+		if(Settings.Items.InfernalTear.absorbWhenCreated)
 			NBTHelper.setBoolean("enabled", stack, true);
 
 		return tear;

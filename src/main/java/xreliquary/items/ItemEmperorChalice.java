@@ -11,7 +11,12 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -71,7 +76,7 @@ public class ItemEmperorChalice extends ItemToggleable {
 
 		EntityPlayer player = (EntityPlayer) entityLiving;
 
-		int multiplier = Settings.EmperorChalice.hungerSatiationMultiplier;
+		int multiplier = Settings.Items.EmperorChalice.hungerSatiationMultiplier;
 		player.getFoodStats().addStats(1, (float) (multiplier / 2));
 		player.attackEntityFrom(DamageSource.DROWN, multiplier);
 		return stack;

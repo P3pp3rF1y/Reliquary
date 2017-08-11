@@ -15,6 +15,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.ArrayUtils;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
@@ -47,17 +48,17 @@ public class BlockInterdictionTorch extends BlockTorch {
 		world.scheduleBlockUpdate(pos, this, tickRate(), 1);
 		if(world.isRemote)
 			return;
-		int radius = Settings.InterdictionTorch.pushRadius;
+		int radius = Settings.Blocks.InterdictionTorch.pushRadius;
 
-		List<String> pushableEntitiesBlacklist = Settings.InterdictionTorch.pushableEntitiesBlacklist;
-		List<String> pushableProjectilesBlacklist = Settings.InterdictionTorch.pushableProjectilesBlacklist;
+		String[] pushableEntitiesBlacklist = Settings.Blocks.InterdictionTorch.pushableEntitiesBlacklist;
+		String[] pushableProjectilesBlacklist = Settings.Blocks.InterdictionTorch.pushableProjectilesBlacklist;
 
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius, pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius));
 		for(Entity entity : entities) {
 			if(entity instanceof EntityPlayer)
 				continue;
 			String entityName = EntityList.getEntityString(entity);
-			if(!pushableEntitiesBlacklist.contains(entityName) || (Settings.InterdictionTorch.canPushProjectiles && !pushableProjectilesBlacklist.contains(entityName))) {
+			if(!ArrayUtils.contains(pushableEntitiesBlacklist, entityName) || (Settings.Blocks.InterdictionTorch.canPushProjectiles && !ArrayUtils.contains(pushableProjectilesBlacklist, entityName))) {
 				double distance = entity.getDistance((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
 				if(distance >= radius || distance == 0)
 					continue;

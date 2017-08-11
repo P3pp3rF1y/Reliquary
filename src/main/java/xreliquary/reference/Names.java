@@ -74,9 +74,9 @@ public class Names {
 
 	public static class Configs {
 		public static final String HUD_POSITIONS = "hud_positions";
+		public static final String ITEM_SETTINGS = "item_settings";
+		public static final String BLOCK_SETTINGS = "block_settings";
 		public static final String ITEM_AND_BLOCK_SETTINGS = "item_and_block_settings";
-		public static final String CRAFTING_RECIPES = "crafting_recipes";
-		public static final String CHARGING_RECIPES = "charging_recipes";
 		public static final String POTION_MAP = "potion_map";
 		public static final String JEI_DESCRIPTIONS = "jei.descriptions.";
 		public static final String MAX_EFFECT_COUNT = "max_effect_count";

@@ -5,11 +5,17 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
+import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
@@ -75,14 +81,14 @@ public class ItemMidasTouchstone extends ItemToggleable {
 
 	private void doRepairAndDamageTouchstone(ItemStack ist, EntityPlayer player) {
 		//list of customizable items added through configs that can be repaired by the touchstone.
-		List<String> goldItems = Settings.MidasTouchstone.goldItems;
+		String[] goldItems = Settings.Items.MidasTouchstone.goldItems;
 
 		for(int slot = 0; slot < player.inventory.armorInventory.size(); slot++) {
 			ItemStack armorStack = player.inventory.armorInventory.get(slot);
-			if (armorStack.isEmpty())
+			if(armorStack.isEmpty())
 				continue;
 			ItemArmor armor = (ItemArmor) armorStack.getItem();
-			if(armor.getArmorMaterial() != ItemArmor.ArmorMaterial.GOLD && !goldItems.contains(RegistryHelper.getItemRegistryName(armor))) {
+			if(armor.getArmorMaterial() != ItemArmor.ArmorMaterial.GOLD && !ArrayUtils.contains(goldItems, RegistryHelper.getItemRegistryName(armor))) {
 				continue;
 			}
 			if(armorStack.getItemDamage() <= 0) {
@@ -98,7 +104,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 
 			if(item instanceof ItemSword) {
 				ItemSword sword = (ItemSword) item;
-				if(!ItemSword.ToolMaterial.GOLD.name().equals(sword.getToolMaterialName()) && !goldItems.contains(RegistryHelper.getItemRegistryName(sword))) {
+				if(!ItemSword.ToolMaterial.GOLD.name().equals(sword.getToolMaterialName()) && !ArrayUtils.contains(goldItems, RegistryHelper.getItemRegistryName(sword))) {
 					continue;
 				}
 				if(stack.getItemDamage() <= 0) {
@@ -109,7 +115,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 				}
 			} else if(item instanceof ItemTool) {
 				ItemTool tool = (ItemTool) item;
-				if(!ItemSword.ToolMaterial.GOLD.name().equals(tool.getToolMaterialName()) && !goldItems.contains(RegistryHelper.getItemRegistryName(tool))) {
+				if(!ItemSword.ToolMaterial.GOLD.name().equals(tool.getToolMaterialName()) && !ArrayUtils.contains(goldItems, RegistryHelper.getItemRegistryName(tool))) {
 					continue;
 				}
 				if(stack.getItemDamage() <= 0) {
@@ -119,7 +125,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 					stack.setItemDamage(stack.getItemDamage() - 1);
 				}
 			} else {
-				if(!goldItems.contains(RegistryHelper.getItemRegistryName(item))) {
+				if(!ArrayUtils.contains(goldItems, RegistryHelper.getItemRegistryName(item))) {
 					continue;
 				}
 				if(stack.getItemDamage() <= 0 || !item.isDamageable()) {
@@ -142,14 +148,14 @@ public class ItemMidasTouchstone extends ItemToggleable {
 	}
 
 	private int getGlowStoneCost() {
-		return Settings.MidasTouchstone.glowstoneCost;
+		return Settings.Items.MidasTouchstone.glowstoneCost;
 	}
 
 	private int getGlowStoneWorth() {
-		return Settings.MidasTouchstone.glowstoneWorth;
+		return Settings.Items.MidasTouchstone.glowstoneWorth;
 	}
 
 	private int getGlowstoneLimit() {
-		return Settings.MidasTouchstone.glowstoneLimit;
+		return Settings.Items.MidasTouchstone.glowstoneLimit;
 	}
 }

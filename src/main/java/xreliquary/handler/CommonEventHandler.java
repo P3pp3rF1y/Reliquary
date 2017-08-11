@@ -121,7 +121,7 @@ public class CommonEventHandler {
 
 		// trades all fire damage for exhaustion (which causes the hunger bar to
 		// be depleted).
-		player.addExhaustion(event.getAmount() * ((float) Settings.InfernalClaws.hungerCostPercent / 100F));
+		player.addExhaustion(event.getAmount() * ((float) Settings.Items.InfernalClaws.hungerCostPercent / 100F));
 		event.setCanceled(true);
 	}
 
@@ -134,7 +134,7 @@ public class CommonEventHandler {
 		if(player.getFoodStats().getFoodLevel() <= 0)
 			return;
 		if(event.getSource() == DamageSource.LAVA || event.getSource() == DamageSource.ON_FIRE || event.getSource() == DamageSource.IN_FIRE) {
-			player.addExhaustion(event.getAmount() * ((float) Settings.InfernalChalice.hungerCostPercent / 100F));
+			player.addExhaustion(event.getAmount() * ((float) Settings.Items.InfernalChalice.hungerCostPercent / 100F));
 		}
 
 		event.setCanceled(true);
@@ -160,11 +160,11 @@ public class CommonEventHandler {
 		player.world.playSound(null, player.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, player.world.rand.nextFloat() * 0.1F + 0.9F);
 
 		// gives the player a few hearts, sparing them from death.
-		float amountHealed = player.getMaxHealth() * (float) Settings.AngelHeartVial.healPercentageOfMaxLife / 100F;
+		float amountHealed = player.getMaxHealth() * (float) Settings.Items.AngelHeartVial.healPercentageOfMaxLife / 100F;
 		player.setHealth(amountHealed);
 
 		// if the player had any negative status effects [vanilla only for now], remove them:
-		if(Settings.AngelHeartVial.removeNegativeStatus)
+		if(Settings.Items.AngelHeartVial.removeNegativeStatus)
 			removeNegativeStatusEffects(player);
 
 		event.setCanceled(true);
@@ -224,7 +224,7 @@ public class CommonEventHandler {
 			if(player.getFoodStats().getFoodLevel() <= 0)
 				return;
 
-			float hungerDamage = event.getAmount() * ((float) Settings.PhoenixDown.hungerCostPercent / 100F);
+			float hungerDamage = event.getAmount() * ((float) Settings.Items.PhoenixDown.hungerCostPercent / 100F);
 			player.addExhaustion(hungerDamage);
 			player.getFoodStats().onUpdate(player);
 
@@ -236,27 +236,27 @@ public class CommonEventHandler {
 			revertPhoenixDownToAngelicFeather(player);
 
 			// gives the player a few hearts, sparing them from death.
-			float amountHealed = player.getMaxHealth() * (float) Settings.PhoenixDown.healPercentageOfMaxLife / 100F;
+			float amountHealed = player.getMaxHealth() * (float) Settings.Items.PhoenixDown.healPercentageOfMaxLife / 100F;
 			player.setHealth(amountHealed);
 
 			// if the player had any negative status effects [vanilla only for now], remove them:
-			if(Settings.PhoenixDown.removeNegativeStatus)
+			if(Settings.Items.PhoenixDown.removeNegativeStatus)
 				removeNegativeStatusEffects(player);
 
 			// added bonus, has some extra effects when drowning or dying to lava
-			if(event.getSource() == DamageSource.LAVA && Settings.PhoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou)
+			if(event.getSource() == DamageSource.LAVA && Settings.Items.PhoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou)
 				player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 200, 0));
-			if(event.getSource() == DamageSource.DROWN && Settings.PhoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou) {
+			if(event.getSource() == DamageSource.DROWN && Settings.Items.PhoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou) {
 				player.setAir(10);
 				player.addPotionEffect(new PotionEffect(MobEffects.WATER_BREATHING, 200, 0));
 			}
 
 			// give the player temporary resistance to other damages.
-			if(Settings.PhoenixDown.giveTemporaryDamageResistance)
+			if(Settings.Items.PhoenixDown.giveTemporaryDamageResistance)
 				player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 200, 1));
 
 			// give the player temporary regeneration.
-			if(Settings.PhoenixDown.giveTemporaryRegeneration)
+			if(Settings.Items.PhoenixDown.giveTemporaryRegeneration)
 				player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 200, 1));
 
 			// particles, lots of them
@@ -281,7 +281,7 @@ public class CommonEventHandler {
 			return;
 
 		if(player.fallDistance > 0.0F) {
-			float hungerDamage = event.getAmount() * ((float) Settings.AngelicFeather.hungerCostPercent / 100F);
+			float hungerDamage = event.getAmount() * ((float) Settings.Items.AngelicFeather.hungerCostPercent / 100F);
 			player.addExhaustion(hungerDamage);
 			player.getFoodStats().onUpdate(player);
 		}
@@ -296,7 +296,7 @@ public class CommonEventHandler {
 
 		// player absorbs drowning damage in exchange for hunger, at a relatively low rate.
 		if(event.getSource() == DamageSource.DROWN) {
-			float hungerDamage = event.getAmount() * ((float) Settings.KrakenShell.hungerCostPercent / 100F);
+			float hungerDamage = event.getAmount() * ((float) Settings.Items.KrakenShell.hungerCostPercent / 100F);
 			player.addExhaustion(hungerDamage);
 			event.setCanceled(true);
 		}

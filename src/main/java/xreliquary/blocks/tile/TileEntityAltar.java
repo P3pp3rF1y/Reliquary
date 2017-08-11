@@ -46,8 +46,8 @@ public class TileEntityAltar extends TileEntityBase implements ITickable {
 
 	public void startCycle() {
 		//grabs the cycle time from the configs
-		int defaultCycleTime = Settings.Altar.timeInMinutes * 60 * 20;
-		int maximumVariance = Settings.Altar.maximumTimeVarianceInMinutes * 60 * 20;
+		int defaultCycleTime = Settings.Blocks.Altar.timeInMinutes * 60 * 20;
+		int maximumVariance = Settings.Blocks.Altar.maximumTimeVarianceInMinutes * 60 * 20;
 		cycleTime = (int) (defaultCycleTime + (double) maximumVariance * world.rand.nextGaussian());
 		redstoneCount = 0;
 		isActive = true;
@@ -88,7 +88,7 @@ public class TileEntityAltar extends TileEntityBase implements ITickable {
 	}
 
 	private static int getRedstoneCost() {
-		return Settings.Altar.redstoneCost;
+		return Settings.Blocks.Altar.redstoneCost;
 	}
 
 	public int getRedstoneCount() {

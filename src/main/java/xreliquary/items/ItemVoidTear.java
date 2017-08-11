@@ -199,12 +199,12 @@ public class ItemVoidTear extends ItemToggleable {
 				quantity = 1;
 			}
 		} else {
-			quantity = InventoryHelper.tryToRemoveFromInventory(target, inventory, Settings.VoidTear.itemLimit);
+			quantity = InventoryHelper.tryToRemoveFromInventory(target, inventory, Settings.Items.VoidTear.itemLimit);
 		}
 		setItemQuantity(voidTear, quantity);
 
 		//configurable auto-drain when created.
-		NBTHelper.setBoolean("enabled", voidTear, Settings.VoidTear.absorbWhenCreated);
+		NBTHelper.setBoolean("enabled", voidTear, Settings.Items.VoidTear.absorbWhenCreated);
 	}
 
 	private boolean canPlaceBlockOnSide(World worldIn, Block blockToPlace, BlockPos pos, EnumFacing side, EntityPlayer player) {
@@ -233,7 +233,7 @@ public class ItemVoidTear extends ItemToggleable {
 				if(!contents.isEmpty()) {
 					int itemQuantity = InventoryHelper.getItemQuantity(contents, player.inventory);
 
-					if(getItemQuantity(voidTear) <= Settings.VoidTear.itemLimit && itemQuantity > getKeepQuantity(voidTear) && InventoryHelper.consumeItem(contents, player, getKeepQuantity(voidTear), itemQuantity - getKeepQuantity(voidTear))) {
+					if(getItemQuantity(voidTear) <= Settings.Items.VoidTear.itemLimit && itemQuantity > getKeepQuantity(voidTear) && InventoryHelper.consumeItem(contents, player, getKeepQuantity(voidTear), itemQuantity - getKeepQuantity(voidTear))) {
 						//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
 						if(!player.capabilities.isCreativeMode) {
 							setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - getKeepQuantity(voidTear));
@@ -370,7 +370,7 @@ public class ItemVoidTear extends ItemToggleable {
 		ItemStack contents = this.getContainerItem(ist);
 		int quantity = getItemQuantity(ist);
 
-		int quantityDrained = InventoryHelper.tryToRemoveFromInventory(contents, inventory, Settings.VoidTear.itemLimit - quantity);
+		int quantityDrained = InventoryHelper.tryToRemoveFromInventory(contents, inventory, Settings.Items.VoidTear.itemLimit - quantity);
 
 		if(!(quantityDrained > 0))
 			return;
@@ -553,7 +553,7 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	boolean canAbsorbStack(ItemStack pickedUpStack, ItemStack tearStack) {
-		return StackHelper.isItemAndNbtEqual(this.getContainerItem(tearStack), pickedUpStack) && this.getItemQuantity(tearStack) + pickedUpStack.getCount() <= Settings.VoidTear.itemLimit;
+		return StackHelper.isItemAndNbtEqual(this.getContainerItem(tearStack), pickedUpStack) && this.getItemQuantity(tearStack) + pickedUpStack.getCount() <= Settings.Items.VoidTear.itemLimit;
 	}
 
 	public boolean isEmpty(ItemStack voidTear) {

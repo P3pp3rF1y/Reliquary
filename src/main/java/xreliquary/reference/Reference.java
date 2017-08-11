@@ -1,16 +1,12 @@
 package xreliquary.reference;
 
 public class Reference {
-	//TODO remove unused stuff
-
 	// class for all the mod related constants
 	public static final String VERSION = "@MOD_VERSION@";
 
 	public static final String MOD_ID = "xreliquary";
 	public static final String DOMAIN = MOD_ID.toLowerCase() + ":";
 	public static final String MOD_NAME = "Reliquary";
-	public static final String GUI_FACTORY_CLASS = "xreliquary.client.gui.GuiFactory";
-	public static final String DEPENDENCIES = "";
 
 	public static final String CLIENT_PROXY = "xreliquary.client.ClientProxy";
 	public static final String COMMON_PROXY = "xreliquary.common.CommonProxy";
@@ -51,16 +47,11 @@ public class Reference {
 	public static final int SQUID_INGREDIENT_META = 12;
 	public static final int CLAW_INGREDIENT_META = 13;
 	public static final int SHELL_INGREDIENT_META = 14;
-	public static final int CLOTH_INGREDIENT_META = 15;
 	public static final int GUARDIAN_INGREDIENT_META = 16;
-
-	public static final int RED_WOOL_META = 14;
-	public static final int BLACK_WOOL_META = 15;
 
 	public static final int WHITE_DYE_META = 15;
 	public static final int YELLOW_DYE_META = 11;
 	public static final int BLUE_DYE_META = 4;
-	public static final int BROWN_DYE_META = 3;
 	public static final int GREEN_DYE_META = 2;
 	public static final int RED_DYE_META = 1;
 	public static final int BLACK_DYE_META = 0;

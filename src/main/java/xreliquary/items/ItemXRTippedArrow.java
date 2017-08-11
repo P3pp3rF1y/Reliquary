@@ -13,9 +13,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityXRTippedArrow;
 import xreliquary.reference.Names;
-import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
@@ -49,7 +49,7 @@ public class ItemXRTippedArrow extends ItemArrow {
 		if (!isInCreativeTab(tab))
 			return;
 
-		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
+		for(PotionEssence essence : PotionMap.uniquePotionEssences) {
 			ItemStack tippedArrow = new ItemStack(this);
 			XRPotionHelper.addPotionEffectsToStack(tippedArrow, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.125F));
 

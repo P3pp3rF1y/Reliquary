@@ -13,9 +13,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
-import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
@@ -78,7 +78,7 @@ public class ItemBullet extends ItemBase {
 		}
 
 		//adding just basic bullets with potions here even though all bullet types can have potions attached
-		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
+		for(PotionEssence essence : PotionMap.uniquePotionEssences) {
 			ItemStack neutralBulletWithPotion = new ItemStack(this, 1, 1);
 			XRPotionHelper.addPotionEffectsToStack(neutralBulletWithPotion, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F));
 

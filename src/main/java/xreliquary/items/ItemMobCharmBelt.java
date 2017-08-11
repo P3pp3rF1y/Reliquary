@@ -183,11 +183,11 @@ public class ItemMobCharmBelt extends ItemBase /*implements IBauble*/ {
 
 			if(mobCharmNbt.getByte(TYPE_TAG) == type) {
 				int damage = mobCharmNbt.getInteger(DAMAGE_TAG);
-				if(damage + Settings.MobCharm.damagePerKill > ModItems.mobCharm.getMaxDamage(ItemStack.EMPTY)) {
+				if(damage + Settings.Items.MobCharm.damagePerKill > ModItems.mobCharm.getMaxDamage(ItemStack.EMPTY)) {
 					removeMobCharmInSlot(belt, i);
 					return ModItems.mobCharm.getMaxDamage(ItemStack.EMPTY) + 1;
 				} else {
-					damage += Settings.MobCharm.damagePerKill;
+					damage += Settings.Items.MobCharm.damagePerKill;
 					mobCharmNbt.setInteger(DAMAGE_TAG, damage);
 					return damage;
 				}

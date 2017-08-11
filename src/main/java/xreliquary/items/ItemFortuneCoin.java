@@ -245,11 +245,11 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem/* T
 	}
 
 	private double getLongRangePullDistance() {
-		return (double) Settings.FortuneCoin.longRangePullDistance;
+		return (double) Settings.Items.FortuneCoin.longRangePullDistance;
 	}
 
 	private double getStandardPullDistance() {
-		return (double) Settings.FortuneCoin.standardPullDistance;
+		return (double) Settings.Items.FortuneCoin.standardPullDistance;
 	}
 
 	@Override
@@ -280,7 +280,7 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem/* T
 	}
 
 	private boolean disabledAudio() {
-		return Settings.FortuneCoin.disableAudio;
+		return Settings.Items.FortuneCoin.disableAudio;
 	}
 
 	@Override

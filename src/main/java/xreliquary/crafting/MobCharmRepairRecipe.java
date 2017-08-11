@@ -68,7 +68,7 @@ public class MobCharmRepairRecipe extends net.minecraftforge.registries.IForgeRe
 			}
 		}
 
-		return !(mobCharm.isEmpty() || ingredient.isEmpty() || !REPAIR_INGREDIENTS.get(ModItems.mobCharm.getType(mobCharm)).isItemEqual(ingredient)) && mobCharm.getItemDamage() >= (Settings.MobCharm.dropDurabilityRepair * (numberIngredients - 1));
+		return !(mobCharm.isEmpty() || ingredient.isEmpty() || !REPAIR_INGREDIENTS.get(ModItems.mobCharm.getType(mobCharm)).isItemEqual(ingredient)) && mobCharm.getItemDamage() >= (Settings.Items.MobCharm.dropDurabilityRepair * (numberIngredients - 1));
 
 	}
 
@@ -103,7 +103,7 @@ public class MobCharmRepairRecipe extends net.minecraftforge.registries.IForgeRe
 
 		ItemStack resultingMobCharm = mobCharm.copy();
 
-		resultingMobCharm.setItemDamage(Math.max(resultingMobCharm.getItemDamage() - (Settings.MobCharm.dropDurabilityRepair * numberIngredients), 0));
+		resultingMobCharm.setItemDamage(Math.max(resultingMobCharm.getItemDamage() - (Settings.Items.MobCharm.dropDurabilityRepair * numberIngredients), 0));
 
 		return resultingMobCharm;
 	}

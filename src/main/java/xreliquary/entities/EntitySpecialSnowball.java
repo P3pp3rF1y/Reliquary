@@ -10,7 +10,11 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import xreliquary.reference.Settings;
 
@@ -34,15 +38,15 @@ public class EntitySpecialSnowball extends EntitySnowball {
 	}
 
 	private int getSnowballDamage() {
-		return fromGlacialStaff ? Settings.GlacialStaff.snowballDamage : Settings.IceMagusRod.snowballDamage;
+		return fromGlacialStaff ? Settings.Items.GlacialStaff.snowballDamage : Settings.Items.IceMagusRod.snowballDamage;
 	}
 
 	private int getSnowballDamageFireImmuneBonus() {
-		return fromGlacialStaff ? Settings.GlacialStaff.snowballDamageBonusFireImmune : Settings.IceMagusRod.snowballDamageBonusFireImmune;
+		return fromGlacialStaff ? Settings.Items.GlacialStaff.snowballDamageBonusFireImmune : Settings.Items.IceMagusRod.snowballDamageBonusFireImmune;
 	}
 
 	private int getSnowballDamageBlazeBonus() {
-		return fromGlacialStaff ? Settings.GlacialStaff.snowballDamageBonusBlaze : Settings.IceMagusRod.snowballDamageBonusBlaze;
+		return fromGlacialStaff ? Settings.Items.GlacialStaff.snowballDamageBonusBlaze : Settings.Items.IceMagusRod.snowballDamageBonusBlaze;
 	}
 
 	/**

@@ -28,6 +28,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.ArrayUtils;
 import xreliquary.reference.ClientReference;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -467,7 +468,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	 */
 	void seekTarget() {
 		Entity closestTarget = null;
-		List<String> huntableEntitiesBlacklist = Settings.SeekerShot.huntableEntitiesBlacklist;
+		String[] huntableEntitiesBlacklist = Settings.Items.SeekerShot.huntableEntitiesBlacklist;
 		List targetsList = world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5));
 		Iterator iTarget = targetsList.iterator();
 		double closestDistance = Double.MAX_VALUE;
@@ -475,7 +476,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			Entity currentTarget = (Entity) iTarget.next();
 
 			String entityName = EntityList.getEntityString(currentTarget);
-			if(huntableEntitiesBlacklist.contains(entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead))
+			if(ArrayUtils.contains(huntableEntitiesBlacklist, entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead))
 				continue;
 			// goes for the closest thing it can
 			if(this.getDistanceToEntity(currentTarget) < closestDistance) {

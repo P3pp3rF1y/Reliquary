@@ -41,7 +41,7 @@ public class ItemAngelicFeather extends ItemBase {
 	// minor jump buff
 	@Override
 	public void onUpdate(ItemStack ist, World world, Entity e, int i, boolean f) {
-		int potency = this instanceof ItemPhoenixDown ? Settings.PhoenixDown.leapingPotency : Settings.AngelicFeather.leapingPotency;
+		int potency = this instanceof ItemPhoenixDown ? Settings.Items.PhoenixDown.leapingPotency : Settings.Items.AngelicFeather.leapingPotency;
 		if(potency == 0)
 			return;
 		potency -= 1;

@@ -60,23 +60,23 @@ public class ItemEnderStaff extends ItemToggleable {
 	}
 
 	private int getEnderStaffPearlCost() {
-		return Settings.EnderStaff.enderPearlCastCost;
+		return Settings.Items.EnderStaff.enderPearlCastCost;
 	}
 
 	private int getEnderStaffNodeWarpCost() {
-		return Settings.EnderStaff.enderPearlNodeWarpCost;
+		return Settings.Items.EnderStaff.enderPearlNodeWarpCost;
 	}
 
 	private int getEnderPearlWorth() {
-		return Settings.EnderStaff.enderPearlWorth;
+		return Settings.Items.EnderStaff.enderPearlWorth;
 	}
 
 	private int getEnderPearlLimit() {
-		return Settings.EnderStaff.enderPearlLimit;
+		return Settings.Items.EnderStaff.enderPearlLimit;
 	}
 
 	private int getNodeWarpCastTime() {
-		return Settings.EnderStaff.nodeWarpCastTime;
+		return Settings.Items.EnderStaff.nodeWarpCastTime;
 	}
 
 	public String getMode(ItemStack ist) {
@@ -114,7 +114,7 @@ public class ItemEnderStaff extends ItemToggleable {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-		return new FilteredItemHandlerProvider(new int[] {Settings.EnderStaff.enderPearlLimit}, new Item[] {Items.ENDER_PEARL}, new int[] {Settings.EnderStaff.enderPearlWorth});
+		return new FilteredItemHandlerProvider(new int[] {Settings.Items.EnderStaff.enderPearlLimit}, new Item[] {Items.ENDER_PEARL}, new int[] {Settings.Items.EnderStaff.enderPearlWorth});
 	}
 
 	@Override

@@ -2,8 +2,8 @@ package xreliquary.compat.jei.lingering;
 
 import net.minecraft.item.ItemStack;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
@@ -22,7 +22,7 @@ public class ArrowShotRecipeMaker {
 	public static List<ArrowShotRecipeJEI> getRecipes(ItemStack output, ItemStack itemStack, float durationFactor) {
 		ArrayList<ArrowShotRecipeJEI> recipes = new ArrayList<>();
 
-		for(PotionEssence essence : Settings.Potions.uniquePotions) {
+		for(PotionEssence essence : PotionMap.uniquePotions) {
 
 			ItemStack potion = new ItemStack(ModItems.potion);
 			XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());

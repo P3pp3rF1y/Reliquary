@@ -82,7 +82,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			retractHook(pedestal, stack);
 		} else //noinspection ConstantConditions
 			if(getTicksCatchable(fakePlayer.fishEntity) > 0 || fakePlayer.fishEntity.caughtEntity != null) {
-				if(rand.nextInt(100) <= Settings.Pedestal.fishingWrapperSuccessRate) {
+				if(rand.nextInt(100) <= Settings.Blocks.Pedestal.fishingWrapperSuccessRate) {
 					retractHook(pedestal, stack);
 				} else {
 					retractFail = true;
@@ -108,7 +108,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		if(stack.getCount() == 0)
 			pedestal.destroyCurrentItem();
 
-		pedestal.setActionCoolDown(Settings.Pedestal.fishingWrapperRetractDelay * 20);
+		pedestal.setActionCoolDown(Settings.Blocks.Pedestal.fishingWrapperRetractDelay * 20);
 	}
 
 	private BlockPos getBestWaterBlock(IPedestal pedestal) {

@@ -12,9 +12,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
-import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
@@ -72,7 +72,7 @@ public class ItemMagazine extends ItemBase {
 		}
 
 		//similar to bullets adding just basic magazines with potions here even though all magazine types can have potions attached
-		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
+		for(PotionEssence essence : PotionMap.uniquePotionEssences) {
 			ItemStack neutralMagazineWithPotion = new ItemStack(this, 1, 1);
 			XRPotionHelper.addPotionEffectsToStack(neutralMagazineWithPotion, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F));
 

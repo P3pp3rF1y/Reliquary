@@ -10,7 +10,7 @@ public class VoidTearItemStackHandler extends FilteredItemStackHandler {
 
 	@Override
 	protected int getParentSlotLimit(int parentSlot) {
-		return Settings.VoidTear.itemLimit;
+		return Settings.Items.VoidTear.itemLimit;
 	}
 
 	@Override

@@ -9,8 +9,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
-import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
@@ -31,7 +31,7 @@ public class ItemPotionEssence extends ItemBase {
 		if (!isInCreativeTab(tab))
 			return;
 
-		for(PotionEssence essence : Settings.Potions.uniquePotionEssences) {
+		for(PotionEssence essence : PotionMap.uniquePotionEssences) {
 			ItemStack essenceItem = new ItemStack(this, 1);
 			XRPotionHelper.addPotionEffectsToStack(essenceItem, essence.getEffects());
 

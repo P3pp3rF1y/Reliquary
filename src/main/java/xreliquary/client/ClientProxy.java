@@ -29,22 +29,45 @@ import xreliquary.client.init.ItemModels;
 import xreliquary.client.init.ModBlockColors;
 import xreliquary.client.init.ModItemColors;
 import xreliquary.client.registry.PedestalClientRegistry;
-import xreliquary.client.render.*;
+import xreliquary.client.render.MobCharmBeltLayerRenderer;
+import xreliquary.client.render.RenderApothecaryMortar;
+import xreliquary.client.render.RenderLyssaHook;
+import xreliquary.client.render.RenderPedestalFishHook;
+import xreliquary.client.render.RenderShot;
+import xreliquary.client.render.RenderThrownKrakenSlime;
+import xreliquary.client.render.RenderThrownXRPotion;
+import xreliquary.client.render.RenderXRTippedArrow;
+import xreliquary.client.render.TileEntityPedestalPassiveRenderer;
+import xreliquary.client.render.TileEntityPedestalRenderer;
 import xreliquary.common.CommonProxy;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
-import xreliquary.entities.*;
+import xreliquary.entities.EntityEnderStaffProjectile;
+import xreliquary.entities.EntityGlowingWater;
+import xreliquary.entities.EntityHolyHandGrenade;
+import xreliquary.entities.EntityKrakenSlime;
+import xreliquary.entities.EntityLyssaHook;
+import xreliquary.entities.EntitySpecialSnowball;
+import xreliquary.entities.EntityXRTippedArrow;
 import xreliquary.entities.potion.EntityAttractionPotion;
 import xreliquary.entities.potion.EntityFertilePotion;
 import xreliquary.entities.potion.EntityThrownXRPotion;
-import xreliquary.entities.shot.*;
+import xreliquary.entities.shot.EntityBlazeShot;
+import xreliquary.entities.shot.EntityBusterShot;
+import xreliquary.entities.shot.EntityConcussiveShot;
+import xreliquary.entities.shot.EntityEnderShot;
+import xreliquary.entities.shot.EntityExorcismShot;
+import xreliquary.entities.shot.EntityNeutralShot;
+import xreliquary.entities.shot.EntitySandShot;
+import xreliquary.entities.shot.EntitySeekerShot;
+import xreliquary.entities.shot.EntityStormShot;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
-import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
 import java.util.ArrayList;
@@ -95,7 +118,7 @@ public class ClientProxy extends CommonProxy {
 		List<ItemStack> potionShots = new ArrayList<>();
 		List<ItemStack> potionMagazines = new ArrayList<>();
 
-		for(PotionEssence essence : Settings.Potions.uniquePotions) {
+		for(PotionEssence essence : PotionMap.uniquePotions) {
 			ItemStack potion = new ItemStack(ModItems.potion, 1);
 			XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());
 			NBTHelper.setBoolean("hasPotion", potion, true);

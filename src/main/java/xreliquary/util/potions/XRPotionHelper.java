@@ -20,10 +20,14 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.items.ItemPotionEssence;
-import xreliquary.reference.Settings;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class XRPotionHelper {
 
@@ -37,7 +41,7 @@ public class XRPotionHelper {
 	}
 
 	public static boolean isItemIngredient(ItemStack ist) {
-		for(PotionIngredient ingredient : Settings.Potions.potionMap) {
+		for(PotionIngredient ingredient : PotionMap.ingredients) {
 			//noinspection ConstantConditions
 			if(ingredient.item.getItem().getRegistryName().equals(ist.getItem().getRegistryName()) && ingredient.item.getMetadata() == ist.getMetadata()) {
 				return true;
@@ -50,7 +54,7 @@ public class XRPotionHelper {
 		if(ist.getItem() instanceof ItemPotionEssence) {
 			return new PotionIngredient(ist, XRPotionHelper.getPotionEffectsFromStack(ist));
 		}
-		for(PotionIngredient ingredient : Settings.Potions.potionMap) {
+		for(PotionIngredient ingredient : PotionMap.ingredients) {
 			//noinspection ConstantConditions
 			if(ingredient.item.getItem().getRegistryName().equals(ist.getItem().getRegistryName()) && ingredient.item.getMetadata() == ist.getMetadata())
 				return ingredient;

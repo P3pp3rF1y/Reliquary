@@ -24,7 +24,7 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 
 	@SuppressWarnings("unused")
 	public PedestalMeleeWeaponWrapper() {
-		this(Settings.Pedestal.meleeWrapperCooldown);
+		this(Settings.Blocks.Pedestal.meleeWrapperCooldown);
 	}
 
 	private PedestalMeleeWeaponWrapper(byte cooldownAfterSwing) {
@@ -37,7 +37,7 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 
 		World world = pedestal.getTheWorld();
 		BlockPos pos = pedestal.getBlockPos();
-		int meleeRange = Settings.Pedestal.meleeWrapperRange;
+		int meleeRange = Settings.Blocks.Pedestal.meleeWrapperRange;
 
 		List<EntityLiving> entities = world.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(pos.getX() - meleeRange, pos.getY() - meleeRange, pos.getZ() - meleeRange, pos.getX() + meleeRange, pos.getY() + meleeRange, pos.getZ() + meleeRange));
 

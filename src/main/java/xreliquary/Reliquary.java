@@ -12,15 +12,18 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import xreliquary.common.CommonProxy;
 import xreliquary.compat.ICompat;
-import xreliquary.handler.ConfigurationHandler;
-import xreliquary.handler.config.PotionConfiguration;
-import xreliquary.init.*;
+import xreliquary.init.ModCapabilities;
+import xreliquary.init.ModCompat;
+import xreliquary.init.ModFluids;
+import xreliquary.init.ModLoot;
+import xreliquary.init.PedestalItems;
 import xreliquary.network.PacketHandler;
 import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.reference.Reference;
 import xreliquary.util.LogHelper;
+import xreliquary.util.potions.PotionMap;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS, dependencies = Reference.DEPENDENCIES)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
 public class Reliquary {
 
 	@Instance(Reference.MOD_ID)
@@ -33,7 +36,6 @@ public class Reliquary {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
 
 		PROXY.initColors();
 
@@ -55,8 +57,7 @@ public class Reliquary {
 
 		ModLoot.init();
 
-		//TODO figure out a better way to handle this if possible
-		PotionConfiguration.loadPotionMap();
+		PotionMap.initPotionMap();
 
 		PROXY.initSpecialJEIDescriptions();
 
@@ -74,8 +75,6 @@ public class Reliquary {
 	public void postInit(FMLPostInitializationEvent event) {
 
 		PROXY.postInit();
-
-		ConfigurationHandler.postInit();
 
 		ModCompat.loadCompat(ICompat.InitializationPhase.POST_INIT, null);
 

@@ -31,6 +31,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.items.util.FilteredItemHandlerProvider;
@@ -67,31 +68,31 @@ public class ItemRendingGale extends ItemToggleable {
 	}
 
 	private static int getChargeLimit() {
-		return Settings.RendingGale.chargeLimit;
+		return Settings.Items.RendingGale.chargeLimit;
 	}
 
 	public static int getChargeCost() {
-		return Settings.RendingGale.castChargeCost;
+		return Settings.Items.RendingGale.castChargeCost;
 	}
 
 	private static int getFeathersWorth() {
-		return Settings.RendingGale.chargeFeatherWorth;
+		return Settings.Items.RendingGale.chargeFeatherWorth;
 	}
 
 	private static int getBoltChargeCost() {
-		return Settings.RendingGale.boltChargeCost;
+		return Settings.Items.RendingGale.boltChargeCost;
 	}
 
 	private static int getBoltTargetRange() {
-		return Settings.RendingGale.blockTargetRange;
+		return Settings.Items.RendingGale.blockTargetRange;
 	}
 
 	private static int getRadialPushRadius() {
-		return Settings.RendingGale.pushPullRadius;
+		return Settings.Items.RendingGale.pushPullRadius;
 	}
 
 	private static boolean canPushProjectiles() {
-		return Settings.RendingGale.canPushProjectiles;
+		return Settings.Items.RendingGale.canPushProjectiles;
 	}
 
 	private void attemptFlight(EntityLivingBase entityLiving) {
@@ -186,7 +187,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-		return new FilteredItemHandlerProvider(new int[] {Settings.RendingGale.chargeLimit}, new Item[] {Items.FEATHER}, new int[] {Settings.RendingGale.chargeFeatherWorth});
+		return new FilteredItemHandlerProvider(new int[] {Settings.Items.RendingGale.chargeLimit}, new Item[] {Items.FEATHER}, new int[] {Settings.Items.RendingGale.chargeFeatherWorth});
 	}
 
 	@Override
@@ -350,14 +351,14 @@ public class ItemRendingGale extends ItemToggleable {
 		double upperY = posY + (double) getRadialPushRadius() / 2D;
 		double upperZ = posZ + getRadialPushRadius();
 
-		List<String> pushableEntitiesBlacklist = Settings.RendingGale.pushableEntitiesBlacklist;
-		List<String> pushableProjectilesBlacklist = Settings.RendingGale.pushableProjectilesBlacklist;
+		String[] pushableEntitiesBlacklist = Settings.Items.RendingGale.pushableEntitiesBlacklist;
+		String[] pushableProjectilesBlacklist = Settings.Items.RendingGale.pushableProjectilesBlacklist;
 
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 
 		for(Entity entity : entities) {
 			String entityName = EntityList.getEntityString(entity);
-			if(!pushableEntitiesBlacklist.contains(entityName) || (!pull && canPushProjectiles() && !pushableProjectilesBlacklist.contains(entityName))) {
+			if(!ArrayUtils.contains(pushableEntitiesBlacklist, entityName) || (!pull && canPushProjectiles() && !ArrayUtils.contains(pushableProjectilesBlacklist, entityName))) {
 				double distance = getDistanceToEntity(posX, posY, posZ, entity);
 				if(distance >= getRadialPushRadius())
 					continue;

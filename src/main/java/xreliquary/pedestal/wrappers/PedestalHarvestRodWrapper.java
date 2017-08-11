@@ -1,6 +1,10 @@
 package xreliquary.pedestal.wrappers;
 
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockCrops;
+import net.minecraft.block.BlockDirt;
+import net.minecraft.block.BlockNetherWart;
+import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
@@ -57,8 +61,8 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		World world = pedestal.getTheWorld();
 		BlockPos pos = pedestal.getBlockPos();
 		EntityPlayer player = pedestal.getFakePlayer();
-		int range = Settings.HarvestRod.pedestalRange;
-		int cooldown = Settings.HarvestRod.pedestalCooldown;
+		int range = Settings.Items.HarvestRod.pedestalRange;
+		int cooldown = Settings.Items.HarvestRod.pedestalCooldown;
 
 		hoeLand(world, player, pos, range);
 

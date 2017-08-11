@@ -3,8 +3,8 @@ package xreliquary.compat.jei.magazines;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
@@ -26,7 +26,7 @@ public class MagazineRecipeMaker {
 		}
 
 		//now add potion variants for the neutral one
-		for(PotionEssence essence : Settings.Potions.uniquePotions) {
+		for(PotionEssence essence : PotionMap.uniquePotions) {
 			List<PotionEffect> effects = XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F);
 
 			List<ItemStack> inputs = new ArrayList<>();

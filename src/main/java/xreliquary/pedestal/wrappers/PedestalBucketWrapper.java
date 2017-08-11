@@ -35,16 +35,16 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 	@Override
 	public void update(ItemStack stack, IPedestal pedestal) {
 		BlockPos pos = pedestal.getBlockPos();
-		int bucketRange = Settings.Pedestal.bucketWrapperRange;
+		int bucketRange = Settings.Blocks.Pedestal.bucketWrapperRange;
 
 		if(!milkCows(pedestal, pos, bucketRange, stack)) {
 			if(!drainLiquid(pedestal, pos, bucketRange)) {
-				pedestal.setActionCoolDown(2 * Settings.Pedestal.bucketWrapperCooldown);
+				pedestal.setActionCoolDown(2 * Settings.Blocks.Pedestal.bucketWrapperCooldown);
 				return;
 			}
 		}
 
-		pedestal.setActionCoolDown(Settings.Pedestal.bucketWrapperCooldown);
+		pedestal.setActionCoolDown(Settings.Blocks.Pedestal.bucketWrapperCooldown);
 	}
 
 	@Override

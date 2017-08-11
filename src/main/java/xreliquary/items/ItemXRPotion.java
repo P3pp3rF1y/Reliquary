@@ -20,9 +20,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.entities.potion.EntityThrownXRPotion;
 import xreliquary.reference.Names;
-import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
@@ -106,7 +106,7 @@ public class ItemXRPotion extends ItemBase {
 
 		List<ItemStack> splashPotions = new ArrayList<>();
 		List<ItemStack> lingeringPotions = new ArrayList<>();
-		for(PotionEssence essence : Settings.Potions.uniquePotions) {
+		for(PotionEssence essence : PotionMap.uniquePotions) {
 			ItemStack potion = new ItemStack(this, 1);
 			XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());
 			NBTHelper.setBoolean("hasPotion", potion, true);

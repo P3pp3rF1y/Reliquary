@@ -95,27 +95,27 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	private int getBonemealLimit() {
-		return Settings.HarvestRod.boneMealLimit;
+		return Settings.Items.HarvestRod.boneMealLimit;
 	}
 
 	private int getBonemealWorth() {
-		return Settings.HarvestRod.boneMealWorth;
+		return Settings.Items.HarvestRod.boneMealWorth;
 	}
 
 	public int getBonemealCost() {
-		return Settings.HarvestRod.boneMealCost;
+		return Settings.Items.HarvestRod.boneMealCost;
 	}
 
 	public int getLuckRolls() {
-		return Settings.HarvestRod.boneMealLuckRolls;
+		return Settings.Items.HarvestRod.boneMealLuckRolls;
 	}
 
 	public int getLuckPercent() {
-		return Settings.HarvestRod.boneMealLuckPercentChance;
+		return Settings.Items.HarvestRod.boneMealLuckPercentChance;
 	}
 
 	private int getBreakRadius() {
-		return Settings.HarvestRod.AOERadius;
+		return Settings.Items.HarvestRod.AOERadius;
 	}
 
 	@Override
@@ -517,7 +517,7 @@ public class ItemHarvestRod extends ItemToggleable {
 					switch(getMode(harvestRod)) {
 						case BONE_MEAL_MODE:
 							if(getBoneMealCount(harvestRod) >= getBonemealCost() || player.capabilities.isCreativeMode) {
-								BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius);
+								BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, cache, result.getBlockPos(), Settings.Items.HarvestRod.AOERadius);
 
 								if(blockToBoneMeal != null) {
 									boneMealBlock(harvestRod, player, world, blockToBoneMeal, false);
@@ -527,7 +527,7 @@ public class ItemHarvestRod extends ItemToggleable {
 							break;
 						case PLANTABLE_MODE:
 							if(getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) >= 1 || player.capabilities.isCreativeMode) {
-								BlockPos blockToPlantOn = getNextBlockToPlantOn(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius, (IPlantable) getCurrentPlantable(harvestRod).getItem());
+								BlockPos blockToPlantOn = getNextBlockToPlantOn(world, cache, result.getBlockPos(), Settings.Items.HarvestRod.AOERadius, (IPlantable) getCurrentPlantable(harvestRod).getItem());
 
 								if(blockToPlantOn != null) {
 									plantItem(harvestRod, player, blockToPlantOn, player.getActiveHand(), false);
@@ -536,7 +536,7 @@ public class ItemHarvestRod extends ItemToggleable {
 							}
 							break;
 						case HOE_MODE:
-							BlockPos blockToHoe = getNextBlockToHoe(world, cache, result.getBlockPos(), Settings.HarvestRod.AOERadius);
+							BlockPos blockToHoe = getNextBlockToHoe(world, cache, result.getBlockPos(), Settings.Items.HarvestRod.AOERadius);
 							if(blockToHoe != null) {
 								hoeLand(world, blockToHoe);
 								return;
@@ -623,7 +623,7 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	private boolean isCoolDownOver(ItemStack stack, int count) {
-		return getMaxItemUseDuration(stack) - count >= AOE_START_COOLDOWN && (getMaxItemUseDuration(stack) - count) % Settings.HarvestRod.AOECooldown == 0;
+		return getMaxItemUseDuration(stack) - count >= AOE_START_COOLDOWN && (getMaxItemUseDuration(stack) - count) % Settings.Items.HarvestRod.AOECooldown == 0;
 	}
 
 	private BlockPos getNextBlockToBoneMeal(World world, IHarvestRodCache cache, BlockPos pos, int range) {

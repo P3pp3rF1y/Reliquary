@@ -8,11 +8,9 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 
-import javax.annotation.Nullable;
-
 public class FluidHandlerInfernalChalice extends FluidHandlerItemStack {
 	public FluidHandlerInfernalChalice(ItemStack chalice) {
-		super(chalice, Settings.InfernalChalice.fluidLimit);
+		super(chalice, Settings.Items.InfernalChalice.fluidLimit);
 	}
 
 	@Override

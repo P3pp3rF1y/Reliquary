@@ -15,6 +15,7 @@ import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import xreliquary.init.ModItems;
+import xreliquary.init.XRRecipes;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
@@ -32,7 +33,7 @@ public class AlkahestryDrainRecipeFactory implements IRecipeFactory {
 		return new AlkahestryDrainRecipe(new ResourceLocation(Reference.MOD_ID, "alkahestry_drain"), chargeToDrain, result);
 	}
 
-	private static class AlkahestryDrainRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+	public static class AlkahestryDrainRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 		private final int chargeToDrain;
 		private final ItemStack result;
 		private final NonNullList<Ingredient> input;
@@ -41,11 +42,13 @@ public class AlkahestryDrainRecipeFactory implements IRecipeFactory {
 		public AlkahestryDrainRecipe(ResourceLocation group, int chargeToDrain, ItemStack result) {
 			this.group = group;
 			ItemStack tome = new ItemStack(ModItems.alkahestryTome);
-			ModItems.alkahestryTome.setCharge(tome, Settings.AlkahestryTome.chargeLimit);
+			ModItems.alkahestryTome.setCharge(tome, Settings.Items.AlkahestryTome.chargeLimit);
 			input = NonNullList.from(Ingredient.EMPTY, Ingredient.fromStacks(tome));
 
 			this.chargeToDrain = chargeToDrain;
 			this.result = result;
+
+			XRRecipes.drainRecipe = this;
 		}
 
 		@Override

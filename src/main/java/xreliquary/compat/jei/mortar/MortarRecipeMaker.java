@@ -2,8 +2,8 @@ package xreliquary.compat.jei.mortar;
 
 import net.minecraft.item.ItemStack;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
@@ -16,7 +16,7 @@ public class MortarRecipeMaker {
 	public static List<MortarRecipeJEI> getRecipes() {
 		ArrayList<MortarRecipeJEI> recipes = new ArrayList<>();
 
-		for(PotionEssence essence : Settings.Potions.potionCombinations) {
+		for(PotionEssence essence : PotionMap.potionCombinations) {
 
 			List<ItemStack> inputs = essence.getIngredients().stream().map(ingredient -> ingredient.item).collect(Collectors.toList());
 

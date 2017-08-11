@@ -40,11 +40,11 @@ import xreliquary.init.ModItems;
 import xreliquary.items.ItemPotionEssence;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
-import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TileEntityCauldron extends TileEntityBase implements IWailaDataChangeIndicator, ITickable {
@@ -285,18 +285,19 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	private int getGlowstoneAmpLimit() {
-		return Settings.ApothecaryCauldron.glowstoneLimit;
+		return Settings.Blocks.ApothecaryCauldron.glowstoneLimit;
 	}
 
 	private int getRedstoneAmpLimit() {
-		return Settings.ApothecaryCauldron.redstoneLimit;
+		return Settings.Blocks.ApothecaryCauldron.redstoneLimit;
 	}
 
 	private List<Block> getHeatSources() {
 		List<Block> heatSources = new ArrayList<>();
-		List<String> heatSourceBlockNames = Settings.ApothecaryCauldron.heatSources;
+		String[] heatSourceBlockNames = Settings.Blocks.ApothecaryCauldron.heatSources;
 
-		heatSourceBlockNames.stream().filter(blockName -> !heatSources.contains(RegistryHelper.getBlockFromName(blockName))).forEach(blockName -> heatSources.add(RegistryHelper.getBlockFromName(blockName)));
+		//TODO: change this to
+		Arrays.stream(heatSourceBlockNames).filter(blockName -> !heatSources.contains(Block.getBlockFromName(blockName))).forEach(blockName -> heatSources.add(Block.getBlockFromName(blockName)));
 		//defaults that can't be removed.
 		heatSources.add(Blocks.LAVA);
 		heatSources.add(Blocks.FLOWING_LAVA);
@@ -309,7 +310,7 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 	}
 
 	private int getTotalCookTime() {
-		return Settings.ApothecaryCauldron.cookTime;
+		return Settings.Blocks.ApothecaryCauldron.cookTime;
 	}
 
 	public void handleCollidingEntity(World world, BlockPos pos, Entity collidingEntity) {

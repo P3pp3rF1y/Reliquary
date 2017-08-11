@@ -18,8 +18,8 @@ import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import xreliquary.crafting.AlkahestryTomeIngredient;
 import xreliquary.init.ModItems;
+import xreliquary.init.XRRecipes;
 import xreliquary.reference.Reference;
-import xreliquary.reference.Settings;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -68,7 +68,7 @@ public class AlkahestryChargingRecipeFactory implements IRecipeFactory {
 			result = new ItemStack(ModItems.alkahestryTome);
 			ModItems.alkahestryTome.addCharge(result, chargeToAdd);
 
-			Settings.AlkahestryTome.chargingRecipes.add(this);
+			XRRecipes.chargingRecipes.add(this);
 		}
 
 		@Override

@@ -1,6 +1,5 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -9,10 +8,15 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
@@ -27,8 +31,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemDestructionCatalyst extends ItemToggleable {
-
-	public static List<String> ids = ImmutableList.of("minecraft:dirt", "minecraft:grass", "minecraft:gravel", "minecraft:cobblestone", "minecraft:stone", "minecraft:sand", "minecraft:sandstone", "minecraft:snow", "minecraft:soul_sand", "minecraft:netherrack", "minecraft:end_stone");
 
 	public ItemDestructionCatalyst() {
 		super(Names.Items.DESTRUCTION_CATALYST);
@@ -79,15 +81,15 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 	}
 
 	private int getExplosionRadius() {
-		return Settings.DestructionCatalyst.explosionRadius;
+		return Settings.Items.DestructionCatalyst.explosionRadius;
 	}
 
 	private boolean centeredExplosion() {
-		return Settings.DestructionCatalyst.centeredExplosion;
+		return Settings.Items.DestructionCatalyst.centeredExplosion;
 	}
 
 	private boolean perfectCube() {
-		return Settings.DestructionCatalyst.perfectCube;
+		return Settings.Items.DestructionCatalyst.perfectCube;
 	}
 
 	private void doExplosion(World world, BlockPos pos, EnumFacing side, EntityPlayer player, @Nonnull ItemStack stack) {
@@ -133,18 +135,18 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 	}
 
 	private boolean isBreakable(String id) {
-		return Settings.DestructionCatalyst.mundaneBlocks.indexOf(id) != -1;
+		return ArrayUtils.contains(Settings.Items.DestructionCatalyst.mundaneBlocks, id);
 	}
 
 	private int gunpowderCost() {
-		return Settings.DestructionCatalyst.gunpowderCost;
+		return Settings.Items.DestructionCatalyst.gunpowderCost;
 	}
 
 	private int gunpowderWorth() {
-		return Settings.DestructionCatalyst.gunpowderWorth;
+		return Settings.Items.DestructionCatalyst.gunpowderWorth;
 	}
 
 	private int gunpowderLimit() {
-		return Settings.DestructionCatalyst.gunpowderLimit;
+		return Settings.Items.DestructionCatalyst.gunpowderLimit;
 	}
 }

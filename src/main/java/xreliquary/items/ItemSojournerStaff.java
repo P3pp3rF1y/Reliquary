@@ -86,14 +86,14 @@ public class ItemSojournerStaff extends ItemToggleable {
 	}
 
 	private void scanForMatchingTorchesToFillInternalStorage(ItemStack ist, EntityPlayer player) {
-		for(ItemStack torch : Settings.SojournerStaff.torches) {
-			if(!isInternalStorageFullOfItem(ist, torch.getItem()) && InventoryHelper.consumeItem(torch, player)) {
-				addItemToInternalStorage(ist, torch.getItem());
+		for(String torch : Settings.Items.SojournerStaff.torches) {
+			if(!isInternalStorageFullOfItem(ist, torch) && InventoryHelper.consumeItem(is -> is.getItem().getRegistryName() != null && is.getItem().getRegistryName().toString().equals(torch), player)) {
+				addItemToInternalStorage(ist, torch);
 			}
 		}
 	}
 
-	private void addItemToInternalStorage(ItemStack ist, Item item) {
+	private void addItemToInternalStorage(ItemStack ist, String itemRegistryName) {
 		NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 		if(tagCompound == null) {
 			tagCompound = new NBTTagCompound();
@@ -105,7 +105,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 		for(int i = 0; i < tagList.tagCount(); ++i) {
 			NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
 			String itemName = tagItemData.getString("Name");
-			if(itemName.equals(RegistryHelper.getItemRegistryName(item))) {
+			if(itemName.equals(itemRegistryName)) {
 				int quantity = tagItemData.getInteger("Quantity");
 				tagItemData.setInteger("Quantity", quantity + 1);
 				added = true;
@@ -113,7 +113,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 		}
 		if(!added) {
 			NBTTagCompound newTagData = new NBTTagCompound();
-			newTagData.setString("Name", RegistryHelper.getItemRegistryName(item));
+			newTagData.setString("Name", itemRegistryName);
 			newTagData.setInteger("Quantity", 1);
 			tagList.appendTag(newTagData);
 		}
@@ -123,7 +123,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 		NBTHelper.setTag(ist, tagCompound);
 	}
 
-	private static boolean hasItemInInternalStorage(ItemStack ist, Item item, int cost) {
+	private static boolean hasItemInInternalStorage(ItemStack ist, String itemRegistryName, int cost) {
 		NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 		if(tagCompound == null) {
 			tagCompound = new NBTTagCompound();
@@ -137,7 +137,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 		for(int i = 0; i < tagList.tagCount(); ++i) {
 			NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
 			String itemName = tagItemData.getString("Name");
-			if(itemName.equals(RegistryHelper.getItemRegistryName(item))) {
+			if(itemName.equals(itemRegistryName)) {
 				int quantity = tagItemData.getInteger("Quantity");
 				return quantity >= cost;
 			}
@@ -146,15 +146,15 @@ public class ItemSojournerStaff extends ItemToggleable {
 		return false;
 	}
 
-	private boolean isInternalStorageFullOfItem(ItemStack ist, Item item) {
-		if(hasItemInInternalStorage(ist, item, 1)) {
+	private boolean isInternalStorageFullOfItem(ItemStack ist, String itemRegistryName) {
+		if(hasItemInInternalStorage(ist, itemRegistryName, 1)) {
 			NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 			NBTTagList tagList = tagCompound.getTagList("Items", 10);
 
 			for(int i = 0; i < tagList.tagCount(); ++i) {
 				NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
 				String itemName = tagItemData.getString("Name");
-				if(itemName.equals(RegistryHelper.getItemRegistryName(item))) {
+				if(itemName.equals(itemRegistryName)) {
 					int quantity = tagItemData.getInteger("Quantity");
 					return quantity >= getTorchItemMaxCapacity();
 				}
@@ -196,7 +196,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 				}
 			}
 		}
-		return torchToPlace.isEmpty() && Settings.SojournerStaff.torches.size() > 0 ? RegistryHelper.getItemRegistryName(Settings.SojournerStaff.torches.get(0).getItem()) : torchToPlace;
+		return (torchToPlace == null || torchToPlace.isEmpty()) && Settings.Items.SojournerStaff.torches.length > 0 ? Settings.Items.SojournerStaff.torches[0] : torchToPlace;
 	}
 
 	public int getTorchCount(ItemStack ist) {
@@ -268,13 +268,13 @@ public class ItemSojournerStaff extends ItemToggleable {
 	}
 
 	private int getTorchItemMaxCapacity() {
-		return Settings.SojournerStaff.maxCapacityPerItemType;
+		return Settings.Items.SojournerStaff.maxCapacityPerItemType;
 	}
 
-	static boolean removeItemFromInternalStorage(ItemStack ist, Item item, int cost, EntityPlayer player) {
+	static boolean removeItemFromInternalStorage(ItemStack ist, String itemRegistryName, int cost, EntityPlayer player) {
 		if(player.capabilities.isCreativeMode)
 			return true;
-		if(hasItemInInternalStorage(ist, item, cost)) {
+		if(hasItemInInternalStorage(ist, itemRegistryName, cost)) {
 			NBTTagCompound tagCompound = NBTHelper.getTag(ist);
 
 			NBTTagList tagList = tagCompound.getTagList("Items", 10);
@@ -284,7 +284,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 			for(int i = 0; i < tagList.tagCount(); ++i) {
 				NBTTagCompound tagItemData = tagList.getCompoundTagAt(i);
 				String itemName = tagItemData.getString("Name");
-				if(itemName.equals(RegistryHelper.getItemRegistryName(item))) {
+				if(itemName.equals(itemRegistryName)) {
 					int quantity = tagItemData.getInteger("Quantity");
 					tagItemData.setInteger("Quantity", quantity - cost);
 				}
@@ -368,10 +368,11 @@ public class ItemSojournerStaff extends ItemToggleable {
 				if(!player.capabilities.isCreativeMode) {
 					int cost = 1;
 					int distance = (int) player.getDistance(placeBlockAt.getX(), placeBlockAt.getY(), placeBlockAt.getZ());
-					for(; distance > Settings.SojournerStaff.tilePerCostMultiplier; distance -= Settings.SojournerStaff.tilePerCostMultiplier) {
+					for(; distance > Settings.Items.SojournerStaff.tilePerCostMultiplier; distance -= Settings.Items.SojournerStaff.tilePerCostMultiplier) {
 						cost++;
 					}
-					if(!removeItemFromInternalStorage(stack, Item.getItemFromBlock(blockAttemptingPlacement), cost, player))
+					//noinspection ConstantConditions
+					if(!removeItemFromInternalStorage(stack, blockAttemptingPlacement.getRegistryName().toString(), cost, player))
 						return EnumActionResult.FAIL;
 				}
 				IBlockState torchBlockState = attemptSide(world, placeBlockAt, side, blockAttemptingPlacement, player, hand);
@@ -406,7 +407,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 		float f6 = MathHelper.sin(-f1 * 0.017453292F);
 		float f7 = f4 * f5;
 		float f8 = f3 * f5;
-		double d3 = Settings.SojournerStaff.maxRange;
+		double d3 = Settings.Items.SojournerStaff.maxRange;
 		Vec3d vec31 = vec3.addVector((double) f7 * d3, (double) f6 * d3, (double) f8 * d3);
 		return world.rayTraceBlocks(vec3, vec31, true, false, false);
 	}

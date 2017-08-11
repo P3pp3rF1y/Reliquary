@@ -71,11 +71,11 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 	}
 
 	private int getExperienceMinimum() {
-		return Settings.HeroMedallion.experienceLevelMinimum;
+		return Settings.Items.HeroMedallion.experienceLevelMinimum;
 	}
 
 	private int getExperienceMaximum() {
-		return Settings.HeroMedallion.experienceLevelMaximum;
+		return Settings.Items.HeroMedallion.experienceLevelMaximum;
 	}
 
 	// this drains experience beyond level specified in configs
@@ -88,7 +88,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 			// in order to make this stop at a specific level, we will need to do
 			// a preemptive check for a specific level.
 			for(int levelLoop = 0; levelLoop <= Math.sqrt(!player.capabilities.isCreativeMode ? player.experienceLevel : 30); ++levelLoop) {
-				if((player.experienceLevel > getExperienceMinimum() || player.experience >= (1F / player.xpBarCap()) || player.capabilities.isCreativeMode) && getExperience(ist) < Settings.HeroMedallion.experienceLimit) {
+				if((player.experienceLevel > getExperienceMinimum() || player.experience >= (1F / player.xpBarCap()) || player.capabilities.isCreativeMode) && getExperience(ist) < Settings.Items.HeroMedallion.experienceLimit) {
 					if(!player.capabilities.isCreativeMode)
 						decreasePlayerExperience(player);
 					increaseMedallionExperience(ist);
@@ -165,7 +165,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 	}
 
 	private void spawnXpOnGround(ItemStack ist, World world, BlockPos hitPos) {
-		int xp = Math.min(Settings.HeroMedallion.experienceDrop, getExperience(ist));
+		int xp = Math.min(Settings.Items.HeroMedallion.experienceDrop, getExperience(ist));
 
 		if(getExperience(ist) >= xp) {
 
@@ -186,7 +186,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 
 	@Override
 	public void update(@Nonnull ItemStack stack, IPedestal pedestal) {
-		List<BlockPos> posInRange = pedestal.getPedestalsInRange(Settings.HeroMedallion.pedestalRange);
+		List<BlockPos> posInRange = pedestal.getPedestalsInRange(Settings.Items.HeroMedallion.pedestalRange);
 		World world = pedestal.getTheWorld();
 
 		for(BlockPos pedestalPos : posInRange) {
@@ -195,7 +195,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 				List<ItemStack> toRepair = getMendingItemsForRepair(pedestalInventory);
 
 				for(ItemStack itemToRepair : toRepair) {
-					int xpToRepair = Math.min(Settings.HeroMedallion.pedestalRepairStepXP, getExperience(stack));
+					int xpToRepair = Math.min(Settings.Items.HeroMedallion.pedestalRepairStepXP, getExperience(stack));
 					int durabilityToRepair = Math.min(XpHelper.xpToDurability(xpToRepair), itemToRepair.getItemDamage());
 
 					setExperience(stack, getExperience(stack) - XpHelper.durabilityToXp(durabilityToRepair));
@@ -203,7 +203,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 				}
 			}
 		}
-		pedestal.setActionCoolDown(Settings.HeroMedallion.pedestalCoolDown);
+		pedestal.setActionCoolDown(Settings.Items.HeroMedallion.pedestalCoolDown);
 	}
 
 	private List<ItemStack> getMendingItemsForRepair(IInventory inventory) {

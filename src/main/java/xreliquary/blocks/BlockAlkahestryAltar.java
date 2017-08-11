@@ -76,7 +76,7 @@ public class BlockAlkahestryAltar extends BlockBase {
 	}
 
 	private int getAltarActiveLightLevel() {
-		return (int) ((float) Settings.Altar.outputLightLevelWhileActive / 16F);
+		return (int) ((float) Settings.Blocks.Altar.outputLightLevelWhileActive / 16F);
 	}
 
 	@Nonnull

@@ -19,15 +19,15 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 	@Override
 	protected int getParentSlotLimit(int parentSlot) {
 		if(parentSlot == BONEMEAL_SLOT)
-			return Settings.HarvestRod.boneMealLimit;
+			return Settings.Items.HarvestRod.boneMealLimit;
 
-		return Settings.HarvestRod.maxCapacityPerPlantable;
+		return Settings.Items.HarvestRod.maxCapacityPerPlantable;
 	}
 
 	@Override
 	protected int getParentSlotUnitWorth(int parentSlot) {
 		if(parentSlot == BONEMEAL_SLOT)
-			return Settings.HarvestRod.boneMealWorth;
+			return Settings.Items.HarvestRod.boneMealWorth;
 
 		return 1;
 	}

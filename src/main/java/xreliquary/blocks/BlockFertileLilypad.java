@@ -49,15 +49,15 @@ public class BlockFertileLilypad extends BlockBush {
 	}
 
 	private int secondsBetweenGrowthTicks() {
-		return Settings.FertileLilypad.secondsBetweenGrowthTicks;
+		return Settings.Blocks.FertileLilypad.secondsBetweenGrowthTicks;
 	}
 
 	private int tileRange() {
-		return Settings.FertileLilypad.tileRange;
+		return Settings.Blocks.FertileLilypad.tileRange;
 	}
 
 	private int fullPotencyRange() {
-		return Settings.FertileLilypad.fullPotencyRange;
+		return Settings.Blocks.FertileLilypad.fullPotencyRange;
 	}
 
 	private void growCropsNearby(World world, BlockPos pos, IBlockState state) {

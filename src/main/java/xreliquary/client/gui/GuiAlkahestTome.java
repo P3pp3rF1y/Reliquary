@@ -5,8 +5,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xreliquary.init.ModItems;
+import xreliquary.init.XRRecipes;
 import xreliquary.reference.Reference;
-import xreliquary.reference.Settings;
 
 public class GuiAlkahestTome extends GuiBase {
 
@@ -31,8 +31,8 @@ public class GuiAlkahestTome extends GuiBase {
 		this.drawTexturedModalRect(((this.width - 16) / 2) - 14, ((this.height - 179) / 2) + 148, 10, 180, 10, 10);
 
 		this.drawItemStack(new ItemStack(ModItems.alkahestryTome), (this.width - 16) / 2, ((this.height - 179) / 2) + 145);
-		this.drawItemStack(Settings.AlkahestryTome.baseItem, ((this.width - 16) / 2) - 32, ((this.height - 179) / 2) + 145);
-		this.drawItemStack(Settings.AlkahestryTome.baseItem, ((this.width - 16) / 2) + 32, ((this.height - 179) / 2) + 145);
+		this.drawItemStack(XRRecipes.drainRecipe.getRecipeOutput(), ((this.width - 16) / 2) - 32, ((this.height - 179) / 2) + 145);
+		this.drawItemStack(XRRecipes.drainRecipe.getRecipeOutput(), ((this.width - 16) / 2) + 32, ((this.height - 179) / 2) + 145);
 	}
 
 }

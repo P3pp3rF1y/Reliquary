@@ -29,7 +29,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 		World world = pedestal.getTheWorld();
 		BlockPos pos = pedestal.getBlockPos();
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
-		int shearsRange = Settings.Pedestal.shearsWrapperRange;
+		int shearsRange = Settings.Blocks.Pedestal.shearsWrapperRange;
 
 		if(!shearAnimals(stack, world, fakePlayer, pos, shearsRange)) {
 			if(!shearBlocks(stack, world, pedestal, fakePlayer, pos, shearsRange)) {
@@ -39,7 +39,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 		}
 
 		if(!isShearingBlock) {
-			pedestal.setActionCoolDown(Settings.Pedestal.shearsWrapperCooldown);
+			pedestal.setActionCoolDown(Settings.Blocks.Pedestal.shearsWrapperCooldown);
 		}
 
 		if(stack.getCount() == 0)

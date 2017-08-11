@@ -23,7 +23,11 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootContext;
@@ -610,7 +614,7 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 		EntityEquipmentSlot slotBeingStolenFrom = EntityEquipmentSlot.values()[world.rand.nextInt(EntityEquipmentSlot.values().length)];
 
 		ItemStack stolenStack = livingEntity.getItemStackFromSlot(slotBeingStolenFrom);
-		if(stolenStack.isEmpty() && Settings.RodOfLyssa.stealFromVacantSlots) {
+		if(stolenStack.isEmpty() && Settings.Items.RodOfLyssa.stealFromVacantSlots) {
 			for(EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
 				stolenStack = livingEntity.getItemStackFromSlot(slot);
 				if(!stolenStack.isEmpty() && canDropFromSlot(livingEntity, slot)) {
@@ -622,13 +626,13 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 
 		float failProbabilityFactor;
 
-		if(Settings.RodOfLyssa.useLeveledFailureRate)
-			failProbabilityFactor = 1F / ((float) Math.sqrt((double) Math.max(1, Math.min(getAngler().experienceLevel, Settings.RodOfLyssa.levelCapForLeveledFormula))) * 2);
+		if(Settings.Items.RodOfLyssa.useLeveledFailureRate)
+			failProbabilityFactor = 1F / ((float) Math.sqrt((double) Math.max(1, Math.min(getAngler().experienceLevel, Settings.Items.RodOfLyssa.levelCapForLeveledFormula))) * 2);
 		else
-			failProbabilityFactor = Settings.RodOfLyssa.flatStealFailurePercentRate / 100F;
+			failProbabilityFactor = Settings.Items.RodOfLyssa.flatStealFailurePercentRate / 100F;
 
-		if(rand.nextFloat() <= failProbabilityFactor || (stolenStack.isEmpty() && Settings.RodOfLyssa.failStealFromVacantSlots)) {
-			if(Settings.RodOfLyssa.angerOnStealFailure)
+		if(rand.nextFloat() <= failProbabilityFactor || (stolenStack.isEmpty() && Settings.Items.RodOfLyssa.failStealFromVacantSlots)) {
+			if(Settings.Items.RodOfLyssa.angerOnStealFailure)
 				livingEntity.attackEntityFrom(DamageSource.causePlayerDamage(this.getAngler()), 0.0F);
 		}
 		if(!stolenStack.isEmpty()) {

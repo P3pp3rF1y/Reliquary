@@ -37,7 +37,7 @@ public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 
 	@Override
 	public void updateRedstone(@Nonnull ItemStack stack, IPedestal pedestal) {
-		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(Settings.Pedestal.redstoneWrapperRange);
+		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(Settings.Blocks.Pedestal.redstoneWrapperRange);
 		World world = pedestal.getTheWorld();
 		BlockPos thisPos = pedestal.getBlockPos();
 
@@ -60,7 +60,7 @@ public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 
 	@Override
 	public void onRemoved(@Nonnull ItemStack stack, IPedestal pedestal) {
-		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(Settings.Pedestal.redstoneWrapperRange);
+		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(Settings.Blocks.Pedestal.redstoneWrapperRange);
 		World world = pedestal.getTheWorld();
 		BlockPos thisPos = pedestal.getBlockPos();
 

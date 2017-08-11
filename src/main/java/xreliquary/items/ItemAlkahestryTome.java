@@ -5,7 +5,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -21,6 +20,7 @@ import xreliquary.Reliquary;
 import xreliquary.common.gui.GUIHandler;
 import xreliquary.crafting.factories.AlkahestryChargingRecipeFactory.AlkahestryChargingRecipe;
 import xreliquary.init.ModSounds;
+import xreliquary.init.XRRecipes;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -67,7 +67,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
 			return;
 		}
 
-		for(AlkahestryChargingRecipe recipe : Settings.AlkahestryTome.chargingRecipes) {
+		for(AlkahestryChargingRecipe recipe : XRRecipes.chargingRecipes) {
 			if(getCharge(tome) + recipe.getChargeToAdd() <= getChargeLimit() && consumeItem(recipe, player)) {
 				addCharge(tome, recipe.getChargeToAdd());
 			}
@@ -86,7 +86,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
 		this.formatTooltip(ImmutableMap.of("chargeAmount", String.valueOf(getCharge(tome)), "chargeLimit", String.valueOf(getChargeLimit())), tome, tooltip);
 
 		if(this.isEnabled(tome))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + Items.REDSTONE.getItemStackDisplayName(Settings.AlkahestryTome.baseItem)), tooltip);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + XRRecipes.drainRecipe.getRecipeOutput().getDisplayName()), tooltip);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
@@ -108,7 +108,7 @@ public class ItemAlkahestryTome extends ItemToggleable {
 	}
 
 	private static int getChargeLimit() {
-		return Settings.AlkahestryTome.chargeLimit;
+		return Settings.Items.AlkahestryTome.chargeLimit;
 	}
 
 	public void setCharge(ItemStack tome, int charge) {

@@ -31,7 +31,7 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 		if(rendingGale.getMode(stack).equals("flight")) {
 			if(buffCheckCoolDown <= 0) {
 
-				int flightRange = Settings.RendingGale.pedestalFlightRange;
+				int flightRange = Settings.Items.RendingGale.pedestalFlightRange;
 
 				if(ModItems.rendingGale.getFeatherCount(stack) >= (ItemRendingGale.getChargeCost() * SECONDS_BETWEEN_BUFF_CHECKS)) {
 					List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos.getX() - flightRange, pos.getY() - flightRange, pos.getZ() - flightRange, pos.getX() + flightRange, pos.getY() + flightRange, pos.getZ() + flightRange));
@@ -40,7 +40,7 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 						for(EntityPlayer player : players) {
 							player.addPotionEffect(new PotionEffect(ModPotions.potionFlight, 20 * 20));
 						}
-						ModItems.rendingGale.setFeatherCount(stack, ModItems.rendingGale.getFeatherCount(stack) - (SECONDS_BETWEEN_BUFF_CHECKS * Settings.RendingGale.pedestalCostPerSecond), true);
+						ModItems.rendingGale.setFeatherCount(stack, ModItems.rendingGale.getFeatherCount(stack) - (SECONDS_BETWEEN_BUFF_CHECKS * Settings.Items.RendingGale.pedestalCostPerSecond), true);
 					}
 				}
 				buffCheckCoolDown = SECONDS_BETWEEN_BUFF_CHECKS * 20;
@@ -50,7 +50,7 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 		} else if(rendingGale.getMode(stack).equals("push")) {
 			if(pushPullCheckCoolDown <= 0) {
 				rendingGale.doRadialPush(world, pos.getX(), pos.getY(), pos.getZ(), null, false);
-				ModItems.rendingGale.setFeatherCount(stack, ModItems.rendingGale.getFeatherCount(stack) - (int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Settings.RendingGale.pedestalCostPerSecond), true);
+				ModItems.rendingGale.setFeatherCount(stack, ModItems.rendingGale.getFeatherCount(stack) - (int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Settings.Items.RendingGale.pedestalCostPerSecond), true);
 				pushPullCheckCoolDown = TICKS_BETWEEN_PUSH_PULL_CHECKS;
 			} else {
 				pushPullCheckCoolDown--;
@@ -58,7 +58,7 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 		} else if(rendingGale.getMode(stack).equals("pull")) {
 			if(pushPullCheckCoolDown <= 0) {
 				rendingGale.doRadialPush(world, pos.getX(), pos.getY(), pos.getZ(), null, true);
-				ModItems.rendingGale.setFeatherCount(stack, ModItems.rendingGale.getFeatherCount(stack) - (int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Settings.RendingGale.pedestalCostPerSecond), true);
+				ModItems.rendingGale.setFeatherCount(stack, ModItems.rendingGale.getFeatherCount(stack) - (int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Settings.Items.RendingGale.pedestalCostPerSecond), true);
 				pushPullCheckCoolDown = TICKS_BETWEEN_PUSH_PULL_CHECKS;
 			} else {
 				pushPullCheckCoolDown--;

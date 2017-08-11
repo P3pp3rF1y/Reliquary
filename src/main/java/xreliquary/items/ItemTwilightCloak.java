@@ -18,7 +18,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -61,7 +60,7 @@ public class ItemTwilightCloak extends ItemToggleable/* implements IBauble*/ {
 		int playerY = MathHelper.floor(player.getEntityBoundingBox().minY);
 		int playerZ = MathHelper.floor(player.posZ);
 
-		if(player.world.getLightFromNeighbors(new BlockPos(playerX, playerY, playerZ)) > Settings.TwilightCloak.maxLightLevel)
+		if(player.world.getLightFromNeighbors(new BlockPos(playerX, playerY, playerZ)) > Settings.Items.TwilightCloak.maxLightLevel)
 			return;
 
 		//checks if the effect would do anything. Literally all this does is make the player invisible. It doesn't interfere with mob AI.
@@ -106,7 +105,7 @@ public class ItemTwilightCloak extends ItemToggleable/* implements IBauble*/ {
 				return;
 
 			//toggled effect, makes player invisible based on light level (configurable)
-			if(player.world.getLightFromNeighbors(player.getPosition()) > Settings.TwilightCloak.maxLightLevel)
+			if(player.world.getLightFromNeighbors(player.getPosition()) > Settings.Items.TwilightCloak.maxLightLevel)
 				return;
 			if(event.getEntity() instanceof EntityLiving) {
 				((EntityLiving) event.getEntity()).setAttackTarget(null);

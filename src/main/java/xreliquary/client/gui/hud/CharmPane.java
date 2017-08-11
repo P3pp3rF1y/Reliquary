@@ -74,7 +74,7 @@ public class CharmPane extends Component {
 	}
 
 	public static void addCharmToDraw(byte type, int damage, int slot) {
-		int maxMobCharmsToDisplay = Settings.MobCharm.maxCharmsToDisplay;
+		int maxMobCharmsToDisplay = Settings.Items.MobCharm.maxCharmsToDisplay;
 		synchronized(charmsToDraw) {
 			if(charmsToDraw.size() == maxMobCharmsToDisplay) {
 				charmsToDraw.remove(0);
@@ -98,7 +98,7 @@ public class CharmPane extends Component {
 		synchronized(charmsToDraw) {
 			for(Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext(); ) {
 				Map.Entry<Integer, CharmToDraw> entry = iterator.next();
-				if(Settings.MobCharm.keepAlmostDestroyedDisplayed && entry.getValue().damage >= (ModItems.mobCharm.getMaxDamage(ItemStack.EMPTY) * 0.9))
+				if(Settings.Items.MobCharm.keepAlmostDestroyedDisplayed && entry.getValue().damage >= (ModItems.mobCharm.getMaxDamage(ItemStack.EMPTY) * 0.9))
 					continue;
 
 				if(entry.getValue().time + secondsToExpire * 1000 < System.currentTimeMillis()) {

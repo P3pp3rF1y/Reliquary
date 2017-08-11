@@ -57,15 +57,15 @@ public class ItemIceMagusRod extends ItemToggleable {
 	}
 
 	private int getSnowballCap() {
-		return this instanceof ItemGlacialStaff ? Settings.GlacialStaff.snowballLimit : Settings.IceMagusRod.snowballLimit;
+		return this instanceof ItemGlacialStaff ? Settings.Items.GlacialStaff.snowballLimit : Settings.Items.IceMagusRod.snowballLimit;
 	}
 
 	int getSnowballCost() {
-		return this instanceof ItemGlacialStaff ? Settings.GlacialStaff.snowballCost : Settings.IceMagusRod.snowballCost;
+		return this instanceof ItemGlacialStaff ? Settings.Items.GlacialStaff.snowballCost : Settings.Items.IceMagusRod.snowballCost;
 	}
 
 	private int getSnowballWorth() {
-		return this instanceof ItemGlacialStaff ? Settings.GlacialStaff.snowballWorth : Settings.IceMagusRod.snowballWorth;
+		return this instanceof ItemGlacialStaff ? Settings.Items.GlacialStaff.snowballWorth : Settings.Items.IceMagusRod.snowballWorth;
 	}
 
 	@Override

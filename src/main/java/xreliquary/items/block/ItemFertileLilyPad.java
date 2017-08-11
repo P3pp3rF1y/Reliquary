@@ -68,7 +68,7 @@ public class ItemFertileLilyPad extends ItemBlockBase {
 					return false;
 				}
 
-				int secondsBetweenGrowthTicks = Settings.FertileLilypad.secondsBetweenGrowthTicks;
+				int secondsBetweenGrowthTicks = Settings.Blocks.FertileLilypad.secondsBetweenGrowthTicks;
 				worldIn.scheduleBlockUpdate(blockpos1, ModBlocks.fertileLilypad, secondsBetweenGrowthTicks * 20, 1);
 
 				if(!playerIn.capabilities.isCreativeMode) {

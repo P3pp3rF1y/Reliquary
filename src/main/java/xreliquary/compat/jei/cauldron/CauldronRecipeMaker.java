@@ -3,9 +3,9 @@ package xreliquary.compat.jei.cauldron;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
+import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
@@ -17,7 +17,7 @@ public class CauldronRecipeMaker {
 	public static List<CauldronRecipeJEI> getRecipes() {
 		ArrayList<CauldronRecipeJEI> recipes = new ArrayList<>();
 
-		for(PotionEssence essence : Settings.Potions.uniquePotions) {
+		for(PotionEssence essence : PotionMap.uniquePotions) {
 
 			List<ItemStack> inputs = new ArrayList<>();
 

@@ -54,7 +54,7 @@ public class ItemMobCharm extends ItemBase {
 	public ItemMobCharm() {
 		super(Names.Items.MOB_CHARM);
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
-		this.setMaxDamage(Settings.MobCharm.durability);
+		this.setMaxDamage(Settings.Items.MobCharm.durability);
 		this.setMaxStackSize(1);
 		this.setHasSubtypes(true);
 		this.canRepair = false;
@@ -226,7 +226,7 @@ public class ItemMobCharm extends ItemBase {
 	}
 
 	private void damageMobCharmInPedestal(EntityPlayer player, Entity entity) {
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.dimension, player.getPosition(), Settings.MobCharm.pedestalRange);
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.dimension, player.getPosition(), Settings.Items.MobCharm.pedestalRange);
 		byte mobCharmType = getMobCharmTypeForEntity(entity);
 		World world = player.getEntityWorld();
 
@@ -240,10 +240,10 @@ public class ItemMobCharm extends ItemBase {
 					for(int slot = 0; slot < pedestal.getSizeInventory(); slot++) {
 						ItemStack slotStack = pedestal.getStackInSlot(slot);
 						if(slotStack.getItem() == this && getType(slotStack) == mobCharmType) {
-							if(slotStack.getItemDamage() + Settings.MobCharm.damagePerKill > slotStack.getMaxDamage()) {
+							if(slotStack.getItemDamage() + Settings.Items.MobCharm.damagePerKill > slotStack.getMaxDamage()) {
 								((TileEntityPedestal) te).setInventorySlotContents(slot, ItemStack.EMPTY);
 							} else {
-								slotStack.setItemDamage(slotStack.getItemDamage() + Settings.MobCharm.damagePerKill);
+								slotStack.setItemDamage(slotStack.getItemDamage() + Settings.Items.MobCharm.damagePerKill);
 							}
 							return;
 						} else if(slotStack.getItem() == ModItems.mobCharmBelt) {
@@ -271,11 +271,11 @@ public class ItemMobCharm extends ItemBase {
 			if(stack.isEmpty())
 				continue;
 			if(stack.getItem() == this && getType(stack) == mobCharmType) {
-				if(stack.getItemDamage() + Settings.MobCharm.damagePerKill > stack.getMaxDamage()) {
+				if(stack.getItemDamage() + Settings.Items.MobCharm.damagePerKill > stack.getMaxDamage()) {
 					player.inventory.mainInventory.set(slot, ItemStack.EMPTY);
 					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, stack.getMaxDamage() + 1, slot), (EntityPlayerMP) player);
 				} else {
-					stack.setItemDamage(stack.getItemDamage() + Settings.MobCharm.damagePerKill);
+					stack.setItemDamage(stack.getItemDamage() + Settings.Items.MobCharm.damagePerKill);
 					PacketHandler.networkWrapper.sendTo(new PacketMobCharmDamage(mobCharmType, stack.getItemDamage(), slot), (EntityPlayerMP) player);
 				}
 				return true;
@@ -346,7 +346,7 @@ public class ItemMobCharm extends ItemBase {
 	}
 
 	private boolean pedestalWithCharmInRange(EntityPlayer player, byte type) {
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.dimension, player.getPosition(), Settings.MobCharm.pedestalRange);
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.dimension, player.getPosition(), Settings.Items.MobCharm.pedestalRange);
 
 		World world = player.getEntityWorld();
 		for(BlockPos pos : pedestalPositions) {

@@ -6,8 +6,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -25,7 +23,6 @@ import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
-import xreliquary.util.RegistryHelper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -48,7 +45,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 	}
 
 	public int getRange() {
-		return Settings.LanternOfParanoia.placementScanRadius;
+		return Settings.Items.LanternOfParanoia.placementScanRadius;
 	}
 	// event driven item, does nothing here.
 
@@ -76,7 +73,7 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 						if(!player.world.isAirBlock(new BlockPos(x, y, z)))
 							continue;
 						int lightLevel = player.world.getLightFromNeighbors(new BlockPos(x, y, z));
-						if(lightLevel > Settings.LanternOfParanoia.minLightLevel)
+						if(lightLevel > Settings.Items.LanternOfParanoia.minLightLevel)
 							continue;
 						if(tryToPlaceTorchAround(stack, x, y, z, player, world))
 							break placement;
@@ -126,8 +123,8 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 				continue;
 			if(!(player.inventory.getStackInSlot(slot).getItem() == ModItems.sojournerStaff))
 				continue;
-			Item torch = ItemBlock.getItemFromBlock(Blocks.TORCH);
-			if(ItemSojournerStaff.removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch, 1, player))
+			//noinspection ConstantConditions
+			if(ItemSojournerStaff.removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), Blocks.TORCH.getRegistryName().toString(), 1, player))
 				return true;
 		}
 		return false;

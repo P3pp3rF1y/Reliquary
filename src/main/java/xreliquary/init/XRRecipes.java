@@ -1,5 +1,6 @@
 package xreliquary.init;
 
+import com.google.common.collect.Lists;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -11,7 +12,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import xreliquary.crafting.MobCharmRepairRecipe;
+import xreliquary.crafting.factories.AlkahestryChargingRecipeFactory;
+import xreliquary.crafting.factories.AlkahestryCraftingRecipeFactory;
+import xreliquary.crafting.factories.AlkahestryDrainRecipeFactory.AlkahestryDrainRecipe;
 import xreliquary.reference.Reference;
+
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class XRRecipes {
@@ -19,6 +25,10 @@ public class XRRecipes {
 	private static ItemStack ingredient(int m) {
 		return new ItemStack(ModItems.mobIngredient, 1, m);
 	}
+
+	public static List<AlkahestryCraftingRecipeFactory.AlkahestryCraftingRecipe> craftingRecipes = Lists.newArrayList();
+	public static List<AlkahestryChargingRecipeFactory.AlkahestryChargingRecipe> chargingRecipes = Lists.newArrayList();
+	public static AlkahestryDrainRecipe drainRecipe;
 
 	public static ItemStack NEBULOUS_HEART;
 	public static ItemStack CREEPER_GLAND;

@@ -17,8 +17,18 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
@@ -413,35 +423,35 @@ public class ItemPyromancerStaff extends ItemToggleable {
 	}
 
 	private int getFireChargeWorth() {
-		return Settings.PyromancerStaff.fireChargeWorth;
+		return Settings.Items.PyromancerStaff.fireChargeWorth;
 	}
 
 	private int getFireChargeCost() {
-		return Settings.PyromancerStaff.fireChargeCost;
+		return Settings.Items.PyromancerStaff.fireChargeCost;
 	}
 
 	private int getFireChargeLimit() {
-		return Settings.PyromancerStaff.fireChargeLimit;
+		return Settings.Items.PyromancerStaff.fireChargeLimit;
 	}
 
 	private int getBlazePowderWorth() {
-		return Settings.PyromancerStaff.blazePowderWorth;
+		return Settings.Items.PyromancerStaff.blazePowderWorth;
 	}
 
 	private int getBlazePowderCost() {
-		return Settings.PyromancerStaff.blazePowderCost;
+		return Settings.Items.PyromancerStaff.blazePowderCost;
 	}
 
 	private int getBlazePowderLimit() {
-		return Settings.PyromancerStaff.blazePowderLimit;
+		return Settings.Items.PyromancerStaff.blazePowderLimit;
 	}
 
 	private int getBlazeAbsorbWorth() {
-		return Settings.PyromancerStaff.blazeAbsorbWorth;
+		return Settings.Items.PyromancerStaff.blazeAbsorbWorth;
 	}
 
 	private int getGhastAbsorbWorth() {
-		return Settings.PyromancerStaff.ghastAbsorbWorth;
+		return Settings.Items.PyromancerStaff.ghastAbsorbWorth;
 	}
 
 	private void doExtinguishEffect(EntityPlayer player) {
