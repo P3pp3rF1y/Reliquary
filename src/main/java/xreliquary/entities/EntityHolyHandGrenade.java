@@ -6,8 +6,6 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
@@ -74,7 +72,7 @@ public class EntityHolyHandGrenade extends EntityThrowable {
 
 		//just making sure that player doesn't see the particles on client when the grenade is thrown
 		if (!world.isRemote || ticksExisted > 3 || result.typeOfHit != RayTraceResult.Type.ENTITY || !(result.entityHit instanceof EntityPlayer))
-			ConcussiveExplosion.customConcussiveExplosion(this, playerThrower, posX, posY, posZ, 4.0F, false);
+			ConcussiveExplosion.grenadeConcussiveExplosion(this, playerThrower, posX, posY, posZ, 4.0F, false);
 	}
 
 	String getCustomName() {

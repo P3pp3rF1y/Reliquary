@@ -53,7 +53,6 @@ public class RenderPedestalFishHook implements IPedestalItemRenderer {
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.popMatrix();
 
-		//TODO fix/calculate yawoffset
 		double d4;
 		double d5;
 		double d6;

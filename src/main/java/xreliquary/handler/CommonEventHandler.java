@@ -128,7 +128,6 @@ public class CommonEventHandler {
 	private static void handleInfernalChaliceCheck(EntityPlayer player, LivingAttackEvent event) {
 		if(!InventoryHelper.playerHasItem(player, ModItems.infernalChalice))
 			return;
-		//TODO: figure out if there's some way to know that the fire was caused by lava, otherwise this is the only way to prevent damage from lava - reason being that most of the damage is from fire caused by lava
 		if(event.getSource() != DamageSource.LAVA && event.getSource() != DamageSource.ON_FIRE && event.getSource() != DamageSource.IN_FIRE)
 			return;
 		if(player.getFoodStats().getFoodLevel() <= 0)

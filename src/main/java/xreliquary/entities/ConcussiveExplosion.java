@@ -1,6 +1,7 @@
 package xreliquary.entities;
 
 import com.google.common.collect.Maps;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,13 +22,14 @@ import xreliquary.network.PacketHandler;
 import java.util.List;
 import java.util.Map;
 
+@MethodsReturnNonnullByDefault
 public class ConcussiveExplosion extends Explosion {
 
 	private World world;
 	private double explosionX;
 	private double explosionY;
 	private double explosionZ;
-	private Entity exploder;
+	Entity exploder;
 	private float explosionSize;
 	private final Map<EntityPlayer, Vec3d> playerKnockbackMap;
 	private EntityPlayer shootingEntity;
@@ -57,27 +59,6 @@ public class ConcussiveExplosion extends Explosion {
 		double d7;
 		double d9;
 
-		int field_77289_h = 16;
-		for(var3 = 0; var3 < field_77289_h; ++var3) {
-			for(var4 = 0; var4 < field_77289_h; ++var4) {
-				for(var5 = 0; var5 < field_77289_h; ++var5) {
-					if(var3 == 0 || var3 == field_77289_h - 1 || var4 == 0 || var4 == field_77289_h - 1 || var5 == 0 || var5 == field_77289_h - 1) {
-						double var6 = var3 / (field_77289_h - 1.0F) * 2.0F - 1.0F;
-						double var8 = var4 / (field_77289_h - 1.0F) * 2.0F - 1.0F;
-						double var10 = var5 / (field_77289_h - 1.0F) * 2.0F - 1.0F;
-						double var12 = Math.sqrt(var6 * var6 + var8 * var8 + var10 * var10);
-						var6 /= var12;
-						var8 /= var12;
-						var10 /= var12;
-						//TODO figure out what the heck this whole loop does. Seems to be a lot looping just to set these 3 variables
-						d5 = explosionX;
-						d7 = explosionY;
-						d9 = explosionZ;
-					}
-				}
-			}
-		}
-
 		explosionSize *= 2.0F;
 		var3 = MathHelper.floor(explosionX - explosionSize - 1.0D);
 		var4 = MathHelper.floor(explosionX + explosionSize + 1.0D);
@@ -90,8 +71,7 @@ public class ConcussiveExplosion extends Explosion {
 		Vec3d var30 = new Vec3d(explosionX, explosionY, explosionZ);
 
 		for(Entity entity : var9) {
-			//TODO refactor this condition out into holy hand grenade
-			if(!(entity instanceof EntityLiving) && (!(exploder instanceof EntityHolyHandGrenade) || !(entity instanceof EntityPlayer) || ((EntityHolyHandGrenade) exploder).getCustomName() == null || !((EntityHolyHandGrenade) exploder).getCustomName().contains(((EntityPlayer) entity).getGameProfile().getName()))) {
+			if(!affectEntity(entity)) {
 				continue;
 			}
 			double var13 = entity.getDistance(explosionX, explosionY, explosionZ) / explosionSize;
@@ -118,6 +98,10 @@ public class ConcussiveExplosion extends Explosion {
 		explosionSize = var1;
 	}
 
+	protected boolean affectEntity(Entity entity) {
+		return entity instanceof EntityLiving;
+	}
+
 	/**
 	 * Does the second part of the explosion (sounds, particles, drop spawn)
 	 */
@@ -137,6 +121,18 @@ public class ConcussiveExplosion extends Explosion {
 		return this.playerKnockbackMap;
 	}
 
+	public static class GrenadeConcussiveExplosion extends ConcussiveExplosion {
+
+		GrenadeConcussiveExplosion(World world, Entity entity, EntityPlayer par3Entity, double explosionX, double explosionY, double explosionZ, float size, boolean isFlaming, boolean isSmoking) {
+			super(world, entity, par3Entity, explosionX, explosionY, explosionZ, size, isFlaming, isSmoking);
+		}
+
+		@Override
+		protected boolean affectEntity(Entity entity) {
+			return entity instanceof EntityPlayer && ((EntityHolyHandGrenade) exploder).getCustomName() != null && ((EntityHolyHandGrenade) exploder).getCustomName().contains(((EntityPlayer) entity).getGameProfile().getName());
+		}
+	}
+
 	public static void customBusterExplosion(Entity par1Entity, double x, double y, double z, float par8) {
 		if(par1Entity.world.isRemote)
 			return;
@@ -145,6 +141,16 @@ public class ConcussiveExplosion extends Explosion {
 
 	public static ConcussiveExplosion customConcussiveExplosion(Entity entity, EntityPlayer player, double explosionX, double explosionY, double explosionZ, float size, boolean isFlaming) {
 		ConcussiveExplosion var11 = new ConcussiveExplosion(entity.world, entity, player, explosionX, explosionY, explosionZ, size, isFlaming, true);
+		var11.doExplosionA();
+		var11.doExplosionB(false);
+
+		PacketHandler.networkWrapper.sendToAllAround(new PacketFXConcussiveExplosion(size, explosionX, explosionY, explosionZ), new NetworkRegistry.TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, 96.0D));
+
+		return var11;
+	}
+
+	public static GrenadeConcussiveExplosion grenadeConcussiveExplosion(Entity entity, EntityPlayer player, double explosionX, double explosionY, double explosionZ, float size, boolean isFlaming) {
+		GrenadeConcussiveExplosion var11 = new GrenadeConcussiveExplosion(entity.world, entity, player, explosionX, explosionY, explosionZ, size, isFlaming, true);
 		var11.doExplosionA();
 		var11.doExplosionB(false);
 

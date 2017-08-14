@@ -296,7 +296,6 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 		List<Block> heatSources = new ArrayList<>();
 		String[] heatSourceBlockNames = Settings.Blocks.ApothecaryCauldron.heatSources;
 
-		//TODO: change this to
 		Arrays.stream(heatSourceBlockNames).filter(blockName -> !heatSources.contains(Block.getBlockFromName(blockName))).forEach(blockName -> heatSources.add(Block.getBlockFromName(blockName)));
 		//defaults that can't be removed.
 		heatSources.add(Blocks.LAVA);

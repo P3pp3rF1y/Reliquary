@@ -1,6 +1,5 @@
 package xreliquary.entities;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityBlaze;
@@ -10,11 +9,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import xreliquary.reference.Settings;
 
@@ -23,7 +18,6 @@ import java.util.List;
 public class EntitySpecialSnowball extends EntitySnowball {
 
 	public int ticksInAir;
-	private int ticksInGround;
 	private boolean fromGlacialStaff;
 
 	@SuppressWarnings("unused")
@@ -86,7 +80,6 @@ public class EntitySpecialSnowball extends EntitySnowball {
 		lastTickPosX = posX;
 		lastTickPosY = posY;
 		lastTickPosZ = posZ;
-		//super.onUpdate();
 
 		if(throwableShake > 0) {
 			--throwableShake;
@@ -94,30 +87,12 @@ public class EntitySpecialSnowball extends EntitySnowball {
 		if(ticksInAir % 4 == world.rand.nextInt(5)) {
 			world.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, 5.0D, 5.0D, 1.0D);
 		}
-		int xTile = (int) Math.round(posX);
-		int yTile = (int) Math.round(posY);
-		int zTile = (int) Math.round(posZ);
-		Block inTile = world.getBlockState(new BlockPos(xTile, yTile, zTile)).getBlock();
 
 		if(inGround) {
-			Block var1 = world.getBlockState(new BlockPos(xTile, yTile, zTile)).getBlock();
-
-			//TODO: again this condition which will always result in true????
-			if(var1 == inTile) {
-				++ticksInGround;
-
-				if(ticksInGround == 1200) {
-					this.setDead();
-				}
-
-				return;
-			}
-
 			inGround = false;
 			motionX *= rand.nextFloat() * 0.2F;
 			motionY *= rand.nextFloat() * 0.2F;
 			motionZ *= rand.nextFloat() * 0.2F;
-			ticksInGround = 0;
 			ticksInAir = 0;
 		} else {
 			++ticksInAir;

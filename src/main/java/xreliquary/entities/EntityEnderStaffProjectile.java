@@ -1,6 +1,5 @@
 package xreliquary.entities;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +17,6 @@ import java.util.List;
 
 public class EntityEnderStaffProjectile extends EntityThrowable {
 	private int ticksInAir;
-	private int ticksInGround;
 
 	public EntityEnderStaffProjectile(World world) {
 		super(world);
@@ -53,7 +51,6 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 		lastTickPosX = posX;
 		lastTickPosY = posY;
 		lastTickPosZ = posZ;
-		//super.onUpdate();
 		onEntityUpdate();
 		if(throwableShake > 0) {
 			--throwableShake;
@@ -63,31 +60,11 @@ public class EntityEnderStaffProjectile extends EntityThrowable {
 			world.spawnParticle(EnumParticleTypes.PORTAL, posX, posY, posZ, 0.0D, 0.0D, 1.0D);
 		}
 
-		int xTile = (int) Math.round(posX);
-		int yTile = (int) Math.round(posY);
-		int zTile = (int) Math.round(posZ);
-
-		IBlockState inTile = world.getBlockState(new BlockPos(xTile, yTile, zTile));
-
 		if(inGround) {
-			IBlockState var1 = world.getBlockState(new BlockPos(xTile, yTile, zTile));
-
-			//TODO: ?? maybe I am blind but why do we check this when these two get initialized to the same block?
-			if(var1 == inTile) {
-				++ticksInGround;
-
-				if(ticksInGround == 1200) {
-					this.setDead();
-				}
-
-				return;
-			}
-
 			inGround = false;
 			motionX = 0F;
 			motionY = 0F;
 			motionZ = 0F;
-			ticksInGround = 0;
 			ticksInAir = 0;
 		} else {
 			++ticksInAir;

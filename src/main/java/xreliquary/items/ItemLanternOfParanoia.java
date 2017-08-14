@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import com.google.common.collect.Lists;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -25,7 +26,6 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ItemLanternOfParanoia extends ItemToggleable {
@@ -80,41 +80,9 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 					}
 				}
 			}
-
-			//attemptPlacementByLookVector(player);
-
 		}
 	}
 
-	//	TODO review torch placement if it needs changes otherwise just remove all of this commented out code
-	//    public void attemptPlacementByLookVector(EntityPlayer player) {
-	//        RayTraceResult mop = getMovingObjectPositionFromPlayer(player.world, player, false);
-	//        if (!player.canPlayerEdit(x, y, z, side, ist))
-	//            return;
-	//
-	//    }
-	//
-	//    //experimenting with a look vector based version of the lantern to avoid some really annoying stuff I can't figure out because I'm dumb.
-	//    @Override
-	//    protected RayTraceResult getMovingObjectPositionFromPlayer(World world, EntityPlayer player, boolean weirdBucketBoolean) {
-	//        float movementCoefficient = 1.0F;
-	//        float pitchOff = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * movementCoefficient;
-	//        float yawOff = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * movementCoefficient;
-	//        double xOff = player.prevPosX + (player.posX - player.prevPosX) * movementCoefficient;
-	//        double yOff = player.prevPosY + (player.posY - player.prevPosY) * movementCoefficient + 1.62D - player.yOffset;
-	//        double zOff = player.prevPosZ + (player.posZ - player.prevPosZ) * movementCoefficient;
-	//        Vec3d playerVector = Vec3d.createVectorHelper(xOff, yOff, zOff);
-	//        float cosTraceYaw = MathHelper.cos(-yawOff * 0.017453292F - (float) Math.PI);
-	//        float sinTraceYaw = MathHelper.sin(-yawOff * 0.017453292F - (float) Math.PI);
-	//        float cosTracePitch = -MathHelper.cos(-pitchOff * 0.017453292F);
-	//        float sinTracePitch = MathHelper.sin(-pitchOff * 0.017453292F);
-	//        float pythagoraStuff = sinTraceYaw * cosTracePitch;
-	//        float pythagoraStuff2 = cosTraceYaw * cosTracePitch;
-	//        double distCoeff = getRange();
-	//        Vec3d rayTraceVector = playerVector.addVector(pythagoraStuff * distCoeff, sinTracePitch * distCoeff, pythagoraStuff2 * distCoeff);
-	//        return world.rayTraceBlocks(playerVector, rayTraceVector, weirdBucketBoolean);
-	//    }
-	//
 	private boolean findAndDrainSojournersStaff(EntityPlayer player) {
 		if(player.capabilities.isCreativeMode)
 			return true;
@@ -154,36 +122,8 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 		}
 
 		if(Blocks.TORCH.canPlaceBlockAt(world, new BlockPos(xO, yO, zO))) {
-			int rotation = ((MathHelper.floor((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3) + 2) % 4;
-			EnumFacing trySide = EnumFacing.DOWN;
-			switch(rotation) {
-				case (0):
-					trySide = EnumFacing.EAST;
-					break;
-				case (1):
-					trySide = EnumFacing.SOUTH;
-					break;
-				case (2):
-					trySide = EnumFacing.WEST;
-					break;
-				case (3):
-					trySide = EnumFacing.NORTH;
-					break;
-			}
+			List<EnumFacing> trySides = Lists.newArrayList(EnumFacing.DOWN, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST);
 
-			List<EnumFacing> trySides = new ArrayList<>();
-			trySides.add(trySide);
-			trySides.add(EnumFacing.DOWN);
-
-			//TODO: alright this seems like there's way too much code and logic here for something that always adds all 4 sides of a block
-			// once the mod is working this should be reviewed
-
-			EnumFacing[] tryOtherSides = {EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST};
-			for(EnumFacing tryOtherSide : tryOtherSides) {
-				if(trySides.contains(tryOtherSide))
-					continue;
-				trySides.add(tryOtherSide);
-			}
 			ItemStack torchStack = new ItemStack(Blocks.TORCH);
 			for(EnumFacing side : trySides) {
 				if(!world.mayPlace(Blocks.TORCH, new BlockPos(xO, yO, zO), false, side, player))
