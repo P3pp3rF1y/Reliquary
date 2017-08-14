@@ -1,10 +1,6 @@
 package xreliquary.pedestal.wrappers;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockCrops;
-import net.minecraft.block.BlockDirt;
-import net.minecraft.block.BlockNetherWart;
-import net.minecraft.block.IGrowable;
+import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
@@ -17,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
@@ -30,7 +27,6 @@ import xreliquary.reference.Settings;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayDeque;
-import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
@@ -101,7 +97,9 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		IBlockState blockState = world.getBlockState(pos);
 		Block block = blockState.getBlock();
 
-		List<ItemStack> drops = block.getDrops(world, pos, blockState, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, ist));
+		NonNullList<ItemStack> drops = NonNullList.create();
+
+		block.getDrops(drops, world, pos, blockState, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, ist));
 		Random rand = new Random();
 
 		for(ItemStack stack : drops) {

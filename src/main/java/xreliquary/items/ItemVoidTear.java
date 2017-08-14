@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -16,12 +15,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
@@ -32,10 +26,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.input.Keyboard;
@@ -46,11 +37,7 @@ import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.items.util.VoidTearItemStackHandler;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
-import xreliquary.util.InventoryHelper;
-import xreliquary.util.LanguageHelper;
-import xreliquary.util.NBTHelper;
-import xreliquary.util.StackHelper;
-import xreliquary.util.XRFakePlayerFactory;
+import xreliquary.util.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -67,7 +54,7 @@ public class ItemVoidTear extends ItemToggleable {
 
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
-		return isEmpty(stack, FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) ? "item.void_tear_empty" : "item.void_tear";
+		return "item.void_tear";
 	}
 
 	@Override
@@ -112,11 +99,7 @@ public class ItemVoidTear extends ItemToggleable {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack voidTear, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			return;
-
+	protected void addMoreInformation(ItemStack voidTear, @Nullable World world, List<String> tooltip) {
 		ItemStack contents = this.getContainerItem(voidTear, true);
 
 		if(isEmpty(voidTear, true))

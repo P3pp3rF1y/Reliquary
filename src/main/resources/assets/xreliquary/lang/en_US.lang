@@ -3,11 +3,15 @@ itemGroup.xreliquary=Reliquary
 xreliquary.gui.tome.text=Craft certain items and;blocks with the tome;to duplicate them.;You can right-click;Altars of Light to fuel;them with redstone from;the tome.
 
 xreliquary.tooltip.absorb={{!colors.light_purple}}Shift + Right click to toggle auto-absorb.
+xreliquary.tooltip.drain={{!colors.light_purple}}Shift + Right click to enable drain mode.
+xreliquary.tooltip.place={{!colors.light_purple}}Shift + Right click to enable place mode.
 xreliquary.tooltip.absorb_active={{!colors.purple}}Automagically absorbs {{item}}{{!colors.purple}}.
 xreliquary.tooltip.absorb_tear={{!colors.purple}}Always leaves a stack of the item in inventory.
+xreliquary.tooltip.shift_for_more_info=Hold Shift for more info
 
 xreliquary.item.alkahestry_tome.name=Tome of Alkahestry
-xreliquary.item.alkahestry_tome.tooltip={{!colors.rose}}Charge: {{chargeAmount}}/{{chargeLimit}};Right-click to read.
+xreliquary.item.alkahestry_tome.tooltip=Uses its charge to duplicate items.
+xreliquary.item.alkahestry_tome.tooltip2={{!colors.rose}}Charge: {{chargeAmount}}/{{chargeLimit}};Right-click to read.
 
 xreliquary.tile.altar_idle.name=Altar of Light
 xreliquary.tile.altar_idle.tooltip=Feed it redstone and;it will grow glowstone.
@@ -56,22 +60,26 @@ xreliquary.item.bullet_9.name=Storm Shot
 xreliquary.item.bullet_9.tooltip=Stronger during storms,;charges creepers.
 
 xreliquary.item.destruction_catalyst.name=Destruction Catalyst
-xreliquary.item.destruction_catalyst.tooltip=Consumes gunpowder to destroy blocks.;{{!colors.yellow}}Charge: {{charge}}
+xreliquary.item.destruction_catalyst.tooltip=Consumes gunpowder to destroy blocks
+xreliquary.item.destruction_catalyst.tooltip2={{!colors.yellow}}Charge: {{charge}}
 
 xreliquary.item.emperor_chalice.name=Emperor's Chalice
-xreliquary.item.emperor_chalice.tooltip=An infinite water bucket.;Enable to drain water.;Disable to place water.;Drinking restores hunger;in exchange for life.
+xreliquary.item.emperor_chalice.tooltip=An infinite water bucket
+xreliquary.item.emperor_chalice.tooltip2=Enable to drain water.;Disable to place water.;Drinking restores hunger;in exchange for life.
 
 xreliquary.item.elsewhere_flask.name=Elsewhere Flask
 xreliquary.item.elsewhere_flask.tooltip=Imbibe potions within it simultaneously.{{contents}}
 
 xreliquary.item.ender_staff.name=Ender Staff
-xreliquary.item.ender_staff.tooltip=Shift + Left-click to cycle modes:;[Cast, Long Cast, Node Warp or Bind];{{!colors.purple}}Ender Pearls: {{charge}};{{!colors.purple}}{{phrase}}{{position}}
+xreliquary.item.ender_staff.tooltip=Uses ender pearls to let player teleport around
+xreliquary.item.ender_staff.tooltip2=Shift + Left-click to cycle modes:;[Cast, Long Cast, Node Warp or Bind];{{!colors.purple}}Ender Pearls: {{charge}};{{!colors.purple}}{{phrase}}{{position}}
 
 xreliquary.item.fortune_coin.name=Coin of Fortune
 xreliquary.item.fortune_coin.tooltip=Draws in items and XP.;Shift+Right to activate.;Hold Right click to super-vacuum.
 
 xreliquary.item.glacial_staff.name=Glacial Staff
-xreliquary.item.glacial_staff.tooltip=Shoots snowballs, chills enemies on;strike and freezes the ground; you walk on.;{{!colors.blue}}Charge: {{charge}}
+xreliquary.item.glacial_staff.tooltip=Shoots snowballs, chills enemies on;strike and freezes the ground;you walk on.
+xreliquary.item.glacial_staff.tooltip2={{!colors.blue}}Charge: {{charge}}
 
 xreliquary.item.glowing_water.name=Glowing Water
 xreliquary.item.glowing_water.tooltip=Harms undead enemies.
@@ -90,60 +98,39 @@ xreliquary.item.handgun.name=Hunter's Handgun
 xreliquary.item.handgun.tooltip=For great justice.;Right click fires, hold to reload.
 
 xreliquary.item.harvest_rod.name={{!colors.green}}Harvest Rod
-xreliquary.item.harvest_rod.tooltip=Right-click to fertilize,;breaks crops in an area.;{{!colors.green}}Charge: {{charge}}
+xreliquary.item.harvest_rod.tooltip=Right-click to fertilize,;breaks crops in an area
+xreliquary.item.harvest_rod.tooltip2={{!colors.green}}Bonemeal charge: {{charge}}
+xreliquary.item.harvest_rod.tooltip3={{!colors.green}}{{plantable}}: {{charge}}
 
 xreliquary.item.mob_charm_fragment_0.name={{!colors.light_green}}Zombie Charm Fragment
-xreliquary.item.heart_zhu_0.name={{!colors.rose}}Zombie Nian Zhu
-xreliquary.item.heart_zhu_0.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_1.name={{!colors.light_green}}Skeleton Charm Fragment
-xreliquary.item.heart_zhu_1.name={{!colors.white}}Skeleton Nian Zhu
-xreliquary.item.heart_zhu_1.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_2.name={{!colors.light_green}}Wither Skeleton Charm Fragment
-xreliquary.item.heart_zhu_2.name={{!colors.gray}}Wither Skeleton Nian Zhu
-xreliquary.item.heart_zhu_2.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_3.name={{!colors.light_green}}Creeper Charm Fragment
-xreliquary.item.heart_zhu_3.name={{!colors.light_green}}Creeper Nian Zhu
-xreliquary.item.heart_zhu_3.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_4.name={{!colors.light_green}}Witch Charm Fragment
-xreliquary.item.heart_zhu_4.name={{!colors.light_green}}Witch Nian Zhu
-xreliquary.item.heart_zhu_4.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_5.name={{!colors.light_green}}Zombie Pigman Charm Fragment
-xreliquary.item.heart_zhu_5.name={{!colors.light_green}}Zombie Pigman Nian Zhu
-xreliquary.item.heart_zhu_5.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_6.name={{!colors.light_green}}Cave Spider Charm Fragment
-xreliquary.item.heart_zhu_6.name={{!colors.light_green}}Cave Spider Nian Zhu
-xreliquary.item.heart_zhu_6.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_7.name={{!colors.light_green}}Spider Charm Fragment
-xreliquary.item.heart_zhu_7.name={{!colors.light_green}}Spider Nian Zhu
-xreliquary.item.heart_zhu_7.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_8.name={{!colors.light_green}}Enderman Charm Fragment
-xreliquary.item.heart_zhu_8.name={{!colors.light_green}}Enderman Nian Zhu
-xreliquary.item.heart_zhu_8.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_9.name={{!colors.light_green}}Ghast Charm Fragment
-xreliquary.item.heart_zhu_9.name={{!colors.light_green}}Ghast Nian Zhu
-xreliquary.item.heart_zhu_9.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_10.name={{!colors.light_green}}Slime Charm Fragment
-xreliquary.item.heart_zhu_10.name={{!colors.light_green}}Slime Nian Zhu
-xreliquary.item.heart_zhu_10.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_11.name={{!colors.light_green}}Magma Cube Charm Fragment
-xreliquary.item.heart_zhu_11.name={{!colors.light_green}}Magma Cube Nian Zhu
-xreliquary.item.heart_zhu_11.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_12.name={{!colors.light_green}}Blaze Charm Fragment
-xreliquary.item.heart_zhu_12.name={{!colors.light_green}}Blaze Nian Zhu
-xreliquary.item.heart_zhu_12.tooltip={{!colors.rose}}Outdated item. Please put in crafting slot to get a new one.
 xreliquary.item.mob_charm_fragment_13.name={{!colors.light_green}}Guardian Charm Fragment
 
 xreliquary.item.hero_medallion.name=Hero's Medallion
-xreliquary.item.hero_medallion.tooltip=Stores experience for you.;Right click to reclaim levels.;{{!colors.green}}Experience: {{experience}}
+xreliquary.item.hero_medallion.tooltip=Stores experience for you.;Right click to reclaim levels.
+xreliquary.item.hero_medallion.tooltip2={{!colors.green}}Levels: {{levels}} + Partial experience: {{experience}}
 
 xreliquary.item.holy_hand_grenade.name=Holy Hand Grenade
 xreliquary.item.holy_hand_grenade.tooltip=A powerful explosive that doesn't;break blocks or hurt the wielder.
 
 xreliquary.item.ice_magus_rod.name=Ice Magus Rod
-xreliquary.item.ice_magus_rod.tooltip=Lobs harmful snowballs.;{{!colors.blue}}Charge: {{charge}}
+xreliquary.item.ice_magus_rod.tooltip=Lobs harmful snowballs.
+xreliquary.item.ice_magus_rod.tooltip2={{!colors.blue}}Charge: {{charge}}
 
 xreliquary.item.infernal_chalice.name=Infernal Chalice
-xreliquary.item.infernal_chalice.tooltip=Protects you from lava damage.;{{!colors.red}}Holds {{amount}} mB of Lava;Shift + Right-Click to enable drain-mode.;Disable to place lava.
+xreliquary.item.infernal_chalice.tooltip=Stores lava and protects you from lava damage
+xreliquary.item.infernal_chalice.tooltip2={{!colors.red}}Holds {{amount}} mB of Lava
 
 xreliquary.item.infernal_claws.name={{!colors.red}}Infernal Claws
 xreliquary.item.infernal_claws.tooltip=Absorbs fire damage at;the expense of hunger.
@@ -183,7 +170,8 @@ xreliquary.item.mercy_cross.name=Cross of Mercy
 xreliquary.item.mercy_cross.tooltip=Deals extra damage;to undead creatures.
 
 xreliquary.item.midas_touchstone.name=Touchstone of Midas
-xreliquary.item.midas_touchstone.tooltip=Repairs gold items.;{{!colors.yellow}}Charge: {{charge}}
+xreliquary.item.midas_touchstone.tooltip=Repairs gold items
+xreliquary.item.midas_touchstone.tooltip2={{!colors.yellow}}Charge: {{charge}}
 
 xreliquary.item.mob_ingredient_0.name=Rib Bone
 xreliquary.item.mob_ingredient_0.tooltip=Skeleton drop
@@ -264,10 +252,12 @@ xreliquary.item.potion_essence.name=Potion Essence
 xreliquary.item.potion_essence.tooltip=Effects:;{{effects}}
 
 xreliquary.item.pyromancer_staff.name={{!colors.red}}Pyromancer's Staff
-xreliquary.item.pyromancer_staff.tooltip=Shoots blaze and ghast;fireballs, creates firebursts;and lights fires.;{{!colors.red}}Charges: {{charges}};{{!colors.red}}Blaze: {{blaze}};Shift + Left-click to change modes.
+xreliquary.item.pyromancer_staff.tooltip=Shoots blaze and ghast;fireballs, creates firebursts;and lights fires
+xreliquary.item.pyromancer_staff.tooltip2={{!colors.red}}Charges: {{charges}};{{!colors.red}}Blaze: {{blaze}};Shift + Left-click to change modes
 
 xreliquary.item.rending_gale.name={{!colors.yellow}}Rending Gale
-xreliquary.item.rending_gale.tooltip=Fly, push and pull mobs, or shoot;lightning while raining.;Shift + Left-click changes modes.;{{!colors.yellow}}Charge: {{charge}}
+xreliquary.item.rending_gale.tooltip=Fly, push and pull mobs, or shoot;lightning while raining
+xreliquary.item.rending_gale.tooltip2={{!colors.yellow}}Charge: {{charge}}
 
 xreliquary.item.rod_of_lyssa.name=Rod of Lyssa
 xreliquary.item.rod_of_lyssa.tooltip=A magic fishing rod that can be;used to reel in items and pick pockets.
@@ -282,7 +272,8 @@ xreliquary.item.shears_of_winter.name=Shears of Winter
 xreliquary.item.shears_of_winter.tooltip=Magic shears that tear the;leaves from trees with cold.
 
 xreliquary.item.sojourner_staff.name=Sojourner's Staff
-xreliquary.item.sojourner_staff.tooltip=Consumes torches, can place them;long distances, but costs extra.;{{!colors.yellow}}Contents: {{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}}
+xreliquary.item.sojourner_staff.tooltip=Consumes torches, can place them;long distances, but costs extra
+xreliquary.item.sojourner_staff.tooltip2={{!colors.yellow}}Contents: {{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}}
 
 xreliquary.item.tipped_arrow.name=Tipped Arrow
 
@@ -296,6 +287,7 @@ xreliquary.item.void_tear.name=Void Tear
 xreliquary.item.void_tear.mode.no_refill=EMPTY
 xreliquary.item.void_tear.mode.one_stack=STACK
 xreliquary.item.void_tear.mode.full_inventory=FILL
+xreliquary.item.void_tear.tooltip=Keeps almost unlimited amount of one item type
 
 xreliquary.tooltip.tear=Currently holds {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
 xreliquary.tooltip.tear_empty=Right-click to capture whatever item you have the most of.

@@ -1,7 +1,6 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -15,7 +14,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.crafting.factories.AlkahestryCraftingRecipeFactory.AlkahestryCraftingRecipe;
 import xreliquary.init.XRRecipes;
@@ -83,12 +81,7 @@ public class ItemInfernalTear extends ItemToggleable {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			return;
-		this.formatTooltip(null, stack, tooltip);
-
+	protected void addMoreInformation(ItemStack stack, @Nullable World world, List<String> tooltip) {
 		if(this.getStackFromTear(stack).isEmpty()) {
 			LanguageHelper.formatTooltip("tooltip.infernal_tear.tear_empty", null, tooltip);
 		} else {

@@ -1,7 +1,6 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +16,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntitySpecialSnowball;
 import xreliquary.reference.Names;
@@ -40,13 +38,11 @@ public class ItemIceMagusRod extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, @Nullable World world, List<String> list, ITooltipFlag flag) {
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			return;
-		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("snowballs", ist))), ist, list);
-		if(this.isEnabled(ist))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.SNOWBALL.getItemStackDisplayName(new ItemStack(Items.SNOWBALL))), list);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, list);
+	protected void addMoreInformation(ItemStack rod, @Nullable World world, List<String> tooltip) {
+		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(rod) + ".tooltip2", ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("snowballs", rod))), tooltip);
+		if(this.isEnabled(rod))
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.SNOWBALL.getItemStackDisplayName(new ItemStack(Items.SNOWBALL))), tooltip);
+		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	ItemIceMagusRod(String langName) {

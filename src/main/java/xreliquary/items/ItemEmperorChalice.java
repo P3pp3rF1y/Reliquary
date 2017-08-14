@@ -11,12 +11,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -27,9 +22,12 @@ import xreliquary.Reliquary;
 import xreliquary.items.util.fluid.FluidHandlerEmperorChalice;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.LanguageHelper;
 import xreliquary.util.RegistryHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class ItemEmperorChalice extends ItemToggleable {
 
@@ -40,6 +38,11 @@ public class ItemEmperorChalice extends ItemToggleable {
 		this.setMaxStackSize(1);
 		canRepair = false;
 
+	}
+
+	@Override
+	protected void addMoreInformation(ItemStack stack, @Nullable World world, List<String> tooltip) {
+		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(stack) + ".tooltip2", tooltip);
 	}
 
 	@Override

@@ -1,14 +1,13 @@
 package xreliquary.compat.jei.mortar;
 
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 import java.util.List;
 
-class MortarRecipeJEI extends BlankRecipeWrapper {
+class MortarRecipeJEI implements IRecipeWrapper {
 	private final List<ItemStack> inputs;
 	private final ItemStack output;
 

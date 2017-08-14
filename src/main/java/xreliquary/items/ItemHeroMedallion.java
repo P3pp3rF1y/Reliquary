@@ -1,7 +1,6 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -22,7 +21,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
@@ -61,11 +59,13 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			return;
-		this.formatTooltip(ImmutableMap.of("experience", String.valueOf(NBTHelper.getInteger("experience", ist))), ist, tooltip);
-		if(this.isEnabled(ist))
+	protected void addMoreInformation(ItemStack medallion, @Nullable World world, List<String> tooltip) {
+		int experience = NBTHelper.getInteger("experience", medallion);
+		int levels = XpHelper.getLevelForExperience(experience);
+		int remainingExperience = experience - XpHelper.getExperienceForLevel(levels);
+
+		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(medallion) + ".tooltip2", ImmutableMap.of("levels", String.valueOf(levels), "experience", String.valueOf(remainingExperience)), tooltip);
+		if(this.isEnabled(medallion))
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + "XP"), tooltip);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}

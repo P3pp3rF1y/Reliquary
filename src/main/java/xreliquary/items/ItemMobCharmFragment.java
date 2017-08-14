@@ -1,17 +1,13 @@
 package xreliquary.items;
 
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
 
 public class ItemMobCharmFragment extends ItemBase {
 	public ItemMobCharmFragment() {
@@ -27,10 +23,6 @@ public class ItemMobCharmFragment extends ItemBase {
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
 		return "item.mob_charm_fragment_" + stack.getItemDamage();
-	}
-
-	@Override
-	public void addInformation(ItemStack fragment, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
 	}
 
 	@Override

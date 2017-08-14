@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import org.lwjgl.input.Keyboard;
 import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
@@ -36,10 +34,8 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 	}
 
 	@Override
-	public void addInformation(ItemStack staff, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			return;
-		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("snowballs", staff))), staff, tooltip);
+	protected void addMoreInformation(ItemStack staff, @Nullable World world, List<String> tooltip) {
+		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(staff) + ".tooltip2", ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("snowballs", staff))), tooltip);
 		if(this.isEnabled(staff))
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.SNOWBALL.getItemStackDisplayName(new ItemStack(Items.SNOWBALL))), tooltip);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);

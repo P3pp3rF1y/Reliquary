@@ -1,7 +1,7 @@
 package xreliquary.util;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.reference.Reference;
@@ -55,14 +55,17 @@ public class LanguageHelper {
 
 	private static String getLocalization(String key, boolean fallback) {
 		//noinspection deprecation
-		String localization = I18n.translateToLocal(Reference.MOD_ID + "." + key);
+		String localization = I18n.format(Reference.MOD_ID + "." + key);
 		if(localization.equals(key) && fallback) {
 			//noinspection deprecation
-			localization = I18n.translateToFallback(Reference.MOD_ID + "." + key);
+			localization = I18n.format(Reference.MOD_ID + "." + key);
 		}
 		return localization;
 	}
 
+	public static void formatTooltip(String langName, List<String> list) {
+		formatTooltip(langName, ImmutableMap.of(), list);
+	}
 	public static void formatTooltip(String langName, ImmutableMap<String, String> toFormat, List<String> list) {
 		String langTooltip = LanguageHelper.getLocalization(langName);
 		if(langTooltip == null || langTooltip.equals(langName))
@@ -77,6 +80,10 @@ public class LanguageHelper {
 			if(descriptionLine != null && descriptionLine.length() > 0)
 				list.add(descriptionLine);
 		}
+	}
+
+	public static boolean localizationExists(String langName) {
+		return I18n.hasKey(Reference.MOD_ID + "." + langName);
 	}
 
 }

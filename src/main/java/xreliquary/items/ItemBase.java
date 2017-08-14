@@ -1,13 +1,16 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
+import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
@@ -28,25 +31,25 @@ public class ItemBase extends Item {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag) {
-		this.formatTooltip(null, stack, tooltip);
+	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+		if (LanguageHelper.localizationExists(this.getUnlocalizedNameInefficiently(stack) + ".tooltip")) {
+			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", tooltip);
+		}
+
+		List<String> detailTooltip = Lists.newArrayList();
+		this.addMoreInformation(stack, world, detailTooltip);
+		if (!detailTooltip.isEmpty()) {
+			tooltip.add("");
+			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+				tooltip.addAll(detailTooltip);
+			} else {
+				tooltip.add(TextFormatting.WHITE + TextFormatting.ITALIC.toString() + I18n.format(Reference.MOD_ID + ".tooltip.shift_for_more_info") + TextFormatting.RESET);
+			}
+		}
 	}
 
-	/**
-	 * Used to format tooltips. Grabs tooltip from language registry with the
-	 * entry 'item.unlocalizedName.tooltip'. Has support for Handlebars-style
-	 * templating, and line breaking using '\n'.
-	 *
-	 * @param toFormat An ImmutableMap that has all the regex keys and values. Regex
-	 *                 strings are handled on the tooltip by including '{{regexKey}}'
-	 *                 with your regex key, of course.
-	 * @param stack    The ItemStack passed from addInformation.
-	 * @param list     List of description lines passed from addInformation.
-	 */
-	@SideOnly(Side.CLIENT)
-	public void formatTooltip(ImmutableMap<String, String> toFormat, ItemStack stack, List<String> list) {
-		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", toFormat, list);
+	protected void addMoreInformation(ItemStack stack, @Nullable World world, List<String> tooltip) {
+
 	}
 
 	@Nonnull

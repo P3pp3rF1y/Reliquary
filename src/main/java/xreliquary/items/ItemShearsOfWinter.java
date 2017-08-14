@@ -23,7 +23,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -31,7 +30,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
@@ -116,13 +114,7 @@ public class ItemShearsOfWinter extends ItemShears {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack shears, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		this.formatTooltip(shears, tooltip);
-	}
-
-	@SideOnly(Side.CLIENT)
-	public void formatTooltip(ItemStack stack, List<String> list) {
-		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", null, list);
+		LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(shears) + ".tooltip", null, tooltip);
 	}
 
 	@Nonnull

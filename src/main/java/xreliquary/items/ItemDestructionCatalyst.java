@@ -1,23 +1,17 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.ArrayUtils;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -40,13 +34,15 @@ public class ItemDestructionCatalyst extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			return;
-		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(NBTHelper.getInteger("gunpowder", ist))), ist, tooltip);
-		if(this.isEnabled(ist))
+	protected void addMoreInformation(ItemStack catalyst, @Nullable World world, List<String> tooltip) {
+		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(catalyst) + ".tooltip2",
+				ImmutableMap.of("charge", String.valueOf(NBTHelper.getInteger("gunpowder", catalyst))), tooltip);
+
+		if(this.isEnabled(catalyst)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GRAY + Items.GUNPOWDER.getItemStackDisplayName(new ItemStack(Items.GUNPOWDER))), tooltip);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
+		} else {
+			LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
+		}
 	}
 
 	@Nonnull

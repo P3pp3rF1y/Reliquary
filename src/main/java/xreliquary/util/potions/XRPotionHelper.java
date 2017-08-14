@@ -2,6 +2,7 @@ package xreliquary.util.potions;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -16,18 +17,12 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.items.ItemPotionEssence;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class XRPotionHelper {
 
@@ -88,7 +83,7 @@ public class XRPotionHelper {
 			List<Tuple<String, AttributeModifier>> list1 = Lists.newArrayList();
 			for(PotionEffect potioneffect : effects) {
 				//noinspection deprecation
-				String s1 = I18n.translateToLocal(potioneffect.getEffectName()).trim();
+				String s1 = I18n.format(potioneffect.getEffectName()).trim();
 				Potion potion = potioneffect.getPotion();
 				Map<IAttribute, AttributeModifier> map = potion.getAttributeModifierMap();
 
@@ -102,7 +97,7 @@ public class XRPotionHelper {
 
 				if(potioneffect.getAmplifier() > 0) {
 					//noinspection deprecation
-					s1 = s1 + " " + I18n.translateToLocal("potion.potency." + potioneffect.getAmplifier()).trim();
+					s1 = s1 + " " + I18n.format("potion.potency." + potioneffect.getAmplifier()).trim();
 				}
 
 				if(potioneffect.getDuration() > 20) {
@@ -119,7 +114,7 @@ public class XRPotionHelper {
 			if(displayWhenDrankInfo && !list1.isEmpty()) {
 				list.add("");
 				//noinspection deprecation
-				list.add((addFormatting ? TextFormatting.DARK_PURPLE.toString() : "") + I18n.translateToLocal("potion.whenDrank"));
+				list.add((addFormatting ? TextFormatting.DARK_PURPLE.toString() : "") + I18n.format("potion.whenDrank"));
 
 				for(Tuple<String, AttributeModifier> tuple : list1) {
 					AttributeModifier attributemodifier2 = tuple.getSecond();
@@ -134,11 +129,11 @@ public class XRPotionHelper {
 
 					if(d0 > 0.0D) {
 						//noinspection deprecation
-						list.add((addFormatting ? TextFormatting.BLUE.toString() : "") + I18n.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.translateToLocal("attribute.name." + tuple.getFirst())));
+						list.add((addFormatting ? TextFormatting.BLUE.toString() : "") + I18n.format("attribute.modifier.plus." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.format("attribute.name." + tuple.getFirst())));
 					} else if(d0 < 0.0D) {
 						d1 = d1 * -1.0D;
 						//noinspection deprecation
-						list.add((addFormatting ? TextFormatting.RED.toString() : "") + I18n.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.translateToLocal("attribute.name." + tuple.getFirst())));
+						list.add((addFormatting ? TextFormatting.RED.toString() : "") + I18n.format("attribute.modifier.take." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.format("attribute.name." + tuple.getFirst())));
 					}
 				}
 			}
@@ -273,7 +268,7 @@ public class XRPotionHelper {
 		return newEffects;
 	}
 
-	public static List<PotionEffect> combineIngredients(PotionIngredient... ingredients) {
+	static List<PotionEffect> combineIngredients(PotionIngredient... ingredients) {
 		return combineIngredients(Arrays.asList(ingredients));
 	}
 

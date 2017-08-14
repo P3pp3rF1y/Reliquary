@@ -2,7 +2,6 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,21 +16,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -68,10 +56,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack staff, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		//maps the contents of the Pyromancer's staff to a tooltip, so the player can review the torches stored within.
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			return;
+	protected void addMoreInformation(ItemStack staff, @Nullable World world, List<String> tooltip) {
 		String charges = "0";
 		String blaze = "0";
 		NBTTagCompound tagCompound = NBTHelper.getTag(staff);
@@ -90,7 +75,7 @@ public class ItemPyromancerStaff extends ItemToggleable {
 				}
 			}
 		}
-		this.formatTooltip(ImmutableMap.of("charges", charges, "blaze", blaze), staff, tooltip);
+		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(staff) + ".tooltip2", ImmutableMap.of("charges", charges, "blaze", blaze), tooltip);
 		if(this.isEnabled(staff))
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + Items.BLAZE_POWDER.getItemStackDisplayName(new ItemStack(Items.BLAZE_POWDER)) + TextFormatting.WHITE + " & " + TextFormatting.RED + Items.FIRE_CHARGE.getItemStackDisplayName(new ItemStack(Items.FIRE_CHARGE))), tooltip);
 

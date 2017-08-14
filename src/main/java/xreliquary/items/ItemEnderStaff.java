@@ -1,7 +1,6 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,12 +11,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -27,7 +21,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.entities.EntityEnderStaffProjectile;
 import xreliquary.init.ModBlocks;
@@ -275,23 +268,20 @@ public class ItemEnderStaff extends ItemToggleable {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack ist, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			return;
+	protected void addMoreInformation(ItemStack staff, @Nullable World world, List<String> tooltip) {
 		//added spacing here to make sure the tooltips didn't come out with weird punctuation derps.
-		String charge = Integer.toString(getPearlCount(ist, true));
+		String charge = Integer.toString(getPearlCount(staff, true));
 		String phrase = "Currently bound to ";
 		String position = "";
-		if(ist.getTagCompound() != null && ist.getTagCompound().getInteger("dimensionID") != getDimension(world)) {
+		if(staff.getTagCompound() != null && staff.getTagCompound().getInteger("dimensionID") != getDimension(world)) {
 			phrase = "Out of range!";
-		} else if(ist.getTagCompound() != null && ist.getTagCompound().hasKey("nodeX" + getDimension(world)) && ist.getTagCompound().hasKey("nodeY" + getDimension(world)) && ist.getTagCompound().hasKey("nodeZ" + getDimension(world))) {
-			position = "X: " + ist.getTagCompound().getInteger("nodeX" + getDimension(world)) + " Y: " + ist.getTagCompound().getInteger("nodeY" + getDimension(world)) + " Z: " + ist.getTagCompound().getInteger("nodeZ" + getDimension(world));
+		} else if(staff.getTagCompound() != null && staff.getTagCompound().hasKey("nodeX" + getDimension(world)) && staff.getTagCompound().hasKey("nodeY" + getDimension(world)) && staff.getTagCompound().hasKey("nodeZ" + getDimension(world))) {
+			position = "X: " + staff.getTagCompound().getInteger("nodeX" + getDimension(world)) + " Y: " + staff.getTagCompound().getInteger("nodeY" + getDimension(world)) + " Z: " + staff.getTagCompound().getInteger("nodeZ" + getDimension(world));
 		} else {
 			position = "nowhere.";
 		}
-		this.formatTooltip(ImmutableMap.of("phrase", phrase, "position", position, "charge", charge), ist, tooltip);
-		if(this.isEnabled(ist))
+		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(staff) + ".tooltip2", ImmutableMap.of("phrase", phrase, "position", position, "charge", charge), tooltip);
+		if(this.isEnabled(staff))
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + Items.ENDER_PEARL.getItemStackDisplayName(new ItemStack(Items.ENDER_PEARL))), tooltip);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}

@@ -343,7 +343,7 @@ public class Settings {
 			@Config.Name("experience_limit")
 			@Config.Comment("Experience level that the medallion can hold")
 			@Config.RangeInt(min = 0, max = CLEAN_INT_MAX)
-			public int experienceLimit;
+			public int experienceLimit = CLEAN_INT_MAX;
 			@Config.Name("experience_drop")
 			@Config.Comment("How much experience gets dropped on ground when hero's medallion is right clicked on it (9 is the first level of player xp)")
 			@Config.RangeInt(min = 1, max = 100)

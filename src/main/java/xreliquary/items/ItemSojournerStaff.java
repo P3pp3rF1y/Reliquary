@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,12 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -28,7 +22,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -299,9 +292,7 @@ public class ItemSojournerStaff extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack staff, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			return;
+	protected void addMoreInformation(ItemStack staff, @Nullable World world, List<String> tooltip) {
 		//maps the contents of the Sojourner's staff to a tooltip, so the player can review the torches stored within.
 		String phrase = "Nothing.";
 		String placing = "Nothing.";
@@ -325,10 +316,11 @@ public class ItemSojournerStaff extends ItemToggleable {
 				placing = new ItemStack(placingItem, 1, 0).getDisplayName();
 			}
 		}
-		this.formatTooltip(ImmutableMap.of("phrase", phrase, "placing", placing), staff, tooltip);
+		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(staff) + ".tooltip2", ImmutableMap.of("phrase", phrase, "placing", placing), tooltip);
+
 		if(this.isEnabled(staff))
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + getItemStackDisplayName(new ItemStack(Blocks.TORCH))), tooltip);
-		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + Item.getItemFromBlock(Blocks.TORCH).getItemStackDisplayName(new ItemStack(Blocks.TORCH))), tooltip);
+		LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
 	}
 
 	@Nonnull

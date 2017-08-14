@@ -1,15 +1,14 @@
 package xreliquary.compat.jei.magazines;
 
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 import java.util.List;
 
-class MagazineRecipeJEI extends BlankRecipeWrapper implements IShapedCraftingRecipeWrapper {
+class MagazineRecipeJEI implements IRecipeWrapper, IShapedCraftingRecipeWrapper {
 
 	private final List<ItemStack> inputs;
 	private final ItemStack output;

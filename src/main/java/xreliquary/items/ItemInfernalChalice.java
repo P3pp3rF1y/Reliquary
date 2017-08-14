@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -24,6 +23,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import xreliquary.Reliquary;
 import xreliquary.items.util.fluid.FluidHandlerInfernalChalice;
 import xreliquary.reference.Names;
+import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nonnull;
@@ -39,10 +39,15 @@ public class ItemInfernalChalice extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		//String fluid = "lava.";
-		String amount = Integer.toString(NBTHelper.getInteger("fluidStacks", ist));
-		this.formatTooltip(ImmutableMap.of("amount", amount), ist, tooltip);
+	protected void addMoreInformation(ItemStack chalice, @Nullable World world, List<String> tooltip) {
+		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(chalice) + ".tooltip2",
+				ImmutableMap.of("amount", String.valueOf(NBTHelper.getInteger("fluidStacks", chalice))), tooltip);
+
+		if(this.isEnabled(chalice)) {
+			LanguageHelper.formatTooltip("tooltip.place", tooltip);
+		} else {
+			LanguageHelper.formatTooltip("tooltip.drain", tooltip);
+		}
 	}
 
 	@Nonnull

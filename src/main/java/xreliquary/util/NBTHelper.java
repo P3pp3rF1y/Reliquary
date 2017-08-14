@@ -1,6 +1,7 @@
 package xreliquary.util;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
@@ -100,13 +101,13 @@ public class NBTHelper {
 
 		NBTTagList slots = tag.getTagList("Slots", Constants.NBT.TAG_COMPOUND);
 
-		if (slot > slots.tagCount()) {
-			return;
+		while(slot > slots.tagCount()) {
+			slots.appendTag(getEmptyStackNBT());
 		}
 
 		NBTTagCompound slotTag;
-		if (slot == slots.tagCount()) {
-			if (updateCountOnly) {
+		if(slot == slots.tagCount()) {
+			if(updateCountOnly) {
 				return;
 			}
 			slotTag = new NBTTagCompound();
@@ -115,7 +116,7 @@ public class NBTHelper {
 			slotTag = (NBTTagCompound) slots.get(slot);
 		}
 
-		if (!updateCountOnly) {
+		if(!updateCountOnly) {
 			slotTag.setTag("Stack", stackToSave.writeToNBT(new NBTTagCompound()));
 		}
 		slotTag.setInteger("Count", count);
@@ -137,6 +138,14 @@ public class NBTHelper {
 
 		return 0;
 	}
+	public static int getCountContainedStacks(ItemStack container) {
+		NBTTagCompound tag = getTag(container);
+
+		NBTTagList slots = tag.getTagList("Slots", Constants.NBT.TAG_COMPOUND);
+
+		return slots.tagCount();
+	}
+
 	public static ItemStack getContainedStack(ItemStack container, int slot) {
 		NBTTagCompound tag = getTag(container);
 
@@ -149,5 +158,13 @@ public class NBTHelper {
 			return ret;
 		}
 		return ItemStack.EMPTY;
+	}
+
+	private static NBTBase getEmptyStackNBT() {
+		NBTTagCompound slotTag = new NBTTagCompound();
+		slotTag.setTag("Stack", ItemStack.EMPTY.writeToNBT(new NBTTagCompound()));
+		slotTag.setInteger("Count", 0);
+
+		return slotTag;
 	}
 }

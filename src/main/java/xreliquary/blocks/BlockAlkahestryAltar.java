@@ -1,5 +1,6 @@
 package xreliquary.blocks;
 
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
@@ -11,11 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -29,14 +26,16 @@ import xreliquary.util.NBTHelper;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
+@MethodsReturnNonnullByDefault
 public class BlockAlkahestryAltar extends BlockBase {
-	public static final PropertyBool ACTIVE = PropertyBool.create("active");
+	private static final PropertyBool ACTIVE = PropertyBool.create("active");
 
 	public BlockAlkahestryAltar() {
 		super(Material.ROCK, Names.Blocks.ALTAR, 1.5F, 5.0F);
 		setDefaultState(this.blockState.getBaseState().withProperty(ACTIVE, false));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return getDefaultState().withProperty(ACTIVE, (meta & 1) == 1);

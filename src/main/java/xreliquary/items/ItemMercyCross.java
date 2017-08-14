@@ -16,7 +16,6 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
@@ -51,14 +50,8 @@ public class ItemMercyCross extends ItemSword {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			return;
-		String value = LanguageHelper.getLocalization("item." + Names.Items.MERCY_CROSS + ".tooltip");
-		for(String descriptionLine : value.split(";")) {
-			if(descriptionLine != null && descriptionLine.length() > 0)
-				tooltip.add(descriptionLine);
-		}
+	public void addInformation(ItemStack cross, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+		LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(cross) + ".tooltip", tooltip);
 	}
 
 	@Override

@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
@@ -28,25 +27,9 @@ public class ItemBlockBase extends ItemBlock {
 		super(block);
 	}
 
-	/**
-	 * Just a call to formatTooltip(). If you are overriding this function, call
-	 * formatTooltip() directly and DO NOT call super.addInformation().
-	 */
 	@Override
 	public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<String> tooltip, @Nullable ITooltipFlag flag) {
-		this.formatTooltip(stack, tooltip);
-	}
-
-	/**
-	 * Used to format tooltips. Grabs tooltip from language registry with the
-	 * entry 'item.unlocalizedName.tooltip'. Has support for Handlebars-style
-	 * templating, and line breaking using '\n'.
-	 *  @param stack    The ItemStack passed from addInformation.
-	 * @param list     List of description lines passed from addInformation.
-	 */
-	public void formatTooltip(ItemStack stack, List<String> list) {
-		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", null, list);
+		LanguageHelper.formatTooltip(this.getUnlocalizedNameInefficiently(stack) + ".tooltip", null, tooltip);
 	}
 
 	@Nonnull

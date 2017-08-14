@@ -5,7 +5,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,12 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
@@ -39,7 +33,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import org.lwjgl.input.Keyboard;
 import xreliquary.Reliquary;
 import xreliquary.blocks.BlockFertileLilypad;
 import xreliquary.entities.EntityXRFakePlayer;
@@ -79,11 +72,15 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	@Override
-	public void addInformation(ItemStack ist, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			return;
-		this.formatTooltip(ImmutableMap.of("charge", Integer.toString(getBoneMealCount(ist, true))), ist, tooltip);
-		if(this.isEnabled(ist))
+	protected void addMoreInformation(ItemStack rod, @Nullable World world, List<String> tooltip) {
+		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(rod) + ".tooltip2", ImmutableMap.of("charge", Integer.toString(getBoneMealCount(rod, true))), tooltip);
+		for (int slot=1; slot<getCountPlantable(rod, true); slot++) {
+			ItemStack plantable = getPlantableInSlot(rod, slot, true);
+			LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(rod) + ".tooltip3",
+					ImmutableMap.of("plantable", plantable.getItem().getItemStackDisplayName(plantable), "charge", Integer.toString(getPlantableQuantity(rod, slot, true))), tooltip);
+		}
+
+		if(this.isEnabled(rod))
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.WHITE + Items.DYE.getItemStackDisplayName(new ItemStack(Items.DYE, 1, Reference.WHITE_DYE_META))), tooltip);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
@@ -324,8 +321,8 @@ public class ItemHarvestRod extends ItemToggleable {
 		for(int slot = 2; slot < filteredHandler.getSlots(); slot++) {
 			ItemStack remainingStack = filteredHandler.insertItem(slot, plantableCopy, false);
 			if(remainingStack.isEmpty()) {
-				int plantableSlot = filteredHandler.getParentSlot(slot);
-				updateContainedItemNBT(harvestRod, player, (short) plantableSlot, plantableCopy, getPlantableQuantity(harvestRod, plantableSlot));
+				int parentSlot = filteredHandler.getParentSlot(slot);
+				updateContainedItemNBT(harvestRod, player, (short) parentSlot, plantableCopy, getPlantableQuantity(harvestRod, parentSlot));
 				return true;
 			}
 		}
@@ -341,12 +338,12 @@ public class ItemHarvestRod extends ItemToggleable {
 		}
 	}
 
-	private void updateContainedItemNBT(ItemStack harvestRod, EntityPlayer player, short slot, ItemStack stack, int count) {
+	private void updateContainedItemNBT(ItemStack harvestRod, EntityPlayer player, short parentSlot, ItemStack stack, int count) {
 		if (player != null && player.isHandActive() && (player.getHeldItemMainhand() == harvestRod || player.getHeldItemOffhand() == harvestRod)) {
 			EnumHand hand = player.getHeldItemMainhand() == harvestRod ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
-			PacketHandler.networkWrapper.sendTo(new PacketCountSync(hand, slot, stack, count), (EntityPlayerMP) player);
+			PacketHandler.networkWrapper.sendTo(new PacketCountSync(hand, parentSlot, stack, count), (EntityPlayerMP) player);
 		} else {
-			NBTHelper.updateContainedStack(harvestRod, slot, stack, count);
+			NBTHelper.updateContainedStack(harvestRod, parentSlot, stack, count);
 		}
 	}
 
@@ -487,7 +484,15 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	@Nonnull
-	public ItemStack getPlantableInSlot(@Nonnull ItemStack harvestRod, int currentSlot) {
+	public ItemStack getPlantableInSlot(@Nonnull ItemStack harvestRod, int slot) {
+		return getPlantableInSlot(harvestRod, slot, false);
+	}
+
+	public ItemStack getPlantableInSlot(@Nonnull ItemStack harvestRod, int slot, boolean isClient) {
+		if (isClient) {
+			return NBTHelper.getContainedStack(harvestRod, slot);
+		}
+
 		IItemHandler itemHandler = harvestRod.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
@@ -495,7 +500,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
 		FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 
-		return filteredHandler.getStackInParentSlot(currentSlot);
+		return filteredHandler.getStackInParentSlot(slot);
 	}
 
 	@Override
@@ -677,6 +682,14 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	public int getCountPlantable(@Nonnull ItemStack harvestRod) {
+		return getCountPlantable(harvestRod, false);
+	}
+
+	public int getCountPlantable(@Nonnull ItemStack harvestRod, boolean isClient) {
+		if (isClient) {
+			return NBTHelper.getCountContainedStacks(harvestRod); // because bonemeal needs to be excluded
+		}
+
 		IItemHandler itemHandler = harvestRod.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
 		if(!(itemHandler instanceof FilteredItemStackHandler))
