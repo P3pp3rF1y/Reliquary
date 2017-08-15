@@ -2,10 +2,7 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.MoverType;
+import net.minecraft.entity.*;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -345,11 +342,13 @@ public class ItemRendingGale extends ItemToggleable {
 		String[] pushableEntitiesBlacklist = Settings.Items.RendingGale.pushableEntitiesBlacklist;
 		String[] pushableProjectilesBlacklist = Settings.Items.RendingGale.pushableProjectilesBlacklist;
 
-		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ),
+				e -> (e instanceof EntityLiving || e instanceof IProjectile));
 
 		for(Entity entity : entities) {
 			String entityName = EntityList.getEntityString(entity);
-			if(!ArrayUtils.contains(pushableEntitiesBlacklist, entityName) || (!pull && canPushProjectiles() && !ArrayUtils.contains(pushableProjectilesBlacklist, entityName))) {
+			if((entity instanceof EntityLiving && !ArrayUtils.contains(pushableEntitiesBlacklist, entityName))
+					|| (!pull && canPushProjectiles() && entity instanceof IProjectile && !ArrayUtils.contains(pushableProjectilesBlacklist, entityName))) {
 				double distance = getDistanceToEntity(posX, posY, posZ, entity);
 				if(distance >= getRadialPushRadius())
 					continue;

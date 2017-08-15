@@ -3,9 +3,7 @@ package xreliquary.blocks;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -53,12 +51,14 @@ public class BlockInterdictionTorch extends BlockTorch {
 		String[] pushableEntitiesBlacklist = Settings.Blocks.InterdictionTorch.pushableEntitiesBlacklist;
 		String[] pushableProjectilesBlacklist = Settings.Blocks.InterdictionTorch.pushableProjectilesBlacklist;
 
-		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius, pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius));
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius, pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius),
+			e -> (e instanceof EntityLiving || e instanceof IProjectile));
 		for(Entity entity : entities) {
 			if(entity instanceof EntityPlayer)
 				continue;
 			String entityName = EntityList.getEntityString(entity);
-			if(!ArrayUtils.contains(pushableEntitiesBlacklist, entityName) || (Settings.Blocks.InterdictionTorch.canPushProjectiles && !ArrayUtils.contains(pushableProjectilesBlacklist, entityName))) {
+			if((entity instanceof EntityLiving && !ArrayUtils.contains(pushableEntitiesBlacklist, entityName))
+					|| (Settings.Blocks.InterdictionTorch.canPushProjectiles && entity instanceof IProjectile && !ArrayUtils.contains(pushableProjectilesBlacklist, entityName))) {
 				double distance = entity.getDistance((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
 				if(distance >= radius || distance == 0)
 					continue;
