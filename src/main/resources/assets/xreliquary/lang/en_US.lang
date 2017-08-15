@@ -75,7 +75,8 @@ xreliquary.item.ender_staff.tooltip=Uses ender pearls to let player teleport aro
 xreliquary.item.ender_staff.tooltip2=Shift + Left-click to cycle modes:;[Cast, Long Cast, Node Warp or Bind];{{!colors.purple}}Ender Pearls: {{charge}};{{!colors.purple}}{{phrase}}{{position}}
 
 xreliquary.item.fortune_coin.name=Coin of Fortune
-xreliquary.item.fortune_coin.tooltip=Draws in items and XP.;Shift+Right to activate.;Hold Right click to super-vacuum.
+xreliquary.item.fortune_coin.tooltip=Draws in items and XP
+xreliquary.item.fortune_coin.tooltip2=Shift+Right to activate.;Hold Right click to super-vacuum.
 
 xreliquary.item.glacial_staff.name=Glacial Staff
 xreliquary.item.glacial_staff.tooltip=Shoots snowballs, chills enemies on;strike and freezes the ground;you walk on.

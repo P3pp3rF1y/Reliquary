@@ -11,11 +11,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -39,10 +35,12 @@ import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.XpHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +83,11 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem/* T
 		this.onUpdate(stack, player.world, player, 0, false);
 	}
 */
+
+	@Override
+	protected void addMoreInformation(ItemStack stack, @Nullable World world, List<String> tooltip) {
+		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(stack) + ".tooltip2", tooltip);
+	}
 
 	@Nonnull
 	@Override
