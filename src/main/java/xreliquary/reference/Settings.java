@@ -772,7 +772,7 @@ public class Settings {
 			@Config.Name("seconds_between_growth_ticks")
 			@Config.Comment("Interval in seconds at which the lilypad causes growth tick updates")
 			@Config.RangeInt(min = 1, max = 150)
-			public int secondsBetweenGrowthTicks = 47;
+			public int secondsBetweenGrowthTicks = 10;
 			@Config.Name("tile_range")
 			@Config.Comment("Radius in which lilypad causes growh ticks")
 			@Config.RangeInt(min = 1, max = 15)
