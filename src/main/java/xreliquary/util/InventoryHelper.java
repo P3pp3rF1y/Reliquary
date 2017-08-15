@@ -1,5 +1,7 @@
 package xreliquary.util;
 
+import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,8 +13,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.oredict.OreDictionary;
 import xreliquary.items.ItemToggleable;
+import xreliquary.reference.Compatibility;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -354,7 +358,6 @@ public class InventoryHelper {
 			}
 		}
 
-/* TODO Baubles
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
 			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 
@@ -370,7 +373,6 @@ public class InventoryHelper {
 				}
 			}
 		}
-*/
 
 		return false;
 	}

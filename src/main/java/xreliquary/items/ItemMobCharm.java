@@ -1,24 +1,12 @@
 package xreliquary.items;
 
+import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.monster.EntityBlaze;
-import net.minecraft.entity.monster.EntityCaveSpider;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.monster.EntityGuardian;
-import net.minecraft.entity.monster.EntityMagmaCube;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.monster.EntityStray;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityWitherSkeleton;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -32,6 +20,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.Reliquary;
 import xreliquary.blocks.BlockPedestal;
@@ -40,6 +29,7 @@ import xreliquary.init.ModItems;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketMobCharmDamage;
 import xreliquary.pedestal.PedestalRegistry;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -284,7 +274,6 @@ public class ItemMobCharm extends ItemBase {
 				return true;
 		}
 
-/* TODO Baubles
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
 			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 
@@ -298,7 +287,6 @@ public class ItemMobCharm extends ItemBase {
 					return true;
 			}
 		}
-*/
 
 		return false;
 	}
@@ -330,7 +318,6 @@ public class ItemMobCharm extends ItemBase {
 				return true;
 		}
 
-/* TODO Baubles
 		if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
 			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 
@@ -340,7 +327,6 @@ public class ItemMobCharm extends ItemBase {
 					return true;
 			}
 		}
-*/
 
 		return false;
 	}

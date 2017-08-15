@@ -1,7 +1,10 @@
 package xreliquary.items;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.EnumRarity;
@@ -26,7 +29,7 @@ import xreliquary.util.InventoryHelper;
 import javax.annotation.Nonnull;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = Compatibility.MOD_ID.BAUBLES, striprefs = true)
-public class ItemTwilightCloak extends ItemToggleable/* implements IBauble*/ {
+public class ItemTwilightCloak extends ItemToggleable implements IBauble {
 
 	public ItemTwilightCloak() {
 		super(Names.Items.TWILIGHT_CLOAK);
@@ -69,7 +72,6 @@ public class ItemTwilightCloak extends ItemToggleable/* implements IBauble*/ {
 		player.addPotionEffect(quickInvisibility);
 	}
 
-/* TODO Baubles
 	@Override
 	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public BaubleType getBaubleType(ItemStack itemStack) {
@@ -81,7 +83,6 @@ public class ItemTwilightCloak extends ItemToggleable/* implements IBauble*/ {
 	public void onWornTick(ItemStack twilightCloak, EntityLivingBase player) {
 		updateInvisibility(twilightCloak, (EntityPlayer) player);
 	}
-*/
 
 	@SubscribeEvent
 	public void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
