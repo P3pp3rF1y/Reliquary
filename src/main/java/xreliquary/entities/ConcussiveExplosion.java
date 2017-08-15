@@ -129,7 +129,8 @@ public class ConcussiveExplosion extends Explosion {
 
 		@Override
 		protected boolean affectEntity(Entity entity) {
-			return entity instanceof EntityPlayer && ((EntityHolyHandGrenade) exploder).getCustomName() != null && ((EntityHolyHandGrenade) exploder).getCustomName().contains(((EntityPlayer) entity).getGameProfile().getName());
+			return (super.affectEntity(entity) && !(entity instanceof EntityPlayer))
+					|| (entity instanceof EntityPlayer && ((EntityHolyHandGrenade) exploder).getCustomName() != null && ((EntityHolyHandGrenade) exploder).getCustomName().contains(((EntityPlayer) entity).getGameProfile().getName()));
 		}
 	}
 
