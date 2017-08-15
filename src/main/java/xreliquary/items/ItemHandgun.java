@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,10 +18,12 @@ import xreliquary.init.ModItems;
 import xreliquary.init.ModSounds;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemHandgun extends ItemBase {
@@ -76,6 +79,16 @@ public class ItemHandgun extends ItemBase {
 	private void setPotionEffects(ItemStack handgun, List<PotionEffect> potionEffects) {
 		XRPotionHelper.cleanPotionEffects(handgun);
 		XRPotionHelper.addPotionEffectsToStack(handgun, potionEffects);
+	}
+
+	@Override
+	protected void addMoreInformation(ItemStack handgun, @Nullable World world, List<String> tooltip) {
+		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(handgun) + ".tooltip2",
+				ImmutableMap.of("count", String.valueOf(getBulletCount(handgun)), "type",
+						LanguageHelper.getLocalization("item." + Names.Items.BULLET + "_" + getBulletType(handgun) + ".name")), tooltip);
+
+		XRPotionHelper.addPotionTooltip(handgun, tooltip);
+
 	}
 
 	@Nonnull
@@ -231,8 +244,6 @@ public class ItemHandgun extends ItemBase {
 	private void fireBullet(ItemStack handgun, World world, EntityPlayer player, EnumHand hand) {
 		if(!world.isRemote) {
 			switch(getBulletType(handgun)) {
-				case 0:
-					return;
 				case Reference.NEUTRAL_SHOT_INDEX:
 					world.spawnEntity(new EntityNeutralShot(world, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
@@ -260,6 +271,9 @@ public class ItemHandgun extends ItemBase {
 				case Reference.STORM_SHOT_INDEX:
 					world.spawnEntity(new EntityStormShot(world, player, hand).addPotionEffects(getPotionEffects(handgun)));
 					break;
+				case 0:
+				default:
+					return;
 			}
 
 			world.playSound(null, player.getPosition(), ModSounds.xshot, SoundCategory.PLAYERS, 0.5F, 1.2F);

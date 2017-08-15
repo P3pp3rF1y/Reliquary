@@ -97,6 +97,7 @@ xreliquary.item.gun_part_2.tooltip=Handgun part
 
 xreliquary.item.handgun.name=Hunter's Handgun
 xreliquary.item.handgun.tooltip=For great justice.;Right click fires, hold to reload.
+xreliquary.item.handgun.tooltip2={{count}} x {{type}}
 
 xreliquary.item.harvest_rod.name={{!colors.green}}Harvest Rod
 xreliquary.item.harvest_rod.tooltip=Right-click to fertilize,;breaks crops in an area
@@ -310,9 +311,10 @@ xreliquary.general.block_settings.apothecary_cauldron.glowstonelimit=Glowstone l
 xreliquary.general.block_settings.apothecary_cauldron.heatsources=Heat sources
 xreliquary.general.block_settings.apothecary_cauldron.redstonelimit=Redstone limit
 xreliquary.general.block_settings.apothecarycauldron=Apothecary Cauldron
+xreliquary.general.block_settings.fertilelilypad=Lilypad of Fertility
 xreliquary.general.block_settings.fertile_lilypad.fullpotencyrange=Full potency range
 xreliquary.general.block_settings.fertile_lilypad.secondsbetweengrowthticks=Seconds between growth ticks
-xreliquary.general.block_settings.fertilelilypad.tilerange=Tile range
+xreliquary.general.block_settings.fertile_lilypad.tilerange=Tile range
 xreliquary.general.block_settings.interdiction_torch.canpushprojectiles=Can push projectiles
 xreliquary.general.block_settings.interdiction_torch.pushableentitiesblacklist=Entities that are banned from being pushed
 xreliquary.general.block_settings.interdiction_torch.pushableprojectilesblacklist=Projectiles that are banned from being pushed
@@ -370,7 +372,6 @@ xreliquary.general.item_settings.ender_staff.enderpearlnodewarpcost=Ender pearl 
 xreliquary.general.item_settings.ender_staff.enderpearlworth=Ender pearl worth
 xreliquary.general.item_settings.ender_staff.nodewarpcasttime=Node warp cast time
 xreliquary.general.item_settings.enderstaff=Ender Staff
-xreliquary.general.item_settings.fertilelilypad=Lilypad of Fertility
 xreliquary.general.item_settings.fortune_coin.disableaudio=Disable audio
 xreliquary.general.item_settings.fortune_coin.longrangepulldistance=Range pull distance
 xreliquary.general.item_settings.fortune_coin.standardpulldistance=Standard pull distance
