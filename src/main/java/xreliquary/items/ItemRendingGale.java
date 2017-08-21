@@ -260,12 +260,7 @@ public class ItemRendingGale extends ItemToggleable {
 	}
 
 	public boolean hasFlightCharge(EntityPlayer player, ItemStack ist) {
-		int remainingCharge = getFeatherCount(ist);
-		if(player.isHandActive()) {
-			remainingCharge -= (player.getItemInUseMaxCount() - player.getItemInUseCount()) * getChargeCost();
-		}
-
-		return remainingCharge > 0;
+		return getFeatherCount(ist) > 0;
 	}
 
 	private boolean isBoltMode(ItemStack stack) {
