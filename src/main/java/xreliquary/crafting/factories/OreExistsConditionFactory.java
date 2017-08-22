@@ -11,6 +11,6 @@ import java.util.function.BooleanSupplier;
 public class OreExistsConditionFactory implements IConditionFactory{
 	@Override
 	public BooleanSupplier parse(JsonContext context, JsonObject json) {
-		return () -> OreDictionary.doesOreNameExist(JsonUtils.getString(json, "ore"));
+		return () -> !OreDictionary.getOres(JsonUtils.getString(json, "ore")).isEmpty();
 	}
 }
