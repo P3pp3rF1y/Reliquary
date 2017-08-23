@@ -13,11 +13,6 @@ Building
 
 We use ForgeGradle. There are instructions inside the 'build.gradle' file in this repository.
 
-Versioning
-=========
-
-Every major version increase means a Minecraft version increase. 1.1.x is for 1.6.4. 1.2.x is for Minecraft 1.7. 1.3 is for Minecraft 1.8. And so on. 
-
 Licence
 =========
 
