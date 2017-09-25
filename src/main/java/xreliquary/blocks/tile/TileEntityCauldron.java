@@ -379,9 +379,9 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 			if(itemStack.getItem() == Items.WATER_BUCKET) {
 				if(!player.capabilities.isCreativeMode)
 					player.setHeldItem(hand, new ItemStack(Items.BUCKET));
-			} else if(itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+			} else if(itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)) {
 				FluidStack waterStack = new FluidStack(FluidRegistry.WATER, 1000);
-				IFluidHandler fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+				IFluidHandler fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 				//noinspection ConstantConditions
 				if(!waterStack.equals(fluidHandler.drain(waterStack, false)))
 					return false;
