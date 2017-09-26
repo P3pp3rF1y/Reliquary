@@ -42,7 +42,7 @@ repositories {
     }
     ivy {
         name "Botania"
-        artifactPattern "http://botaniamod.net/files/[module] r[revision].[ext]"
+        artifactPattern "http://addons-origin.cursecdn.com/files/${botania_cf}/[module] r[revision].[ext]"
     }
     ivy {
         name "Mantle"
@@ -70,7 +70,7 @@ dependencies {
     deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
     deobfCompile name: 'JustEnoughResources', version: jer_version, ext: 'jar'
     deobfCompile name: 'Baubles', version: baubles_version, ext: 'jar'
-    //deobfCompile name: 'Botania', version: botania_version, ext: 'jar'
+    deobfCompile name: 'Botania', version: botania_version, ext: 'jar'
     deobfCompile name: 'Mantle', version: mantle_version, ext: 'jar'
     deobfCompile name: 'TConstruct', version: tconstruct_version, ext: 'jar'
     //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'

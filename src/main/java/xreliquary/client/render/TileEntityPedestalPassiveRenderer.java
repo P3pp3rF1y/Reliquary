@@ -21,7 +21,7 @@ public class TileEntityPedestalPassiveRenderer extends TileEntitySpecialRenderer
 			float f3 = ((System.currentTimeMillis() % 86400000) / 2000F) * (180F / (float) Math.PI);
 			GlStateManager.rotate(f3, 0.0F, 1.0F, 0.0F);
 			GlStateManager.scale(0.75d, 0.75d, 0.75d);
-			Minecraft.getMinecraft().getRenderManager().doRenderEntity(item, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, false);
+			Minecraft.getMinecraft().getRenderManager().renderEntity(item, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, false);
 			GlStateManager.popMatrix();
 		}
 	}

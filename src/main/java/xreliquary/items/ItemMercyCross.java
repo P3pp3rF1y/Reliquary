@@ -3,7 +3,11 @@ package xreliquary.items;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,7 +59,7 @@ public class ItemMercyCross extends ItemSword {
 	}
 
 	@Override
-	public float getDamageVsEntity() {
+	public float getAttackDamage() {
 		return 0.0F;
 	}
 
@@ -64,7 +68,7 @@ public class ItemMercyCross extends ItemSword {
 	 * (Quality+1)*2 if correct blocktype, 1.5F if sword
 	 */
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState blockState) {
+	public float getDestroySpeed(ItemStack stack, IBlockState blockState) {
 		return blockState.getBlock() == Blocks.WEB ? 15.0F : 1.5F;
 	}
 
