@@ -34,9 +34,10 @@ public class ReliquaryPlugin implements IModPlugin {
 
 	@Override
 	public void registerItemSubtypes(@Nonnull ISubtypeRegistry subtypeRegistry) {
-		subtypeRegistry.useNbtForSubtypes(ModItems.mobCharm, ModItems.potionEssence, ModItems.potion, ModItems.tippedArrow, ModItems.magazine);
+		subtypeRegistry.useNbtForSubtypes(ModItems.mobCharm, ModItems.potionEssence, ModItems.potion, ModItems.tippedArrow);
 
 		subtypeRegistry.registerSubtypeInterpreter(ModItems.bullet, itemStack -> Integer.toString(itemStack.getMetadata()) + ":" + (itemStack.hasTagCompound() ? itemStack.getTagCompound().toString() : ""));
+		subtypeRegistry.registerSubtypeInterpreter(ModItems.magazine, itemStack -> Integer.toString(itemStack.getMetadata()) + ":" + (itemStack.hasTagCompound() ? itemStack.getTagCompound().toString() : ""));
 	}
 
 	@Override
