@@ -15,7 +15,7 @@ public class FluidHandlerInfernalChalice extends FluidHandlerItemStack {
 
 	@Override
 	public boolean canDrainFluidType(FluidStack fluid) {
-		return !ModItems.infernalChalice.isEnabled(container) && fluid.getFluid() == FluidRegistry.LAVA;
+		return !ModItems.infernalChalice.isEnabled(container) && fluid.getFluid() == FluidRegistry.LAVA && getFluid().amount >= fluid.amount;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class FluidHandlerInfernalChalice extends FluidHandlerItemStack {
 	public FluidStack getFluid() {
 		NBTTagCompound tagCompound = container.getTagCompound();
 		if(tagCompound == null || !tagCompound.hasKey("fluidStacks")) {
-			return null;
+			return new FluidStack(FluidRegistry.LAVA, 0);
 		}
 		return new FluidStack(FluidRegistry.LAVA, tagCompound.getInteger("fluidStacks"));
 	}

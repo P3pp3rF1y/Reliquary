@@ -8,7 +8,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
@@ -16,7 +16,7 @@ import xreliquary.util.XpHelper;
 
 import javax.annotation.Nonnull;
 
-public class FluidHandlerHeroMedallion implements IFluidHandler, ICapabilityProvider {
+public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapabilityProvider {
 
 	private ItemStack heroMedallion;
 
@@ -27,13 +27,13 @@ public class FluidHandlerHeroMedallion implements IFluidHandler, ICapabilityProv
 
 	@Override
 	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+		return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
 	}
 
 	@Override
 	public <T> T getCapability(@Nonnull Capability<T> capability,  EnumFacing facing) {
 		//noinspection unchecked
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T) this : null;
+		return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ? (T) this : null;
 	}
 
 	@Override
@@ -70,5 +70,11 @@ public class FluidHandlerHeroMedallion implements IFluidHandler, ICapabilityProv
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain) {
 		return drain(new FluidStack(ModFluids.fluidXpJuice, maxDrain), doDrain);
+	}
+
+	@Nonnull
+	@Override
+	public ItemStack getContainer() {
+		return heroMedallion;
 	}
 }

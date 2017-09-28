@@ -64,7 +64,7 @@ public class ItemMagicbane extends ItemSword {
 	 * (Quality+1)*2 if correct blocktype, 1.5F if sword
 	 */
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState blockState) {
+	public float getDestroySpeed(ItemStack stack, IBlockState blockState) {
 		return blockState.getBlock() == Blocks.WEB ? 15.0F : 1.5F;
 	}
 

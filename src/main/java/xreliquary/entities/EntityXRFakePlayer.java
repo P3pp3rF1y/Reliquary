@@ -14,8 +14,8 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class EntityXRFakePlayer extends FakePlayer {
-	private AbstractAttributeMap attributeMap;
-	private final NonNullList<ItemStack> handInventory = NonNullList.withSize(2, ItemStack.EMPTY);
+	private AbstractAttributeMap fakePlayerAttributeMap;
+	private final NonNullList<ItemStack> fakePlayerHandInventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	private static final String FAKE_PLAYER_USERNAME = "reliquary_pedestal_fake_player";
 
 	public EntityXRFakePlayer(WorldServer world) {
@@ -30,9 +30,9 @@ public class EntityXRFakePlayer extends FakePlayer {
 	@Nonnull
 	@Override
 	public AbstractAttributeMap getAttributeMap() {
-		if(attributeMap == null)
-			attributeMap = new AttributeMap();
-		return attributeMap;
+		if(fakePlayerAttributeMap == null)
+			fakePlayerAttributeMap = new AttributeMap();
+		return fakePlayerAttributeMap;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class EntityXRFakePlayer extends FakePlayer {
 		for(int i = 0; i < 2; i++) {
 			EntityEquipmentSlot entityEquipmentSlot = EntityEquipmentSlot.values()[i];
 
-			ItemStack itemstack = this.handInventory.get(entityEquipmentSlot.getIndex());
+			ItemStack itemstack = this.fakePlayerHandInventory.get(entityEquipmentSlot.getIndex());
 			ItemStack itemstack1 = this.getItemStackFromSlot(entityEquipmentSlot);
 
 			if(!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {

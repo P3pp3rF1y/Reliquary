@@ -118,7 +118,7 @@ public class ModItemColors {
 				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 					ItemStack containedStack = ModItems.voidTear.getContainerItem(stack, true);
 					if(!containedStack.isEmpty()) {
-						return itemColors.getColorFromItemstack(containedStack, tintIndex);
+						return itemColors.colorMultiplier(containedStack, tintIndex);
 					}
 				}
 				return -1;

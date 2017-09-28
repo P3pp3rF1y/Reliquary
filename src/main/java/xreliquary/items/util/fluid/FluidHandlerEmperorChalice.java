@@ -9,13 +9,13 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import xreliquary.init.ModItems;
 
 import javax.annotation.Nonnull;
 
-public class FluidHandlerEmperorChalice implements IFluidHandler, ICapabilityProvider {
+public class FluidHandlerEmperorChalice implements IFluidHandlerItem, ICapabilityProvider {
 
 	private ItemStack chalice;
 
@@ -54,12 +54,18 @@ public class FluidHandlerEmperorChalice implements IFluidHandler, ICapabilityPro
 
 	@Override
 	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+		return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
 	}
 
 	@Override
 	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 		//noinspection unchecked
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T) this : null;
+		return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ? (T) this : null;
+	}
+
+	@Nonnull
+	@Override
+	public ItemStack getContainer() {
+		return chalice;
 	}
 }

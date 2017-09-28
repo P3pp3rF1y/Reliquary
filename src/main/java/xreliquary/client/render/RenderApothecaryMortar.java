@@ -31,7 +31,7 @@ public class RenderApothecaryMortar extends TileEntitySpecialRenderer<TileEntity
 			GlStateManager.rotate(40F, 0F, 0F, 1F);
 			GlStateManager.scale(0.60d, 0.60d, 0.60d);
 			GlStateManager.rotate(90F, 0F, 1F, 0F);
-			Minecraft.getMinecraft().getRenderManager().doRenderEntity(item, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, false);
+			Minecraft.getMinecraft().getRenderManager().renderEntity(item, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, false);
 			GlStateManager.popMatrix();
 		}
 
@@ -44,7 +44,7 @@ public class RenderApothecaryMortar extends TileEntitySpecialRenderer<TileEntity
 			GlStateManager.rotate(40F, 1F, 0F, 0F);
 			GlStateManager.rotate(180F, 0F, 1F, 0F);
 			GlStateManager.scale(0.60d, 0.60d, 0.60d);
-			Minecraft.getMinecraft().getRenderManager().doRenderEntity(item, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, false);
+			Minecraft.getMinecraft().getRenderManager().renderEntity(item, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, false);
 			GlStateManager.popMatrix();
 		}
 
@@ -57,7 +57,7 @@ public class RenderApothecaryMortar extends TileEntitySpecialRenderer<TileEntity
 			GlStateManager.rotate(-40F, 0F, 0F, 1F);
 			GlStateManager.rotate(270F, 0F, 1F, 0F);
 			GlStateManager.scale(0.60d, 0.60d, 0.60d);
-			Minecraft.getMinecraft().getRenderManager().doRenderEntity(item, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, false);
+			Minecraft.getMinecraft().getRenderManager().renderEntity(item, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, false);
 			GlStateManager.popMatrix();
 		}
 

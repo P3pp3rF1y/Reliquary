@@ -64,8 +64,8 @@ public class ItemShearsOfWinter extends ItemShears {
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState blockState) {
-		return blockState.getBlock() != Blocks.WEB && blockState.getMaterial() != Material.LEAVES ? (blockState.getBlock() == Blocks.WOOL ? 5.0F : super.getStrVsBlock(stack, blockState)) : 15.0F;
+	public float getDestroySpeed(ItemStack stack, IBlockState blockState) {
+		return blockState.getBlock() != Blocks.WEB && blockState.getMaterial() != Material.LEAVES ? (blockState.getBlock() == Blocks.WOOL ? 5.0F : super.getDestroySpeed(stack, blockState)) : 15.0F;
 	}
 
 	@Override

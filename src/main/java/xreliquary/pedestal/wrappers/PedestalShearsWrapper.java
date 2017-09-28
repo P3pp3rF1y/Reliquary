@@ -67,7 +67,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 			IBlockState blockState = world.getBlockState(blockPosBeingSheared);
 			if(blockState.getBlock() instanceof IShearable && ((IShearable) blockState.getBlock()).isShearable(stack, world, blockPosBeingSheared)) {
 				float hardness = blockState.getBlockHardness(world, blockPosBeingSheared);
-				float digSpeed = stack.getItem().getStrVsBlock(stack, blockState);
+				float digSpeed = stack.getItem().getDestroySpeed(stack, blockState);
 
 				pedestal.setActionCoolDown((int) ((hardness * 1.5f * 20f) / digSpeed));
 				isShearingBlock = true;

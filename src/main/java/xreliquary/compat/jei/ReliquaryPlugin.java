@@ -1,6 +1,11 @@
 package xreliquary.compat.jei;
 
-import mezz.jei.api.*;
+import mezz.jei.api.IGuiHelper;
+import mezz.jei.api.IJeiRuntime;
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.IModRegistry;
+import mezz.jei.api.ISubtypeRegistry;
+import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
@@ -29,7 +34,10 @@ public class ReliquaryPlugin implements IModPlugin {
 
 	@Override
 	public void registerItemSubtypes(@Nonnull ISubtypeRegistry subtypeRegistry) {
-		subtypeRegistry.useNbtForSubtypes(ModItems.mobCharm, ModItems.potionEssence, ModItems.potion, ModItems.bullet, ModItems.tippedArrow, ModItems.magazine);
+		subtypeRegistry.useNbtForSubtypes(ModItems.mobCharm, ModItems.potionEssence, ModItems.potion, ModItems.tippedArrow);
+
+		subtypeRegistry.registerSubtypeInterpreter(ModItems.bullet, itemStack -> Integer.toString(itemStack.getMetadata()) + ":" + (itemStack.hasTagCompound() ? itemStack.getTagCompound().toString() : ""));
+		subtypeRegistry.registerSubtypeInterpreter(ModItems.magazine, itemStack -> Integer.toString(itemStack.getMetadata()) + ":" + (itemStack.hasTagCompound() ? itemStack.getTagCompound().toString() : ""));
 	}
 
 	@Override

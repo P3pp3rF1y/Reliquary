@@ -4,7 +4,12 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
+import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -76,7 +81,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 
 		for(int slot = 0; slot < player.inventory.armorInventory.size(); slot++) {
 			ItemStack armorStack = player.inventory.armorInventory.get(slot);
-			if(armorStack.isEmpty())
+			if(armorStack.isEmpty() || !(armorStack.getItem() instanceof ItemArmor))
 				continue;
 			ItemArmor armor = (ItemArmor) armorStack.getItem();
 			if(armor.getArmorMaterial() != ItemArmor.ArmorMaterial.GOLD && !ArrayUtils.contains(goldItems, RegistryHelper.getItemRegistryName(armor))) {

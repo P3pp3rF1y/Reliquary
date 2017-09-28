@@ -15,7 +15,11 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -27,6 +31,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import vazkii.botania.common.block.subtile.functional.SubTileSolegnolia;
 import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
@@ -166,12 +171,10 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IB
 			return false;
 		if (isInDisabledRange(item, disablePositions))
 			return false;
-/* TODO Botania
 		if (Compatibility.isLoaded(Compatibility.MOD_ID.BOTANIA)) {
 			if (SubTileSolegnolia.hasSolegnoliaAround(item))
 				return false;
 		}
-*/
 		return true;
 	}
 
