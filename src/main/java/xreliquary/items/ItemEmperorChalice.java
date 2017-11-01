@@ -11,7 +11,12 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -95,7 +100,12 @@ public class ItemEmperorChalice extends ItemToggleable {
 		RayTraceResult result = this.rayTrace(world, player, isInDrainMode);
 
 		//noinspection ConstantConditions
-		if(result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
+		if(result == null) {
+			if(!this.isEnabled(ist)) {
+				player.setActiveHand(hand);
+			}
+			return new ActionResult<>(EnumActionResult.SUCCESS, ist);
+		} else if(result.typeOfHit == RayTraceResult.Type.BLOCK) {
 
 			if(!world.isBlockModifiable(player, result.getBlockPos()))
 				return new ActionResult<>(EnumActionResult.FAIL, ist);
