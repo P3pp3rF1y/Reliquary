@@ -2,6 +2,8 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -36,6 +38,11 @@ public class ItemAlkahestryTome extends ItemToggleable {
 		this.setMaxStackSize(1);
 		this.setMaxDamage(getChargeLimit() + 1); //to always display damage bar
 		this.canRepair = false;
+	}
+
+	@Override
+	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+		return enchantment.type == EnumEnchantmentType.BREAKABLE ? false : super.canApplyAtEnchantingTable(stack, enchantment);
 	}
 
 	@Nonnull
