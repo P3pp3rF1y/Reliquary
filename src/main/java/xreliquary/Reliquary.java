@@ -19,11 +19,12 @@ import xreliquary.init.ModLoot;
 import xreliquary.init.PedestalItems;
 import xreliquary.network.PacketHandler;
 import xreliquary.pedestal.PedestalRegistry;
+import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 import xreliquary.util.LogHelper;
 import xreliquary.util.potions.PotionMap;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "after:" + Compatibility.MOD_ID.BAUBLES)
 public class Reliquary {
 
 	@Instance(Reference.MOD_ID)
