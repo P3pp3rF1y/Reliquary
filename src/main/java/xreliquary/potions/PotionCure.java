@@ -31,9 +31,9 @@ public class PotionCure extends Potion {
 
 	private static final Method START_CONVERTING = ReflectionHelper
 			.findMethod(EntityZombieVillager.class, "startConverting", "func_191991_a", UUID.class, int.class);
-	private static void startConverting(EntityZombieVillager zombieVillager, @Nullable UUID conversionStarterIn, int conversionTime) {
+	private static void startConverting(EntityZombieVillager zombieVillager, @Nullable UUID conversionStarter, int conversionTime) {
 		try {
-			START_CONVERTING.invoke(zombieVillager, conversionTime);
+			START_CONVERTING.invoke(zombieVillager, conversionStarter, conversionTime);
 		} catch (InvocationTargetException|IllegalAccessException e) {
 			LogHelper.error("Error running startConverting on zombie villager", e);
 		}

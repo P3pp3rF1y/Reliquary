@@ -32,7 +32,7 @@ public class ModFluids {
 		}
 
 		if(!Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT) && !FluidRegistry.isFluidRegistered(MILK_FLUID_NAME)) {
-			milk = new Fluid(MILK_FLUID_NAME, new ResourceLocation(Reference.MOD_ID, "fluids/milk"), new ResourceLocation(Reference.MOD_ID, "fluids/milk_flowing")).setTemperature(320);
+			milk = new Fluid(MILK_FLUID_NAME, new ResourceLocation(Reference.MOD_ID, "fluids/milk_still"), new ResourceLocation(Reference.MOD_ID, "fluids/milk_flowing")).setTemperature(320);
 			FluidRegistry.registerFluid(milk);
 		}
 	}
