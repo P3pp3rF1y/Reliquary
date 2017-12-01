@@ -1,6 +1,6 @@
 package xreliquary.util.potions;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,7 +14,6 @@ import xreliquary.util.StackHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.StringJoiner;
 
 public class PotionMap {
@@ -162,9 +161,11 @@ public class PotionMap {
 	private static void loadPotionMapFromSettings() {
 		ingredients.clear();
 
-		for(Map.Entry<String, String> entry : Settings.Potions.potionMap.entrySet()) {
-			String[] nameParts = entry.getKey().split("\\|");
-			String[] effects = entry.getValue().split(";");
+		for(String entry : Settings.Potions.potionMap) {
+			String[] entryParts = entry.split("=");
+
+			String[] nameParts = entryParts[0].split("\\|");
+			String[] effects = entryParts[1].split(";");
 
 			String modId = nameParts[0].split(":")[0];
 			String name = nameParts[0].split(":")[1];
@@ -190,8 +191,8 @@ public class PotionMap {
 		}
 	}
 
-	public static Map<String, String> getDefaultConfigPotionMap() {
-		Map<String, String> potionMap = Maps.newHashMap();
+	public static String[] getDefaultConfigPotionMap() {
+		List<String> potionMap = Lists.newArrayList();
 
 		String mobIngredient = Reference.MOD_ID + ":" + Names.Items.MOB_INGREDIENT;
 
@@ -276,7 +277,7 @@ public class PotionMap {
 		addPotionIngredient(potionMap, mobIngredient, Reference.ENDER_INGREDIENT_META, vision(6), invis(6), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
 		addPotionIngredient(potionMap, mobIngredient, Reference.CLAW_INGREDIENT_META, harm(1), resist(6, 1), fireres(6), dboost(6, 1), satur(1), heal(1));
 
-		return potionMap;
+		return potionMap.toArray(new String[potionMap.size()]);
 	}
 
 	private static String harm(int potency) {
@@ -379,18 +380,18 @@ public class PotionMap {
 		return name + "|" + duration + "|" + potency;
 	}
 
-	private static void addPotionIngredient(Map<String, String> potionMap, Item ingredient, String... effects) {
+	private static void addPotionIngredient(List<String> potionMap, Item ingredient, String... effects) {
 		addPotionIngredient(potionMap, ingredient, 0, effects);
 	}
 
-	private static void addPotionIngredient(Map<String, String> potionMap, Item ingredient, int meta, String... effects) {
+	private static void addPotionIngredient(List<String> potionMap, Item ingredient, int meta, String... effects) {
 		//noinspection ConstantConditions
 		addPotionIngredient(potionMap, ingredient.getRegistryName().toString(), meta, effects);
 	}
-	private static void addPotionIngredient(Map<String, String> potionMap, String itemRegistryName, int meta, String... effects) {
+	private static void addPotionIngredient(List<String> potionMap, String itemRegistryName, int meta, String... effects) {
 		StringJoiner effectsString = new StringJoiner(";");
 		Arrays.stream(effects).forEach(effectsString::add);
 
-		potionMap.put(String.format("%s|%d", itemRegistryName, meta), effectsString.toString());
+		potionMap.add(String.format("%s=%s", String.format("%s|%d", itemRegistryName, meta), effectsString.toString()));
 	}
 }

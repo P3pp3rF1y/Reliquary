@@ -8,8 +8,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.client.gui.hud.HUDPosition;
 import xreliquary.util.potions.PotionMap;
 
-import java.util.Map;
-
 @Config(modid = Reference.MOD_ID)
 public class Settings {
 	private static final int ITEM_CAP = 9999;
@@ -49,7 +47,7 @@ public class Settings {
 	public static class PotionSettings {
 		@Config.Name("potion_map")
 		@Config.Comment("Map of potion ingredients and their effects")
-		public Map<String, String> potionMap = PotionMap.getDefaultConfigPotionMap();
+		public String[] potionMap = PotionMap.getDefaultConfigPotionMap();
 		@Config.Name("max_effect_count")
 		@Config.Comment("Maximum number of effects a potion can have to appear in creative tabs / JEI")
 		@Config.RangeInt(min = 1, max = 6)
