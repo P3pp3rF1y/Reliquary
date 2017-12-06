@@ -327,14 +327,14 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 				if(finishedCooking()) {
 					for(PotionEffect effect : this.effects) {
 						Potion potion = effect.getPotion();
-						if(potion.isInstant() && world.getWorldTime() % 20 != 0)
+						if(potion.isInstant() && world.getTotalWorldTime() % 20 != 0)
 							continue;
 						PotionEffect reducedEffect = new PotionEffect(effect.getPotion(), potion.isInstant() ? 1 : effect.getDuration() / 20, Math.max(0, effect.getAmplifier() - 1));
 						((EntityLivingBase) collidingEntity).addPotionEffect(reducedEffect);
 					}
 				}
 
-				if(this.cookTime > 0 && world.getWorldTime() % 10 == 0) {
+				if(this.cookTime > 0 && world.getTotalWorldTime() % 10 == 0) {
 					collidingEntity.attackEntityFrom(DamageSource.IN_FIRE, 1.0F);
 				}
 			}
