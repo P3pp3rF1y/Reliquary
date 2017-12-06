@@ -19,7 +19,11 @@ import xreliquary.items.ItemToggleable;
 import xreliquary.reference.Compatibility;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 
 public class InventoryHelper {
@@ -38,10 +42,9 @@ public class InventoryHelper {
 				i = stack.getCount();
 			}
 
-			stack.shrink(i);
-
 			ItemStack stackToDrop = stack.copy();
 			stackToDrop.setCount(i);
+			stack.shrink(i);
 			EntityItem entityitem = new EntityItem(worldIn, x + (double) f, y + (double) f1, z + (double) f2, stackToDrop);
 
 			float f3 = 0.05F;
