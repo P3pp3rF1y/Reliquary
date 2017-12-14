@@ -13,7 +13,15 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
-import xreliquary.entities.shot.*;
+import xreliquary.entities.shot.EntityBlazeShot;
+import xreliquary.entities.shot.EntityBusterShot;
+import xreliquary.entities.shot.EntityConcussiveShot;
+import xreliquary.entities.shot.EntityEnderShot;
+import xreliquary.entities.shot.EntityExorcismShot;
+import xreliquary.entities.shot.EntityNeutralShot;
+import xreliquary.entities.shot.EntitySandShot;
+import xreliquary.entities.shot.EntitySeekerShot;
+import xreliquary.entities.shot.EntityStormShot;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModSounds;
 import xreliquary.reference.Names;
@@ -117,11 +125,11 @@ public class ItemHandgun extends ItemBase {
 	}
 
 	private boolean isCooldownOver(World world, ItemStack handgun) {
-		return getCooldown(handgun) < world.getWorldTime() && world.getWorldTime() - getCooldown(handgun) < 12000;
+		return getCooldown(handgun) < world.getTotalWorldTime() && world.getTotalWorldTime() - getCooldown(handgun) < 12000;
 	}
 
 	private boolean isValidCooldownTime(World world, ItemStack handgun) {
-		return Math.min(Math.abs(world.getWorldTime() - getCooldown(handgun)), Math.abs(world.getWorldTime() - 23999 - getCooldown(handgun))) <= getMaxItemUseDuration(handgun);
+		return Math.min(Math.abs(world.getTotalWorldTime() - getCooldown(handgun)), Math.abs(world.getTotalWorldTime() - 23999 - getCooldown(handgun))) <= getMaxItemUseDuration(handgun);
 	}
 
 	@Nonnull
@@ -154,7 +162,7 @@ public class ItemHandgun extends ItemBase {
 		} else {
 			secondHandgun = player.getHeldItemMainhand();
 		}
-		return !isInCooldown(secondHandgun) || (getCooldown(secondHandgun) - world.getWorldTime()) < (getPlayerReloadDelay(player) / 2);
+		return !isInCooldown(secondHandgun) || (getCooldown(secondHandgun) - world.getTotalWorldTime()) < (getPlayerReloadDelay(player) / 2);
 
 	}
 
@@ -203,7 +211,7 @@ public class ItemHandgun extends ItemBase {
 		// fire bullet
 		if(getBulletCount(handgun) > 0) {
 			if(!isInCooldown(handgun)) {
-				setCooldown(handgun, worldIn.getWorldTime() + PLAYER_HANDGUN_SKILL_MAXIMUM + HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, PLAYER_HANDGUN_SKILL_MAXIMUM));
+				setCooldown(handgun, worldIn.getTotalWorldTime() + PLAYER_HANDGUN_SKILL_MAXIMUM + HANDGUN_COOLDOWN_SKILL_OFFSET - Math.min(player.experienceLevel, PLAYER_HANDGUN_SKILL_MAXIMUM));
 				setInCooldown(handgun, true);
 
 				fireBullet(handgun, worldIn, player, handgun == player.getHeldItemMainhand() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
@@ -212,7 +220,7 @@ public class ItemHandgun extends ItemBase {
 		}
 
 		//arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
-		setCooldown(handgun, player.world.getWorldTime() + 12);
+		setCooldown(handgun, player.world.getTotalWorldTime() + 12);
 		setInCooldown(handgun, true);
 
 		int slot = getMagazineSlot(player);

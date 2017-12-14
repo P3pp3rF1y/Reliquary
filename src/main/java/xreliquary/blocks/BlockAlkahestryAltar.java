@@ -12,7 +12,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -88,7 +92,7 @@ public class BlockAlkahestryAltar extends BlockBase {
 	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand) {
 		if(!state.getValue(ACTIVE))
 			return;
-		int worldTime = (int) (world.getWorldTime() % 24000);
+		int worldTime = (int) (world.getTotalWorldTime() % 24000);
 		if(worldTime >= 12000)
 			return;
 		if(!world.canBlockSeeSky(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ())))

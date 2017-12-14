@@ -100,7 +100,7 @@ public class ClientEventHandler {
 	private static boolean isValidTimeFrame(World world, ItemStack handgun) {
 		long cooldownTime = ModItems.handgun.getCooldown(handgun) + 5;
 
-		return cooldownTime - world.getWorldTime() <= ModItems.handgun.getMaxItemUseDuration(handgun) && cooldownTime >= world.getWorldTime();
+		return cooldownTime - world.getTotalWorldTime() <= ModItems.handgun.getMaxItemUseDuration(handgun) && cooldownTime >= world.getTotalWorldTime();
 	}
 
 	private static final List<Tuple<Component, HUDPosition>> hudComponents = Lists.newArrayList();

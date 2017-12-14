@@ -70,7 +70,7 @@ public class ItemMidasTouchstone extends ItemToggleable {
 			}
 		}
 
-		if(world.getWorldTime() % 4 == 0) {
+		if(world.getTotalWorldTime() % 4 == 0) {
 			doRepairAndDamageTouchstone(ist, player);
 		}
 	}
