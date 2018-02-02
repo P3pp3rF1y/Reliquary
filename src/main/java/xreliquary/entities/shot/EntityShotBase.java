@@ -2,7 +2,12 @@ package xreliquary.entities.shot;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,8 +16,16 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -169,10 +182,10 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		// bullets fly reasonably fast. if it stays "alive" for more than 30
+		// bullets fly reasonably fast. if it stays "alive" for more than 10
 		// seconds
 		// this forces it to de-spawn.. just to be on the safe side.
-		if(ticksInAir > 600)
+		if(ticksInAir > 200)
 			this.setDead();
 		ensurePlayerShooterEntity();
 
@@ -241,9 +254,10 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			if(objectStruckByVector != null) {
 				this.applyPotionEffects(objectStruckByVector);
 				this.onImpact(objectStruckByVector);
-				if(scheduledForDeath)
-					this.setDead();
 			}
+
+			if(scheduledForDeath)
+				this.setDead();
 
 			this.move(MoverType.SELF, motionX, motionY, motionZ);
 		}
@@ -525,7 +539,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 				doDamage(entityLiving);
 			}
 			spawnHitParticles(8);
-			this.setDead();
+			scheduledForDeath = true;
 		}
 	}
 
