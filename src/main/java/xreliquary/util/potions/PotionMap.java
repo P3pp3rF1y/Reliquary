@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.regex.Pattern;
 
 public class PotionMap {
 	public static List<PotionIngredient> ingredients = new ArrayList<>();
@@ -161,32 +162,40 @@ public class PotionMap {
 	private static void loadPotionMapFromSettings() {
 		ingredients.clear();
 
+		Pattern validEntry = Pattern.compile("[a-z_:]+\\|[0-9]+=[a-z_0-9:\\.\\|;]+");
 		for(String entry : Settings.Potions.potionMap) {
-			String[] entryParts = entry.split("=");
+			if (validEntry.matcher(entry).matches()) {
+				String[] entryParts = entry.split("=");
 
-			String[] nameParts = entryParts[0].split("\\|");
-			String[] effects = entryParts[1].split(";");
+				String[] nameParts = entryParts[0].split("\\|");
+				String[] effects = entryParts[1].split(";");
 
-			String modId = nameParts[0].split(":")[0];
-			String name = nameParts[0].split(":")[1];
-			int meta = Integer.parseInt(nameParts[1]);
+				String modId = nameParts[0].split(":")[0];
+				String name = nameParts[0].split(":")[1];
+				int meta = Integer.parseInt(nameParts[1]);
 
-			ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
+				ItemStack stack = StackHelper.getItemStackFromNameMeta(modId, name, meta);
 
-			if(stack != null) {
-				PotionIngredient ingredient = new PotionIngredient(stack);
-				for(String effect : effects) {
-					String[] effectValues = effect.split("\\|");
-					String potionName = effectValues[0];
-					if(!potionName.isEmpty()) {
-						short durationWeight = Short.parseShort(effectValues[1]);
-						short ampWeight = Short.parseShort(effectValues[2]);
-						ingredient.addEffect(potionName, durationWeight, ampWeight);
+				if(stack != null) {
+					PotionIngredient ingredient = new PotionIngredient(stack);
+					for(String effect : effects) {
+						String[] effectValues = effect.split("\\|");
+						String potionName = effectValues[0];
+						if(!potionName.isEmpty()) {
+							short durationWeight = Short.parseShort(effectValues[1]);
+							short ampWeight = Short.parseShort(effectValues[2]);
+							ingredient.addEffect(potionName, durationWeight, ampWeight);
+						}
+					}
+					if(!ingredient.effects.isEmpty()) {
+						ingredients.add(ingredient);
 					}
 				}
-				if(!ingredient.effects.isEmpty()) {
-					ingredients.add(ingredient);
-				}
+			} else {
+				LogHelper.error("Potion map entry \"" + entry + "\" is not valid.\n"
+						+ "Needs to be mod:item_or_block_registry_name|meta=potion_effect_name|duration_multiplier|amplifier\n"
+						+ "Potion effect part (\"potion_effect_name|...|amplifier\") can be optionally repeated if there are multiple effects on item, the individual potion sections are delimited by semicolon \";\"\n"
+						+ "Duration multiplier is multiples of 15 seconds the potion will last");
 			}
 		}
 	}
