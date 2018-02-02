@@ -29,7 +29,8 @@ public class ItemMobCharmBelt extends ItemBase implements IBauble {
 
 	public ItemMobCharmBelt() {
 		super(Names.Items.MOB_CHARM_BELT);
-		this.setCreativeTab(Reliquary.CREATIVE_TAB);
+		setCreativeTab(Reliquary.CREATIVE_TAB);
+		setMaxStackSize(1);
 	}
 
 	@Override

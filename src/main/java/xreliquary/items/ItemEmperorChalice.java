@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import net.minecraft.block.BlockCauldron;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -20,7 +21,11 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
@@ -42,7 +47,7 @@ public class ItemEmperorChalice extends ItemToggleable {
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		canRepair = false;
-
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -134,6 +139,27 @@ public class ItemEmperorChalice extends ItemToggleable {
 		}
 
 		return new ActionResult<>(EnumActionResult.PASS, ist);
+	}
+
+	@SubscribeEvent
+	public void onBlockRightClick(PlayerInteractEvent.RightClickBlock evt) {
+		if (evt.getItemStack().getItem() == this) {
+			World world = evt.getWorld();
+			IBlockState state = world.getBlockState(evt.getPos());
+			if (state.getBlock() == Blocks.CAULDRON) {
+				if (!isEnabled(evt.getItemStack()) && state.getValue(BlockCauldron.LEVEL) == 0) {
+					Blocks.CAULDRON.setWaterLevel(world, evt.getPos(), state, 3);
+					evt.setUseItem(Event.Result.DENY);
+					evt.setCanceled(true);
+					evt.setCancellationResult(EnumActionResult.SUCCESS);
+				} else if (isEnabled(evt.getItemStack()) && state.getValue(BlockCauldron.LEVEL) == 3) {
+					Blocks.CAULDRON.setWaterLevel(world, evt.getPos(), state, 0);
+					evt.setUseItem(Event.Result.DENY);
+					evt.setCanceled(true);
+					evt.setCancellationResult(EnumActionResult.SUCCESS);
+				}
+			}
+		}
 	}
 
 	private boolean tryPlaceContainedLiquid(World world, @Nonnull ItemStack stack, BlockPos pos) {

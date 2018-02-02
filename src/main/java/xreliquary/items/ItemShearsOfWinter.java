@@ -325,10 +325,8 @@ public class ItemShearsOfWinter extends ItemShears {
 			float randY = 10F * (player.world.rand.nextFloat() - 0.5F);
 			float randZ = 10F * (player.world.rand.nextFloat() - 0.5F);
 
-			player.world.spawnParticle(EnumParticleTypes.BLOCK_DUST, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.x * 5, lookVector.y * 5, lookVector.z * 5, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
-
+			player.world.spawnParticle(EnumParticleTypes.BLOCK_DUST, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.x * 5, lookVector.y * 5, lookVector.z * 5, Block.getStateId(Blocks.SNOW.getDefaultState()));
 		}
-
 	}
 
 }
