@@ -2,7 +2,12 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -15,7 +20,11 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -334,18 +343,13 @@ public class ItemRendingGale extends ItemToggleable {
 		double upperY = posY + (double) getRadialPushRadius() / 2D;
 		double upperZ = posZ + getRadialPushRadius();
 
-		String[] pushableEntitiesBlacklist = Settings.Items.RendingGale.pushableEntitiesBlacklist;
-		String[] pushableProjectilesBlacklist = Settings.Items.RendingGale.pushableProjectilesBlacklist;
-
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ),
 				e -> (e instanceof EntityLiving || e instanceof IProjectile));
 
 		for(Entity entity : entities) {
-			String entityName = EntityList.getEntityString(entity);
-			if((entity instanceof EntityLiving && !ArrayUtils.contains(pushableEntitiesBlacklist, entityName))
-					|| (!pull && canPushProjectiles() && entity instanceof IProjectile && !ArrayUtils.contains(pushableProjectilesBlacklist, entityName))) {
-				double distance = getDistanceToEntity(posX, posY, posZ, entity);
-				if(distance >= getRadialPushRadius())
+			double distance = getDistanceToEntity(posX, posY, posZ, entity);
+			if(distance < getRadialPushRadius()) {
+				if(isBlacklistedEntity(entity))
 					continue;
 
 				if(entity.equals(player))
@@ -361,6 +365,19 @@ public class ItemRendingGale extends ItemToggleable {
 				entity.move(MoverType.PLAYER, pushVector.x, Math.min(pushVector.y, 0.1D) * 1.5D, pushVector.z);
 			}
 		}
+	}
+
+	private boolean isBlacklistedEntity(Entity entity) {
+		String entityName = EntityList.getKey(entity).toString();
+		return isBlacklistedLivingEntity(entity, entityName) || Settings.Items.RendingGale.canPushProjectiles && isBlacklistedProjectile(entity, entityName);
+	}
+
+	private boolean isBlacklistedProjectile(Entity entity, String entityName) {
+		return entity instanceof IProjectile && ArrayUtils.contains(Settings.Items.RendingGale.pushableProjectilesBlacklist, entityName);
+	}
+
+	private boolean isBlacklistedLivingEntity(Entity entity, String entityName) {
+		return entity instanceof EntityLiving && ArrayUtils.contains(Settings.Items.RendingGale.pushableEntitiesBlacklist, entityName);
 	}
 
 	private float getDistanceToEntity(double posX, double posY, double posZ, Entity entityIn) {

@@ -3,7 +3,11 @@ package xreliquary.blocks;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -48,20 +52,16 @@ public class BlockInterdictionTorch extends BlockTorch {
 			return;
 		int radius = Settings.Blocks.InterdictionTorch.pushRadius;
 
-		String[] pushableEntitiesBlacklist = Settings.Blocks.InterdictionTorch.pushableEntitiesBlacklist;
-		String[] pushableProjectilesBlacklist = Settings.Blocks.InterdictionTorch.pushableProjectilesBlacklist;
-
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius, pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius),
 			e -> (e instanceof EntityLiving || e instanceof IProjectile));
 		for(Entity entity : entities) {
 			if(entity instanceof EntityPlayer)
 				continue;
-			String entityName = EntityList.getEntityString(entity);
-			if((entity instanceof EntityLiving && !ArrayUtils.contains(pushableEntitiesBlacklist, entityName))
-					|| (Settings.Blocks.InterdictionTorch.canPushProjectiles && entity instanceof IProjectile && !ArrayUtils.contains(pushableProjectilesBlacklist, entityName))) {
-				double distance = entity.getDistance((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
-				if(distance >= radius || distance == 0)
+			double distance = entity.getDistance((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
+			if(distance < radius && distance != 0) {
+				if(isBlacklistedEntity(entity)) {
 					continue;
+				}
 
 				// the multiplier is based on a set rate added to an inverse
 				// proportion to the distance.
@@ -91,6 +91,19 @@ public class BlockInterdictionTorch extends BlockTorch {
 				entity.motionZ += zForce;
 			}
 		}
+	}
+
+	private boolean isBlacklistedEntity(Entity entity) {
+		String entityName = EntityList.getKey(entity).toString();
+		return isBlacklistedLivingEntity(entity, entityName) || Settings.Blocks.InterdictionTorch.canPushProjectiles && isBlacklistedProjectile(entity, entityName);
+	}
+
+	private boolean isBlacklistedProjectile(Entity entity, String entityName) {
+		return entity instanceof IProjectile && ArrayUtils.contains(Settings.Blocks.InterdictionTorch.pushableProjectilesBlacklist, entityName);
+	}
+
+	private boolean isBlacklistedLivingEntity(Entity entity, String entityName) {
+		return entity instanceof EntityLiving && ArrayUtils.contains(Settings.Blocks.InterdictionTorch.pushableEntitiesBlacklist, entityName);
 	}
 
 	private int tickRate() {
