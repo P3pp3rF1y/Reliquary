@@ -397,7 +397,7 @@ public class ItemRendingGale extends ItemToggleable {
 			float randY = 10F * (itemRand.nextFloat() - 0.5F);
 			float randZ = 10F * (itemRand.nextFloat() - 0.5F);
 
-			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX + lookVector.x * 20 * factor, y + randY + lookVector.y * 20 * factor, z + randZ + lookVector.z * 20 * factor, -lookVector.x * 5 * factor, -lookVector.y * 5 * factor, -lookVector.z * 5 * factor, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
+			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX + lookVector.x * 20 * factor, y + randY + lookVector.y * 20 * factor, z + randZ + lookVector.z * 20 * factor, -lookVector.x * 5 * factor, -lookVector.y * 5 * factor, -lookVector.z * 5 * factor, Block.getStateId(Blocks.SNOW.getDefaultState()));
 		}
 	}
 
@@ -417,7 +417,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 			double posYAdjusted = player == null ? posY : (posY + player.getEyeHeight()) - (player.height / 2);
 
-			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.SNOW_LAYER.getDefaultState()));
+			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.SNOW.getDefaultState()));
 		}
 	}
 
