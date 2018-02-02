@@ -30,27 +30,33 @@ repositories {
     maven { url 'http://tehnut.info/maven/' }
     ivy {
         name "JustEnoughResources"
-        artifactPattern "http://addons-origin.cursecdn.com/files/${jer_cf}/[module]-[revision].[ext]"
+        ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
+        artifactPattern "http://media.forgecdn.net/files/${jer_cf}/[module]-[revision].[ext]"
     }
     ivy {
         name "Baubles"
-        artifactPattern "http://addons-origin.cursecdn.com/files/${baubles_cf}/[module]-[revision].[ext]"
+        ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
+        artifactPattern "http://media.forgecdn.net/files/${baubles_cf}/[module]-[revision].[ext]"
     }
     ivy {
         name "Thaumcraft"
-        artifactPattern "http://addons-origin.cursecdn.com/files/${thaumcraft_cf}/[module]-[revision].[ext]"
+        ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
+        artifactPattern "http://media.forgecdn.net/files/${thaumcraft_cf}/[module]-[revision].[ext]"
     }
     ivy {
         name "Botania"
-        artifactPattern "http://addons-origin.cursecdn.com/files/${botania_cf}/[module] r[revision].[ext]"
+        ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
+        artifactPattern "http://media.forgecdn.net/files/${botania_cf}/[module] r[revision].[ext]"
     }
     ivy {
         name "Mantle"
-        artifactPattern "http://addons-origin.cursecdn.com/files/${mantle_cf}/[module]-[revision].[ext]"
+        ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
+        artifactPattern "http://media.forgecdn.net/files/${mantle_cf}/[module]-[revision].[ext]"
     }
     ivy {
         name "TConstruct"
-        artifactPattern "http://addons-origin.cursecdn.com/files/${tconstruct_cf}/[module]-[revision].[ext]"
+        ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
+        artifactPattern "http://media.forgecdn.net/files/${tconstruct_cf}/[module]-[revision].[ext]"
     }
 }
 
