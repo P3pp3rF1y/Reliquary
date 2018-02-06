@@ -157,6 +157,10 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		//init fake player
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
+
+		//set position because of sound
+		fakePlayer.setPosition(pos.getX(), 0, pos.getZ());
+
 		ItemStack bucketStack = new ItemStack(Items.BUCKET);
 		fakePlayer.setHeldItem(EnumHand.MAIN_HAND, bucketStack);
 
