@@ -58,7 +58,7 @@ public class ItemGlowingWater extends ItemBase {
 		world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
 		EntityGlowingWater glowingWater = new EntityGlowingWater(world, player);
-		glowingWater.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
+		glowingWater.shoot(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
 		world.spawnEntity(glowingWater);
 
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);

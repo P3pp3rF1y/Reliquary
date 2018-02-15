@@ -6,7 +6,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -56,7 +60,7 @@ public class ItemSerpentStaff extends ItemBase {
 		player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
 		EntityKrakenSlime krakenSlime = new EntityKrakenSlime(player.world, player);
-		krakenSlime.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0F, 1.5F, 1.0F);
+		krakenSlime.shoot(player, player.rotationPitch, player.rotationYaw, 0F, 1.5F, 1.0F);
 		player.world.spawnEntity(krakenSlime);
 		serpentStaff.damageItem(1, player);
 	}

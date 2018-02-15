@@ -81,7 +81,7 @@ public class ItemIceMagusRod extends ItemToggleable {
 			if(NBTHelper.getInteger("snowballs", ist) >= getSnowballCost() || player.capabilities.isCreativeMode) {
 				world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 				EntitySpecialSnowball snowball = new EntitySpecialSnowball(world, player, this instanceof ItemGlacialStaff);
-				snowball.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 2.4F, 1.0F);
+				snowball.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, 2.4F, 1.0F);
 				world.spawnEntity(snowball);
 				if(!player.capabilities.isCreativeMode)
 					NBTHelper.setInteger("snowballs", ist, NBTHelper.getInteger("snowballs", ist) - getSnowballCost());

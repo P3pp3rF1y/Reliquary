@@ -94,7 +94,7 @@ public class EntityThrownXRPotion extends EntityThrowable implements IEntityAddi
 					if(!livingEntities.isEmpty()) {
 
 						for(EntityLivingBase entitylivingbase : livingEntities) {
-							double d0 = this.getDistanceSqToEntity(entitylivingbase);
+							double d0 = this.getDistance(entitylivingbase);
 
 							if(d0 < 16.0D) {
 								double d1 = 1.0D - Math.sqrt(d0) / 4.0D;

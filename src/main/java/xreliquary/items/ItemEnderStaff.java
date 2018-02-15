@@ -11,7 +11,12 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -214,7 +219,7 @@ public class ItemEnderStaff extends ItemToggleable {
 				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ENDERPEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 				if(!player.world.isRemote) {
 					EntityEnderStaffProjectile enderStaffProjectile = new EntityEnderStaffProjectile(player.world, player, !getMode(ist).equals("long_cast"));
-					enderStaffProjectile.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
+					enderStaffProjectile.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
 					player.world.spawnEntity(enderStaffProjectile);
 					if(!player.capabilities.isCreativeMode)
 						setPearlCount(ist, getPearlCount(ist) - getEnderStaffPearlCost());

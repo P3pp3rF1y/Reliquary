@@ -168,6 +168,7 @@ public class ClientProxy extends CommonProxy {
 			JEIDescriptionRegistry.register(item, name);
 	}
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void registerModels(ModelRegistryEvent event) {
 		ItemBlockModels.registerItemBlockModels();
@@ -187,13 +188,13 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntitySandShot.class, RenderShot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityStormShot.class, RenderShot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityXRTippedArrow.class, RenderXRTippedArrow::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, renderManager -> new RenderSnowball(renderManager, ModItems.glowingWater, Minecraft.getMinecraft().getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, renderManager -> new RenderSnowball(renderManager, ModItems.attractionPotion, Minecraft.getMinecraft().getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, renderManager -> new RenderSnowball(renderManager, ModItems.fertilePotion, Minecraft.getMinecraft().getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, renderManager -> new RenderSnowball(renderManager, ModItems.holyHandGrenade, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityGlowingWater.class, renderManager -> new RenderSnowball<>(renderManager, ModItems.glowingWater, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityAttractionPotion.class, renderManager -> new RenderSnowball<>(renderManager, ModItems.attractionPotion, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityFertilePotion.class, renderManager -> new RenderSnowball<>(renderManager, ModItems.fertilePotion, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityHolyHandGrenade.class, renderManager -> new RenderSnowball<>(renderManager, ModItems.holyHandGrenade, Minecraft.getMinecraft().getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityKrakenSlime.class, RenderThrownKrakenSlime::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, renderManager -> new RenderSnowball(renderManager, Items.SNOWBALL, Minecraft.getMinecraft().getRenderItem()));
-		RenderingRegistry.registerEntityRenderingHandler(EntityEnderStaffProjectile.class, renderManager -> new RenderSnowball(renderManager, Items.ENDER_PEARL, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntitySpecialSnowball.class, renderManager -> new RenderSnowball<>(renderManager, Items.SNOWBALL, Minecraft.getMinecraft().getRenderItem()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityEnderStaffProjectile.class, renderManager -> new RenderSnowball<>(renderManager, Items.ENDER_PEARL, Minecraft.getMinecraft().getRenderItem()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityThrownXRPotion.class, renderManager -> new RenderThrownXRPotion(renderManager, Minecraft.getMinecraft().getRenderItem()));
 	}
 
@@ -202,7 +203,7 @@ public class ClientProxy extends CommonProxy {
 		super.init();
 		ModItemColors.init();
 		ModBlockColors.init();
-		RegisterBeltRender();
+		registerBeltRender();
 		this.registerRenderers();
 		ClientRegistry.registerKeyBinding(FORTUNE_COIN_TOGGLE_KEYBIND);
 	}
@@ -213,7 +214,7 @@ public class ClientProxy extends CommonProxy {
 		PedestalClientRegistry.registerItemRenderer(ItemFishingRod.class, RenderPedestalFishHook.class);
 	}
 
-	private void RegisterBeltRender() {
+	private void registerBeltRender() {
 		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
 		RenderPlayer render;
 		render = skinMap.get("default");

@@ -147,7 +147,7 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IB
 			}
 
 			item.setPickupDelay(0);
-			if(player.getDistanceToEntity(item) < 1.5D) {
+			if(player.getDistance(item) < 1.5D) {
 				continue;
 			}
 			teleportEntityToPlayer(item, player);
@@ -158,7 +158,7 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IB
 			if(player.xpCooldown > 0) {
 				player.xpCooldown = 0;
 			}
-			if(player.getDistanceToEntity(item) < 1.5D) {
+			if(player.getDistance(item) < 1.5D) {
 				continue;
 			}
 			teleportEntityToPlayer(item, player);

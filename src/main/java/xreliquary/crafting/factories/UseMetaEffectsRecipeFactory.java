@@ -212,7 +212,7 @@ public class UseMetaEffectsRecipeFactory implements IRecipeFactory {
 		}
 
 		@Override
-		public boolean isHidden() {
+		public boolean isDynamic() {
 			return true;
 		}
 	}

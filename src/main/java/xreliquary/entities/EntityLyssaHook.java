@@ -178,7 +178,7 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 					this.checkCollision();
 				}
 
-				if(!this.inGround && !this.onGround && !this.isCollidedHorizontally) {
+				if(!this.inGround && !this.onGround && !this.collidedHorizontally) {
 					++this.ticksInAir;
 				} else {
 					this.ticksInAir = 0;
@@ -536,7 +536,7 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 		boolean flag = itemstack.getItem() == ModItems.rodOfLyssa;
 		boolean flag1 = itemstack1.getItem() == ModItems.rodOfLyssa;
 
-		if(!this.getAngler().isDead && this.getAngler().isEntityAlive() && (flag || flag1) && this.getDistanceSqToEntity(this.getAngler()) <= 1024.0D) {
+		if(!this.getAngler().isDead && this.getAngler().isEntityAlive() && (flag || flag1) && this.getDistance(this.getAngler()) <= 1024.0D) {
 			return false;
 		} else {
 			this.setDead();

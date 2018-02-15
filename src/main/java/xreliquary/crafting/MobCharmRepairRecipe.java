@@ -126,7 +126,7 @@ public class MobCharmRepairRecipe extends net.minecraftforge.registries.IForgeRe
 	}
 
 	@Override
-	public boolean isHidden() {
+	public boolean isDynamic() {
 		return true;
 	}
 }

@@ -79,7 +79,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		motionX = -MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0F * (float) Math.PI);
 		motionZ = MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(rotationPitch / 180.0F * (float) Math.PI);
 		motionY = -MathHelper.sin(rotationPitch / 180.0F * (float) Math.PI);
-		this.setThrowableHeading(motionX, motionY, motionZ, par3 * 1.5F, 1.0F);
+		this.shoot(motionX, motionY, motionZ, par3 * 1.5F, 1.0F);
 	}
 
 	@Override
@@ -97,28 +97,24 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 		return this;
 	}
 
-	/**
-	 * Similar to setArrowHeading, it's point the throwable entity to a x, y, z
-	 * direction.
-	 */
 	@Override
-	public void setThrowableHeading(double var1, double var3, double var5, float var7, float var8) {
-		float var9 = MathHelper.sqrt(var1 * var1 + var3 * var3 + var5 * var5);
-		var1 /= var9;
-		var3 /= var9;
-		var5 /= var9;
-		var1 += rand.nextGaussian() * 0.007499999832361937D * var8;
-		var3 += rand.nextGaussian() * 0.007499999832361937D * var8;
-		var5 += rand.nextGaussian() * 0.007499999832361937D * var8;
-		var1 *= var7;
-		var3 *= var7;
-		var5 *= var7;
-		motionX = var1;
-		motionY = var3;
-		motionZ = var5;
-		float var10 = MathHelper.sqrt(var1 * var1 + var5 * var5);
-		prevRotationYaw = rotationYaw = (float) (Math.atan2(var1, var5) * 180.0D / Math.PI);
-		prevRotationPitch = rotationPitch = (float) (Math.atan2(var3, var10) * 180.0D / Math.PI);
+	public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
+		float var9 = MathHelper.sqrt(x * x + y * y + z * z);
+		x /= var9;
+		y /= var9;
+		z /= var9;
+		x += rand.nextGaussian() * 0.007499999832361937D * inaccuracy;
+		y += rand.nextGaussian() * 0.007499999832361937D * inaccuracy;
+		z += rand.nextGaussian() * 0.007499999832361937D * inaccuracy;
+		x *= velocity;
+		y *= velocity;
+		z *= velocity;
+		motionX = x;
+		motionY = y;
+		motionZ = z;
+		float var10 = MathHelper.sqrt(x * x + z * z);
+		prevRotationYaw = rotationYaw = (float) (Math.atan2(x, z) * 180.0D / Math.PI);
+		prevRotationPitch = rotationPitch = (float) (Math.atan2(y, var10) * 180.0D / Math.PI);
 	}
 
 	/**
@@ -165,7 +161,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			EntityPlayer closestPlayer = null;
 			while(i.hasNext()) {
 				EntityPlayer e = (EntityPlayer) i.next();
-				double distance = e.getDistanceToEntity(this);
+				double distance = e.getDistance(this);
 				if(distance < closestDistance)
 					closestPlayer = e;
 			}
@@ -481,8 +477,8 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			if(ArrayUtils.contains(huntableEntitiesBlacklist, entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead))
 				continue;
 			// goes for the closest thing it can
-			if(this.getDistanceToEntity(currentTarget) < closestDistance) {
-				closestDistance = this.getDistanceToEntity(currentTarget);
+			if(this.getDistance(currentTarget) < closestDistance) {
+				closestDistance = this.getDistance(currentTarget);
 				closestTarget = currentTarget;
 			}
 		}
