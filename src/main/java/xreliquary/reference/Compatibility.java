@@ -8,7 +8,9 @@ import java.util.Map;
 public class Compatibility {
 	
 	private static Map<String, Boolean> loadedMods = new HashMap<>();
-	
+
+	public static final String DEPENDENCIES = "after:" + MOD_ID.BAUBLES + ";after:" + MOD_ID.ENDERIO + ";after:" + MOD_ID.TINKERS_CONSTRUCT;
+
 	public static class MOD_ID {
 		public static final String JEI = "jei";
 		public static final String JER = "jeresources";

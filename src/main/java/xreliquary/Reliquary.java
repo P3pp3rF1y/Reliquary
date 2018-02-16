@@ -24,7 +24,7 @@ import xreliquary.reference.Reference;
 import xreliquary.util.LogHelper;
 import xreliquary.util.potions.PotionMap;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "after:" + Compatibility.MOD_ID.BAUBLES)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = Compatibility.DEPENDENCIES)
 public class Reliquary {
 
 	@Instance(Reference.MOD_ID)
@@ -61,8 +61,6 @@ public class Reliquary {
 		PotionMap.initPotionMap();
 
 		PROXY.initSpecialJEIDescriptions();
-
-		ModFluids.init();
 
 		PROXY.init();
 

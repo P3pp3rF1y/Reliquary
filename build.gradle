@@ -39,20 +39,17 @@ group = 'xreliquary'
 version = "${minecraft_version}-${mod_version}.${getBuildNumber()}${getStable()}"
 archivesBaseName = 'Reliquary'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 dependencies {
     deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
     //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     //deobfCompile "info.amerifrance.guideapi:Guide-API:${guideapi_version}"
     deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
-    deobfCompile "jeresources:JustEnoughResources-${minecraft_version}:${jer_version}:deobf"
+    deobfCompile "jeresources:JustEnoughResources-${minecraft_version}:${jer_version}"
     deobfCompile "com.azanor.baubles:Baubles:${baubles_version}"
     deobfCompile name: 'Botania', version: botania_version, ext: 'jar'
-    deobfCompile "slimeknights.mantle:Mantle:${mantle_version}:deobf"
-    deobfCompile "slimeknights:TConstruct:${tconstruct_version}:deobf"
+    deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
+    deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
 
     testCompile 'org.testng:testng:6.9.10'

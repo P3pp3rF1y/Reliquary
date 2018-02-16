@@ -5,12 +5,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 import xreliquary.util.LogHelper;
 
@@ -19,34 +17,30 @@ public class ModFluids {
 	private static final String XP_JUICE_FLUID_NAME = "xpjuice";
 	private static final String MILK_FLUID_NAME = "milk";
 
-	public static Fluid fluidXpJuice;
-	public static Fluid milk;
+	private static boolean registeredXpJuice = false;
+	private static boolean registeredMilk = false;
 
-	public static void preInit() {
-		if(!Loader.isModLoaded(Compatibility.MOD_ID.ENDERIO)) {
-			LogHelper.info("XP Juice registered by Reliquary.");
-			fluidXpJuice = new Fluid(XP_JUICE_FLUID_NAME, new ResourceLocation(Reference.MOD_ID, "fluids/xpjuice_still"), new ResourceLocation(Reference.MOD_ID, "fluids/xpjuice_flowing")).setLuminosity(10).setDensity(800).setViscosity(1500).setUnlocalizedName("xreliquary.xpjuice");
-			FluidRegistry.registerFluid(fluidXpJuice);
-		} else {
-			LogHelper.info("XP Juice registration left to Ender IO.");
-		}
-
-		if(!Loader.isModLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT) && !FluidRegistry.isFluidRegistered(MILK_FLUID_NAME)) {
-			milk = new Fluid(MILK_FLUID_NAME, new ResourceLocation(Reference.MOD_ID, "fluids/milk_still"), new ResourceLocation(Reference.MOD_ID, "fluids/milk_flowing")).setTemperature(320);
-			FluidRegistry.registerFluid(milk);
-		}
+	public static Fluid milk() {
+		return FluidRegistry.getFluid(MILK_FLUID_NAME);
 	}
 
-	public static void init() {
-		if(fluidXpJuice == null) { //should have been registered by open blocks / Ender IO
-			fluidXpJuice = FluidRegistry.getFluid(XP_JUICE_FLUID_NAME);
-			if(fluidXpJuice == null) {
-				LogHelper.error("Liquid XP Juice registration left to Ender IO but could not be found.");
-			}
+	public static Fluid xpJuice() {
+		return FluidRegistry.getFluid(XP_JUICE_FLUID_NAME);
+	}
+
+
+	public static void preInit() {
+		if(!FluidRegistry.isFluidRegistered(XP_JUICE_FLUID_NAME)) {
+			LogHelper.info("XP Juice registered by Reliquary.");
+			Fluid fluidXpJuice = new Fluid(XP_JUICE_FLUID_NAME, new ResourceLocation(Reference.MOD_ID, "fluids/xpjuice_still"), new ResourceLocation(Reference.MOD_ID, "fluids/xpjuice_flowing")).setLuminosity(10).setDensity(800).setViscosity(1500).setUnlocalizedName("xreliquary.xpjuice");
+			FluidRegistry.registerFluid(fluidXpJuice);
+			registeredXpJuice = true;
 		}
 
-		if(milk == null) {
-			milk = FluidRegistry.getFluid(MILK_FLUID_NAME);
+		if(!FluidRegistry.isFluidRegistered(MILK_FLUID_NAME)) {
+			Fluid milk = new Fluid(MILK_FLUID_NAME, new ResourceLocation(Reference.MOD_ID, "fluids/milk_still"), new ResourceLocation(Reference.MOD_ID, "fluids/milk_flowing")).setTemperature(320);
+			FluidRegistry.registerFluid(milk);
+			registeredMilk = true;
 		}
 	}
 
@@ -54,8 +48,12 @@ public class ModFluids {
 	@SubscribeEvent
 	public static void onIconLoad(TextureStitchEvent.Pre event) {
 		TextureMap textureMap = event.getMap();
-		registerFluidSprites(textureMap, fluidXpJuice);
-		registerFluidSprites(textureMap, milk);
+		if (registeredXpJuice) {
+			registerFluidSprites(textureMap, xpJuice());
+		}
+		if (registeredMilk) {
+			registerFluidSprites(textureMap, milk());
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
