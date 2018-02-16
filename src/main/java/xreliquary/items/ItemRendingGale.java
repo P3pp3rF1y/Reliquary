@@ -368,6 +368,10 @@ public class ItemRendingGale extends ItemToggleable {
 	}
 
 	private boolean isBlacklistedEntity(Entity entity) {
+		if (EntityList.getKey(entity) == null) {
+			return false;
+		}
+
 		String entityName = EntityList.getKey(entity).toString();
 		return isBlacklistedLivingEntity(entity, entityName) || Settings.Items.RendingGale.canPushProjectiles && isBlacklistedProjectile(entity, entityName);
 	}
