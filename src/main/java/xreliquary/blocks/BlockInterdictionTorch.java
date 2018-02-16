@@ -94,6 +94,10 @@ public class BlockInterdictionTorch extends BlockTorch {
 	}
 
 	private boolean isBlacklistedEntity(Entity entity) {
+		if (EntityList.getKey(entity) == null) {
+			return false;
+		}
+
 		String entityName = EntityList.getKey(entity).toString();
 		return isBlacklistedLivingEntity(entity, entityName) || Settings.Blocks.InterdictionTorch.canPushProjectiles && isBlacklistedProjectile(entity, entityName);
 	}

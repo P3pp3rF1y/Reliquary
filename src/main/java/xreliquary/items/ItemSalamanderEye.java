@@ -18,7 +18,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
-import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 
 import javax.annotation.Nonnull;
@@ -80,7 +79,7 @@ public class ItemSalamanderEye extends ItemBase {
 	private void doFireballEffect(EntityPlayer player) {
 		List<EntityLargeFireball> ghastFireballs = player.world.getEntitiesWithinAABB(EntityLargeFireball.class, new AxisAlignedBB(player.posX - 5, player.posY - 5, player.posZ - 5, player.posX + 5, player.posY + 5, player.posZ + 5));
 		for(EntityLargeFireball fireball : ghastFireballs) {
-			if(player.getDistanceToEntity(fireball) < 4) {
+			if(player.getDistance(fireball) < 4) {
 				fireball.setDead();
 			}
 			fireball.attackEntityFrom(DamageSource.causePlayerDamage(player), 1);

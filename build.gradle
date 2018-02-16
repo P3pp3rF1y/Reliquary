@@ -1,4 +1,3 @@
-// This simple grabs the latest 'forge' plugin, or ForgeGradle, from Forge's servers.
 buildscript {
     repositories {
         jcenter()
@@ -26,59 +25,31 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 repositories {
     maven { url "http://dvs1.progwml6.com/files/maven" }
-    maven { url "http://mobiusstrip.eu/maven" }
-    maven { url 'http://tehnut.info/maven/' }
-    ivy {
-        name "JustEnoughResources"
-        ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
-        artifactPattern "http://media.forgecdn.net/files/${jer_cf}/[module]-[revision].[ext]"
-    }
-    ivy {
-        name "Baubles"
-        ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
-        artifactPattern "http://media.forgecdn.net/files/${baubles_cf}/[module]-[revision].[ext]"
-    }
-    ivy {
-        name "Thaumcraft"
-        ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
-        artifactPattern "http://media.forgecdn.net/files/${thaumcraft_cf}/[module]-[revision].[ext]"
-    }
+    maven { url "http://tehnut.info/maven" }
+    maven { url "https://dl.bintray.com/way2muchnoise/dev" }
+    maven { url "http://maven.thiakil.com" }
     ivy {
         name "Botania"
         ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
         artifactPattern "http://media.forgecdn.net/files/${botania_cf}/[module] r[revision].[ext]"
     }
-    ivy {
-        name "Mantle"
-        ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
-        artifactPattern "http://media.forgecdn.net/files/${mantle_cf}/[module]-[revision].[ext]"
-    }
-    ivy {
-        name "TConstruct"
-        ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
-        artifactPattern "http://media.forgecdn.net/files/${tconstruct_cf}/[module]-[revision].[ext]"
-    }
 }
 
-group = 'xreliquary' // Your main package.
+group = 'xreliquary'
 version = "${minecraft_version}-${mod_version}.${getBuildNumber()}${getStable()}"
 archivesBaseName = 'Reliquary'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 dependencies {
     deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
     //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     //deobfCompile "info.amerifrance.guideapi:Guide-API:${guideapi_version}"
-    //deobfCompile "mcp.mobius.waila:Waila:${waila_version}"
     deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
-    deobfCompile name: 'JustEnoughResources', version: jer_version, ext: 'jar'
-    deobfCompile name: 'Baubles', version: baubles_version, ext: 'jar'
+    deobfCompile "jeresources:JustEnoughResources-${minecraft_version}:${jer_version}"
+    deobfCompile "com.azanor.baubles:Baubles:${baubles_version}"
     deobfCompile name: 'Botania', version: botania_version, ext: 'jar'
-    deobfCompile name: 'Mantle', version: mantle_version, ext: 'jar'
-    deobfCompile name: 'TConstruct', version: tconstruct_version, ext: 'jar'
+    deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
+    deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
 
     testCompile 'org.testng:testng:6.9.10'

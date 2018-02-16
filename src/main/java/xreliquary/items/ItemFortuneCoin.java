@@ -147,7 +147,7 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IB
 			}
 
 			item.setPickupDelay(0);
-			if(player.getDistanceToEntity(item) < 1.5D) {
+			if(player.getDistance(item) < 1.5D) {
 				continue;
 			}
 			teleportEntityToPlayer(item, player);
@@ -158,7 +158,7 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IB
 			if(player.xpCooldown > 0) {
 				player.xpCooldown = 0;
 			}
-			if(player.getDistanceToEntity(item) < 1.5D) {
+			if(player.getDistance(item) < 1.5D) {
 				continue;
 			}
 			teleportEntityToPlayer(item, player);
@@ -322,7 +322,7 @@ public class ItemFortuneCoin extends ItemBase implements IPedestalActionItem, IB
 			List<EntityXPOrb> XPOrbs = world.getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
 			for(EntityXPOrb xpOrb : XPOrbs) {
 				int amountToTransfer = XpHelper.experienceToLiquid(xpOrb.xpValue);
-				int amountAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.fluidXpJuice, amountToTransfer));
+				int amountAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.xpJuice(), amountToTransfer));
 
 				if(amountAdded > 0) {
 					xpOrb.setDead();

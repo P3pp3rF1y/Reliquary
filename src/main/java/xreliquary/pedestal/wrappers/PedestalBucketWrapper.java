@@ -157,6 +157,10 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		//init fake player
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
+
+		//set position because of sound
+		fakePlayer.setPosition(pos.getX(), 0, pos.getZ());
+
 		ItemStack bucketStack = new ItemStack(Items.BUCKET);
 		fakePlayer.setHeldItem(EnumHand.MAIN_HAND, bucketStack);
 
@@ -165,7 +169,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		//put milk in the adjacent tanks
 		if(fakePlayer.getHeldItem(EnumHand.MAIN_HAND).getItem() == Items.MILK_BUCKET) {
-			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.milk, Fluid.BUCKET_VOLUME));
+			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.milk(), Fluid.BUCKET_VOLUME));
 			//replace bucket in the pedestal with milk one if the tanks can't hold it
 			if(fluidAdded == 0) {
 				if(stack.getCount() == 1) {

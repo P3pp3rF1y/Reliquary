@@ -292,7 +292,7 @@ public class ItemShearsOfWinter extends ItemShears {
 		double upperZ = Math.max(player.posZ, player.posZ + lookVector.z * 10D);
 		List<EntityLiving> eList = player.world.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 		for(EntityLiving e : eList) {
-			int distance = (int) player.getDistanceToEntity(e);
+			int distance = (int) player.getDistance(e);
 			int probabilityFactor = (distance - 3) / 2;
 			if(probabilityFactor > 0 && player.world.rand.nextInt(probabilityFactor) != 0)
 				continue;

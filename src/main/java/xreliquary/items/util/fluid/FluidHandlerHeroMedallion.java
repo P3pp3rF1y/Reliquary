@@ -38,12 +38,12 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 
 	@Override
 	public IFluidTankProperties[] getTankProperties() {
-		return new IFluidTankProperties[] {new FluidTankProperties(new FluidStack(ModFluids.fluidXpJuice, Fluid.BUCKET_VOLUME), Integer.MAX_VALUE)};
+		return new IFluidTankProperties[] {new FluidTankProperties(new FluidStack(ModFluids.xpJuice(), Fluid.BUCKET_VOLUME), Integer.MAX_VALUE)};
 	}
 
 	@Override
 	public int fill(FluidStack resource, boolean doFill) {
-		if(resource.getFluid() != ModFluids.fluidXpJuice)
+		if(resource.getFluid() != ModFluids.xpJuice())
 			return 0;
 
 		if(doFill) {
@@ -55,7 +55,7 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		if (resource.getFluid() != ModFluids.fluidXpJuice)
+		if (resource.getFluid() != ModFluids.xpJuice())
 			return null;
 
 		int experienceToRemove = Math.min(XpHelper.liquidToExperience(resource.amount), ModItems.heroMedallion.getExperience(heroMedallion));
@@ -64,12 +64,12 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 			ModItems.heroMedallion.setExperience(heroMedallion, ModItems.heroMedallion.getExperience(heroMedallion) - experienceToRemove);
 		}
 
-		return new FluidStack(ModFluids.fluidXpJuice, XpHelper.experienceToLiquid(experienceToRemove));
+		return new FluidStack(ModFluids.xpJuice(), XpHelper.experienceToLiquid(experienceToRemove));
 	}
 
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain) {
-		return drain(new FluidStack(ModFluids.fluidXpJuice, maxDrain), doDrain);
+		return drain(new FluidStack(ModFluids.xpJuice(), maxDrain), doDrain);
 	}
 
 	@Nonnull
