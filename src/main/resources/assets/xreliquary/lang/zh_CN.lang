@@ -244,62 +244,62 @@ xreliquary.item.mob_charm_belt.tooltip=拥有全部护符效果
 xreliquary.item.phoenix_down.name=凤凰之尾
 xreliquary.item.phoenix_down.tooltip=原地满血复活一次后会;还原成天使之羽。
 
-xreliquary.item.potion_empty.name=Condensed Potion Vial
-xreliquary.item.potion.name=Condensed Potion
-xreliquary.item.potion_splash.name=Splash Condensed Potion
-xreliquary.item.potion_lingering.name=Lingering Condensed Potion
-xreliquary.item.potion.tooltip=Effects:;{{effects}}
+xreliquary.item.potion_empty.name=浓缩药水瓶
+xreliquary.item.potion.name=浓缩药水
+xreliquary.item.potion_splash.name=喷溅型浓缩药水
+xreliquary.item.potion_lingering.name=滞留型浓缩药水
+xreliquary.item.potion.tooltip=效果：;{{effects}}
 
-xreliquary.item.potion_essence.name=Potion Essence
-xreliquary.item.potion_essence.tooltip=Effects:;{{effects}}
+xreliquary.item.potion_essence.name=药水香精
+xreliquary.item.potion_essence.tooltip=效果：;{{effects}}
 
-xreliquary.item.pyromancer_staff.name={{!colors.red}}Pyromancer's Staff
-xreliquary.item.pyromancer_staff.tooltip=Shoots blaze and ghast;fireballs, creates firebursts;and lights fires
-xreliquary.item.pyromancer_staff.tooltip2={{!colors.red}}Charges: {{charges}};{{!colors.red}}Blaze: {{blaze}};Shift + Left-click to change modes
+xreliquary.item.pyromancer_staff.name={{!colors.red}}烈焰术士之杖
+xreliquary.item.pyromancer_staff.tooltip=用于发射火焰以及;烈焰弹，从而点燃周围方块;造成火灾。
+xreliquary.item.pyromancer_staff.tooltip2={{!colors.red}}充能：{{charges}};{{!colors.red}}烈焰：{{blaze}};按住Shift左击改变模式
 
-xreliquary.item.rending_gale.name={{!colors.yellow}}Rending Gale
-xreliquary.item.rending_gale.tooltip=Fly, push and pull mobs, or shoot;lightning while raining
-xreliquary.item.rending_gale.tooltip2={{!colors.yellow}}Charge: {{charge}}
+xreliquary.item.rending_gale.name={{!colors.yellow}}裂风者
+xreliquary.item.rending_gale.tooltip=飞行，推拉怪物;或者雨天发射闪电
+xreliquary.item.rending_gale.tooltip2={{!colors.yellow}}充能：{{charge}}
 
-xreliquary.item.rod_of_lyssa.name=Rod of Lyssa
-xreliquary.item.rod_of_lyssa.tooltip=A magic fishing rod that can be;used to reel in items and pick pockets.
+xreliquary.item.rod_of_lyssa.name=犬牙钓竿
+xreliquary.item.rod_of_lyssa.tooltip=能够钓起物品打包并;带回的魔法钓竿。
 
-xreliquary.item.salamander_eye.name=Salamander's Eye
-xreliquary.item.salamander_eye.tooltip=Dispels blaze fireballs and reflects;ghast fireballs while held.;Puts out fires on and around you.
+xreliquary.item.salamander_eye.name=蝾螈之眼
+xreliquary.item.salamander_eye.tooltip=手持其可驱散烈焰人以及恶魂;的火球。;并扑灭你身上和周围的火焰。
 
-xreliquary.item.serpent_staff.name={{!colors.green}}Serpent Staff
-xreliquary.item.serpent_staff.tooltip=All that nasty stuff;from a Kraken's spit,;thrown at your enemies.;Drains life on strike.
+xreliquary.item.serpent_staff.name={{!colors.green}}蛇杖
+xreliquary.item.serpent_staff.tooltip=骇人听闻的法杖;用于投掷海妖的唾沫，;砸向你的敌人。;并汲取你的生命。
 
-xreliquary.item.shears_of_winter.name=Shears of Winter
-xreliquary.item.shears_of_winter.tooltip=Magic shears that tear the;leaves from trees with cold.
+xreliquary.item.shears_of_winter.name=严冬剪刀
+xreliquary.item.shears_of_winter.tooltip=运用严寒让树叶;凋零的魔法剪刀。
 
-xreliquary.item.sojourner_staff.name=Sojourner's Staff
-xreliquary.item.sojourner_staff.tooltip=Consumes torches, can place them;long distances, but costs extra
-xreliquary.item.sojourner_staff.tooltip2={{!colors.yellow}}Contents: {{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}}
+xreliquary.item.sojourner_staff.name=旅居者手杖
+xreliquary.item.sojourner_staff.tooltip=能够放置火把;可以将它们放置得更远，但会有额外消耗。
+xreliquary.item.sojourner_staff.tooltip2={{!colors.yellow}}内含：{{phrase}};{{!colors.rose}}放置：{{!colors.yellow}}{{placing}}
 
-xreliquary.item.tipped_arrow.name=Tipped Arrow
+xreliquary.item.tipped_arrow.name=药水箭
 
-xreliquary.item.twilight_cloak.name=Twilight Cloak
-xreliquary.item.twilight_cloak.tooltip=Makes you invisible in darkness.
+xreliquary.item.twilight_cloak.name=暮光斗篷
+xreliquary.item.twilight_cloak.tooltip=穿戴它可以让你在夜色中无迹可寻。
 
-xreliquary.item.witch_hat.name={{!colors.yellow}}Witch Hat
+xreliquary.item.witch_hat.name={{!colors.yellow}}女巫之帽
 
-xreliquary.item.void_tear_empty.name=Empty Void Tear
-xreliquary.item.void_tear.name=Void Tear
-xreliquary.item.void_tear.mode.no_refill=EMPTY
-xreliquary.item.void_tear.mode.one_stack=STACK
-xreliquary.item.void_tear.mode.full_inventory=FILL
-xreliquary.item.void_tear.tooltip=Keeps almost unlimited amount of one item type
+xreliquary.item.void_tear_empty.name=空白虚空之泪
+xreliquary.item.void_tear.name=虚空之泪
+xreliquary.item.void_tear.mode.no_refill=无
+xreliquary.item.void_tear.mode.one_stack=堆叠
+xreliquary.item.void_tear.mode.full_inventory=填充
+xreliquary.item.void_tear.tooltip=能够近乎无限的堆叠同一种物品
 
-xreliquary.tooltip.tear=Currently holds {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
-xreliquary.tooltip.tear_empty=Right-click to capture whatever item you have the most of.
-xreliquary.tooltip.tear_quantity=Currently holds {{!colors.yellow}}{{amount}}{{!colors.light_gray}} {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+xreliquary.tooltip.tear=当前存有{{!colors.yellow}}{{item}}{{!colors.light_gray}}.
+xreliquary.tooltip.tear_empty=右击拿取物品栏中最多的物品。
+xreliquary.tooltip.tear_quantity=当前存有{{!colors.yellow}}{{amount}}{{!colors.light_gray}} {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
 
-xreliquary.item.witherless_rose.name=Witherless Rose
-xreliquary.item.witherless_rose.tooltip=With the Nether Stars enchanting this rose;the holder is protected from Withering.
+xreliquary.item.witherless_rose.name=不凋玫瑰
+xreliquary.item.witherless_rose.tooltip=通过使用下界之心为玫瑰灌输;从而赋予持有者免疫凋零的效果。
 
-xreliquary.tile.wraith_node.name=Wraith Node
-xreliquary.tile.wraith_node.tooltip=Used as a destination for;Ender Staff in wraith node mode
+xreliquary.tile.wraith_node.name=幽灵节点
+xreliquary.tile.wraith_node.tooltip=用作传送点;只能在末地岛使用。
 
 xreliquary.general.block_settings.altar.maximumtimevarianceinminutes=Maximum time variance in minutes
 xreliquary.general.block_settings.altar.outputlightlevelwhileactive=Output light level while active
@@ -624,22 +624,22 @@ xreliquary.jei.descriptions.wraith_node=Right-click it with the Ender Staff and 
 xreliquary.jei.descriptions.pedestal=Pedestal is a fancy way of displaying your items, but at the same time it also allows some automation.\n\nCoin of fortune - When active picks up items and XP and puts these in containers beside the pedestal, when inactive prevents players and pedestals with fortune coin from picking up items in its range\nHero's medallion - Acts as a tank for XP also when activated searches nearby pedestals for mending items and repairs those with its XP\nSword - Attacks mobs in its range (ignores bosses, tamed and child animals)\nBucket - milks cows and picks up fluids in the world and puts these in containers beside the pedestal\nShears - shears all shearable blocks and entities in its range\nFishing Rod - fishes for the player, doesn't pick up items or xp, you need to use something else for that\nTo turn on pedestal functionality either empty hand right click the switch or provide redstone signal or provide power remotely using redstone block or dust in another pedestal
 xreliquary.jei.descriptions.pedestal_passive=Display only pedestal is exactly that - fancy way of displaying items, but doesn't have any of the regular pedestal's functionality for the items put into it
 
-xreliquary.waila.xreliquary.mortar.ingredients=Ingredients:
-xreliquary.waila.xreliquary.mortar.result=Resulting potion effects:
-xreliquary.waila.xreliquary.cauldron.missing_netherwart=Missing Nether Wart
-xreliquary.waila.xreliquary.cauldron.missing_gunpowder=Missing Gunpowder
-xreliquary.waila.xreliquary.cauldron.lingering=Lingering potion
-xreliquary.waila.xreliquary.cauldron.splash=Splash potion
-xreliquary.waila.xreliquary.cauldron.potion=Potion
-xreliquary.waila.xreliquary.altar.inactive=Inactive
-xreliquary.waila.xreliquary.altar.active=Active
-xreliquary.waila.xreliquary.altar.time_remaining=Time remaining: %s
-xreliquary.waila.xreliquary.shift_for_more=Hold shift for more info
+xreliquary.waila.xreliquary.mortar.ingredients=配方：
+xreliquary.waila.xreliquary.mortar.result=导致药水效果：
+xreliquary.waila.xreliquary.cauldron.missing_netherwart=缺少地狱疣
+xreliquary.waila.xreliquary.cauldron.missing_gunpowder=缺少火药
+xreliquary.waila.xreliquary.cauldron.lingering=滞留型药水
+xreliquary.waila.xreliquary.cauldron.splash=喷溅型药水
+xreliquary.waila.xreliquary.cauldron.potion=药水
+xreliquary.waila.xreliquary.altar.inactive=闲置
+xreliquary.waila.xreliquary.altar.active=运行中
+xreliquary.waila.xreliquary.altar.time_remaining=持续时间：%s
+xreliquary.waila.xreliquary.shift_for_more=按住 Shift 查看更多详细信息
 
-xreliquary.keybind.category=Reliquary
-xreliquary.keybind.fortune_coin=Enable/Disable Fortune Coin
+xreliquary.keybind.category=圣遗物
+xreliquary.keybind.fortune_coin=启用/禁用幸运硬币
 
-xreliquary.potion.cure=Cure
+xreliquary.potion.cure=治疗
 
 potion.potency.3=IV
 potion.potency.4=V
@@ -649,7 +649,7 @@ potion.potency.7=VIII
 potion.potency.8=IX
 potion.potency.9=X
 
-fluid.xreliquary.xpjuice=XP Juice
-fluid.milk=Milk
+fluid.xreliquary.xpjuice=经验汁
+fluid.milk=牛奶
 
-xreliquary.potion.flight=Flight
+xreliquary.potion.flight=漂浮
