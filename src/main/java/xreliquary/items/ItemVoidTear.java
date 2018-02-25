@@ -15,7 +15,12 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
@@ -37,7 +42,11 @@ import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.items.util.VoidTearItemStackHandler;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
-import xreliquary.util.*;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.LanguageHelper;
+import xreliquary.util.NBTHelper;
+import xreliquary.util.StackHelper;
+import xreliquary.util.XRFakePlayerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -222,15 +231,17 @@ public class ItemVoidTear extends ItemToggleable {
 							setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - getKeepQuantity(voidTear));
 						}
 					}
-				}
-				if(getMode(voidTear) != Mode.NO_REFILL) {
-					attemptToReplenish(player, voidTear);
+					if(getMode(voidTear) != Mode.NO_REFILL) {
+						attemptToReplenish(player, voidTear);
+					}
+				} else {
+					setEmpty(voidTear);
 				}
 			}
 		}
 	}
 
-	private boolean attemptToReplenish(EntityPlayer player, ItemStack voidTear) {
+	private void attemptToReplenish(EntityPlayer player, ItemStack voidTear) {
 		IInventory inventory = player.inventory;
 		for(int slot = 0; slot < inventory.getSizeInventory(); slot++) {
 			ItemStack stackFound = inventory.getStackInSlot(slot);
@@ -240,7 +251,7 @@ public class ItemVoidTear extends ItemToggleable {
 				stackFound.grow(quantityToDecrease);
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
 				if(getMode(voidTear) != Mode.FULL_INVENTORY)
-					return true;
+					return;
 			}
 		}
 
@@ -252,10 +263,8 @@ public class ItemVoidTear extends ItemToggleable {
 			player.inventory.setInventorySlotContents(slot, newStack);
 			setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
 			if(getMode(voidTear) != Mode.FULL_INVENTORY)
-				return true;
+				return;
 		}
-
-		return false;
 	}
 
 	@Nonnull
@@ -289,7 +298,7 @@ public class ItemVoidTear extends ItemToggleable {
 				}
 			}
 			return EnumActionResult.SUCCESS;
-		} else if(getContainerItem(voidTear).getItem() instanceof ItemBlock) {
+		} else if(getContainerItem(voidTear).getItem() instanceof ItemBlock && getItemQuantity(voidTear) > 0) {
 			ItemStack containerItem = getContainerItem(voidTear);
 			ItemBlock itemBlock = (ItemBlock) containerItem.getItem();
 			Block block = itemBlock.getBlock();
