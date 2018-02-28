@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import xreliquary.common.CommonProxy;
 import xreliquary.compat.ICompat;
+import xreliquary.crafting.AlkahestryLoader;
 import xreliquary.init.ModCapabilities;
 import xreliquary.init.ModCompat;
 import xreliquary.init.ModFluids;
@@ -78,6 +79,8 @@ public class Reliquary {
 		ModCompat.loadCompat(ICompat.InitializationPhase.POST_INIT, null);
 
 		PedestalItems.init();
+
+		AlkahestryLoader.loadRecipes();
 
 		LogHelper.info("Loaded successfully!");
 	}
