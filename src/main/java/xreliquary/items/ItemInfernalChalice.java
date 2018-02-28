@@ -9,20 +9,27 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import xreliquary.Reliquary;
+import xreliquary.handler.CommonEventHandler;
+import xreliquary.handler.IPlayerHurtHandler;
+import xreliquary.init.ModItems;
 import xreliquary.items.util.fluid.FluidHandlerInfernalChalice;
 import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
@@ -36,6 +43,26 @@ public class ItemInfernalChalice extends ItemToggleable {
 		this.setCreativeTab(Reliquary.CREATIVE_TAB);
 		this.setMaxStackSize(1);
 		canRepair = false;
+
+		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
+			@Override
+			public boolean canApply(EntityPlayer player, LivingAttackEvent event) {
+				return (event.getSource() == DamageSource.LAVA || event.getSource() == DamageSource.ON_FIRE || event.getSource() == DamageSource.IN_FIRE)
+						&& player.getFoodStats().getFoodLevel() > 0
+						&& InventoryHelper.playerHasItem(player, ModItems.infernalChalice);
+			}
+
+			@Override
+			public boolean apply(EntityPlayer player, LivingAttackEvent event) {
+				player.addExhaustion(event.getAmount() * ((float) Settings.Items.InfernalChalice.hungerCostPercent / 100F));
+				return true;
+			}
+
+			@Override
+			public Priority getPriority() {
+				return Priority.HIGH;
+			}
+		});
 	}
 
 	@Override

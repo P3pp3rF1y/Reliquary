@@ -5,12 +5,18 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
+import xreliquary.handler.CommonEventHandler;
+import xreliquary.handler.IPlayerHurtHandler;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
+import xreliquary.util.InventoryHelper;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -23,6 +29,24 @@ public class ItemWitherlessRose extends ItemBase {
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		canRepair = false;
+
+		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
+			@Override
+			public boolean canApply(EntityPlayer player, LivingAttackEvent event) {
+				return event.getSource() == DamageSource.WITHER
+						&& InventoryHelper.playerHasItem(player, ModItems.witherlessRose);
+			}
+
+			@Override
+			public boolean apply(EntityPlayer player, LivingAttackEvent event) {
+				return true;
+			}
+
+			@Override
+			public Priority getPriority() {
+				return Priority.HIGHEST;
+			}
+		});
 	}
 
 	@Nonnull
