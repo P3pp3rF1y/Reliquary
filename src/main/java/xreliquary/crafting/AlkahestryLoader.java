@@ -40,7 +40,7 @@ public class AlkahestryLoader {
 
 	private static void loadConstants(JsonContext ctx, JsonObject[] jsons) {
 		try {
-			LOAD_CONSTANTS.invoke(ctx, jsons);
+			LOAD_CONSTANTS.invoke(ctx, (Object) jsons);
 		}
 		catch (IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();
