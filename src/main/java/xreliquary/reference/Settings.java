@@ -836,12 +836,12 @@ public class Settings {
 			public int redstoneWrapperRange = 10;
 			@Config.Name("fishing_wrapper_success_rate")
 			@Config.Comment("Success rate of fishing in percent. When unsuccessful it will pull the hook too late to catch a fish.")
-			@Config.RangeInt(min = 80, max = 100)
-			public int fishingWrapperSuccessRate = 0;
+			@Config.RangeInt(min = 0, max = 100)
+			public int fishingWrapperSuccessRate = 80;
 			@Config.Name("fishing_wrapper_retract_delay")
 			@Config.Comment("Delay in seconds before it would start fishing again after retracting the hook.")
-			@Config.RangeInt(min = 2, max = 20)
-			public int fishingWrapperRetractDelay = 1;
+			@Config.RangeInt(min = 1, max = 20)
+			public int fishingWrapperRetractDelay = 2;
 		}
 	}
 }
