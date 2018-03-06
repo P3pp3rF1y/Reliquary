@@ -10,13 +10,13 @@ import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import xreliquary.reference.Reference;
+import xreliquary.util.LogHelper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -49,15 +49,15 @@ public class AlkahestryLoader {
 
 	public static void loadRecipes() {
 		createConfigFolder();
-		loadAlkahestry(new File(CONFIG_FOLDER), "");
-		loadAlkahestry(Loader.instance().activeModContainer().getSource(), "assets/" + Reference.MOD_ID + "/alkahestry");
+		loadAlkahestry(new File(CONFIG_FOLDER), "", false);
+		loadAlkahestry(Loader.instance().activeModContainer().getSource(), "assets/" + Reference.MOD_ID + "/alkahestry", true);
 	}
 
 	private static void createConfigFolder() {
 		(new File(CONFIG_FOLDER)).mkdirs();
 	}
 
-	private static void loadAlkahestry(File source, String base) {
+	private static void loadAlkahestry(File source, String base, boolean folderMustExist) {
 		FileSystem fs = null;
 
 		try {
@@ -68,7 +68,7 @@ public class AlkahestryLoader {
 					root = fs.getPath("/" + base);
 				}
 				catch (IOException e) {
-					FMLLog.log.error("Error loading FileSystem from jar: ", e);
+					LogHelper.error("Error loading FileSystem from jar: ", e);
 				}
 			} else if (source.isDirectory()) {
 				root = source.toPath().resolve(base);
@@ -80,9 +80,9 @@ public class AlkahestryLoader {
 
 			JsonContext ctx = loadJsonContext(root);
 
-			loadRecipeFolder(root, "crafting", ctx);
-			loadRecipeFolder(root, "charging", ctx);
-			loadRecipeFolder(root, "drain", ctx);
+			loadRecipeFolder(root, "crafting", ctx, folderMustExist);
+			loadRecipeFolder(root, "charging", ctx, folderMustExist);
+			loadRecipeFolder(root, "drain", ctx, folderMustExist);
 
 		}
 		finally {
@@ -90,7 +90,7 @@ public class AlkahestryLoader {
 		}
 	}
 
-	private static void loadRecipeFolder(Path root, String folderName, JsonContext ctx) {
+	private static void loadRecipeFolder(Path root, String folderName, JsonContext ctx, boolean folderMustExist) {
 		if (foldersLoaded.contains(folderName)) {
 			return;
 		}
@@ -99,11 +99,20 @@ public class AlkahestryLoader {
 
 		Path folderRoot = root.resolve(folderName);
 
+		if (!Files.exists(folderRoot)) {
+			if (folderMustExist) {
+				LogHelper.error("Unable to find folder {} which is required", folderRoot.toString());
+			}
+			return;
+		}
+
 		try {
 			itr = Files.walk(folderRoot).iterator();
 		}
 		catch (IOException e) {
-			FMLLog.log.error("Error iterating filesystem for: {}", Reference.MOD_ID, e);
+			if (folderMustExist) {
+				LogHelper.error("Error iterating filesystem for: {}", Reference.MOD_ID, e);
+			}
 		}
 
 		boolean recipeAdded = false;
@@ -134,11 +143,11 @@ public class AlkahestryLoader {
 			ForgeRegistries.RECIPES.register(recipe.setRegistryName(key));
 		}
 		catch (JsonParseException e) {
-			FMLLog.log.error("Parsing error loading recipe {}", key, e);
+			LogHelper.error("Parsing error loading recipe {}", key, e);
 			return false;
 		}
 		catch (IOException e) {
-			FMLLog.log.error("Couldn't read recipe {} from {}", key, file, e);
+			LogHelper.error("Couldn't read recipe {} from {}", key, file, e);
 			return false;
 		}
 		finally {
@@ -160,7 +169,7 @@ public class AlkahestryLoader {
 				loadConstants(ctx, json);
 			}
 			catch (IOException e) {
-				FMLLog.log.error("Error loading _constants.json: ", e);
+				LogHelper.error("Error loading _constants.json: ", e);
 			}
 			finally {
 				IOUtils.closeQuietly(reader);
