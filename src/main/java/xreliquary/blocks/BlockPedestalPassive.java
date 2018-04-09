@@ -24,12 +24,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import xreliquary.blocks.tile.TileEntityPedestal;
 import xreliquary.blocks.tile.TileEntityPedestalPassive;
-import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
 import xreliquary.util.InventoryHelper;
 
 import javax.annotation.Nonnull;
@@ -88,7 +84,7 @@ public class BlockPedestalPassive extends BlockBase {
 
 	@Override
 	public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state, int fortune) {
-		Item item = this.getItemDropped(state, ((World) world).rand, fortune);
+		Item item = Item.getItemFromBlock(this);
 
 		int meta = 0;
 		if(world.getTileEntity(pos) instanceof TileEntityPedestalPassive) {
