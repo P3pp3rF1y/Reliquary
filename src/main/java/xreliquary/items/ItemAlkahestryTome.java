@@ -112,21 +112,21 @@ public class ItemAlkahestryTome extends ItemToggleable {
 		subItems.add(stack);
 	}
 
-	private static int getChargeLimit() {
+	public static int getChargeLimit() {
 		return Settings.Items.AlkahestryTome.chargeLimit;
 	}
 
-	public void setCharge(ItemStack tome, int charge) {
+	public static void setCharge(ItemStack tome, int charge) {
 		NBTHelper.setInteger("charge", tome, charge);
 
 		tome.setItemDamage(tome.getMaxDamage() - charge);
 	}
 
-	public int getCharge(ItemStack tome) {
+	public static int getCharge(ItemStack tome) {
 		return NBTHelper.getInteger("charge", tome);
 	}
 
-	public void addCharge(ItemStack tome, int chageToAdd) {
+	public static void addCharge(ItemStack tome, int chageToAdd) {
 		setCharge(tome, getCharge(tome) + chageToAdd);
 	}
 
