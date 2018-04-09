@@ -1,7 +1,9 @@
 package xreliquary.util.potions;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import xreliquary.util.LogHelper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -26,10 +28,16 @@ public class PotionIngredient {
 	}
 
 	public PotionIngredient addEffect(String potionName, int durationWeight, int ampWeight) {
-		return this.addEffect(new WeightedPotionEffect(potionName, durationWeight, ampWeight));
+		Potion potion  = Potion.getPotionFromResourceLocation(potionName);
+
+		if (potion == null) {
+			LogHelper.error("Potion name " + potionName + " is not registered. Please fix the name or remove it from potion map.");
+			return this;
+		}
+		return this.addEffect(new PotionEffect(potion, durationWeight * 300, ampWeight, true, false));
 	}
 
-	private PotionIngredient addEffect(WeightedPotionEffect effect) {
+	private PotionIngredient addEffect(PotionEffect effect) {
 		effects.add(effect);
 		return this;
 	}

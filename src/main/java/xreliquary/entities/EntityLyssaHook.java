@@ -38,6 +38,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
+import xreliquary.util.LogHelper;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
@@ -581,7 +582,7 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 
 	public int handleHookRetraction() {
 		if(!this.world.isRemote) {
-			if(this.caughtEntity != null && this.getAngler().isSneaking() && this.caughtEntity instanceof EntityLiving) {
+			if(this.caughtEntity != null && this.getAngler().isSneaking() && this.caughtEntity instanceof EntityLivingBase) {
 				stealFromLivingEntity();
 				this.setDead();
 			} else {
@@ -610,7 +611,7 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 	}
 
 	private void stealFromLivingEntity() {
-		EntityLiving livingEntity = (EntityLiving) this.caughtEntity;
+		EntityLivingBase livingEntity = (EntityLivingBase) this.caughtEntity;
 		EntityEquipmentSlot slotBeingStolenFrom = EntityEquipmentSlot.values()[world.rand.nextInt(EntityEquipmentSlot.values().length)];
 
 		ItemStack stolenStack = livingEntity.getItemStackFromSlot(slotBeingStolenFrom);
@@ -654,7 +655,12 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 		}
 	}
 
-	private boolean canDropFromSlot(EntityLiving livingEntity, EntityEquipmentSlot slot) {
+	private boolean canDropFromSlot(EntityLivingBase entity, EntityEquipmentSlot slot) {
+		if (!(entity instanceof EntityLiving)) {
+			return true;
+		}
+		EntityLiving livingEntity = (EntityLiving) entity;
+
 		try {
 			if(slot.getSlotType() == EntityEquipmentSlot.Type.HAND) {
 				return float[].class.cast(HANDS_CHANCES.get(livingEntity))[slot.getIndex()] > -1;
@@ -662,7 +668,7 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 				return float[].class.cast(ARMOR_CHANCES.get(livingEntity))[slot.getIndex()] > -1;
 			}
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			LogHelper.error(e);
 		}
 
 		return false;

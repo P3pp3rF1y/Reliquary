@@ -19,9 +19,11 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import xreliquary.crafting.AlkahestryTomeIngredient;
 import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
+import xreliquary.items.ItemAlkahestryTome;
 import xreliquary.reference.Reference;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.Predicate;
 
 @SuppressWarnings("unused")
 @MethodsReturnNonnullByDefault
@@ -43,7 +45,7 @@ public class AlkahestryChargingRecipeFactory implements IRecipeFactory {
 		int chargeToAdd = JsonUtils.getInt(json, "charge");
 
 		ItemStack tome = new ItemStack(ModItems.alkahestryTome);
-		ModItems.alkahestryTome.setCharge(tome, 0);
+		ItemAlkahestryTome.setCharge(tome, 0);
 
 		return new AlkahestryChargingRecipe(new ResourceLocation(Reference.MOD_ID, "alkahestry_charging"), ingredients.get(0), new AlkahestryTomeIngredient(tome, 0), chargeToAdd);
 	}
@@ -52,6 +54,7 @@ public class AlkahestryChargingRecipeFactory implements IRecipeFactory {
 		private final ResourceLocation group;
 		private final Ingredient chargingIngredient;
 		private final Ingredient tomeIngredient;
+		private final Predicate<ItemStack> tomeIngredientMatch;
 
 		public int getChargeToAdd() {
 			return chargeToAdd;
@@ -63,10 +66,11 @@ public class AlkahestryChargingRecipeFactory implements IRecipeFactory {
 		public AlkahestryChargingRecipe(ResourceLocation group, Ingredient chargingIngredient, Ingredient tomeIngredient, int chargeToAdd) {
 			this.group = group;
 			this.chargingIngredient = chargingIngredient;
+			this.tomeIngredientMatch = s -> tomeIngredient.apply(s) && ItemAlkahestryTome.getCharge(s) + chargeToAdd <= ItemAlkahestryTome.getChargeLimit();
 			this.tomeIngredient = tomeIngredient;
 			this.chargeToAdd = chargeToAdd;
 			result = new ItemStack(ModItems.alkahestryTome);
-			ModItems.alkahestryTome.addCharge(result, chargeToAdd);
+			ItemAlkahestryTome.addCharge(result, chargeToAdd);
 
 			XRRecipes.chargingRecipes.add(this);
 		}
@@ -84,7 +88,7 @@ public class AlkahestryChargingRecipeFactory implements IRecipeFactory {
 					if(chargingIngredient.apply(slot)) {
 						inRecipe = true;
 						hasIngredient = true;
-					} else if(!hasTome && tomeIngredient.apply(slot)) {
+					} else if(!hasTome && tomeIngredientMatch.test(slot)) {
 						inRecipe = true;
 						hasTome = true;
 					}
@@ -106,12 +110,12 @@ public class AlkahestryChargingRecipeFactory implements IRecipeFactory {
 				ItemStack stack = inv.getStackInSlot(slot);
 				if (chargingIngredient.apply(stack)) {
 					numberOfIngredients++;
-				} else if (tomeIngredient.apply(stack)) {
+				} else if (tomeIngredientMatch.test(stack)) {
 					tome = stack.copy();
 				}
 			}
 
-			ModItems.alkahestryTome.addCharge(tome, chargeToAdd * numberOfIngredients);
+			ItemAlkahestryTome.addCharge(tome, chargeToAdd * numberOfIngredients);
 
 			return tome;
 		}

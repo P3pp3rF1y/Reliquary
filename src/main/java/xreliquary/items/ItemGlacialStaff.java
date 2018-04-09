@@ -2,7 +2,6 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -123,7 +122,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 		x += xOff;
 		z += zOff;
 		IBlockState blockState = world.getBlockState(new BlockPos(x, y, z));
-		if(blockState.getMaterial() == Material.WATER && blockState.getValue(BlockLiquid.LEVEL) == 0 && world.isAirBlock(new BlockPos(x, y + 1, z))) {
+		if(blockState.getBlock() == Blocks.WATER && blockState.getValue(BlockLiquid.LEVEL) == 0 && world.isAirBlock(new BlockPos(x, y + 1, z))) {
 			addFrozenBlockToList(ist, x, y, z);
 			world.setBlockState(new BlockPos(x, y, z), Blocks.PACKED_ICE.getDefaultState());
 
@@ -133,7 +132,7 @@ public class ItemGlacialStaff extends ItemIceMagusRod {
 				float zVel = world.rand.nextFloat();
 				world.spawnParticle(EnumParticleTypes.REDSTONE, x + xVel, y + yVel, z + zVel, 0.75F, 0.75F, 1.0F);
 			}
-		} else if(blockState.getMaterial() == Material.LAVA && blockState.getValue(BlockLiquid.LEVEL) == 0) {
+		} else if(blockState.getBlock() == Blocks.LAVA && blockState.getValue(BlockLiquid.LEVEL) == 0) {
 			addFrozenBlockToList(ist, x, y, z);
 			world.setBlockState(new BlockPos(x, y, z), Blocks.OBSIDIAN.getDefaultState());
 			for(int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {

@@ -1,6 +1,10 @@
 package xreliquary.util;
 
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.message.Message;
 import xreliquary.reference.Reference;
 
@@ -18,7 +22,7 @@ public class LogHelper {
 	}
 
 	public static void log(Level level, Marker marker, String message) {
-		logger.log(level, marker, message);
+		logger.log(level, marker, "[" + Reference.MOD_ID + "] " + message);
 	}
 
 	public static void log(Level level, Marker marker, String format, Object... params) {
