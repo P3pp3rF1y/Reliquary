@@ -162,7 +162,7 @@ public class PotionMap {
 	private static void loadPotionMapFromSettings() {
 		ingredients.clear();
 
-		Pattern validEntry = Pattern.compile("[a-z_:]+\\|[0-9]+=[a-z_0-9:\\.\\|;]+");
+		Pattern validEntry = Pattern.compile("[a-z_:0-9]+\\|[0-9]+=[a-z_0-9:\\.\\|;]+");
 		for(String entry : Settings.Potions.potionMap) {
 			if (validEntry.matcher(entry).matches()) {
 				String[] entryParts = entry.split("=");
