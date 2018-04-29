@@ -104,7 +104,7 @@ public class ItemRendingGale extends ItemToggleable {
 		double y = lookVec.y;
 		double z = lookVec.z;
 
-		RayTraceResult rayTrace =  this.rayTrace(player.world, player, true);
+		RayTraceResult rayTrace =  this.rayTrace(player.world, player, false);
 
 		double slowDownFactor = 1.0;
 
