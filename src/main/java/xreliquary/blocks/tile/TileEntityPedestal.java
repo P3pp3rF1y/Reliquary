@@ -23,7 +23,13 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import xreliquary.api.*;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import xreliquary.api.IPedestal;
+import xreliquary.api.IPedestalActionItem;
+import xreliquary.api.IPedestalActionItemWrapper;
+import xreliquary.api.IPedestalItemWrapper;
+import xreliquary.api.IPedestalRedstoneItem;
+import xreliquary.api.IPedestalRedstoneItemWrapper;
 import xreliquary.blocks.BlockPedestal;
 import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredItemStackHandler;
@@ -33,7 +39,11 @@ import xreliquary.util.StackHelper;
 import xreliquary.util.XRFakePlayerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TileEntityPedestal extends TileEntityPedestalPassive implements IPedestal, ITickable {
 
@@ -51,6 +61,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	private boolean powered = false;
 	private PedestalFluidHandler pedestalFluidHandler = null;
 	private List<Object> itemData = new ArrayList<>();
+	private IItemHandler inventoryWrapper = new InvWrapper(this);
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
@@ -117,7 +128,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 	@Override
 	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
@@ -128,6 +139,8 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			}
 			//noinspection unchecked
 			return (T) pedestalFluidHandler;
+		} else if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+			return (T) inventoryWrapper;
 		}
 
 		return super.getCapability(capability, facing);
