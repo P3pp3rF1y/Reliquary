@@ -20,6 +20,6 @@ public class VoidTearItemStackHandler extends FilteredItemStackHandler {
 
 	@Override
 	protected boolean isItemStackValidForParentSlot(ItemStack stack, int parentSlot) {
-		return parentSlot == 0;
+		return parentSlot == 0 && super.isItemStackValidForParentSlot(stack, parentSlot);
 	}
 }
