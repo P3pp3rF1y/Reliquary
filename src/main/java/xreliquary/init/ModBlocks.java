@@ -1,6 +1,7 @@
 package xreliquary.init;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.RegistryEvent;
@@ -40,6 +41,8 @@ public class ModBlocks {
 	public static BlockWraithNode wraithNode;
 	public static BlockPedestal pedestal;
 	public static BlockPedestalPassive pedestalPassive;
+	//TODO not ideal place - figure out something better and move there with the init method
+	public static int snowStateId = 0;
 
 	@SubscribeEvent
 	public static void register(RegistryEvent.Register<Block> event) {
@@ -89,5 +92,9 @@ public class ModBlocks {
 		registry.register(itemBlock.setRegistryName(block.getRegistryName()));
 
 		Reliquary.PROXY.registerJEI(block, name, jeiOneDescription);
+	}
+
+	public static void initSnowStateId() {
+		snowStateId = Block.getStateId(Blocks.SNOW.getDefaultState());
 	}
 }

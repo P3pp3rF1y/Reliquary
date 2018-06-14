@@ -28,8 +28,8 @@ public class LanguageHelper {
 	 * @param key The localization key.
 	 * @return A preprocessed localized string. If your current language dosen't have a localized string, it defaults to en_US.
 	 */
-	public static String getLocalization(String key) {
-		String localization = getLocalization(key, true);
+	public static String getLocalization(String key, Object... parameters) {
+		String localization = getLocalization(key, true, parameters);
 
 		if(preprocesssed.containsKey(key)) {
 			return preprocesssed.get(key);
@@ -53,12 +53,12 @@ public class LanguageHelper {
 		return localization;
 	}
 
-	private static String getLocalization(String key, boolean fallback) {
+	private static String getLocalization(String key, boolean fallback, Object... parameters) {
 		//noinspection deprecation
-		String localization = I18n.format(Reference.MOD_ID + "." + key);
+		String localization = I18n.format(Reference.MOD_ID + "." + key, parameters);
 		if(localization.equals(key) && fallback) {
 			//noinspection deprecation
-			localization = I18n.format(Reference.MOD_ID + "." + key);
+			localization = I18n.format(Reference.MOD_ID + "." + key, parameters);
 		}
 		return localization;
 	}

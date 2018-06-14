@@ -1,7 +1,6 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -10,7 +9,6 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
@@ -32,6 +30,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.ArrayUtils;
 import xreliquary.Reliquary;
+import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.reference.Names;
@@ -401,7 +400,7 @@ public class ItemRendingGale extends ItemToggleable {
 			float randY = 10F * (itemRand.nextFloat() - 0.5F);
 			float randZ = 10F * (itemRand.nextFloat() - 0.5F);
 
-			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX + lookVector.x * 20 * factor, y + randY + lookVector.y * 20 * factor, z + randZ + lookVector.z * 20 * factor, -lookVector.x * 5 * factor, -lookVector.y * 5 * factor, -lookVector.z * 5 * factor, Block.getStateId(Blocks.SNOW.getDefaultState()));
+			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX + lookVector.x * 20 * factor, y + randY + lookVector.y * 20 * factor, z + randZ + lookVector.z * 20 * factor, -lookVector.x * 5 * factor, -lookVector.y * 5 * factor, -lookVector.z * 5 * factor, ModBlocks.snowStateId);
 		}
 	}
 
@@ -421,7 +420,7 @@ public class ItemRendingGale extends ItemToggleable {
 
 			double posYAdjusted = player == null ? posY : (posY + player.getEyeHeight()) - (player.height / 2);
 
-			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ, Block.getStateId(Blocks.SNOW.getDefaultState()));
+			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ, ModBlocks.snowStateId);
 		}
 	}
 

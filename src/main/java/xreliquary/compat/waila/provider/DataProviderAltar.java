@@ -42,8 +42,8 @@ public class DataProviderAltar implements IWailaDataProvider {
 			return currenttip;
 		}
 
-		currenttip.add(ChatFormatting.GREEN + LanguageHelper.getLocalization("waila.xreliquary.altar.active") + ChatFormatting.RESET);
-		currenttip.add(String.format(LanguageHelper.getLocalization("waila.xreliquary.altar.time_remaining"), new SimpleDateFormat("mm:ss").format(altar.getCycleTime() * 50)));
+		currenttip.add(ChatFormatting.GREEN + LanguageHelper.getLocalization("waila.xreliquary.altar.active"));
+		currenttip.add(LanguageHelper.getLocalization("waila.xreliquary.altar.time_remaining", new SimpleDateFormat("mm:ss").format(altar.getCycleTime() * 50)));
 
 		return currenttip;
 	}

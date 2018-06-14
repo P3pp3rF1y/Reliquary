@@ -31,6 +31,7 @@ import net.minecraftforge.common.IShearable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
+import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 
@@ -325,7 +326,7 @@ public class ItemShearsOfWinter extends ItemShears {
 			float randY = 10F * (player.world.rand.nextFloat() - 0.5F);
 			float randZ = 10F * (player.world.rand.nextFloat() - 0.5F);
 
-			player.world.spawnParticle(EnumParticleTypes.BLOCK_DUST, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.x * 5, lookVector.y * 5, lookVector.z * 5, Block.getStateId(Blocks.SNOW.getDefaultState()));
+			player.world.spawnParticle(EnumParticleTypes.BLOCK_DUST, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.x * 5, lookVector.y * 5, lookVector.z * 5, ModBlocks.snowStateId);
 		}
 	}
 
