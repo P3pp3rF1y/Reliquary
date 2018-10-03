@@ -203,8 +203,12 @@ public class InventoryHelper {
 		return WorldHelper.getTile(world, pos).map(te -> InventoryHelper.getItemHandlerFrom(te, side)).orElse(Optional.empty());
 	}
 
+	public static IItemHandler getItemHandlerFrom(EntityPlayer player, @Nullable EnumFacing facing) {
+		return player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing);
+	}
+
 	public static IItemHandler getItemHandlerFrom(EntityPlayer player) {
-		return player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+		return getItemHandlerFrom(player, EnumFacing.UP);
 	}
 
 	public static Optional<IItemHandler> getItemHandlerFrom(TileEntity te) {
