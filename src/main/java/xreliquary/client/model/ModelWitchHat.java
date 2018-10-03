@@ -30,15 +30,13 @@ public class ModelWitchHat extends ModelBiped {
 	@Override
 	public void render(@Nullable Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 		setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
-		witchHat.rotateAngleY = this.bipedHead.rotateAngleY;
-		witchHat.rotateAngleX = this.bipedHead.rotateAngleX;
-
-		if(this.isSneak)
-			witchHat.rotationPointY = 1.0F;
-		else
-			witchHat.rotationPointY = 0.0F;
-
+		copyModelAngles(this.bipedHead, witchHat);
 		GlStateManager.pushMatrix();
+
+		if (this.isSneak) {
+			GlStateManager.translate(0.0F, 0.2F, 0.0F);
+		}
+
 		witchHat.render(scale);
 		GlStateManager.popMatrix();
 	}
