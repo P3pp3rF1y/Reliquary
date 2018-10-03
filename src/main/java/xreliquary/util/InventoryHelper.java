@@ -241,7 +241,7 @@ public class InventoryHelper {
 				if (remainingStack.getCount() < currentStackCount) {
 					remaining -= (currentStackCount - remainingStack.getCount());
 					if (remaining <= 0) {
-						break;
+						return maxToAdd;
 					}
 					stackToInsert = contents.copy();
 					currentStackCount = Math.min(remaining, stackToInsert.getMaxStackSize());
