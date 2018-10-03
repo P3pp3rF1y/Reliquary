@@ -1,15 +1,11 @@
 package xreliquary.blocks.tile;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Tuple;
@@ -23,7 +19,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
 import xreliquary.api.IPedestalActionItemWrapper;
@@ -44,6 +39,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class TileEntityPedestal extends TileEntityPedestalPassive implements IPedestal, ITickable {
 
@@ -61,7 +57,6 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	private boolean powered = false;
 	private PedestalFluidHandler pedestalFluidHandler = null;
 	private List<Object> itemData = new ArrayList<>();
-	private IItemHandler inventoryWrapper = new InvWrapper(this);
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
@@ -128,7 +123,7 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 
 	@Override
 	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
@@ -139,8 +134,6 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			}
 			//noinspection unchecked
 			return (T) pedestalFluidHandler;
-		} else if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return (T) inventoryWrapper;
 		}
 
 		return super.getCapability(capability, facing);
@@ -256,10 +249,10 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 	public int addToConnectedInventory(@Nonnull ItemStack stack) {
 		int numberAdded = 0;
 		for(EnumFacing facing : EnumFacing.VALUES) {
-			IInventory inventory = getInventoryAtPos(this.getPos().add(facing.getDirectionVec()));
+			Optional<IItemHandler> inventory = InventoryHelper.getInventoryAtPos(world, pos.add(facing.getDirectionVec()), facing.getOpposite());
 
-			if(inventory != null) {
-				numberAdded += InventoryHelper.tryToAddToInventory(stack, inventory, stack.getCount() - numberAdded, facing.getOpposite());
+			if(inventory.isPresent()) {
+				numberAdded += InventoryHelper.tryToAddToInventory(stack, inventory.get(), stack.getCount() - numberAdded);
 
 				if(numberAdded >= stack.getCount())
 					break;
@@ -392,20 +385,6 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 			}
 	}
 
-	private IInventory getInventoryAtPos(BlockPos pos) {
-		if(world.getTileEntity(pos) instanceof IInventory) {
-			IInventory inventory = (IInventory) world.getTileEntity(pos);
-			Block block = world.getBlockState(pos).getBlock();
-
-			if(inventory instanceof TileEntityChest && block instanceof BlockChest) {
-				inventory = ((BlockChest) block).getContainer(world, pos, true);
-			}
-
-			return inventory;
-		}
-		return null;
-	}
-
 	private List<IFluidHandler> getAdjacentTanks() {
 		List<IFluidHandler> adjacentTanks = new ArrayList<>();
 
@@ -444,7 +423,6 @@ public class TileEntityPedestal extends TileEntityPedestalPassive implements IPe
 		}
 	}
 
-	// IInventory
 	@Override
 	public int getSizeInventory() {
 		int itemHandlerSlots = 0;

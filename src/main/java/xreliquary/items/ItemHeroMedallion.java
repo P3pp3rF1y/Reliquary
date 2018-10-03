@@ -6,7 +6,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,12 +20,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
 import xreliquary.items.util.fluid.FluidHandlerHeroMedallion;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.XpHelper;
@@ -59,6 +60,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	protected void addMoreInformation(ItemStack medallion, @Nullable World world, List<String> tooltip) {
 		int experience = NBTHelper.getInteger("experience", medallion);
 		int levels = XpHelper.getLevelForExperience(experience);
@@ -190,8 +192,7 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 		World world = pedestal.getTheWorld();
 
 		for(BlockPos pedestalPos : posInRange) {
-			IInventory pedestalInventory = (IInventory) world.getTileEntity(pedestalPos);
-			if(pedestalInventory != null) {
+			InventoryHelper.getInventoryAtPos(world, pedestalPos).ifPresent(pedestalInventory -> {
 				List<ItemStack> toRepair = getMendingItemsForRepair(pedestalInventory);
 
 				for(ItemStack itemToRepair : toRepair) {
@@ -201,15 +202,15 @@ public class ItemHeroMedallion extends ItemToggleable implements IPedestalAction
 					setExperience(stack, getExperience(stack) - XpHelper.durabilityToXp(durabilityToRepair));
 					itemToRepair.setItemDamage(itemToRepair.getItemDamage() - durabilityToRepair);
 				}
-			}
+			});
 		}
 		pedestal.setActionCoolDown(Settings.Items.HeroMedallion.pedestalCoolDown);
 	}
 
-	private List<ItemStack> getMendingItemsForRepair(IInventory inventory) {
+	private List<ItemStack> getMendingItemsForRepair(IItemHandler inventory) {
 		NonNullList<ItemStack> stacksToReturn = NonNullList.create();
 
-		for(int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+		for(int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack stack = inventory.getStackInSlot(slot);
 
 			//only getting items that are more than 1 damaged to not waste xp

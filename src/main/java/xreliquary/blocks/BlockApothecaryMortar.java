@@ -7,25 +7,22 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import xreliquary.blocks.tile.TileEntityMortar;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
+import xreliquary.util.InventoryHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -103,13 +100,13 @@ public class BlockApothecaryMortar extends BlockBase {
 
 		ItemStack heldItem = player.getHeldItem(hand);
 		TileEntity tileEntity = world.getTileEntity(pos);
-		if(tileEntity == null || !(tileEntity instanceof TileEntityMortar))
+		if (tileEntity == null || !(tileEntity instanceof TileEntityMortar))
 			return false;
 		TileEntityMortar mortar = (TileEntityMortar) tileEntity;
 
-		if(heldItem.isEmpty()) {
-			if(player.isSneaking()) {
-				xreliquary.util.InventoryHelper.tryRemovingLastStack(mortar, world, mortar.getPos());
+		if (heldItem.isEmpty()) {
+			if (player.isSneaking()) {
+				InventoryHelper.getItemHandlerFrom(mortar).ifPresent(itemHandler -> InventoryHelper.tryRemovingLastStack(itemHandler, world, mortar.getPos()));
 				return true;
 			}
 			boolean done = mortar.usePestle();
@@ -119,23 +116,21 @@ public class BlockApothecaryMortar extends BlockBase {
 		}
 
 		//if we're in cooldown prevent player from insta inserting essence that they just got from mortar
-		if(mortar.isInCooldown() && heldItem.getItem() == ModItems.potionEssence)
+		if (mortar.isInCooldown() && heldItem.getItem() == ModItems.potionEssence)
 			return false;
 
-		NonNullList<ItemStack> mortarItems = mortar.getItemStacks();
-		boolean putItemInSlot = false;
+		ItemStack stackToAdd = heldItem.copy();
+		stackToAdd.setCount(1);
 
-		for(int slot = 0; slot < mortarItems.size(); slot++) {
-			ItemStack item = new ItemStack(heldItem.getItem(), 1, heldItem.getItemDamage());
-			item.setTagCompound(heldItem.getTagCompound());
-			if(mortarItems.get(slot).isEmpty() && mortar.isItemValidForSlot(slot, item)) {
+		boolean putItemInSlot = InventoryHelper.getItemHandlerFrom(mortar).map(itemHandler -> {
+			if (InventoryHelper.insertIntoInventory(stackToAdd, itemHandler) == 1) {
 				heldItem.shrink(1);
-				mortar.setInventorySlotContents(slot, item);
-				putItemInSlot = true;
-				break;
+				return true;
 			}
-		}
-		if(!putItemInSlot) {
+			return false;
+		}).orElse(false);
+
+		if (!putItemInSlot) {
 			mortar.usePestle();
 			world.playSound(null, pos, this.blockSoundType.getStepSound(), SoundCategory.BLOCKS, (this.blockSoundType.getVolume() + 1.0F) / 2.0F, this.blockSoundType.getPitch() * 0.8F);
 			return false;
@@ -147,9 +142,8 @@ public class BlockApothecaryMortar extends BlockBase {
 
 	@Nonnull
 	@Override
-	public IBlockState getStateForPlacement(
-			@Nonnull World world,
-			@Nonnull BlockPos pos, @Nonnull EnumFacing facing, float hitX, float hitY, float hitZ, int meta, @Nonnull EntityLivingBase placer, EnumHand hand) {
+	public IBlockState getStateForPlacement(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing facing, float hitX, float hitY, float hitZ,
+			int meta, @Nonnull EntityLivingBase placer, EnumHand hand) {
 		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
 	}
 
@@ -162,12 +156,7 @@ public class BlockApothecaryMortar extends BlockBase {
 
 	@Override
 	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
-		TileEntity tileentity = world.getTileEntity(pos);
-
-		if(tileentity instanceof TileEntityMortar) {
-			InventoryHelper.dropInventoryItems(world, pos, (TileEntityMortar) tileentity);
-		}
-
+		InventoryHelper.dropInventoryItems(world, pos);
 		super.breakBlock(world, pos, state);
 	}
 }

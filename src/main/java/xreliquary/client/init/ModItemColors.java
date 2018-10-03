@@ -8,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Colors;
@@ -17,6 +19,7 @@ import xreliquary.util.potions.XRPotionHelper;
 
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public class ModItemColors {
 	public static void init() {
 		ItemColors itemColors = Minecraft.getMinecraft().getItemColors();

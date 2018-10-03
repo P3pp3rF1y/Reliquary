@@ -84,4 +84,10 @@ public class GuiMobCharmBelt extends GuiBase {
 			this.inventorySlots.inventorySlots.get(i).xPos = -999;
 		}
 	}
+
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		renderHoveredToolTip(mouseX, mouseY);
+	}
 }
