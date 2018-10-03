@@ -410,20 +410,16 @@ public class TileEntityCauldron extends TileEntityBase implements IWailaDataChan
 
 				return true;
 			}
-		} else if(getLiquidLevel() == 3) {
-			if(isItemValidForInput(itemStack)) {
-				addItem(itemStack);
+		} else if (getLiquidLevel() == 3 && isItemValidForInput(itemStack)) {
+			addItem(itemStack);
 
-				if(itemStack.getItem() == Items.DRAGON_BREATH) {
-					if(InventoryHelper.tryToAddToInventory(new ItemStack(Items.GLASS_BOTTLE), player.inventory, 1) != 1) {
-						InventoryHelper.spawnItemStack(world, pos.getX() + 0.5f, pos.getY() + 1.5f, pos.getZ() + 0.5f, new ItemStack(Items.GLASS_BOTTLE));
-					}
-				}
-
-				itemStack.shrink(1);
-
-				return true;
+			if (itemStack.getItem() == Items.DRAGON_BREATH && InventoryHelper.tryToAddToInventory(new ItemStack(Items.GLASS_BOTTLE), InventoryHelper.getItemHandlerFrom(player), 1) != 1) {
+				InventoryHelper.spawnItemStack(world, pos.getX() + 0.5f, pos.getY() + 1.5f, pos.getZ() + 0.5f, new ItemStack(Items.GLASS_BOTTLE));
 			}
+
+			itemStack.shrink(1);
+
+			return true;
 		}
 		return false;
 	}

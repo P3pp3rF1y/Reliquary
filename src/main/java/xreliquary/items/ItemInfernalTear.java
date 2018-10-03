@@ -3,7 +3,6 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,6 +13,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 import xreliquary.Reliquary;
 import xreliquary.crafting.factories.AlkahestryCraftingRecipeFactory.AlkahestryCraftingRecipe;
 import xreliquary.init.XRRecipes;
@@ -81,6 +81,7 @@ public class ItemInfernalTear extends ItemToggleable {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	protected void addMoreInformation(ItemStack stack, @Nullable World world, List<String> tooltip) {
 		if(this.getStackFromTear(stack).isEmpty()) {
 			LanguageHelper.formatTooltip("tooltip.infernal_tear.tear_empty", null, tooltip);
@@ -140,7 +141,7 @@ public class ItemInfernalTear extends ItemToggleable {
 
 		//if user is sneaking or just enabled the tear, let's fill it
 		if(player.isSneaking() || !this.isEnabled(itemStack)) {
-			ItemStack returnStack = this.buildTear(itemStack, player.inventory);
+			ItemStack returnStack = this.buildTear(itemStack, InventoryHelper.getItemHandlerFrom(player));
 			if(!returnStack.isEmpty())
 				return new ActionResult<>(EnumActionResult.SUCCESS, returnStack);
 		}
@@ -153,7 +154,7 @@ public class ItemInfernalTear extends ItemToggleable {
 	}
 
 	@Nonnull
-	private ItemStack buildTear(@Nonnull ItemStack stack, IInventory inventory) {
+	private ItemStack buildTear(@Nonnull ItemStack stack, IItemHandler inventory) {
 		ItemStack tear = new ItemStack(this, 1);
 
 		ItemStack target = getTargetAlkahestItem(stack, inventory);
@@ -169,10 +170,10 @@ public class ItemInfernalTear extends ItemToggleable {
 	}
 
 	@Nonnull
-	private ItemStack getTargetAlkahestItem(@Nonnull ItemStack self, IInventory inventory) {
+	private ItemStack getTargetAlkahestItem(@Nonnull ItemStack self, IItemHandler inventory) {
 		ItemStack targetItem = ItemStack.EMPTY;
 		int itemQuantity = 0;
-		for(int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+		for(int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack stack = inventory.getStackInSlot(slot);
 			if(stack.isEmpty()) {
 				continue;
@@ -194,7 +195,6 @@ public class ItemInfernalTear extends ItemToggleable {
 				targetItem = stack.copy();
 			}
 		}
-		inventory.markDirty();
 		return targetItem;
 	}
 

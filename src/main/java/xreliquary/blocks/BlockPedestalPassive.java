@@ -161,7 +161,8 @@ public class BlockPedestalPassive extends BlockBase {
 				return false;
 			}
 		} else {
-			return InventoryHelper.tryAddingPlayerCurrentItem(player, pedestal, EnumHand.MAIN_HAND);
+			return InventoryHelper.getItemHandlerFrom(pedestal)
+					.map(itemHandler -> InventoryHelper.tryAddingPlayerCurrentItem(player, itemHandler, EnumHand.MAIN_HAND)).orElse(false);
 		}
 	}
 

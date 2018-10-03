@@ -9,17 +9,25 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import xreliquary.util.InventoryHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+//TODO replace the use of IInventory here with ItemStackHandler that will handle inventory state
 public class TileEntityPedestalPassive extends TileEntityBase implements IInventory {
 	protected NonNullList<ItemStack> inventory;
 	protected short slots = 0;
 	private EnumDyeColor color = EnumDyeColor.RED;
+	private IItemHandler inventoryWrapper = new InvWrapper(this);
 
 	public TileEntityPedestalPassive() {
 		this.slots = 1;
@@ -230,5 +238,19 @@ public class TileEntityPedestalPassive extends TileEntityBase implements IInvent
 				return false;
 		}
 		return true;
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+	}
+
+	@Nullable
+	@Override
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+			return (T) inventoryWrapper;
+		}
+		return super.getCapability(capability, facing);
 	}
 }

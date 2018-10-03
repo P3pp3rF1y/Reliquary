@@ -21,7 +21,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
@@ -31,6 +36,8 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.Reliquary;
@@ -72,6 +79,7 @@ public class ItemHarvestRod extends ItemToggleable {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	protected void addMoreInformation(ItemStack rod, @Nullable World world, List<String> tooltip) {
 		LanguageHelper.formatTooltip(getUnlocalizedNameInefficiently(rod) + ".tooltip2", ImmutableMap.of("charge", Integer.toString(getBoneMealCount(rod, true))), tooltip);
 		for (int slot=1; slot<getCountPlantable(rod, true); slot++) {
@@ -425,7 +433,7 @@ public class ItemHarvestRod extends ItemToggleable {
 		if(getMode(stack).equals(BONE_MEAL_MODE)) {
 			ItemStack boneMealStack = new ItemStack(Items.DYE, 1, Reference.WHITE_DYE_META);
 			int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), getBoneMealCount(stack));
-			int numberAdded = InventoryHelper.tryToAddToInventory(boneMealStack, player.inventory, numberToAdd);
+			int numberAdded = InventoryHelper.tryToAddToInventory(boneMealStack, InventoryHelper.getItemHandlerFrom(player), numberToAdd);
 			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded, player, true);
 		} else if(getMode(stack).equals(PLANTABLE_MODE)) {
 			byte plantableSlot = getCurrentPlantableSlot(stack);
@@ -433,7 +441,7 @@ public class ItemHarvestRod extends ItemToggleable {
 			int plantableQuantity = getPlantableQuantity(stack, plantableSlot);
 
 			int numberToAdd = Math.min(plantableStack.getMaxStackSize(), plantableQuantity);
-			int numberAdded = InventoryHelper.tryToAddToInventory(plantableStack, player.inventory, numberToAdd);
+			int numberAdded = InventoryHelper.tryToAddToInventory(plantableStack, InventoryHelper.getItemHandlerFrom(player), numberToAdd);
 
 			int updatedPlantableQuantity = getPlantableQuantity(stack, plantableSlot) - numberAdded;
 
@@ -546,6 +554,7 @@ public class ItemHarvestRod extends ItemToggleable {
 								hoeLand(world, blockToHoe);
 								return;
 							}
+							break;
 						default:
 							break;
 					}
@@ -702,7 +711,7 @@ public class ItemHarvestRod extends ItemToggleable {
 
 	public byte getCurrentPlantableSlot(ItemStack stack) {
 		//noinspection ConstantConditions
-		return stack.hasTagCompound() ? stack.getTagCompound().getByte(PLANTABLE_INDEX_NBT_TAG) : -1;
+		return stack.hasTagCompound() ? stack.getTagCompound().getByte(PLANTABLE_INDEX_NBT_TAG) : (byte) -1;
 	}
 
 	private void setCurrentPlantableSlot(ItemStack stack, byte index) {
