@@ -71,10 +71,6 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 			int playerY = MathHelper.floor(player.getEntityBoundingBox().minY);
 			int playerZ = MathHelper.floor(player.posZ);
 
-			BlockPos pos;
-			IBlockState state;
-			Block block;
-
 			placement:
 			for (int xDiff = -getRange(); xDiff <= getRange(); xDiff++) {
 				for (int zDiff = -getRange(); zDiff <= getRange(); zDiff++) {
@@ -83,13 +79,13 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 						int y = playerY + yDiff;
 						int z = playerZ + zDiff;
 
-						pos = new BlockPos(x, y, z);
-						state = world.getBlockState(pos);
-						block = state.getBlock();
+						BlockPos pos = new BlockPos(x, y, z);
+						IBlockState state = world.getBlockState(pos);
+						Block block = state.getBlock();
 
 						if (block instanceof BlockLiquid || block instanceof IFluidBlock || !block.isAir(state, world, pos) && !block.isReplaceable(world, pos))
 							continue;
-						int lightLevel = player.world.getLightFromNeighborsFor(EnumSkyBlock.BLOCK, pos);
+						int lightLevel = player.world.getLightFor(EnumSkyBlock.BLOCK, pos);
 						if (lightLevel > Settings.Items.LanternOfParanoia.minLightLevel)
 							continue;
 						if (tryToPlaceTorchAround(stack, x, y, z, player, world))
