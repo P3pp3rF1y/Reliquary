@@ -46,9 +46,14 @@ public class Settings {
 
   public static class DisableSettings {
     @Config.Name(Names.Items.ALKAHESTRY_TOME)
-    @Config.Comment("Setting to false will remove this tome, altar, and recipes")
+    @Config.Comment("Disable this tome, altar, and recipes")
     @Config.RequiresMcRestart()
-    public boolean enableAlkahestry = true;
+    public boolean enableAlkahestry = false;
+
+    @Config.Name(Names.Items.HANDGUN)
+    @Config.Comment("Disable the handgun, bullets, magazines, and gun parts")
+    @Config.RequiresMcRestart()
+    public boolean enableHandgun = false;
   
   }
   

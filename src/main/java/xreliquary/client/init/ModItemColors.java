@@ -180,6 +180,6 @@ public class ModItemColors {
 	}
 
 	private static boolean isEnabled(Item item) {
-		return item.getRegistryName() != null;
+		return item != null && item.getRegistryName() != null;
 	}
 }

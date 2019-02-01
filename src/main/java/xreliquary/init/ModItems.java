@@ -145,8 +145,6 @@ public class ModItems {
 		glacialStaff = registerItem(registry, new ItemGlacialStaff(), Names.Items.GLACIAL_STAFF);
 		glowingBread = registerItem(registry, new ItemGlowingBread(), Names.Items.GLOWING_BREAD);
 		glowingWater = registerItem(registry, new ItemGlowingWater(), Names.Items.GLOWING_WATER);
-		gunPart = registerItem(registry, new ItemGunPart(), Names.Items.GUN_PART);
-		handgun = registerItem(registry, new ItemHandgun(), Names.Items.HANDGUN);
 		harvestRod = registerItem(registry, new ItemHarvestRod(), Names.Items.HARVEST_ROD);
 		mobCharmFragment = registerItem(registry, new ItemMobCharmFragment(), Names.Items.MOB_CHARM_FRAGMENT);
 		heroMedallion = registerItem(registry, new ItemHeroMedallion(), Names.Items.HERO_MEDALLION);
@@ -175,9 +173,13 @@ public class ModItems {
 		witherlessRose = registerItem(registry, new ItemWitherlessRose(), Names.Items.WITHERLESS_ROSE);
 		potionEssence = registerItem(registry, new ItemPotionEssence(), Names.Items.POTION_ESSENCE, false);
 		potion = registerItem(registry, new ItemXRPotion(), Names.Items.POTION, false);
-		bullet = registerItem(registry, new ItemBullet(), Names.Items.BULLET);
-		magazine = registerItem(registry, new ItemMagazine(), Names.Items.MAGAZINE);
-		tippedArrow = registerItem(registry, new ItemXRTippedArrow(), Names.Items.TIPPED_ARROW, false);
+    if(Settings.Disable.enableHandgun) {
+      bullet = registerItem(registry, new ItemBullet(), Names.Items.BULLET);
+      magazine = registerItem(registry, new ItemMagazine(), Names.Items.MAGAZINE);
+      gunPart = registerItem(registry, new ItemGunPart(), Names.Items.GUN_PART);
+      handgun = registerItem(registry, new ItemHandgun(), Names.Items.HANDGUN);
+    }
+    tippedArrow = registerItem(registry, new ItemXRTippedArrow(), Names.Items.TIPPED_ARROW, false);
 
 		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.potion, new BehaviorDefaultProjectileDispense() {
 			@Override

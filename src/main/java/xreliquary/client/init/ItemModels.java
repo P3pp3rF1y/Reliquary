@@ -35,7 +35,9 @@ public class ItemModels {
 		registerItemModel(ModItems.glacialStaff, Names.Items.GLACIAL_STAFF);
 		registerItemModel(ModItems.glowingBread, Names.Items.GLOWING_BREAD);
 		registerItemModel(ModItems.glowingWater, Names.Items.GLOWING_WATER);
-		registerItemModel(ModItems.handgun, Names.Items.HANDGUN);
+    if(Settings.Disable.enableHandgun) {
+      registerItemModel(ModItems.handgun, Names.Items.HANDGUN);
+    }
 		registerItemModel(ModItems.harvestRod, Names.Items.HARVEST_ROD);
 		registerItemModel(ModItems.heroMedallion, Names.Items.HERO_MEDALLION);
 		registerItemModel(ModItems.holyHandGrenade, Names.Items.HOLY_HAND_GRENADE);
@@ -69,12 +71,16 @@ public class ItemModels {
 			registerItemModel(ModItems.mobIngredient, Names.Items.MOB_INGREDIENT, i, true);
 		}
 
-		for(int i = 0; i < 3; i++) {
-			registerItemModel(ModItems.gunPart, Names.Items.GUN_PART, i, true);
-		}
+    if(Settings.Disable.enableHandgun) {
+  		for(int i = 0; i < 3; i++) {
+  			registerItemModel(ModItems.gunPart, Names.Items.GUN_PART, i, true);
+  		}
+    }
 
-		registerItemModelForAllVariants(ModItems.bullet, Names.Items.BULLET, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.BULLET, "inventory"));
-		registerItemModelForAllVariants(ModItems.mobCharmFragment, Names.Items.MOB_CHARM_FRAGMENT, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MOB_CHARM_FRAGMENT, "inventory"));
+    if(Settings.Disable.enableHandgun) {
+      registerItemModelForAllVariants(ModItems.bullet, Names.Items.BULLET, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.BULLET, "inventory"));
+    }
+    registerItemModelForAllVariants(ModItems.mobCharmFragment, Names.Items.MOB_CHARM_FRAGMENT, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MOB_CHARM_FRAGMENT, "inventory"));
 		registerItemModelForAllVariants(ModItems.mobCharm, Names.Items.MOB_CHARM, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MOB_CHARM, "inventory"));
 		registerItemModelForAllVariants(ModItems.potionEssence, Names.Items.POTION_ESSENCE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.POTION_ESSENCE, "inventory"));
 		registerItemModelForAllVariants(ModItems.infernalTear, Names.Items.INFERNAL_TEAR_EMPTY, stack -> {
@@ -103,8 +109,9 @@ public class ItemModels {
 		});
 		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.POTION_SPLASH);
 		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.POTION_LINGERING);
-
-		registerItemModelForAllVariants(ModItems.magazine, Names.Items.MAGAZINE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MAGAZINE, "inventory"));
+		if(Settings.Disable.enableHandgun) {
+		  registerItemModelForAllVariants(ModItems.magazine, Names.Items.MAGAZINE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MAGAZINE, "inventory"));
+	  }
 	}
 
 	private static void registerItemModelForAllVariants(Item item, String resourceName, ItemMeshDefinition itemMeshDefinition) {
