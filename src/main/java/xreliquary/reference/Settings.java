@@ -46,7 +46,7 @@ public class Settings {
 
   public static class DisableSettings {
     @Config.Name(Names.Items.ALKAHESTRY_TOME)
-    @Config.Comment("Disable this tome, altar, and recipes")
+    @Config.Comment("Disable Alkahestry tome and its and recipes")
     @Config.RequiresMcRestart()
     public boolean enableAlkahestry = false;
 

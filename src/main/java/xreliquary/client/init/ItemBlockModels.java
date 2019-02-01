@@ -15,9 +15,7 @@ public class ItemBlockModels {
 	public static void registerItemBlockModels() {
 		registerBlockItemModel(ModBlocks.apothecaryCauldron, Names.Blocks.APOTHECARY_CAULDRON);
 		registerBlockItemModel(ModBlocks.apothecaryMortar, Names.Blocks.APOTHECARY_MORTAR);
-    if(Settings.Disable.enableAlkahestry) {
-      registerBlockItemModel(ModBlocks.alkahestryAltar, Names.Blocks.ALTAR);
-    }
+    registerBlockItemModel(ModBlocks.alkahestryAltar, Names.Blocks.ALTAR);
 		registerBlockItemModel(ModBlocks.interdictionTorch, Names.Blocks.INTERDICTION_TORCH);
 		registerBlockItemModel(ModBlocks.wraithNode, Names.Blocks.WRAITH_NODE);
 		registerBlockItemModel(ModBlocks.fertileLilypad, Names.Blocks.FERTILE_LILYPAD);
