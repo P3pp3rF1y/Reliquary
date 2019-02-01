@@ -59,6 +59,17 @@ public class Settings {
     @Config.Comment("Disable the potion system including mortar, altar, potions, tipped arrows, and powder")
     @Config.RequiresMcRestart()
     public boolean enablePotions = false;
+
+    @Config.Name(Names.Blocks.PEDESTAL)
+    @Config.Comment("Disable all pedestals")
+    @Config.RequiresMcRestart()
+    public boolean enablePedestal = false;
+
+    @Config.Name(Names.Blocks.PEDESTAL_PASSIVE)
+    @Config.Comment("Disable all display-only pedestals")
+    @Config.RequiresMcRestart()
+    public boolean enablePedestalPassive = false;
+    
   }
   
 	@Config.Name("potions")

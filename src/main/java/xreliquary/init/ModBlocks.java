@@ -57,10 +57,14 @@ public class ModBlocks {
     fertileLilypad = registerBlock(registry, new BlockFertileLilypad(), Names.Blocks.FERTILE_LILYPAD);
 		interdictionTorch = registerBlock(registry, new BlockInterdictionTorch(), Names.Blocks.INTERDICTION_TORCH);
 		wraithNode = registerBlock(registry, new BlockWraithNode(), Names.Blocks.WRAITH_NODE);
-		pedestal = registerBlock(registry, new BlockPedestal(), Names.Blocks.PEDESTAL, TileEntityPedestal.class);
-		pedestalPassive = registerBlock(registry, new BlockPedestalPassive(), Names.Blocks.PEDESTAL_PASSIVE, TileEntityPedestalPassive.class);
+		if(Settings.Disable.enablePedestal) {
+		  pedestal = registerBlock(registry, new BlockPedestal(), Names.Blocks.PEDESTAL, TileEntityPedestal.class);
+		}
+		if(Settings.Disable.enablePedestal) {
+	    pedestalPassive = registerBlock(registry, new BlockPedestalPassive(), Names.Blocks.PEDESTAL_PASSIVE, TileEntityPedestalPassive.class);	
+		}
 	}
-
+	
 	@SubscribeEvent
 	public static void registerItemBlocks(RegistryEvent.Register<Item> event) {
 		IForgeRegistry<Item> registry = event.getRegistry();
@@ -73,8 +77,12 @@ public class ModBlocks {
     registerItemBlock(registry, fertileLilypad, new ItemFertileLilyPad(), Names.Blocks.FERTILE_LILYPAD, false);
 		registerItemBlock(registry, interdictionTorch, Names.Blocks.INTERDICTION_TORCH);
 		registerItemBlock(registry, wraithNode, Names.Blocks.WRAITH_NODE);
-		registerItemBlock(registry, pedestal, new ItemBlockPedestal(pedestal), Names.Blocks.PEDESTAL, true);
-		registerItemBlock(registry, pedestalPassive, new ItemBlockPedestal(pedestalPassive), Names.Blocks.PEDESTAL_PASSIVE, true);
+    if(Settings.Disable.enablePedestal) {
+      registerItemBlock(registry, pedestal, new ItemBlockPedestal(pedestal), Names.Blocks.PEDESTAL, true);
+    }
+    if(Settings.Disable.enablePedestalPassive) {
+      registerItemBlock(registry, pedestalPassive, new ItemBlockPedestal(pedestalPassive), Names.Blocks.PEDESTAL_PASSIVE, true);
+    }
 	}
 
 	private static <T extends Block> T registerBlock(IForgeRegistry<Block> registry, T block, String name) {
