@@ -54,7 +54,11 @@ public class Settings {
     @Config.Comment("Disable the handgun, bullets, magazines, and gun parts")
     @Config.RequiresMcRestart()
     public boolean enableHandgun = false;
-  
+
+    @Config.Name(Names.Items.POTION)
+    @Config.Comment("Disable the potion system including mortar, altar, potions, tipped arrows, and powder")
+    @Config.RequiresMcRestart()
+    public boolean enablePotions = false;
   }
   
 	@Config.Name("potions")

@@ -48,11 +48,13 @@ public class ModBlocks {
 	@SubscribeEvent
 	public static void register(RegistryEvent.Register<Block> event) {
 		IForgeRegistry<Block> registry = event.getRegistry();
-
-		apothecaryCauldron = registerBlock(registry, new BlockApothecaryCauldron(), Names.Blocks.APOTHECARY_CAULDRON, TileEntityCauldron.class);
-		alkahestryAltar = registerBlock(registry, new BlockAlkahestryAltar(), Names.Blocks.ALTAR, TileEntityAltar.class);		
-		apothecaryMortar = registerBlock(registry, new BlockApothecaryMortar(), Names.Blocks.APOTHECARY_MORTAR, TileEntityMortar.class);
-		fertileLilypad = registerBlock(registry, new BlockFertileLilypad(), Names.Blocks.FERTILE_LILYPAD);
+		
+		alkahestryAltar = registerBlock(registry, new BlockAlkahestryAltar(), Names.Blocks.ALTAR, TileEntityAltar.class);       
+    if(Settings.Disable.enablePotions) {
+  		apothecaryCauldron = registerBlock(registry, new BlockApothecaryCauldron(), Names.Blocks.APOTHECARY_CAULDRON, TileEntityCauldron.class);
+  		apothecaryMortar = registerBlock(registry, new BlockApothecaryMortar(), Names.Blocks.APOTHECARY_MORTAR, TileEntityMortar.class);
+    }
+    fertileLilypad = registerBlock(registry, new BlockFertileLilypad(), Names.Blocks.FERTILE_LILYPAD);
 		interdictionTorch = registerBlock(registry, new BlockInterdictionTorch(), Names.Blocks.INTERDICTION_TORCH);
 		wraithNode = registerBlock(registry, new BlockWraithNode(), Names.Blocks.WRAITH_NODE);
 		pedestal = registerBlock(registry, new BlockPedestal(), Names.Blocks.PEDESTAL, TileEntityPedestal.class);
@@ -63,10 +65,12 @@ public class ModBlocks {
 	public static void registerItemBlocks(RegistryEvent.Register<Item> event) {
 		IForgeRegistry<Item> registry = event.getRegistry();
 
-		registerItemBlock(registry, apothecaryCauldron, Names.Blocks.APOTHECARY_CAULDRON);
     registerItemBlock(registry, alkahestryAltar, Names.Blocks.ALTAR);
-	  registerItemBlock(registry, apothecaryMortar, Names.Blocks.APOTHECARY_MORTAR);
-		registerItemBlock(registry, fertileLilypad, new ItemFertileLilyPad(), Names.Blocks.FERTILE_LILYPAD, false);
+    if(Settings.Disable.enablePotions) {
+  		registerItemBlock(registry, apothecaryCauldron, Names.Blocks.APOTHECARY_CAULDRON);
+  	  registerItemBlock(registry, apothecaryMortar, Names.Blocks.APOTHECARY_MORTAR);
+    }
+    registerItemBlock(registry, fertileLilypad, new ItemFertileLilyPad(), Names.Blocks.FERTILE_LILYPAD, false);
 		registerItemBlock(registry, interdictionTorch, Names.Blocks.INTERDICTION_TORCH);
 		registerItemBlock(registry, wraithNode, Names.Blocks.WRAITH_NODE);
 		registerItemBlock(registry, pedestal, new ItemBlockPedestal(pedestal), Names.Blocks.PEDESTAL, true);
