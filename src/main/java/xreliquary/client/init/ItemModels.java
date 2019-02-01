@@ -15,12 +15,15 @@ import xreliquary.client.model.ModelVoidTear;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Side.CLIENT)
 public class ItemModels {
 	public static void registerItemModels() {
-		registerItemModel(ModItems.alkahestryTome, Names.Items.ALKAHESTRY_TOME);
-		registerItemModel(ModItems.mercyCross, Names.Items.MERCY_CROSS);
+	  if(Settings.Disable.enableAlkahestry) {
+		  registerItemModel(ModItems.alkahestryTome, Names.Items.ALKAHESTRY_TOME);
+	  }
+	  registerItemModel(ModItems.mercyCross, Names.Items.MERCY_CROSS);
 		registerItemModel(ModItems.angelheartVial, Names.Items.ANGELHEART_VIAL);
 		registerItemModel(ModItems.angelicFeather, Names.Items.ANGELIC_FEATHER);
 		registerItemModel(ModItems.attractionPotion, Names.Items.ATTRACTION_POTION);

@@ -40,6 +40,18 @@ public class Settings {
 	@Config.RequiresMcRestart
 	public static boolean mobDropsEnabled = true;
 
+  @Config.Name("disable")
+  @Config.Comment("Disable sections of the mod")
+  public static final DisableSettings Disable = new DisableSettings();
+
+  public static class DisableSettings {
+    @Config.Name(Names.Items.ALKAHESTRY_TOME)
+    @Config.Comment("Setting to false will remove this tome, altar, and recipes")
+    @Config.RequiresMcRestart()
+    public boolean enableAlkahestry = true;
+  
+  }
+  
 	@Config.Name("potions")
 	@Config.Comment("Potions related settings")
 	public static final PotionSettings Potions = new PotionSettings();
@@ -844,4 +856,5 @@ public class Settings {
 			public int fishingWrapperRetractDelay = 2;
 		}
 	}
+	
 }

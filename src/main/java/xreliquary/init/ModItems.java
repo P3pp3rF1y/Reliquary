@@ -72,7 +72,7 @@ import xreliquary.items.ItemXRPotion;
 import xreliquary.items.ItemXRTippedArrow;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
-
+import xreliquary.reference.Settings;
 import javax.annotation.Nonnull;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
@@ -129,9 +129,10 @@ public class ModItems {
 	@SubscribeEvent
 	public static void register(RegistryEvent.Register<Item> event) {
 		IForgeRegistry<Item> registry = event.getRegistry();
-
-		alkahestryTome = registerItem(registry, new ItemAlkahestryTome(), Names.Items.ALKAHESTRY_TOME);
-		mobIngredient = registerItem(registry, new ItemMobIngredient(), Names.Items.MOB_INGREDIENT);
+	  if(Settings.Disable.enableAlkahestry) {
+	    alkahestryTome = registerItem(registry, new ItemAlkahestryTome(), Names.Items.ALKAHESTRY_TOME);
+	  }
+	  mobIngredient = registerItem(registry, new ItemMobIngredient(), Names.Items.MOB_INGREDIENT);
 		mercyCross = registerItem(registry, new ItemMercyCross(), Names.Items.MERCY_CROSS);
 		angelheartVial = registerItem(registry, new ItemAngelheartVial(), Names.Items.ANGELHEART_VIAL);
 		angelicFeather = registerItem(registry, new ItemAngelicFeather(), Names.Items.ANGELIC_FEATHER);
