@@ -48,27 +48,27 @@ public class Settings {
     @Config.Name(Names.Items.ALKAHESTRY_TOME)
     @Config.Comment("Disable Alkahestry tome and its and recipes")
     @Config.RequiresMcRestart()
-    public boolean enableAlkahestry = false;
+    public boolean enableAlkahestry = true;
 
     @Config.Name(Names.Items.HANDGUN)
     @Config.Comment("Disable the handgun, bullets, magazines, and gun parts")
     @Config.RequiresMcRestart()
-    public boolean enableHandgun = false;
+    public boolean enableHandgun = true;
 
     @Config.Name(Names.Items.POTION)
     @Config.Comment("Disable the potion system including mortar, altar, potions, tipped arrows, and powder")
     @Config.RequiresMcRestart()
-    public boolean enablePotions = false;
+    public boolean enablePotions = true;
 
     @Config.Name(Names.Blocks.PEDESTAL)
     @Config.Comment("Disable all pedestals")
     @Config.RequiresMcRestart()
-    public boolean enablePedestal = false;
+    public boolean enablePedestal = true;
 
     @Config.Name(Names.Blocks.PEDESTAL_PASSIVE)
     @Config.Comment("Disable all display-only pedestals")
     @Config.RequiresMcRestart()
-    public boolean enablePedestalPassive = false;
+    public boolean enablePedestalPassive = true;
     
   }
   
