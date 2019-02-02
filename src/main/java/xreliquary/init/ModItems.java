@@ -169,7 +169,8 @@ public class ModItems {
 		twilightCloak = registerItem(registry, new ItemTwilightCloak(), Names.Items.TWILIGHT_CLOAK);
 		voidTear = registerItem(registry, new ItemVoidTear(), Names.Items.VOID_TEAR);
 		witchHat = registerItem(registry, new ItemWitchHat(), Names.Items.WITCH_HAT);
-		witherlessRose = registerItem(registry, new ItemWitherlessRose(), Names.Items.WITHERLESS_ROSE);if(Settings.Disable.enableHandgun) {
+		witherlessRose = registerItem(registry, new ItemWitherlessRose(), Names.Items.WITHERLESS_ROSE);
+		if(Settings.Disable.enableHandgun) {
       bullet = registerItem(registry, new ItemBullet(), Names.Items.BULLET);
       magazine = registerItem(registry, new ItemMagazine(), Names.Items.MAGAZINE);
       gunPart = registerItem(registry, new ItemGunPart(), Names.Items.GUN_PART);
