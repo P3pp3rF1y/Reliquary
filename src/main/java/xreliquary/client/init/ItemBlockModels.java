@@ -9,7 +9,6 @@ import xreliquary.blocks.BlockPedestalPassive;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
-import xreliquary.reference.Settings;
 
 public class ItemBlockModels {
 	public static void registerItemBlockModels() {

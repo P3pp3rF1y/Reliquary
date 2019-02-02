@@ -20,10 +20,10 @@ import xreliquary.reference.Settings;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Side.CLIENT)
 public class ItemModels {
 	public static void registerItemModels() {
-	  if(Settings.Disable.enableAlkahestry) {
-		  registerItemModel(ModItems.alkahestryTome, Names.Items.ALKAHESTRY_TOME);
-	  }
-	  registerItemModel(ModItems.mercyCross, Names.Items.MERCY_CROSS);
+		if(Settings.Disable.enableAlkahestry) {
+			registerItemModel(ModItems.alkahestryTome, Names.Items.ALKAHESTRY_TOME);
+		}
+		registerItemModel(ModItems.mercyCross, Names.Items.MERCY_CROSS);
 		registerItemModel(ModItems.angelheartVial, Names.Items.ANGELHEART_VIAL);
 		registerItemModel(ModItems.angelicFeather, Names.Items.ANGELIC_FEATHER);
 		registerItemModel(ModItems.destructionCatalyst, Names.Items.DESTRUCTION_CATALYST);
@@ -33,9 +33,9 @@ public class ItemModels {
 		registerItemModel(ModItems.glacialStaff, Names.Items.GLACIAL_STAFF);
 		registerItemModel(ModItems.glowingBread, Names.Items.GLOWING_BREAD);
 		registerItemModel(ModItems.glowingWater, Names.Items.GLOWING_WATER);
-    if(Settings.Disable.enableHandgun) {
-      registerItemModel(ModItems.handgun, Names.Items.HANDGUN);
-    }
+		if(Settings.Disable.enableHandgun) {
+			registerItemModel(ModItems.handgun, Names.Items.HANDGUN);
+		}
 		registerItemModel(ModItems.harvestRod, Names.Items.HARVEST_ROD);
 		registerItemModel(ModItems.heroMedallion, Names.Items.HERO_MEDALLION);
 		registerItemModel(ModItems.holyHandGrenade, Names.Items.HOLY_HAND_GRENADE);
@@ -68,18 +68,18 @@ public class ItemModels {
 			registerItemModel(ModItems.mobIngredient, Names.Items.MOB_INGREDIENT, i, true);
 		}
 
-    if(Settings.Disable.enableHandgun) {
-      registerItemModelForAllVariants(ModItems.magazine, Names.Items.MAGAZINE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MAGAZINE, "inventory"));
-      
-  		for(int i = 0; i < 3; i++) {
-  			registerItemModel(ModItems.gunPart, Names.Items.GUN_PART, i, true);
-  		}
-  		
-      registerItemModelForAllVariants(ModItems.bullet, Names.Items.BULLET, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.BULLET, "inventory"));
-    }
+		if(Settings.Disable.enableHandgun) {
+			registerItemModelForAllVariants(ModItems.magazine, Names.Items.MAGAZINE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MAGAZINE, "inventory"));
+			
+			for(int i = 0; i < 3; i++) {
+				registerItemModel(ModItems.gunPart, Names.Items.GUN_PART, i, true);
+			}
+			
+			registerItemModelForAllVariants(ModItems.bullet, Names.Items.BULLET, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.BULLET, "inventory"));
+		}
     registerItemModelForAllVariants(ModItems.mobCharmFragment, Names.Items.MOB_CHARM_FRAGMENT, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MOB_CHARM_FRAGMENT, "inventory"));
 		registerItemModelForAllVariants(ModItems.mobCharm, Names.Items.MOB_CHARM, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MOB_CHARM, "inventory"));
-	registerItemModelForAllVariants(ModItems.infernalTear, Names.Items.INFERNAL_TEAR_EMPTY, stack -> {
+		registerItemModelForAllVariants(ModItems.infernalTear, Names.Items.INFERNAL_TEAR_EMPTY, stack -> {
 			if(!ModItems.infernalTear.getStackFromTear(stack).isEmpty()) {
 				return ItemModelLocations.INFERNAL_TEAR;
 			}
@@ -95,24 +95,24 @@ public class ItemModels {
 		});
 		ModelBakery.registerItemVariants(ModItems.voidTear, ItemModelLocations.VOID_TEAR);
 
-    if(Settings.Disable.enablePotions) {
-      registerItemModel(ModItems.tippedArrow, Names.Items.TIPPED_ARROW);
-      registerItemModel(ModItems.attractionPotion, Names.Items.ATTRACTION_POTION);
-      registerItemModel(ModItems.fertilePotion, Names.Items.FERTILE_POTION);  
-      registerItemModelForAllVariants(ModItems.potionEssence, Names.Items.POTION_ESSENCE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.POTION_ESSENCE, "inventory"));
-      
-     
-  		registerItemModelForAllVariants(ModItems.potion, Names.Items.POTION, stack -> {
-  			if(ModItems.potion.isSplash(stack)) {
-  				return ItemModelLocations.POTION_SPLASH;
-  			} else if(ModItems.potion.isLingering(stack)) {
-  				return ItemModelLocations.POTION_LINGERING;
-  			}
-  			return ItemModelLocations.POTION;
-  		});
-  		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.POTION_SPLASH);
-  		ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.POTION_LINGERING);
-    }
+		if(Settings.Disable.enablePotions) {
+			registerItemModel(ModItems.tippedArrow, Names.Items.TIPPED_ARROW);
+			registerItemModel(ModItems.attractionPotion, Names.Items.ATTRACTION_POTION);
+			registerItemModel(ModItems.fertilePotion, Names.Items.FERTILE_POTION);  
+			registerItemModelForAllVariants(ModItems.potionEssence, Names.Items.POTION_ESSENCE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.POTION_ESSENCE, "inventory"));
+			
+			
+			registerItemModelForAllVariants(ModItems.potion, Names.Items.POTION, stack -> {
+				if(ModItems.potion.isSplash(stack)) {
+					return ItemModelLocations.POTION_SPLASH;
+				} else if(ModItems.potion.isLingering(stack)) {
+					return ItemModelLocations.POTION_LINGERING;
+				}
+				return ItemModelLocations.POTION;
+			});
+			ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.POTION_SPLASH);
+			ModelBakery.registerItemVariants(ModItems.potion, ItemModelLocations.POTION_LINGERING);
+		}
 	}
 
 	private static void registerItemModelForAllVariants(Item item, String resourceName, ItemMeshDefinition itemMeshDefinition) {
