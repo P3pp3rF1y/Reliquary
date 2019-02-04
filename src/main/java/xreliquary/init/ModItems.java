@@ -73,6 +73,7 @@ import xreliquary.items.ItemXRTippedArrow;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+
 import javax.annotation.Nonnull;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
@@ -129,10 +130,10 @@ public class ModItems {
 	@SubscribeEvent
 	public static void register(RegistryEvent.Register<Item> event) {
 		IForgeRegistry<Item> registry = event.getRegistry();
-	  if(!Settings.Disable.disableAlkahestry) {
-	    alkahestryTome = registerItem(registry, new ItemAlkahestryTome(), Names.Items.ALKAHESTRY_TOME);
-	  }
-	  mobIngredient = registerItem(registry, new ItemMobIngredient(), Names.Items.MOB_INGREDIENT);
+		if (!Settings.Disable.disableAlkahestry) {
+			alkahestryTome = registerItem(registry, new ItemAlkahestryTome(), Names.Items.ALKAHESTRY_TOME);
+		}
+		mobIngredient = registerItem(registry, new ItemMobIngredient(), Names.Items.MOB_INGREDIENT);
 		mercyCross = registerItem(registry, new ItemMercyCross(), Names.Items.MERCY_CROSS);
 		angelheartVial = registerItem(registry, new ItemAngelheartVial(), Names.Items.ANGELHEART_VIAL);
 		angelicFeather = registerItem(registry, new ItemAngelicFeather(), Names.Items.ANGELIC_FEATHER);
@@ -140,7 +141,7 @@ public class ModItems {
 		destructionCatalyst = registerItem(registry, new ItemDestructionCatalyst(), Names.Items.DESTRUCTION_CATALYST);
 		emperorChalice = registerItem(registry, new ItemEmperorChalice(), Names.Items.EMPEROR_CHALICE);
 		enderStaff = registerItem(registry, new ItemEnderStaff(), Names.Items.ENDER_STAFF);
-		fortuneCoin = registerItem(registry,  new ItemFortuneCoin(), Names.Items.FORTUNE_COIN);
+		fortuneCoin = registerItem(registry, new ItemFortuneCoin(), Names.Items.FORTUNE_COIN);
 		glacialStaff = registerItem(registry, new ItemGlacialStaff(), Names.Items.GLACIAL_STAFF);
 		glowingBread = registerItem(registry, new ItemGlowingBread(), Names.Items.GLOWING_BREAD);
 		glowingWater = registerItem(registry, new ItemGlowingWater(), Names.Items.GLOWING_WATER);
@@ -170,63 +171,62 @@ public class ModItems {
 		voidTear = registerItem(registry, new ItemVoidTear(), Names.Items.VOID_TEAR);
 		witchHat = registerItem(registry, new ItemWitchHat(), Names.Items.WITCH_HAT);
 		witherlessRose = registerItem(registry, new ItemWitherlessRose(), Names.Items.WITHERLESS_ROSE);
-		if(!Settings.Disable.disableHandgun) {
-      bullet = registerItem(registry, new ItemBullet(), Names.Items.BULLET);
-      magazine = registerItem(registry, new ItemMagazine(), Names.Items.MAGAZINE);
-      gunPart = registerItem(registry, new ItemGunPart(), Names.Items.GUN_PART);
-      handgun = registerItem(registry, new ItemHandgun(), Names.Items.HANDGUN);
-    }
-    if(!Settings.Disable.disablePotions) {
-      attractionPotion = registerItem(registry, new ItemAttractionPotion(), Names.Items.ATTRACTION_POTION);
-      fertilePotion = registerItem(registry, new ItemFertilePotion(), Names.Items.FERTILE_POTION);
-      potionEssence = registerItem(registry, new ItemPotionEssence(), Names.Items.POTION_ESSENCE, false);
-      potion = registerItem(registry, new ItemXRPotion(), Names.Items.POTION, false);
-      tippedArrow = registerItem(registry, new ItemXRTippedArrow(), Names.Items.TIPPED_ARROW, false);
-    
-  		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.potion, new BehaviorDefaultProjectileDispense() {
-  			@Override
-  			ProjectileEntityFactory getProjectileEntityFactory() {
-  				return (world, position, stack) -> new EntityThrownXRPotion(world, position.getX(), position.getY(), position.getZ(), stack);
-  			}
-  
-  			@Override
-  			boolean canShoot(ItemStack stack) {
-  				return ModItems.potion.isSplash(stack) || ModItems.potion.isLingering(stack);
-  			}
-  		});
+		if (!Settings.Disable.disableHandgun) {
+			bullet = registerItem(registry, new ItemBullet(), Names.Items.BULLET);
+			magazine = registerItem(registry, new ItemMagazine(), Names.Items.MAGAZINE);
+			gunPart = registerItem(registry, new ItemGunPart(), Names.Items.GUN_PART);
+			handgun = registerItem(registry, new ItemHandgun(), Names.Items.HANDGUN);
+		}
+		if (!Settings.Disable.disablePotions) {
+			attractionPotion = registerItem(registry, new ItemAttractionPotion(), Names.Items.ATTRACTION_POTION);
+			fertilePotion = registerItem(registry, new ItemFertilePotion(), Names.Items.FERTILE_POTION);
+			potionEssence = registerItem(registry, new ItemPotionEssence(), Names.Items.POTION_ESSENCE, false);
+			potion = registerItem(registry, new ItemXRPotion(), Names.Items.POTION, false);
+			tippedArrow = registerItem(registry, new ItemXRTippedArrow(), Names.Items.TIPPED_ARROW, false);
 
-      BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.attractionPotion, new BehaviorDefaultProjectileDispense() {
-        @Override
-        ProjectileEntityFactory getProjectileEntityFactory() {
-          return (world, position, stack) -> new EntityAttractionPotion(world, position.getX(), position.getY(), position.getZ());
-        }
-      });
+			BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.potion, new BehaviorDefaultProjectileDispense() {
+				@Override
+				ProjectileEntityFactory getProjectileEntityFactory() {
+					return (world, position, stack) -> new EntityThrownXRPotion(world, position.getX(), position.getY(), position.getZ(), stack);
+				}
 
-      BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.fertilePotion, new BehaviorDefaultProjectileDispense() {
-        @Override
-        ProjectileEntityFactory getProjectileEntityFactory() {
-          return (world, position, stack) -> new EntityFertilePotion(world, position.getX(), position.getY(), position.getZ());
-        }
-      });
+				@Override
+				boolean canShoot(ItemStack stack) {
+					return ModItems.potion.isSplash(stack) || ModItems.potion.isLingering(stack);
+				}
+			});
 
-      BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.tippedArrow, new BehaviorProjectileDispense() {
-        @Nonnull
-        @Override
-        protected IProjectile getProjectileEntity(@Nonnull World world, @Nonnull IPosition position, @Nonnull ItemStack stack) {
-          EntityXRTippedArrow entitytippedarrow = new EntityXRTippedArrow(world, position.getX(), position.getY(), position.getZ());
-          entitytippedarrow.setPotionEffect(stack);
-          entitytippedarrow.pickupStatus = EntityArrow.PickupStatus.ALLOWED;
-          return entitytippedarrow;
-        }
-      });
-    }
+			BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.attractionPotion, new BehaviorDefaultProjectileDispense() {
+				@Override
+				ProjectileEntityFactory getProjectileEntityFactory() {
+					return (world, position, stack) -> new EntityAttractionPotion(world, position.getX(), position.getY(), position.getZ());
+				}
+			});
+
+			BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.fertilePotion, new BehaviorDefaultProjectileDispense() {
+				@Override
+				ProjectileEntityFactory getProjectileEntityFactory() {
+					return (world, position, stack) -> new EntityFertilePotion(world, position.getX(), position.getY(), position.getZ());
+				}
+			});
+
+			BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.tippedArrow, new BehaviorProjectileDispense() {
+				@Nonnull
+				@Override
+				protected IProjectile getProjectileEntity(@Nonnull World world, @Nonnull IPosition position, @Nonnull ItemStack stack) {
+					EntityXRTippedArrow entitytippedarrow = new EntityXRTippedArrow(world, position.getX(), position.getY(), position.getZ());
+					entitytippedarrow.setPotionEffect(stack);
+					entitytippedarrow.pickupStatus = EntityArrow.PickupStatus.ALLOWED;
+					return entitytippedarrow;
+				}
+			});
+		}
 		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.glowingWater, new BehaviorDefaultProjectileDispense() {
 			@Override
 			ProjectileEntityFactory getProjectileEntityFactory() {
 				return (world, position, stack) -> new EntityGlowingWater(world, position.getX(), position.getY(), position.getZ());
 			}
 		});
-
 
 		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.holyHandGrenade, new BehaviorDefaultProjectileDispense() {
 			@Override
@@ -251,7 +251,7 @@ public class ModItems {
 		item.setRegistryName(new ResourceLocation(Reference.MOD_ID, name));
 		registry.register(item);
 
-		if(registerInJEI)
+		if (registerInJEI)
 			Reliquary.PROXY.registerJEI(item, name);
 
 		return item;
@@ -268,7 +268,7 @@ public class ModItems {
 		@Nonnull
 		@Override
 		public ItemStack dispense(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
-			if(!canShoot(stack)) {
+			if (!canShoot(stack)) {
 				return new BehaviorDefaultDispenseItem().dispense(source, stack);
 			}
 

@@ -8,13 +8,13 @@ import xreliquary.init.ModBlocks;
 public class ModBlockColors {
 	public static void init() {
 
-		if(ModBlocks.apothecaryCauldron != null && ModBlocks.apothecaryCauldron.getRegistryName() != null) {
-	    BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
+		if (ModBlocks.apothecaryCauldron != null && ModBlocks.apothecaryCauldron.getRegistryName() != null) {
+			BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
 
 			blockColors.registerBlockColorHandler((state, world, pos, tintIndex) -> {
-				if(world != null && pos != null) {
+				if (world != null && pos != null) {
 					TileEntityCauldron cauldron = (TileEntityCauldron) world.getTileEntity(pos);
-					if(cauldron != null) {
+					if (cauldron != null) {
 						return cauldron.getColorMultiplier();
 					}
 				}

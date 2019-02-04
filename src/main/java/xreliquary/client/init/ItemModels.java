@@ -20,7 +20,7 @@ import xreliquary.reference.Settings;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Side.CLIENT)
 public class ItemModels {
 	public static void registerItemModels() {
-		if(!Settings.Disable.disableAlkahestry) {
+		if (!Settings.Disable.disableAlkahestry) {
 			registerItemModel(ModItems.alkahestryTome, Names.Items.ALKAHESTRY_TOME);
 		}
 		registerItemModel(ModItems.mercyCross, Names.Items.MERCY_CROSS);
@@ -33,7 +33,7 @@ public class ItemModels {
 		registerItemModel(ModItems.glacialStaff, Names.Items.GLACIAL_STAFF);
 		registerItemModel(ModItems.glowingBread, Names.Items.GLOWING_BREAD);
 		registerItemModel(ModItems.glowingWater, Names.Items.GLOWING_WATER);
-		if(!Settings.Disable.disableHandgun) {
+		if (!Settings.Disable.disableHandgun) {
 			registerItemModel(ModItems.handgun, Names.Items.HANDGUN);
 		}
 		registerItemModel(ModItems.harvestRod, Names.Items.HARVEST_ROD);
@@ -64,23 +64,23 @@ public class ItemModels {
 
 		ModelBakery.registerItemVariants(ModItems.rodOfLyssa, ItemModelLocations.ROD_OF_LYSSA_CAST);
 
-		for(int i = 0; i < 17; i++) {
+		for (int i = 0; i < 17; i++) {
 			registerItemModel(ModItems.mobIngredient, Names.Items.MOB_INGREDIENT, i, true);
 		}
 
-		if(!Settings.Disable.disableHandgun) {
+		if (!Settings.Disable.disableHandgun) {
 			registerItemModelForAllVariants(ModItems.magazine, Names.Items.MAGAZINE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MAGAZINE, "inventory"));
-			
-			for(int i = 0; i < 3; i++) {
+
+			for (int i = 0; i < 3; i++) {
 				registerItemModel(ModItems.gunPart, Names.Items.GUN_PART, i, true);
 			}
-			
+
 			registerItemModelForAllVariants(ModItems.bullet, Names.Items.BULLET, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.BULLET, "inventory"));
 		}
-    registerItemModelForAllVariants(ModItems.mobCharmFragment, Names.Items.MOB_CHARM_FRAGMENT, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MOB_CHARM_FRAGMENT, "inventory"));
+		registerItemModelForAllVariants(ModItems.mobCharmFragment, Names.Items.MOB_CHARM_FRAGMENT, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MOB_CHARM_FRAGMENT, "inventory"));
 		registerItemModelForAllVariants(ModItems.mobCharm, Names.Items.MOB_CHARM, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MOB_CHARM, "inventory"));
 		registerItemModelForAllVariants(ModItems.infernalTear, Names.Items.INFERNAL_TEAR_EMPTY, stack -> {
-			if(!ModItems.infernalTear.getStackFromTear(stack).isEmpty()) {
+			if (!ModItems.infernalTear.getStackFromTear(stack).isEmpty()) {
 				return ItemModelLocations.INFERNAL_TEAR;
 			}
 			return ItemModelLocations.INFERNAL_TEAR_EMPTY;
@@ -88,24 +88,23 @@ public class ItemModels {
 		ModelBakery.registerItemVariants(ModItems.infernalTear, ItemModelLocations.INFERNAL_TEAR);
 
 		registerItemModelForAllVariants(ModItems.voidTear, Names.Items.VOID_TEAR_EMPTY, stack -> {
-			if(!ModItems.voidTear.isEmpty(stack, true)) {
+			if (!ModItems.voidTear.isEmpty(stack, true)) {
 				return ItemModelLocations.VOID_TEAR;
 			}
 			return ItemModelLocations.VOID_TEAR_EMPTY;
 		});
 		ModelBakery.registerItemVariants(ModItems.voidTear, ItemModelLocations.VOID_TEAR);
 
-		if(!Settings.Disable.disablePotions) {
+		if (!Settings.Disable.disablePotions) {
 			registerItemModel(ModItems.tippedArrow, Names.Items.TIPPED_ARROW);
 			registerItemModel(ModItems.attractionPotion, Names.Items.ATTRACTION_POTION);
-			registerItemModel(ModItems.fertilePotion, Names.Items.FERTILE_POTION);  
+			registerItemModel(ModItems.fertilePotion, Names.Items.FERTILE_POTION);
 			registerItemModelForAllVariants(ModItems.potionEssence, Names.Items.POTION_ESSENCE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.POTION_ESSENCE, "inventory"));
-			
-			
+
 			registerItemModelForAllVariants(ModItems.potion, Names.Items.POTION, stack -> {
-				if(ModItems.potion.isSplash(stack)) {
+				if (ModItems.potion.isSplash(stack)) {
 					return ItemModelLocations.POTION_SPLASH;
-				} else if(ModItems.potion.isLingering(stack)) {
+				} else if (ModItems.potion.isLingering(stack)) {
 					return ItemModelLocations.POTION_LINGERING;
 				}
 				return ItemModelLocations.POTION;
@@ -129,7 +128,7 @@ public class ItemModels {
 	}
 
 	private static void registerItemModel(Item item, String resourceName, int meta, boolean hasSubTypes) {
-		if(hasSubTypes) {
+		if (hasSubTypes) {
 			resourceName = resourceName + "_" + meta;
 		}
 

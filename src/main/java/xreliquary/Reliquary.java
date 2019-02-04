@@ -83,7 +83,7 @@ public class Reliquary {
 		PedestalItems.init();
 
 		if (!Settings.Disable.disableAlkahestry) {
-		  AlkahestryLoader.loadRecipes();
+			AlkahestryLoader.loadRecipes();
 		}
 
 		ModBlocks.initSnowStateId();
