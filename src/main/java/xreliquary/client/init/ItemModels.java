@@ -20,7 +20,7 @@ import xreliquary.reference.Settings;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Side.CLIENT)
 public class ItemModels {
 	public static void registerItemModels() {
-		if(Settings.Disable.enableAlkahestry) {
+		if(!Settings.Disable.disableAlkahestry) {
 			registerItemModel(ModItems.alkahestryTome, Names.Items.ALKAHESTRY_TOME);
 		}
 		registerItemModel(ModItems.mercyCross, Names.Items.MERCY_CROSS);
@@ -33,7 +33,7 @@ public class ItemModels {
 		registerItemModel(ModItems.glacialStaff, Names.Items.GLACIAL_STAFF);
 		registerItemModel(ModItems.glowingBread, Names.Items.GLOWING_BREAD);
 		registerItemModel(ModItems.glowingWater, Names.Items.GLOWING_WATER);
-		if(Settings.Disable.enableHandgun) {
+		if(!Settings.Disable.disableHandgun) {
 			registerItemModel(ModItems.handgun, Names.Items.HANDGUN);
 		}
 		registerItemModel(ModItems.harvestRod, Names.Items.HARVEST_ROD);
@@ -68,7 +68,7 @@ public class ItemModels {
 			registerItemModel(ModItems.mobIngredient, Names.Items.MOB_INGREDIENT, i, true);
 		}
 
-		if(Settings.Disable.enableHandgun) {
+		if(!Settings.Disable.disableHandgun) {
 			registerItemModelForAllVariants(ModItems.magazine, Names.Items.MAGAZINE, stack -> new ModelResourceLocation(Reference.DOMAIN + Names.Items.MAGAZINE, "inventory"));
 			
 			for(int i = 0; i < 3; i++) {
@@ -95,7 +95,7 @@ public class ItemModels {
 		});
 		ModelBakery.registerItemVariants(ModItems.voidTear, ItemModelLocations.VOID_TEAR);
 
-		if(Settings.Disable.enablePotions) {
+		if(!Settings.Disable.disablePotions) {
 			registerItemModel(ModItems.tippedArrow, Names.Items.TIPPED_ARROW);
 			registerItemModel(ModItems.attractionPotion, Names.Items.ATTRACTION_POTION);
 			registerItemModel(ModItems.fertilePotion, Names.Items.FERTILE_POTION);  

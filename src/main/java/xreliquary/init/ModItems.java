@@ -129,7 +129,7 @@ public class ModItems {
 	@SubscribeEvent
 	public static void register(RegistryEvent.Register<Item> event) {
 		IForgeRegistry<Item> registry = event.getRegistry();
-	  if(Settings.Disable.enableAlkahestry) {
+	  if(!Settings.Disable.disableAlkahestry) {
 	    alkahestryTome = registerItem(registry, new ItemAlkahestryTome(), Names.Items.ALKAHESTRY_TOME);
 	  }
 	  mobIngredient = registerItem(registry, new ItemMobIngredient(), Names.Items.MOB_INGREDIENT);
@@ -170,13 +170,13 @@ public class ModItems {
 		voidTear = registerItem(registry, new ItemVoidTear(), Names.Items.VOID_TEAR);
 		witchHat = registerItem(registry, new ItemWitchHat(), Names.Items.WITCH_HAT);
 		witherlessRose = registerItem(registry, new ItemWitherlessRose(), Names.Items.WITHERLESS_ROSE);
-		if(Settings.Disable.enableHandgun) {
+		if(!Settings.Disable.disableHandgun) {
       bullet = registerItem(registry, new ItemBullet(), Names.Items.BULLET);
       magazine = registerItem(registry, new ItemMagazine(), Names.Items.MAGAZINE);
       gunPart = registerItem(registry, new ItemGunPart(), Names.Items.GUN_PART);
       handgun = registerItem(registry, new ItemHandgun(), Names.Items.HANDGUN);
     }
-    if(Settings.Disable.enablePotions) {
+    if(!Settings.Disable.disablePotions) {
       attractionPotion = registerItem(registry, new ItemAttractionPotion(), Names.Items.ATTRACTION_POTION);
       fertilePotion = registerItem(registry, new ItemFertilePotion(), Names.Items.FERTILE_POTION);
       potionEssence = registerItem(registry, new ItemPotionEssence(), Names.Items.POTION_ESSENCE, false);

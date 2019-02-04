@@ -82,7 +82,7 @@ public class Reliquary {
 
 		PedestalItems.init();
 
-		if (Settings.Disable.enableAlkahestry) {
+		if (!Settings.Disable.disableAlkahestry) {
 		  AlkahestryLoader.loadRecipes();
 		}
 
