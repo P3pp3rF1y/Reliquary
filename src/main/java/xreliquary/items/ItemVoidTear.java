@@ -279,9 +279,9 @@ public class ItemVoidTear extends ItemToggleable {
 		if (world.getBlockState(pos).getBlock() == ModBlocks.pedestal)
 			return EnumActionResult.PASS;
 
-		if (!world.isRemote) {
-			Optional<IItemHandler> handler = WorldHelper.getTile(world, pos).map(InventoryHelper::getItemHandlerFrom).orElse(Optional.empty());
-			if (handler.isPresent()) {
+		Optional<IItemHandler> handler = WorldHelper.getTile(world, pos).map(InventoryHelper::getItemHandlerFrom).orElse(Optional.empty());
+		if (handler.isPresent()) {
+			if (!world.isRemote) {
 				IItemHandler itemHandler = handler.get();
 				if (isEmpty(voidTear)) {
 					return onItemUseFirstEmpty(voidTear, itemHandler, player, hand);
