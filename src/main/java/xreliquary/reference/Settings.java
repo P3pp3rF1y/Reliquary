@@ -693,6 +693,10 @@ public class Settings {
 			@Config.Name("anger_on_steal_failure")
 			@Config.Comment("Whether entities get angry at player if stealing fails")
 			public boolean angerOnStealFailure = true;
+
+			@Config.Name("steal_from_players")
+			@Config.Comment("Allows switching stealing from player on and off")
+			public boolean stealFromPlayers = true;
 		}
 
 		@Config.Name("seeker_shot")

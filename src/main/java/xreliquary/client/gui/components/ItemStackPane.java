@@ -56,5 +56,6 @@ public class ItemStackPane extends Component {
 		if (renderOverlay) {
 			mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, x, y, null);
 		}
+		RenderHelper.disableStandardItemLighting();
 	}
 }
