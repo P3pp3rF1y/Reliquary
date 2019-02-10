@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -17,7 +18,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -75,9 +78,14 @@ public class ItemLanternOfParanoia extends ItemToggleable {
 						int x = playerX + xDiff;
 						int y = playerY + yDiff;
 						int z = playerZ + zDiff;
-						if (!player.world.isAirBlock(new BlockPos(x, y, z)))
+
+						BlockPos pos = new BlockPos(x, y, z);
+						IBlockState state = world.getBlockState(pos);
+						Block block = state.getBlock();
+
+						if (block instanceof BlockLiquid || block instanceof IFluidBlock || !block.isAir(state, world, pos) && !block.isReplaceable(world, pos))
 							continue;
-						int lightLevel = player.world.getLightFromNeighbors(new BlockPos(x, y, z));
+						int lightLevel = player.world.getLightFor(EnumSkyBlock.BLOCK, pos);
 						if (lightLevel > Settings.Items.LanternOfParanoia.minLightLevel)
 							continue;
 						if (tryToPlaceTorchAround(stack, x, y, z, player, world))
