@@ -19,7 +19,7 @@ public class Settings {
 	private static class EventHandler {
 		@SubscribeEvent
 		public static void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
-			if(event.getModID().equals(Reference.MOD_ID)) {
+			if (event.getModID().equals(Reference.MOD_ID)) {
 				ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
 			}
 		}
@@ -39,6 +39,38 @@ public class Settings {
 	@Config.Comment("Whether mobs drop the Reliquary mob drops. This won't remove mob drop items from registry and replace them with something else, but allows to turn off the additional drops when mobs are killed by player. If this is turned off the mob drop crafting recipes turned on by the other setting can be used.")
 	@Config.RequiresMcRestart
 	public static boolean mobDropsEnabled = true;
+
+	@Config.Name("disable")
+	@Config.Comment("Disable sections of the mod")
+	public static final DisableSettings Disable = new DisableSettings();
+
+	public static class DisableSettings {
+		@Config.Name(Names.Items.ALKAHESTRY_TOME)
+		@Config.Comment("Disable Alkahestry tome and its and recipes")
+		@Config.RequiresMcRestart()
+		public boolean disableAlkahestry = false;
+
+		@Config.Name(Names.Items.HANDGUN)
+		@Config.Comment("Disable the handgun, bullets, magazines, and gun parts")
+		@Config.RequiresMcRestart()
+		public boolean disableHandgun = false;
+
+		@Config.Name(Names.Items.POTION)
+		@Config.Comment("Disable the potion system including mortar, altar, potions, tipped arrows, and powder")
+		@Config.RequiresMcRestart()
+		public boolean disablePotions = false;
+
+		@Config.Name(Names.Blocks.PEDESTAL)
+		@Config.Comment("Disable all pedestals")
+		@Config.RequiresMcRestart()
+		public boolean disablePedestal = false;
+
+		@Config.Name(Names.Blocks.PEDESTAL_PASSIVE)
+		@Config.Comment("Disable all display-only pedestals")
+		@Config.RequiresMcRestart()
+		public boolean disablePedestalPassive = false;
+
+	}
 
 	@Config.Name("potions")
 	@Config.Comment("Potions related settings")
@@ -166,7 +198,17 @@ public class Settings {
 		public class DestructionCatalystSettings {
 			@Config.Name("mundane_blocks")
 			@Config.Comment("List of mundane blocks the catalyst will break")
-			public String[] mundaneBlocks = new String[] {"minecraft:dirt", "minecraft:grass", "minecraft:gravel", "minecraft:cobblestone", "minecraft:stone", "minecraft:sand", "minecraft:sandstone", "minecraft:snow", "minecraft:soul_sand", "minecraft:netherrack", "minecraft:end_stone"};
+			public String[] mundaneBlocks = new String[] {"minecraft:dirt",
+					"minecraft:grass",
+					"minecraft:gravel",
+					"minecraft:cobblestone",
+					"minecraft:stone",
+					"minecraft:sand",
+					"minecraft:sandstone",
+					"minecraft:snow",
+					"minecraft:soul_sand",
+					"minecraft:netherrack",
+					"minecraft:end_stone"};
 			@Config.Name("gunpowder_cost")
 			@Config.Comment("Number of gunpowder it costs per catalyst use")
 			@Config.RangeInt(min = 0, max = 10)
@@ -670,7 +712,7 @@ public class Settings {
 		public class SojournerStaffSettings {
 			@Config.Name("torches")
 			@Config.Comment("List of torches that are supported by the staff in addition to the default minecraft torch")
-			public String[] torches = new String[]{"minecraft:torch"};
+			public String[] torches = new String[] {"minecraft:torch"};
 			@Config.Name("max_capacity_per_item_type")
 			@Config.Comment("Number of items the staff can store per item type")
 			@Config.RangeInt(min = 1, max = ITEM_CAP)
@@ -844,4 +886,5 @@ public class Settings {
 			public int fishingWrapperRetractDelay = 2;
 		}
 	}
+
 }

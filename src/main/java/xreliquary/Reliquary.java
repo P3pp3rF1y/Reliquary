@@ -23,6 +23,7 @@ import xreliquary.network.PacketHandler;
 import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
 import xreliquary.util.potions.PotionMap;
 
@@ -81,7 +82,9 @@ public class Reliquary {
 
 		PedestalItems.init();
 
-		AlkahestryLoader.loadRecipes();
+		if (!Settings.Disable.disableAlkahestry) {
+			AlkahestryLoader.loadRecipes();
+		}
 
 		ModBlocks.initSnowStateId();
 
