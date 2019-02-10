@@ -477,6 +477,7 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 			} else if(this.ticksCatchable > 0) {
 				LootContext.Builder lootcontext$builder = new LootContext.Builder((WorldServer) this.world);
 				lootcontext$builder.withLuck((float) luckOfTheSeaLevel + this.angler.getLuck());
+				lootcontext$builder.withPlayer(angler);
 
 				for(ItemStack itemstack : this.world.getLootTableManager().getLootTableFromLocation(LootTableList.GAMEPLAY_FISHING).generateLootForPools(this.rand, lootcontext$builder.build())) {
 					EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY, this.posZ, itemstack);
