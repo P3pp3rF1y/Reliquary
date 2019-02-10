@@ -582,7 +582,7 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 
 	public int handleHookRetraction() {
 		if(!this.world.isRemote) {
-			if(this.caughtEntity != null && this.getAngler().isSneaking() && this.caughtEntity instanceof EntityLivingBase) {
+			if(this.caughtEntity != null && this.getAngler().isSneaking() && canStealFromEntity()) {
 				stealFromLivingEntity();
 				this.setDead();
 			} else {
@@ -593,6 +593,10 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 		}
 
 		return 0;
+	}
+
+	private boolean canStealFromEntity() {
+		return caughtEntity instanceof EntityLivingBase && (Settings.Items.RodOfLyssa.stealFromPlayers || !(caughtEntity instanceof EntityPlayer));
 	}
 
 	private void pullItemEntitiesWithHook() {
