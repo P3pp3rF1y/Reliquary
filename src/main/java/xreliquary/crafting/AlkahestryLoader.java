@@ -11,8 +11,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import xreliquary.reference.Reference;
@@ -34,7 +34,7 @@ public class AlkahestryLoader {
 
 	private static final String CONFIG_FOLDER = "config/" + Reference.MOD_ID + "/alkahestry_overrides";
 	private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-	private static final Method LOAD_CONSTANTS = ReflectionHelper.findMethod(JsonContext.class, "loadConstants", null, JsonObject[].class);
+	private static final Method LOAD_CONSTANTS = ObfuscationReflectionHelper.findMethod(JsonContext.class, "loadConstants", void.class, JsonObject[].class);
 	private static Set<String> foldersLoaded = Sets.newHashSet();
 
 

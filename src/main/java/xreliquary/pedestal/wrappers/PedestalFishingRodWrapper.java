@@ -13,8 +13,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
 import xreliquary.entities.EntityXRFakePlayer;
@@ -256,7 +256,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private int getTicksCatchable(EntityFishHook hook) {
-		return ReflectionHelper.getPrivateValue(EntityFishHook.class, hook, "ticksCatchable", "field_146045_ax");
+		return ObfuscationReflectionHelper.getPrivateValue(EntityFishHook.class, hook, "field_146045_ax");
 	}
 
 	private void setPitchYaw(BlockPos pos) {
