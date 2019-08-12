@@ -13,6 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.handler.CommonEventHandler;
+import xreliquary.handler.HandlerPriority;
 import xreliquary.handler.IPlayerHurtHandler;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
@@ -46,8 +47,8 @@ public class ItemAngelicFeather extends ItemBase {
 			}
 
 			@Override
-			public Priority getPriority() {
-				return Priority.HIGH;
+			public HandlerPriority getPriority() {
+				return HandlerPriority.HIGH;
 			}
 		});
 	}

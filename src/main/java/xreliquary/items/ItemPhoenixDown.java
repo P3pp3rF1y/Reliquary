@@ -7,8 +7,11 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import xreliquary.Reliquary;
 import xreliquary.handler.CommonEventHandler;
+import xreliquary.handler.HandlerPriority;
+import xreliquary.handler.IPlayerDeathHandler;
 import xreliquary.handler.IPlayerHurtHandler;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
@@ -41,20 +44,19 @@ public class ItemPhoenixDown extends ItemAngelicFeather {
 			}
 
 			@Override
-			public Priority getPriority() {
-				return Priority.HIGH;
+			public HandlerPriority getPriority() {
+				return HandlerPriority.HIGH;
 			}
 		});
 
-		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
+		CommonEventHandler.registerPlayerDeathHandler(new IPlayerDeathHandler() {
 			@Override
-			public boolean canApply(EntityPlayer player, LivingAttackEvent event) {
-				return player.getHealth() <= Math.round(event.getAmount())
-						&& InventoryHelper.playerHasItem(player, ModItems.phoenixDown);
+			public boolean canApply(EntityPlayer player, LivingDeathEvent event) {
+				return InventoryHelper.playerHasItem(player, ModItems.phoenixDown);
 			}
 
 			@Override
-			public boolean apply(EntityPlayer player, LivingAttackEvent event) {
+			public boolean apply(EntityPlayer player, LivingDeathEvent event) {
 				// item reverts to a normal feather.
 				revertPhoenixDownToAngelicFeather(player);
 
@@ -89,8 +91,8 @@ public class ItemPhoenixDown extends ItemAngelicFeather {
 			}
 
 			@Override
-			public Priority getPriority() {
-				return Priority.LOW;
+			public HandlerPriority getPriority() {
+				return HandlerPriority.LOW;
 			}
 		});
 	}

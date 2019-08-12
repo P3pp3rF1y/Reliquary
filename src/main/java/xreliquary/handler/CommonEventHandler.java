@@ -12,6 +12,7 @@ import net.minecraft.network.play.server.SPacketPlayerAbilities;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,14 +33,16 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class CommonEventHandler {
 
-	private static final Set<IPlayerHurtHandler> playerHurtHandlers = Sets.newTreeSet((o1, o2) -> {
-		int ret = 10 * (o1.getPriority().ordinal() - o2.getPriority().ordinal());
-		return ret == 0 ? 1 : ret; //just make every value unique, same priority sorted on the same level
-	});
+	private static final Set<IPlayerHurtHandler> playerHurtHandlers = Sets.newTreeSet(new HandlerPriorityComparator());
+	private static final Set<IPlayerDeathHandler> playerDeathHandlers = Sets.newTreeSet(new HandlerPriorityComparator());
+
 	private static Map<UUID, Boolean> playersFlightStatus = new HashMap<>();
 
 	public static void registerPlayerHurtHandler(IPlayerHurtHandler handler) {
 		playerHurtHandlers.add(handler);
+	}
+	public static void registerPlayerDeathHandler(IPlayerDeathHandler handler) {
+		playerDeathHandlers.add(handler);
 	}
 
 	@SubscribeEvent
@@ -94,6 +97,27 @@ public class CommonEventHandler {
 					cancel = true;
 					break;
 				}
+			}
+		}
+
+		if(cancel) {
+			event.setCanceled(true);
+			event.setResult(null);
+		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public static void beforePlayerDeath(LivingDeathEvent event) {
+		Entity entity = event.getEntity();
+		if(entity == null || !(entity instanceof EntityPlayer))
+			return;
+		EntityPlayer player = (EntityPlayer) entity;
+
+		boolean cancel = false;
+		for (IPlayerDeathHandler handler : playerDeathHandlers) {
+			if (handler.canApply(player, event) && handler.apply(player, event)) {
+				cancel = true;
+				break;
 			}
 		}
 

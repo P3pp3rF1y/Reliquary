@@ -24,6 +24,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import xreliquary.Reliquary;
 import xreliquary.handler.CommonEventHandler;
+import xreliquary.handler.HandlerPriority;
 import xreliquary.handler.IPlayerHurtHandler;
 import xreliquary.init.ModItems;
 import xreliquary.items.util.fluid.FluidHandlerInfernalChalice;
@@ -59,8 +60,8 @@ public class ItemInfernalChalice extends ItemToggleable {
 			}
 
 			@Override
-			public Priority getPriority() {
-				return Priority.HIGH;
+			public HandlerPriority getPriority() {
+				return HandlerPriority.HIGH;
 			}
 		});
 	}
