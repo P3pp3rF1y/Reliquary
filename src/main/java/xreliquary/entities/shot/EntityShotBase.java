@@ -474,7 +474,7 @@ public abstract class EntityShotBase extends Entity implements IProjectile {
 			Entity currentTarget = (Entity) iTarget.next();
 
 			String entityName = EntityList.getEntityString(currentTarget);
-			if(ArrayUtils.contains(huntableEntitiesBlacklist, entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead))
+			if(ArrayUtils.contains(huntableEntitiesBlacklist, entityName) || (currentTarget == shootingEntity) || (currentTarget.isDead || (currentTarget instanceof EntityLivingBase && ((EntityLivingBase) currentTarget).getHealth() <= 0)))
 				continue;
 			// goes for the closest thing it can
 			if(this.getDistance(currentTarget) < closestDistance) {
