@@ -8,6 +8,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityCaveSpider;
 import net.minecraft.entity.monster.EntityCreeper;
@@ -202,12 +203,15 @@ public class ItemMobCharm extends ItemBase {
 			return;
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
-		if((entity.getAttackTarget() == null && entity.getRevengeTarget() == null) ||
-				!(entity.getAttackTarget() instanceof EntityPlayer || entity.getRevengeTarget() instanceof EntityPlayer) ||
-				entity.getAttackTarget() instanceof FakePlayer || entity.getRevengeTarget() instanceof FakePlayer)
+		EntityPlayer player;
+		if (isPlayer(entity.getAttackTarget())) {
+			player = (EntityPlayer) entity.getAttackTarget();
+		} else if (isPlayer(entity.getRevengeTarget())) {
+			player = (EntityPlayer) entity.getRevengeTarget();
+		} else {
 			return;
+		}
 
-		EntityPlayer player = (EntityPlayer) entity.getAttackTarget();
 		boolean resetTarget = false;
 
 		if(entity instanceof EntityGhast) {
@@ -225,6 +229,10 @@ public class ItemMobCharm extends ItemBase {
 		if(resetTarget) {
 			MobHelper.resetTarget(entity, true, true);
 		}
+	}
+
+	private boolean isPlayer(EntityLivingBase target) {
+		return target instanceof EntityPlayer && !(target instanceof FakePlayer);
 	}
 
 	@SubscribeEvent
