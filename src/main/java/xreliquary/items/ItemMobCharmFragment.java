@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import xreliquary.Reliquary;
 import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
 
 import javax.annotation.Nonnull;
 
@@ -30,7 +29,7 @@ public class ItemMobCharmFragment extends ItemBase {
 		if (!isInCreativeTab(tab))
 			return;
 
-		for(int i = 0; i < Reference.MOB_CHARM.COUNT_TYPES; i++)
+		for(int i = 0; i < ItemMobCharm.CHARM_DEFINITIONS.size(); i++)
 			list.add(new ItemStack(this, 1, i));
 	}
 }

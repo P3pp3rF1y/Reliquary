@@ -7,13 +7,13 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Reference;
+import xreliquary.items.ItemMobCharm;
 
 import javax.annotation.Nonnull;
 
 public class ContainerMobCharmBelt extends Container {
 	private ItemStack belt;
-	private static final int PLAYER_INV_INDEX = Reference.MOB_CHARM.COUNT_TYPES + 1;
+	private static final int PLAYER_INV_INDEX = ItemMobCharm.CHARM_DEFINITIONS.size() + 1;
 
 	@Override
 	@Nonnull
@@ -102,7 +102,7 @@ public class ContainerMobCharmBelt extends Container {
 	public ContainerMobCharmBelt(InventoryPlayer playerInventory, ItemStack belt) {
 		this.belt = belt;
 
-		for(int i = 0; i < Reference.MOB_CHARM.COUNT_TYPES + 1; i++) {
+		for(int i = 0; i < ItemMobCharm.CHARM_DEFINITIONS.size() + 1; i++) {
 			this.addSlotToContainer(new SlotMobCharm(belt, i, -999, 0));
 		}
 

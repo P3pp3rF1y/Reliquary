@@ -8,6 +8,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
+import xreliquary.items.ItemMobCharm;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
@@ -15,7 +16,7 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 
 public class MobCharmRepairRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
-	private static final HashMap<Byte, ItemStack> REPAIR_INGREDIENTS;
+	private static final HashMap<Integer, ItemStack> REPAIR_INGREDIENTS;
 
 	public MobCharmRepairRecipe() {
 		setRegistryName(Reference.MOD_ID, "mob_charm_repair");
@@ -23,20 +24,20 @@ public class MobCharmRepairRecipe extends net.minecraftforge.registries.IForgeRe
 
 	static {
 		REPAIR_INGREDIENTS = new HashMap<>();
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.BLAZE_META, XRRecipes.MOLTEN_CORE);
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.CAVE_SPIDER_META, XRRecipes.CHELICERAE);
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.CREEPER_META, XRRecipes.CREEPER_GLAND);
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.ENDERMAN_META, XRRecipes.NEBULOUS_HEART);
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.GHAST_META, new ItemStack(Items.GHAST_TEAR));
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.MAGMA_CUBE_META, XRRecipes.MOLTEN_CORE);
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.SKELETON_META, XRRecipes.RIB_BONE);
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.SLIME_META, XRRecipes.SLIME_PEARL);
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.SPIDER_META, XRRecipes.CHELICERAE);
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.WITCH_META, new ItemStack(ModItems.witchHat));
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.WITHER_SKELETON_META, XRRecipes.WITHER_RIB);
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.ZOMBIE_META, XRRecipes.ZOMBIE_HEART);
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.ZOMBIE_PIGMAN_META, XRRecipes.ZOMBIE_HEART);
-		REPAIR_INGREDIENTS.put(Reference.MOB_CHARM.GUARDIAN_META, XRRecipes.GUARDIAN_SPIKE);
+		REPAIR_INGREDIENTS.put(ItemMobCharm.BLAZE_META, XRRecipes.MOLTEN_CORE);
+		REPAIR_INGREDIENTS.put(ItemMobCharm.CAVE_SPIDER_META, XRRecipes.CHELICERAE);
+		REPAIR_INGREDIENTS.put(ItemMobCharm.CREEPER_META, XRRecipes.CREEPER_GLAND);
+		REPAIR_INGREDIENTS.put(ItemMobCharm.ENDERMAN_META, XRRecipes.NEBULOUS_HEART);
+		REPAIR_INGREDIENTS.put(ItemMobCharm.GHAST_META, new ItemStack(Items.GHAST_TEAR));
+		REPAIR_INGREDIENTS.put(ItemMobCharm.MAGMA_CUBE_META, XRRecipes.MOLTEN_CORE);
+		REPAIR_INGREDIENTS.put(ItemMobCharm.SKELETON_META, XRRecipes.RIB_BONE);
+		REPAIR_INGREDIENTS.put(ItemMobCharm.SLIME_META, XRRecipes.SLIME_PEARL);
+		REPAIR_INGREDIENTS.put(ItemMobCharm.SPIDER_META, XRRecipes.CHELICERAE);
+		REPAIR_INGREDIENTS.put(ItemMobCharm.WITCH_META, new ItemStack(ModItems.witchHat));
+		REPAIR_INGREDIENTS.put(ItemMobCharm.WITHER_SKELETON_META, XRRecipes.WITHER_RIB);
+		REPAIR_INGREDIENTS.put(ItemMobCharm.ZOMBIE_META, XRRecipes.ZOMBIE_HEART);
+		REPAIR_INGREDIENTS.put(ItemMobCharm.ZOMBIE_PIGMAN_META, XRRecipes.ZOMBIE_HEART);
+		REPAIR_INGREDIENTS.put(ItemMobCharm.GUARDIAN_META, XRRecipes.GUARDIAN_SPIKE);
 	}
 
 	@Override
@@ -49,7 +50,7 @@ public class MobCharmRepairRecipe extends net.minecraftforge.registries.IForgeRe
 			ItemStack currentStack = inv.getStackInSlot(i);
 			if(!currentStack.isEmpty()) {
 				if(currentStack.getItem() == ModItems.mobCharm) {
-					if(!mobCharm.isEmpty() || !REPAIR_INGREDIENTS.keySet().contains(ModItems.mobCharm.getType(currentStack)))
+					if(!mobCharm.isEmpty() || !REPAIR_INGREDIENTS.keySet().contains((int) ModItems.mobCharm.getType(currentStack)))
 						return false;
 					mobCharm = currentStack;
 					continue;
@@ -68,7 +69,7 @@ public class MobCharmRepairRecipe extends net.minecraftforge.registries.IForgeRe
 			}
 		}
 
-		return !(mobCharm.isEmpty() || ingredient.isEmpty() || !REPAIR_INGREDIENTS.get(ModItems.mobCharm.getType(mobCharm)).isItemEqual(ingredient)) && mobCharm.getItemDamage() >= (Settings.Items.MobCharm.dropDurabilityRepair * (numberIngredients - 1));
+		return !(mobCharm.isEmpty() || ingredient.isEmpty() || !REPAIR_INGREDIENTS.get((int) ModItems.mobCharm.getType(mobCharm)).isItemEqual(ingredient)) && mobCharm.getItemDamage() >= (Settings.Items.MobCharm.dropDurabilityRepair * (numberIngredients - 1));
 
 	}
 

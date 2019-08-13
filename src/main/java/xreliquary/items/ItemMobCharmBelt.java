@@ -146,7 +146,7 @@ public class ItemMobCharmBelt extends ItemBase implements IBauble {
 		return mobCharms.tagCount();
 	}
 
-	boolean hasCharmType(ItemStack belt, byte type) {
+	boolean hasCharmType(ItemStack belt, int type) {
 		NBTTagCompound nbt = belt.getTagCompound();
 
 		if(nbt == null || !nbt.hasKey(SLOTS_TAG))
@@ -168,7 +168,7 @@ public class ItemMobCharmBelt extends ItemBase implements IBauble {
 		return false;
 	}
 
-	int damageCharmType(ItemStack belt, byte type) {
+	int damageCharmType(ItemStack belt, int type) {
 		NBTTagCompound nbt = belt.getTagCompound();
 
 		if(nbt == null || !nbt.hasKey(SLOTS_TAG))
