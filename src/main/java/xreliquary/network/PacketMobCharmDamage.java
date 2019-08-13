@@ -17,8 +17,8 @@ public class PacketMobCharmDamage implements IMessage, IMessageHandler<PacketMob
 	@SuppressWarnings("unused")
 	public PacketMobCharmDamage() {}
 
-	public PacketMobCharmDamage(byte type, int damage, int slot){
-		this.type = type;
+	public PacketMobCharmDamage(int type, int damage, int slot){
+		this.type = (byte) type;
 		this.damage = damage;
 		this.slot = slot;
 	}

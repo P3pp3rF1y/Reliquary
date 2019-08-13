@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xreliquary.common.gui.ContainerMobCharmBelt;
 import xreliquary.init.ModItems;
+import xreliquary.items.ItemMobCharm;
 import xreliquary.reference.Reference;
 
 public class GuiMobCharmBelt extends GuiBase {
@@ -48,7 +49,7 @@ public class GuiMobCharmBelt extends GuiBase {
 
 	private void updateMobCharmSlots(int centerX, int centerY) {
 		int slots = ModItems.mobCharmBelt.getCharmCount(belt);
-		slots = Math.min(slots, Reference.MOB_CHARM.COUNT_TYPES);
+		slots = Math.min(slots, ItemMobCharm.CHARM_DEFINITIONS.size());
 
 		double radius = 44.0;
 
@@ -80,7 +81,7 @@ public class GuiMobCharmBelt extends GuiBase {
 		this.inventorySlots.inventorySlots.get(slots).xPos = 80;
 		this.inventorySlots.inventorySlots.get(slots).yPos = -12;
 
-		for(int i = slots + 1; i < Reference.MOB_CHARM.COUNT_TYPES + 1; i++) {
+		for(int i = slots + 1; i < ItemMobCharm.CHARM_DEFINITIONS.size() + 1; i++) {
 			this.inventorySlots.inventorySlots.get(i).xPos = -999;
 		}
 	}

@@ -12,8 +12,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import xreliquary.init.ModItems;
+import xreliquary.items.ItemMobCharm;
 import xreliquary.reference.Colors;
-import xreliquary.reference.Reference;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.XRPotionHelper;
 
@@ -131,51 +131,9 @@ public class ModItemColors {
 
 	private static EntityList.EntityEggInfo getEntityEggInfo(int type) {
 		String entityName = "";
-		switch (type) {
-			case Reference.MOB_CHARM.ZOMBIE_META:
-				entityName = "zombie";
-				break;
-			case Reference.MOB_CHARM.SKELETON_META:
-				entityName = "skeleton";
-				break;
-			case Reference.MOB_CHARM.WITHER_SKELETON_META:
-				entityName = "wither_skeleton";
-				break;
-			case Reference.MOB_CHARM.CREEPER_META:
-				entityName = "creeper";
-				break;
-			case Reference.MOB_CHARM.WITCH_META:
-				entityName = "witch";
-				break;
-			case Reference.MOB_CHARM.ZOMBIE_PIGMAN_META:
-				entityName = "zombie_pigman";
-				break;
-			case Reference.MOB_CHARM.CAVE_SPIDER_META:
-				entityName = "cave_spider";
-				break;
-			case Reference.MOB_CHARM.SPIDER_META:
-				entityName = "spider";
-				break;
-			case Reference.MOB_CHARM.ENDERMAN_META:
-				entityName = "enderman";
-				break;
-			case Reference.MOB_CHARM.GHAST_META:
-				entityName = "ghast";
-				break;
-			case Reference.MOB_CHARM.SLIME_META:
-				entityName = "slime";
-				break;
-			case Reference.MOB_CHARM.MAGMA_CUBE_META:
-				entityName = "magma_cube";
-				break;
-			case Reference.MOB_CHARM.BLAZE_META:
-				entityName = "blaze";
-				break;
-			case Reference.MOB_CHARM.GUARDIAN_META:
-				entityName = "guardian";
-				break;
+		if (ItemMobCharm.CHARM_DEFINITIONS.containsKey(type)) {
+			entityName = ItemMobCharm.CHARM_DEFINITIONS.get(type).getEggEntityName();
 		}
-
 		return EntityList.ENTITY_EGGS.get(new ResourceLocation(entityName));
 	}
 

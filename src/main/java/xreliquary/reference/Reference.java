@@ -14,24 +14,6 @@ public class Reference {
 	public static final String ART_PATH_ENTITIES = "textures/entities/";
 	public static final String THROWN_ITEM_SPRITES = "thrown_items_sheet.png";
 
-	public static class MOB_CHARM {
-		public static final byte ZOMBIE_META = 0;
-		public static final byte SKELETON_META = 1;
-		public static final byte WITHER_SKELETON_META = 2;
-		public static final byte CREEPER_META = 3;
-		public static final byte WITCH_META = 4;
-		public static final byte ZOMBIE_PIGMAN_META = 5;
-		public static final byte CAVE_SPIDER_META = 6;
-		public static final byte SPIDER_META = 7;
-		public static final byte ENDERMAN_META = 8;
-		public static final byte GHAST_META = 9;
-		public static final byte SLIME_META = 10;
-		public static final byte MAGMA_CUBE_META = 11;
-		public static final byte BLAZE_META = 12;
-		public static final byte GUARDIAN_META = 13;
-		public static final byte COUNT_TYPES = 14;
-	}
-
 	public static final int SKELETON_INGREDIENT_META = 0;
 	public static final int WITHER_INGREDIENT_META = 1;
 	public static final int SPIDER_INGREDIENT_META = 2;
