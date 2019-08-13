@@ -202,7 +202,9 @@ public class ItemMobCharm extends ItemBase {
 			return;
 		EntityLiving entity = (EntityLiving) event.getEntity();
 
-		if(entity.getAttackTarget() == null || !(entity.getAttackTarget() instanceof EntityPlayer) || entity.getAttackTarget() instanceof FakePlayer)
+		if((entity.getAttackTarget() == null && entity.getRevengeTarget() == null) ||
+				!(entity.getAttackTarget() instanceof EntityPlayer || entity.getRevengeTarget() instanceof EntityPlayer) ||
+				entity.getAttackTarget() instanceof FakePlayer || entity.getRevengeTarget() instanceof FakePlayer)
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity.getAttackTarget();
@@ -221,7 +223,7 @@ public class ItemMobCharm extends ItemBase {
 		}
 
 		if(resetTarget) {
-			MobHelper.resetTarget(entity, true);
+			MobHelper.resetTarget(entity, true, true);
 		}
 	}
 

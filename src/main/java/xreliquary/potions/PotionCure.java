@@ -4,7 +4,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.Potion;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import xreliquary.init.ModPotions;
 import xreliquary.reference.Reference;
 import xreliquary.util.LogHelper;
@@ -29,8 +29,8 @@ public class PotionCure extends Potion {
 		return true;
 	}
 
-	private static final Method START_CONVERTING = ReflectionHelper
-			.findMethod(EntityZombieVillager.class, "startConverting", "func_191991_a", UUID.class, int.class);
+	private static final Method START_CONVERTING = ObfuscationReflectionHelper
+			.findMethod(EntityZombieVillager.class, "func_191991_a", void.class, UUID.class, int.class);
 	private static void startConverting(EntityZombieVillager zombieVillager, @Nullable UUID conversionStarter, int conversionTime) {
 		try {
 			START_CONVERTING.invoke(zombieVillager, conversionStarter, conversionTime);

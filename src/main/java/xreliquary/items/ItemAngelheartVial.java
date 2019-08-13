@@ -9,12 +9,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.Reliquary;
 import xreliquary.handler.CommonEventHandler;
-import xreliquary.handler.IPlayerHurtHandler;
+import xreliquary.handler.HandlerPriority;
+import xreliquary.handler.IPlayerDeathHandler;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
@@ -33,15 +34,14 @@ public class ItemAngelheartVial extends ItemBase {
 		this.setMaxStackSize(64);
 		canRepair = false;
 
-		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
+		CommonEventHandler.registerPlayerDeathHandler(new IPlayerDeathHandler() {
 			@Override
-			public boolean canApply(EntityPlayer player, LivingAttackEvent event) {
-				return player.getHealth() <= Math.round(event.getAmount())
-					&& InventoryHelper.playerHasItem(player, ModItems.angelheartVial);
+			public boolean canApply(EntityPlayer player, LivingDeathEvent event) {
+				return InventoryHelper.playerHasItem(player, ModItems.angelheartVial);
 			}
 
 			@Override
-			public boolean apply(EntityPlayer player, LivingAttackEvent event) {
+			public boolean apply(EntityPlayer player, LivingDeathEvent event) {
 				decreaseAngelHeartByOne(player);
 
 				// player should see a vial "shatter" effect and hear the glass break to
@@ -63,8 +63,8 @@ public class ItemAngelheartVial extends ItemBase {
 			}
 
 			@Override
-			public Priority getPriority() {
-				return Priority.LOW;
+			public HandlerPriority getPriority() {
+				return HandlerPriority.LOW;
 			}
 		});
 	}

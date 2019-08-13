@@ -2,7 +2,6 @@ package xreliquary.potions;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.potion.Potion;
 import xreliquary.reference.Reference;
 import xreliquary.util.MobHelper;
@@ -31,6 +30,6 @@ public class PotionPacification extends Potion {
 		EntityLiving entityLiving = (EntityLiving) entityLivingBase;
 
 		if (entityLiving.getAttackTarget() != null || entityLiving.getRevengeTarget() != null)
-			MobHelper.resetTarget(entityLiving, true);
+			MobHelper.resetTarget(entityLiving, true, true);
 	}
 }

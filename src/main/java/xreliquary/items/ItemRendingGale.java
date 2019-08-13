@@ -392,15 +392,13 @@ public class ItemRendingGale extends ItemToggleable {
 
 	private void spawnFlightParticles(World world, double x, double y, double z, EntityPlayer player) {
 		Vec3d lookVector = player.getLookVec();
-		double factor = (player.motionX / lookVector.x + player.motionY / lookVector.y + player.motionZ / lookVector.z) / 3d;
-
 		//spawn a whole mess of particles every tick.
-		for(int i = 0; i < 8 * factor; ++i) {
+		for(int i = 0; i < 8; ++i) {
 			float randX = 10F * (itemRand.nextFloat() - 0.5F);
 			float randY = 10F * (itemRand.nextFloat() - 0.5F);
 			float randZ = 10F * (itemRand.nextFloat() - 0.5F);
 
-			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX + lookVector.x * 20 * factor, y + randY + lookVector.y * 20 * factor, z + randZ + lookVector.z * 20 * factor, -lookVector.x * 5 * factor, -lookVector.y * 5 * factor, -lookVector.z * 5 * factor, ModBlocks.snowStateId);
+			world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x + randX + lookVector.x * 20, y + randY + lookVector.y * 20, z + randZ + lookVector.z * 20, -lookVector.x * 5, -lookVector.y * 5, -lookVector.z * 5, ModBlocks.snowStateId);
 		}
 	}
 

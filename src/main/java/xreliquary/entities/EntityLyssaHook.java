@@ -32,8 +32,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xreliquary.init.ModItems;
@@ -679,10 +679,8 @@ public class EntityLyssaHook extends Entity implements IEntityAdditionalSpawnDat
 		return false;
 	}
 
-	private static Field HANDS_CHANCES = ReflectionHelper.findField(EntityLiving.class, "field_82174_bp", "inventoryHandsDropChances");
-	private static Field ARMOR_CHANCES = ReflectionHelper.findField(EntityLiving.class, "field_184655_bs", "inventoryArmorDropChances");
-
-
+	private static final Field HANDS_CHANCES = ObfuscationReflectionHelper.findField(EntityLiving.class, "field_82174_bp");
+	private static final Field ARMOR_CHANCES = ObfuscationReflectionHelper.findField(EntityLiving.class, "field_184655_bs");
 
 	@Override
 	public void writeSpawnData(ByteBuf buffer) {
