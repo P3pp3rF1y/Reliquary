@@ -1,17 +1,17 @@
 package xreliquary.items.util;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class HarvestRodCacheStorage implements Capability.IStorage<IHarvestRodCache> {
 	@Override
-	public NBTBase writeNBT(Capability<IHarvestRodCache> capability, IHarvestRodCache instance, EnumFacing side) {
+	public INBT writeNBT(Capability<IHarvestRodCache> capability, IHarvestRodCache instance, Direction side) {
 		return null;
 	}
 
 	@Override
-	public void readNBT(Capability<IHarvestRodCache> capability, IHarvestRodCache instance, EnumFacing side, NBTBase nbt) {
+	public void readNBT(Capability<IHarvestRodCache> capability, IHarvestRodCache instance, Direction side, INBT nbt) {
 
 	}
 }

@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/salamander_eye"
+    "layer0": "xreliquary:item/salamander_eye"
   }
 }

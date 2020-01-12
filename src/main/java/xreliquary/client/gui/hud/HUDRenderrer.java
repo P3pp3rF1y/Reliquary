@@ -1,30 +1,31 @@
 package xreliquary.client.gui.hud;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.Tuple;
 import xreliquary.client.gui.components.Component;
 
 public class HUDRenderrer {
+	private HUDRenderrer() {}
 	public static void render(Component component, HUDPosition position) {
 		if (component.shouldRender()) {
-			Minecraft mc = Minecraft.getMinecraft();
-			ScaledResolution sr = new ScaledResolution(mc);
-			Tuple<Integer, Integer>	xy = getXYPosition(sr, component, position);
+			Minecraft mc = Minecraft.getInstance();
+			MainWindow mainWindow = mc.mainWindow;
+			Tuple<Integer, Integer> xy = getXYPosition(mainWindow, component, position);
 
-			renderComponent(sr, xy.getFirst(), xy.getSecond(), component);
+			renderComponent(xy.getA(), xy.getB(), component);
 		}
 	}
 
-	private static void renderComponent(ScaledResolution sr, int x, int y, Component component) {
+	private static void renderComponent(int x, int y, Component component) {
 		GlStateManager.pushMatrix();
 		component.render(x, y);
 		GlStateManager.popMatrix();
 	}
 
-	private static Tuple<Integer, Integer> getXYPosition(ScaledResolution sr, Component component, HUDPosition position) {
-		switch(position) {
+	private static Tuple<Integer, Integer> getXYPosition(MainWindow sr, Component component, HUDPosition position) {
+		switch (position) {
 			case BOTTOM_LEFT:
 				return new Tuple<>(0, sr.getScaledHeight() - component.getHeight());
 			case LEFT:

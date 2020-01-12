@@ -1,18 +1,39 @@
 package xreliquary.entities;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.EnumPacketDirection;
-import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.*;
+import net.minecraft.network.PacketDirection;
+import net.minecraft.network.play.ServerPlayNetHandler;
+import net.minecraft.network.play.client.CAnimateHandPacket;
+import net.minecraft.network.play.client.CChatMessagePacket;
+import net.minecraft.network.play.client.CClickWindowPacket;
+import net.minecraft.network.play.client.CClientSettingsPacket;
+import net.minecraft.network.play.client.CClientStatusPacket;
+import net.minecraft.network.play.client.CCloseWindowPacket;
+import net.minecraft.network.play.client.CConfirmTransactionPacket;
+import net.minecraft.network.play.client.CCreativeInventoryActionPacket;
+import net.minecraft.network.play.client.CEnchantItemPacket;
+import net.minecraft.network.play.client.CEntityActionPacket;
+import net.minecraft.network.play.client.CHeldItemChangePacket;
+import net.minecraft.network.play.client.CInputPacket;
+import net.minecraft.network.play.client.CKeepAlivePacket;
+import net.minecraft.network.play.client.CPlayerAbilitiesPacket;
+import net.minecraft.network.play.client.CPlayerDiggingPacket;
+import net.minecraft.network.play.client.CPlayerPacket;
+import net.minecraft.network.play.client.CPlayerTryUseItemOnBlockPacket;
+import net.minecraft.network.play.client.CPlayerTryUseItemPacket;
+import net.minecraft.network.play.client.CResourcePackStatusPacket;
+import net.minecraft.network.play.client.CSpectatePacket;
+import net.minecraft.network.play.client.CTabCompletePacket;
+import net.minecraft.network.play.client.CUpdateSignPacket;
+import net.minecraft.network.play.client.CUseEntityPacket;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class FakeNetHandlerPlayServer extends NetHandlerPlayServer {
-	
-	public FakeNetHandlerPlayServer(EntityPlayerMP player) {
-		super(FMLCommonHandler.instance().getMinecraftServerInstance(), new NetworkManager(EnumPacketDirection.CLIENTBOUND), player);
+public class FakeNetHandlerPlayServer extends ServerPlayNetHandler {
+	public FakeNetHandlerPlayServer(ServerPlayerEntity player) {
+		super(ServerLifecycleHooks.getCurrentServer(), new NetworkManager(PacketDirection.CLIENTBOUND), player);
 	}
 	@Override
 	public NetworkManager getNetworkManager() {
@@ -20,108 +41,132 @@ public class FakeNetHandlerPlayServer extends NetHandlerPlayServer {
 	}
 
 	@Override
-	public void processTryUseItemOnBlock(CPacketPlayerTryUseItemOnBlock packetIn) {
+	public void processTryUseItemOnBlock(CPlayerTryUseItemOnBlockPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processTryUseItem(CPacketPlayerTryUseItem packetIn) {
+	public void processTryUseItem(CPlayerTryUseItemPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processInput(CPacketInput p_147358_1_) {
+	public void processInput(CInputPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processPlayer(CPacketPlayer p_147347_1_) {
+	public void processPlayer(CPlayerPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void setPlayerLocation(double p_147364_1_, double p_147364_3_, double p_147364_5_, float p_147364_7_, float p_147364_8_) {
+	public void setPlayerLocation(double x, double y, double z, float yaw, float pitch) {
+		//noop
 	}
 
 	@Override
-	public void processPlayerDigging(CPacketPlayerDigging p_147345_1_) {
+	public void processPlayerDigging(CPlayerDiggingPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void onDisconnect(ITextComponent p_147231_1_) {
+	public void onDisconnect(ITextComponent reason) {
+		//noop
 	}
 
 	@Override
-	public void sendPacket(Packet<?> p_147359_1_) {
+	public void sendPacket(IPacket<?> packet) {
+		//noop
 	}
 
 	@Override
-	public void processHeldItemChange(CPacketHeldItemChange p_147355_1_) {
+	public void processHeldItemChange(CHeldItemChangePacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processChatMessage(CPacketChatMessage p_147354_1_) {
+	public void processChatMessage(CChatMessagePacket packet) {
+		//noop
 	}
 
 	@Override
-	public void handleAnimation(CPacketAnimation packetIn) {
-
+	public void handleAnimation(CAnimateHandPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processEntityAction(CPacketEntityAction p_147357_1_) {
+	public void processEntityAction(CEntityActionPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processUseEntity(CPacketUseEntity p_147340_1_) {
+	public void processUseEntity(CUseEntityPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processClientStatus(CPacketClientStatus p_147342_1_) {
+	public void processClientStatus(CClientStatusPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processCloseWindow(CPacketCloseWindow p_147356_1_) {
+	public void processCloseWindow(CCloseWindowPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processClickWindow(CPacketClickWindow p_147351_1_) {
+	public void processClickWindow(CClickWindowPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processEnchantItem(CPacketEnchantItem p_147338_1_) {
+	public void processEnchantItem(CEnchantItemPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processCreativeInventoryAction(CPacketCreativeInventoryAction p_147344_1_) {
+	public void processCreativeInventoryAction(CCreativeInventoryActionPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processConfirmTransaction(CPacketConfirmTransaction p_147339_1_) {
+	public void processConfirmTransaction(CConfirmTransactionPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processUpdateSign(CPacketUpdateSign p_147343_1_) {
+	public void processUpdateSign(CUpdateSignPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processKeepAlive(CPacketKeepAlive p_147353_1_) {
+	public void processKeepAlive(CKeepAlivePacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processPlayerAbilities(CPacketPlayerAbilities p_147348_1_) {
+	public void processPlayerAbilities(CPlayerAbilitiesPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processTabComplete(CPacketTabComplete p_147341_1_) {
+	public void processTabComplete(CTabCompletePacket packet) {
+		//noop
 	}
 
 	@Override
-	public void processClientSettings(CPacketClientSettings p_147352_1_) {
+	public void processClientSettings(CClientSettingsPacket packet) {
+		//noop
 	}
 
 	@Override
-	public void handleSpectate(CPacketSpectate packetIn) {
+	public void handleSpectate(CSpectatePacket packet) {
+		//noop
 	}
 
 	@Override
-	public void handleResourcePackStatus(CPacketResourcePackStatus packetIn) {
+	public void handleResourcePackStatus(CResourcePackStatusPacket packet) {
+		//noop
 	}
-
 }

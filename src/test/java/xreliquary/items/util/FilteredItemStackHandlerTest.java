@@ -247,7 +247,7 @@ public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 		filterStacks.add(itemStack);
 		filterStacks.add(dynamicItemStack);
 		handler = spy(new FilteredItemStackHandler(new int[] {1000, 1000}, filterStacks, new int[] {1, 1}));
-		handler.setDynamicSize(true);
+		handler.setDynamicSlotNumber(true);
 
 		when(handler.getParentSlotRemovable(0)).thenReturn(false);
 		when(handler.getParentSlotRemovable(1)).thenReturn(true);
@@ -269,7 +269,7 @@ public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 		when(handler.isItemStackValidForParentSlot(any(ItemStack.class), anyInt())).thenReturn(true);
 		when(handler.getParentSlotUnitWorth(anyInt())).thenReturn(1);
 		when(handler.getParentSlotLimit(anyInt())).thenReturn(1000);
-		handler.setDynamicSize(true);
+		handler.setDynamicSlotNumber(true);
 
 		handler.setTotalAmount(0, 55);
 
@@ -310,7 +310,7 @@ public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 
 		PowerMockito.mockStatic(ItemHandlerHelper.class);
 		PowerMockito.when(ItemHandlerHelper.canItemStacksStack(any(ItemStack.class), any(ItemStack.class))).thenReturn(true);
-		handler.setDynamicSize(true);
+		handler.setDynamicSlotNumber(true);
 		handler.setTotalAmount(0, 55);
 		handler.setTotalAmount(1, 1000);
 
@@ -346,7 +346,7 @@ public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 		filterStacks.add(itemStack);
 		filterStacks.add(dynamicStack);
 		handler = new FilteredItemStackHandler(new int[] {1000, 1000}, filterStacks, new int[] {1, 1});
-		handler.setDynamicSize(true);
+		handler.setDynamicSlotNumber(true);
 		handler.setTotalAmount(0, 55);
 		handler.setTotalAmount(1, 64);
 
@@ -361,7 +361,7 @@ public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 	@Test
 	public void insertItemAddsDynamicStack() {
 		handler = spy(new FilteredItemStackHandler(new int[] {1000}, NonNullList.withSize(1, itemStack), new int[] {1}));
-		handler.setDynamicSize(true);
+		handler.setDynamicSlotNumber(true);
 		handler.setTotalAmount(0, 55);
 		when(handler.isItemStackValidForParentSlot(any(ItemStack.class), anyInt())).thenReturn(true);
 		when(handler.getParentSlotLimit(anyInt())).thenReturn(1000);
@@ -404,7 +404,7 @@ public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 
 		PowerMockito.mockStatic(ItemHandlerHelper.class);
 		PowerMockito.when(ItemHandlerHelper.canItemStacksStack(any(ItemStack.class), any(ItemStack.class))).thenReturn(true);
-		handler.setDynamicSize(true);
+		handler.setDynamicSlotNumber(true);
 		handler.setTotalAmount(0, 55);
 		handler.setTotalAmount(1, 1000);
 
@@ -433,7 +433,7 @@ public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 		filterStacks.add(itemStack);
 		filterStacks.add(dynamicStack);
 		handler = new FilteredItemStackHandler(new int[] {1000, 1000}, filterStacks, new int[] {1, 1});
-		handler.setDynamicSize(true);
+		handler.setDynamicSlotNumber(true);
 		handler.setTotalAmount(0, 55);
 		handler.setTotalAmount(1, 64);
 
@@ -459,7 +459,7 @@ public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 		filterStacks.add(itemStack);
 		filterStacks.add(dynamicStack);
 		handler = spy(new FilteredItemStackHandler(new int[] {1000, 1000}, filterStacks, new int[] {1, 1}));
-		handler.setDynamicSize(true);
+		handler.setDynamicSlotNumber(true);
 		handler.setTotalAmount(0, 55);
 		handler.setTotalAmount(1, 64);
 		when(handler.getParentSlotRemovable(1)).thenReturn(true);
@@ -478,12 +478,12 @@ public class FilteredItemStackHandlerTest extends PowerMockTestCase {
 		handler = new FilteredItemStackHandler(new int[] {1000}, NonNullList.withSize(1, itemStack), new int[] {1});
 
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setInteger("Size", 2);
+		nbt.putInt("Size", 2);
 		NBTTagList amounts = new NBTTagList();
-		amounts.appendTag(new NBTTagInt(0));
+		amounts.add(new NBTTagInt(0));
 
-		nbt.setTag("TotalAmounts", amounts);
-		nbt.setTag("Items", new NBTTagList());
+		nbt.put("TotalAmounts", amounts);
+		nbt.put("Items", new NBTTagList());
 
 		handler.deserializeNBT(nbt);
 

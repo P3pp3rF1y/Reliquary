@@ -1,7 +1,7 @@
 package xreliquary.client.gui.hud;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xreliquary.client.gui.components.Component;
@@ -9,10 +9,8 @@ import xreliquary.client.gui.components.ItemStackCountPane;
 import xreliquary.reference.Colors;
 import xreliquary.util.InventoryHelper;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Function;
 
-@ParametersAreNonnullByDefault
 public class ChargePane extends Component {
 	private Item mainItem;
 	private ItemStackCountPane chargeablePane;
@@ -21,6 +19,7 @@ public class ChargePane extends Component {
 	public ChargePane(Item mainItem, ItemStack chargeItem, Function<ItemStack, Integer> getCount) {
 		this(mainItem, chargeItem, getCount, Colors.get(Colors.PURE));
 	}
+
 	public ChargePane(Item mainItem, ItemStack chargeItem, Function<ItemStack, Integer> getCount, int textColor) {
 		this.mainItem = mainItem;
 		this.getCount = getCount;
@@ -45,10 +44,10 @@ public class ChargePane extends Component {
 
 	@Override
 	public void renderInternal(int x, int y) {
-		EntityPlayer player = Minecraft.getMinecraft().player;
+		PlayerEntity player = Minecraft.getInstance().player;
 		ItemStack itemStack = InventoryHelper.getCorrectItemFromEitherHand(player, mainItem);
 
-		if(itemStack.isEmpty())
+		if (itemStack.isEmpty())
 			return;
 
 		chargeablePane.setCount(getCount.apply(itemStack));

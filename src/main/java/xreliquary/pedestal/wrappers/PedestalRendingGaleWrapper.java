@@ -1,8 +1,8 @@
 package xreliquary.pedestal.wrappers;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -10,10 +10,9 @@ import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModPotions;
-import xreliquary.items.ItemRendingGale;
+import xreliquary.items.RendingGaleItem;
 import xreliquary.reference.Settings;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
@@ -24,41 +23,27 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 	private int pushPullCheckCoolDown;
 
 	@Override
-	public void update(@Nonnull ItemStack stack, IPedestal pedestal) {
+	public void update( ItemStack stack, IPedestal pedestal) {
 		World world = pedestal.getTheWorld();
 		BlockPos pos = pedestal.getBlockPos();
-		ItemRendingGale rendingGale = (ItemRendingGale) stack.getItem();
+		RendingGaleItem rendingGale = (RendingGaleItem) stack.getItem();
 		if(rendingGale.getMode(stack).equals("flight")) {
 			if(buffCheckCoolDown <= 0) {
-
-				int flightRange = Settings.Items.RendingGale.pedestalFlightRange;
-
-				if(ModItems.rendingGale.getFeatherCount(stack) >= (ItemRendingGale.getChargeCost() * SECONDS_BETWEEN_BUFF_CHECKS)) {
-					List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos.getX() - flightRange, pos.getY() - flightRange, pos.getZ() - flightRange, pos.getX() + flightRange, pos.getY() + flightRange, pos.getZ() + flightRange));
-
-					if(!players.isEmpty()) {
-						for(EntityPlayer player : players) {
-							player.addPotionEffect(new PotionEffect(ModPotions.potionFlight, 20 * 20));
-						}
-						ModItems.rendingGale.setFeatherCount(stack, ModItems.rendingGale.getFeatherCount(stack) - (SECONDS_BETWEEN_BUFF_CHECKS * Settings.Items.RendingGale.pedestalCostPerSecond), true);
-					}
-				}
+				buffPlayersWithFlight(stack, world, pos);
 				buffCheckCoolDown = SECONDS_BETWEEN_BUFF_CHECKS * 20;
 			} else {
 				buffCheckCoolDown--;
 			}
 		} else if(rendingGale.getMode(stack).equals("push")) {
 			if(pushPullCheckCoolDown <= 0) {
-				rendingGale.doRadialPush(world, pos.getX(), pos.getY(), pos.getZ(), null, false);
-				ModItems.rendingGale.setFeatherCount(stack, ModItems.rendingGale.getFeatherCount(stack) - (int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Settings.Items.RendingGale.pedestalCostPerSecond), true);
+				pushEntities(stack, world, pos, rendingGale, false);
 				pushPullCheckCoolDown = TICKS_BETWEEN_PUSH_PULL_CHECKS;
 			} else {
 				pushPullCheckCoolDown--;
 			}
 		} else if(rendingGale.getMode(stack).equals("pull")) {
 			if(pushPullCheckCoolDown <= 0) {
-				rendingGale.doRadialPush(world, pos.getX(), pos.getY(), pos.getZ(), null, true);
-				ModItems.rendingGale.setFeatherCount(stack, ModItems.rendingGale.getFeatherCount(stack) - (int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Settings.Items.RendingGale.pedestalCostPerSecond), true);
+				pushEntities(stack, world, pos, rendingGale, true);
 				pushPullCheckCoolDown = TICKS_BETWEEN_PUSH_PULL_CHECKS;
 			} else {
 				pushPullCheckCoolDown--;
@@ -66,11 +51,33 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 		}
 	}
 
-	@Override
-	public void onRemoved(@Nonnull ItemStack stack, IPedestal pedestal) {
+	private void pushEntities(ItemStack stack, World world, BlockPos pos, RendingGaleItem rendingGale, boolean b) {
+		rendingGale.doRadialPush(world, pos.getX(), pos.getY(), pos.getZ(), null, b);
+		ModItems.RENDING_GALE.setFeatherCount(stack, ModItems.RENDING_GALE.getFeatherCount(stack) - (int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Settings.COMMON.items.rendingGale.pedestalCostPerSecond.get()), true);
+	}
+
+	private void buffPlayersWithFlight(ItemStack stack, World world, BlockPos pos) {
+		int flightRange = Settings.COMMON.items.rendingGale.pedestalFlightRange.get();
+
+		if(ModItems.RENDING_GALE.getFeatherCount(stack) >= (RendingGaleItem.getChargeCost() * SECONDS_BETWEEN_BUFF_CHECKS)) {
+			List<PlayerEntity> players = world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB((double) pos.getX() - flightRange, (double) pos.getY() - flightRange, (double) pos.getZ() - flightRange, (double) pos.getX() + flightRange, (double) pos.getY() + flightRange, (double) pos.getZ() + flightRange));
+
+			if(!players.isEmpty()) {
+				for(PlayerEntity player : players) {
+					player.addPotionEffect(new EffectInstance(ModPotions.potionFlight, 20 * 20));
+				}
+				ModItems.RENDING_GALE.setFeatherCount(stack, ModItems.RENDING_GALE.getFeatherCount(stack) - (SECONDS_BETWEEN_BUFF_CHECKS * Settings.COMMON.items.rendingGale.pedestalCostPerSecond.get()), true);
+			}
+		}
 	}
 
 	@Override
-	public void stop(@Nonnull ItemStack stack, IPedestal pedestal) {
+	public void onRemoved( ItemStack stack, IPedestal pedestal) {
+		//noop
+	}
+
+	@Override
+	public void stop( ItemStack stack, IPedestal pedestal) {
+		//noop
 	}
 }

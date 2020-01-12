@@ -3,8 +3,14 @@ package xreliquary.reference;
 public class Names {
 
 	public static class Items {
+		public static class Bullets {
+			public static final String EMPTY = "empty_bullet";
+			public static final String NEUTRAL = "neutral_bullet";
+		}
+
+		public static class MobIngredients {
+		}
 		public static final String HANDGUN = "handgun";
-		public static final String BULLET = "bullet";
 		public static final String MERCY_CROSS = "mercy_cross";
 		public static final String MAGAZINE = "magazine";
 		public static final String SOJOURNER_STAFF = "sojourner_staff";
@@ -41,7 +47,6 @@ public class Names {
 		public static final String RENDING_GALE = "rending_gale";
 		public static final String HARVEST_ROD = "harvest_rod";
 		public static final String MOB_INGREDIENT = "mob_ingredient";
-		public static final String MOB_CHARM_FRAGMENT = "mob_charm_fragment";
 		public static final String HEART_ZHU = "heart_zhu";
 		public static final String SEEKER_SHOT = "seeker_shot";
 		public static final String FERTILE_ESSENCE = "fertile_essence";
@@ -60,16 +65,20 @@ public class Names {
 	}
 
 	public static class Blocks {
-		public static final String ALTAR_IDLE = "altar_idle";
-		public static final String ALTAR = "altar";
+		public static final String ALKAHESTRY_ALTAR = "alkahestry_altar";
 		public static final String FERTILE_LILYPAD = "fertile_lilypad";
 		public static final String WRAITH_NODE = "wraith_node";
 		public static final String INTERDICTION_TORCH = "interdiction_torch";
+		public static final String WALL_INTERDICTION_TORCH = "wall_interdiction_torch";
 		public static final String APOTHECARY_CAULDRON = "apothecary_cauldron";
 		public static final String APOTHECARY_MORTAR = "apothecary_mortar";
 		public static final String CAULDRON_BUBBLE = "cauldron_bubble";
-		public static final String PEDESTAL = "pedestal";
-		public static final String PEDESTAL_PASSIVE = "pedestal_passive";
+		public static final String PEDESTAL = "pedestals";
+		public static final String PASSIVE_PEDESTAL = "passive_pedestal";
+	}
+
+	public static class Entities {
+
 	}
 
 	public static class Configs {

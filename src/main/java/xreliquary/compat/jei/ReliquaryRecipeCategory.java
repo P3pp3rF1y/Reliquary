@@ -1,16 +1,17 @@
 package xreliquary.compat.jei;
 
-import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
-import xreliquary.reference.Reference;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nonnull;
+public abstract class ReliquaryRecipeCategory<T> implements IRecipeCategory<T> {
+	private final ResourceLocation uid;
 
-public abstract class ReliquaryRecipeCategory<T extends IRecipeWrapper> implements IRecipeCategory<T> {
+	public ReliquaryRecipeCategory(ResourceLocation uid) {
+		this.uid = uid;
+	}
 
-	@Nonnull
 	@Override
-	public String getModName() {
-		return Reference.MOD_NAME;
+	public ResourceLocation getUid() {
+		return uid;
 	}
 }

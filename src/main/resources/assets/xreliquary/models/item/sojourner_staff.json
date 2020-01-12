@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_weapon_item",
   "textures": {
-    "layer0": "xreliquary:items/sojourner_staff"
+    "layer0": "xreliquary:item/sojourner_staff"
   }
 }

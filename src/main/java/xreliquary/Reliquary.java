@@ -1,99 +1,49 @@
 package xreliquary;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.item.ItemGroup;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import xreliquary.client.ClientProxy;
 import xreliquary.common.CommonProxy;
-import xreliquary.compat.ICompat;
-import xreliquary.crafting.AlkahestryLoader;
-import xreliquary.init.ModBlocks;
 import xreliquary.init.ModCapabilities;
 import xreliquary.init.ModCompat;
-import xreliquary.init.ModFluids;
-import xreliquary.init.ModLoot;
+import xreliquary.init.ModItems;
 import xreliquary.init.PedestalItems;
 import xreliquary.network.PacketHandler;
-import xreliquary.pedestal.PedestalRegistry;
-import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
-import xreliquary.util.LogHelper;
 import xreliquary.util.potions.PotionMap;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = Compatibility.DEPENDENCIES)
+import static xreliquary.init.ModFluids.FLUIDS;
+
+@Mod(Reference.MOD_ID)
 public class Reliquary {
+	public static CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+	public static final ItemGroup ITEM_GROUP = new ReliquaryItemGroup();
 
-	@Instance(Reference.MOD_ID)
-	public static Reliquary INSTANCE;
-
-	@SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
-	public static CommonProxy PROXY;
-
-	public static CreativeTabs CREATIVE_TAB = new CreativeTabXR(CreativeTabs.getNextID());
-
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-
-		PROXY.initColors();
-
-		ModFluids.preInit();
-
-		ModCapabilities.init();
-
-		PROXY.preInit();
-
-		PacketHandler.init();
-
-		ModCompat.registerModCompat();
-		ModCompat.loadCompat(ICompat.InitializationPhase.PRE_INIT, null);
+	public Reliquary() {
+		proxy.registerHandlers();
+		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		FLUIDS.register(eventBus);
+		eventBus.addListener(Reliquary::setup);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Settings.CLIENT_SPEC);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Settings.COMMON_SPEC);
+		proxy.registerHandlers();
 	}
 
-	@SuppressWarnings("unused")
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
-
-		ModLoot.init();
-
+	public static void setup(FMLCommonSetupEvent event) {
+		ModItems.registerDispenseBehaviors();
 		PotionMap.initPotionMap();
-
-		PROXY.initSpecialJEIDescriptions();
-
-		PROXY.init();
-
-		MinecraftForge.EVENT_BUS.register(this);
-
-		ModCompat.loadCompat(ICompat.InitializationPhase.INIT, null);
-	}
-
-	@SuppressWarnings("unused")
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
-
-		PROXY.postInit();
-
-		ModCompat.loadCompat(ICompat.InitializationPhase.POST_INIT, null);
-
+		ModCapabilities.init();
+		PacketHandler.init();
+		ModCompat.registerModCompat();
+		ModCompat.loadCompats();
+		ModItems.registerHandgunMagazines();
 		PedestalItems.init();
-
-		if (!Settings.Disable.disableAlkahestry) {
-			AlkahestryLoader.loadRecipes();
-		}
-
-		ModBlocks.initSnowStateId();
-
-		LogHelper.info("Loaded successfully!");
-	}
-
-	@SuppressWarnings("unused")
-	@EventHandler
-	public void serverStopping(FMLServerStoppingEvent event) {
-		PedestalRegistry.clearPositions();
 	}
 }

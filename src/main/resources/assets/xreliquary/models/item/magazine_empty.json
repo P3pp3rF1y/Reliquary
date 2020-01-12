@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/magazine_empty"
+    "layer0": "xreliquary:item/magazine_empty"
   }
 }

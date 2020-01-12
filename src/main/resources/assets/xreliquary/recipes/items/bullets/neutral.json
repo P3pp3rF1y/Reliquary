@@ -15,8 +15,7 @@
         }
     ],
     "result": {
-        "item": "xreliquary:bullet",
-        "data": 1,
+        "item": "xreliquary:bullets/neutral_bullet",
         "count": 8
     }
 }

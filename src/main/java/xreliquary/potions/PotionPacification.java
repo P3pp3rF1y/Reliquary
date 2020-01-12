@@ -1,20 +1,17 @@
 package xreliquary.potions;
 
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.Potion;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectType;
 import xreliquary.reference.Reference;
 import xreliquary.util.MobHelper;
 
-import javax.annotation.Nonnull;
-
-public class PotionPacification extends Potion {
+public class PotionPacification extends Effect {
 
 	public PotionPacification() {
-		super(false, 0);
-		this.setPotionName("xreliquary.potion.pacification");
-		this.setIconIndex(0, 0);
-		this.setRegistryName(Reference.MOD_ID, "pacification_potion");
+		super(EffectType.BENEFICIAL, 0);
+		setRegistryName(Reference.MOD_ID, "pacification");
 	}
 
 	@Override
@@ -23,13 +20,15 @@ public class PotionPacification extends Potion {
 	}
 
 	@Override
-	public void performEffect(@Nonnull EntityLivingBase entityLivingBase, int p_76394_2_) {
-		if (entityLivingBase.world.isRemote || !(entityLivingBase instanceof EntityLiving))
+	public void performEffect( LivingEntity entityLivingBase, int amplifier) {
+		if (entityLivingBase.world.isRemote || !(entityLivingBase instanceof MobEntity)) {
 			return;
+		}
 
-		EntityLiving entityLiving = (EntityLiving) entityLivingBase;
+		MobEntity entityLiving = (MobEntity) entityLivingBase;
 
-		if (entityLiving.getAttackTarget() != null || entityLiving.getRevengeTarget() != null)
+		if (entityLiving.getAttackTarget() != null || entityLiving.getRevengeTarget() != null) {
 			MobHelper.resetTarget(entityLiving, true, true);
+		}
 	}
 }

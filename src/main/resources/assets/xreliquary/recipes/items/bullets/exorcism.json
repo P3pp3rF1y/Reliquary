@@ -1,0 +1,36 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "xreliquary:bullets/neutral_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/neutral_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/neutral_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/neutral_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/neutral_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/neutral_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/neutral_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/neutral_bullet"
+        },
+        {
+            "item": "#ZOMBIE_HEART"
+        }
+    ],
+    "result": {
+        "item": "xreliquary:bullets/exorcism_bullet",
+        "count": 8
+    }
+}

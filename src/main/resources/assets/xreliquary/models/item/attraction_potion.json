@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/attraction_potion"
+    "layer0": "xreliquary:item/attraction_potion"
   }
 }

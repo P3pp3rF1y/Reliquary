@@ -1,82 +1,61 @@
 package xreliquary.network;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkEvent;
 import xreliquary.api.IPedestal;
-import xreliquary.client.render.RenderPedestalFishHook;
+import xreliquary.client.render.PedestalFishHookRenderer;
+import xreliquary.util.WorldHelper;
 
-public class PacketPedestalFishHook implements IMessage, IMessageHandler<PacketPedestalFishHook, IMessage> {
+import java.util.function.Supplier;
+
+public class PacketPedestalFishHook {
 
 	private BlockPos pedestalPos;
-	private int itemIndex;
 	private double hookX;
 	private double hookY;
 	private double hookZ;
 
-	@SuppressWarnings("unused")
-	public PacketPedestalFishHook() {
-	}
-
-	public PacketPedestalFishHook(BlockPos pedestalPos, int itemIndex, double hookX, double hookY, double hookZ) {
+	public PacketPedestalFishHook(BlockPos pedestalPos, double hookX, double hookY, double hookZ) {
 
 		this.pedestalPos = pedestalPos;
-		this.itemIndex = itemIndex;
 		this.hookX = hookX;
 		this.hookY = hookY;
 		this.hookZ = hookZ;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		pedestalPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-		itemIndex = buf.readInt();
-		hookX = buf.readDouble();
-		hookY = buf.readDouble();
-		hookZ = buf.readDouble();
-
+	static void encode(PacketPedestalFishHook msg, PacketBuffer packetBuffer) {
+		packetBuffer.writeInt(msg.pedestalPos.getX());
+		packetBuffer.writeInt(msg.pedestalPos.getY());
+		packetBuffer.writeInt(msg.pedestalPos.getZ());
+		packetBuffer.writeDouble(msg.hookX);
+		packetBuffer.writeDouble(msg.hookY);
+		packetBuffer.writeDouble(msg.hookZ);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeInt(pedestalPos.getX());
-		buf.writeInt(pedestalPos.getY());
-		buf.writeInt(pedestalPos.getZ());
-		buf.writeInt(itemIndex);
-		buf.writeDouble(hookX);
-		buf.writeDouble(hookY);
-		buf.writeDouble(hookZ);
+	static PacketPedestalFishHook decode(PacketBuffer packetBuffer) {
+		return new PacketPedestalFishHook(new BlockPos(packetBuffer.readInt(), packetBuffer.readInt(), packetBuffer.readInt()),
+				packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readDouble());
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IMessage onMessage(PacketPedestalFishHook message, MessageContext ctx) {
-
-		Minecraft.getMinecraft().addScheduledTask(() -> handleMessage(message));
-
-		return null;
+	static void onMessage(PacketPedestalFishHook msg, Supplier<NetworkEvent.Context> contextSupplier) {
+		contextSupplier.get().enqueueWork(() -> handleMessage(msg));
 	}
 
-	@SideOnly(Side.CLIENT)
-	private void handleMessage(PacketPedestalFishHook message) {
-		WorldClient world = Minecraft.getMinecraft().world;
-		TileEntity te = world.getTileEntity(message.pedestalPos);
+	@OnlyIn(Dist.CLIENT)
+	private static void handleMessage(PacketPedestalFishHook message) {
+		ClientWorld world = Minecraft.getInstance().world;
+		WorldHelper.getTile(world, message.pedestalPos, IPedestal.class).ifPresent(pedestal -> {
+			PedestalFishHookRenderer.HookRenderingData data = null;
+			if (message.hookY > 0) {
+				data = new PedestalFishHookRenderer.HookRenderingData(message.hookX, message.hookY, message.hookZ);
+			}
 
-		if(te != null && te instanceof IPedestal) {
-			IPedestal pedestal = (IPedestal) te;
-
-			RenderPedestalFishHook.HookRenderingData data = null;
-			if (message.hookY > 0)
-				data = new RenderPedestalFishHook.HookRenderingData(message.hookX, message.hookY, message.hookZ);
-
-			pedestal.setItemData(message.itemIndex, data);
-		}
+			pedestal.setItemData(data);
+		});
 	}
 }

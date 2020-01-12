@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/midas_touchstone"
+    "layer0": "xreliquary:item/midas_touchstone"
   }
 }

@@ -18,8 +18,8 @@ public abstract class Component {
 	}
 
 	public void render(int x, int y) {
-		//Minecraft.getMinecraft().renderEngine.bindTexture(GuiContainer.INVENTORY_BACKGROUND);
-		//drawTexturedModalRect(x, y, 5, 170, getWidth(), getHeight());
+		//Minecraft.getInstance().textureManager.bindTexture(GuiContainer.INVENTORY_BACKGROUND);
+		//blit(x, y, 5, 170, getWidth(), getHeight());
 		renderInternal(x + getPadding(), y + getPadding());
 	}
 
@@ -28,15 +28,16 @@ public abstract class Component {
 	}
 
 	public abstract int getHeightInternal();
+
 	public abstract int getWidthInternal();
+
 	public abstract void renderInternal(int x, int y);
 
-	protected void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height) {
-		drawTexturedModalRect(x, y, textureX, textureY, width, height, 256, 256);
+	protected void blit(int x, int y, int textureX, int textureY, int width, int height) {
+		blit(x, y, textureX, textureY, width, height, 256, 256);
 	}
 
-	protected void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height, double textureWidth, double textureHeight)
-	{
+	protected void blit(int x, int y, int textureX, int textureY, int width, int height, double textureWidth, double textureHeight) {
 		double minU = textureX / textureWidth;
 		double maxU = (textureX + width) / textureWidth;
 		double minV = textureY / textureHeight;

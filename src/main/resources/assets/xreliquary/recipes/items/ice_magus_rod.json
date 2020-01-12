@@ -13,7 +13,7 @@
             "item": "#FROZEN_CORE"
         },
         "V": {
-            "type": "xreliquary:item_empty_nbt",
+            "type": "forge:nbt",
             "item": "xreliquary:void_tear"
         },
         "I": {

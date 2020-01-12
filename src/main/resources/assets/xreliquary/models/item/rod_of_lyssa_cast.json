@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/rod_of_lyssa",
   "textures": {
-    "layer0": "xreliquary:items/rod_of_lyssa_cast"
+    "layer0": "xreliquary:item/rod_of_lyssa_cast"
   }
 }

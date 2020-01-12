@@ -1,37 +1,37 @@
+/* TODO readd waila integration
 package xreliquary.compat.waila.provider;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
-import xreliquary.blocks.BlockApothecaryMortar;
-import xreliquary.blocks.tile.TileEntityMortar;
+import xreliquary.blocks.ApothecaryMortarBlock;
+import xreliquary.blocks.tile.ApothecaryMortarTileEntity;
 import xreliquary.init.ModBlocks;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionIngredient;
 import xreliquary.util.potions.XRPotionHelper;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataProviderMortar extends CachedBodyDataProvider {
-	@Nonnull
+
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return new ItemStack(ModBlocks.apothecaryMortar);
+		return new ItemStack(ModBlocks.APOTHECARY_MORTAR);
 	}
 
 	@Override
 	public List<String> getWailaBodyToCache(ItemStack itemStack, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		List<String> currenttip = new ArrayList<>();
 
-		if(!(accessor.getBlock() instanceof BlockApothecaryMortar && accessor.getTileEntity() instanceof TileEntityMortar))
+		if(!(accessor.getBlock() instanceof ApothecaryMortarBlock && accessor.getTileEntity() instanceof ApothecaryMortarTileEntity))
 			return currenttip;
 
-		TileEntityMortar mortar = (TileEntityMortar) accessor.getTileEntity();
+		ApothecaryMortarTileEntity mortar = (ApothecaryMortarTileEntity) accessor.getTileEntity();
 
 		if(mortar == null)
 			return currenttip;
@@ -56,7 +56,7 @@ public class DataProviderMortar extends CachedBodyDataProvider {
 		if(!ingredients.get(2).isEmpty())
 			potionIngredients.add(XRPotionHelper.getIngredient(ingredients.get(2)));
 
-		List<PotionEffect> effects = XRPotionHelper.combineIngredients(potionIngredients);
+		List<EffectInstance> effects = XRPotionHelper.combineIngredients(potionIngredients);
 		if(!effects.isEmpty()) {
 			currenttip.add(TextFormatting.WHITE + LanguageHelper.getLocalization("waila.xreliquary.mortar.result") + TextFormatting.RESET);
 
@@ -65,3 +65,4 @@ public class DataProviderMortar extends CachedBodyDataProvider {
 		return currenttip;
 	}
 }
+*/

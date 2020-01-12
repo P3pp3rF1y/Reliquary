@@ -1,27 +1,24 @@
 package xreliquary.util;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.Nonnull;
+import java.util.Optional;
 
 public class StackHelper {
-	public static ItemStack getItemStackFromNameMeta(String modId, String name, int meta) {
-		ItemStack stack;
-		Item item = Item.REGISTRY.getObject(new ResourceLocation(modId, name));
+	private StackHelper() {}
 
-		if(item != null) {
-			stack = new ItemStack(item, 1, meta);
-		} else {
-			Block block = Block.REGISTRY.getObject(new ResourceLocation(modId, name));
-			stack = new ItemStack(block, 1, meta);
+	public static Optional<ItemStack> getItemStackFromName(String name) {
+		Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(name));
+		if (item == null) {
+			return Optional.empty();
 		}
-		return stack;
+		return Optional.of(new ItemStack(item));
 	}
 
-	public static boolean isItemAndNbtEqual(@Nonnull ItemStack ist1, @Nonnull ItemStack ist2) {
-		return (ist1.isEmpty() && ist2.isEmpty()) || (ist1.isItemEqual(ist2) && (ist1.getTagCompound() == null || ist1.getTagCompound().equals(ist2.getTagCompound())));
+	public static boolean isItemAndNbtEqual(ItemStack ist1, ItemStack ist2) {
+		return (ist1.isEmpty() && ist2.isEmpty()) || (ist1.isItemEqual(ist2) && (ist1.getTag() == null || ist1.getTag().equals(ist2.getTag())));
 	}
 }

@@ -1,50 +1,52 @@
 package xreliquary.items.util.fluid;
 
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.FluidTags;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 
 public class FluidHandlerInfernalChalice extends FluidHandlerItemStack {
+	private static final String FLUID_STACKS_TAG = "fluidStacks";
+
 	public FluidHandlerInfernalChalice(ItemStack chalice) {
-		super(chalice, Settings.Items.InfernalChalice.fluidLimit);
+		super(chalice, Settings.COMMON.items.infernalChalice.fluidLimit.get());
 	}
 
 	@Override
 	public boolean canDrainFluidType(FluidStack fluid) {
-		return !ModItems.infernalChalice.isEnabled(container) && fluid.getFluid() == FluidRegistry.LAVA && getFluid().amount >= fluid.amount;
+		return !ModItems.INFERNAL_CHALICE.isEnabled(container) && FluidTags.LAVA.contains(fluid.getFluid()) && getFluid().getAmount() >= fluid.getAmount();
 	}
 
 	@Override
 	protected void setContainerToEmpty() {
-		setFluid(new FluidStack(FluidRegistry.LAVA, 0));
+		setFluid(new FluidStack(Fluids.LAVA, 0));
 	}
 
 	@Override
 	public boolean canFillFluidType(FluidStack fluid) {
-		return ModItems.infernalChalice.isEnabled(container) && fluid.getFluid() == FluidRegistry.LAVA;
+		return ModItems.INFERNAL_CHALICE.isEnabled(container) && fluid.getFluid() == Fluids.LAVA;
 	}
 
 	@Override
 	protected void setFluid(FluidStack fluid) {
-		if (!container.hasTagCompound())
-		{
-			container.setTagCompound(new NBTTagCompound());
+		if (!container.hasTag()) {
+			container.setTag(new CompoundNBT());
 		}
 
 		//noinspection ConstantConditions
-		container.getTagCompound().setInteger("fluidStacks", fluid.amount);
+		container.getTag().putInt(FLUID_STACKS_TAG, fluid.getAmount());
 	}
 
 	@Override
 	public FluidStack getFluid() {
-		NBTTagCompound tagCompound = container.getTagCompound();
-		if(tagCompound == null || !tagCompound.hasKey("fluidStacks")) {
-			return new FluidStack(FluidRegistry.LAVA, 0);
+		CompoundNBT tagCompound = container.getTag();
+		if (tagCompound == null || !tagCompound.contains(FLUID_STACKS_TAG)) {
+			return new FluidStack(Fluids.LAVA, 0);
 		}
-		return new FluidStack(FluidRegistry.LAVA, tagCompound.getInteger("fluidStacks"));
+		return new FluidStack(Fluids.LAVA, tagCompound.getInt(FLUID_STACKS_TAG));
 	}
 }

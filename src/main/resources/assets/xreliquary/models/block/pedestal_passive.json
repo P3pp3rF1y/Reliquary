@@ -1,14 +1,14 @@
 {
     "parent": "block/block",
     "textures": {
-        "particle": "blocks/quartz_block_bottom",
-        "0": "blocks/quartz_block_bottom",
-        "1": "blocks/quartz_block_lines",
-        "2": "blocks/quartz_block_lines_top",
-        "3": "blocks/quartz_block_chiseled",
-        "4": "blocks/wool_colored_red",
-        "5": "blocks/gold_block",
-        "6": "blocks/redstone_block"
+        "particle": "block/quartz_block_bottom",
+        "0": "block/quartz_block_bottom",
+        "1": "block/quartz_block_lines",
+        "2": "block/quartz_block_lines_top",
+        "3": "block/quartz_block_chiseled",
+        "4": "block/wool_colored_red",
+        "5": "block/gold_block",
+        "6": "block/redstone_block"
     },
     "elements": [
         {

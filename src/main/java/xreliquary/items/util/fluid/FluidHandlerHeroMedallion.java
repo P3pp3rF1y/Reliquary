@@ -1,80 +1,105 @@
 package xreliquary.items.util.fluid;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
 import xreliquary.util.XpHelper;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapabilityProvider {
-
+	private static final int MAX_CAPACITY = Integer.MAX_VALUE;
 	private ItemStack heroMedallion;
 
 	public FluidHandlerHeroMedallion(ItemStack heroMedallion) {
-
 		this.heroMedallion = heroMedallion;
 	}
 
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
-	}
-
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability,  EnumFacing facing) {
-		//noinspection unchecked
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ? (T) this : null;
-	}
-
-	@Override
-	public IFluidTankProperties[] getTankProperties() {
-		return new IFluidTankProperties[] {new FluidTankProperties(new FluidStack(ModFluids.xpJuice(), Fluid.BUCKET_VOLUME), Integer.MAX_VALUE)};
-	}
-
-	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		if(resource.getFluid() != ModFluids.xpJuice())
-			return 0;
-
-		if(doFill) {
-			ModItems.heroMedallion.setExperience(heroMedallion, ModItems.heroMedallion.getExperience(heroMedallion) + XpHelper.liquidToExperience(resource.amount));
-		}
-
-		return resource.amount;
-	}
-
-	@Override
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		if (resource.getFluid() != ModFluids.xpJuice())
-			return null;
-
-		int experienceToRemove = Math.min(XpHelper.liquidToExperience(resource.amount), ModItems.heroMedallion.getExperience(heroMedallion));
-
-		if(doDrain) {
-			ModItems.heroMedallion.setExperience(heroMedallion, ModItems.heroMedallion.getExperience(heroMedallion) - experienceToRemove);
-		}
-
-		return new FluidStack(ModFluids.xpJuice(), XpHelper.experienceToLiquid(experienceToRemove));
-	}
-
-	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		return drain(new FluidStack(ModFluids.xpJuice(), maxDrain), doDrain);
-	}
-
-	@Nonnull
-	@Override
 	public ItemStack getContainer() {
 		return heroMedallion;
+	}
+
+
+	@Override
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+		return CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this));
+	}
+
+	@Override
+	public int getTanks() {
+		return 1;
+	}
+
+
+	@Override
+	public FluidStack getFluidInTank(int tank) {
+		return new FluidStack(ModFluids.xpJuiceStill.get(), getMedallionXp());
+	}
+
+	@Override
+	public int getTankCapacity(int tank) {
+		return MAX_CAPACITY;
+	}
+
+	@Override
+	public boolean isFluidValid(int tank, FluidStack stack) {
+		return tank == 0 && isXpJuiceFluid(stack);
+	}
+
+	private boolean isXpJuiceFluid(FluidStack stack) {
+		return FluidTags.getCollection().getOrCreate(ModFluids.XP_JUICE_TAG).contains(stack.getFluid());
+	}
+
+	@Override
+	public int fill(FluidStack resource, FluidAction action) {
+		if (!isXpJuiceFluid(resource)) {
+			return 0;
+		}
+
+		int currentXp = getMedallionXp();
+		int toFill = Math.min(MAX_CAPACITY - XpHelper.experienceToLiquid(currentXp), resource.getAmount());
+
+		if (action == FluidAction.EXECUTE) {
+			ModItems.HERO_MEDALLION.setExperience(heroMedallion, currentXp + XpHelper.liquidToExperience(toFill));
+		}
+
+		return toFill;
+	}
+
+	private int getMedallionXp() {
+		return ModItems.HERO_MEDALLION.getExperience(heroMedallion);
+	}
+
+
+	@Override
+	public FluidStack drain(FluidStack resource, FluidAction action) {
+		if (!isXpJuiceFluid(resource)) {
+			return FluidStack.EMPTY;
+		}
+
+		int currentXp = getMedallionXp();
+		int currentLiquidXp = XpHelper.experienceToLiquid(currentXp);
+		int toDrain = Math.min(currentLiquidXp, resource.getAmount());
+
+		if (action == FluidAction.EXECUTE) {
+			ModItems.HERO_MEDALLION.setExperience(heroMedallion, currentXp - XpHelper.liquidToExperience(toDrain));
+		}
+
+		return new FluidStack(resource.getFluid(), toDrain);
+	}
+
+
+	@Override
+	public FluidStack drain(int maxDrain, FluidAction action) {
+		return drain(new FluidStack(ModFluids.xpJuiceStill.get(), maxDrain), action);
 	}
 }

@@ -1,3 +1,4 @@
+/* TODO readd waila integration
 package xreliquary.compat.waila.provider;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -9,7 +10,6 @@ import net.minecraft.util.math.BlockPos;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 abstract class CachedBodyDataProvider implements IWailaDataProvider {
@@ -17,7 +17,7 @@ abstract class CachedBodyDataProvider implements IWailaDataProvider {
 	private List<String> cachedBody = null;
 	private BlockPos cachedPosition = null;
 
-	@Nonnull
+
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		if(Settings.wailaShiftForInfo && !accessor.getPlayer().isSneaking()) {
@@ -43,3 +43,4 @@ abstract class CachedBodyDataProvider implements IWailaDataProvider {
 
 	abstract List<String> getWailaBodyToCache(ItemStack itemStack, IWailaDataAccessor accessor, IWailaConfigHandler config);
 }
+*/

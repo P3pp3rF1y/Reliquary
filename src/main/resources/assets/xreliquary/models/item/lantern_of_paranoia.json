@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/lantern_of_paranoia"
+    "layer0": "xreliquary:item/lantern_of_paranoia"
   }
 }

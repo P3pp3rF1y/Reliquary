@@ -1,7 +1,7 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
     "textures": {
-        "layer1": "xreliquary:items/handgun/handgun"
+        "layer1": "xreliquary:item/handgun/handgun"
     },
     "elements": [
         {

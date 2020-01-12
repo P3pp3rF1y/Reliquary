@@ -15,6 +15,7 @@ public class ItemStackCountPane extends Component {
 	public ItemStackCountPane(ItemStack itemStack, int count, int textColor) {
 		this(Box.Layout.HORIZONTAL, itemStack, count, textColor);
 	}
+
 	public ItemStackCountPane(Box.Layout layout, ItemStack itemStack, int count, int textColor) {
 		countPane = new TextPane(String.valueOf(count), textColor);
 		itemStackPane = new ItemStackPane(itemStack);

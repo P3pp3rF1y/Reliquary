@@ -3,6 +3,7 @@ package xreliquary.items.util;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayDeque;
+import java.util.Optional;
 import java.util.Queue;
 
 public class HarvestRodCache implements IHarvestRodCache {
@@ -30,8 +31,8 @@ public class HarvestRodCache implements IHarvestRodCache {
 	}
 
 	@Override
-	public BlockPos getNextBlockInQueue() {
-		return blockQueue.poll();
+	public Optional<BlockPos> getNextBlockInQueue() {
+		return Optional.ofNullable(blockQueue.poll());
 	}
 
 	@Override

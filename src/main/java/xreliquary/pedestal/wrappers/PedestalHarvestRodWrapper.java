@@ -1,49 +1,50 @@
 package xreliquary.pedestal.wrappers;
 
-import net.minecraft.block.*;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Enchantments;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemDye;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.CropsBlock;
+import net.minecraft.block.IGrowable;
+import net.minecraft.block.NetherWartBlock;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BoneMealItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.item.Items;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.IPlantable;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
-import xreliquary.blocks.BlockFertileLilypad;
+import xreliquary.blocks.FertileLilypadBlock;
 import xreliquary.init.ModItems;
-import xreliquary.items.ItemHarvestRod;
-import xreliquary.reference.Reference;
+import xreliquary.items.HarvestRodItem;
 import xreliquary.reference.Settings;
+import xreliquary.util.ItemHelper;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayDeque;
+import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
-import java.util.Random;
 
 public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 	private static final int NO_JOB_COOL_DOWN_CYCLES = 10;
-	private static final ItemHarvestRod harvestRod = ModItems.harvestRod;
+	private static final HarvestRodItem harvestRod = ModItems.HARVEST_ROD;
 
 	private int hoeCoolDown = 0;
 	private int plantCoolDown = 0;
 	private int boneMealCoolDown = 0;
 	private int breakCoolDown = 0;
 
-	private Queue<BlockPos> queueToHoe;
-	private Queue<BlockPos> queueToPlant;
-	private Queue<BlockPos> queueToBoneMeal;
-	private Queue<BlockPos> queueToBreak;
+	private final Queue<BlockPos> queueToHoe;
+	private final Queue<BlockPos> queueToPlant;
+	private final Queue<BlockPos> queueToBoneMeal;
+	private final Queue<BlockPos> queueToBreak;
 
 	public PedestalHarvestRodWrapper() {
 		queueToHoe = new ArrayDeque<>();
@@ -53,12 +54,12 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	@Override
-	public void update(@Nonnull ItemStack stack, IPedestal pedestal) {
+	public void update(ItemStack stack, IPedestal pedestal) {
 		World world = pedestal.getTheWorld();
 		BlockPos pos = pedestal.getBlockPos();
-		EntityPlayer player = pedestal.getFakePlayer();
-		int range = Settings.Items.HarvestRod.pedestalRange;
-		int cooldown = Settings.Items.HarvestRod.pedestalCooldown;
+		PlayerEntity player = pedestal.getFakePlayer();
+		int range = Settings.COMMON.items.harvestRod.pedestalRange.get();
+		int cooldown = Settings.COMMON.items.harvestRod.pedestalCooldown.get();
 
 		hoeLand(world, player, pos, range);
 
@@ -66,50 +67,49 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 		boneMealCrops(world, pos, stack, range);
 
-		breakCrops(world, pos, stack, range);
+		breakCrops(world, player, pos, stack, range);
 
 		pedestal.setActionCoolDown(cooldown);
 	}
 
 	@Override
-	public void onRemoved(@Nonnull ItemStack stack, IPedestal pedestal) {
+	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+		//noop
 	}
 
 	@Override
-	public void stop(@Nonnull ItemStack stack, IPedestal pedestal) {
+	public void stop(ItemStack stack, IPedestal pedestal) {
+		//noop
 	}
 
-	private void breakCrops(World world, BlockPos pos, ItemStack stack, int range) {
-		if(breakCoolDown > 0) {
+	private void breakCrops(World world, PlayerEntity player, BlockPos pos, ItemStack stack, int range) {
+		if (breakCoolDown > 0) {
 			breakCoolDown--;
 		} else {
-			BlockPos nextBlockToBreak = getNextBlockToBreak(world, pos, range);
-
-			if(nextBlockToBreak != null) {
-				doHarvestBlockBreak(world, stack, nextBlockToBreak);
-				return;
+			if (!breakNext(world, player, pos, stack, range)) {
+				breakCoolDown = NO_JOB_COOL_DOWN_CYCLES;
 			}
-			breakCoolDown = NO_JOB_COOL_DOWN_CYCLES;
 		}
 	}
 
-	private void doHarvestBlockBreak(World world, ItemStack ist, BlockPos pos) {
-		IBlockState blockState = world.getBlockState(pos);
-		Block block = blockState.getBlock();
+	private boolean breakNext(World world, PlayerEntity player, BlockPos pos, ItemStack stack, int range) {
+		return getNextBlockToBreak(world, pos, range).map(nextBlockToBreak -> {
+			doHarvestBlockBreak(world, player, stack, nextBlockToBreak);
+			return true;
+		}).orElse(false);
+	}
 
-		NonNullList<ItemStack> drops = NonNullList.create();
-
-		block.getDrops(drops, world, pos, blockState, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, ist));
-		Random rand = new Random();
-
-		for(ItemStack stack : drops) {
+	private void doHarvestBlockBreak(World world, PlayerEntity player, ItemStack stack, BlockPos pos) {
+		BlockState blockState = world.getBlockState(pos);
+		List<ItemStack> drops = Block.getDrops(blockState, (ServerWorld) world, pos, null, player, stack);
+		for (ItemStack drop : drops) {
 			float f = 0.7F;
-			double d = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-			double d1 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-			double d2 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-			EntityItem entityitem = new EntityItem(world, (double) pos.getX() + d, (double) pos.getY() + d1, (double) pos.getZ() + d2, stack);
+			double d = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+			double d1 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+			double d2 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+			ItemEntity entityitem = new ItemEntity(world, (double) pos.getX() + d, (double) pos.getY() + d1, (double) pos.getZ() + d2, drop);
 			entityitem.setPickupDelay(10);
-			world.spawnEntity(entityitem);
+			world.addEntity(entityitem);
 		}
 
 		world.setBlockState(pos, Blocks.AIR.getDefaultState());
@@ -117,148 +117,156 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 	private void boneMealCrops(World world, BlockPos pos, ItemStack stack, int range) {
 
-		if(boneMealCoolDown > 0) {
+		if (boneMealCoolDown > 0) {
 			boneMealCoolDown--;
 		} else {
-			if(harvestRod.getBoneMealCount(stack) >= (harvestRod.getBonemealCost())) {
-				BlockPos blockToBoneMeal = getNextBlockToBoneMeal(world, pos, range);
-
-				if(blockToBoneMeal != null) {
-					boneMealBlock(stack, world, blockToBoneMeal);
-					return;
-				}
+			if (harvestRod.getBoneMealCount(stack) >= (harvestRod.getBonemealCost()) && boneMealNext(world, pos, stack, range)) {
+				return;
 			}
 			boneMealCoolDown = NO_JOB_COOL_DOWN_CYCLES;
 		}
 	}
 
-	private void boneMealBlock(ItemStack ist, World world, BlockPos pos) {
-		ItemStack fakeItemStack = new ItemStack(Items.DYE, 1, Reference.WHITE_DYE_META);
-
-		boolean boneMealUsed = false;
-		for(int repeatedUses = 0; repeatedUses <= harvestRod.getLuckRolls(); repeatedUses++) {
-			if(repeatedUses == 0 || world.rand.nextInt(100) <= harvestRod.getLuckPercent()) {
-				if(ItemDye.applyBonemeal(fakeItemStack, world, pos)) {
-					boneMealUsed = true;
-				}
-			}
-		}
-		if(boneMealUsed)
-			harvestRod.setBoneMealCount(ist, harvestRod.getBoneMealCount(ist) - harvestRod.getBonemealCost());
+	private boolean boneMealNext(World world, BlockPos pos, ItemStack stack, int range) {
+		return getNextBlockToBoneMeal(world, pos, range).map(blockToBoneMeal -> {
+			boneMealBlock(stack, world, blockToBoneMeal);
+			return true;
+		}).orElse(false);
 	}
 
-	private void plantSeeds(World world, EntityPlayer player, BlockPos pos, ItemStack stack, int range) {
+	private void boneMealBlock(ItemStack stack, World world, BlockPos pos) {
+		ItemStack fakeItemStack = new ItemStack(Items.BONE_MEAL);
 
-		if(plantCoolDown > 0) {
+		boolean boneMealUsed = false;
+		for (int repeatedUses = 0; repeatedUses <= harvestRod.getLuckRolls(); repeatedUses++) {
+			if ((repeatedUses == 0 || world.rand.nextInt(100) <= harvestRod.getLuckPercent()) && BoneMealItem.applyBonemeal(fakeItemStack, world, pos)) {
+				boneMealUsed = true;
+			}
+		}
+		if (boneMealUsed) {
+			harvestRod.setBoneMealCount(stack, harvestRod.getBoneMealCount(stack) - harvestRod.getBonemealCost());
+		}
+	}
+
+	private void plantSeeds(World world, PlayerEntity player, BlockPos pos, ItemStack stack, int range) {
+
+		if (plantCoolDown > 0) {
 			plantCoolDown--;
 		} else {
 			byte plantableSlot = 1;
 
-			if(harvestRod.getCountPlantable(stack) > 0) {
+			if (harvestRod.getCountPlantable(stack) > 0) {
 				int quantity = harvestRod.getPlantableQuantity(stack, plantableSlot);
 
-				if(quantity > 0) {
-					BlockPos blockToPlantOn = getNextBlockToPlantOn(world, pos, range, (IPlantable) harvestRod.getPlantableInSlot(stack, plantableSlot).getItem());
-
-					if(blockToPlantOn != null) {
-						plantItem(world, player, blockToPlantOn, stack, plantableSlot);
-						return;
-					}
+				if (quantity > 0 && plantNext(world, player, pos, stack, range, plantableSlot)) {
+					return;
 				}
 			}
 			plantCoolDown = NO_JOB_COOL_DOWN_CYCLES;
 		}
 	}
 
-	private void plantItem(World world, EntityPlayer player, BlockPos pos, ItemStack stack, byte idx) {
+	private boolean plantNext(World world, PlayerEntity player, BlockPos pos, ItemStack stack, int range, byte plantableSlot) {
+		return getNextBlockToPlantOn(world, pos, range, (IPlantable) harvestRod.getPlantableInSlot(stack, plantableSlot).getItem()).map(blockToPlantOn -> {
+			plantItem(player, blockToPlantOn, stack, plantableSlot);
+			return true;
+		}).orElse(false);
+	}
+
+	private void plantItem(PlayerEntity player, BlockPos pos, ItemStack stack, byte idx) {
 		ItemStack fakePlantableStack = harvestRod.getPlantableInSlot(stack, idx).copy();
 		fakePlantableStack.setCount(1);
 
-		if(fakePlantableStack.onItemUse(player, world, pos, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0) == EnumActionResult.SUCCESS) {
+		if (fakePlantableStack.onItemUse(ItemHelper.getItemUseContext(pos, player)) == ActionResultType.SUCCESS) {
 			harvestRod.setPlantableQuantity(stack, idx, harvestRod.getPlantableQuantity(stack, idx) - 1);
 			harvestRod.shiftModeOnEmptyPlantable(stack, idx);
 		}
 	}
 
-	private void hoeLand(World world, EntityPlayer player, BlockPos pos, int range) {
-		if(hoeCoolDown > 0) {
+	private void hoeLand(World world, PlayerEntity player, BlockPos pos, int range) {
+		if (hoeCoolDown > 0) {
 			hoeCoolDown--;
 		} else {
-			ItemStack fakeHoe = new ItemStack(Items.WOODEN_HOE);
-			BlockPos blockToHoe = getNextBlockToHoe(world, pos, range);
-			player.setHeldItem(EnumHand.MAIN_HAND, fakeHoe);
-			if(blockToHoe != null) {
-				Items.WOODEN_HOE.onItemUse(player, world, blockToHoe, EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0);
-			} else {
+			if (!hoeNext(world, player, pos, range)) {
 				hoeCoolDown = NO_JOB_COOL_DOWN_CYCLES;
 			}
 		}
 	}
 
-	//TODO: change these to capabilities in 1.9 and use Harvest Rod methods
+	private boolean hoeNext(World world, PlayerEntity player, BlockPos pos, int range) {
+		return getNextBlockToHoe(world, pos, range).map(blockToHoe -> {
+			ItemStack fakeHoe = new ItemStack(Items.WOODEN_HOE);
+			player.setHeldItem(Hand.MAIN_HAND, fakeHoe);
+			Items.WOODEN_HOE.onItemUse(ItemHelper.getItemUseContext(pos, player));
+			return true;
+		}).orElse(false);
+	}
 
-	private BlockPos getNextBlockToBreak(World world, BlockPos pos, int range) {
-		if(queueToBreak.isEmpty()) {
+	private Optional<BlockPos> getNextBlockToBreak(World world, BlockPos pos, int range) {
+		if (queueToBreak.isEmpty()) {
 			fillQueueToBreak(world, pos, range);
 		}
-		return queueToBreak.poll();
+		return Optional.ofNullable(queueToBreak.poll());
 
 	}
 
 	private void fillQueueToBreak(World world, BlockPos pos, int range) {
-		for(int x = pos.getX() - range; x <= pos.getX() + range; x++) {
-			for(int y = pos.getY() - range; y <= pos.getY() + range; y++) {
-				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
-					BlockPos currentPos = new BlockPos(x, y, z);
-					IBlockState state = world.getBlockState(currentPos);
-					Block block = state.getBlock();
-					if(block instanceof IPlantable || block == Blocks.MELON_BLOCK || block == Blocks.PUMPKIN) {
-						if(block instanceof BlockFertileLilypad || block == Blocks.PUMPKIN_STEM || block == Blocks.MELON_STEM)
-							continue;
-						if(block instanceof BlockCrops && ((BlockCrops) block).canGrow(world, pos, state, false))
-							continue;
-						if(block instanceof BlockNetherWart && state.getValue(BlockNetherWart.AGE) < 3)
-							continue;
-
-						queueToBreak.add(currentPos);
-					}
+		for (int x = pos.getX() - range; x <= pos.getX() + range; x++) {
+			for (int y = pos.getY() - range; y <= pos.getY() + range; y++) {
+				for (int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
+					addBreakableCropAt(world, x, y, z);
 				}
 			}
 		}
 	}
 
-	private BlockPos getNextBlockToHoe(World world, BlockPos pos, int range) {
-		if(queueToHoe.isEmpty())
-			fillQueueToHoe(world, pos, range);
+	private void addBreakableCropAt(World world, int x, int y, int z) {
+		BlockPos currentPos = new BlockPos(x, y, z);
+		BlockState state = world.getBlockState(currentPos);
+		Block block = state.getBlock();
+		if (block instanceof IPlantable || block == Blocks.MELON || block == Blocks.PUMPKIN) {
+			if (block instanceof FertileLilypadBlock || block == Blocks.PUMPKIN_STEM || block == Blocks.MELON_STEM
+					|| block instanceof CropsBlock && ((CropsBlock) block).canGrow(world, currentPos, state, false)
+					|| block instanceof NetherWartBlock && state.get(NetherWartBlock.AGE) < 3) {
+				return;
+			}
 
-		return queueToHoe.poll();
+			queueToBreak.add(currentPos);
+		}
+	}
+
+	private Optional<BlockPos> getNextBlockToHoe(World world, BlockPos pos, int range) {
+		if (queueToHoe.isEmpty()) {
+			fillQueueToHoe(world, pos, range);
+		}
+
+		return Optional.ofNullable(queueToHoe.poll());
 	}
 
 	private void fillQueueToHoe(World world, BlockPos pos, int range) {
 		queueToHoe.clear();
-		for(int x = pos.getX() - range; x <= pos.getX() + range; x++) {
-			for(int y = pos.getY() - range; y <= pos.getY() + range; y++) {
-				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
+		for (int x = pos.getX() - range; x <= pos.getX() + range; x++) {
+			for (int y = pos.getY() - range; y <= pos.getY() + range; y++) {
+				for (int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
 					BlockPos currentPos = new BlockPos(x, y, z);
 
-					IBlockState blockState = world.getBlockState(currentPos);
+					BlockState blockState = world.getBlockState(currentPos);
 					Block block = blockState.getBlock();
 
-					if(world.isAirBlock(currentPos.up())) {
-						if(block == Blocks.GRASS || (block == Blocks.DIRT && (blockState.getValue(BlockDirt.VARIANT) == BlockDirt.DirtType.DIRT || blockState.getValue(BlockDirt.VARIANT) == BlockDirt.DirtType.COARSE_DIRT))) {
-							queueToHoe.add(currentPos);
-						}
+					if (world.isAirBlock(currentPos.up()) && (block == Blocks.GRASS || block == Blocks.DIRT || block == Blocks.COARSE_DIRT)) {
+						queueToHoe.add(currentPos);
 					}
 				}
 			}
 		}
 	}
 
-	private BlockPos getNextBlockToPlantOn(World world, BlockPos pos, int range, IPlantable plantable) {
-		if(queueToPlant.isEmpty())
+	private Optional<BlockPos> getNextBlockToPlantOn(World world, BlockPos pos, int range, IPlantable plantable) {
+		if (queueToPlant.isEmpty()) {
 			fillQueueToPlant(world, pos, range, plantable);
+		}
 
-		return queueToPlant.poll();
+		return Optional.ofNullable(queueToPlant.poll());
 	}
 
 	private void fillQueueToPlant(World world, BlockPos pos, int range, IPlantable plantable) {
@@ -267,19 +275,19 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		boolean checkerboard = false;
 		boolean bothOddOrEven = false;
 
-		if(plantable == Items.PUMPKIN_SEEDS || plantable == Items.MELON_SEEDS) {
+		if (plantable == Items.PUMPKIN_SEEDS || plantable == Items.MELON_SEEDS) {
 			checkerboard = true;
 			boolean xEven = pos.getX() % 2 == 0;
 			boolean zEven = pos.getZ() % 2 == 0;
 			bothOddOrEven = xEven == zEven;
 		}
 
-		for(int x = pos.getX() - range; x <= pos.getX() + range; x++) {
-			for(int y = pos.getY() - range; y <= pos.getY() + range; y++) {
-				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
+		for (int x = pos.getX() - range; x <= pos.getX() + range; x++) {
+			for (int y = pos.getY() - range; y <= pos.getY() + range; y++) {
+				for (int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
 					BlockPos currentPos = new BlockPos(x, y, z);
-					IBlockState blockState = world.getBlockState(currentPos);
-					if((!checkerboard || (bothOddOrEven == ((currentPos.getX() % 2 == 0) == (currentPos.getZ() % 2 == 0)))) && blockState.getBlock().canSustainPlant(blockState, world, pos, EnumFacing.UP, plantable) && world.isAirBlock(currentPos.up())) {
+					BlockState blockState = world.getBlockState(currentPos);
+					if ((!checkerboard || (bothOddOrEven == ((currentPos.getX() % 2 == 0) == (currentPos.getZ() % 2 == 0)))) && blockState.getBlock().canSustainPlant(blockState, world, pos, Direction.UP, plantable) && world.isAirBlock(currentPos.up())) {
 						queueToPlant.add(currentPos);
 					}
 				}
@@ -287,21 +295,22 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		}
 	}
 
-	private BlockPos getNextBlockToBoneMeal(World world, BlockPos pos, int range) {
-		if(queueToBoneMeal.isEmpty())
+	private Optional<BlockPos> getNextBlockToBoneMeal(World world, BlockPos pos, int range) {
+		if (queueToBoneMeal.isEmpty()) {
 			fillQueueToBoneMeal(world, pos, range);
+		}
 
-		return queueToBoneMeal.poll();
+		return Optional.ofNullable(queueToBoneMeal.poll());
 	}
 
 	private void fillQueueToBoneMeal(World world, BlockPos pos, int range) {
 		queueToBoneMeal.clear();
-		for(int x = pos.getX() - range; x <= pos.getX() + range; x++) {
-			for(int y = pos.getY() - range; y <= pos.getY() + range; y++) {
-				for(int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
+		for (int x = pos.getX() - range; x <= pos.getX() + range; x++) {
+			for (int y = pos.getY() - range; y <= pos.getY() + range; y++) {
+				for (int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
 					BlockPos currentPos = new BlockPos(x, y, z);
-					IBlockState blockState = world.getBlockState(currentPos);
-					if(blockState.getBlock() != Blocks.GRASS && blockState.getBlock() instanceof IGrowable && ((IGrowable) blockState.getBlock()).canGrow(world, currentPos, blockState, world.isRemote)) {
+					BlockState blockState = world.getBlockState(currentPos);
+					if (blockState.getBlock() != Blocks.GRASS && blockState.getBlock() instanceof IGrowable && ((IGrowable) blockState.getBlock()).canGrow(world, currentPos, blockState, world.isRemote)) {
 						queueToBoneMeal.add(currentPos);
 					}
 				}

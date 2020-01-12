@@ -1,7 +1,7 @@
 {
     "parent": "block/cube_all",
     "textures": {
-        "all": "xreliquary:blocks/altar_idle"
+        "all": "xreliquary:block/altar_idle"
     }
 
 }

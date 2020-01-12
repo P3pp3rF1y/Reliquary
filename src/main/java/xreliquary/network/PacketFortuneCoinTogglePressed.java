@@ -1,19 +1,14 @@
 package xreliquary.network;
 
-import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Compatibility;
 
-public class PacketFortuneCoinTogglePressed implements IMessage, IMessageHandler<PacketFortuneCoinTogglePressed, IMessage> {
+import java.util.function.Supplier;
+
+public class PacketFortuneCoinTogglePressed {
 
 	private InventoryType inventoryType;
 	private int slot;
@@ -25,43 +20,40 @@ public class PacketFortuneCoinTogglePressed implements IMessage, IMessageHandler
 		this.slot = slot;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		inventoryType = InventoryType.values()[buf.readByte()];
-		slot = buf.readInt();
+	static void encode(PacketFortuneCoinTogglePressed msg, PacketBuffer packetBuffer) {
+		packetBuffer.writeByte(msg.inventoryType.ordinal());
+		packetBuffer.writeInt(msg.slot);
+
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeByte(inventoryType.ordinal());
-		buf.writeInt(slot);
+	static PacketFortuneCoinTogglePressed decode(PacketBuffer packetBuffer) {
+		return new PacketFortuneCoinTogglePressed(InventoryType.values()[packetBuffer.readByte()], packetBuffer.readInt());
 	}
 
-	@Override
-	public IMessage onMessage(PacketFortuneCoinTogglePressed message, MessageContext ctx) {
-		((WorldServer) ctx.getServerHandler().player.world).addScheduledTask(() -> handleMessage(message, ctx.getServerHandler().player));
-
-		return null;
+	static void onMessage(PacketFortuneCoinTogglePressed msg, Supplier<NetworkEvent.Context> contextSupplier) {
+		contextSupplier.get().enqueueWork(() -> handleMessage(msg, contextSupplier.get().getSender()));
 	}
 
-	private void handleMessage(PacketFortuneCoinTogglePressed message, EntityPlayerMP player) {
+	private static void handleMessage(PacketFortuneCoinTogglePressed message, ServerPlayerEntity player) {
 		ItemStack stack = ItemStack.EMPTY;
-		switch(message.inventoryType) {
+		switch (message.inventoryType) {
 			case MAIN:
 				stack = player.inventory.mainInventory.get(message.slot);
 				break;
 			case OFF_HAND:
 				stack = player.inventory.offHandInventory.get(0);
 				break;
+/*	TODO implement code for Baubles successor
 			case BAUBLES:
-				if(Loader.isModLoaded(Compatibility.MOD_ID.BAUBLES)) {
+				if(ModList.get().isLoaded(Compatibility.MOD_ID.BAUBLES)) {
 					IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
 					stack = inventoryBaubles.getStackInSlot(message.slot);
 				}
-				break;
+				break;*/
 		}
-		if (stack.getItem() == ModItems.fortuneCoin)
-			ModItems.fortuneCoin.toggle(stack);
+		if (stack.getItem() == ModItems.FORTUNE_COIN) {
+			ModItems.FORTUNE_COIN.toggle(stack);
+		}
 	}
 
 	public enum InventoryType {

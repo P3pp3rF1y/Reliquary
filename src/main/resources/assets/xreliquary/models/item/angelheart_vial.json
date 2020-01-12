@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/angelheart_vial"
+    "layer0": "xreliquary:item/angelheart_vial"
   }
 }

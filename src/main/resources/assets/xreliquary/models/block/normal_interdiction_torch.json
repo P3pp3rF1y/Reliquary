@@ -1,6 +1,6 @@
 {
     "parent": "xreliquary:block/interdiction_torch",
     "textures": {
-        "torch": "xreliquary:blocks/interdiction_torch"
+        "torch": "xreliquary:block/interdiction_torch"
     }
 }

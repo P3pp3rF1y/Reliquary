@@ -1,35 +1,35 @@
+/* TODO readd waila integration
 package xreliquary.compat.waila.provider;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.text.TextFormatting;
-import xreliquary.blocks.BlockApothecaryCauldron;
-import xreliquary.blocks.tile.TileEntityCauldron;
+import xreliquary.blocks.ApothecaryCauldronBlock;
+import xreliquary.blocks.tile.ApothecaryCauldronTileEntity;
 import xreliquary.init.ModBlocks;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.XRPotionHelper;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataProviderCauldron extends CachedBodyDataProvider {
-	@Nonnull
+
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return new ItemStack(ModBlocks.apothecaryCauldron);
+		return new ItemStack(ModBlocks.APOTHECARY_CAULDRON);
 	}
 
 	@Override
 	public List<String> getWailaBodyToCache(ItemStack itemStack, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		List<String> currenttip = new ArrayList<>();
 
-		if(!(accessor.getBlock() instanceof BlockApothecaryCauldron && accessor.getTileEntity() instanceof TileEntityCauldron))
+		if(!(accessor.getBlock() instanceof ApothecaryCauldronBlock && accessor.getTileEntity() instanceof ApothecaryCauldronTileEntity))
 			return currenttip;
 
-		TileEntityCauldron cauldron = (TileEntityCauldron) accessor.getTileEntity();
+		ApothecaryCauldronTileEntity cauldron = (ApothecaryCauldronTileEntity) accessor.getTileEntity();
 
 		if(cauldron == null || cauldron.effects.isEmpty())
 			return currenttip;
@@ -70,3 +70,4 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		return currenttip;
 	}
 }
+*/

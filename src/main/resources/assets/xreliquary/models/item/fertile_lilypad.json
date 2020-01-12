@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/lilypad"
+    "layer0": "xreliquary:item/lilypad"
   }
 }

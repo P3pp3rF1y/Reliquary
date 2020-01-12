@@ -1,17 +1,17 @@
 package xreliquary.util;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.MobEffects;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.potion.Effects;
 
 public class EntityHelper {
-	public static void removeNegativeStatusEffects(EntityLivingBase player) {
-		player.removePotionEffect(MobEffects.WITHER);
-		player.removePotionEffect(MobEffects.HUNGER);
-		player.removePotionEffect(MobEffects.POISON);
-		player.removePotionEffect(MobEffects.NAUSEA);
-		player.removePotionEffect(MobEffects.MINING_FATIGUE);
-		player.removePotionEffect(MobEffects.SLOWNESS);
-		player.removePotionEffect(MobEffects.BLINDNESS);
-		player.removePotionEffect(MobEffects.WEAKNESS);
+	public static void removeNegativeStatusEffects(LivingEntity player) {
+		player.removePotionEffect(Effects.WITHER);
+		player.removePotionEffect(Effects.HUNGER);
+		player.removePotionEffect(Effects.POISON);
+		player.removePotionEffect(Effects.NAUSEA);
+		player.removePotionEffect(Effects.MINING_FATIGUE);
+		player.removePotionEffect(Effects.SLOWNESS);
+		player.removePotionEffect(Effects.BLINDNESS);
+		player.removePotionEffect(Effects.WEAKNESS);
 	}
 }

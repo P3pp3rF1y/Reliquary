@@ -3,76 +3,80 @@ package xreliquary.entities;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeMap;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.NonNullList;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 
-import javax.annotation.Nonnull;
 import java.util.UUID;
 
+@SuppressWarnings({"squid:S2160", "squid:MaximumInheritanceDepth"})
 public class EntityXRFakePlayer extends FakePlayer {
 	private AbstractAttributeMap fakePlayerAttributeMap;
 	private final NonNullList<ItemStack> fakePlayerHandInventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	private static final String FAKE_PLAYER_USERNAME = "reliquary_pedestal_fake_player";
 
-	public EntityXRFakePlayer(WorldServer world) {
+	public EntityXRFakePlayer(ServerWorld world) {
 		this(world, new GameProfile(UUID.nameUUIDFromBytes(FAKE_PLAYER_USERNAME.getBytes()), FAKE_PLAYER_USERNAME));
 	}
 
-	private EntityXRFakePlayer(WorldServer world, GameProfile name) {
+	private EntityXRFakePlayer(ServerWorld world, GameProfile name) {
 		super(world, name);
 		connection = new FakeNetHandlerPlayServer(this);
 	}
 
-	@Nonnull
 	@Override
-	public AbstractAttributeMap getAttributeMap() {
-		if(fakePlayerAttributeMap == null)
+	public AbstractAttributeMap getAttributes() {
+		if (fakePlayerAttributeMap == null) {
 			fakePlayerAttributeMap = new AttributeMap();
+		}
 		return fakePlayerAttributeMap;
 	}
 
 	@Override
-	public void onUpdate() {
-		if(this.world.isRemote)
+	public void tick() {
+		if (world.isRemote) {
 			return;
+		}
 
-		for(int i = 0; i < 2; i++) {
-			EntityEquipmentSlot entityEquipmentSlot = EntityEquipmentSlot.values()[i];
+		for (int i = 0; i < 2; i++) {
+			EquipmentSlotType entityEquipmentSlot = EquipmentSlotType.values()[i];
 
-			ItemStack itemstack = this.fakePlayerHandInventory.get(entityEquipmentSlot.getIndex());
-			ItemStack itemstack1 = this.getItemStackFromSlot(entityEquipmentSlot);
+			ItemStack itemstack = fakePlayerHandInventory.get(entityEquipmentSlot.getIndex());
+			ItemStack itemstack1 = getItemStackFromSlot(entityEquipmentSlot);
 
-			if(!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
-				if(!itemstack.isEmpty()) {
-					this.getAttributeMap().removeAttributeModifiers(itemstack.getAttributeModifiers(entityEquipmentSlot));
+			if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
+				if (!itemstack.isEmpty()) {
+					getAttributes().removeAttributeModifiers(itemstack.getAttributeModifiers(entityEquipmentSlot));
 				}
 
-				if(!itemstack1.isEmpty()) {
-					this.getAttributeMap().applyAttributeModifiers(itemstack1.getAttributeModifiers(entityEquipmentSlot));
+				if (!itemstack1.isEmpty()) {
+					getAttributes().applyAttributeModifiers(itemstack1.getAttributeModifiers(entityEquipmentSlot));
 				}
 
-				this.setItemStackToSlot(entityEquipmentSlot, itemstack1.isEmpty() ? ItemStack.EMPTY : itemstack1);
+				setItemStackToSlot(entityEquipmentSlot, itemstack1.isEmpty() ? ItemStack.EMPTY : itemstack1);
 				break;
 			}
 		}
 
 		//finish previous swing or cool down caused by change of weapons
-		this.ticksSinceLastSwing = (int) this.getCooldownPeriod();
+		ticksSinceLastSwing = (int) getCooldownPeriod();
 	}
 
 	@Override
-	protected void onNewPotionEffect(PotionEffect id) {
+	protected void onNewPotionEffect(EffectInstance id) {
+		//noop
 	}
 
 	@Override
-	protected void onChangedPotionEffect(PotionEffect id, boolean p_70695_2_) {
+	protected void onChangedPotionEffect(EffectInstance id, boolean p_70695_2_) {
+		//noop
 	}
 
 	@Override
-	protected void onFinishedPotionEffect(PotionEffect p_70688_1_) {
+	protected void onFinishedPotionEffect(EffectInstance effect) {
+		//noop
 	}
 }

@@ -1,44 +1,41 @@
 package xreliquary.util;
 
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAITasks;
-import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.goal.HurtByTargetGoal;
+import net.minecraft.entity.monster.ZombiePigmanEntity;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 
 public class MobHelper {
+	private MobHelper() {}
 
-	public static void resetTarget(EntityLiving entity) {
+	public static void resetTarget(MobEntity entity) {
 		resetTarget(entity, false, false);
 	}
 
-	public static void resetTarget(EntityLiving entity, boolean processPigmanLogic, boolean resetRevengeTarget) {
+	public static void resetTarget(MobEntity entity, boolean processPigmanLogic, boolean resetRevengeTarget) {
 		entity.setAttackTarget(null);
 		if (resetRevengeTarget) {
 			entity.setRevengeTarget(null);
 		}
-		if(processPigmanLogic && entity instanceof EntityPigZombie) {
+		if(processPigmanLogic && entity instanceof ZombiePigmanEntity) {
 			//need to reset ai task because it doesn't get reset with setAttackTarget or setRevengeTarget and keeps player as target
-			for (EntityAITasks.EntityAITaskEntry aiTask : entity.targetTasks.taskEntries) {
-				if (aiTask.action instanceof EntityAIHurtByTarget) {
-					aiTask.action.resetTask();
-					break;
-				}
-			}
+			entity.targetSelector.getRunningGoals().filter(prioritizedGoal -> prioritizedGoal.getGoal() instanceof HurtByTargetGoal).findFirst()
+					.ifPresent(prioritizedGoal -> prioritizedGoal.getGoal().resetTask());
 
 			//also need to reset anger target because apparently setRevengeTarget doesn't set this to null
-			resetAngerTarget((EntityPigZombie) entity);
+			resetAngerTarget((ZombiePigmanEntity) entity);
 		}
 	}
 
-	private static final Field SET_ANGER_TARGET = ObfuscationReflectionHelper.findField(EntityPigZombie.class, "field_175459_bn");
-	private static void resetAngerTarget(EntityPigZombie zombiePigman) {
+	private static final Field ANGER_TARGET_UUID = ObfuscationReflectionHelper.findField(ZombiePigmanEntity.class, "field_175459_bn");
+	@SuppressWarnings("squid:S3011")
+	private static void resetAngerTarget(ZombiePigmanEntity zombiePigman) {
 		try {
-			SET_ANGER_TARGET.set(zombiePigman, null);
+			ANGER_TARGET_UUID.set(zombiePigman, null);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			LogHelper.error("Error setting angerTargetUUID to null in ZombiePigmanEntity", e);
 		}
 	}
 }

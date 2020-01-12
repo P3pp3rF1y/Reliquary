@@ -16,7 +16,7 @@
             "item": "minecraft:ender_eye"
         },
         "V": {
-            "type": "xreliquary:item_empty_nbt",
+            "type": "forge:nbt",
             "item": "xreliquary:void_tear"
         },
         "N": {

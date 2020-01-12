@@ -3,11 +3,11 @@ package xreliquary.init;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.reference.Reference;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModSounds {
 	public static SoundEvent book = new SoundEvent(new ResourceLocation(Reference.MOD_ID, "book"));
 	public static SoundEvent xload = new SoundEvent(new ResourceLocation(Reference.MOD_ID, "xload"));

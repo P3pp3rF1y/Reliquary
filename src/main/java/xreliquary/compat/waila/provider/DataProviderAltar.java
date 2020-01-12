@@ -1,29 +1,29 @@
+/* TODO readd waila integration
 package xreliquary.compat.waila.provider;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import xreliquary.blocks.BlockAlkahestryAltar;
-import xreliquary.blocks.tile.TileEntityAltar;
+import net.minecraft.item.Items;
+import xreliquary.blocks.AlkahestryAltarBlock;
+import xreliquary.blocks.tile.AlkahestryAltarTileEntity;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 
-import javax.annotation.Nonnull;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class DataProviderAltar implements IWailaDataProvider {
-	@Nonnull
+
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		return new ItemStack(ModBlocks.alkahestryAltar);
+		return new ItemStack(ModBlocks.ALKAHESTRY_ALTAR);
 	}
 
-	@Nonnull
+
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 		if(Settings.wailaShiftForInfo && !accessor.getPlayer().isSneaking()) {
@@ -31,10 +31,10 @@ public class DataProviderAltar implements IWailaDataProvider {
 			return currenttip;
 		}
 
-		if(!(accessor.getBlock() instanceof BlockAlkahestryAltar && accessor.getTileEntity() instanceof TileEntityAltar))
+		if(!(accessor.getBlock() instanceof AlkahestryAltarBlock && accessor.getTileEntity() instanceof AlkahestryAltarTileEntity))
 			return currenttip;
 
-		TileEntityAltar altar = (TileEntityAltar) accessor.getTileEntity();
+		AlkahestryAltarTileEntity altar = (AlkahestryAltarTileEntity) accessor.getTileEntity();
 
 		if(!altar.isActive()) {
 			currenttip.add(ChatFormatting.RED + LanguageHelper.getLocalization("waila.xreliquary.altar.inactive") + ChatFormatting.RESET);
@@ -48,3 +48,4 @@ public class DataProviderAltar implements IWailaDataProvider {
 		return currenttip;
 	}
 }
+*/

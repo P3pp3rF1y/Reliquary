@@ -20,7 +20,7 @@ public class HeroMedallionPane extends Component {
 	public HeroMedallionPane() {
 		xpBar = new XPBarPane();
 		levelPane = new TextPane("0", Colors.get(Colors.GREEN));
-		mainPane = Box.createVertical(Box.Alignment.RIGHT, xpBar, Box.createHorizontal(Box.Alignment.MIDDLE, new ItemStackPane(ModItems.heroMedallion), levelPane));
+		mainPane = Box.createVertical(Box.Alignment.RIGHT, xpBar, Box.createHorizontal(Box.Alignment.MIDDLE, new ItemStackPane(ModItems.HERO_MEDALLION), levelPane));
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class HeroMedallionPane extends Component {
 
 	@Override
 	public boolean shouldRender() {
-		return !InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, ModItems.heroMedallion).isEmpty();
+		return !InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, ModItems.HERO_MEDALLION).isEmpty();
 	}
 
 	@Override
@@ -45,12 +45,13 @@ public class HeroMedallionPane extends Component {
 
 	@Override
 	public void renderInternal(int x, int y) {
-		ItemStack item = InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, ModItems.heroMedallion);
+		ItemStack item = InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, ModItems.HERO_MEDALLION);
 
-		if (item.isEmpty())
+		if (item.isEmpty()) {
 			return;
+		}
 
-		int experience = ModItems.heroMedallion.getExperience(item);
+		int experience = ModItems.HERO_MEDALLION.getExperience(item);
 		int level = XpHelper.getLevelForExperience(experience);
 		levelPane.setText(String.valueOf(level));
 

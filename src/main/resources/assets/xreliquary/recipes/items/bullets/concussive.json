@@ -15,8 +15,7 @@
         }
     ],
     "result": {
-        "item": "xreliquary:bullet",
-        "data": 5,
+        "item": "xreliquary:bullets/concussive_bullet",
         "count": 8
     }
 }

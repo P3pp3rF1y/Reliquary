@@ -2,25 +2,25 @@ package xreliquary.handler;
 
 import com.google.common.collect.Sets;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Enchantments;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SPacketPlayerAbilities;
-import net.minecraft.world.WorldServer;
+import net.minecraft.network.play.server.SPlayerAbilitiesPacket;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AnvilUpdateEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 import xreliquary.util.XRFakePlayerFactory;
@@ -30,8 +30,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CommonEventHandler {
+	private CommonEventHandler() {}
 
 	private static final Set<IPlayerHurtHandler> playerHurtHandlers = Sets.newTreeSet(new HandlerPriorityComparator());
 	private static final Set<IPlayerDeathHandler> playerDeathHandlers = Sets.newTreeSet(new HandlerPriorityComparator());
@@ -41,30 +42,35 @@ public class CommonEventHandler {
 	public static void registerPlayerHurtHandler(IPlayerHurtHandler handler) {
 		playerHurtHandlers.add(handler);
 	}
+
 	public static void registerPlayerDeathHandler(IPlayerDeathHandler handler) {
 		playerDeathHandlers.add(handler);
 	}
 
 	@SubscribeEvent
 	public static void handleMercyCrossDamage(AttackEntityEvent event) {
-		if(event.getEntityPlayer().world.isRemote || !(event.getTarget() instanceof EntityLivingBase))
+		if (event.getPlayer().world.isRemote || !(event.getTarget() instanceof LivingEntity)) {
 			return;
+		}
 
-		if(event.getEntityPlayer().getHeldItemMainhand().getItem() != ModItems.mercyCross)
+		if (event.getPlayer().getHeldItemMainhand().getItem() != ModItems.MERCY_CROSS) {
 			return;
+		}
 
-		EntityLivingBase target = (EntityLivingBase) event.getTarget();
+		LivingEntity target = (LivingEntity) event.getTarget();
 
-		ModItems.mercyCross.updateAttackDamageModifier(target, event.getEntityPlayer());
+		ModItems.MERCY_CROSS.updateAttackDamageModifier(target, event.getPlayer());
 	}
 
 	@SubscribeEvent
 	public static void preventMendingAndUnbreaking(AnvilUpdateEvent event) {
-		if(event.getLeft().isEmpty() || event.getRight().isEmpty())
+		if (event.getLeft().isEmpty() || event.getRight().isEmpty()) {
 			return;
+		}
 
-		if (event.getLeft().getItem() != ModItems.mobCharm && event.getLeft().getItem() != ModItems.alkahestryTome)
+		if (event.getLeft().getItem() != ModItems.MOB_CHARM && event.getLeft().getItem() != ModItems.ALKAHESTRY_TOME) {
 			return;
+		}
 
 		if (EnchantmentHelper.getEnchantments(event.getRight()).keySet().stream().anyMatch(e -> e == Enchantments.UNBREAKING)) {
 			event.setCanceled(true);
@@ -74,33 +80,30 @@ public class CommonEventHandler {
 	@SubscribeEvent
 	public static void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
 		// Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
-		if(event.player.getGameProfile().getName().equals("Drullkus")) {
-			if(!event.player.getEntityData().hasKey("gift")) {
-				if(event.player.inventory.addItemStackToInventory(new ItemStack(ModItems.witchHat))) {
-					event.player.getEntityData().setBoolean("gift", true);
-				}
-			}
+		if (event.getPlayer().getGameProfile().getName().equals("Drullkus")
+				&& !event.getPlayer().getPersistentData().contains("gift")
+				&& event.getPlayer().inventory.addItemStackToInventory(new ItemStack(ModItems.WITCH_HAT))) {
+			event.getPlayer().getPersistentData().putBoolean("gift", true);
 		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void beforePlayerHurt(LivingAttackEvent event) {
 		Entity entity = event.getEntity();
-		if(entity == null || !(entity instanceof EntityPlayer))
+		if (!(entity instanceof PlayerEntity)) {
 			return;
-		EntityPlayer player = (EntityPlayer) entity;
+		}
+		PlayerEntity player = (PlayerEntity) entity;
 
 		boolean cancel = false;
 		for (IPlayerHurtHandler handler : playerHurtHandlers) {
-			if (handler.canApply(player, event)) {
-				if (handler.apply(player, event)) {
-					cancel = true;
-					break;
-				}
+			if (handler.canApply(player, event) && handler.apply(player, event)) {
+				cancel = true;
+				break;
 			}
 		}
 
-		if(cancel) {
+		if (cancel) {
 			event.setCanceled(true);
 			event.setResult(null);
 		}
@@ -109,9 +112,10 @@ public class CommonEventHandler {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void beforePlayerDeath(LivingDeathEvent event) {
 		Entity entity = event.getEntity();
-		if(entity == null || !(entity instanceof EntityPlayer))
+		if (!(entity instanceof PlayerEntity)) {
 			return;
-		EntityPlayer player = (EntityPlayer) entity;
+		}
+		PlayerEntity player = (PlayerEntity) entity;
 
 		boolean cancel = false;
 		for (IPlayerDeathHandler handler : playerDeathHandlers) {
@@ -121,7 +125,7 @@ public class CommonEventHandler {
 			}
 		}
 
-		if(cancel) {
+		if (cancel) {
 			event.setCanceled(true);
 			event.setResult(null);
 		}
@@ -129,34 +133,35 @@ public class CommonEventHandler {
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void onDimensionUnload(WorldEvent.Unload event) {
-		if(event.getWorld() instanceof WorldServer)
-			XRFakePlayerFactory.unloadWorld((WorldServer) event.getWorld());
+		if (event.getWorld() instanceof ServerWorld) {
+			XRFakePlayerFactory.unloadWorld((ServerWorld) event.getWorld());
+		}
 	}
 
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		if(event.side == Side.CLIENT)
+		if (event.side == LogicalSide.CLIENT) {
 			return;
+		}
 
-		EntityPlayer player = event.player;
+		PlayerEntity player = event.player;
 
-		if(player.isHandActive() && player.getActiveItemStack().getItem() == ModItems.rendingGale && ModItems.rendingGale.isFlightMode(player.getActiveItemStack()) && ModItems.rendingGale.hasFlightCharge(player, player.getActiveItemStack())) {
+		if (player.isHandActive() && player.getActiveItemStack().getItem() == ModItems.RENDING_GALE && ModItems.RENDING_GALE.isFlightMode(player.getActiveItemStack()) && ModItems.RENDING_GALE.hasFlightCharge(player.getActiveItemStack())) {
 			playersFlightStatus.put(player.getGameProfile().getId(), true);
-			player.capabilities.allowFlying = true;
-			((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
+			player.abilities.allowFlying = true;
+			((ServerPlayerEntity) player).connection.sendPacket(new SPlayerAbilitiesPacket(player.abilities));
 		} else {
-			if(!playersFlightStatus.containsKey(player.getGameProfile().getId())) {
+			if (!playersFlightStatus.containsKey(player.getGameProfile().getId())) {
 				playersFlightStatus.put(player.getGameProfile().getId(), false);
+				return;
 			}
-
-			if(playersFlightStatus.get(player.getGameProfile().getId())) {
-
+			boolean isFlying = playersFlightStatus.get(player.getGameProfile().getId());
+			if (isFlying) {
 				playersFlightStatus.put(player.getGameProfile().getId(), false);
-
-				if(!player.capabilities.isCreativeMode) {
-					player.capabilities.allowFlying = false;
-					player.capabilities.isFlying = false;
-					((EntityPlayerMP) player).connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
+				if (!player.isCreative()) {
+					player.abilities.allowFlying = false;
+					player.abilities.isFlying = false;
+					((ServerPlayerEntity) player).connection.sendPacket(new SPlayerAbilitiesPacket(player.abilities));
 				}
 			}
 		}

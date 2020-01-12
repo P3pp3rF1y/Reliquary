@@ -1,8 +1,8 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "particle": "xreliquary:blocks/lilypad",
-    "texture": "xreliquary:blocks/lilypad"
+    "particle": "xreliquary:block/lilypad",
+    "texture": "xreliquary:block/lilypad"
   },
   "elements": [
     {   "from": [ 0, 0.25, 0 ],

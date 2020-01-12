@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/shears_of_winter"
+    "layer0": "xreliquary:item/shears_of_winter"
   }
 }

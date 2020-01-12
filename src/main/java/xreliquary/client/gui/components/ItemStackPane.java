@@ -47,14 +47,14 @@ public class ItemStackPane extends Component {
 			return;
 
 		RenderHelper.enableGUIStandardItemLighting();
-		Minecraft mc = Minecraft.getMinecraft();
+		Minecraft mc = Minecraft.getInstance();
 		if (renderEffect) {
-			mc.getRenderItem().renderItemAndEffectIntoGUI(itemStack, x, y);
+			mc.getItemRenderer().renderItemAndEffectIntoGUI(itemStack, x, y);
 		} else {
-			mc.getRenderItem().renderItemIntoGUI(itemStack, x, y);
+			mc.getItemRenderer().renderItemIntoGUI(itemStack, x, y);
 		}
 		if (renderOverlay) {
-			mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, x, y, null);
+			mc.getItemRenderer().renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, x, y, null);
 		}
 		RenderHelper.disableStandardItemLighting();
 	}

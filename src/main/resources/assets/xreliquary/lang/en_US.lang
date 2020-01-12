@@ -5,7 +5,7 @@ xreliquary.gui.tome.text=Craft certain items and;blocks with the tome;to duplica
 xreliquary.tooltip.absorb={{!colors.light_purple}}Shift + Right click to toggle auto-absorb.
 xreliquary.tooltip.drain={{!colors.light_purple}}Shift + Right click to enable drain mode.
 xreliquary.tooltip.place={{!colors.light_purple}}Shift + Right click to enable place mode.
-xreliquary.tooltip.absorb_active={{!colors.purple}}Automagically absorbs {{item}}{{!colors.purple}}.
+xreliquary.tooltip.absorb_active={{!colors.purple}}Automagically absorbs {{!colors.gray}}{{item}}.
 xreliquary.tooltip.absorb_tear={{!colors.purple}}Always leaves a stack of the item in inventory.
 xreliquary.tooltip.shift_for_more_info=Hold Shift for more info
 
@@ -13,10 +13,10 @@ xreliquary.item.alkahestry_tome.name=Tome of Alkahestry
 xreliquary.item.alkahestry_tome.tooltip=Uses its charge to duplicate items.
 xreliquary.item.alkahestry_tome.tooltip2={{!colors.rose}}Charge: {{chargeAmount}}/{{chargeLimit}};Right-click to read.
 
-xreliquary.tile.altar_idle.name=Altar of Light
-xreliquary.tile.altar_idle.tooltip=Feed it redstone and;it will grow glowstone.
-xreliquary.tile.altar.name=Altar of Light
-xreliquary.tile.altar.tooltip=Feed it redstone and;it will grow glowstone.
+block.xreliquary.altar_idle.name=Altar of Light
+block.xreliquary.altar_idle.tooltip=Feed it redstone and;it will grow glowstone.
+block.xreliquary.altar.name=Altar of Light
+block.xreliquary.altar.tooltip=Feed it redstone and;it will grow glowstone.
 
 xreliquary.item.angelheart_vial.name=Angelheart Vial
 xreliquary.item.angelheart_vial.tooltip=Resurrects you;once and breaks.
@@ -24,15 +24,15 @@ xreliquary.item.angelheart_vial.tooltip=Resurrects you;once and breaks.
 xreliquary.item.angelic_feather.name=Angelic Feather
 xreliquary.item.angelic_feather.tooltip=Protects you from falls,;at the expense of hunger.
 
-xreliquary.tile.apothecary_cauldron.name=Apothecary Cauldron
-xreliquary.tile.apothecary_cauldron.tooltip=Used to brew potions;from potion essence.
-xreliquary.tile.apothecary_mortar.name=Apothecary Mortar
-xreliquary.tile.apothecary_mortar.tooltip=Used to grind ingredients;into potion essence.
+block.xreliquary.apothecary_cauldron.name=Apothecary Cauldron
+block.xreliquary.apothecary_cauldron.tooltip=Used to brew potions;from potion essence.
+block.xreliquary.apothecary_mortar.name=Apothecary Mortar
+block.xreliquary.apothecary_mortar.tooltip=Used to grind ingredients;into potion essence.
 
-xreliquary.tile.pedestal.name=Pedestal
-xreliquary.tile.pedestal.tooltip=Automates stuff and things placed in it
-xreliquary.tile.pedestal_passive.name=Pedestal (Display only)
-xreliquary.tile.pedestal_passive.tooltip=Used as a fancy display of items
+block.xreliquary.pedestals.white_pedestal.name=Pedestal
+block.xreliquary.pedestal.tooltip=Automates stuff and things placed in it
+block.xreliquary.pedestal_passive.name=Pedestal (Display only)
+block.xreliquary.pedestal_passive.tooltip=Used as a fancy display of items
 
 xreliquary.item.attraction_potion.name=Aphrodite's Serum
 xreliquary.item.attraction_potion.tooltip=Makes animals mate.
@@ -40,24 +40,24 @@ xreliquary.item.attraction_potion.tooltip=Makes animals mate.
 xreliquary.item.fertile_potion.name=Fertile Potion
 xreliquary.item.fertile_potion.tooltip=Causes plants to grow.
 
-xreliquary.item.bullet_0.name=Empty Casing
-xreliquary.item.bullet_1.name=Neutral Shot
-xreliquary.item.bullet_2.name=Exorcism Shot
-xreliquary.item.bullet_2.tooltip=Effective vs. undead.
-xreliquary.item.bullet_3.name=Blaze Shot
-xreliquary.item.bullet_3.tooltip=Deals only fire damage.
-xreliquary.item.bullet_4.name=Ender Shot
-xreliquary.item.bullet_4.tooltip=Pierce enemies, seek targets.
-xreliquary.item.bullet_5.name=Concussive Shot
-xreliquary.item.bullet_5.tooltip=Small area damage.
-xreliquary.item.bullet_6.name=Buster Shot
-xreliquary.item.bullet_6.tooltip=Large area damage.
-xreliquary.item.bullet_7.name=Seeker Shot
-xreliquary.item.bullet_7.tooltip=Seeks its targets.
-xreliquary.item.bullet_8.name=Sand Shot
-xreliquary.item.bullet_8.tooltip=Blinds target,;irritates creepers.
-xreliquary.item.bullet_9.name=Storm Shot
-xreliquary.item.bullet_9.tooltip=Stronger during storms,;charges creepers.
+xreliquary.item.empty_bullet.name=Empty Casing
+xreliquary.item.neutral_bullet.name=Neutral Shot
+xreliquary.item.exorcism_bullet.name=Exorcism Shot
+xreliquary.item.exorcism_bullet.tooltip=Effective vs. undead.
+xreliquary.item.blaze_bullet.name=Blaze Shot
+xreliquary.item.blaze_bullet.tooltip=Deals only fire damage.
+xreliquary.item.ender_bullet.name=Ender Shot
+xreliquary.item.ender_bullet.tooltip=Pierce enemies, seek targets.
+xreliquary.item.concussive_bullet.name=Concussive Shot
+xreliquary.item.concussive_bullet.tooltip=Small area damage.
+xreliquary.item.buster_bullet.name=Buster Shot
+xreliquary.item.buster_bullet.tooltip=Large area damage.
+xreliquary.item.seeker_bullet.name=Seeker Shot
+xreliquary.item.seeker_bullet.tooltip=Seeks its targets.
+xreliquary.item.sand_bullet.name=Sand Shot
+xreliquary.item.sand_bullet.tooltip=Blinds target,;irritates creepers.
+xreliquary.item.storm_bullet.name=Storm Shot
+xreliquary.item.storm_bullet.tooltip=Stronger during storms,;charges creepers.
 
 xreliquary.item.destruction_catalyst.name=Destruction Catalyst
 xreliquary.item.destruction_catalyst.tooltip=Consumes gunpowder to destroy blocks
@@ -142,8 +142,8 @@ xreliquary.item.infernal_tear.tooltip=Burns items into experience.
 xreliquary.tooltip.infernal_tear.absorb_unset=Right-Click to remove item association
 xreliquary.tooltip.infernal_tear.tear_empty=Right-click to capture whatever item you have the most of;that infernal tear can burn.
 
-xreliquary.tile.interdiction_torch.name={{!colors.yellow}}Interdiction Torch
-xreliquary.tile.interdiction_torch.tooltip=Repels creatures and projectiles.
+block.xreliquary.interdiction_torch.name={{!colors.yellow}}Interdiction Torch
+block.xreliquary.interdiction_torch.tooltip=Repels creatures and projectiles.
 
 xreliquary.item.kraken_shell.name=Kraken Shell
 xreliquary.item.kraken_shell.tooltip=Absorbs drowning damage;at the expense of hunger.
@@ -151,8 +151,8 @@ xreliquary.item.kraken_shell.tooltip=Absorbs drowning damage;at the expense of h
 xreliquary.item.lantern_of_paranoia.name={{!colors.yellow}}Lantern Of Paranoia
 xreliquary.item.lantern_of_paranoia.tooltip=Places torches in unlit;areas automatically.;Shift + Right-Click to activate.
 
-xreliquary.tile.fertile_lilypad.name=Lilypad of Fertility
-xreliquary.tile.fertile_lilypad.tooltip=Speeds up growth of crops
+block.xreliquary.fertile_lilypad.name=Lilypad of Fertility
+block.xreliquary.fertile_lilypad.tooltip=Speeds up growth of crops
 
 xreliquary.item.magicbane.name=Magicbane
 xreliquary.item.magicbane.tooltip=Increases its strength;with each enchantment.
@@ -298,8 +298,8 @@ xreliquary.tooltip.tear_quantity=Currently holds {{!colors.yellow}}{{amount}}{{!
 xreliquary.item.witherless_rose.name=Witherless Rose
 xreliquary.item.witherless_rose.tooltip=With the Nether Stars enchanting this rose;the holder is protected from Withering.
 
-xreliquary.tile.wraith_node.name=Wraith Node
-xreliquary.tile.wraith_node.tooltip=Used as a destination for;Ender Staff in wraith node mode
+block.xreliquary.wraith_node.name=Wraith Node
+block.xreliquary.wraith_node.tooltip=Used as a destination for;Ender Staff in wraith node mode
 
 xreliquary.general.block_settings.altar.maximumtimevarianceinminutes=Maximum time variance in minutes
 xreliquary.general.block_settings.altar.outputlightlevelwhileactive=Output light level while active

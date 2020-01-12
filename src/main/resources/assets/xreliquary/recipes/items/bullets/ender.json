@@ -2,44 +2,35 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "xreliquary:bullet",
-            "data": 7
+            "item": "xreliquary:bullets/seeker_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 7
+            "item": "xreliquary:bullets/seeker_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 7
+            "item": "xreliquary:bullets/seeker_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 7
+            "item": "xreliquary:bullets/seeker_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 7
+            "item": "xreliquary:bullets/seeker_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 7
+            "item": "xreliquary:bullets/seeker_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 7
+            "item": "xreliquary:bullets/seeker_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 7
+            "item": "xreliquary:bullets/seeker_bullet"
         },
         {
             "item": "#NEBULOUS_HEART"
         }
     ],
     "result": {
-        "item": "xreliquary:bullet",
-        "data": 4,
+        "item": "xreliquary:bullets/ender_bullet",
         "count": 8
     }
 }

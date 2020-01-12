@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_weapon_item",
   "textures": {
-    "layer0": "xreliquary:items/ice_magus_rod"
+    "layer0": "xreliquary:item/ice_magus_rod"
   }
 }

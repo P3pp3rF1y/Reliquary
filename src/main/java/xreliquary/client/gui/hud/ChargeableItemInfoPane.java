@@ -28,6 +28,7 @@ public class ChargeableItemInfoPane extends Component {
 		String mode = modePanes.keySet().iterator().next();
 		updateCurrentPane(modePanes.get(mode), mode);
 	}
+
 	public ChargeableItemInfoPane(Item mainItem, HUDPosition hudPosition, Function<ItemStack, String> getMode, Map<String, Component> modePanes) {
 		this(new ItemStack(mainItem), hudPosition, getMode, modePanes);
 	}
@@ -71,12 +72,12 @@ public class ChargeableItemInfoPane extends Component {
 
 	@Override
 	public boolean shouldRender() {
-		return !InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, mainItem.getItem()).isEmpty();
+		return !InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, mainItem.getItem()).isEmpty();
 	}
 
 	@Override
 	public void renderInternal(int x, int y) {
-		ItemStack mainStack = InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getMinecraft().player, mainItem.getItem());
+		ItemStack mainStack = InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, mainItem.getItem());
 
 		String mode = getMode.apply(mainStack);
 		if (!lastMode.equals(mode)) {

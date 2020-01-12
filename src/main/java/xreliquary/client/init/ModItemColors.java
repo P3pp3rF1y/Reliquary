@@ -1,185 +1,126 @@
 package xreliquary.client.init;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.item.SpawnEggItem;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
-import xreliquary.init.ModItems;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
+import xreliquary.items.BulletItem;
+import xreliquary.items.IPotionItem;
+import xreliquary.items.MobCharmItem;
 import xreliquary.reference.Colors;
-import xreliquary.reference.Reference;
 import xreliquary.util.NBTHelper;
-import xreliquary.util.potions.XRPotionHelper;
 
 import java.util.List;
+import java.util.Optional;
 
-@SideOnly(Side.CLIENT)
+import static xreliquary.init.ModItems.*;
+
+@OnlyIn(Dist.CLIENT)
 public class ModItemColors {
+	private ModItemColors() {}
+
 	public static void init() {
-		ItemColors itemColors = Minecraft.getMinecraft().getItemColors();
+		ItemColors itemColors = Minecraft.getInstance().getItemColors();
 
-		if (isEnabled(ModItems.mobCharmFragment) && isEnabled(ModItems.mobCharm)) {
-			itemColors.registerItemColorHandler((stack, tintIndex) -> {
-				if (tintIndex < 1 || tintIndex > 2)
-					return -1;
+		registerMobCharmItemColors();
 
-				int type = ModItems.mobCharm.getType(stack);
-				EntityList.EntityEggInfo eggInfo = getEntityEggInfo(type);
+		registerBulletItemColors();
 
-				if (eggInfo != null) {
-					return tintIndex == 1 ? eggInfo.primaryColor : eggInfo.secondaryColor;
+		registerPotionItemColors();
+
+		registerVoidTearItemColors(itemColors);
+	}
+
+	private static void registerVoidTearItemColors(ItemColors itemColors) {
+		registerItemColor((stack, tintIndex) -> {
+			if (Screen.hasShiftDown()) {
+				ItemStack containedStack = VOID_TEAR.getContainerItem(stack, true);
+				if (!containedStack.isEmpty()) {
+					return itemColors.getColor(containedStack, tintIndex);
+				}
+			}
+			return -1;
+		}, VOID_TEAR);
+	}
+
+	private static void registerPotionItemColors() {
+		registerItemColor((stack, tintIndex) -> getColor(stack), POTION_ESSENCE);
+
+		registerItemColor((stack, tintIndex) -> {
+			if (tintIndex == 1) {
+
+				//used when rendering as thrown entity
+				if (NBTHelper.getInt("renderColor", stack) > 0) {
+					return NBTHelper.getInt("renderColor", stack);
 				}
 
-				return -1;
-			}, ModItems.mobCharm);
-		}
-
-		if (isEnabled(ModItems.mobCharmFragment) && isEnabled(ModItems.mobCharm)) {
-			itemColors.registerItemColorHandler((stack, tintIndex) -> {
-				if (tintIndex < 0 || tintIndex > 1)
-					return -1;
-
-				int type = stack.getMetadata();
-				EntityList.EntityEggInfo eggInfo = getEntityEggInfo(type);
-
-				if (eggInfo != null) {
-					return tintIndex == 0 ? eggInfo.primaryColor : eggInfo.secondaryColor;
-				}
-
-				return -1;
-			}, ModItems.mobCharmFragment);
-		}
-
-		if (isEnabled(ModItems.magazine) && isEnabled(ModItems.bullet)) {
-			itemColors.registerItemColorHandler((stack, tintIndex) -> {
-				if (stack.getItemDamage() == 0 || tintIndex == 0)
-					return Integer.parseInt(Colors.DARKER, 16);
-				else if (tintIndex == 1) {
-					switch (stack.getItemDamage()) {
-						case 1:
-							return Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16);
-						case 2:
-							return Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16);
-						case 3:
-							return Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16);
-						case 4:
-							return Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16);
-						case 5:
-							return Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16);
-						case 6:
-							return Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16);
-						case 7:
-							return Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16);
-						case 8:
-							return Integer.parseInt(Colors.SAND_SHOT_COLOR, 16);
-						case 9:
-							return Integer.parseInt(Colors.STORM_SHOT_COLOR, 16);
-					}
-					return Integer.parseInt(Colors.DARKEST, 16);
-				} else if (tintIndex == 2) {
-					return PotionUtils.getPotionColorFromEffectList(XRPotionHelper.getPotionEffectsFromStack(stack));
-				}
-				return Integer.parseInt(Colors.DARKER, 16);
-			}, ModItems.magazine, ModItems.bullet);
-		}
-
-		if (isEnabled(ModItems.potionEssence)) {
-			itemColors.registerItemColorHandler((stack, tintIndex) -> {
-				//basically we're just using vanillas right now. This is hilarious in comparison to the old method, which is a mile long.
-				return PotionUtils.getPotionColorFromEffectList(XRPotionHelper.getPotionEffectsFromStack(stack));
-			}, ModItems.potionEssence);
-		}
-		if (isEnabled(ModItems.potion)) {
-			itemColors.registerItemColorHandler((stack, tintIndex) -> {
-				if (tintIndex == 1) {
-
-					//used when rendering as thrown entity
-					if (NBTHelper.getInteger("renderColor", stack) > 0)
-						return NBTHelper.getInteger("renderColor", stack);
-
-					List<PotionEffect> effects = XRPotionHelper.getPotionEffectsFromStack(stack);
-					if (effects.isEmpty())
-						return Integer.parseInt(Colors.PURE, 16);
-
-					return PotionUtils.getPotionColorFromEffectList(effects);
-				} else
+				List<EffectInstance> effects = ((IPotionItem) stack.getItem()).getEffects(stack);
+				if (effects.isEmpty()) {
 					return Integer.parseInt(Colors.PURE, 16);
-			}, ModItems.potion);
-		}
-		if (isEnabled(ModItems.tippedArrow)) {
-			itemColors.registerItemColorHandler((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getPotionColorFromEffectList(XRPotionHelper.getPotionEffectsFromStack(stack)) : -1, ModItems.tippedArrow);
-		}
-
-		if (isEnabled(ModItems.voidTear)) {
-			itemColors.registerItemColorHandler((stack, tintIndex) -> {
-				if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-					ItemStack containedStack = ModItems.voidTear.getContainerItem(stack, true);
-					if (!containedStack.isEmpty()) {
-						return itemColors.colorMultiplier(containedStack, tintIndex);
-					}
 				}
+
+				return PotionUtils.getPotionColorFromEffectList(effects);
+			} else {
+				return Integer.parseInt(Colors.PURE, 16);
+			}
+		}, POTION);
+
+		registerItemColor((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getPotionColorFromEffectList(((IPotionItem) stack.getItem()).getEffects(stack)) : -1, TIPPED_ARROW);
+	}
+
+	private static void registerBulletItemColors() {
+		registerItemColor((stack, tintIndex) -> {
+					if (tintIndex == 0) {
+						return Integer.parseInt(Colors.DARKER, 16);
+					} else if (tintIndex == 1) {
+						return ((BulletItem) stack.getItem()).getColor();
+					} else if (tintIndex == 2) {
+						return PotionUtils.getPotionColorFromEffectList(((IPotionItem) stack.getItem()).getEffects(stack));
+					}
+					return Integer.parseInt(Colors.DARKER, 16);
+				}, NEUTRAL_MAGAZINE, EXORCISM_MAGAZINE, BLAZE_MAGAZINE, ENDER_MAGAZINE, CONCUSSIVE_MAGAZINE, BUSTER_MAGAZINE, SEEKER_MAGAZINE, SAND_MAGAZINE, STORM_MAGAZINE,
+				NEUTRAL_BULLET, EXORCISM_BULLET, BLAZE_BULLET, ENDER_BULLET, CONCUSSIVE_BULLET, BUSTER_BULLET, SEEKER_BULLET, SAND_BULLET, STORM_BULLET);
+	}
+
+	private static void registerMobCharmItemColors() {
+		registerItemColor((stack, tintIndex) -> {
+			if (tintIndex < 1 || tintIndex > 2) {
 				return -1;
-			}, ModItems.voidTear);
+			}
+
+			ResourceLocation entityName = MobCharmItem.getEntityEggRegistryName(stack);
+			return getEgg(entityName).map(egg -> tintIndex == 1 ? egg.getColor(0) : egg.getColor(1)).orElse(-1);
+		}, MOB_CHARM);
+
+		registerItemColor((stack, tintIndex) -> {
+			if (tintIndex < 0 || tintIndex > 1) {
+				return -1;
+			}
+
+			ResourceLocation entityName = MobCharmItem.getEntityEggRegistryName(stack);
+			return getEgg(entityName).map(egg -> tintIndex == 0 ? egg.getColor(0) : egg.getColor(1)).orElse(-1);
+		}, MOB_CHARM_FRAGMENT);
+	}
+
+	private static void registerItemColor(IItemColor itemColor, Item... items) {
+		if (isEnabled(items)) {
+			Minecraft.getInstance().getItemColors().register(itemColor, items);
 		}
 	}
 
-	private static EntityList.EntityEggInfo getEntityEggInfo(int type) {
-		String entityName = "";
-		switch (type) {
-			case Reference.MOB_CHARM.ZOMBIE_META:
-				entityName = "zombie";
-				break;
-			case Reference.MOB_CHARM.SKELETON_META:
-				entityName = "skeleton";
-				break;
-			case Reference.MOB_CHARM.WITHER_SKELETON_META:
-				entityName = "wither_skeleton";
-				break;
-			case Reference.MOB_CHARM.CREEPER_META:
-				entityName = "creeper";
-				break;
-			case Reference.MOB_CHARM.WITCH_META:
-				entityName = "witch";
-				break;
-			case Reference.MOB_CHARM.ZOMBIE_PIGMAN_META:
-				entityName = "zombie_pigman";
-				break;
-			case Reference.MOB_CHARM.CAVE_SPIDER_META:
-				entityName = "cave_spider";
-				break;
-			case Reference.MOB_CHARM.SPIDER_META:
-				entityName = "spider";
-				break;
-			case Reference.MOB_CHARM.ENDERMAN_META:
-				entityName = "enderman";
-				break;
-			case Reference.MOB_CHARM.GHAST_META:
-				entityName = "ghast";
-				break;
-			case Reference.MOB_CHARM.SLIME_META:
-				entityName = "slime";
-				break;
-			case Reference.MOB_CHARM.MAGMA_CUBE_META:
-				entityName = "magma_cube";
-				break;
-			case Reference.MOB_CHARM.BLAZE_META:
-				entityName = "blaze";
-				break;
-			case Reference.MOB_CHARM.GUARDIAN_META:
-				entityName = "guardian";
-				break;
-		}
-
-		return EntityList.ENTITY_EGGS.get(new ResourceLocation(entityName));
+	private static Optional<SpawnEggItem> getEgg(ResourceLocation entityName) {
+		//noinspection ConstantConditions - getEgg can actually return null, but is not marked as such
+		return Optional.ofNullable(SpawnEggItem.getEgg(ForgeRegistries.ENTITIES.getValue(entityName)));
 	}
 
-	private static boolean isEnabled(Item item) {
-		return item != null && item.getRegistryName() != null;
-	}
+	private static int getColor(ItemStack stack) {return PotionUtils.getPotionColorFromEffectList(((IPotionItem) stack.getItem()).getEffects(stack));}
 }

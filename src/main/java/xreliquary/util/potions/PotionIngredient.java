@@ -1,48 +1,43 @@
 package xreliquary.util.potions;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.util.LogHelper;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PotionIngredient {
+	private ItemStack item;
+	private List<EffectInstance> effects = new ArrayList<>();
 
-	public ItemStack item;
-	public List<PotionEffect> effects = new ArrayList<>();
-
-	//default constructor, used by Potion Essence, because it extends this class.
-	PotionIngredient() {
+	public PotionIngredient(ItemStack item) {
+		this.item = item;
 	}
 
-	public PotionIngredient(@Nonnull ItemStack ist) {
-		this.item = ist;
-	}
-
-	public PotionIngredient(@Nonnull ItemStack stack, List<PotionEffect> effects) {
-		this.item = stack;
+	public PotionIngredient(ItemStack item, List<EffectInstance> effects) {
+		this.item = item;
 		this.effects = effects;
 	}
 
-	public PotionIngredient addEffect(String potionName, int durationWeight, int ampWeight) {
-		Potion potion  = Potion.getPotionFromResourceLocation(potionName);
+	void addEffect(String potionName, int durationWeight, int ampWeight) {
+		Effect potion = ForgeRegistries.POTIONS.getValue(new ResourceLocation(potionName));
 
 		if (potion == null) {
 			LogHelper.error("Potion name " + potionName + " is not registered. Please fix the name or remove it from potion map.");
-			return this;
+			return;
 		}
-		return this.addEffect(new PotionEffect(potion, durationWeight * 300, ampWeight, true, false));
+		effects.add(new EffectInstance(potion, durationWeight * 300, ampWeight, true, false));
 	}
 
-	private PotionIngredient addEffect(PotionEffect effect) {
-		effects.add(effect);
-		return this;
+	public List<EffectInstance> getEffects() {
+		return effects;
 	}
 
-	public List<PotionEffect> getEffects() {
-		return this.effects;
+	public ItemStack getItem() {
+		return item;
 	}
 }

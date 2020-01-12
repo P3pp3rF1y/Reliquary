@@ -1,0 +1,14 @@
+{
+    "conditions": [
+        {
+            "type": "forge:item_exists",
+            "item": "xreliquary:alkahestry_tome"
+        }
+    ],
+    "type": "xreliquary:alkahestry_crafting",
+    "charge": 4,
+    "ingredient": {
+        "item": "minecraft:dirt"
+    },
+    "result_count": 33
+}

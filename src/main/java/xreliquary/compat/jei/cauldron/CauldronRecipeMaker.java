@@ -1,19 +1,18 @@
 package xreliquary.compat.jei.cauldron;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import xreliquary.init.ModItems;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CauldronRecipeMaker {
-	@Nonnull
+	private CauldronRecipeMaker() {}
 	public static List<CauldronRecipeJEI> getRecipes() {
 		ArrayList<CauldronRecipeJEI> recipes = new ArrayList<>();
 
@@ -21,16 +20,18 @@ public class CauldronRecipeMaker {
 
 			List<ItemStack> inputs = new ArrayList<>();
 
-			ItemStack potionEssence = new ItemStack(ModItems.potionEssence, 1);
+			ItemStack potionEssence = new ItemStack(ModItems.POTION_ESSENCE, 1);
 			XRPotionHelper.addPotionEffectsToStack(potionEssence, essence.getEffects());
 
 			inputs.add(potionEssence);
 
-			if(essence.getRedstoneCount() > 0)
+			if(essence.getRedstoneCount() > 0) {
 				inputs.add(new ItemStack(Items.REDSTONE, essence.getRedstoneCount()));
+			}
 
-			if(essence.getGlowstoneCount() > 0)
+			if(essence.getGlowstoneCount() > 0) {
 				inputs.add(new ItemStack(Items.GLOWSTONE_DUST, essence.getGlowstoneCount()));
+			}
 
 			List<ItemStack> splashInputs = new ArrayList<>(inputs);
 			List<ItemStack> lingeringInputs = new ArrayList<>(inputs);
@@ -44,19 +45,19 @@ public class CauldronRecipeMaker {
 			splashInputs.add(new ItemStack(Items.NETHER_WART));
 			lingeringInputs.add(new ItemStack(Items.NETHER_WART));
 
-			inputs.add(new ItemStack(ModItems.potion, 3));
-			splashInputs.add(new ItemStack(ModItems.potion, 3));
-			lingeringInputs.add(new ItemStack(ModItems.potion, 3));
+			inputs.add(new ItemStack(ModItems.POTION, 3));
+			splashInputs.add(new ItemStack(ModItems.POTION, 3));
+			lingeringInputs.add(new ItemStack(ModItems.POTION, 3));
 
-			ItemStack output = new ItemStack(ModItems.potion, 3);
+			ItemStack output = new ItemStack(ModItems.POTION, 3);
 			XRPotionHelper.addPotionEffectsToStack(output, essence.getEffects());
-			NBTHelper.setBoolean("hasPotion", output, true);
+			NBTHelper.putBoolean("hasPotion", output, true);
 
 			ItemStack outputSplash = output.copy();
-			NBTHelper.setBoolean("splash", outputSplash, true);
+			NBTHelper.putBoolean("splash", outputSplash, true);
 
 			ItemStack outputLingering = output.copy();
-			NBTHelper.setBoolean("lingering", outputLingering, true);
+			NBTHelper.putBoolean("lingering", outputLingering, true);
 
 			recipes.add(new CauldronRecipeJEI(inputs, output));
 			recipes.add(new CauldronRecipeJEI(splashInputs, outputSplash));

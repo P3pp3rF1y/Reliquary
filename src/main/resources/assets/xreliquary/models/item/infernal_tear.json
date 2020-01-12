@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/infernal_tear"
+    "layer0": "xreliquary:item/infernal_tear"
   }
 }

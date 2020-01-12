@@ -1,12 +1,12 @@
 {
     "ambientocclusion": false,
     "textures": {
-        "particle": "xreliquary:blocks/apothecary_cauldron_side",
-        "top": "xreliquary:blocks/apothecary_cauldron_top",
-        "bottom": "xreliquary:blocks/apothecary_cauldron_bottom",
-        "side": "xreliquary:blocks/apothecary_cauldron_side",
-        "inside": "xreliquary:blocks/apothecary_cauldron_inner",
-        "water": "xreliquary:blocks/cauldron_water"
+        "particle": "xreliquary:block/apothecary_cauldron_side",
+        "top": "xreliquary:block/apothecary_cauldron_top",
+        "bottom": "xreliquary:block/apothecary_cauldron_bottom",
+        "side": "xreliquary:block/apothecary_cauldron_side",
+        "inside": "xreliquary:block/apothecary_cauldron_inner",
+        "water": "xreliquary:block/cauldron_water"
     },
     "elements": [
         {   "from": [ 0, 3, 0 ],

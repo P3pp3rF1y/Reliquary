@@ -18,8 +18,7 @@
         }
     ],
     "result": {
-        "item": "xreliquary:bullet",
-        "data": 9,
+        "item": "xreliquary:bullets/storm_bullet",
         "count": 8
     }
 }

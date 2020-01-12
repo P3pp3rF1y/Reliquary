@@ -1,0 +1,13 @@
+{
+    "conditions": [
+        {
+            "type": "forge:item_exists",
+            "item": "xreliquary:alkahestry_tome"
+        }
+    ],
+    "type": "xreliquary:alkahestry_charging",
+    "charge": 9,
+    "ingredient": {
+        "item": "minecraft:redstone_block"
+    }
+}

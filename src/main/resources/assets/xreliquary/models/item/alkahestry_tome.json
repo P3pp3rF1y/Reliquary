@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/alkahest_tome"
+    "layer0": "xreliquary:item/alkahest_tome"
   }
 }

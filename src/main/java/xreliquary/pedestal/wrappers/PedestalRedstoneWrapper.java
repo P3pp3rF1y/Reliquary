@@ -7,14 +7,12 @@ import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalRedstoneItemWrapper;
 import xreliquary.reference.Settings;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 	private boolean powered;
 
 	public static class AlwaysOn extends PedestalRedstoneWrapper {
-
 		public AlwaysOn() {
 			super(true);
 		}
@@ -26,26 +24,22 @@ public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	public PedestalRedstoneWrapper() {
-		this(false);
-	}
-
 	private PedestalRedstoneWrapper(boolean powered) {
 		this.powered = powered;
 	}
 
 	@Override
-	public void updateRedstone(@Nonnull ItemStack stack, IPedestal pedestal) {
-		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(Settings.Blocks.Pedestal.redstoneWrapperRange);
+	public void updateRedstone( ItemStack stack, IPedestal pedestal) {
+		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(Settings.COMMON.blocks.pedestal.redstoneWrapperRange.get());
 		World world = pedestal.getTheWorld();
 		BlockPos thisPos = pedestal.getBlockPos();
 
 		boolean buttonEnabled = pedestal.switchedOn();
 
 		for(BlockPos pos : pedestalsInRange) {
-			if(pos.equals(thisPos))
+			if(pos.equals(thisPos)) {
 				continue;
+			}
 
 			IPedestal ped = (IPedestal) world.getTileEntity(pos);
 			if(ped != null) {
@@ -59,8 +53,8 @@ public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 	}
 
 	@Override
-	public void onRemoved(@Nonnull ItemStack stack, IPedestal pedestal) {
-		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(Settings.Blocks.Pedestal.redstoneWrapperRange);
+	public void onRemoved( ItemStack stack, IPedestal pedestal) {
+		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(Settings.COMMON.blocks.pedestal.redstoneWrapperRange.get());
 		World world = pedestal.getTheWorld();
 		BlockPos thisPos = pedestal.getBlockPos();
 

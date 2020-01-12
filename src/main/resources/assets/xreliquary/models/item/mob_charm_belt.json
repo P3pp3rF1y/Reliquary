@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/mob_charm_belt"
+    "layer0": "xreliquary:item/mob_charm_belt"
   }
 }

@@ -1,12 +1,12 @@
 package xreliquary.pedestal.wrappers;
 
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -15,92 +15,75 @@ import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
 import xreliquary.reference.Settings;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
+	private int cooldownAfterSwing;
 
-	private byte cooldownAfterSwing;
-
-	@SuppressWarnings("unused")
 	public PedestalMeleeWeaponWrapper() {
-		this(Settings.Blocks.Pedestal.meleeWrapperCooldown);
-	}
-
-	private PedestalMeleeWeaponWrapper(byte cooldownAfterSwing) {
-		this.cooldownAfterSwing = cooldownAfterSwing;
+		cooldownAfterSwing = Settings.COMMON.blocks.pedestal.meleeWrapperCooldown.get();
 	}
 
 	@Override
-	public void update(@Nonnull ItemStack stack, IPedestal pedestal) {
+	public void update(ItemStack stack, IPedestal pedestal) {
 		FakePlayer fakePlayer = pedestal.getFakePlayer();
 
 		World world = pedestal.getTheWorld();
 		BlockPos pos = pedestal.getBlockPos();
-		int meleeRange = Settings.Blocks.Pedestal.meleeWrapperRange;
+		int meleeRange = Settings.COMMON.blocks.pedestal.meleeWrapperRange.get();
 
-		List<EntityLiving> entities = world.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(pos.getX() - meleeRange, pos.getY() - meleeRange, pos.getZ() - meleeRange, pos.getX() + meleeRange, pos.getY() + meleeRange, pos.getZ() + meleeRange));
+		List<MobEntity> entities = world.getEntitiesWithinAABB(MobEntity.class, new AxisAlignedBB((double) pos.getX() - meleeRange, (double) pos.getY() - meleeRange, (double) pos.getZ() - meleeRange, (double) pos.getX() + meleeRange, (double) pos.getY() + meleeRange, (double) pos.getZ() + meleeRange));
 
-		if(entities.size() == 0) {
+		if (entities.isEmpty()) {
 			pedestal.setActionCoolDown(40);
 			return;
 		}
-		
-		EntityLiving entityToAttack = entities.get(world.rand.nextInt(entities.size()));
-		
-		while (entities.size() > 0 && !canAttackEntity(entityToAttack)) {
+
+		MobEntity entityToAttack = entities.get(world.rand.nextInt(entities.size()));
+
+		while (!entities.isEmpty() && !canAttackEntity(entityToAttack)) {
 			entities.remove(entityToAttack);
-			if (entities.size() > 0)
+			if (!entities.isEmpty()) {
 				entityToAttack = entities.get(world.rand.nextInt(entities.size()));
+			}
 		}
 
-		if(entities.size() == 0) {
+		if (entities.isEmpty()) {
 			pedestal.setActionCoolDown(40);
 			return;
 		}
-		
+
 		//set position so that entities get knocked back away from the altar
 		fakePlayer.setPosition(pos.getX(), 0, pos.getZ());
 
 		//set sword and update attributes
-		fakePlayer.setHeldItem(EnumHand.MAIN_HAND, stack);
-		fakePlayer.onUpdate();
+		fakePlayer.setHeldItem(Hand.MAIN_HAND, stack);
+		fakePlayer.tick();
 
 		fakePlayer.attackTargetEntityWithCurrentItem(entityToAttack);
 
 		pedestal.setActionCoolDown((int) fakePlayer.getCooldownPeriod() + cooldownAfterSwing);
 
 		//destroy the item when it gets used up
-		if(stack.getCount() == 0)
-			pedestal.destroyCurrentItem();
+		if (stack.isEmpty()) {
+			pedestal.destroyItem();
+		}
 	}
 
-	@SuppressWarnings("RedundantIfStatement")
-	private boolean canAttackEntity(EntityLiving entityToAttack) {
-		//don't want players to use this to kill bosses
-		if(!entityToAttack.isNonBoss())
-			return false;
-
-		if(entityToAttack instanceof EntityVillager)
-			return false;
-
-		if(entityToAttack instanceof EntityAnimal && entityToAttack.isChild())
-			return false;
-		
-		if(entityToAttack instanceof EntityHorse && ((EntityHorse) entityToAttack).isTame())
-			return false;
-		
-		if(entityToAttack instanceof EntityTameable && ((EntityTameable) entityToAttack).isTamed())
-			return false;
-		
-		return true;
+	private boolean canAttackEntity(MobEntity entityToAttack) {
+		return entityToAttack.isNonBoss() && !(entityToAttack instanceof VillagerEntity)
+				&& (!(entityToAttack instanceof AnimalEntity) || !entityToAttack.isChild())
+				&& (!(entityToAttack instanceof HorseEntity) || !((HorseEntity) entityToAttack).isTame())
+				&& (!(entityToAttack instanceof TameableEntity) || !((TameableEntity) entityToAttack).isTamed());
 	}
 
 	@Override
-	public void onRemoved(@Nonnull ItemStack stack, IPedestal pedestal) {
+	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+		//noop
 	}
 
 	@Override
-	public void stop(@Nonnull ItemStack stack, IPedestal pedestal) {
+	public void stop(ItemStack stack, IPedestal pedestal) {
+		//noop
 	}
 }

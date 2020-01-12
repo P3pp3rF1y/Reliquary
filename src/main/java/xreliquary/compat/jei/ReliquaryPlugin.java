@@ -1,21 +1,20 @@
 package xreliquary.compat.jei;
 
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
-import mezz.jei.api.IModRegistry;
-import mezz.jei.api.ISubtypeRegistry;
-import mezz.jei.api.JEIPlugin;
-import mezz.jei.api.ingredients.IModIngredientRegistration;
-import mezz.jei.api.recipe.IRecipeCategoryRegistration;
-import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.ResourceLocation;
 import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeCategory;
-import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeMaker;
 import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeCategory;
-import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeMaker;
 import xreliquary.compat.jei.cauldron.CauldronRecipeCategory;
 import xreliquary.compat.jei.cauldron.CauldronRecipeMaker;
 import xreliquary.compat.jei.descriptions.DescriptionEntry;
@@ -26,57 +25,54 @@ import xreliquary.compat.jei.mortar.MortarRecipeCategory;
 import xreliquary.compat.jei.mortar.MortarRecipeMaker;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
+import xreliquary.init.XRRecipes;
+import xreliquary.reference.Reference;
 
-import javax.annotation.Nonnull;
-
-@JEIPlugin
+@JeiPlugin
 public class ReliquaryPlugin implements IModPlugin {
-
 	@Override
-	public void registerItemSubtypes(@Nonnull ISubtypeRegistry subtypeRegistry) {
-		subtypeRegistry.useNbtForSubtypes(ModItems.mobCharm, ModItems.potionEssence, ModItems.potion, ModItems.tippedArrow);
-
-		subtypeRegistry.registerSubtypeInterpreter(ModItems.bullet, itemStack -> Integer.toString(itemStack.getMetadata()) + ":" + (itemStack.hasTagCompound() ? itemStack.getTagCompound().toString() : ""));
-		subtypeRegistry.registerSubtypeInterpreter(ModItems.magazine, itemStack -> Integer.toString(itemStack.getMetadata()) + ":" + (itemStack.hasTagCompound() ? itemStack.getTagCompound().toString() : ""));
+	public void registerItemSubtypes(ISubtypeRegistration registration) {
+		registration.useNbtForSubtypes(ModItems.MOB_CHARM, ModItems.POTION_ESSENCE, ModItems.POTION, ModItems.TIPPED_ARROW, ModItems.NEUTRAL_BULLET, ModItems.NEUTRAL_MAGAZINE);
 	}
 
 	@Override
-	public void registerIngredients(@Nonnull IModIngredientRegistration registry) {
+	public void registerCategories(IRecipeCategoryRegistration registration) {
+		IGuiHelper guiHelper = registration.getJeiHelpers().getGuiHelper();
+
+		registration.addRecipeCategories(new AlkahestryCraftingRecipeCategory(guiHelper));
+		registration.addRecipeCategories(new AlkahestryChargingRecipeCategory(guiHelper));
+
+		registration.addRecipeCategories(new MortarRecipeCategory(guiHelper));
+		registration.addRecipeCategories(new CauldronRecipeCategory(guiHelper));
+
 	}
 
 	@Override
-	public void registerCategories(@Nonnull IRecipeCategoryRegistration registry) {
-		IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
+	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+		registration.addRecipeCatalyst(new ItemStack(Blocks.CRAFTING_TABLE), AlkahestryChargingRecipeCategory.UID, AlkahestryCraftingRecipeCategory.UID);
 
-		registry.addRecipeCategories(new AlkahestryCraftingRecipeCategory(guiHelper));
-		registry.addRecipeCategories(new AlkahestryChargingRecipeCategory(guiHelper));
-
-		registry.addRecipeCategories(new MortarRecipeCategory(guiHelper));
-		registry.addRecipeCategories(new CauldronRecipeCategory(guiHelper));
+		registration.addRecipeCatalyst(new ItemStack(ModBlocks.APOTHECARY_MORTAR), MortarRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(ModBlocks.APOTHECARY_CAULDRON), CauldronRecipeCategory.UID);
 	}
 
 	@Override
-	public void register(@Nonnull IModRegistry registry) {
-		registry.addRecipes(AlkahestryCraftingRecipeMaker.getRecipes(registry.getJeiHelpers().getStackHelper()), JEICategory.ALKAHESTRY_CRAFTING.getUid());
-		registry.addRecipes(AlkahestryChargingRecipeMaker.getRecipes(registry.getJeiHelpers().getStackHelper()), JEICategory.ALKAHESTRY_CHARGING.getUid());
+	public void registerRecipes(IRecipeRegistration registration) {
+		registration.addRecipes(XRRecipes.craftingRecipes, AlkahestryCraftingRecipeCategory.UID);
+		registration.addRecipes(XRRecipes.chargingRecipes, AlkahestryChargingRecipeCategory.UID);
 
-		registry.addRecipeCatalyst(new ItemStack(Blocks.CRAFTING_TABLE), JEICategory.ALKAHESTRY_CHARGING.getUid(), JEICategory.ALKAHESTRY_CRAFTING.getUid());
+		registration.addRecipes(MortarRecipeMaker.getRecipes(), MortarRecipeCategory.UID);
+		registration.addRecipes(CauldronRecipeMaker.getRecipes(), CauldronRecipeCategory.UID);
+		registration.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.NEUTRAL_BULLET), "bullet"), VanillaRecipeCategoryUid.CRAFTING);
+		registration.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.TIPPED_ARROW), new ItemStack(Items.ARROW), 0.125F, "arrow"), VanillaRecipeCategoryUid.CRAFTING);
+		registration.addRecipes(MagazineRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
 
-		registry.addRecipeCatalyst(new ItemStack(ModBlocks.apothecaryMortar), JEICategory.MORTAR.getUid());
-		registry.addRecipeCatalyst(new ItemStack(ModBlocks.apothecaryCauldron), JEICategory.CAULDRON.getUid());
-
-		registry.addRecipes(MortarRecipeMaker.getRecipes(), JEICategory.MORTAR.getUid());
-		registry.addRecipes(CauldronRecipeMaker.getRecipes(), JEICategory.CAULDRON.getUid());
-		registry.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.bullet, 1, 1)), VanillaRecipeCategoryUid.CRAFTING);
-		registry.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.tippedArrow), new ItemStack(Items.ARROW), 0.125F), VanillaRecipeCategoryUid.CRAFTING);
-		registry.addRecipes(MagazineRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
-
-		for(DescriptionEntry entry : JEIDescriptionRegistry.entrySet())
-			registry.addIngredientInfo(entry.itemStacks(), ItemStack.class, entry.langKey());
+		for (DescriptionEntry entry : JEIDescriptionRegistry.entrySet()) {
+			registration.addIngredientInfo(entry.itemStacks(), VanillaTypes.ITEM, entry.langKey());
+		}
 	}
 
 	@Override
-	public void onRuntimeAvailable(@Nonnull IJeiRuntime jeiRuntime) {
-
+	public ResourceLocation getPluginUid() {
+		return new ResourceLocation(Reference.MOD_ID, "default");
 	}
 }

@@ -1,894 +1,1291 @@
 package xreliquary.reference;
 
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import com.google.common.collect.Lists;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import org.apache.commons.lang3.tuple.Pair;
 import xreliquary.client.gui.hud.HUDPosition;
-import xreliquary.util.potions.PotionMap;
 
-@Config(modid = Reference.MOD_ID)
+import java.util.ArrayList;
+import java.util.List;
+
+@SuppressWarnings("squid:S1192") //no issue repeating the same string literal as they are independent
 public class Settings {
-	private static final int ITEM_CAP = 9999;
-	private static final int CLEAN_SHORT_MAX = 30000;
-	private static final int CLEAN_INT_MAX = 2000000000;
+	private Settings() {}
 
-	@SuppressWarnings("unused")
-	@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
-	private static class EventHandler {
-		@SubscribeEvent
-		public static void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
-			if (event.getModID().equals(Reference.MOD_ID)) {
-				ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
+	private static final int ITEM_CAP = 9999;
+
+	public static class Client {
+		public final HudPos hudPositions;
+		final BooleanValue wailaShiftForInfo;
+
+		public static class HudPos {
+			public final EnumValue<HUDPosition> sojournerStaff;
+			public final EnumValue<HUDPosition> handgun;
+			public final EnumValue<HUDPosition> alkahestryTome;
+			public final EnumValue<HUDPosition> destructionCatalyst;
+			public final EnumValue<HUDPosition> enderStaff;
+			public final EnumValue<HUDPosition> iceMagusRod;
+			public final EnumValue<HUDPosition> glacialStaff;
+			public final EnumValue<HUDPosition> voidTear;
+			public final EnumValue<HUDPosition> midasTouchstone;
+			public final EnumValue<HUDPosition> harvestRod;
+			public final EnumValue<HUDPosition> infernalChalice;
+			public final EnumValue<HUDPosition> heroMedallion;
+			public final EnumValue<HUDPosition> pyromancerStaff;
+			public final EnumValue<HUDPosition> rendingGale;
+			public final EnumValue<HUDPosition> mobCharm;
+
+			HudPos(ForgeConfigSpec.Builder builder) {
+				builder.comment("Position of mode and/or item display on the screen - used by some of the tools and weapons.")
+						.push("hudPositions");
+
+				sojournerStaff = builder
+						.comment("Position of Sojouner Staff HUD")
+						.defineEnum("sojournerStaff", HUDPosition.BOTTOM_RIGHT);
+				handgun = builder
+						.comment("Position of Handgun HUD")
+						.defineEnum("handgun", HUDPosition.BOTTOM_RIGHT);
+				alkahestryTome = builder
+						.comment("Position of Alkahestry Tome HUD")
+						.defineEnum("alkahestryTome", HUDPosition.BOTTOM_RIGHT);
+				destructionCatalyst = builder
+						.comment("Position of Destruction Catalyst HUD")
+						.defineEnum("destructionCatalyst", HUDPosition.BOTTOM_RIGHT);
+				enderStaff = builder
+						.comment("Position of Ender Staff HUD")
+						.defineEnum("enderStaff", HUDPosition.BOTTOM_RIGHT);
+				iceMagusRod = builder
+						.comment("Position of Ice Magus Rod HUD")
+						.defineEnum("iceMagusRod", HUDPosition.BOTTOM_RIGHT);
+				glacialStaff = builder
+						.comment("Position of Glacial Staff HUD")
+						.defineEnum("glacialStaff", HUDPosition.BOTTOM_RIGHT);
+				voidTear = builder
+						.comment("Position of Void Tear HUD")
+						.defineEnum("voidTear", HUDPosition.BOTTOM_RIGHT);
+				midasTouchstone = builder
+						.comment("Position of Midas Touchstone HUD")
+						.defineEnum("midasTouchstone", HUDPosition.BOTTOM_RIGHT);
+				harvestRod = builder
+						.comment("Position of Infernal Chalice HUD")
+						.defineEnum("harvestRod", HUDPosition.BOTTOM_RIGHT);
+				infernalChalice = builder
+						.comment("Position of Ender Staff HUD")
+						.defineEnum("infernalChalice", HUDPosition.BOTTOM_RIGHT);
+				heroMedallion = builder
+						.comment("Position of Hero Medallion HUD")
+						.defineEnum("heroMedallion", HUDPosition.BOTTOM_RIGHT);
+				pyromancerStaff = builder
+						.comment("Position of Pyromancer Staff HUD")
+						.defineEnum("pyromancerStaff", HUDPosition.BOTTOM_RIGHT);
+				rendingGale = builder
+						.comment("Position of Rending Gale HUD")
+						.defineEnum("rendingGale", HUDPosition.BOTTOM_RIGHT);
+				mobCharm = builder
+						.comment("Position of Mob Charm HUD")
+						.defineEnum("mobCharm", HUDPosition.RIGHT);
+
+				builder.pop();
+			}
+		}
+
+		public Client(ForgeConfigSpec.Builder builder) {
+			builder.comment("Client Settings").push("client");
+			hudPositions = new HudPos(builder);
+			wailaShiftForInfo = builder
+					.comment("Whether player has to sneak to see additional info in waila")
+					.define("waila_shift_for_info", false);
+			builder.pop();
+		}
+	}
+
+	public static final Client CLIENT;
+	public static final ForgeConfigSpec CLIENT_SPEC;
+
+	static {
+		final Pair<Client, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Client::new);
+		CLIENT_SPEC = specPair.getRight();
+		CLIENT = specPair.getLeft();
+	}
+
+	public static class Common {
+		public final DisableSettings disable;
+		public final PotionSettings potions;
+		public final ItemSettings items;
+		public final BlockSettings blocks;
+		public final BooleanValue chestLootEnabled;
+		public final BooleanValue dropCraftingRecipesEnabled;
+		public final BooleanValue mobDropsEnabled;
+
+		public static class DisableSettings {
+			public final BooleanValue disableAlkahestry;
+			public final BooleanValue disableHandgun;
+			public final BooleanValue disablePotions;
+			public final BooleanValue disablePedestal;
+			public final BooleanValue disablePassivePedestal;
+
+			DisableSettings(ForgeConfigSpec.Builder builder) {
+				builder.comment("Disable sections of the mod")
+						.push("disable");
+
+				disableAlkahestry = builder
+						.comment("Disable Alkahestry tome and its and recipes")
+						.worldRestart()
+						.define("alkahestryTome", false);
+
+				disableHandgun = builder
+						.comment("Disable the HANDGUN, bullets, magazines, and gun parts")
+						.worldRestart()
+						.define("handgun", false);
+
+				disablePotions = builder
+						.comment("Disable the POTION system including mortar, altar, potions, tipped arrows, and powder")
+						.worldRestart()
+						.define("potion", false);
+
+				disablePedestal = builder
+						.comment("Disable all pedestals")
+						.worldRestart()
+						.define("pedestal", false);
+
+				disablePassivePedestal = builder
+						.comment("Disable all display-only pedestals")
+						.worldRestart()
+						.define("passivePedestal", false);
+
+				builder.pop();
+			}
+		}
+
+		Common(ForgeConfigSpec.Builder builder) {
+			chestLootEnabled = builder
+					.comment("Determines whether Reliquary items will be generated in chest loot (mostly mob drops, very rarely some lower level items)")
+					.worldRestart()
+					.define("chestLootEnabled", true);
+
+			dropCraftingRecipesEnabled = builder
+					.comment("Determines wheter Reliquary mob drops have crafting recipes")
+					.define("dropCraftingRecipesEnabled", false);
+
+			mobDropsEnabled = builder
+					.comment("Whether mobs drop the Reliquary mob drops. This won't remove mob drop items from registry and replace them with something else, but allows to turn off the additional drops when mobs are killed by player. If this is turned off the mob drop crafting recipes turned on by the other setting can be used.")
+					.worldRestart()
+					.define("mobDropsEnabled", true);
+
+			disable = new DisableSettings(builder);
+			potions = new PotionSettings(builder);
+			items = new ItemSettings(builder);
+			blocks = new BlockSettings(builder);
+		}
+
+		public static class PotionSettings {
+			public final ConfigValue<List<String>> potionMap;
+			public final IntValue maxEffectCount;
+			public final BooleanValue threeIngredients;
+			public final BooleanValue differentDurations;
+			public final BooleanValue redstoneAndGlowstone;
+
+			PotionSettings(ForgeConfigSpec.Builder builder) {
+				builder.comment("Potions related settings").push("potions");
+
+				potionMap = builder
+						.comment("Map of POTION ingredients and their effects")
+						.define("potionMap", new ArrayList<>());
+
+				maxEffectCount = builder
+						.comment("Maximum number of effects a POTION can have to appear in creative tabs / JEI")
+						.defineInRange("maxEffectCount", 1, 1, 6);
+
+				threeIngredients = builder
+						.comment("Whether potions that are made out of three base ingredients appear in creative tabs / JEI")
+						.define("threeIngredients", false);
+
+				differentDurations = builder
+						.comment("Whether potions augmented with Redstone and Glowstone appear in creative tabs / JEI")
+						.define("differentDurations", false);
+
+				redstoneAndGlowstone = builder
+						.comment("Whether potions with the same effect combination, but different duration appear in creative tabs / JEI")
+						.define("redstoneAndGlowstone", false);
+
+				builder.pop();
+			}
+		}
+
+		public static class ItemSettings {
+			ItemSettings(ForgeConfigSpec.Builder builder) {
+				builder.push("items");
+
+				alkahestryTome = new AlkahestryTomeSettings(builder);
+				angelicFeather = new AngelicFeatherSettings(builder);
+				angelHeartVial = new AngelHeartVialSettings(builder);
+				destructionCatalyst = new DestructionCatalystSettings(builder);
+				emperorChalice = new EmperorChaliceSettings(builder);
+				enderStaff = new EnderStaffSettings(builder);
+				fortuneCoin = new FortuneCoinSettings(builder);
+				glacialStaff = new GlacialStaffSettings(builder);
+				harvestRod = new HarvestRodSettings(builder);
+				heroMedallion = new HeroMedallionSettings(builder);
+				iceMagusRod = new IceMagusRodSettings(builder);
+				infernalChalice = new InfernalChaliceSettings(builder);
+				infernalClaws = new InfernalClawsSettings(builder);
+				infernalTear = new InfernalTearSettings(builder);
+				krakenShell = new KrakenShellSettings(builder);
+				lanternOfParanoia = new LanternOfParanoiaSettings(builder);
+				midasTouchstone = new MidasTouchstoneSettings(builder);
+				mobCharm = new MobCharmSettings(builder);
+				phoenixDown = new PhoenixDownSettings(builder);
+				pyromancerStaff = new PyromancerStaffSettings(builder);
+				rendingGale = new RendingGaleSettings(builder);
+				rodOfLyssa = new RodOfLyssaSettings(builder);
+				seekerShot = new SeekerShotSettings(builder);
+				sojournerStaff = new SojournerStaffSettings(builder);
+				twilightCloak = new TwilightCloakSettings(builder);
+				voidTear = new VoidTearSettings(builder);
+
+				builder.pop();
+			}
+
+			public final AlkahestryTomeSettings alkahestryTome;
+
+			public static class AlkahestryTomeSettings {
+				public final IntValue chargeLimit;
+
+				AlkahestryTomeSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Alkahestry Tome settings")
+							.push("alkahestryTome");
+
+					chargeLimit = builder.comment("Charge limit of the tome").defineInRange("chargeLimit", 1000, 0, ITEM_CAP);
+
+					builder.pop();
+				}
+			}
+
+			public final AngelicFeatherSettings angelicFeather;
+
+			public static class AngelicFeatherSettings {
+				public final IntValue hungerCostPercent;
+				public final IntValue leapingPotency;
+
+				AngelicFeatherSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Angelic Feather settings").push("angelicFeather");
+
+					hungerCostPercent = builder
+							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
+							.defineInRange("hungerCostPercent", 50, 0, 100);
+					leapingPotency = builder
+							.comment("Potency of the leaping effect")
+							.defineInRange("leapingPotency", 1, 0, 5);
+
+					builder.pop();
+				}
+			}
+
+			public final AngelHeartVialSettings angelHeartVial;
+
+			public static class AngelHeartVialSettings {
+				public final IntValue healPercentageOfMaxLife;
+				public final BooleanValue removeNegativeStatus;
+
+				AngelHeartVialSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Angelheart Vial settings").push("angelheartVial");
+
+					healPercentageOfMaxLife = builder
+							.comment("Percent of life that gets healed when the player would die")
+							.defineInRange("healPercentageOfMaxLife", 25, 0, 100);
+
+					removeNegativeStatus = builder
+							.comment("Whether the player gets negative statuses removed")
+							.define("removeNegativeStatus", true);
+
+					builder.pop();
+				}
+			}
+
+			public final DestructionCatalystSettings destructionCatalyst;
+
+			public static class DestructionCatalystSettings {
+				public final ConfigValue<List<String>> mundaneBlocks;
+				public final IntValue gunpowderCost;
+				public final IntValue gunpowderWorth;
+				public final IntValue gunpowderLimit;
+				public final IntValue explosionRadius;
+				public final BooleanValue centeredExplosion;
+				public final BooleanValue perfectCube;
+
+				DestructionCatalystSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Destruction Catalyst settings").push("destructionCatalyst");
+
+					mundaneBlocks = builder
+							.comment("List of mundane blocks the catalyst will break")
+							.define("mundaneBlocks", Lists.newArrayList(
+									"minecraft:dirt",
+									"minecraft:grass",
+									"minecraft:gravel",
+									"minecraft:cobblestone",
+									"minecraft:stone",
+									"minecraft:sand",
+									"minecraft:sandstone",
+									"minecraft:snow",
+									"minecraft:soul_sand",
+									"minecraft:netherrack",
+									"minecraft:end_stone"));
+
+					gunpowderCost = builder
+							.comment("Number of gunpowder it costs per catalyst use")
+							.defineInRange("gunpowderCost", 3, 0, 10);
+
+					gunpowderWorth = builder
+							.comment("Number of gunpowder that gets added to catalyst per one that's consumed from players inventory")
+							.defineInRange("gunpowderWorth", 1, 0, 3);
+
+					gunpowderLimit = builder
+							.comment("Number of gunpowder that can be stored in destruction catalyst")
+							.defineInRange("gunpowderLimit", 250, 0, ITEM_CAP);
+
+					explosionRadius = builder
+							.comment("Radius of the explosion")
+							.defineInRange("explosionRadius", 1, 1, 5);
+
+					centeredExplosion = builder
+							.comment("Whether the explosion is centered on the block that gets clicked")
+							.define("centeredExplosion", false);
+
+					perfectCube = builder
+							.comment("Whether the explosion makes a perfect cube hole")
+							.define("perfectCube", true);
+
+					builder.pop();
+				}
+			}
+
+			public final EmperorChaliceSettings emperorChalice;
+
+			public static class EmperorChaliceSettings {
+				public final IntValue hungerSatiationMultiplier;
+
+				EmperorChaliceSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Emperor Chalice settings").push("emperorChalice");
+
+					hungerSatiationMultiplier = builder
+							.comment("How much saturation is added in addition to filling the hunger")
+							.defineInRange("hungerSatiationMultiplier", 4, 0, 10);
+
+					builder.pop();
+				}
+			}
+
+			public final EnderStaffSettings enderStaff;
+
+			public static class EnderStaffSettings {
+				public final IntValue enderPearlCastCost;
+				public final IntValue enderPearlNodeWarpCost;
+				public final IntValue enderPearlWorth;
+				public final IntValue enderPearlLimit;
+				public final IntValue nodeWarpCastTime;
+
+				EnderStaffSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Ender Staff settings").push("enderStaff");
+
+					enderPearlCastCost = builder
+							.comment("Number of ender pearls per use")
+							.defineInRange("enderPearlCastCost", 1, 0, 3);
+
+					enderPearlNodeWarpCost = builder
+							.comment("Number of ender pearls per teleportation to the wraith node")
+							.defineInRange("enderPearlNodeWarpCost", 1, 0, 3);
+
+					enderPearlWorth = builder
+							.comment("Number of ender pearls that get added to the staff per one that's consumed from players inventory")
+							.defineInRange("enderPearlWorth", 1, 0, 10);
+
+					enderPearlLimit = builder
+							.comment("Number of ender pearls that the ender staff can store")
+							.defineInRange("enderPearlLimit", 250, 0, ITEM_CAP);
+
+					nodeWarpCastTime = builder
+							.comment("Time it takes to teleport to the wraith node")
+							.defineInRange("nodeWarpCastTime", 60, 10, 120);
+
+					builder.pop();
+				}
+			}
+
+			public final FortuneCoinSettings fortuneCoin;
+
+			public static class FortuneCoinSettings {
+				public final BooleanValue enabledAudio;
+				public final IntValue standardPullDistance;
+				public final IntValue longRangePullDistance;
+
+				FortuneCoinSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Fortune Coin settings").push("fortuneCoin");
+
+					enabledAudio = builder
+							.comment("Allows to disable the sound of fortune coin teleporting stuff")
+							.define("enabledAudio", true);
+
+					standardPullDistance = builder
+							.comment("The distance that it pulls from when activated")
+							.defineInRange("standardPullDistance", 5, 3, 10);
+
+					longRangePullDistance = builder
+							.comment("The distance that it pulls from when right click is held")
+							.defineInRange("longRangePullDistance", 15, 9, 30);
+
+					builder.pop();
+				}
+			}
+
+			public final GlacialStaffSettings glacialStaff;
+
+			public static class GlacialStaffSettings {
+				public final IntValue snowballLimit;
+				public final IntValue snowballCost;
+				public final IntValue snowballWorth;
+				public final IntValue snowballDamage;
+				public final IntValue snowballDamageBonusFireImmune;
+				public final IntValue snowballDamageBonusBlaze;
+
+				GlacialStaffSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Glacial Staff settings").push("glacialStaff");
+
+					snowballLimit = builder
+							.comment("Number of snowballs the staff can hold")
+							.defineInRange("snowballLimit", 250, 0, ITEM_CAP);
+
+					snowballCost = builder
+							.comment("Number of snowballs it costs when the staff is used")
+							.defineInRange("snowballCost", 1, 0, 3);
+
+					snowballWorth = builder
+							.comment("Number of snowballs that get added to the staff per one that's consumed from player's inventory")
+							.defineInRange("snowballWorth", 1, 0, 3);
+
+					snowballDamage = builder
+							.comment("The damage that snowballs cause")
+							.defineInRange("snowballDamage", 3, 0, 6);
+
+					snowballDamageBonusFireImmune = builder
+							.comment("The damage bonus against entities that are immune to fire")
+							.defineInRange("snowballDamageBonusFireImmune", 3, 0, 6);
+
+					snowballDamageBonusBlaze = builder
+							.comment("The damage bonus against blaze")
+							.defineInRange("snowballDamageBonusBlaze", 6, 0, 12);
+
+					builder.pop();
+				}
+			}
+
+			public final HarvestRodSettings harvestRod;
+
+			public static class HarvestRodSettings {
+				public final IntValue boneMealLimit;
+				public final IntValue boneMealCost;
+				public final IntValue boneMealWorth;
+				public final IntValue boneMealLuckPercentChance;
+				public final IntValue boneMealLuckRolls;
+				public final IntValue aoeRadius;
+				public final IntValue aoeCooldown;
+				public final IntValue maxCapacityPerPlantable;
+				public final IntValue pedestalRange;
+				public final IntValue pedestalCooldown;
+
+				HarvestRodSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Harvest Rod settings").push("harvestRod");
+
+					boneMealLimit = builder
+							.comment("Number of bonemeal the rod can hold")
+							.defineInRange("boneMealLimit", 250, 0, ITEM_CAP);
+
+					boneMealCost = builder
+							.comment("Number of bonemeal consumed per use")
+							.defineInRange("boneMealCost", 1, 0, 3);
+
+					boneMealWorth = builder
+							.comment("Number of bonemeal that gets added to the rod per one that's consumed from player's inventory")
+							.defineInRange("boneMealWorth", 1, 0, 3);
+
+					boneMealLuckPercentChance = builder
+							.comment("Percent chance that a bonemeal will get applied during a luck roll")
+							.defineInRange("boneMealLuckPercentChance", 33, 1, 100);
+
+					boneMealLuckRolls = builder
+							.comment("Number of times that a rod may apply additional luck based bonemeal")
+							.defineInRange("boneMealLuckRolls", 2, 0, 7);
+
+					aoeRadius = builder
+							.comment("Radius in which harvest rod breaks crops, bonemeals/plants/hoes blocks")
+							.defineInRange("aoeRadius", 2, 0, 5);
+
+					aoeCooldown = builder
+							.comment("Ticks in between bonemealing/planting/hoeing blocks when player is using one of these AOE actions")
+							.defineInRange("aoeCooldown", 3, 1, 20);
+
+					maxCapacityPerPlantable = builder
+							.comment("Maximum number of units harvest rod can hold per plantable item")
+							.defineInRange("maxCapacityPerPlantable", 250, 0, ITEM_CAP);
+
+					pedestalRange = builder
+							.comment("Range at which harvest rod will automatically hoe/plant/bonemeal/break crops around pedestals")
+							.defineInRange("pedestalRange", 4, 1, 20);
+
+					pedestalCooldown = builder
+							.comment("Ticks in between harvest rod actions when in pedestals")
+							.defineInRange("pedestalCooldown", 5, 1, 20);
+
+					builder.pop();
+				}
+			}
+
+			public final HeroMedallionSettings heroMedallion;
+
+			public static class HeroMedallionSettings {
+				public final IntValue experienceLevelMaximum;
+				public final IntValue experienceLevelMinimum;
+				public final IntValue experienceLimit;
+				public final IntValue experienceDrop;
+				public final IntValue pedestalCoolDown;
+				public final IntValue pedestalRange;
+				public final IntValue pedestalRepairStepXP;
+
+				HeroMedallionSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Hero Medallion settings").push("heroMedallion");
+
+					experienceLevelMaximum = builder
+							.comment("A player's experience level at which pulling from the medallion to player will stop")
+							.defineInRange("experienceLevelMaximum", 200, 0, 1000);
+
+					experienceLevelMinimum = builder
+							.comment("A player's experience level at which the medallion will stop pulling from the player")
+							.defineInRange("experienceLevelMinimum", 0, 0, 30);
+
+					experienceLimit = builder
+							.comment("Experience level that the medallion can hold")
+							.defineInRange("experienceLimit", Integer.MAX_VALUE, 0, Integer.MAX_VALUE);
+
+					experienceDrop = builder
+							.comment("How much experience gets dropped on ground when hero's medallion is right clicked on it (9 is the first level of player xp)")
+							.defineInRange("experienceDrop", 9, 1, 100);
+
+					pedestalCoolDown = builder
+							.comment("Cooldown between hero medallion tries to fix mending items in nearby pedestals")
+							.defineInRange("pedestalCoolDown", 20, 1, 100);
+
+					pedestalRange = builder
+							.comment("Range in which pedestals are checked for items with mending enchant that need fixing")
+							.defineInRange("pedestalRange", 5, 1, 20);
+
+					pedestalRepairStepXP = builder
+							.comment("Maximum amount of xp that is used each time medallion repairs items")
+							.defineInRange("pedestalRepairStepXP", 5, 1, 20);
+
+					builder.pop();
+				}
+			}
+
+			public final IceMagusRodSettings iceMagusRod;
+
+			public static class IceMagusRodSettings {
+				public final IntValue snowballLimit;
+				public final IntValue snowballCost;
+				public final IntValue snowballWorth;
+				public final IntValue snowballDamage;
+				public final IntValue snowballDamageBonusFireImmune;
+				public final IntValue snowballDamageBonusBlaze;
+
+				IceMagusRodSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Ice Magus Rod settings").push("iceMagusRod");
+
+					snowballLimit = builder
+							.comment("Number of snowballs the rod can hold")
+							.defineInRange("snowballLimit", 250, 0, ITEM_CAP);
+
+					snowballCost = builder
+							.comment("Number of snowballs it costs when the rod is used")
+							.defineInRange("snowballCost", 1, 0, 3);
+
+					snowballWorth = builder
+							.comment("Number of snowballs that get added to the rod per one that's consumed from player's inventory")
+							.defineInRange("snowballWorth", 1, 0, 3);
+
+					snowballDamage = builder
+							.comment("The damage that snowballs cause")
+							.defineInRange("snowballDamage", 2, 0, 4);
+
+					snowballDamageBonusFireImmune = builder
+							.comment("Damage bonus against fire immune mobs")
+							.defineInRange("snowballDamageBonusFireImmune", 2, 0, 4);
+
+					snowballDamageBonusBlaze = builder
+							.comment("Damage bonus against blaze")
+							.defineInRange("snowballDamageBonusBlaze", 4, 0, 8);
+
+					builder.pop();
+				}
+			}
+
+			public final InfernalChaliceSettings infernalChalice;
+
+			public static class InfernalChaliceSettings {
+				public final IntValue hungerCostPercent;
+				public final IntValue fluidLimit;
+
+				InfernalChaliceSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Infernal Chalice settings").push("infernalChalice");
+
+					hungerCostPercent = builder
+							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
+							.defineInRange("hungerCostPercent", 1, 0, 10);
+
+					fluidLimit = builder
+							.comment("Millibuckets of lava that the chalice can hold")
+							.defineInRange("fluidLimit", 500000, 0, Integer.MAX_VALUE);
+
+					builder.pop();
+				}
+			}
+
+			public final InfernalClawsSettings infernalClaws;
+
+			public static class InfernalClawsSettings {
+				public final IntValue hungerCostPercent;
+
+				InfernalClawsSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Infernal Chalice settings").push("infernalClaws");
+
+					hungerCostPercent = builder
+							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
+							.defineInRange("hungerCostPercent", 5, 0, 30);
+
+					builder.pop();
+				}
+			}
+
+			public final InfernalTearSettings infernalTear;
+
+			public static class InfernalTearSettings {
+				public final BooleanValue absorbWhenCreated;
+
+				InfernalTearSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Infernal Tear settings").push("infernalTear");
+
+					absorbWhenCreated = builder
+							.comment("Whether the infernal tear starts absorbing immediately after it is set to item type")
+							.define("absorbWhenCreated", false);
+
+					builder.pop();
+				}
+			}
+
+			public final KrakenShellSettings krakenShell;
+
+			public static class KrakenShellSettings {
+				public final IntValue hungerCostPercent;
+
+				KrakenShellSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Kraken Shell settings").push("krakenShell");
+
+					hungerCostPercent = builder
+							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
+							.defineInRange("hungerCostPercent", 25, 0, 50);
+
+					builder.pop();
+				}
+			}
+
+			public final LanternOfParanoiaSettings lanternOfParanoia;
+
+			public static class LanternOfParanoiaSettings {
+				public final IntValue minLightLevel;
+				public final IntValue placementScanRadius;
+
+				LanternOfParanoiaSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Lantern of Paranoia settings").push("lanternOfParanoia");
+
+					minLightLevel = builder
+							.comment("Minimum light level below which the lantern will place torches")
+							.defineInRange("minLightLevel", 8, 0, 15);
+
+					placementScanRadius = builder
+							.comment("Radius in which the lantern checks for light levels and places torches")
+							.defineInRange("placementScanRadius", 6, 1, 15);
+
+					builder.pop();
+				}
+			}
+
+			public final MidasTouchstoneSettings midasTouchstone;
+
+			public static class MidasTouchstoneSettings {
+				public final ConfigValue<List<String>> goldItems;
+				public final IntValue glowstoneCost;
+				public final IntValue glowstoneWorth;
+				public final IntValue glowstoneLimit;
+
+				MidasTouchstoneSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Midas Touchstone settings").push("midasTouchstone");
+
+					goldItems = builder
+							.comment("Gold items that can be repaired by the touchstone")
+							.define("goldItems", new ArrayList<>());
+
+					glowstoneCost = builder
+							.comment("Number of glowstone that the repair costs")
+							.defineInRange("glowstoneCost", 1, 0, 3);
+
+					glowstoneWorth = builder
+							.comment("Number of glowstone that gets added to the touchstone per one in player's inventory")
+							.defineInRange("glowstoneWorth", 4, 0, 12);
+
+					glowstoneLimit = builder
+							.comment("Number of glowstone the touchstone can hold")
+							.defineInRange("glowstoneLimit", 250, 0, ITEM_CAP);
+
+					builder.pop();
+				}
+			}
+
+			public final MobCharmSettings mobCharm;
+
+			public static class MobCharmSettings {
+				public final IntValue durability;
+				public final IntValue damagePerKill;
+				public final IntValue dropDurabilityRepair;
+				public final IntValue maxCharmsToDisplay;
+				public final IntValue pedestalRange;
+				public final BooleanValue keepAlmostDestroyedDisplayed;
+
+				MobCharmSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Mob Charm settings").push("mobCharm");
+
+					durability = builder
+							.comment("Total durability of Mob Charm")
+							.defineInRange("durability", 80, 20, 1000);
+
+					damagePerKill = builder
+							.comment("Damage that Mob Charm takes when player kills mob it protects them from")
+							.defineInRange("damagePerKill", 1, 0, 40);
+
+					dropDurabilityRepair = builder
+							.comment("Sets how much durability of Mob Charm gets repaired per special drop")
+							.defineInRange("dropDurabilityRepair", 20, 1, 200);
+
+					maxCharmsToDisplay = builder
+							.comment("Maximum charms that will get displayed in HUD")
+							.defineInRange("maxCharmsToDisplay", 6, 1, 20);
+
+					pedestalRange = builder
+							.comment("Range in which mob charm or belt in pedestals will keep monsters from attacking players")
+							.defineInRange("pedestalRange", 21, 10, 100);
+
+					keepAlmostDestroyedDisplayed = builder
+							.comment("Determines if almost destroyed charms stay displayed in the hud")
+							.define("keepAlmostDestroyedDisplayed", true);
+
+					builder.pop();
+				}
+			}
+
+			public final PhoenixDownSettings phoenixDown;
+
+			public static class PhoenixDownSettings {
+				public final IntValue hungerCostPercent;
+				public final IntValue leapingPotency;
+				public final IntValue healPercentageOfMaxLife;
+				public final BooleanValue removeNegativeStatus;
+				public final BooleanValue giveTemporaryDamageResistance;
+				public final BooleanValue giveTemporaryRegeneration;
+				public final BooleanValue giveTemporaryFireResistanceIfFireDamageKilledYou;
+				public final BooleanValue giveTemporaryWaterBreathingIfDrowningKilledYou;
+
+				PhoenixDownSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Phoenix Down settings").push("PhoenixDown");
+
+					hungerCostPercent = builder
+							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise")
+							.defineInRange("hungerCostPercent", 25, 0, 50);
+
+					leapingPotency = builder
+							.comment("Potency of the leaping effect")
+							.defineInRange("leapingPotency", 1, 0, 5);
+
+					healPercentageOfMaxLife = builder
+							.comment("Percent of life that gets healed when the player would die")
+							.defineInRange("healPercentageOfMaxLife", 100, 0, 100);
+
+					removeNegativeStatus = builder
+							.comment("Whether the player gets negative statuses removed when they were saved by Phoenix Down")
+							.define("removeNegativeStatus", true);
+
+					giveTemporaryDamageResistance = builder
+							.comment("Whether to give temporary damage resistance when the player would die")
+							.define("giveTemporaryDamageResistance", true);
+
+					giveTemporaryRegeneration = builder
+							.comment("Whether to give temporary regeneration when the player would die")
+							.define("giveTemporaryRegeneration", true);
+
+					giveTemporaryFireResistanceIfFireDamageKilledYou = builder
+							.comment("Whether to give temporary fire resistance when the player would die. Applies only when the player is being hurt by fire damage.")
+							.define("giveTemporaryFireResistanceIfFireDamageKilledYou", true);
+
+					giveTemporaryWaterBreathingIfDrowningKilledYou = builder
+							.comment("Whether to give temporary damage resistance when the player would die. Applies only when the player is drowning.")
+							.define("giveTemporaryWaterBreathingIfDrowningKilledYou", true);
+
+					builder.pop();
+				}
+			}
+
+			public final PyromancerStaffSettings pyromancerStaff;
+
+			public static class PyromancerStaffSettings {
+				public final IntValue fireChargeLimit;
+				public final IntValue fireChargeCost;
+				public final IntValue fireChargeWorth;
+				public final IntValue ghastAbsorbWorth;
+				public final IntValue blazePowderLimit;
+				public final IntValue blazePowderCost;
+				public final IntValue blazePowderWorth;
+				public final IntValue blazeAbsorbWorth;
+
+				PyromancerStaffSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Pyromancer Staff settings").push("pyromancerStaff");
+
+					fireChargeLimit = builder
+							.comment("Number of fire charges the staff can hold")
+							.defineInRange("fireChargeLimit", 250, 0, ITEM_CAP);
+
+					fireChargeCost = builder
+							.comment("Number of fire charges used when the staff is fired")
+							.defineInRange("fireChargeCost", 1, 0, 3);
+
+					fireChargeWorth = builder
+							.comment("Number of fire charges that get added to the staff per one that's consumed from player's inventory")
+							.defineInRange("fireChargeWorth", 1, 0, 3);
+
+					ghastAbsorbWorth = builder
+							.comment("Number of fire charges added to the staff per one that was shot by ghast and gets absorbed by the staff")
+							.defineInRange("ghastAbsorbWorth", 1, 0, 3);
+
+					blazePowderLimit = builder
+							.comment("Number of blaze powder the staff can hold")
+							.defineInRange("blazePowderLimit", 250, 0, ITEM_CAP);
+
+					blazePowderCost = builder
+							.comment("Number of blaze powder used when staff is fired")
+							.defineInRange("blazePowderCost", 1, 0, 3);
+
+					blazePowderWorth = builder
+							.comment("Number of blaze powder that gets added to the staff per one that's consumed from player's inventory")
+							.defineInRange("blazePowderWorth", 1, 0, 3);
+
+					blazeAbsorbWorth = builder
+							.comment("Number of blaze powder added to the staff per one fireball that was shot by blaze and gets absorbed by the staff")
+							.defineInRange("blazeAbsorbWorth", 1, 0, 3);
+
+					builder.pop();
+				}
+			}
+
+			public final RendingGaleSettings rendingGale;
+
+			public static class RendingGaleSettings {
+				public final IntValue chargeLimit;
+				public final IntValue castChargeCost;
+				public final IntValue boltChargeCost;
+				public final IntValue chargeFeatherWorth;
+				public final IntValue blockTargetRange;
+				public final IntValue pushPullRadius;
+				public final BooleanValue canPushProjectiles;
+				public final IntValue pedestalFlightRange;
+				public final IntValue pedestalCostPerSecond;
+				public final ConfigValue<List<String>> pushableEntitiesBlacklist;
+				public final ConfigValue<List<String>> pushableProjectilesBlacklist;
+
+				RendingGaleSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Rending Gale settings").push("rendingGale");
+
+					chargeLimit = builder
+							.comment("Number of feathers the rending gale can hold")
+							.defineInRange("chargeLimit", 30000, 0, Integer.MAX_VALUE);
+
+					castChargeCost = builder
+							.comment("Number of feathers used when the rending gale is cast in flight mode")
+							.defineInRange("castChargeCost", 1, 0, 3);
+
+					boltChargeCost = builder
+							.comment("Number of feathers used to cast a lightning bolt")
+							.defineInRange("boltChargeCost", 100, 0, 250);
+
+					chargeFeatherWorth = builder
+							.comment("Number of feathers that get added to the rending gale per one that's consumed from player's inventory")
+							.defineInRange("chargeFeatherWorth", 100, 1, 250);
+
+					blockTargetRange = builder
+							.comment("How far a lightning block can be cast")
+							.defineInRange("blockTargetRange", 12, 5, 15);
+
+					pushPullRadius = builder
+							.comment("Radius in which entities can be pushed/pulled")
+							.defineInRange("pushPullRadius", 10, 1, 20);
+
+					canPushProjectiles = builder
+							.comment("Whether the rending gale can push projectiles")
+							.define("canPushProjectiles", true);
+
+					pedestalFlightRange = builder
+							.comment("Range from pedestals at which players will get buffed with flight")
+							.defineInRange("pedestalFlightRange", 30, 10, 100);
+
+					pedestalCostPerSecond = builder
+							.comment("Cost per second of buffing players with flight")
+							.defineInRange("pedestalCostPerSecond", 5, 1, 20);
+
+					pushableEntitiesBlacklist = builder
+							.comment("List of entities that are banned from being pushed by the Rending Gale")
+							.define("pushableEntitiesBlacklist", new ArrayList<>());
+
+					pushableProjectilesBlacklist = builder
+							.comment("List of projectiles that are banned from being pushed by the Rending Gale")
+							.define("pushableProjectilesBlacklist", new ArrayList<>());
+
+					builder.pop();
+				}
+			}
+
+			public final RodOfLyssaSettings rodOfLyssa;
+
+			public static class RodOfLyssaSettings {
+				public final BooleanValue useLeveledFailureRate;
+				public final IntValue levelCapForLeveledFormula;
+				public final IntValue flatStealFailurePercentRate;
+				public final BooleanValue stealFromVacantSlots;
+				public final BooleanValue failStealFromVacantSlots;
+				public final BooleanValue angerOnStealFailure;
+				public final BooleanValue stealFromPlayers;
+
+				RodOfLyssaSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Rod of Lyssa settings").push("rodOfLyssa");
+
+					useLeveledFailureRate = builder
+							.comment("Whether level influences stealing failure rate of the rod")
+							.define("useLeveledFailureRate", true);
+
+					levelCapForLeveledFormula = builder
+							.comment("The experience level cap after which the failure rate is at a minimum and doesn't get better")
+							.defineInRange("levelCapForLeveledFormula", 100, 1, 900);
+
+					flatStealFailurePercentRate = builder
+							.comment("The flat failure rate in case failure rate isn't influenced by player's level")
+							.defineInRange("flatStealFailurePercentRate", 10, 0, 100);
+
+					stealFromVacantSlots = builder
+							.comment("If set to false it goes through additional 4 accessible slots and looks for items in case the one selected randomly was empty")
+							.define("stealFromVacantSlots", true);
+
+					failStealFromVacantSlots = builder
+							.comment("Whether stealing from an empty slot triggers failure even if otherwise it would be successful")
+							.define("failStealFromVacantSlots", false);
+
+					angerOnStealFailure = builder
+							.comment("Whether entities get angry at player if stealing fails")
+							.define("angerOnStealFailure", true);
+
+					stealFromPlayers = builder
+							.comment("Allows switching stealing from player on and off")
+							.define("stealFromPlayers", true);
+
+					builder.pop();
+				}
+			}
+
+			public final SeekerShotSettings seekerShot;
+
+			public static class SeekerShotSettings {
+				public final ConfigValue<List<String>> huntableEntitiesBlacklist;
+
+				SeekerShotSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Seeker Shot settings").push("seekerShot");
+
+					huntableEntitiesBlacklist = builder
+							.comment("Entities that are banned from being tracked by seeker shot")
+							.define("huntableEntitiesBlacklist", new ArrayList<>());
+
+					builder.pop();
+				}
+			}
+
+			public final SojournerStaffSettings sojournerStaff;
+
+			public static class SojournerStaffSettings {
+				public final ConfigValue<List<String>> torches;
+				public final IntValue maxCapacityPerItemType;
+				public final IntValue maxRange;
+				public final IntValue tilePerCostMultiplier;
+
+				SojournerStaffSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Sojourner Staff settings").push("sojournerStaff");
+
+					torches = builder
+							.comment("List of torches that are supported by the staff in addition to the default minecraft torch")
+							.define("torches", Lists.newArrayList("minecraft:torch"));
+
+					maxCapacityPerItemType = builder
+							.comment("Number of items the staff can store per item type")
+							.defineInRange("maxCapacityPerItemType", 1500, 1, ITEM_CAP);
+
+					maxRange = builder
+							.comment("Maximum range at which torches can be placed")
+							.defineInRange("maxRange", 30, 1, 30);
+
+					tilePerCostMultiplier = builder
+							.comment("Distance after which there is an additional cost for torch placement. The additional cost is the number of times this distance fits in the distance at which the torch is being placed.")
+							.defineInRange("tilePerCostMultiplier", 6, 6, 30);
+
+					builder.pop();
+
+				}
+			}
+
+			public final TwilightCloakSettings twilightCloak;
+
+			public static class TwilightCloakSettings {
+				public final IntValue maxLightLevel;
+
+				TwilightCloakSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Twilight Cloak settings").push("twilightCloak");
+
+					maxLightLevel = builder
+							.comment("Maximum light level at which the player is still invisible to the mobs")
+							.defineInRange("maxLightLevel", 4, 0, 15);
+
+					builder.pop();
+				}
+			}
+
+			public final VoidTearSettings voidTear;
+
+			public static class VoidTearSettings {
+				public final IntValue itemLimit;
+				public final BooleanValue absorbWhenCreated;
+
+				VoidTearSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Void Tear settings").push("voidTear");
+
+					itemLimit = builder
+							.comment("Number of items the tear can hold of the item type it is set to")
+							.defineInRange("itemLimit", 2000000000, 0, Integer.MAX_VALUE);
+
+					absorbWhenCreated = builder
+							.comment("Whether the void tear starts absorbing immediately after it is set to item type")
+							.define("absorbWhenCreated", true);
+
+					builder.pop();
+				}
+			}
+		}
+
+		public static class BlockSettings {
+			BlockSettings(ForgeConfigSpec.Builder builder) {
+				builder.push("blocks");
+				altar = new AltarSettings(builder);
+				apothecaryCauldron = new ApothecaryCauldronSettings(builder);
+				fertileLilypad = new FertileLilypadSettings(builder);
+				interdictionTorch = new InterdictionTorchSettings(builder);
+				pedestal = new PedestalSettings(builder);
+				builder.pop();
+			}
+
+			public final AltarSettings altar;
+
+			public static class AltarSettings {
+				public final IntValue redstoneCost;
+				public final IntValue timeInMinutes;
+				public final IntValue maximumTimeVarianceInMinutes;
+				public final IntValue outputLightLevelWhileActive;
+
+				AltarSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Altar of Light settings").push("altar");
+
+					redstoneCost = builder
+							.comment("Number of redstone it costs to activate altar")
+							.defineInRange("redstoneCost", 3, 0, 10);
+
+					timeInMinutes = builder
+							.comment("Time in minutes it takes for the altar to create glowstone block")
+							.defineInRange("timeInMinutes", 20, 0, 60);
+
+					maximumTimeVarianceInMinutes = builder
+							.comment("Maximum time variance in minutes. A random part of it gets added to the Time in minutes.")
+							.defineInRange("maximumTimeVarianceInMinutes", 5, 0, 15);
+
+					outputLightLevelWhileActive = builder
+							.comment("Light level that the altar outputs while active")
+							.defineInRange("outputLightLevelWhileActive", 16, 0, 16);
+
+					builder.pop();
+				}
+			}
+
+			public final ApothecaryCauldronSettings apothecaryCauldron;
+
+			public static class ApothecaryCauldronSettings {
+				public final IntValue redstoneLimit;
+				public final IntValue cookTime;
+				public final ConfigValue<List<String>> heatSources;
+				public final IntValue glowstoneLimit;
+
+				ApothecaryCauldronSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Apothecary Cauldron settings").push("apothecaryCauldron");
+
+					redstoneLimit = builder
+							.comment("Limit of redstone that can be used in cauldron to make POTION last longer")
+							.defineInRange("redstoneLimit", 3, 0, 5);
+
+					cookTime = builder
+							.comment("Time it takes to cook POTION")
+							.defineInRange("cookTime", 160, 20, 32000);
+
+					heatSources = builder
+							.comment("List of acceptable heat sources")
+							.define("heatSources", new ArrayList<>());
+
+					glowstoneLimit = builder
+							.comment("Limit of glowstone that can be used in cauldron to make POTION more potent")
+							.defineInRange("glowstoneLimit", 2, 0, 4);
+
+					builder.pop();
+				}
+			}
+
+			public final FertileLilypadSettings fertileLilypad;
+
+			public static class FertileLilypadSettings {
+				public final IntValue secondsBetweenGrowthTicks;
+				public final IntValue tileRange;
+				public final IntValue fullPotencyRange;
+
+				FertileLilypadSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Lilypad of Fertility settings").push("fertileLilypad");
+
+					secondsBetweenGrowthTicks = builder
+							.comment("Interval in seconds at which the lilypad causes growth tick updates")
+							.defineInRange("secondsBetweenGrowthTicks", 10, 1, 150);
+
+					tileRange = builder
+							.comment("Radius in which lilypad causes growh ticks")
+							.defineInRange("tileRange", 4, 1, 15);
+
+					fullPotencyRange = builder
+							.comment("Radius around lilypad where the growth ticks occur the most often")
+							.defineInRange("fullPotencyRange", 1, 1, 15);
+
+					builder.pop();
+				}
+			}
+
+			public final InterdictionTorchSettings interdictionTorch;
+
+			public static class InterdictionTorchSettings {
+				public final IntValue pushRadius;
+				public final BooleanValue canPushProjectiles;
+				public final ConfigValue<List<String>> pushableEntitiesBlacklist;
+				public final ConfigValue<List<String>> pushableProjectilesBlacklist;
+
+				InterdictionTorchSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Interdiction Torch settings").push("interdictionTorch");
+
+					pushRadius = builder
+							.comment("Radius in which the torch can push out mobs")
+							.defineInRange("pushRadius", 5, 1, 15);
+
+					canPushProjectiles = builder
+							.comment("Whether the torch can push projectiles")
+							.define("canPushProjectiles", false);
+
+					pushableEntitiesBlacklist = builder
+							.comment("List of entities that are banned from being pushed by the torch")
+							.define("pushableEntitiesBlacklist", new ArrayList<>());
+
+					pushableProjectilesBlacklist = builder
+							.comment("List of projectiles that are banned from being pushed by the torch")
+							.define("pushableProjectilesBlacklist", new ArrayList<>());
+
+					builder.pop();
+				}
+			}
+
+			public final PedestalSettings pedestal;
+
+			public static class PedestalSettings {
+				public final IntValue meleeWrapperRange;
+				public final IntValue meleeWrapperCooldown;
+				public final IntValue bucketWrapperRange;
+				public final IntValue bucketWrapperCooldown;
+				public final IntValue shearsWrapperRange;
+				public final IntValue shearsWrapperCooldown;
+				public final IntValue redstoneWrapperRange;
+				public final IntValue fishingWrapperSuccessRate;
+				public final IntValue fishingWrapperRetractDelay;
+
+				PedestalSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Pedestal related settings").push("pedestal");
+
+					meleeWrapperRange = builder
+							.comment("Range of the melee weapons in which these will attack when in pedestals")
+							.defineInRange("meleeWrapperRange", 5, 1, 10);
+
+					meleeWrapperCooldown = builder
+							.comment("How long it takes after a melee weapon swing before it can swing again (in ticks)")
+							.defineInRange("meleeWrapperCooldown", 5, 1, 200);
+
+					bucketWrapperRange = builder
+							.comment("Range at which bucket will pickup liquid blocks or milk cows")
+							.defineInRange("bucketWrapperRange", 4, 1, 10);
+
+					bucketWrapperCooldown = builder
+							.comment("How long it takes in between bucket actions (in ticks)")
+							.defineInRange("bucketWrapperCooldown", 40, 1, 200);
+
+					shearsWrapperRange = builder
+							.comment("How long it takes between shearing actions (in ticks)")
+							.defineInRange("shearsWrapperRange", 4, 1, 10);
+
+					shearsWrapperCooldown = builder
+							.comment("Range at which shears will shear sheep or shearable blocks")
+							.defineInRange("shearsWrapperCooldown", 10, 1, 200);
+
+					redstoneWrapperRange = builder
+							.comment("Range at which pedestals will get turned on if either redstone block gets put in or redstone dust and transmitting pedestals is powered")
+							.defineInRange("redstoneWrapperRange", 10, 1, 200);
+
+					fishingWrapperSuccessRate = builder
+							.comment("Success rate of fishing in percent. When unsuccessful it will pull the hook too late to catch a fish.")
+							.defineInRange("fishingWrapperSuccessRate", 80, 0, 100);
+
+					fishingWrapperRetractDelay = builder
+							.comment("Delay in seconds before it would start fishing again after retracting the hook.")
+							.defineInRange("fishingWrapperRetractDelay", 2, 1, 20);
+
+					builder.pop();
+				}
 			}
 		}
 	}
 
-	@Config.Name("chest_loot_enabled")
-	@Config.Comment("Determines whether Reliquary items will be generated in chest loot (mostly mob drops, very rarely some lower level items)")
-	@Config.RequiresMcRestart()
-	public static boolean chestLootEnabled = true;
-	@Config.Name("waila_shift_for_info")
-	@Config.Comment("Whether player has to sneak to see additional info in waila")
-	public static boolean wailaShiftForInfo = false;
-	@Config.Name("mob_drop_crafting_recipes_enabled")
-	@Config.Comment("Determines wheter Reliquary mob drops have crafting recipes")
-	public static boolean dropCraftingRecipesEnabled = false;
-	@Config.Name("mob_drops_enabled")
-	@Config.Comment("Whether mobs drop the Reliquary mob drops. This won't remove mob drop items from registry and replace them with something else, but allows to turn off the additional drops when mobs are killed by player. If this is turned off the mob drop crafting recipes turned on by the other setting can be used.")
-	@Config.RequiresMcRestart
-	public static boolean mobDropsEnabled = true;
+	public static final Common COMMON;
+	public static final ForgeConfigSpec COMMON_SPEC;
 
-	@Config.Name("disable")
-	@Config.Comment("Disable sections of the mod")
-	public static final DisableSettings Disable = new DisableSettings();
-
-	public static class DisableSettings {
-		@Config.Name(Names.Items.ALKAHESTRY_TOME)
-		@Config.Comment("Disable Alkahestry tome and its and recipes")
-		@Config.RequiresMcRestart()
-		public boolean disableAlkahestry = false;
-
-		@Config.Name(Names.Items.HANDGUN)
-		@Config.Comment("Disable the handgun, bullets, magazines, and gun parts")
-		@Config.RequiresMcRestart()
-		public boolean disableHandgun = false;
-
-		@Config.Name(Names.Items.POTION)
-		@Config.Comment("Disable the potion system including mortar, altar, potions, tipped arrows, and powder")
-		@Config.RequiresMcRestart()
-		public boolean disablePotions = false;
-
-		@Config.Name(Names.Blocks.PEDESTAL)
-		@Config.Comment("Disable all pedestals")
-		@Config.RequiresMcRestart()
-		public boolean disablePedestal = false;
-
-		@Config.Name(Names.Blocks.PEDESTAL_PASSIVE)
-		@Config.Comment("Disable all display-only pedestals")
-		@Config.RequiresMcRestart()
-		public boolean disablePedestalPassive = false;
-
+	static {
+		final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
+		COMMON_SPEC = specPair.getRight();
+		COMMON = specPair.getLeft();
 	}
-
-	@Config.Name("potions")
-	@Config.Comment("Potions related settings")
-	public static final PotionSettings Potions = new PotionSettings();
-
-	public static class PotionSettings {
-		@Config.Name("potion_map")
-		@Config.Comment("Map of potion ingredients and their effects")
-		public String[] potionMap = PotionMap.getDefaultConfigPotionMap();
-		@Config.Name("max_effect_count")
-		@Config.Comment("Maximum number of effects a potion can have to appear in creative tabs / JEI")
-		@Config.RangeInt(min = 1, max = 6)
-		public int maxEffectCount = 1;
-		@Config.Name("three_ingredients")
-		@Config.Comment("Whether potions that are made out of three base ingredients appear in creative tabs / JEI")
-		public boolean threeIngredients = false;
-		@Config.Name("different_durations")
-		@Config.Comment("Whether potions augmented with Redstone and Glowstone appear in creative tabs / JEI")
-		public boolean differentDurations = false;
-		@Config.Name("redstone_and_glowstone")
-		@Config.Comment("Whether potions with the same effect combination, but different duration appear in creative tabs / JEI")
-		public boolean redstoneAndGlowstone = false;
-	}
-
-	@Config.Name("hud_positions")
-	@Config.Comment("Position of mode and/or item display on the screen - used by some of the tools and weapons.")
-	public static final HudPos HudPositions = new HudPos();
-
-	public static class HudPos {
-		@Config.Name(Names.Items.SOJOURNER_STAFF)
-		@Config.Comment("Position of Sojouner Staff HUD")
-		public HUDPosition sojournerStaff = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.HANDGUN)
-		@Config.Comment("Position of Handgun HUD")
-		public HUDPosition handgun = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.ALKAHESTRY_TOME)
-		@Config.Comment("Position of Alkahestry Tome HUD")
-		public HUDPosition alkahestryTome = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.DESTRUCTION_CATALYST)
-		@Config.Comment("Position of Destruction Catalyst HUD")
-		public HUDPosition destructionCatalyst = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.ENDER_STAFF)
-		@Config.Comment("Position of Ender Staff HUD")
-		public HUDPosition enderStaff = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.ICE_MAGUS_ROD)
-		@Config.Comment("Position of Ice Magus Rod HUD")
-		public HUDPosition iceMagusRod = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.GLACIAL_STAFF)
-		@Config.Comment("Position of Glacial Staff HUD")
-		public HUDPosition glacialStaff = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.VOID_TEAR)
-		@Config.Comment("Position of Void Tear HUD")
-		public HUDPosition voidTear = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.MIDAS_TOUCHSTONE)
-		@Config.Comment("Position of Midas Touchstone HUD")
-		public HUDPosition midasTouchstone = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.HARVEST_ROD)
-		@Config.Comment("Position of Harvest Rod HUD")
-		public HUDPosition harvestRod = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.INFERNAL_CHALICE)
-		@Config.Comment("Position of Infernal Chalice HUD")
-		public HUDPosition infernalChalice = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.HERO_MEDALLION)
-		@Config.Comment("Position of Hero Medallion HUD")
-		public HUDPosition heroMedallion = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.PYROMANCER_STAFF)
-		@Config.Comment("Position of Pyromancer Staff HUD")
-		public HUDPosition pyromancerStaff = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.RENDING_GALE)
-		@Config.Comment("Position of Rending Gale HUD")
-		public HUDPosition rendingGale = HUDPosition.BOTTOM_RIGHT;
-		@Config.Name(Names.Items.MOB_CHARM)
-		@Config.Comment("Position of Mob Charm HUD")
-		public HUDPosition mobCharm = HUDPosition.RIGHT;
-	}
-
-	@Config.Name("item_settings")
-	public static final ItemSettings Items = new ItemSettings();
-
-	public static class ItemSettings {
-		@Config.Name("alkahestry_tome")
-		@Config.Comment("Alkahestry Tome settings")
-		public final AlkahestryTomeSettings AlkahestryTome = new AlkahestryTomeSettings();
-
-		public class AlkahestryTomeSettings {
-			@Config.Name("charge_limit")
-			@Config.Comment("Charge limit of the tome")
-			@Config.RangeInt(min = 0, max = ITEM_CAP)
-			public int chargeLimit = 1000;
-		}
-
-		@Config.Name("angelic_feather")
-		@Config.Comment("Angelic Feather settings")
-		public final AngelicFeatherSettings AngelicFeather = new AngelicFeatherSettings();
-
-		public class AngelicFeatherSettings {
-			@Config.Name("hunger_cost_percent")
-			@Config.Comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
-			@Config.RangeInt(min = 0, max = 100)
-			public int hungerCostPercent = 50;
-			@Config.Name("leaping_potency")
-			@Config.Comment("Potency of the leaping effect")
-			@Config.RangeInt(min = 0, max = 5)
-			public int leapingPotency = 1;
-		}
-
-		@Config.Name("angelheart_vial")
-		@Config.Comment("Angelheart Vial settings")
-		public final AngelHeartVialSettings AngelHeartVial = new AngelHeartVialSettings();
-
-		public class AngelHeartVialSettings {
-			@Config.Name("heal_percentage_of_max_life")
-			@Config.Comment("Percent of life that gets healed when the player would die")
-			@Config.RangeInt(min = 0, max = 100)
-			public int healPercentageOfMaxLife = 25;
-			@Config.Name("remove_negative_status")
-			@Config.Comment("Whether the player gets negative statuses removed")
-			public boolean removeNegativeStatus = true;
-		}
-
-		@Config.Name("destruction_catalyst")
-		@Config.Comment("Destruction Catalyst settings")
-		public final DestructionCatalystSettings DestructionCatalyst = new DestructionCatalystSettings();
-
-		public class DestructionCatalystSettings {
-			@Config.Name("mundane_blocks")
-			@Config.Comment("List of mundane blocks the catalyst will break")
-			public String[] mundaneBlocks = new String[] {"minecraft:dirt",
-					"minecraft:grass",
-					"minecraft:gravel",
-					"minecraft:cobblestone",
-					"minecraft:stone",
-					"minecraft:sand",
-					"minecraft:sandstone",
-					"minecraft:snow",
-					"minecraft:soul_sand",
-					"minecraft:netherrack",
-					"minecraft:end_stone"};
-			@Config.Name("gunpowder_cost")
-			@Config.Comment("Number of gunpowder it costs per catalyst use")
-			@Config.RangeInt(min = 0, max = 10)
-			public int gunpowderCost = 3;
-			@Config.Name("gunpowder_worth")
-			@Config.Comment("Number of gunpowder that gets added to catalyst per one that's consumed from players inventory")
-			@Config.RangeInt(min = 0, max = 3)
-			public int gunpowderWorth = 1;
-			@Config.Name("gunpowder_limit")
-			@Config.Comment("Number of gunpowder that can be stored in destruction catalyst")
-			@Config.RangeInt(min = 0, max = ITEM_CAP)
-			public int gunpowderLimit = 250;
-			@Config.Name("explosion_radius")
-			@Config.Comment("Radius of the explosion")
-			@Config.RangeInt(min = 1, max = 5)
-			public int explosionRadius = 1;
-			@Config.Name("centered_explosion")
-			@Config.Comment("Whether the explosion is centered on the block that gets clicked")
-			public boolean centeredExplosion = false;
-			@Config.Name("perfect_cube")
-			@Config.Comment("Whether the explosion makes a perfect cube hole")
-			public boolean perfectCube = true;
-		}
-
-		@Config.Name("emperor_chalice")
-		@Config.Comment("Emperor Chalice settings")
-		public final EmperorChaliceSettings EmperorChalice = new EmperorChaliceSettings();
-
-		public class EmperorChaliceSettings {
-			@Config.Name("hunger_satiation_multiplier")
-			@Config.Comment("How much saturation is added in addition to filling the hunger")
-			@Config.RangeInt(min = 0, max = 10)
-			public int hungerSatiationMultiplier = 4;
-		}
-
-		@Config.Name("ender_staff")
-		@Config.Comment("Ender Staff settings")
-		public final EnderStaffSettings EnderStaff = new EnderStaffSettings();
-
-		public class EnderStaffSettings {
-			@Config.Name("ender_pearl_cast_cost")
-			@Config.Comment("Number of ender pearls per use")
-			@Config.RangeInt(min = 0, max = 3)
-			public int enderPearlCastCost = 1;
-			@Config.Name("ender_pearl_node_warp_cost")
-			@Config.Comment("Number of ender pearls per teleportation to the wraith node")
-			@Config.RangeInt(min = 0, max = 3)
-			public int enderPearlNodeWarpCost = 1;
-			@Config.Name("ender_pearl_worth")
-			@Config.Comment("Number of ender pearls that get added to the staff per one that's consumed from players inventory")
-			@Config.RangeInt(min = 0, max = 10)
-			public int enderPearlWorth = 1;
-			@Config.Name("ender_pearl_limit")
-			@Config.Comment("Number of ender pearls that the ender staff can store")
-			@Config.RangeInt(min = 0, max = ITEM_CAP)
-			public int enderPearlLimit = 250;
-			@Config.Name("node_warp_cast_time")
-			@Config.Comment("Time it takes to teleport to the wraith node")
-			@Config.RangeInt(min = 10, max = 120)
-			public int nodeWarpCastTime = 60;
-		}
-
-		@Config.Name("fortune_coin")
-		@Config.Comment("Fortune Coin settings")
-		public final FortuneCoinSettings FortuneCoin = new FortuneCoinSettings();
-
-		public class FortuneCoinSettings {
-			@Config.Name("disable_audio")
-			@Config.Comment("Disables the sound of fortune coin teleporting stuff")
-			public boolean disableAudio = false;
-			@Config.Name("standard_pull_distance")
-			@Config.Comment("The distance that it pulls from when activated")
-			@Config.RangeInt(min = 3, max = 10)
-			public int standardPullDistance = 5;
-			@Config.Name("long_range_pull_distance")
-			@Config.Comment("The distance that it pulls from when right click is held")
-			@Config.RangeInt(min = 9, max = 30)
-			public int longRangePullDistance = 15;
-		}
-
-		@Config.Name("glacial_staff")
-		@Config.Comment("Glacial Staff settings")
-		public final GlacialStaffSettings GlacialStaff = new GlacialStaffSettings();
-
-		public class GlacialStaffSettings {
-			@Config.Name("snowball_limit")
-			@Config.Comment("Number of snowballs the staff can hold")
-			@Config.RangeInt(min = 0, max = ITEM_CAP)
-			public int snowballLimit = 250;
-			@Config.Name("snowball_cost")
-			@Config.Comment("Number of snowballs it costs when the staff is used")
-			@Config.RangeInt(min = 0, max = 3)
-			public int snowballCost = 1;
-			@Config.Name("snowball_worth")
-			@Config.Comment("Number of snowballs that get added to the staff per one that's consumed from player's inventory")
-			@Config.RangeInt(min = 0, max = 3)
-			public int snowballWorth = 1;
-			@Config.Name("snowball_damage")
-			@Config.Comment("The damage that snowballs cause")
-			@Config.RangeInt(min = 0, max = 6)
-			public int snowballDamage = 3;
-			@Config.Name("snowball_damage_bonus_fire_immune")
-			@Config.Comment("The damage bonus against entities that are immune to fire")
-			@Config.RangeInt(min = 0, max = 6)
-			public int snowballDamageBonusFireImmune = 3;
-			@Config.Name("snowball_damage_bonus_blaze")
-			@Config.Comment("The damage bonus against blaze")
-			@Config.RangeInt(min = 0, max = 12)
-			public int snowballDamageBonusBlaze = 6;
-		}
-
-		@Config.Name("harvest_rod")
-		@Config.Comment("Harvest Rod settings")
-		public final HarvestRodSettings HarvestRod = new HarvestRodSettings();
-
-		public class HarvestRodSettings {
-			@Config.Name("bonemeal_limit")
-			@Config.Comment("Number of bonemeal the rod can hold")
-			@Config.RangeInt(min = 0, max = ITEM_CAP)
-			public int boneMealLimit = 250;
-			@Config.Name("bonemeal_cost")
-			@Config.Comment("Number of bonemeal consumed per use")
-			@Config.RangeInt(min = 0, max = 3)
-			public int boneMealCost = 1;
-			@Config.Name("bonemeal_worth")
-			@Config.Comment("Number of bonemeal that gets added to the rod per one that's consumed from player's inventory")
-			@Config.RangeInt(min = 0, max = 3)
-			public int boneMealWorth = 1;
-			@Config.Name("bonemeal_luck_percent_chance")
-			@Config.Comment("Percent chance that a bonemeal will get applied during a luck roll")
-			@Config.RangeInt(min = 1, max = 100)
-			public int boneMealLuckPercentChance = 33;
-			@Config.Name("bonemeal_luck_rolls")
-			@Config.Comment("Number of times that a rod may apply additional luck based bonemeal")
-			@Config.RangeInt(min = 0, max = 7)
-			public int boneMealLuckRolls = 2;
-			@Config.Name("aoe_radius")
-			@Config.Comment("Radius in which harvest rod breaks crops, bonemeals/plants/hoes blocks")
-			@Config.RangeInt(min = 0, max = 5)
-			public int AOERadius = 2;
-			@Config.Name("aoe_cooldown")
-			@Config.Comment("Ticks in between bonemealing/planting/hoeing blocks when player is using one of these AOE actions")
-			@Config.RangeInt(min = 1, max = 20)
-			public int AOECooldown = 3;
-			@Config.Name("max_capacity_per_plantable")
-			@Config.Comment("Maximum number of units harvest rod can hold per plantable item")
-			@Config.RangeInt(min = 0, max = ITEM_CAP)
-			public int maxCapacityPerPlantable = 250;
-			@Config.Name("pedestal_range")
-			@Config.Comment("Range at which harvest rod will automatically hoe/plant/bonemeal/break crops around pedestal")
-			@Config.RangeInt(min = 1, max = 20)
-			public int pedestalRange = 4;
-			@Config.Name("pedestal_cooldown")
-			@Config.Comment("Ticks in between harvest rod actions when in pedestal")
-			@Config.RangeInt(min = 1, max = 20)
-			public byte pedestalCooldown = 5;
-		}
-
-		@Config.Name("hero_medallion")
-		@Config.Comment("Hero Medallion settings")
-		public final HeroMedallionSettings HeroMedallion = new HeroMedallionSettings();
-
-		public class HeroMedallionSettings {
-			@Config.Name("experience_level_maximum")
-			@Config.Comment("A player's experience level at which pulling from the medallion to player will stop")
-			@Config.RangeInt(min = 0, max = 1000)
-			public int experienceLevelMaximum = 200;
-			@Config.Name("experience_level_minimum")
-			@Config.Comment("A player's experience level at which the medallion will stop pulling from the player")
-			@Config.RangeInt(min = 0, max = 30)
-			public int experienceLevelMinimum = 0;
-			@Config.Name("experience_limit")
-			@Config.Comment("Experience level that the medallion can hold")
-			@Config.RangeInt(min = 0, max = CLEAN_INT_MAX)
-			public int experienceLimit = CLEAN_INT_MAX;
-			@Config.Name("experience_drop")
-			@Config.Comment("How much experience gets dropped on ground when hero's medallion is right clicked on it (9 is the first level of player xp)")
-			@Config.RangeInt(min = 1, max = 100)
-			public int experienceDrop = 9;
-			@Config.Name("pedestal_cooldown")
-			@Config.Comment("Cooldown between hero medallion tries to fix mending items in nearby pedestals")
-			@Config.RangeInt(min = 1, max = 100)
-			public int pedestalCoolDown = 20;
-			@Config.Name("pedestal_range")
-			@Config.Comment("Range in which pedestals are checked for items with mending enchant that need fixing")
-			@Config.RangeInt(min = 1, max = 20)
-			public int pedestalRange = 5;
-			@Config.Name("pedestal_repair_step_xp")
-			@Config.Comment("Maximum amount of xp that is used each time medallion repairs items")
-			@Config.RangeInt(min = 1, max = 20)
-			public int pedestalRepairStepXP = 5;
-		}
-
-		@Config.Name("ice_magus_rod")
-		@Config.Comment("Ice Magus Rod settings")
-		public final IceMagusRodSettings IceMagusRod = new IceMagusRodSettings();
-
-		public class IceMagusRodSettings {
-			@Config.Name("snowball_limit")
-			@Config.Comment("Number of snowballs the rod can hold")
-			@Config.RangeInt(min = 0, max = ITEM_CAP)
-			public int snowballLimit = 250;
-			@Config.Name("snowball_cost")
-			@Config.Comment("Number of snowballs it costs when the rod is used")
-			@Config.RangeInt(min = 0, max = 3)
-			public int snowballCost = 1;
-			@Config.Name("snowball_worth")
-			@Config.Comment("Number of snowballs that get added to the rod per one that's consumed from player's inventory")
-			@Config.RangeInt(min = 0, max = 3)
-			public int snowballWorth = 1;
-			@Config.Name("snowball_damage")
-			@Config.Comment("The damage that snowballs cause")
-			@Config.RangeInt(min = 0, max = 4)
-			public int snowballDamage = 2;
-			@Config.Name("snowball_damage_bonus_fire_immune")
-			@Config.Comment("Damage bonus against fire immune mobs")
-			@Config.RangeInt(min = 0, max = 4)
-			public int snowballDamageBonusFireImmune = 2;
-			@Config.Name("snowball_damage_bonus_blaze")
-			@Config.Comment("Damage bonus against blaze")
-			@Config.RangeInt(min = 0, max = 8)
-			public int snowballDamageBonusBlaze = 4;
-		}
-
-		@Config.Name("infernal_chalice")
-		@Config.Comment("Infernal Chalice settings")
-		public final InfernalChaliceSettings InfernalChalice = new InfernalChaliceSettings();
-
-		public class InfernalChaliceSettings {
-			@Config.Name("hunger_cost_percent")
-			@Config.Comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
-			@Config.RangeInt(min = 0, max = 10)
-			public int hungerCostPercent = 1;
-			@Config.Name("fluid_limit")
-			@Config.Comment("Millibuckets of lava that the chalice can hold")
-			@Config.RangeInt(min = 0, max = CLEAN_INT_MAX)
-			public int fluidLimit = 500000;
-		}
-
-		@Config.Name("infernal_claws")
-		@Config.Comment("Infernal Chalice settings")
-		public final InfernalClawsSettings InfernalClaws = new InfernalClawsSettings();
-
-		public class InfernalClawsSettings {
-			@Config.Name("hunger_cost_percent")
-			@Config.Comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
-			@Config.RangeInt(min = 0, max = 30)
-			public int hungerCostPercent = 5;
-		}
-
-		@Config.Name("infernal_tear")
-		@Config.Comment("Infernal Tear settings")
-		public final InfernalTearSettings InfernalTear = new InfernalTearSettings();
-
-		public class InfernalTearSettings {
-			@Config.Name("absorb_when_created")
-			@Config.Comment("Whether the infernal tear starts absorbing immediately after it is set to item type")
-			public boolean absorbWhenCreated = false;
-		}
-
-		@Config.Name("kraken_shell")
-		@Config.Comment("Kraken Shell settings")
-		public final KrakenShellSettings KrakenShell = new KrakenShellSettings();
-
-		public class KrakenShellSettings {
-			@Config.Name("hunger_cost_percent")
-			@Config.Comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
-			@Config.RangeInt(min = 0, max = 50)
-			public int hungerCostPercent = 25;
-		}
-
-		@Config.Name("lantern_of_paranoia")
-		@Config.Comment("Lantern of Paranoia settings")
-		public final LanternOfParanoiaSettings LanternOfParanoia = new LanternOfParanoiaSettings();
-
-		public class LanternOfParanoiaSettings {
-			@Config.Name("min_light_level")
-			@Config.Comment("Minimum light level below which the lantern will place torches")
-			@Config.RangeInt(min = 0, max = 15)
-			public int minLightLevel = 8;
-			@Config.Name("placement_scan_radius")
-			@Config.Comment("Radius in which the lantern checks for light levels and places torches")
-			@Config.RangeInt(min = 1, max = 15)
-			public int placementScanRadius = 6;
-		}
-
-		@Config.Name("midas_touchstone")
-		@Config.Comment("Midas Touchstone settings")
-		public final MidasTouchstoneSettings MidasTouchstone = new MidasTouchstoneSettings();
-
-		public class MidasTouchstoneSettings {
-			@Config.Name("gold_items")
-			@Config.Comment("Gold items that can be repaired by the touchstone")
-			public String[] goldItems = new String[0];
-			@Config.Name("glowstone_cost")
-			@Config.Comment("Number of glowstone that the repair costs")
-			@Config.RangeInt(min = 0, max = 3)
-			public int glowstoneCost = 1;
-			@Config.Name("glowstone_worth")
-			@Config.Comment("Number of glowstone that gets added to the touchstone per one in player's inventory")
-			@Config.RangeInt(min = 0, max = 12)
-			public int glowstoneWorth = 4;
-			@Config.Name("glowstone_limit")
-			@Config.Comment("Number of glowstone the touchstone can hold")
-			@Config.RangeInt(min = 0, max = ITEM_CAP)
-			public int glowstoneLimit = 250;
-		}
-
-		@Config.Name("mob_charm")
-		@Config.Comment("Mob Charm settings")
-		public final MobCharmSettings MobCharm = new MobCharmSettings();
-
-		public class MobCharmSettings {
-			@Config.Name("durability")
-			@Config.Comment("Total durability of Mob Charm")
-			@Config.RangeInt(min = 20, max = 1000)
-			public int durability = 80;
-			@Config.Name("damage_per_kill")
-			@Config.Comment("Damage that Mob Charm takes when player kills mob it protects them from")
-			@Config.RangeInt(min = 0, max = 40)
-			public int damagePerKill = 1;
-			@Config.Name("drop_durability_repair")
-			@Config.Comment("Sets how much durability of Mob Charm gets repaired per special drop")
-			@Config.RangeInt(min = 1, max = 200)
-			public int dropDurabilityRepair = 20;
-			@Config.Name("max_charms_to_display")
-			@Config.Comment("Maximum charms that will get displayed in HUD")
-			@Config.RangeInt(min = 1, max = 20)
-			public int maxCharmsToDisplay = 6;
-			@Config.Name("pedestal_range")
-			@Config.Comment("Range in which mob charm or belt in pedestal will keep monsters from attacking players")
-			@Config.RangeInt(min = 10, max = 100)
-			public int pedestalRange = 21;
-			@Config.Name("keep_almost_destroyed_displayed")
-			@Config.Comment("Determines if almost destroyed charms stay displayed in the hud")
-			public boolean keepAlmostDestroyedDisplayed = true;
-		}
-
-		@Config.Name("phoenix_down")
-		@Config.Comment("Phoenix Down settings")
-		public final PhoenixDownSettings PhoenixDown = new PhoenixDownSettings();
-
-		public class PhoenixDownSettings {
-			@Config.Name("hunger_cost_percent")
-			@Config.Comment("Percent hunger used to heal player per 1 damage that would be taken otherwise")
-			@Config.RangeInt(min = 0, max = 50)
-			public int hungerCostPercent = 25;
-			@Config.Name("leaping_potency")
-			@Config.Comment("Potency of the leaping effect")
-			@Config.RangeInt(min = 0, max = 5)
-			public int leapingPotency = 1;
-			@Config.Name("heal_percentage_of_max_life")
-			@Config.Comment("Percent of life that gets healed when the player would die")
-			@Config.RangeInt(min = 0, max = 100)
-			public int healPercentageOfMaxLife = 100;
-			@Config.Name("remove_negative_status")
-			@Config.Comment("Whether the player gets negative statuses removed when they were saved by Phoenix Down")
-			public boolean removeNegativeStatus = true;
-			@Config.Name("give_temporary_damage_resistance")
-			@Config.Comment("Whether to give temporary damage resistance when the player would die")
-			public boolean giveTemporaryDamageResistance = true;
-			@Config.Name("give_temporary_regeneration")
-			@Config.Comment("Whether to give temporary regeneration when the player would die")
-			public boolean giveTemporaryRegeneration = true;
-			@Config.Name("give_temporary_fire_resistance_if_fire_damage_killed_you")
-			@Config.Comment("Whether to give temporary fire resistance when the player would die. Applies only when the player is being hurt by fire damage.")
-			public boolean giveTemporaryFireResistanceIfFireDamageKilledYou = true;
-			@Config.Name("give_temporary_water_breathing_if_drowning_killed_you")
-			@Config.Comment("Whether to give temporary damage resistance when the player would die. Applies only when the player is drowning.")
-			public boolean giveTemporaryWaterBreathingIfDrowningKilledYou = true;
-		}
-
-		@Config.Name("pyromancer_staff")
-		@Config.Comment("Pyromancer Staff settings")
-		public final PyromancerStaffSettings PyromancerStaff = new PyromancerStaffSettings();
-
-		public class PyromancerStaffSettings {
-			@Config.Name("fire_charge_limit")
-			@Config.Comment("Number of fire charges the staff can hold")
-			@Config.RangeInt(min = 0, max = ITEM_CAP)
-			public int fireChargeLimit = 250;
-			@Config.Name("fire_charge_cost")
-			@Config.Comment("Number of fire charges used when the staff is fired")
-			@Config.RangeInt(min = 0, max = 3)
-			public int fireChargeCost = 1;
-			@Config.Name("fire_charge_worth")
-			@Config.Comment("Number of fire charges that get added to the staff per one that's consumed from player's inventory")
-			@Config.RangeInt(min = 0, max = 3)
-			public int fireChargeWorth = 1;
-			@Config.Name("ghast_absorb_worth")
-			@Config.Comment("Number of fire charges added to the staff per one that was shot by ghast and gets absorbed by the staff")
-			@Config.RangeInt(min = 0, max = 3)
-			public int ghastAbsorbWorth = 1;
-			@Config.Name("blaze_powder_limit")
-			@Config.Comment("Number of blaze powder the staff can hold")
-			@Config.RangeInt(min = 0, max = ITEM_CAP)
-			public int blazePowderLimit = 250;
-			@Config.Name("blaze_powder_cost")
-			@Config.Comment("Number of blaze powder used when staff is fired")
-			@Config.RangeInt(min = 0, max = 3)
-			public int blazePowderCost = 1;
-			@Config.Name("blaze_powder_worth")
-			@Config.Comment("Number of blaze powder that gets added to the staff per one that's consumed from player's inventory")
-			@Config.RangeInt(min = 0, max = 3)
-			public int blazePowderWorth = 1;
-			@Config.Name("blaze_absorb_worth")
-			@Config.Comment("Number of blaze powder added to the staff per one fireball that was shot by blaze and gets absorbed by the staff")
-			@Config.RangeInt(min = 0, max = 3)
-			public int blazeAbsorbWorth = 1;
-		}
-
-		@Config.Name("rending_gale")
-		@Config.Comment("Rending Gale settings")
-		public final RendingGaleSettings RendingGale = new RendingGaleSettings();
-
-		public class RendingGaleSettings {
-			@Config.Name("charge_limit")
-			@Config.Comment("Number of feathers the rending gale can hold")
-			@Config.RangeInt(min = 0, max = CLEAN_INT_MAX)
-			public int chargeLimit = CLEAN_SHORT_MAX;
-			@Config.Name("cast_charge_cost")
-			@Config.Comment("Number of feathers used when the rending gale is cast in flight mode")
-			@Config.RangeInt(min = 0, max = 3)
-			public int castChargeCost = 1;
-			@Config.Name("bolt_charge_cost")
-			@Config.Comment("Number of feathers used to cast a lightning bolt")
-			@Config.RangeInt(min = 0, max = 250)
-			public int boltChargeCost = 100;
-			@Config.Name("charge_feather_worth")
-			@Config.Comment("Number of feathers that get added to the rending gale per one that's consumed from player's inventory")
-			@Config.RangeInt(min = 1, max = 250)
-			public int chargeFeatherWorth = 100;
-			@Config.Name("block_target_range")
-			@Config.Comment("How far a lightning block can be cast")
-			@Config.RangeInt(min = 5, max = 15)
-			public int blockTargetRange = 12;
-			@Config.Name("push_pull_radius")
-			@Config.Comment("Radius in which entities can be pushed/pulled")
-			@Config.RangeInt(min = 1, max = 20)
-			public int pushPullRadius = 10;
-			@Config.Name("can_push_projectiles")
-			@Config.Comment("Whether the rending gale can push projectiles")
-			public boolean canPushProjectiles = false;
-			@Config.Name("pedestal_flight_range")
-			@Config.Comment("Range from pedestal at which players will get buffed with flight")
-			@Config.RangeInt(min = 10, max = 100)
-			public int pedestalFlightRange = 30;
-			@Config.Name("pedestal_cost_per_second")
-			@Config.Comment("Cost per second of buffing players with flight")
-			@Config.RangeInt(min = 1, max = 20)
-			public int pedestalCostPerSecond = 5;
-			@Config.Name("pushable_entities_blacklist")
-			@Config.Comment("List of entities that are banned from being pushed by the Rending Gale")
-			public String[] pushableEntitiesBlacklist = new String[0];
-			@Config.Name("pushable_projectiles_blacklist")
-			@Config.Comment("List of projectiles that are banned from being pushed by the Rending Gale")
-			public String[] pushableProjectilesBlacklist = new String[0];
-		}
-
-		@Config.Name("rod_of_lyssa")
-		@Config.Comment("Rod of Lyssa settings")
-		public final RodOfLyssaSettings RodOfLyssa = new RodOfLyssaSettings();
-
-		public class RodOfLyssaSettings {
-			@Config.Name("use_leveled_failure_rate")
-			@Config.Comment("Whether level influences stealing failure rate of the rod")
-			public boolean useLeveledFailureRate = true;
-			@Config.Name("level_cap_for_leveled_formula")
-			@Config.Comment("The experience level cap after which the failure rate is at a minimum and doesn't get better")
-			@Config.RangeInt(min = 1, max = 900)
-			public int levelCapForLeveledFormula = 100;
-			@Config.Name("flat_steal_failure_percent_rate")
-			@Config.Comment("The flat failure rate in case failure rate isn't influenced by player's level")
-			@Config.RangeInt(min = 0, max = 100)
-			public int flatStealFailurePercentRate = 10;
-			@Config.Name("steal_from_vacant_slots")
-			@Config.Comment("If set to false it goes through additional 4 accessible slots and looks for items in case the one selected randomly was empty")
-			public boolean stealFromVacantSlots = true;
-			@Config.Name("fail_steal_from_vacant_slots")
-			@Config.Comment("Whether stealing from an empty slot triggers failure even if otherwise it would be successful")
-			public boolean failStealFromVacantSlots = false;
-			@Config.Name("anger_on_steal_failure")
-			@Config.Comment("Whether entities get angry at player if stealing fails")
-			public boolean angerOnStealFailure = true;
-
-			@Config.Name("steal_from_players")
-			@Config.Comment("Allows switching stealing from player on and off")
-			public boolean stealFromPlayers = true;
-		}
-
-		@Config.Name("seeker_shot")
-		@Config.Comment("Seeker Shot settings")
-		public final SeekerShotSettings SeekerShot = new SeekerShotSettings();
-
-		public class SeekerShotSettings {
-			@Config.Name("huntable_entities_blacklist")
-			@Config.Comment("Entities that are banned from being tracked by seeker shot")
-			public String[] huntableEntitiesBlacklist = new String[0];
-		}
-
-		@Config.Name("sojourner_staff")
-		@Config.Comment("Sojourner Staff settings")
-		public final SojournerStaffSettings SojournerStaff = new SojournerStaffSettings();
-
-		public class SojournerStaffSettings {
-			@Config.Name("torches")
-			@Config.Comment("List of torches that are supported by the staff in addition to the default minecraft torch")
-			public String[] torches = new String[] {"minecraft:torch"};
-			@Config.Name("max_capacity_per_item_type")
-			@Config.Comment("Number of items the staff can store per item type")
-			@Config.RangeInt(min = 1, max = ITEM_CAP)
-			public int maxCapacityPerItemType = 1500;
-			@Config.Name("max_range")
-			@Config.Comment("Maximum range at which torches can be placed")
-			@Config.RangeInt(min = 1, max = 30)
-			public int maxRange = 30;
-			@Config.Name("tile_per_cost_multiplier")
-			@Config.Comment("Distance after which there is an additional cost for torch placement. The additional cost is the number of times this distance fits in the distance at which the torch is being placed.")
-			@Config.RangeInt(min = 6, max = 30)
-			public int tilePerCostMultiplier = 6;
-		}
-
-		@Config.Name("twilight_cloak")
-		@Config.Comment("Twilight Cloak settings")
-		public final TwilightCloakSettings TwilightCloak = new TwilightCloakSettings();
-
-		public class TwilightCloakSettings {
-			@Config.Name("max_light_level")
-			@Config.Comment("Maximum light level at which the player is still invisible to the mobs")
-			@Config.RangeInt(min = 0, max = 15)
-			public int maxLightLevel = 4;
-		}
-
-		@Config.Name("void_tear")
-		@Config.Comment("Void Tear settings")
-		public final VoidTearSettings VoidTear = new VoidTearSettings();
-
-		public class VoidTearSettings {
-			@Config.Name("item_limit")
-			@Config.Comment("Number of items the tear can hold of the item type it is set to")
-			@Config.RangeInt(min = 0, max = CLEAN_INT_MAX)
-			public int itemLimit = 2000000000;
-			@Config.Name("absorb_when_created")
-			@Config.Comment("Whether the void tear starts absorbing immediately after it is set to item type")
-			public boolean absorbWhenCreated = true;
-		}
-	}
-
-	@Config.Name("block_settings")
-	public static final BlockSettings Blocks = new BlockSettings();
-
-	public static class BlockSettings {
-
-		@Config.Name("altar")
-		@Config.Comment("Altar of Light settings")
-		public final AltarSettings Altar = new AltarSettings();
-
-		public class AltarSettings {
-			@Config.Name("redstone_cost")
-			@Config.Comment("Number of redstone it costs to activate altar")
-			@Config.RangeInt(min = 0, max = 10)
-			public int redstoneCost = 3;
-			@Config.Name("time_in_minutes")
-			@Config.Comment("Time in minutes it takes for the altar to create glowstone block")
-			@Config.RangeInt(min = 0, max = 60)
-			public int timeInMinutes = 20;
-			@Config.Name("maximum_time_variance_in_minutes")
-			@Config.Comment("Maximum time variance in minutes. A random part of it gets added to the Time in minutes.")
-			@Config.RangeInt(min = 0, max = 15)
-			public int maximumTimeVarianceInMinutes = 5;
-			@Config.Name("output_light_level_while_active")
-			@Config.Comment("Light level that the altar outputs while active")
-			@Config.RangeInt(min = 16, max = 0)
-			public int outputLightLevelWhileActive = 16;
-		}
-
-		@Config.Name("apothecary_cauldron")
-		@Config.Comment("Apothecary Cauldron settings")
-		public final ApothecaryCauldronSettings ApothecaryCauldron = new ApothecaryCauldronSettings();
-
-		public class ApothecaryCauldronSettings {
-			@Config.Name("redstone_limit")
-			@Config.Comment("Limit of redstone that can be used in cauldron to make potion last longer")
-			@Config.RangeInt(min = 0, max = 5)
-			public int redstoneLimit = 3;
-
-			@Config.Name("cook_time")
-			@Config.Comment("Time it takes to cook potion")
-			@Config.RangeInt(min = 20, max = 32000)
-			public int cookTime = 160;
-			@Config.Name("heat_sources")
-			@Config.Comment("List of acceptable heat sources")
-			public String[] heatSources = new String[] {};
-			@Config.Name("glowstone_limit")
-			@Config.Comment("Limit of glowstone that can be used in cauldron to make potion more potent")
-			@Config.RangeInt(min = 0, max = 4)
-			public int glowstoneLimit = 2;
-		}
-
-		@Config.Name("fertile_lilypad")
-		@Config.Comment("Lilypad of Fertility settings")
-		public final FertileLilypadSettings FertileLilypad = new FertileLilypadSettings();
-
-		public class FertileLilypadSettings {
-			@Config.Name("seconds_between_growth_ticks")
-			@Config.Comment("Interval in seconds at which the lilypad causes growth tick updates")
-			@Config.RangeInt(min = 1, max = 150)
-			public int secondsBetweenGrowthTicks = 10;
-			@Config.Name("tile_range")
-			@Config.Comment("Radius in which lilypad causes growh ticks")
-			@Config.RangeInt(min = 1, max = 15)
-			public int tileRange = 4;
-			@Config.Name("full_potency_range")
-			@Config.Comment("Radius around lilypad where the growth ticks occur the most often")
-			@Config.RangeInt(min = 1, max = 15)
-			public int fullPotencyRange = 1;
-		}
-
-		@Config.Name("interdiction_torch")
-		@Config.Comment("Interdiction Torch settings")
-		public final InterdictionTorchSettings InterdictionTorch = new InterdictionTorchSettings();
-
-		public class InterdictionTorchSettings {
-			@Config.Name("push_radius")
-			@Config.Comment("Radius in which the torch can push out mobs")
-			@Config.RangeInt(min = 1, max = 15)
-			public int pushRadius = 5;
-			@Config.Name("can_push_projectiles")
-			@Config.Comment("Whether the torch can push projectiles")
-			public boolean canPushProjectiles = false;
-			@Config.Name("pushable_entities_blacklist")
-			@Config.Comment("List of entities that are banned from being pushed by the torch")
-			public String[] pushableEntitiesBlacklist = new String[0];
-			@Config.Name("pushable_projectiles_blacklist")
-			@Config.Comment("List of projectiles that are banned from being pushed by the torch")
-			public String[] pushableProjectilesBlacklist = new String[0];
-		}
-
-		@Config.Name("pedestal")
-		@Config.Comment("Pedestal related settings")
-		public final PedestalSettings Pedestal = new PedestalSettings();
-
-		public class PedestalSettings {
-			@Config.Name("melee_wrapper_range")
-			@Config.Comment("Range of the melee weapons in which these will attack when in pedestal")
-			@Config.RangeInt(min = 1, max = 10)
-			public int meleeWrapperRange = 5;
-			@Config.Name("melee_wrapper_cooldown")
-			@Config.Comment("How long it takes after a melee weapon swing before it can swing again (in ticks)")
-			@Config.RangeInt(min = 1, max = 200)
-			public byte meleeWrapperCooldown = 5;
-			@Config.Name("bucket_wrapper_range")
-			@Config.Comment("Range at which bucket will pickup liquid blocks or milk cows")
-			@Config.RangeInt(min = 1, max = 10)
-			public int bucketWrapperRange = 4;
-			@Config.Name("bucket_wrapper_cooldown")
-			@Config.Comment("How long it takes in between bucket actions (in ticks)")
-			@Config.RangeInt(min = 1, max = 200)
-			public byte bucketWrapperCooldown = 40;
-			@Config.Name("shears_wrapper_range")
-			@Config.Comment("How long it takes between shearing actions (in ticks)")
-			@Config.RangeInt(min = 1, max = 10)
-			public int shearsWrapperRange = 4;
-			@Config.Name("shears_wrapper_cooldown")
-			@Config.Comment("Range at which shears will shear sheep or shearable blocks")
-			@Config.RangeInt(min = 1, max = 200)
-			public byte shearsWrapperCooldown = 10;
-			@Config.Name("redstone_wrapper_range")
-			@Config.Comment("Range at which pedestal will get turned on if either redstone block gets put in or redstone dust and transmitting pedestal is powered")
-			@Config.RangeInt(min = 1, max = 200)
-			public int redstoneWrapperRange = 10;
-			@Config.Name("fishing_wrapper_success_rate")
-			@Config.Comment("Success rate of fishing in percent. When unsuccessful it will pull the hook too late to catch a fish.")
-			@Config.RangeInt(min = 0, max = 100)
-			public int fishingWrapperSuccessRate = 80;
-			@Config.Name("fishing_wrapper_retract_delay")
-			@Config.Comment("Delay in seconds before it would start fishing again after retracting the hook.")
-			@Config.RangeInt(min = 1, max = 20)
-			public int fishingWrapperRetractDelay = 2;
-		}
-	}
-
 }

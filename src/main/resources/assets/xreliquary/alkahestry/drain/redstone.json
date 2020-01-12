@@ -1,7 +1,0 @@
-{
-    "type": "xreliquary:alkahestry_drain",
-    "charge": 1,
-    "result": {
-        "item": "minecraft:redstone"
-    }
-}

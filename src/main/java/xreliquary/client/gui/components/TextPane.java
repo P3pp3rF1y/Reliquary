@@ -19,7 +19,7 @@ public class TextPane extends Component {
 
 	public void setText(String text) {
 		this.text = text;
-		width = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+		width = Minecraft.getInstance().fontRenderer.getStringWidth(text);
 	}
 
 	@Override
@@ -34,6 +34,6 @@ public class TextPane extends Component {
 
 	@Override
 	public void renderInternal(int x, int y) {
-		Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(text, x, y, textColor);
+		Minecraft.getInstance().fontRenderer.drawStringWithShadow(text, x, y, textColor);
 	}
 }

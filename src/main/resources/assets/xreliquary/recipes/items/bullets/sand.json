@@ -2,8 +2,7 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "minecraft:sandstone",
-            "data": 0
+            "item": "minecraft:sandstone"
         },
         {
             "item": "minecraft:slime_ball"
@@ -16,8 +15,7 @@
         }
     ],
     "result": {
-        "item": "xreliquary:bullet",
-        "data": 8,
+        "item": "xreliquary:bullets/sand_bullet",
         "count": 8
     }
 }

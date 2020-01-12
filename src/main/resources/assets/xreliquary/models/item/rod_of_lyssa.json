@@ -1,7 +1,7 @@
 {
   "parent": "item/handheld_rod",
   "textures": {
-    "layer0": "xreliquary:items/rod_of_lyssa"
+    "layer0": "xreliquary:item/rod_of_lyssa"
   },
   "overrides": [
     {

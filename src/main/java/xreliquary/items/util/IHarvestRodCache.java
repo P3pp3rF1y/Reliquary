@@ -2,6 +2,8 @@ package xreliquary.items.util;
 
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Optional;
+
 public interface IHarvestRodCache {
 	void setStartBlockPos(BlockPos pos);
 
@@ -9,7 +11,7 @@ public interface IHarvestRodCache {
 
 	void addBlockToQueue(BlockPos pos);
 
-	BlockPos getNextBlockInQueue();
+	Optional<BlockPos> getNextBlockInQueue();
 
 	void clearBlockQueue();
 

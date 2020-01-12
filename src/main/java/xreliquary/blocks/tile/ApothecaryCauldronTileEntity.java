@@ -1,0 +1,456 @@
+package xreliquary.blocks.tile;
+
+import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.particles.RedstoneParticleData;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.PotionUtils;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ObjectHolder;
+import xreliquary.blocks.ApothecaryCauldronBlock;
+import xreliquary.client.init.ModParticles;
+import xreliquary.client.particle.ColorParticleData;
+import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
+import xreliquary.init.ModBlocks;
+import xreliquary.init.ModItems;
+import xreliquary.items.PotionEssenceItem;
+import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
+import xreliquary.util.InjectionHelper;
+import xreliquary.util.InventoryHelper;
+import xreliquary.util.potions.XRPotionHelper;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWailaDataChangeIndicator, ITickableTileEntity {
+	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.APOTHECARY_CAULDRON)
+	public static final TileEntityType<ApothecaryCauldronTileEntity> TYPE = InjectionHelper.nullValue();
+	public int redstoneCount = 0;
+	public List<EffectInstance> effects = Lists.newArrayList();
+	public int glowstoneCount = 0;
+	public boolean hasGunpowder = false;
+	public boolean hasNetherwart = false;
+	public boolean hasDragonBreath = false;
+	private int cookTime = 0;
+	private int liquidLevel = 0;
+	private boolean dataChanged;
+
+	public ApothecaryCauldronTileEntity() {
+		super(TYPE);
+		dataChanged = true;
+	}
+
+	@Override
+	public void tick() {
+		//Item addition gets handled by the block's onEntityCollided method.
+		if (getHeatSources().contains(world.getBlockState(getPos().add(0, -1, 0)).getBlock()) && getLiquidLevel() > 0) {
+			if (!effects.isEmpty() && hasNetherwart && cookTime < getTotalCookTime()) {
+				cookTime++;
+			}
+			if (world.isRemote) {
+				for (int particleCount = 0; particleCount <= 2; ++particleCount)
+					spawnBoilingParticles();
+
+				if (hasDragonBreath)
+					spawnDragonBreathParticles();
+				else if (hasGunpowder)
+					spawnGunpowderParticles();
+
+				if (glowstoneCount > 0)
+					spawnGlowstoneParticles();
+				if (hasNetherwart) {
+					spawnNetherwartParticles();
+					if (finishedCooking()) {
+						spawnFinishedParticles();
+					}
+				}
+				if (redstoneCount > 0)
+					spawnRedstoneParticles();
+			}
+		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void spawnBoilingParticles() {
+		if (world.rand.nextInt(getTotalCookTime() * getTotalCookTime()) > cookTime * cookTime)
+			return;
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.33F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.33F;
+
+		int color = PotionUtils.getPotionColorFromEffectList(effects);
+
+		float red = (((color >> 16) & 255) / 256F);
+		float green = (((color >> 8) & 255) / 256F);
+		float blue = ((color & 255) / 256F);
+
+		ColorParticleData particleData = new ColorParticleData(ModParticles.CAULDRON_BUBBLE, red, green, blue);
+		world.addParticle(particleData, getPos().getX() + 0.5D + xOffset, getPos().getY() + 0.01D + getRenderLiquidLevel(), getPos().getZ() + 0.5D + zOffset, 0D, 0D, 0D);
+
+		particleData = new ColorParticleData(ModParticles.CAULDRON_STEAM, red, green, blue);
+		if (world.rand.nextInt(6) == 0) {
+			world.addParticle(particleData, getPos().getX() + 0.5D + xOffset, getPos().getY() + 0.01D + getRenderLiquidLevel(), getPos().getZ() + 0.5D + zOffset, 0D, 0.05D + 0.02F * getRenderLiquidLevel(), 0D);
+		}
+	}
+
+	private float getRenderLiquidLevel() {
+		int j = MathHelper.clamp(getLiquidLevel(), 0, 3);
+		return (float) (6 + 3 * j) / 16.0F;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void spawnGunpowderParticles() {
+		if (world.rand.nextInt(8) > 0)
+			return;
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		world.addParticle(ParticleTypes.SMOKE, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void spawnDragonBreathParticles() {
+		if (world.rand.nextInt(8) > 0)
+			return;
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		world.addParticle(ParticleTypes.DRAGON_BREATH, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void spawnGlowstoneParticles() {
+		if (world.rand.nextInt(8) > 0)
+			return;
+		double gauss = 0.5D + world.rand.nextFloat() / 2;
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		world.addParticle(ParticleTypes.ENTITY_EFFECT, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, gauss, gauss, 0.0F);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void spawnNetherwartParticles() {
+		if (world.rand.nextInt(8) > 0)
+			return;
+		double gauss = 0.5D + world.rand.nextFloat() / 2;
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		world.addParticle(ParticleTypes.ENTITY_EFFECT, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, gauss, 0.0F, gauss);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void spawnRedstoneParticles() {
+		if (world.rand.nextInt(10) / this.redstoneCount > 0)
+			return;
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		world.addParticle(RedstoneParticleData.REDSTONE_DUST, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 1D, 0D, 0D);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void spawnFinishedParticles() {
+		if (world.rand.nextInt(8) > 0)
+			return;
+		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
+		world.addParticle(ParticleTypes.WITCH, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0D, 0D, 0D);
+	}
+
+	@Override
+	public void read(CompoundNBT tag) {
+		super.read(tag);
+		this.setLiquidLevel(tag.getShort("liquidLevel"));
+		this.glowstoneCount = tag.getInt("glowstoneCount");
+		this.hasNetherwart = tag.getBoolean("hasNetherwart");
+		this.hasGunpowder = tag.getBoolean("hasGunpowder");
+		this.hasDragonBreath = tag.getBoolean("hasDragonBreath");
+		this.redstoneCount = tag.getInt("redstoneCount");
+		this.cookTime = tag.getInt("cookTime");
+		this.effects = XRPotionHelper.getPotionEffectsFromCompoundTag(tag);
+	}
+
+	@Override
+	public CompoundNBT write(CompoundNBT compound) {
+		super.write(compound);
+		compound.putInt("liquidLevel", getLiquidLevel());
+		compound.putInt("cookTime", cookTime);
+		compound.putInt("redstoneCount", redstoneCount);
+		compound.putInt("glowstoneCount", glowstoneCount);
+		compound.putBoolean("hasGunpowder", hasGunpowder);
+		compound.putBoolean("hasDragonBreath", hasDragonBreath);
+		compound.putBoolean("hasNetherwart", hasNetherwart);
+		XRPotionHelper.addPotionEffectsToCompoundTag(compound, effects);
+
+		return compound;
+	}
+
+	private boolean finishedCooking() {
+		return hasNetherwart && !effects.isEmpty() && this.cookTime >= getTotalCookTime() && (!hasDragonBreath || hasGunpowder);
+	}
+
+	private CompoundNBT removeContainedPotion() {
+		if (!hasNetherwart || effects.isEmpty() || getLiquidLevel() <= 0)
+			return null;
+
+		setLiquidLevel(getLiquidLevel() - 1);
+		CompoundNBT tag = getFinishedPotion();
+
+		if (getLiquidLevel() <= 0) {
+			clearAllFields();
+		}
+		return tag;
+	}
+
+	private CompoundNBT getFinishedPotion() {
+		CompoundNBT tag = new CompoundNBT();
+		XRPotionHelper.addPotionEffectsToCompoundTag(tag, XRPotionHelper.augmentPotionEffects(effects, redstoneCount, glowstoneCount));
+		tag.putBoolean("hasPotion", true);
+		if (hasDragonBreath) {
+			tag.putBoolean("lingering", true);
+		} else if (hasGunpowder) {
+			tag.putBoolean("splash", true);
+		}
+		return tag;
+	}
+
+	private void clearAllFields() {
+		this.cookTime = 0;
+		this.glowstoneCount = 0;
+		this.hasGunpowder = false;
+		this.hasNetherwart = false;
+		this.redstoneCount = 0;
+		this.effects.clear();
+		this.dataChanged = true;
+		this.hasDragonBreath = false;
+		BlockState blockState = world.getBlockState(this.getPos());
+		world.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
+	}
+
+	@SuppressWarnings("SimplifiableIfStatement")
+	private boolean isItemValidForInput(ItemStack stack) {
+		if (stack.getItem() instanceof PotionEssenceItem && this.effects.isEmpty())
+			return true;
+
+		if (effects.isEmpty())
+			return false;
+
+		if (stack.getItem() == Items.GUNPOWDER && !this.hasGunpowder)
+			return true;
+		if (stack.getItem() == Items.GLOWSTONE_DUST && this.glowstoneCount < getGlowstoneAmpLimit())
+			return true;
+		if (stack.getItem() == Items.REDSTONE && this.redstoneCount < getRedstoneAmpLimit())
+			return true;
+		if (stack.getItem() == Items.NETHER_WART && !this.hasNetherwart)
+			return true;
+		return stack.getItem() == Items.DRAGON_BREATH && !this.hasDragonBreath;
+	}
+
+	private void addItem(ItemStack stack) {
+		if (stack.getItem() instanceof PotionEssenceItem) {
+			effects = XRPotionHelper.getPotionEffectsFromStack(stack);
+		} else if (stack.getItem() == Items.GUNPOWDER) {
+			this.hasGunpowder = true;
+		} else if (stack.getItem() == Items.GLOWSTONE_DUST) {
+			++this.glowstoneCount;
+		} else if (stack.getItem() == Items.REDSTONE) {
+			++this.redstoneCount;
+		} else if (stack.getItem() == Items.NETHER_WART) {
+			this.hasNetherwart = true;
+		} else if (stack.getItem() == Items.DRAGON_BREATH) {
+			this.hasDragonBreath = true;
+		}
+
+		BlockState blockState = world.getBlockState(this.getPos());
+		world.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
+	}
+
+	private int getGlowstoneAmpLimit() {
+		return Settings.COMMON.blocks.apothecaryCauldron.glowstoneLimit.get();
+	}
+
+	private int getRedstoneAmpLimit() {
+		return Settings.COMMON.blocks.apothecaryCauldron.redstoneLimit.get();
+	}
+
+	private Set<Block> getHeatSources() {
+		Set<Block> heatSources = new HashSet<>();
+		List<String> heatSourceBlockNames = Settings.COMMON.blocks.apothecaryCauldron.heatSources.get();
+
+		heatSourceBlockNames.forEach(blockName -> heatSources.add(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName))));
+		//defaults that can't be removed.
+		heatSources.add(Blocks.LAVA);
+		heatSources.add(Blocks.FIRE);
+/*
+		if(ModList.get().isLoaded(Compatibility.MOD_ID.THAUMCRAFT))
+			heatSources.add(BlocksTC.nitor); //TODO add back when Thaumcraft is back in
+*/
+		return heatSources;
+	}
+
+	private int getTotalCookTime() {
+		return Settings.COMMON.blocks.apothecaryCauldron.cookTime.get();
+	}
+
+	public void handleCollidingEntity(World world, BlockPos pos, Entity collidingEntity) {
+		int l = getLiquidLevel();
+		float f = (float) pos.getY() + (6.0F + (float) (3 * l)) / 16.0F;
+		if (collidingEntity.getBoundingBox().minY <= (double) f) {
+
+			if (collidingEntity.isBurning() && l > 0) {
+				collidingEntity.extinguish();
+			}
+			if (collidingEntity instanceof LivingEntity) {
+				if (this.effects.isEmpty())
+					return;
+				//apply potion effects when done cooking potion (potion essence and netherwart in and fire below at the minimum)
+				if (finishedCooking()) {
+					for (EffectInstance effect : this.effects) {
+						Effect potion = effect.getPotion();
+						if (potion.isInstant() && world.getGameTime() % 20 != 0)
+							continue;
+						EffectInstance reducedEffect = new EffectInstance(effect.getPotion(), potion.isInstant() ? 1 : effect.getDuration() / 20, Math.max(0, effect.getAmplifier() - 1));
+						((LivingEntity) collidingEntity).addPotionEffect(reducedEffect);
+					}
+				}
+
+				if (this.cookTime > 0 && world.getGameTime() % 10 == 0) {
+					collidingEntity.attackEntityFrom(DamageSource.IN_FIRE, 1.0F);
+				}
+			}
+
+			if (collidingEntity instanceof ItemEntity) {
+				ItemStack item = ((ItemEntity) collidingEntity).getItem();
+				while (this.isItemValidForInput(item)) {
+					this.addItem(item);
+					item.shrink(1);
+				}
+			}
+
+		}
+	}
+
+	public int getColorMultiplier() {
+		return PotionUtils.getPotionColorFromEffectList(effects);
+	}
+
+	public int getLiquidLevel() {
+		return liquidLevel;
+	}
+
+	public void fillWithRain() {
+		if (getLiquidLevel() < 3 && !finishedCooking()) {
+			setLiquidLevel(getLiquidLevel() + 1);
+		}
+	}
+
+	public boolean handleBlockActivation(World world, PlayerEntity player, Hand hand) {
+		ItemStack itemStack = player.getHeldItem(hand);
+
+		if (itemStack.isEmpty())
+			return false;
+
+		if (getLiquidLevel() < 3 && !finishedCooking()) {
+			if (itemStack.getItem() == Items.WATER_BUCKET) {
+				if (!player.isCreative())
+					player.setHeldItem(hand, new ItemStack(Items.BUCKET));
+			} else if (!itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null).map(fh -> drainWater(player, fh)).orElse(false)) {
+				return false;
+			}
+
+			setLiquidLevel(3);
+			cookTime = 0;
+
+			return true;
+		} else if (itemStack.getItem() == ModItems.POTION && (itemStack.getTag() == null || !itemStack.getTag().getBoolean("hasPotion")) && finishedCooking() && getLiquidLevel() > 0) {
+			if (finishedCooking()) {
+				ItemStack potion = new ItemStack(ModItems.POTION);
+				potion.setTag(removeContainedPotion());
+
+				itemStack.shrink(1);
+
+				if (itemStack.getCount() <= 0) {
+					player.setHeldItem(hand, potion);
+				} else if (!player.inventory.addItemStackToInventory(potion)) {
+					world.addEntity(new ItemEntity(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
+				}
+
+				return true;
+			}
+		} else if (getLiquidLevel() == 3 && isItemValidForInput(itemStack)) {
+			addItem(itemStack);
+
+			if (itemStack.getItem() == Items.DRAGON_BREATH
+					&& InventoryHelper.getItemHandlerFrom(player).map(handler -> InventoryHelper.tryToAddToInventory(new ItemStack(Items.GLASS_BOTTLE), handler, 1)).orElse(0) != 1) {
+				net.minecraft.inventory.InventoryHelper.spawnItemStack(world, pos.getX() + 0.5f, pos.getY() + 1.5f, pos.getZ() + 0.5f, new ItemStack(Items.GLASS_BOTTLE));
+			}
+
+			itemStack.shrink(1);
+
+			return true;
+		}
+		return false;
+	}
+
+	private Boolean drainWater(PlayerEntity player, IFluidHandlerItem fh) {
+		FluidStack waterStack = new FluidStack(Fluids.WATER, 1000);
+		if (!waterStack.equals(fh.drain(waterStack, IFluidHandler.FluidAction.SIMULATE))) {
+			return false;
+		}
+
+		if (!player.isCreative()) {
+			fh.drain(waterStack, IFluidHandler.FluidAction.EXECUTE);
+		}
+		return true;
+	}
+
+	private void setLiquidLevel(int liquidLevel) {
+		this.liquidLevel = liquidLevel;
+		if (this.world != null) {
+			BlockState blockState = this.world.getBlockState(this.getPos());
+			blockState = blockState.with(ApothecaryCauldronBlock.LEVEL, liquidLevel);
+			this.world.setBlockState(this.getPos(), blockState);
+			this.world.updateComparatorOutputLevel(pos, ModBlocks.APOTHECARY_CAULDRON);
+		}
+	}
+
+	@Override
+	public boolean getDataChanged() {
+		boolean ret = this.dataChanged;
+		this.dataChanged = false;
+		return ret;
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
+		super.onDataPacket(net, packet);
+		this.dataChanged = true;
+	}
+}

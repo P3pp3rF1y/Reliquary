@@ -1,17 +1,9 @@
 {
-    "recipes": {
-        "alkahestry_crafting": "xreliquary.crafting.factories.AlkahestryCraftingRecipeFactory",
-        "alkahestry_charging": "xreliquary.crafting.factories.AlkahestryChargingRecipeFactory",
-        "alkahestry_drain": "xreliquary.crafting.factories.AlkahestryDrainRecipeFactory",
-        "use_meta_effects": "xreliquary.crafting.factories.UseMetaEffectsRecipeFactory"
-    },
     "conditions": {
         "mob_drops_craftable": "xreliquary.crafting.factories.MobDropsCraftableConditionFactory",
         "ore_exists": "xreliquary.crafting.factories.OreExistsConditionFactory"
     },
     "ingredients": {
-        "item_empty_nbt": "xreliquary.crafting.factories.EmptyNBTIngredientFactory",
-        "use_meta_effects": "xreliquary.crafting.factories.UseMetaEffectsIngredientFactory",
         "lingering_potion": "xreliquary.crafting.factories.LingeringPotionIngredientFactory"
     }
 }

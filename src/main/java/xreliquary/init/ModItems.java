@@ -1,281 +1,466 @@
 package xreliquary.init;
 
-import net.minecraft.block.BlockDispenser;
-import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
-import net.minecraft.dispenser.BehaviorProjectileDispense;
-import net.minecraft.dispenser.IBehaviorDispenseItem;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.dispenser.IPosition;
+import net.minecraft.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 import xreliquary.Reliquary;
-import xreliquary.entities.EntityGlowingWater;
-import xreliquary.entities.EntityHolyHandGrenade;
-import xreliquary.entities.EntityXRTippedArrow;
-import xreliquary.entities.potion.EntityAttractionPotion;
-import xreliquary.entities.potion.EntityFertilePotion;
-import xreliquary.entities.potion.EntityThrownXRPotion;
-import xreliquary.items.ItemAlkahestryTome;
-import xreliquary.items.ItemAngelheartVial;
-import xreliquary.items.ItemAngelicFeather;
-import xreliquary.items.ItemAttractionPotion;
-import xreliquary.items.ItemBullet;
-import xreliquary.items.ItemDestructionCatalyst;
-import xreliquary.items.ItemEmperorChalice;
-import xreliquary.items.ItemEnderStaff;
-import xreliquary.items.ItemFertilePotion;
-import xreliquary.items.ItemFortuneCoin;
-import xreliquary.items.ItemGlacialStaff;
-import xreliquary.items.ItemGlowingBread;
-import xreliquary.items.ItemGlowingWater;
-import xreliquary.items.ItemGunPart;
-import xreliquary.items.ItemHandgun;
-import xreliquary.items.ItemHarvestRod;
-import xreliquary.items.ItemHeroMedallion;
-import xreliquary.items.ItemHolyHandGrenade;
-import xreliquary.items.ItemIceMagusRod;
-import xreliquary.items.ItemInfernalChalice;
-import xreliquary.items.ItemInfernalClaws;
-import xreliquary.items.ItemInfernalTear;
-import xreliquary.items.ItemKrakenShell;
-import xreliquary.items.ItemLanternOfParanoia;
-import xreliquary.items.ItemMagazine;
-import xreliquary.items.ItemMagicbane;
-import xreliquary.items.ItemMercyCross;
-import xreliquary.items.ItemMidasTouchstone;
-import xreliquary.items.ItemMobCharm;
-import xreliquary.items.ItemMobCharmBelt;
-import xreliquary.items.ItemMobCharmFragment;
-import xreliquary.items.ItemMobIngredient;
-import xreliquary.items.ItemPhoenixDown;
-import xreliquary.items.ItemPotionEssence;
-import xreliquary.items.ItemPyromancerStaff;
-import xreliquary.items.ItemRendingGale;
-import xreliquary.items.ItemRodOfLyssa;
-import xreliquary.items.ItemSalamanderEye;
-import xreliquary.items.ItemSerpentStaff;
-import xreliquary.items.ItemShearsOfWinter;
-import xreliquary.items.ItemSojournerStaff;
-import xreliquary.items.ItemTwilightCloak;
-import xreliquary.items.ItemVoidTear;
-import xreliquary.items.ItemWitchHat;
-import xreliquary.items.ItemWitherlessRose;
-import xreliquary.items.ItemXRPotion;
-import xreliquary.items.ItemXRTippedArrow;
-import xreliquary.reference.Names;
+import xreliquary.client.gui.GuiAlkahestTome;
+import xreliquary.client.gui.GuiMobCharmBelt;
+import xreliquary.common.gui.ContainerAlkahestTome;
+import xreliquary.common.gui.ContainerMobCharmBelt;
+import xreliquary.crafting.AlkahestryChargingRecipe;
+import xreliquary.crafting.AlkahestryCraftingRecipe;
+import xreliquary.crafting.AlkahestryDrainRecipe;
+import xreliquary.crafting.MobCharmRepairRecipe;
+import xreliquary.crafting.MobDropsCraftableCondition;
+import xreliquary.crafting.PotionEffectsRecipe;
+import xreliquary.entities.GlowingWaterEntity;
+import xreliquary.entities.HolyHandGrenadeEntity;
+import xreliquary.entities.XRTippedArrowEntity;
+import xreliquary.entities.potion.AttractionPotionEntity;
+import xreliquary.entities.potion.FertilePotionEntity;
+import xreliquary.entities.potion.ThrownXRPotionEntity;
+import xreliquary.entities.shot.BlazeShotEntity;
+import xreliquary.entities.shot.BusterShotEntity;
+import xreliquary.entities.shot.ConcussiveShotEntity;
+import xreliquary.entities.shot.EnderShotEntity;
+import xreliquary.entities.shot.ExorcismShotEntity;
+import xreliquary.entities.shot.NeutralShotEntity;
+import xreliquary.entities.shot.SandShotEntity;
+import xreliquary.entities.shot.SeekerShotEntity;
+import xreliquary.entities.shot.StormShotEntity;
+import xreliquary.items.AlkahestryTomeItem;
+import xreliquary.items.AngelheartVialItem;
+import xreliquary.items.AngelicFeatherItem;
+import xreliquary.items.AttractionPotionItem;
+import xreliquary.items.BulletItem;
+import xreliquary.items.DestructionCatalystItem;
+import xreliquary.items.EmperorChaliceItem;
+import xreliquary.items.EnderStaffItem;
+import xreliquary.items.FertilePotionItem;
+import xreliquary.items.FortuneCoinItem;
+import xreliquary.items.GlacialStaffItem;
+import xreliquary.items.GlowingWaterItem;
+import xreliquary.items.HandgunItem;
+import xreliquary.items.HarvestRodItem;
+import xreliquary.items.HeroMedallionItem;
+import xreliquary.items.HolyHandGrenadeItem;
+import xreliquary.items.IceMagusRodItem;
+import xreliquary.items.InfernalChaliceItem;
+import xreliquary.items.InfernalClawsItem;
+import xreliquary.items.InfernalTearItem;
+import xreliquary.items.ItemBase;
+import xreliquary.items.KrakenShellItem;
+import xreliquary.items.LanternOfParanoiaItem;
+import xreliquary.items.MagazineItem;
+import xreliquary.items.MagicbaneItem;
+import xreliquary.items.MercyCrossItem;
+import xreliquary.items.MidasTouchstoneItem;
+import xreliquary.items.MobCharmBeltItem;
+import xreliquary.items.MobCharmFragmentItem;
+import xreliquary.items.MobCharmItem;
+import xreliquary.items.PhoenixDownItem;
+import xreliquary.items.PotionEssenceItem;
+import xreliquary.items.PotionItem;
+import xreliquary.items.PyromancerStaffItem;
+import xreliquary.items.RendingGaleItem;
+import xreliquary.items.RodOfLyssaItem;
+import xreliquary.items.SalamanderEyeItem;
+import xreliquary.items.SerpentStaffItem;
+import xreliquary.items.ShearsOfWinterItem;
+import xreliquary.items.SojournerStaffItem;
+import xreliquary.items.TippedArrowItem;
+import xreliquary.items.TwilightCloakItem;
+import xreliquary.items.VoidTearItem;
+import xreliquary.items.WitchHatItem;
+import xreliquary.items.WitherlessRoseItem;
+import xreliquary.reference.Colors;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
+import xreliquary.util.InjectionHelper;
 
-import javax.annotation.Nonnull;
-
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@ObjectHolder(Reference.MOD_ID)
 public class ModItems {
+	//TODO move to names?
+	private static final String NEUTRAL_MAGAZINE_REGISTRY_NAME = "magazines/neutral_magazine";
+	private static final String EXORCISM_MAGAZINE_REGISTRY_NAME = "magazines/exorcism_magazine";
+	private static final String BLAZE_MAGAZINE_REGISTRY_NAME = "magazines/blaze_magazine";
+	private static final String ENDER_MAGAZINE_REGISTRY_NAME = "magazines/ender_magazine";
+	private static final String CONCUSSIVE_MAGAZINE_REGISTRY_NAME = "magazines/concussive_magazine";
+	private static final String BUSTER_MAGAZINE_REGISTRY_NAME = "magazines/buster_magazine";
+	private static final String SEEKER_MAGAZINE_REGISTRY_NAME = "magazines/seeker_magazine";
+	private static final String SAND_MAGAZINE_REGISTRY_NAME = "magazines/sand_magazine";
+	private static final String STORM_MAGAZINE_REGISTRY_NAME = "magazines/storm_magazine";
+	private static final String EMPTY_MAGAZINE_REGISTRY_NAME = "magazines/empty_magazine";
+	private static final String EMPTY_BULLET_REGISTRY_NAME = "bullets/empty_bullet";
+	private static final String NEUTRAL_BULLET_REGISTRY_NAME = "bullets/neutral_bullet";
+	private static final String EXORCISM_BULLET_REGISTRY_NAME = "bullets/exorcism_bullet";
+	private static final String BLAZE_BULLET_REGISTRY_NAME = "bullets/blaze_bullet";
+	private static final String ENDER_BULLET_REGISTRY_NAME = "bullets/ender_bullet";
+	private static final String CONCUSSIVE_BULLET_REGISTRY_NAME = "bullets/concussive_bullet";
+	private static final String BUSTER_BULLET_REGISTRY_NAME = "bullets/buster_bullet";
+	private static final String SEEKER_BULLET_REGISTRY_NAME = "bullets/seeker_bullet";
+	private static final String SAND_BULLET_REGISTRY_NAME = "bullets/sand_bullet";
+	private static final String STORM_BULLET_REGISTRY_NAME = "bullets/storm_bullet";
 
-	public static ItemAlkahestryTome alkahestryTome;
-	public static ItemMobIngredient mobIngredient;
-	public static ItemMercyCross mercyCross;
-	public static ItemAngelheartVial angelheartVial;
-	public static ItemAngelicFeather angelicFeather;
-	public static ItemAttractionPotion attractionPotion;
-	public static ItemPotionEssence potionEssence;
-	public static ItemBullet bullet;
-	public static ItemDestructionCatalyst destructionCatalyst;
-	public static ItemEmperorChalice emperorChalice;
-	public static ItemEnderStaff enderStaff;
-	public static ItemFertilePotion fertilePotion;
-	public static ItemFortuneCoin fortuneCoin;
-	public static ItemGlacialStaff glacialStaff;
-	public static ItemGlowingBread glowingBread;
-	public static ItemGlowingWater glowingWater;
-	public static ItemHolyHandGrenade holyHandGrenade;
-	public static ItemGunPart gunPart;
-	public static ItemHandgun handgun;
-	public static ItemHarvestRod harvestRod;
-	public static ItemMobCharmFragment mobCharmFragment;
-	public static ItemHeroMedallion heroMedallion;
-	public static ItemIceMagusRod iceMagusRod;
-	public static ItemInfernalChalice infernalChalice;
-	public static ItemInfernalClaws infernalClaws;
-	public static ItemInfernalTear infernalTear;
-	public static ItemKrakenShell krakenShell;
-	public static ItemLanternOfParanoia lanternOfParanoia;
-	public static ItemMagazine magazine;
-	public static ItemMagicbane magicbane;
-	public static ItemMidasTouchstone midasTouchstone;
-	public static ItemPhoenixDown phoenixDown;
-	public static ItemPyromancerStaff pyromancerStaff;
-	public static ItemRendingGale rendingGale;
-	public static ItemRodOfLyssa rodOfLyssa;
-	public static ItemSalamanderEye salamanderEye;
-	public static ItemSerpentStaff serpentStaff;
-	public static ItemShearsOfWinter shearsOfWinter;
-	public static ItemSojournerStaff sojournerStaff;
-	public static ItemXRTippedArrow tippedArrow;
-	public static ItemTwilightCloak twilightCloak;
-	public static ItemVoidTear voidTear;
-	public static ItemWitchHat witchHat;
-	public static ItemWitherlessRose witherlessRose;
-	public static ItemXRPotion potion;
-	public static ItemMobCharmBelt mobCharmBelt;
-	public static ItemMobCharm mobCharm;
+	public static final AlkahestryTomeItem ALKAHESTRY_TOME = InjectionHelper.nullValue();
+	public static final MercyCrossItem MERCY_CROSS = InjectionHelper.nullValue();
+	public static final AngelheartVialItem ANGELHEART_VIAL = InjectionHelper.nullValue();
+	public static final AngelicFeatherItem ANGELIC_FEATHER = InjectionHelper.nullValue();
+	public static final AttractionPotionItem ATTRACTION_POTION = InjectionHelper.nullValue();
+	public static final PotionEssenceItem POTION_ESSENCE = InjectionHelper.nullValue();
+	public static final DestructionCatalystItem DESTRUCTION_CATALYST = InjectionHelper.nullValue();
+	public static final EmperorChaliceItem EMPEROR_CHALICE = InjectionHelper.nullValue();
+	public static final EnderStaffItem ENDER_STAFF = InjectionHelper.nullValue();
+	public static final FertilePotionItem FERTILE_POTION = InjectionHelper.nullValue();
+	public static final FortuneCoinItem FORTUNE_COIN = InjectionHelper.nullValue();
+	public static final GlacialStaffItem GLACIAL_STAFF = InjectionHelper.nullValue();
+	public static final GlowingWaterItem GLOWING_WATER = InjectionHelper.nullValue();
+	public static final HolyHandGrenadeItem HOLY_HAND_GRENADE = InjectionHelper.nullValue();
+	public static final HandgunItem HANDGUN = InjectionHelper.nullValue();
+	public static final HarvestRodItem HARVEST_ROD = InjectionHelper.nullValue();
+	public static final MobCharmFragmentItem MOB_CHARM_FRAGMENT = InjectionHelper.nullValue();
+	public static final HeroMedallionItem HERO_MEDALLION = InjectionHelper.nullValue();
+	public static final IceMagusRodItem ICE_MAGUS_ROD = InjectionHelper.nullValue();
+	public static final InfernalChaliceItem INFERNAL_CHALICE = InjectionHelper.nullValue();
+	public static final InfernalClawsItem INFERNAL_CLAWS = InjectionHelper.nullValue();
+	public static final KrakenShellItem KRAKEN_SHELL = InjectionHelper.nullValue();
+	public static final MidasTouchstoneItem MIDAS_TOUCHSTONE = InjectionHelper.nullValue();
+	public static final PhoenixDownItem PHOENIX_DOWN = InjectionHelper.nullValue();
+	public static final PyromancerStaffItem PYROMANCER_STAFF = InjectionHelper.nullValue();
+	public static final RendingGaleItem RENDING_GALE = InjectionHelper.nullValue();
+	public static final RodOfLyssaItem ROD_OF_LYSSA = InjectionHelper.nullValue();
+	public static final SojournerStaffItem SOJOURNER_STAFF = InjectionHelper.nullValue();
+	public static final TippedArrowItem TIPPED_ARROW = InjectionHelper.nullValue();
+	public static final VoidTearItem VOID_TEAR = InjectionHelper.nullValue();
+	public static final WitchHatItem WITCH_HAT = InjectionHelper.nullValue();
+	public static final WitherlessRoseItem WITHERLESS_ROSE = InjectionHelper.nullValue();
+	public static final PotionItem POTION = InjectionHelper.nullValue();
+	public static final MobCharmBeltItem MOB_CHARM_BELT = InjectionHelper.nullValue();
+	public static final MobCharmItem MOB_CHARM = InjectionHelper.nullValue();
+	@ObjectHolder(EMPTY_MAGAZINE_REGISTRY_NAME)
+	public static final MagazineItem EMPTY_MAGAZINE = InjectionHelper.nullValue();
+	@ObjectHolder(NEUTRAL_MAGAZINE_REGISTRY_NAME)
+	public static final MagazineItem NEUTRAL_MAGAZINE = InjectionHelper.nullValue();
+	@ObjectHolder(EXORCISM_MAGAZINE_REGISTRY_NAME)
+	public static final MagazineItem EXORCISM_MAGAZINE = InjectionHelper.nullValue();
+	@ObjectHolder(BLAZE_MAGAZINE_REGISTRY_NAME)
+	public static final MagazineItem BLAZE_MAGAZINE = InjectionHelper.nullValue();
+	@ObjectHolder(ENDER_MAGAZINE_REGISTRY_NAME)
+	public static final MagazineItem ENDER_MAGAZINE = InjectionHelper.nullValue();
+	@ObjectHolder(CONCUSSIVE_MAGAZINE_REGISTRY_NAME)
+	public static final MagazineItem CONCUSSIVE_MAGAZINE = InjectionHelper.nullValue();
+	@ObjectHolder(BUSTER_MAGAZINE_REGISTRY_NAME)
+	public static final MagazineItem BUSTER_MAGAZINE = InjectionHelper.nullValue();
+	@ObjectHolder(SEEKER_MAGAZINE_REGISTRY_NAME)
+	public static final MagazineItem SEEKER_MAGAZINE = InjectionHelper.nullValue();
+	@ObjectHolder(SAND_MAGAZINE_REGISTRY_NAME)
+	public static final MagazineItem SAND_MAGAZINE = InjectionHelper.nullValue();
+	@ObjectHolder(STORM_MAGAZINE_REGISTRY_NAME)
+	public static final MagazineItem STORM_MAGAZINE = InjectionHelper.nullValue();
+	@ObjectHolder(EMPTY_BULLET_REGISTRY_NAME)
+	public static final MagazineItem EMPTY_BULLET = InjectionHelper.nullValue();
+	@ObjectHolder(NEUTRAL_BULLET_REGISTRY_NAME)
+	public static final MagazineItem NEUTRAL_BULLET = InjectionHelper.nullValue();
+	@ObjectHolder(EXORCISM_BULLET_REGISTRY_NAME)
+	public static final MagazineItem EXORCISM_BULLET = InjectionHelper.nullValue();
+	@ObjectHolder(BLAZE_BULLET_REGISTRY_NAME)
+	public static final MagazineItem BLAZE_BULLET = InjectionHelper.nullValue();
+	@ObjectHolder(ENDER_BULLET_REGISTRY_NAME)
+	public static final MagazineItem ENDER_BULLET = InjectionHelper.nullValue();
+	@ObjectHolder(CONCUSSIVE_BULLET_REGISTRY_NAME)
+	public static final MagazineItem CONCUSSIVE_BULLET = InjectionHelper.nullValue();
+	@ObjectHolder(BUSTER_BULLET_REGISTRY_NAME)
+	public static final MagazineItem BUSTER_BULLET = InjectionHelper.nullValue();
+	@ObjectHolder(SEEKER_BULLET_REGISTRY_NAME)
+	public static final MagazineItem SEEKER_BULLET = InjectionHelper.nullValue();
+	@ObjectHolder(SAND_BULLET_REGISTRY_NAME)
+	public static final MagazineItem SAND_BULLET = InjectionHelper.nullValue();
+	@ObjectHolder(STORM_BULLET_REGISTRY_NAME)
+	public static final MagazineItem STORM_BULLET = InjectionHelper.nullValue();
+	public static final ItemBase ZOMBIE_HEART = InjectionHelper.nullValue();
+	public static final ItemBase SQUID_BEAK = InjectionHelper.nullValue();
+	public static final ItemBase RIB_BONE = InjectionHelper.nullValue();
+	public static final ItemBase CATALYZING_GLAND = InjectionHelper.nullValue();
+	public static final ItemBase CHELICERAE = InjectionHelper.nullValue();
+	public static final ItemBase SLIME_PEARL = InjectionHelper.nullValue();
+	public static final ItemBase KRAKEN_SHELL_FRAGMENT = InjectionHelper.nullValue();
+	public static final ItemBase BAT_WING = InjectionHelper.nullValue();
+	public static final ItemBase WITHERED_RIB = InjectionHelper.nullValue();
+	public static final ItemBase MOLTEN_CORE = InjectionHelper.nullValue();
+	public static final ItemBase EYE_OF_THE_STORM = InjectionHelper.nullValue();
+	public static final ItemBase FERTILE_ESSENCE = InjectionHelper.nullValue();
+	public static final ItemBase FROZEN_CORE = InjectionHelper.nullValue();
+	public static final ItemBase NEBULOUS_HEART = InjectionHelper.nullValue();
+	public static final ItemBase INFERNAL_CLAW = InjectionHelper.nullValue();
+	public static final ItemBase GUARDIAN_SPIKE = InjectionHelper.nullValue();
+
+	@SuppressWarnings("ConstantConditions")
+	@SubscribeEvent
+	public static void registerContainers(RegistryEvent.Register<ContainerType<?>> evt) {
+		IForgeRegistry<ContainerType<?>> r = evt.getRegistry();
+
+		ContainerType<ContainerAlkahestTome> tome = IForgeContainerType.create(ContainerAlkahestTome::fromBuffer);
+		r.register(tome.setRegistryName(ALKAHESTRY_TOME.getRegistryName()));
+
+		ContainerType<ContainerMobCharmBelt> belt = IForgeContainerType.create(ContainerMobCharmBelt::fromBuffer);
+		r.register(belt.setRegistryName(MOB_CHARM_BELT.getRegistryName()));
+
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			ScreenManager.registerFactory(tome, GuiAlkahestTome::new);
+			ScreenManager.registerFactory(belt, GuiMobCharmBelt::new);
+		});
+	}
 
 	@SubscribeEvent
 	public static void register(RegistryEvent.Register<Item> event) {
 		IForgeRegistry<Item> registry = event.getRegistry();
-		if (!Settings.Disable.disableAlkahestry) {
-			alkahestryTome = registerItem(registry, new ItemAlkahestryTome(), Names.Items.ALKAHESTRY_TOME);
+		if (!Settings.COMMON.disable.disableAlkahestry.get()) {
+			registerItem(registry, new AlkahestryTomeItem());
 		}
-		mobIngredient = registerItem(registry, new ItemMobIngredient(), Names.Items.MOB_INGREDIENT);
-		mercyCross = registerItem(registry, new ItemMercyCross(), Names.Items.MERCY_CROSS);
-		angelheartVial = registerItem(registry, new ItemAngelheartVial(), Names.Items.ANGELHEART_VIAL);
-		angelicFeather = registerItem(registry, new ItemAngelicFeather(), Names.Items.ANGELIC_FEATHER);
+		registerItem(registry, new MercyCrossItem());
+		registerItem(registry, new AngelheartVialItem());
+		registerItem(registry, new AngelicFeatherItem());
 
-		destructionCatalyst = registerItem(registry, new ItemDestructionCatalyst(), Names.Items.DESTRUCTION_CATALYST);
-		emperorChalice = registerItem(registry, new ItemEmperorChalice(), Names.Items.EMPEROR_CHALICE);
-		enderStaff = registerItem(registry, new ItemEnderStaff(), Names.Items.ENDER_STAFF);
-		fortuneCoin = registerItem(registry, new ItemFortuneCoin(), Names.Items.FORTUNE_COIN);
-		glacialStaff = registerItem(registry, new ItemGlacialStaff(), Names.Items.GLACIAL_STAFF);
-		glowingBread = registerItem(registry, new ItemGlowingBread(), Names.Items.GLOWING_BREAD);
-		glowingWater = registerItem(registry, new ItemGlowingWater(), Names.Items.GLOWING_WATER);
-		harvestRod = registerItem(registry, new ItemHarvestRod(), Names.Items.HARVEST_ROD);
-		mobCharmFragment = registerItem(registry, new ItemMobCharmFragment(), Names.Items.MOB_CHARM_FRAGMENT);
-		heroMedallion = registerItem(registry, new ItemHeroMedallion(), Names.Items.HERO_MEDALLION);
-		holyHandGrenade = registerItem(registry, new ItemHolyHandGrenade(), Names.Items.HOLY_HAND_GRENADE);
-		iceMagusRod = registerItem(registry, new ItemIceMagusRod(), Names.Items.ICE_MAGUS_ROD);
-		infernalChalice = registerItem(registry, new ItemInfernalChalice(), Names.Items.INFERNAL_CHALICE);
-		infernalClaws = registerItem(registry, new ItemInfernalClaws(), Names.Items.INFERNAL_CLAWS);
-		infernalTear = registerItem(registry, new ItemInfernalTear(), Names.Items.INFERNAL_TEAR);
-		krakenShell = registerItem(registry, new ItemKrakenShell(), Names.Items.KRAKEN_SHELL);
-		lanternOfParanoia = registerItem(registry, new ItemLanternOfParanoia(), Names.Items.LANTERN_OF_PARANOIA);
-		magicbane = registerItem(registry, new ItemMagicbane(), Names.Items.MAGICBANE);
-		midasTouchstone = registerItem(registry, new ItemMidasTouchstone(), Names.Items.MIDAS_TOUCHSTONE);
-		mobCharm = registerItem(registry, new ItemMobCharm(), Names.Items.MOB_CHARM, false);
-		mobCharmBelt = registerItem(registry, new ItemMobCharmBelt(), Names.Items.MOB_CHARM_BELT);
-		phoenixDown = registerItem(registry, new ItemPhoenixDown(), Names.Items.PHOENIX_DOWN);
-		pyromancerStaff = registerItem(registry, new ItemPyromancerStaff(), Names.Items.PYROMANCER_STAFF);
-		rendingGale = registerItem(registry, new ItemRendingGale(), Names.Items.RENDING_GALE);
-		rodOfLyssa = registerItem(registry, new ItemRodOfLyssa(), Names.Items.ROD_OF_LYSSA);
-		salamanderEye = registerItem(registry, new ItemSalamanderEye(), Names.Items.SALAMANDER_EYE);
-		serpentStaff = registerItem(registry, new ItemSerpentStaff(), Names.Items.SERPENT_STAFF);
-		shearsOfWinter = registerItem(registry, new ItemShearsOfWinter(), Names.Items.SHEARS_OF_WINTER);
-		sojournerStaff = registerItem(registry, new ItemSojournerStaff(), Names.Items.SOJOURNER_STAFF);
-		twilightCloak = registerItem(registry, new ItemTwilightCloak(), Names.Items.TWILIGHT_CLOAK);
-		voidTear = registerItem(registry, new ItemVoidTear(), Names.Items.VOID_TEAR);
-		witchHat = registerItem(registry, new ItemWitchHat(), Names.Items.WITCH_HAT);
-		witherlessRose = registerItem(registry, new ItemWitherlessRose(), Names.Items.WITHERLESS_ROSE);
-		if (!Settings.Disable.disableHandgun) {
-			bullet = registerItem(registry, new ItemBullet(), Names.Items.BULLET);
-			magazine = registerItem(registry, new ItemMagazine(), Names.Items.MAGAZINE);
-			gunPart = registerItem(registry, new ItemGunPart(), Names.Items.GUN_PART);
-			handgun = registerItem(registry, new ItemHandgun(), Names.Items.HANDGUN);
+		registerItem(registry, new DestructionCatalystItem());
+		registerItem(registry, new EmperorChaliceItem());
+		registerItem(registry, new EnderStaffItem());
+		registerItem(registry, new FortuneCoinItem());
+		registerItem(registry, new GlacialStaffItem());
+		registerItem(registry, new ItemBase("glowing_bread", new Item.Properties().rarity(Rarity.RARE).food(new Food.Builder().hunger(20).saturation(1F).fastToEat().build())));
+		registerItem(registry, new GlowingWaterItem());
+		registerItem(registry, new HarvestRodItem());
+		registerItem(registry, new HeroMedallionItem());
+		registerItem(registry, new HolyHandGrenadeItem());
+		registerItem(registry, new IceMagusRodItem());
+		registerItem(registry, new InfernalChaliceItem());
+		registerItem(registry, new InfernalClawsItem());
+		registerItem(registry, new InfernalTearItem());
+		registerItem(registry, new KrakenShellItem());
+		registerItem(registry, new LanternOfParanoiaItem());
+		registerItem(registry, new MagicbaneItem());
+		registerItem(registry, new MidasTouchstoneItem());
+
+		registerItem(registry, new ItemBase("rib_bone", new Item.Properties()));
+		registerItem(registry, new ItemBase("withered_rib", new Item.Properties()));
+		registerItem(registry, new ItemBase("chelicerae", new Item.Properties()));
+		registerItem(registry, new ItemBase("catalyzing_gland", new Item.Properties()));
+		registerItem(registry, new ItemBase("slime_pearl", new Item.Properties()));
+		registerItem(registry, new ItemBase("bat_wing", new Item.Properties()));
+		registerItem(registry, new ItemBase("zombie_heart", new Item.Properties()));
+		registerItem(registry, new ItemBase("molten_core", new Item.Properties()));
+		registerItem(registry, new ItemBase("eye_of_the_storm", new Item.Properties()));
+		registerItem(registry, new ItemBase("fertile_essence", new Item.Properties()));
+		registerItem(registry, new ItemBase("frozen_core", new Item.Properties()));
+		registerItem(registry, new ItemBase("nebulous_heart", new Item.Properties()));
+		registerItem(registry, new ItemBase("squid_beak", new Item.Properties()));
+		registerItem(registry, new ItemBase("infernal_claw", new Item.Properties()));
+		registerItem(registry, new ItemBase("kraken_shell_fragment", new Item.Properties()));
+		registerItem(registry, new ItemBase("crimson_cloth", new Item.Properties()));
+		registerItem(registry, new ItemBase("guardian_spike", new Item.Properties()));
+		registerItem(registry, new MobCharmFragmentItem());
+		registerItem(registry, new MobCharmItem(), false);
+		registerItem(registry, new MobCharmBeltItem());
+
+		registerItem(registry, new PhoenixDownItem());
+		registerItem(registry, new PyromancerStaffItem());
+		registerItem(registry, new RendingGaleItem());
+		registerItem(registry, new RodOfLyssaItem());
+		registerItem(registry, new SalamanderEyeItem());
+		registerItem(registry, new SerpentStaffItem());
+		registerItem(registry, new ShearsOfWinterItem());
+		registerItem(registry, new SojournerStaffItem());
+		registerItem(registry, new TwilightCloakItem());
+		registerItem(registry, new VoidTearItem());
+		registerItem(registry, new WitchHatItem());
+		registerItem(registry, new WitherlessRoseItem());
+		if (!Settings.COMMON.disable.disableHandgun.get()) {
+			registerItem(registry, new BulletItem(EMPTY_BULLET_REGISTRY_NAME, false, false, Integer.parseInt(Colors.DARKEST, 16)));
+			registerItem(registry, new BulletItem(NEUTRAL_BULLET_REGISTRY_NAME, false, true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
+			registerItem(registry, new BulletItem(EXORCISM_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
+			registerItem(registry, new BulletItem(BLAZE_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16)));
+			registerItem(registry, new BulletItem(ENDER_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16)));
+			registerItem(registry, new BulletItem(CONCUSSIVE_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16)));
+			registerItem(registry, new BulletItem(BUSTER_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16)));
+			registerItem(registry, new BulletItem(SEEKER_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16)));
+			registerItem(registry, new BulletItem(SAND_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16)));
+			registerItem(registry, new BulletItem(STORM_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16)));
+
+			registerItem(registry, new MagazineItem(EMPTY_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.DARKEST, 16)));
+			registerItem(registry, new MagazineItem(NEUTRAL_MAGAZINE_REGISTRY_NAME, true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
+			registerItem(registry, new MagazineItem(EXORCISM_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
+			registerItem(registry, new MagazineItem(BLAZE_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16)));
+			registerItem(registry, new MagazineItem(ENDER_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16)));
+			registerItem(registry, new MagazineItem(CONCUSSIVE_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16)));
+			registerItem(registry, new MagazineItem(BUSTER_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16)));
+			registerItem(registry, new MagazineItem(SEEKER_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16)));
+			registerItem(registry, new MagazineItem(SAND_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16)));
+			registerItem(registry, new MagazineItem(STORM_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16)));
+
+			registerItem(registry, new ItemBase("grip_assembly", new Item.Properties().maxStackSize(4)));
+			registerItem(registry, new ItemBase("barrel_assembly", new Item.Properties().maxStackSize(4)));
+			registerItem(registry, new ItemBase("hammer_assembly", new Item.Properties().maxStackSize(4)));
+			registerItem(registry, new HandgunItem());
 		}
-		if (!Settings.Disable.disablePotions) {
-			attractionPotion = registerItem(registry, new ItemAttractionPotion(), Names.Items.ATTRACTION_POTION);
-			fertilePotion = registerItem(registry, new ItemFertilePotion(), Names.Items.FERTILE_POTION);
-			potionEssence = registerItem(registry, new ItemPotionEssence(), Names.Items.POTION_ESSENCE, false);
-			potion = registerItem(registry, new ItemXRPotion(), Names.Items.POTION, false);
-			tippedArrow = registerItem(registry, new ItemXRTippedArrow(), Names.Items.TIPPED_ARROW, false);
+		if (!Settings.COMMON.disable.disablePotions.get()) {
+			registerItem(registry, new AttractionPotionItem());
+			registerItem(registry, new FertilePotionItem());
+			registerItem(registry, new PotionEssenceItem(), false);
+			registerItem(registry, new PotionItem(), false);
+			registerItem(registry, new TippedArrowItem(), false);
+		}
+	}
 
-			BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.potion, new BehaviorDefaultProjectileDispense() {
+	public static void registerDispenseBehaviors() {
+		if (!Settings.COMMON.disable.disablePotions.get()) {
+			DispenserBlock.registerDispenseBehavior(ModItems.POTION, new BehaviorDefaultProjectileDispense() {
 				@Override
 				ProjectileEntityFactory getProjectileEntityFactory() {
-					return (world, position, stack) -> new EntityThrownXRPotion(world, position.getX(), position.getY(), position.getZ(), stack);
+					return (world, position, stack) -> new ThrownXRPotionEntity(world, position.getX(), position.getY(), position.getZ(), stack);
 				}
 
 				@Override
 				boolean canShoot(ItemStack stack) {
-					return ModItems.potion.isSplash(stack) || ModItems.potion.isLingering(stack);
+					return ModItems.POTION.isSplash(stack) || ModItems.POTION.isLingering(stack);
 				}
 			});
 
-			BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.attractionPotion, new BehaviorDefaultProjectileDispense() {
+			DispenserBlock.registerDispenseBehavior(ModItems.ATTRACTION_POTION, new BehaviorDefaultProjectileDispense() {
 				@Override
 				ProjectileEntityFactory getProjectileEntityFactory() {
-					return (world, position, stack) -> new EntityAttractionPotion(world, position.getX(), position.getY(), position.getZ());
+					return (world, position, stack) -> new AttractionPotionEntity(world, position.getX(), position.getY(), position.getZ());
 				}
 			});
 
-			BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.fertilePotion, new BehaviorDefaultProjectileDispense() {
+			DispenserBlock.registerDispenseBehavior(ModItems.FERTILE_POTION, new BehaviorDefaultProjectileDispense() {
 				@Override
 				ProjectileEntityFactory getProjectileEntityFactory() {
-					return (world, position, stack) -> new EntityFertilePotion(world, position.getX(), position.getY(), position.getZ());
+					return (world, position, stack) -> new FertilePotionEntity(world, position.getX(), position.getY(), position.getZ());
 				}
 			});
 
-			BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.tippedArrow, new BehaviorProjectileDispense() {
-				@Nonnull
+			DispenserBlock.registerDispenseBehavior(ModItems.TIPPED_ARROW, new ProjectileDispenseBehavior() {
+
 				@Override
-				protected IProjectile getProjectileEntity(@Nonnull World world, @Nonnull IPosition position, @Nonnull ItemStack stack) {
-					EntityXRTippedArrow entitytippedarrow = new EntityXRTippedArrow(world, position.getX(), position.getY(), position.getZ());
+				protected IProjectile getProjectileEntity(World world, IPosition position, ItemStack stack) {
+					XRTippedArrowEntity entitytippedarrow = new XRTippedArrowEntity(world, position.getX(), position.getY(), position.getZ());
 					entitytippedarrow.setPotionEffect(stack);
-					entitytippedarrow.pickupStatus = EntityArrow.PickupStatus.ALLOWED;
+					entitytippedarrow.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
 					return entitytippedarrow;
 				}
 			});
 		}
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.glowingWater, new BehaviorDefaultProjectileDispense() {
+		DispenserBlock.registerDispenseBehavior(ModItems.GLOWING_WATER, new BehaviorDefaultProjectileDispense() {
 			@Override
 			ProjectileEntityFactory getProjectileEntityFactory() {
-				return (world, position, stack) -> new EntityGlowingWater(world, position.getX(), position.getY(), position.getZ());
+				return (world, position, stack) -> new GlowingWaterEntity(world, position.getX(), position.getY(), position.getZ());
 			}
 		});
 
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.holyHandGrenade, new BehaviorDefaultProjectileDispense() {
+		DispenserBlock.registerDispenseBehavior(ModItems.HOLY_HAND_GRENADE, new BehaviorDefaultProjectileDispense() {
 			@Override
 			ProjectileEntityFactory getProjectileEntityFactory() {
-				return (world, position, stack) -> new EntityHolyHandGrenade(world, position.getX(), position.getY(), position.getZ(), stack.getDisplayName());
+				return (world, position, stack) -> new HolyHandGrenadeEntity(world, position.getX(), position.getY(), position.getZ());
 			}
 		});
 
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.holyHandGrenade, new BehaviorDefaultProjectileDispense() {
+		DispenserBlock.registerDispenseBehavior(ModItems.HOLY_HAND_GRENADE, new BehaviorDefaultProjectileDispense() {
 			@Override
 			ProjectileEntityFactory getProjectileEntityFactory() {
-				return (world, position, stack) -> new EntityHolyHandGrenade(world, position.getX(), position.getY(), position.getZ(), stack.getDisplayName());
+				return (world, position, stack) -> new HolyHandGrenadeEntity(world, position.getX(), position.getY(), position.getZ());
 			}
 		});
+
 	}
 
-	private static <T extends Item> T registerItem(IForgeRegistry<Item> registry, T item, String name) {
-		return registerItem(registry, item, name, true);
+	private static void registerItem(IForgeRegistry<Item> registry, Item item) {
+		registerItem(registry, item, true);
 	}
 
-	private static <T extends Item> T registerItem(IForgeRegistry<Item> registry, T item, String name, boolean registerInJEI) {
-		item.setRegistryName(new ResourceLocation(Reference.MOD_ID, name));
+	private static void registerItem(IForgeRegistry<Item> registry, Item item, boolean registerInJEI) {
 		registry.register(item);
 
-		if (registerInJEI)
-			Reliquary.PROXY.registerJEI(item, name);
-
-		return item;
+		if (registerInJEI) {
+			//noinspection ConstantConditions
+			Reliquary.proxy.registerJEI(item, item.getRegistryName().getPath());
+		}
 	}
 
-	private abstract static class BehaviorDefaultProjectileDispense implements IBehaviorDispenseItem {
+	@SubscribeEvent
+	public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> evt) {
+		CraftingHelper.register(MobDropsCraftableCondition.Serializer.INSTANCE);
+
+		evt.getRegistry().register(MobCharmRepairRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "mob_charm_repair")));
+		evt.getRegistry().register(AlkahestryChargingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_charging")));
+		evt.getRegistry().register(AlkahestryCraftingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_crafting")));
+		evt.getRegistry().register(AlkahestryDrainRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_drain")));
+		evt.getRegistry().register(PotionEffectsRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "potion_effects")));
+	}
+
+	public static void registerHandgunMagazines() {
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + NEUTRAL_MAGAZINE_REGISTRY_NAME, NeutralShotEntity::new, () -> NEUTRAL_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + EXORCISM_MAGAZINE_REGISTRY_NAME, ExorcismShotEntity::new, () -> EXORCISM_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + BLAZE_MAGAZINE_REGISTRY_NAME, BlazeShotEntity::new, () -> BLAZE_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + ENDER_MAGAZINE_REGISTRY_NAME, EnderShotEntity::new, () -> ENDER_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + CONCUSSIVE_MAGAZINE_REGISTRY_NAME, ConcussiveShotEntity::new, () -> CONCUSSIVE_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + BUSTER_MAGAZINE_REGISTRY_NAME, BusterShotEntity::new, () -> BUSTER_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + SEEKER_MAGAZINE_REGISTRY_NAME, SeekerShotEntity::new, () -> SEEKER_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + SAND_MAGAZINE_REGISTRY_NAME, SandShotEntity::new, () -> SAND_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + STORM_MAGAZINE_REGISTRY_NAME, StormShotEntity::new, () -> STORM_BULLET);
+	}
+
+	public static boolean isEnabled(Item... items) {
+		for (Item item : items) {
+			if (item == null || item.getRegistryName() == null) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private abstract static class BehaviorDefaultProjectileDispense implements IDispenseItemBehavior {
 
 		abstract ProjectileEntityFactory getProjectileEntityFactory();
 
+		@SuppressWarnings("squid:S1172")
 		boolean canShoot(ItemStack stack) {
 			return true;
 		}
 
-		@Nonnull
 		@Override
-		public ItemStack dispense(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+		public ItemStack dispense(IBlockSource source, ItemStack stack) {
 			if (!canShoot(stack)) {
-				return new BehaviorDefaultDispenseItem().dispense(source, stack);
+				return new DefaultDispenseItemBehavior().dispense(source, stack);
 			}
 
-			return (new BehaviorProjectileDispense() {
-				@Nonnull
+			return (new ProjectileDispenseBehavior() {
+
 				@Override
-				protected IProjectile getProjectileEntity(@Nonnull World world, @Nonnull IPosition position, @Nonnull ItemStack stack) {
+				protected IProjectile getProjectileEntity(World world, IPosition position, ItemStack stack) {
 					return getProjectileEntityFactory().createProjectileEntity(world, position, stack);
 				}
 

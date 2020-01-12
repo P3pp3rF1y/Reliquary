@@ -2,8 +2,7 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "minecraft:dye",
-            "data": 4
+            "item": "minecraft:lapis_lazuli"
         },
         {
             "item": "minecraft:gold_nugget"
@@ -16,8 +15,7 @@
         }
     ],
     "result": {
-        "item": "xreliquary:bullet",
-        "data": 7,
+        "item": "xreliquary:bullets/seeker_bullet",
         "count": 8
     }
 }

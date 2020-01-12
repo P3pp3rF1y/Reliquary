@@ -1,9 +1,9 @@
 package xreliquary.handler;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
 public interface IPlayerHurtHandler extends IPrioritizedHandler {
-	boolean canApply(EntityPlayer player, LivingAttackEvent event);
-	boolean apply(EntityPlayer player, LivingAttackEvent event);
+	boolean canApply(PlayerEntity player, LivingAttackEvent event);
+	boolean apply(PlayerEntity player, LivingAttackEvent event);
 }

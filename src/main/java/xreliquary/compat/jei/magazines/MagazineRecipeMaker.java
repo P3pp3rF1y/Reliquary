@@ -1,60 +1,51 @@
 package xreliquary.compat.jei.magazines;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import xreliquary.init.ModItems;
+import xreliquary.reference.Reference;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MagazineRecipeMaker {
-	@Nonnull
-	public static List<MagazineRecipeJEI> getRecipes() {
-		ArrayList<MagazineRecipeJEI> recipes = new ArrayList<>();
+	private MagazineRecipeMaker() {}
 
-		//add basic set of magazines
-		for(int meta = 1; meta <= 9; meta++) {
-			List<ItemStack> inputs = new ArrayList<>();
-			inputs = addShots(inputs, meta, null);
-			inputs.add(new ItemStack(ModItems.magazine));
-			inputs = addShots(inputs, meta, null);
+	public static List<ShapedRecipe> getRecipes() {
+		ArrayList<ShapedRecipe> recipes = new ArrayList<>();
 
-			recipes.add(new MagazineRecipeJEI(inputs, new ItemStack(ModItems.magazine, 1, meta)));
-		}
+		String group = "xreliquary.potion.magazine";
 
-		//now add potion variants for the neutral one
-		for(PotionEssence essence : PotionMap.uniquePotions) {
-			List<PotionEffect> effects = XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F);
+		for (PotionEssence essence : PotionMap.uniquePotions) {
+			List<EffectInstance> effects = XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F);
 
-			List<ItemStack> inputs = new ArrayList<>();
-			inputs = addShots(inputs, 1, effects);
-			inputs.add(new ItemStack(ModItems.magazine, 1, 0));
-			inputs = addShots(inputs, 1, effects);
+			NonNullList<Ingredient> inputs = NonNullList.create();
+			addShots(inputs, effects);
+			inputs.add(Ingredient.fromStacks(new ItemStack(ModItems.EMPTY_MAGAZINE)));
+			addShots(inputs, effects);
 
-			ItemStack output = new ItemStack(ModItems.magazine, 1, 1);
+			ItemStack output = new ItemStack(ModItems.NEUTRAL_MAGAZINE);
 			XRPotionHelper.addPotionEffectsToStack(output, effects);
 
-			recipes.add(new MagazineRecipeJEI(inputs, output));
+			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, "xreliquary.potion.magazine." + output.getTranslationKey());
+			recipes.add(new ShapedRecipe(id, group, 3, 3, inputs, output));
 		}
 
 		return recipes;
 	}
 
-	private static List<ItemStack> addShots(List<ItemStack> inputs, int meta, List<PotionEffect> effects) {
-		ItemStack shot = new ItemStack(ModItems.bullet, 1, meta);
-
-		if(effects != null && !effects.isEmpty()) {
-			XRPotionHelper.addPotionEffectsToStack(shot, effects);
+	private static void addShots(List<Ingredient> inputs, List<EffectInstance> effects) {
+		ItemStack shot = new ItemStack(ModItems.NEUTRAL_BULLET);
+		XRPotionHelper.addPotionEffectsToStack(shot, effects);
+		for (int i = 0; i < 4; i++) {
+			inputs.add(Ingredient.fromStacks(shot));
 		}
-
-		for(int i = 0; i < 4; i++) {
-			inputs.add(shot);
-		}
-
-		return inputs;
 	}
 }

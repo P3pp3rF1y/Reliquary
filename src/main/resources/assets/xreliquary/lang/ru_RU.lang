@@ -14,10 +14,10 @@ xreliquary.item.alkahestry_tome.name=Большая книга Алкагест�
 xreliquary.item.alkahestry_tome.tooltip=Использует свой заряд для удваивания предметов.
 xreliquary.item.alkahestry_tome.tooltip2={{!colors.rose}}Заряд: {{chargeAmount}}/{{chargeLimit}};Чтобы прочитать книгу, нажмите ПКМ.
 
-xreliquary.tile.altar_idle.name=Алтарь света
-xreliquary.tile.altar_idle.tooltip=Покормите его редстоуном,;и тогда он вырастит Вам;светокамень.
-xreliquary.tile.altar.name=Алтарь света
-xreliquary.tile.altar.tooltip=Покормите его редстоуном,;и тогда он вырастит Вам;светокамень.
+block.xreliquary.altar_idle.name=Алтарь света
+block.xreliquary.altar_idle.tooltip=Покормите его редстоуном,;и тогда он вырастит Вам;светокамень.
+block.xreliquary.altar.name=Алтарь света
+block.xreliquary.altar.tooltip=Покормите его редстоуном,;и тогда он вырастит Вам;светокамень.
 
 xreliquary.item.angelheart_vial.name=Фиал ангельского сердца
 xreliquary.item.angelheart_vial.tooltip=Воскресит Вас;и сломается.
@@ -25,15 +25,15 @@ xreliquary.item.angelheart_vial.tooltip=Воскресит Вас;и слома�
 xreliquary.item.angelic_feather.name=Ангельское перо
 xreliquary.item.angelic_feather.tooltip=Защищает от падений,;за счет голода.
 
-xreliquary.tile.apothecary_cauldron.name=Аптекарский котел
-xreliquary.tile.apothecary_cauldron.tooltip=Используется для варки зелий ;из эссенции зелья.
-xreliquary.tile.apothecary_mortar.name=Аптекарская ступка
-xreliquary.tile.apothecary_mortar.tooltip=Используется для измельчения ингредиентов;в эссенцию зелья.
+block.xreliquary.apothecary_cauldron.name=Аптекарский котел
+block.xreliquary.apothecary_cauldron.tooltip=Используется для варки зелий ;из эссенции зелья.
+block.xreliquary.apothecary_mortar.name=Аптекарская ступка
+block.xreliquary.apothecary_mortar.tooltip=Используется для измельчения ингредиентов;в эссенцию зелья.
 
-xreliquary.tile.pedestal.name=Пьедестал
-xreliquary.tile.pedestal.tooltip=Автоматизирует процессы и использует положенные на него вещи
-xreliquary.tile.pedestal_passive.name=Пьедестал (Только для отображения)
-xreliquary.tile.pedestal_passive.tooltip=Используется в качестве забавного отображения предметов
+block.xreliquary.pedestal.name=Пьедестал
+block.xreliquary.pedestal.tooltip=Автоматизирует процессы и использует положенные на него вещи
+block.xreliquary.pedestal_passive.name=Пьедестал (Только для отображения)
+block.xreliquary.pedestal_passive.tooltip=Используется в качестве забавного отображения предметов
 
 xreliquary.item.attraction_potion.name=Сыворотка Афродиты
 xreliquary.item.attraction_potion.tooltip=Заставляет животных спариваться.
@@ -143,8 +143,8 @@ xreliquary.item.infernal_tear.tooltip=Сжигает предметы, прев�
 xreliquary.tooltip.infernal_tear.absorb_unset=Нажмите ПКМ для отключения привязки к данному предмету
 xreliquary.tooltip.infernal_tear.tear_empty=Нажмите ПКМ, чтобы привязать Слезу к предмету,;который она может сжечь (из инвентаря).
 
-xreliquary.tile.interdiction_torch.name={{!colors.yellow}}Факел запрета
-xreliquary.tile.interdiction_torch.tooltip=Не даёт подойти животным или долететь снарядам.
+block.xreliquary.interdiction_torch.name={{!colors.yellow}}Факел запрета
+block.xreliquary.interdiction_torch.tooltip=Не даёт подойти животным или долететь снарядам.
 
 xreliquary.item.kraken_shell.name=Панцирь Кракена
 xreliquary.item.kraken_shell.tooltip=Поглощает урон от нехватки кислорода в воде;за счет голода.
@@ -152,8 +152,8 @@ xreliquary.item.kraken_shell.tooltip=Поглощает урон от нехва
 xreliquary.item.lantern_of_paranoia.name={{!colors.yellow}}Фонарь паранойи
 xreliquary.item.lantern_of_paranoia.tooltip=Автоматически ставит факелы на;неосвещенные территории.;Нажмите Shift+ПКМ для активации.
 
-xreliquary.tile.fertile_lilypad.name=Кувшинка плодородия
-xreliquary.tile.fertile_lilypad.tooltip=Ускоряет рост посевов.
+block.xreliquary.fertile_lilypad.name=Кувшинка плодородия
+block.xreliquary.fertile_lilypad.tooltip=Ускоряет рост посевов.
 
 xreliquary.item.magicbane.name=Чаробой
 xreliquary.item.magicbane.tooltip=Увеличивает свою силу;с каждым зачарованием...
@@ -298,8 +298,8 @@ xreliquary.tooltip.tear_quantity=На данный момент содержит
 xreliquary.item.witherless_rose.name=Неиссушаемая роза
 xreliquary.item.witherless_rose.tooltip=Благодаря Звездам из Незера,;которыми наполнена эта роза,;ее владелец защищен от эффекта Иссушения.
 
-xreliquary.tile.wraith_node.name=Призрачный узел
-xreliquary.tile.wraith_node.tooltip=Используется в качестве места назначения для;Посоха Эндера в режиме "Призрачный узел"
+block.xreliquary.wraith_node.name=Призрачный узел
+block.xreliquary.wraith_node.tooltip=Используется в качестве места назначения для;Посоха Эндера в режиме "Призрачный узел"
 
 xreliquary.general.block_settings.altar.maximumtimevarianceinminutes=Макс. отклонение от времени в минутах
 xreliquary.general.block_settings.altar.outputlightlevelwhileactive=Уровень излучаемого света во время работы

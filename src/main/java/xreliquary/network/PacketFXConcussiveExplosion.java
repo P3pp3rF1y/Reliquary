@@ -1,60 +1,42 @@
 package xreliquary.network;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkEvent;
 import xreliquary.entities.ConcussiveExplosion;
 
-public class PacketFXConcussiveExplosion implements IMessage, IMessageHandler<PacketFXConcussiveExplosion, IMessage> {
+import java.util.function.Supplier;
+
+public class PacketFXConcussiveExplosion {
 	private float size;
-	private double posX;
-	private double posY;
-	private double posZ;
+	private Vec3d pos;
 
-	@SuppressWarnings("unused")
-	public PacketFXConcussiveExplosion() {
-	}
-
-	public PacketFXConcussiveExplosion(float size, double x, double y, double z) {
+	public PacketFXConcussiveExplosion(float size, Vec3d pos) {
 		this.size = size;
-		this.posX = x;
-		this.posY = y;
-		this.posZ = z;
-
+		this.pos = pos;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		this.size = buf.readFloat();
-		this.posX = buf.readDouble();
-		this.posY = buf.readDouble();
-		this.posZ = buf.readDouble();
+	static void encode(PacketFXConcussiveExplosion msg, PacketBuffer packetBuffer) {
+		packetBuffer.writeFloat(msg.size);
+		packetBuffer.writeDouble(msg.pos.getX());
+		packetBuffer.writeDouble(msg.pos.getY());
+		packetBuffer.writeDouble(msg.pos.getZ());
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeFloat(this.size);
-		buf.writeDouble(this.posX);
-		buf.writeDouble(this.posY);
-		buf.writeDouble(this.posZ);
+	static PacketFXConcussiveExplosion decode(PacketBuffer packetBuffer) {
+		return new PacketFXConcussiveExplosion(packetBuffer.readFloat(), new Vec3d(packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readDouble()));
 	}
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IMessage onMessage(PacketFXConcussiveExplosion message, MessageContext ctx) {
-		Minecraft.getMinecraft().addScheduledTask(() -> handleMessage(message));
-
-		return null;
+	static void onMessage(PacketFXConcussiveExplosion msg, Supplier<NetworkEvent.Context> contextSupplier) {
+		contextSupplier.get().enqueueWork(() -> handleMessage(msg));
 	}
 
-	@SideOnly(Side.CLIENT)
-	private void handleMessage(PacketFXConcussiveExplosion message) {
-		ConcussiveExplosion explosion = new ConcussiveExplosion(Minecraft.getMinecraft().world, null, null, message.posX, message.posY, message.posZ, message.size, false, true);
-
+	@OnlyIn(Dist.CLIENT)
+	private static void handleMessage(PacketFXConcussiveExplosion message) {
+		ConcussiveExplosion explosion = new ConcussiveExplosion(Minecraft.getInstance().world, null, null, message.pos, message.size, false);
 		explosion.doExplosionB(false);
 	}
 }

@@ -5,14 +5,17 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        mavenCentral()
+    }
+    // This is only here while FG is under active development
+    configurations.classpath {
+        resolutionStrategy {
+            cacheDynamicVersionsFor 10, "seconds"
+            cacheChangingModulesFor 0, "seconds"
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1+"
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.0.+'
     }
 }
 
@@ -20,36 +23,69 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-// We apply the 'forge' plugin, so ForgeGradle can do it's stuff.
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'idea'
 
 repositories {
+    mavenCentral()
     maven { url "http://dvs1.progwml6.com/files/maven" }
     maven { url "http://tehnut.info/maven" }
     maven { url "https://dl.bintray.com/way2muchnoise/dev" }
     maven { url "http://maven.thiakil.com" }
-    ivy {
+/*    ivy {
         name "Botania"
         ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
-        artifactPattern "http://media.forgecdn.net/files/${botania_cf}/[module] r[revision].[ext]"
-    }
+        artifactPattern "http://media.forgecdn.net/files/${project.botania_cf}/[module] r[revision].[ext]"
+    }*/
 }
 
 group = 'xreliquary'
-version = "${minecraft_version}-${mod_version}.${getBuildNumber()}${getStable()}"
+version = "${project.minecraft_version}-${project.mod_version}.${getBuildNumber()}${getStable()}"
 archivesBaseName = 'Reliquary'
 
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+minecraft {
+    mappings channel: 'snapshot', version: project.mcp_mappings
+    runs {
+        client {
+            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            properties 'forge.logging.console.level': 'debug'
+            workingDirectory project.file('run')
+            mods {
+                xreliquary {
+                    source sourceSets.main
+                }
+            }
+        }
+        server {
+            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            properties 'forge.logging.console.level': 'debug'
+            workingDirectory project.file('run')
+            mods {
+                xreliquary {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
 dependencies {
-    deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
+    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
+    //deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
     //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     //deobfCompile "info.amerifrance.guideapi:Guide-API:${guideapi_version}"
-    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
-    deobfCompile "jeresources:JustEnoughResources-${minecraft_version}:${jer_version}"
-    deobfCompile "com.azanor.baubles:Baubles:${baubles_version}"
-    deobfCompile name: 'Botania', version: botania_version, ext: 'jar'
-    deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
-    deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
+    //deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    //deobfCompile "jeresources:JustEnoughResources-${minecraft_version}:${jer_version}"
+    //deobfCompile "com.azanor.baubles:Baubles:${baubles_version}"
+    //deobfCompile name: 'Botania', version: botania_version, ext: 'jar'
+    //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
+    //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
 
     testCompile 'org.testng:testng:6.9.10'
@@ -61,18 +97,16 @@ test {
     useTestNG()
 }
 
-minecraft {
-    version = minecraft_version + "-" + forge_version
-    mappings = mcp_mappings
-    runDir = "run"
-    replaceIn "reference/Reference.java"
-    replace "@MOD_VERSION@", "${project.version}"
+task generateSources(type: Copy) {
+    from 'src/replaceme/java'
+    into "$buildDir/generated-src"
+    filter { line -> line.replaceAll('@MOD_VERSION@', '${project.version}') }
 }
 
 processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "project_version", project.version
-    inputs.property "minecraft_version", minecraft_version
+    inputs.property "minecraft_version", project.minecraft_version
 
     // Replace stuff in mcmod.info and in .lang files, nothing else.
     from(sourceSets.main.resources.srcDirs) {

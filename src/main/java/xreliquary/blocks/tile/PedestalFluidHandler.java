@@ -1,122 +1,69 @@
 package xreliquary.blocks.tile;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 public class PedestalFluidHandler implements IFluidHandler {
-	private static final IFluidTankProperties[] EMPTY_TANK_PROPERTIES = new IFluidTankProperties[0];
+	private PedestalTileEntity pedestal;
 
-	TileEntityPedestal pedestal;
-
-	public PedestalFluidHandler(TileEntityPedestal pedestal) {
+	public PedestalFluidHandler(PedestalTileEntity pedestal) {
 		this.pedestal = pedestal;
 	}
 
 	@Override
-	public IFluidTankProperties[] getTankProperties() {
-		List<ItemStack> fluidContainers = pedestal.getFluidContainers();
-		if(fluidContainers.size() == 0)
-			return EMPTY_TANK_PROPERTIES;
+	public int getTanks() {
+		return getFluidHandlerValue(IFluidHandler::getTanks).orElse(0);
+	}
 
-		List<IFluidTankProperties> props = new ArrayList<>();
-		for(ItemStack container : fluidContainers) {
-			IFluidTankProperties[] containerProps = getContainerTankProperties(container);
-			Collections.addAll(props, containerProps);
-		}
 
-		return props.toArray(new IFluidTankProperties[0]);
+	@Override
+	public FluidStack getFluidInTank(int tank) {
+		return getFluidHandlerValue(fh -> fh.getFluidInTank(tank)).orElse(FluidStack.EMPTY);
 	}
 
 	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		int totalFilled = 0;
-		FluidStack resourceCopy = resource.copy();
-		for(ItemStack container : pedestal.getFluidContainers()) {
-			totalFilled += getFluidCapFromContainer(container).fill(resourceCopy, doFill);
-			resourceCopy.amount = resource.amount - totalFilled;
-
-			if(totalFilled >= resource.amount)
-				break;
-		}
-
-		return totalFilled;
+	public int getTankCapacity(int tank) {
+		return getFluidHandlerValue(fh -> fh.getTankCapacity(tank)).orElse(0);
 	}
 
 	@Override
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		int totalDrained = 0;
-		for(ItemStack container : pedestal.getFluidContainers()) {
-			FluidStack drainedStack = getFluidCapFromContainer(container).drain(resource.amount - totalDrained, doDrain);
-
-			if(drainedStack == null)
-				continue;
-
-			totalDrained += drainedStack.amount;
-
-			if(totalDrained >= resource.amount)
-				break;
-		}
-
-		return new FluidStack(resource.getFluid(), totalDrained);
+	public boolean isFluidValid(int tank, FluidStack stack) {
+		return getFluidHandlerValue(fh -> fh.isFluidValid(tank, stack)).orElse(false);
 	}
 
 	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		List<ItemStack> fluidContainers = pedestal.getFluidContainers();
-		if(fluidContainers.size() == 0)
-			return null;
-
-		ItemStack container = fluidContainers.get(0);
-		Fluid fluid = getFirstContainerFluid(container);
-
-		if(fluid == null)
-			return null;
-
-		return drain(new FluidStack(fluid, maxDrain), doDrain);
+	public int fill(FluidStack resource, FluidAction action) {
+		return getFluidHandlerValue(fh -> fh.fill(resource, action)).orElse(0);
 	}
 
-	private IFluidHandler getFluidCapFromContainer(ItemStack container) {
-		if(!container.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null) && !container.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null))
-			return null;
 
-		IFluidHandler fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+	@Override
+	public FluidStack drain(FluidStack resource, FluidAction action) {
+		return getFluidHandlerValue(fh -> fh.drain(resource, action)).orElse(FluidStack.EMPTY);
+	}
 
-		if (fluidHandler == null) {
-			fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+
+	@Override
+	public FluidStack drain(int maxDrain, FluidAction action) {
+		return getFluidHandlerValue(fh -> fh.drain(maxDrain, action)).orElse(FluidStack.EMPTY);
+	}
+
+	private <T> Optional<T> getFluidHandlerValue(Function<IFluidHandler, T> mapValue) {
+		ItemStack fluidContainer = pedestal.getFluidContainer();
+		if (fluidContainer.isEmpty()) {
+			return Optional.empty();
 		}
+		LazyOptional<IFluidHandler> cap = fluidContainer.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+		if (cap.isPresent()) {
+			return cap.map(fh -> Optional.of(mapValue.apply(fh))).orElse(Optional.empty());
+		}
+		return fluidContainer.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).map(fh -> Optional.of(mapValue.apply(fh))).orElse(Optional.empty());
 
-		return fluidHandler;
-	}
-
-	private IFluidTankProperties[] getContainerTankProperties(ItemStack container) {
-		IFluidHandler handler = getFluidCapFromContainer(container);
-
-		if(handler == null)
-			return null;
-
-		return handler.getTankProperties();
-	}
-
-	private Fluid getFirstContainerFluid(ItemStack container) {
-		IFluidHandler handler = getFluidCapFromContainer(container);
-
-		if(handler == null)
-			return null;
-
-		IFluidTankProperties[] tankProperties = handler.getTankProperties();
-
-		if(tankProperties == null || tankProperties.length == 0)
-			return null;
-
-		return tankProperties[0].getContents() == null ? null : tankProperties[0].getContents().getFluid();
 	}
 }

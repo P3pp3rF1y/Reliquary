@@ -1,0 +1,21 @@
+{
+    "type": "xreliquary:potion_effects",
+    "pattern": [
+        "BBB",
+        "BPB",
+        "BBB"
+    ],
+    "duration_factor": 0.2,
+    "key": {
+        "B": {
+            "item": "xreliquary:bullets/neutral_bullet"
+        },
+        "P": {
+            "type": "xreliquary:lingering_potion"
+        }
+    },
+    "result": {
+        "item": "xreliquary:bullets/neutral_bullet",
+        "count": 8
+    }
+}

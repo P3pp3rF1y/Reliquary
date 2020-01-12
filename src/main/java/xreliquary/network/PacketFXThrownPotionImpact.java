@@ -1,80 +1,66 @@
 package xreliquary.network;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.Random;
+import java.util.function.Supplier;
 
-public class PacketFXThrownPotionImpact implements IMessage, IMessageHandler<PacketFXThrownPotionImpact, IMessage> {
+public class PacketFXThrownPotionImpact {
 	private int color;
 	private double posX;
 	private double posY;
 	private double posZ;
 
-	@SuppressWarnings("unused")
-	public PacketFXThrownPotionImpact() {
-	}
-
 	public PacketFXThrownPotionImpact(int color, double x, double y, double z) {
 		this.color = color;
-		this.posX = x;
-		this.posY = y;
-		this.posZ = z;
+		posX = x;
+		posY = y;
+		posZ = z;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		this.color = buf.readInt();
-		this.posX = buf.readDouble();
-		this.posY = buf.readDouble();
-		this.posZ = buf.readDouble();
+	static void encode(PacketFXThrownPotionImpact msg, PacketBuffer packetBuffer) {
+		packetBuffer.writeInt(msg.color);
+		packetBuffer.writeDouble(msg.posX);
+		packetBuffer.writeDouble(msg.posY);
+		packetBuffer.writeDouble(msg.posZ);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeInt(this.color);
-		buf.writeDouble(this.posX);
-		buf.writeDouble(this.posY);
-		buf.writeDouble(this.posZ);
+	static PacketFXThrownPotionImpact decode(PacketBuffer packetBuffer) {
+		return new PacketFXThrownPotionImpact(packetBuffer.readInt(), packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readDouble());
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IMessage onMessage(PacketFXThrownPotionImpact message, MessageContext ctx) {
-		Minecraft.getMinecraft().addScheduledTask(() -> handleMessage(message));
-
-		return null;
+	public static void onMessage(PacketFXThrownPotionImpact msg, Supplier<NetworkEvent.Context> contextSupplier) {
+		contextSupplier.get().enqueueWork(() -> handleMessage(msg));
 	}
 
-	@SideOnly(Side.CLIENT)
-	private void handleMessage(PacketFXThrownPotionImpact message) {
-		Minecraft mc = FMLClientHandler.instance().getClient();
+	@OnlyIn(Dist.CLIENT)
+	private static void handleMessage(PacketFXThrownPotionImpact message) {
+		Minecraft mc = Minecraft.getInstance();
 		int color = message.color;
-		Random rand = new Random();
+		Random rand = mc.world.rand;
 
 		float red = (((color >> 16) & 255) / 256F);
 		float green = (((color >> 8) & 255) / 256F);
 		float blue = ((color & 255) / 256F);
 
-		for(int var20 = 0; var20 < 100; ++var20) {
+		for (int i = 0; i < 100; ++i) {
 			double var39 = rand.nextDouble() * 4.0D;
-			double var23 = rand.nextDouble() * Math.PI * 2.0D;
-			double var25 = Math.cos(var23) * var39;
-			double var27 = 0.01D + rand.nextDouble() * 0.5D;
-			double var29 = Math.sin(var23) * var39;
-			Particle var31 = mc.effectRenderer.spawnEffectParticle(EnumParticleTypes.SPELL.getParticleID(), message.posX + var25 * 0.1D, message.posY + 0.3D, message.posZ + var29 * 0.1D, var25, var27, var29);
-			if(var31 != null) {
+			double angle = rand.nextDouble() * Math.PI * 2.0D;
+			double xSpeed = Math.cos(angle) * var39;
+			double ySpeed = 0.01D + rand.nextDouble() * 0.5D;
+			double zSpeed = Math.sin(angle) * var39;
+
+			Particle particle = mc.particles.addParticle(ParticleTypes.EFFECT, message.posX + xSpeed * 0.1D, message.posY + 0.3D, message.posZ + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
+			if (particle != null) {
 				float var32 = 0.75F + rand.nextFloat() * 0.25F;
-				var31.setRBGColorF(red * var32, green * var32, blue * var32);
-				var31.multiplyVelocity((float) var39);
+				particle.setColor(red * var32, green * var32, blue * var32);
+				particle.multiplyVelocity((float) var39);
 			}
 		}
 	}

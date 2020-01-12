@@ -1,10 +1,7 @@
 package xreliquary.init;
 
-import net.minecraft.world.World;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.compat.ICompat;
 import xreliquary.compat.waila.WailaCompat;
 import xreliquary.reference.Compatibility;
@@ -12,14 +9,15 @@ import xreliquary.reference.Reference;
 
 import java.util.ArrayList;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModCompat {
+	private ModCompat() {}
+
 	private static ArrayList<ICompat> compats = new ArrayList<>();
 
 	public static void registerModCompat() {
-		//compats.add(new TCCompat()); // TODO add back when TC is updated
 		compats.add(new WailaCompat());
-		compats.add(new WailaCompat(){
+		compats.add(new WailaCompat() {
 			@Override
 			public String getModId() {
 				return Compatibility.MOD_ID.HWYLA;
@@ -27,13 +25,7 @@ public class ModCompat {
 		});
 	}
 
-	public static void loadCompat(ICompat.InitializationPhase phase, World world) {
-		compats.stream().filter(compatibility -> Loader.isModLoaded(compatibility.getModId())).forEach(compatibility -> compatibility.loadCompatibility(phase, world));
+	public static void loadCompats() {
+		compats.stream().filter(compatibility -> ModList.get().isLoaded(compatibility.getModId())).forEach(ICompat::loadCompatibility);
 	}
-
-	@SubscribeEvent
-	public static void worldLoad(WorldEvent.Load event) {
-		loadCompat(ICompat.InitializationPhase.WORLD_LOAD, event.getWorld());
-	}
-
 }

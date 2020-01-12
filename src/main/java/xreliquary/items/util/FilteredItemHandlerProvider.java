@@ -1,42 +1,34 @@
 package xreliquary.items.util;
 
-import net.minecraft.item.Item;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
-public class FilteredItemHandlerProvider implements ICapabilitySerializable<NBTTagCompound> {
+public class FilteredItemHandlerProvider implements ICapabilitySerializable<CompoundNBT> {
 	private FilteredItemStackHandler itemHandler;
 
-	public FilteredItemHandlerProvider(int[] limits, Item[] items, int[] unitWorth) {
-		itemHandler = new FilteredItemStackHandler(limits, items, unitWorth);
+	public FilteredItemHandlerProvider(List<FilteredItemStackHandler.RemovableStack> filteredBigItemStacks) {
+		itemHandler = new FilteredItemStackHandler(filteredBigItemStacks);
 	}
 
 	@Override
-	public NBTTagCompound serializeNBT() {
+	public CompoundNBT serializeNBT() {
 		return itemHandler.serializeNBT();
 	}
 
 	@Override
-	public void deserializeNBT(NBTTagCompound tagCompound) {
+	public void deserializeNBT(CompoundNBT tagCompound) {
 		itemHandler.deserializeNBT(tagCompound);
 	}
 
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
-	}
-
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
-		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			//noinspection unchecked
-			return (T) itemHandler;
-
-		return null;
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction side) {
+		return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> itemHandler));
 	}
 }

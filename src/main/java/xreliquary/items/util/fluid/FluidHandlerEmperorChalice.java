@@ -1,71 +1,82 @@
 package xreliquary.items.util.fluid;
 
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import xreliquary.init.ModItems;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class FluidHandlerEmperorChalice implements IFluidHandlerItem, ICapabilityProvider {
 
+	public static final FluidStack BUCKET_OF_WATER = new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
 	private ItemStack chalice;
 
 	public FluidHandlerEmperorChalice(ItemStack chalice) {
 		this.chalice = chalice;
 	}
 
-	@Override
-	public IFluidTankProperties[] getTankProperties() {
-		return new IFluidTankProperties[] {new FluidTankProperties(new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME), Fluid.BUCKET_VOLUME)};
-	}
 
 	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		if(!ModItems.emperorChalice.isEnabled(chalice) || resource == null || resource.amount <= 0 || resource.getFluid() != FluidRegistry.WATER)
-			return 0;
-
-		return resource.amount;
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+		return CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this));
 	}
 
-	@Override
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		if(ModItems.emperorChalice.isEnabled(chalice) || resource == null || resource.amount <= 0 || resource.getFluid() != FluidRegistry.WATER)
-			return new FluidStack(FluidRegistry.WATER, 0);
-
-		return new FluidStack(FluidRegistry.WATER, Math.min(resource.amount, Fluid.BUCKET_VOLUME));
-	}
-
-	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		if(ModItems.emperorChalice.isEnabled(chalice))
-			return new FluidStack(FluidRegistry.WATER, 0);
-
-		return new FluidStack(FluidRegistry.WATER, Math.min(maxDrain, Fluid.BUCKET_VOLUME));
-	}
-
-	@Override
-	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY;
-	}
-
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
-		//noinspection unchecked
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ? (T) this : null;
-	}
-
-	@Nonnull
 	@Override
 	public ItemStack getContainer() {
 		return chalice;
+	}
+
+	@Override
+	public int getTanks() {
+		return 1;
+	}
+
+
+	@Override
+	public FluidStack getFluidInTank(int tank) {
+		return BUCKET_OF_WATER;
+	}
+
+	@Override
+	public int getTankCapacity(int tank) {
+		return FluidAttributes.BUCKET_VOLUME;
+	}
+
+	@Override
+	public boolean isFluidValid(int tank, FluidStack stack) {
+		return stack.getFluid() == Fluids.WATER;
+	}
+
+	@Override
+	public int fill(FluidStack resource, FluidAction action) {
+		if (!ModItems.EMPEROR_CHALICE.isEnabled(chalice) || resource.isEmpty() || resource.getFluid() != Fluids.WATER)
+			return 0;
+		return resource.getAmount();
+	}
+
+
+	@Override
+	public FluidStack drain(FluidStack resource, FluidAction action) {
+		if (ModItems.EMPEROR_CHALICE.isEnabled(chalice) || resource.isEmpty() || resource.getFluid() != Fluids.WATER) {
+			return FluidStack.EMPTY;
+		}
+		return new FluidStack(Fluids.WATER, Math.min(FluidAttributes.BUCKET_VOLUME, resource.getAmount()));
+	}
+
+
+	@Override
+	public FluidStack drain(int maxDrain, FluidAction action) {
+		if (ModItems.EMPEROR_CHALICE.isEnabled(chalice)) {
+			return FluidStack.EMPTY;
+		}
+		return new FluidStack(Fluids.WATER, Math.min(FluidAttributes.BUCKET_VOLUME, maxDrain));
 	}
 }

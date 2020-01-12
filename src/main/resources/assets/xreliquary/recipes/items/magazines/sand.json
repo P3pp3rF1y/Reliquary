@@ -1,0 +1,19 @@
+{
+    "type": "xreliquary:potion_effects",
+    "pattern": [
+        "BBB",
+        "BMB",
+        "BBB"
+    ],
+    "key": {
+        "B": {
+            "item": "xreliquary:bullets/sand_bullet"
+        },
+        "M": {
+            "item": "xreliquary:magazines/empty_magazine"
+        }
+    },
+    "result": {
+        "item": "xreliquary:magazines/sand_magazine"
+    }
+}

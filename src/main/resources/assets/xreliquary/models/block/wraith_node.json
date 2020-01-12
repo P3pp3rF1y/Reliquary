@@ -2,9 +2,9 @@
   "parent":"block/block",
   "ambientocclusion": true,
   "textures": {
-    "side": "xreliquary:blocks/wraith_node",
-    "top": "xreliquary:blocks/wraith_node_top",
-    "particle": "xreliquary:blocks/wraith_node"
+    "side": "xreliquary:block/wraith_node",
+    "top": "xreliquary:block/wraith_node_top",
+    "particle": "xreliquary:block/wraith_node"
   },
   "elements": [
     {

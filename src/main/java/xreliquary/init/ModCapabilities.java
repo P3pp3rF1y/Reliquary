@@ -1,48 +1,43 @@
 package xreliquary.init;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.items.util.HarvestRodCache;
 import xreliquary.items.util.HarvestRodCacheStorage;
 import xreliquary.items.util.IHarvestRodCache;
 import xreliquary.reference.Reference;
+import xreliquary.util.InjectionHelper;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModCapabilities {
 	@CapabilityInject(IHarvestRodCache.class)
-	public final static Capability<IHarvestRodCache> HARVEST_ROD_CACHE = null;
+	public final static Capability<IHarvestRodCache> HARVEST_ROD_CACHE = InjectionHelper.nullValue();
 
 	public static void init() {
-		CapabilityManager.INSTANCE.register(IHarvestRodCache.class, new HarvestRodCacheStorage(), HarvestRodCache.class);
+		CapabilityManager.INSTANCE.register(IHarvestRodCache.class, new HarvestRodCacheStorage(), HarvestRodCache::new);
 	}
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void onItemStackConstruct(AttachCapabilitiesEvent<ItemStack> evt) {
-		if (evt.getObject().getItem() == ModItems.harvestRod) {
+		if (evt.getObject().getItem() == ModItems.HARVEST_ROD) {
 			evt.addCapability(new ResourceLocation(Reference.MOD_ID, "IHarvestRodCache"), new ICapabilityProvider() {
-				@SuppressWarnings("ConstantConditions")
 				IHarvestRodCache instance = HARVEST_ROD_CACHE.getDefaultInstance();
 
 				@Override
-				public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-					//noinspection ConstantConditions
-					return capability == HARVEST_ROD_CACHE;
-				}
-
-				@Override
-				public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
-					//noinspection ConstantConditions
-					return capability == HARVEST_ROD_CACHE ? HARVEST_ROD_CACHE.<T>cast(instance) : null;
+				public <T> LazyOptional<T> getCapability( Capability<T> capability, @Nullable Direction side) {
+					return HARVEST_ROD_CACHE.orEmpty(capability, LazyOptional.of(() -> instance));
 				}
 			});
 		}

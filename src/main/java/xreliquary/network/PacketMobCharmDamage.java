@@ -1,52 +1,41 @@
 package xreliquary.network;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkEvent;
 import xreliquary.client.gui.hud.CharmPane;
 
-public class PacketMobCharmDamage implements IMessage, IMessageHandler<PacketMobCharmDamage, IMessage> {
-	private byte type;
-	private int damage;
+import java.util.function.Supplier;
+
+public class PacketMobCharmDamage {
+	private ItemStack mobCharm;
 	private int slot;
 
-	@SuppressWarnings("unused")
 	public PacketMobCharmDamage() {}
 
-	public PacketMobCharmDamage(byte type, int damage, int slot){
-		this.type = type;
-		this.damage = damage;
+	public PacketMobCharmDamage(ItemStack mobCharm, int slot) {
+		this.mobCharm = mobCharm;
 		this.slot = slot;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		type = buf.readByte();
-		damage = buf.readInt();
-		slot = buf.readInt();
+	static void encode(PacketMobCharmDamage msg, PacketBuffer packetBuffer) {
+		packetBuffer.writeCompoundTag(msg.mobCharm.write(new CompoundNBT()));
+		packetBuffer.writeByte(msg.slot);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeByte(type);
-		buf.writeInt(damage);
-		buf.writeInt(slot);
+	static PacketMobCharmDamage decode(PacketBuffer packetBuffer) {
+		return new PacketMobCharmDamage(ItemStack.read(packetBuffer.readCompoundTag()), packetBuffer.readByte());
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IMessage onMessage(PacketMobCharmDamage message, MessageContext ctx) {
-		Minecraft.getMinecraft().addScheduledTask(() -> handleMessage(message));
-
-		return null;
+	static void onMessage(PacketMobCharmDamage msg, Supplier<NetworkEvent.Context> contextSupplier) {
+		contextSupplier.get().enqueueWork(() -> handleMessage(msg));
 	}
 
-	@SideOnly(Side.CLIENT)
-	private void handleMessage(PacketMobCharmDamage message) {
-		CharmPane.addCharmToDraw(message.type, message.damage, message.slot);
+	@OnlyIn(Dist.CLIENT)
+	private static void handleMessage(PacketMobCharmDamage message) {
+		CharmPane.addCharmToDraw(message.mobCharm, message.slot);
 	}
 }

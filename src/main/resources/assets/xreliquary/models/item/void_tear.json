@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/void_tear"
+    "layer0": "xreliquary:item/void_tear"
   }
 }

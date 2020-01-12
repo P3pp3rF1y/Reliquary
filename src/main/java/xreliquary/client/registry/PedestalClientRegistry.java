@@ -7,6 +7,7 @@ import xreliquary.util.LogHelper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class PedestalClientRegistry {
 	private static final PedestalClientRegistry INSTANCE = new PedestalClientRegistry();
@@ -20,18 +21,19 @@ public class PedestalClientRegistry {
 		INSTANCE.itemRenderers.put(itemClass, rendererClass);
 	}
 
-	public static IPedestalItemRenderer getItemRenderer(ItemStack item) {
+	public static Optional<IPedestalItemRenderer> getItemRenderer(ItemStack item) {
 		for(Class<? extends Item> itemClass : INSTANCE.itemRenderers.keySet()) {
-			if(itemClass.isInstance(item.getItem()))
+			if(itemClass.isInstance(item.getItem())) {
 				try {
-					return INSTANCE.itemRenderers.get(itemClass).newInstance();
+					return Optional.of(INSTANCE.itemRenderers.get(itemClass).newInstance());
 				}
 				catch(InstantiationException | IllegalAccessException e) {
-					LogHelper.error("Error instantiating pedestal item renderer for " + itemClass.getName());
+					LogHelper.error("Error instantiating pedestals item renderer for " + itemClass.getName());
 				}
+			}
 
 		}
-		return null;
+		return Optional.empty();
 	}
 
 }

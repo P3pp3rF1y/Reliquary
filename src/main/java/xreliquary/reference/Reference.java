@@ -93,5 +93,5 @@ public class Reference {
 	public static final String BLIND = "blindness";
 
 	//reliquary potion names
-	public static final String CURE = MOD_ID + ":cure_potion";
+	public static final String CURE = MOD_ID + ":cure";
 }

@@ -1,8 +1,8 @@
 {
 "textures": {
-    "0": "blocks/stonebrick_carved",
-    "1": "blocks/hopper_outside",
-    "particle": "blocks/stonebrick_carved"
+    "0": "block/stonebrick_carved",
+    "1": "block/hopper_outside",
+    "particle": "block/stonebrick_carved"
 },
 "elements": [ 
 {

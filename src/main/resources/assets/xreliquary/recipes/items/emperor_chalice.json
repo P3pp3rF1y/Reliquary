@@ -11,7 +11,7 @@
             "item": "minecraft:bucket"
         },
         {
-            "type": "xreliquary:item_empty_nbt",
+            "type": "forge:nbt",
             "item": "xreliquary:void_tear"
         }
     ],

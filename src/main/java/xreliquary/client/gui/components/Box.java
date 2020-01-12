@@ -18,8 +18,8 @@ public class Box extends Component {
 		int height = 0;
 		int width = 0;
 
-		for(Component component : components) {
-			if(layout == Layout.HORIZONTAL) {
+		for (Component component : components) {
+			if (layout == Layout.HORIZONTAL) {
 				height = Math.max(height, component.getHeight());
 				width += component.getWidth();
 			} else {
@@ -66,7 +66,7 @@ public class Box extends Component {
 	public void renderInternal(int x, int y) {
 		updateDimensions();
 
-		for(Component component : components) {
+		for (Component component : components) {
 			if (!component.shouldRender()) {
 				continue;
 			}
@@ -74,7 +74,7 @@ public class Box extends Component {
 			int componentX = x;
 			int componentY = y;
 
-			switch(alignment) {
+			switch (alignment) {
 				case MIDDLE:
 					componentX += layout == Layout.VERTICAL && component.getWidth() < width ? (width - component.getWidth()) / 2 : 0;
 					componentY += layout == Layout.HORIZONTAL && component.getHeight() < height ? (height - component.getHeight()) / 2 : 0;
@@ -88,7 +88,7 @@ public class Box extends Component {
 
 			component.render(componentX, componentY);
 
-			if(layout == Layout.HORIZONTAL) {
+			if (layout == Layout.HORIZONTAL) {
 				x += component.getWidth();
 			} else {
 				y += component.getHeight();

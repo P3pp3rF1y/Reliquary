@@ -2,44 +2,35 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "xreliquary:bullet",
-            "data": 5
+            "item": "xreliquary:bullets/concussive_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 5
+            "item": "xreliquary:bullets/concussive_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 5
+            "item": "xreliquary:bullets/concussive_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 5
+            "item": "xreliquary:bullets/concussive_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 5
+            "item": "xreliquary:bullets/concussive_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 5
+            "item": "xreliquary:bullets/concussive_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 5
+            "item": "xreliquary:bullets/concussive_bullet"
         },
         {
-            "item": "xreliquary:bullet",
-            "data": 5
+            "item": "xreliquary:bullets/concussive_bullet"
         },
         {
             "item": "#CREEPER_GLAND"
         }
     ],
     "result": {
-        "item": "xreliquary:bullet",
-        "data": 6,
+        "item": "xreliquary:bullets/buster_bullet",
         "count": 8
     }
 }

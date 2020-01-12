@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/angelic_feather"
+    "layer0": "xreliquary:item/angelic_feather"
   }
 }

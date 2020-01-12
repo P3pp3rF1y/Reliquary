@@ -1,6 +1,6 @@
 package xreliquary.client;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 

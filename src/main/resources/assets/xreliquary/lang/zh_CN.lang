@@ -13,10 +13,10 @@ xreliquary.item.alkahestry_tome.name=万能溶剂之经
 xreliquary.item.alkahestry_tome.tooltip=通过消耗能量来转化世间万物。
 xreliquary.item.alkahestry_tome.tooltip2={{!colors.rose}}充能：{{chargeAmount}}/{{chargeLimit}};右击阅读。
 
-xreliquary.tile.altar_idle.name=光明祭坛
-xreliquary.tile.altar_idle.tooltip=喂之以红石;报我以荧光。
-xreliquary.tile.altar.name=光明祭坛
-xreliquary.tile.altar.tooltip=喂之以红石;报我以荧光。
+block.xreliquary.altar_idle.name=光明祭坛
+block.xreliquary.altar_idle.tooltip=喂之以红石;报我以荧光。
+block.xreliquary.altar.name=光明祭坛
+block.xreliquary.altar.tooltip=喂之以红石;报我以荧光。
 
 xreliquary.item.angelheart_vial.name=天使心瓶
 xreliquary.item.angelheart_vial.tooltip=能让你复活一次;随即便会碎裂。
@@ -24,15 +24,15 @@ xreliquary.item.angelheart_vial.tooltip=能让你复活一次;随即便会碎裂
 xreliquary.item.angelic_feather.name=天使之羽
 xreliquary.item.angelic_feather.tooltip=保护你免受跌落伤害，;代之以消耗饱腹度。
 
-xreliquary.tile.apothecary_cauldron.name=药师坩埚
-xreliquary.tile.apothecary_cauldron.tooltip=用于从药材精华之中;提炼酿造药水。
-xreliquary.tile.apothecary_mortar.name=药师研钵
-xreliquary.tile.apothecary_mortar.tooltip=用于碾磨药材;取之精华至药水精华之中。
+block.xreliquary.apothecary_cauldron.name=药师坩埚
+block.xreliquary.apothecary_cauldron.tooltip=用于从药材精华之中;提炼酿造药水。
+block.xreliquary.apothecary_mortar.name=药师研钵
+block.xreliquary.apothecary_mortar.tooltip=用于碾磨药材;取之精华至药水精华之中。
 
-xreliquary.tile.pedestal.name=基座
-xreliquary.tile.pedestal.tooltip=用于自动化放置于其中的物品
-xreliquary.tile.pedestal_passive.name=基座（装饰性）
-xreliquary.tile.pedestal_passive.tooltip=用于展示物品
+block.xreliquary.pedestal.name=基座
+block.xreliquary.pedestal.tooltip=用于自动化放置于其中的物品
+block.xreliquary.pedestal_passive.name=基座（装饰性）
+block.xreliquary.pedestal_passive.tooltip=用于展示物品
 
 xreliquary.item.attraction_potion.name=阿佛洛狄忒的血清
 xreliquary.item.attraction_potion.tooltip=用于使动物交配。
@@ -142,8 +142,8 @@ xreliquary.item.infernal_tear.tooltip=将物品烧炼成天然的经验。
 xreliquary.tooltip.infernal_tear.absorb_unset=右击删除关联物品
 xreliquary.tooltip.infernal_tear.tear_empty=右击筛选物品;炼狱之泪可以燃烧。
 
-xreliquary.tile.interdiction_torch.name={{!colors.yellow}}结界火炬
-xreliquary.tile.interdiction_torch.tooltip=驱逐生物以及飞行物。
+block.xreliquary.interdiction_torch.name={{!colors.yellow}}结界火炬
+block.xreliquary.interdiction_torch.tooltip=驱逐生物以及飞行物。
 
 xreliquary.item.kraken_shell.name=海妖壳甲
 xreliquary.item.kraken_shell.tooltip=耗之以饥饿;以抵窒息之伤。
@@ -151,8 +151,8 @@ xreliquary.item.kraken_shell.tooltip=耗之以饥饿;以抵窒息之伤。
 xreliquary.item.lantern_of_paranoia.name={{!colors.yellow}}诞妄提灯
 xreliquary.item.lantern_of_paranoia.tooltip=自动在黑暗区域放置火把。;Shift右击激活。
 
-xreliquary.tile.fertile_lilypad.name=富饶莲叶
-xreliquary.tile.fertile_lilypad.tooltip=加速作物生长。
+block.xreliquary.fertile_lilypad.name=富饶莲叶
+block.xreliquary.fertile_lilypad.tooltip=加速作物生长。
 
 xreliquary.item.magicbane.name=魔骨
 xreliquary.item.magicbane.tooltip=附魔等级越高;力量就越大。
@@ -298,8 +298,8 @@ xreliquary.tooltip.tear_quantity=当前存有{{!colors.yellow}}{{amount}}{{!colo
 xreliquary.item.witherless_rose.name=不凋玫瑰
 xreliquary.item.witherless_rose.tooltip=通过使用下界之心为玫瑰灌输;从而赋予持有者免疫凋零的效果。
 
-xreliquary.tile.wraith_node.name=幽灵节点
-xreliquary.tile.wraith_node.tooltip=用作传送点;绑定到你的幽灵手杖。
+block.xreliquary.wraith_node.name=幽灵节点
+block.xreliquary.wraith_node.tooltip=用作传送点;绑定到你的幽灵手杖。
 
 xreliquary.general.block_settings.altar.maximumtimevarianceinminutes=最大时长（以分钟为单位）
 xreliquary.general.block_settings.altar.outputlightlevelwhileactive=激活时产生的光源

@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_item",
   "textures": {
-    "layer0": "xreliquary:items/holy_hand_grenade"
+    "layer0": "xreliquary:item/holy_hand_grenade"
   }
 }

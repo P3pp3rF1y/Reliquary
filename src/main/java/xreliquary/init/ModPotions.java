@@ -1,22 +1,22 @@
 package xreliquary.init;
 
-import net.minecraft.potion.Potion;
+import net.minecraft.potion.Effect;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xreliquary.potions.PotionCure;
 import xreliquary.potions.PotionFlight;
 import xreliquary.potions.PotionPacification;
 import xreliquary.reference.Reference;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModPotions {
-	public static Potion potionFlight;
-	public static Potion potionPacification;
-	public static Potion potionCure;
+	public static Effect potionFlight;
+	public static Effect potionPacification;
+	public static Effect potionCure;
 
 	@SubscribeEvent
-	public static void register(RegistryEvent.Register<Potion> event) {
+	public static void register(RegistryEvent.Register<Effect> event) {
 		potionFlight = new PotionFlight();
 		potionPacification = new PotionPacification();
 		potionCure = new PotionCure();

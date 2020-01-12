@@ -134,7 +134,7 @@ item.magazine_8.name=Sandmagazin
 item.magazine_9.name=Sturmmagazin
 
 item.mercy_cross.name=Kreuz der Gnade
-item.mercy_cross.tooltip="Verdammt, das Ding ist schwer!";Das, mein Freund, liegt an;all der Gnade in ihm.
+item.mercy_cross.tooltip="Verdammt, das Ding stack schwer!";Das, mein Freund, liegt an;all der Gnade in ihm.
 
 item.midas_touchstone.name=Prüfstein des Midas
 item.midas_touchstone.tooltip=Repariert Items aus Gold,;verbraucht Glowstone-Staub.;{{!colors.yellow}}Ladung: {{charge}}
@@ -219,7 +219,7 @@ item.potion_25.tooltip=Verbessert Kraft und Grabegeschwindigkeit;für 3 Minuten.
 item.potion_26.tooltip=Verbessert Geschwindigkeit und Sprunghöhe;für 3 Minuten.
 item.potion_27.tooltip=Heilt, regeneriert und kuriert jegliches Leiden.
 item.potion_28.tooltip=Bringt dich;in die Schatten.
-item.potion_29.tooltip=Es ist eine Phiole voller;gewöhnlichem 08/15-Wasser.
+item.potion_29.tooltip=Es stack eine Phiole voller;gewöhnlichem 08/15-Wasser.
 
 potion.haste.name=Graben
 potion.leaping.name=Sprung
@@ -267,6 +267,6 @@ tooltip.tear_empty=Hält aktuell nichts.
 tooltip.tear_quantity=Hält aktuell: {{!colors.yellow}}{{amount}}{{!colors.light_gray}} mal {{!colors.yellow}}{{item}}{{!colors.light_gray}}.
 
 item.witherless_rose.name=Nie welkende Rose
-item.witherless_rose.tooltip=Durch das Verzaubern dieser Rose mit Nethersternen; ist der Träger gegen den Wither-Effekt geschützt.
+item.witherless_rose.tooltip=Durch das Verzaubern dieser Rose mit Nethersternen; stack der Träger gegen den Wither-Effekt geschützt.
 
 tile.wraith_node.name=Geisternodie

@@ -1,15 +1,13 @@
 package xreliquary.common.gui;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import xreliquary.init.ModItems;
 
-import javax.annotation.Nonnull;
-
 class SlotMobCharm extends Slot {
-	private static IInventory emptyInventory = new InventoryBasic("[Null]", true, 0);
+	private static IInventory emptyInventory = new Inventory();
 	private ItemStack belt;
 
 	SlotMobCharm(ItemStack belt, int index, int xPosition, int yPosition) {
@@ -18,15 +16,15 @@ class SlotMobCharm extends Slot {
 		this.belt = belt;
 	}
 
-	@Nonnull
+
 	@Override
 	public ItemStack getStack() {
-		return ModItems.mobCharmBelt.getMobCharmInSlot(belt, this.getSlotIndex());
+		return ModItems.MOB_CHARM_BELT.getMobCharmInSlot(belt, this.getSlotIndex());
 	}
 
 	@Override
-	public void putStack(@Nonnull ItemStack stack) {
-		ModItems.mobCharmBelt.putMobCharmInSlot(belt, this.getSlotIndex(), stack);
+	public void putStack( ItemStack stack) {
+		ModItems.MOB_CHARM_BELT.putMobCharmInSlot(belt, this.getSlotIndex(), stack);
 	}
 
 	@Override
@@ -38,22 +36,22 @@ class SlotMobCharm extends Slot {
 		return 1;
 	}
 
-	@Nonnull
+
 	@Override
 	public ItemStack decrStackSize(int amount) {
 		if(amount > 1)
 			return ItemStack.EMPTY;
 
-		ItemStack mobCharm = ModItems.mobCharmBelt.getMobCharmInSlot(belt, getSlotIndex());
+		ItemStack mobCharm = ModItems.MOB_CHARM_BELT.getMobCharmInSlot(belt, getSlotIndex());
 
-		ModItems.mobCharmBelt.removeMobCharmInSlot(belt, getSlotIndex());
+		ModItems.MOB_CHARM_BELT.removeMobCharmInSlot(belt, getSlotIndex());
 
 		return mobCharm;
 	}
 
 	@Override
 	public boolean isItemValid(ItemStack stack) {
-		return stack.getItem() == ModItems.mobCharm;
+		return stack.getItem() == ModItems.MOB_CHARM;
 	}
 
 	@Override

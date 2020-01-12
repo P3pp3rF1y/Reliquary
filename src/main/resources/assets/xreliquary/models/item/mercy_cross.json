@@ -1,6 +1,6 @@
 {
   "parent": "xreliquary:item/default_weapon_item",
   "textures": {
-    "layer0": "xreliquary:items/mercy_cross"
+    "layer0": "xreliquary:item/mercy_cross"
   }
 }

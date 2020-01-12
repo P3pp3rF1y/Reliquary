@@ -15,8 +15,7 @@
         }
     ],
     "result": {
-        "item": "xreliquary:bullet",
-        "data": 3,
+        "item": "xreliquary:bullets/blaze_bullet",
         "count": 8
     }
 }
