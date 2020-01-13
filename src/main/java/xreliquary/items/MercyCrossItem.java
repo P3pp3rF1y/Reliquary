@@ -40,7 +40,7 @@ public class MercyCrossItem extends SwordItem {
 
 	@Override
 	public void addInformation(ItemStack cross, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip", tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", tooltip);
 	}
 
 	@Override

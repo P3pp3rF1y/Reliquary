@@ -1,13 +1,12 @@
 {
     "forge_marker": 1,
     "defaults": {
-        "model": "xreliquary:pedestal_passive",
+        "model": "xreliquary:block/pedestal_passive",
         "textures": {
             "4": "block/green_wool"
         }
     },
     "variants": {
-        "inventory": {},
         "facing": {
             "north": {},
             "south": {

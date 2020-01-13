@@ -35,7 +35,7 @@ public class DestructionCatalystItem extends ToggleableItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack catalyst, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip2",
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2",
 				ImmutableMap.of("charge", String.valueOf(NBTHelper.getInt("gunpowder", catalyst))), tooltip);
 
 		if (isEnabled(catalyst)) {

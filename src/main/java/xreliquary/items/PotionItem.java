@@ -21,6 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.entities.potion.ThrownXRPotionEntity;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
@@ -139,11 +140,12 @@ public class PotionItem extends ItemBase implements IPotionItem {
 	public ITextComponent getDisplayName(ItemStack stack) {
 		//noinspection ConstantConditions
 		if (!stack.hasTag() || stack.getTag().isEmpty()) {
-			return new TranslationTextComponent("item.potion_empty");
+			return new TranslationTextComponent("item." + Reference.MOD_ID + ".potion_empty");
+
 		} else if (isLingering(stack)) {
-			return new TranslationTextComponent("item.potion_lingering");
+			return new TranslationTextComponent("item." + Reference.MOD_ID + ".potion_lingering");
 		} else if (isSplash(stack)) {
-			return new TranslationTextComponent("item.potion_splash");
+			return new TranslationTextComponent("item." + Reference.MOD_ID + ".potion_splash");
 		}
 
 		return super.getDisplayName(stack);

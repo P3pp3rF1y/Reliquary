@@ -1,5 +1,5 @@
 {
   "variants": {
-    "normal": { "model": "xreliquary:wraith_node"}
+    "": { "model": "xreliquary:block/wraith_node"}
   }
 }

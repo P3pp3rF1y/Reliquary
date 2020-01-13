@@ -7,7 +7,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import xreliquary.reference.Reference;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -54,7 +53,7 @@ public class LanguageHelper {
 	 * @return A preprocessed localized string. If your current language doesn't have a localized string, it defaults to en_US.
 	 */
 	public static String getLocalization(String key, Object... parameters) {
-		String localization = I18n.format(Reference.MOD_ID + "." + key, parameters);
+		String localization = I18n.format(key, parameters);
 
 		if (preprocessed.containsKey(key)) {
 			return preprocessed.get(key);
@@ -101,7 +100,7 @@ public class LanguageHelper {
 	}
 
 	public static boolean localizationExists(String langName) {
-		return I18n.hasKey(Reference.MOD_ID + "." + langName);
+		return I18n.hasKey(langName);
 	}
 
 }

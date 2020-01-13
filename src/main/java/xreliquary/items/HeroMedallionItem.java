@@ -61,7 +61,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		int levels = XpHelper.getLevelForExperience(experience);
 		int remainingExperience = experience - XpHelper.getExperienceForLevel(levels);
 
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip2", ImmutableMap.of("levels", String.valueOf(levels), "experience", String.valueOf(remainingExperience)), tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("levels", String.valueOf(levels), "experience", String.valueOf(remainingExperience)), tooltip);
 		if (isEnabled(medallion)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + "XP"), tooltip);
 		}

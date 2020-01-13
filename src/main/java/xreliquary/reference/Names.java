@@ -73,7 +73,7 @@ public class Names {
 		public static final String APOTHECARY_CAULDRON = "apothecary_cauldron";
 		public static final String APOTHECARY_MORTAR = "apothecary_mortar";
 		public static final String CAULDRON_BUBBLE = "cauldron_bubble";
-		public static final String PEDESTAL = "pedestals";
+		public static final String PEDESTAL = "pedestal";
 		public static final String PASSIVE_PEDESTAL = "passive_pedestal";
 	}
 

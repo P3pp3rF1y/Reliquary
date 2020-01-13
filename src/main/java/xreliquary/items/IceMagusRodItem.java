@@ -34,7 +34,7 @@ public class IceMagusRodItem extends ToggleableItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack rod, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip2", ImmutableMap.of("charge", Integer.toString(NBTHelper.getInt("snowballs", rod))), tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("charge", Integer.toString(NBTHelper.getInt("snowballs", rod))), tooltip);
 		if (isEnabled(rod)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.SNOWBALL.getDisplayName(new ItemStack(Items.SNOWBALL)).toString()), tooltip);
 		}

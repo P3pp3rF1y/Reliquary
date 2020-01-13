@@ -260,7 +260,7 @@ public class SojournerStaffItem extends ToggleableItem {
 			phrase = String.format("%s%s", phrase.equals("Nothing.") ? "" : String.format("%s;", phrase), containedItem.getDisplayName() + ": " + quantity);
 		}
 
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip2", ImmutableMap.of("phrase", phrase, "placing", getCurrentTorch(staff).getDisplayName().getString()), tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("phrase", phrase, "placing", getCurrentTorch(staff).getDisplayName().getString()), tooltip);
 
 		if (isEnabled(staff)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + (new ItemStack(Blocks.TORCH).getDisplayName().getString())), tooltip);

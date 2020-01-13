@@ -85,7 +85,7 @@ public class AlkahestryTomeItem extends ToggleableItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack tome, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip2",
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2",
 				ImmutableMap.of("chargeAmount", String.valueOf(getCharge(tome)), "chargeLimit", String.valueOf(getChargeLimit())), tooltip);
 
 		if (isEnabled(tome)) {

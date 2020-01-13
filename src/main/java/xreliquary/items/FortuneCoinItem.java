@@ -79,7 +79,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip2", tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", tooltip);
 	}
 
 	@Override

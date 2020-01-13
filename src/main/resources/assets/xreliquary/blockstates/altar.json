@@ -1,6 +1,0 @@
-{
-    "variants": {
-        "active=false" : { "model": "xreliquary:altar_idle"},
-        "active=true": { "model": "xreliquary:altar"}
-    }
-}

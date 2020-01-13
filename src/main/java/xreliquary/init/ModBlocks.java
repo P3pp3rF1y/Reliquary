@@ -4,9 +4,12 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.WallOrFloorItem;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -40,6 +43,7 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 @ObjectHolder(Reference.MOD_ID)
 public class ModBlocks {
+	private ModBlocks() {}
 	public static final AlkahestryAltarBlock ALKAHESTRY_ALTAR = InjectionHelper.nullValue();
 	public static final ApothecaryCauldronBlock APOTHECARY_CAULDRON = InjectionHelper.nullValue();
 	public static final BaseBlock APOTHECARY_MORTAR = InjectionHelper.nullValue();
@@ -53,7 +57,7 @@ public class ModBlocks {
 		IForgeRegistry<Block> registry = event.getRegistry();
 
 		registry.register(new AlkahestryAltarBlock());
-		if (!Settings.COMMON.disable.disablePotions.get()) {
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			registry.register(new ApothecaryCauldronBlock());
 			registry.register(new ApothecaryMortarBlock());
 		}
@@ -63,12 +67,12 @@ public class ModBlocks {
 		registry.register(new WallInterdictionTorchBlock());
 		registry.register(new WraithNodeBlock());
 
-		if (!Settings.COMMON.disable.disablePedestal.get()) {
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePedestal.get())) {
 			for (DyeColor dyecolor : DyeColor.values()) {
 				registry.register(new PedestalBlock(dyecolor));
 			}
 		}
-		if (!Settings.COMMON.disable.disablePassivePedestal.get()) {
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePassivePedestal.get())) {
 			for (DyeColor dyecolor : DyeColor.values()) {
 				registry.register(new PassivePedestalBlock(dyecolor));
 			}
@@ -78,15 +82,15 @@ public class ModBlocks {
 	@SubscribeEvent
 	public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
 		registerTileEntity(event, Names.Blocks.ALKAHESTRY_ALTAR, AlkahestryAltarTileEntity::new, ALKAHESTRY_ALTAR);
-		if (!Settings.COMMON.disable.disablePedestal.get()) {
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePedestal.get())) {
 			registerTileEntity(event, Names.Blocks.PEDESTAL, PedestalTileEntity::new,
-					PedestalBlock.ALL_PEDESTAL_BLOCKS.toArray(new Block[PedestalBlock.ALL_PEDESTAL_BLOCKS.size()]));
+					PedestalBlock.ALL_PEDESTAL_BLOCKS.toArray(new Block[0]));
 		}
-		if (!Settings.COMMON.disable.disablePassivePedestal.get()) {
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePassivePedestal.get())) {
 			registerTileEntity(event, Names.Blocks.PASSIVE_PEDESTAL, PedestalPassiveTileEntity::new,
-					PassivePedestalBlock.ALL_PEDESTAL_BLOCKS.toArray(new Block[PassivePedestalBlock.ALL_PEDESTAL_BLOCKS.size()]));
+					PassivePedestalBlock.ALL_PEDESTAL_BLOCKS.toArray(new Block[0]));
 		}
-		if (!Settings.COMMON.disable.disablePotions.get()) {
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			registerTileEntity(event, Names.Blocks.APOTHECARY_CAULDRON, ApothecaryCauldronTileEntity::new, APOTHECARY_CAULDRON);
 			registerTileEntity(event, Names.Blocks.APOTHECARY_MORTAR, ApothecaryMortarTileEntity::new, APOTHECARY_MORTAR);
 		}
@@ -102,7 +106,7 @@ public class ModBlocks {
 
 		registerItemBlock(registry, ALKAHESTRY_ALTAR, Names.Blocks.ALKAHESTRY_ALTAR);
 
-		if (!Settings.COMMON.disable.disablePotions.get()) {
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			registerItemBlock(registry, APOTHECARY_CAULDRON, Names.Blocks.APOTHECARY_CAULDRON);
 			registerItemBlock(registry, APOTHECARY_MORTAR, Names.Blocks.APOTHECARY_MORTAR);
 		}
@@ -111,12 +115,22 @@ public class ModBlocks {
 		registerItemBlock(registry, INTERDICTION_TORCH, new WallOrFloorItem(INTERDICTION_TORCH, WALL_INTERDICTION_TORCH, new Item.Properties().group(Reliquary.ITEM_GROUP)), Names.Blocks.INTERDICTION_TORCH, true);
 		registerItemBlock(registry, WRAITH_NODE, Names.Blocks.WRAITH_NODE);
 
-		if (!Settings.COMMON.disable.disablePedestal.get()) {
-			PedestalBlock.ALL_PEDESTAL_BLOCKS.forEach(b -> registerItemBlock(registry, b, new BlockItemBase(b, new Item.Properties()), "pedestal", true));
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePedestal.get())) {
+			PedestalBlock.ALL_PEDESTAL_BLOCKS.forEach(b -> registerItemBlock(registry, b, new BlockItemBase(b, new Item.Properties()) {
+				@Override
+				public ITextComponent getDisplayName(ItemStack stack) {
+					return new TranslationTextComponent("block." + Reference.MOD_ID + ".pedestal");
+				}
+			}, "pedestal", true));
 		}
 
-		if (!Settings.COMMON.disable.disablePassivePedestal.get()) {
-			PassivePedestalBlock.ALL_PEDESTAL_BLOCKS.forEach(b -> registerItemBlock(registry, b, new BlockItemBase(b, new Item.Properties()), "pedestal_passive", true));
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePassivePedestal.get())) {
+			PassivePedestalBlock.ALL_PEDESTAL_BLOCKS.forEach(b -> registerItemBlock(registry, b, new BlockItemBase(b, new Item.Properties()){
+				@Override
+				public ITextComponent getDisplayName(ItemStack stack) {
+					return new TranslationTextComponent("block." + Reference.MOD_ID + ".pedestal_passive");
+				}
+			}, "pedestal_passive", true));
 		}
 	}
 

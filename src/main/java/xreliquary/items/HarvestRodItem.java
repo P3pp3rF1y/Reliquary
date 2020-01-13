@@ -76,10 +76,10 @@ public class HarvestRodItem extends ToggleableItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack rod, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip2", ImmutableMap.of("charge", Integer.toString(getBoneMealCount(rod, true))), tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("charge", Integer.toString(getBoneMealCount(rod, true))), tooltip);
 		for (int slot = 1; slot < getCountPlantable(rod, true); slot++) {
 			ItemStack plantable = getPlantableInSlot(rod, slot, true);
-			LanguageHelper.formatTooltip(getRegistryName() + ".tooltip3",
+			LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip3",
 					ImmutableMap.of("plantable", plantable.getItem().getDisplayName(plantable).getString(), "charge", Integer.toString(getPlantableQuantity(rod, slot, true))), tooltip);
 		}
 

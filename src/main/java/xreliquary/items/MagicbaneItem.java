@@ -45,7 +45,7 @@ public class MagicbaneItem extends SwordItem {
 
 	@Override
 	public void addInformation(ItemStack magicBane, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip", tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", tooltip);
 	}
 
 	/**

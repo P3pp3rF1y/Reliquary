@@ -95,7 +95,7 @@ public class PyromancerStaffItem extends ToggleableItem {
 				charges = Integer.toString(quantity);
 			}
 		}
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip2", ImmutableMap.of("charges", charges, BLAZE_CHARGES_TAG, blaze), tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("charges", charges, BLAZE_CHARGES_TAG, blaze), tooltip);
 		if (isEnabled(staff)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active",
 					ImmutableMap.of("item", TextFormatting.RED + Items.BLAZE_POWDER.getDisplayName(new ItemStack(Items.BLAZE_POWDER)).getString()

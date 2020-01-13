@@ -19,6 +19,7 @@ import net.minecraftforge.items.IItemHandler;
 import xreliquary.crafting.AlkahestryCraftingRecipe;
 import xreliquary.init.XRRecipes;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -92,8 +93,8 @@ public class InfernalTearItem extends ToggleableItem {
 			if (isEnabled(stack)) {
 				LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + itemName), tooltip);
 			}
-			tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip.absorb")));
-			tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip.infernal_tear.absorb_unset")));
+			tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".absorb")));
+			tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".infernal_tear.absorb_unset")));
 		}
 	}
 

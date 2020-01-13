@@ -72,7 +72,7 @@ public class InfernalChaliceItem extends ToggleableItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack chalice, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip2",
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2",
 				ImmutableMap.of("amount", String.valueOf(NBTHelper.getInt("fluidStacks", chalice))), tooltip);
 
 		if (isEnabled(chalice)) {

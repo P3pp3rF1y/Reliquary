@@ -140,10 +140,10 @@ public class XRPotionHelper {
 					}
 
 					if (d0 > 0.0D) {
-						list.add(new StringTextComponent((addFormatting ? TextFormatting.BLUE.toString() : "") + I18n.format("attribute.modifier.plus." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.format("attribute.name." + tuple.getA()))));
+						list.add(new StringTextComponent((addFormatting ? TextFormatting.BLUE.toString() : "") + I18n.format("attribute.modifier.plus." + attributemodifier2.getOperation().toString().toLowerCase(), ItemStack.DECIMALFORMAT.format(d1), I18n.format("attribute.name." + tuple.getA().toLowerCase()))));
 					} else if (d0 < 0.0D) {
 						d1 = d1 * -1.0D;
-						list.add(new StringTextComponent((addFormatting ? TextFormatting.RED.toString() : "") + I18n.format("attribute.modifier.take." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.format("attribute.name." + tuple.getA()))));
+						list.add(new StringTextComponent((addFormatting ? TextFormatting.RED.toString() : "") + I18n.format("attribute.modifier.take." + attributemodifier2.getOperation().toString().toLowerCase(), ItemStack.DECIMALFORMAT.format(d1), I18n.format("attribute.name." + tuple.getA().toLowerCase()))));
 					}
 				}
 			}

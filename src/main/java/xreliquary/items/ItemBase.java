@@ -28,8 +28,8 @@ public class ItemBase extends Item {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		if (LanguageHelper.localizationExists(getRegistryName() + ".tooltip")) {
-			LanguageHelper.formatTooltip(getRegistryName() + ".tooltip", tooltip);
+		if (LanguageHelper.localizationExists(getTranslationKey() + ".tooltip")) {
+			LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", tooltip);
 		}
 
 		if (Screen.hasShiftDown()) {
@@ -40,7 +40,7 @@ public class ItemBase extends Item {
 				tooltip.addAll(detailTooltip);
 			}
 		} else {
-			tooltip.add(new TranslationTextComponent(TextFormatting.WHITE + TextFormatting.ITALIC.toString() + LanguageHelper.getLocalization("tooltip.shift_for_more_info") + TextFormatting.RESET));
+			tooltip.add(new TranslationTextComponent(TextFormatting.WHITE + TextFormatting.ITALIC.toString() + LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".shift_for_more_info") + TextFormatting.RESET));
 		}
 	}
 

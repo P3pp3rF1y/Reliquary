@@ -5,10 +5,9 @@
             "6": "block/redstone_block",
             "4": "block/black_wool"
         },
-        "model": "xreliquary:pedestal"
+        "model": "xreliquary:block/pedestal"
     },
     "variants": {
-        "inventory": {},
         "facing": {
             "north": {},
             "south": {

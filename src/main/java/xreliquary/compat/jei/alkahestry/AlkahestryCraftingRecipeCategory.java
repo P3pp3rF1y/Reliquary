@@ -26,7 +26,7 @@ public class AlkahestryCraftingRecipeCategory extends AlkahestryRecipeCategory<A
 	public AlkahestryCraftingRecipeCategory(IGuiHelper guiHelper) {
 		super(guiHelper, UID);
 		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/alkahest_crafting.png"), 0, 0, 95, 76);
-		localizedName = LanguageHelper.getLocalization("jei.recipe.alkahest_crafting");
+		localizedName = LanguageHelper.getLocalization("jei." + Reference.MOD_ID + ".recipe.alkahest_crafting");
 	}
 
 	@Override

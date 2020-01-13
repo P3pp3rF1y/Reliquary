@@ -21,6 +21,7 @@ import xreliquary.entities.shot.ShotEntityBase;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModSounds;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.XRPotionHelper;
@@ -116,11 +117,15 @@ public class HandgunItem extends ItemBase {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack handgun, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip2",
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2",
 				ImmutableMap.of("count", String.valueOf(getBulletCount(handgun)), "type",
-						LanguageHelper.getLocalization(getMagazineType(handgun) + ".name")), tooltip);
+						LanguageHelper.getLocalization("magazine." + Reference.MOD_ID + "." + getMagazineTranslationKey(handgun))), tooltip);
 
 		XRPotionHelper.addPotionTooltip(handgun, tooltip);
+	}
+
+	private String getMagazineTranslationKey(ItemStack handgun) {
+		return getMagazineType(handgun).replace(Reference.MOD_ID + ":", "");
 	}
 
 	@Override

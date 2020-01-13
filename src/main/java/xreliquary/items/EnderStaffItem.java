@@ -271,7 +271,7 @@ public class EnderStaffItem extends ToggleableItem {
 		} else {
 			position = "nowhere.";
 		}
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip2", ImmutableMap.of("phrase", phrase, "position", position, "charge", charge), tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("phrase", phrase, "position", position, "charge", charge), tooltip);
 		if (isEnabled(staff))
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + Items.ENDER_PEARL.getDisplayName(new ItemStack(Items.ENDER_PEARL)).toString()), tooltip);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);

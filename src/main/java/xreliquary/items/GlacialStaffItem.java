@@ -38,7 +38,7 @@ public class GlacialStaffItem extends IceMagusRodItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack staff, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip2", ImmutableMap.of("charge", Integer.toString(NBTHelper.getInt("snowballs", staff))), tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("charge", Integer.toString(NBTHelper.getInt("snowballs", staff))), tooltip);
 		if (isEnabled(staff))
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.SNOWBALL.getDisplayName(new ItemStack(Items.SNOWBALL)).toString()), tooltip);
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);

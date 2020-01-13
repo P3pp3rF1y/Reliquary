@@ -1,7 +1,8 @@
 {
     "ambientocclusion": false,
     "textures": {
-        "particle": "#torch"
+        "particle": "xreliquary:block/interdiction_torch",
+        "torch": "xreliquary:block/interdiction_torch"
     },
     "elements": [
         {   "from": [ 7, 0, 7 ],

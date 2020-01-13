@@ -117,7 +117,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack shears, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip", null, tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", null, tooltip);
 	}
 
 	private void checkAndBreakBlockAt(PlayerEntity player, ItemStack stack, BlockPos pos) {

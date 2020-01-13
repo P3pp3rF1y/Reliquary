@@ -46,7 +46,7 @@ import java.util.List;
 public class ClientEventHandler {
 	private ClientEventHandler() {}
 
-	private static final String VOID_TEAR_MODE_TRANSLATION = "item.void_tear.mode.";
+	private static final String VOID_TEAR_MODE_TRANSLATION = "item." + Reference.MOD_ID + ".void_tear.mode.";
 
 	@SubscribeEvent
 	public static void onRenderLiving(RenderLivingEvent.Pre event) {

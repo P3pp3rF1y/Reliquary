@@ -32,7 +32,7 @@ public class BulletItem extends ItemBase implements IPotionItem {
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
 		if (hasTooltip) {
-			LanguageHelper.formatTooltip(getRegistryName() + ".tooltip", null, tooltip);
+			LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", null, tooltip);
 		}
 		XRPotionHelper.addPotionTooltip(stack, tooltip);
 	}

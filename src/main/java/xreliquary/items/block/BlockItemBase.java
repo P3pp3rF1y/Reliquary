@@ -31,6 +31,6 @@ public class BlockItemBase extends BlockItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		LanguageHelper.formatTooltip(getRegistryName() + ".tooltip", null, tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", null, tooltip);
 	}
 }
