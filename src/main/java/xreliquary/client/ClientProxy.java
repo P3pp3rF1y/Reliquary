@@ -22,7 +22,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import xreliquary.blocks.tile.ApothecaryMortarTileEntity;
-import xreliquary.blocks.tile.PedestalPassiveTileEntity;
+import xreliquary.blocks.tile.PassivePedestalTileEntity;
 import xreliquary.blocks.tile.PedestalTileEntity;
 import xreliquary.client.init.ModBlockColors;
 import xreliquary.client.init.ModItemColors;
@@ -93,7 +93,7 @@ public class ClientProxy extends CommonProxy {
 			return;
 		}
 
-		if (!Settings.COMMON.disable.disablePotions.get()) {
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			NonNullList<ItemStack> subItems = NonNullList.create();
 
 			//noinspection ConstantConditions
@@ -208,7 +208,7 @@ public class ClientProxy extends CommonProxy {
 	private static void registerTileRenderers() {
 		ClientRegistry.bindTileEntitySpecialRenderer(ApothecaryMortarTileEntity.class, new ApothecaryMortarRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(PedestalTileEntity.class, new PedestalRenderer());
-		ClientRegistry.bindTileEntitySpecialRenderer(PedestalPassiveTileEntity.class, new PassivePedestalRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(PassivePedestalTileEntity.class, new PassivePedestalRenderer());
 	}
 
 	private static void registerBeltRender() {

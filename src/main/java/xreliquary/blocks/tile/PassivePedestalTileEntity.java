@@ -21,18 +21,18 @@ import xreliquary.util.InventoryHelper;
 
 import javax.annotation.Nullable;
 
-public class PedestalPassiveTileEntity extends TileEntityBase implements IInventory {
+public class PassivePedestalTileEntity extends TileEntityBase implements IInventory {
 	@SuppressWarnings("WeakerAccess")
 	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.PASSIVE_PEDESTAL)
-	public static final TileEntityType<PedestalPassiveTileEntity> TYPE = InjectionHelper.nullValue();
+	public static final TileEntityType<PassivePedestalTileEntity> TYPE = InjectionHelper.nullValue();
 	protected ItemStack item;
 	private IItemHandler inventoryWrapper = new InvWrapper(this);
 
-	public PedestalPassiveTileEntity() {
+	public PassivePedestalTileEntity() {
 		this(TYPE);
 	}
 
-	PedestalPassiveTileEntity(TileEntityType<?> tileEntityType) {
+	PassivePedestalTileEntity(TileEntityType<?> tileEntityType) {
 		super(tileEntityType);
 		item = ItemStack.EMPTY;
 	}
@@ -44,13 +44,13 @@ public class PedestalPassiveTileEntity extends TileEntityBase implements IInvent
 	}
 
 	public void removeAndSpawnItem() {
-		if (item.isEmpty()) {
+		if (!item.isEmpty()) {
+			if (!world.isRemote) {
+				markDirty();
+				ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, item);
+				world.addEntity(itemEntity);
+			}
 			item = ItemStack.EMPTY;
-			if (world.isRemote)
-				return;
-			markDirty();
-			ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, item);
-			world.addEntity(itemEntity);
 		}
 	}
 
@@ -139,12 +139,12 @@ public class PedestalPassiveTileEntity extends TileEntityBase implements IInvent
 
 	@Override
 	public void openInventory(PlayerEntity player) {
-
+		//noop
 	}
 
 	@Override
 	public void closeInventory(PlayerEntity player) {
-
+		//noop
 	}
 
 	@Override
@@ -154,8 +154,9 @@ public class PedestalPassiveTileEntity extends TileEntityBase implements IInvent
 
 	@Override
 	public void clear() {
-		for (int i = 0; i < this.getSizeInventory(); i++)
-			this.setInventorySlotContents(i, ItemStack.EMPTY);
+		for (int i = 0; i < getSizeInventory(); i++) {
+			setInventorySlotContents(i, ItemStack.EMPTY);
+		}
 	}
 
 	@Override

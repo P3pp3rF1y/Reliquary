@@ -47,7 +47,7 @@ public class PedestalBlock extends PassivePedestalBlock {
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 
 		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(worldIn.getDimension().getType().getId(), pos, 160);
@@ -102,15 +102,16 @@ public class PedestalBlock extends PassivePedestalBlock {
 	@Override
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		ItemStack heldItem = player.getHeldItem(hand);
-		if (world.isRemote)
+		if (world.isRemote) {
 			return !heldItem.isEmpty() || player.isSneaking();
+		}
 
 		return WorldHelper.getTile(world, pos, PedestalTileEntity.class).map(pedestal -> {
 					if (heldItem.isEmpty() && !player.isSneaking() && hand == Hand.MAIN_HAND && switchClicked(hit.getFace(), hit.getHitVec())) {
 						pedestal.toggleSwitch();
 						return true;
 					}
-					return false;
+					return super.onBlockActivated(state, world, pos, player, hand, hit);
 				}
 		).orElse(false);
 	}
@@ -120,17 +121,20 @@ public class PedestalBlock extends PassivePedestalBlock {
 		double yOff = hitVec.getY();
 		double zOff = hitVec.getZ();
 
-		if (yOff < 0.3 || yOff > 0.65)
+		if (yOff < 0.3 || yOff > 0.65) {
 			return false;
-		if (side == Direction.NORTH && (xOff < 0.35 || xOff > 0.65 || zOff != 0.125))
+		}
+		if (side == Direction.NORTH && (xOff < 0.35 || xOff > 0.65 || zOff != 0.125)) {
 			return false;
-		if (side == Direction.SOUTH && (xOff < 0.35 || xOff > 0.65 || zOff != 0.875))
+		}
+		if (side == Direction.SOUTH && (xOff < 0.35 || xOff > 0.65 || zOff != 0.875)) {
 			return false;
+		}
 		//noinspection SimplifiableIfStatement
-		if (side == Direction.WEST && (zOff < 0.35 || zOff > 0.65 || xOff != 0.125))
+		if (side == Direction.WEST && (zOff < 0.35 || zOff > 0.65 || xOff != 0.125)) {
 			return false;
+		}
 		return !(side == Direction.EAST && (zOff < 0.35 || zOff > 0.65 || xOff != 0.875));
-
 	}
 
 	@Override

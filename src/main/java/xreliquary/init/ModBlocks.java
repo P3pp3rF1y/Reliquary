@@ -29,7 +29,7 @@ import xreliquary.blocks.WraithNodeBlock;
 import xreliquary.blocks.tile.AlkahestryAltarTileEntity;
 import xreliquary.blocks.tile.ApothecaryCauldronTileEntity;
 import xreliquary.blocks.tile.ApothecaryMortarTileEntity;
-import xreliquary.blocks.tile.PedestalPassiveTileEntity;
+import xreliquary.blocks.tile.PassivePedestalTileEntity;
 import xreliquary.blocks.tile.PedestalTileEntity;
 import xreliquary.items.block.BlockItemBase;
 import xreliquary.items.block.FertileLilyPadItem;
@@ -87,7 +87,7 @@ public class ModBlocks {
 					PedestalBlock.ALL_PEDESTAL_BLOCKS.toArray(new Block[0]));
 		}
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePassivePedestal.get())) {
-			registerTileEntity(event, Names.Blocks.PASSIVE_PEDESTAL, PedestalPassiveTileEntity::new,
+			registerTileEntity(event, Names.Blocks.PASSIVE_PEDESTAL, PassivePedestalTileEntity::new,
 					PassivePedestalBlock.ALL_PEDESTAL_BLOCKS.toArray(new Block[0]));
 		}
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {

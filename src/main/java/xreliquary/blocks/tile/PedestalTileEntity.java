@@ -43,12 +43,11 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class PedestalTileEntity extends PedestalPassiveTileEntity implements IPedestal, ITickableTileEntity {
+public class PedestalTileEntity extends PassivePedestalTileEntity implements IPedestal, ITickableTileEntity {
 	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.PEDESTAL)
 	public static final TileEntityType<PedestalTileEntity> TYPE = InjectionHelper.nullValue();
 	private boolean tickable = false;
 	private int actionCooldown = 0;
-	private int currentItemIndex;
 	@Nullable
 	private IPedestalActionItem actionItem = null;
 	@Nullable
@@ -115,16 +114,18 @@ public class PedestalTileEntity extends PedestalPassiveTileEntity implements IPe
 
 	@Override
 	public void onChunkUnloaded() {
-		if (!world.isRemote)
+		if (!world.isRemote) {
 			PedestalRegistry.unregisterPosition(world.getDimension().getType().getId(), pos);
+		}
 
 		super.onChunkUnloaded();
 	}
 
 	@Override
 	public void onLoad() {
-		if (!world.isRemote)
+		if (!world.isRemote) {
 			PedestalRegistry.registerPosition(world.getDimension().getType().getId(), pos);
+		}
 
 		super.onLoad();
 	}
@@ -198,8 +199,9 @@ public class PedestalTileEntity extends PedestalPassiveTileEntity implements IPe
 
 	@Override
 	public void tick() {
-		if (world.isRemote)
+		if (world.isRemote) {
 			return;
+		}
 
 		if (!enabledInitialized) {
 			enabledInitialized = true;
@@ -221,8 +223,9 @@ public class PedestalTileEntity extends PedestalPassiveTileEntity implements IPe
 
 			if (powered) {
 				switchOn(BlockPos.ZERO);
-			} else
+			} else {
 				switchOff(BlockPos.ZERO);
+			}
 		}
 
 		updateRedstone();
@@ -393,7 +396,7 @@ public class PedestalTileEntity extends PedestalPassiveTileEntity implements IPe
 
 	@Override
 	public int getSizeInventory() {
-		return applyToItemHandler(IItemHandler::getSlots).orElse(0);
+		return applyToItemHandler(IItemHandler::getSlots).orElse(0) + 1;
 	}
 
 	private <T> Optional<T> applyToItemHandler(Function<IItemHandler, T> function) {
@@ -488,8 +491,9 @@ public class PedestalTileEntity extends PedestalPassiveTileEntity implements IPe
 		int adjustedSlot = getInternalItemHandlerSlot(slot);
 		ItemStack stackInSlot = ih.getStackInSlot(adjustedSlot);
 
-		if (!stackInSlot.isEmpty() && !stack.isEmpty() && !StackHelper.isItemAndNbtEqual(stack, stackInSlot))
+		if (!stackInSlot.isEmpty() && !stack.isEmpty() && !StackHelper.isItemAndNbtEqual(stack, stackInSlot)) {
 			return;
+		}
 
 		if (!stackInSlot.isEmpty() && (stack.isEmpty() || stack.getCount() < stackInSlot.getCount())) {
 			int amount = stackInSlot.getCount() - (stack.isEmpty() ? 0 : stack.getCount());
@@ -502,8 +506,9 @@ public class PedestalTileEntity extends PedestalPassiveTileEntity implements IPe
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		if (super.isItemValidForSlot(index, stack))
+		if (super.isItemValidForSlot(index, stack)) {
 			return true;
+		}
 
 		return applyToItemHandler(ih -> {
 			ItemStack returnedStack = ih.insertItem(getInternalItemHandlerSlot(index), stack, true);
@@ -514,24 +519,13 @@ public class PedestalTileEntity extends PedestalPassiveTileEntity implements IPe
 	public void toggleSwitch() {
 		switchedOn = !switchedOn;
 
-		if (switchedOn)
+		if (switchedOn) {
 			switchOn(BlockPos.ZERO);
-		else
+		} else {
 			switchOff(BlockPos.ZERO);
+		}
 
 		updateRedstone();
-	}
-
-	public boolean isPowered() {
-		return powered;
-	}
-
-	public List<Long> getOnSwitches() {
-		return onSwitches;
-	}
-
-	public boolean isSwitchedOn() {
-		return switchedOn;
 	}
 
 	ItemStack getFluidContainer() {

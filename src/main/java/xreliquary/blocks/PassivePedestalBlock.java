@@ -18,12 +18,13 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import xreliquary.blocks.tile.PedestalPassiveTileEntity;
+import net.minecraftforge.fml.common.Mod;
+import xreliquary.blocks.tile.PassivePedestalTileEntity;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.WorldHelper;
 
@@ -32,6 +33,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class PassivePedestalBlock extends BaseBlock {
 	static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
 	private static final VoxelShape SHAPE = makeCuboidShape(2, 0, 2, 14, 11, 14);
@@ -45,7 +47,6 @@ public class PassivePedestalBlock extends BaseBlock {
 	public PassivePedestalBlock(String name) {
 		super(name, Properties.create(Material.ROCK).harvestTool(ToolType.PICKAXE));
 		setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH));
-		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -65,16 +66,17 @@ public class PassivePedestalBlock extends BaseBlock {
 	@Override
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		ItemStack heldItem = player.getHeldItem(hand);
-		if (world.isRemote)
+		if (world.isRemote) {
 			return !heldItem.isEmpty() || player.isSneaking();
+		}
 
-		if (!(world.getTileEntity(pos) instanceof PedestalPassiveTileEntity))
+		if (!(world.getTileEntity(pos) instanceof PassivePedestalTileEntity)) {
 			return false;
+		}
 
-		Optional<PedestalPassiveTileEntity> pedestal = WorldHelper.getTile(world, pos, PedestalPassiveTileEntity.class);
+		Optional<PassivePedestalTileEntity> pedestal = WorldHelper.getTile(world, pos, PassivePedestalTileEntity.class);
 		if (heldItem.isEmpty()) {
 			if (player.isSneaking() && pedestal.isPresent()) {
-				//noinspection ConstantConditions
 				pedestal.get().removeAndSpawnItem();
 				return true;
 			} else {
@@ -88,7 +90,7 @@ public class PassivePedestalBlock extends BaseBlock {
 
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-		WorldHelper.getTile(world, pos, PedestalPassiveTileEntity.class).ifPresent(PedestalPassiveTileEntity::dropPedestalInventory);
+		WorldHelper.getTile(world, pos, PassivePedestalTileEntity.class).ifPresent(PassivePedestalTileEntity::dropPedestalInventory);
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 
@@ -105,22 +107,24 @@ public class PassivePedestalBlock extends BaseBlock {
 	@Nullable
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		return new PedestalPassiveTileEntity();
+		return new PassivePedestalTileEntity();
 	}
 
 	@SubscribeEvent
-	public void onRightClicked(PlayerInteractEvent.RightClickBlock event) {
+	public static void onRightClicked(PlayerInteractEvent.RightClickBlock event) {
 		PlayerEntity player = event.getEntityPlayer();
 
 		//should only really use the event in case that the player is sneaking with something in offhand and empty mainhand
-		if (!player.isSneaking() || !player.getHeldItemMainhand().isEmpty() || player.getHeldItemOffhand().isEmpty())
+		if (!player.isSneaking() || !player.getHeldItemMainhand().isEmpty() || !player.getHeldItemOffhand().isEmpty()) {
 			return;
+		}
 
 		Block block = player.world.getBlockState(event.getPos()).getBlock();
-		if (block != this)
+		if (!(block instanceof PassivePedestalBlock)) {
 			return;
+		}
 
-		PedestalPassiveTileEntity pedestal = (PedestalPassiveTileEntity) player.world.getTileEntity(event.getPos());
+		PassivePedestalTileEntity pedestal = (PassivePedestalTileEntity) player.world.getTileEntity(event.getPos());
 
 		if (pedestal != null) {
 			pedestal.removeAndSpawnItem();
