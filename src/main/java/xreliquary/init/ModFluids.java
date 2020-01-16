@@ -3,10 +3,6 @@ package xreliquary.init;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fml.RegistryObject;
@@ -35,13 +31,4 @@ public class ModFluids {
 	public static RegistryObject<FlowingFluid> milkFlowing = FLUIDS.register("milk_flowing", () -> new ForgeFlowingFluid.Flowing(ModFluids.milkProperties));
 
 	public static final ForgeFlowingFluid.Properties milkProperties = new ForgeFlowingFluid.Properties(milkStill, milkFlowing, FluidAttributes.builder(MILK_STILL_TEXTURE, MILK_FLOWING_TEXTURE).temperature(320));
-
-	@OnlyIn(Dist.CLIENT)
-	@SubscribeEvent
-	public static void onIconLoad(TextureStitchEvent.Pre event) {
-		event.addSprite(XP_JUICE_STILL_TEXTURE);
-		event.addSprite(XP_JUICE_FLOWING_TEXTURE);
-		event.addSprite(MILK_STILL_TEXTURE);
-		event.addSprite(MILK_FLOWING_TEXTURE);
-	}
 }
