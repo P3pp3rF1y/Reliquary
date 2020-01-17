@@ -183,25 +183,25 @@ public class ModItems {
 	@ObjectHolder(STORM_MAGAZINE_REGISTRY_NAME)
 	public static final MagazineItem STORM_MAGAZINE = InjectionHelper.nullValue();
 	@ObjectHolder(EMPTY_BULLET_REGISTRY_NAME)
-	public static final MagazineItem EMPTY_BULLET = InjectionHelper.nullValue();
+	public static final BulletItem EMPTY_BULLET = InjectionHelper.nullValue();
 	@ObjectHolder(NEUTRAL_BULLET_REGISTRY_NAME)
-	public static final MagazineItem NEUTRAL_BULLET = InjectionHelper.nullValue();
+	public static final BulletItem NEUTRAL_BULLET = InjectionHelper.nullValue();
 	@ObjectHolder(EXORCISM_BULLET_REGISTRY_NAME)
-	public static final MagazineItem EXORCISM_BULLET = InjectionHelper.nullValue();
+	public static final BulletItem EXORCISM_BULLET = InjectionHelper.nullValue();
 	@ObjectHolder(BLAZE_BULLET_REGISTRY_NAME)
-	public static final MagazineItem BLAZE_BULLET = InjectionHelper.nullValue();
+	public static final BulletItem BLAZE_BULLET = InjectionHelper.nullValue();
 	@ObjectHolder(ENDER_BULLET_REGISTRY_NAME)
-	public static final MagazineItem ENDER_BULLET = InjectionHelper.nullValue();
+	public static final BulletItem ENDER_BULLET = InjectionHelper.nullValue();
 	@ObjectHolder(CONCUSSIVE_BULLET_REGISTRY_NAME)
-	public static final MagazineItem CONCUSSIVE_BULLET = InjectionHelper.nullValue();
+	public static final BulletItem CONCUSSIVE_BULLET = InjectionHelper.nullValue();
 	@ObjectHolder(BUSTER_BULLET_REGISTRY_NAME)
-	public static final MagazineItem BUSTER_BULLET = InjectionHelper.nullValue();
+	public static final BulletItem BUSTER_BULLET = InjectionHelper.nullValue();
 	@ObjectHolder(SEEKER_BULLET_REGISTRY_NAME)
-	public static final MagazineItem SEEKER_BULLET = InjectionHelper.nullValue();
+	public static final BulletItem SEEKER_BULLET = InjectionHelper.nullValue();
 	@ObjectHolder(SAND_BULLET_REGISTRY_NAME)
-	public static final MagazineItem SAND_BULLET = InjectionHelper.nullValue();
+	public static final BulletItem SAND_BULLET = InjectionHelper.nullValue();
 	@ObjectHolder(STORM_BULLET_REGISTRY_NAME)
-	public static final MagazineItem STORM_BULLET = InjectionHelper.nullValue();
+	public static final BulletItem STORM_BULLET = InjectionHelper.nullValue();
 	public static final ItemBase ZOMBIE_HEART = InjectionHelper.nullValue();
 	public static final ItemBase SQUID_BEAK = InjectionHelper.nullValue();
 	public static final ItemBase RIB_BONE = InjectionHelper.nullValue();
@@ -239,7 +239,7 @@ public class ModItems {
 	@SubscribeEvent
 	public static void register(RegistryEvent.Register<Item> event) {
 		IForgeRegistry<Item> registry = event.getRegistry();
-		if (!Settings.COMMON.disable.disableAlkahestry.get()) {
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disableAlkahestry.get())) {
 			registerItem(registry, new AlkahestryTomeItem());
 		}
 		registerItem(registry, new MercyCrossItem());
@@ -298,7 +298,7 @@ public class ModItems {
 		registerItem(registry, new VoidTearItem());
 		registerItem(registry, new WitchHatItem());
 		registerItem(registry, new WitherlessRoseItem());
-		if (!Settings.COMMON.disable.disableHandgun.get()) {
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disableHandgun.get())) {
 			registerItem(registry, new BulletItem(EMPTY_BULLET_REGISTRY_NAME, false, false, Integer.parseInt(Colors.DARKEST, 16)));
 			registerItem(registry, new BulletItem(NEUTRAL_BULLET_REGISTRY_NAME, false, true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
 			registerItem(registry, new BulletItem(EXORCISM_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
@@ -326,7 +326,7 @@ public class ModItems {
 			registerItem(registry, new ItemBase("hammer_assembly", new Item.Properties().maxStackSize(4)));
 			registerItem(registry, new HandgunItem());
 		}
-		if (!Settings.COMMON.disable.disablePotions.get()) {
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			registerItem(registry, new AttractionPotionItem());
 			registerItem(registry, new FertilePotionItem());
 			registerItem(registry, new PotionEssenceItem(), false);
@@ -336,7 +336,7 @@ public class ModItems {
 	}
 
 	public static void registerDispenseBehaviors() {
-		if (!Settings.COMMON.disable.disablePotions.get()) {
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			DispenserBlock.registerDispenseBehavior(ModItems.POTION, new BehaviorDefaultProjectileDispense() {
 				@Override
 				ProjectileEntityFactory getProjectileEntityFactory() {
