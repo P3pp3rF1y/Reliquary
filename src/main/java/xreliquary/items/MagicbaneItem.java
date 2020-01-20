@@ -29,7 +29,7 @@ import java.util.List;
 public class MagicbaneItem extends SwordItem {
 	public MagicbaneItem() {
 		super(ItemTier.GOLD, 3, -2.4f, new Properties().maxDamage(16).setNoRepair().group(Reliquary.ITEM_GROUP).rarity(Rarity.EPIC));
-		setRegistryName(new ResourceLocation(Reference.MOD_ID, "magic_bane"));
+		setRegistryName(new ResourceLocation(Reference.MOD_ID, "magicbane"));
 	}
 
 	@Override

@@ -10,12 +10,15 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.Reliquary;
 import xreliquary.client.model.WitchHatModel;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nullable;
 
@@ -60,6 +63,11 @@ public class WitchHatItem extends ArmorItem {
 	public WitchHatItem() {
 		super(hatMaterial, EquipmentSlotType.HEAD, new Properties().group(Reliquary.ITEM_GROUP));
 		setRegistryName(new ResourceLocation(Reference.MOD_ID, Names.Items.WITCH_HAT));
+	}
+
+	@Override
+	public ITextComponent getDisplayName(ItemStack stack) {
+		return new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey(stack)));
 	}
 
 	@Nullable

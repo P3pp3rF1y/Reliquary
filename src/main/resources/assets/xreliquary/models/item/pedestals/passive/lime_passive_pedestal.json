@@ -1,5 +1,5 @@
 {
-    "parent": "xreliquary:block/pedestal_passive",
+    "parent": "xreliquary:block/passive_pedestal",
     "textures": {
         "4": "block/lime_wool"
     }

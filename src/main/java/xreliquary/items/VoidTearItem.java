@@ -42,6 +42,7 @@ import net.minecraftforge.items.IItemHandler;
 import xreliquary.blocks.PedestalBlock;
 import xreliquary.items.util.VoidTearItemStackHandler;
 import xreliquary.reference.Names;
+import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -108,10 +109,10 @@ public class VoidTearItem extends ToggleableItem {
 		}
 
 		if (isEnabled(voidTear)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName().getString()), tooltip);
-			tooltip.add(new TranslationTextComponent("tooltip.absorb_tear"));
+			LanguageHelper.formatTooltip("tooltip."+ Reference.MOD_ID + ".absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName().getString()), tooltip);
+			tooltip.add(new TranslationTextComponent("tooltip."+ Reference.MOD_ID + ".absorb_tear"));
 		}
-		LanguageHelper.formatTooltip("tooltip.tear_quantity", ImmutableMap.of("item", contents.getDisplayName().getString(), "amount", Integer.toString(contents.getCount())), tooltip);
+		LanguageHelper.formatTooltip("tooltip."+ Reference.MOD_ID + ".tear_quantity", ImmutableMap.of("item", contents.getDisplayName().getString(), "amount", Integer.toString(contents.getCount())), tooltip);
 	}
 
 	@Override

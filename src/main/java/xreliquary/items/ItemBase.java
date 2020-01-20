@@ -40,8 +40,13 @@ public class ItemBase extends Item {
 				tooltip.addAll(detailTooltip);
 			}
 		} else {
-			tooltip.add(new TranslationTextComponent(TextFormatting.WHITE + TextFormatting.ITALIC.toString() + LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".shift_for_more_info") + TextFormatting.RESET));
+			tooltip.add(new TranslationTextComponent(TextFormatting.WHITE + TextFormatting.ITALIC.toString() + "tooltip." + Reference.MOD_ID + ".shift_for_more_info" + TextFormatting.RESET));
 		}
+	}
+
+	@Override
+	public ITextComponent getDisplayName(ItemStack stack) {
+		return new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey(stack)));
 	}
 
 	@OnlyIn(Dist.CLIENT)

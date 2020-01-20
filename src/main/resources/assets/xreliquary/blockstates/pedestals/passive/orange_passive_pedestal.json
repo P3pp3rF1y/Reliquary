@@ -1,7 +1,7 @@
 {
     "forge_marker": 1,
     "defaults": {
-        "model": "xreliquary:block/pedestal_passive",
+        "model": "xreliquary:block/passive_pedestal",
         "textures": {
             "4": "block/orange_wool"
         }

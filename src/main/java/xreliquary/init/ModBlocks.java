@@ -9,6 +9,7 @@ import net.minecraft.item.WallOrFloorItem;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,6 +38,7 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InjectionHelper;
+import xreliquary.util.LanguageHelper;
 
 import java.util.function.Supplier;
 
@@ -44,6 +46,7 @@ import java.util.function.Supplier;
 @ObjectHolder(Reference.MOD_ID)
 public class ModBlocks {
 	private ModBlocks() {}
+
 	public static final AlkahestryAltarBlock ALKAHESTRY_ALTAR = InjectionHelper.nullValue();
 	public static final ApothecaryCauldronBlock APOTHECARY_CAULDRON = InjectionHelper.nullValue();
 	public static final BaseBlock APOTHECARY_MORTAR = InjectionHelper.nullValue();
@@ -112,7 +115,12 @@ public class ModBlocks {
 		}
 
 		registerItemBlock(registry, FERTILE_LILYPAD, new FertileLilyPadItem(), Names.Blocks.FERTILE_LILYPAD, false);
-		registerItemBlock(registry, INTERDICTION_TORCH, new WallOrFloorItem(INTERDICTION_TORCH, WALL_INTERDICTION_TORCH, new Item.Properties().group(Reliquary.ITEM_GROUP)), Names.Blocks.INTERDICTION_TORCH, true);
+		registerItemBlock(registry, INTERDICTION_TORCH, new WallOrFloorItem(INTERDICTION_TORCH, WALL_INTERDICTION_TORCH, new Item.Properties().group(Reliquary.ITEM_GROUP)) {
+			@Override
+			public ITextComponent getDisplayName(ItemStack stack) {
+				return new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey(stack)));
+			}
+		}, Names.Blocks.INTERDICTION_TORCH, true);
 		registerItemBlock(registry, WRAITH_NODE, Names.Blocks.WRAITH_NODE);
 
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePedestal.get())) {
@@ -125,12 +133,12 @@ public class ModBlocks {
 		}
 
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePassivePedestal.get())) {
-			PassivePedestalBlock.ALL_PEDESTAL_BLOCKS.forEach(b -> registerItemBlock(registry, b, new BlockItemBase(b, new Item.Properties()){
+			PassivePedestalBlock.ALL_PEDESTAL_BLOCKS.forEach(b -> registerItemBlock(registry, b, new BlockItemBase(b, new Item.Properties()) {
 				@Override
 				public ITextComponent getDisplayName(ItemStack stack) {
-					return new TranslationTextComponent("block." + Reference.MOD_ID + ".pedestal_passive");
+					return new TranslationTextComponent("block." + Reference.MOD_ID + ".passive_pedestal");
 				}
-			}, "pedestal_passive", true));
+			}, "passive_pedestal", true));
 		}
 	}
 

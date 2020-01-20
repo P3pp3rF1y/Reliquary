@@ -10,7 +10,7 @@
             "item": "minecraft:diamond"
         },
         "P": {
-            "item": "xreliquary:pedestal_passive",
+            "item": "xreliquary:passive_pedestal",
             "data": 13
         }
     },
