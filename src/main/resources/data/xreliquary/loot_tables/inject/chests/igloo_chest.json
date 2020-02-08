@@ -6,14 +6,9 @@
             "entries": [
                 {
                     "type": "item",
-                    "entryName": "xreliquary:frozen_core",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:frozen_core",
                     "weight": 40,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 10
-                        },
                         {
                             "function": "set_count",
                             "count": {

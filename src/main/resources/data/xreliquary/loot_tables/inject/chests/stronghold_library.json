@@ -6,14 +6,9 @@
             "entries": [
                 {
                     "type": "item",
-                    "entryName" : "xreliquary:slime_pearl",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:slime_pearl",
                     "weight": 8,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 4
-                        },
                         {
                             "function": "set_count",
                             "count": {

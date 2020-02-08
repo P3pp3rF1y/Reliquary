@@ -6,14 +6,9 @@
             "entries": [
                 {
                     "type": "item",
-                    "entryName": "xreliquary:withered_rib",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:withered_rib",
                     "weight": 20,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 1
-                        },
                         {
                             "function": "set_count",
                             "count": {
@@ -25,14 +20,9 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:slime_pearl",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:slime_pearl",
                     "weight": 8,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 4
-                        },
                         {
                             "function": "set_count",
                             "count": {
@@ -44,14 +34,9 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:molten_core",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:molten_core",
                     "weight": 8,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 7
-                        },
                         {
                             "function": "set_count",
                             "count": {

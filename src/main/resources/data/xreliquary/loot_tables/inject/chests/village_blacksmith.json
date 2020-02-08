@@ -6,14 +6,9 @@
             "entries": [
                 {
                     "type": "item",
-                    "entryName": "xreliquary:zombie_heart",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:zombie_heart",
                     "weight": 10,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 6
-                        },
                         {
                             "function": "set_count",
                             "count": {

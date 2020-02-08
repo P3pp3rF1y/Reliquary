@@ -6,14 +6,9 @@
             "entries": [
                 {
                     "type": "item",
-                    "entryName": "xreliquary:rib_bone",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:rib_bone",
                     "weight": 8,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 0
-                        },
                         {
                             "function": "set_count",
                             "count": {
@@ -25,14 +20,9 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:chelicerae",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:chelicerae",
                     "weight": 8,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 2
-                        },
                         {
                             "function": "set_count",
                             "count": {
@@ -44,14 +34,9 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:zombie_heart",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:zombie_heart",
                     "weight": 8,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 6
-                        },
                         {
                             "function": "set_count",
                             "count": {

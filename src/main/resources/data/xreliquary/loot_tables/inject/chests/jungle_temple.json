@@ -6,15 +6,10 @@
             "entries": [
                 {
                     "type": "item",
-                    "entryName": "xreliquary:rib_bone",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:rib_bone",
                     "weight": 10,
                     "functions": [
                         {
-                            "function": "minecraft:set_data",
-                            "data": 0
-                        },
-                        {
                             "function": "set_count",
                             "count": {
                                 "min": 1,
@@ -25,15 +20,10 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:catalyzing_gland",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:catalyzing_gland",
                     "weight": 7,
                     "functions": [
                         {
-                            "function": "minecraft:set_data",
-                            "data": 3
-                        },
-                        {
                             "function": "set_count",
                             "count": {
                                 "min": 1,
@@ -44,15 +34,10 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:bat_wing",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:bat_wing",
                     "weight": 7,
                     "functions": [
                         {
-                            "function": "minecraft:set_data",
-                            "data": 5
-                        },
-                        {
                             "function": "set_count",
                             "count": {
                                 "min": 1,
@@ -63,14 +48,9 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:nebulous_heart",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:nebulous_heart",
                     "weight": 6,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 11
-                        },
                         {
                             "function": "set_count",
                             "count": {

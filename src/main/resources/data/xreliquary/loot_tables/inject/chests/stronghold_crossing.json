@@ -6,14 +6,9 @@
             "entries": [
                 {
                     "type": "item",
-                    "entryName": "xreliquary:rib_bone",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:rib_bone",
                     "weight": 7,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 0
-                        },
                         {
                             "function": "set_count",
                             "count": {
@@ -25,15 +20,10 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:withered_rib",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:withered_rib",
                     "weight": 5,
                     "functions": [
                         {
-                            "function": "minecraft:set_data",
-                            "data": 1
-                        },
-                        {
                             "function": "set_count",
                             "count": {
                                 "min": 1,
@@ -44,15 +34,10 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:slime_pearl",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:slime_pearl",
                     "weight": 9,
                     "functions": [
                         {
-                            "function": "minecraft:set_data",
-                            "data": 4
-                        },
-                        {
                             "function": "set_count",
                             "count": {
                                 "min": 1,
@@ -63,15 +48,10 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:nebulous_heart",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:nebulous_heart",
                     "weight": 9,
                     "functions": [
                         {
-                            "function": "minecraft:set_data",
-                            "data": 11
-                        },
-                        {
                             "function": "set_count",
                             "count": {
                                 "min": 1,
@@ -82,14 +62,9 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:frozen_core",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:frozen_core",
                     "weight": 7,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 10
-                        },
                         {
                             "function": "set_count",
                             "count": {

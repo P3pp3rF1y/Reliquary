@@ -7,13 +7,9 @@
                 {
                     "type": "item",
                     "entryName": "xreliquary:rib_bone",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:rib_bone",
                     "weight": 10,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 0
-                        },
                         {
                             "function": "set_count",
                             "count": {
@@ -26,13 +22,9 @@
                 {
                     "type": "item",
                     "entryName": "xreliquary:slime_pearl",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:slime_pearl",
                     "weight": 8,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 4
-                        },
                         {
                             "function": "set_count",
                             "count": {
@@ -45,13 +37,9 @@
                 {
                     "type": "item",
                     "entryName": "xreliquary:bat_wing",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:bat_wing",
                     "weight": 8,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 5
-                        },
                         {
                             "function": "set_count",
                             "count": {
@@ -63,14 +51,9 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:nebulous_heart",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:nebulous_heart",
                     "weight": 4,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 11
-                        },
                         {
                             "function": "set_count",
                             "count": {
@@ -82,14 +65,9 @@
                 },
                 {
                     "type": "item",
-                    "entryName": "xreliquary:squid_beak",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:squid_beak",
                     "weight": 8,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 12
-                        },
                         {
                             "function": "set_count",
                             "count": {

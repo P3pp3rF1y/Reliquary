@@ -13,7 +13,7 @@ import xreliquary.reference.Settings;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ModLoot {
 	private ModLoot() {}
 

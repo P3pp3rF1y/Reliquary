@@ -6,14 +6,9 @@
             "entries": [
                 {
                     "type": "item",
-                    "entryName": "xreliquary:nebulous_heart",
-                    "name": "xreliquary:mob_ingredient",
+                    "name": "xreliquary:nebulous_heart",
                     "weight": 30,
                     "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 11
-                        },
                         {
                             "function": "set_count",
                             "count": {

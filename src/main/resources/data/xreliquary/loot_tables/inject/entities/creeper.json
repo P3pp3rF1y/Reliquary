@@ -6,14 +6,8 @@
             "entries": [
                 {
                     "type": "item",
-                    "name": "xreliquary:mob_ingredient",
-                    "weight": 1,
-                    "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 3
-                        }
-                    ]
+                    "name": "xreliquary:catalyzing_gland",
+                    "weight": 1
                 }
             ],
             "conditions": [
@@ -33,14 +27,8 @@
             "entries": [
                 {
                     "type": "item",
-                    "name": "xreliquary:mob_ingredient",
-                    "weight": 1,
-                    "functions": [
-                        {
-                            "function": "minecraft:set_data",
-                            "data": 8
-                        }
-                    ]
+                    "name": "xreliquary:eye_of_the_storm",
+                    "weight": 1
                 }
             ],
             "conditions": [
@@ -51,9 +39,7 @@
                     "condition": "entity_properties",
                     "entity": "this",
                     "predicate": {
-                        "nbt": {
-                            "powered": true
-                        }
+                        "nbt": "{\"powered\": true}"
                     }
                 },
                 {
