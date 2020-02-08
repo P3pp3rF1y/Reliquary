@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "name": "main",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "xreliquary:pedestals/passive/light_blue_passive_pedestal"
+        }
+      ]
+    }
+  ]
+}

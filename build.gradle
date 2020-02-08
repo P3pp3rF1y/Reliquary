@@ -68,7 +68,23 @@ minecraft {
                 }
             }
         }
+        data {
+            properties 'forge.logging.markers': 'REGISTRIES,REGISTRYDUMP'
+            properties 'forge.logging.console.level': 'debug'
+            properties 'fml.earlyprogresswindow': 'false'
+            workingDirectory project.file('run')
+            mods {
+                xreliquary {
+                    source sourceSets.main
+                }
+            }
+            args '--mod', 'xreliquary', '--all', '--output', file('src/generated/resources/')
+        }
     }
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
 }
 
 dependencies {
