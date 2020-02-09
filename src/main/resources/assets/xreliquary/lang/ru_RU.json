@@ -213,5 +213,12 @@
     "item.xreliquary.witch_hat": "{{!colors.yellow}}Шляпа ведьмы",
     "item.xreliquary.witherless_rose": "Неиссушаемая роза",
     "item.xreliquary.witherless_rose.tooltip": "Благодаря Звездам из Незера,;которыми наполнена эта роза,;ее владелец защищен от эффекта Иссушения.",
-    "tooltip.xreliquary.shift_for_more_info": "Удерживайте Shift для большей информации"
+    "tooltip.xreliquary.shift_for_more_info": "Удерживайте Shift для большей информации",
+
+    "effect.xreliquary.cure": "Лекарство",
+
+    "potion.potency.6": "VII",
+    "potion.potency.7": "VIII",
+    "potion.potency.8": "IX",
+    "potion.potency.9": "X"
 }

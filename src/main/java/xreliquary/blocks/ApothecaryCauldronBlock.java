@@ -55,8 +55,9 @@ public class ApothecaryCauldronBlock extends BaseBlock {
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
 		if (!world.isRemote) {
 			ApothecaryCauldronTileEntity cauldron = (ApothecaryCauldronTileEntity) world.getTileEntity(pos);
-			if (cauldron != null)
+			if (cauldron != null) {
 				cauldron.handleCollidingEntity(world, pos, entity);
+			}
 		}
 	}
 
@@ -71,8 +72,9 @@ public class ApothecaryCauldronBlock extends BaseBlock {
 			} else {
 				ApothecaryCauldronTileEntity cauldron = (ApothecaryCauldronTileEntity) world.getTileEntity(pos);
 
-				if (cauldron != null)
+				if (cauldron != null) {
 					return cauldron.handleBlockActivation(world, player, hand);
+				}
 			}
 		}
 		return true;
@@ -93,7 +95,7 @@ public class ApothecaryCauldronBlock extends BaseBlock {
 	 * use the value from getComparatorInputOverride instead of the actual
 	 * redstone signal strength.
 	 */
-	@SuppressWarnings("deprecation")
+	@Override
 	public boolean hasComparatorInputOverride(BlockState state) {
 		return true;
 	}
@@ -103,7 +105,7 @@ public class ApothecaryCauldronBlock extends BaseBlock {
 	 * used instead of the redstone signal strength when this block inputs to a
 	 * comparator.
 	 */
-	@SuppressWarnings("deprecation")
+	@Override
 	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos) {
 		ApothecaryCauldronTileEntity cauldron = (ApothecaryCauldronTileEntity) world.getTileEntity(pos);
 		if (cauldron != null) {

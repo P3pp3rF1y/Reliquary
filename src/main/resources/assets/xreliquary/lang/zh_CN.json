@@ -207,5 +207,12 @@
     "item.xreliquary.witch_hat": "{{!colors.yellow}}女巫之帽",
     "item.xreliquary.witherless_rose": "不凋玫瑰",
     "item.xreliquary.witherless_rose.tooltip": "通过使用下界之心为玫瑰灌输;从而赋予持有者免疫凋零的效果。",
-    "tooltip.xreliquary.shift_for_more_info": "按住 Shift 查看更多详细信息"
+    "tooltip.xreliquary.shift_for_more_info": "按住 Shift 查看更多详细信息",
+
+    "effect.xreliquary.cure": "治疗",
+
+    "potion.potency.6": "VII",
+    "potion.potency.7": "VIII",
+    "potion.potency.8": "IX",
+    "potion.potency.9": "X"
 }

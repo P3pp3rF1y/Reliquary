@@ -49,19 +49,21 @@ import xreliquary.util.InjectionHelper;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.potions.XRPotionHelper;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWailaDataChangeIndicator, ITickableTileEntity {
+	@SuppressWarnings("WeakerAccess") // need to keep this public so that forge can inject into ObjectHolder
 	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.APOTHECARY_CAULDRON)
 	public static final TileEntityType<ApothecaryCauldronTileEntity> TYPE = InjectionHelper.nullValue();
-	public int redstoneCount = 0;
-	public List<EffectInstance> effects = Lists.newArrayList();
-	public int glowstoneCount = 0;
-	public boolean hasGunpowder = false;
-	public boolean hasNetherwart = false;
-	public boolean hasDragonBreath = false;
+	private int redstoneCount = 0;
+	private List<EffectInstance> effects = Lists.newArrayList();
+	private int glowstoneCount = 0;
+	private boolean hasGunpowder = false;
+	private boolean hasNetherwart = false;
+	private boolean hasDragonBreath = false;
 	private int cookTime = 0;
 	private int liquidLevel = 0;
 	private boolean dataChanged;
@@ -79,32 +81,37 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 				cookTime++;
 			}
 			if (world.isRemote) {
-				for (int particleCount = 0; particleCount <= 2; ++particleCount)
+				for (int particleCount = 0; particleCount <= 2; ++particleCount) {
 					spawnBoilingParticles();
+				}
 
-				if (hasDragonBreath)
+				if (hasDragonBreath) {
 					spawnDragonBreathParticles();
-				else if (hasGunpowder)
+				} else if (hasGunpowder) {
 					spawnGunpowderParticles();
+				}
 
-				if (glowstoneCount > 0)
+				if (glowstoneCount > 0) {
 					spawnGlowstoneParticles();
+				}
 				if (hasNetherwart) {
 					spawnNetherwartParticles();
 					if (finishedCooking()) {
 						spawnFinishedParticles();
 					}
 				}
-				if (redstoneCount > 0)
+				if (redstoneCount > 0) {
 					spawnRedstoneParticles();
+				}
 			}
 		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnBoilingParticles() {
-		if (world.rand.nextInt(getTotalCookTime() * getTotalCookTime()) > cookTime * cookTime)
+		if (world.rand.nextInt(getTotalCookTime() * getTotalCookTime()) > cookTime * cookTime) {
 			return;
+		}
 		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.33F;
 		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.33F;
 
@@ -130,71 +137,77 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnGunpowderParticles() {
-		if (world.rand.nextInt(8) > 0)
+		if (world.rand.nextInt(8) > 0) {
 			return;
+		}
 		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
 		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
-		world.addParticle(ParticleTypes.SMOKE, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
+		world.addParticle(ParticleTypes.SMOKE, getPos().getX() + 0.5D + xOffset, getPos().getY() + getRenderLiquidLevel(), getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnDragonBreathParticles() {
-		if (world.rand.nextInt(8) > 0)
+		if (world.rand.nextInt(8) > 0) {
 			return;
+		}
 		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
 		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
-		world.addParticle(ParticleTypes.DRAGON_BREATH, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
+		world.addParticle(ParticleTypes.DRAGON_BREATH, getPos().getX() + 0.5D + xOffset, getPos().getY() + getRenderLiquidLevel(), getPos().getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnGlowstoneParticles() {
-		if (world.rand.nextInt(8) > 0)
+		if (world.rand.nextInt(8) > 0) {
 			return;
+		}
 		double gauss = 0.5D + world.rand.nextFloat() / 2;
 		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
 		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
-		world.addParticle(ParticleTypes.ENTITY_EFFECT, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, gauss, gauss, 0.0F);
+		world.addParticle(ParticleTypes.ENTITY_EFFECT, getPos().getX() + 0.5D + xOffset, getPos().getY() + getRenderLiquidLevel(), getPos().getZ() + 0.5D + zOffset, gauss, gauss, 0.0F);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnNetherwartParticles() {
-		if (world.rand.nextInt(8) > 0)
+		if (world.rand.nextInt(8) > 0) {
 			return;
+		}
 		double gauss = 0.5D + world.rand.nextFloat() / 2;
 		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
 		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
-		world.addParticle(ParticleTypes.ENTITY_EFFECT, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, gauss, 0.0F, gauss);
+		world.addParticle(ParticleTypes.ENTITY_EFFECT, getPos().getX() + 0.5D + xOffset, getPos().getY() + getRenderLiquidLevel(), getPos().getZ() + 0.5D + zOffset, gauss, 0.0F, gauss);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnRedstoneParticles() {
-		if (world.rand.nextInt(10) / this.redstoneCount > 0)
+		if (world.rand.nextInt(10) / redstoneCount > 0) {
 			return;
+		}
 		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
 		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
-		world.addParticle(RedstoneParticleData.REDSTONE_DUST, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 1D, 0D, 0D);
+		world.addParticle(RedstoneParticleData.REDSTONE_DUST, getPos().getX() + 0.5D + xOffset, getPos().getY() + getRenderLiquidLevel(), getPos().getZ() + 0.5D + zOffset, 1D, 0D, 0D);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnFinishedParticles() {
-		if (world.rand.nextInt(8) > 0)
+		if (world.rand.nextInt(8) > 0) {
 			return;
+		}
 		float xOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
 		float zOffset = (world.rand.nextFloat() - 0.5F) / 1.66F;
-		world.addParticle(ParticleTypes.WITCH, this.getPos().getX() + 0.5D + xOffset, this.getPos().getY() + getRenderLiquidLevel(), this.getPos().getZ() + 0.5D + zOffset, 0D, 0D, 0D);
+		world.addParticle(ParticleTypes.WITCH, getPos().getX() + 0.5D + xOffset, getPos().getY() + getRenderLiquidLevel(), getPos().getZ() + 0.5D + zOffset, 0D, 0D, 0D);
 	}
 
 	@Override
 	public void read(CompoundNBT tag) {
 		super.read(tag);
-		this.setLiquidLevel(tag.getShort("liquidLevel"));
-		this.glowstoneCount = tag.getInt("glowstoneCount");
-		this.hasNetherwart = tag.getBoolean("hasNetherwart");
-		this.hasGunpowder = tag.getBoolean("hasGunpowder");
-		this.hasDragonBreath = tag.getBoolean("hasDragonBreath");
-		this.redstoneCount = tag.getInt("redstoneCount");
-		this.cookTime = tag.getInt("cookTime");
-		this.effects = XRPotionHelper.getPotionEffectsFromCompoundTag(tag);
+		setLiquidLevel(tag.getShort("liquidLevel"));
+		glowstoneCount = tag.getInt("glowstoneCount");
+		hasNetherwart = tag.getBoolean("hasNetherwart");
+		hasGunpowder = tag.getBoolean("hasGunpowder");
+		hasDragonBreath = tag.getBoolean("hasDragonBreath");
+		redstoneCount = tag.getInt("redstoneCount");
+		cookTime = tag.getInt("cookTime");
+		effects = XRPotionHelper.getPotionEffectsFromCompoundTag(tag);
 	}
 
 	@Override
@@ -213,12 +226,14 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 	}
 
 	private boolean finishedCooking() {
-		return hasNetherwart && !effects.isEmpty() && this.cookTime >= getTotalCookTime() && (!hasDragonBreath || hasGunpowder);
+		return hasNetherwart && !effects.isEmpty() && cookTime >= getTotalCookTime() && (!hasDragonBreath || hasGunpowder);
 	}
 
+	@Nullable
 	private CompoundNBT removeContainedPotion() {
-		if (!hasNetherwart || effects.isEmpty() || getLiquidLevel() <= 0)
+		if (!hasNetherwart || effects.isEmpty() || getLiquidLevel() <= 0) {
 			return null;
+		}
 
 		setLiquidLevel(getLiquidLevel() - 1);
 		CompoundNBT tag = getFinishedPotion();
@@ -242,54 +257,60 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 	}
 
 	private void clearAllFields() {
-		this.cookTime = 0;
-		this.glowstoneCount = 0;
-		this.hasGunpowder = false;
-		this.hasNetherwart = false;
-		this.redstoneCount = 0;
-		this.effects.clear();
-		this.dataChanged = true;
-		this.hasDragonBreath = false;
-		BlockState blockState = world.getBlockState(this.getPos());
-		world.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
+		cookTime = 0;
+		glowstoneCount = 0;
+		hasGunpowder = false;
+		hasNetherwart = false;
+		redstoneCount = 0;
+		effects.clear();
+		dataChanged = true;
+		hasDragonBreath = false;
+		BlockState blockState = world.getBlockState(getPos());
+		world.notifyBlockUpdate(getPos(), blockState, blockState, 3);
 	}
 
 	@SuppressWarnings("SimplifiableIfStatement")
 	private boolean isItemValidForInput(ItemStack stack) {
-		if (stack.getItem() instanceof PotionEssenceItem && this.effects.isEmpty())
+		if (stack.getItem() instanceof PotionEssenceItem && effects.isEmpty()) {
 			return true;
+		}
 
-		if (effects.isEmpty())
+		if (effects.isEmpty()) {
 			return false;
+		}
 
-		if (stack.getItem() == Items.GUNPOWDER && !this.hasGunpowder)
+		if (stack.getItem() == Items.GUNPOWDER && !hasGunpowder) {
 			return true;
-		if (stack.getItem() == Items.GLOWSTONE_DUST && this.glowstoneCount < getGlowstoneAmpLimit())
+		}
+		if (stack.getItem() == Items.GLOWSTONE_DUST && glowstoneCount < getGlowstoneAmpLimit()) {
 			return true;
-		if (stack.getItem() == Items.REDSTONE && this.redstoneCount < getRedstoneAmpLimit())
+		}
+		if (stack.getItem() == Items.REDSTONE && redstoneCount < getRedstoneAmpLimit()) {
 			return true;
-		if (stack.getItem() == Items.NETHER_WART && !this.hasNetherwart)
+		}
+		if (stack.getItem() == Items.NETHER_WART && !hasNetherwart) {
 			return true;
-		return stack.getItem() == Items.DRAGON_BREATH && !this.hasDragonBreath;
+		}
+		return stack.getItem() == Items.DRAGON_BREATH && !hasDragonBreath;
 	}
 
 	private void addItem(ItemStack stack) {
 		if (stack.getItem() instanceof PotionEssenceItem) {
 			effects = XRPotionHelper.getPotionEffectsFromStack(stack);
 		} else if (stack.getItem() == Items.GUNPOWDER) {
-			this.hasGunpowder = true;
+			hasGunpowder = true;
 		} else if (stack.getItem() == Items.GLOWSTONE_DUST) {
-			++this.glowstoneCount;
+			++glowstoneCount;
 		} else if (stack.getItem() == Items.REDSTONE) {
-			++this.redstoneCount;
+			++redstoneCount;
 		} else if (stack.getItem() == Items.NETHER_WART) {
-			this.hasNetherwart = true;
+			hasNetherwart = true;
 		} else if (stack.getItem() == Items.DRAGON_BREATH) {
-			this.hasDragonBreath = true;
+			hasDragonBreath = true;
 		}
 
-		BlockState blockState = world.getBlockState(this.getPos());
-		world.notifyBlockUpdate(this.getPos(), blockState, blockState, 3);
+		BlockState blockState = world.getBlockState(getPos());
+		world.notifyBlockUpdate(getPos(), blockState, blockState, 3);
 	}
 
 	private int getGlowstoneAmpLimit() {
@@ -328,28 +349,30 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 				collidingEntity.extinguish();
 			}
 			if (collidingEntity instanceof LivingEntity) {
-				if (this.effects.isEmpty())
+				if (effects.isEmpty()) {
 					return;
+				}
 				//apply potion effects when done cooking potion (potion essence and netherwart in and fire below at the minimum)
 				if (finishedCooking()) {
-					for (EffectInstance effect : this.effects) {
+					for (EffectInstance effect : effects) {
 						Effect potion = effect.getPotion();
-						if (potion.isInstant() && world.getGameTime() % 20 != 0)
+						if (potion.isInstant() && world.getGameTime() % 20 != 0) {
 							continue;
+						}
 						EffectInstance reducedEffect = new EffectInstance(effect.getPotion(), potion.isInstant() ? 1 : effect.getDuration() / 20, Math.max(0, effect.getAmplifier() - 1));
 						((LivingEntity) collidingEntity).addPotionEffect(reducedEffect);
 					}
 				}
 
-				if (this.cookTime > 0 && world.getGameTime() % 10 == 0) {
+				if (cookTime > 0 && world.getGameTime() % 10 == 0) {
 					collidingEntity.attackEntityFrom(DamageSource.IN_FIRE, 1.0F);
 				}
 			}
 
 			if (collidingEntity instanceof ItemEntity) {
 				ItemStack item = ((ItemEntity) collidingEntity).getItem();
-				while (this.isItemValidForInput(item)) {
-					this.addItem(item);
+				while (isItemValidForInput(item)) {
+					addItem(item);
 					item.shrink(1);
 				}
 			}
@@ -374,14 +397,16 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 	public boolean handleBlockActivation(World world, PlayerEntity player, Hand hand) {
 		ItemStack itemStack = player.getHeldItem(hand);
 
-		if (itemStack.isEmpty())
+		if (itemStack.isEmpty()) {
 			return false;
+		}
 
 		if (getLiquidLevel() < 3 && !finishedCooking()) {
 			if (itemStack.getItem() == Items.WATER_BUCKET) {
-				if (!player.isCreative())
+				if (!player.isCreative()) {
 					player.setHeldItem(hand, new ItemStack(Items.BUCKET));
-			} else if (!itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null).map(fh -> drainWater(player, fh)).orElse(false)) {
+				}
+			} else if (Boolean.FALSE.equals(itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null).map(fh -> drainWater(player, fh)).orElse(false))) {
 				return false;
 			}
 
@@ -433,24 +458,24 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 
 	private void setLiquidLevel(int liquidLevel) {
 		this.liquidLevel = liquidLevel;
-		if (this.world != null) {
-			BlockState blockState = this.world.getBlockState(this.getPos());
+		if (world != null) {
+			BlockState blockState = world.getBlockState(getPos());
 			blockState = blockState.with(ApothecaryCauldronBlock.LEVEL, liquidLevel);
-			this.world.setBlockState(this.getPos(), blockState);
-			this.world.updateComparatorOutputLevel(pos, ModBlocks.APOTHECARY_CAULDRON);
+			world.setBlockState(getPos(), blockState);
+			world.updateComparatorOutputLevel(pos, ModBlocks.APOTHECARY_CAULDRON);
 		}
 	}
 
 	@Override
 	public boolean getDataChanged() {
-		boolean ret = this.dataChanged;
-		this.dataChanged = false;
+		boolean ret = dataChanged;
+		dataChanged = false;
 		return ret;
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
 		super.onDataPacket(net, packet);
-		this.dataChanged = true;
+		dataChanged = true;
 	}
 }

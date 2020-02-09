@@ -213,5 +213,12 @@
     "item.xreliquary.witch_hat": "{{!colors.yellow}}Witch Hat",
     "item.xreliquary.witherless_rose": "Witherless Rose",
     "item.xreliquary.witherless_rose.tooltip": "With the Nether Stars enchanting this rose;the holder is protected from Withering.",
-    "tooltip.xreliquary.shift_for_more_info": "Hold Shift for more info"
+    "tooltip.xreliquary.shift_for_more_info": "Hold Shift for more info",
+
+    "effect.xreliquary.cure": "Cure",
+
+    "potion.potency.6": "VII",
+    "potion.potency.7": "VIII",
+    "potion.potency.8": "IX",
+    "potion.potency.9": "X"
 }

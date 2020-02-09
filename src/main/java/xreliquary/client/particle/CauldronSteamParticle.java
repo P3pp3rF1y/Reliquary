@@ -15,16 +15,17 @@ import javax.annotation.Nullable;
 public class CauldronSteamParticle extends SpriteTexturedParticle {
 	private final IAnimatedSprite spriteSet;
 
-	public CauldronSteamParticle(World world, ColorParticleData particleData, double x, double y, double z, double yMot, IAnimatedSprite spriteSet) {
-		this(world, particleData, x, y, z, 0D, yMot, 0D, spriteSet);
-	}
-
-	private CauldronSteamParticle(World world, ColorParticleData particleData, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, IAnimatedSprite spriteSet) {
-		super(world, x, y, z, xSpeed, ySpeed, zSpeed);
-		this.particleRed = particleData.getRed();
-		this.particleGreen = particleData.getGreen();
-		this.particleBlue = particleData.getBlue();
+	private CauldronSteamParticle(World world, ColorParticleData particleData, double x, double y, double z, double ySpeed, IAnimatedSprite spriteSet) {
+		super(world, x, y, z, 0, 0, 0);
+		particleRed = particleData.getRed();
+		particleGreen = particleData.getGreen();
+		particleBlue = particleData.getBlue();
+		motionX *= 0.1F;
+		motionY *= 0.1F;
+		motionZ *= 0.1F;
+		motionY += ySpeed;
 		this.spriteSet = spriteSet;
+		maxAge = 8 + world.rand.nextInt(32);
 	}
 
 	@Override
@@ -35,6 +36,7 @@ public class CauldronSteamParticle extends SpriteTexturedParticle {
 		if (age++ >= maxAge) {
 			setExpired();
 		} else {
+			particleAlpha = (float) (maxAge - age) / maxAge;
 			selectSpriteWithAge(spriteSet);
 			move(motionX, motionY, motionZ);
 			if (posY == prevPosY) {
@@ -42,46 +44,19 @@ public class CauldronSteamParticle extends SpriteTexturedParticle {
 				motionZ *= 1.1D;
 			}
 
-			motionX *= 0.9599999785423279D;
-			motionY *= 0.9599999785423279D;
-			motionZ *= 0.9599999785423279D;
+			motionX *= 0.96D;
+			motionY *= 0.96D;
+			motionZ *= 0.96D;
 			if (onGround) {
-				motionX *= 0.699999988079071D;
-				motionZ *= 0.699999988079071D;
+				motionX *= 0.7D;
+				motionZ *= 0.7D;
 			}
-
-		}
-
-		prevPosX = posX;
-		prevPosY = posY;
-		prevPosZ = posZ;
-
-		if (age++ >= maxAge) {
-			setExpired();
-		}
-
-		selectSpriteWithAge(spriteSet);
-		setAlphaF((1F - ((float) age / (float) maxAge)) / 2F);
-		move(motionX, motionY, motionZ);
-
-		if (posY == prevPosY) {
-			motionX *= 1.1D;
-			motionZ *= 1.1D;
-		}
-
-		motionX *= 0.9599999785423279D;
-		motionY *= 0.9599999785423279D;
-		motionZ *= 0.9599999785423279D;
-
-		if (onGround) {
-			motionX *= 0.699999988079071D;
-			motionZ *= 0.699999988079071D;
 		}
 	}
 
 	@Override
 	public IParticleRenderType getRenderType() {
-		return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+		return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -95,7 +70,9 @@ public class CauldronSteamParticle extends SpriteTexturedParticle {
 		@Nullable
 		@Override
 		public Particle makeParticle(ColorParticleData particleData, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			return new CauldronSteamParticle(world, particleData, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
+			CauldronSteamParticle particle = new CauldronSteamParticle(world, particleData, x, y, z, ySpeed, spriteSet);
+			particle.setSprite(spriteSet.get(particle.age, particle.maxAge));
+			return particle;
 		}
 	}
 }
