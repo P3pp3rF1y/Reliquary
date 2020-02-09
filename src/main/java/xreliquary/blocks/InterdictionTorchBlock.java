@@ -29,7 +29,7 @@ public class InterdictionTorchBlock extends TorchBlock {
 	private static final int TICK_RATE = 1;
 
 	InterdictionTorchBlock(String registryName) {
-		super(Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0).lightValue(1).tickRandomly().sound(SoundType.WOOD));
+		super(Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0).lightValue(1).tickRandomly().sound(SoundType.WOOD).doesNotBlockMovement());
 		setRegistryName(Reference.MOD_ID, registryName);
 	}
 
@@ -48,18 +48,19 @@ public class InterdictionTorchBlock extends TorchBlock {
 	public void tick(BlockState state, World world, BlockPos pos, Random random) {
 		super.tick(state, world, pos, random);
 		world.getPendingBlockTicks().scheduleTick(pos, this, TICK_RATE);
-		if(world.isRemote)
+		if (world.isRemote) {
 			return;
+		}
 		int radius = Settings.COMMON.blocks.interdictionTorch.pushRadius.get();
 
-		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius, pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius),
-			e -> (e instanceof MobEntity || e instanceof IProjectile));
-		for(Entity entity : entities) {
-			if(entity instanceof PlayerEntity)
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos).grow(radius), e -> (e instanceof MobEntity || e instanceof IProjectile));
+		for (Entity entity : entities) {
+			if (entity instanceof PlayerEntity) {
 				continue;
+			}
 			double distance = Math.sqrt(entity.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()));
-			if(distance < radius && distance != 0) {
-				if(isBlacklistedEntity(entity)) {
+			if (distance < radius && distance != 0) {
+				if (isBlacklistedEntity(entity)) {
 					continue;
 				}
 
@@ -67,8 +68,9 @@ public class InterdictionTorchBlock extends TorchBlock {
 				// proportion to the distance.
 				// we raise the distance to 1 if it's less than one, or it becomes a
 				// crazy multiplier we don't want/need.
-				if(distance < 1D)
+				if (distance < 1D) {
 					distance = 1D;
+				}
 				double knockbackMultiplier = 1D + (1D / distance);
 
 				// we also need a reduction coefficient because the above force is
@@ -112,9 +114,9 @@ public class InterdictionTorchBlock extends TorchBlock {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
-		double xOffset = (double) ((float) pos.getX() + 0.5F);
-		double yOffset = (double) ((float) pos.getY() + 0.7F);
-		double zOffset = (double) ((float) pos.getZ() + 0.5F);
+		double xOffset = (float) pos.getX() + 0.5F;
+		double yOffset = (float) pos.getY() + 0.7F;
+		double zOffset = (float) pos.getZ() + 0.5F;
 		world.addParticle(ParticleTypes.ENTITY_EFFECT, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
 		world.addParticle(ParticleTypes.FLAME, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
 	}
