@@ -66,7 +66,7 @@ public class Names {
 
 	public static class Blocks {
 		public static final String ALKAHESTRY_ALTAR = "alkahestry_altar";
-		public static final String FERTILE_LILYPAD = "fertile_lilypad";
+		public static final String FERTILE_LILY_PAD = "fertile_lily_pad";
 		public static final String WRAITH_NODE = "wraith_node";
 		public static final String INTERDICTION_TORCH = "interdiction_torch";
 		public static final String WALL_INTERDICTION_TORCH = "wall_interdiction_torch";

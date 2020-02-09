@@ -21,7 +21,7 @@ import xreliquary.blocks.AlkahestryAltarBlock;
 import xreliquary.blocks.ApothecaryCauldronBlock;
 import xreliquary.blocks.ApothecaryMortarBlock;
 import xreliquary.blocks.BaseBlock;
-import xreliquary.blocks.FertileLilypadBlock;
+import xreliquary.blocks.FertileLilyPadBlock;
 import xreliquary.blocks.InterdictionTorchBlock;
 import xreliquary.blocks.PassivePedestalBlock;
 import xreliquary.blocks.PedestalBlock;
@@ -50,7 +50,7 @@ public class ModBlocks {
 	public static final AlkahestryAltarBlock ALKAHESTRY_ALTAR = InjectionHelper.nullValue();
 	public static final ApothecaryCauldronBlock APOTHECARY_CAULDRON = InjectionHelper.nullValue();
 	public static final BaseBlock APOTHECARY_MORTAR = InjectionHelper.nullValue();
-	public static final FertileLilypadBlock FERTILE_LILYPAD = InjectionHelper.nullValue();
+	public static final FertileLilyPadBlock FERTILE_LILY_PAD = InjectionHelper.nullValue();
 	public static final InterdictionTorchBlock INTERDICTION_TORCH = InjectionHelper.nullValue();
 	public static final WallInterdictionTorchBlock WALL_INTERDICTION_TORCH = InjectionHelper.nullValue();
 	public static final WraithNodeBlock WRAITH_NODE = InjectionHelper.nullValue();
@@ -65,7 +65,7 @@ public class ModBlocks {
 			registry.register(new ApothecaryMortarBlock());
 		}
 
-		registry.register(new FertileLilypadBlock());
+		registry.register(new FertileLilyPadBlock());
 		registry.register(new InterdictionTorchBlock());
 		registry.register(new WallInterdictionTorchBlock());
 		registry.register(new WraithNodeBlock());
@@ -114,7 +114,7 @@ public class ModBlocks {
 			registerItemBlock(registry, APOTHECARY_MORTAR, Names.Blocks.APOTHECARY_MORTAR);
 		}
 
-		registerItemBlock(registry, FERTILE_LILYPAD, new FertileLilyPadItem(), Names.Blocks.FERTILE_LILYPAD, false);
+		registerItemBlock(registry, FERTILE_LILY_PAD, new FertileLilyPadItem(), Names.Blocks.FERTILE_LILY_PAD, false);
 		registerItemBlock(registry, INTERDICTION_TORCH, new WallOrFloorItem(INTERDICTION_TORCH, WALL_INTERDICTION_TORCH, new Item.Properties().group(Reliquary.ITEM_GROUP)) {
 			@Override
 			public ITextComponent getDisplayName(ItemStack stack) {

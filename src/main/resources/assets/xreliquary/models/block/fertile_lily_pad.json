@@ -1,8 +1,8 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "particle": "xreliquary:block/lilypad",
-    "texture": "xreliquary:block/lilypad"
+    "particle": "xreliquary:block/fertile_lily_pad",
+    "texture": "xreliquary:block/fertile_lily_pad"
   },
   "elements": [
     {   "from": [ 0, 0.25, 0 ],

@@ -23,7 +23,7 @@ import xreliquary.reference.Settings;
 
 import java.util.Random;
 
-public class FertileLilypadBlock extends BushBlock {
+public class FertileLilyPadBlock extends BushBlock {
 	private static final VoxelShape AABB = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 1.5D, 15.0D);
 
 	@Override
@@ -31,9 +31,9 @@ public class FertileLilypadBlock extends BushBlock {
 		return PlantType.Water;
 	}
 
-	public FertileLilypadBlock() {
+	public FertileLilyPadBlock() {
 		super(Properties.create(Material.PLANTS).tickRandomly());
-		setRegistryName(Reference.MOD_ID, Names.Blocks.FERTILE_LILYPAD);
+		setRegistryName(Reference.MOD_ID, Names.Blocks.FERTILE_LILY_PAD);
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class FertileLilypadBlock extends BushBlock {
 					BlockState cropState = world.getBlockState(new BlockPos(x, y, z));
 					Block cropBlock = cropState.getBlock();
 
-					if ((cropBlock instanceof IPlantable || cropBlock instanceof IGrowable) && !(cropBlock instanceof FertileLilypadBlock)) {
+					if ((cropBlock instanceof IPlantable || cropBlock instanceof IGrowable) && !(cropBlock instanceof FertileLilyPadBlock)) {
 						double distance = Math.sqrt(Math.pow((double) x - xO, 2) + Math.pow((double) y - yO, 2) + Math.pow((double) z - zO, 2));
 						tickCropBlock(world, x, y, z, cropState, cropBlock, distance);
 					}
@@ -85,12 +85,14 @@ public class FertileLilypadBlock extends BushBlock {
 
 	private void tickCropBlock(World world, int x, int y, int z, BlockState cropState, Block cropBlock, double distance) {
 		distance -= fullPotencyRange();
-		distance = Math.min(1D, distance);
+		distance = Math.max(1D, distance);
 		double distanceCoefficient = 1D - (distance / tileRange());
 
 		//it schedules the next tick.
-		world.getPendingBlockTicks().scheduleTick(new BlockPos(x, y, z), cropBlock, (int) (distanceCoefficient * (float) secondsBetweenGrowthTicks() * 20F));
-		cropBlock.tick(cropState, world, new BlockPos(x, y, z), world.rand);
+		BlockPos pos = new BlockPos(x, y, z);
+		world.getPendingBlockTicks().scheduleTick(pos, cropBlock, (int) (distanceCoefficient * (float) secondsBetweenGrowthTicks() * 20F));
+		cropBlock.tick(cropState, world, pos, world.rand);
+		world.playEvent(2005, pos, Math.max((int) (tileRange() - distance), 1));
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Rarity;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
@@ -26,7 +27,7 @@ import xreliquary.reference.Settings;
 
 public class FertileLilyPadItem extends BlockItemBase {
 	public FertileLilyPadItem() {
-		super(ModBlocks.FERTILE_LILYPAD, new Properties().rarity(Rarity.EPIC));
+		super(ModBlocks.FERTILE_LILY_PAD, new Properties().rarity(Rarity.EPIC));
 	}
 
 	@Override
@@ -38,6 +39,11 @@ public class FertileLilyPadItem extends BlockItemBase {
 			return new ActionResult<>(ActionResultType.SUCCESS, stack);
 		}
 		return new ActionResult<>(ActionResultType.FAIL, stack);
+	}
+
+	@Override
+	public ActionResultType onItemUse(ItemUseContext context) {
+		return ActionResultType.PASS;
 	}
 
 	private boolean tryPlacingLilyPad(ItemStack itemStack, World world, PlayerEntity playerIn, RayTraceResult result) {
@@ -67,14 +73,14 @@ public class FertileLilyPadItem extends BlockItemBase {
 	private boolean placeAndShrinkStack(ItemStack itemStack, World worldIn, PlayerEntity playerIn, BlockPos blockpos, BlockPos posUp) {
 		// special case for handling block placement with water lilies
 		net.minecraftforge.common.util.BlockSnapshot blocksnapshot = net.minecraftforge.common.util.BlockSnapshot.getBlockSnapshot(worldIn, posUp);
-		worldIn.setBlockState(posUp, ModBlocks.FERTILE_LILYPAD.getDefaultState(), 11);
+		worldIn.setBlockState(posUp, ModBlocks.FERTILE_LILY_PAD.getDefaultState(), 11);
 		if (net.minecraftforge.event.ForgeEventFactory.onBlockPlace(playerIn, blocksnapshot, Direction.UP)) {
 			blocksnapshot.restore(true, false);
 			return false;
 		}
 
 		int secondsBetweenGrowthTicks = Settings.COMMON.blocks.fertileLilypad.secondsBetweenGrowthTicks.get();
-		worldIn.getPendingBlockTicks().scheduleTick(posUp, ModBlocks.FERTILE_LILYPAD, secondsBetweenGrowthTicks * 20);
+		worldIn.getPendingBlockTicks().scheduleTick(posUp, ModBlocks.FERTILE_LILY_PAD, secondsBetweenGrowthTicks * 20);
 
 		if (playerIn instanceof ServerPlayerEntity) {
 			CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayerEntity) playerIn, posUp, itemStack);

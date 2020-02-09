@@ -100,7 +100,7 @@
     "xreliquary.jei.descriptions.destruction_catalyst": "以消耗火药为代价，破坏方块，被破坏之方块不会掉落。",
     "xreliquary.jei.descriptions.emperor_chalice": "这是一个无限水桶，shift+右击切换模式。一种模式右击放置水，能无限向外放水。而且此时可饮用，会恢复你的生命值，但是会消耗你的饥饿度。另一种模式可无限往里面装水，右击装水。",
     "xreliquary.jei.descriptions.ender_staff": "按住shift右击便会吸收你物品栏内的所有末影珍珠来进行充能，shift左击切换模式，一共有3个模式。\\n普通模式，右击投掷末影珍珠，进行传送，但是不会伤害你。\\n超远距离传输模式，右击投掷末影珍珠，扔得更远。\\n幽灵节点模式，按住右键传送会与之绑定的幽灵节点。",
-    "xreliquary.jei.descriptions.fertile_lilypad": "越靠近该莲叶的作物，生长得越快。你可以放置更多的莲叶来扩大影响。",
+    "xreliquary.jei.descriptions.fertile_lily_pad": "越靠近该莲叶的作物，生长得越快。你可以放置更多的莲叶来扩大影响。",
     "xreliquary.jei.descriptions.fertile_potion": "肥沃药剂作用类似于骨粉。",
     "xreliquary.jei.descriptions.fortune_coin": "可以自动将5格范围内的掉落物和经验全部引到玩家物品栏内或身上。Shift+右键开关。\\n\\n超级吸尘模式， 按住右键，可以将15格范围内的掉落物和经验全部引到玩家物品栏内或身上。",
     "xreliquary.jei.descriptions.glacial_staff": "冰河之杖是升级的冰妖之杖他可以发射雪球，除此之外，它还可以把水变成冰块和熔岩为黑曜石。那些方块会在手持法杖的玩家远离一定范围后融化。",

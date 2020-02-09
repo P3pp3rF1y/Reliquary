@@ -38,7 +38,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import xreliquary.blocks.FertileLilypadBlock;
+import xreliquary.blocks.FertileLilyPadBlock;
 import xreliquary.entities.EntityXRFakePlayer;
 import xreliquary.init.ModCapabilities;
 import xreliquary.items.util.FilteredBigItemStack;
@@ -209,7 +209,7 @@ public class HarvestRodItem extends ToggleableItem {
 		if (!(block instanceof IPlantable || block == Blocks.MELON || block == Blocks.PUMPKIN)) {
 			return false;
 		}
-		if (block instanceof FertileLilypadBlock) {
+		if (block instanceof FertileLilyPadBlock) {
 			return false;
 		}
 

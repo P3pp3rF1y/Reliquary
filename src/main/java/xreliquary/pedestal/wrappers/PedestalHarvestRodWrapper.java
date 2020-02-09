@@ -20,7 +20,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.IPlantable;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
-import xreliquary.blocks.FertileLilypadBlock;
+import xreliquary.blocks.FertileLilyPadBlock;
 import xreliquary.init.ModItems;
 import xreliquary.items.HarvestRodItem;
 import xreliquary.reference.Settings;
@@ -225,7 +225,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		BlockState state = world.getBlockState(currentPos);
 		Block block = state.getBlock();
 		if (block instanceof IPlantable || block == Blocks.MELON || block == Blocks.PUMPKIN) {
-			if (block instanceof FertileLilypadBlock || block == Blocks.PUMPKIN_STEM || block == Blocks.MELON_STEM
+			if (block instanceof FertileLilyPadBlock || block == Blocks.PUMPKIN_STEM || block == Blocks.MELON_STEM
 					|| block instanceof CropsBlock && ((CropsBlock) block).canGrow(world, currentPos, state, false)
 					|| block instanceof NetherWartBlock && state.get(NetherWartBlock.AGE) < 3) {
 				return;
