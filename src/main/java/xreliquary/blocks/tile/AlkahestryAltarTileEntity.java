@@ -13,7 +13,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InjectionHelper;
 
 public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickableTileEntity {
-	@SuppressWarnings("WeakerAccess")
+	@SuppressWarnings("WeakerAccess") // need public here for ObjectHolder to work
 	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.ALKAHESTRY_ALTAR)
 	public static final TileEntityType<AlkahestryAltarTileEntity> TYPE = InjectionHelper.nullValue();
 	private int cycleTime;
@@ -28,25 +28,14 @@ public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickab
 
 	@Override
 	public void tick() {
-		if(world.isRemote)
+		if (world.isRemote || !isActive || world.getDayTime() >= 12000 || !world.isSkyLightMax(getPos().up())) {
 			return;
-		if(!isActive)
-			return;
-		int worldTime = (int) (world.getWorldInfo().getGameTime() % 24000);
-		if(worldTime >= 12000)
-			return;
-		if(!world.isSkyLightMax(getPos().add(0, 1, 0)))
-			return;
+		}
 		if(cycleTime > 0) {
 			cycleTime--;
-			if(cycleTime % 20 == 0) {
-				BlockState blockState = world.getBlockState(this.getPos());
-				world.notifyBlockUpdate(this.pos, blockState, blockState, 3);
-
-			}
 		} else {
 			isActive = false;
-			world.setBlockState(getPos().add(0, 1, 0), Blocks.GLOWSTONE.getDefaultState());
+			world.setBlockState(getPos().up(), Blocks.GLOWSTONE.getDefaultState());
 			AlkahestryAltarBlock.updateAltarBlockState(isActive(), world, getPos());
 		}
 	}
@@ -89,9 +78,9 @@ public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickab
 			AlkahestryAltarBlock.updateAltarBlockState(true, world, getPos());
 		}
 
-		BlockState blockState = world.getBlockState(this.getPos());
+		BlockState blockState = world.getBlockState(getPos());
 
-		world.notifyBlockUpdate(this.pos, blockState, blockState, 3);
+		world.notifyBlockUpdate(pos, blockState, blockState, 3);
 	}
 
 	private static int getRedstoneCost() {
@@ -102,7 +91,7 @@ public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickab
 		return redstoneCount;
 	}
 
-	public boolean isActive() {
+	private boolean isActive() {
 		return isActive;
 	}
 

@@ -45,7 +45,7 @@ public class AlkahestryAltarBlock extends BaseBlock {
 
 	@Override
 	public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
-		return state.get(ACTIVE) ? getAltarActiveLightLevel() : 0;
+		return Boolean.TRUE.equals(state.get(ACTIVE)) ? getAltarActiveLightLevel() : 0;
 	}
 
 	@Override
@@ -70,38 +70,34 @@ public class AlkahestryAltarBlock extends BaseBlock {
 
 	@Override
 	public void animateTick(BlockState state, World world, BlockPos pos, Random rand) {
-		if (!state.get(ACTIVE))
+		if (Boolean.FALSE.equals(state.get(ACTIVE)) || world.getDayTime() >= 12000 || !world.canBlockSeeSky(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ())) || rand.nextInt(3) != 0) {
 			return;
-		int worldTime = (int) (world.getGameTime() % 24000);
-		if (worldTime >= 12000)
-			return;
-		if (!world.canBlockSeeSky(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ())))
-			return;
-		if (rand.nextInt(3) != 0)
-			return;
+		}
 		world.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + 0.5D + rand.nextGaussian() / 8, pos.getY() + 1.1D, pos.getZ() + 0.5D + rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
 	}
 
 	@Override
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		ItemStack heldItem = player.getHeldItem(hand);
-		if (state.get(ACTIVE))
+		if (Boolean.TRUE.equals(state.get(ACTIVE))) {
 			return true;
+		}
 		AlkahestryAltarTileEntity altar = (AlkahestryAltarTileEntity) world.getTileEntity(pos);
-		if (altar == null)
+		if (altar == null || heldItem.isEmpty()) {
 			return true;
-		if (heldItem.isEmpty())
-			return true;
+		}
 		if (heldItem.getItem() == Items.REDSTONE) {
 			int slot = getSlotWithRedstoneDust(player);
-			if (slot == -1)
+			if (slot == -1) {
 				return true;
+			}
 			world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.3F, 0.5F + 0.5F * altar.getRedstoneCount() + (float) (world.rand.nextGaussian() / 8));
 			for (int particles = world.rand.nextInt(3); particles < 3 + altar.getRedstoneCount() * 4 + altar.getRedstoneCount(); particles++) {
 				world.addParticle(RedstoneParticleData.REDSTONE_DUST, pos.getX() + 0.5D + world.rand.nextGaussian() / 5, pos.getY() + 1.2D, pos.getZ() + 0.5D + world.rand.nextGaussian() / 5, 1D, 0D, 0D);
 			}
-			if (world.isRemote)
+			if (world.isRemote) {
 				return true;
+			}
 			player.inventory.decrStackSize(slot, 1);
 			altar.addRedstone();
 		} else if (heldItem.getItem() instanceof AlkahestryTomeItem && NBTHelper.getInt(REDSTONE_TAG, heldItem) > 0) {
@@ -109,8 +105,9 @@ public class AlkahestryAltarBlock extends BaseBlock {
 			for (int particles = world.rand.nextInt(3); particles < 3 + altar.getRedstoneCount() * 4 + altar.getRedstoneCount(); particles++) {
 				world.addParticle(RedstoneParticleData.REDSTONE_DUST, pos.getX() + 0.5D + world.rand.nextGaussian() / 5, pos.getY() + 1.2D, pos.getZ() + 0.5D + world.rand.nextGaussian() / 5, 1D, 0D, 0D);
 			}
-			if (world.isRemote)
+			if (world.isRemote) {
 				return true;
+			}
 			NBTHelper.putInt(REDSTONE_TAG, heldItem, NBTHelper.getInt(REDSTONE_TAG, heldItem) - 1);
 			altar.addRedstone();
 		}
@@ -122,8 +119,9 @@ public class AlkahestryAltarBlock extends BaseBlock {
 			if (player.inventory.mainInventory.get(slot).isEmpty()) {
 				continue;
 			}
-			if (player.inventory.mainInventory.get(slot).getItem() == Items.REDSTONE)
+			if (player.inventory.mainInventory.get(slot).getItem() == Items.REDSTONE) {
 				return slot;
+			}
 		}
 		return -1;
 	}
