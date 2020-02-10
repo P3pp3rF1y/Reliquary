@@ -68,6 +68,11 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
+	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
 	private int getExperienceMinimum() {
 		return Settings.COMMON.items.heroMedallion.experienceLevelMinimum.get();
 	}

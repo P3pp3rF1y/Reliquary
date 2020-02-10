@@ -67,6 +67,11 @@ public class RendingGaleItem extends ToggleableItem {
 		}
 	}
 
+	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
 	private static int getChargeLimit() {
 		return Settings.COMMON.items.rendingGale.chargeLimit.get();
 	}

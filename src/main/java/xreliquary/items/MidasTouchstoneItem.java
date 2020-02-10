@@ -50,6 +50,11 @@ public class MidasTouchstoneItem extends ToggleableItem {
 	}
 
 	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
+	@Override
 	public Rarity getRarity(ItemStack stack) {
 		return Rarity.EPIC;
 	}

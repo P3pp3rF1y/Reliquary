@@ -116,6 +116,11 @@ public class VoidTearItem extends ToggleableItem {
 	}
 
 	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
+	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack voidTear = player.getHeldItem(hand);
 

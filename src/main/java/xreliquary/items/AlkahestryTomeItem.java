@@ -96,6 +96,11 @@ public class AlkahestryTomeItem extends ToggleableItem {
 	}
 
 	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
+	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		if (!isInGroup(group)) {
 			return;

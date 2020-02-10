@@ -46,6 +46,11 @@ public class DestructionCatalystItem extends ToggleableItem {
 	}
 
 	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
+	@Override
 	public ActionResultType onItemUse(ItemUseContext itemUseContext) {
 		PlayerEntity player = itemUseContext.getPlayer();
 		ItemStack stack = itemUseContext.getItem();

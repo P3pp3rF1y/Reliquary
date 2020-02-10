@@ -83,6 +83,11 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem {
 	}
 
 	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
+	@Override
 	public Rarity getRarity(ItemStack stack) {
 		return Rarity.EPIC;
 	}

@@ -41,6 +41,11 @@ public class IceMagusRodItem extends ToggleableItem {
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
+	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
 	IceMagusRodItem(String langName) {
 		super(langName, new Properties().maxStackSize(1).setNoRepair());
 	}

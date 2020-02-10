@@ -124,6 +124,11 @@ public class HandgunItem extends ItemBase {
 		XRPotionHelper.addPotionTooltip(handgun, tooltip);
 	}
 
+	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
 	private String getMagazineTranslationKey(ItemStack handgun) {
 		return getMagazineType(handgun).replace(Reference.MOD_ID + ":", "");
 	}

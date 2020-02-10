@@ -53,6 +53,11 @@ public class EmperorChaliceItem extends ToggleableItem {
 	}
 
 	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
+	@Override
 	public int getUseDuration(ItemStack p_77626_1_) {
 		return 16;
 	}

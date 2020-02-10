@@ -90,6 +90,11 @@ public class HarvestRodItem extends ToggleableItem {
 	}
 
 	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
+	@Override
 	public UseAction getUseAction(ItemStack stack) {
 		return UseAction.BLOCK;
 	}

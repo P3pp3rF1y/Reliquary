@@ -32,16 +32,22 @@ public class ItemBase extends Item {
 			LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", tooltip);
 		}
 
-		if (Screen.hasShiftDown()) {
-			List<ITextComponent> detailTooltip = Lists.newArrayList();
-			addMoreInformation(stack, world, detailTooltip);
-			if (!detailTooltip.isEmpty()) {
-				tooltip.add(new StringTextComponent(""));
-				tooltip.addAll(detailTooltip);
+		if (hasMoreInformation(stack)) {
+			if (Screen.hasShiftDown()) {
+				List<ITextComponent> detailTooltip = Lists.newArrayList();
+				addMoreInformation(stack, world, detailTooltip);
+				if (!detailTooltip.isEmpty()) {
+					tooltip.add(new StringTextComponent(""));
+					tooltip.addAll(detailTooltip);
+				}
+			} else {
+				tooltip.add(new TranslationTextComponent("tooltip." + Reference.MOD_ID + ".shift_for_more_info").applyTextStyle(TextFormatting.WHITE).applyTextStyle(TextFormatting.ITALIC));
 			}
-		} else {
-			tooltip.add(new TranslationTextComponent("tooltip." + Reference.MOD_ID + ".shift_for_more_info").applyTextStyle(TextFormatting.WHITE).applyTextStyle(TextFormatting.ITALIC));
 		}
+	}
+
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return false;
 	}
 
 	@Override

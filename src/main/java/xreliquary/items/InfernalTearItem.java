@@ -98,6 +98,11 @@ public class InfernalTearItem extends ToggleableItem {
 		}
 	}
 
+	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return !getStackFromTear(stack).isEmpty();
+	}
+
 	private ItemStack getStackFromTear(ItemStack tear) {
 		CompoundNBT itemNBT = NBTHelper.getTagCompound("item", tear);
 		if (itemNBT.isEmpty()) {

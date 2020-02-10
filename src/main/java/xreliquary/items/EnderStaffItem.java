@@ -278,6 +278,11 @@ public class EnderStaffItem extends ToggleableItem {
 	}
 
 	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
+	@Override
 	public ActionResultType onItemUse(ItemUseContext itemUseContext) {
 		ItemStack stack = itemUseContext.getItem();
 		World world = itemUseContext.getWorld();

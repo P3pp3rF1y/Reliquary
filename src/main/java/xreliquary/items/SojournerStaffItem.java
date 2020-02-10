@@ -268,6 +268,11 @@ public class SojournerStaffItem extends ToggleableItem {
 		LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
 	}
 
+	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
 	private static ItemStack getItem(CompoundNBT tagItemData) {
 		return ItemStack.read(tagItemData.getCompound("Item"));
 	}

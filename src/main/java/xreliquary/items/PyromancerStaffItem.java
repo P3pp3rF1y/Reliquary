@@ -106,6 +106,11 @@ public class PyromancerStaffItem extends ToggleableItem {
 	}
 
 	@Override
+	protected boolean hasMoreInformation(ItemStack stack) {
+		return true;
+	}
+
+	@Override
 	public int getUseDuration(ItemStack par1ItemStack) {
 		return 11;
 	}
