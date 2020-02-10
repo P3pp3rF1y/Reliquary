@@ -8,7 +8,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -21,12 +20,11 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
 public class InterdictionTorchBlock extends TorchBlock {
-	private static final int TICK_RATE = 1;
+	protected static final int TICK_RATE = 1;
 
 	InterdictionTorchBlock(String registryName) {
 		super(Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0).lightValue(1).tickRandomly().sound(SoundType.WOOD).doesNotBlockMovement());
@@ -37,11 +35,10 @@ public class InterdictionTorchBlock extends TorchBlock {
 		this(Names.Blocks.INTERDICTION_TORCH);
 	}
 
-	@Nullable
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		context.getWorld().getPendingBlockTicks().scheduleTick(context.getPos(), this, TICK_RATE);
-		return super.getStateForPlacement(context);
+	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
+		world.getPendingBlockTicks().scheduleTick(pos, this, TICK_RATE);
+		super.onBlockAdded(state, world, pos, oldState, isMoving);
 	}
 
 	@Override
