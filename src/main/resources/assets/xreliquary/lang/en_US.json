@@ -1,4 +1,5 @@
 {
+    "itemGroup.xreliquary": "Reliquary",
     "block.xreliquary.alkahestry_altar": "Altar of Light",
     "block.xreliquary.alkahestry_altar.tooltip": "Feed it redstone and;it will grow glowstone.",
     "block.xreliquary.apothecary_cauldron": "Apothecary Cauldron",
@@ -196,6 +197,11 @@
     "item.xreliquary.sojourner_staff.tooltip2": "{{!colors.yellow}}Contents: {{phrase}};{{!colors.rose}}Placing: {{!colors.yellow}}{{placing}}",
 
     "item.xreliquary.tipped_arrow": "Tipped Arrow",
+
+    "item.xreliquary.mob_charm": "{{!colors.light_green}}%s Charm",
+    "item.xreliquary.mob_charm.tooltip": "%s can't see you with this.",
+
+    "item.xreliquary.mob_charm_fragment": "{{!colors.light_green}}%s Charm Fragment",
 
     "item.xreliquary.twilight_cloak": "Twilight Cloak",
     "item.xreliquary.twilight_cloak.tooltip": "Makes you invisible in darkness.",

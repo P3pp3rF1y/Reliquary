@@ -15,6 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.items.BulletItem;
 import xreliquary.items.IPotionItem;
+import xreliquary.items.MobCharmFragmentItem;
 import xreliquary.items.MobCharmItem;
 import xreliquary.reference.Colors;
 import xreliquary.util.NBTHelper;
@@ -106,7 +107,7 @@ public class ModItemColors {
 				return -1;
 			}
 
-			ResourceLocation entityName = MobCharmItem.getEntityEggRegistryName(stack);
+			ResourceLocation entityName = MobCharmFragmentItem.getEntityEggRegistryName(stack);
 			return getEgg(entityName).map(egg -> tintIndex == 0 ? egg.getColor(0) : egg.getColor(1)).orElse(-1);
 		}, MOB_CHARM_FRAGMENT);
 	}

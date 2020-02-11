@@ -1,5 +1,4 @@
 {
-    "itemGroup.xreliquary": "圣遗物",
 
     "xreliquary.gui.tome.text": "万能溶剂之经;能允许你将红石;或者荧石转变成世间万物。;按住shift右击可以自动;吸收它们补充能量;你可右击祭坛;以填充它们。",
 
@@ -8,63 +7,6 @@
     "tooltip.xreliquary.place": "{{!colors.light_purple}}按住Shift右击切换放置模式。",
     "tooltip.xreliquary.absorb_active": "{{!colors.purple}}将自动吸收{{item}}{{!colors.purple}}。",
     "tooltip.xreliquary.absorb_tear": "{{!colors.purple}}总会在物品栏中保留一组物品。",
-
-
-
-
-
-
-    "item.xreliquary.mob_charm_fragment_0": "{{!colors.light_green}}僵尸心珠",
-    "item.xreliquary.mob_charm_fragment_1": "{{!colors.light_green}}骷髅心珠",
-    "item.xreliquary.mob_charm_fragment_2": "{{!colors.light_green}}凋灵骷髅心珠",
-    "item.xreliquary.mob_charm_fragment_3": "{{!colors.light_green}}爬行者心珠",
-    "item.xreliquary.mob_charm_fragment_4": "{{!colors.light_green}}女巫心珠",
-    "item.xreliquary.mob_charm_fragment_5": "{{!colors.light_green}}僵尸猪人心珠",
-    "item.xreliquary.mob_charm_fragment_6": "{{!colors.light_green}}洞穴蜘蛛心珠",
-    "item.xreliquary.mob_charm_fragment_7": "{{!colors.light_green}}蜘蛛心珠",
-    "item.xreliquary.mob_charm_fragment_8": "{{!colors.light_green}}末影人心珠",
-    "item.xreliquary.mob_charm_fragment_9": "{{!colors.light_green}}恶魂心珠",
-    "item.xreliquary.mob_charm_fragment_10": "{{!colors.light_green}}史莱姆心珠",
-    "item.xreliquary.mob_charm_fragment_11": "{{!colors.light_green}}岩浆怪心珠",
-    "item.xreliquary.mob_charm_fragment_12": "{{!colors.light_green}}烈焰人心珠",
-    "item.xreliquary.mob_charm_fragment_13": "{{!colors.light_green}}守卫者心珠",
-
-
-
-
-
-
-
-
-    "item.xreliquary.mob_charm_0": "{{!colors.light_green}}僵尸护符",
-    "item.xreliquary.mob_charm_0.tooltip": "僵尸将无法看见你。",
-    "item.xreliquary.mob_charm_1": "{{!colors.light_green}}骷髅护符",
-    "item.xreliquary.mob_charm_1.tooltip": "骷髅将无法看见你。",
-    "item.xreliquary.mob_charm_2": "{{!colors.light_green}}凋灵骷髅护符",
-    "item.xreliquary.mob_charm_2.tooltip": "凋灵骷髅将无法看见你。",
-    "item.xreliquary.mob_charm_3": "{{!colors.light_green}}爬行者护符",
-    "item.xreliquary.mob_charm_3.tooltip": "爬行者将无法看见你。",
-    "item.xreliquary.mob_charm_4": "{{!colors.light_green}}女巫护符",
-    "item.xreliquary.mob_charm_4.tooltip": "女巫将无法看见你。",
-    "item.xreliquary.mob_charm_5": "{{!colors.light_green}}僵尸猪人护符",
-    "item.xreliquary.mob_charm_5.tooltip": "僵尸猪人将无法看见你。",
-    "item.xreliquary.mob_charm_6": "{{!colors.light_green}}洞穴蜘蛛护符",
-    "item.xreliquary.mob_charm_6.tooltip": "洞穴蜘蛛将无法看见你。",
-    "item.xreliquary.mob_charm_7": "{{!colors.light_green}}蜘蛛护符",
-    "item.xreliquary.mob_charm_7.tooltip": "蜘蛛将无法看见你。",
-    "item.xreliquary.mob_charm_8": "{{!colors.light_green}}末影人护符",
-    "item.xreliquary.mob_charm_8.tooltip": "末影人将无法看见你。",
-    "item.xreliquary.mob_charm_9": "{{!colors.light_green}}恶魂护符",
-    "item.xreliquary.mob_charm_9.tooltip": "恶魂将无法看见你。",
-    "item.xreliquary.mob_charm_10": "{{!colors.light_green}}史莱姆护符",
-    "item.xreliquary.mob_charm_10.tooltip": "史莱姆将无法看见你。",
-    "item.xreliquary.mob_charm_11": "{{!colors.light_green}}岩浆怪护符",
-    "item.xreliquary.mob_charm_11.tooltip": "岩浆怪将无法看见你。",
-    "item.xreliquary.mob_charm_12": "{{!colors.light_green}}烈焰人护符",
-    "item.xreliquary.mob_charm_12.tooltip": "烈焰人将无法看见你。",
-    "item.xreliquary.mob_charm_13": "{{!colors.light_green}}守卫者护符",
-    "item.xreliquary.mob_charm_13.tooltip": "守卫者将无法看见你。",
-
 
 
 

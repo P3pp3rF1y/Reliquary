@@ -9,9 +9,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A language file 'preprocessor', I guess you could call it. It just injects globals right now.
@@ -23,7 +25,7 @@ import java.util.Map;
 public class LanguageHelper {
 	private LanguageHelper() {}
 
-	private static Map<String, String> preprocessed = new HashMap<>();
+	private static Map<TranslationKey, String> preprocessed = new HashMap<>();
 	private static Map<String, String> globals = new HashMap<>();
 
 	static {
@@ -55,8 +57,9 @@ public class LanguageHelper {
 	public static String getLocalization(String key, Object... parameters) {
 		String localization = I18n.format(key, parameters);
 
-		if (preprocessed.containsKey(key)) {
-			return preprocessed.get(key);
+		TranslationKey translationKey = new TranslationKey(key, parameters);
+		if (preprocessed.containsKey(translationKey)) {
+			return preprocessed.get(translationKey);
 		} else if (localization.contains("{{!")) {
 			while (localization.contains("{{!")) {
 				int startingIndex = localization.indexOf("{{!");
@@ -72,7 +75,7 @@ public class LanguageHelper {
 				}
 			}
 
-			preprocessed.put(key, localization);
+			preprocessed.put(translationKey, localization);
 		}
 		return localization;
 	}
@@ -103,4 +106,33 @@ public class LanguageHelper {
 		return I18n.hasKey(langName);
 	}
 
+	private static class TranslationKey {
+		private final String key;
+		private final Object[] parameters;
+
+		private TranslationKey(String key, Object[] parameters) {
+			this.key = key;
+			this.parameters = parameters;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) {
+				return true;
+			}
+			if (o == null || getClass() != o.getClass()) {
+				return false;
+			}
+			TranslationKey that = (TranslationKey) o;
+			return key.equals(that.key) &&
+					Arrays.equals(parameters, that.parameters);
+		}
+
+		@Override
+		public int hashCode() {
+			int result = Objects.hash(key);
+			result = 31 * result + Arrays.hashCode(parameters);
+			return result;
+		}
+	}
 }

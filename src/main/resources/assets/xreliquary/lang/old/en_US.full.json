@@ -1,5 +1,4 @@
 {
-    "itemGroup.xreliquary": "Reliquary",
 
     "xreliquary.gui.tome.text": "Craft certain items and;blocks with the tome;to duplicate them.;You can right-click;Altars of Light to fuel;them with redstone from;the tome.",
 
@@ -8,63 +7,6 @@
     "tooltip.xreliquary.place": "{{!colors.light_purple}}Shift + Right click to enable place mode.",
     "tooltip.xreliquary.absorb_active": "{{!colors.purple}}Automagically absorbs {{!colors.gray}}{{item}}.",
     "tooltip.xreliquary.absorb_tear": "{{!colors.purple}}Always leaves a stack of the item in inventory.",
-
-
-
-
-
-
-
-    "item.xreliquary.mob_charm_fragment_0": "{{!colors.light_green}}Zombie Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_1": "{{!colors.light_green}}Skeleton Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_2": "{{!colors.light_green}}Wither Skeleton Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_3": "{{!colors.light_green}}Creeper Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_4": "{{!colors.light_green}}Witch Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_5": "{{!colors.light_green}}Zombie Pigman Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_6": "{{!colors.light_green}}Cave Spider Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_7": "{{!colors.light_green}}Spider Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_8": "{{!colors.light_green}}Enderman Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_9": "{{!colors.light_green}}Ghast Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_10": "{{!colors.light_green}}Slime Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_11": "{{!colors.light_green}}Magma Cube Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_12": "{{!colors.light_green}}Blaze Charm Fragment",
-    "item.xreliquary.mob_charm_fragment_13": "{{!colors.light_green}}Guardian Charm Fragment",
-
-
-
-
-
-
-
-
-    "item.xreliquary.mob_charm_0": "{{!colors.light_green}}Zombie Charm",
-    "item.xreliquary.mob_charm_0.tooltip": "Zombies can't see you with this.",
-    "item.xreliquary.mob_charm_1": "{{!colors.light_green}}Skeleton Charm",
-    "item.xreliquary.mob_charm_1.tooltip": "Skeletons can't see you with this.",
-    "item.xreliquary.mob_charm_2": "{{!colors.light_green}}Wither Skeleton Charm",
-    "item.xreliquary.mob_charm_2.tooltip": "Wither skeletons can't see you with this.",
-    "item.xreliquary.mob_charm_3": "{{!colors.light_green}}Creeper Charm",
-    "item.xreliquary.mob_charm_3.tooltip": "Creepers can't see you with this.",
-    "item.xreliquary.mob_charm_4": "{{!colors.light_green}}Witch Charm",
-    "item.xreliquary.mob_charm_4.tooltip": "Witches can't see you with this.",
-    "item.xreliquary.mob_charm_5": "{{!colors.light_green}}Zombie Pigman Charm",
-    "item.xreliquary.mob_charm_5.tooltip": "Zombie Pigmen can't see you with this.",
-    "item.xreliquary.mob_charm_6": "{{!colors.light_green}}Cave Spider Charm",
-    "item.xreliquary.mob_charm_6.tooltip": "Cave Spiders can't see you with this.",
-    "item.xreliquary.mob_charm_7": "{{!colors.light_green}}Spider Charm",
-    "item.xreliquary.mob_charm_7.tooltip": "Spiders can't see you with this.",
-    "item.xreliquary.mob_charm_8": "{{!colors.light_green}}Enderman Charm",
-    "item.xreliquary.mob_charm_8.tooltip": "Endermen can't see you with this.",
-    "item.xreliquary.mob_charm_9": "{{!colors.light_green}}Ghast Charm",
-    "item.xreliquary.mob_charm_9.tooltip": "Ghasts can't see you with this.",
-    "item.xreliquary.mob_charm_10": "{{!colors.light_green}}Slime Charm",
-    "item.xreliquary.mob_charm_10.tooltip": "Slimes can't see you with this.",
-    "item.xreliquary.mob_charm_11": "{{!colors.light_green}}Magma Cube Charm",
-    "item.xreliquary.mob_charm_11.tooltip": "Magma Cubes can't see you with this.",
-    "item.xreliquary.mob_charm_12": "{{!colors.light_green}}Blaze Charm",
-    "item.xreliquary.mob_charm_12.tooltip": "Blazes can't see you with this.",
-    "item.xreliquary.mob_charm_13": "{{!colors.light_green}}Guardian Charm",
-    "item.xreliquary.mob_charm_13.tooltip": "Guardians can't see you with this.",
 
 
 

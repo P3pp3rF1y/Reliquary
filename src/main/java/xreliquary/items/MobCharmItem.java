@@ -1,9 +1,11 @@
 package xreliquary.items;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -12,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
@@ -19,6 +23,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.blocks.PedestalBlock;
 import xreliquary.blocks.tile.PedestalTileEntity;
 import xreliquary.init.ModItems;
@@ -26,16 +31,37 @@ import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketMobCharmDamage;
 import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.reference.Settings;
+import xreliquary.util.LanguageHelper;
 import xreliquary.util.MobHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.WorldHelper;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class MobCharmItem extends ItemBase {
 	public MobCharmItem() {
 		super("mob_charm", new Properties().maxStackSize(1).maxDamage(Settings.COMMON.items.mobCharm.durability.get()).setNoRepair());
 		MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+		EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(getEntityEggRegistryName(stack));
+		if (entityType == null) {
+			return;
+		}
+
+		tooltip.add(new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey() + ".tooltip", entityType.getName().getString())));
+	}
+
+	@Override
+	public ITextComponent getDisplayName(ItemStack stack) {
+		EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(getEntityEggRegistryName(stack));
+		if (entityType == null) {
+			return super.getDisplayName(stack);
+		}
+		return new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey(), entityType.getName().getString()));
 	}
 
 	@Override
@@ -258,7 +284,7 @@ public class MobCharmItem extends ItemBase {
 		return false;
 	}
 
-	public static String getEntityRegistryName(ItemStack charm) {
+	static String getEntityRegistryName(ItemStack charm) {
 		return NBTHelper.getString("entity", charm);
 	}
 

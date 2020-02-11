@@ -1,9 +1,14 @@
 package xreliquary.items;
 
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.registries.ForgeRegistries;
+import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
 public class MobCharmFragmentItem extends ItemBase {
@@ -33,5 +38,14 @@ public class MobCharmFragmentItem extends ItemBase {
 
 	public static ResourceLocation getEntityEggRegistryName(ItemStack charm) {
 		return new ResourceLocation(getEntityRegistryName(charm));
+	}
+
+	@Override
+	public ITextComponent getDisplayName(ItemStack stack) {
+		EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(getEntityEggRegistryName(stack));
+		if (entityType == null) {
+			return super.getDisplayName(stack);
+		}
+		return new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey(), entityType.getName().getString()));
 	}
 }

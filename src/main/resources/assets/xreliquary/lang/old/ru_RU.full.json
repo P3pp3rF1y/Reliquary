@@ -1,6 +1,5 @@
 {
     "_comment": "Translated by TimeConqueror",
-    "itemGroup.xreliquary": "Reliquary",
 
     "xreliquary.gui.tome.text": "Соедините на верстаке;определенные предметы и;блоки с книгой, чтобы;удвоить их.;Чтобы заполнить Большую;книгу Алкагестии редстоуном,;нажмите Shift+ПКМ.",
 
@@ -10,61 +9,6 @@
     "tooltip.xreliquary.absorb_active": "{{!colors.purple}}Автоматически поглощает {{item}}{{!colors.purple}}.",
     "tooltip.xreliquary.absorb_tear": "{{!colors.purple}}Всегда оставляет стак этого предмета в инвентаре.",
 
-
-
-
-
-
-
-    "item.xreliquary.mob_charm_fragment_0": "{{!colors.light_green}}Фрагмент амулета зомби",
-    "item.xreliquary.mob_charm_fragment_1": "{{!colors.light_green}}Фрагмент амулета скелета",
-    "item.xreliquary.mob_charm_fragment_2": "{{!colors.light_green}}Фрагмент амулета визер-скелета",
-    "item.xreliquary.mob_charm_fragment_3": "{{!colors.light_green}}Фрагмент амулета крипера",
-    "item.xreliquary.mob_charm_fragment_4": "{{!colors.light_green}}Фрагмент амулета ведьмы",
-    "item.xreliquary.mob_charm_fragment_5": "{{!colors.light_green}}Фрагмент амулета свинозомби",
-    "item.xreliquary.mob_charm_fragment_6": "{{!colors.light_green}}Фрагмент амулета пещерного паука",
-    "item.xreliquary.mob_charm_fragment_7": "{{!colors.light_green}}Фрагмент амулета паука",
-    "item.xreliquary.mob_charm_fragment_8": "{{!colors.light_green}}Фрагмент амулета эндермена",
-    "item.xreliquary.mob_charm_fragment_9": "{{!colors.light_green}}Фрагмент амулета гаста",
-    "item.xreliquary.mob_charm_fragment_10": "{{!colors.light_green}}Фрагмент амулета слизня",
-    "item.xreliquary.mob_charm_fragment_11": "{{!colors.light_green}}Фрагмент амулета магмового куба",
-    "item.xreliquary.mob_charm_fragment_12": "{{!colors.light_green}}Фрагмент амулета всполоха",
-    "item.xreliquary.mob_charm_fragment_13": "{{!colors.light_green}}Фрагмент амулета стража",
-
-
-
-
-
-
-
-    "item.xreliquary.mob_charm_0": "{{!colors.light_green}}Амулет зомби",
-    "item.xreliquary.mob_charm_0.tooltip": "Зомби не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_1": "{{!colors.light_green}}Амулет скелета",
-    "item.xreliquary.mob_charm_1.tooltip": "Скелеты не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_2": "{{!colors.light_green}}Амулет визер-скелета",
-    "item.xreliquary.mob_charm_2.tooltip": "Визер-скелеты не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_3": "{{!colors.light_green}}Амулет крипера",
-    "item.xreliquary.mob_charm_3.tooltip": "Криперы не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_4": "{{!colors.light_green}}Амулет ведьмы",
-    "item.xreliquary.mob_charm_4.tooltip": "Ведьмы не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_5": "{{!colors.light_green}}Амулет свинозомби",
-    "item.xreliquary.mob_charm_5.tooltip": "Свинозомби не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_6": "{{!colors.light_green}}Амулет пещерного паука",
-    "item.xreliquary.mob_charm_6.tooltip": "Пещерные паука не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_7": "{{!colors.light_green}}Амулет паука",
-    "item.xreliquary.mob_charm_7.tooltip": "Пауки не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_8": "{{!colors.light_green}}Амулет эндермена",
-    "item.xreliquary.mob_charm_8.tooltip": "Эндермены не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_9": "{{!colors.light_green}}Амулет гаста",
-    "item.xreliquary.mob_charm_9.tooltip": "Гасты не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_10": "{{!colors.light_green}}Амулет слизня",
-    "item.xreliquary.mob_charm_10.tooltip": "Слизни не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_11": "{{!colors.light_green}}Амулет магмового куба",
-    "item.xreliquary.mob_charm_11.tooltip": "Магмовые кубы не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_12": "{{!colors.light_green}}Амулет всполоха",
-    "item.xreliquary.mob_charm_12.tooltip": "Всполохи не смогут увидеть Вас с этим предметом.",
-    "item.xreliquary.mob_charm_13": "{{!colors.light_green}}Амулет стража",
-    "item.xreliquary.mob_charm_13.tooltip": "Стражи не смогут увидеть Вас с этим предметом.",
 
 
 
