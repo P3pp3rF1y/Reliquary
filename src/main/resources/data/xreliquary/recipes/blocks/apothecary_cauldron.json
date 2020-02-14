@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GNG",
+        "ICI",
+        "NMN"
+    ],
+    "key": {
+        "G": {
+            "item": "xreliquary:catalyzing_gland"
+        },
+        "N": {
+            "item": "xreliquary:nebulous_heart"
+        },
+        "I": {
+            "item": "xreliquary:infernal_claw"
+        },
+        "C": {
+            "item": "minecraft:cauldron"
+        },
+        "M": {
+            "item": "xreliquary:molten_core"
+        }
+    },
+    "result": {
+        "item": "xreliquary:apothecary_cauldron"
+    }
+}

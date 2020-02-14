@@ -34,6 +34,7 @@ import xreliquary.common.gui.ContainerMobCharmBelt;
 import xreliquary.crafting.AlkahestryChargingRecipe;
 import xreliquary.crafting.AlkahestryCraftingRecipe;
 import xreliquary.crafting.AlkahestryDrainRecipe;
+import xreliquary.crafting.LingeringPotionIngredient;
 import xreliquary.crafting.MobCharmRepairRecipe;
 import xreliquary.crafting.MobDropsCraftableCondition;
 import xreliquary.crafting.PotionEffectsRecipe;
@@ -414,11 +415,14 @@ public class ModItems {
 	public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> evt) {
 		CraftingHelper.register(MobDropsCraftableCondition.Serializer.INSTANCE);
 
-		evt.getRegistry().register(MobCharmRepairRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "mob_charm_repair")));
-		evt.getRegistry().register(AlkahestryChargingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_charging")));
-		evt.getRegistry().register(AlkahestryCraftingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_crafting")));
-		evt.getRegistry().register(AlkahestryDrainRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_drain")));
-		evt.getRegistry().register(PotionEffectsRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "potion_effects")));
+		IForgeRegistry<IRecipeSerializer<?>> reg = evt.getRegistry();
+		reg.register(MobCharmRepairRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "mob_charm_repair")));
+		reg.register(AlkahestryChargingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_charging")));
+		reg.register(AlkahestryCraftingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_crafting")));
+		reg.register(AlkahestryDrainRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_drain")));
+		reg.register(PotionEffectsRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "potion_effects")));
+
+		CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "lingering_potion"), LingeringPotionIngredient.SERIALIZER);
 	}
 
 	public static void registerHandgunMagazines() {

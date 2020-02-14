@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "I I",
+        "IGI",
+        "SIS"
+    ],
+    "key": {
+        "S": {
+            "item": "minecraft:stone"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "G": {
+            "item": "minecraft:glass"
+        }
+    },
+    "result": {
+        "item": "xreliquary:magazines/empty_magazine",
+        "count": 5
+    }
+}

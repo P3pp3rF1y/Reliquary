@@ -1,0 +1,27 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GNG",
+        "NGN",
+        "NNN"
+    ],
+    "key": {
+        "G": {
+            "item": "xreliquary:catalyzing_gland"
+        },
+        "N": [
+            {
+                "item": "minecraft:quartz_block"
+            },
+            {
+                "item": "minecraft:chiseled_quartz_block"
+            },
+            {
+                "item": "minecraft:quartz_pillar"
+            }
+        ]
+    },
+    "result": {
+        "item": "xreliquary:apothecary_mortar"
+    }
+}

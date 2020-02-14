@@ -14,9 +14,11 @@ import static xreliquary.items.MobCharmDefinition.*;
 public class StandardMobCharmRegistry {
 	private StandardMobCharmRegistry() {}
 
+	private static final Map<String, MobCharmDefinition> REGISTERED_CHARM_DEFINITIONS = new HashMap<>();
 	private static final Map<String, MobCharmDefinition> ENTITY_NAME_CHARM_DEFINITIONS = new HashMap<>();
 
 	private static void registerMobCharmDefinition(MobCharmDefinition charmDefinition) {
+		REGISTERED_CHARM_DEFINITIONS.put(charmDefinition.getRegistryName(), charmDefinition);
 		for (String registryName : charmDefinition.getEntities()) {
 			ENTITY_NAME_CHARM_DEFINITIONS.put(registryName, charmDefinition);
 		}
@@ -53,6 +55,6 @@ public class StandardMobCharmRegistry {
 	}
 
 	static Set<String> getRegisteredNames() {
-		return ENTITY_NAME_CHARM_DEFINITIONS.keySet();
+		return REGISTERED_CHARM_DEFINITIONS.keySet();
 	}
 }

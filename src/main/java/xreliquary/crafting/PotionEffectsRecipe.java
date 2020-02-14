@@ -168,7 +168,7 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 		return SERIALIZER;
 	}
 
-	public static class Serializer  extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<PotionEffectsRecipe> {
+	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<PotionEffectsRecipe> {
 		@Override
 		public PotionEffectsRecipe read(ResourceLocation recipeId, JsonObject json) {
 			return new PotionEffectsRecipe(IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, json), JSONUtils.getFloat(json, "duration_factor", 1.0f));

@@ -1,0 +1,36 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:anvil"
+        },
+        {
+            "item": "minecraft:gold_block"
+        },
+        {
+            "item": "minecraft:gold_block"
+        },
+        {
+            "item": "xreliquary:molten_core"
+        },
+        {
+            "item": "xreliquary:molten_core"
+        },
+        {
+            "item": "xreliquary:molten_core"
+        },
+        {
+            "item": "xreliquary:catalyzing_gland"
+        },
+        {
+            "item": "xreliquary:catalyzing_gland"
+        },
+        {
+            "type": "forge:nbt",
+            "item": "xreliquary:void_tear"
+        }
+    ],
+    "result": {
+        "item": "xreliquary:midas_touchstone"
+    }
+}

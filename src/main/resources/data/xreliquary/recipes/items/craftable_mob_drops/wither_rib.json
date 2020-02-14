@@ -1,0 +1,25 @@
+{
+    "conditions": [
+        {
+            "type": "xreliquary:mob_drops_craftable"
+        }
+    ],
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "D D",
+        " S ",
+        "D D"
+    ],
+    "key": {
+        "D": {
+            "item": "minecraft:diamond"
+        },
+        "S": {
+            "item": "minecraft:wither_skeleton_skull"
+        }
+    },
+    "result": {
+        "item": "xreliquary:wither_rib",
+        "count": 4
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "xreliquary:nebulous_heart"
+        },
+        {
+            "item": "minecraft:gold_nugget"
+        },
+        {
+            "item": "xreliquary:slime_pearl"
+        },
+        {
+            "item": "xreliquary:bat_wing"
+        }
+    ],
+    "result": {
+        "item": "xreliquary:fortune_coin"
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "xreliquary:rib_bone"
+        },
+        {
+            "item": "xreliquary:catalyzing_gland"
+        },
+        {
+            "item": "minecraft:green_dye"
+        },
+        {
+            "item": "xreliquary:slime_pearl"
+        }
+    ],
+    "result": {
+        "item": "xreliquary:fertile_essence"
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "conditions": [
+        {
+            "type": "xreliquary:mob_drops_craftable"
+        }
+    ],
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "III",
+        "IFI",
+        "III"
+    ],
+    "key": {
+        "F": {
+            "item": "minecraft:rotten_flesh"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "result": {
+        "item": "xreliquary:zombie_heart"
+    }
+}

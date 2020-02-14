@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "STS",
+        "PPP"
+    ],
+    "key": {
+        "P": {
+            "item": "xreliquary:zombie_heart"
+        },
+        "S": {
+            "item": "minecraft:rotten_flesh"
+        },
+        "T": {
+            "item": "minecraft:golden_sword"
+        }
+    },
+    "result": {
+        "type": "forge:nbt",
+        "item": "xreliquary:mob_charm_fragment",
+        "nbt": "{entity:\"minecraft:zombie_pigman\"}"
+    }
+}

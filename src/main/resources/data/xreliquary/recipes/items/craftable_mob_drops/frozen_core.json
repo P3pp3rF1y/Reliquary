@@ -1,0 +1,27 @@
+{
+    "conditions": [
+        {
+            "type": "xreliquary:mob_drops_craftable"
+        }
+    ],
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GPG",
+        "GSG",
+        "GSG"
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:pumpkin"
+        },
+        "S": {
+            "item": "minecraft:snow"
+        },
+        "G": {
+            "item": "minecraft:gold_ingot"
+        }
+    },
+    "result": {
+        "item": "xreliquary:frozen_core"
+    }
+}

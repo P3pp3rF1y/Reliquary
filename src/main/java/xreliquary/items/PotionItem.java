@@ -41,7 +41,7 @@ public class PotionItem extends ItemBase implements IPotionItem {
 	// the base potion types.
 	@Override
 	public boolean hasContainerItem(ItemStack stack) {
-		return XRPotionHelper.getPotionEffectsFromStack(stack).size() > 0;
+		return !XRPotionHelper.getPotionEffectsFromStack(stack).isEmpty();
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class PotionItem extends ItemBase implements IPotionItem {
 		return NBTHelper.getBoolean("splash", stack);
 	}
 
-	public boolean isLingering(ItemStack stack) {
+	public static boolean isLingering(ItemStack stack) {
 		return NBTHelper.getBoolean("lingering", stack);
 	}
 
@@ -130,7 +130,7 @@ public class PotionItem extends ItemBase implements IPotionItem {
 
 	@Override
 	public UseAction getUseAction(ItemStack stack) {
-		if (!isSplash(stack) && XRPotionHelper.getPotionEffectsFromStack(stack).size() > 0) {
+		if (!isSplash(stack) && !XRPotionHelper.getPotionEffectsFromStack(stack).isEmpty()) {
 			return UseAction.DRINK;
 		}
 		return UseAction.NONE;
@@ -160,7 +160,7 @@ public class PotionItem extends ItemBase implements IPotionItem {
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		if (!isSplash(stack) && !isLingering(stack)) {
-			if (XRPotionHelper.getPotionEffectsFromStack(stack).size() > 0) {
+			if (!XRPotionHelper.getPotionEffectsFromStack(stack).isEmpty()) {
 				player.setActiveHand(hand);
 				return new ActionResult<>(ActionResultType.SUCCESS, stack);
 			} else {

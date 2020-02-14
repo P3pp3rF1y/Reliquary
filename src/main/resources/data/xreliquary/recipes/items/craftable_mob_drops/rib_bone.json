@@ -1,0 +1,24 @@
+{
+    "conditions": [
+        {
+            "type": "xreliquary:mob_drops_craftable"
+        }
+    ],
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "III",
+        "IBI",
+        "III"
+    ],
+    "key": {
+        "B": {
+            "item": "minecraft:bone"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "result": {
+        "item": "xreliquary:rib_bone"
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "xreliquary:squid_beak"
+        }
+    ],
+    "result": {
+        "item": "minecraft:ink_sac",
+        "count": 6
+    }
+}

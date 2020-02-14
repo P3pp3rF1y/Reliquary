@@ -1,0 +1,36 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "xreliquary:bullets/seeker_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/seeker_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/seeker_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/seeker_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/seeker_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/seeker_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/seeker_bullet"
+        },
+        {
+            "item": "xreliquary:bullets/seeker_bullet"
+        },
+        {
+            "item": "xreliquary:nebulous_heart"
+        }
+    ],
+    "result": {
+        "item": "xreliquary:bullets/ender_bullet",
+        "count": 8
+    }
+}

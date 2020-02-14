@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " DF",
+        " VD",
+        "I  "
+    ],
+    "key": {
+        "D": {
+            "item": "minecraft:diamond"
+        },
+        "F": {
+            "item": "xreliquary:frozen_core"
+        },
+        "V": {
+            "type": "forge:nbt",
+            "item": "xreliquary:void_tear"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "result": {
+        "item": "xreliquary:ice_magus_rod"
+    }
+}

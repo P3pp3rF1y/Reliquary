@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " CE",
+        " KC",
+        "S  "
+    ],
+    "key": {
+        "S": {
+            "item": "minecraft:stick"
+        },
+        "C": {
+            "item": "xreliquary:chelicerae"
+        },
+        "E": {
+            "item": "minecraft:ender_eye"
+        },
+        "K": {
+            "item": "xreliquary:kraken_shell_fragment"
+        }
+    },
+    "result": {
+        "item": "xreliquary:serpent_staff"
+    }
+}
