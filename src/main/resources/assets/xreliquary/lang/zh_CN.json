@@ -157,10 +157,10 @@
     "item.xreliquary.phoenix_down": "凤凰之尾",
     "item.xreliquary.phoenix_down.tooltip": "原地满血复活一次后会;还原成天使之羽。",
 
-    "item.xreliquary.potion_empty": "浓缩药水瓶",
+    "item.xreliquary.empty_potion_vial": "浓缩药水瓶",
     "item.xreliquary.potion": "浓缩药水",
-    "item.xreliquary.potion_splash": "喷溅型浓缩药水",
-    "item.xreliquary.potion_lingering": "滞留型浓缩药水",
+    "item.xreliquary.splash_potion": "喷溅型浓缩药水",
+    "item.xreliquary.lingering_potion": "滞留型浓缩药水",
     "item.xreliquary.potion.tooltip": "效果：;{{effects}}",
 
     "item.xreliquary.potion_essence": "药水香精",

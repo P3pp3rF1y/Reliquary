@@ -27,11 +27,8 @@ public class ArrowShotRecipeMaker {
 		String group = "xreliquary.potion." + itemName;
 		for (PotionEssence essence : PotionMap.uniquePotions) {
 
-			ItemStack potion = new ItemStack(ModItems.POTION);
+			ItemStack potion = new ItemStack(ModItems.LINGERING_POTION);
 			XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());
-			//noinspection ConstantConditions
-			potion.getTag().putBoolean("lingering", true);
-			potion.getTag().putBoolean("hasPotion", true);
 
 			ItemStack outputCopy = output.copy();
 			outputCopy.setCount(8);

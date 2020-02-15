@@ -45,7 +45,7 @@ public class AlkahestryTomeItem extends ToggleableItem {
 
 	@Override
 	public int getDamage(ItemStack stack) {
-		return getCharge(stack);
+		return getMaxDamage(stack) - getCharge(stack);
 	}
 
 	@Override

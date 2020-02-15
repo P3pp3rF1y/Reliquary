@@ -1,7 +1,0 @@
-{
-  "parent": "xreliquary:item/default_item",
-  "textures": {
-    "layer0": "xreliquary:item/potion_splash",
-    "layer1": "xreliquary:item/potion_splash_overlay"
-  }
-}

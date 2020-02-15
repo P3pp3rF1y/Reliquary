@@ -34,7 +34,6 @@ import xreliquary.common.gui.ContainerMobCharmBelt;
 import xreliquary.crafting.AlkahestryChargingRecipe;
 import xreliquary.crafting.AlkahestryCraftingRecipe;
 import xreliquary.crafting.AlkahestryDrainRecipe;
-import xreliquary.crafting.LingeringPotionIngredient;
 import xreliquary.crafting.MobCharmRepairRecipe;
 import xreliquary.crafting.MobDropsCraftableCondition;
 import xreliquary.crafting.PotionEffectsRecipe;
@@ -86,6 +85,7 @@ import xreliquary.items.MobCharmItem;
 import xreliquary.items.PhoenixDownItem;
 import xreliquary.items.PotionEssenceItem;
 import xreliquary.items.PotionItem;
+import xreliquary.items.PotionItemBase;
 import xreliquary.items.PyromancerStaffItem;
 import xreliquary.items.RendingGaleItem;
 import xreliquary.items.RodOfLyssaItem;
@@ -93,6 +93,7 @@ import xreliquary.items.SalamanderEyeItem;
 import xreliquary.items.SerpentStaffItem;
 import xreliquary.items.ShearsOfWinterItem;
 import xreliquary.items.SojournerStaffItem;
+import xreliquary.items.ThrownPotionItem;
 import xreliquary.items.TippedArrowItem;
 import xreliquary.items.TwilightCloakItem;
 import xreliquary.items.VoidTearItem;
@@ -160,7 +161,10 @@ public class ModItems {
 	public static final VoidTearItem VOID_TEAR = InjectionHelper.nullValue();
 	public static final WitchHatItem WITCH_HAT = InjectionHelper.nullValue();
 	public static final WitherlessRoseItem WITHERLESS_ROSE = InjectionHelper.nullValue();
-	public static final PotionItem POTION = InjectionHelper.nullValue();
+	public static final ItemBase EMPTY_POTION_VIAL = InjectionHelper.nullValue();
+	public static final PotionItemBase POTION = InjectionHelper.nullValue();
+	public static final PotionItemBase SPLASH_POTION = InjectionHelper.nullValue();
+	public static final PotionItemBase LINGERING_POTION = InjectionHelper.nullValue();
 	public static final MobCharmBeltItem MOB_CHARM_BELT = InjectionHelper.nullValue();
 	public static final MobCharmItem MOB_CHARM = InjectionHelper.nullValue();
 	@ObjectHolder(EMPTY_MAGAZINE_REGISTRY_NAME)
@@ -331,22 +335,20 @@ public class ModItems {
 			registerItem(registry, new AttractionPotionItem());
 			registerItem(registry, new FertilePotionItem());
 			registerItem(registry, new PotionEssenceItem(), false);
+			registerItem(registry, new ItemBase("empty_potion_vial", new Item.Properties()), false);
 			registerItem(registry, new PotionItem(), false);
+			registerItem(registry, new ThrownPotionItem("splash_potion"), false);
+			registerItem(registry, new ThrownPotionItem("lingering_potion"), false);
 			registerItem(registry, new TippedArrowItem(), false);
 		}
 	}
 
 	public static void registerDispenseBehaviors() {
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
-			DispenserBlock.registerDispenseBehavior(ModItems.POTION, new BehaviorDefaultProjectileDispense() {
+			DispenserBlock.registerDispenseBehavior(ModItems.LINGERING_POTION, new BehaviorDefaultProjectileDispense() {
 				@Override
 				ProjectileEntityFactory getProjectileEntityFactory() {
 					return (world, position, stack) -> new ThrownXRPotionEntity(world, position.getX(), position.getY(), position.getZ(), stack);
-				}
-
-				@Override
-				boolean canShoot(ItemStack stack) {
-					return ModItems.POTION.isSplash(stack) || ModItems.POTION.isLingering(stack);
 				}
 			});
 
@@ -421,8 +423,6 @@ public class ModItems {
 		reg.register(AlkahestryCraftingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_crafting")));
 		reg.register(AlkahestryDrainRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_drain")));
 		reg.register(PotionEffectsRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "potion_effects")));
-
-		CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "lingering_potion"), LingeringPotionIngredient.SERIALIZER);
 	}
 
 	public static void registerHandgunMagazines() {

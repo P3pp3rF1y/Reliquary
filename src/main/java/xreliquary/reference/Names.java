@@ -54,8 +54,8 @@ public class Names {
 		public static final String MOB_CHARM = "mob_charm";
 		public static final String GUN_PART = "gun_part";
 		public static final String POTION = "potion";
-		public static final String POTION_SPLASH = "potion_splash";
-		public static final String POTION_LINGERING = "potion_lingering";
+		public static final String POTION_SPLASH = "splash_potion";
+		public static final String POTION_LINGERING = "lingering_potion";
 		public static final String POTION_ESSENCE = "potion_essence";
 		public static final String GLOWING_WATER = "glowing_water";
 		public static final String ANGELHEART_VIAL = "angelheart_vial";

@@ -32,7 +32,8 @@ import xreliquary.reference.Reference;
 public class ReliquaryPlugin implements IModPlugin {
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registration) {
-		registration.useNbtForSubtypes(ModItems.MOB_CHARM_FRAGMENT, ModItems.MOB_CHARM, ModItems.POTION_ESSENCE, ModItems.POTION, ModItems.TIPPED_ARROW, ModItems.NEUTRAL_BULLET, ModItems.NEUTRAL_MAGAZINE);
+		registration.useNbtForSubtypes(ModItems.MOB_CHARM_FRAGMENT, ModItems.MOB_CHARM, ModItems.POTION_ESSENCE, ModItems.POTION, ModItems.SPLASH_POTION,
+				ModItems.LINGERING_POTION, ModItems.TIPPED_ARROW, ModItems.NEUTRAL_BULLET, ModItems.NEUTRAL_MAGAZINE);
 	}
 
 	@Override

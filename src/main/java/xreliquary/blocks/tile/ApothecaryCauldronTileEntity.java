@@ -49,7 +49,6 @@ import xreliquary.util.InjectionHelper;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.potions.XRPotionHelper;
 
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -229,31 +228,22 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 		return hasNetherwart && !effects.isEmpty() && cookTime >= getTotalCookTime() && (!hasDragonBreath || hasGunpowder);
 	}
 
-	@Nullable
-	private CompoundNBT removeContainedPotion() {
-		if (!hasNetherwart || effects.isEmpty() || getLiquidLevel() <= 0) {
-			return null;
+	private ItemStack removeContainedPotion() {
+		ItemStack potion;
+		if (hasDragonBreath) {
+			potion = new ItemStack(ModItems.LINGERING_POTION);
+		} else if (hasGunpowder) {
+			potion = new ItemStack(ModItems.SPLASH_POTION);
+		} else {
+			potion = new ItemStack(ModItems.POTION);
 		}
+		XRPotionHelper.addPotionEffectsToStack(potion, XRPotionHelper.augmentPotionEffects(effects, redstoneCount, glowstoneCount));
 
 		setLiquidLevel(getLiquidLevel() - 1);
-		CompoundNBT tag = getFinishedPotion();
-
 		if (getLiquidLevel() <= 0) {
 			clearAllFields();
 		}
-		return tag;
-	}
-
-	private CompoundNBT getFinishedPotion() {
-		CompoundNBT tag = new CompoundNBT();
-		XRPotionHelper.addPotionEffectsToCompoundTag(tag, XRPotionHelper.augmentPotionEffects(effects, redstoneCount, glowstoneCount));
-		tag.putBoolean("hasPotion", true);
-		if (hasDragonBreath) {
-			tag.putBoolean("lingering", true);
-		} else if (hasGunpowder) {
-			tag.putBoolean("splash", true);
-		}
-		return tag;
+		return potion;
 	}
 
 	private void clearAllFields() {
@@ -414,10 +404,9 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 			cookTime = 0;
 
 			return true;
-		} else if (itemStack.getItem() == ModItems.POTION && (itemStack.getTag() == null || !itemStack.getTag().getBoolean("hasPotion")) && finishedCooking() && getLiquidLevel() > 0) {
-			if (finishedCooking()) {
-				ItemStack potion = new ItemStack(ModItems.POTION);
-				potion.setTag(removeContainedPotion());
+		} else if (itemStack.getItem() == ModItems.EMPTY_POTION_VIAL && finishedCooking() && getLiquidLevel() > 0) {
+			if (finishedCooking() && hasNetherwart && !effects.isEmpty() && getLiquidLevel() > 0) {
+				ItemStack potion = removeContainedPotion();
 
 				itemStack.shrink(1);
 

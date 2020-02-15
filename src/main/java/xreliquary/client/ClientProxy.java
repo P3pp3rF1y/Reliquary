@@ -61,7 +61,6 @@ import xreliquary.reference.Compatibility;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
-import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
@@ -101,6 +100,8 @@ public class ClientProxy extends CommonProxy {
 			JEIDescriptionRegistry.register(subItems, Names.Items.POTION_ESSENCE);
 
 			JEIDescriptionRegistry.register(ModItems.POTION, "potion0");
+			JEIDescriptionRegistry.register(ModItems.LINGERING_POTION, "potion0");
+			JEIDescriptionRegistry.register(ModItems.SPLASH_POTION, "potion0");
 
 			List<ItemStack> potions = new ArrayList<>();
 			List<ItemStack> splashPotions = new ArrayList<>();
@@ -112,15 +113,14 @@ public class ClientProxy extends CommonProxy {
 			for (PotionEssence essence : PotionMap.uniquePotions) {
 				ItemStack potion = new ItemStack(ModItems.POTION, 1);
 				XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());
-				NBTHelper.putBoolean("hasPotion", potion, true);
 				potions.add(potion);
 
-				ItemStack splashPotion = potion.copy();
-				NBTHelper.putBoolean("splash", splashPotion, true);
+				ItemStack splashPotion = new ItemStack(ModItems.SPLASH_POTION);
+				XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());
 				splashPotions.add(splashPotion);
 
-				ItemStack lingeringPotion = potion.copy();
-				NBTHelper.putBoolean("lingering", lingeringPotion, true);
+				ItemStack lingeringPotion = new ItemStack(ModItems.LINGERING_POTION);
+				XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());
 				lingeringPotions.add(lingeringPotion);
 
 				ItemStack tippedArrow = new ItemStack(ModItems.TIPPED_ARROW);

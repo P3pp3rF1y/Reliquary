@@ -163,10 +163,10 @@
     "item.xreliquary.phoenix_down": "Phoenix Down",
     "item.xreliquary.phoenix_down.tooltip": "Resurrects you once with;full health and reverts;to an Angelic Feather.",
 
-    "item.xreliquary.potion_empty": "Condensed Potion Vial",
+    "item.xreliquary.empty_potion_vial": "Condensed Potion Vial",
     "item.xreliquary.potion": "Condensed Potion",
-    "item.xreliquary.potion_splash": "Splash Condensed Potion",
-    "item.xreliquary.potion_lingering": "Lingering Condensed Potion",
+    "item.xreliquary.splash_potion": "Splash Condensed Potion",
+    "item.xreliquary.lingering_potion": "Lingering Condensed Potion",
     "item.xreliquary.potion.tooltip": "Effects:;{{effects}}",
 
     "item.xreliquary.potion_essence": "Potion Essence",

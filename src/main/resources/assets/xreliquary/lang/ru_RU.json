@@ -163,10 +163,10 @@
     "item.xreliquary.phoenix_down": "Пух Феникса",
     "item.xreliquary.phoenix_down.tooltip": "Лишь раз воскресит Вас;с полным здоровьем, а затем;превратится в Ангельское перо.",
 
-    "item.xreliquary.potion_empty": "Колба для конденсированного зелья",
+    "item.xreliquary.empty_potion_vial": "Колба для конденсированного зелья",
     "item.xreliquary.potion": "Конденсированное зелье",
-    "item.xreliquary.potion_splash": "Взрывное конденсированное зелье",
-    "item.xreliquary.potion_lingering": "Затяжное конденсированное зелье",
+    "item.xreliquary.splash_potion": "Взрывное конденсированное зелье",
+    "item.xreliquary.lingering_potion": "Затяжное конденсированное зелье",
     "item.xreliquary.potion.tooltip": "Эффекты:;{{effects}}",
 
     "item.xreliquary.potion_essence": "Эссенция зелья",

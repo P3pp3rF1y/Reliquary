@@ -73,7 +73,7 @@ public class ModItemColors {
 			} else {
 				return Integer.parseInt(Colors.PURE, 16);
 			}
-		}, POTION);
+		}, POTION, SPLASH_POTION, LINGERING_POTION);
 
 		registerItemColor((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getPotionColorFromEffectList(((IPotionItem) stack.getItem()).getEffects(stack)) : -1, TIPPED_ARROW);
 	}

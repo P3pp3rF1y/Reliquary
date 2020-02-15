@@ -26,7 +26,7 @@ public class AttractionPotionItem extends ItemBase {
 
 	@Override
 	public ItemStack getContainerItem( ItemStack stack) {
-		return new ItemStack(ModItems.POTION);
+		return new ItemStack(ModItems.EMPTY_POTION_VIAL);
 	}
 
 
