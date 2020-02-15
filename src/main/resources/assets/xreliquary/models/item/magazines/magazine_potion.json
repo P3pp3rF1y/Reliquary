@@ -1,8 +1,0 @@
-{
-  "parent": "xreliquary:item/default_item",
-  "textures": {
-    "layer0": "xreliquary:item/bullet",
-    "layer1": "xreliquary:item/bullet_overlay",
-    "layer2": "xreliquary:item/bullet_potion_overlay"
-  }
-}

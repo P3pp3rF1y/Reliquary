@@ -35,7 +35,17 @@ import java.util.List;
 
 public class AlkahestryTomeItem extends ToggleableItem {
 	public AlkahestryTomeItem() {
-		super(Names.Items.ALKAHESTRY_TOME, new Properties().maxDamage(getChargeLimit() + 1).setNoRepair().rarity(Rarity.EPIC));
+		super(Names.Items.ALKAHESTRY_TOME, new Properties().setNoRepair().rarity(Rarity.EPIC));
+	}
+
+	@Override
+	public int getMaxDamage(ItemStack stack) {
+		return getChargeLimit() + 1;
+	}
+
+	@Override
+	public int getDamage(ItemStack stack) {
+		return getCharge(stack);
 	}
 
 	@Override
@@ -107,7 +117,6 @@ public class AlkahestryTomeItem extends ToggleableItem {
 		}
 
 		ItemStack stack = new ItemStack(this);
-		stack.setDamage(stack.getMaxDamage());
 		items.add(stack);
 	}
 
@@ -117,7 +126,6 @@ public class AlkahestryTomeItem extends ToggleableItem {
 
 	public static ItemStack setCharge(ItemStack tome, int charge) {
 		NBTHelper.putInt("charge", tome, charge);
-		tome.setDamage(tome.getMaxDamage() - charge);
 		return tome;
 	}
 

@@ -1,3 +1,15 @@
 {
-  "parent": "xreliquary:item/magazines/magazine"
+  "parent": "xreliquary:item/default_item",
+  "textures": {
+    "layer0": "xreliquary:item/magazine",
+    "layer1": "xreliquary:item/magazine_overlay"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "potion": 1
+      },
+      "model": "xreliquary:item/magazines/potion_magazine"
+    }
+  ]
 }
