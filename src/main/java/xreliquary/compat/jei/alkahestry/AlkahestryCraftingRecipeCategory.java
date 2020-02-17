@@ -5,10 +5,16 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import xreliquary.crafting.AlkahestryCraftingRecipe;
+import xreliquary.init.ModItems;
+import xreliquary.items.AlkahestryTomeItem;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 
 import java.util.List;
@@ -47,7 +53,11 @@ public class AlkahestryCraftingRecipeCategory extends AlkahestryRecipeCategory<A
 	@Override
 	public void setIngredients(AlkahestryCraftingRecipe recipe, IIngredients ingredients) {
 		ingredients.setInputIngredients(recipe.getIngredients());
-		ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
+		NonNullList<ItemStack> outputs = NonNullList.create();
+		outputs.add(recipe.getRecipeOutput());
+		outputs.add(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME),
+				Settings.COMMON.items.alkahestryTome.chargeLimit.get() - recipe.getChargeNeeded()));
+		ingredients.setOutputs(VanillaTypes.ITEM, outputs);
 	}
 
 	@Override
@@ -67,5 +77,13 @@ public class AlkahestryCraftingRecipeCategory extends AlkahestryRecipeCategory<A
 		recipeLayout.getItemStacks().set(TOME_SLOT, tome);
 		recipeLayout.getItemStacks().set(OUTPUT_SLOT, output);
 		recipeLayout.getItemStacks().set(TOME_OUTPUT_SLOT, tomeOutput);
+	}
+
+	@Override
+	public void draw(AlkahestryCraftingRecipe recipe, double mouseX, double mouseY) {
+		String chargeString = "-" + recipe.getChargeNeeded();
+		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
+		int stringWidth = fontRenderer.getStringWidth(chargeString);
+		fontRenderer.drawString(chargeString, (float) (((double) background.getWidth() - stringWidth) / 2), 40.0F, -8355712);
 	}
 }

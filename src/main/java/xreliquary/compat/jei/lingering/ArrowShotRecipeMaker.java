@@ -12,6 +12,7 @@ import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ArrowShotRecipeMaker {
@@ -35,7 +36,8 @@ public class ArrowShotRecipeMaker {
 			XRPotionHelper.addPotionEffectsToStack(outputCopy, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), durationFactor));
 
 			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, "xreliquary.potion.magazine." + output.getTranslationKey());
-			NonNullList<Ingredient> ingredients = NonNullList.withSize(8, Ingredient.fromStacks(itemStack));
+			NonNullList<Ingredient> ingredients = NonNullList.create();
+			ingredients.addAll(Collections.nCopies(8, Ingredient.fromStacks(itemStack)));
 			ingredients.add(Ingredient.fromStacks(potion));
 
 			recipes.add(new ShapelessRecipe(id, group, outputCopy, ingredients));

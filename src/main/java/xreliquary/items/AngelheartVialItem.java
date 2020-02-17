@@ -16,7 +16,6 @@ import xreliquary.handler.CommonEventHandler;
 import xreliquary.handler.HandlerPriority;
 import xreliquary.handler.IPlayerDeathHandler;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.EntityHelper;
 import xreliquary.util.InventoryHelper;
@@ -25,7 +24,7 @@ import java.util.Random;
 
 public class AngelheartVialItem extends ItemBase {
 	public AngelheartVialItem() {
-		super(Names.Items.ANGELHEART_VIAL, new Properties());
+		super("angelheart_vial", new Properties());
 
 		CommonEventHandler.registerPlayerDeathHandler(new IPlayerDeathHandler() {
 			@Override
@@ -49,7 +48,7 @@ public class AngelheartVialItem extends ItemBase {
 				player.setHealth(amountHealed);
 
 				// if the player had any negative status effects [vanilla only for now], remove them:
-				if (Settings.COMMON.items.angelHeartVial.removeNegativeStatus.get()) {
+				if (Boolean.TRUE.equals(Settings.COMMON.items.angelHeartVial.removeNegativeStatus.get())) {
 					EntityHelper.removeNegativeStatusEffects(player);
 				}
 

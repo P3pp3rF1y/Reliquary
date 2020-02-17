@@ -14,7 +14,6 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import xreliquary.reference.Names;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -25,7 +24,7 @@ import static net.minecraft.block.HorizontalBlock.HORIZONTAL_FACING;
 public class WallInterdictionTorchBlock extends InterdictionTorchBlock {
 	private static final Map<Direction, VoxelShape> SHAPES = Maps.newEnumMap(ImmutableMap.of(Direction.NORTH, Block.makeCuboidShape(5.5D, 3.0D, 11.0D, 10.5D, 13.0D, 16.0D), Direction.SOUTH, Block.makeCuboidShape(5.5D, 3.0D, 0.0D, 10.5D, 13.0D, 5.0D), Direction.WEST, Block.makeCuboidShape(11.0D, 3.0D, 5.5D, 16.0D, 13.0D, 10.5D), Direction.EAST, Block.makeCuboidShape(0.0D, 3.0D, 5.5D, 5.0D, 13.0D, 10.5D)));
 	public WallInterdictionTorchBlock() {
-		super(Names.Blocks.WALL_INTERDICTION_TORCH);
+		super("wall_interdiction_torch");
 		setDefaultState(stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH));
 	}
 

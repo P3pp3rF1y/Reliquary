@@ -69,6 +69,11 @@ public class AlkahestryChargingRecipe implements ICraftingRecipe {
 	}
 
 	@Override
+	public boolean isDynamic() {
+		return true;
+	}
+
+	@Override
 	public ItemStack getCraftingResult(CraftingInventory inv) {
 		int numberOfIngredients = 0;
 		ItemStack tome = ItemStack.EMPTY;
@@ -93,7 +98,7 @@ public class AlkahestryChargingRecipe implements ICraftingRecipe {
 
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.from(chargingIngredient, tomeIngredient);
+		return NonNullList.from(Ingredient.EMPTY, chargingIngredient, tomeIngredient);
 	}
 
 	@Override
@@ -122,7 +127,7 @@ public class AlkahestryChargingRecipe implements ICraftingRecipe {
 	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<AlkahestryChargingRecipe> {
 		@Override
 		public AlkahestryChargingRecipe read(ResourceLocation recipeId, JsonObject json) {
-			if (Settings.COMMON.disable.disableAlkahestry.get()) {
+			if (Boolean.TRUE.equals(Settings.COMMON.disable.disableAlkahestry.get())) {
 				//noinspection ConstantConditions - this is the easiest way to disable recipes without having to code special condition and adding to every recipe
 				return null;
 			}

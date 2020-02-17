@@ -17,16 +17,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import xreliquary.reference.Names;
 
 import java.util.List;
 
 public class SalamanderEyeItem extends ItemBase {
 
 	public SalamanderEyeItem() {
-		super(Names.Items.SALAMANDER_EYE, new Properties().maxStackSize(1));
+		super("salamander_eye", new Properties().maxStackSize(1));
 	}
-
 
 	@Override
 	public Rarity getRarity(ItemStack stack) {

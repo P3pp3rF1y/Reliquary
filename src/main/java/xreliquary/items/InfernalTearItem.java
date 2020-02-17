@@ -18,7 +18,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.crafting.AlkahestryCraftingRecipe;
 import xreliquary.init.XRRecipes;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -33,7 +32,7 @@ public class InfernalTearItem extends ToggleableItem {
 	private static final String ENABLED_TAG = "enabled";
 
 	public InfernalTearItem() {
-		super(Names.Items.INFERNAL_TEAR, new Properties().maxStackSize(1).setNoRepair());
+		super("infernal_tear", new Properties().maxStackSize(1).setNoRepair());
 	}
 
 	@Override

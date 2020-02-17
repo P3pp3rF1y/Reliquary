@@ -37,7 +37,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -57,7 +56,7 @@ public class PyromancerStaffItem extends ToggleableItem {
 	private static final String ERUPTION_MODE = "eruption";
 
 	public PyromancerStaffItem() {
-		super(Names.Items.PYROMANCER_STAFF, new Properties().maxStackSize(1));
+		super("pyromancer_staff", new Properties().maxStackSize(1));
 	}
 
 	@Override

@@ -2,33 +2,43 @@ package xreliquary.compat.jei.descriptions;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
 public class JEIDescriptionRegistry {
 	private JEIDescriptionRegistry() {}
 
-	private static Map<String, List<ItemStack>> registry = new HashMap<>();
+	private static Set<DescriptionEntry> descriptionEntries = new HashSet<>();
 
-	public static Set<DescriptionEntry> entrySet() {
-		return registry.entrySet().stream().map(entry -> new DescriptionEntry(entry.getValue(), entry.getKey())).collect(Collectors.toCollection(HashSet::new));
+	public static Set<DescriptionEntry> getEntries() {
+		return descriptionEntries;
 	}
 
-	public static void register(List<ItemStack> itemStacks, String name) {
-		registry.put(Reference.MOD_ID + "." + Names.Configs.JEI_DESCRIPTIONS + name, itemStacks);
+	public static void register(Supplier<List<ItemStack>> itemStacks, String... names) {
+		descriptionEntries.add(new DescriptionEntry(itemStacks, getTranslationKeys(names)));
+	}
+
+	private static String[] getTranslationKeys(String... names) {
+		String[] keys = new String[names.length];
+		for (int i = 0; i < names.length; i++) {
+			keys[i] = String.format("jei.%s.description.%s", Reference.MOD_ID, names[i].replace('/', '.'));
+		}
+
+		return keys;
+	}
+
+	public static void register(ItemStack stack, String name) {
+		register(() -> Collections.singletonList(stack), name);
 	}
 
 	public static void register(Item item, String name) {
 		if (item.getGroup() != null) {
-			registry.put(Reference.MOD_ID + "." + Names.Configs.JEI_DESCRIPTIONS + name, Collections.singletonList(new ItemStack(item, 1)));
+			register(new ItemStack(item), name);
 		}
 	}
 }

@@ -9,7 +9,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import xreliquary.reference.Names;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
@@ -20,7 +19,7 @@ import java.util.List;
 public class PotionEssenceItem extends ItemBase implements IPotionItem {
 
 	public PotionEssenceItem() {
-		super(Names.Items.POTION_ESSENCE, new Properties());
+		super("potion_essence", new Properties());
 	}
 
 	@Override

@@ -35,7 +35,6 @@ import xreliquary.init.ModItems;
 import xreliquary.network.PacketFortuneCoinTogglePressed;
 import xreliquary.network.PacketHandler;
 import xreliquary.pedestal.PedestalRegistry;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
@@ -49,7 +48,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem {
 	private static final String SOUND_TIMER_TAG = "soundTimer";
 
 	public FortuneCoinItem() {
-		super(Names.Items.FORTUNE_COIN, new Properties().maxStackSize(1));
+		super("fortune_coin", new Properties().maxStackSize(1));
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

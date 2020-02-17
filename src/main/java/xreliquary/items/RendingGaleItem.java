@@ -36,7 +36,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import xreliquary.items.util.FilteredBigItemStack;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -51,7 +50,7 @@ public class RendingGaleItem extends ToggleableItem {
 	private static final String COUNT_TAG = "count";
 
 	public RendingGaleItem() {
-		super(Names.Items.RENDING_GALE, new Properties().maxStackSize(1));
+		super("rending_gale", new Properties().maxStackSize(1));
 	}
 
 	@Override

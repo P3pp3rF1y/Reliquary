@@ -2,7 +2,6 @@ package xreliquary.init;
 
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.dispenser.IPosition;
@@ -15,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,6 +23,7 @@ import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
@@ -100,34 +101,21 @@ import xreliquary.items.VoidTearItem;
 import xreliquary.items.WitchHatItem;
 import xreliquary.items.WitherlessRoseItem;
 import xreliquary.reference.Colors;
+import xreliquary.reference.Compatibility;
+import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InjectionHelper;
+import xreliquary.util.NBTHelper;
+import xreliquary.util.potions.XRPotionHelper;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 @ObjectHolder(Reference.MOD_ID)
 public class ModItems {
-	//TODO move to names?
-	private static final String NEUTRAL_MAGAZINE_REGISTRY_NAME = "magazines/neutral_magazine";
-	private static final String EXORCISM_MAGAZINE_REGISTRY_NAME = "magazines/exorcism_magazine";
-	private static final String BLAZE_MAGAZINE_REGISTRY_NAME = "magazines/blaze_magazine";
-	private static final String ENDER_MAGAZINE_REGISTRY_NAME = "magazines/ender_magazine";
-	private static final String CONCUSSIVE_MAGAZINE_REGISTRY_NAME = "magazines/concussive_magazine";
-	private static final String BUSTER_MAGAZINE_REGISTRY_NAME = "magazines/buster_magazine";
-	private static final String SEEKER_MAGAZINE_REGISTRY_NAME = "magazines/seeker_magazine";
-	private static final String SAND_MAGAZINE_REGISTRY_NAME = "magazines/sand_magazine";
-	private static final String STORM_MAGAZINE_REGISTRY_NAME = "magazines/storm_magazine";
-	private static final String EMPTY_MAGAZINE_REGISTRY_NAME = "magazines/empty_magazine";
-	private static final String EMPTY_BULLET_REGISTRY_NAME = "bullets/empty_bullet";
-	private static final String NEUTRAL_BULLET_REGISTRY_NAME = "bullets/neutral_bullet";
-	private static final String EXORCISM_BULLET_REGISTRY_NAME = "bullets/exorcism_bullet";
-	private static final String BLAZE_BULLET_REGISTRY_NAME = "bullets/blaze_bullet";
-	private static final String ENDER_BULLET_REGISTRY_NAME = "bullets/ender_bullet";
-	private static final String CONCUSSIVE_BULLET_REGISTRY_NAME = "bullets/concussive_bullet";
-	private static final String BUSTER_BULLET_REGISTRY_NAME = "bullets/buster_bullet";
-	private static final String SEEKER_BULLET_REGISTRY_NAME = "bullets/seeker_bullet";
-	private static final String SAND_BULLET_REGISTRY_NAME = "bullets/sand_bullet";
-	private static final String STORM_BULLET_REGISTRY_NAME = "bullets/storm_bullet";
 
 	public static final AlkahestryTomeItem ALKAHESTRY_TOME = InjectionHelper.nullValue();
 	public static final MercyCrossItem MERCY_CROSS = InjectionHelper.nullValue();
@@ -167,45 +155,45 @@ public class ModItems {
 	public static final PotionItemBase LINGERING_POTION = InjectionHelper.nullValue();
 	public static final MobCharmBeltItem MOB_CHARM_BELT = InjectionHelper.nullValue();
 	public static final MobCharmItem MOB_CHARM = InjectionHelper.nullValue();
-	@ObjectHolder(EMPTY_MAGAZINE_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Magazines.EMPTY_MAGAZINE_REGISTRY_NAME)
 	public static final MagazineItem EMPTY_MAGAZINE = InjectionHelper.nullValue();
-	@ObjectHolder(NEUTRAL_MAGAZINE_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Magazines.NEUTRAL_MAGAZINE_REGISTRY_NAME)
 	public static final MagazineItem NEUTRAL_MAGAZINE = InjectionHelper.nullValue();
-	@ObjectHolder(EXORCISM_MAGAZINE_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Magazines.EXORCISM_MAGAZINE_REGISTRY_NAME)
 	public static final MagazineItem EXORCISM_MAGAZINE = InjectionHelper.nullValue();
-	@ObjectHolder(BLAZE_MAGAZINE_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Magazines.BLAZE_MAGAZINE_REGISTRY_NAME)
 	public static final MagazineItem BLAZE_MAGAZINE = InjectionHelper.nullValue();
-	@ObjectHolder(ENDER_MAGAZINE_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Magazines.ENDER_MAGAZINE_REGISTRY_NAME)
 	public static final MagazineItem ENDER_MAGAZINE = InjectionHelper.nullValue();
-	@ObjectHolder(CONCUSSIVE_MAGAZINE_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Magazines.CONCUSSIVE_MAGAZINE_REGISTRY_NAME)
 	public static final MagazineItem CONCUSSIVE_MAGAZINE = InjectionHelper.nullValue();
-	@ObjectHolder(BUSTER_MAGAZINE_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Magazines.BUSTER_MAGAZINE_REGISTRY_NAME)
 	public static final MagazineItem BUSTER_MAGAZINE = InjectionHelper.nullValue();
-	@ObjectHolder(SEEKER_MAGAZINE_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Magazines.SEEKER_MAGAZINE_REGISTRY_NAME)
 	public static final MagazineItem SEEKER_MAGAZINE = InjectionHelper.nullValue();
-	@ObjectHolder(SAND_MAGAZINE_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Magazines.SAND_MAGAZINE_REGISTRY_NAME)
 	public static final MagazineItem SAND_MAGAZINE = InjectionHelper.nullValue();
-	@ObjectHolder(STORM_MAGAZINE_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Magazines.STORM_MAGAZINE_REGISTRY_NAME)
 	public static final MagazineItem STORM_MAGAZINE = InjectionHelper.nullValue();
-	@ObjectHolder(EMPTY_BULLET_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Bullets.EMPTY_BULLET_REGISTRY_NAME)
 	public static final BulletItem EMPTY_BULLET = InjectionHelper.nullValue();
-	@ObjectHolder(NEUTRAL_BULLET_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Bullets.NEUTRAL_BULLET_REGISTRY_NAME)
 	public static final BulletItem NEUTRAL_BULLET = InjectionHelper.nullValue();
-	@ObjectHolder(EXORCISM_BULLET_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Bullets.EXORCISM_BULLET_REGISTRY_NAME)
 	public static final BulletItem EXORCISM_BULLET = InjectionHelper.nullValue();
-	@ObjectHolder(BLAZE_BULLET_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Bullets.BLAZE_BULLET_REGISTRY_NAME)
 	public static final BulletItem BLAZE_BULLET = InjectionHelper.nullValue();
-	@ObjectHolder(ENDER_BULLET_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Bullets.ENDER_BULLET_REGISTRY_NAME)
 	public static final BulletItem ENDER_BULLET = InjectionHelper.nullValue();
-	@ObjectHolder(CONCUSSIVE_BULLET_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Bullets.CONCUSSIVE_BULLET_REGISTRY_NAME)
 	public static final BulletItem CONCUSSIVE_BULLET = InjectionHelper.nullValue();
-	@ObjectHolder(BUSTER_BULLET_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Bullets.BUSTER_BULLET_REGISTRY_NAME)
 	public static final BulletItem BUSTER_BULLET = InjectionHelper.nullValue();
-	@ObjectHolder(SEEKER_BULLET_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Bullets.SEEKER_BULLET_REGISTRY_NAME)
 	public static final BulletItem SEEKER_BULLET = InjectionHelper.nullValue();
-	@ObjectHolder(SAND_BULLET_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Bullets.SAND_BULLET_REGISTRY_NAME)
 	public static final BulletItem SAND_BULLET = InjectionHelper.nullValue();
-	@ObjectHolder(STORM_BULLET_REGISTRY_NAME)
+	@ObjectHolder(Names.Items.Bullets.STORM_BULLET_REGISTRY_NAME)
 	public static final BulletItem STORM_BULLET = InjectionHelper.nullValue();
 	public static final ItemBase ZOMBIE_HEART = InjectionHelper.nullValue();
 	public static final ItemBase SQUID_BEAK = InjectionHelper.nullValue();
@@ -287,8 +275,8 @@ public class ModItems {
 		registerItem(registry, new ItemBase("kraken_shell_fragment", new Item.Properties()));
 		registerItem(registry, new ItemBase("crimson_cloth", new Item.Properties()));
 		registerItem(registry, new ItemBase("guardian_spike", new Item.Properties()));
-		registerItem(registry, new MobCharmFragmentItem());
-		registerItem(registry, new MobCharmItem(), false);
+		registerCharmItems(registry, new MobCharmFragmentItem());
+		registerCharmItems(registry, new MobCharmItem());
 		registerItem(registry, new MobCharmBeltItem());
 
 		registerItem(registry, new PhoenixDownItem());
@@ -304,27 +292,27 @@ public class ModItems {
 		registerItem(registry, new WitchHatItem());
 		registerItem(registry, new WitherlessRoseItem());
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disableHandgun.get())) {
-			registerItem(registry, new BulletItem(EMPTY_BULLET_REGISTRY_NAME, false, false, Integer.parseInt(Colors.DARKEST, 16)));
-			registerItem(registry, new BulletItem(NEUTRAL_BULLET_REGISTRY_NAME, false, true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
-			registerItem(registry, new BulletItem(EXORCISM_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
-			registerItem(registry, new BulletItem(BLAZE_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16)));
-			registerItem(registry, new BulletItem(ENDER_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16)));
-			registerItem(registry, new BulletItem(CONCUSSIVE_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16)));
-			registerItem(registry, new BulletItem(BUSTER_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16)));
-			registerItem(registry, new BulletItem(SEEKER_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16)));
-			registerItem(registry, new BulletItem(SAND_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16)));
-			registerItem(registry, new BulletItem(STORM_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16)));
+			registerItem(registry, new BulletItem(Names.Items.Bullets.EMPTY_BULLET_REGISTRY_NAME, false, false, Integer.parseInt(Colors.DARKEST, 16)));
+			registerPotionCapableAmmoItem(registry, new BulletItem(Names.Items.Bullets.NEUTRAL_BULLET_REGISTRY_NAME, false, true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new BulletItem(Names.Items.Bullets.EXORCISM_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new BulletItem(Names.Items.Bullets.BLAZE_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new BulletItem(Names.Items.Bullets.ENDER_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new BulletItem(Names.Items.Bullets.CONCUSSIVE_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new BulletItem(Names.Items.Bullets.BUSTER_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new BulletItem(Names.Items.Bullets.SEEKER_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new BulletItem(Names.Items.Bullets.SAND_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new BulletItem(Names.Items.Bullets.STORM_BULLET_REGISTRY_NAME, true, false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16)));
 
-			registerItem(registry, new MagazineItem(EMPTY_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.DARKEST, 16)));
-			registerItem(registry, new MagazineItem(NEUTRAL_MAGAZINE_REGISTRY_NAME, true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
-			registerItem(registry, new MagazineItem(EXORCISM_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
-			registerItem(registry, new MagazineItem(BLAZE_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16)));
-			registerItem(registry, new MagazineItem(ENDER_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16)));
-			registerItem(registry, new MagazineItem(CONCUSSIVE_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16)));
-			registerItem(registry, new MagazineItem(BUSTER_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16)));
-			registerItem(registry, new MagazineItem(SEEKER_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16)));
-			registerItem(registry, new MagazineItem(SAND_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16)));
-			registerItem(registry, new MagazineItem(STORM_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16)));
+			registerItem(registry, new MagazineItem(Names.Items.Magazines.EMPTY_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.DARKEST, 16)));
+			registerPotionCapableAmmoItem(registry, new MagazineItem(Names.Items.Magazines.NEUTRAL_MAGAZINE_REGISTRY_NAME, true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new MagazineItem(Names.Items.Magazines.EXORCISM_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new MagazineItem(Names.Items.Magazines.BLAZE_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new MagazineItem(Names.Items.Magazines.ENDER_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new MagazineItem(Names.Items.Magazines.CONCUSSIVE_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new MagazineItem(Names.Items.Magazines.BUSTER_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new MagazineItem(Names.Items.Magazines.SEEKER_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new MagazineItem(Names.Items.Magazines.SAND_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16)));
+			registerPotionCapableAmmoItem(registry, new MagazineItem(Names.Items.Magazines.STORM_MAGAZINE_REGISTRY_NAME, false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16)));
 
 			registerItem(registry, new ItemBase("grip_assembly", new Item.Properties().maxStackSize(4)));
 			registerItem(registry, new ItemBase("barrel_assembly", new Item.Properties().maxStackSize(4)));
@@ -334,12 +322,12 @@ public class ModItems {
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			registerItem(registry, new AttractionPotionItem());
 			registerItem(registry, new FertilePotionItem());
-			registerItem(registry, new PotionEssenceItem(), false);
-			registerItem(registry, new ItemBase("empty_potion_vial", new Item.Properties()), false);
-			registerItem(registry, new PotionItem(), false);
-			registerItem(registry, new ThrownPotionItem("splash_potion"), false);
-			registerItem(registry, new ThrownPotionItem("lingering_potion"), false);
-			registerItem(registry, new TippedArrowItem(), false);
+			registerItem(registry, new PotionEssenceItem());
+			registerItem(registry, new ItemBase("empty_potion_vial", new Item.Properties()));
+			registerItem(registry, new PotionItem());
+			registerItem(registry, new ThrownPotionItem("splash_potion"));
+			registerItem(registry, new ThrownPotionItem("lingering_potion"));
+			registerItem(registry, new TippedArrowItem());
 		}
 	}
 
@@ -401,16 +389,66 @@ public class ModItems {
 	}
 
 	private static void registerItem(IForgeRegistry<Item> registry, Item item) {
-		registerItem(registry, item, true);
-	}
-
-	private static void registerItem(IForgeRegistry<Item> registry, Item item, boolean registerInJEI) {
 		registry.register(item);
 
-		if (registerInJEI) {
+		registerItemsJEIDescription(item, () -> {
+			NonNullList<ItemStack> subItems = NonNullList.create();
+			item.fillItemGroup(Reliquary.ITEM_GROUP, subItems);
+			return subItems;
+		});
+	}
+
+	private static void registerItemsJEIDescription(Item item, Supplier<List<ItemStack>> subItems) {
+		//noinspection ConstantConditions
+		Reliquary.proxy.registerJEI(subItems, item.getRegistryName().getPath());
+	}
+
+	private static void registerCharmItems(IForgeRegistry<Item> registry, Item item) {
+		registry.register(item);
+
+		NonNullList<ItemStack> subItems = NonNullList.create();
+		item.fillItemGroup(Reliquary.ITEM_GROUP, subItems);
+		for (ItemStack subItem : subItems) {
 			//noinspection ConstantConditions
-			Reliquary.proxy.registerJEI(item, item.getRegistryName().getPath());
+			Reliquary.proxy.registerJEI(() -> Collections.singletonList(subItem), NBTHelper.getString("entity", subItem).split(":")[1] + "_" + item.getRegistryName().getPath());
 		}
+	}
+
+	private static void registerPotionCapableAmmoItem(IForgeRegistry<Item> registry, Item item) {
+		registry.register(item);
+
+		if (!ModList.get().isLoaded(Compatibility.MOD_ID.JEI)) {
+			return;
+		}
+
+		//noinspection ConstantConditions
+		String regName = item.getRegistryName().getPath();
+
+		Reliquary.proxy.registerJEI(() -> {
+			NonNullList<ItemStack> subItems = NonNullList.create();
+			NonNullList<ItemStack> potionItems = NonNullList.create();
+			item.fillItemGroup(Reliquary.ITEM_GROUP, subItems);
+			for (ItemStack subItem : subItems) {
+				if (!XRPotionHelper.getPotionEffectsFromStack(subItem).isEmpty()) {
+					potionItems.add(subItem);
+				}
+			}
+
+			return potionItems;
+		}, regName, "ammo_potion");
+
+		registerItemsJEIDescription(item, () -> {
+					NonNullList<ItemStack> subItems = NonNullList.create();
+					NonNullList<ItemStack> nonPotionItems = NonNullList.create();
+					item.fillItemGroup(Reliquary.ITEM_GROUP, subItems);
+					for (ItemStack subItem : subItems) {
+						if (XRPotionHelper.getPotionEffectsFromStack(subItem).isEmpty()) {
+							nonPotionItems.add(subItem);
+						}
+					}
+
+					return nonPotionItems;
+				});
 	}
 
 	@SubscribeEvent
@@ -426,15 +464,15 @@ public class ModItems {
 	}
 
 	public static void registerHandgunMagazines() {
-		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + NEUTRAL_MAGAZINE_REGISTRY_NAME, NeutralShotEntity::new, () -> NEUTRAL_BULLET);
-		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + EXORCISM_MAGAZINE_REGISTRY_NAME, ExorcismShotEntity::new, () -> EXORCISM_BULLET);
-		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + BLAZE_MAGAZINE_REGISTRY_NAME, BlazeShotEntity::new, () -> BLAZE_BULLET);
-		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + ENDER_MAGAZINE_REGISTRY_NAME, EnderShotEntity::new, () -> ENDER_BULLET);
-		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + CONCUSSIVE_MAGAZINE_REGISTRY_NAME, ConcussiveShotEntity::new, () -> CONCUSSIVE_BULLET);
-		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + BUSTER_MAGAZINE_REGISTRY_NAME, BusterShotEntity::new, () -> BUSTER_BULLET);
-		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + SEEKER_MAGAZINE_REGISTRY_NAME, SeekerShotEntity::new, () -> SEEKER_BULLET);
-		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + SAND_MAGAZINE_REGISTRY_NAME, SandShotEntity::new, () -> SAND_BULLET);
-		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + STORM_MAGAZINE_REGISTRY_NAME, StormShotEntity::new, () -> STORM_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + Names.Items.Magazines.NEUTRAL_MAGAZINE_REGISTRY_NAME, NeutralShotEntity::new, () -> NEUTRAL_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + Names.Items.Magazines.EXORCISM_MAGAZINE_REGISTRY_NAME, ExorcismShotEntity::new, () -> EXORCISM_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + Names.Items.Magazines.BLAZE_MAGAZINE_REGISTRY_NAME, BlazeShotEntity::new, () -> BLAZE_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + Names.Items.Magazines.ENDER_MAGAZINE_REGISTRY_NAME, EnderShotEntity::new, () -> ENDER_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + Names.Items.Magazines.CONCUSSIVE_MAGAZINE_REGISTRY_NAME, ConcussiveShotEntity::new, () -> CONCUSSIVE_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + Names.Items.Magazines.BUSTER_MAGAZINE_REGISTRY_NAME, BusterShotEntity::new, () -> BUSTER_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + Names.Items.Magazines.SEEKER_MAGAZINE_REGISTRY_NAME, SeekerShotEntity::new, () -> SEEKER_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + Names.Items.Magazines.SAND_MAGAZINE_REGISTRY_NAME, SandShotEntity::new, () -> SAND_BULLET);
+		HANDGUN.registerMagazine(Reference.MOD_ID + ":" + Names.Items.Magazines.STORM_MAGAZINE_REGISTRY_NAME, StormShotEntity::new, () -> STORM_BULLET);
 	}
 
 	public static boolean isEnabled(Item... items) {
@@ -447,20 +485,10 @@ public class ModItems {
 	}
 
 	private abstract static class BehaviorDefaultProjectileDispense implements IDispenseItemBehavior {
-
 		abstract ProjectileEntityFactory getProjectileEntityFactory();
-
-		@SuppressWarnings("squid:S1172")
-		boolean canShoot(ItemStack stack) {
-			return true;
-		}
 
 		@Override
 		public ItemStack dispense(IBlockSource source, ItemStack stack) {
-			if (!canShoot(stack)) {
-				return new DefaultDispenseItemBehavior().dispense(source, stack);
-			}
-
 			return (new ProjectileDispenseBehavior() {
 
 				@Override

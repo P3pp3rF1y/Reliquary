@@ -34,7 +34,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IShearable;
 import xreliquary.Reliquary;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -46,7 +45,7 @@ import java.util.Random;
 public class ShearsOfWinterItem extends ShearsItem {
 	public ShearsOfWinterItem() {
 		super(new Properties().group(Reliquary.ITEM_GROUP).maxDamage(0));
-		setRegistryName(new ResourceLocation(Reference.MOD_ID, Names.Items.SHEARS_OF_WINTER));
+		setRegistryName(new ResourceLocation(Reference.MOD_ID, "shears_of_winter"));
 	}
 
 	@Override

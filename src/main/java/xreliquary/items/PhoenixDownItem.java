@@ -13,7 +13,6 @@ import xreliquary.handler.HandlerPriority;
 import xreliquary.handler.IPlayerDeathHandler;
 import xreliquary.handler.IPlayerHurtHandler;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.EntityHelper;
 import xreliquary.util.InventoryHelper;
@@ -21,7 +20,7 @@ import xreliquary.util.InventoryHelper;
 public class PhoenixDownItem extends AngelicFeatherItem {
 
 	public PhoenixDownItem() {
-		super(Names.Items.PHOENIX_DOWN);
+		super("phoenix_down");
 
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override

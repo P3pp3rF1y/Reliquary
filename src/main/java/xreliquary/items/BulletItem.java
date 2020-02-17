@@ -54,10 +54,10 @@ public class BulletItem extends ItemBase implements IPotionItem {
 		}
 
 		for (PotionEssence essence : PotionMap.uniquePotionEssences) {
-			ItemStack neutralBulletWithPotion = new ItemStack(this);
-			XRPotionHelper.addPotionEffectsToStack(neutralBulletWithPotion, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F));
+			ItemStack bullet = new ItemStack(this);
+			XRPotionHelper.addPotionEffectsToStack(bullet, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F));
 
-			items.add(neutralBulletWithPotion);
+			items.add(bullet);
 		}
 	}
 

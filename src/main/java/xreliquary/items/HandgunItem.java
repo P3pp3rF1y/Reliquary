@@ -20,7 +20,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.entities.shot.ShotEntityBase;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModSounds;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
@@ -52,7 +51,7 @@ public class HandgunItem extends ItemBase {
 	}
 
 	public HandgunItem() {
-		super(Names.Items.HANDGUN, new Properties().maxStackSize(1));
+		super("handgun", new Properties().maxStackSize(1));
 	}
 
 	private short getBulletCount(ItemStack handgun) {

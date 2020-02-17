@@ -12,11 +12,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.entities.GlowingWaterEntity;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Names;
 
 public class GlowingWaterItem extends ItemBase {
 	public GlowingWaterItem() {
-		super(Names.Items.GLOWING_WATER, new Properties());
+		super("glowing_water", new Properties());
 	}
 
 	@Override

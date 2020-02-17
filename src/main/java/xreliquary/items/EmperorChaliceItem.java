@@ -32,7 +32,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import xreliquary.items.util.fluid.FluidHandlerEmperorChalice;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 
@@ -42,7 +41,7 @@ import java.util.List;
 public class EmperorChaliceItem extends ToggleableItem {
 
 	public EmperorChaliceItem() {
-		super(Names.Items.EMPEROR_CHALICE, new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
+		super("emperor_chalice", new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

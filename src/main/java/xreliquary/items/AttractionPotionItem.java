@@ -10,12 +10,11 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import xreliquary.entities.potion.AttractionPotionEntity;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Names;
 
 public class AttractionPotionItem extends ItemBase {
 
 	public AttractionPotionItem() {
-		super(Names.Items.ATTRACTION_POTION, new Properties());
+		super("attraction_potion", new Properties());
 	}
 
 	@Override

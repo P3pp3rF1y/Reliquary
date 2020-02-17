@@ -28,6 +28,9 @@ import xreliquary.init.ModItems;
 import xreliquary.init.XRRecipes;
 import xreliquary.reference.Reference;
 
+import java.util.List;
+
+@SuppressWarnings("unused") //plugin class is used by JEI's reflection
 @JeiPlugin
 public class ReliquaryPlugin implements IModPlugin {
 	@Override
@@ -67,8 +70,11 @@ public class ReliquaryPlugin implements IModPlugin {
 		registration.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.TIPPED_ARROW), new ItemStack(Items.ARROW), 0.125F, "arrow"), VanillaRecipeCategoryUid.CRAFTING);
 		registration.addRecipes(MagazineRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
 
-		for (DescriptionEntry entry : JEIDescriptionRegistry.entrySet()) {
-			registration.addIngredientInfo(entry.itemStacks(), VanillaTypes.ITEM, entry.langKey());
+		for (DescriptionEntry entry : JEIDescriptionRegistry.getEntries()) {
+			List<ItemStack> itemStacks = entry.getItemStacks();
+			if (!itemStacks.isEmpty()) {
+				registration.addIngredientInfo(itemStacks, VanillaTypes.ITEM, entry.langKeys());
+			}
 		}
 	}
 

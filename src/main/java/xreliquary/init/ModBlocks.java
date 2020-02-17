@@ -99,6 +99,7 @@ public class ModBlocks {
 		}
 	}
 
+	@SuppressWarnings({"squid:S4449", "ConstantConditions"}) // no datafixer is defined for any of the tile entities so this is moot
 	private static void registerTileEntity(RegistryEvent.Register<TileEntityType<?>> event, String tileRegistryName, Supplier<? extends TileEntity> tileFactory, Block... validBlocks) {
 		event.getRegistry().register(TileEntityType.Builder.create(tileFactory, validBlocks).build(null).setRegistryName(Reference.MOD_ID, tileRegistryName));
 	}
@@ -114,13 +115,13 @@ public class ModBlocks {
 			registerItemBlock(registry, APOTHECARY_MORTAR, Names.Blocks.APOTHECARY_MORTAR);
 		}
 
-		registerItemBlock(registry, FERTILE_LILY_PAD, new FertileLilyPadItem(), Names.Blocks.FERTILE_LILY_PAD, false);
+		registerItemBlock(registry, FERTILE_LILY_PAD, new FertileLilyPadItem(), Names.Blocks.FERTILE_LILY_PAD);
 		registerItemBlock(registry, INTERDICTION_TORCH, new WallOrFloorItem(INTERDICTION_TORCH, WALL_INTERDICTION_TORCH, new Item.Properties().group(Reliquary.ITEM_GROUP)) {
 			@Override
 			public ITextComponent getDisplayName(ItemStack stack) {
 				return new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey(stack)));
 			}
-		}, Names.Blocks.INTERDICTION_TORCH, true);
+		}, Names.Blocks.INTERDICTION_TORCH);
 		registerItemBlock(registry, WRAITH_NODE, Names.Blocks.WRAITH_NODE);
 
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePedestal.get())) {
@@ -129,7 +130,7 @@ public class ModBlocks {
 				public ITextComponent getDisplayName(ItemStack stack) {
 					return new TranslationTextComponent("block." + Reference.MOD_ID + ".pedestal");
 				}
-			}, "pedestal", true));
+			}, "pedestal"));
 		}
 
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePassivePedestal.get())) {
@@ -138,18 +139,18 @@ public class ModBlocks {
 				public ITextComponent getDisplayName(ItemStack stack) {
 					return new TranslationTextComponent("block." + Reference.MOD_ID + ".passive_pedestal");
 				}
-			}, "passive_pedestal", true));
+			}, "passive_pedestal"));
 		}
 	}
 
 	private static void registerItemBlock(IForgeRegistry<Item> registry, Block block, String jeiDescriptionKey) {
-		registerItemBlock(registry, block, new BlockItemBase(block, new Item.Properties()), jeiDescriptionKey, false);
+		registerItemBlock(registry, block, new BlockItemBase(block, new Item.Properties()), jeiDescriptionKey);
 	}
 
-	private static void registerItemBlock(IForgeRegistry<Item> registry, Block block, BlockItem itemBlock, String jeiDescriptionKey, boolean jeiOneDescription) {
+	private static void registerItemBlock(IForgeRegistry<Item> registry, Block block, BlockItem itemBlock, String jeiDescriptionKey) {
 		//noinspection ConstantConditions
 		registry.register(itemBlock.setRegistryName(block.getRegistryName()));
 
-		Reliquary.proxy.registerJEI(block, jeiDescriptionKey, jeiOneDescription);
+		Reliquary.proxy.registerJEI(block, jeiDescriptionKey);
 	}
 }

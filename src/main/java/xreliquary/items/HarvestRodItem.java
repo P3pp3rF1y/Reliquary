@@ -46,7 +46,6 @@ import xreliquary.items.util.HarvestRodItemStackHandler;
 import xreliquary.items.util.IHarvestRodCache;
 import xreliquary.network.PacketCountSync;
 import xreliquary.network.PacketHandler;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.ItemHelper;
@@ -70,7 +69,7 @@ public class HarvestRodItem extends ToggleableItem {
 	private static final int AOE_START_COOLDOWN = 10;
 
 	public HarvestRodItem() {
-		super(Names.Items.HARVEST_ROD, new Properties().maxStackSize(1).setNoRepair());
+		super("harvest_rod", new Properties().maxStackSize(1).setNoRepair());
 	}
 
 	@Override

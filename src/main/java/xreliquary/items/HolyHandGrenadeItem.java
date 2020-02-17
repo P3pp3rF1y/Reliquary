@@ -12,12 +12,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.entities.HolyHandGrenadeEntity;
-import xreliquary.reference.Names;
 
 public class HolyHandGrenadeItem extends ItemBase {
 
 	public HolyHandGrenadeItem() {
-		super(Names.Items.HOLY_HAND_GRENADE, new Properties());
+		super("holy_hand_grenade", new Properties());
 	}
 
 	@Override

@@ -5,9 +5,14 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import xreliquary.crafting.AlkahestryChargingRecipe;
+import xreliquary.init.ModItems;
+import xreliquary.items.AlkahestryTomeItem;
 import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 
@@ -46,7 +51,10 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 	@Override
 	public void setIngredients(AlkahestryChargingRecipe recipe, IIngredients ingredients) {
 		ingredients.setInputIngredients(recipe.getIngredients());
-		ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
+		NonNullList<ItemStack> outputs = NonNullList.create();
+		outputs.add(recipe.getRecipeOutput());
+		outputs.add(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME), recipe.getChargeToAdd()));
+		ingredients.setOutputs(VanillaTypes.ITEM, outputs);
 	}
 
 	@Override
@@ -63,5 +71,13 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 		recipeLayout.getItemStacks().set(INPUT_SLOT, input);
 		recipeLayout.getItemStacks().set(TOME_SLOT, tome);
 		recipeLayout.getItemStacks().set(OUTPUT_SLOT, output);
+	}
+
+	@Override
+	public void draw(AlkahestryChargingRecipe recipe, double mouseX, double mouseY) {
+		String chargeString = "+" + recipe.getChargeToAdd();
+		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
+		int stringWidth = fontRenderer.getStringWidth(chargeString);
+		fontRenderer.drawString(chargeString, (float) (((double) background.getWidth() - stringWidth) / 2), 3.0F, -8355712);
 	}
 }

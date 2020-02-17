@@ -13,6 +13,7 @@ import xreliquary.init.XRRecipes;
 import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 
+@SuppressWarnings("squid:MaximumInheritanceDepth")
 public class GuiAlkahestTome extends GuiBase<ContainerAlkahestTome> {
 	private static final ResourceLocation BOOK_TEX = new ResourceLocation(Reference.MOD_ID, "textures/gui/book.png");
 
@@ -42,7 +43,7 @@ public class GuiAlkahestTome extends GuiBase<ContainerAlkahestTome> {
 	}
 
 	private void drawTomeText(FontRenderer renderer) {
-		String values = "gui.tome.text";
+		String values = "gui.xreliquary.alkahestry_tome.text";
 		if (!LanguageHelper.getLocalization(values).equals(values)) {
 			values = LanguageHelper.getLocalization(values);
 		}

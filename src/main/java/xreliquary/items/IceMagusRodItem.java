@@ -17,7 +17,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.entities.SpecialSnowballEntity;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -28,7 +27,7 @@ import java.util.List;
 
 public class IceMagusRodItem extends ToggleableItem {
 	public IceMagusRodItem() {
-		this(Names.Items.ICE_MAGUS_ROD);
+		this("ice_magus_rod");
 	}
 
 	@Override

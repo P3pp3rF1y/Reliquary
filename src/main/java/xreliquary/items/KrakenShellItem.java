@@ -14,13 +14,12 @@ import xreliquary.handler.CommonEventHandler;
 import xreliquary.handler.HandlerPriority;
 import xreliquary.handler.IPlayerHurtHandler;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 
 public class KrakenShellItem extends ItemBase {
 	public KrakenShellItem() {
-		super(Names.Items.KRAKEN_SHELL, new Properties().maxStackSize(1));
+		super("kraken_shell", new Properties().maxStackSize(1));
 
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override

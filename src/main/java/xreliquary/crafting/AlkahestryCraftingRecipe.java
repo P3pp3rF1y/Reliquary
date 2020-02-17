@@ -34,7 +34,7 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 		this.id = id;
 		this.craftingIngredient = craftingIngredient;
 		this.chargeNeeded = chargeNeeded;
-		tomeIngredient = Ingredient.fromStacks(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME), chargeNeeded));
+		tomeIngredient = Ingredient.fromStacks(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME), Settings.COMMON.items.alkahestryTome.chargeLimit.get()));
 		this.resultCount = resultCount;
 		result = craftingIngredient.getMatchingStacks()[0].copy();
 		result.setCount(resultCount);
@@ -71,7 +71,7 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.from(craftingIngredient, tomeIngredient);
+		return NonNullList.from(Ingredient.EMPTY, craftingIngredient, tomeIngredient);
 	}
 
 	@Override
@@ -136,6 +136,11 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 		}
 	}
 
+	@Override
+	public boolean isDynamic() {
+		return true;
+	}
+
 	public int getChargeNeeded() {
 		return chargeNeeded;
 	}
@@ -143,8 +148,7 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<AlkahestryCraftingRecipe> {
 		@Override
 		public AlkahestryCraftingRecipe read(ResourceLocation recipeId, JsonObject json) {
-			//TODO  implement condition here and apply to all three types of alkahestry recipe
-			if (Settings.COMMON.disable.disableAlkahestry.get()) {
+			if (Boolean.TRUE.equals(Settings.COMMON.disable.disableAlkahestry.get())) {
 				//noinspection ConstantConditions - this is the easiest way to disable recipes without having to code special condition and adding to every recipe
 				return null;
 			}

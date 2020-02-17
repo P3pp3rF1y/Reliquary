@@ -8,7 +8,6 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -56,23 +55,16 @@ import xreliquary.entities.shot.NeutralShotEntity;
 import xreliquary.entities.shot.SandShotEntity;
 import xreliquary.entities.shot.SeekerShotEntity;
 import xreliquary.entities.shot.StormShotEntity;
-import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
-import xreliquary.reference.Settings;
-import xreliquary.util.potions.PotionEssence;
-import xreliquary.util.potions.PotionMap;
-import xreliquary.util.potions.XRPotionHelper;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientProxy extends CommonProxy {
-	public static final KeyBinding FORTUNE_COIN_TOGGLE_KEYBIND = new KeyBinding("xreliquary.keybind.fortune_coin", InputMappings.INPUT_INVALID.getKeyCode(), "xreliquary.keybind.category");
+	public static final KeyBinding FORTUNE_COIN_TOGGLE_KEYBIND = new KeyBinding("keybind.xreliquary.fortune_coin", InputMappings.INPUT_INVALID.getKeyCode(), "keybind.xreliquary.category");
 
 	@Override
 	public void registerHandlers() {
@@ -81,85 +73,16 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void registerJEI(Block block, String name, boolean oneDescription) {
+	public void registerJEI(Block block, String name) {
 		if (ModList.get().isLoaded(Compatibility.MOD_ID.JEI)) {
 			JEIDescriptionRegistry.register(Item.getItemFromBlock(block), name);
 		}
 	}
 
-	private void initSpecialJEIDescriptions() {
-		if (!ModList.get().isLoaded(Compatibility.MOD_ID.JEI)) {
-			return;
-		}
-
-		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
-			NonNullList<ItemStack> subItems = NonNullList.create();
-
-			//noinspection ConstantConditions
-			ModItems.POTION_ESSENCE.fillItemGroup(ModItems.POTION_ESSENCE.getGroup(), subItems);
-			JEIDescriptionRegistry.register(subItems, Names.Items.POTION_ESSENCE);
-
-			JEIDescriptionRegistry.register(ModItems.POTION, "potion0");
-			JEIDescriptionRegistry.register(ModItems.LINGERING_POTION, "potion0");
-			JEIDescriptionRegistry.register(ModItems.SPLASH_POTION, "potion0");
-
-			List<ItemStack> potions = new ArrayList<>();
-			List<ItemStack> splashPotions = new ArrayList<>();
-			List<ItemStack> lingeringPotions = new ArrayList<>();
-			List<ItemStack> tippedArrows = new ArrayList<>();
-			List<ItemStack> potionShots = new ArrayList<>();
-			List<ItemStack> potionMagazines = new ArrayList<>();
-
-			for (PotionEssence essence : PotionMap.uniquePotions) {
-				ItemStack potion = new ItemStack(ModItems.POTION, 1);
-				XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());
-				potions.add(potion);
-
-				ItemStack splashPotion = new ItemStack(ModItems.SPLASH_POTION);
-				XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());
-				splashPotions.add(splashPotion);
-
-				ItemStack lingeringPotion = new ItemStack(ModItems.LINGERING_POTION);
-				XRPotionHelper.addPotionEffectsToStack(potion, essence.getEffects());
-				lingeringPotions.add(lingeringPotion);
-
-				ItemStack tippedArrow = new ItemStack(ModItems.TIPPED_ARROW);
-				XRPotionHelper.addPotionEffectsToStack(tippedArrow, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.125F));
-				tippedArrows.add(tippedArrow);
-
-				ItemStack potionShot = new ItemStack(ModItems.NEUTRAL_BULLET);
-				XRPotionHelper.addPotionEffectsToStack(potionShot, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F));
-				potionShots.add(potionShot);
-
-				ItemStack potionMagazine = new ItemStack(ModItems.NEUTRAL_MAGAZINE);
-				XRPotionHelper.addPotionEffectsToStack(potionMagazine, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F));
-				potionMagazines.add(potionMagazine);
-			}
-			JEIDescriptionRegistry.register(potions, Names.Items.POTION);
-			JEIDescriptionRegistry.register(splashPotions, Names.Items.POTION_SPLASH);
-			JEIDescriptionRegistry.register(lingeringPotions, Names.Items.POTION_LINGERING);
-			JEIDescriptionRegistry.register(tippedArrows, Names.Items.TIPPED_ARROW);
-			JEIDescriptionRegistry.register(potionShots, "bullet1_potion");
-			JEIDescriptionRegistry.register(potionMagazines, "magazine1_potion");
-		}
-
-		if (ModItems.isEnabled(ModItems.MOB_CHARM)) {
-			NonNullList<ItemStack> mobCharms = NonNullList.create();
-			//noinspection ConstantConditions - enabled check above
-			ModItems.MOB_CHARM.fillItemGroup(ModItems.MOB_CHARM.getGroup(), mobCharms);
-
-			int meta = 0;
-			for (ItemStack mobCharm : mobCharms) {
-				JEIDescriptionRegistry.register(Collections.singletonList(mobCharm), Names.Items.MOB_CHARM + meta);
-				meta++;
-			}
-		}
-	}
-
 	@Override
-	public void registerJEI(Item item, String name) {
+	public void registerJEI(Supplier<List<ItemStack>> items, String... names) {
 		if (ModList.get().isLoaded(Compatibility.MOD_ID.JEI)) {
-			JEIDescriptionRegistry.register(item, name);
+			JEIDescriptionRegistry.register(items, names);
 		}
 	}
 
@@ -191,10 +114,7 @@ public class ClientProxy extends CommonProxy {
 
 	private void clientSetup(FMLClientSetupEvent event) {
 		//TODO replace with new interface from event when that is implemented in forge
-		DeferredWorkQueue.runLater(() -> {
-			ClientRegistry.registerKeyBinding(FORTUNE_COIN_TOGGLE_KEYBIND);
-			initSpecialJEIDescriptions();
-		});
+		DeferredWorkQueue.runLater(() -> ClientRegistry.registerKeyBinding(FORTUNE_COIN_TOGGLE_KEYBIND));
 	}
 
 	private void loadComplete(FMLLoadCompleteEvent event) {

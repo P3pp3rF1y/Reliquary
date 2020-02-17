@@ -23,7 +23,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import xreliquary.reference.Names;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
@@ -32,7 +31,7 @@ import java.util.List;
 
 public class GlacialStaffItem extends IceMagusRodItem {
 	public GlacialStaffItem() {
-		super(Names.Items.GLACIAL_STAFF);
+		super("glacial_staff");
 	}
 
 	@Override

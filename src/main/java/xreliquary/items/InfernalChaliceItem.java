@@ -35,7 +35,6 @@ import xreliquary.handler.HandlerPriority;
 import xreliquary.handler.IPlayerHurtHandler;
 import xreliquary.init.ModItems;
 import xreliquary.items.util.fluid.FluidHandlerInfernalChalice;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -46,7 +45,7 @@ import java.util.List;
 
 public class InfernalChaliceItem extends ToggleableItem {
 	public InfernalChaliceItem() {
-		super(Names.Items.INFERNAL_CHALICE, new Properties().maxStackSize(1).setNoRepair());
+		super("infernal_chalice", new Properties().maxStackSize(1).setNoRepair());
 
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override

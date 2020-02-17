@@ -10,11 +10,10 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import xreliquary.entities.potion.FertilePotionEntity;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Names;
 
 public class FertilePotionItem extends ItemBase {
 	public FertilePotionItem() {
-		super(Names.Items.FERTILE_POTION, new Properties());
+		super("fertile_potion", new Properties());
 	}
 
 	@Override

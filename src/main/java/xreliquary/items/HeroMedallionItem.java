@@ -27,7 +27,6 @@ import net.minecraftforge.items.IItemHandler;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
 import xreliquary.items.util.fluid.FluidHandlerHeroMedallion;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -40,7 +39,7 @@ import java.util.List;
 public class HeroMedallionItem extends ToggleableItem implements IPedestalActionItem {
 
 	public HeroMedallionItem() {
-		super(Names.Items.HERO_MEDALLION, new Properties().maxDamage(0).setNoRepair());
+		super("hero_medallion", new Properties().maxDamage(0).setNoRepair());
 	}
 
 	@Override

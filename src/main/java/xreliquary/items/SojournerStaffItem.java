@@ -27,7 +27,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -43,7 +42,7 @@ public class SojournerStaffItem extends ToggleableItem {
 	private static final String CURRENT_INDEX_TAG = "Current";
 
 	public SojournerStaffItem() {
-		super(Names.Items.SOJOURNER_STAFF, new Properties().maxStackSize(1));
+		super("sojourner_staff", new Properties().maxStackSize(1));
 	}
 
 	@Override

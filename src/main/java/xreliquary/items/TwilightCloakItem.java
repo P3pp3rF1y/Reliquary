@@ -13,14 +13,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 
 public class TwilightCloakItem extends ToggleableItem {
 
 	public TwilightCloakItem() {
-		super(Names.Items.TWILIGHT_CLOAK, new Properties().maxStackSize(1));
+		super("twilight_cloak", new Properties().maxStackSize(1));
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

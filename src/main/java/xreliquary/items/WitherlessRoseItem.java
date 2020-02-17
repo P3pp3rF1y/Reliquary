@@ -15,14 +15,13 @@ import xreliquary.handler.CommonEventHandler;
 import xreliquary.handler.HandlerPriority;
 import xreliquary.handler.IPlayerHurtHandler;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
 
 import java.util.Random;
 
 public class WitherlessRoseItem extends ItemBase {
 	public WitherlessRoseItem() {
-		super(Names.Items.WITHERLESS_ROSE, new Properties().maxStackSize(1));
+		super("witherless_rose", new Properties().maxStackSize(1));
 
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override

@@ -54,7 +54,7 @@ public class StandardMobCharmRegistry {
 		return Optional.ofNullable(ENTITY_NAME_CHARM_DEFINITIONS.get(MobCharmItem.getEntityRegistryName(stack)));
 	}
 
-	static Set<String> getRegisteredNames() {
+	public static Set<String> getRegisteredNames() {
 		return REGISTERED_CHARM_DEFINITIONS.keySet();
 	}
 }

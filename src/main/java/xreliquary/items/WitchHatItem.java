@@ -16,7 +16,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.Reliquary;
 import xreliquary.client.model.WitchHatModel;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 
@@ -62,7 +61,7 @@ public class WitchHatItem extends ArmorItem {
 
 	public WitchHatItem() {
 		super(hatMaterial, EquipmentSlotType.HEAD, new Properties().group(Reliquary.ITEM_GROUP));
-		setRegistryName(new ResourceLocation(Reference.MOD_ID, Names.Items.WITCH_HAT));
+		setRegistryName(new ResourceLocation(Reference.MOD_ID, "witch_hat"));
 	}
 
 	@Override

@@ -25,7 +25,6 @@ import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 
@@ -37,7 +36,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 	private static final Map<String, Block> TORCH_BLOCKS = new HashMap<>();
 
 	public LanternOfParanoiaItem() {
-		super(Names.Items.LANTERN_OF_PARANOIA, new Properties().maxStackSize(1));
+		super("lantern_of_paranoia", new Properties().maxStackSize(1));
 	}
 
 	@Override

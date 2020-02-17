@@ -16,7 +16,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -36,7 +35,7 @@ public class MidasTouchstoneItem extends ToggleableItem {
 	private static final String GLOWSTONE_TAG = "glowstone";
 
 	public MidasTouchstoneItem() {
-		super(Names.Items.MIDAS_TOUCHSTONE, new Properties().maxStackSize(1));
+		super("midas_touchstone", new Properties().maxStackSize(1));
 	}
 
 	@Override

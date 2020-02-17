@@ -15,11 +15,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.entities.KrakenSlimeEntity;
-import xreliquary.reference.Names;
 
 public class SerpentStaffItem extends ItemBase {
 	public SerpentStaffItem() {
-		super(Names.Items.SERPENT_STAFF, new Properties().maxDamage(200).setNoRepair());
+		super("serpent_staff", new Properties().maxDamage(200).setNoRepair());
 	}
 
 	@Override

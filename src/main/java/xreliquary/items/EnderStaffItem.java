@@ -30,7 +30,6 @@ import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredBigItemStack;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -43,7 +42,7 @@ import java.util.List;
 public class EnderStaffItem extends ToggleableItem {
 
 	public EnderStaffItem() {
-		super(Names.Items.ENDER_STAFF, new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
+		super("ender_staff", new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
 	}
 
 	private int getEnderStaffPearlCost() {

@@ -10,13 +10,12 @@ import xreliquary.handler.CommonEventHandler;
 import xreliquary.handler.HandlerPriority;
 import xreliquary.handler.IPlayerHurtHandler;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 
 public class InfernalClawsItem extends ItemBase {
 	public InfernalClawsItem() {
-		super(Names.Items.INFERNAL_CLAWS, new Properties().maxStackSize(1));
+		super("infernal_claws", new Properties().maxStackSize(1));
 
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override

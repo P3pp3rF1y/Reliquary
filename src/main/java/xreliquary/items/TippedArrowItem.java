@@ -13,7 +13,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.XRTippedArrowEntity;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
@@ -25,7 +24,7 @@ import java.util.List;
 public class TippedArrowItem extends ArrowItem implements IPotionItem {
 	public TippedArrowItem() {
 		super(new Properties().group(Reliquary.ITEM_GROUP));
-		setRegistryName(new ResourceLocation(Reference.MOD_ID, Names.Items.TIPPED_ARROW));
+		setRegistryName(new ResourceLocation(Reference.MOD_ID, "tipped_arrow"));
 	}
 
 	@Override

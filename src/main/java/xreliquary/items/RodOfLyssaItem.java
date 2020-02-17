@@ -12,12 +12,11 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import xreliquary.entities.LyssaBobberEntity;
-import xreliquary.reference.Names;
 import xreliquary.util.NBTHelper;
 
 public class RodOfLyssaItem extends ItemBase {
 	public RodOfLyssaItem() {
-		super(Names.Items.ROD_OF_LYSSA, new Properties().maxStackSize(1));
+		super("rod_of_lyssa", new Properties().maxStackSize(1));
 		addPropertyOverride(new ResourceLocation("cast"), (stack, world, entity) -> {
 			if (entity == null) {
 				return 0.0F;
