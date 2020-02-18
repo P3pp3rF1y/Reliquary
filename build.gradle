@@ -174,7 +174,7 @@ publishing {
 sonarqube {
     properties {
         property "sonar.projectName", "Reliquary"
-        property "sonar.projectKey", "reliquary"
+        property "sonar.projectKey", "xreliquary"
     }
 }
 
