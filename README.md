@@ -1,4 +1,4 @@
-Reliquary [![Build Status](![Mod Build](https://github.com/P3pp3rF1y/Reliquary/workflows/Mod%20Build/badge.svg))](https://github.com/p3pp3rF1y/reliquary/actions?query=workflow%3A%22Mod+Build%22)
+Reliquary [![Mod Build](https://github.com/P3pp3rF1y/Reliquary/workflows/Mod%20Build/badge.svg)](https://github.com/p3pp3rF1y/reliquary/actions?query=workflow%3A%22Mod+Build%22)
 =========
 
 Description
