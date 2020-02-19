@@ -149,6 +149,10 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 		ItemStack invStack = inv.getStackInSlot(x + y * inv.getWidth());
 		if (invStack.getItem() instanceof IPotionItem) {
 			List<EffectInstance> effects = ((IPotionItem) invStack.getItem()).getEffects(invStack);
+			if (effects.isEmpty()) {
+				return true;
+			}
+
 			if (targetEffects.isEmpty()) {
 				targetEffects.addAll(XRPotionHelper.changePotionEffectsDuration(effects, potionDurationFactor));
 			} else {
