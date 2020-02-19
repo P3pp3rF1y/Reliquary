@@ -10,7 +10,6 @@
 !build.gradle
 !build.properties
 !gradle.properties
-!.travis.yml
 !.github/
 
 # include markdowns

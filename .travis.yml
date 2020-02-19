@@ -1,9 +1,0 @@
-language: java
-dist: trusty
-jdk: oraclejdk8
-install: true
-script:
-- "./gradlew clean"
-- "./gradlew setupCIWorkspace"
-- "./gradlew build"
-- "./gradlew bintrayUpload"
