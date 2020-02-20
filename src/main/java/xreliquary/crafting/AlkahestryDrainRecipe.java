@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xreliquary.init.ModItems;
-import xreliquary.init.XRRecipes;
 import xreliquary.items.AlkahestryTomeItem;
 import xreliquary.reference.Settings;
 
@@ -32,7 +31,7 @@ public class AlkahestryDrainRecipe implements ICraftingRecipe {
 		this.result = result;
 		this.id = id;
 		tomeIngredient = Ingredient.fromStacks(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME), Settings.COMMON.items.alkahestryTome.chargeLimit.get()));
-		XRRecipes.drainRecipe = this;
+		AlkahestryRecipeRegistry.setDrainRecipe(this);
 	}
 
 	@Override

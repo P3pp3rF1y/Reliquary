@@ -22,8 +22,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.common.gui.ContainerAlkahestTome;
 import xreliquary.crafting.AlkahestryChargingRecipe;
+import xreliquary.crafting.AlkahestryRecipeRegistry;
 import xreliquary.init.ModSounds;
-import xreliquary.init.XRRecipes;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -81,7 +81,7 @@ public class AlkahestryTomeItem extends ToggleableItem {
 			return;
 		}
 
-		for (AlkahestryChargingRecipe recipe : XRRecipes.chargingRecipes) {
+		for (AlkahestryChargingRecipe recipe : AlkahestryRecipeRegistry.getChargingRecipes()) {
 			if (getCharge(tome) + recipe.getChargeToAdd() <= getChargeLimit() && consumeItem(recipe, player)) {
 				addCharge(tome, recipe.getChargeToAdd());
 			}
@@ -99,7 +99,7 @@ public class AlkahestryTomeItem extends ToggleableItem {
 				ImmutableMap.of("chargeAmount", String.valueOf(getCharge(tome)), "chargeLimit", String.valueOf(getChargeLimit())), tooltip);
 
 		if (isEnabled(tome)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + XRRecipes.drainRecipe.getRecipeOutput().getDisplayName().getString()), tooltip);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + AlkahestryRecipeRegistry.getDrainRecipe().getRecipeOutput().getDisplayName().getString()), tooltip);
 		} else {
 			LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
 		}

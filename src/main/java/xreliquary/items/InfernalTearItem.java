@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.crafting.AlkahestryCraftingRecipe;
-import xreliquary.init.XRRecipes;
+import xreliquary.crafting.AlkahestryRecipeRegistry;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -62,7 +62,7 @@ public class InfernalTearItem extends ToggleableItem {
 	}
 
 	private Optional<AlkahestryCraftingRecipe> matchAlkahestryRecipe(ItemStack stack) {
-		for (AlkahestryCraftingRecipe recipe : XRRecipes.craftingRecipes) {
+		for (AlkahestryCraftingRecipe recipe : AlkahestryRecipeRegistry.getCraftingRecipes()) {
 			if (recipe.getCraftingIngredient().test(stack)) {
 				return Optional.of(recipe);
 			}
@@ -166,7 +166,7 @@ public class InfernalTearItem extends ToggleableItem {
 
 		NBTHelper.putTagCompound("item", tear, target.write(new CompoundNBT()));
 
-		if (Settings.COMMON.items.infernalTear.absorbWhenCreated.get()) {
+		if (Boolean.TRUE.equals(Settings.COMMON.items.infernalTear.absorbWhenCreated.get())) {
 			NBTHelper.putBoolean(ENABLED_TAG, stack, true);
 		}
 

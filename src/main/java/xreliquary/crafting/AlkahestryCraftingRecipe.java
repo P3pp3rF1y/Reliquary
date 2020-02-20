@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xreliquary.init.ModItems;
-import xreliquary.init.XRRecipes;
 import xreliquary.items.AlkahestryTomeItem;
 import xreliquary.reference.Settings;
 
@@ -39,7 +38,7 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 		result = craftingIngredient.getMatchingStacks()[0].copy();
 		result.setCount(resultCount);
 
-		XRRecipes.craftingRecipes.add(this);
+		AlkahestryRecipeRegistry.registerCraftingRecipe(this);
 	}
 
 	@Override

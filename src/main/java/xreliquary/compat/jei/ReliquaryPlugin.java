@@ -23,9 +23,9 @@ import xreliquary.compat.jei.lingering.ArrowShotRecipeMaker;
 import xreliquary.compat.jei.magazines.MagazineRecipeMaker;
 import xreliquary.compat.jei.mortar.MortarRecipeCategory;
 import xreliquary.compat.jei.mortar.MortarRecipeMaker;
+import xreliquary.crafting.AlkahestryRecipeRegistry;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
-import xreliquary.init.XRRecipes;
 import xreliquary.reference.Reference;
 
 import java.util.List;
@@ -61,8 +61,8 @@ public class ReliquaryPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
-		registration.addRecipes(XRRecipes.craftingRecipes, AlkahestryCraftingRecipeCategory.UID);
-		registration.addRecipes(XRRecipes.chargingRecipes, AlkahestryChargingRecipeCategory.UID);
+		registration.addRecipes(AlkahestryRecipeRegistry.getCraftingRecipes(), AlkahestryCraftingRecipeCategory.UID);
+		registration.addRecipes(AlkahestryRecipeRegistry.getChargingRecipes(), AlkahestryChargingRecipeCategory.UID);
 
 		registration.addRecipes(MortarRecipeMaker.getRecipes(), MortarRecipeCategory.UID);
 		registration.addRecipes(CauldronRecipeMaker.getRecipes(), CauldronRecipeCategory.UID);

@@ -8,8 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import xreliquary.common.gui.ContainerAlkahestTome;
+import xreliquary.crafting.AlkahestryRecipeRegistry;
 import xreliquary.init.ModItems;
-import xreliquary.init.XRRecipes;
 import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 
@@ -38,8 +38,8 @@ public class GuiAlkahestTome extends GuiBase<ContainerAlkahestTome> {
 		blit(((width - 16) / 2) - 14, ((height - 179) / 2) + 148, 10, 180, 10, 10);
 
 		drawItemStack(new ItemStack(ModItems.ALKAHESTRY_TOME), (width - 16) / 2, ((height - 179) / 2) + 145);
-		drawItemStack(XRRecipes.drainRecipe.getRecipeOutput(), ((width - 16) / 2) - 32, ((height - 179) / 2) + 145);
-		drawItemStack(XRRecipes.drainRecipe.getRecipeOutput(), ((width - 16) / 2) + 32, ((height - 179) / 2) + 145);
+		drawItemStack(AlkahestryRecipeRegistry.getDrainRecipe().getRecipeOutput(), ((width - 16) / 2) - 32, ((height - 179) / 2) + 145);
+		drawItemStack(AlkahestryRecipeRegistry.getDrainRecipe().getRecipeOutput(), ((width - 16) / 2) + 32, ((height - 179) / 2) + 145);
 	}
 
 	private void drawTomeText(FontRenderer renderer) {
