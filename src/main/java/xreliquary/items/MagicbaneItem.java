@@ -63,47 +63,45 @@ public class MagicbaneItem extends SwordItem {
 	 */
 	@Override
 	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		if (target != null) {
-			int random = target.world.rand.nextInt(16);
-			switch (random) {
-				case 0:
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-					target.addPotionEffect(new EffectInstance(Effects.WEAKNESS, 100, 2));
-					break;
-				case 5:
-				case 6:
-				case 7:
-				case 8:
-				case 9:
-				case 10:
-				case 11:
-					target.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 100, 2));
-					break;
-				case 12:
-				case 13:
-					target.addPotionEffect(new EffectInstance(Effects.POISON, 100, 2));
-					target.addPotionEffect(new EffectInstance(Effects.NAUSEA, 100, 2));
-					break;
-				case 14:
-					target.addPotionEffect(new EffectInstance(Effects.WITHER, 100, 2));
-					target.addPotionEffect(new EffectInstance(Effects.BLINDNESS, 100, 2));
-					break;
-				default:
-					break;
-			}
-			if (attacker instanceof PlayerEntity) {
-				ListNBT enchants = stack.getEnchantmentTagList();
-				int bonus = 0;
-				for (int enchant = 0; enchant < enchants.size(); enchant++) {
-					bonus += enchants.getCompound(enchant).getShort("lvl");
-				}
-				target.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) attacker), bonus + 4f);
-			}
-			stack.damageItem(1, attacker, e -> e.sendBreakAnimation(EquipmentSlotType.MAINHAND));
+		int random = target.world.rand.nextInt(16);
+		switch (random) {
+			case 0:
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+				target.addPotionEffect(new EffectInstance(Effects.WEAKNESS, 100, 2));
+				break;
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+			case 11:
+				target.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 100, 2));
+				break;
+			case 12:
+			case 13:
+				target.addPotionEffect(new EffectInstance(Effects.POISON, 100, 2));
+				target.addPotionEffect(new EffectInstance(Effects.NAUSEA, 100, 2));
+				break;
+			case 14:
+				target.addPotionEffect(new EffectInstance(Effects.WITHER, 100, 2));
+				target.addPotionEffect(new EffectInstance(Effects.BLINDNESS, 100, 2));
+				break;
+			default:
+				break;
 		}
+		if (attacker instanceof PlayerEntity) {
+			ListNBT enchants = stack.getEnchantmentTagList();
+			int bonus = 0;
+			for (int enchant = 0; enchant < enchants.size(); enchant++) {
+				bonus += enchants.getCompound(enchant).getShort("lvl");
+			}
+			target.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) attacker), bonus + 4f);
+		}
+		stack.damageItem(1, attacker, e -> e.sendBreakAnimation(EquipmentSlotType.MAINHAND));
 		return true;
 	}
 }
