@@ -14,8 +14,6 @@ public class PacketMobCharmDamage {
 	private ItemStack mobCharm;
 	private int slot;
 
-	public PacketMobCharmDamage() {}
-
 	public PacketMobCharmDamage(ItemStack mobCharm, int slot) {
 		this.mobCharm = mobCharm;
 		this.slot = slot;
@@ -31,7 +29,9 @@ public class PacketMobCharmDamage {
 	}
 
 	static void onMessage(PacketMobCharmDamage msg, Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> handleMessage(msg));
+		NetworkEvent.Context context = contextSupplier.get();
+		context.enqueueWork(() -> handleMessage(msg));
+		context.setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)

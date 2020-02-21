@@ -31,7 +31,9 @@ public class PacketFXConcussiveExplosion {
 	}
 
 	static void onMessage(PacketFXConcussiveExplosion msg, Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> handleMessage(msg));
+		NetworkEvent.Context context = contextSupplier.get();
+		context.enqueueWork(() -> handleMessage(msg));
+		context.setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)

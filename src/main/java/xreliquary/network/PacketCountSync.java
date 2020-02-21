@@ -14,7 +14,7 @@ import xreliquary.util.NBTHelper;
 import java.util.function.Supplier;
 
 public class PacketCountSync {
-	private Hand hand = Hand.MAIN_HAND;
+	private Hand hand;
 	private short slot;
 	private ItemStack stack;
 	private int count;
@@ -38,7 +38,9 @@ public class PacketCountSync {
 	}
 
 	static void onMessage(PacketCountSync msg, Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> handleMessage(msg));
+		NetworkEvent.Context context = contextSupplier.get();
+		context.enqueueWork(() -> handleMessage(msg));
+		context.setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)

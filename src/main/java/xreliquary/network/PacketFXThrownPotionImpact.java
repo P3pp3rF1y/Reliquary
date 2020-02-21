@@ -35,8 +35,10 @@ public class PacketFXThrownPotionImpact {
 		return new PacketFXThrownPotionImpact(packetBuffer.readInt(), packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readDouble());
 	}
 
-	public static void onMessage(PacketFXThrownPotionImpact msg, Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> handleMessage(msg));
+	static void onMessage(PacketFXThrownPotionImpact msg, Supplier<NetworkEvent.Context> contextSupplier) {
+		NetworkEvent.Context context = contextSupplier.get();
+		context.enqueueWork(() -> handleMessage(msg));
+		context.setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)

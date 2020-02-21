@@ -13,8 +13,6 @@ public class PacketFortuneCoinTogglePressed {
 	private InventoryType inventoryType;
 	private int slot;
 
-	public PacketFortuneCoinTogglePressed() {}
-
 	public PacketFortuneCoinTogglePressed(InventoryType inventoryType, int slot) {
 		this.inventoryType = inventoryType;
 		this.slot = slot;
@@ -31,7 +29,9 @@ public class PacketFortuneCoinTogglePressed {
 	}
 
 	static void onMessage(PacketFortuneCoinTogglePressed msg, Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> handleMessage(msg, contextSupplier.get().getSender()));
+		NetworkEvent.Context context = contextSupplier.get();
+		context.enqueueWork(() -> handleMessage(msg, context.getSender()));
+		context.setPacketHandled(true);
 	}
 
 	private static void handleMessage(PacketFortuneCoinTogglePressed message, ServerPlayerEntity player) {

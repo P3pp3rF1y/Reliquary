@@ -43,7 +43,9 @@ public class PacketPedestalFishHook {
 	}
 
 	static void onMessage(PacketPedestalFishHook msg, Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> handleMessage(msg));
+		NetworkEvent.Context context = contextSupplier.get();
+		context.enqueueWork(() -> handleMessage(msg));
+		context.setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
