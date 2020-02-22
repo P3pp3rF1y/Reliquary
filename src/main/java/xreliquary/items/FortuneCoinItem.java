@@ -268,7 +268,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem {
 	}
 
 	private boolean enabledAudio() {
-		return !Settings.COMMON.items.fortuneCoin.enabledAudio.get();
+		return Settings.COMMON.items.fortuneCoin.enabledAudio.get();
 	}
 
 	@Override
