@@ -76,7 +76,7 @@ public class ModEntities {
 		ModEntities.<SeekerShotEntity>registerShotEntity(registry, SeekerShotEntity::new, "seeker_shot");
 		ModEntities.<StormShotEntity>registerShotEntity(registry, StormShotEntity::new, "storm_shot");
 
-		ModEntities.<EnderStaffProjectileEntity>registerDefaultSizeEntity(registry, EnderStaffProjectileEntity::new, "ender_staff_projectile");
+		ModEntities.<EnderStaffProjectileEntity>registerEntity(registry, EnderStaffProjectileEntity::new, "ender_staff_projectile", 0.25F, 0.25F, 256);
 		ModEntities.<GlowingWaterEntity>registerDefaultSizeEntity(registry, GlowingWaterEntity::new, "glowing_water");
 		ModEntities.<HolyHandGrenadeEntity>registerDefaultSizeEntity(registry, HolyHandGrenadeEntity::new, "holy_hand_grenade");
 		ModEntities.<KrakenSlimeEntity>registerDefaultSizeEntity(registry, KrakenSlimeEntity::new, "kraken_slime");
@@ -94,8 +94,12 @@ public class ModEntities {
 	}
 
 	private static <T extends Entity> void registerEntity(IForgeRegistry<EntityType<?>> registry, EntityType.IFactory<T> factory, String registryName, float width, float height) {
+		registerEntity(registry, factory, registryName, width, height, 128);
+	}
+
+	private static <T extends Entity> void registerEntity(IForgeRegistry<EntityType<?>> registry, EntityType.IFactory<T> factory, String registryName, float width, float height, int trackingRange) {
 		registry.register(EntityType.Builder.create(factory, EntityClassification.MISC)
-				.size(width, height).setUpdateInterval(5).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
+				.size(width, height).setUpdateInterval(5).setTrackingRange(trackingRange).setShouldReceiveVelocityUpdates(true)
 				.build("").setRegistryName(new ResourceLocation(Reference.MOD_ID, registryName)));
 	}
 }

@@ -51,7 +51,7 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 		if (normalGravity) {
 			return super.getGravityVelocity();
 		}
-		return 0.01F;
+		return 0.005F;
 	}
 
 	@Override
