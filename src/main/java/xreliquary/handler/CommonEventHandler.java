@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -14,7 +13,6 @@ import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -30,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class CommonEventHandler {
 	private CommonEventHandler() {}
 
@@ -45,21 +43,6 @@ public class CommonEventHandler {
 
 	public static void registerPlayerDeathHandler(IPlayerDeathHandler handler) {
 		playerDeathHandlers.add(handler);
-	}
-
-	@SubscribeEvent
-	public static void handleMercyCrossDamage(AttackEntityEvent event) {
-		if (event.getPlayer().world.isRemote || !(event.getTarget() instanceof LivingEntity)) {
-			return;
-		}
-
-		if (event.getPlayer().getHeldItemMainhand().getItem() != ModItems.MERCY_CROSS) {
-			return;
-		}
-
-		LivingEntity target = (LivingEntity) event.getTarget();
-
-		ModItems.MERCY_CROSS.updateAttackDamageModifier(target, event.getPlayer());
 	}
 
 	@SubscribeEvent
