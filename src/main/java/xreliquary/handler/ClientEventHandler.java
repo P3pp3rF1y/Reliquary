@@ -42,7 +42,7 @@ import xreliquary.util.NBTHelper;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class ClientEventHandler {
 	private ClientEventHandler() {}
 
@@ -115,7 +115,7 @@ public class ClientEventHandler {
 	@SubscribeEvent
 	public static void onRenderTick(TickEvent.RenderTickEvent event) {
 		Minecraft mc = Minecraft.getInstance();
-		if (!Minecraft.isGuiEnabled() || !mc.isGameFocused()) {
+		if (!Minecraft.isGuiEnabled() || !mc.isGameFocused() || mc.player == null) {
 			return;
 		}
 
