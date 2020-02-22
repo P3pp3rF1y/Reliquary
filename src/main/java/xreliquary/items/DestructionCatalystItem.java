@@ -24,7 +24,6 @@ import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DestructionCatalystItem extends ToggleableItem {
 
@@ -94,9 +93,12 @@ public class DestructionCatalystItem extends ToggleableItem {
 	private boolean doExplosion(World world, BlockPos pos, Direction direction) {
 		boolean destroyedSomething = false;
 		boolean playOnce = true;
-		BlockPos origin = pos.offset(direction.getOpposite(), getExplosionRadius());
-		for (BlockPos target : BlockPos.getAllInBox(origin.add(-getExplosionRadius(), -getExplosionRadius(), -getExplosionRadius()),
-				origin.add(getExplosionRadius(), getExplosionRadius(), getExplosionRadius())).collect(Collectors.toList())) {
+		BlockPos origin = pos;
+		if (Boolean.FALSE.equals(Settings.COMMON.items.destructionCatalyst.centeredExplosion.get())) {
+			origin = pos.offset(direction.getOpposite(), getExplosionRadius());
+		}
+		for (BlockPos target : BlockPos.getAllInBoxMutable(origin.add(-getExplosionRadius(), -getExplosionRadius(), -getExplosionRadius()),
+				origin.add(getExplosionRadius(), getExplosionRadius(), getExplosionRadius()))) {
 			if (!perfectCube()) {
 				double distance = origin.distanceSq(target);
 				if (distance >= getExplosionRadius()) {

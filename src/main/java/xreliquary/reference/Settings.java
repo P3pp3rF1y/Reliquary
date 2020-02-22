@@ -324,10 +324,16 @@ public class Settings {
 							.comment("List of mundane blocks the catalyst will break")
 							.define("mundaneBlocks", Lists.newArrayList(
 									"minecraft:dirt",
-									"minecraft:grass",
+									"minecraft:coarse_dirt",
+									"minecraft:podzol",
+									"minecraft:mycelium",
+									"minecraft:grass_block",
 									"minecraft:gravel",
 									"minecraft:cobblestone",
 									"minecraft:stone",
+									"minecraft:granite",
+									"minecraft:diorite",
+									"minecraft:andesite",
 									"minecraft:sand",
 									"minecraft:sandstone",
 									"minecraft:snow",
