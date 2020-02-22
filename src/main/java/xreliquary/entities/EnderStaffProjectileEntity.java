@@ -9,6 +9,7 @@ import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
@@ -22,6 +23,7 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 
 @SuppressWarnings("squid:S2160")
@@ -195,5 +197,10 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 	@Override
 	public ItemStack getItem() {
 		return new ItemStack(Items.ENDER_PEARL);
+	}
+
+	@Override
+	public IPacket<?> createSpawnPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

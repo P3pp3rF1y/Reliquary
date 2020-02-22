@@ -9,6 +9,7 @@ import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -18,6 +19,7 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 import xreliquary.init.ModItems;
 import xreliquary.util.potions.XRPotionHelper;
@@ -144,5 +146,10 @@ public class XRTippedArrowEntity extends AbstractArrowEntity {
 		} else {
 			super.handleStatusUpdate(id);
 		}
+	}
+
+	@Override
+	public IPacket<?> createSpawnPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

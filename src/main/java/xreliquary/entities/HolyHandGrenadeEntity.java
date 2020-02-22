@@ -5,11 +5,13 @@ import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 import xreliquary.init.ModItems;
 
@@ -76,5 +78,11 @@ public class HolyHandGrenadeEntity extends ThrowableEntity implements IRendersAs
 	@Override
 	public ItemStack getItem() {
 		return new ItemStack(ModItems.HOLY_HAND_GRENADE);
+	}
+
+
+	@Override
+	public IPacket<?> createSpawnPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

@@ -9,6 +9,7 @@ import net.minecraft.entity.projectile.ProjectileItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.IPacket;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleTypes;
@@ -23,6 +24,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 import xreliquary.reference.Settings;
 
@@ -121,8 +123,13 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 			IParticleData particleData = stack.isEmpty() ? ParticleTypes.ITEM_SNOWBALL : new ItemParticleData(ParticleTypes.ITEM, stack);
 
 			for(int i = 0; i < 8; ++i) {
-				world.addParticle(particleData, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
+				world.addParticle(particleData, posX, posY, posZ, 0.0D, 0.0D, 0.0D);
 			}
 		}
+	}
+
+	@Override
+	public IPacket<?> createSpawnPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }
