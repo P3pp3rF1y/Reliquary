@@ -33,7 +33,6 @@ public class Reliquary {
 		eventBus.addListener(Reliquary::setup);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Settings.CLIENT_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Settings.COMMON_SPEC);
-		proxy.registerHandlers();
 	}
 
 	public static void setup(FMLCommonSetupEvent event) {
