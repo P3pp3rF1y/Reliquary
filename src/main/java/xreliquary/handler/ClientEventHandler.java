@@ -115,7 +115,7 @@ public class ClientEventHandler {
 	@SubscribeEvent
 	public static void onRenderTick(TickEvent.RenderTickEvent event) {
 		Minecraft mc = Minecraft.getInstance();
-		if (!Minecraft.isGuiEnabled() || !mc.isGameFocused() || mc.player == null) {
+		if (mc.currentScreen != null || !Minecraft.isGuiEnabled() || !mc.isGameFocused() || mc.player == null) {
 			return;
 		}
 
