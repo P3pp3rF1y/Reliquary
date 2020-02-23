@@ -69,6 +69,9 @@ public class ThrownXRPotionEntity extends ThrowableEntity implements IEntityAddi
 	protected void onImpact(RayTraceResult result) {
 		if (!world.isRemote) {
 			ItemStack potion = getItem();
+			if (!(potion.getItem() instanceof IPotionItem)) {
+				return;
+			}
 			List<EffectInstance> effects = ((IPotionItem) potion.getItem()).getEffects(potion);
 
 			int color = PotionUtils.getPotionColorFromEffectList(effects);
