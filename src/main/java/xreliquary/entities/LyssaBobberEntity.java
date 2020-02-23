@@ -46,6 +46,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
+import xreliquary.util.RandHelper;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -305,7 +306,7 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 			} else {
 				Vec3d vec3d = getMotion();
 				setMotion(vec3d.x, -0.4F * MathHelper.nextFloat(rand, 0.6F, 1.0F), vec3d.z);
-				playSound(SoundEvents.ENTITY_FISHING_BOBBER_SPLASH, 0.25F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.4F);
+				playSound(SoundEvents.ENTITY_FISHING_BOBBER_SPLASH, 0.25F, 1.0F + RandHelper.getRandomMinusOneToOne(rand) * 0.4F);
 				double d3 = getBoundingBox().minY + 0.5D;
 				serverworld.spawnParticle(ParticleTypes.BUBBLE, posX, d3, posZ, (int) (1.0F + getWidth() * 20.0F), getWidth(), 0.0D, getWidth(), 0.2F);
 				serverworld.spawnParticle(ParticleTypes.FISHING, posX, d3, posZ, (int) (1.0F + getWidth() * 20.0F), getWidth(), 0.0D, getWidth(), 0.2F);
@@ -552,7 +553,7 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 		EquipmentSlotType slotBeingStolenFrom = EquipmentSlotType.values()[world.rand.nextInt(EquipmentSlotType.values().length)];
 
 		ItemStack stolenStack = livingEntity.getItemStackFromSlot(slotBeingStolenFrom);
-		if (stolenStack.isEmpty() && Settings.COMMON.items.rodOfLyssa.stealFromVacantSlots.get()) {
+		if (stolenStack.isEmpty() && Boolean.TRUE.equals(Settings.COMMON.items.rodOfLyssa.stealFromVacantSlots.get())) {
 			for (EquipmentSlotType slot : EquipmentSlotType.values()) {
 				stolenStack = livingEntity.getItemStackFromSlot(slot);
 				if (!stolenStack.isEmpty() && canDropFromSlot(livingEntity, slot)) {
@@ -564,13 +565,13 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 
 		float failProbabilityFactor;
 
-		if (Settings.COMMON.items.rodOfLyssa.useLeveledFailureRate.get()) {
+		if (Boolean.TRUE.equals(Settings.COMMON.items.rodOfLyssa.useLeveledFailureRate.get())) {
 			failProbabilityFactor = 1F / ((float) Math.sqrt(Math.max(1, Math.min(getAngler().experienceLevel, Settings.COMMON.items.rodOfLyssa.levelCapForLeveledFormula.get()))) * 2);
 		} else {
 			failProbabilityFactor = Settings.COMMON.items.rodOfLyssa.flatStealFailurePercentRate.get() / 100F;
 		}
 
-		if ((rand.nextFloat() <= failProbabilityFactor || (stolenStack.isEmpty() && Settings.COMMON.items.rodOfLyssa.failStealFromVacantSlots.get())) && Settings.COMMON.items.rodOfLyssa.angerOnStealFailure.get()) {
+		if ((rand.nextFloat() <= failProbabilityFactor || (stolenStack.isEmpty() && Settings.COMMON.items.rodOfLyssa.failStealFromVacantSlots.get())) && Boolean.TRUE.equals(Settings.COMMON.items.rodOfLyssa.angerOnStealFailure.get())) {
 			livingEntity.attackEntityFrom(DamageSource.causePlayerDamage(getAngler()), 0.0F);
 		}
 		if (!stolenStack.isEmpty()) {

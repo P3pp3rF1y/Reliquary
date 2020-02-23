@@ -27,6 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 import xreliquary.reference.Settings;
+import xreliquary.util.RandHelper;
 
 @SuppressWarnings({"squid:S2160", "squid:MaximumInheritanceDepth"})
 public class SpecialSnowballEntity extends ProjectileItemEntity {
@@ -77,7 +78,7 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 			} else if (result.getType() == RayTraceResult.Type.BLOCK) {
 				BlockPos pos = ((BlockRayTraceResult) result).getPos();
 				if (world.getBlockState(pos.up()).getBlock() == Blocks.FIRE) {
-					world.playSound(null, pos.up(), SoundEvents.ENTITY_GENERIC_BURN, SoundCategory.NEUTRAL, 0.5F, (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+					world.playSound(null, pos.up(), SoundEvents.ENTITY_GENERIC_BURN, SoundCategory.NEUTRAL, 0.5F, RandHelper.getRandomMinusOneToOne(world.rand) * 0.8F);
 					world.setBlockState(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ()), Blocks.AIR.getDefaultState());
 				}
 			}
@@ -131,5 +132,14 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 	@Override
 	public IPacket<?> createSpawnPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public boolean isInRangeToRenderDist(double distance) {
+		double d0 = 4.0D;
+
+		d0 = d0 * 64.0D;
+		return distance < d0 * d0;
 	}
 }

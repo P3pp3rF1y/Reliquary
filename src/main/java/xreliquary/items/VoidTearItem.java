@@ -47,6 +47,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.RandHelper;
 import xreliquary.util.StackHelper;
 import xreliquary.util.WorldHelper;
 
@@ -147,8 +148,8 @@ public class VoidTearItem extends ToggleableItem {
 				return super.onItemRightClick(world, player, hand);
 			}
 
-			if (InventoryHelper.getItemHandlerFrom(player).map(h -> attemptToEmptyIntoInventory(voidTear, player, h)).orElse(false)) {
-				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
+			if (Boolean.TRUE.equals(InventoryHelper.getItemHandlerFrom(player).map(h -> attemptToEmptyIntoInventory(voidTear, player, h)).orElse(false))) {
+				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
 				setEmpty(voidTear);
 				return new ActionResult<>(ActionResultType.SUCCESS, voidTear);
 			}
@@ -168,7 +169,7 @@ public class VoidTearItem extends ToggleableItem {
 					filledTear = emptyVoidTear;
 				}
 				buildTear(filledTear, target, player, playerInventory, true);
-				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
+				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
 				if (emptyVoidTear.getCount() == 1) {
 					return new ActionResult<>(ActionResultType.SUCCESS, filledTear);
 				} else {
@@ -247,7 +248,7 @@ public class VoidTearItem extends ToggleableItem {
 	}
 
 	private void attemptToReplenish(PlayerEntity player, ItemStack voidTear) {
-		if (InventoryHelper.getItemHandlerFrom(player).map(h -> fillFirstFirstStackFound(voidTear, h)).orElse(false)) {
+		if (Boolean.TRUE.equals(InventoryHelper.getItemHandlerFrom(player).map(h -> fillFirstFirstStackFound(voidTear, h)).orElse(false))) {
 			return;
 		}
 
@@ -348,7 +349,7 @@ public class VoidTearItem extends ToggleableItem {
 			}
 			buildTear(filledTear, target, player, inventory, false);
 
-			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
+			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
 			if (emptyVoidTear.getCount() == 1) {
 				player.setHeldItem(hand, filledTear);
 			} else {
@@ -371,10 +372,10 @@ public class VoidTearItem extends ToggleableItem {
 
 		setItemQuantity(stack, quantity);
 		if (quantity == 0) {
-			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.8F));
+			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.8F));
 			return true;
 		} else {
-			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
+			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
 			return false;
 		}
 	}
@@ -389,7 +390,7 @@ public class VoidTearItem extends ToggleableItem {
 			return;
 		}
 
-		player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
+		player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
 
 		setItemQuantity(stack, quantity + quantityDrained);
 	}
@@ -541,7 +542,7 @@ public class VoidTearItem extends ToggleableItem {
 				setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.getCount());
 				if (!itemEntity.isSilent()) {
 					Random rand = itemEntity.world.rand;
-					itemEntity.world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+					itemEntity.world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, (RandHelper.getRandomMinusOneToOne(rand) * 0.7F + 1.0F) * 2.0F);
 				}
 				itemEntity.remove();
 				event.setCanceled(true);

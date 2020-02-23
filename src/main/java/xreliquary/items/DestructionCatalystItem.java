@@ -21,6 +21,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.RandHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -114,7 +115,7 @@ public class DestructionCatalystItem extends ToggleableItem {
 				}
 				destroyedSomething = true;
 				if (playOnce) {
-					world.playSound(null, target, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
+					world.playSound(null, target, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(world.rand) * 0.2F) * 0.7F);
 					playOnce = false;
 				}
 			}

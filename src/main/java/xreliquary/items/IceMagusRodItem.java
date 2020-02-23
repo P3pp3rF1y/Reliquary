@@ -26,6 +26,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class IceMagusRodItem extends ToggleableItem {
+	private static final String SNOWBALLS_TAG = "snowballs";
+
 	public IceMagusRodItem() {
 		this("ice_magus_rod");
 	}
@@ -33,7 +35,7 @@ public class IceMagusRodItem extends ToggleableItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack rod, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("charge", Integer.toString(NBTHelper.getInt("snowballs", rod))), tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("charge", Integer.toString(NBTHelper.getInt(SNOWBALLS_TAG, rod))), tooltip);
 		if (isEnabled(rod)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.SNOWBALL.getDisplayName(new ItemStack(Items.SNOWBALL)).toString()), tooltip);
 		}
@@ -69,15 +71,13 @@ public class IceMagusRodItem extends ToggleableItem {
 			return new ActionResult<>(ActionResultType.PASS, stack);
 		}
 		player.swingArm(hand);
-		if (!player.isSneaking()) {
-			if (NBTHelper.getInt("snowballs", stack) >= getSnowballCost() || player.isCreative()) {
-				world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
-				SpecialSnowballEntity snowball = new SpecialSnowballEntity(world, player, this instanceof GlacialStaffItem);
-				snowball.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, 2.4F, 1.0F);
-				world.addEntity(snowball);
-				if (!player.isCreative()) {
-					NBTHelper.putInt("snowballs", stack, NBTHelper.getInt("snowballs", stack) - getSnowballCost());
-				}
+		if (!player.isSneaking() && (NBTHelper.getInt(SNOWBALLS_TAG, stack) >= getSnowballCost() || player.isCreative())) {
+			world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+			SpecialSnowballEntity snowball = new SpecialSnowballEntity(world, player, this instanceof GlacialStaffItem);
+			snowball.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, 2.4F, 1.0F);
+			world.addEntity(snowball);
+			if (!player.isCreative()) {
+				NBTHelper.putInt(SNOWBALLS_TAG, stack, NBTHelper.getInt(SNOWBALLS_TAG, stack) - getSnowballCost());
 			}
 		}
 		return super.onItemRightClick(world, player, hand);
@@ -97,12 +97,9 @@ public class IceMagusRodItem extends ToggleableItem {
 			return;
 		}
 
-		if (isEnabled(rod)) {
-			if (NBTHelper.getInt("snowballs", rod) + getSnowballWorth() <= getSnowballCap()) {
-				if (InventoryHelper.consumeItem(new ItemStack(Items.SNOWBALL), (PlayerEntity) entity)) {
-					NBTHelper.putInt("snowballs", rod, NBTHelper.getInt("snowballs", rod) + getSnowballWorth());
-				}
-			}
+		if (isEnabled(rod) && NBTHelper.getInt(SNOWBALLS_TAG, rod) + getSnowballWorth() <= getSnowballCap()
+				&& InventoryHelper.consumeItem(new ItemStack(Items.SNOWBALL), (PlayerEntity) entity)) {
+			NBTHelper.putInt(SNOWBALLS_TAG, rod, NBTHelper.getInt(SNOWBALLS_TAG, rod) + getSnowballWorth());
 		}
 	}
 }

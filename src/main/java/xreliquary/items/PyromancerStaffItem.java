@@ -41,6 +41,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.RandHelper;
 import xreliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
@@ -479,7 +480,7 @@ public class PyromancerStaffItem extends ToggleableItem {
 					Block block = player.world.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock();
 					if (block == Blocks.FIRE) {
 						player.world.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.AIR.getDefaultState());
-						player.world.playSound(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.8F, false);
+						player.world.playSound(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
 					}
 				}
 			}
@@ -500,7 +501,7 @@ public class PyromancerStaffItem extends ToggleableItem {
 			for (int particles = 0; particles < 4; particles++) {
 				player.world.addParticle(RedstoneParticleData.REDSTONE_DUST, fireball.posX, fireball.posY, fireball.posZ, 0.0D, 1.0D, 1.0D);
 			}
-			player.world.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.8F, false);
+			player.world.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
 
 			if (!isInternalStorageFullOfItem(stack, Items.BLAZE_POWDER) && InventoryHelper.consumeItem(new ItemStack(Items.BLAZE_POWDER), player)) {
 				addItemToInternalStorage(stack, Items.BLAZE_POWDER, true);
@@ -515,7 +516,7 @@ public class PyromancerStaffItem extends ToggleableItem {
 			if (fireball.shootingEntity != player && player.getDistance(fireball) < 4) {
 				if (!isInternalStorageFullOfItem(stack, Items.FIRE_CHARGE) && InventoryHelper.consumeItem(new ItemStack(Items.FIRE_CHARGE), player)) {
 					addItemToInternalStorage(stack, Items.FIRE_CHARGE, true);
-					player.world.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.8F, false);
+					player.world.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
 				}
 				fireball.remove();
 			}

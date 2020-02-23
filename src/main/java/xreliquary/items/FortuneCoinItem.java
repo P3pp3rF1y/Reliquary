@@ -38,6 +38,7 @@ import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.RandHelper;
 import xreliquary.util.XpHelper;
 
 import javax.annotation.Nullable;
@@ -58,7 +59,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem {
 *//*
 	TODO add back if baubles stops triggering this on every GUI open
 		if(player.world.isRemote)
-			player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 2.2F));
+			player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 2.2F));
 *//*
 
 	}*/
@@ -108,7 +109,8 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem {
 		}
 		if (enabledAudio() && NBTHelper.getShort(SOUND_TIMER_TAG, stack) > 0) {
 			if (NBTHelper.getShort(SOUND_TIMER_TAG, stack) % 2 == 0) {
-				world.playSound(null, entity.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
+				world.playSound(null, entity.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F,
+						0.5F * RandHelper.getRandomMinusOneToOne(world.rand) * 0.7F + 1.8F);
 			}
 			NBTHelper.putShort(SOUND_TIMER_TAG, stack, (short) (NBTHelper.getShort(SOUND_TIMER_TAG, stack) - 1));
 		}
@@ -198,7 +200,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem {
 		double z = player.posZ + player.getLookVec().z * 0.2D;
 		item.setPosition(x, y, z);
 		if (enabledAudio()) {
-			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.8F));
+			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.8F));
 		}
 	}
 

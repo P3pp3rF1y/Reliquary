@@ -30,6 +30,9 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class GlacialStaffItem extends IceMagusRodItem {
+	private static final String SNOWBALLS_TAG = "snowballs";
+	private static final String BLOCK_LOCATIONS_TAG = "blockLocations";
+
 	public GlacialStaffItem() {
 		super("glacial_staff");
 	}
@@ -37,28 +40,30 @@ public class GlacialStaffItem extends IceMagusRodItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack staff, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("charge", Integer.toString(NBTHelper.getInt("snowballs", staff))), tooltip);
-		if (isEnabled(staff))
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("charge", Integer.toString(NBTHelper.getInt(SNOWBALLS_TAG, staff))), tooltip);
+		if (isEnabled(staff)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.SNOWBALL.getDisplayName(new ItemStack(Items.SNOWBALL)).toString()), tooltip);
+		}
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity e) {
-		if (e instanceof LivingEntity && NBTHelper.getInt("snowballs", stack) >= getSnowballCost()) {
+		if (e instanceof LivingEntity && NBTHelper.getInt(SNOWBALLS_TAG, stack) >= getSnowballCost()) {
 			LivingEntity livingBase = (LivingEntity) e;
 			EffectInstance slow = new EffectInstance(Effects.SLOWNESS, 30, 0);
 
 			//if the creature is slowed already, refresh the duration and increase the amplifier by 1.
 			//5 hits is all it takes to max out the amplitude.
-			if (livingBase.getActivePotionEffect(Effects.SLOWNESS) != null)
-				//noinspection ConstantConditions
-				slow = new EffectInstance(Effects.SLOWNESS, Math.min(livingBase.getActivePotionEffect(Effects.SLOWNESS).getDuration() + 30, 300),
-						Math.min(livingBase.getActivePotionEffect(Effects.SLOWNESS).getAmplifier() + 1, 4));
+			EffectInstance slownessEffect = livingBase.getActivePotionEffect(Effects.SLOWNESS);
+			if (slownessEffect != null) {
+				slow = new EffectInstance(Effects.SLOWNESS, Math.min(slownessEffect.getDuration() + 30, 300),
+						Math.min(slownessEffect.getAmplifier() + 1, 4));
+			}
 
 			((LivingEntity) e).addPotionEffect(slow);
 			e.attackEntityFrom(DamageSource.causePlayerDamage(player), slow.getAmplifier());
-			NBTHelper.putInt("snowballs", stack, NBTHelper.getInt("snowballs", stack) - getSnowballCost());
+			NBTHelper.putInt(SNOWBALLS_TAG, stack, NBTHelper.getInt(SNOWBALLS_TAG, stack) - getSnowballCost());
 		}
 		return super.onLeftClickEntity(stack, player, e);
 	}
@@ -70,31 +75,40 @@ public class GlacialStaffItem extends IceMagusRodItem {
 		if (entity instanceof PlayerEntity) {
 			player = (PlayerEntity) entity;
 		}
-		if (player == null)
+		if (player == null) {
 			return;
+		}
 
+		if (isEnabled(staff)) {
+			freezeBlocks(staff, world, player);
+		}
+		meltBlocks(staff, world, player);
+	}
+
+	private void freezeBlocks(ItemStack staff, World world, PlayerEntity player) {
 		int x = MathHelper.floor(player.posX);
 		int y = MathHelper.floor(player.getBoundingBox().minY) - 1;
 		int z = MathHelper.floor(player.posZ);
-
-		if (isEnabled(staff)) {
-			for (int xOff = -2; xOff <= 2; xOff++) {
-				for (int zOff = -2; zOff <= 2; zOff++) {
-					if (Math.abs(xOff) == 2 && Math.abs(zOff) == 2)
-						continue;
-					doFreezeCheck(staff, x, y, z, world, xOff, zOff);
+		for (int xOff = -2; xOff <= 2; xOff++) {
+			for (int zOff = -2; zOff <= 2; zOff++) {
+				if (Math.abs(xOff) == 2 && Math.abs(zOff) == 2) {
+					continue;
 				}
+				doFreezeCheck(staff, x, y, z, world, xOff, zOff);
 			}
 		}
+	}
 
+	private void meltBlocks(ItemStack staff, World world, PlayerEntity player) {
 		if (!world.isRemote) {
 			for (BlockPos pos : getBlockLocations(staff)) {
 				int xOff = Math.abs(MathHelper.floor(player.posX) - pos.getX());
 				int yOff = Math.abs(MathHelper.floor(player.posY) - pos.getY());
 				int zOff = Math.abs(MathHelper.floor(player.posZ) - pos.getZ());
 
-				if (xOff < 3 && yOff < 3 && zOff < 3 && !(xOff == 2 && zOff == 2))
+				if (xOff < 3 && yOff < 3 && zOff < 3 && !(xOff == 2 && zOff == 2)) {
 					continue;
+				}
 
 				doThawCheck(staff, pos.getX(), pos.getY(), pos.getZ(), world);
 			}
@@ -107,9 +121,10 @@ public class GlacialStaffItem extends IceMagusRodItem {
 			tagCompound = new CompoundNBT();
 		}
 
-		if (!tagCompound.contains("BlockLocations"))
-			tagCompound.put("BlockLocations", new ListNBT());
-		ListNBT tagList = tagCompound.getList("BlockLocations", 10);
+		if (!tagCompound.contains(BLOCK_LOCATIONS_TAG)) {
+			tagCompound.put(BLOCK_LOCATIONS_TAG, new ListNBT());
+		}
+		ListNBT tagList = tagCompound.getList(BLOCK_LOCATIONS_TAG, 10);
 
 		BlockPos[] locations = new BlockPos[tagList.size()];
 
@@ -162,20 +177,18 @@ public class GlacialStaffItem extends IceMagusRodItem {
 
 				}
 			}
-		} else if (blockState == Blocks.OBSIDIAN.getDefaultState()) {
-			if (removeFrozenBlockFromList(stack, x, y, z)) {
-				world.setBlockState(new BlockPos(x, y, z), Blocks.LAVA.getDefaultState());
+		} else if (blockState == Blocks.OBSIDIAN.getDefaultState() && removeFrozenBlockFromList(stack, x, y, z)) {
+			world.setBlockState(new BlockPos(x, y, z), Blocks.LAVA.getDefaultState());
 
-				float red = 1.0F;
-				float green = 0.0F;
-				float blue = 0.0F;
+			float red = 1.0F;
+			float green = 0.0F;
+			float blue = 0.0F;
 
-				for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
-					float xVel = world.rand.nextFloat();
-					float yVel = world.rand.nextFloat() + 0.5F;
-					float zVel = world.rand.nextFloat();
-					world.addParticle(RedstoneParticleData.REDSTONE_DUST, x + xVel, y + yVel, z + zVel, red, green, blue);
-				}
+			for (int particleNum = world.rand.nextInt(3); particleNum < 2; ++particleNum) {
+				float xVel = world.rand.nextFloat();
+				float yVel = world.rand.nextFloat() + 0.5F;
+				float zVel = world.rand.nextFloat();
+				world.addParticle(RedstoneParticleData.REDSTONE_DUST, x + xVel, y + yVel, z + zVel, red, green, blue);
 			}
 		}
 	}
@@ -186,9 +199,10 @@ public class GlacialStaffItem extends IceMagusRodItem {
 			tagCompound = new CompoundNBT();
 		}
 
-		if (!tagCompound.contains("BlockLocations"))
-			tagCompound.put("BlockLocations", new ListNBT());
-		ListNBT tagList = tagCompound.getList("BlockLocations", 10);
+		if (!tagCompound.contains(BLOCK_LOCATIONS_TAG)) {
+			tagCompound.put(BLOCK_LOCATIONS_TAG, new ListNBT());
+		}
+		ListNBT tagList = tagCompound.getList(BLOCK_LOCATIONS_TAG, 10);
 
 		CompoundNBT newTagData = new CompoundNBT();
 		newTagData.putInt("x", x);
@@ -197,7 +211,7 @@ public class GlacialStaffItem extends IceMagusRodItem {
 
 		tagList.add(newTagData);
 
-		tagCompound.put("BlockLocations", tagList);
+		tagCompound.put(BLOCK_LOCATIONS_TAG, tagList);
 
 		stack.setTag(tagCompound);
 	}
@@ -208,9 +222,10 @@ public class GlacialStaffItem extends IceMagusRodItem {
 			tagCompound = new CompoundNBT();
 		}
 
-		if (!tagCompound.contains("BlockLocations"))
-			tagCompound.put("BlockLocations", new ListNBT());
-		ListNBT tagList = tagCompound.getList("BlockLocations", 10);
+		if (!tagCompound.contains(BLOCK_LOCATIONS_TAG)) {
+			tagCompound.put(BLOCK_LOCATIONS_TAG, new ListNBT());
+		}
+		ListNBT tagList = tagCompound.getList(BLOCK_LOCATIONS_TAG, 10);
 
 		boolean removedBlock = false;
 
@@ -234,7 +249,7 @@ public class GlacialStaffItem extends IceMagusRodItem {
 			}
 		}
 
-		tagCompound.put("BlockLocations", newTagList);
+		tagCompound.put(BLOCK_LOCATIONS_TAG, newTagList);
 		stack.setTag(tagCompound);
 		return removedBlock;
 	}

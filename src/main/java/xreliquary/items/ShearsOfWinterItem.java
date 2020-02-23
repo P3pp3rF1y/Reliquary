@@ -37,6 +37,7 @@ import xreliquary.Reliquary;
 import xreliquary.reference.Reference;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
+import xreliquary.util.RandHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -182,7 +183,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 							EnchantmentHelper.getEnchantmentLevel(net.minecraft.enchantment.Enchantments.FORTUNE, stack));
 					drops.forEach(d -> {
 						ItemEntity ent = e.entityDropItem(d, 1.0F);
-						ent.setMotion(ent.getMotion().add((rand.nextFloat() - rand.nextFloat()) * 0.1F, rand.nextFloat() * 0.05F, (rand.nextFloat() - rand.nextFloat()) * 0.1F));
+						ent.setMotion(ent.getMotion().add(RandHelper.getRandomMinusOneToOne(rand) * 0.1F, rand.nextFloat() * 0.05F, RandHelper.getRandomMinusOneToOne(rand) * 0.1F));
 					});
 
 					player.addExhaustion(0.01F);

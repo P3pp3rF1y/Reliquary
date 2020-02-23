@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.RandHelper;
 
 public class ToggleableItem extends ItemBase {
 
@@ -31,7 +32,7 @@ public class ToggleableItem extends ItemBase {
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote && player.isSneaking()) {
 			toggleEnabled(stack);
-			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.7F + 1.2F));
+			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
 			return new ActionResult<>(ActionResultType.SUCCESS, stack);
 		}
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);

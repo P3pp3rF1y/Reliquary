@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 import xreliquary.network.PacketFXConcussiveExplosion;
 import xreliquary.network.PacketHandler;
+import xreliquary.util.RandHelper;
 
 import java.util.List;
 import java.util.Map;
@@ -92,7 +93,7 @@ public class ConcussiveExplosion extends Explosion {
 	 */
 	@Override
 	public void doExplosionB(boolean spawnParticles) {
-		world.playSound(null, new BlockPos(pos), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
+		world.playSound(null, new BlockPos(pos), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(world.rand) * 0.2F) * 0.7F);
 
 		if (explosionSize >= 2.0F) {
 			world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.getX(), pos.getY(), pos.getZ(), 1.0D, 0.0D, 0.0D);
@@ -103,7 +104,7 @@ public class ConcussiveExplosion extends Explosion {
 
 	@Override
 	public Map<PlayerEntity, Vec3d> getPlayerKnockbackMap() {
-		return this.playerKnockbackMap;
+		return playerKnockbackMap;
 	}
 
 	public static class GrenadeConcussiveExplosion extends ConcussiveExplosion {
