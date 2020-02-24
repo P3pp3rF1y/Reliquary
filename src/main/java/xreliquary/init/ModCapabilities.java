@@ -19,10 +19,12 @@ import xreliquary.util.InjectionHelper;
 
 import javax.annotation.Nullable;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ModCapabilities {
+	private ModCapabilities() {}
+
 	@CapabilityInject(IHarvestRodCache.class)
-	public final static Capability<IHarvestRodCache> HARVEST_ROD_CACHE = InjectionHelper.nullValue();
+	public static final Capability<IHarvestRodCache> HARVEST_ROD_CACHE = InjectionHelper.nullValue();
 
 	public static void init() {
 		CapabilityManager.INSTANCE.register(IHarvestRodCache.class, new HarvestRodCacheStorage(), HarvestRodCache::new);
@@ -32,7 +34,7 @@ public class ModCapabilities {
 	@SubscribeEvent
 	public static void onItemStackConstruct(AttachCapabilitiesEvent<ItemStack> evt) {
 		if (evt.getObject().getItem() == ModItems.HARVEST_ROD) {
-			evt.addCapability(new ResourceLocation(Reference.MOD_ID, "IHarvestRodCache"), new ICapabilityProvider() {
+			evt.addCapability(new ResourceLocation(Reference.MOD_ID, "harvest_rod_cache"), new ICapabilityProvider() {
 				IHarvestRodCache instance = HARVEST_ROD_CACHE.getDefaultInstance();
 
 				@Override

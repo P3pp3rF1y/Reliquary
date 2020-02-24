@@ -12,8 +12,8 @@ public class FilteredBigItemStack implements INBTSerializable<CompoundNBT> {
 	private int amount;
 	private int amountLimit;
 	private int unitWorth;
-	private ItemStack outputStack;
-	private ItemStack inputStack;
+	private ItemStack outputStack = ItemStack.EMPTY;
+	private ItemStack inputStack = ItemStack.EMPTY;
 	public FilteredBigItemStack(Item filter, int amountLimit, int unitWorth) {
 		this(new ItemStack(filter), amountLimit, unitWorth);
 	}
@@ -79,8 +79,9 @@ public class FilteredBigItemStack implements INBTSerializable<CompoundNBT> {
 		int remainingTotal = worthToUnits(amountLimit - amount);
 		limit = Math.min(limit, remainingTotal);
 
-		if (limit <= 0)
+		if (limit <= 0) {
 			return stack;
+		}
 
 		boolean reachedLimit = stack.getCount() > limit;
 

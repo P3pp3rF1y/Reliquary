@@ -10,7 +10,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.BoneMealItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.UseAction;
@@ -59,6 +61,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class HarvestRodItem extends ToggleableItem {
 	public static final String BONE_MEAL_MODE = "bone_meal";
@@ -169,11 +172,16 @@ public class HarvestRodItem extends ToggleableItem {
 	private void consumePlantables(ItemStack harvestRod, PlayerEntity player) {
 		for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
 			ItemStack currentStack = player.inventory.mainInventory.get(slot);
-			if (currentStack.getItem() instanceof IPlantable && incrementPlantable(harvestRod, currentStack, player)) {
+			if (isPlantable(currentStack) && incrementPlantable(harvestRod, currentStack, player)) {
 				InventoryHelper.consumeItem(currentStack, player, 0, 1);
 				break;
 			}
 		}
+	}
+
+	private boolean isPlantable(ItemStack currentStack) {
+		Item item = currentStack.getItem();
+		return item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof IPlantable;
 	}
 
 	@Override
@@ -493,7 +501,7 @@ public class HarvestRodItem extends ToggleableItem {
 				break;
 			case PLANTABLE_MODE:
 				if (getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) >= 1 || player.isCreative()) {
-					getNextBlockToPlantOn(world, cache, pos, Settings.COMMON.items.harvestRod.aoeRadius.get(), (IPlantable) getCurrentPlantable(harvestRod).getItem())
+					getNextBlockToPlantOn(world, cache, pos, Settings.COMMON.items.harvestRod.aoeRadius.get(), (IPlantable) ((BlockItem) getCurrentPlantable(harvestRod).getItem()).getBlock())
 							.ifPresent(blockToPlantOn -> plantItem(harvestRod, player, blockToPlantOn, player.getActiveHand(), false));
 				}
 				break;
@@ -507,29 +515,26 @@ public class HarvestRodItem extends ToggleableItem {
 
 	private Optional<BlockPos> getNextBlockToHoe(World world, IHarvestRodCache cache, BlockPos pos, int range) {
 		if (cache.isQueueEmpty() || !pos.equals(cache.getStartBlockPos())) {
-			fillQueueToHoe(world, cache, pos, range);
+			fillQueue(cache, pos, range, currentPos -> {
+				BlockState blockState = world.getBlockState(currentPos);
+				Block block = blockState.getBlock();
+
+				return world.isAirBlock(currentPos.up()) && (block == Blocks.GRASS_BLOCK || block == Blocks.GRASS_PATH || block == Blocks.DIRT || block == Blocks.COARSE_DIRT);
+			});
 		}
 
 		return cache.getNextBlockInQueue();
 	}
 
-	private void fillQueueToHoe(World world, IHarvestRodCache cache, BlockPos pos, int range) {
+	private void fillQueue(IHarvestRodCache cache, BlockPos pos, int range, Predicate<BlockPos> isValidBlock) {
 		cache.setStartBlockPos(pos);
 		cache.clearBlockQueue();
-		for (int x = pos.getX() - range; x <= pos.getX() + range; x++) {
-			for (int y = pos.getY() - range; y <= pos.getY() + range; y++) {
-				for (int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
-					BlockPos currentPos = new BlockPos(x, y, z);
-					BlockState blockState = world.getBlockState(currentPos);
-					Block block = blockState.getBlock();
-
-					if (world.isAirBlock(currentPos.up()) && (block == Blocks.GRASS || block == Blocks.DIRT || block == Blocks.COARSE_DIRT)) {
-						cache.addBlockToQueue(currentPos);
+		BlockPos.getAllInBox(pos.add(-range, -range, -range), pos.add(range, range, range))
+				.forEach(currentPos -> {
+					if (isValidBlock.test(currentPos)) {
+						cache.addBlockToQueue(currentPos.toImmutable());
 					}
-				}
-			}
-		}
-
+				});
 	}
 
 	private Optional<BlockPos> getNextBlockToPlantOn(World world, IHarvestRodCache cache, BlockPos pos, int range, IPlantable plantable) {
@@ -541,9 +546,6 @@ public class HarvestRodItem extends ToggleableItem {
 	}
 
 	private void fillQueueToPlant(World world, IHarvestRodCache cache, BlockPos pos, int range, IPlantable plantable) {
-		cache.setStartBlockPos(pos);
-		cache.clearBlockQueue();
-
 		boolean checkerboard = false;
 		boolean bothOddOrEven = false;
 
@@ -554,17 +556,12 @@ public class HarvestRodItem extends ToggleableItem {
 			bothOddOrEven = xEven == zEven;
 		}
 
-		for (int x = pos.getX() - range; x <= pos.getX() + range; x++) {
-			for (int y = pos.getY() - range; y <= pos.getY() + range; y++) {
-				for (int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
-					BlockPos currentPos = new BlockPos(x, y, z);
-					BlockState blockState = world.getBlockState(currentPos);
-					if ((!checkerboard || (bothOddOrEven == ((currentPos.getX() % 2 == 0) == (currentPos.getZ() % 2 == 0)))) && blockState.getBlock().canSustainPlant(blockState, world, pos, Direction.UP, plantable) && world.isAirBlock(currentPos.up())) {
-						cache.addBlockToQueue(currentPos);
-					}
-				}
-			}
-		}
+		boolean finalCheckerboard = checkerboard;
+		boolean finalBothOddOrEven = bothOddOrEven;
+		fillQueue(cache, pos, range, currentPos -> {
+			BlockState blockState = world.getBlockState(currentPos);
+			return (!finalCheckerboard || (finalBothOddOrEven == ((currentPos.getX() % 2 == 0) == (currentPos.getZ() % 2 == 0)))) && blockState.getBlock().canSustainPlant(blockState, world, pos, Direction.UP, plantable) && world.isAirBlock(currentPos.up());
+		});
 	}
 
 	@Override
@@ -585,26 +582,13 @@ public class HarvestRodItem extends ToggleableItem {
 
 	private Optional<BlockPos> getNextBlockToBoneMeal(World world, IHarvestRodCache cache, BlockPos pos, int range) {
 		if (cache.isQueueEmpty() || !pos.equals(cache.getStartBlockPos())) {
-			fillQueueToBoneMeal(world, cache, pos, range);
+			fillQueue(cache, pos, range, currentPos -> {
+				BlockState blockState = world.getBlockState(currentPos);
+				return blockState.getBlock() instanceof IGrowable && ((IGrowable) blockState.getBlock()).canGrow(world, currentPos, blockState, world.isRemote);
+			});
 		}
 
 		return cache.getNextBlockInQueue();
-	}
-
-	private void fillQueueToBoneMeal(World world, IHarvestRodCache cache, BlockPos pos, int range) {
-		cache.setStartBlockPos(pos);
-		cache.clearBlockQueue();
-		for (int x = pos.getX() - range; x <= pos.getX() + range; x++) {
-			for (int y = pos.getY() - range; y <= pos.getY() + range; y++) {
-				for (int z = pos.getZ() - range; z <= pos.getZ() + range; z++) {
-					BlockPos currentPos = new BlockPos(x, y, z);
-					BlockState blockState = world.getBlockState(currentPos);
-					if (blockState.getBlock() instanceof IGrowable && ((IGrowable) blockState.getBlock()).canGrow(world, currentPos, blockState, world.isRemote)) {
-						cache.addBlockToQueue(currentPos);
-					}
-				}
-			}
-		}
 	}
 
 	private void cycleMode(ItemStack harvestRod) {

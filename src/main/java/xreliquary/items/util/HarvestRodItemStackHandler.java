@@ -1,5 +1,8 @@
 package xreliquary.items.util;
 
+import net.minecraft.block.IGrowable;
+import net.minecraft.item.BlockNamedItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraftforge.common.IPlantable;
@@ -10,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
-	public static final int BONEMEAL_SLOT = 0;
+	private static final int BONEMEAL_SLOT = 0;
 
 	private static List<RemovableStack> getDefaultStacks() {
 		List<RemovableStack> stacks = new ArrayList<>();
@@ -21,7 +24,7 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 
 	public HarvestRodItemStackHandler() {
 		super(getDefaultStacks());
-		this.setDynamicSlotNumber();
+		setDynamicSlotNumber();
 	}
 
 	@Override
@@ -36,14 +39,20 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 
 	@Override
 	protected boolean isValidForBigStackSlot(ItemStack stack, int bigStackSlot) {
-		if (bigStackSlot == BONEMEAL_SLOT)
+		if (bigStackSlot == BONEMEAL_SLOT) {
 			return stack.getItem() == Items.BONE_MEAL;
+		}
 		return super.isValidForBigStackSlot(stack, bigStackSlot);
 	}
 
 	@Override
 	protected boolean isValidForDynamicStack(ItemStack stack) {
-		return stack.getItem() instanceof IPlantable;
+		return isPlantable(stack);
+	}
+
+	private boolean isPlantable(ItemStack stack) {
+		Item item = stack.getItem();
+		return item instanceof IPlantable || (item instanceof BlockNamedItem && ((BlockNamedItem) item).getBlock() instanceof IGrowable);
 	}
 
 	public int getBoneMealCount() {
