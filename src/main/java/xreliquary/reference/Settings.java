@@ -33,7 +33,7 @@ public class Settings {
 	@Config.Comment("Whether player has to sneak to see additional info in waila")
 	public static boolean wailaShiftForInfo = false;
 	@Config.Name("mob_drop_crafting_recipes_enabled")
-	@Config.Comment("Determines wheter Reliquary mob drops have crafting recipes")
+	@Config.Comment("Determines wheter Reliquary mob drops are craftable")
 	public static boolean dropCraftingRecipesEnabled = false;
 	@Config.Name("mob_drops_enabled")
 	@Config.Comment("Whether mobs drop the Reliquary mob drops. This won't remove mob drop items from registry and replace them with something else, but allows to turn off the additional drops when mobs are killed by player. If this is turned off the mob drop crafting recipes turned on by the other setting can be used.")
