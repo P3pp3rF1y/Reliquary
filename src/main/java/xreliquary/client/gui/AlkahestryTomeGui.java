@@ -14,10 +14,10 @@ import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class GuiAlkahestTome extends GuiBase<ContainerAlkahestTome> {
+public class AlkahestryTomeGui extends GuiBase<ContainerAlkahestTome> {
 	private static final ResourceLocation BOOK_TEX = new ResourceLocation(Reference.MOD_ID, "textures/gui/book.png");
 
-	public GuiAlkahestTome(ContainerAlkahestTome container, PlayerInventory playerInventory, ITextComponent title) {
+	public AlkahestryTomeGui(ContainerAlkahestTome container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
 	}
 

@@ -5,19 +5,21 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import xreliquary.common.gui.ContainerMobCharmBelt;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 
-public class GuiMobCharmBelt extends GuiBase<ContainerMobCharmBelt> {
+@SuppressWarnings("squid:MaximumInheritanceDepth")
+public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
 	private static final ResourceLocation BELT_TEX = new ResourceLocation(Reference.MOD_ID, "textures/gui/mob_charm_belt.png");
-	private static final ResourceLocation BELT_ITEM_TEX = new ResourceLocation(Reference.MOD_ID, "textures/items/mob_charm_belt.png");
+	private static final ResourceLocation BELT_ITEM_TEX = new ResourceLocation(Reference.MOD_ID, "textures/item/mob_charm_belt.png");
 	private static final int WIDTH = 175;
 	private static final int HEIGHT = 221;
 
 	private ItemStack belt;
 
-	public GuiMobCharmBelt(ContainerMobCharmBelt container, PlayerInventory playerInventory, ITextComponent title) {
+	public MobCharmBeltGui(ContainerMobCharmBelt container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
 		belt = container.getBelt();
 	}
@@ -27,15 +29,8 @@ public class GuiMobCharmBelt extends GuiBase<ContainerMobCharmBelt> {
 		int i = guiLeft;
 		int j = guiTop;
 
-		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GlStateManager.enableAlphaTest();
-		GlStateManager.enableBlend();
-
 		bindTexture(BELT_TEX);
-		blit(i, j - 27, 0, 0, WIDTH, HEIGHT);
-
-		GlStateManager.disableAlphaTest();
-		GlStateManager.disableBlend();
+		GuiUtils.drawTexturedModalRect(i, j - 27, 0, 0, WIDTH, HEIGHT, 0);
 
 		int centerX = i + 88;
 		int centerY = j + 40;
@@ -43,7 +38,9 @@ public class GuiMobCharmBelt extends GuiBase<ContainerMobCharmBelt> {
 		updateMobCharmSlots(centerX, centerY);
 
 		bindTexture(BELT_ITEM_TEX);
+		GlStateManager.enableBlend();
 		blit(centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
+		GlStateManager.disableBlend();
 	}
 
 	private void updateMobCharmSlots(int centerX, int centerY) {

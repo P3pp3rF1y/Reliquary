@@ -28,8 +28,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
 import xreliquary.Reliquary;
-import xreliquary.client.gui.GuiAlkahestTome;
-import xreliquary.client.gui.GuiMobCharmBelt;
+import xreliquary.client.gui.AlkahestryTomeGui;
+import xreliquary.client.gui.MobCharmBeltGui;
 import xreliquary.common.gui.ContainerAlkahestTome;
 import xreliquary.common.gui.ContainerMobCharmBelt;
 import xreliquary.crafting.AlkahestryChargingRecipe;
@@ -224,8 +224,8 @@ public class ModItems {
 		r.register(belt.setRegistryName(MOB_CHARM_BELT.getRegistryName()));
 
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			ScreenManager.registerFactory(tome, GuiAlkahestTome::new);
-			ScreenManager.registerFactory(belt, GuiMobCharmBelt::new);
+			ScreenManager.registerFactory(tome, AlkahestryTomeGui::new);
+			ScreenManager.registerFactory(belt, MobCharmBeltGui::new);
 		});
 	}
 
