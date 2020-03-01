@@ -104,13 +104,16 @@ public class RendingGaleItem extends ToggleableItem {
 
 		RayTraceResult rayTrace = rayTrace(player.world, player, RayTraceContext.FluidMode.NONE);
 
+		Vec3d motion = player.getLookVec();
 		if (rayTrace.getType() == RayTraceResult.Type.BLOCK) {
 			double distance = player.getPosition().distanceSq(((BlockRayTraceResult) rayTrace).getPos());
-			if (distance < 20) {
-				double slowDownFactor = distance / 20;
-				player.setMotion(player.getLookVec().mul(slowDownFactor, slowDownFactor, slowDownFactor));
+			if (distance < 40) {
+				double slowDownFactor = distance / 40;
+				motion = player.getLookVec().mul(slowDownFactor, slowDownFactor, slowDownFactor);
 			}
 		}
+
+		player.setMotion(motion);
 		player.move(MoverType.SELF, player.getMotion());
 
 		player.fallDistance = 0.0F;
