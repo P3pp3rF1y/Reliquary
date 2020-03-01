@@ -17,7 +17,7 @@ import xreliquary.entities.LyssaBobberEntity;
 import xreliquary.init.ModItems;
 
 public class LyssaHookRenderer extends EntityRenderer<LyssaBobberEntity> {
-	private static final ResourceLocation FISH_PARTICLES = new ResourceLocation("textures/particle/particles.png");
+	private static final ResourceLocation FISH_PARTICLES = new ResourceLocation("textures/entity/fishing_hook.png");
 
 	public LyssaHookRenderer(EntityRendererManager renderManager) {
 		super(renderManager);
@@ -71,8 +71,8 @@ public class LyssaHookRenderer extends EntityRenderer<LyssaBobberEntity> {
 			double d6;
 			double d7;
 			if ((renderManager.options == null || renderManager.options.thirdPersonView <= 0) && playerentity == Minecraft.getInstance().player) {
-				assert this.renderManager.options != null;
-				double d8 = this.renderManager.options.fov;
+				assert renderManager.options != null;
+				double d8 = renderManager.options.fov;
 				d8 = d8 / 100.0D;
 				Vec3d vec3d = new Vec3d((double) i * -0.36D * d8, -0.045D * d8, 0.4D);
 				vec3d = vec3d.rotatePitch(-MathHelper.lerp(partialTicks, playerentity.prevRotationPitch, playerentity.rotationPitch) * ((float) Math.PI / 180F));

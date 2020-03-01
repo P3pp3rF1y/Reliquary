@@ -44,6 +44,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.init.ModEntities;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
 import xreliquary.util.RandHelper;
@@ -476,8 +477,8 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 	private boolean shouldStopFishing() {
 		ItemStack itemstack = angler.getHeldItemMainhand();
 		ItemStack itemstack1 = angler.getHeldItemOffhand();
-		boolean flag = itemstack.getItem() instanceof net.minecraft.item.FishingRodItem;
-		boolean flag1 = itemstack1.getItem() instanceof net.minecraft.item.FishingRodItem;
+		boolean flag = itemstack.getItem() == ModItems.ROD_OF_LYSSA;
+		boolean flag1 = itemstack1.getItem() == ModItems.ROD_OF_LYSSA;
 		if (angler.isAlive() && (flag || flag1) && getDistanceSq(angler) <= 1024.0D) {
 			return false;
 		} else {
