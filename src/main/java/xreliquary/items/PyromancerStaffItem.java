@@ -185,9 +185,9 @@ public class PyromancerStaffItem extends ToggleableItem {
 		if (removeItemFromInternalStorage(stack, Items.FIRE_CHARGE, getFireChargeCost(), player.world.isRemote, player)) {
 			player.world.playEvent(player, 1016, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
 			FireballEntity fireball = new FireballEntity(player.world, player, lookVec.x, lookVec.y, lookVec.z);
-			fireball.accelerationX = lookVec.x;
-			fireball.accelerationY = lookVec.y;
-			fireball.accelerationZ = lookVec.z;
+			fireball.accelerationX = lookVec.x / 3;
+			fireball.accelerationY = lookVec.y / 3;
+			fireball.accelerationZ = lookVec.z / 3;
 			fireball.posX += lookVec.x;
 			fireball.posY += lookVec.y;
 			fireball.posZ += lookVec.z;
@@ -203,9 +203,9 @@ public class PyromancerStaffItem extends ToggleableItem {
 		if (removeItemFromInternalStorage(stack, Items.BLAZE_POWDER, getBlazePowderCost(), player.world.isRemote, player)) {
 			player.world.playEvent(player, 1018, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
 			SmallFireballEntity fireball = new SmallFireballEntity(player.world, player, lookVec.x, lookVec.y, lookVec.z);
-			fireball.accelerationX = lookVec.x;
-			fireball.accelerationY = lookVec.y;
-			fireball.accelerationZ = lookVec.z;
+			fireball.accelerationX = lookVec.x / 3;
+			fireball.accelerationY = lookVec.y / 3;
+			fireball.accelerationZ = lookVec.z / 3;
 			fireball.posX += lookVec.x;
 			fireball.posY += lookVec.y;
 			fireball.posZ += lookVec.z;
@@ -488,6 +488,9 @@ public class PyromancerStaffItem extends ToggleableItem {
 	}
 
 	private void doFireballAbsorbEffect(ItemStack stack, PlayerEntity player) {
+		if (player.world.isRemote) {
+			return;
+		}
 		absorbGhastFireballs(stack, player);
 		absorbBlazeFireballs(stack, player);
 	}
