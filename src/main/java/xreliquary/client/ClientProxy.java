@@ -32,7 +32,6 @@ import xreliquary.client.render.PassivePedestalRenderer;
 import xreliquary.client.render.PedestalFishHookRenderer;
 import xreliquary.client.render.PedestalRenderer;
 import xreliquary.client.render.ShotRenderer;
-import xreliquary.client.render.ThrownKrakenSlimeRenderer;
 import xreliquary.client.render.XRTippedArrowRenderer;
 import xreliquary.common.CommonProxy;
 import xreliquary.compat.jei.descriptions.JEIDescriptionRegistry;
@@ -103,7 +102,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(AttractionPotionEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
 		RenderingRegistry.registerEntityRenderingHandler(FertilePotionEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
 		RenderingRegistry.registerEntityRenderingHandler(HolyHandGrenadeEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
-		RenderingRegistry.registerEntityRenderingHandler(KrakenSlimeEntity.class, ThrownKrakenSlimeRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(KrakenSlimeEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
 		RenderingRegistry.registerEntityRenderingHandler(SpecialSnowballEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
 		RenderingRegistry.registerEntityRenderingHandler(EnderStaffProjectileEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
 		RenderingRegistry.registerEntityRenderingHandler(ThrownXRPotionEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));

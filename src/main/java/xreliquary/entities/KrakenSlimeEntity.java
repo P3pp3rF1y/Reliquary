@@ -3,7 +3,9 @@ package xreliquary.entities;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.entity.projectile.ProjectileItemEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
@@ -18,7 +20,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 import xreliquary.init.ModPotions;
 
-public class KrakenSlimeEntity extends ThrowableEntity {
+public class KrakenSlimeEntity extends ProjectileItemEntity {
 	public KrakenSlimeEntity(EntityType<KrakenSlimeEntity> entityType, World world) {
 		super(entityType, world);
 	}
@@ -57,8 +59,8 @@ public class KrakenSlimeEntity extends ThrowableEntity {
 	}
 
 	@Override
-	protected void registerData() {
-		//noop
+	protected Item func_213885_i() {
+		return Items.SLIME_BALL;
 	}
 
 	@Override
