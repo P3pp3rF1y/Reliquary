@@ -3,10 +3,8 @@ package xreliquary.items;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -20,7 +18,6 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.stats.Stats;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -35,7 +32,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IShearable;
 import xreliquary.Reliquary;
 import xreliquary.reference.Reference;
-import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.RandHelper;
 
@@ -47,15 +43,6 @@ public class ShearsOfWinterItem extends ShearsItem {
 	public ShearsOfWinterItem() {
 		super(new Properties().group(Reliquary.ITEM_GROUP).maxDamage(0));
 		setRegistryName(new ResourceLocation(Reference.MOD_ID, "shears_of_winter"));
-	}
-
-	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity player) {
-		Block block = state.getBlock();
-		if (!state.isIn(BlockTags.LEAVES) && block != Blocks.COBWEB && block != Blocks.GRASS && block != Blocks.FERN && block != Blocks.DEAD_BUSH && block != Blocks.VINE && block != Blocks.TRIPWIRE && !block.isIn(BlockTags.WOOL)) {
-			return super.onBlockDestroyed(stack, world, state, pos, player);
-		}
-		return true;
 	}
 
 	@Override
@@ -91,10 +78,10 @@ public class ShearsOfWinterItem extends ShearsItem {
 		}
 
 		doEntityShearableCheck(stack, player, lookVector);
-		shearBlocks(stack, player, lookVector);
+		shearBlocks(player, lookVector);
 	}
 
-	private void shearBlocks(ItemStack stack, PlayerEntity player, Vec3d lookVector) {
+	private void shearBlocks(PlayerEntity player, Vec3d lookVector) {
 		BlockPos firstPos = new BlockPos(player.getEyePosition(1));
 		BlockPos secondPos = new BlockPos(player.getEyePosition(1).add(lookVector.mul(10, 10, 10)));
 		if (firstPos.getX() == secondPos.getX()) {
@@ -111,7 +98,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 		}
 
 		BlockPos.getAllInBox(firstPos, secondPos)
-				.forEach(pos -> checkAndBreakBlockAt(player, stack, pos));
+				.forEach(pos -> checkAndBreakBlockAt(player, pos));
 	}
 
 	@Override
@@ -120,37 +107,46 @@ public class ShearsOfWinterItem extends ShearsItem {
 		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", null, tooltip);
 	}
 
-	private void checkAndBreakBlockAt(PlayerEntity player, ItemStack stack, BlockPos pos) {
+	private void checkAndBreakBlockAt(PlayerEntity player, BlockPos pos) {
 		int distance = (int) Math.sqrt(pos.distanceSq(player.posX, player.posY, player.posZ, false));
 		int probabilityFactor = 5 + distance;
 		//chance of block break diminishes over distance
 		if (player.world.rand.nextInt(probabilityFactor) == 0) {
-			shearBlockAt(pos, player, stack);
+			shearBlockAt(pos, player);
 		}
 	}
 
 	@SuppressWarnings({"squid:CallToDeprecatedMethod", "deprecation"})
-	private void shearBlockAt(BlockPos pos, PlayerEntity player, ItemStack stack) {
-		BlockState blockState = player.world.getBlockState(pos);
+	private void shearBlockAt(BlockPos pos, PlayerEntity player) {
+		World world = player.world;
+		BlockState blockState = world.getBlockState(pos);
 		Block block = blockState.getBlock();
 		if (block instanceof IShearable) {
 			IShearable target = (IShearable) block;
 			ItemStack dummyShears = new ItemStack(Items.SHEARS);
-			if (target.isShearable(dummyShears, player.world, pos)) {
-				List<ItemStack> drops = target.onSheared(dummyShears, player.world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack));
-				if (player.world.isRemote) {
-					if (blockState.getMaterial() != Material.AIR) {
-						player.world.playEvent(player, 2001, pos, Block.getStateId(player.world.getBlockState(pos)));
-					}
-
-				} else {
-					drops.forEach(drop -> InventoryHelper.spawnItemStack(player.world, pos, drop));
-					player.world.setBlockState(pos, Blocks.AIR.getDefaultState());
-					player.addStat(Stats.BLOCK_MINED.get(block));
-					player.addExhaustion(0.01F);
-				}
+			if (target.isShearable(dummyShears, world, pos) && removeBlock(player, pos, blockState.canHarvestBlock(world, pos, player))) {
+				player.addStat(Stats.BLOCK_MINED.get(block));
+				player.addExhaustion(0.01F);
+				Block.spawnDrops(blockState, world, pos, null, player, dummyShears);
 			}
 		}
+	}
+
+	@Override
+	public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
+		if (entityLiving instanceof PlayerEntity) {
+			shearBlockAt(pos, (PlayerEntity) entityLiving);
+		}
+		return super.onBlockDestroyed(stack, worldIn, state, pos, entityLiving);
+	}
+
+	private boolean removeBlock(PlayerEntity player, BlockPos pos, boolean canHarvest) {
+		BlockState state = player.world.getBlockState(pos);
+		boolean removed = state.removedByPlayer(player.world, pos, player, canHarvest, player.world.getFluidState(pos));
+		if (removed) {
+			state.getBlock().onPlayerDestroy(player.world, pos, state);
+		}
+		return removed;
 	}
 
 	@SuppressWarnings({"squid:CallToDeprecatedMethod", "deprecation", "squid:S1764"})
@@ -176,19 +172,26 @@ public class ShearsOfWinterItem extends ShearsItem {
 				e.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 120, 1));
 			}
 			if (e instanceof IShearable) {
-				IShearable target = (IShearable) e;
-				BlockPos pos = new BlockPos((int) e.posX, (int) e.posY, (int) e.posZ);
-				if (target.isShearable(new ItemStack(Items.SHEARS), e.world, pos)) {
-					List<ItemStack> drops = target.onSheared(stack, e.world, pos,
-							EnchantmentHelper.getEnchantmentLevel(net.minecraft.enchantment.Enchantments.FORTUNE, stack));
-					drops.forEach(d -> {
-						ItemEntity ent = e.entityDropItem(d, 1.0F);
-						ent.setMotion(ent.getMotion().add(RandHelper.getRandomMinusOneToOne(rand) * 0.1F, rand.nextFloat() * 0.05F, RandHelper.getRandomMinusOneToOne(rand) * 0.1F));
-					});
-
-					player.addExhaustion(0.01F);
-				}
+				shearEntity(stack, player, rand, e);
 			}
+		}
+	}
+
+	@SuppressWarnings({"squid:CallToDeprecatedMethod", "deprecation", "squid:S1764"})
+	private void shearEntity(ItemStack stack, PlayerEntity player, Random rand, MobEntity e) {
+		IShearable target = (IShearable) e;
+		BlockPos pos = new BlockPos((int) e.posX, (int) e.posY, (int) e.posZ);
+		if (target.isShearable(new ItemStack(Items.SHEARS), e.world, pos)) {
+			List<ItemStack> drops = target.onSheared(stack, e.world, pos,
+					EnchantmentHelper.getEnchantmentLevel(net.minecraft.enchantment.Enchantments.FORTUNE, stack));
+			drops.forEach(d -> {
+				ItemEntity ent = e.entityDropItem(d, 1.0F);
+				if (ent != null) {
+					ent.setMotion(ent.getMotion().add(RandHelper.getRandomMinusOneToOne(rand) * 0.1F, rand.nextFloat() * 0.05F, RandHelper.getRandomMinusOneToOne(rand) * 0.1F));
+				}
+			});
+
+			player.addExhaustion(0.01F);
 		}
 	}
 
