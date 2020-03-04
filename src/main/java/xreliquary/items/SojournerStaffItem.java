@@ -256,7 +256,7 @@ public class SojournerStaffItem extends ToggleableItem {
 			CompoundNBT tagItemData = tagList.getCompound(i);
 			ItemStack containedItem = getItem(tagItemData);
 			int quantity = tagItemData.getInt(QUANTITY_TAG);
-			phrase = String.format("%s%s", phrase.equals("Nothing.") ? "" : String.format("%s;", phrase), containedItem.getDisplayName() + ": " + quantity);
+			phrase = String.format("%s%s", phrase.equals("Nothing.") ? "" : String.format("%s;", phrase), containedItem.getDisplayName().getString() + ": " + quantity);
 		}
 
 		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("phrase", phrase, "placing", getCurrentTorch(staff).getDisplayName().getString()), tooltip);
