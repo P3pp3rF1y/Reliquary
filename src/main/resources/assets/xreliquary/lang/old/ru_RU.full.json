@@ -1,11 +1,6 @@
 {
     "_comment": "Translated by TimeConqueror",
 
-    "tooltip.xreliquary.absorb": "{{!colors.light_purple}}Нажмите Shift+ПКМ, чтобы активировать режим авто-поглощения.",
-    "tooltip.xreliquary.drain": "{{!colors.light_purple}}Нажмите Shift+ПКМ, чтобы активировать режим истощения.",
-    "tooltip.xreliquary.place": "{{!colors.light_purple}}Нажмите Shift+ПКМ, чтобы активировать режим размещения.",
-    "tooltip.xreliquary.absorb_active": "{{!colors.purple}}Автоматически поглощает {{item}}{{!colors.purple}}.",
-    "tooltip.xreliquary.absorb_tear": "{{!colors.purple}}Всегда оставляет стак этого предмета в инвентаре.",
 
 
 

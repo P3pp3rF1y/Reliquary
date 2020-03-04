@@ -351,5 +351,10 @@
     "jei.xreliquary.description.passive_pedestal": "Пьедесталы с пометкой \"Только для отображения\" - лишь забавный способ отобразить предметы, он не имеет никаких функций обычного пьедестала и никак не использует поставленные на него предметы.",
 
     "keybind.xreliquary.category": "Reliquary",
-    "keybind.xreliquary.fortune_coin": "Вкл./Выкл. монетку фортуны"
+    "keybind.xreliquary.fortune_coin": "Вкл./Выкл. монетку фортуны",
+    "tooltip.xreliquary.absorb": "{{!colors.light_purple}}Нажмите Shift+ПКМ, чтобы активировать режим авто-поглощения.",
+    "tooltip.xreliquary.drain": "{{!colors.light_purple}}Нажмите Shift+ПКМ, чтобы активировать режим истощения.",
+    "tooltip.xreliquary.place": "{{!colors.light_purple}}Нажмите Shift+ПКМ, чтобы активировать режим размещения.",
+    "tooltip.xreliquary.absorb_active": "{{!colors.purple}}Автоматически поглощает {{item}}{{!colors.purple}}.",
+    "tooltip.xreliquary.absorb_tear": "{{!colors.purple}}Всегда оставляет стак этого предмета в инвентаре."
 }

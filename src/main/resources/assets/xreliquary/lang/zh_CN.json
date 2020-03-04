@@ -346,5 +346,11 @@
     "jei.xreliquary.description.passive_pedestal": "基座（装饰性）只是一个花哨的显示你的物品的方式，没有其他功能。",
 
     "keybind.xreliquary.category": "圣遗物",
-    "keybind.xreliquary.fortune_coin": "启用/禁用幸运硬币"
+    "keybind.xreliquary.fortune_coin": "启用/禁用幸运硬币",
+
+    "tooltip.xreliquary.absorb": "{{!colors.light_purple}}按住Shift右击切换自动吸收模式。",
+    "tooltip.xreliquary.drain": "{{!colors.light_purple}}按住Shift右击切换排空模式。",
+    "tooltip.xreliquary.place": "{{!colors.light_purple}}按住Shift右击切换放置模式。",
+    "tooltip.xreliquary.absorb_active": "{{!colors.purple}}将自动吸收{{item}}{{!colors.purple}}。",
+    "tooltip.xreliquary.absorb_tear": "{{!colors.purple}}总会在物品栏中保留一组物品。"
 }

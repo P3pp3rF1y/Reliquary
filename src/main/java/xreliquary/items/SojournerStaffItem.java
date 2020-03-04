@@ -7,7 +7,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Rarity;
@@ -31,6 +30,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.NoPlayerBlockItemUseContext;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -289,6 +289,8 @@ public class SojournerStaffItem extends ToggleableItem {
 		Direction face = context.getFace();
 		ItemStack stack = context.getItem();
 
+		BlockPos placeBlockAt = pos.offset(face);
+
 		if (world.isRemote) {
 			return ActionResultType.SUCCESS;
 		}
@@ -296,19 +298,19 @@ public class SojournerStaffItem extends ToggleableItem {
 		if (player == null || torch.isEmpty() || !(torch.getItem() instanceof BlockItem)) {
 			return ActionResultType.FAIL;
 		}
-		if (!player.canPlayerEdit(pos, face, stack) || player.isSneaking()) {
+		if (!player.canPlayerEdit(placeBlockAt, face, stack) || player.isSneaking()) {
 			return ActionResultType.PASS;
 		}
 		player.swingArm(hand);
 
 		Block blockToPlace = ((BlockItem) torch.getItem()).getBlock();
-		BlockItemUseContext blockContext = new BlockItemUseContext(context);
-		if (!blockContext.canPlace() || !removeTorches(player, stack, blockToPlace, pos)) {
+		NoPlayerBlockItemUseContext placeContext = new NoPlayerBlockItemUseContext(world, placeBlockAt, new ItemStack(blockToPlace), face);
+		if (!placeContext.canPlace() || !removeTorches(player, stack, blockToPlace, placeBlockAt)) {
 			return ActionResultType.FAIL;
 		}
-		((BlockItem) torch.getItem()).tryPlace(blockContext);
+		((BlockItem) torch.getItem()).tryPlace(placeContext);
 		double gauss = 0.5D + world.rand.nextFloat() / 2;
-		world.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, gauss, gauss, 0.0F);
+		world.addParticle(ParticleTypes.ENTITY_EFFECT, placeBlockAt.getX() + 0.5D, placeBlockAt.getY() + 0.5D, placeBlockAt.getZ() + 0.5D, gauss, gauss, 0.0F);
 		return ActionResultType.SUCCESS;
 	}
 

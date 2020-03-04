@@ -357,5 +357,11 @@
     "jei.xreliquary.description.passive_pedestal": "Display only pedestal is exactly that - fancy way of displaying items, but doesn't have any of the regular pedestal's functionality for the items put into it",
 
     "keybind.xreliquary.category": "Reliquary",
-    "keybind.xreliquary.fortune_coin": "Enable/Disable Fortune Coin"
+    "keybind.xreliquary.fortune_coin": "Enable/Disable Fortune Coin",
+
+    "tooltip.xreliquary.absorb": "{{!colors.light_purple}}Shift + Right click to toggle auto-absorb.",
+    "tooltip.xreliquary.drain": "{{!colors.light_purple}}Shift + Right click to enable drain mode.",
+    "tooltip.xreliquary.place": "{{!colors.light_purple}}Shift + Right click to enable place mode.",
+    "tooltip.xreliquary.absorb_active": "{{!colors.purple}}Automagically absorbs {{!colors.gray}}{{item}}.",
+    "tooltip.xreliquary.absorb_tear": "{{!colors.purple}}Always leaves a stack of the item in inventory."
 }

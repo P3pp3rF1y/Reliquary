@@ -1,15 +1,12 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -47,6 +44,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.NoPlayerBlockItemUseContext;
 import xreliquary.util.RandHelper;
 import xreliquary.util.StackHelper;
 import xreliquary.util.WorldHelper;
@@ -61,6 +59,7 @@ import java.util.function.Function;
 public class VoidTearItem extends ToggleableItem {
 
 	private static final String CONTENTS_TAG = "contents";
+	private static final String TOOLTIP_PREFIX = "tooltip.";
 
 	public VoidTearItem() {
 		super(Names.Items.VOID_TEAR, new Properties());
@@ -110,10 +109,10 @@ public class VoidTearItem extends ToggleableItem {
 		}
 
 		if (isEnabled(voidTear)) {
-			LanguageHelper.formatTooltip("tooltip."+ Reference.MOD_ID + ".absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName().getString()), tooltip);
-			tooltip.add(new TranslationTextComponent("tooltip."+ Reference.MOD_ID + ".absorb_tear"));
+			LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName().getString()), tooltip);
+			tooltip.add(new TranslationTextComponent(TOOLTIP_PREFIX + Reference.MOD_ID + ".absorb_tear"));
 		}
-		LanguageHelper.formatTooltip("tooltip."+ Reference.MOD_ID + ".tear_quantity", ImmutableMap.of("item", contents.getDisplayName().getString(), "amount", Integer.toString(contents.getCount())), tooltip);
+		LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".tear_quantity", ImmutableMap.of("item", contents.getDisplayName().getString(), "amount", Integer.toString(contents.getCount())), tooltip);
 	}
 
 	@Override
@@ -200,18 +199,6 @@ public class VoidTearItem extends ToggleableItem {
 
 		//configurable auto-drain when created.
 		NBTHelper.putBoolean("enabled", voidTear, Settings.COMMON.items.voidTear.absorbWhenCreated.get());
-	}
-
-	private boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, ItemUseContext context) {
-		BlockState state = worldIn.getBlockState(pos);
-		Direction face = context.getFace();
-		BlockItemUseContext blockContext = new BlockItemUseContext(context);
-		if (state.isReplaceable(blockContext)) {
-			face = Direction.UP;
-		} else {
-			pos = pos.offset(face);
-		}
-		return new DirectionalPlaceContext(context.getWorld(), pos, face, context.getItem(), face).canPlace();
 	}
 
 	@Override
@@ -302,11 +289,12 @@ public class VoidTearItem extends ToggleableItem {
 			ItemStack containerItem = getContainerItem(voidTear);
 			BlockItem itemBlock = (BlockItem) containerItem.getItem();
 
-			if (canPlaceBlockOnSide(world, pos, context)) {
+			Direction face = context.getFace();
+			NoPlayerBlockItemUseContext noPlayerBlockItemUseContext = new NoPlayerBlockItemUseContext(world, pos, new ItemStack(itemBlock), face);
+			if (noPlayerBlockItemUseContext.canPlace()) {
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - 1);
 				if (!world.isRemote) {
-					Direction face = context.getFace();
-					itemBlock.onItemUse(new DirectionalPlaceContext(world, pos, face, stack, face));
+					itemBlock.tryPlace(noPlayerBlockItemUseContext);
 				}
 			}
 		}
