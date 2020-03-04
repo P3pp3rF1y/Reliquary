@@ -306,6 +306,7 @@ public class SojournerStaffItem extends ToggleableItem {
 		if (!blockContext.canPlace() || !removeTorches(player, stack, blockToPlace, pos)) {
 			return ActionResultType.FAIL;
 		}
+		((BlockItem) torch.getItem()).tryPlace(blockContext);
 		double gauss = 0.5D + world.rand.nextFloat() / 2;
 		world.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, gauss, gauss, 0.0F);
 		return ActionResultType.SUCCESS;
