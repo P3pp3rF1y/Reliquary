@@ -50,7 +50,7 @@ public class WitchHatItem extends ArmorItem {
 
 		@Override
 		public String getName() {
-			return "hat_material";
+			return Reference.MOD_ID + ":witch_hat";
 		}
 
 		@Override
@@ -69,6 +69,7 @@ public class WitchHatItem extends ArmorItem {
 		return new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey(stack)));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
 	@OnlyIn(Dist.CLIENT)

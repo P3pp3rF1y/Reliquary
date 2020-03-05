@@ -26,7 +26,7 @@ public class WitchHatModel extends BipedModel<LivingEntity> {
 	@Override
 	public void render(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 		setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-		bipedHead.copyModelAngles(witchHat);
+		witchHat.copyModelAngles(bipedHead);
 		GlStateManager.pushMatrix();
 
 		if (isSneak) {
