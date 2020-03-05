@@ -22,8 +22,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -110,7 +110,7 @@ public class VoidTearItem extends ToggleableItem {
 
 		if (isEnabled(voidTear)) {
 			LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName().getString()), tooltip);
-			tooltip.add(new TranslationTextComponent(TOOLTIP_PREFIX + Reference.MOD_ID + ".absorb_tear"));
+			tooltip.add(new StringTextComponent(LanguageHelper.getLocalization(TOOLTIP_PREFIX + Reference.MOD_ID + ".absorb_tear")));
 		}
 		LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".tear_quantity", ImmutableMap.of("item", contents.getDisplayName().getString(), "amount", Integer.toString(contents.getCount())), tooltip);
 	}
