@@ -474,7 +474,7 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 
 			//noinspection ConstantConditions
 			String entityName = currentTarget.getType().getRegistryName().toString();
-			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == shootingEntity) || (currentTarget.isAlive()
+			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == shootingEntity) || (!currentTarget.isAlive()
 					|| (currentTarget instanceof LivingEntity && ((LivingEntity) currentTarget).getHealth() <= 0))) {
 				continue;
 			}
