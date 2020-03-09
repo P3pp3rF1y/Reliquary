@@ -33,18 +33,10 @@ public class FertilePotionEntity extends ThrownPotionEntity {
 	// fertility is one of the only potion that has this effect, the rest of
 	// them will be mostly empty
 	@Override
+	@SuppressWarnings({"squid:CallToDeprecatedMethod", "deprecation"}) // there's no point in calling player/hand applyBonemeal version as that would mean repeating code in this "deprecated" version
 	void doGroundSplashEffect() {
-		int x = (int) (posX + 0.5);
-		int y = (int) (posY + 0.5);
-		int z = (int) (posZ + 0.5);
-		// applies bonemeal to every block it finds in a 3x3 area.
-		for (int xD = -1; xD <= 1; xD++) {
-			for (int yD = -2; yD <= 1; yD++) {
-				for (int zD = -1; zD <= 1; zD++) {
-					BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), world, new BlockPos(x + xD, y + yD, z + zD));
-				}
-			}
-		}
+		BlockPos.getAllInBox(getPosition().add(-1, -2, -1), getPosition().add(1, 1, 1))
+				.forEach(pos -> BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), world, pos));
 	}
 
 	@Override
