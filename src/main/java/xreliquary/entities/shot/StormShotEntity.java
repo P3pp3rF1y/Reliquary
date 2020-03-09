@@ -41,7 +41,8 @@ public class StormShotEntity extends ShotEntityBase {
 	@Override
 	protected void onImpact(RayTraceResult result) {
 		if(result.getType() == RayTraceResult.Type.BLOCK) {
-			BlockPos pos = ((BlockRayTraceResult) result).getPos();
+			BlockRayTraceResult blockResult = (BlockRayTraceResult) result;
+			BlockPos pos = blockResult.getPos().offset(blockResult.getFace());
 			if(world instanceof ServerWorld && world.isRainingAt(pos) && world.getWorldInfo().isRaining() && world.getWorldInfo().isThundering()) {
 				((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, pos.getX(), pos.getY(), pos.getZ(), false));
 			}
