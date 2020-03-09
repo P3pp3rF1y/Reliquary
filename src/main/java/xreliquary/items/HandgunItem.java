@@ -37,6 +37,7 @@ public class HandgunItem extends ItemBase {
 	private static final int PLAYER_HANDGUN_SKILL_MAXIMUM = 20;
 	private static final int HANDGUN_RELOAD_SKILL_OFFSET = 10;
 	private static final int HANDGUN_COOLDOWN_SKILL_OFFSET = 5;
+	private static final String MAGAZINE_TYPE_TAG = "magazineType";
 
 	public interface IShotEntityFactory {
 		ShotEntityBase createShot(World world, PlayerEntity player, Hand hand);
@@ -76,12 +77,12 @@ public class HandgunItem extends ItemBase {
 	}
 
 	private String getMagazineType(ItemStack handgun) {
-		return NBTHelper.getString("magazineType", handgun);
+		return NBTHelper.getString(MAGAZINE_TYPE_TAG, handgun);
 	}
 
 	private void setMagazineType(ItemStack handgun, ItemStack magazine) {
 		//noinspection ConstantConditions
-		NBTHelper.putString("magazineType", handgun, magazine.getItem().getRegistryName().toString());
+		NBTHelper.putString(MAGAZINE_TYPE_TAG, handgun, magazine.getItem().getRegistryName().toString());
 	}
 
 	private boolean hasAmmo(ItemStack handgun) {
@@ -270,14 +271,12 @@ public class HandgunItem extends ItemBase {
 			if (magazine.isEmpty()) {
 				player.inventory.mainInventory.set(slot, ItemStack.EMPTY);
 			}
-		});
-
-		if(hasAmmo(handgun)) {
 			player.swingArm(player.getActiveHand());
 			spawnEmptyMagazine(player);
 			setBulletCount(handgun, (short) 8);
 			player.world.playSound(null, player.getPosition(), ModSounds.xload, SoundCategory.PLAYERS, 0.25F, 1.0F);
-		}
+		});
+
 		if(getBulletCount(handgun) == 0) {
 			setPotionEffects(handgun, Collections.emptyList());
 		}
@@ -305,6 +304,9 @@ public class HandgunItem extends ItemBase {
 	}
 
 	private void spawnShotEntity(ItemStack handgun, World world, PlayerEntity player, Hand hand, String magazineType) {
+		if (!magazineShotFactories.containsKey(magazineType)) {
+			return;
+		}
 		ShotEntityBase shot = magazineShotFactories.get(magazineType).createShot(world, player, hand).addPotionEffects(getPotionEffects(handgun));
 		double motionX = -MathHelper.sin(player.rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(player.rotationPitch / 180.0F * (float) Math.PI);
 		double motionZ = MathHelper.cos(player.rotationYaw / 180.0F * (float) Math.PI) * MathHelper.cos(player.rotationPitch / 180.0F * (float) Math.PI);

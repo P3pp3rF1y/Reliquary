@@ -8,7 +8,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -39,6 +38,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.reference.Settings;
 import xreliquary.util.potions.XRPotionHelper;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +51,7 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 	private int yTile = -1;
 	private int zTile = -1;
 	private boolean inGround = false;
-	private List<EffectInstance> potionEffects;
+	private List<EffectInstance> potionEffects = Collections.emptyList();
 
 	/**
 	 * The owner of this arrow.
@@ -259,7 +259,8 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 				remove();
 			}
 
-			move(MoverType.SELF, motionVec);
+			Vec3d newPos = getPositionVec().add(getMotion());
+			setPosition(newPos.x, newPos.y, newPos.z);
 		}
 	}
 
@@ -416,17 +417,14 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 		switch (sideHit) {
 			case DOWN:
 			case UP:
-				// topHit, bottomHit, reflect Y
 				setMotion(getMotion().mul(1, -1, 1));
 				break;
 			case WEST:
 			case EAST:
-				// westHit, eastHit, reflect x
 				setMotion(getMotion().mul(-1, 1, 1));
 				break;
 			case SOUTH:
 			case NORTH:
-				// southHit, northHit, reflect z
 				setMotion(getMotion().mul(1, 1, -1));
 				break;
 		}
