@@ -12,7 +12,7 @@ import xreliquary.api.client.IPedestalItemRenderer;
 import xreliquary.blocks.tile.PedestalTileEntity;
 
 public class PedestalFishHookRenderer implements IPedestalItemRenderer {
-	private static final ResourceLocation FISH_PARTICLES = new ResourceLocation("textures/particle/particles.png");
+	private static final ResourceLocation FISH_PARTICLES = new ResourceLocation("textures/entity/fishing_hook.png");
 	private static EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
 
 	@Override
@@ -51,24 +51,24 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.popMatrix();
 
-		double d4 = te.getPos().getX() + 0.5D;
-		double d5 = te.getPos().getY() + 0.7D;
-		double d6 = te.getPos().getZ() + 0.5D;
+		double pedestalX = te.getPos().getX() + 0.5D;
+		double pedestalY = te.getPos().getY() + 0.7D;
+		double pedestalZ = te.getPos().getZ() + 0.5D;
 
-		double d13 = hookData.hookX;
-		double d8 = hookData.hookY + 0.25D;
-		double d9 = hookData.hookZ;
+		double hookX = hookData.hookX;
+		double hookY = hookData.hookY + 0.25D;
+		double hookZ = hookData.hookZ;
 
-		double d10 = (float) (d4 - d13);
-		double d11 = (float) (d5 - d8);
-		double d12 = (float) (d6 - d9);
+		double xDiff = (float) (hookX - pedestalX);
+		double yDiff = (float) (hookY - pedestalY);
+		double zDiff = (float) (hookZ - pedestalZ);
 		GlStateManager.disableTexture();
 		GlStateManager.disableLighting();
 		bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
 
 		for (int k = 0; k <= 16; ++k) {
 			float f6 = (float) k / 16.0F;
-			bufferbuilder.pos(x + d10 * (double) f6, y + d11 * (double) (f6 * f6 + f6) * 0.5D + 0.25D, z + d12 * (double) f6).color(0, 0, 0, 255).endVertex();
+			bufferbuilder.pos(x + 0.5D + xDiff * (double) f6, y + 0.5D + yDiff * (double) (f6 * f6 + f6) * 0.5D + 0.25D, z + 0.5D + zDiff * (double) f6).color(0, 0, 0, 255).endVertex();
 		}
 
 		tessellator.draw();
