@@ -32,7 +32,7 @@ import java.util.Set;
 
 public class PedestalBlock extends PassivePedestalBlock {
 	public static final BooleanProperty ENABLED = BooleanProperty.create("enabled");
-	public static final Set<Block> ALL_PEDESTAL_BLOCKS = new HashSet<>();
+	protected static final Set<Block> ALL_PEDESTAL_BLOCKS = new HashSet<>();
 
 	public PedestalBlock(DyeColor dyeColor) {
 		super("pedestals/" + dyeColor.getName() + "_" + Names.Blocks.PEDESTAL);
@@ -74,7 +74,7 @@ public class PedestalBlock extends PassivePedestalBlock {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void animateTick(BlockState state, World world, BlockPos pos, Random rand) {
-		if (state.get(ENABLED) && rand.nextInt(3) == 1) {
+		if (Boolean.TRUE.equals(state.get(ENABLED)) && rand.nextInt(3) == 1) {
 			Direction enumfacing = state.get(FACING);
 			double xMiddle = (double) pos.getX() + 0.5D;
 			double y = (double) pos.getY() + 4.0D / 16.0D + rand.nextDouble() * 4.0D / 16.0D;
@@ -107,7 +107,8 @@ public class PedestalBlock extends PassivePedestalBlock {
 		}
 
 		return WorldHelper.getTile(world, pos, PedestalTileEntity.class).map(pedestal -> {
-					if (heldItem.isEmpty() && !player.isSneaking() && hand == Hand.MAIN_HAND && switchClicked(hit.getFace(), hit.getHitVec())) {
+					if (heldItem.isEmpty() && !player.isSneaking() && hand == Hand.MAIN_HAND
+							&& switchClicked(hit.getFace(), hit.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
 						pedestal.toggleSwitch();
 						return true;
 					}
@@ -139,17 +140,11 @@ public class PedestalBlock extends PassivePedestalBlock {
 
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (state.getBlock() == this) {
+			return;
+		}
 		PedestalRegistry.unregisterPosition(world.getDimension().getType().getId(), pos);
 		WorldHelper.getTile(world, pos, PedestalTileEntity.class).ifPresent(PedestalTileEntity::removeSpecialItems);
 		super.onReplaced(state, world, pos, newState, isMoving);
-	}
-
-	public void setEnabled(World world, BlockPos pos, boolean enabled) {
-		BlockState state = world.getBlockState(pos);
-		if (state.get(PedestalBlock.ENABLED) != enabled) {
-			state = state.with(PedestalBlock.ENABLED, enabled);
-
-			world.setBlockState(pos, state);
-		}
 	}
 }
