@@ -32,7 +32,7 @@ import java.util.Set;
 
 public class PedestalBlock extends PassivePedestalBlock {
 	public static final BooleanProperty ENABLED = BooleanProperty.create("enabled");
-	protected static final Set<Block> ALL_PEDESTAL_BLOCKS = new HashSet<>();
+	public static final Set<Block> ALL_PEDESTAL_BLOCKS = new HashSet<>();
 
 	public PedestalBlock(DyeColor dyeColor) {
 		super("pedestals/" + dyeColor.getName() + "_" + Names.Blocks.PEDESTAL);

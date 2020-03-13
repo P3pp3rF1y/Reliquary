@@ -395,6 +395,12 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	}
 
 	@Override
+	public void removeAndSpawnItem() {
+		removeSpecialItems();
+		super.removeAndSpawnItem();
+	}
+
+	@Override
 	public int getSizeInventory() {
 		return applyToItemHandler(IItemHandler::getSlots).orElse(0) + 1;
 	}
