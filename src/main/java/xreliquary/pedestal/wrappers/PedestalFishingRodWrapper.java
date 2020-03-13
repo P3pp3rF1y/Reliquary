@@ -128,25 +128,25 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 				int x = pedestalX - r;
 				int z = pedestalZ - r;
 				while (x <= pedestalX + r) {
-					checkForAndAddWaterBlocks(pedestal, visitedBlocks, connectedGroups, pedestalX, pedestalY, pedestalZ, x, y, z);
+					checkForAndAddWaterBlocks(pedestal, visitedBlocks, connectedGroups, pos, x, y, z);
 					x++;
 				}
 				x--;
 
 				while (z <= pedestalZ + r) {
-					checkForAndAddWaterBlocks(pedestal, visitedBlocks, connectedGroups, pedestalX, pedestalY, pedestalZ, x, y, z);
+					checkForAndAddWaterBlocks(pedestal, visitedBlocks, connectedGroups, pos, x, y, z);
 					z++;
 				}
 				z--;
 
 				while (x >= pedestalX - r) {
-					checkForAndAddWaterBlocks(pedestal, visitedBlocks, connectedGroups, pedestalX, pedestalY, pedestalZ, x, y, z);
+					checkForAndAddWaterBlocks(pedestal, visitedBlocks, connectedGroups, pos, x, y, z);
 					x--;
 				}
 				x++;
 
 				while (z >= pedestalZ - r) {
-					checkForAndAddWaterBlocks(pedestal, visitedBlocks, connectedGroups, pedestalX, pedestalY, pedestalZ, x, y, z);
+					checkForAndAddWaterBlocks(pedestal, visitedBlocks, connectedGroups, pos, x, y, z);
 					z--;
 				}
 			}
@@ -176,18 +176,18 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		return Optional.ofNullable(closestBlockInLargestGroup);
 	}
 
-	private void checkForAndAddWaterBlocks(IPedestal pedestal, List<BlockPos> visitedBlocks, List<List<BlockPos>> connectedGroups, double pedestalX, double pedestalY, double pedestalZ, int x, int y, int z) {
+	private void checkForAndAddWaterBlocks(IPedestal pedestal, List<BlockPos> visitedBlocks, List<List<BlockPos>> connectedGroups, BlockPos pedestalPos, int x, int y, int z) {
 		BlockPos blockPos = new BlockPos(x, y, z);
 		if (!visitedBlocks.contains(blockPos)) {
 			List<BlockPos> group = new ArrayList<>();
-			checkForWaterAndSearchNeighbors(pedestal, visitedBlocks, pedestalX, pedestalY, pedestalZ, blockPos, group);
+			checkForWaterAndSearchNeighbors(pedestal, visitedBlocks, pedestalPos, blockPos, group);
 			if (!group.isEmpty()) {
 				connectedGroups.add(group);
 			}
 		}
 	}
 
-	private void checkForWaterAndSearchNeighbors(IPedestal pedestal, List<BlockPos> visitedBlocks, double pedestalX, double pedestalY, double pedestalZ, BlockPos blockPos, List<BlockPos> group) {
+	private void checkForWaterAndSearchNeighbors(IPedestal pedestal, List<BlockPos> visitedBlocks, BlockPos pedestalPos, BlockPos blockPos, List<BlockPos> group) {
 		visitedBlocks.add(blockPos);
 		BlockState blockState = pedestal.getTheWorld().getBlockState(blockPos);
 		if (blockState.getBlock() == Blocks.WATER) {
@@ -201,23 +201,23 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 
 			//make sure that the fakePlayer can see the block
 			BlockRayTraceResult raytraceresult = pedestal.getTheWorld().rayTraceBlocks(
-					new RayTraceContext(new Vec3d(startX, startY, startZ), new Vec3d(((double) x) + 0.5D, ((double) y) + 0.99D, ((double) z) + 0.5D), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.SOURCE_ONLY, fakePlayer));
+					new RayTraceContext(new Vec3d(startX, startY, startZ), new Vec3d(((double) x) + 0.5D, ((double) y) + 0.8D, ((double) z) + 0.5D), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.SOURCE_ONLY, fakePlayer));
 			if (raytraceresult.getType() != RayTraceResult.Type.MISS && raytraceresult.getPos().equals(blockPos)) {
 				group.add(blockPos);
 				for (Direction direction : Direction.Plane.HORIZONTAL) {
 					BlockPos neighborPos = blockPos.offset(direction);
 					//no search outside of the range
-					if (neighborPos.getX() <= pedestalX + RANGE && neighborPos.getX() >= pedestalX - RANGE && neighborPos.getY() <= pedestalY + RANGE && neighborPos.getY() >= pedestalY - RANGE) {
-						addNeighboringWater(pedestal, visitedBlocks, group, pedestalX, pedestalY, pedestalZ, neighborPos);
+					if (neighborPos.getX() <= pedestalPos.getX() + RANGE && neighborPos.getX() >= pedestalPos.getX() - RANGE && neighborPos.getY() <= pedestalPos.getY() + RANGE && neighborPos.getY() >= pedestalPos.getY() - RANGE) {
+						addNeighboringWater(pedestal, visitedBlocks, group, pedestalPos, neighborPos);
 					}
 				}
 			}
 		}
 	}
 
-	private void addNeighboringWater(IPedestal pedestal, List<BlockPos> visitedBlocks, List<BlockPos> group, double pedestalX, double pedestalY, double pedestalZ, BlockPos blockPos) {
+	private void addNeighboringWater(IPedestal pedestal, List<BlockPos> visitedBlocks, List<BlockPos> group, BlockPos pedestalPos, BlockPos blockPos) {
 		if (!visitedBlocks.contains(blockPos)) {
-			checkForWaterAndSearchNeighbors(pedestal, visitedBlocks, pedestalX, pedestalY, pedestalZ, blockPos, group);
+			checkForWaterAndSearchNeighbors(pedestal, visitedBlocks, pedestalPos, blockPos, group);
 		}
 	}
 
@@ -225,8 +225,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		World world = pedestal.getTheWorld();
 		world.playSound(null, pedestal.getBlockPos(), SoundEvents.ENTITY_FISHING_BOBBER_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (world.rand.nextFloat() * 0.4F + 0.8F));
 
-		Vec3d pos = fakePlayer.getPositionVec();
-		world.addEntity(new FishingBobberEntity(world, fakePlayer, pos.x, pos.y, pos.z));
+		world.addEntity(new FishingBobberEntity(fakePlayer, world, 0, 0));
 	}
 
 	private void syncHookData(IPedestal pedestal) {
@@ -263,6 +262,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private int getTicksCatchable(@Nullable FishingBobberEntity hook) {
+		//noinspection ConstantConditions
 		return ObfuscationReflectionHelper.getPrivateValue(FishingBobberEntity.class, hook, "field_146045_ax");
 	}
 
