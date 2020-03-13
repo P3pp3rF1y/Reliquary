@@ -369,9 +369,11 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	}
 
 	private void setEnabled(boolean switchedOn) {
-		world.setBlockState(pos, world.getBlockState(pos).with(PedestalBlock.ENABLED, switchedOn));
-		if (!switchedOn) {
-			executeOnActionItem(ai -> ai.stop(item, this));
+		if (world.getBlockState(pos).getBlock() instanceof PedestalBlock) {
+			world.setBlockState(pos, world.getBlockState(pos).with(PedestalBlock.ENABLED, switchedOn));
+			if (!switchedOn) {
+				executeOnActionItem(ai -> ai.stop(item, this));
+			}
 		}
 	}
 

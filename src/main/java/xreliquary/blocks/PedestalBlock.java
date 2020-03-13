@@ -131,11 +131,11 @@ public class PedestalBlock extends PassivePedestalBlock {
 
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (state.getBlock() == this) {
+		if (newState.getBlock() == this) {
 			return;
 		}
 		PedestalRegistry.unregisterPosition(world.getDimension().getType().getId(), pos);
-		WorldHelper.getTile(world, pos, PedestalTileEntity.class).ifPresent(PedestalTileEntity::removeSpecialItems);
+		WorldHelper.getTile(world, pos, PedestalTileEntity.class).ifPresent(PedestalTileEntity::removeAndSpawnItem);
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 }
