@@ -44,6 +44,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class PedestalTileEntity extends PassivePedestalTileEntity implements IPedestal, ITickableTileEntity {
+	@SuppressWarnings("WeakerAccess") // needs to stay public so that ObjectHolder can update the value
 	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.PEDESTAL)
 	public static final TileEntityType<PedestalTileEntity> TYPE = InjectionHelper.nullValue();
 	private boolean tickable = false;
@@ -208,7 +209,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 			neighborUpdate();
 		}
 
-		if (tickable && world.getBlockState(pos).get(PedestalBlock.ENABLED)) {
+		if (tickable && Boolean.TRUE.equals(world.getBlockState(pos).get(PedestalBlock.ENABLED))) {
 			if (actionCooldown > 0) {
 				actionCooldown--;
 			} else {
@@ -294,6 +295,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	}
 
 	@Override
+	@Nullable
 	public FakePlayer getFakePlayer() {
 		if (world.isRemote) {
 			return null;
@@ -397,6 +399,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	@Override
 	public void removeAndSpawnItem() {
 		removeSpecialItems();
+		resetSpecialItems();
 		super.removeAndSpawnItem();
 	}
 
@@ -431,13 +434,13 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	@Override
 	public ItemStack decrStackSize(int slot, int count) {
 		if (slot == 0) {
-			return decrStackInInventory(count);
+			return decrStack(count);
 		}
 
 		return applyToItemHandler(ih -> ih.extractItem(getInternalItemHandlerSlot(slot), count, false)).orElse(ItemStack.EMPTY);
 	}
 
-	private ItemStack decrStackInInventory(int count) {
+	private ItemStack decrStack(int count) {
 		if (!item.isEmpty()) {
 			ItemStack stack;
 
