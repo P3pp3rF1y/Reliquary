@@ -2,6 +2,7 @@ package xreliquary.init;
 
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
@@ -30,5 +31,5 @@ public class ModFluids {
 	public static RegistryObject<FlowingFluid> milkStill = FLUIDS.register("milk_still", () -> new ForgeFlowingFluid.Source(ModFluids.milkProperties));
 	public static RegistryObject<FlowingFluid> milkFlowing = FLUIDS.register("milk_flowing", () -> new ForgeFlowingFluid.Flowing(ModFluids.milkProperties));
 
-	public static final ForgeFlowingFluid.Properties milkProperties = new ForgeFlowingFluid.Properties(milkStill, milkFlowing, FluidAttributes.builder(MILK_STILL_TEXTURE, MILK_FLOWING_TEXTURE).temperature(320));
+	public static final ForgeFlowingFluid.Properties milkProperties = new ForgeFlowingFluid.Properties(milkStill, milkFlowing, FluidAttributes.builder(MILK_STILL_TEXTURE, MILK_FLOWING_TEXTURE).temperature(320)).bucket(() -> Items.MILK_BUCKET);
 }

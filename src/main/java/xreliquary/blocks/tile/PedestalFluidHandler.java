@@ -5,6 +5,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -12,7 +13,7 @@ import java.util.function.Function;
 public class PedestalFluidHandler implements IFluidHandler {
 	private PedestalTileEntity pedestal;
 
-	public PedestalFluidHandler(PedestalTileEntity pedestal) {
+	PedestalFluidHandler(PedestalTileEntity pedestal) {
 		this.pedestal = pedestal;
 	}
 
@@ -20,7 +21,6 @@ public class PedestalFluidHandler implements IFluidHandler {
 	public int getTanks() {
 		return getFluidHandlerValue(IFluidHandler::getTanks).orElse(0);
 	}
-
 
 	@Override
 	public FluidStack getFluidInTank(int tank) {
@@ -39,19 +39,28 @@ public class PedestalFluidHandler implements IFluidHandler {
 
 	@Override
 	public int fill(FluidStack resource, FluidAction action) {
-		return getFluidHandlerValue(fh -> fh.fill(resource, action)).orElse(0);
+		return getFluidHandlerValue(fh -> executeAndUpdateItem(fh, f -> f.fill(resource, action))).orElse(0);
 	}
-
 
 	@Override
 	public FluidStack drain(FluidStack resource, FluidAction action) {
-		return getFluidHandlerValue(fh -> fh.drain(resource, action)).orElse(FluidStack.EMPTY);
+		return getFluidHandlerValue(fh -> executeAndUpdateItem(fh, f -> f.drain(resource, action))).orElse(FluidStack.EMPTY);
 	}
-
 
 	@Override
 	public FluidStack drain(int maxDrain, FluidAction action) {
-		return getFluidHandlerValue(fh -> fh.drain(maxDrain, action)).orElse(FluidStack.EMPTY);
+		return getFluidHandlerValue(fh -> executeAndUpdateItem(fh, f -> f.drain(maxDrain, action))).orElse(FluidStack.EMPTY);
+	}
+
+	private <T> T executeAndUpdateItem(IFluidHandler fh, Function<IFluidHandler, T> execute) {
+		T ret = execute.apply(fh);
+		if (fh instanceof IFluidHandlerItem) {
+			IFluidHandlerItem fhi = (IFluidHandlerItem) fh;
+			if (fhi.getContainer() != pedestal.getItem()) {
+				pedestal.setItem(fhi.getContainer());
+			}
+		}
+		return ret;
 	}
 
 	private <T> Optional<T> getFluidHandlerValue(Function<IFluidHandler, T> mapValue) {

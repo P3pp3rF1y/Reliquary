@@ -107,7 +107,7 @@ public class PedestalBlock extends PassivePedestalBlock {
 		}
 
 		return WorldHelper.getTile(world, pos, PedestalTileEntity.class).map(pedestal -> {
-					if (heldItem.isEmpty() && !player.isSneaking() && hand == Hand.MAIN_HAND
+					if (heldItem.isEmpty() && !player.isSneaking() && hand == Hand.MAIN_HAND && hit.getFace() == state.get(FACING).getOpposite()
 							&& switchClicked(hit.getFace(), hit.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
 						pedestal.toggleSwitch();
 						return true;
@@ -125,17 +125,8 @@ public class PedestalBlock extends PassivePedestalBlock {
 		if (yOff < 0.3 || yOff > 0.65) {
 			return false;
 		}
-		if (side == Direction.NORTH && (xOff < 0.35 || xOff > 0.65 || zOff != 0.125)) {
-			return false;
-		}
-		if (side == Direction.SOUTH && (xOff < 0.35 || xOff > 0.65 || zOff != 0.875)) {
-			return false;
-		}
-		//noinspection SimplifiableIfStatement
-		if (side == Direction.WEST && (zOff < 0.35 || zOff > 0.65 || xOff != 0.125)) {
-			return false;
-		}
-		return !(side == Direction.EAST && (zOff < 0.35 || zOff > 0.65 || xOff != 0.875));
+		return (side.getAxis() == Direction.Axis.Z && xOff >= 0.35 && xOff <= 0.65)
+				|| (side.getAxis() == Direction.Axis.X && zOff >= 0.35 && zOff <= 0.65);
 	}
 
 	@Override
