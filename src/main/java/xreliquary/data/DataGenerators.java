@@ -1,5 +1,6 @@
 package xreliquary.data;
 
+import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
@@ -11,6 +12,9 @@ public class DataGenerators {
 
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent evt) {
-		evt.getGenerator().addProvider(new BlockLootProvider(evt.getGenerator()));
+		DataGenerator generator = evt.getGenerator();
+
+		generator.addProvider(new BlockLootProvider(generator));
+		generator.addProvider(new ItemTagProvider(generator));
 	}
 }
