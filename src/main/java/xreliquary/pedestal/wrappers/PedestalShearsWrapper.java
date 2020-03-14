@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -76,6 +77,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 			stack.getItem().onBlockStartBreak(stack, blockPosBeingSheared, fakePlayer);
 			BlockState blockState = world.getBlockState(blockPosBeingSheared);
 			world.removeBlock(blockPosBeingSheared, false);
+			Block.spawnDrops(blockState, world, pos, null, fakePlayer, new ItemStack(Items.SHEARS));
 			world.playEvent(2001, blockPosBeingSheared, Block.getStateId(blockState));
 
 			isShearingBlock = false;
