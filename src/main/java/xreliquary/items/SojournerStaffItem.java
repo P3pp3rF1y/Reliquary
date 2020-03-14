@@ -19,6 +19,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
@@ -328,11 +330,26 @@ public class SojournerStaffItem extends ToggleableItem {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		if (!player.isSneaking()) {
-			RayTraceResult rayTraceResult = player.func_213324_a(Settings.COMMON.items.sojournerStaff.maxRange.get(), 1, true);
+			RayTraceResult rayTraceResult = longRayTrace(world, player);
 			if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK) {
 				placeTorch(new ItemUseContext(player, hand, (BlockRayTraceResult) rayTraceResult));
 			}
 		}
 		return super.onItemRightClick(world, player, hand);
+	}
+
+	private RayTraceResult longRayTrace(World worldIn, PlayerEntity player) {
+		float f = player.rotationPitch;
+		float f1 = player.rotationYaw;
+		Vec3d vec3d = player.getEyePosition(1.0F);
+		float f2 = MathHelper.cos(-f1 * ((float)Math.PI / 180F) - (float)Math.PI);
+		float f3 = MathHelper.sin(-f1 * ((float)Math.PI / 180F) - (float)Math.PI);
+		float f4 = -MathHelper.cos(-f * ((float)Math.PI / 180F));
+		float f5 = MathHelper.sin(-f * ((float)Math.PI / 180F));
+		float f6 = f3 * f4;
+		float f7 = f2 * f4;
+		double d0 = Settings.COMMON.items.sojournerStaff.maxRange.get();;
+		Vec3d vec3d1 = vec3d.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
+		return worldIn.rayTraceBlocks(new RayTraceContext(vec3d, vec3d1, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.ANY, player));
 	}
 }
