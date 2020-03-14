@@ -175,8 +175,8 @@ public class RendingGaleItem extends ToggleableItem {
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
 		return new FilteredItemHandlerProvider(Collections.singletonList(new FilteredItemStackHandler.RemovableStack(
-				new FilteredBigItemStack(Items.FEATHER, Settings.COMMON.items.rendingGale.chargeFeatherWorth.get(),
-						Settings.COMMON.items.rendingGale.chargeLimit.get())
+				new FilteredBigItemStack(Items.FEATHER, Settings.COMMON.items.rendingGale.chargeLimit.get(),
+						Settings.COMMON.items.rendingGale.chargeFeatherWorth.get())
 				,false)));
 	}
 

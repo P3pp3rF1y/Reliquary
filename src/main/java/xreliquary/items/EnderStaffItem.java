@@ -41,6 +41,12 @@ import java.util.List;
 
 public class EnderStaffItem extends ToggleableItem {
 
+	private static final String DIMENSION_ID_TAG = "dimensionID";
+	private static final String NODE_X_TAG = "nodeX";
+	private static final String NODE_Y_TAG = "nodeY";
+	private static final String NODE_Z_TAG = "nodeZ";
+	private static final String LONG_CAST_TAG = "long_cast";
+
 	public EnderStaffItem() {
 		super("ender_staff", new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
 	}
@@ -77,20 +83,23 @@ public class EnderStaffItem extends ToggleableItem {
 	}
 
 	private void cycleMode(ItemStack stack) {
-		if (getMode(stack).equals("cast"))
-			setMode(stack, "long_cast");
-		else if (getMode(stack).equals("long_cast"))
+		if (getMode(stack).equals("cast")) {
+			setMode(stack, LONG_CAST_TAG);
+		} else if (getMode(stack).equals(LONG_CAST_TAG)) {
 			setMode(stack, "node_warp");
-		else
+		} else {
 			setMode(stack, "cast");
+		}
 	}
 
 	@Override
 	public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
-		if (entity.world.isRemote)
+		if (entity.world.isRemote) {
 			return true;
-		if (!(entity instanceof PlayerEntity))
+		}
+		if (!(entity instanceof PlayerEntity)) {
 			return true;
+		}
 		PlayerEntity player = (PlayerEntity) entity;
 		if (player.isSneaking()) {
 			cycleMode(stack);
@@ -101,36 +110,38 @@ public class EnderStaffItem extends ToggleableItem {
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
 		return new FilteredItemHandlerProvider(Collections.singletonList(new FilteredItemStackHandler.RemovableStack(
-				new FilteredBigItemStack(Items.ENDER_PEARL, Settings.COMMON.items.enderStaff.enderPearlWorth.get(),
-						Settings.COMMON.items.enderStaff.enderPearlLimit.get())
+				new FilteredBigItemStack(Items.ENDER_PEARL, Settings.COMMON.items.enderStaff.enderPearlLimit.get(),
+						Settings.COMMON.items.enderStaff.enderPearlWorth.get())
 				, false)));
 	}
 
 	@Override
 	public void inventoryTick(ItemStack staff, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote)
+		if (world.isRemote) {
 			return;
+		}
 
 		PlayerEntity player = null;
 		if (entity instanceof PlayerEntity) {
 			player = (PlayerEntity) entity;
 		}
-		if (player == null)
+		if (player == null) {
 			return;
+		}
 
-		if (!isEnabled(staff))
+		if (!isEnabled(staff)) {
 			return;
-		if (getPearlCount(staff) + getEnderPearlWorth() <= getEnderPearlLimit()) {
-			if (InventoryHelper.consumeItem(new ItemStack(Items.ENDER_PEARL), player)) {
-				setPearlCount(staff, getPearlCount(staff) + getEnderPearlWorth());
-			}
+		}
+		if (getPearlCount(staff) + getEnderPearlWorth() <= getEnderPearlLimit() && InventoryHelper.consumeItem(new ItemStack(Items.ENDER_PEARL), player)) {
+			setPearlCount(staff, getPearlCount(staff) + getEnderPearlWorth());
 		}
 	}
 
 	private void setPearlCount(ItemStack stack, int count) {
 		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(itemHandler -> {
-			if (!(itemHandler instanceof FilteredItemStackHandler))
+			if (!(itemHandler instanceof FilteredItemStackHandler)) {
 				return;
+			}
 			FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 			filteredHandler.setTotalAmount(0, count);
 		});
@@ -146,8 +157,9 @@ public class EnderStaffItem extends ToggleableItem {
 		}
 
 		return staff.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).map(itemHandler -> {
-			if (!(itemHandler instanceof FilteredItemStackHandler))
+			if (!(itemHandler instanceof FilteredItemStackHandler)) {
 				return 0;
+			}
 			FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 			return filteredHandler.getTotalAmount(0);
 		}).orElse(0);
@@ -155,8 +167,9 @@ public class EnderStaffItem extends ToggleableItem {
 
 	@Override
 	public void onUsingTick(ItemStack stack, LivingEntity entityLivingBase, int unadjustedCount) {
-		if (!(entityLivingBase instanceof PlayerEntity))
+		if (!(entityLivingBase instanceof PlayerEntity)) {
 			return;
+		}
 
 		PlayerEntity player = (PlayerEntity) entityLivingBase;
 
@@ -180,8 +193,9 @@ public class EnderStaffItem extends ToggleableItem {
 
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
-		if (!(entityLiving instanceof PlayerEntity))
+		if (!(entityLiving instanceof PlayerEntity)) {
 			return;
+		}
 
 		PlayerEntity player = (PlayerEntity) entityLiving;
 
@@ -194,19 +208,19 @@ public class EnderStaffItem extends ToggleableItem {
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		if (!player.isSneaking()) {
-			if (getMode(stack).equals("cast") || getMode(stack).equals("long_cast")) {
-				if (player.isSwingInProgress)
+			if (getMode(stack).equals("cast") || getMode(stack).equals(LONG_CAST_TAG)) {
+				if (player.isSwingInProgress || (getPearlCount(stack) < getEnderStaffPearlCost() && !player.isCreative())) {
 					return new ActionResult<>(ActionResultType.FAIL, stack);
+				}
 				player.swingArm(hand);
-				if (getPearlCount(stack) < getEnderStaffPearlCost() && !player.isCreative())
-					return new ActionResult<>(ActionResultType.FAIL, stack);
 				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ENDER_PEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 				if (!player.world.isRemote) {
-					EnderStaffProjectileEntity enderStaffProjectile = new EnderStaffProjectileEntity(player.world, player, !getMode(stack).equals("long_cast"));
+					EnderStaffProjectileEntity enderStaffProjectile = new EnderStaffProjectileEntity(player.world, player, !getMode(stack).equals(LONG_CAST_TAG));
 					enderStaffProjectile.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
 					player.world.addEntity(enderStaffProjectile);
-					if (!player.isCreative())
+					if (!player.isCreative()) {
 						setPearlCount(stack, getPearlCount(stack) - getEnderStaffPearlCost());
+					}
 				}
 			} else {
 				player.setActiveHand(hand);
@@ -216,25 +230,26 @@ public class EnderStaffItem extends ToggleableItem {
 	}
 
 	private void doWraithNodeWarpCheck(ItemStack stack, World world, PlayerEntity player) {
-		if (getPearlCount(stack) < getEnderStaffNodeWarpCost() && !player.isCreative())
+		if (getPearlCount(stack) < getEnderStaffNodeWarpCost() && !player.isCreative()) {
 			return;
+		}
 
-		if (stack.getTag() != null && stack.getTag().getInt("dimensionID") != getDimension(world)) {
+		if (stack.getTag() != null && stack.getTag().getInt(DIMENSION_ID_TAG) != getDimension(world)) {
 			if (!world.isRemote) {
 				player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Out of range!"));
 			}
-		} else if (stack.getTag() != null && world.getBlockState(new BlockPos(stack.getTag().getInt("nodeX" + getDimension(world)), stack.getTag().getInt("nodeY" + getDimension(world)), stack.getTag().getInt("nodeZ" + getDimension(world)))).getBlock() == ModBlocks.WRAITH_NODE) {
-			if (canTeleport(world, stack.getTag().getInt("nodeX" + getDimension(world)), stack.getTag().getInt("nodeY" + getDimension(world)), stack.getTag().getInt("nodeZ" + getDimension(world)))) {
-				teleportPlayer(world, stack.getTag().getInt("nodeX" + getDimension(world)), stack.getTag().getInt("nodeY" + getDimension(world)), stack.getTag().getInt("nodeZ" + getDimension(world)), player);
-				//setCooldown(stack);
-				if (!player.isCreative() && !player.world.isRemote)
+		} else if (stack.getTag() != null && world.getBlockState(new BlockPos(stack.getTag().getInt(NODE_X_TAG + getDimension(world)), stack.getTag().getInt(NODE_Y_TAG + getDimension(world)), stack.getTag().getInt(NODE_Z_TAG + getDimension(world)))).getBlock() == ModBlocks.WRAITH_NODE) {
+			if (canTeleport(world, stack.getTag().getInt(NODE_X_TAG + getDimension(world)), stack.getTag().getInt(NODE_Y_TAG + getDimension(world)), stack.getTag().getInt(NODE_Z_TAG + getDimension(world)))) {
+				teleportPlayer(world, stack.getTag().getInt(NODE_X_TAG + getDimension(world)), stack.getTag().getInt(NODE_Y_TAG + getDimension(world)), stack.getTag().getInt(NODE_Z_TAG + getDimension(world)), player);
+				if (!player.isCreative() && !player.world.isRemote) {
 					setPearlCount(stack, getPearlCount(stack) - getEnderStaffNodeWarpCost());
+				}
 			}
-		} else if (stack.getTag() != null && stack.getTag().contains("dimensionID")) {
-			stack.getTag().remove("dimensionID");
-			stack.getTag().remove("nodeX");
-			stack.getTag().remove("nodeY");
-			stack.getTag().remove("nodeZ");
+		} else if (stack.getTag() != null && stack.getTag().contains(DIMENSION_ID_TAG)) {
+			stack.getTag().remove(DIMENSION_ID_TAG);
+			stack.getTag().remove(NODE_X_TAG);
+			stack.getTag().remove(NODE_Y_TAG);
+			stack.getTag().remove(NODE_Z_TAG);
 			stack.getTag().remove("cooldown");
 			if (!world.isRemote) {
 				player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Node dosen't exist!"));
@@ -263,16 +278,17 @@ public class EnderStaffItem extends ToggleableItem {
 		String charge = Integer.toString(getPearlCount(staff, true));
 		String phrase = "Currently bound to ";
 		String position = "";
-		if (staff.getTag() != null && staff.getTag().getInt("dimensionID") != getDimension(world)) {
+		if (staff.getTag() != null && staff.getTag().getInt(DIMENSION_ID_TAG) != getDimension(world)) {
 			phrase = "Out of range!";
-		} else if (staff.getTag() != null && staff.getTag().contains("nodeX" + getDimension(world)) && staff.getTag().contains("nodeY" + getDimension(world)) && staff.getTag().contains("nodeZ" + getDimension(world))) {
-			position = "X: " + staff.getTag().getInt("nodeX" + getDimension(world)) + " Y: " + staff.getTag().getInt("nodeY" + getDimension(world)) + " Z: " + staff.getTag().getInt("nodeZ" + getDimension(world));
+		} else if (staff.getTag() != null && staff.getTag().contains(NODE_X_TAG + getDimension(world)) && staff.getTag().contains(NODE_Y_TAG + getDimension(world)) && staff.getTag().contains(NODE_Z_TAG + getDimension(world))) {
+			position = "X: " + staff.getTag().getInt(NODE_X_TAG + getDimension(world)) + " Y: " + staff.getTag().getInt(NODE_Y_TAG + getDimension(world)) + " Z: " + staff.getTag().getInt(NODE_Z_TAG + getDimension(world));
 		} else {
 			position = "nowhere.";
 		}
 		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("phrase", phrase, "position", position, "charge", charge), tooltip);
-		if (isEnabled(staff))
+		if (isEnabled(staff)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + Items.ENDER_PEARL.getDisplayName(new ItemStack(Items.ENDER_PEARL)).toString()), tooltip);
+		}
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
@@ -288,7 +304,7 @@ public class EnderStaffItem extends ToggleableItem {
 		BlockPos pos = itemUseContext.getPos();
 
 		// if right clicking on a wraith node, bind the eye to that wraith node.
-		if ((stack.getTag() == null || !(stack.getTag().contains("dimensionID"))) && world.getBlockState(pos).getBlock() == ModBlocks.WRAITH_NODE) {
+		if ((stack.getTag() == null || !(stack.getTag().contains(DIMENSION_ID_TAG))) && world.getBlockState(pos).getBlock() == ModBlocks.WRAITH_NODE) {
 			setWraithNode(stack, pos, getDimension(world));
 
 			PlayerEntity player = itemUseContext.getPlayer();
@@ -298,7 +314,6 @@ public class EnderStaffItem extends ToggleableItem {
 			for (int particles = 0; particles < 12; particles++) {
 				world.addParticle(ParticleTypes.PORTAL, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
 			}
-			//setCooldown(stack);
 			return ActionResultType.SUCCESS;
 		} else {
 			return ActionResultType.PASS;
@@ -310,10 +325,10 @@ public class EnderStaffItem extends ToggleableItem {
 	}
 
 	private void setWraithNode(ItemStack eye, BlockPos pos, int dimensionID) {
-		NBTHelper.putInt("nodeX" + dimensionID, eye, pos.getX());
-		NBTHelper.putInt("nodeY" + dimensionID, eye, pos.getY());
-		NBTHelper.putInt("nodeZ" + dimensionID, eye, pos.getZ());
-		NBTHelper.putInt("dimensionID", eye, dimensionID);
+		NBTHelper.putInt(NODE_X_TAG + dimensionID, eye, pos.getX());
+		NBTHelper.putInt(NODE_Y_TAG + dimensionID, eye, pos.getY());
+		NBTHelper.putInt(NODE_Z_TAG + dimensionID, eye, pos.getZ());
+		NBTHelper.putInt(DIMENSION_ID_TAG, eye, dimensionID);
 	}
 
 	@Nullable
