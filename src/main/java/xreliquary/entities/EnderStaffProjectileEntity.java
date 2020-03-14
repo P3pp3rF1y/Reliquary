@@ -23,10 +23,16 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 
 @SuppressWarnings("squid:S2160")
+@OnlyIn(
+		value = Dist.CLIENT,
+		_interface = IRendersAsItem.class
+)
 public class EnderStaffProjectileEntity extends ThrowableEntity implements IRendersAsItem {
 	private int ticksInAir;
 	private Entity ignoreEntity;

@@ -22,9 +22,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
@@ -50,7 +48,6 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem {
 
 	public FortuneCoinItem() {
 		super("fortune_coin", new Properties().maxStackSize(1));
-		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 /*	TODO implement with bauble like mod
@@ -338,8 +335,6 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem {
 		NBTHelper.putBoolean("enabled", stack, !isEnabled(stack));
 	}
 
-	/* EVENT HANDLING */
-	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public void handleKeyInputEvent(TickEvent.ClientTickEvent event) {
 		if (ClientProxy.FORTUNE_COIN_TOGGLE_KEYBIND.isPressed()) {

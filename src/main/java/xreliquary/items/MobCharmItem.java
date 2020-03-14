@@ -17,12 +17,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.blocks.PedestalBlock;
 import xreliquary.blocks.tile.PedestalTileEntity;
@@ -42,10 +43,13 @@ import java.util.List;
 public class MobCharmItem extends ItemBase {
 	public MobCharmItem() {
 		super("mob_charm", new Properties().maxStackSize(1).maxDamage(Settings.COMMON.items.mobCharm.durability.get()).setNoRepair());
-		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.addListener(this::onEntityTargetedEvent);
+		MinecraftForge.EVENT_BUS.addListener(this::onLivingUpdate);
+		MinecraftForge.EVENT_BUS.addListener(this::onLivingDeath);
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
 		EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(getEntityEggRegistryName(stack));
 		if (entityType == null) {
@@ -80,8 +84,7 @@ public class MobCharmItem extends ItemBase {
 		return enchantment.type != EnchantmentType.BREAKABLE && super.canApplyAtEnchantingTable(stack, enchantment);
 	}
 
-	@SubscribeEvent
-	public void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
+	private void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
 		if (!(event.getTarget() instanceof PlayerEntity) || event.getTarget() instanceof FakePlayer ||
 				!(event.getEntity() instanceof MobEntity)) {
 			return;
@@ -96,8 +99,7 @@ public class MobCharmItem extends ItemBase {
 		});
 	}
 
-	@SubscribeEvent
-	public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+	private void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
 		if (!(event.getEntity() instanceof MobEntity)) {
 			return;
 		}
@@ -121,8 +123,7 @@ public class MobCharmItem extends ItemBase {
 		});
 	}
 
-	@SubscribeEvent
-	public void onLivingDeath(LivingDeathEvent event) {
+	private void onLivingDeath(LivingDeathEvent event) {
 		if (event.getSource() == null || event.getSource().getTrueSource() == null || !(event.getSource().getTrueSource() instanceof PlayerEntity)) {
 			return;
 		}

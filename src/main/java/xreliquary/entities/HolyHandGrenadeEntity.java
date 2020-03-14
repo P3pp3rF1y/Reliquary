@@ -11,11 +11,17 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 import xreliquary.init.ModItems;
 
 @SuppressWarnings("squid:S2160")
+@OnlyIn(
+		value = Dist.CLIENT,
+		_interface = IRendersAsItem.class
+)
 public class HolyHandGrenadeEntity extends ThrowableEntity implements IRendersAsItem {
 	private int count = 0;
 	private PlayerEntity playerThrower;

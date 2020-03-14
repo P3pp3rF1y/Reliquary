@@ -12,7 +12,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 
@@ -20,9 +19,9 @@ public class TwilightCloakItem extends ToggleableItem {
 
 	public TwilightCloakItem() {
 		super("twilight_cloak", new Properties().maxStackSize(1));
-		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.addListener(this::onEntityTargetedEvent);
+		MinecraftForge.EVENT_BUS.addListener(this::onLivingUpdate);
 	}
-
 
 	@Override
 	public Rarity getRarity(ItemStack stack) {
@@ -31,7 +30,7 @@ public class TwilightCloakItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack twilightCloak, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if(!(entity instanceof PlayerEntity)) {
+		if (!(entity instanceof PlayerEntity)) {
 			return;
 		}
 
@@ -39,13 +38,13 @@ public class TwilightCloakItem extends ToggleableItem {
 	}
 
 	private void updateInvisibility(ItemStack twilightCloak, PlayerEntity player) {
-		if(!isEnabled(twilightCloak)) {
+		if (!isEnabled(twilightCloak)) {
 			return;
 		}
 
 		//toggled effect, makes player invisible based on light level (configurable)
 
-		if(player.world.getLight(new BlockPos(player.getPosition())) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
+		if (player.world.getLight(new BlockPos(player.getPosition())) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
 			return;
 		}
 
@@ -69,18 +68,16 @@ public class TwilightCloakItem extends ToggleableItem {
 	}
 */
 
-	@SubscribeEvent
-	public void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
+	private void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
 		doTwilightCloakCheck(event);
 	}
 
-	@SubscribeEvent
-	public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+	private void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
 		doTwilightCloakCheck(event);
 	}
 
 	private void doTwilightCloakCheck(LivingEvent event) {
-		if(event.getEntity() instanceof MobEntity) {
+		if (event.getEntity() instanceof MobEntity) {
 			MobEntity entityLiving = ((MobEntity) event.getEntity());
 			if (!(entityLiving.getAttackTarget() instanceof PlayerEntity)) {
 				return;
@@ -90,7 +87,7 @@ public class TwilightCloakItem extends ToggleableItem {
 				return;
 			}
 
-			if(event.getEntity() instanceof MobEntity) {
+			if (event.getEntity() instanceof MobEntity) {
 				((MobEntity) event.getEntity()).setAttackTarget(null);
 			}
 		}

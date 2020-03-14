@@ -22,6 +22,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -35,6 +37,10 @@ import xreliquary.util.potions.XRPotionHelper;
 import java.util.List;
 import java.util.Random;
 
+@OnlyIn(
+		value = Dist.CLIENT,
+		_interface = IRendersAsItem.class
+)
 public class ThrownXRPotionEntity extends ThrowableEntity implements IEntityAdditionalSpawnData, IRendersAsItem {
 	private static final DataParameter<ItemStack> ITEM = EntityDataManager.createKey(ThrownPotionEntity.class, DataSerializers.ITEMSTACK);
 

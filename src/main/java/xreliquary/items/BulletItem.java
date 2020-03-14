@@ -8,6 +8,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
@@ -30,6 +32,7 @@ public class BulletItem extends ItemBase implements IPotionItem {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
 		if (hasTooltip) {
 			LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", null, tooltip);

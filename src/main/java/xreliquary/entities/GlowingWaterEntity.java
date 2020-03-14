@@ -18,6 +18,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import xreliquary.init.ModEntities;
@@ -28,6 +30,10 @@ import xreliquary.reference.Colors;
 
 import java.util.List;
 
+@OnlyIn(
+		value = Dist.CLIENT,
+		_interface = IRendersAsItem.class
+)
 public class GlowingWaterEntity extends ThrowableEntity implements IRendersAsItem {
 	public GlowingWaterEntity(EntityType<GlowingWaterEntity> entityType, World world) {
 		super(entityType, world);

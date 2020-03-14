@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.ModList;
@@ -54,6 +55,7 @@ import xreliquary.entities.shot.NeutralShotEntity;
 import xreliquary.entities.shot.SandShotEntity;
 import xreliquary.entities.shot.SeekerShotEntity;
 import xreliquary.entities.shot.StormShotEntity;
+import xreliquary.init.ModItems;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 
@@ -121,6 +123,7 @@ public class ClientProxy extends CommonProxy {
 			ModItemColors.init();
 			ModBlockColors.init();
 			PedestalClientRegistry.registerItemRenderer(FishingRodItem.class, PedestalFishHookRenderer.class);
+			MinecraftForge.EVENT_BUS.addListener(ModItems.FORTUNE_COIN::handleKeyInputEvent);
 		});
 	}
 

@@ -33,7 +33,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.blocks.PedestalBlock;
@@ -63,7 +62,7 @@ public class VoidTearItem extends ToggleableItem {
 
 	public VoidTearItem() {
 		super(Names.Items.VOID_TEAR, new Properties());
-		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.addListener(this::onItemPickup);
 	}
 
 	@Override
@@ -507,8 +506,7 @@ public class VoidTearItem extends ToggleableItem {
 		return Integer.MAX_VALUE;
 	}
 
-	@SubscribeEvent
-	public void onItemPickup(EntityItemPickupEvent event) {
+	private void onItemPickup(EntityItemPickupEvent event) {
 		ItemStack pickedUpStack = event.getItem().getItem();
 		PlayerEntity player = event.getPlayer();
 		ItemEntity itemEntity = event.getItem();

@@ -3,7 +3,6 @@ package xreliquary.client.init;
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.ParticleType;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,7 +14,6 @@ import xreliquary.client.particle.ColorParticleData;
 import xreliquary.reference.Reference;
 import xreliquary.util.InjectionHelper;
 
-@OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid= Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 @ObjectHolder(Reference.MOD_ID)
 public class ModParticles {

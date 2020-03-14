@@ -30,7 +30,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import xreliquary.items.util.fluid.FluidHandlerEmperorChalice;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
@@ -43,7 +42,7 @@ public class EmperorChaliceItem extends ToggleableItem {
 
 	public EmperorChaliceItem() {
 		super("emperor_chalice", new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
-		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.addListener(this::onBlockRightClick);
 	}
 
 	@Override
@@ -135,9 +134,7 @@ public class EmperorChaliceItem extends ToggleableItem {
 		return new ActionResult<>(ActionResultType.PASS, stack);
 	}
 
-	@SubscribeEvent
-	@SuppressWarnings("unused") //used in event
-	public void onBlockRightClick(PlayerInteractEvent.RightClickBlock evt) {
+	private void onBlockRightClick(PlayerInteractEvent.RightClickBlock evt) {
 		if (evt.getItemStack().getItem() == this) {
 			World world = evt.getWorld();
 			BlockState state = world.getBlockState(evt.getPos());
