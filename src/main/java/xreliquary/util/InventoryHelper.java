@@ -104,10 +104,12 @@ public class InventoryHelper {
 	}
 
 	public static boolean consumeItem(ItemStack itemStack, PlayerEntity player, int minCount, int countToConsume) {
-		if (player.isCreative())
+		if (player.isCreative()) {
 			return true;
-		if (itemStack.isEmpty() || countToConsume <= 0)
+		}
+		if (itemStack.isEmpty() || countToConsume <= 0) {
 			return false;
+		}
 
 		int itemCount = 0;
 
@@ -121,8 +123,9 @@ public class InventoryHelper {
 			}
 		}
 
-		if (itemCount - countToConsume < minCount)
+		if (itemCount - countToConsume < minCount) {
 			return false;
+		}
 
 		//fill stacks based on which ones have the highest sizes
 		if (itemCount >= countToConsume) {
@@ -137,7 +140,6 @@ public class InventoryHelper {
 				if (countToFill > 0) {
 					int stackSizeToFill = Math.min(itemStack.getMaxStackSize(), countToFill);
 
-					//noinspection ConstantConditions
 					player.inventory.getStackInSlot(slot).setCount(stackSizeToFill);
 
 					countToFill -= stackSizeToFill;
@@ -177,8 +179,9 @@ public class InventoryHelper {
 				stackToExtract.setCount(currentStackCount);
 			}
 
-			if (remaining <= 0)
+			if (remaining <= 0) {
 				break;
+			}
 		}
 		return maxToRemove - remaining;
 	}
@@ -242,8 +245,9 @@ public class InventoryHelper {
 			if (!inventory.getStackInSlot(i).isEmpty()) {
 				ItemStack stack = inventory.getStackInSlot(i).copy();
 				inventory.extractItem(i, stack.getCount(), false);
-				if (world.isRemote)
+				if (world.isRemote) {
 					return;
+				}
 				ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, stack);
 				world.addEntity(itemEntity);
 				break;
@@ -260,8 +264,9 @@ public class InventoryHelper {
 			if (remainingStack.isEmpty()) {
 				player.getHeldItem(hand).shrink(1);
 
-				if (player.getHeldItem(hand).getCount() == 0)
+				if (player.getHeldItem(hand).getCount() == 0) {
 					player.setHeldItem(hand, ItemStack.EMPTY);
+				}
 
 				player.inventory.markDirty();
 				return true;
@@ -277,8 +282,9 @@ public class InventoryHelper {
 
 	public static boolean playerHasItem(PlayerEntity player, Item item, boolean checkEnabled) {
 		for (ItemStack stack : player.inventory.mainInventory) {
-			if (stack.isEmpty())
+			if (stack.isEmpty()) {
 				continue;
+			}
 			if (stack.getItem() == item) {
 				return !(checkEnabled && stack.getItem() instanceof ToggleableItem) || ((ToggleableItem) stack.getItem()).isEnabled(stack);
 			}
@@ -300,26 +306,18 @@ public class InventoryHelper {
 	}
 
 	public static ItemStack getCorrectItemFromEitherHand(PlayerEntity player, Item item) {
-		if (player == null)
-			return ItemStack.EMPTY;
-
-		Hand itemInHand = getHandHoldingCorrectItem(player, item);
-
-		if (itemInHand == null)
-			return ItemStack.EMPTY;
-
-		return player.getHeldItem(itemInHand);
+		return getHandHoldingCorrectItem(player, item).map(player::getHeldItem).orElse(ItemStack.EMPTY);
 	}
 
-	private static Hand getHandHoldingCorrectItem(PlayerEntity player, Item item) {
+	private static Optional<Hand> getHandHoldingCorrectItem(PlayerEntity player, Item item) {
 		if (player.getHeldItemMainhand().getItem() == item) {
-			return Hand.MAIN_HAND;
+			return Optional.of(Hand.MAIN_HAND);
 		}
 
 		if (player.getHeldItemOffhand().getItem() == item) {
-			return Hand.OFF_HAND;
+			return Optional.of(Hand.OFF_HAND);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	public static void addItemToPlayerInventory(PlayerEntity player, ItemStack stack) {
@@ -341,11 +339,7 @@ public class InventoryHelper {
 		return ret;
 	}
 
-	public static void dropInventoryItems(World world, BlockPos pos) {
-		WorldHelper.getTile(world, pos).ifPresent(te -> getItemHandlerFrom(te).ifPresent(itemHandler -> dropInventoryItems(world, pos, itemHandler)));
-	}
-
-	private static void dropInventoryItems(World world, BlockPos pos, IItemHandler inventory) {
+	public static void dropInventoryItems(World world, BlockPos pos, IItemHandler inventory) {
 		dropInventoryItems(world, pos.getX(), pos.getY(), pos.getZ(), inventory);
 	}
 

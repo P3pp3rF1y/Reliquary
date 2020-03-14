@@ -22,6 +22,7 @@ import xreliquary.blocks.tile.ApothecaryMortarTileEntity;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Names;
 import xreliquary.util.InventoryHelper;
+import xreliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
 
@@ -31,7 +32,7 @@ public class ApothecaryMortarBlock extends BaseBlock {
 
 	public ApothecaryMortarBlock() {
 		super(Names.Blocks.APOTHECARY_MORTAR, Properties.create(Material.ROCK).hardnessAndResistance(1.5F, 2.0F));
-		setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH));
+		setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH));
 	}
 
 	@Override
@@ -59,8 +60,9 @@ public class ApothecaryMortarBlock extends BaseBlock {
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		ItemStack heldItem = player.getHeldItem(hand);
 		TileEntity tileEntity = world.getTileEntity(pos);
-		if (!(tileEntity instanceof ApothecaryMortarTileEntity))
+		if (!(tileEntity instanceof ApothecaryMortarTileEntity)) {
 			return false;
+		}
 		ApothecaryMortarTileEntity mortar = (ApothecaryMortarTileEntity) tileEntity;
 
 		if (heldItem.isEmpty()) {
@@ -69,14 +71,15 @@ public class ApothecaryMortarBlock extends BaseBlock {
 				return true;
 			}
 			boolean done = mortar.usePestle();
-			world.playSound(null, pos, soundType.getStepSound(), SoundCategory.BLOCKS, (this.soundType.getVolume() + 1.0F) / 2.0F, this.soundType.getPitch() * 0.8F);
+			world.playSound(null, pos, soundType.getStepSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
 			player.swingArm(hand);
 			return done;
 		}
 
 		//if we're in cooldown prevent player from insta inserting essence that they just got from mortar
-		if (mortar.isInCooldown() && heldItem.getItem() == ModItems.POTION_ESSENCE)
+		if (mortar.isInCooldown() && heldItem.getItem() == ModItems.POTION_ESSENCE) {
 			return false;
+		}
 
 		ItemStack stackToAdd = heldItem.copy();
 		stackToAdd.setCount(1);
@@ -91,7 +94,7 @@ public class ApothecaryMortarBlock extends BaseBlock {
 
 		if (!putItemInSlot) {
 			mortar.usePestle();
-			world.playSound(null, pos, this.soundType.getStepSound(), SoundCategory.BLOCKS, (this.soundType.getVolume() + 1.0F) / 2.0F, this.soundType.getPitch() * 0.8F);
+			world.playSound(null, pos, soundType.getStepSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
 			return false;
 		} else {
 			mortar.markDirty();
@@ -106,5 +109,11 @@ public class ApothecaryMortarBlock extends BaseBlock {
 			return getDefaultState();
 		}
 		return getDefaultState().with(FACING, context.getPlayer().getHorizontalFacing());
+	}
+
+	@Override
+	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+		WorldHelper.getTile(world, pos, ApothecaryMortarTileEntity.class).ifPresent(te -> te.dropItems());
+		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 }

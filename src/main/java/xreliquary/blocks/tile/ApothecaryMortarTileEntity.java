@@ -56,10 +56,12 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 
 			//also now doesn't allow the same item twice.
 			for (int i = 0; i < getSlots(); ++i) {
-				if (getStackInSlot(i).isEmpty())
+				if (getStackInSlot(i).isEmpty()) {
 					continue;
-				if (getStackInSlot(i).isItemEqual(stack))
+				}
+				if (getStackInSlot(i).isItemEqual(stack)) {
 					return false;
+				}
 			}
 			return XRPotionHelper.isIngredient(stack) || XRPotionHelper.isItemEssence(stack);
 		}
@@ -103,8 +105,9 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 		int itemCount = 0;
 		List<PotionIngredient> potionIngredients = new ArrayList<>();
 		for (ItemStack item : getItemStacks()) {
-			if (item.isEmpty())
+			if (item.isEmpty()) {
 				continue;
+			}
 			++itemCount;
 			potionIngredients.add(XRPotionHelper.getIngredient(item));
 		}
@@ -120,8 +123,9 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 		if (resultEffects.isEmpty()) {
 			pestleUsedCounter = 0;
 			for (int clearSlot = 0; clearSlot < items.getSlots(); ++clearSlot) {
-				if (items.getStackInSlot(clearSlot).isEmpty())
+				if (items.getStackInSlot(clearSlot).isEmpty()) {
 					continue;
+				}
 				if (!world.isRemote) {
 					ItemEntity itemEntity = new ItemEntity(world, getPos().getX() + 0.5D, getPos().getY() + 0.5D, getPos().getZ() + 0.5D, items.getStackInSlot(clearSlot).copy());
 					world.addEntity(itemEntity);
@@ -134,8 +138,9 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 			}
 			pestleUsedCounter = 0;
 			finishCoolDown = world.getGameTime() + 20; // 1 second cooldown before essence can be put in to prevent insta insert of it
-			if (world.isRemote)
+			if (world.isRemote) {
 				return true;
+			}
 			ItemStack resultItem = new ItemStack(ModItems.POTION_ESSENCE);
 			XRPotionHelper.addPotionEffectsToStack(resultItem, resultEffects);
 
@@ -169,5 +174,9 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 		}
 
 		return super.getCapability(cap, side);
+	}
+
+	public void dropItems() {
+		InventoryHelper.dropInventoryItems(world, pos, items);
 	}
 }
