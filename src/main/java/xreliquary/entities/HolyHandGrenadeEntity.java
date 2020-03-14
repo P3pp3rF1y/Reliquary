@@ -71,12 +71,14 @@ public class HolyHandGrenadeEntity extends ThrowableEntity implements IRendersAs
 	 */
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		if (!world.isRemote) {
-			remove();
+		if (world.isRemote) {
+			return;
 		}
 
+		remove();
+
 		//just making sure that player doesn't see the particles on client when the grenade is thrown
-		if (!world.isRemote || ticksExisted > 3 || result.getType() != RayTraceResult.Type.ENTITY || !(((EntityRayTraceResult) result).getEntity() instanceof PlayerEntity)) {
+		if (ticksExisted > 3 || result.getType() != RayTraceResult.Type.ENTITY || !(((EntityRayTraceResult) result).getEntity() instanceof PlayerEntity)) {
 			ConcussiveExplosion.grenadeConcussiveExplosion(this, playerThrower, getPositionVec());
 		}
 	}

@@ -46,13 +46,9 @@ public class ItemBase extends Item {
 		}
 	}
 
+	@SuppressWarnings("squid:S1172") //parameter used in overrides
 	protected boolean hasMoreInformation(ItemStack stack) {
 		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName(ItemStack stack) {
-		return new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey(stack)));
 	}
 
 	@OnlyIn(Dist.CLIENT)
