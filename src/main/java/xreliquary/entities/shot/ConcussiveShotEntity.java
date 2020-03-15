@@ -51,12 +51,19 @@ public class ConcussiveShotEntity extends ShotEntityBase {
 
 	@Override
 	protected void onImpact(LivingEntity entityLiving) {
+		if (world.isRemote) {
+			return;
+		}
+
 		ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, getPositionVec(), 1.5F, true);
 		super.onImpact(entityLiving);
 	}
 
 	@Override
 	void doBurstEffect(Direction sideHit) {
+		if (world.isRemote) {
+			return;
+		}
 		ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, getPositionVec(), 1.5F, true);
 		remove();
 	}
