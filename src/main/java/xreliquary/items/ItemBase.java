@@ -55,5 +55,10 @@ public class ItemBase extends Item {
 	protected void addMoreInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip) {
 		//overriden in child classes
 	}
+
+	@Override
+	public ITextComponent getDisplayName(ItemStack stack) {
+		return new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey(stack)));
+	}
 }
 

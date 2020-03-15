@@ -1,12 +1,10 @@
 package xreliquary.util;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.util.text.translation.LanguageMap;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -21,7 +19,6 @@ import java.util.Objects;
  * @author TheMike
  * @author x3n0ph0b3
  */
-@OnlyIn(Dist.CLIENT)
 public class LanguageHelper {
 	private LanguageHelper() {}
 
@@ -55,7 +52,7 @@ public class LanguageHelper {
 	 * @return A preprocessed localized string. If your current language doesn't have a localized string, it defaults to en_US.
 	 */
 	public static String getLocalization(String key, Object... parameters) {
-		String localization = I18n.format(key, parameters);
+		String localization = String.format(LanguageMap.getInstance().translateKey(key), parameters);
 
 		TranslationKey translationKey = new TranslationKey(key, parameters);
 		if (preprocessed.containsKey(translationKey)) {
@@ -103,7 +100,7 @@ public class LanguageHelper {
 	}
 
 	public static boolean localizationExists(String langName) {
-		return I18n.hasKey(langName);
+		return LanguageMap.getInstance().exists(langName);
 	}
 
 	private static class TranslationKey {
