@@ -333,6 +333,13 @@ public class ModItems {
 
 	public static void registerDispenseBehaviors() {
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
+			DispenserBlock.registerDispenseBehavior(ModItems.SPLASH_POTION, new BehaviorDefaultProjectileDispense() {
+				@Override
+				ProjectileEntityFactory getProjectileEntityFactory() {
+					return (world, position, stack) -> new ThrownXRPotionEntity(world, position.getX(), position.getY(), position.getZ(), stack);
+				}
+			});
+
 			DispenserBlock.registerDispenseBehavior(ModItems.LINGERING_POTION, new BehaviorDefaultProjectileDispense() {
 				@Override
 				ProjectileEntityFactory getProjectileEntityFactory() {
@@ -378,14 +385,6 @@ public class ModItems {
 				return (world, position, stack) -> new HolyHandGrenadeEntity(world, position.getX(), position.getY(), position.getZ());
 			}
 		});
-
-		DispenserBlock.registerDispenseBehavior(ModItems.HOLY_HAND_GRENADE, new BehaviorDefaultProjectileDispense() {
-			@Override
-			ProjectileEntityFactory getProjectileEntityFactory() {
-				return (world, position, stack) -> new HolyHandGrenadeEntity(world, position.getX(), position.getY(), position.getZ());
-			}
-		});
-
 	}
 
 	private static void registerItem(IForgeRegistry<Item> registry, Item item) {
