@@ -141,30 +141,6 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 		}
 	}
 
-	// this makes sure no matter where the bullet originated, it "belongs" to a
-	// player.
-	// this prevents a lot of weird things from happening with bullet effects
-	// that
-	// require an originating player. Consider deprecating this.
-	private void ensurePlayerShooterEntity() {
-		if (shootingEntity == null) {
-			List players = world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(posX - 1, posY - 1, posZ - 1, posX + 1, posY + 1, posZ + 1));
-			Iterator i = players.iterator();
-			double closestDistance = Double.MAX_VALUE;
-			PlayerEntity closestPlayer = null;
-			while (i.hasNext()) {
-				PlayerEntity e = (PlayerEntity) i.next();
-				double distance = e.getDistance(this);
-				if (distance < closestDistance) {
-					closestPlayer = e;
-				}
-			}
-			if (closestPlayer != null) {
-				shootingEntity = closestPlayer;
-			}
-		}
-	}
-
 	/**
 	 * Called to update the entity's position/logic. Special snippets of the
 	 * usual projectile code have been removed so they can be handled manually
@@ -176,7 +152,6 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 		if (ticksInAir > 200) {
 			remove();
 		}
-		ensurePlayerShooterEntity();
 
 		if (world.isRemote) {
 			spawnPotionParticles();
