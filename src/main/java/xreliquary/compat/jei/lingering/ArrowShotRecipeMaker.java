@@ -35,7 +35,7 @@ public class ArrowShotRecipeMaker {
 			outputCopy.setCount(8);
 			XRPotionHelper.addPotionEffectsToStack(outputCopy, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), durationFactor));
 
-			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, "xreliquary.potion.magazine." + output.getTranslationKey());
+			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, output.getTranslationKey());
 			NonNullList<Ingredient> ingredients = NonNullList.create();
 			ingredients.addAll(Collections.nCopies(8, Ingredient.fromStacks(itemStack)));
 			ingredients.add(Ingredient.fromStacks(potion));

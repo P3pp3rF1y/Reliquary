@@ -72,7 +72,7 @@ public class MagazineRecipeMaker {
 			ItemStack output = new ItemStack(NEUTRAL_MAGAZINE);
 			XRPotionHelper.addPotionEffectsToStack(output, effects);
 
-			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, "xreliquary.potion.magazine." + output.getTranslationKey());
+			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, output.getTranslationKey());
 			recipes.add(new ShapedRecipe(id, "xreliquary.potion.magazine", 3, 3, inputs, output));
 		}
 	}
