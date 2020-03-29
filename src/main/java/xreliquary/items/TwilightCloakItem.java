@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -15,8 +16,7 @@ import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 
-public class TwilightCloakItem extends ToggleableItem {
-
+public class TwilightCloakItem extends ToggleableItem implements IBaubleItem {
 	public TwilightCloakItem() {
 		super("twilight_cloak", new Properties().maxStackSize(1));
 		MinecraftForge.EVENT_BUS.addListener(this::onEntityTargetedEvent);
@@ -54,19 +54,15 @@ public class TwilightCloakItem extends ToggleableItem {
 		player.addPotionEffect(quickInvisibility);
 	}
 
-/* TODO implement Bauble replacement
 	@Override
-	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
-	public BaubleType getBaubleType(ItemStack itemStack) {
-		return BaubleType.BODY;
+	public IBaubleItem.Type getBaubleType() {
+		return Type.BODY;
 	}
 
 	@Override
-	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
 	public void onWornTick(ItemStack twilightCloak, LivingEntity player) {
 		updateInvisibility(twilightCloak, (PlayerEntity) player);
 	}
-*/
 
 	private void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
 		doTwilightCloakCheck(event);
@@ -83,7 +79,7 @@ public class TwilightCloakItem extends ToggleableItem {
 				return;
 			}
 			PlayerEntity player = (PlayerEntity) entityLiving.getAttackTarget();
-			if (!InventoryHelper.playerHasItem(player, this, true) || player.world.getLight(player.getPosition()) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
+			if (!InventoryHelper.playerHasItem(player, this, true, IBaubleItem.Type.BODY) || player.world.getLight(player.getPosition()) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
 				return;
 			}
 

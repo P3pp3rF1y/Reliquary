@@ -1,6 +1,5 @@
 package xreliquary.items;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ExperienceOrbEntity;
@@ -22,16 +21,12 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fluids.FluidStack;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
 import xreliquary.blocks.tile.PedestalTileEntity;
-import xreliquary.client.ClientProxy;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
-import xreliquary.network.PacketFortuneCoinTogglePressed;
-import xreliquary.network.PacketHandler;
 import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
@@ -43,35 +38,29 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FortuneCoinItem extends ItemBase implements IPedestalActionItem {
+public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IBaubleItem {
 	private static final String SOUND_TIMER_TAG = "soundTimer";
 
 	public FortuneCoinItem() {
 		super("fortune_coin", new Properties().maxStackSize(1));
 	}
 
-/*	TODO implement with bauble like mod
 	@Override
-	public void onEquipped(ItemStack stack, LivingEntity player) {
-*//*
-	TODO add back if baubles stops triggering this on every GUI open
-		if(player.world.isRemote)
+	public void onEquipped(String identifier, LivingEntity player) {
+		if (player.world.isRemote) {
 			player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 2.2F));
-*//*
+		}
+	}
 
-	}*/
-
-/*
 	@Override
-	public BaubleType getBaubleType(ItemStack stack) {
-		return BaubleType.AMULET;
+	public IBaubleItem.Type getBaubleType() {
+		return Type.NECKLACE;
 	}
 
 	@Override
 	public void onWornTick(ItemStack stack, LivingEntity player) {
-		this.onUpdate(stack, player.world, player, 0, false);
+		inventoryTick(stack, player.world, player, 0, false);
 	}
-*/
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
@@ -333,41 +322,5 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem {
 
 	public void toggle(ItemStack stack) {
 		NBTHelper.putBoolean("enabled", stack, !isEnabled(stack));
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public void handleKeyInputEvent(TickEvent.ClientTickEvent event) {
-		if (ClientProxy.FORTUNE_COIN_TOGGLE_KEYBIND.isPressed()) {
-			PlayerEntity player = Minecraft.getInstance().player;
-			for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
-				ItemStack stack = player.inventory.mainInventory.get(slot);
-				if (stack.getItem() == this) {
-					PacketHandler.sendToServer(new PacketFortuneCoinTogglePressed(PacketFortuneCoinTogglePressed.InventoryType.MAIN, slot));
-
-					toggle(stack);
-					return;
-				}
-			}
-			if (player.inventory.offHandInventory.get(0).getItem() == this) {
-				PacketHandler.sendToServer(new PacketFortuneCoinTogglePressed(PacketFortuneCoinTogglePressed.InventoryType.OFF_HAND, 0));
-				toggle(player.inventory.offHandInventory.get(0));
-				return;
-			}
-
-/*
-			if (ModList.get().isLoaded(Compatibility.MOD_ID.BAUBLES)) {
-				IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
-
-				for (int slot = 0; slot < inventoryBaubles.getSlots(); slot++) {
-					ItemStack baubleStack = inventoryBaubles.getStackInSlot(slot);
-
-					if (baubleStack.getItem() == this) {
-						PacketHandler.networkWrapper.sendToServer(new PacketFortuneCoinTogglePressed(PacketFortuneCoinTogglePressed.InventoryType.BAUBLES, slot));
-						return;
-					}
-				}
-			}
-*/
-		}
 	}
 }

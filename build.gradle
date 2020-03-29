@@ -33,6 +33,7 @@ repositories {
     maven { url "http://tehnut.info/maven" }
     maven { url "https://dl.bintray.com/way2muchnoise/dev" }
     maven { url "http://maven.thiakil.com" }
+    maven { url "https://maven.theillusivec4.top/" }
 /*    ivy {
         name "Botania"
         ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
@@ -104,7 +105,8 @@ dependencies {
     //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
-
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios:FORGE-${minecraft_version}-${curios_version}:api")
     testCompile 'org.testng:testng:6.9.10'
     testCompile "org.mockito:mockito-core:1.+"
     testCompile "org.powermock:powermock-mockito-release-full:1.6.2"

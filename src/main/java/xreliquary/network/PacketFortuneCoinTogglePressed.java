@@ -4,7 +4,9 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
+import xreliquary.compat.curios.CuriosCompat;
 import xreliquary.init.ModItems;
+import xreliquary.items.IBaubleItem;
 
 import java.util.function.Supplier;
 
@@ -35,30 +37,38 @@ public class PacketFortuneCoinTogglePressed {
 	}
 
 	private static void handleMessage(PacketFortuneCoinTogglePressed message, ServerPlayerEntity player) {
-		ItemStack stack = ItemStack.EMPTY;
 		switch (message.inventoryType) {
 			case MAIN:
-				stack = player.inventory.mainInventory.get(message.slot);
+				ItemStack stack2 = player.inventory.mainInventory.get(message.slot);
+				if (stack2.getItem() == ModItems.FORTUNE_COIN) {
+					ModItems.FORTUNE_COIN.toggle(stack2);
+				}
 				break;
 			case OFF_HAND:
-				stack = player.inventory.offHandInventory.get(0);
-				break;
-/*	TODO implement code for Baubles successor
-			case BAUBLES:
-				if(ModList.get().isLoaded(Compatibility.MOD_ID.BAUBLES)) {
-					IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
-					stack = inventoryBaubles.getStackInSlot(message.slot);
+				ItemStack stack1 = player.inventory.offHandInventory.get(0);
+				if (stack1.getItem() == ModItems.FORTUNE_COIN) {
+					ModItems.FORTUNE_COIN.toggle(stack1);
 				}
-				break;*/
+				break;
+			case CURIOS:
+				run(() -> () -> CuriosCompat.getStackInSlot(player, IBaubleItem.Type.NECKLACE.getIdentifier(), message.slot)
+						.ifPresent(stack -> {
+							if (stack.getItem() == ModItems.FORTUNE_COIN) {
+								ModItems.FORTUNE_COIN.toggle(stack);
+								CuriosCompat.setStackInSlot(player, IBaubleItem.Type.NECKLACE.getIdentifier(), message.slot, stack);
+							}
+						}));
+				break;
 		}
-		if (stack.getItem() == ModItems.FORTUNE_COIN) {
-			ModItems.FORTUNE_COIN.toggle(stack);
-		}
+	}
+
+	private static void run(Supplier<Runnable> toRun) {
+		toRun.get().run();
 	}
 
 	public enum InventoryType {
 		MAIN,
 		OFF_HAND,
-		BAUBLES
+		CURIOS
 	}
 }

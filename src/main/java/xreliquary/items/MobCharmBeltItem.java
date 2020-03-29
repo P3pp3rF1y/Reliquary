@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -17,34 +19,29 @@ import xreliquary.common.gui.ContainerMobCharmBelt;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
-public class MobCharmBeltItem extends ItemBase {
+public class MobCharmBeltItem extends ItemBase implements IBaubleItem {
 	private static final String SLOTS_TAG = "Slots";
 
 	public MobCharmBeltItem() {
 		super(Names.Items.MOB_CHARM_BELT, new Properties().maxStackSize(1));
 	}
 
-/* TODO implement Baubles successor
-
-@Override
-	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
-	public BaubleType getBaubleType(ItemStack stack) {
-		return BaubleType.BELT;
+	@Override
+	public IBaubleItem.Type getBaubleType() {
+		return IBaubleItem.Type.BELT;
 	}
 
 	@Override
-	public void onWornTick(ItemStack stack, LivingEntity player) {}
+	public void onWornTick(ItemStack stack, LivingEntity player) {
+		//noop
+	}
 
 	@Override
-	@Optional.Method(modid = Compatibility.MOD_ID.BAUBLES)
-	public void onEquipped(ItemStack stack, LivingEntity player) {
-
-		*//*	TODO add back if baubles stops triggering this on every GUI open
-		if(player.world.isRemote)
+	public void onEquipped(String identifier, LivingEntity player) {
+		if(player.world.isRemote) {
 			player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1F, 1F);
-*//*
-
-	}*/
+		}
+	}
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
@@ -134,7 +131,7 @@ public class MobCharmBeltItem extends ItemBase {
 		return mobCharms.size();
 	}
 
-	boolean hasCharm(ItemStack belt, String entityRegistryName) {
+	public boolean hasCharm(ItemStack belt, String entityRegistryName) {
 		CompoundNBT nbt = belt.getTag();
 
 		if (nbt == null || !nbt.contains(SLOTS_TAG)) {

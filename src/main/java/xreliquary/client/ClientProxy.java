@@ -55,7 +55,7 @@ import xreliquary.entities.shot.NeutralShotEntity;
 import xreliquary.entities.shot.SandShotEntity;
 import xreliquary.entities.shot.SeekerShotEntity;
 import xreliquary.entities.shot.StormShotEntity;
-import xreliquary.init.ModItems;
+import xreliquary.items.FortuneCoinToggler;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 
@@ -110,7 +110,6 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(ThrownXRPotionEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
 
 		registerTileRenderers();
-		registerBeltRender();
 	}
 
 	private void clientSetup(FMLClientSetupEvent event) {
@@ -123,7 +122,7 @@ public class ClientProxy extends CommonProxy {
 			ModItemColors.init();
 			ModBlockColors.init();
 			PedestalClientRegistry.registerItemRenderer(FishingRodItem.class, PedestalFishHookRenderer.class);
-			MinecraftForge.EVENT_BUS.addListener(ModItems.FORTUNE_COIN::handleKeyInputEvent);
+			MinecraftForge.EVENT_BUS.addListener(FortuneCoinToggler::handleKeyInputEvent);
 		});
 	}
 
@@ -131,14 +130,5 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(ApothecaryMortarTileEntity.class, new ApothecaryMortarRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(PedestalTileEntity.class, new PedestalRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(PassivePedestalTileEntity.class, new PassivePedestalRenderer());
-	}
-
-	private static void registerBeltRender() {
-/* TODO add baubles replacement compatibility
-		Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
-		PlayerRenderer render;
-		render = skinMap.get("default");
-		render.addLayer(new MobCharmBeltLayerRenderer());
-*/
 	}
 }

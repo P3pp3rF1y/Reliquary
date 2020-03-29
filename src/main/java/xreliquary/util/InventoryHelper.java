@@ -14,20 +14,30 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import xreliquary.items.IBaubleItem;
 import xreliquary.items.ToggleableItem;
 
 import javax.annotation.Nullable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class InventoryHelper {
 	private InventoryHelper() {}
+
+	private static Set<BiFunction<PlayerEntity, IBaubleItem.Type, IItemHandler>> baublesItemHandlerFactories = new HashSet<>();
+
+	public static void addBaublesItemHandlerFactory(BiFunction<PlayerEntity, IBaubleItem.Type, IItemHandler> factory) {
+		baublesItemHandlerFactories.add(factory);
+	}
 
 	public static void spawnItemStack(World world, BlockPos pos, ItemStack stack) {
 		net.minecraft.inventory.InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
@@ -277,10 +287,10 @@ public class InventoryHelper {
 	}
 
 	public static boolean playerHasItem(PlayerEntity player, Item item) {
-		return playerHasItem(player, item, false);
+		return playerHasItem(player, item, false, IBaubleItem.Type.NONE);
 	}
 
-	public static boolean playerHasItem(PlayerEntity player, Item item, boolean checkEnabled) {
+	public static boolean playerHasItem(PlayerEntity player, Item item, boolean checkEnabled, IBaubleItem.Type baubleType) {
 		for (ItemStack stack : player.inventory.mainInventory) {
 			if (stack.isEmpty()) {
 				continue;
@@ -290,18 +300,20 @@ public class InventoryHelper {
 			}
 		}
 
-/* TODO implement Baubles alternative
-		if (ModList.get().isLoaded(Compatibility.MOD_ID.BAUBLES)) {
-			IBaublesItemHandler inventoryBaubles = BaublesApi.getBaublesHandler(player);
+		return hasItemInBaubleInventories(player, item, checkEnabled, baubleType);
+	}
 
-			for (int i = 0; i < inventoryBaubles.getSlots(); i++) {
-				ItemStack baubleStack = inventoryBaubles.getStackInSlot(i);
-				if (!baubleStack.isEmpty() && baubleStack.getItem() == item) {
-					return !(checkEnabled && baubleStack.getItem() instanceof ToggleableItem) || ((ToggleableItem) baubleStack.getItem()).isEnabled(baubleStack);
+	private static boolean hasItemInBaubleInventories(PlayerEntity player, Item item, boolean checkEnabled, IBaubleItem.Type baubleType) {
+		for (BiFunction<PlayerEntity, IBaubleItem.Type, IItemHandler> factory : baublesItemHandlerFactories) {
+			IItemHandler handler = factory.apply(player, baubleType);
+			for (int i = 0; i < handler.getSlots(); i++) {
+				ItemStack baubleStack = handler.getStackInSlot(i);
+				if (!baubleStack.isEmpty() && baubleStack.getItem() == item &&
+						(!(checkEnabled && baubleStack.getItem() instanceof ToggleableItem) || ((ToggleableItem) baubleStack.getItem()).isEnabled(baubleStack))) {
+					return true;
 				}
 			}
-		}*/
-
+		}
 		return false;
 	}
 
@@ -366,6 +378,7 @@ public class InventoryHelper {
 	}
 
 	private static <T extends IItemHandler> LazyOptional<T> getItemHandler(ItemStack stack, Class<T> itemHandlerClass) {
+		//noinspection NullableProblems
 		return stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).filter(itemHandlerClass::isInstance).map(itemHandlerClass::cast);
 	}
 

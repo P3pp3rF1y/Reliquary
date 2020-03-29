@@ -40,8 +40,8 @@ public class Reliquary {
 		PotionMap.initPotionMap();
 		ModCapabilities.init();
 		PacketHandler.init();
-		ModCompat.registerModCompat();
-		ModCompat.loadCompats();
+		ModCompat.initCompats();
+		ModCompat.setupCompats();
 		ModItems.registerHandgunMagazines();
 		PedestalItems.init();
 	}

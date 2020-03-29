@@ -209,7 +209,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 			neighborUpdate();
 		}
 
-		if (tickable && Boolean.TRUE.equals(world.getBlockState(pos).get(PedestalBlock.ENABLED))) {
+		if (tickable && isEnabled()) {
 			if (actionCooldown > 0) {
 				actionCooldown--;
 			} else {
@@ -375,6 +375,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 				executeOnActionItem(ai -> ai.stop(item, this));
 			}
 		}
+		markDirty();
 	}
 
 	private List<IFluidHandler> getAdjacentTanks() {
@@ -541,5 +542,9 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 
 	ItemStack getFluidContainer() {
 		return fluidContainer;
+	}
+
+	public boolean isEnabled() {
+		return getBlockState().get(PedestalBlock.ENABLED);
 	}
 }
