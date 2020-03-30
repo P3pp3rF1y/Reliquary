@@ -34,7 +34,7 @@ authors="x3n0ph0b3, TheMike, P3pp3rF1y" #optional
 modId="xreliquary" #mandatory
 
 # The version number of the mod
-version="${project_version}" #mandatory
+version="project_version" #mandatory
 
 # A display name for the mod
 displayName="Reliquary" #mandatory
