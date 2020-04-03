@@ -1,4 +1,4 @@
-package xreliquary.items;
+package xreliquary.items.util;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;

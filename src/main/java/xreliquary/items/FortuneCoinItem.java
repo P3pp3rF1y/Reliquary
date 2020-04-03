@@ -27,6 +27,7 @@ import xreliquary.api.IPedestalActionItem;
 import xreliquary.blocks.tile.PedestalTileEntity;
 import xreliquary.init.ModFluids;
 import xreliquary.init.ModItems;
+import xreliquary.items.util.IBaubleItem;
 import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
@@ -115,7 +116,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 
 	private void scanForEntitiesInRange(World world, PlayerEntity player, double d) {
 		List<BlockPos> disablePositions = getDisablePositions(world, player.getPosition());
-		List<ItemEntity> iList = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(player.posX - d, player.posY - d, player.posZ - d, player.posX + d, player.posY + d, player.posZ + d));
+		List<ItemEntity> iList = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(player.getPosX() - d, player.getPosY() - d, player.getPosZ() - d, player.getPosX() + d, player.getPosY() + d, player.getPosZ() + d));
 		for (ItemEntity item : iList) {
 			if (canPickupItem(item, disablePositions) && checkForRoom(item.getItem(), player)) {
 				item.setPickupDelay(0);
@@ -125,7 +126,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 				}
 			}
 		}
-		List<ExperienceOrbEntity> iList2 = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, new AxisAlignedBB(player.posX - d, player.posY - d, player.posZ - d, player.posX + d, player.posY + d, player.posZ + d));
+		List<ExperienceOrbEntity> iList2 = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, new AxisAlignedBB(player.getPosX() - d, player.getPosY() - d, player.getPosZ() - d, player.getPosX() + d, player.getPosY() + d, player.getPosZ() + d));
 		for (ExperienceOrbEntity item : iList2) {
 			if (player.xpCooldown > 0) {
 				player.xpCooldown = 0;
@@ -179,11 +180,11 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 	}
 
 	private void teleportEntityToPlayer(Entity item, PlayerEntity player) {
-		player.world.addParticle(ParticleTypes.ENTITY_EFFECT, item.posX + 0.5D + player.world.rand.nextGaussian() / 8, item.posY + 0.2D, item.posZ + 0.5D + player.world.rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
+		player.world.addParticle(ParticleTypes.ENTITY_EFFECT, item.getPosX() + 0.5D + player.world.rand.nextGaussian() / 8, item.getPosY() + 0.2D, item.getPosZ() + 0.5D + player.world.rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
 		player.getLookVec();
-		double x = player.posX + player.getLookVec().x * 0.2D;
-		double y = player.posY;
-		double z = player.posZ + player.getLookVec().z * 0.2D;
+		double x = player.getPosX() + player.getLookVec().x * 0.2D;
+		double y = player.getPosY();
+		double z = player.getPosZ() + player.getLookVec().z * 0.2D;
 		item.setPosition(x, y, z);
 		if (enabledAudio()) {
 			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.8F));
@@ -244,7 +245,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 
-		if (player.isSneaking()) {
+		if (player.isShiftKeyDown()) {
 			if (enabledAudio()) {
 				NBTHelper.putShort(SOUND_TIMER_TAG, stack, (short) 6);
 			}
@@ -294,7 +295,6 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 			List<ExperienceOrbEntity> xpOrbs = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
 			for (ExperienceOrbEntity xpOrb : xpOrbs) {
 				int amountToTransfer = XpHelper.experienceToLiquid(xpOrb.xpValue);
-				//noinspection ConstantConditions
 				int amountAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.xpJuiceStill.get(), amountToTransfer));
 
 				if (amountAdded > 0) {

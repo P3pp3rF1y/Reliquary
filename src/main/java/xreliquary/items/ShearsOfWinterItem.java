@@ -108,7 +108,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 	}
 
 	private void checkAndBreakBlockAt(PlayerEntity player, BlockPos pos) {
-		int distance = (int) Math.sqrt(pos.distanceSq(player.posX, player.posY, player.posZ, false));
+		int distance = (int) Math.sqrt(pos.distanceSq(player.getPosX(), player.getPosY(), player.getPosZ(), false));
 		int probabilityFactor = 5 + distance;
 		//chance of block break diminishes over distance
 		if (player.world.rand.nextInt(probabilityFactor) == 0) {
@@ -154,12 +154,12 @@ public class ShearsOfWinterItem extends ShearsItem {
 		if (player.world.isRemote) {
 			return;
 		}
-		double lowerX = Math.min(player.posX, player.posX + lookVector.x * 10D);
-		double lowerY = Math.min(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.y * 10D);
-		double lowerZ = Math.min(player.posZ, player.posZ + lookVector.z * 10D);
-		double upperX = Math.max(player.posX, player.posX + lookVector.x * 10D);
-		double upperY = Math.max(player.posY + player.getEyeHeight(), player.posY + player.getEyeHeight() + lookVector.y * 10D);
-		double upperZ = Math.max(player.posZ, player.posZ + lookVector.z * 10D);
+		double lowerX = Math.min(player.getPosX(), player.getPosX() + lookVector.x * 10D);
+		double lowerY = Math.min(player.getPosY() + player.getEyeHeight(), player.getPosY() + player.getEyeHeight() + lookVector.y * 10D);
+		double lowerZ = Math.min(player.getPosZ(), player.getPosZ() + lookVector.z * 10D);
+		double upperX = Math.max(player.getPosX(), player.getPosX() + lookVector.x * 10D);
+		double upperY = Math.max(player.getPosY() + player.getEyeHeight(), player.getPosY() + player.getEyeHeight() + lookVector.y * 10D);
+		double upperZ = Math.max(player.getPosZ(), player.getPosZ() + lookVector.z * 10D);
 		List<MobEntity> eList = player.world.getEntitiesWithinAABB(MobEntity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
 		Random rand = player.world.rand;
 		for (MobEntity e : eList) {
@@ -180,7 +180,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 	@SuppressWarnings({"squid:CallToDeprecatedMethod", "deprecation", "squid:S1764"})
 	private void shearEntity(ItemStack stack, PlayerEntity player, Random rand, MobEntity e) {
 		IShearable target = (IShearable) e;
-		BlockPos pos = new BlockPos((int) e.posX, (int) e.posY, (int) e.posZ);
+		BlockPos pos = new BlockPos((int) e.getPosX(), (int) e.getPosY(), (int) e.getPosZ());
 		if (target.isShearable(new ItemStack(Items.SHEARS), e.world, pos)) {
 			List<ItemStack> drops = target.onSheared(stack, e.world, pos,
 					EnchantmentHelper.getEnchantmentLevel(net.minecraft.enchantment.Enchantments.FORTUNE, stack));
@@ -203,7 +203,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 			float randY = 10F * (player.world.rand.nextFloat() - 0.5F);
 			float randZ = 10F * (player.world.rand.nextFloat() - 0.5F);
 
-			player.world.addParticle(blockParticleData, player.posX + randX, player.posY + randY, player.posZ + randZ, lookVector.x * 5, lookVector.y * 5, lookVector.z * 5);
+			player.world.addParticle(blockParticleData, player.getPosX() + randX, player.getPosY() + randY, player.getPosZ() + randZ, lookVector.x * 5, lookVector.y * 5, lookVector.z * 5);
 		}
 	}
 

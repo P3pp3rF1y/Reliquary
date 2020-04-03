@@ -1,32 +1,52 @@
 {
-    "forge_marker": 1,
-    "defaults": {
-        "textures": {
-            "6": "block/redstone_block",
-            "4": "block/red_wool"
+    "multipart": [
+        {
+            "when": {"facing": "north"},
+            "apply": {"model": "xreliquary:block/pedestals/red_pedestal"}
         },
-        "model": "xreliquary:block/pedestal"
-    },
-    "variants": {
-        "facing": {
-            "north": {},
-            "south": {
-                "y": 180
-            },
-            "west": {
-                "y": 270
-            },
-            "east": {
-                "y": 90
-            }
+        {
+            "when": {"facing": "east"},
+            "apply": {"model": "xreliquary:block/pedestals/red_pedestal", "y": 90}
         },
-        "enabled": {
-            "true": {},
-            "false": {
-                "textures": {
-                    "6": "xreliquary:block/redstone_block_off"
-                }
-            }
+        {
+            "when": {"facing": "south"},
+            "apply": {"model": "xreliquary:block/pedestals/red_pedestal", "y": 180}
+        },
+        {
+            "when": {"facing": "west"},
+            "apply": {"model": "xreliquary:block/pedestals/red_pedestal", "y": 270}
+        },
+        {
+            "when": {"AND": [{"enabled": true}, {"facing": "north"}]},
+            "apply": {"model": "xreliquary:block/pedestal_button_on"}
+        },
+        {
+            "when": {"AND": [{"enabled": true}, {"facing": "east"}]},
+            "apply": {"model": "xreliquary:block/pedestal_button_on", "y": 90}
+        },
+        {
+            "when": {"AND": [{"enabled": true}, {"facing": "south"}]},
+            "apply": {"model": "xreliquary:block/pedestal_button_on", "y": 180}
+        },
+        {
+            "when": {"AND": [{"enabled": true}, {"facing": "west"}]},
+            "apply": {"model": "xreliquary:block/pedestal_button_on", "y": 270}
+        },
+        {
+            "when": {"AND": [{"enabled": false}, {"facing": "north"}]},
+            "apply": {"model": "xreliquary:block/pedestal_button_off"}
+        },
+        {
+            "when": {"AND": [{"enabled": false}, {"facing": "east"}]},
+            "apply": {"model": "xreliquary:block/pedestal_button_off", "y": 90}
+        },
+        {
+            "when": {"AND": [{"enabled": false}, {"facing": "south"}]},
+            "apply": {"model": "xreliquary:block/pedestal_button_off", "y": 180}
+        },
+        {
+            "when": {"AND": [{"enabled": false}, {"facing": "west"}]},
+            "apply": {"model": "xreliquary:block/pedestal_button_off", "y": 270}
         }
-    }
+    ]
 }

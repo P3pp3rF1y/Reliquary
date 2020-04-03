@@ -29,7 +29,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import xreliquary.init.ModEntities;
 import xreliquary.init.ModItems;
-import xreliquary.items.IPotionItem;
+import xreliquary.items.util.IPotionItem;
 import xreliquary.network.PacketFXThrownPotionImpact;
 import xreliquary.network.PacketHandler;
 import xreliquary.util.potions.XRPotionHelper;
@@ -114,7 +114,7 @@ public class ThrownXRPotionEntity extends ThrowableEntity implements IEntityAddi
 	}
 
 	private void spawnAreaEffectCloud(List<EffectInstance> effects, int color) {
-		AreaEffectCloudEntity areaEffectCloud = new AreaEffectCloudEntity(world, posX, posY, posZ);
+		AreaEffectCloudEntity areaEffectCloud = new AreaEffectCloudEntity(world, getPosX(), getPosY(), getPosZ());
 		areaEffectCloud.setOwner(getThrower());
 		areaEffectCloud.setRadius(3.0F);
 		areaEffectCloud.setRadiusOnUse(-0.5F);
@@ -136,11 +136,11 @@ public class ThrownXRPotionEntity extends ThrowableEntity implements IEntityAddi
 
 		Random var7 = rand;
 		for (int var15 = 0; var15 < 8; ++var15) {
-			world.addParticle(new ItemParticleData(ParticleTypes.ITEM, getItem()), posX, posY, posZ, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+			world.addParticle(new ItemParticleData(ParticleTypes.ITEM, getItem()), getPosX(), getPosY(), getPosZ(), var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
 		}
 
 		world.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(color, posX, posY, posZ), new PacketDistributor.TargetPoint(posX, posY, posZ, 32.0D, world.getDimension().getType()));
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(color, getPosX(), getPosY(), getPosZ()), new PacketDistributor.TargetPoint(getPosX(), getPosY(), getPosZ(), 32.0D, world.getDimension().getType()));
 	}
 
 	@Override

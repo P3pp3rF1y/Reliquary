@@ -28,6 +28,10 @@ public class PassivePedestalTileEntity extends TileEntityBase implements IInvent
 	protected ItemStack item;
 	private IItemHandler inventoryWrapper = new InvWrapper(this);
 
+	public ItemStack getItem() {
+		return item;
+	}
+
 	public PassivePedestalTileEntity() {
 		this(TYPE);
 	}

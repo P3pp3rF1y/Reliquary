@@ -1,0 +1,21 @@
+{
+    "parent": "block/block",
+    "ambientocclusion": true,
+    "textures": {
+        "0": "xreliquary:block/redstone_block_off"
+    },
+    "elements": [
+        {
+            "from": [7, 6, 10.5],
+            "to": [9, 8, 11.5],
+            "faces": {
+                "down": {"uv": [9, 10, 11, 11], "texture": "#0"},
+                "up": {"uv": [9, 10, 11, 11], "texture": "#0"},
+                "north": {"uv": [4, 3, 6, 5], "texture": "#0"},
+                "south": {"uv": [4, 3, 6, 5], "texture": "#0"},
+                "west": {"uv": [9, 9, 10, 11], "texture": "#0"},
+                "east": {"uv": [9, 9, 10, 11], "texture": "#0"}
+            }
+        }
+    ]
+}

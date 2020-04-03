@@ -37,6 +37,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
+import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -48,7 +49,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PyromancerStaffItem extends ToggleableItem {
+public class PyromancerStaffItem extends ToggleableItem implements ILeftClickableItem {
 	private static final String QUANTITY_TAG = "Quantity";
 	private static final String BLAZE_MODE = "blaze";
 	private static final String BLAZE_CHARGES_TAG = BLAZE_MODE;
@@ -144,21 +145,21 @@ public class PyromancerStaffItem extends ToggleableItem {
 	}
 
 	@Override
-	public boolean onEntitySwing(ItemStack stack, LivingEntity entityLiving) {
-		if (entityLiving.world.isRemote || !(entityLiving instanceof PlayerEntity)) {
-			return true;
+	public ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
+		if (!entityLiving.isShiftKeyDown()) {
+			return ActionResultType.CONSUME;
 		}
-		PlayerEntity player = (PlayerEntity) entityLiving;
-		if (player.isSneaking()) {
-			cycleMode(stack);
+		if (entityLiving.world.isRemote) {
+			return ActionResultType.PASS;
 		}
-		return false;
+		cycleMode(stack);
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (player.isSneaking()) {
+		if (player.isShiftKeyDown()) {
 			super.onItemRightClick(world, player, hand);
 		} else {
 			if (getMode(stack).equals(BLAZE_MODE)) {
@@ -183,15 +184,12 @@ public class PyromancerStaffItem extends ToggleableItem {
 
 	private void shootGhastFireball(PlayerEntity player, ItemStack stack, Vec3d lookVec) {
 		if (removeItemFromInternalStorage(stack, Items.FIRE_CHARGE, getFireChargeCost(), player.world.isRemote, player)) {
-			player.world.playEvent(player, 1016, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
+			player.world.playEvent(player, 1016, new BlockPos((int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ()), 0);
 			FireballEntity fireball = new FireballEntity(player.world, player, lookVec.x, lookVec.y, lookVec.z);
 			fireball.accelerationX = lookVec.x / 3;
 			fireball.accelerationY = lookVec.y / 3;
 			fireball.accelerationZ = lookVec.z / 3;
-			fireball.posX += lookVec.x;
-			fireball.posY += lookVec.y;
-			fireball.posZ += lookVec.z;
-			fireball.posY = player.posY + player.getEyeHeight();
+			fireball.setPosition(fireball.getPosX() + lookVec.x, player.getPosY() + player.getEyeHeight(), fireball.getPosZ() + lookVec.z);
 			player.world.addEntity(fireball);
 
 		}
@@ -201,15 +199,12 @@ public class PyromancerStaffItem extends ToggleableItem {
 		Vec3d lookVec = player.getLookVec();
 		//blaze fireball!
 		if (removeItemFromInternalStorage(stack, Items.BLAZE_POWDER, getBlazePowderCost(), player.world.isRemote, player)) {
-			player.world.playEvent(player, 1018, new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ), 0);
+			player.world.playEvent(player, 1018, new BlockPos((int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ()), 0);
 			SmallFireballEntity fireball = new SmallFireballEntity(player.world, player, lookVec.x, lookVec.y, lookVec.z);
 			fireball.accelerationX = lookVec.x / 3;
 			fireball.accelerationY = lookVec.y / 3;
 			fireball.accelerationZ = lookVec.z / 3;
-			fireball.posX += lookVec.x;
-			fireball.posY += lookVec.y;
-			fireball.posZ += lookVec.z;
-			fireball.posY = player.posY + player.getEyeHeight();
+			fireball.setPosition(fireball.getPosX() + lookVec.x, player.getPosY() + player.getEyeHeight(), fireball.getPosZ() + lookVec.z);
 			player.world.addEntity(fireball);
 		}
 	}
@@ -221,7 +216,7 @@ public class PyromancerStaffItem extends ToggleableItem {
 		}
 		if (getMode(stack).equals(ERUPTION_MODE)) {
 			PlayerEntity player = (PlayerEntity) entity;
-			RayTraceResult rayTraceResult = player.func_213324_a(12, 1, true);
+			RayTraceResult rayTraceResult = player.pick(12, 1, true);
 
 			if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK) {
 				count -= 1;
@@ -471,9 +466,9 @@ public class PyromancerStaffItem extends ToggleableItem {
 		if (player.isBurning()) {
 			player.extinguish();
 		}
-		int x = (int) Math.floor(player.posX);
-		int y = (int) Math.floor(player.posY);
-		int z = (int) Math.floor(player.posZ);
+		int x = (int) Math.floor(player.getPosX());
+		int y = (int) Math.floor(player.getPosY());
+		int z = (int) Math.floor(player.getPosZ());
 		for (int xOff = -3; xOff <= 3; xOff++) {
 			for (int yOff = -3; yOff <= 3; yOff++) {
 				for (int zOff = -3; zOff <= 3; zOff++) {
@@ -496,15 +491,15 @@ public class PyromancerStaffItem extends ToggleableItem {
 	}
 
 	private void absorbBlazeFireballs(ItemStack stack, PlayerEntity player) {
-		List<SmallFireballEntity> blazeFireballs = player.world.getEntitiesWithinAABB(SmallFireballEntity.class, new AxisAlignedBB(player.posX - 3, player.posY - 3, player.posZ - 3, player.posX + 3, player.posY + 3, player.posZ + 3));
+		List<SmallFireballEntity> blazeFireballs = player.world.getEntitiesWithinAABB(SmallFireballEntity.class, new AxisAlignedBB(player.getPosX() - 3, player.getPosY() - 3, player.getPosZ() - 3, player.getPosX() + 3, player.getPosY() + 3, player.getPosZ() + 3));
 		for (SmallFireballEntity fireball : blazeFireballs) {
 			if (fireball.shootingEntity == player) {
 				continue;
 			}
 			for (int particles = 0; particles < 4; particles++) {
-				player.world.addParticle(RedstoneParticleData.REDSTONE_DUST, fireball.posX, fireball.posY, fireball.posZ, 0.0D, 1.0D, 1.0D);
+				player.world.addParticle(RedstoneParticleData.REDSTONE_DUST, fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), 0.0D, 1.0D, 1.0D);
 			}
-			player.world.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
+			player.world.playSound(fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
 
 			if (!isInternalStorageFullOfItem(stack, Items.BLAZE_POWDER) && InventoryHelper.consumeItem(new ItemStack(Items.BLAZE_POWDER), player)) {
 				addItemToInternalStorage(stack, Items.BLAZE_POWDER, true);
@@ -514,12 +509,12 @@ public class PyromancerStaffItem extends ToggleableItem {
 	}
 
 	private void absorbGhastFireballs(ItemStack stack, PlayerEntity player) {
-		List<FireballEntity> ghastFireballs = player.world.getEntitiesWithinAABB(FireballEntity.class, new AxisAlignedBB(player.posX - 5, player.posY - 5, player.posZ - 5, player.posX + 5, player.posY + 5, player.posZ + 5));
+		List<FireballEntity> ghastFireballs = player.world.getEntitiesWithinAABB(FireballEntity.class, new AxisAlignedBB(player.getPosX() - 5, player.getPosY() - 5, player.getPosZ() - 5, player.getPosX() + 5, player.getPosY() + 5, player.getPosZ() + 5));
 		for (FireballEntity fireball : ghastFireballs) {
 			if (fireball.shootingEntity != player && player.getDistance(fireball) < 4) {
 				if (!isInternalStorageFullOfItem(stack, Items.FIRE_CHARGE) && InventoryHelper.consumeItem(new ItemStack(Items.FIRE_CHARGE), player)) {
 					addItemToInternalStorage(stack, Items.FIRE_CHARGE, true);
-					player.world.playSound(fireball.posX, fireball.posY, fireball.posZ, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
+					player.world.playSound(fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
 				}
 				fireball.remove();
 			}

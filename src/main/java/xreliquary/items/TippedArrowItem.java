@@ -13,6 +13,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import xreliquary.Reliquary;
 import xreliquary.entities.XRTippedArrowEntity;
+import xreliquary.items.util.IPotionItem;
 import xreliquary.reference.Reference;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;

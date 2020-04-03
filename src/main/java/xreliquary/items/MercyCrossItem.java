@@ -95,7 +95,7 @@ public class MercyCrossItem extends SwordItem {
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity monster) {
 		if (monster instanceof MobEntity && isUndead((MobEntity) monster)) {
-			monster.world.addParticle(ParticleTypes.EXPLOSION, monster.posX + (random.nextFloat() - 0.5F), monster.posY + (random.nextFloat() - 0.5F) + (monster.getHeight() / 2), monster.posZ + (random.nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
+			monster.world.addParticle(ParticleTypes.EXPLOSION, monster.getPosX() + (random.nextFloat() - 0.5F), monster.getPosY() + (random.nextFloat() - 0.5F) + (monster.getHeight() / 2), monster.getPosZ() + (random.nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
 		}
 		return super.onLeftClickEntity(stack, player, monster);
 	}

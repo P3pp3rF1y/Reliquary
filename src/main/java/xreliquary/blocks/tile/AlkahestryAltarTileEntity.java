@@ -28,7 +28,7 @@ public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickab
 
 	@Override
 	public void tick() {
-		if (world.isRemote || !isActive || world.getDayTime() >= 12000 || !world.isSkyLightMax(getPos().up())) {
+		if (world.isRemote || !isActive || world.getDayTime() >= 12000 || !world.canSeeSky(getPos().up())) {
 			return;
 		}
 		if(cycleTime > 0) {

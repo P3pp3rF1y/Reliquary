@@ -1,6 +1,6 @@
 package xreliquary.client.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -43,14 +43,14 @@ abstract class GuiBase<T extends Container> extends ContainerScreen<T> {
 			fr = font;
 		}
 
-		GlStateManager.disableLighting();
-		blitOffset = 200;
+		RenderSystem.disableLighting();
+		setBlitOffset(200);
 		itemRenderer.zLevel = 200.0F;
 		itemRenderer.renderItemAndEffectIntoGUI(stack, x, y);
 		itemRenderer.renderItemOverlayIntoGUI(fr, stack, x, y, null);
-		blitOffset = 0;
+		setBlitOffset(0);
 		itemRenderer.zLevel = 0.0F;
-		GlStateManager.enableLighting();
+		RenderSystem.enableLighting();
 	}
 
 	@Override

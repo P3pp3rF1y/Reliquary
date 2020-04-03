@@ -29,7 +29,7 @@ public class StormShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -59,7 +59,7 @@ public class StormShotEntity extends ShotEntityBase {
 	void spawnHitParticles(int i) {
 		Vec3d motion = getMotion();
 		for(int particles = 0; particles < i; particles++) {
-			world.addParticle(ParticleTypes.BUBBLE, posX, posY, posZ, gaussian(motion.getX()), rand.nextFloat() + motion.getY(), gaussian(motion.getZ()));
+			world.addParticle(ParticleTypes.BUBBLE, getPosX(), getPosY(), getPosZ(), gaussian(motion.getX()), rand.nextFloat() + motion.getY(), gaussian(motion.getZ()));
 		}
 	}
 
@@ -71,10 +71,10 @@ public class StormShotEntity extends ShotEntityBase {
 	@Override
 	int getDamageOfShot(LivingEntity entity) {
 		if(entity instanceof CreeperEntity) {
-			entity.onStruckByLightning(new LightningBoltEntity(world, entity.posX, entity.posY, entity.posZ, false));
+			entity.onStruckByLightning(new LightningBoltEntity(world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), false));
 		}
-		if(world instanceof ServerWorld && world.isRainingAt(new BlockPos((int) (entity.posX + 0.5F), (int) (entity.posY + 0.5F), (int) (entity.posZ + 0.5F))) && world.getWorldInfo().isRaining() && world.getWorldInfo().isThundering()) {
-			((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, (int) (entity.posX + 0.5F), (int) (entity.posY + 0.5F), (int) (entity.posZ + 0.5F), false));
+		if(world instanceof ServerWorld && world.isRainingAt(new BlockPos((int) (entity.getPosX() + 0.5F), (int) (entity.getPosY() + 0.5F), (int) (entity.getPosZ() + 0.5F))) && world.getWorldInfo().isRaining() && world.getWorldInfo().isThundering()) {
+			((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, (int) (entity.getPosX() + 0.5F), (int) (entity.getPosY() + 0.5F), (int) (entity.getPosZ() + 0.5F), false));
 		}
 		float f = 1F + (world.isRaining() ? 0.5F : 0F) + (world.isThundering() ? 0.5F : 0F);
 		return Math.round(9F * f) + d6();

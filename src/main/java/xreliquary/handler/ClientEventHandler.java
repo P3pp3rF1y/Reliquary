@@ -3,19 +3,22 @@ package xreliquary.handler;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import xreliquary.client.gui.components.Box;
 import xreliquary.client.gui.components.Component;
@@ -33,6 +36,9 @@ import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.HarvestRodItem;
 import xreliquary.items.VoidTearItem;
+import xreliquary.items.util.ILeftClickableItem;
+import xreliquary.network.LeftClickedItemPacket;
+import xreliquary.network.PacketHandler;
 import xreliquary.reference.Colors;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -126,8 +132,21 @@ public class ClientEventHandler {
 	}
 
 	@SubscribeEvent
-	public static void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
-		hudComponents.clear();
+	public static void onMouseLeftClick(InputEvent.MouseInputEvent evt) {
+		Minecraft mc = Minecraft.getInstance();
+		if (evt.getButton() != 0 || evt.getAction() != 1 || mc.currentScreen != null) {
+			return;
+		}
+		ClientPlayerEntity player = mc.player;
+		if (player == null) {
+			return;
+		}
+		ItemStack stack = player.getHeldItemMainhand();
+		if (stack.getItem() instanceof ILeftClickableItem) {
+			if (((ILeftClickableItem) stack.getItem()).onLeftClickItem(stack, player) == ActionResultType.PASS) {
+				PacketHandler.sendToServer(new LeftClickedItemPacket());
+			}
+		}
 	}
 
 	private static void renderHUDComponents() {

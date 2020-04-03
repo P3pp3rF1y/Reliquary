@@ -30,7 +30,7 @@ import top.theillusivec4.curios.api.inventory.CurioStackHandler;
 import xreliquary.client.render.MobCharmBeltLayerRenderer;
 import xreliquary.compat.ICompat;
 import xreliquary.init.ModItems;
-import xreliquary.items.IBaubleItem;
+import xreliquary.items.util.IBaubleItem;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
 import xreliquary.util.InventoryHelper;

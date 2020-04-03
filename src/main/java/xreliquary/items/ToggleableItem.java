@@ -30,7 +30,7 @@ public class ToggleableItem extends ItemBase {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && player.isSneaking()) {
+		if (!world.isRemote && player.isShiftKeyDown()) {
 			toggleEnabled(stack);
 			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
 			return new ActionResult<>(ActionResultType.SUCCESS, stack);

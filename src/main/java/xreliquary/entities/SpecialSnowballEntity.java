@@ -61,7 +61,7 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 	@Override
 	protected void onImpact(RayTraceResult result) {
 		for (int var3 = 0; var3 < 8; ++var3) {
-			world.addParticle(ParticleTypes.ITEM_SNOWBALL, posX, posY, posZ, 0.0D, 0.0D, 0.0D);
+			world.addParticle(ParticleTypes.ITEM_SNOWBALL, getPosX(), getPosY(), getPosZ(), 0.0D, 0.0D, 0.0D);
 		}
 
 		if (!world.isRemote) {
@@ -98,7 +98,7 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 		}
 		super.tick();
 		if (ticksInAir % 4 == world.rand.nextInt(5)) {
-			world.addParticle(RedstoneParticleData.REDSTONE_DUST, posX, posY, posZ, 5.0D, 5.0D, 1.0D);
+			world.addParticle(RedstoneParticleData.REDSTONE_DUST, getPosX(), getPosY(), getPosZ(), 5.0D, 5.0D, 1.0D);
 		}
 	}
 
@@ -112,7 +112,7 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 	}
 
 	@Override
-	protected Item func_213885_i() {
+	protected Item getDefaultItem() {
 		return Items.SNOWBALL;
 	}
 
@@ -124,7 +124,7 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 			IParticleData particleData = stack.isEmpty() ? ParticleTypes.ITEM_SNOWBALL : new ItemParticleData(ParticleTypes.ITEM, stack);
 
 			for(int i = 0; i < 8; ++i) {
-				world.addParticle(particleData, posX, posY, posZ, 0.0D, 0.0D, 0.0D);
+				world.addParticle(particleData, getPosX(), getPosY(), getPosZ(), 0.0D, 0.0D, 0.0D);
 			}
 		}
 	}

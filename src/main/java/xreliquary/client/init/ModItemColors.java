@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.items.BulletItem;
-import xreliquary.items.IPotionItem;
+import xreliquary.items.util.IPotionItem;
 import xreliquary.items.MobCharmFragmentItem;
 import xreliquary.items.MobCharmItem;
 import xreliquary.reference.Colors;
@@ -119,7 +119,6 @@ public class ModItemColors {
 	}
 
 	private static Optional<SpawnEggItem> getEgg(ResourceLocation entityName) {
-		//noinspection ConstantConditions - getEgg can actually return null, but is not marked as such
 		return Optional.ofNullable(SpawnEggItem.getEgg(ForgeRegistries.ENTITIES.getValue(entityName)));
 	}
 

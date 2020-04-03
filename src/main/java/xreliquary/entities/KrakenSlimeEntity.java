@@ -47,7 +47,7 @@ public class KrakenSlimeEntity extends ProjectileItemEntity {
 		double motionZ = getMotion().getZ();
 		for (int count = 0; count < 6; ++count) {
 			float amplifier = 0.25F;
-			world.addParticle(ParticleTypes.ITEM_SLIME, posX - motionX * amplifier + world.rand.nextDouble(), posY - motionY * amplifier + world.rand.nextDouble(), posZ - motionZ * amplifier + world.rand.nextDouble(), motionX, motionY, motionZ);
+			world.addParticle(ParticleTypes.ITEM_SLIME, getPosX() - motionX * amplifier + world.rand.nextDouble(), getPosY() - motionY * amplifier + world.rand.nextDouble(), getPosZ() - motionZ * amplifier + world.rand.nextDouble(), motionX, motionY, motionZ);
 		}
 		world.playSound(null, getPosition(), SoundEvents.ENTITY_SLIME_JUMP, SoundCategory.NEUTRAL, 0.5F, 0.4F / (world.rand.nextFloat() * 0.4F + 0.8F));
 		remove();
@@ -59,7 +59,7 @@ public class KrakenSlimeEntity extends ProjectileItemEntity {
 	}
 
 	@Override
-	protected Item func_213885_i() {
+	protected Item getDefaultItem() {
 		return Items.SLIME_BALL;
 	}
 
@@ -72,7 +72,7 @@ public class KrakenSlimeEntity extends ProjectileItemEntity {
 		double motionZ = getMotion().getZ();
 		for (int count = 0; count < 2; ++count) {
 			float amplifier = 0.25F;
-			world.addParticle(ParticleTypes.ITEM_SLIME, posX - motionX * amplifier, posY - motionY * amplifier, posZ - motionZ * amplifier, motionX, motionY, motionZ);
+			world.addParticle(ParticleTypes.ITEM_SLIME, getPosX() - motionX * amplifier, getPosY() - motionY * amplifier, getPosZ() - motionZ * amplifier, motionX, motionY, motionZ);
 		}
 
 		if (world.isRemote) {
@@ -84,7 +84,7 @@ public class KrakenSlimeEntity extends ProjectileItemEntity {
 			return;
 		}
 
-		if (posY > world.getHeight() || posY <= 0) {
+		if (getPosY() > world.getHeight() || getPosY() <= 0) {
 			remove();
 		}
 	}

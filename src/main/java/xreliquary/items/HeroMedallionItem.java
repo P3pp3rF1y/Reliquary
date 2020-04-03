@@ -145,7 +145,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		if (world.isRemote) {
 			return new ActionResult<>(ActionResultType.SUCCESS, stack);
 		}
-		if (player.isSneaking()) {
+		if (player.isShiftKeyDown()) {
 			return super.onItemRightClick(world, player, hand);
 		}
 

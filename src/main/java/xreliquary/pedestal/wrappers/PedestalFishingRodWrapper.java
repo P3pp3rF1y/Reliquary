@@ -23,8 +23,10 @@ import xreliquary.entities.EntityXRFakePlayer;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketPedestalFishHook;
 import xreliquary.reference.Settings;
+import xreliquary.util.LogHelper;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -72,8 +74,9 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			}
 		} else if (!badThrowChecked && ticksSinceLastThrow > BAD_THROW_TIMEOUT) {
 			//when hook doesn't land in water retract it after some time
+			FishingBobberEntity fishingBobber = fakePlayer.fishingBobber;
 			//noinspection ConstantConditions
-			if (!fakePlayer.fishingBobber.isInWater()) {
+			if (fishingBobber.onGround || (!fishingBobber.isInWater() && getTicksInAir(fishingBobber) > 20)) {
 				retractHook(pedestal, stack);
 			} else {
 				badThrowChecked = true;
@@ -90,6 +93,18 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 				}
 			}
 	}
+
+	private static final Field TICKS_IN_AIR = ObfuscationReflectionHelper.findField(FishingBobberEntity.class, "field_146047_aw");
+	private static int getTicksInAir(FishingBobberEntity fishingBobber) {
+		try {
+			return (int) TICKS_IN_AIR.get(fishingBobber);
+		}
+		catch (IllegalAccessException e) {
+			LogHelper.error("Error getting ticksInAir from fishingBobber ", e);
+		}
+		return 0;
+	}
+
 
 	private void updateHeldItem(ItemStack fishingRod) {
 		ItemStack heldItem = fakePlayer.getHeldItemMainhand();
@@ -195,9 +210,9 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			int y = blockPos.getY();
 			int z = blockPos.getZ();
 
-			double startX = fakePlayer.posX;
-			double startY = fakePlayer.posY;
-			double startZ = fakePlayer.posZ;
+			double startX = fakePlayer.getPosX();
+			double startY = fakePlayer.getPosY();
+			double startZ = fakePlayer.getPosZ();
 
 			//make sure that the fakePlayer can see the block
 			BlockRayTraceResult raytraceresult = pedestal.getTheWorld().rayTraceBlocks(
@@ -235,7 +250,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		if (hook == null) {
 			PacketHandler.sendToAllAround(new PacketPedestalFishHook(pedestal.getBlockPos(), -1, -1, -1), new PacketDistributor.TargetPoint(pedestalPos.getX(), pedestalPos.getY(), pedestalPos.getZ(), PACKET_RANGE, pedestal.getTheWorld().getDimension().getType()));
 		} else {
-			PacketHandler.sendToAllAround(new PacketPedestalFishHook(pedestal.getBlockPos(), hook.posX, hook.posY, hook.posZ), new PacketDistributor.TargetPoint(pedestalPos.getX(), pedestalPos.getY(), pedestalPos.getZ(), PACKET_RANGE, pedestal.getTheWorld().getDimension().getType()));
+			PacketHandler.sendToAllAround(new PacketPedestalFishHook(pedestal.getBlockPos(), hook.getPosX(), hook.getPosY(), hook.getPosZ()), new PacketDistributor.TargetPoint(pedestalPos.getX(), pedestalPos.getY(), pedestalPos.getZ(), PACKET_RANGE, pedestal.getTheWorld().getDimension().getType()));
 		}
 	}
 
@@ -272,9 +287,9 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		int z = pos.getZ();
 
 		double degree = 180 / Math.PI;
-		double dx = fakePlayer.posX - (x + 0.5);
-		double dy = fakePlayer.posY - y;
-		double dz = fakePlayer.posZ - (z + 0.5);
+		double dx = fakePlayer.getPosX() - (x + 0.5);
+		double dy = fakePlayer.getPosY() - y;
+		double dz = fakePlayer.getPosZ() - (z + 0.5);
 		fakePlayer.rotationYaw = (float) -((Math.atan2(dx, dz) * degree) + 180);
 		fakePlayer.rotationPitch = (float) (Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)) * degree);
 	}

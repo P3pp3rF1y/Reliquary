@@ -6,7 +6,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xreliquary.compat.curios.CuriosCompat;
 import xreliquary.init.ModItems;
-import xreliquary.items.IBaubleItem;
+import xreliquary.items.util.IBaubleItem;
 
 import java.util.function.Supplier;
 

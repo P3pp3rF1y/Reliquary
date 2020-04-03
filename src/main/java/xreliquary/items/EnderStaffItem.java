@@ -30,6 +30,7 @@ import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredBigItemStack;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
+import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -39,7 +40,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class EnderStaffItem extends ToggleableItem {
+public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem {
 
 	private static final String DIMENSION_ID_TAG = "dimensionID";
 	private static final String NODE_X_TAG = "nodeX";
@@ -93,18 +94,15 @@ public class EnderStaffItem extends ToggleableItem {
 	}
 
 	@Override
-	public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+	public ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entity) {
+		if (!entity.isShiftKeyDown()) {
+			return ActionResultType.CONSUME;
+		}
 		if (entity.world.isRemote) {
-			return true;
+			return ActionResultType.PASS;
 		}
-		if (!(entity instanceof PlayerEntity)) {
-			return true;
-		}
-		PlayerEntity player = (PlayerEntity) entity;
-		if (player.isSneaking()) {
-			cycleMode(stack);
-		}
-		return false;
+		cycleMode(stack);
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override
@@ -174,7 +172,7 @@ public class EnderStaffItem extends ToggleableItem {
 		PlayerEntity player = (PlayerEntity) entityLivingBase;
 
 		for (int particles = 0; particles < 2; particles++) {
-			player.world.addParticle(ParticleTypes.PORTAL, player.posX, player.posY, player.posZ, player.world.rand.nextGaussian(), player.world.rand.nextGaussian(), player.world.rand.nextGaussian());
+			player.world.addParticle(ParticleTypes.PORTAL, player.getPosX(), player.getPosY(), player.getPosZ(), player.world.rand.nextGaussian(), player.world.rand.nextGaussian(), player.world.rand.nextGaussian());
 		}
 		if (unadjustedCount == 1) {
 			player.stopActiveHand();
@@ -207,7 +205,7 @@ public class EnderStaffItem extends ToggleableItem {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (!player.isSneaking()) {
+		if (!player.isShiftKeyDown()) {
 			if (getMode(stack).equals("cast") || getMode(stack).equals(LONG_CAST_TAG)) {
 				if (player.isSwingInProgress || (getPearlCount(stack) < getEnderStaffPearlCost() && !player.isCreative())) {
 					return new ActionResult<>(ActionResultType.FAIL, stack);
@@ -267,7 +265,7 @@ public class EnderStaffItem extends ToggleableItem {
 		player.setPositionAndUpdate(x + 0.5, y + 0.875, z + 0.5);
 		player.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
 		for (int particles = 0; particles < 2; particles++) {
-			world.addParticle(ParticleTypes.PORTAL, player.posX, player.posY, player.posZ, world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
+			world.addParticle(ParticleTypes.PORTAL, player.getPosX(), player.getPosY(), player.getPosZ(), world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
 		}
 	}
 

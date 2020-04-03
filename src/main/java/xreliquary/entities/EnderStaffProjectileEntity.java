@@ -67,16 +67,16 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 
 	@Override
 	public void tick() {
-		lastTickPosX = posX;
-		lastTickPosY = posY;
-		lastTickPosZ = posZ;
+		lastTickPosX = getPosX();
+		lastTickPosY = getPosY();
+		lastTickPosZ = getPosZ();
 		baseTick();
 		if (throwableShake > 0) {
 			--throwableShake;
 		}
 
 		if (ticksInAir % 4 == world.rand.nextInt(5)) {
-			world.addParticle(ParticleTypes.PORTAL, posX, posY, posZ, 0.0D, 0.0D, 1.0D);
+			world.addParticle(ParticleTypes.PORTAL, getPosX(), getPosY(), getPosZ(), 0.0D, 0.0D, 1.0D);
 		}
 
 		if (inGround) {
@@ -102,7 +102,7 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 			}
 		}
 
-		RayTraceResult raytraceresult = ProjectileHelper.func_221267_a(this, axisalignedbb,
+		RayTraceResult raytraceresult = ProjectileHelper.rayTrace(this, axisalignedbb,
 				e -> !e.isSpectator() && e.canBeCollidedWith() && e != ignoreEntity, RayTraceContext.BlockMode.OUTLINE, true);
 		if (ignoreEntity != null && ignoreTime-- <= 0) {
 			ignoreEntity = null;
@@ -117,10 +117,9 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 		}
 
 		Vec3d vec3d = getMotion();
-		posX += vec3d.x;
-		posY += vec3d.y;
-		posZ += vec3d.z;
-		float f = MathHelper.sqrt(func_213296_b(vec3d));
+		setPosition(getPosX() + vec3d.x, getPosY() + vec3d.y, getPosZ() + vec3d.z);
+
+		float f = MathHelper.sqrt(getDistanceSq(vec3d));
 
 		rotationYaw = (float) (MathHelper.atan2(vec3d.x, vec3d.z) * (double) (180F / (float) Math.PI));
 		rotationPitch = (float) (MathHelper.atan2(vec3d.y, f) * (double) (180F / (float) Math.PI));
@@ -153,7 +152,6 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 		}
 
 		setMotion(getMotion().mul(var18, var18, var18).add(0, -var19, 0));
-		setPosition(posX, posY, posZ);
 	}
 
 	@Override
@@ -162,21 +160,21 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 	}
 
 	private void onThrowableCollision(RayTraceResult result) {
-		if (!(getThrower() instanceof PlayerEntity) || ((int) posY) <= 0) {
+		if (!(getThrower() instanceof PlayerEntity) || ((int) getPosY()) <= 0) {
 			remove();
 			return;
 		}
 
 		for (int i = 0; i < 32; i++) {
-			world.addParticle(ParticleTypes.PORTAL, posX, posY + rand.nextDouble() * 2D, posZ, rand.nextGaussian(), 0.0D, rand.nextGaussian());
+			world.addParticle(ParticleTypes.PORTAL, getPosX(), getPosY() + rand.nextDouble() * 2D, getPosZ(), rand.nextGaussian(), 0.0D, rand.nextGaussian());
 		}
 
 		if (!world.isRemote) {
 			getThrower().fallDistance = 0.0F;
 
-			int x = (int) Math.round(posX);
-			int y = (int) Math.round(posY);
-			int z = (int) Math.round(posZ);
+			int x = (int) Math.round(getPosX());
+			int y = (int) Math.round(getPosY());
+			int z = (int) Math.round(getPosZ());
 
 			if (result.getType() != RayTraceResult.Type.MISS) {
 				BlockPos pos;

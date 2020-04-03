@@ -21,6 +21,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -384,11 +385,11 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 		}
 	}
 
-	public boolean handleBlockActivation(World world, PlayerEntity player, Hand hand) {
+	public ActionResultType handleBlockActivation(World world, PlayerEntity player, Hand hand) {
 		ItemStack itemStack = player.getHeldItem(hand);
 
 		if (itemStack.isEmpty()) {
-			return false;
+			return ActionResultType.CONSUME;
 		}
 
 		if (getLiquidLevel() < 3 && !finishedCooking()) {
@@ -397,13 +398,13 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 					player.setHeldItem(hand, new ItemStack(Items.BUCKET));
 				}
 			} else if (Boolean.FALSE.equals(itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null).map(fh -> drainWater(player, fh)).orElse(false))) {
-				return false;
+				return ActionResultType.CONSUME;
 			}
 
 			setLiquidLevel(3);
 			cookTime = 0;
 
-			return true;
+			return ActionResultType.SUCCESS;
 		} else if (itemStack.getItem() == ModItems.EMPTY_POTION_VIAL && finishedCooking() && getLiquidLevel() > 0) {
 			if (finishedCooking() && hasNetherwart && !effects.isEmpty() && getLiquidLevel() > 0) {
 				ItemStack potion = removeContainedPotion();
@@ -416,7 +417,7 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 					world.addEntity(new ItemEntity(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
 				}
 
-				return true;
+				return ActionResultType.SUCCESS;
 			}
 		} else if (getLiquidLevel() == 3 && isItemValidForInput(itemStack)) {
 			addItem(itemStack);
@@ -428,9 +429,9 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 
 			itemStack.shrink(1);
 
-			return true;
+			return ActionResultType.SUCCESS;
 		}
-		return false;
+		return ActionResultType.CONSUME;
 	}
 
 	private Boolean drainWater(PlayerEntity player, IFluidHandlerItem fh) {

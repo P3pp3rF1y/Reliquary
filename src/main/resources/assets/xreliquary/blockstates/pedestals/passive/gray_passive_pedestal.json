@@ -1,23 +1,8 @@
 {
-    "forge_marker": 1,
-    "defaults": {
-        "model": "xreliquary:block/passive_pedestal",
-        "textures": {
-            "4": "block/gray_wool"
-        }
-    },
     "variants": {
-        "facing": {
-            "north": {},
-            "south": {
-                "y": 180
-            },
-            "west": {
-                "y": 270
-            },
-            "east": {
-                "y": 90
-            }
-        }
+        "facing=north": {"model": "xreliquary:block/pedestals/passive/gray_passive_pedestal"},
+        "facing=east": {"model": "xreliquary:block/pedestals/passive/gray_passive_pedestal", "y": 90},
+        "facing=south": {"model": "xreliquary:block/pedestals/passive/gray_passive_pedestal", "y": 180},
+        "facing=west": {"model": "xreliquary:block/pedestals/passive/gray_passive_pedestal", "y": 270}
     }
 }

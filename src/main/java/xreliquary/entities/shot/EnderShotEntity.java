@@ -25,8 +25,8 @@ public class EnderShotEntity extends ShotEntityBase {
 
 	private void doPortalExplosion() {
 		for (int particles = 0; particles < 3; particles++) {
-			spawnMotionBasedParticle(ParticleTypes.PORTAL, posY - 1);
-			world.addParticle(ParticleTypes.SMOKE, posX, posY, posZ, 0, 0, 0);
+			spawnMotionBasedParticle(ParticleTypes.PORTAL, getPosY() - 1);
+			world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), 0, 0, 0);
 		}
 		remove();
 	}
@@ -39,7 +39,7 @@ public class EnderShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -73,7 +73,7 @@ public class EnderShotEntity extends ShotEntityBase {
 	@Override
 	void doFlightEffects() {
 		if (ticksInAir % 3 == 0) {
-			spawnMotionBasedParticle(ParticleTypes.PORTAL, posY - 1);
+			spawnMotionBasedParticle(ParticleTypes.PORTAL, getPosY() - 1);
 		}
 
 		// housed in the base class

@@ -36,6 +36,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import xreliquary.items.util.FilteredBigItemStack;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
+import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -45,7 +46,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class RendingGaleItem extends ToggleableItem {
+public class RendingGaleItem extends ToggleableItem implements ILeftClickableItem {
 	private static final String FLIGHT_TAG = "flight";
 	private static final String COUNT_TAG = "count";
 
@@ -160,16 +161,15 @@ public class RendingGaleItem extends ToggleableItem {
 	}
 
 	@Override
-	public boolean onEntitySwing(ItemStack stack, LivingEntity entityLiving) {
-		if (entityLiving.world.isRemote || !(entityLiving instanceof PlayerEntity)) {
-			return false;
+	public ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
+		if (!entityLiving.isShiftKeyDown()) {
+			return ActionResultType.CONSUME;
 		}
-		PlayerEntity player = (PlayerEntity) entityLiving;
-		if (player.isSneaking()) {
-			cycleMode(stack, player.world.isRaining());
-			return true;
+		if (entityLiving.world.isRemote) {
+			return ActionResultType.PASS;
 		}
-		return false;
+		cycleMode(stack, entityLiving.world.isRaining());
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override
@@ -193,7 +193,7 @@ public class RendingGaleItem extends ToggleableItem {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (player.isSneaking()) {
+		if (player.isShiftKeyDown()) {
 			super.onItemRightClick(world, player, hand);
 		} else {
 			player.setActiveHand(hand);
@@ -221,11 +221,11 @@ public class RendingGaleItem extends ToggleableItem {
 		} else {
 			if (isFlightMode(rendingGale)) {
 				attemptFlight(player);
-				spawnFlightParticles(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, player);
+				spawnFlightParticles(player.world, player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), player);
 			} else if (isPushMode(rendingGale)) {
-				doRadialPush(player.world, player.posX, player.posY, player.posZ, player, false);
+				doRadialPush(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), player, false);
 			} else if (isPullMode(rendingGale)) {
-				doRadialPush(player.world, player.posX, player.posY, player.posZ, player, true);
+				doRadialPush(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), player, true);
 			}
 			if (!player.world.isRemote) {
 				setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - getChargeCost()), false);
@@ -234,7 +234,7 @@ public class RendingGaleItem extends ToggleableItem {
 	}
 
 	private void spawnBolt(ItemStack rendingGale, PlayerEntity player) {
-		RayTraceResult rayTraceResult = player.func_213324_a(getBoltTargetRange(), 1, true);
+		RayTraceResult rayTraceResult = player.pick(getBoltTargetRange(), 1, true);
 		if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK) {
 			BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) rayTraceResult;
 			int attemptedY = blockRayTraceResult.getPos().getY();
@@ -322,9 +322,9 @@ public class RendingGaleItem extends ToggleableItem {
 
 				Vec3d pushVector;
 				if (pull) {
-					pushVector = new Vec3d(posX - entity.posX, posY - entity.posY, posZ - entity.posZ);
+					pushVector = new Vec3d(posX - entity.getPosX(), posY - entity.getPosY(), posZ - entity.getPosZ());
 				} else {
-					pushVector = new Vec3d(entity.posX - posX, entity.posY - posY, entity.posZ - posZ);
+					pushVector = new Vec3d(entity.getPosX() - posX, entity.getPosY() - posY, entity.getPosZ() - posZ);
 				}
 				pushVector = pushVector.normalize();
 				entity.move(MoverType.PLAYER, new Vec3d(0.0D, 0.2D, 0.0D));
@@ -351,9 +351,9 @@ public class RendingGaleItem extends ToggleableItem {
 	}
 
 	private float getDistanceToEntity(double posX, double posY, double posZ, Entity entityIn) {
-		float f = (float) (posX - entityIn.posX);
-		float f1 = (float) (posY - entityIn.posY);
-		float f2 = (float) (posZ - entityIn.posZ);
+		float f = (float) (posX - entityIn.getPosX());
+		float f1 = (float) (posY - entityIn.getPosY());
+		float f2 = (float) (posZ - entityIn.getPosZ());
 		return MathHelper.sqrt(f * f + f1 * f1 + f2 * f2);
 	}
 

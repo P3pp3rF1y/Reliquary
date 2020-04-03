@@ -1,5 +1,6 @@
 package xreliquary.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -12,15 +13,14 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.Pair;
 import xreliquary.init.ModItems;
 
 import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
 import java.util.List;
 import java.util.Random;
 
-@SuppressWarnings({"deprecation", "squid:CallToDeprecatedMethod"}) // - a lot of methods here are deprecated, but need to be used to delegate call to the original model
+@SuppressWarnings({"deprecation", "squid:CallToDeprecatedMethod"})
+// - a lot of methods here are deprecated, but need to be used to delegate call to the original model
 public class VoidTearModel implements IBakedModel {
 	private final IBakedModel originalModel;
 
@@ -42,6 +42,11 @@ public class VoidTearModel implements IBakedModel {
 	@Override
 	public boolean isGui3d() {
 		return originalModel.isGui3d();
+	}
+
+	@Override
+	public boolean func_230044_c_() {
+		return originalModel.func_230044_c_();
 	}
 
 	@Override
@@ -81,7 +86,7 @@ public class VoidTearModel implements IBakedModel {
 	}
 
 	@Override
-	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-		return originalModel.handlePerspective(cameraTransformType);
+	public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+		return originalModel.handlePerspective(cameraTransformType, mat);
 	}
 }

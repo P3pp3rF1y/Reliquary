@@ -49,6 +49,7 @@ import xreliquary.reference.Settings;
 import xreliquary.util.LogHelper;
 import xreliquary.util.RandHelper;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -69,9 +70,9 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 
 	public LyssaBobberEntity(EntityType<LyssaBobberEntity> entityType, World world) {
 		super(entityType, world);
-		prevPosX = posX;
-		prevPosY = posY;
-		prevPosZ = posZ;
+		prevPosX = getPosX();
+		prevPosY = getPosY();
+		prevPosZ = getPosZ();
 	}
 
 	public LyssaBobberEntity(World world, PlayerEntity fishingPlayer, int lureSpeed, int luck) {
@@ -97,16 +98,16 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 		float f3 = MathHelper.sin(-f1 * ((float) Math.PI / 180F) - (float) Math.PI);
 		float f4 = -MathHelper.cos(-f * ((float) Math.PI / 180F));
 		float f5 = MathHelper.sin(-f * ((float) Math.PI / 180F));
-		double d0 = angler.posX - (double) f3 * 0.3D;
-		double d1 = angler.posY + (double) angler.getEyeHeight();
-		double d2 = angler.posZ - (double) f2 * 0.3D;
+		double d0 = angler.getPosX() - (double) f3 * 0.3D;
+		double d1 = angler.getPosY() + (double) angler.getEyeHeight();
+		double d2 = angler.getPosZ() - (double) f2 * 0.3D;
 		setLocationAndAngles(d0, d1, d2, f1, f);
 		Vec3d vec3d = new Vec3d(-f3, MathHelper.clamp(-(f5 / f4), -5.0F, 5.0F), -f2);
 		double d3 = vec3d.length();
 		vec3d = vec3d.mul(0.6D / d3 + 0.5D + rand.nextGaussian() * 0.0045D, 0.6D / d3 + 0.5D + rand.nextGaussian() * 0.0045D, 0.6D / d3 + 0.5D + rand.nextGaussian() * 0.0045D);
 		setMotion(vec3d);
 		rotationYaw = (float) (MathHelper.atan2(vec3d.x, vec3d.z) * (double) (180F / (float) Math.PI));
-		rotationPitch = (float) (MathHelper.atan2(vec3d.y, MathHelper.sqrt(func_213296_b(vec3d))) * (double) (180F / (float) Math.PI));
+		rotationPitch = (float) (MathHelper.atan2(vec3d.y, MathHelper.sqrt(getDistanceSq(vec3d))) * (double) (180F / (float) Math.PI));
 		prevRotationYaw = rotationYaw;
 		prevRotationPitch = rotationPitch;
 	}
@@ -154,7 +155,7 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 			BlockPos blockpos = new BlockPos(this);
 			IFluidState ifluidstate = world.getFluidState(blockpos);
 			if (ifluidstate.isTagged(FluidTags.WATER)) {
-				f = ifluidstate.func_215679_a(world, blockpos);
+				f = ifluidstate.getActualHeight(world, blockpos);
 			}
 
 			if (currentState == State.FLYING) {
@@ -187,10 +188,7 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 							caughtEntity = null;
 							currentState = State.FLYING;
 						} else {
-							posX = caughtEntity.posX;
-							posY = caughtEntity.getBoundingBox().minY + (double) caughtEntity.getHeight() * 0.8D;
-							posZ = caughtEntity.posZ;
-							setPosition(posX, posY, posZ);
+							setPosition(caughtEntity.getPosX(), caughtEntity.getBoundingBox().minY + (double) caughtEntity.getHeight() * 0.8D, caughtEntity.getPosZ());
 						}
 					}
 
@@ -199,7 +197,7 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 
 				if (currentState == State.BOBBING) {
 					Vec3d vec3d = getMotion();
-					double d0 = posY + vec3d.y - (double) blockpos.getY() - (double) f;
+					double d0 = getPosY() + vec3d.y - (double) blockpos.getY() - (double) f;
 					if (Math.abs(d0) < 0.01D) {
 						d0 += Math.signum(d0) * 0.1D;
 					}
@@ -218,13 +216,12 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 			move(MoverType.SELF, getMotion());
 			updateRotation();
 			setMotion(getMotion().scale(0.92D));
-			setPosition(posX, posY, posZ);
 		}
 	}
 
 	private void updateRotation() {
 		Vec3d vec3d = getMotion();
-		float f = MathHelper.sqrt(func_213296_b(vec3d));
+		float f = MathHelper.sqrt(getDistanceSq(vec3d));
 		rotationYaw = (float) (MathHelper.atan2(vec3d.x, vec3d.z) * (double) (180F / (float) Math.PI));
 
 		rotationPitch = (float) (MathHelper.atan2(vec3d.y, f) * (double) (180F / (float) Math.PI));
@@ -249,7 +246,7 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 	}
 
 	private void checkCollision() {
-		RayTraceResult raytraceresult = ProjectileHelper.func_221267_a(this, getBoundingBox().expand(getMotion()).grow(1.0D), e -> !e.isSpectator() && (e.canBeCollidedWith() || e instanceof ItemEntity) && (e != angler || ticksInAir >= 5), RayTraceContext.BlockMode.COLLIDER, true);
+		RayTraceResult raytraceresult = ProjectileHelper.rayTrace(this, getBoundingBox().expand(getMotion()).grow(1.0D), e -> !e.isSpectator() && (e.canBeCollidedWith() || e instanceof ItemEntity) && (e != angler || ticksInAir >= 5), RayTraceContext.BlockMode.COLLIDER, true);
 		if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
 			if (raytraceresult.getType() == RayTraceResult.Type.ENTITY) {
 				caughtEntity = ((EntityRayTraceResult) raytraceresult).getEntity();
@@ -272,7 +269,7 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 			++i;
 		}
 
-		if (rand.nextFloat() < 0.5F && !world.isSkyLightMax(blockpos)) {
+		if (rand.nextFloat() < 0.5F && !world.canSeeSky(blockpos)) {
 			--i;
 		}
 
@@ -291,9 +288,9 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 				float f = fishApproachAngle * ((float) Math.PI / 180F);
 				float f1 = MathHelper.sin(f);
 				float f2 = MathHelper.cos(f);
-				double d0 = posX + (double) (f1 * (float) ticksCatchableDelay * 0.1F);
+				double d0 = getPosX() + (double) (f1 * (float) ticksCatchableDelay * 0.1F);
 				double d1 = (float) MathHelper.floor(getBoundingBox().minY) + 1.0F;
-				double d2 = posZ + (double) (f2 * (float) ticksCatchableDelay * 0.1F);
+				double d2 = getPosZ() + (double) (f2 * (float) ticksCatchableDelay * 0.1F);
 				if (serverworld.getBlockState(new BlockPos((int) d0, (int) d1 - 1, (int) d2)).getMaterial() == net.minecraft.block.material.Material.WATER) {
 					if (rand.nextFloat() < 0.15F) {
 						serverworld.spawnParticle(ParticleTypes.BUBBLE, d0, d1 - (double) 0.1F, d2, 1, f1, 0.1D, f2, 0.0D);
@@ -309,8 +306,8 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 				setMotion(vec3d.x, -0.4F * MathHelper.nextFloat(rand, 0.6F, 1.0F), vec3d.z);
 				playSound(SoundEvents.ENTITY_FISHING_BOBBER_SPLASH, 0.25F, 1.0F + RandHelper.getRandomMinusOneToOne(rand) * 0.4F);
 				double d3 = getBoundingBox().minY + 0.5D;
-				serverworld.spawnParticle(ParticleTypes.BUBBLE, posX, d3, posZ, (int) (1.0F + getWidth() * 20.0F), getWidth(), 0.0D, getWidth(), 0.2F);
-				serverworld.spawnParticle(ParticleTypes.FISHING, posX, d3, posZ, (int) (1.0F + getWidth() * 20.0F), getWidth(), 0.0D, getWidth(), 0.2F);
+				serverworld.spawnParticle(ParticleTypes.BUBBLE, getPosX(), d3, getPosZ(), (int) (1.0F + getWidth() * 20.0F), getWidth(), 0.0D, getWidth(), 0.2F);
+				serverworld.spawnParticle(ParticleTypes.FISHING, getPosX(), d3, getPosZ(), (int) (1.0F + getWidth() * 20.0F), getWidth(), 0.0D, getWidth(), 0.2F);
 				ticksCatchable = MathHelper.nextInt(rand, 20, 40);
 			}
 		} else if (ticksCaughtDelay > 0) {
@@ -327,9 +324,9 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 			if (rand.nextFloat() < f5) {
 				float f6 = MathHelper.nextFloat(rand, 0.0F, 360.0F) * ((float) Math.PI / 180F);
 				float f7 = MathHelper.nextFloat(rand, 25.0F, 60.0F);
-				double d4 = posX + (double) (MathHelper.sin(f6) * f7 * 0.1F);
+				double d4 = getPosX() + (double) (MathHelper.sin(f6) * f7 * 0.1F);
 				double d5 = (float) MathHelper.floor(getBoundingBox().minY) + 1.0F;
-				double d6 = posZ + (double) (MathHelper.cos(f6) * f7 * 0.1F);
+				double d6 = getPosZ() + (double) (MathHelper.cos(f6) * f7 * 0.1F);
 				if (serverworld.getBlockState(new BlockPos(d4, d5 - 1.0D, d6)).getMaterial() == net.minecraft.block.material.Material.WATER) {
 					serverworld.spawnParticle(ParticleTypes.SPLASH, d4, d5, d6, 2 + rand.nextInt(2), 0.1F, 0.0D, 0.1F, 0.0D);
 				}
@@ -375,13 +372,13 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 				List<ItemStack> list = loottable.generate(builder.build(LootParameterSets.FISHING));
 
 				for (ItemStack itemstack : list) {
-					ItemEntity itementity = new ItemEntity(world, posX, posY, posZ, itemstack);
-					double d0 = angler.posX - posX;
-					double d1 = angler.posY - posY;
-					double d2 = angler.posZ - posZ;
+					ItemEntity itementity = new ItemEntity(world, getPosX(), getPosY(), getPosZ(), itemstack);
+					double d0 = angler.getPosX() - getPosX();
+					double d1 = angler.getPosY() - getPosY();
+					double d2 = angler.getPosZ() - getPosZ();
 					itementity.setMotion(d0 * 0.1D, d1 * 0.1D + Math.sqrt(Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2)) * 0.08D, d2 * 0.1D);
 					world.addEntity(itementity);
-					angler.world.addEntity(new ExperienceOrbEntity(angler.world, angler.posX, angler.posY + 0.5D, angler.posZ + 0.5D, rand.nextInt(6) + 1));
+					angler.world.addEntity(new ExperienceOrbEntity(angler.world, angler.getPosX(), angler.getPosY() + 0.5D, angler.getPosZ() + 0.5D, rand.nextInt(6) + 1));
 					if (itemstack.getItem().isIn(ItemTags.FISHES)) {
 						angler.addStat(Stats.FISH_CAUGHT, 1);
 					}
@@ -413,7 +410,7 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 
 	private void bringInHookedEntityOriginal() {
 		if (angler != null) {
-			Vec3d vec3d = (new Vec3d(angler.posX - posX, angler.posY - posY, angler.posZ - posZ)).scale(0.1D);
+			Vec3d vec3d = (new Vec3d(angler.getPosX() - getPosX(), angler.getPosY() - getPosY(), angler.getPosZ() - getPosZ())).scale(0.1D);
 			caughtEntity.setMotion(caughtEntity.getMotion().add(vec3d));
 		}
 	}
@@ -439,6 +436,7 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 
 	}
 
+	@Nullable
 	public PlayerEntity getAngler() {
 		return angler;
 	}
@@ -494,14 +492,14 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 
 			IFluidState ifluidstate = world.getFluidState(blockpos);
 			if (ifluidstate.isTagged(FluidTags.WATER)) {
-				f = ifluidstate.func_215679_a(world, blockpos);
+				f = ifluidstate.getActualHeight(world, blockpos);
 			}
 
 			if (f <= 0F) {
 				List<Entity> list = world.getEntitiesWithinAABB(ItemEntity.class, getBoundingBox().expand(getMotion()).grow(3.0D));
 
 				for (Entity e : list) {
-					Vec3d pullVector = new Vec3d(posX - e.posX, posY - e.posY, posZ - e.posZ).normalize();
+					Vec3d pullVector = new Vec3d(getPosX() - e.getPosX(), getPosY() - e.getPosY(), getPosZ() - e.getPosZ()).normalize();
 					e.setMotion(pullVector.mul(0.4D, 0.4D, 0.4D));
 				}
 			}
@@ -520,7 +518,7 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 
 	public void handleHookRetraction(ItemStack stack) {
 		if (!world.isRemote) {
-			if (caughtEntity != null && getAngler().isSneaking() && canStealFromEntity()) {
+			if (caughtEntity != null && getAngler().isCrouching() && canStealFromEntity()) {
 				stealFromLivingEntity();
 				remove();
 			} else {
@@ -540,9 +538,9 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 		List<ItemEntity> pullingItemsList = world.getEntitiesWithinAABB(ItemEntity.class, getBoundingBox().expand(getMotion()).grow(1.0D, 1.0D, 1.0D));
 
 		for (ItemEntity e : pullingItemsList) {
-			double d1 = getAngler().posX - posX;
-			double d3 = getAngler().posY - posY;
-			double d5 = getAngler().posZ - posZ;
+			double d1 = getAngler().getPosX() - getPosX();
+			double d3 = getAngler().getPosY() - getPosY();
+			double d5 = getAngler().getPosZ() - getPosZ();
 			double d7 = MathHelper.sqrt(d1 * d1 + d3 * d3 + d5 * d5);
 			double d9 = 0.1D;
 			e.setMotion(d1 * d9, d3 * d9 + (double) MathHelper.sqrt(d7) * 0.08D, d5 * d9);
@@ -578,11 +576,11 @@ public class LyssaBobberEntity extends Entity implements IEntityAdditionalSpawnD
 		if (!stolenStack.isEmpty()) {
 			int randomItemDamage = world.rand.nextInt(3);
 			stolenStack.damageItem(randomItemDamage, livingEntity, e -> {});
-			ItemEntity entityitem = new ItemEntity(world, posX, posY, posZ, stolenStack);
+			ItemEntity entityitem = new ItemEntity(world, getPosX(), getPosY(), getPosZ(), stolenStack);
 			entityitem.setPickupDelay(5);
-			double d1 = getAngler().posX - posX;
-			double d3 = getAngler().posY - posY;
-			double d5 = getAngler().posZ - posZ;
+			double d1 = getAngler().getPosX() - getPosX();
+			double d3 = getAngler().getPosY() - getPosY();
+			double d5 = getAngler().getPosZ() - getPosZ();
 			double d7 = MathHelper.sqrt(d1 * d1 + d3 * d3 + d5 * d5);
 			double d9 = 0.1D;
 			entityitem.setMotion(d1 * d9, d3 * d9 + (double) MathHelper.sqrt(d7) * 0.08D, d5 * d9);

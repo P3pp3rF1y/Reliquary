@@ -13,6 +13,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -42,7 +43,7 @@ public class InterdictionTorchBlock extends TorchBlock {
 	}
 
 	@Override
-	public void tick(BlockState state, World world, BlockPos pos, Random random) {
+	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		super.tick(state, world, pos, random);
 		world.getPendingBlockTicks().scheduleTick(pos, this, TICK_RATE);
 		if (world.isRemote) {
@@ -79,7 +80,7 @@ public class InterdictionTorchBlock extends TorchBlock {
 				// note that we do not add 0.5 to the y coord, if we wanted to be
 				// SUPER accurate, we would be using
 				// the entity height offset to find its "center of mass"
-				Vec3d angleOfAttack = new Vec3d(entity.posX - (pos.getX() + 0.5D), entity.posY - pos.getY(), entity.posZ - (pos.getZ() + 0.5D));
+				Vec3d angleOfAttack = entity.getPositionVec().add(-(pos.getX() + 0.5D), -pos.getY(), -(pos.getZ() + 0.5D));
 
 				// we use the resultant vector to determine the force to apply.
 				double xForce = angleOfAttack.x * knockbackMultiplier * reductionCoefficient;

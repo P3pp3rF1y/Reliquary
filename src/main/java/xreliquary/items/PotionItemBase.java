@@ -9,6 +9,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import xreliquary.items.util.IPotionItem;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;

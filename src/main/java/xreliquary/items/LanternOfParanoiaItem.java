@@ -74,12 +74,12 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 	}
 
 	private boolean isBlockBlockingView(World world, PlayerEntity player, BlockPos pos) {
-		double playerEyeHeight = player.posY + player.getEyeHeight();
+		double playerEyeHeight = player.getPosY() + player.getEyeHeight();
 		for (float xOff = -0.2F; xOff <= 0.2F; xOff += 0.4F) {
 			for (float yOff = -0.2F; yOff <= 0.2F; yOff += 0.4F) {
 				for (float zOff = -0.2F; zOff <= 0.2F; zOff += 0.4F) {
 
-					Vec3d playerVec = new Vec3d(player.posX + xOff, playerEyeHeight + yOff, player.posZ + zOff);
+					Vec3d playerVec = new Vec3d(player.getPosX() + xOff, playerEyeHeight + yOff, player.getPosZ() + zOff);
 					Vec3d rayTraceVector = new Vec3d(pos).add(0.5D + xOff, 0.5D + yOff, 0.5D + zOff);
 
 					RayTraceResult rayTraceResult = world.rayTraceBlocks(new RayTraceContext(playerVec, rayTraceVector, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
@@ -113,7 +113,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			ItemStack torchStack = new ItemStack(torch);
 			for (Direction side : trySides) {
 				BlockState torchBlockState = getTorchSideAttempt(world, torch, pos, side);
-				if (!world.func_217350_a(torchBlockState, pos, ISelectionContext.dummy()) || !(InventoryHelper.consumeItem(torchStack, player, 0, 1) || findAndDrainSojournersStaff(player, torch))) {
+				if (!world.func_226663_a_(torchBlockState, pos, ISelectionContext.dummy()) || !(InventoryHelper.consumeItem(torchStack, player, 0, 1) || findAndDrainSojournersStaff(player, torch))) {
 					continue;
 				}
 

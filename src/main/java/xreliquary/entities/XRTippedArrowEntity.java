@@ -83,7 +83,7 @@ public class XRTippedArrowEntity extends AbstractArrowEntity {
 			double d2 = (double) (i & 255) / 255.0D;
 
 			for (int j = 0; j < particleCount; ++j) {
-				world.addParticle(ParticleTypes.ENTITY_EFFECT, posX + (rand.nextDouble() - 0.5D) * (double) getWidth(), posY + rand.nextDouble() * (double) getHeight(), posZ + (rand.nextDouble() - 0.5D) * (double) getWidth(), d0, d1, d2);
+				world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX() + (rand.nextDouble() - 0.5D) * (double) getWidth(), getPosY() + rand.nextDouble() * (double) getHeight(), getPosZ() + (rand.nextDouble() - 0.5D) * (double) getWidth(), d0, d1, d2);
 			}
 		}
 	}
@@ -140,7 +140,7 @@ public class XRTippedArrowEntity extends AbstractArrowEntity {
 				double d2 = (double) (i & 255) / 255.0D;
 
 				for (int j = 0; j < 20; ++j) {
-					world.addParticle(ParticleTypes.ENTITY_EFFECT, posX + (rand.nextDouble() - 0.5D) * (double) getWidth(), posY + rand.nextDouble() * (double) getHeight(), posZ + (rand.nextDouble() - 0.5D) * (double) getWidth(), d0, d1, d2);
+					world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX() + (rand.nextDouble() - 0.5D) * (double) getWidth(), getPosY() + rand.nextDouble() * (double) getHeight(), getPosZ() + (rand.nextDouble() - 0.5D) * (double) getWidth(), d0, d1, d2);
 				}
 			}
 		} else {

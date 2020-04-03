@@ -89,13 +89,13 @@ public abstract class ThrownPotionEntity extends ThrowableEntity implements IRen
 
 		Random rand = this.rand;
 		for (int i = 0; i < 8; ++i) {
-			world.addParticle(new ItemParticleData(ParticleTypes.ITEM, getItem()), posX, posY, posZ,
+			world.addParticle(new ItemParticleData(ParticleTypes.ITEM, getItem()), getPosX(), getPosY(), getPosZ(),
 					rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D);
 		}
 
 		world.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
 
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), posX, posY, posZ), new PacketDistributor.TargetPoint(posX, posY, posZ, 32D, world.getDimension().getType()));
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), getPosX(), getPosY(), getPosZ()), new PacketDistributor.TargetPoint(getPosX(), getPosY(), getPosZ(), 32D, world.getDimension().getType()));
 	}
 
 	// this gets called inside the on-impact method on EVERY living entity

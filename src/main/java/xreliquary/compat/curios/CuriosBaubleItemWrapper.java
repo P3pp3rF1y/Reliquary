@@ -2,7 +2,7 @@ package xreliquary.compat.curios;
 
 import net.minecraft.entity.LivingEntity;
 import top.theillusivec4.curios.api.capability.ICurio;
-import xreliquary.items.IBaubleItem;
+import xreliquary.items.util.IBaubleItem;
 
 class CuriosBaubleItemWrapper implements ICurio {
 	private IBaubleItem baubleItem;

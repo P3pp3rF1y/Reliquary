@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.common.gui.ContainerMobCharmBelt;
+import xreliquary.items.util.IBaubleItem;
 import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
@@ -47,7 +48,7 @@ public class MobCharmBeltItem extends ItemBase implements IBaubleItem {
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 
-		if (player.isSneaking()) {
+		if (player.isCrouching()) {
 			return new ActionResult<>(ActionResultType.PASS, stack);
 		}
 

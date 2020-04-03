@@ -67,16 +67,16 @@ public class ConcussiveExplosion extends Explosion {
 		double d9;
 		double var13 = Math.sqrt(entity.getDistanceSq(pos)) / explosionSize;
 		if (var13 <= 1.0D) {
-			d5 = entity.posX - pos.getX();
-			d7 = entity.posY + entity.getEyeHeight() - pos.getY();
-			d9 = entity.posZ - pos.getZ();
+			d5 = entity.getPosX() - pos.getX();
+			d7 = entity.getPosY() + entity.getEyeHeight() - pos.getY();
+			d9 = entity.getPosZ() - pos.getZ();
 			double var33 = MathHelper.sqrt(d5 * d5 + d7 * d7 + d9 * d9);
 
 			if (var33 != 0.0D) {
 				d5 /= var33;
 				d7 /= var33;
 				d9 /= var33;
-				double var32 = func_222259_a(var30, entity);
+				double var32 = getBlockDensity(var30, entity);
 				double d10 = (1.0D - var13) * var32;
 				entity.attackEntityFrom(DamageSource.causeThrownDamage(exploder, shootingEntity), (int) ((d10 * d10 + d10) * 6.0D * (explosionSize * 2) + 3.0D));
 				entity.setMotion(entity.getMotion().add(d5 * d10, d7 * d10, d9 * d10));
@@ -132,7 +132,7 @@ public class ConcussiveExplosion extends Explosion {
 		var11.doExplosionA();
 		var11.doExplosionB(false);
 
-		PacketHandler.sendToAllAround(new PacketFXConcussiveExplosion(size, pos), new PacketDistributor.TargetPoint(entity.posX, entity.posY, entity.posZ, 96.0D, entity.getEntityWorld().getDimension().getType()));
+		PacketHandler.sendToAllAround(new PacketFXConcussiveExplosion(size, pos), new PacketDistributor.TargetPoint(entity.getPosX(), entity.getPosY(), entity.getPosZ(), 96.0D, entity.getEntityWorld().getDimension().getType()));
 
 	}
 
@@ -141,7 +141,7 @@ public class ConcussiveExplosion extends Explosion {
 		var11.doExplosionA();
 		var11.doExplosionB(false);
 
-		PacketHandler.sendToAllAround(new PacketFXConcussiveExplosion((float) 4.0, pos), new PacketDistributor.TargetPoint(entity.posX, entity.posY, entity.posZ, 96.0D, entity.getEntityWorld().getDimension().getType()));
+		PacketHandler.sendToAllAround(new PacketFXConcussiveExplosion((float) 4.0, pos), new PacketDistributor.TargetPoint(entity.getPosX(), entity.getPosY(), entity.getPosZ(), 96.0D, entity.getEntityWorld().getDimension().getType()));
 
 	}
 

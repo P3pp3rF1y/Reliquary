@@ -74,11 +74,12 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 	public <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world, PlayerEntity player, Hand hand) {
 		this(entityType, world);
 		shootingEntity = player;
-		setLocationAndAngles(player.posX, player.posY + player.getEyeHeight(), player.posZ, player.rotationYaw, player.rotationPitch);
-		posX -= MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * (hand == Hand.MAIN_HAND ? 1 : -1) * 0.16F;
-		posY -= 0.2D;
-		posZ -= MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * (hand == Hand.MAIN_HAND ? 1 : -1) * 0.16F;
-		setPosition(posX, posY, posZ);
+		setLocationAndAngles(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), player.rotationYaw, player.rotationPitch);
+		setPosition(
+				getPosX() - MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * (hand == Hand.MAIN_HAND ? 1 : -1) * 0.16F,
+				getPosY() - 0.2D,
+				getPosZ() - MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * (hand == Hand.MAIN_HAND ? 1 : -1) * 0.16F
+		);
 	}
 
 	@Override
@@ -114,10 +115,6 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 		prevRotationPitch = rotationPitch = (float) (Math.atan2(motionY, var10) * 180.0D / Math.PI);
 	}
 
-	/**
-	 * Sets the position and rotation. Only difference from the other one is no bounding on the rotation. Args: posX,
-	 * posY, posZ, yaw, pitch
-	 **/
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport) {
@@ -137,7 +134,7 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 			float var7 = MathHelper.sqrt(motionX * motionX + motionZ * motionZ);
 			prevRotationYaw = rotationYaw = (float) (Math.atan2(motionX, motionZ) * 180.0D / Math.PI);
 			prevRotationPitch = rotationPitch = (float) (Math.atan2(motionY, var7) * 180.0D / Math.PI);
-			setLocationAndAngles(posX, posY, posZ, rotationYaw, rotationPitch);
+			setLocationAndAngles(getPosX(), getPosY(), getPosZ(), rotationYaw, rotationPitch);
 		}
 	}
 
@@ -171,7 +168,7 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 			VoxelShape voxelshape = blockState.getCollisionShape(world, pos);
 			if (!voxelshape.isEmpty()) {
 				for (AxisAlignedBB axisalignedbb : voxelshape.toBoundingBoxList()) {
-					if (axisalignedbb.offset(pos).contains(new Vec3d(posX, posY, posZ))) {
+					if (axisalignedbb.offset(pos).contains(new Vec3d(getPosX(), getPosY(), getPosZ()))) {
 						inGround = true;
 						break;
 					}
@@ -182,7 +179,7 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 		if (!inGround) {
 			++ticksInAir;
 			if (ticksInAir == 2) {
-				world.addParticle(ParticleTypes.FLAME, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0D, 0D, 0D);
+				world.addParticle(ParticleTypes.FLAME, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0D, 0D, 0D);
 				for (int particles = 0; particles < 3; particles++) {
 					doFiringEffects();
 				}
@@ -191,8 +188,8 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 				doFlightEffects();
 			}
 
-			Vec3d posVector = new Vec3d(posX, posY, posZ);
-			Vec3d approachVector = new Vec3d(posX + motionVec.getX(), posY + motionVec.getY(), posZ + motionVec.getZ());
+			Vec3d posVector = new Vec3d(getPosX(), getPosY(), getPosZ());
+			Vec3d approachVector = new Vec3d(getPosX() + motionVec.getX(), getPosY() + motionVec.getY(), getPosZ() + motionVec.getZ());
 
 			RayTraceResult objectStruckByVector = world.rayTraceBlocks(new RayTraceContext(posVector, approachVector, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
 
@@ -248,7 +245,7 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 			double d2 = (double) (color & 255) / 255.0D;
 
 			for (int j = 0; j < 2; ++j) {
-				world.addParticle(ParticleTypes.ENTITY_EFFECT, posX + (rand.nextDouble() - 0.5D) * (double) getWidth(), posY + rand.nextDouble() * (double) getHeight(), posZ + (rand.nextDouble() - 0.5D) * (double) getWidth(), d0, d1, d2);
+				world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX() + (rand.nextDouble() - 0.5D) * (double) getWidth(), getPosY() + rand.nextDouble() * (double) getHeight(), getPosZ() + (rand.nextDouble() - 0.5D) * (double) getWidth(), d0, d1, d2);
 			}
 		}
 	}
@@ -330,12 +327,12 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 	}
 
 	protected void spawnMotionBasedParticle(IParticleData particleData) {
-		spawnMotionBasedParticle(particleData, posY);
+		spawnMotionBasedParticle(particleData, getPosY());
 	}
 
 	protected void spawnMotionBasedParticle(IParticleData particleData, double y) {
 		Vec3d motion = getMotion();
-		world.addParticle(particleData, posX, y, posZ, gaussian(motion.getX()), gaussian(motion.getY()), gaussian(motion.getZ()));
+		world.addParticle(particleData, getPosX(), y, getPosZ(), gaussian(motion.getX()), gaussian(motion.getY()), gaussian(motion.getZ()));
 	}
 
 	protected DamageSource getDamageSource() {
@@ -410,22 +407,22 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 			for (int particles = 0; particles < 4; particles++) {
 				switch (sideHit) {
 					case DOWN:
-						world.addParticle(ParticleTypes.SMOKE, posX, posY, posZ, gaussian(0.1D), -gaussian(0.1D), gaussian(0.1D));
+						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), -gaussian(0.1D), gaussian(0.1D));
 						break;
 					case UP:
-						world.addParticle(ParticleTypes.SMOKE, posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
+						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
 						break;
 					case NORTH:
-						world.addParticle(ParticleTypes.SMOKE, posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), -gaussian(0.1D));
+						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), gaussian(0.1D), -gaussian(0.1D));
 						break;
 					case SOUTH:
-						world.addParticle(ParticleTypes.SMOKE, posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
+						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
 						break;
 					case WEST:
-						world.addParticle(ParticleTypes.SMOKE, posX, posY, posZ, -gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
+						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), -gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
 						break;
 					case EAST:
-						world.addParticle(ParticleTypes.SMOKE, posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
+						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
 						break;
 				}
 			}
@@ -440,7 +437,8 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 	void seekTarget() {
 		Entity closestTarget = null;
 		List<String> huntableEntitiesBlacklist = Settings.COMMON.items.seekerShot.huntableEntitiesBlacklist.get();
-		List targetsList = world.getEntitiesInAABBexcluding(this, new AxisAlignedBB(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5),
+		List targetsList = world.getEntitiesInAABBexcluding(this,
+				new AxisAlignedBB(getPosX() - 5, getPosY() - 5, getPosZ() - 5, getPosX() + 5, getPosY() + 5, getPosZ() + 5),
 				e -> e instanceof MobEntity);
 		Iterator iTarget = targetsList.iterator();
 		double closestDistance = Double.MAX_VALUE;

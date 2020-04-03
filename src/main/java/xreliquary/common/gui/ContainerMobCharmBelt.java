@@ -22,20 +22,21 @@ public class ContainerMobCharmBelt extends Container {
 		super(TYPE, windowId);
 		this.belt = belt;
 
-		for(int i = 0; i < Reference.MOB_CHARM.COUNT_TYPES + 1; i++) {
+		for (int i = 0; i < Reference.MOB_CHARM.COUNT_TYPES + 1; i++) {
 			addSlot(new SlotMobCharm(belt, i, -999, 0));
 		}
 
-		for(int i = 0; i < 3; ++i) {
-			for(int j = 0; j < 9; ++j) {
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 9; ++j) {
 				addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 113 + i * 18));
 			}
 		}
 
-		for(int k = 0; k < 9; ++k) {
+		for (int k = 0; k < 9; ++k) {
 			addSlot(new Slot(playerInventory, k, 8 + k * 18, 171));
 		}
 	}
+
 	private ItemStack belt;
 
 	private static final int PLAYER_INV_INDEX = Reference.MOB_CHARM.COUNT_TYPES + 1;
@@ -44,26 +45,28 @@ public class ContainerMobCharmBelt extends Container {
 
 	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
 		Slot slot = null;
-		if(slotId >= 0 && slotId < inventorySlots.size())
+		if (slotId >= 0 && slotId < inventorySlots.size()) {
 			slot = inventorySlots.get(slotId);
+		}
 		ItemStack slotStack = slot == null ? ItemStack.EMPTY : slot.getStack();
 
 		//prevent moving belt out of its slot
-		if(slot != null && !slotStack.isEmpty() && slotStack.getItem() == ModItems.MOB_CHARM_BELT && slotStack == player.getHeldItemMainhand())
+		if (slot != null && !slotStack.isEmpty() && slotStack.getItem() == ModItems.MOB_CHARM_BELT && slotStack == player.getHeldItemMainhand()) {
 			return ItemStack.EMPTY;
+		}
 
 		//overriden here so that on shift click it doesn't retry and thus move more charms out of belt
-		if(slotId >= 0 && slotId < PLAYER_INV_INDEX && clickTypeIn == ClickType.QUICK_MOVE && (dragType == 0 || dragType == 1)) {
+		if (slotId >= 0 && slotId < PLAYER_INV_INDEX && clickTypeIn == ClickType.QUICK_MOVE && (dragType == 0 || dragType == 1)) {
 			ItemStack itemstack = ItemStack.EMPTY;
 
-			if(slot != null && slot.canTakeStack(player)) {
-				if(!slotStack.isEmpty()) {
+			if (slot != null && slot.canTakeStack(player)) {
+				if (!slotStack.isEmpty()) {
 					itemstack = slotStack.copy();
 				}
 
 				ItemStack transferredStack = transferStackInSlot(player, slotId);
 
-				if(!transferredStack.isEmpty()) {
+				if (!transferredStack.isEmpty()) {
 					itemstack = transferredStack.copy();
 				}
 			}
@@ -73,32 +76,31 @@ public class ContainerMobCharmBelt extends Container {
 		return super.slotClick(slotId, dragType, clickTypeIn, player);
 	}
 
-
 	@Override
 	public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
 		ItemStack copiedStack = ItemStack.EMPTY;
 		Slot slot = inventorySlots.get(index);
 
-		if(slot != null && slot.getHasStack()) {
+		if (slot != null && slot.getHasStack()) {
 			ItemStack originalStack = slot.getStack();
 			copiedStack = originalStack.copy();
 
-			if(index < PLAYER_INV_INDEX) {
-				if(!mergeItemStack(originalStack, PLAYER_INV_INDEX, PLAYER_INV_INDEX + 36, true)) {
+			if (index < PLAYER_INV_INDEX) {
+				if (!mergeItemStack(originalStack, PLAYER_INV_INDEX, PLAYER_INV_INDEX + 36, true)) {
 					return ItemStack.EMPTY;
 				}
 
 				slot.onSlotChange(originalStack, copiedStack);
-			} else if(index < PLAYER_INV_INDEX + 36) {
-				if(originalStack.getItem() == ModItems.MOB_CHARM) {
-					if(!mergeItemStack(originalStack, 0, PLAYER_INV_INDEX, false)) {
+			} else if (index < PLAYER_INV_INDEX + 36) {
+				if (originalStack.getItem() == ModItems.MOB_CHARM) {
+					if (!mergeItemStack(originalStack, 0, PLAYER_INV_INDEX, false)) {
 						return ItemStack.EMPTY;
 					}
-				} else if(index < PLAYER_INV_INDEX + 27) {
-					if(!mergeItemStack(originalStack, PLAYER_INV_INDEX + 27, PLAYER_INV_INDEX + 36, false)) {
+				} else if (index < PLAYER_INV_INDEX + 27) {
+					if (!mergeItemStack(originalStack, PLAYER_INV_INDEX + 27, PLAYER_INV_INDEX + 36, false)) {
 						return ItemStack.EMPTY;
 					}
-				} else if(!mergeItemStack(originalStack, PLAYER_INV_INDEX, PLAYER_INV_INDEX + 27, false)) {
+				} else if (!mergeItemStack(originalStack, PLAYER_INV_INDEX, PLAYER_INV_INDEX + 27, false)) {
 					return ItemStack.EMPTY;
 				}
 			}
@@ -109,7 +111,7 @@ public class ContainerMobCharmBelt extends Container {
 				slot.onSlotChanged();
 			}
 
-			if(originalStack.getCount() == copiedStack.getCount()) {
+			if (originalStack.getCount() == copiedStack.getCount()) {
 				return ItemStack.EMPTY;
 			}
 
@@ -120,10 +122,9 @@ public class ContainerMobCharmBelt extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith( PlayerEntity playerIn) {
+	public boolean canInteractWith(PlayerEntity playerIn) {
 		return true;
 	}
-
 
 	public ItemStack getBelt() {
 		return belt;

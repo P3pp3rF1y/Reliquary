@@ -64,7 +64,7 @@ public class WitherlessRoseItem extends ItemBase {
 			for (int particles = 0; particles < 10; particles++) {
 				double gauss1 = gaussian(world.rand);
 				double gauss2 = gaussian(world.rand);
-				world.addParticle(ParticleTypes.ENTITY_EFFECT, player.posX + gauss1, player.posY + player.getHeight() / 2, player.posZ + gauss2, 0.0, 0.0, 1.0);
+				world.addParticle(ParticleTypes.ENTITY_EFFECT, player.getPosX() + gauss1, player.getPosY() + player.getHeight() / 2, player.getPosZ() + gauss2, 0.0, 0.0, 1.0);
 			}
 		}
 	}

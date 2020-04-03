@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -57,28 +58,28 @@ public class ApothecaryMortarBlock extends BaseBlock {
 	}
 
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		ItemStack heldItem = player.getHeldItem(hand);
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if (!(tileEntity instanceof ApothecaryMortarTileEntity)) {
-			return false;
+			return ActionResultType.FAIL;
 		}
 		ApothecaryMortarTileEntity mortar = (ApothecaryMortarTileEntity) tileEntity;
 
 		if (heldItem.isEmpty()) {
-			if (player.isSneaking()) {
+			if (player.isCrouching()) {
 				InventoryHelper.getItemHandlerFrom(mortar).ifPresent(itemHandler -> InventoryHelper.tryRemovingLastStack(itemHandler, world, mortar.getPos()));
-				return true;
+				return ActionResultType.SUCCESS;
 			}
 			boolean done = mortar.usePestle();
 			world.playSound(null, pos, soundType.getStepSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
 			player.swingArm(hand);
-			return done;
+			return done ? ActionResultType.SUCCESS : ActionResultType.CONSUME;
 		}
 
 		//if we're in cooldown prevent player from insta inserting essence that they just got from mortar
 		if (mortar.isInCooldown() && heldItem.getItem() == ModItems.POTION_ESSENCE) {
-			return false;
+			return ActionResultType.CONSUME;
 		}
 
 		ItemStack stackToAdd = heldItem.copy();
@@ -95,11 +96,11 @@ public class ApothecaryMortarBlock extends BaseBlock {
 		if (!putItemInSlot) {
 			mortar.usePestle();
 			world.playSound(null, pos, soundType.getStepSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
-			return false;
+			return ActionResultType.CONSUME;
 		} else {
 			mortar.markDirty();
 		}
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Nullable
@@ -113,7 +114,7 @@ public class ApothecaryMortarBlock extends BaseBlock {
 
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-		WorldHelper.getTile(world, pos, ApothecaryMortarTileEntity.class).ifPresent(te -> te.dropItems());
+		WorldHelper.getTile(world, pos, ApothecaryMortarTileEntity.class).ifPresent(ApothecaryMortarTileEntity::dropItems);
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 }

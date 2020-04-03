@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -64,27 +65,28 @@ public class PassivePedestalBlock extends BaseBlock {
 	}
 
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		ItemStack heldItem = player.getHeldItem(hand);
 		if (world.isRemote) {
-			return !heldItem.isEmpty() || player.isSneaking();
+			return (!heldItem.isEmpty() || player.isCrouching()) ? ActionResultType.SUCCESS : ActionResultType.CONSUME;
 		}
 
 		if (!(world.getTileEntity(pos) instanceof PassivePedestalTileEntity)) {
-			return false;
+			return ActionResultType.FAIL;
 		}
 
 		Optional<PassivePedestalTileEntity> pedestal = WorldHelper.getTile(world, pos, PassivePedestalTileEntity.class);
 		if (heldItem.isEmpty()) {
-			if (player.isSneaking() && pedestal.isPresent()) {
+			if (player.isCrouching() && pedestal.isPresent()) {
 				pedestal.get().removeAndSpawnItem();
-				return true;
+				return ActionResultType.SUCCESS;
 			} else {
-				return false;
+				return ActionResultType.FAIL;
 			}
 		} else {
 			return pedestal.map(ped -> InventoryHelper.getItemHandlerFrom(ped)
-					.map(itemHandler -> InventoryHelper.tryAddingPlayerCurrentItem(player, itemHandler, Hand.MAIN_HAND)).orElse(false)).orElse(false);
+					.map(itemHandler -> InventoryHelper.tryAddingPlayerCurrentItem(player, itemHandler, Hand.MAIN_HAND) ? ActionResultType.SUCCESS : ActionResultType.CONSUME)
+					.orElse(ActionResultType.CONSUME)).orElse(ActionResultType.CONSUME);
 		}
 	}
 
@@ -112,10 +114,10 @@ public class PassivePedestalBlock extends BaseBlock {
 
 	@SubscribeEvent
 	public static void onRightClicked(PlayerInteractEvent.RightClickBlock event) {
-		PlayerEntity player = event.getEntityPlayer();
+		PlayerEntity player = event.getPlayer();
 
 		//should only really use the event in case that the player is sneaking with something in offhand and empty mainhand
-		if (!player.isSneaking() || !player.getHeldItemMainhand().isEmpty() || !player.getHeldItemOffhand().isEmpty()) {
+		if (!player.isCrouching() || !player.getHeldItemMainhand().isEmpty() || !player.getHeldItemOffhand().isEmpty()) {
 			return;
 		}
 

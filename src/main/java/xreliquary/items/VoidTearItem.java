@@ -36,6 +36,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.blocks.PedestalBlock;
+import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.items.util.VoidTearItemStackHandler;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
@@ -55,7 +56,7 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class VoidTearItem extends ToggleableItem {
+public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 	private static final String CONTENTS_TAG = "contents";
 	private static final String TOOLTIP_PREFIX = "tooltip.";
@@ -129,7 +130,7 @@ public class VoidTearItem extends ToggleableItem {
 			//not letting logic go through if player was sneak clicking inventory or was trying to place a block
 			//noinspection ConstantConditions
 			if (rayTraceResult != null && rayTraceResult.getType() == RayTraceResult.Type.BLOCK &&
-					(InventoryHelper.hasItemHandler(world, ((BlockRayTraceResult) rayTraceResult).getPos()) && player.isSneaking() || getContainerItem(voidTear).getItem() instanceof BlockItem)) {
+					(InventoryHelper.hasItemHandler(world, ((BlockRayTraceResult) rayTraceResult).getPos()) && player.isShiftKeyDown() || getContainerItem(voidTear).getItem() instanceof BlockItem)) {
 				return new ActionResult<>(ActionResultType.PASS, voidTear);
 			}
 
@@ -142,7 +143,7 @@ public class VoidTearItem extends ToggleableItem {
 				return new ActionResult<>(ActionResultType.SUCCESS, voidTear);
 			}
 
-			if (player.isSneaking()) {
+			if (player.isShiftKeyDown()) {
 				return super.onItemRightClick(world, player, hand);
 			}
 
@@ -353,7 +354,7 @@ public class VoidTearItem extends ToggleableItem {
 		contents.setCount(1);
 
 		int quantity = getItemQuantity(stack);
-		int maxNumberToEmpty = player.isSneaking() ? quantity : Math.min(contents.getMaxStackSize(), quantity);
+		int maxNumberToEmpty = player.isShiftKeyDown() ? quantity : Math.min(contents.getMaxStackSize(), quantity);
 
 		quantity -= InventoryHelper.tryToAddToInventory(contents, inventory, maxNumberToEmpty);
 
@@ -441,17 +442,15 @@ public class VoidTearItem extends ToggleableItem {
 	}
 
 	@Override
-	public boolean onEntitySwing(ItemStack voidTear, LivingEntity entityLiving) {
-		if (entityLiving.world.isRemote || !(entityLiving instanceof PlayerEntity)) {
-			return false;
+	public ActionResultType onLeftClickItem(ItemStack voidTear, LivingEntity entityLiving) {
+		if (!entityLiving.isShiftKeyDown()) {
+			return ActionResultType.CONSUME;
 		}
-
-		PlayerEntity player = (PlayerEntity) entityLiving;
-		if (player.isSneaking()) {
-			cycleMode(voidTear);
-			return true;
+		if (entityLiving.world.isRemote) {
+			return ActionResultType.PASS;
 		}
-		return false;
+		cycleMode(voidTear);
+		return ActionResultType.SUCCESS;
 	}
 
 	public enum Mode implements IStringSerializable {
@@ -528,7 +527,7 @@ public class VoidTearItem extends ToggleableItem {
 				setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.getCount());
 				if (!itemEntity.isSilent()) {
 					Random rand = itemEntity.world.rand;
-					itemEntity.world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, (RandHelper.getRandomMinusOneToOne(rand) * 0.7F + 1.0F) * 2.0F);
+					itemEntity.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, (RandHelper.getRandomMinusOneToOne(rand) * 0.7F + 1.0F) * 2.0F);
 				}
 				itemEntity.remove();
 				event.setCanceled(true);

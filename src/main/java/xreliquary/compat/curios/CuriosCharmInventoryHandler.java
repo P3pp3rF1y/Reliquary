@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import top.theillusivec4.curios.api.CuriosAPI;
 import top.theillusivec4.curios.api.inventory.CurioStackHandler;
 import xreliquary.init.ModItems;
-import xreliquary.items.IBaubleItem;
+import xreliquary.items.util.IBaubleItem;
 import xreliquary.items.MobCharmDefinition;
 import xreliquary.items.MobCharmItem;
 

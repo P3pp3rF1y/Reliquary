@@ -58,7 +58,7 @@ public class HolyHandGrenadeEntity extends ThrowableEntity implements IRendersAs
 		super.tick();
 		if (count == 2) {
 			for (int particles = 0; particles < rand.nextInt(2) + 1; particles++) {
-				world.addParticle(ParticleTypes.ENTITY_EFFECT, posX + world.rand.nextDouble(), posY + world.rand.nextDouble(), posZ + world.rand.nextDouble(), 0D, 0D, 0D);
+				world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX() + world.rand.nextDouble(), getPosY() + world.rand.nextDouble(), getPosZ() + world.rand.nextDouble(), 0D, 0D, 0D);
 			}
 			count = 0;
 		} else {

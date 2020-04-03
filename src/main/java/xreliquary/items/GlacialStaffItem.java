@@ -86,9 +86,9 @@ public class GlacialStaffItem extends IceMagusRodItem {
 	}
 
 	private void freezeBlocks(ItemStack staff, World world, PlayerEntity player) {
-		int x = MathHelper.floor(player.posX);
+		int x = MathHelper.floor(player.getPosX());
 		int y = MathHelper.floor(player.getBoundingBox().minY) - 1;
-		int z = MathHelper.floor(player.posZ);
+		int z = MathHelper.floor(player.getPosZ());
 		for (int xOff = -2; xOff <= 2; xOff++) {
 			for (int zOff = -2; zOff <= 2; zOff++) {
 				if (Math.abs(xOff) == 2 && Math.abs(zOff) == 2) {
@@ -102,9 +102,9 @@ public class GlacialStaffItem extends IceMagusRodItem {
 	private void meltBlocks(ItemStack staff, World world, PlayerEntity player) {
 		if (!world.isRemote) {
 			for (BlockPos pos : getBlockLocations(staff)) {
-				int xOff = Math.abs(MathHelper.floor(player.posX) - pos.getX());
-				int yOff = Math.abs(MathHelper.floor(player.posY) - pos.getY());
-				int zOff = Math.abs(MathHelper.floor(player.posZ) - pos.getZ());
+				int xOff = Math.abs(MathHelper.floor(player.getPosX()) - pos.getX());
+				int yOff = Math.abs(MathHelper.floor(player.getPosY()) - pos.getY());
+				int zOff = Math.abs(MathHelper.floor(player.getPosZ()) - pos.getZ());
 
 				if (xOff < 3 && yOff < 3 && zOff < 3 && !(xOff == 2 && zOff == 2)) {
 					continue;

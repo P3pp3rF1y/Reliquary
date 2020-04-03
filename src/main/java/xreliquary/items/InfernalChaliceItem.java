@@ -89,7 +89,7 @@ public class InfernalChaliceItem extends ToggleableItem {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (player.isSneaking()) {
+		if (player.isShiftKeyDown()) {
 			return super.onItemRightClick(world, player, hand);
 		}
 

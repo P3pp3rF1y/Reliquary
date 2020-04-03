@@ -10,6 +10,7 @@ import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -100,21 +101,21 @@ public class PedestalBlock extends PassivePedestalBlock {
 	}
 
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		ItemStack heldItem = player.getHeldItem(hand);
 		if (world.isRemote) {
-			return !heldItem.isEmpty() || player.isSneaking();
+			return !heldItem.isEmpty() || player.isCrouching() ? ActionResultType.SUCCESS : ActionResultType.CONSUME;
 		}
 
 		return WorldHelper.getTile(world, pos, PedestalTileEntity.class).map(pedestal -> {
-					if (heldItem.isEmpty() && !player.isSneaking() && hand == Hand.MAIN_HAND && hit.getFace() == state.get(FACING).getOpposite()
+					if (heldItem.isEmpty() && !player.isCrouching() && hand == Hand.MAIN_HAND && hit.getFace() == state.get(FACING).getOpposite()
 							&& switchClicked(hit.getFace(), hit.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
 						pedestal.toggleSwitch();
-						return true;
+						return ActionResultType.SUCCESS;
 					}
 					return super.onBlockActivated(state, world, pos, player, hand, hit);
 				}
-		).orElse(false);
+		).orElse(ActionResultType.FAIL);
 	}
 
 	private boolean switchClicked(Direction side, Vec3d hitVec) {

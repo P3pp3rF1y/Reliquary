@@ -51,7 +51,7 @@ public class AttractionPotionEntity extends ThrownPotionEntity {
 			double var4 = rand.nextGaussian() * 0.02D;
 			double var6 = rand.nextGaussian() * 0.02D;
 			double var8 = rand.nextGaussian() * 0.02D;
-			world.addParticle(ParticleTypes.HEART, e.posX + rand.nextFloat() * e.getWidth() * 2.0F - e.getWidth(), e.posY + 0.5D + rand.nextFloat() * e.getHeight(), e.posZ + rand.nextFloat() * e.getWidth() * 2.0F - e.getWidth(), var4, var6, var8);
+			world.addParticle(ParticleTypes.HEART, e.getPosX() + rand.nextFloat() * e.getWidth() * 2.0F - e.getWidth(), e.getPosY() + 0.5D + rand.nextFloat() * e.getHeight(), e.getPosZ() + rand.nextFloat() * e.getWidth() * 2.0F - e.getWidth(), var4, var6, var8);
 		}
 	}
 

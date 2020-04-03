@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import xreliquary.items.util.IBaubleItem;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 

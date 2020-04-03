@@ -1,14 +1,20 @@
 package xreliquary.client.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import xreliquary.common.gui.ContainerMobCharmBelt;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
+import xreliquary.util.LogHelper;
+
+import java.lang.reflect.Field;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
 public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
@@ -61,25 +67,44 @@ public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
 			int x = centerX - offsetX - 8;
 			int y = centerY - offsetY - 8;
 
-			GlStateManager.enableAlphaTest();
-			GlStateManager.enableBlend();
+			RenderSystem.enableAlphaTest();
+			RenderSystem.enableBlend();
 
 			blit(x, y, 176, 0, 16, 16);
 
-			GlStateManager.disableAlphaTest();
-			GlStateManager.disableBlend();
+			RenderSystem.disableAlphaTest();
+			RenderSystem.disableBlend();
 
-			container.inventorySlots.get(i - 1).xPos = x - centerX + 88;
-			container.inventorySlots.get(i - 1).yPos = y - centerY + 40;
+			setSlotXPos(container.inventorySlots.get(i - 1),x - centerX + 88 );
+			setSlotYPos(container.inventorySlots.get(i - 1), y - centerY + 40);
 		}
-		container.inventorySlots.get(slots).xPos = 80;
-		container.inventorySlots.get(slots).yPos = -12;
+		setSlotXPos(container.inventorySlots.get(slots), 80);
+		setSlotYPos(container.inventorySlots.get(slots), -12);
 
 		for (int i = slots + 1; i < Reference.MOB_CHARM.COUNT_TYPES + 1; i++) {
-			container.inventorySlots.get(i).xPos = -999;
+			setSlotXPos(container.inventorySlots.get(i), -999);
 		}
 	}
 
+	private static final Field SLOT_X_POS = ObfuscationReflectionHelper.findField(Slot.class, "field_75223_e");
+	private static void setSlotXPos(Slot slot, int xPos) {
+		try {
+			SLOT_X_POS.set(slot, xPos);
+		}
+		catch (IllegalAccessException e) {
+			LogHelper.error("Error setting xPos of Slot: ", e);
+		}
+	}
+
+	private static final Field SLOT_Y_POS = ObfuscationReflectionHelper.findField(Slot.class, "field_75221_f");
+	private static void setSlotYPos(Slot slot, int yPos) {
+		try {
+			SLOT_Y_POS.set(slot, yPos);
+		}
+		catch (IllegalAccessException e) {
+			LogHelper.error("Error setting yPos of Slot: ", e);
+		}
+	}
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		super.render(mouseX, mouseY, partialTicks);

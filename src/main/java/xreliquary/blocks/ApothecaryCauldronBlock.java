@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -30,7 +31,7 @@ public class ApothecaryCauldronBlock extends BaseBlock {
 	private static final VoxelShape SHAPE = VoxelShapes.combineAndSimplify(VoxelShapes.fullCube(), VoxelShapes.or(makeCuboidShape(0.0D, 0.0D, 4.0D, 16.0D, 3.0D, 12.0D), makeCuboidShape(4.0D, 0.0D, 0.0D, 12.0D, 3.0D, 16.0D), makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 3.0D, 14.0D), INSIDE), IBooleanFunction.ONLY_FIRST);
 
 	public ApothecaryCauldronBlock() {
-		super(Names.Blocks.APOTHECARY_CAULDRON, Properties.create(Material.IRON).hardnessAndResistance(1.5F, 5.0F));
+		super(Names.Blocks.APOTHECARY_CAULDRON, Properties.create(Material.IRON).hardnessAndResistance(1.5F, 5.0F).notSolid());
 		setDefaultState(stateContainer.getBaseState().with(LEVEL, 0));
 	}
 
@@ -41,10 +42,6 @@ public class ApothecaryCauldronBlock extends BaseBlock {
 
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		return SHAPE;
-	}
-
-	public boolean isSolid(BlockState state) {
-		return false;
 	}
 
 	public VoxelShape getRaytraceShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
@@ -62,13 +59,13 @@ public class ApothecaryCauldronBlock extends BaseBlock {
 	}
 
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		ItemStack heldItem = player.getHeldItem(hand);
 		if (world.isRemote) {
-			return !heldItem.isEmpty();
+			return !heldItem.isEmpty() ? ActionResultType.SUCCESS : ActionResultType.CONSUME;
 		} else {
 			if (heldItem.isEmpty()) {
-				return true;
+				return ActionResultType.CONSUME;
 			} else {
 				ApothecaryCauldronTileEntity cauldron = (ApothecaryCauldronTileEntity) world.getTileEntity(pos);
 
@@ -77,7 +74,7 @@ public class ApothecaryCauldronBlock extends BaseBlock {
 				}
 			}
 		}
-		return true;
+		return ActionResultType.CONSUME;
 	}
 
 	@Override

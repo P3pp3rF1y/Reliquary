@@ -24,7 +24,7 @@ public class ItemStackPane extends Component {
 	}
 
 	public void setItem(Item item) {
-		this.itemStack = new ItemStack(item);
+		itemStack = new ItemStack(item);
 	}
 
 	public void setItemStack(ItemStack itemStack) {
@@ -43,10 +43,11 @@ public class ItemStackPane extends Component {
 
 	@Override
 	public void renderInternal(int x, int y) {
-		if (itemStack.isEmpty())
+		if (itemStack.isEmpty()) {
 			return;
+		}
 
-		RenderHelper.enableGUIStandardItemLighting();
+		RenderHelper.enableStandardItemLighting();
 		Minecraft mc = Minecraft.getInstance();
 		if (renderEffect) {
 			mc.getItemRenderer().renderItemAndEffectIntoGUI(itemStack, x, y);

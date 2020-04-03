@@ -1,6 +1,5 @@
 package xreliquary.client.gui.hud;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Tuple;
@@ -11,17 +10,11 @@ public class HUDRenderrer {
 	public static void render(Component component, HUDPosition position) {
 		if (component.shouldRender()) {
 			Minecraft mc = Minecraft.getInstance();
-			MainWindow mainWindow = mc.mainWindow;
+			MainWindow mainWindow = mc.getMainWindow();
 			Tuple<Integer, Integer> xy = getXYPosition(mainWindow, component, position);
 
-			renderComponent(xy.getA(), xy.getB(), component);
+			component.render(xy.getA(), xy.getB());
 		}
-	}
-
-	private static void renderComponent(int x, int y, Component component) {
-		GlStateManager.pushMatrix();
-		component.render(x, y);
-		GlStateManager.popMatrix();
 	}
 
 	private static Tuple<Integer, Integer> getXYPosition(MainWindow sr, Component component, HUDPosition position) {

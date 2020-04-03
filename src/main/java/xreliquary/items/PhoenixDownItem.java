@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
@@ -13,6 +14,8 @@ import xreliquary.handler.HandlerPriority;
 import xreliquary.handler.IPlayerDeathHandler;
 import xreliquary.handler.IPlayerHurtHandler;
 import xreliquary.init.ModItems;
+import xreliquary.network.PacketHandler;
+import xreliquary.network.SpawnPhoenixDownParticlesPacket;
 import xreliquary.reference.Settings;
 import xreliquary.util.EntityHelper;
 import xreliquary.util.InventoryHelper;
@@ -109,8 +112,6 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 	}
 
 	private static void spawnPhoenixResurrectionParticles(PlayerEntity player) {
-		for (int particles = 0; particles <= 400; particles++) {
-			player.world.addParticle(ParticleTypes.FLAME, player.posX, player.posY, player.posZ, player.world.rand.nextGaussian() * 8, player.world.rand.nextGaussian() * 8, player.world.rand.nextGaussian() * 8);
-		}
+		PacketHandler.sendToClient((ServerPlayerEntity) player, new SpawnPhoenixDownParticlesPacket());
 	}
 }

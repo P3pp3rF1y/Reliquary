@@ -23,12 +23,12 @@ public class BusterShotEntity extends ShotEntityBase {
 
 	@Override
 	void doBurstEffect(Direction sideHit) {
-		ConcussiveExplosion.customBusterExplosion(this, posX, posY, posZ, 4.0F);
+		ConcussiveExplosion.customBusterExplosion(this, getPosX(), getPosY(), getPosZ(), 4.0F);
 	}
 
 	@Override
 	void doFiringEffects() {
-		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -46,7 +46,7 @@ public class BusterShotEntity extends ShotEntityBase {
 
 	@Override
 	protected void onImpact(LivingEntity entityLiving) {
-		ConcussiveExplosion.customBusterExplosion(this, posX, posY, posZ, 4.0F);
+		ConcussiveExplosion.customBusterExplosion(this, getPosX(), getPosY(), getPosZ(), 4.0F);
 		super.onImpact(entityLiving);
 	}
 

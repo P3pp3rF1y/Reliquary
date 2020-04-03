@@ -18,8 +18,6 @@ public abstract class Component {
 	}
 
 	public void render(int x, int y) {
-		//Minecraft.getInstance().textureManager.bindTexture(GuiContainer.INVENTORY_BACKGROUND);
-		//blit(x, y, 5, 170, getWidth(), getHeight());
 		renderInternal(x + getPadding(), y + getPadding());
 	}
 
@@ -37,11 +35,11 @@ public abstract class Component {
 		blit(x, y, textureX, textureY, width, height, 256, 256);
 	}
 
-	protected void blit(int x, int y, int textureX, int textureY, int width, int height, double textureWidth, double textureHeight) {
-		double minU = textureX / textureWidth;
-		double maxU = (textureX + width) / textureWidth;
-		double minV = textureY / textureHeight;
-		double maxV = (textureY + height) / textureHeight;
+	protected void blit(int x, int y, int textureX, int textureY, int width, int height, float textureWidth, float textureHeight) {
+		float minU = textureX / textureWidth;
+		float maxU = (textureX + width) / textureWidth;
+		float minV = textureY / textureHeight;
+		float maxV = (textureY + height) / textureHeight;
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();

@@ -7,8 +7,7 @@
         "2": "block/quartz_pillar_top",
         "3": "block/chiseled_quartz_block",
         "4": "block/red_wool",
-        "5": "block/gold_block",
-        "6": "block/redstone_block"
+        "5": "block/gold_block"
     },
     "elements": [
         {

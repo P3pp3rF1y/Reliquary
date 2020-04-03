@@ -14,7 +14,7 @@ public class XRTippedArrowRenderer extends ArrowRenderer<XRTippedArrowEntity> {
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture( XRTippedArrowEntity entity) {
+	public ResourceLocation getEntityTexture( XRTippedArrowEntity entity) {
 		return entity.getColor() > 0 ? RES_TIPPED_ARROW : RES_ARROW;
 	}
 }

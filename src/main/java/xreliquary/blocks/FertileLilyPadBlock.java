@@ -15,6 +15,7 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 import xreliquary.reference.Names;
@@ -37,7 +38,7 @@ public class FertileLilyPadBlock extends BushBlock {
 	}
 
 	@Override
-	public void tick(BlockState state, World world, BlockPos pos, Random random) {
+	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		growCropsNearby(world, pos, state);
 	}
 
@@ -58,7 +59,7 @@ public class FertileLilyPadBlock extends BushBlock {
 		return Settings.COMMON.blocks.fertileLilypad.fullPotencyRange.get();
 	}
 
-	private void growCropsNearby(World world, BlockPos pos, BlockState state) {
+	private void growCropsNearby(ServerWorld world, BlockPos pos, BlockState state) {
 		int xO = pos.getX();
 		int yO = pos.getY();
 		int zO = pos.getZ();
@@ -83,7 +84,7 @@ public class FertileLilyPadBlock extends BushBlock {
 		world.getPendingBlockTicks().scheduleTick(pos, state.getBlock(), secondsBetweenGrowthTicks() * 20);
 	}
 
-	private void tickCropBlock(World world, int x, int y, int z, BlockState cropState, Block cropBlock, double distance) {
+	private void tickCropBlock(ServerWorld world, int x, int y, int z, BlockState cropState, Block cropBlock, double distance) {
 		distance -= fullPotencyRange();
 		distance = Math.max(1D, distance);
 		double distanceCoefficient = 1D - (distance / tileRange());

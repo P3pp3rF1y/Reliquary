@@ -1,4 +1,4 @@
-package xreliquary.items;
+package xreliquary.items.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;

@@ -46,6 +46,7 @@ import xreliquary.init.ModCapabilities;
 import xreliquary.items.util.FilteredBigItemStack;
 import xreliquary.items.util.HarvestRodItemStackHandler;
 import xreliquary.items.util.IHarvestRodCache;
+import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.network.PacketCountSync;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Settings;
@@ -63,7 +64,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class HarvestRodItem extends ToggleableItem {
+public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem {
 	public static final String BONE_MEAL_MODE = "bone_meal";
 	private static final String PLANTABLE_MODE = "plantable";
 	public static final String HOE_MODE = "hoe";
@@ -335,7 +336,7 @@ public class HarvestRodItem extends ToggleableItem {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (player.isSneaking()) {
+		if (player.isShiftKeyDown()) {
 			return super.onItemRightClick(world, player, hand);
 		}
 
@@ -565,15 +566,15 @@ public class HarvestRodItem extends ToggleableItem {
 	}
 
 	@Override
-	public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
-		if (entity.world.isRemote) {
-			return false;
+	public ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
+		if (!entityLiving.isShiftKeyDown()) {
+			return ActionResultType.CONSUME;
 		}
-		if (entity.isSneaking()) {
-			cycleMode(stack);
-			return true;
+		if (entityLiving.world.isRemote) {
+			return ActionResultType.PASS;
 		}
-		return false;
+		cycleMode(stack);
+		return ActionResultType.SUCCESS;
 	}
 
 	private boolean isCoolDownOver(ItemStack stack, int count) {

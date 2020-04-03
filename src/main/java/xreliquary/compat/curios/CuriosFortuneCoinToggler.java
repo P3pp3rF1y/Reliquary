@@ -8,7 +8,7 @@ import top.theillusivec4.curios.api.CuriosAPI;
 import top.theillusivec4.curios.api.inventory.CurioStackHandler;
 import xreliquary.init.ModItems;
 import xreliquary.items.FortuneCoinToggler;
-import xreliquary.items.IBaubleItem;
+import xreliquary.items.util.IBaubleItem;
 import xreliquary.network.PacketFortuneCoinTogglePressed;
 import xreliquary.network.PacketHandler;
 

@@ -20,7 +20,7 @@ abstract class CachedBodyDataProvider implements IWailaDataProvider {
 
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		if(Settings.wailaShiftForInfo && !accessor.getPlayer().isSneaking()) {
+		if(Settings.wailaShiftForInfo && !accessor.getPlayer().isCrouching()) {
 			currenttip.add(ChatFormatting.ITALIC + LanguageHelper.getLocalization("waila.xreliquary.shift_for_more") + ChatFormatting.RESET);
 			return currenttip;
 		}

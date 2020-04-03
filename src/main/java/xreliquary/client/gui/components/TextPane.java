@@ -13,7 +13,7 @@ public class TextPane extends Component {
 	}
 	public TextPane(String text, int textColor) {
 		this.text = text;
-		this.width = text.length() * 6;
+		width = text.length() * 6;
 		this.textColor = textColor;
 	}
 

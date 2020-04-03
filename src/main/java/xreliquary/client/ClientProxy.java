@@ -2,12 +2,15 @@ package xreliquary.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.entity.SpriteRenderer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -21,6 +24,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import xreliquary.blocks.PassivePedestalBlock;
+import xreliquary.blocks.PedestalBlock;
 import xreliquary.blocks.tile.ApothecaryMortarTileEntity;
 import xreliquary.blocks.tile.PassivePedestalTileEntity;
 import xreliquary.blocks.tile.PedestalTileEntity;
@@ -55,6 +60,8 @@ import xreliquary.entities.shot.NeutralShotEntity;
 import xreliquary.entities.shot.SandShotEntity;
 import xreliquary.entities.shot.SeekerShotEntity;
 import xreliquary.entities.shot.StormShotEntity;
+import xreliquary.init.ModBlocks;
+import xreliquary.init.ModEntities;
 import xreliquary.items.FortuneCoinToggler;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
@@ -89,25 +96,25 @@ public class ClientProxy extends CommonProxy {
 
 	@SubscribeEvent
 	public static void registerModels(ModelRegistryEvent event) {
-		RenderingRegistry.registerEntityRenderingHandler(LyssaBobberEntity.class, LyssaHookRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(BlazeShotEntity.class, ShotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(BusterShotEntity.class, ShotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(ConcussiveShotEntity.class, ShotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(EnderShotEntity.class, ShotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(ExorcismShotEntity.class, ShotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(NeutralShotEntity.class, ShotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(SeekerShotEntity.class, ShotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(SandShotEntity.class, ShotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(StormShotEntity.class, ShotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(XRTippedArrowEntity.class, XRTippedArrowRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(GlowingWaterEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
-		RenderingRegistry.registerEntityRenderingHandler(AttractionPotionEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
-		RenderingRegistry.registerEntityRenderingHandler(FertilePotionEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
-		RenderingRegistry.registerEntityRenderingHandler(HolyHandGrenadeEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
-		RenderingRegistry.registerEntityRenderingHandler(KrakenSlimeEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
-		RenderingRegistry.registerEntityRenderingHandler(SpecialSnowballEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
-		RenderingRegistry.registerEntityRenderingHandler(EnderStaffProjectileEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
-		RenderingRegistry.registerEntityRenderingHandler(ThrownXRPotionEntity.class, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.LYSSA_HOOK, LyssaHookRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.BLAZE_SHOT, ShotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.BUSTER_SHOT, ShotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.CONCUSSIVE_SHOT, ShotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.ENDER_SHOT, ShotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.EXORCISM_SHOT, ShotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.NEUTRAL_SHOT, ShotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.SEEKER_SHOT, ShotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.SAND_SHOT, ShotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.STORM_SHOT, ShotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.TIPPED_ARROW, XRTippedArrowRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.GLOWING_WATER, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.APHRODITE_POTION, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.FERTILE_POTION, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.HOLY_HAND_GRENADE, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.KRAKEN_SLIME, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.SPECIAL_SNOWBALL, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.ENDER_STAFF_PROJECTILE, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWN_POTION, renderManager -> new SpriteRenderer<>(renderManager, Minecraft.getInstance().getItemRenderer()));
 
 		registerTileRenderers();
 	}
@@ -115,6 +122,10 @@ public class ClientProxy extends CommonProxy {
 	private void clientSetup(FMLClientSetupEvent event) {
 		//TODO replace with new interface from event when that is implemented in forge
 		DeferredWorkQueue.runLater(() -> ClientRegistry.registerKeyBinding(FORTUNE_COIN_TOGGLE_KEYBIND));
+
+		RenderTypeLookup.setRenderLayer(ModBlocks.FERTILE_LILY_PAD, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(ModBlocks.INTERDICTION_TORCH, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(ModBlocks.WALL_INTERDICTION_TORCH, RenderType.getCutout());
 	}
 
 	private void loadComplete(FMLLoadCompleteEvent event) {
@@ -127,8 +138,8 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	private static void registerTileRenderers() {
-		ClientRegistry.bindTileEntitySpecialRenderer(ApothecaryMortarTileEntity.class, new ApothecaryMortarRenderer());
-		ClientRegistry.bindTileEntitySpecialRenderer(PedestalTileEntity.class, new PedestalRenderer());
-		ClientRegistry.bindTileEntitySpecialRenderer(PassivePedestalTileEntity.class, new PassivePedestalRenderer());
+		ClientRegistry.bindTileEntityRenderer(ApothecaryMortarTileEntity.TYPE, ApothecaryMortarRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(PedestalTileEntity.TYPE, PedestalRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(PassivePedestalTileEntity.TYPE, PassivePedestalRenderer::new);
 	}
 }

@@ -120,7 +120,7 @@ public class InfernalTearItem extends ToggleableItem {
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		ActionResult<ItemStack> actionResult = super.onItemRightClick(world, player, hand);
-		if (player.isSneaking() && !isEnabled(stack)) {
+		if (player.isShiftKeyDown() && !isEnabled(stack)) {
 			return actionResult;
 		}
 
@@ -128,7 +128,7 @@ public class InfernalTearItem extends ToggleableItem {
 
 		//empty the tear if player is not sneaking and the tear is not empty
 		CompoundNBT nbt = itemStack.getTag();
-		if (!player.isSneaking() && !getStackFromTear(itemStack).isEmpty()) {
+		if (!player.isShiftKeyDown() && !getStackFromTear(itemStack).isEmpty()) {
 			NBTHelper.remove(nbt, "item");
 			NBTHelper.remove(nbt, ENABLED_TAG);
 
@@ -141,7 +141,7 @@ public class InfernalTearItem extends ToggleableItem {
 		}
 
 		//if user is sneaking or just enabled the tear, let's fill it
-		if (player.isSneaking() || !isEnabled(itemStack)) {
+		if (player.isShiftKeyDown() || !isEnabled(itemStack)) {
 			ItemStack returnStack = InventoryHelper.getItemHandlerFrom(player).map(handler -> buildTear(itemStack, handler)).orElse(ItemStack.EMPTY);
 			if (!returnStack.isEmpty()) {
 				return new ActionResult<>(ActionResultType.SUCCESS, returnStack);

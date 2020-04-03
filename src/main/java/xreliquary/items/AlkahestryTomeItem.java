@@ -57,7 +57,7 @@ public class AlkahestryTomeItem extends ToggleableItem {
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		ItemStack newStack = super.onItemRightClick(world, player, hand).getResult();
-		if (player.isSneaking()) {
+		if (player.isShiftKeyDown()) {
 			return new ActionResult<>(ActionResultType.SUCCESS, newStack);
 		}
 

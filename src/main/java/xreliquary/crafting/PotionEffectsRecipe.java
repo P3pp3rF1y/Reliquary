@@ -14,7 +14,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import xreliquary.items.IPotionItem;
+import xreliquary.items.util.IPotionItem;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nullable;

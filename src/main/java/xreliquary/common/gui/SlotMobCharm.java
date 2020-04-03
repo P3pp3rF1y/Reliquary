@@ -19,16 +19,17 @@ class SlotMobCharm extends Slot {
 
 	@Override
 	public ItemStack getStack() {
-		return ModItems.MOB_CHARM_BELT.getMobCharmInSlot(belt, this.getSlotIndex());
+		return ModItems.MOB_CHARM_BELT.getMobCharmInSlot(belt, getSlotIndex());
 	}
 
 	@Override
 	public void putStack( ItemStack stack) {
-		ModItems.MOB_CHARM_BELT.putMobCharmInSlot(belt, this.getSlotIndex(), stack);
+		ModItems.MOB_CHARM_BELT.putMobCharmInSlot(belt, getSlotIndex(), stack);
 	}
 
 	@Override
-	public void onSlotChange(ItemStack p_75220_1_, ItemStack p_75220_2_) {
+	public void onSlotChange(ItemStack newStack, ItemStack originalStack) {
+		//noop
 	}
 
 	@Override
@@ -39,8 +40,9 @@ class SlotMobCharm extends Slot {
 
 	@Override
 	public ItemStack decrStackSize(int amount) {
-		if(amount > 1)
+		if(amount > 1) {
 			return ItemStack.EMPTY;
+		}
 
 		ItemStack mobCharm = ModItems.MOB_CHARM_BELT.getMobCharmInSlot(belt, getSlotIndex());
 
@@ -56,7 +58,7 @@ class SlotMobCharm extends Slot {
 
 	@Override
 	public boolean isSameInventory(Slot other) {
-		return other instanceof SlotMobCharm && ((SlotMobCharm) other).getBelt() == this.belt;
+		return other instanceof SlotMobCharm && ((SlotMobCharm) other).getBelt() == belt;
 	}
 
 	private ItemStack getBelt() {

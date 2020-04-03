@@ -83,9 +83,9 @@ public class GlowingWaterEntity extends ThrowableEntity implements IRendersAsIte
 	}
 
 	private void spawnParticles() {
-		double x = posX;
-		double y = posY;
-		double z = posZ;
+		double x = getPosX();
+		double y = getPosY();
+		double z = getPosZ();
 
 		ItemParticleData itemParticleData = new ItemParticleData(ParticleTypes.ITEM, new ItemStack(ModItems.GLOWING_WATER));
 		for (int particleNum = 0; particleNum < 8; ++particleNum) {
@@ -93,7 +93,7 @@ public class GlowingWaterEntity extends ThrowableEntity implements IRendersAsIte
 		}
 
 		world.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), posX, posY, posZ), new PacketDistributor.TargetPoint(posX, posY, posZ, 32.0D, world.getDimension().getType()));
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), getPosX(), getPosY(), getPosZ()), new PacketDistributor.TargetPoint(getPosX(), getPosY(), getPosZ(), 32.0D, world.getDimension().getType()));
 
 	}
 

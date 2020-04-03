@@ -34,13 +34,13 @@ public class BlazeShotEntity extends ShotEntityBase {
 	void doFlightEffects() {
 		if(ticksInAir % 3 == 0 && ticksInAir < 9) {
 			Vec3d motion = getMotion();
-			world.addParticle(ParticleTypes.FLAME, posX, posY, posZ, lowGauss(motion.getX()), lowGauss(motion.getY()), lowGauss(motion.getZ()));
+			world.addParticle(ParticleTypes.FLAME, getPosX(), getPosY(), getPosZ(), lowGauss(motion.getX()), lowGauss(motion.getY()), lowGauss(motion.getZ()));
 		}
 	}
 
 	@Override
 	void doFiringEffects() {
-		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -113,22 +113,22 @@ public class BlazeShotEntity extends ShotEntityBase {
 		for(int particles = 0; particles < 40; particles++) {
 			switch(sideHit) {
 				case DOWN:
-					world.addParticle(ParticleTypes.FLAME, posX, posY, posZ, smallGauss(0.1D) + motionX / 4, -posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
+					world.addParticle(ParticleTypes.FLAME, getPosX(), getPosY(), getPosZ(), smallGauss(0.1D) + motionX / 4, -posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
 					break;
 				case UP:
-					world.addParticle(ParticleTypes.FLAME, posX, posY, posZ, smallGauss(0.1D) + motionX / 4, posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
+					world.addParticle(ParticleTypes.FLAME, getPosX(), getPosY(), getPosZ(), smallGauss(0.1D) + motionX / 4, posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
 					break;
 				case NORTH:
-					world.addParticle(ParticleTypes.FLAME, posX, posY, posZ, smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, -posGauss(0.2D));
+					world.addParticle(ParticleTypes.FLAME, getPosX(), getPosY(), getPosZ(), smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, -posGauss(0.2D));
 					break;
 				case SOUTH:
-					world.addParticle(ParticleTypes.FLAME, posX, posY, posZ, smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, posGauss(0.2D));
+					world.addParticle(ParticleTypes.FLAME, getPosX(), getPosY(), getPosZ(), smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, posGauss(0.2D));
 					break;
 				case WEST:
-					world.addParticle(ParticleTypes.FLAME, posX, posY, posZ, -posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
+					world.addParticle(ParticleTypes.FLAME, getPosX(), getPosY(), getPosZ(), -posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
 					break;
 				case EAST:
-					world.addParticle(ParticleTypes.FLAME, posX, posY, posZ, posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
+					world.addParticle(ParticleTypes.FLAME, getPosX(), getPosY(), getPosZ(), posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
 					break;
 			}
 		}

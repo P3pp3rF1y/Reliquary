@@ -48,7 +48,6 @@ public class ReliquaryPlugin implements IModPlugin {
 
 		registration.addRecipeCategories(new MortarRecipeCategory(guiHelper));
 		registration.addRecipeCategories(new CauldronRecipeCategory(guiHelper));
-
 	}
 
 	@Override

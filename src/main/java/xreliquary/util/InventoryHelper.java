@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import xreliquary.items.IBaubleItem;
+import xreliquary.items.util.IBaubleItem;
 import xreliquary.items.ToggleableItem;
 
 import javax.annotation.Nullable;
@@ -339,7 +339,7 @@ public class InventoryHelper {
 				return;
 			}
 		}
-		player.world.addEntity(new ItemEntity(player.world, player.posX, player.posY, player.posZ, stack));
+		player.world.addEntity(new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), stack));
 	}
 
 	public static NonNullList<ItemStack> getItemStacks(IItemHandler inventory) {

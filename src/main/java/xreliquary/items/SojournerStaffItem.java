@@ -28,6 +28,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -37,8 +38,7 @@ import xreliquary.util.NoPlayerBlockItemUseContext;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class SojournerStaffItem extends ToggleableItem {
-
+public class SojournerStaffItem extends ToggleableItem implements ILeftClickableItem {
 	private static final String ITEMS_TAG = "Items";
 	private static final String QUANTITY_TAG = "Quantity";
 	private static final String CURRENT_INDEX_TAG = "Current";
@@ -72,15 +72,15 @@ public class SojournerStaffItem extends ToggleableItem {
 	}
 
 	@Override
-	public boolean onEntitySwing(ItemStack stack, LivingEntity entityLiving) {
+	public ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
+		if (!entityLiving.isShiftKeyDown()) {
+			return ActionResultType.CONSUME;
+		}
 		if (entityLiving.world.isRemote) {
-			return false;
+			return ActionResultType.PASS;
 		}
-		if (entityLiving.isSneaking()) {
-			cycleTorchMode(stack);
-			return true;
-		}
-		return false;
+		cycleTorchMode(stack);
+		return ActionResultType.SUCCESS;
 	}
 
 	private void scanForMatchingTorchesToFillInternalStorage(ItemStack stack, PlayerEntity player) {
@@ -300,7 +300,7 @@ public class SojournerStaffItem extends ToggleableItem {
 		if (player == null || torch.isEmpty() || !(torch.getItem() instanceof BlockItem)) {
 			return ActionResultType.FAIL;
 		}
-		if (!player.canPlayerEdit(placeBlockAt, face, stack) || player.isSneaking()) {
+		if (!player.canPlayerEdit(placeBlockAt, face, stack) || player.isCrouching()) {
 			return ActionResultType.PASS;
 		}
 		player.swingArm(hand);
@@ -329,7 +329,7 @@ public class SojournerStaffItem extends ToggleableItem {
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		if (!player.isSneaking()) {
+		if (!player.isShiftKeyDown()) {
 			RayTraceResult rayTraceResult = longRayTrace(world, player);
 			if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK) {
 				placeTorch(new ItemUseContext(player, hand, (BlockRayTraceResult) rayTraceResult));
@@ -348,7 +348,7 @@ public class SojournerStaffItem extends ToggleableItem {
 		float f5 = MathHelper.sin(-f * ((float)Math.PI / 180F));
 		float f6 = f3 * f4;
 		float f7 = f2 * f4;
-		double d0 = Settings.COMMON.items.sojournerStaff.maxRange.get();;
+		double d0 = Settings.COMMON.items.sojournerStaff.maxRange.get();
 		Vec3d vec3d1 = vec3d.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
 		return worldIn.rayTraceBlocks(new RayTraceContext(vec3d, vec3d1, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.ANY, player));
 	}

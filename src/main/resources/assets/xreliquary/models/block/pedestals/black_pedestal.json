@@ -1,0 +1,6 @@
+{
+    "parent": "xreliquary:block/pedestal",
+    "textures": {
+        "4": "block/black_wool"
+    }
+}

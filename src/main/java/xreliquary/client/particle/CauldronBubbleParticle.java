@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 public class CauldronBubbleParticle extends SpriteTexturedParticle {
 	private final IAnimatedSprite spriteSet;
 
-	public CauldronBubbleParticle(World world, ColorParticleData particleData, double x, double y, double z, IAnimatedSprite spriteSet) {
+	private CauldronBubbleParticle(World world, ColorParticleData particleData, double x, double y, double z, IAnimatedSprite spriteSet) {
 		super(world, x, y, z, 0D, 0D, 0D);
 		this.spriteSet = spriteSet;
 		setSize(0.02F, 0.02F);

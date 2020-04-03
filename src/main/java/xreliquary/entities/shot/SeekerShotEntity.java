@@ -23,7 +23,7 @@ public class SeekerShotEntity extends ShotEntityBase {
 	@Override
 	void doFlightEffects() {
 		if(ticksInAir % 3 == 0) {
-			world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, posX, posY, posZ, 0.0F, gaussian(1.0F), gaussian(1.0F));
+			world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 0.0F, gaussian(1.0F), gaussian(1.0F));
 		}
 
 		// housed in the base class
@@ -32,7 +32,7 @@ public class SeekerShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -44,7 +44,7 @@ public class SeekerShotEntity extends ShotEntityBase {
 	@Override
 	void spawnHitParticles(int i) {
 		for(int particles = 0; particles < i; particles++) {
-			world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, posX + smallGauss(0.1D), posY + smallGauss(0.1D), posZ + smallGauss(0.1D), 0.1F, 1.0F, 1.0F);
+			world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0.1F, 1.0F, 1.0F);
 		}
 	}
 

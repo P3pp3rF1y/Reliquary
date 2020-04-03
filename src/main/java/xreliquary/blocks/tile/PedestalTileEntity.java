@@ -95,7 +95,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 		ListNBT onLocations = new ListNBT();
 
 		for (Long onSwitch : onSwitches) {
-			onLocations.add(new LongNBT(onSwitch));
+			onLocations.add(LongNBT.valueOf(onSwitch));
 		}
 		compound.put("OnSwitches", onLocations);
 
@@ -316,11 +316,6 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 		removeSpecialItems();
 		item = stack;
 		updateItemsAndBlock();
-	}
-
-	@Override
-	public ItemStack getItem() {
-		return item;
 	}
 
 	@Override
