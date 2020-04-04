@@ -10,6 +10,7 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
@@ -35,8 +36,15 @@ import java.util.List;
 public class ReliquaryPlugin implements IModPlugin {
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registration) {
-		registration.useNbtForSubtypes(ModItems.MOB_CHARM_FRAGMENT, ModItems.MOB_CHARM, ModItems.POTION_ESSENCE, ModItems.POTION, ModItems.SPLASH_POTION,
-				ModItems.LINGERING_POTION, ModItems.TIPPED_ARROW, ModItems.NEUTRAL_BULLET, ModItems.NEUTRAL_MAGAZINE);
+		registerNbtSubtypeInterpreter(registration, ModItems.MOB_CHARM_FRAGMENT, "entity");
+		registerNbtSubtypeInterpreter(registration, ModItems.MOB_CHARM, "entity");
+		registerNbtSubtypeInterpreter(registration, ModItems.POTION_ESSENCE, "effects");
+		registerNbtSubtypeInterpreter(registration, ModItems.POTION, "effects");
+		registerNbtSubtypeInterpreter(registration, ModItems.SPLASH_POTION, "effects");
+		registerNbtSubtypeInterpreter(registration, ModItems.LINGERING_POTION, "effects");
+		registerNbtSubtypeInterpreter(registration, ModItems.TIPPED_ARROW, "effects");
+		registerNbtSubtypeInterpreter(registration, ModItems.NEUTRAL_BULLET, "effects");
+		registerNbtSubtypeInterpreter(registration, ModItems.NEUTRAL_MAGAZINE, "effects");
 	}
 
 	@Override
@@ -75,6 +83,10 @@ public class ReliquaryPlugin implements IModPlugin {
 				registration.addIngredientInfo(itemStacks, VanillaTypes.ITEM, entry.langKeys());
 			}
 		}
+	}
+
+	private void registerNbtSubtypeInterpreter(ISubtypeRegistration registration, Item item, String... keys) {
+		registration.registerSubtypeInterpreter(item, new SortedNbtSubtypeInterpreter(keys));
 	}
 
 	@Override
