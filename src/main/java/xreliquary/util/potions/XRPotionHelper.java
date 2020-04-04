@@ -20,6 +20,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -33,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class XRPotionHelper {
 	private static final String EFFECTS_TAG = "effects";
@@ -58,17 +60,17 @@ public class XRPotionHelper {
 		return false;
 	}
 
-	public static PotionIngredient getIngredient(ItemStack stack) {
+	public static Optional<PotionIngredient> getIngredient(ItemStack stack) {
 		if (stack.getItem() instanceof PotionEssenceItem) {
-			return new PotionIngredient(stack, XRPotionHelper.getPotionEffectsFromStack(stack));
+			return Optional.of(new PotionIngredient(stack, XRPotionHelper.getPotionEffectsFromStack(stack)));
 		}
 		for (PotionIngredient ingredient : PotionMap.ingredients) {
 			//noinspection ConstantConditions
 			if (ingredient.getItem().getItem().getRegistryName().equals(stack.getItem().getRegistryName())) {
-				return ingredient;
+				return Optional.of(ingredient);
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	private static Effect[] nonAugmentableEffects = new Effect[] {Effects.BLINDNESS,
@@ -89,11 +91,6 @@ public class XRPotionHelper {
 
 	@OnlyIn(Dist.CLIENT)
 	private static void addPotionTooltip(List<EffectInstance> effects, List<ITextComponent> list) {
-		addPotionTooltip(effects, list, true, true);
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private static void addPotionTooltip(List<EffectInstance> effects, List<ITextComponent> list, boolean displayWhenDrankInfo, boolean addFormatting) {
 		if (!effects.isEmpty()) {
 			List<Tuple<String, AttributeModifier>> list1 = Lists.newArrayList();
 			for (EffectInstance potioneffect : effects) {
@@ -118,15 +115,15 @@ public class XRPotionHelper {
 				}
 
 				if (potion.isBeneficial()) {
-					list.add(new StringTextComponent((addFormatting ? TextFormatting.BLUE.toString() : "") + s1));
+					list.add(new StringTextComponent((TextFormatting.BLUE.toString()) + s1));
 				} else {
-					list.add(new StringTextComponent((addFormatting ? TextFormatting.RED.toString() : "") + s1));
+					list.add(new StringTextComponent((TextFormatting.RED.toString()) + s1));
 				}
 			}
 
-			if (displayWhenDrankInfo && !list1.isEmpty()) {
+			if (!list1.isEmpty()) {
 				list.add(new StringTextComponent(""));
-				list.add(new StringTextComponent((addFormatting ? TextFormatting.DARK_PURPLE.toString() : "") + I18n.format("potion.whenDrank")));
+				list.add(new StringTextComponent(TextFormatting.DARK_PURPLE.toString() + I18n.format("potion.whenDrank")));
 
 				for (Tuple<String, AttributeModifier> tuple : list1) {
 					AttributeModifier attributemodifier2 = tuple.getB();
@@ -140,10 +137,10 @@ public class XRPotionHelper {
 					}
 
 					if (d0 > 0.0D) {
-						list.add(new StringTextComponent((addFormatting ? TextFormatting.BLUE.toString() : "") + I18n.format("attribute.modifier.plus." + attributemodifier2.getOperation().toString().toLowerCase(), ItemStack.DECIMALFORMAT.format(d1), I18n.format("attribute.name." + tuple.getA().toLowerCase()))));
+						list.add((new TranslationTextComponent("attribute.modifier.plus." + attributemodifier2.getOperation().getId(), ItemStack.DECIMALFORMAT.format(d1), new TranslationTextComponent("attribute.name." + tuple.getA()))).applyTextStyle(TextFormatting.BLUE));
 					} else if (d0 < 0.0D) {
 						d1 = d1 * -1.0D;
-						list.add(new StringTextComponent((addFormatting ? TextFormatting.RED.toString() : "") + I18n.format("attribute.modifier.take." + attributemodifier2.getOperation().toString().toLowerCase(), ItemStack.DECIMALFORMAT.format(d1), I18n.format("attribute.name." + tuple.getA().toLowerCase()))));
+						list.add((new TranslationTextComponent("attribute.modifier.take." + attributemodifier2.getOperation().getId(), ItemStack.DECIMALFORMAT.format(d1), new TranslationTextComponent("attribute.name." + tuple.getA()))).applyTextStyle(TextFormatting.RED));
 					}
 				}
 			}
