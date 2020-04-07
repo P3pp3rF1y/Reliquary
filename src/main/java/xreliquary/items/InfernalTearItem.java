@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -33,6 +34,7 @@ public class InfernalTearItem extends ToggleableItem {
 
 	public InfernalTearItem() {
 		super("infernal_tear", new Properties().maxStackSize(1).setNoRepair());
+		addPropertyOverride(new ResourceLocation("empty"), (stack, world, entity) -> getStackFromTear(stack).isEmpty() ? 1.0F : 0.0F);
 	}
 
 	@Override
