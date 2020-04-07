@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
+import xreliquary.items.VoidTearItem;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -69,7 +70,7 @@ public class VoidTearModel implements IBakedModel {
 	public ItemOverrideList getOverrides() {
 		return new ItemOverrideList() {
 			@Override
-			public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
+			public IBakedModel getModelWithOverrides(IBakedModel model, ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
 				if (Screen.hasShiftDown()) {
 					ItemStack containedStack = ModItems.VOID_TEAR.getContainerItem(stack, true);
 					if (!containedStack.isEmpty()) {
@@ -80,7 +81,7 @@ public class VoidTearModel implements IBakedModel {
 					}
 				}
 
-				return VoidTearModel.this;
+				return originalModel.getOverrides().getModelWithOverrides(model, stack, world, entity);
 			}
 		};
 	}

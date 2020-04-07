@@ -134,7 +134,7 @@
                 "east": { "texture": "layer1", "uv": [ 0.5, 8.0, 1.0, 9.0 ] },
                 "south": { "texture": "layer1", "uv": [ 1.5, 8.0, 0.0, 9.0 ] },
                 "up": { "texture": "layer1", "uv": [ 0.0, 8.0, 0.5, 9.5 ], "rotation": 90 },
-                "down": { "texture": "#-1", "uv": [ 8.01, 0.01, 10.99, 1.49 ] }
+                "down": { "texture": "layer1", "uv": [ 8.01, 0.01, 10.99, 1.49 ] }
             }
         },
         {
