@@ -117,7 +117,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 	@Override
 	protected boolean hasMoreInformation(ItemStack stack) {
-		return true;
+		return !isEmpty(stack, true);
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 			//not letting logic go through if player was sneak clicking inventory or was trying to place a block
 			//noinspection ConstantConditions
 			if (rayTraceResult != null && rayTraceResult.getType() == RayTraceResult.Type.BLOCK &&
-					(InventoryHelper.hasItemHandler(world, ((BlockRayTraceResult) rayTraceResult).getPos()) && player.isShiftKeyDown() || getContainerItem(voidTear).getItem() instanceof BlockItem)) {
+					(InventoryHelper.hasItemHandler(world, ((BlockRayTraceResult) rayTraceResult).getPos()) && player.isShiftKeyDown() || hasPlaceableBlock(voidTear, false))) {
 				return new ActionResult<>(ActionResultType.PASS, voidTear);
 			}
 
@@ -154,6 +154,10 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 			}
 		}
 		return new ActionResult<>(ActionResultType.PASS, voidTear);
+	}
+
+	private boolean hasPlaceableBlock(ItemStack voidTear, boolean isClient) {
+		return !isEmpty(voidTear) && getContainerItem(voidTear, isClient).getItem() instanceof BlockItem;
 	}
 
 	private ActionResult<ItemStack> rightClickEmpty(ItemStack emptyVoidTear, PlayerEntity player) {
@@ -211,6 +215,11 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 			PlayerEntity player = (PlayerEntity) entity;
 
 			if (isEnabled(voidTear)) {
+				if (isEmpty(voidTear)) {
+					setEmpty(voidTear); //fixes issue when creative inventory is opened and active tear gets messed up
+					return;
+				}
+
 				ItemStack contents = getContainerItem(voidTear);
 
 				if (!contents.isEmpty()) {
@@ -285,17 +294,15 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		LazyOptional<IItemHandler> handler = WorldHelper.getTile(world, pos).map(InventoryHelper::getItemHandlerFrom).orElse(LazyOptional.empty());
 		if (handler.isPresent()) {
 			return handler.map(h -> processItemHandlerInteraction(player, hand, world, voidTear, h)).orElse(ActionResultType.FAIL);
-		} else if (getContainerItem(voidTear).getItem() instanceof BlockItem && getItemQuantity(voidTear) > 0) {
-			ItemStack containerItem = getContainerItem(voidTear);
+		} else if (!world.isRemote && hasPlaceableBlock(voidTear, world.isRemote) && getItemQuantity(voidTear) > 0) {
+			ItemStack containerItem = getContainerItem(voidTear, world.isRemote);
 			BlockItem itemBlock = (BlockItem) containerItem.getItem();
 
 			Direction face = context.getFace();
 			NoPlayerBlockItemUseContext noPlayerBlockItemUseContext = new NoPlayerBlockItemUseContext(world, pos, new ItemStack(itemBlock), face);
 			if (noPlayerBlockItemUseContext.canPlace()) {
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - 1);
-				if (!world.isRemote) {
-					itemBlock.tryPlace(noPlayerBlockItemUseContext);
-				}
+				itemBlock.tryPlace(noPlayerBlockItemUseContext);
 			}
 		}
 		return ActionResultType.PASS;
@@ -550,7 +557,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 			return getContainerItem(voidTear, true).isEmpty();
 		}
 
-		return voidTear.getTag() == null || voidTear.getTag().keySet().isEmpty();
+		return getFromHandler(voidTear, h -> h.getBigStackSlots() <= 0 || h.getContainedAmount() <= 0).orElse(true);
 	}
 
 	private void setEmpty(ItemStack voidTear) {
