@@ -295,12 +295,12 @@ public class InventoryHelper {
 			if (stack.isEmpty()) {
 				continue;
 			}
-			if (stack.getItem() == item) {
-				return !(checkEnabled && stack.getItem() instanceof ToggleableItem) || ((ToggleableItem) stack.getItem()).isEnabled(stack);
+			if (stack.getItem() == item && (!(checkEnabled && stack.getItem() instanceof ToggleableItem) || ((ToggleableItem) stack.getItem()).isEnabled(stack))) {
+				return true;
 			}
 		}
 
-		return hasItemInBaubleInventories(player, item, checkEnabled, baubleType);
+		return baubleType != IBaubleItem.Type.NONE && hasItemInBaubleInventories(player, item, checkEnabled, baubleType);
 	}
 
 	private static boolean hasItemInBaubleInventories(PlayerEntity player, Item item, boolean checkEnabled, IBaubleItem.Type baubleType) {
