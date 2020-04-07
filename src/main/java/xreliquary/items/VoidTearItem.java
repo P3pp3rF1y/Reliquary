@@ -15,6 +15,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -63,6 +64,7 @@ public class VoidTearItem extends ToggleableItem {
 	public VoidTearItem() {
 		super(Names.Items.VOID_TEAR, new Properties());
 		MinecraftForge.EVENT_BUS.addListener(this::onItemPickup);
+		addPropertyOverride(new ResourceLocation("empty"), (stack, world, entity) -> isEmpty(stack, true) ? 1.0F : 0.0F);
 	}
 
 	@Override
@@ -129,7 +131,7 @@ public class VoidTearItem extends ToggleableItem {
 			//not letting logic go through if player was sneak clicking inventory or was trying to place a block
 			//noinspection ConstantConditions
 			if (rayTraceResult != null && rayTraceResult.getType() == RayTraceResult.Type.BLOCK &&
-					(InventoryHelper.hasItemHandler(world, ((BlockRayTraceResult) rayTraceResult).getPos()) && player.isSneaking() || hasPlaceableBlock(voidTear, false))) {
+					(InventoryHelper.hasItemHandler(world, ((BlockRayTraceResult) rayTraceResult).getPos()) && player.isSneaking() || hasPlaceableBlock(voidTear))) {
 				return new ActionResult<>(ActionResultType.PASS, voidTear);
 			}
 
@@ -155,8 +157,8 @@ public class VoidTearItem extends ToggleableItem {
 		return new ActionResult<>(ActionResultType.PASS, voidTear);
 	}
 
-	private boolean hasPlaceableBlock(ItemStack voidTear, boolean isClient) {
-		return !isEmpty(voidTear) && getContainerItem(voidTear, isClient).getItem() instanceof BlockItem;
+	private boolean hasPlaceableBlock(ItemStack voidTear) {
+		return !isEmpty(voidTear) && getContainerItem(voidTear, false).getItem() instanceof BlockItem;
 	}
 
 	private ActionResult<ItemStack> rightClickEmpty(ItemStack emptyVoidTear, PlayerEntity player) {
@@ -293,8 +295,8 @@ public class VoidTearItem extends ToggleableItem {
 		LazyOptional<IItemHandler> handler = WorldHelper.getTile(world, pos).map(InventoryHelper::getItemHandlerFrom).orElse(LazyOptional.empty());
 		if (handler.isPresent()) {
 			return handler.map(h -> processItemHandlerInteraction(player, hand, world, voidTear, h)).orElse(ActionResultType.FAIL);
-		} else if (!world.isRemote && hasPlaceableBlock(voidTear, world.isRemote) && getItemQuantity(voidTear) > 0) {
-			ItemStack containerItem = getContainerItem(voidTear, world.isRemote);
+		} else if (!world.isRemote && hasPlaceableBlock(voidTear) && getItemQuantity(voidTear) > 0) {
+			ItemStack containerItem = getContainerItem(voidTear);
 			BlockItem itemBlock = (BlockItem) containerItem.getItem();
 
 			Direction face = context.getFace();
