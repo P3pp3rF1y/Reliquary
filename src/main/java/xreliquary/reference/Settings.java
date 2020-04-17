@@ -1134,7 +1134,7 @@ public class Settings {
 
 					outputLightLevelWhileActive = builder
 							.comment("Light level that the altar outputs while active")
-							.defineInRange("outputLightLevelWhileActive", 16, 0, 16);
+							.defineInRange("outputLightLevelWhileActive", 15, 0, 15);
 
 					builder.pop();
 				}
