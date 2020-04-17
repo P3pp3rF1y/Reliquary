@@ -27,7 +27,9 @@ public class PacketHandler {
 		networkWrapper.registerMessage(idx++, PacketCountSync.class, PacketCountSync::encode, PacketCountSync::decode, PacketCountSync::onMessage);
 		networkWrapper.registerMessage(idx++, PacketMobCharmDamage.class, PacketMobCharmDamage::encode, PacketMobCharmDamage::decode, PacketMobCharmDamage::onMessage);
 		networkWrapper.registerMessage(idx++, PacketPedestalFishHook.class, PacketPedestalFishHook::encode, PacketPedestalFishHook::decode, PacketPedestalFishHook::onMessage);
-		networkWrapper.registerMessage(idx, PacketFortuneCoinTogglePressed.class, PacketFortuneCoinTogglePressed::encode, PacketFortuneCoinTogglePressed::decode, PacketFortuneCoinTogglePressed::onMessage);
+		networkWrapper.registerMessage(idx++, PacketFortuneCoinTogglePressed.class, PacketFortuneCoinTogglePressed::encode, PacketFortuneCoinTogglePressed::decode, PacketFortuneCoinTogglePressed::onMessage);
+		networkWrapper.registerMessage(idx++, SpawnAngelheartVialParticlesPacket.class, SpawnAngelheartVialParticlesPacket::encode, SpawnAngelheartVialParticlesPacket::decode, SpawnAngelheartVialParticlesPacket::onMessage);
+		networkWrapper.registerMessage(idx, SpawnPhoenixDownParticlesPacket.class, SpawnPhoenixDownParticlesPacket::encode, SpawnPhoenixDownParticlesPacket::decode, SpawnPhoenixDownParticlesPacket::onMessage);
 	}
 
 	public static <M> void sendToClient(ServerPlayerEntity player, M message) {
