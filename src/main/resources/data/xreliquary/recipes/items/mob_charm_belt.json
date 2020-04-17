@@ -10,7 +10,6 @@
             "item": "minecraft:leather"
         },
         "F": {
-            "type": "forge:nbt",
             "item": "xreliquary:mob_charm_fragment"
         }
     },
