@@ -20,7 +20,8 @@ import javax.vecmath.Matrix4f;
 import java.util.List;
 import java.util.Random;
 
-@SuppressWarnings({"deprecation", "squid:CallToDeprecatedMethod"}) // - a lot of methods here are deprecated, but need to be used to delegate call to the original model
+@SuppressWarnings({"deprecation", "squid:CallToDeprecatedMethod"})
+// - a lot of methods here are deprecated, but need to be used to delegate call to the original model
 public class VoidTearModel implements IBakedModel {
 	private final IBakedModel originalModel;
 
@@ -64,7 +65,7 @@ public class VoidTearModel implements IBakedModel {
 	public ItemOverrideList getOverrides() {
 		return new ItemOverrideList() {
 			@Override
-			public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
+			public IBakedModel getModelWithOverrides(IBakedModel model, ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
 				if (Screen.hasShiftDown()) {
 					ItemStack containedStack = ModItems.VOID_TEAR.getContainerItem(stack, true);
 					if (!containedStack.isEmpty()) {
@@ -75,7 +76,7 @@ public class VoidTearModel implements IBakedModel {
 					}
 				}
 
-				return VoidTearModel.this;
+				return originalModel.getOverrides().getModelWithOverrides(model, stack, world, entity);
 			}
 		};
 	}

@@ -65,7 +65,7 @@ public class AlkahestryAltarBlock extends BaseBlock {
 	}
 
 	private int getAltarActiveLightLevel() {
-		return (int) ((float) Settings.COMMON.blocks.altar.outputLightLevelWhileActive.get() / 16F);
+		return Settings.COMMON.blocks.altar.outputLightLevelWhileActive.get();
 	}
 
 	@Override

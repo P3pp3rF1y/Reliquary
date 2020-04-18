@@ -326,10 +326,9 @@ public class HarvestRodItem extends ToggleableItem {
 		}
 	}
 
-	private void decrementPlantable(ItemStack harvestRod, int slot, PlayerEntity player, boolean updateNBT) {
-		runOnHandler(harvestRod, h -> h.decrementPlantable(slot));
-		getFromHandler(harvestRod, h -> h.getBigStack(slot))
-				.ifPresent(plantable -> updateContainedItemNBT(harvestRod, player, (short) slot, plantable.getFilterStack(), plantable.getAmount(), updateNBT));
+	private void decrementPlantable(ItemStack harvestRod, byte slot, PlayerEntity player, boolean updateNBT) {
+		getFromHandler(harvestRod, h -> h.getBigStack(slot).getAmount()).flatMap(amount -> setPlantableQuantity(harvestRod, slot, amount - 1))
+				.ifPresent(plantable -> updateContainedItemNBT(harvestRod, player, slot, plantable.getFilterStack(), plantable.getAmount(), updateNBT));
 	}
 
 	@Override
@@ -397,7 +396,7 @@ public class HarvestRodItem extends ToggleableItem {
 	}
 
 	private void removeStackFromCurrent(ItemStack stack, PlayerEntity player) {
-		if (getMode(stack).equals(BONE_MEAL_MODE)) {
+		if (getMode(stack).equals(BONE_MEAL_MODE) && getBoneMealCount(stack) > 0) {
 			ItemStack boneMealStack = new ItemStack(Items.BONE_MEAL);
 			int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), getBoneMealCount(stack));
 			int numberAdded = InventoryHelper.getItemHandlerFrom(player).map(handler -> InventoryHelper.tryToAddToInventory(boneMealStack, handler, numberToAdd)).orElse(0);
@@ -406,20 +405,16 @@ public class HarvestRodItem extends ToggleableItem {
 			byte plantableSlot = getCurrentPlantableSlot(stack);
 			ItemStack plantableStack = getCurrentPlantable(stack);
 			int plantableQuantity = getPlantableQuantity(stack, plantableSlot);
-
 			int numberToAdd = Math.min(plantableStack.getMaxStackSize(), plantableQuantity);
 			int numberAdded = InventoryHelper.getItemHandlerFrom(player).map(handler -> InventoryHelper.tryToAddToInventory(plantableStack, handler, numberToAdd)).orElse(0);
 
 			int updatedPlantableQuantity = getPlantableQuantity(stack, plantableSlot) - numberAdded;
 
 			setPlantableQuantity(stack, plantableSlot, updatedPlantableQuantity, player);
-			if (updatedPlantableQuantity == 0) {
-				shiftModeOnEmptyPlantable(stack, plantableSlot);
-			}
 		}
 	}
 
-	public void shiftModeOnEmptyPlantable(ItemStack harvestRod, byte plantableSlot) {
+	private void shiftModeOnEmptyPlantable(ItemStack harvestRod, byte plantableSlot) {
 		if (plantableSlot > 0) {
 			setCurrentPlantableSlot(harvestRod, (byte) (plantableSlot - 1));
 		}
@@ -438,11 +433,7 @@ public class HarvestRodItem extends ToggleableItem {
 			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
 
 			if (!player.isCreative()) {
-				int plantableQuantity = getPlantableQuantity(harvestRod, plantableSlot);
 				decrementPlantable(harvestRod, plantableSlot, player, updateNBT);
-				if (plantableQuantity <= 1) {
-					shiftModeOnEmptyPlantable(harvestRod, plantableSlot);
-				}
 			}
 		}
 	}
@@ -664,10 +655,12 @@ public class HarvestRodItem extends ToggleableItem {
 	}
 
 	public Optional<FilteredBigItemStack> setPlantableQuantity(ItemStack harvestRod, byte plantableSlot, int quantity) {
-		return getFromHandler(harvestRod, h -> {
-					h.setTotalAmount(plantableSlot, quantity);
-			return h.getBigStack(plantableSlot);
-		});
+		runOnHandler(harvestRod, h -> h.setTotalAmount(plantableSlot, quantity));
+		if (quantity == 0) {
+			shiftModeOnEmptyPlantable(harvestRod, plantableSlot);
+			return Optional.empty();
+		}
+		return getFromHandler(harvestRod, h -> h.getBigStack(plantableSlot));
 	}
 
 	private void setPlantableQuantity(ItemStack harvestRod, byte plantableSlot, int quantity, PlayerEntity player) {

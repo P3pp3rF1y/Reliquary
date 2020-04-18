@@ -93,7 +93,7 @@ public class Settings {
 			}
 		}
 
-		public Client(ForgeConfigSpec.Builder builder) {
+		Client(ForgeConfigSpec.Builder builder) {
 			builder.comment("Client Settings").push("client");
 			hudPositions = new HudPos(builder);
 			wailaShiftForInfo = builder
@@ -347,7 +347,7 @@ public class Settings {
 
 					gunpowderWorth = builder
 							.comment("Number of gunpowder that gets added to catalyst per one that's consumed from players inventory")
-							.defineInRange("gunpowderWorth", 1, 0, 3);
+							.defineInRange("gunpowderWorth", 1, 1, 3);
 
 					gunpowderLimit = builder
 							.comment("Number of gunpowder that can be stored in destruction catalyst")
@@ -407,7 +407,7 @@ public class Settings {
 
 					enderPearlWorth = builder
 							.comment("Number of ender pearls that get added to the staff per one that's consumed from players inventory")
-							.defineInRange("enderPearlWorth", 1, 0, 10);
+							.defineInRange("enderPearlWorth", 1, 1, 10);
 
 					enderPearlLimit = builder
 							.comment("Number of ender pearls that the ender staff can store")
@@ -470,7 +470,7 @@ public class Settings {
 
 					snowballWorth = builder
 							.comment("Number of snowballs that get added to the staff per one that's consumed from player's inventory")
-							.defineInRange("snowballWorth", 1, 0, 3);
+							.defineInRange("snowballWorth", 1, 1, 3);
 
 					snowballDamage = builder
 							.comment("The damage that snowballs cause")
@@ -515,7 +515,7 @@ public class Settings {
 
 					boneMealWorth = builder
 							.comment("Number of bonemeal that gets added to the rod per one that's consumed from player's inventory")
-							.defineInRange("boneMealWorth", 1, 0, 3);
+							.defineInRange("boneMealWorth", 1, 1, 3);
 
 					boneMealLuckPercentChance = builder
 							.comment("Percent chance that a bonemeal will get applied during a luck roll")
@@ -618,7 +618,7 @@ public class Settings {
 
 					snowballWorth = builder
 							.comment("Number of snowballs that get added to the rod per one that's consumed from player's inventory")
-							.defineInRange("snowballWorth", 1, 0, 3);
+							.defineInRange("snowballWorth", 1, 1, 3);
 
 					snowballDamage = builder
 							.comment("The damage that snowballs cause")
@@ -747,7 +747,7 @@ public class Settings {
 
 					glowstoneWorth = builder
 							.comment("Number of glowstone that gets added to the touchstone per one in player's inventory")
-							.defineInRange("glowstoneWorth", 4, 0, 12);
+							.defineInRange("glowstoneWorth", 4, 1, 12);
 
 					glowstoneLimit = builder
 							.comment("Number of glowstone the touchstone can hold")
@@ -874,7 +874,7 @@ public class Settings {
 
 					fireChargeWorth = builder
 							.comment("Number of fire charges that get added to the staff per one that's consumed from player's inventory")
-							.defineInRange("fireChargeWorth", 1, 0, 3);
+							.defineInRange("fireChargeWorth", 1, 1, 3);
 
 					ghastAbsorbWorth = builder
 							.comment("Number of fire charges added to the staff per one that was shot by ghast and gets absorbed by the staff")
@@ -890,7 +890,7 @@ public class Settings {
 
 					blazePowderWorth = builder
 							.comment("Number of blaze powder that gets added to the staff per one that's consumed from player's inventory")
-							.defineInRange("blazePowderWorth", 1, 0, 3);
+							.defineInRange("blazePowderWorth", 1, 1, 3);
 
 					blazeAbsorbWorth = builder
 							.comment("Number of blaze powder added to the staff per one fireball that was shot by blaze and gets absorbed by the staff")
@@ -1134,7 +1134,7 @@ public class Settings {
 
 					outputLightLevelWhileActive = builder
 							.comment("Light level that the altar outputs while active")
-							.defineInRange("outputLightLevelWhileActive", 16, 0, 16);
+							.defineInRange("outputLightLevelWhileActive", 15, 0, 15);
 
 					builder.pop();
 				}

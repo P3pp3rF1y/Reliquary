@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApothecaryMortarTileEntity extends TileEntityBase implements IWailaDataChangeIndicator {
-	@SuppressWarnings("WeakerAccess")
 	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.APOTHECARY_MORTAR)
 	public static final TileEntityType<ApothecaryMortarTileEntity> TYPE = InjectionHelper.nullValue();
 	private static final int PESTLE_USAGE_MAX = 5; // the number of times you have to use the pestle
@@ -109,7 +108,7 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 				continue;
 			}
 			++itemCount;
-			potionIngredients.add(XRPotionHelper.getIngredient(item));
+			XRPotionHelper.getIngredient(item).ifPresent(potionIngredients::add);
 		}
 		if (itemCount > 1) {
 			pestleUsedCounter++;
