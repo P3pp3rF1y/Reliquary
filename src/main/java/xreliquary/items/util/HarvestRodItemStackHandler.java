@@ -33,11 +33,6 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 	}
 
 	@Override
-	protected boolean getBigStackRemovable(int bigStackSlot) {
-		return bigStackSlot != BONEMEAL_SLOT;
-	}
-
-	@Override
 	protected boolean isValidForBigStackSlot(ItemStack stack, int bigStackSlot) {
 		if (bigStackSlot == BONEMEAL_SLOT) {
 			return stack.getItem() == Items.BONE_MEAL;
@@ -64,16 +59,12 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 	}
 
 	public Optional<Integer> insertPlantable(ItemStack stack) {
-		for (int slot = 0; slot < getSlots(); slot++) {
+		for (int slot = 1; slot < getSlots(); slot++) {
 			if (insertItem(slot, stack, false).isEmpty()) {
 				return Optional.of(getBigStackSlot(slot));
 			}
 		}
 		return Optional.empty();
-	}
-
-	public void decrementPlantable(int slot) {
-		setTotalAmount(slot, getTotalAmount(slot) - 1);
 	}
 
 	public int getCountPlantable() {

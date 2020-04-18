@@ -17,12 +17,12 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	private List<RemovableStack> filteredBigItemStacks;
 	private static final String NOT_IN_RANGE_ERROR = "%s %d not in valid range - (0, %d)";
 
-	public FilteredItemStackHandler(List<RemovableStack> filteredBigItemStacks) {
+	FilteredItemStackHandler(List<RemovableStack> filteredBigItemStacks) {
 		this.filteredBigItemStacks = filteredBigItemStacks;
 	}
 
 	public void setTotalAmount(int bigStackSlot, int amount) {
-		if (dynamicSlotNumber && amount == 0 && getBigStackRemovable(bigStackSlot)) {
+		if (dynamicSlotNumber && amount == 0 && filteredBigItemStacks.get(bigStackSlot).canRemove) {
 			filteredBigItemStacks.remove(bigStackSlot);
 		} else {
 			filteredBigItemStacks.get(bigStackSlot).getStack().setAmount(amount);
@@ -51,11 +51,6 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 				it.remove();
 			}
 		}
-	}
-
-	@SuppressWarnings("squid:S1172")
-	protected boolean getBigStackRemovable(int bigStackSlot) {
-		return false;
 	}
 
 	public FilteredBigItemStack getBigStack(int bigStackSlot) {
@@ -113,7 +108,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		return Integer.MAX_VALUE;
 	}
 
-	protected int getBigStackSlot(int slot) {
+	int getBigStackSlot(int slot) {
 		return slot / 2;
 	}
 
@@ -175,8 +170,9 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-		if (stack.isEmpty() || stack.getCount() == 0)
+		if (stack.isEmpty() || stack.getCount() == 0) {
 			return ItemStack.EMPTY;
+		}
 
 		validateSlotIndex(slot);
 
@@ -187,13 +183,14 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 				if (!simulate) {
 					addDynamicBigStack(stack, bigStackSlot);
 				}
-				return ItemStack.EMPTY;
+			} else {
+				return stack;
 			}
-			return stack;
 		}
 
-		if (!isValidForBigStackSlot(stack, bigStackSlot))
+		if (!isValidForBigStackSlot(stack, bigStackSlot)) {
 			return stack;
+		}
 
 		return filteredBigItemStacks.get(bigStackSlot).getStack().insertItem(stack, simulate, isInputSlot(slot));
 	}
@@ -266,13 +263,14 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	void setDynamicSlotNumber() {
-		this.dynamicSlotNumber = true;
+		dynamicSlotNumber = true;
 	}
 
 	private void validateSlotIndex(int slot) {
 		int slots = getSlots();
-		if (slot < 0 || slot >= slots)
+		if (slot < 0 || slot >= slots) {
 			throw new IllegalArgumentException(String.format(NOT_IN_RANGE_ERROR, "Slot", slot, filteredBigItemStacks.size() - 1));
+		}
 	}
 
 	public static class RemovableStack {
