@@ -60,8 +60,7 @@ public class CuriosCompat implements ICompat {
 	public void onAttachCapabilities(AttachCapabilitiesEvent<ItemStack> evt) {
 		ItemStack stack = evt.getObject();
 		Item item = stack.getItem();
-		//noinspection ConstantConditions
-		if (item.getRegistryName().getNamespace().equals(Reference.MOD_ID) && item instanceof IBaubleItem) {
+		if (item.getRegistryName() != null && item.getRegistryName().getNamespace().equals(Reference.MOD_ID) && item instanceof IBaubleItem) {
 			evt.addCapability(new ResourceLocation(Reference.MOD_ID, item.getRegistryName().getPath() + "_curios"), new ICapabilityProvider() {
 				@Nonnull
 				@Override
@@ -69,7 +68,6 @@ public class CuriosCompat implements ICompat {
 					return CuriosCapability.ITEM.orEmpty(cap, LazyOptional.of(() -> new CuriosBaubleItemWrapper((IBaubleItem) item)));
 				}
 			});
-
 		}
 	}
 

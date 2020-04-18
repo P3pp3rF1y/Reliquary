@@ -13,7 +13,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import xreliquary.Reliquary;
 import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeCategory;
 import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeCategory;
 import xreliquary.compat.jei.cauldron.CauldronRecipeCategory;
@@ -29,6 +33,7 @@ import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unused") //plugin class is used by JEI's reflection
@@ -76,6 +81,7 @@ public class ReliquaryPlugin implements IModPlugin {
 		registration.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.NEUTRAL_BULLET), "bullet"), VanillaRecipeCategoryUid.CRAFTING);
 		registration.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.TIPPED_ARROW), new ItemStack(Items.ARROW), 0.125F, "arrow"), VanillaRecipeCategoryUid.CRAFTING);
 		registration.addRecipes(MagazineRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
+		registerMobCharmBeltRecipe(registration);
 
 		for (DescriptionEntry entry : JEIDescriptionRegistry.getEntries()) {
 			List<ItemStack> itemStacks = entry.getItemStacks();
@@ -83,6 +89,25 @@ public class ReliquaryPlugin implements IModPlugin {
 				registration.addIngredientInfo(itemStacks, VanillaTypes.ITEM, entry.langKeys());
 			}
 		}
+	}
+
+	private void registerMobCharmBeltRecipe(IRecipeRegistration registration) {
+		NonNullList<ItemStack> fragments = NonNullList.create();
+		ModItems.MOB_CHARM_FRAGMENT.fillItemGroup(Reliquary.ITEM_GROUP, fragments);
+		ItemStack[] fragmentStacks = fragments.toArray(new ItemStack[0]);
+
+		registration.addRecipes(Collections.singleton(new ShapedRecipe(new ResourceLocation(Reference.MOD_ID, "items/mob_charm_belt"), "", 3, 3,
+				NonNullList.from(Ingredient.EMPTY,
+						Ingredient.fromItems(() -> Items.LEATHER),
+						Ingredient.fromItems(() -> Items.LEATHER),
+						Ingredient.fromItems(() -> Items.LEATHER),
+						Ingredient.fromStacks(fragmentStacks),
+						Ingredient.EMPTY,
+						Ingredient.fromStacks(fragmentStacks),
+						Ingredient.fromStacks(fragmentStacks),
+						Ingredient.fromStacks(fragmentStacks),
+						Ingredient.fromStacks(fragmentStacks)
+				), new ItemStack(ModItems.MOB_CHARM_BELT))), VanillaRecipeCategoryUid.CRAFTING);
 	}
 
 	private void registerNbtSubtypeInterpreter(ISubtypeRegistration registration, Item item, String... keys) {
