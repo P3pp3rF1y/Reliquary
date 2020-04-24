@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
-	private static final int BONEMEAL_SLOT = 0;
+	public static final int BONEMEAL_SLOT = 0;
 
 	private static List<RemovableStack> getDefaultStacks() {
 		List<RemovableStack> stacks = new ArrayList<>();
