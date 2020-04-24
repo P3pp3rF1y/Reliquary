@@ -182,6 +182,8 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 			if (!alreadyExistsInAnotherSlot(stack, bigStackSlot) && isValidForDynamicStack(stack)) {
 				if (!simulate) {
 					addDynamicBigStack(stack, bigStackSlot);
+				} else {
+					return ItemStack.EMPTY;
 				}
 			} else {
 				return stack;

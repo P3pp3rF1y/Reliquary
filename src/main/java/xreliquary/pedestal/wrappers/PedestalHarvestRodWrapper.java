@@ -24,8 +24,10 @@ import xreliquary.api.IPedestalActionItemWrapper;
 import xreliquary.blocks.FertileLilyPadBlock;
 import xreliquary.init.ModItems;
 import xreliquary.items.HarvestRodItem;
+import xreliquary.items.util.HarvestRodItemStackHandler;
 import xreliquary.reference.Settings;
 import xreliquary.util.ItemHelper;
+import xreliquary.util.NBTHelper;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -75,7 +77,10 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void onRemoved(ItemStack stack, IPedestal pedestal) {
-		//noop
+		NBTHelper.updateContainedStack(stack, (short) HarvestRodItemStackHandler.BONEMEAL_SLOT, ItemStack.EMPTY, harvestRod.getBoneMealCount(stack));
+		for(short slot=1; slot < harvestRod.getCountPlantable(stack) + 1; slot++) {
+			NBTHelper.updateContainedStack(stack, slot, harvestRod.getPlantableInSlot(stack, slot), harvestRod.getPlantableQuantity(stack, slot));
+		}
 	}
 
 	@Override
