@@ -345,6 +345,12 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 	}
 
 	@Override
+	void toggleEnabled(ItemStack stack) {
+		super.toggleEnabled(stack);
+		updateContainedStacks(stack);
+	}
+
+	@Override
 	public int getUseDuration(ItemStack stack) {
 		return 300;
 	}
@@ -631,11 +637,21 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 		if (stack.hasTag()) {
 			//noinspection ConstantConditions
 			stack.getTag().putByte(PLANTABLE_INDEX_NBT_TAG, index);
+			updateContainedStacks(stack);
 		}
 	}
 
 	private void setMode(ItemStack stack, String mode) {
 		NBTHelper.putString(MODE_NBT_TAG, stack, mode);
+		updateContainedStacks(stack);
+	}
+
+	public void updateContainedStacks(ItemStack stack) {
+		NBTHelper.removeContainedStacks(stack);
+		NBTHelper.updateContainedStack(stack, (short) HarvestRodItemStackHandler.BONEMEAL_SLOT, ItemStack.EMPTY, getBoneMealCount(stack));
+		for(short slot=1; slot < getCountPlantable(stack) + 1; slot++) {
+			NBTHelper.updateContainedStack(stack, slot, getPlantableInSlot(stack, slot), getPlantableQuantity(stack, slot));
+		}
 	}
 
 	public String getMode(ItemStack stack) {

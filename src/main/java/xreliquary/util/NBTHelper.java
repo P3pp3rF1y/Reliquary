@@ -92,6 +92,10 @@ public class NBTHelper {
 		}
 	}
 
+	public static void removeContainedStacks(ItemStack container) {
+		remove(container.getTag(), "Slots");
+	}
+
 	public static void updateContainedStack(ItemStack container, short slot, ItemStack stackToSave, int count) {
 		updateContainedStack(container, slot, stackToSave, count, false);
 	}
