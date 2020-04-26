@@ -77,9 +77,8 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void onRemoved(ItemStack stack, IPedestal pedestal) {
-		NBTHelper.updateContainedStack(stack, (short) HarvestRodItemStackHandler.BONEMEAL_SLOT, ItemStack.EMPTY, harvestRod.getBoneMealCount(stack));
-		for(short slot=1; slot < harvestRod.getCountPlantable(stack) + 1; slot++) {
-			NBTHelper.updateContainedStack(stack, slot, harvestRod.getPlantableInSlot(stack, slot), harvestRod.getPlantableQuantity(stack, slot));
+		if (!pedestal.getTheWorld().isRemote) {
+			harvestRod.updateContainedStacks(stack);
 		}
 	}
 
