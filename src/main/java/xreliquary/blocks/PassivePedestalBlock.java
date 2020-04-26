@@ -46,7 +46,7 @@ public class PassivePedestalBlock extends BaseBlock {
 	}
 
 	public PassivePedestalBlock(String name) {
-		super(name, Properties.create(Material.ROCK).harvestTool(ToolType.PICKAXE));
+		super(name, Properties.create(Material.ROCK).harvestTool(ToolType.PICKAXE).hardnessAndResistance(1.5F, 2.0F));
 		setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH));
 	}
 
