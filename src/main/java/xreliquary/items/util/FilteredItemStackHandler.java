@@ -237,9 +237,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		ListNBT nbtTagList = new ListNBT();
 		for (RemovableStack removableStack : filteredBigItemStacks) {
 			FilteredBigItemStack bigStack = removableStack.getStack();
-			if (!bigStack.isEmpty()) {
-				nbtTagList.add(bigStack.serializeNBT());
-			}
+			nbtTagList.add(bigStack.serializeNBT());
 		}
 
 		CompoundNBT nbt = new CompoundNBT();
