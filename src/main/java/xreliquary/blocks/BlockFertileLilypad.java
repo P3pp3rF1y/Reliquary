@@ -65,6 +65,7 @@ public class BlockFertileLilypad extends BlockBush {
 		int yO = pos.getY();
 		int zO = pos.getZ();
 
+		final BlockPos.MutableBlockPos posToCheck = new BlockPos.MutableBlockPos();
 		for(int xD = -tileRange(); xD <= tileRange(); xD++) {
 			for(int yD = -1; yD <= tileRange(); yD++) {
 				for(int zD = -tileRange(); zD <= tileRange(); zD++) {
@@ -77,14 +78,20 @@ public class BlockFertileLilypad extends BlockBush {
 					distance = Math.min(1D, distance);
 					double distanceCoefficient = 1D - (distance / tileRange());
 
-					IBlockState cropState = world.getBlockState(new BlockPos(x, y, z));
+					posToCheck.setPos(x, y, z);
+					// If the block isn't loaded, avoid loading the chunk
+					if (!world.isBlockLoaded(posToCheck)) {
+						continue;
+					}
+
+					IBlockState cropState = world.getBlockState(posToCheck);
 					Block cropBlock = cropState.getBlock();
 
 					if(cropBlock instanceof IPlantable || cropBlock instanceof IGrowable) {
 						if(!(cropBlock instanceof BlockFertileLilypad)) {
 							//it schedules the next tick.
-							world.scheduleBlockUpdate(new BlockPos(x, y, z), cropBlock, (int) (distanceCoefficient * (float) secondsBetweenGrowthTicks() * 20F), 1);
-							cropBlock.updateTick(world, new BlockPos(x, y, z), cropState, world.rand);
+							world.scheduleBlockUpdate(posToCheck, cropBlock, (int) (distanceCoefficient * (float) secondsBetweenGrowthTicks() * 20F), 1);
+							cropBlock.updateTick(world, posToCheck, cropState, world.rand);
 						}
 					}
 				}
