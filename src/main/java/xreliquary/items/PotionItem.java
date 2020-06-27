@@ -4,12 +4,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import xreliquary.init.ModItems;
 import xreliquary.util.potions.XRPotionHelper;
 
 public class PotionItem extends PotionItemBase {
@@ -55,8 +55,7 @@ public class PotionItem extends PotionItemBase {
 		}
 
 		if (!player.isCreative()) {
-			ItemStack emptyVial = new ItemStack(this);
-			emptyVial.setTag(new CompoundNBT()); //doing this as without this vials dropped on ground and picked up wouldn't stack properly - they get empty NBT assigned
+			ItemStack emptyVial = new ItemStack(ModItems.EMPTY_POTION_VIAL);
 			if (stack.getCount() <= 0) {
 				return emptyVial;
 			} else {
