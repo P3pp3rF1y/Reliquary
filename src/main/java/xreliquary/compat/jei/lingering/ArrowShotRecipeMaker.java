@@ -2,7 +2,7 @@ package xreliquary.compat.jei.lingering;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapelessRecipe;
+import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import xreliquary.init.ModItems;
@@ -18,12 +18,12 @@ import java.util.List;
 public class ArrowShotRecipeMaker {
 	private ArrowShotRecipeMaker() {}
 
-	public static List<ShapelessRecipe> getRecipes(ItemStack output, String itemName) {
+	public static List<ShapedRecipe> getRecipes(ItemStack output, String itemName) {
 		return getRecipes(output, output, 0.2F, itemName);
 	}
 
-	public static List<ShapelessRecipe> getRecipes(ItemStack output, ItemStack itemStack, float durationFactor, String itemName) {
-		ArrayList<ShapelessRecipe> recipes = new ArrayList<>();
+	public static List<ShapedRecipe> getRecipes(ItemStack output, ItemStack itemStack, float durationFactor, String itemName) {
+		ArrayList<ShapedRecipe> recipes = new ArrayList<>();
 
 		String group = "xreliquary.potion." + itemName;
 		for (PotionEssence essence : PotionMap.uniquePotions) {
@@ -37,10 +37,11 @@ public class ArrowShotRecipeMaker {
 
 			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, output.getTranslationKey());
 			NonNullList<Ingredient> ingredients = NonNullList.create();
-			ingredients.addAll(Collections.nCopies(8, Ingredient.fromStacks(itemStack)));
+			ingredients.addAll(Collections.nCopies(4, Ingredient.fromStacks(itemStack)));
 			ingredients.add(Ingredient.fromStacks(potion));
+			ingredients.addAll(Collections.nCopies(4, Ingredient.fromStacks(itemStack)));
 
-			recipes.add(new ShapelessRecipe(id, group, outputCopy, ingredients));
+			recipes.add(new ShapedRecipe(id, group, 3, 3, ingredients, outputCopy));
 		}
 
 		return recipes;
