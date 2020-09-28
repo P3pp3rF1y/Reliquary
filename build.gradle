@@ -88,7 +88,6 @@ dependencies {
 
     compileOnly fg.deobf("mezz.jei:jei-${project.minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${project.minecraft_version}:${jei_version}")
-    compile fg.deobf('com.feed_the_beast.mods:ftb-gui-library:1.0.0.18') //only added to stop jei from crashing the build
     //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     //deobfCompile "info.amerifrance.guideapi:Guide-API:${guideapi_version}"
