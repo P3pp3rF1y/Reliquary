@@ -9,7 +9,7 @@ import net.minecraft.entity.LivingEntity;
 public class WitchHatModel extends BipedModel<LivingEntity> {
 	public static final WitchHatModel SELF = new WitchHatModel();
 
-	private ModelRenderer witchHat;
+	private final ModelRenderer witchHat;
 
 	private WitchHatModel() {
 		super(1F);

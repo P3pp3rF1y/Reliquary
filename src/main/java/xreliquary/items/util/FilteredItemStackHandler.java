@@ -14,7 +14,7 @@ import java.util.List;
 
 public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
 	private boolean dynamicSlotNumber = false;
-	private List<RemovableStack> filteredBigItemStacks;
+	private final List<RemovableStack> filteredBigItemStacks;
 	private static final String NOT_IN_RANGE_ERROR = "%s %d not in valid range - (0, %d)";
 
 	FilteredItemStackHandler(List<RemovableStack> filteredBigItemStacks) {

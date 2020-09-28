@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 
 public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapabilityProvider {
 	private static final int MAX_CAPACITY = Integer.MAX_VALUE;
-	private ItemStack heroMedallion;
+	private final ItemStack heroMedallion;
 
 	public FluidHandlerHeroMedallion(ItemStack heroMedallion) {
 		this.heroMedallion = heroMedallion;
@@ -42,7 +42,7 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 
 	@Override
 	public FluidStack getFluidInTank(int tank) {
-		return new FluidStack(ModFluids.xpJuiceStill.get(), getMedallionXp());
+		return new FluidStack(ModFluids.XP_JUICE_STILL.get(), getMedallionXp());
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 	}
 
 	private boolean isXpJuiceFluid(FluidStack stack) {
-		return FluidTags.getCollection().getOrCreate(ModFluids.XP_JUICE_TAG).contains(stack.getFluid());
+		return FluidTags.getCollection().getTagByID(ModFluids.XP_JUICE_TAG).contains(stack.getFluid());
 	}
 
 	@Override
@@ -100,6 +100,6 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 
 	@Override
 	public FluidStack drain(int maxDrain, FluidAction action) {
-		return drain(new FluidStack(ModFluids.xpJuiceStill.get(), maxDrain), action);
+		return drain(new FluidStack(ModFluids.XP_JUICE_STILL.get(), maxDrain), action);
 	}
 }

@@ -1,5 +1,6 @@
 package xreliquary.client.gui.hud;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.item.ItemStack;
 import xreliquary.client.gui.components.Box;
 import xreliquary.client.gui.components.Component;
@@ -15,7 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class CharmPane extends Component {
 	private static Box mainPane = Box.createVertical();
-	private static Lock lock = new ReentrantLock();
+	private static final Lock lock = new ReentrantLock();
 
 	@Override
 	public int getHeightInternal() {
@@ -55,8 +56,8 @@ public class CharmPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(int x, int y) {
-		mainPane.render(x, y);
+	public void renderInternal(MatrixStack matrixStack, int x, int y) {
+		mainPane.render(matrixStack, x, y);
 	}
 
 	private static final Map<Integer, CharmToDraw> charmsToDraw = new HashMap<>();
@@ -67,8 +68,8 @@ public class CharmPane extends Component {
 			this.time = time;
 		}
 
-		ItemStack charm;
-		long time;
+		final ItemStack charm;
+		final long time;
 
 		ItemStack getCharm() {
 			return charm;

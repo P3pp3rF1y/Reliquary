@@ -5,10 +5,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -29,8 +29,8 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("squid:S2160")
-public abstract class ShotEntityBase extends Entity implements IProjectile {
+public abstract class ShotEntityBase extends ProjectileEntity {
 	private static final DataParameter<Byte> CRITICAL = EntityDataManager.createKey(ShotEntityBase.class, DataSerializers.BYTE);
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(ShotEntityBase.class, DataSerializers.VARINT);
 	private int xTile = -1;
@@ -153,7 +153,7 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 		if (world.isRemote) {
 			spawnPotionParticles();
 		}
-		Vec3d motionVec = getMotion();
+		Vector3d motionVec = getMotion();
 		if (prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
 			float pythingy = MathHelper.sqrt(motionVec.getX() * motionVec.getX() + motionVec.getZ() * motionVec.getZ());
 			prevRotationYaw = rotationYaw = (float) (Math.atan2(motionVec.getX(), motionVec.getZ()) * 180.0D / Math.PI);
@@ -168,7 +168,7 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 			VoxelShape voxelshape = blockState.getCollisionShape(world, pos);
 			if (!voxelshape.isEmpty()) {
 				for (AxisAlignedBB axisalignedbb : voxelshape.toBoundingBoxList()) {
-					if (axisalignedbb.offset(pos).contains(new Vec3d(getPosX(), getPosY(), getPosZ()))) {
+					if (axisalignedbb.offset(pos).contains(new Vector3d(getPosX(), getPosY(), getPosZ()))) {
 						inGround = true;
 						break;
 					}
@@ -188,23 +188,23 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 				doFlightEffects();
 			}
 
-			Vec3d posVector = new Vec3d(getPosX(), getPosY(), getPosZ());
-			Vec3d approachVector = new Vec3d(getPosX() + motionVec.getX(), getPosY() + motionVec.getY(), getPosZ() + motionVec.getZ());
+			Vector3d posVector = new Vector3d(getPosX(), getPosY(), getPosZ());
+			Vector3d approachVector = new Vector3d(getPosX() + motionVec.getX(), getPosY() + motionVec.getY(), getPosZ() + motionVec.getZ());
 
 			RayTraceResult objectStruckByVector = world.rayTraceBlocks(new RayTraceContext(posVector, approachVector, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
 
 			Entity hitEntity = null;
-			List struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().expand(motionVec).grow(1.0D, 1.0D, 1.0D));
+			List<Entity> struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().expand(motionVec).grow(1.0D, 1.0D, 1.0D));
 			double var7 = 0.0D;
-			Iterator struckEntityIterator = struckEntitiesInAABB.iterator();
+			Iterator<Entity> struckEntityIterator = struckEntitiesInAABB.iterator();
 			float var11;
 
 			while (struckEntityIterator.hasNext()) {
-				Entity struckEntity = (Entity) struckEntityIterator.next();
+				Entity struckEntity = struckEntityIterator.next();
 				if (struckEntity.canBeCollidedWith() && (struckEntity != shootingEntity || ticksInAir >= 5)) {
 					var11 = 0.5F;
 					AxisAlignedBB var12 = struckEntity.getBoundingBox().grow(var11, var11, var11);
-					Optional<Vec3d> hitResult = var12.rayTrace(posVector, approachVector);
+					Optional<Vector3d> hitResult = var12.rayTrace(posVector, approachVector);
 
 					if (hitResult.isPresent()) {
 						double var14 = posVector.distanceTo(hitResult.get());
@@ -231,7 +231,7 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 				remove();
 			}
 
-			Vec3d newPos = getPositionVec().add(getMotion());
+			Vector3d newPos = getPositionVec().add(getMotion());
 			setPosition(newPos.x, newPos.y, newPos.z);
 		}
 	}
@@ -331,7 +331,7 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 	}
 
 	protected void spawnMotionBasedParticle(IParticleData particleData, double y) {
-		Vec3d motion = getMotion();
+		Vector3d motion = getMotion();
 		world.addParticle(particleData, getPosX(), y, getPosZ(), gaussian(motion.getX()), gaussian(motion.getY()), gaussian(motion.getZ()));
 	}
 
@@ -410,19 +410,15 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), -gaussian(0.1D), gaussian(0.1D));
 						break;
 					case UP:
+					case SOUTH:
+					case EAST:
 						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
 						break;
 					case NORTH:
 						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), gaussian(0.1D), -gaussian(0.1D));
 						break;
-					case SOUTH:
-						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
-						break;
 					case WEST:
 						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), -gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
-						break;
-					case EAST:
-						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
 						break;
 				}
 			}
@@ -437,13 +433,13 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 	void seekTarget() {
 		Entity closestTarget = null;
 		List<String> huntableEntitiesBlacklist = Settings.COMMON.items.seekerShot.huntableEntitiesBlacklist.get();
-		List targetsList = world.getEntitiesInAABBexcluding(this,
+		List<Entity> targetsList = world.getEntitiesInAABBexcluding(this,
 				new AxisAlignedBB(getPosX() - 5, getPosY() - 5, getPosZ() - 5, getPosX() + 5, getPosY() + 5, getPosZ() + 5),
 				e -> e instanceof MobEntity);
-		Iterator iTarget = targetsList.iterator();
+		Iterator<Entity> iTarget = targetsList.iterator();
 		double closestDistance = Double.MAX_VALUE;
 		while (iTarget.hasNext()) {
-			Entity currentTarget = (Entity) iTarget.next();
+			Entity currentTarget = iTarget.next();
 
 			//noinspection ConstantConditions
 			String entityName = currentTarget.getType().getRegistryName().toString();
@@ -471,7 +467,7 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 			trueY -= getHeight() / 2D;
 			double trueZ = getBoundingBox().minZ + getBoundingBox().maxZ;
 			trueZ /= 2D;
-			Vec3d seekVector = new Vec3d(x - trueX, y - trueY, z - trueZ);
+			Vector3d seekVector = new Vector3d(x - trueX, y - trueY, z - trueZ);
 			seekVector = seekVector.normalize();
 			setMotion(seekVector.mul(0.4D, 0.4D, 0.4D));
 
@@ -512,6 +508,7 @@ public abstract class ShotEntityBase extends Entity implements IProjectile {
 		}
 	}
 
+	@Override
 	protected void onImpact(RayTraceResult result) {
 		if (result.getType() == RayTraceResult.Type.ENTITY) {
 			Entity entity = ((EntityRayTraceResult) result).getEntity();

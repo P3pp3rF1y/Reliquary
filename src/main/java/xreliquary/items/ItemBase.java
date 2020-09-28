@@ -41,7 +41,7 @@ public class ItemBase extends Item {
 					tooltip.addAll(detailTooltip);
 				}
 			} else {
-				tooltip.add(new TranslationTextComponent("tooltip." + Reference.MOD_ID + ".shift_for_more_info").applyTextStyle(TextFormatting.WHITE).applyTextStyle(TextFormatting.ITALIC));
+				tooltip.add(new TranslationTextComponent("tooltip." + Reference.MOD_ID + ".shift_for_more_info").mergeStyle(TextFormatting.WHITE).mergeStyle(TextFormatting.ITALIC));
 			}
 		}
 	}

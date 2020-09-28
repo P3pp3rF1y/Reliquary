@@ -1,7 +1,7 @@
 package xreliquary.potions;
 
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
+import net.minecraft.entity.ai.attributes.AttributeModifierManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SPlayerAbilitiesPacket;
@@ -38,8 +38,8 @@ public class PotionFlight extends Effect {
 	}
 
 	@Override
-	public void removeAttributesModifiersFromEntity(LivingEntity entityLivingBase, AbstractAttributeMap attributeMap, int amplifier) {
-		super.removeAttributesModifiersFromEntity(entityLivingBase, attributeMap, amplifier);
+	public void removeAttributesModifiersFromEntity(LivingEntity entityLivingBase, AttributeModifierManager attributeModifierManager, int amplifier) {
+		super.removeAttributesModifiersFromEntity(entityLivingBase, attributeModifierManager, amplifier);
 
 		if (!(entityLivingBase instanceof PlayerEntity)) {
 			return;

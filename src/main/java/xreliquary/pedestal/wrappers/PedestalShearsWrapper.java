@@ -9,7 +9,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.IShearable;
+import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.util.FakePlayer;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
@@ -22,7 +22,7 @@ import java.util.Queue;
 public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 	private boolean isShearingBlock = false;
 	private BlockPos blockPosBeingSheared;
-	private Queue<BlockPos> blockQueue = new ArrayDeque<>();
+	private final Queue<BlockPos> blockQueue = new ArrayDeque<>();
 
 	@Override
 	public void update(ItemStack stack, IPedestal pedestal) {
@@ -66,7 +66,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 
 			blockPosBeingSheared = blockQueue.remove();
 			BlockState blockState = world.getBlockState(blockPosBeingSheared);
-			if (blockState.getBlock() instanceof IShearable && ((IShearable) blockState.getBlock()).isShearable(stack, world, blockPosBeingSheared)) {
+			if (blockState.getBlock() instanceof IForgeShearable && ((IForgeShearable) blockState.getBlock()).isShearable(stack, world, blockPosBeingSheared)) {
 				float hardness = blockState.getBlockHardness(world, blockPosBeingSheared);
 				float digSpeed = stack.getItem().getDestroySpeed(stack, blockState);
 
@@ -91,7 +91,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 				for (int z = pos.getZ() - shearsRange; z <= pos.getZ() + shearsRange; z++) {
 					BlockPos currentBlockPos = new BlockPos(x, y, z);
 					BlockState blockState = world.getBlockState(currentBlockPos);
-					if (blockState.getBlock() instanceof IShearable && ((IShearable) blockState.getBlock()).isShearable(stack, world, currentBlockPos)) {
+					if (blockState.getBlock() instanceof IForgeShearable && ((IForgeShearable) blockState.getBlock()).isShearable(stack, world, currentBlockPos)) {
 						blockQueue.add(currentBlockPos);
 					}
 				}
@@ -100,10 +100,11 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private boolean shearAnimals(ItemStack stack, World world, FakePlayer fakePlayer, BlockPos pos, int shearsRange) {
-		List<AnimalEntity> entities = world.getEntitiesWithinAABB(AnimalEntity.class, new AxisAlignedBB(pos.getX() - shearsRange, pos.getY() - shearsRange, pos.getZ() - shearsRange, pos.getX() + shearsRange, pos.getY() + shearsRange, pos.getZ() + shearsRange));
+		List<AnimalEntity> entities = world.getEntitiesWithinAABB(AnimalEntity.class,
+				new AxisAlignedBB(pos.add(-shearsRange, -shearsRange, -shearsRange), pos.add(shearsRange, shearsRange, shearsRange)));
 
 		for (AnimalEntity animal : entities) {
-			if (animal instanceof IShearable && ((IShearable) animal).isShearable(stack, world, animal.getPosition())) {
+			if (animal instanceof IForgeShearable && ((IForgeShearable) animal).isShearable(stack, world, animal.getPosition())) {
 				fakePlayer.setHeldItem(Hand.MAIN_HAND, stack);
 				fakePlayer.interactOn(animal, Hand.MAIN_HAND);
 				return true;

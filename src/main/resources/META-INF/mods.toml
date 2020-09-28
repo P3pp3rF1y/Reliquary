@@ -18,8 +18,11 @@ issueTrackerURL="https://github.com/p3pp3rF1y/reliquary/issues" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
 displayURL="https://www.curseforge.com/minecraft/mc-mods/reliquary-v1-3" #optional
 
+# License
+license="GNU General Public License v3.0"
+
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="/mods/xreliquary/textures/logo/xrlogo.png" #optional
+logoFile="xrlogo.png" #optional
 
 # A text field displayed in the mod UI
 credits="Originally made by x3n0ph0b3 and TheMike, now maintained by P3pp3rF1y." #optional

@@ -8,7 +8,7 @@ public enum JEICategory {
 	MORTAR("mortar"),
 	CAULDRON("cauldron");
 
-	private String uid;
+	private final String uid;
 
 	JEICategory(String uid) {
 		this.uid = uid;

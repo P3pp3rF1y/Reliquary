@@ -6,12 +6,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class NoPlayerBlockItemUseContext extends BlockItemUseContext {
 	public NoPlayerBlockItemUseContext(World world, BlockPos pos, ItemStack stack, Direction face) {
-		super(world, null, Hand.MAIN_HAND, stack, new BlockRayTraceResult(new Vec3d(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D), face, pos, false));
+		super(world, null, Hand.MAIN_HAND, stack, new BlockRayTraceResult(new Vector3d(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D), face, pos, false));
 	}
 
 	@Override

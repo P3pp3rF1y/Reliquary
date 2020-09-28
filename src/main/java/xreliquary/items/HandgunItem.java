@@ -43,8 +43,8 @@ public class HandgunItem extends ItemBase {
 		ShotEntityBase createShot(World world, PlayerEntity player, Hand hand);
 	}
 
-	private Map<String, IShotEntityFactory> magazineShotFactories = new HashMap<>();
-	private Map<String, Supplier<BulletItem>> magazineBulletItems = new HashMap<>();
+	private final Map<String, IShotEntityFactory> magazineShotFactories = new HashMap<>();
+	private final Map<String, Supplier<BulletItem>> magazineBulletItems = new HashMap<>();
 
 	public void registerMagazine(String magazineRegistryName, IShotEntityFactory factory, Supplier<BulletItem> getBulletItem) {
 		magazineShotFactories.put(magazineRegistryName, factory);

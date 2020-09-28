@@ -29,7 +29,6 @@ public class BulletItem extends ItemBase implements IPotionItem {
 		this.hasTooltip = hasTooltip;
 		this.addPotionBulletsInItemGroup = addPotionBulletsInItemGroup;
 		this.color = color;
-		addPropertyOverride(new ResourceLocation("potion"), (stack, world, livingEntity) -> isPotionAttached(stack) ? 1 : 0);
 	}
 
 	@Override
@@ -39,10 +38,6 @@ public class BulletItem extends ItemBase implements IPotionItem {
 			LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", null, tooltip);
 		}
 		XRPotionHelper.addPotionTooltip(stack, tooltip);
-	}
-
-	private boolean isPotionAttached(ItemStack stack) {
-		return !XRPotionHelper.getPotionEffectsFromStack(stack).isEmpty();
 	}
 
 	@Override

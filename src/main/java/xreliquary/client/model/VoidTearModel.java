@@ -9,11 +9,10 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
-import xreliquary.init.ModItems;
 import xreliquary.items.VoidTearItem;
 
 import javax.annotation.Nullable;
@@ -46,8 +45,8 @@ public class VoidTearModel implements IBakedModel {
 	}
 
 	@Override
-	public boolean func_230044_c_() {
-		return originalModel.func_230044_c_();
+	public boolean isSideLit() {
+		return originalModel.isSideLit();
 	}
 
 	@Override
@@ -70,9 +69,9 @@ public class VoidTearModel implements IBakedModel {
 	public ItemOverrideList getOverrides() {
 		return new ItemOverrideList() {
 			@Override
-			public IBakedModel getModelWithOverrides(IBakedModel model, ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
+			public IBakedModel getOverrideModel(IBakedModel model, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity) {
 				if (Screen.hasShiftDown()) {
-					ItemStack containedStack = ModItems.VOID_TEAR.getContainerItem(stack, true);
+					ItemStack containedStack = VoidTearItem.getContainerItem(stack, true);
 					if (!containedStack.isEmpty()) {
 						IBakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(containedStack, world, entity);
 						if (!bakedModel.isBuiltInRenderer()) {
@@ -81,7 +80,7 @@ public class VoidTearModel implements IBakedModel {
 					}
 				}
 
-				return originalModel.getOverrides().getModelWithOverrides(model, stack, world, entity);
+				return originalModel.getOverrides().getOverrideModel(model, stack, world, entity);
 			}
 		};
 	}

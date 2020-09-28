@@ -1,5 +1,6 @@
 package xreliquary.client.gui.components;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;
@@ -7,8 +8,8 @@ import net.minecraft.item.ItemStack;
 
 public class ItemStackPane extends Component {
 	private ItemStack itemStack;
-	private boolean renderEffect;
-	private boolean renderOverlay;
+	private final boolean renderEffect;
+	private final boolean renderOverlay;
 
 	public ItemStackPane(Item item) {
 		this(new ItemStack(item));
@@ -42,7 +43,7 @@ public class ItemStackPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(int x, int y) {
+	public void renderInternal(MatrixStack matrixStack, int x, int y) {
 		if (itemStack.isEmpty()) {
 			return;
 		}

@@ -11,7 +11,7 @@ import xreliquary.reference.Reference;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class LogHelper {
 	private static final Marker MOD_MARKER = MarkerManager.getMarker(Reference.MOD_ID);
-	private static Logger logger = LogManager.getLogger(Reference.MOD_ID);
+	private static final Logger logger = LogManager.getLogger(Reference.MOD_ID);
 
 	public static void log(Level level, Marker marker, Message message) {
 		logger.log(level, marker, message);

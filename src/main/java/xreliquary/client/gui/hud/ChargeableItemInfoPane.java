@@ -1,6 +1,7 @@
 package xreliquary.client.gui.hud;
 
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,12 +15,12 @@ import java.util.function.Function;
 
 public class ChargeableItemInfoPane extends Component {
 	public static final String DYNAMIC_PANE = "dynamic";
-	private ItemStack mainItem;
+	private final ItemStack mainItem;
 	private Box mainPanel;
 	private Map<String, Component> modePanes = Maps.newHashMap();
-	private HUDPosition hudPosition;
+	private final HUDPosition hudPosition;
 	private String lastMode;
-	private Function<ItemStack, String> getMode;
+	private final Function<ItemStack, String> getMode;
 
 	public ChargeableItemInfoPane(ItemStack mainItem, HUDPosition hudPosition, Function<ItemStack, String> getMode, Map<String, Component> modePanes) {
 		this(mainItem, getMode, hudPosition);
@@ -50,8 +51,8 @@ public class ChargeableItemInfoPane extends Component {
 	}
 
 	private void updateCurrentPane(Component modePane, String currentMode) {
-		this.lastMode = currentMode;
-		Box.Alignment alignment = getMainStackAlignment(this.hudPosition);
+		lastMode = currentMode;
+		Box.Alignment alignment = getMainStackAlignment(hudPosition);
 		mainPanel = Box.createVertical(alignment, new ItemStackPane(mainItem), modePane);
 	}
 
@@ -76,19 +77,19 @@ public class ChargeableItemInfoPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(int x, int y) {
+	public void renderInternal(MatrixStack matrixStack, int x, int y) {
 		ItemStack mainStack = InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, mainItem.getItem());
 
 		String mode = getMode.apply(mainStack);
 		if (!lastMode.equals(mode)) {
-			if (modePanes.keySet().contains(mode)) {
+			if (modePanes.containsKey(mode)) {
 				updateCurrentPane(modePanes.get(mode), mode);
-			} else if (modePanes.keySet().contains(DYNAMIC_PANE)) {
+			} else if (modePanes.containsKey(DYNAMIC_PANE)) {
 				updateCurrentPane(modePanes.get(DYNAMIC_PANE), DYNAMIC_PANE);
 			}
 		}
 
-		mainPanel.render(x, y);
+		mainPanel.render(matrixStack, x, y);
 	}
 
 	private static Box.Alignment getMainStackAlignment(HUDPosition position) {

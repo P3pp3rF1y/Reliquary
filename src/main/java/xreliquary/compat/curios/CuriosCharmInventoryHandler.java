@@ -3,12 +3,11 @@ package xreliquary.compat.curios;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import top.theillusivec4.curios.api.CuriosAPI;
-import top.theillusivec4.curios.api.inventory.CurioStackHandler;
+import top.theillusivec4.curios.api.CuriosApi;
 import xreliquary.init.ModItems;
-import xreliquary.items.util.IBaubleItem;
 import xreliquary.items.MobCharmDefinition;
 import xreliquary.items.MobCharmItem;
+import xreliquary.items.util.IBaubleItem;
 
 public class CuriosCharmInventoryHandler extends MobCharmItem.CharmInventoryHandler {
 	@Override
@@ -16,16 +15,15 @@ public class CuriosCharmInventoryHandler extends MobCharmItem.CharmInventoryHand
 		if (super.playerHasMobCharm(player, charmDefinition)) {
 			return true;
 		}
-		return CuriosAPI.getCuriosHandler(player).map(handler -> {
-			CurioStackHandler stackHandler = handler.getStackHandler(IBaubleItem.Type.BELT.getIdentifier());
+		return CuriosApi.getCuriosHelper().getCuriosHandler(player).map(handler -> handler.getStacksHandler(IBaubleItem.Type.BELT.getIdentifier()).map(stackHandler -> {
 			for (int slot = 0; slot < stackHandler.getSlots(); slot++) {
-				ItemStack baubleStack = stackHandler.getStackInSlot(slot);
+				ItemStack baubleStack = stackHandler.getStacks().getStackInSlot(slot);
 				if (!baubleStack.isEmpty() && baubleStack.getItem() == ModItems.MOB_CHARM_BELT && ModItems.MOB_CHARM_BELT.hasCharm(baubleStack, charmDefinition.getRegistryName())) {
 					return true;
 				}
 			}
 			return false;
-		}).orElse(false);
+		}).orElse(false)).orElse(false);
 	}
 
 	@Override
@@ -33,10 +31,9 @@ public class CuriosCharmInventoryHandler extends MobCharmItem.CharmInventoryHand
 		if (super.damagePlayersMobCharm(player, entityRegistryName)) {
 			return true;
 		}
-		return CuriosAPI.getCuriosHandler(player).map(handler -> {
-			CurioStackHandler stackHandler = handler.getStackHandler(IBaubleItem.Type.BELT.getIdentifier());
+		return CuriosApi.getCuriosHelper().getCuriosHandler(player).map(handler -> handler.getStacksHandler(IBaubleItem.Type.BELT.getIdentifier()).map(stackHandler -> {
 			for (int slot = 0; slot < stackHandler.getSlots(); slot++) {
-				ItemStack baubleStack = stackHandler.getStackInSlot(slot);
+				ItemStack baubleStack = stackHandler.getStacks().getStackInSlot(slot);
 
 				if (baubleStack.isEmpty()) {
 					continue;
@@ -47,6 +44,6 @@ public class CuriosCharmInventoryHandler extends MobCharmItem.CharmInventoryHand
 				}
 			}
 			return false;
-		}).orElse(false);
+		}).orElse(false)).orElse(false);
 	}
 }

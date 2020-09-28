@@ -3,12 +3,13 @@ package xreliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.UseAction;
@@ -24,11 +25,10 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -103,11 +103,11 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 
 		PlayerEntity player = (PlayerEntity) entityLiving;
 
-		RayTraceResult rayTrace = rayTrace(player.world, player, RayTraceContext.FluidMode.NONE);
+		BlockRayTraceResult rayTrace = rayTrace(player.world, player, RayTraceContext.FluidMode.NONE);
 
-		Vec3d motion = player.getLookVec();
+		Vector3d motion = player.getLookVec();
 		if (rayTrace.getType() == RayTraceResult.Type.BLOCK) {
-			double distance = player.getPosition().distanceSq(((BlockRayTraceResult) rayTrace).getPos());
+			double distance = player.getPosition().distanceSq(rayTrace.getPos());
 			if (distance < 40) {
 				double slowDownFactor = distance / 40;
 				motion = player.getLookVec().mul(slowDownFactor, slowDownFactor, slowDownFactor);
@@ -162,7 +162,7 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 
 	@Override
 	public ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
-		if (!entityLiving.isShiftKeyDown()) {
+		if (!entityLiving.isSneaking()) {
 			return ActionResultType.CONSUME;
 		}
 		if (entityLiving.world.isRemote) {
@@ -177,7 +177,7 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 		return new FilteredItemHandlerProvider(Collections.singletonList(new FilteredItemStackHandler.RemovableStack(
 				new FilteredBigItemStack(Items.FEATHER, Settings.COMMON.items.rendingGale.chargeLimit.get(),
 						Settings.COMMON.items.rendingGale.chargeFeatherWorth.get())
-				,false)));
+				, false)));
 	}
 
 	@Override
@@ -193,7 +193,7 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (player.isShiftKeyDown()) {
+		if (player.isSneaking()) {
 			super.onItemRightClick(world, player, hand);
 		} else {
 			player.setActiveHand(hand);
@@ -237,13 +237,18 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 		RayTraceResult rayTraceResult = player.pick(getBoltTargetRange(), 1, true);
 		if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK) {
 			BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) rayTraceResult;
-			int attemptedY = blockRayTraceResult.getPos().getY();
-			if (!player.world.isRainingAt(blockRayTraceResult.getPos())) {
+			BlockPos pos = blockRayTraceResult.getPos();
+			int attemptedY = pos.getY();
+			if (!player.world.isRainingAt(pos)) {
 				attemptedY++;
 			}
-			if (!player.world.isRemote && player.world.isRainingAt(new BlockPos(blockRayTraceResult.getPos().getX(), attemptedY, blockRayTraceResult.getPos().getZ()))) {
-				((ServerWorld) player.world).addLightningBolt(new LightningBoltEntity(player.world, blockRayTraceResult.getPos().getX(), blockRayTraceResult.getPos().getY(), blockRayTraceResult.getPos().getZ(), false));
-				setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - (getBoltChargeCost())), false);
+			if (!player.world.isRemote && player.world.isRainingAt(new BlockPos(pos.getX(), attemptedY, pos.getZ()))) {
+				LightningBoltEntity bolt = EntityType.LIGHTNING_BOLT.create(player.world);
+				if (bolt != null) {
+					bolt.moveForced(pos.getX(), pos.getY(), pos.getZ());
+					player.world.addEntity(bolt);
+					setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - (getBoltChargeCost())), false);
+				}
 			}
 		}
 	}
@@ -307,11 +312,11 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 		double lowerY = posY - (double) getRadialPushRadius() / 5D;
 		double lowerZ = posZ - getRadialPushRadius();
 		double upperX = posX + getRadialPushRadius();
-		double upperY = posY + (double) getRadialPushRadius() / 2D;
+		double upperY = posY + (double) getRadialPushRadius() / 5D;
 		double upperZ = posZ + getRadialPushRadius();
 
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ),
-				e -> (e instanceof MobEntity || e instanceof IProjectile));
+				e -> (e instanceof MobEntity || e instanceof ProjectileEntity));
 
 		for (Entity entity : entities) {
 			double distance = getDistanceToEntity(posX, posY, posZ, entity);
@@ -320,15 +325,15 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 					continue;
 				}
 
-				Vec3d pushVector;
+				Vector3d pushVector;
 				if (pull) {
-					pushVector = new Vec3d(posX - entity.getPosX(), posY - entity.getPosY(), posZ - entity.getPosZ());
+					pushVector = new Vector3d(posX - entity.getPosX(), posY - entity.getPosY(), posZ - entity.getPosZ());
 				} else {
-					pushVector = new Vec3d(entity.getPosX() - posX, entity.getPosY() - posY, entity.getPosZ() - posZ);
+					pushVector = new Vector3d(entity.getPosX() - posX, entity.getPosY() - posY, entity.getPosZ() - posZ);
 				}
 				pushVector = pushVector.normalize();
-				entity.move(MoverType.PLAYER, new Vec3d(0.0D, 0.2D, 0.0D));
-				entity.move(MoverType.PLAYER, new Vec3d(pushVector.x, Math.min(pushVector.y, 0.1D) * 1.5D, pushVector.z));
+				entity.move(MoverType.PLAYER, new Vector3d(0.0D, 0.2D, 0.0D));
+				entity.move(MoverType.PLAYER, new Vector3d(pushVector.x, Math.min(pushVector.y, 0.1D) * 1.5D, pushVector.z));
 			}
 		}
 	}
@@ -343,7 +348,7 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 	}
 
 	private boolean isBlacklistedProjectile(Entity entity, String entityName) {
-		return entity instanceof IProjectile && Settings.COMMON.items.rendingGale.pushableProjectilesBlacklist.get().contains(entityName);
+		return entity instanceof ProjectileEntity && Settings.COMMON.items.rendingGale.pushableProjectilesBlacklist.get().contains(entityName);
 	}
 
 	private boolean isBlacklistedLivingEntity(Entity entity, String entityName) {
@@ -358,7 +363,7 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 	}
 
 	private void spawnFlightParticles(World world, double x, double y, double z, PlayerEntity player) {
-		Vec3d lookVector = player.getLookVec();
+		Vector3d lookVector = player.getLookVec();
 
 		BlockParticleData blockParticleData = new BlockParticleData(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.getDefaultState());
 

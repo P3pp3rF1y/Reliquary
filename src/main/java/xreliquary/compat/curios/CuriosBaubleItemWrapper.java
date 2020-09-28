@@ -1,23 +1,23 @@
 package xreliquary.compat.curios;
 
 import net.minecraft.entity.LivingEntity;
-import top.theillusivec4.curios.api.capability.ICurio;
+import top.theillusivec4.curios.api.type.capability.ICurio;
 import xreliquary.items.util.IBaubleItem;
 
 class CuriosBaubleItemWrapper implements ICurio {
-	private IBaubleItem baubleItem;
+	private final IBaubleItem baubleItem;
 
 	CuriosBaubleItemWrapper(IBaubleItem baubleItem) {
 		this.baubleItem = baubleItem;
 	}
 
 	@Override
-	public void onEquipped(String identifier, LivingEntity livingEntity) {
+	public void onEquip(String identifier, int index, LivingEntity livingEntity) {
 		baubleItem.onEquipped(identifier, livingEntity);
 	}
 
 	@Override
-	public void onCurioTick(String identifier, int index, LivingEntity livingEntity) {
+	public void curioTick(String identifier, int index, LivingEntity livingEntity) {
 		CuriosCompat.getStackInSlot(livingEntity, identifier, index).ifPresent(stack -> baubleItem.onWornTick(stack, livingEntity));
 	}
 

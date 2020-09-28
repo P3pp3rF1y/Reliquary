@@ -10,8 +10,8 @@ public class FilteredBigItemStack implements INBTSerializable<CompoundNBT> {
 	private ItemStack filter;
 
 	private int amount;
-	private int amountLimit;
-	private int unitWorth;
+	private final int amountLimit;
+	private final int unitWorth;
 	private ItemStack outputStack = ItemStack.EMPTY;
 	private ItemStack inputStack = ItemStack.EMPTY;
 	public FilteredBigItemStack(Item filter, int amountLimit, int unitWorth) {

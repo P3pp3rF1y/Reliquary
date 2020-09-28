@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PotionIngredient {
-	private ItemStack item;
+	private final ItemStack item;
 	private List<EffectInstance> effects = new ArrayList<>();
 
 	public PotionIngredient(ItemStack item) {

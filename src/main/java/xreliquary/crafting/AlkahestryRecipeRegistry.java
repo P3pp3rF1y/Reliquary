@@ -8,8 +8,8 @@ public class AlkahestryRecipeRegistry {
 	private AlkahestryRecipeRegistry() {}
 
 	private static AlkahestryDrainRecipe drainRecipe;
-	private static List<AlkahestryCraftingRecipe> craftingRecipes = Lists.newArrayList();
-	private static List<AlkahestryChargingRecipe> chargingRecipes = Lists.newArrayList();
+	private static final List<AlkahestryCraftingRecipe> craftingRecipes = Lists.newArrayList();
+	private static final List<AlkahestryChargingRecipe> chargingRecipes = Lists.newArrayList();
 
 	static void setDrainRecipe(AlkahestryDrainRecipe drainRecipe) {
 		AlkahestryRecipeRegistry.drainRecipe = drainRecipe;

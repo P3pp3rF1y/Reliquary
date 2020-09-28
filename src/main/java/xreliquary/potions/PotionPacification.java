@@ -28,7 +28,7 @@ public class PotionPacification extends Effect {
 		MobEntity entityLiving = (MobEntity) entityLivingBase;
 
 		if (entityLiving.getAttackTarget() != null || entityLiving.getRevengeTarget() != null) {
-			MobHelper.resetTarget(entityLiving, true, true);
+			MobHelper.resetTarget(entityLiving, true);
 		}
 	}
 }

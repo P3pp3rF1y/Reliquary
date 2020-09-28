@@ -1,5 +1,6 @@
 package xreliquary.client.gui.hud;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -12,9 +13,9 @@ import xreliquary.util.InventoryHelper;
 import java.util.function.Function;
 
 public class ChargePane extends Component {
-	private Item mainItem;
-	private ItemStackCountPane chargeablePane;
-	private Function<ItemStack, Integer> getCount;
+	private final Item mainItem;
+	private final ItemStackCountPane chargeablePane;
+	private final Function<ItemStack, Integer> getCount;
 
 	public ChargePane(Item mainItem, ItemStack chargeItem, Function<ItemStack, Integer> getCount) {
 		this(mainItem, chargeItem, getCount, Colors.get(Colors.PURE));
@@ -43,14 +44,15 @@ public class ChargePane extends Component {
 	}
 
 	@Override
-	public void renderInternal(int x, int y) {
+	public void renderInternal(MatrixStack matrixStack, int x, int y) {
 		PlayerEntity player = Minecraft.getInstance().player;
 		ItemStack itemStack = InventoryHelper.getCorrectItemFromEitherHand(player, mainItem);
 
-		if (itemStack.isEmpty())
+		if (itemStack.isEmpty()) {
 			return;
+		}
 
 		chargeablePane.setCount(getCount.apply(itemStack));
-		chargeablePane.render(x, y);
+		chargeablePane.render(matrixStack, x, y);
 	}
 }

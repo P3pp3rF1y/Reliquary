@@ -33,7 +33,7 @@ import java.util.function.Predicate;
 public class InventoryHelper {
 	private InventoryHelper() {}
 
-	private static Set<BiFunction<PlayerEntity, IBaubleItem.Type, IItemHandler>> baublesItemHandlerFactories = new HashSet<>();
+	private static final Set<BiFunction<PlayerEntity, IBaubleItem.Type, IItemHandler>> baublesItemHandlerFactories = new HashSet<>();
 
 	public static void addBaublesItemHandlerFactory(BiFunction<PlayerEntity, IBaubleItem.Type, IItemHandler> factory) {
 		baublesItemHandlerFactories.add(factory);
@@ -374,15 +374,14 @@ public class InventoryHelper {
 	}
 
 	public static <T extends IItemHandler> void runOnItemHandler(ItemStack stack, Consumer<T> run, Class<T> itemHandlerClass) {
-		getItemHandler(stack, itemHandlerClass).ifPresent(run::accept);
+		getItemHandler(stack, itemHandlerClass).ifPresent(run);
 	}
 
-	private static <T extends IItemHandler> LazyOptional<T> getItemHandler(ItemStack stack, Class<T> itemHandlerClass) {
-		//noinspection NullableProblems
+	private static <T extends IItemHandler> Optional<T> getItemHandler(ItemStack stack, Class<T> itemHandlerClass) {
 		return stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).filter(itemHandlerClass::isInstance).map(itemHandlerClass::cast);
 	}
 
 	public static <R, T extends IItemHandler> Optional<R> getFromHandler(ItemStack stack, Function<T, R> get, Class<T> itemHandlerClass) {
-		return getItemHandler(stack, itemHandlerClass).map(h -> Optional.of(get.apply(h))).orElse(Optional.empty());
+		return getItemHandler(stack, itemHandlerClass).map(get);
 	}
 }

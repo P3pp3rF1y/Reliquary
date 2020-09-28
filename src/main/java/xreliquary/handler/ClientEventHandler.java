@@ -2,9 +2,12 @@ package xreliquary.handler;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -14,7 +17,6 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.TickEvent;
@@ -54,8 +56,9 @@ public class ClientEventHandler {
 
 	private static final String VOID_TEAR_MODE_TRANSLATION = "item." + Reference.MOD_ID + ".void_tear.mode.";
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent
-	public static void onRenderLiving(RenderLivingEvent.Pre event) {
+	public static void onRenderLiving(RenderLivingEvent.Pre<PlayerEntity, PlayerModel<PlayerEntity>> event) {
 		if (event.getEntity() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) event.getEntity();
 
@@ -68,8 +71,8 @@ public class ClientEventHandler {
 		}
 	}
 
-	private static void setHandgunArmPoses(RenderLivingEvent.Pre event, PlayerEntity player, boolean handgunInOff, boolean handgunInMain) {
-		BipedModel model = (BipedModel) event.getRenderer().getEntityModel();
+	private static void setHandgunArmPoses(RenderLivingEvent.Pre<PlayerEntity, PlayerModel<PlayerEntity>> event, PlayerEntity player, boolean handgunInOff, boolean handgunInMain) {
+		PlayerModel<PlayerEntity> model = event.getRenderer().getEntityModel();
 
 		if (isHandgunActive(player, handgunInMain, handgunInOff)) {
 			Hand hand = getActiveHandgunHand(player, handgunInMain, handgunInOff);
@@ -118,6 +121,7 @@ public class ClientEventHandler {
 
 	private static final List<Tuple<Component, HUDPosition>> hudComponents = Lists.newArrayList();
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void onRenderTick(TickEvent.RenderTickEvent event) {
 		Minecraft mc = Minecraft.getInstance();
@@ -128,9 +132,10 @@ public class ClientEventHandler {
 		if (hudComponents.isEmpty()) {
 			initHUDComponents();
 		}
-		renderHUDComponents();
+		renderHUDComponents(new MatrixStack());
 	}
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void onMouseLeftClick(InputEvent.MouseInputEvent evt) {
 		Minecraft mc = Minecraft.getInstance();
@@ -142,16 +147,14 @@ public class ClientEventHandler {
 			return;
 		}
 		ItemStack stack = player.getHeldItemMainhand();
-		if (stack.getItem() instanceof ILeftClickableItem) {
-			if (((ILeftClickableItem) stack.getItem()).onLeftClickItem(stack, player) == ActionResultType.PASS) {
-				PacketHandler.sendToServer(new LeftClickedItemPacket());
-			}
+		if (stack.getItem() instanceof ILeftClickableItem && ((ILeftClickableItem) stack.getItem()).onLeftClickItem(stack, player) == ActionResultType.PASS) {
+			PacketHandler.sendToServer(new LeftClickedItemPacket());
 		}
 	}
 
-	private static void renderHUDComponents() {
+	private static void renderHUDComponents(MatrixStack matrixStack) {
 		for (Tuple<Component, HUDPosition> component : hudComponents) {
-			HUDRenderrer.render(component.getA(), component.getB());
+			HUDRenderrer.render(matrixStack, component.getA(), component.getB());
 		}
 	}
 
@@ -199,16 +202,16 @@ public class ClientEventHandler {
 				)), Settings.CLIENT.hudPositions.rendingGale.get()));
 
 		Component contentsPane = new DynamicChargePane(ModItems.VOID_TEAR,
-				is -> ModItems.VOID_TEAR.getContainerItem(is, true), is -> ModItems.VOID_TEAR.getContainerItem(is, true).getCount());
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.VOID_TEAR, Settings.CLIENT.hudPositions.voidTear.get(), is -> ModItems.VOID_TEAR.getMode(is).getName(),
+				is -> VoidTearItem.getContainerItem(is, true), is -> VoidTearItem.getContainerItem(is, true).getCount());
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.VOID_TEAR, Settings.CLIENT.hudPositions.voidTear.get(), is -> ModItems.VOID_TEAR.getMode(is).getString(),
 				ImmutableMap.of(
-						VoidTearItem.Mode.FULL_INVENTORY.getName(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization(VOID_TEAR_MODE_TRANSLATION + VoidTearItem.Mode.FULL_INVENTORY.getName().toLowerCase())), contentsPane),
-						VoidTearItem.Mode.NO_REFILL.getName(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization(VOID_TEAR_MODE_TRANSLATION + VoidTearItem.Mode.NO_REFILL.getName().toLowerCase())), contentsPane),
-						VoidTearItem.Mode.ONE_STACK.getName(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization(VOID_TEAR_MODE_TRANSLATION + VoidTearItem.Mode.ONE_STACK.getName().toLowerCase())), contentsPane)
+						VoidTearItem.Mode.FULL_INVENTORY.getString(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization(VOID_TEAR_MODE_TRANSLATION + VoidTearItem.Mode.FULL_INVENTORY.getString().toLowerCase())), contentsPane),
+						VoidTearItem.Mode.NO_REFILL.getString(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization(VOID_TEAR_MODE_TRANSLATION + VoidTearItem.Mode.NO_REFILL.getString().toLowerCase())), contentsPane),
+						VoidTearItem.Mode.ONE_STACK.getString(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization(VOID_TEAR_MODE_TRANSLATION + VoidTearItem.Mode.ONE_STACK.getString().toLowerCase())), contentsPane)
 				)) {
 			@Override
 			public boolean shouldRender() {
-				return !ModItems.VOID_TEAR.isEmpty(InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, ModItems.VOID_TEAR), true);
+				return !VoidTearItem.isEmpty(InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, ModItems.VOID_TEAR), true);
 			}
 		}, Settings.CLIENT.hudPositions.voidTear.get()));
 

@@ -1,5 +1,6 @@
 package xreliquary.entities;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,13 +32,14 @@ public class KrakenSlimeEntity extends ProjectileItemEntity {
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		if (world.isRemote || result.getType() == RayTraceResult.Type.ENTITY && ((EntityRayTraceResult) result).getEntity() == getThrower()) {
+		Entity thrower = func_234616_v_();
+		if (world.isRemote || result.getType() == RayTraceResult.Type.ENTITY && ((EntityRayTraceResult) result).getEntity() == thrower) {
 			return;
 		}
 
 		if (result.getType() == RayTraceResult.Type.ENTITY && ((EntityRayTraceResult) result).getEntity() instanceof MobEntity) {
 			MobEntity living = (MobEntity) ((EntityRayTraceResult) result).getEntity();
-			living.attackEntityFrom(DamageSource.causeThrownDamage(this, getThrower()), 5.0f);
+			living.attackEntityFrom(DamageSource.causeThrownDamage(this, thrower), 5.0f);
 			living.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 20 * 20, 2));
 			living.addPotionEffect(new EffectInstance(ModPotions.potionPacification, 15 * 20));
 		}

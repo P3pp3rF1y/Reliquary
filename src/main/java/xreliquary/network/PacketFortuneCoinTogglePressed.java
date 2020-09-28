@@ -12,8 +12,8 @@ import java.util.function.Supplier;
 
 public class PacketFortuneCoinTogglePressed {
 
-	private InventoryType inventoryType;
-	private int slot;
+	private final InventoryType inventoryType;
+	private final int slot;
 
 	public PacketFortuneCoinTogglePressed(InventoryType inventoryType, int slot) {
 		this.inventoryType = inventoryType;

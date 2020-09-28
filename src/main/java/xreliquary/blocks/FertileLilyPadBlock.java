@@ -7,8 +7,8 @@ import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -29,7 +29,7 @@ public class FertileLilyPadBlock extends BushBlock {
 
 	@Override
 	public PlantType getPlantType(IBlockReader world, BlockPos pos) {
-		return PlantType.Water;
+		return PlantType.WATER;
 	}
 
 	public FertileLilyPadBlock() {
@@ -64,9 +64,9 @@ public class FertileLilyPadBlock extends BushBlock {
 		int yO = pos.getY();
 		int zO = pos.getZ();
 
-		for(int xD = -tileRange(); xD <= tileRange(); xD++) {
-			for(int yD = -1; yD <= tileRange(); yD++) {
-				for(int zD = -tileRange(); zD <= tileRange(); zD++) {
+		for (int xD = -tileRange(); xD <= tileRange(); xD++) {
+			for (int yD = -1; yD <= tileRange(); yD++) {
+				for (int zD = -tileRange(); zD <= tileRange(); zD++) {
 					int x = xO + xD;
 					int y = yO + yD;
 					int z = zO + zD;
@@ -92,7 +92,7 @@ public class FertileLilyPadBlock extends BushBlock {
 		//it schedules the next tick.
 		BlockPos pos = new BlockPos(x, y, z);
 		world.getPendingBlockTicks().scheduleTick(pos, cropBlock, (int) (distanceCoefficient * (float) secondsBetweenGrowthTicks() * 20F));
-		cropBlock.tick(cropState, world, pos, world.rand);
+		cropBlock.randomTick(cropState, world, pos, world.rand);
 		world.playEvent(2005, pos, Math.max((int) (tileRange() - distance), 1));
 	}
 
@@ -111,7 +111,7 @@ public class FertileLilyPadBlock extends BushBlock {
 
 	@Override
 	protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
-		IFluidState ifluidstate = worldIn.getFluidState(pos);
+		FluidState ifluidstate = worldIn.getFluidState(pos);
 		return ifluidstate.getFluid() == Fluids.WATER || state.getMaterial() == Material.ICE;
 	}
 }

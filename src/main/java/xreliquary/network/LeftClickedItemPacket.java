@@ -3,7 +3,6 @@ package xreliquary.network;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xreliquary.items.util.ILeftClickableItem;
 

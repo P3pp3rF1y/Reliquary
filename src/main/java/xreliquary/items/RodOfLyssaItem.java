@@ -3,6 +3,7 @@ package xreliquary.items;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -12,18 +13,16 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import xreliquary.entities.LyssaBobberEntity;
+import xreliquary.init.ModItems;
 import xreliquary.util.NBTHelper;
 
 public class RodOfLyssaItem extends ItemBase {
 	public RodOfLyssaItem() {
 		super("rod_of_lyssa", new Properties().maxStackSize(1));
-		addPropertyOverride(new ResourceLocation("cast"), (stack, world, entity) -> {
-			if (entity == null) {
-				return 0.0F;
-			} else {
-				return (entity.getHeldItemMainhand() == stack || entity.getHeldItemOffhand() == stack) && getHookEntityId(stack) > 0 ? 1.0F : 0.0F;
-			}
-		});
+	}
+
+	public static int getHookEntityId(ItemStack stack) {
+		return NBTHelper.getInt("hookEntityId", stack);
 	}
 
 	@Override
@@ -59,9 +58,4 @@ public class RodOfLyssaItem extends ItemBase {
 	private void setHookEntityId(ItemStack stack, int entityId) {
 		NBTHelper.putInt("hookEntityId", stack, entityId);
 	}
-
-	private int getHookEntityId(ItemStack stack) {
-		return NBTHelper.getInt("hookEntityId", stack);
-	}
-
 }

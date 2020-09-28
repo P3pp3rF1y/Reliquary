@@ -1,5 +1,6 @@
 package xreliquary.client.gui.hud;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -9,10 +10,10 @@ import xreliquary.client.gui.components.ItemStackPane;
 import xreliquary.init.ModItems;
 
 public class HandgunPane extends Component {
-	private Box mainPane;
-	private ItemStackPane[] bulletPanes = new ItemStackPane[8];
-	private ItemStackPane magazinePane;
-	private Hand hand;
+	private final Box mainPane;
+	private final ItemStackPane[] bulletPanes = new ItemStackPane[8];
+	private final ItemStackPane magazinePane;
+	private final Hand hand;
 	private int time = 0;
 
 	public HandgunPane(Hand hand) {
@@ -67,7 +68,7 @@ public class HandgunPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(int x, int y) {
+	public void renderInternal(MatrixStack matrixStack, int x, int y) {
 		ItemStack handgun = Minecraft.getInstance().player.getHeldItem(hand);
 
 		if (handgun.isEmpty()) {
@@ -89,7 +90,7 @@ public class HandgunPane extends Component {
 			magazinePane.setItemStack(ItemStack.EMPTY);
 		}
 
-		mainPane.render(x, y);
+		mainPane.render(matrixStack, x, y);
 	}
 
 	private int getTime() {

@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class PedestalFluidHandler implements IFluidHandler {
-	private PedestalTileEntity pedestal;
+	private final PedestalTileEntity pedestal;
 
 	PedestalFluidHandler(PedestalTileEntity pedestal) {
 		this.pedestal = pedestal;

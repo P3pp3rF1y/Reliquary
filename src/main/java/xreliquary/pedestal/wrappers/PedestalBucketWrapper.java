@@ -33,7 +33,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 	private static final int UNSUCCESSFUL_TRIES_TO_CLEAN_QUEUE = 5;
 
-	private List<BlockPos> queueToDrain = new ArrayList<>();
+	private final List<BlockPos> queueToDrain = new ArrayList<>();
 	private int unsuccessfulTries = 0;
 
 	@Override
@@ -174,12 +174,11 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		fakePlayer.setHeldItem(Hand.MAIN_HAND, bucketStack);
 
 		//right click cow with bucket
-		cow.processInteract(fakePlayer, Hand.MAIN_HAND);
+		cow.func_230254_b_(fakePlayer, Hand.MAIN_HAND);
 
 		//put milk in the adjacent tanks
 		if(fakePlayer.getHeldItem(Hand.MAIN_HAND).getItem() == Items.MILK_BUCKET) {
-			//noinspection ConstantConditions - by this time the fluid was set from registry
-			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.milkStill.get(), FluidAttributes.BUCKET_VOLUME));
+			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.MILK_STILL.get(), FluidAttributes.BUCKET_VOLUME));
 			//replace bucket in the pedestals with milk one if the tanks can't hold it
 			if(fluidAdded == 0) {
 				if(stack.getCount() == 1) {

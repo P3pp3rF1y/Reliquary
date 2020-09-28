@@ -45,7 +45,7 @@ public class SerpentStaffItem extends ItemBase {
 		player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 
 		KrakenSlimeEntity krakenSlime = new KrakenSlimeEntity(player.world, player);
-		krakenSlime.shoot(player, player.rotationPitch, player.rotationYaw, 0F, 1.5F, 1.0F);
+		krakenSlime.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0F, 1.5F, 1.0F);
 		player.world.addEntity(krakenSlime);
 		serpentStaff.damageItem(1, player, p -> p.sendBreakAnimation(p.getActiveHand()));
 	}

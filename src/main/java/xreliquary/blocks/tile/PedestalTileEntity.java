@@ -57,7 +57,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	private IItemHandler itemHandler = null;
 	private ItemStack fluidContainer = ItemStack.EMPTY;
 	private boolean switchedOn = false;
-	private List<Long> onSwitches = new ArrayList<>();
+	private final List<Long> onSwitches = new ArrayList<>();
 	private boolean enabledInitialized = false;
 	private boolean powered = false;
 	private PedestalFluidHandler pedestalFluidHandler = null;
@@ -68,8 +68,8 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	}
 
 	@Override
-	public void read(CompoundNBT tag) {
-		super.read(tag);
+	public void read(BlockState state, CompoundNBT tag) {
+		super.read(state, tag);
 
 		switchedOn = tag.getBoolean("SwitchedOn");
 		powered = tag.getBoolean("Powered");
@@ -116,7 +116,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	@Override
 	public void onChunkUnloaded() {
 		if (!world.isRemote) {
-			PedestalRegistry.unregisterPosition(world.getDimension().getType().getId(), pos);
+			PedestalRegistry.unregisterPosition(world.getDimensionKey().getRegistryName(), pos);
 		}
 
 		super.onChunkUnloaded();
@@ -125,7 +125,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	@Override
 	public void onLoad() {
 		if (!world.isRemote) {
-			PedestalRegistry.registerPosition(world.getDimension().getType().getId(), pos);
+			PedestalRegistry.registerPosition(world.getDimensionKey().getRegistryName(), pos);
 		}
 
 		super.onLoad();
@@ -320,7 +320,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 
 	@Override
 	public List<BlockPos> getPedestalsInRange(int range) {
-		return PedestalRegistry.getPositionsInRange(world.getDimension().getType().getId(), pos, range);
+		return PedestalRegistry.getPositionsInRange(world.getDimensionKey().getRegistryName(), pos, range);
 	}
 
 	@Override

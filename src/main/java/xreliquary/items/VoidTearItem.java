@@ -65,7 +65,6 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	public VoidTearItem() {
 		super(Names.Items.VOID_TEAR, new Properties());
 		MinecraftForge.EVENT_BUS.addListener(this::onItemPickup);
-		addPropertyOverride(new ResourceLocation("empty"), (stack, world, entity) -> isEmpty(stack, true) ? 1.0F : 0.0F);
 	}
 
 	@Override
@@ -76,7 +75,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
 		return new ICapabilitySerializable<CompoundNBT>() {
-			VoidTearItemStackHandler itemHandler = new VoidTearItemStackHandler();
+			final VoidTearItemStackHandler itemHandler = new VoidTearItemStackHandler();
 
 			@Override
 			public CompoundNBT serializeNBT() {
@@ -127,12 +126,12 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		ItemStack voidTear = player.getHeldItem(hand);
 
 		if (!world.isRemote) {
-			RayTraceResult rayTraceResult = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
+			BlockRayTraceResult rayTraceResult = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
 
 			//not letting logic go through if player was sneak clicking inventory or was trying to place a block
 			//noinspection ConstantConditions
 			if (rayTraceResult != null && rayTraceResult.getType() == RayTraceResult.Type.BLOCK &&
-					(InventoryHelper.hasItemHandler(world, ((BlockRayTraceResult) rayTraceResult).getPos()) && player.isShiftKeyDown() || hasPlaceableBlock(voidTear))) {
+					(InventoryHelper.hasItemHandler(world, rayTraceResult.getPos()) && player.isSneaking() || hasPlaceableBlock(voidTear))) {
 				return new ActionResult<>(ActionResultType.PASS, voidTear);
 			}
 
@@ -145,7 +144,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 				return new ActionResult<>(ActionResultType.SUCCESS, voidTear);
 			}
 
-			if (player.isShiftKeyDown()) {
+			if (player.isSneaking()) {
 				return super.onItemRightClick(world, player, hand);
 			}
 
@@ -363,7 +362,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		contents.setCount(1);
 
 		int quantity = getItemQuantity(stack);
-		int maxNumberToEmpty = player.isShiftKeyDown() ? quantity : Math.min(contents.getMaxStackSize(), quantity);
+		int maxNumberToEmpty = player.isSneaking() ? quantity : Math.min(contents.getMaxStackSize(), quantity);
 
 		quantity -= InventoryHelper.tryToAddToInventory(contents, inventory, maxNumberToEmpty);
 
@@ -415,7 +414,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		return getContainerItem(voidTear, false);
 	}
 
-	public ItemStack getContainerItem(ItemStack voidTear, boolean isClient) {
+	public static ItemStack getContainerItem(ItemStack voidTear, boolean isClient) {
 		if (isClient) {
 			CompoundNBT nbt = voidTear.getTag();
 			if (nbt == null || !nbt.contains(CONTENTS_TAG)) {
@@ -430,7 +429,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		return getFromHandler(voidTear, VoidTearItemStackHandler::getTotalAmountStack).orElse(ItemStack.EMPTY);
 	}
 
-	private <T> Optional<T> getFromHandler(ItemStack voidTear, Function<VoidTearItemStackHandler, T> get) {
+	private static <T> Optional<T> getFromHandler(ItemStack voidTear, Function<VoidTearItemStackHandler, T> get) {
 		return InventoryHelper.getFromHandler(voidTear, get, VoidTearItemStackHandler.class);
 	}
 
@@ -452,7 +451,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 	@Override
 	public ActionResultType onLeftClickItem(ItemStack voidTear, LivingEntity entityLiving) {
-		if (!entityLiving.isShiftKeyDown()) {
+		if (!entityLiving.isSneaking()) {
 			return ActionResultType.CONSUME;
 		}
 		if (entityLiving.world.isRemote) {
@@ -466,7 +465,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		ONE_STACK, FULL_INVENTORY, NO_REFILL;
 
 		@Override
-		public String getName() {
+		public String getString() {
 			return name();
 		}
 	}
@@ -554,7 +553,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		return isEmpty(voidTear, false);
 	}
 
-	public boolean isEmpty(ItemStack voidTear, boolean isClient) {
+	public static boolean isEmpty(ItemStack voidTear, boolean isClient) {
 		if (isClient) {
 			return getContainerItem(voidTear, true).isEmpty();
 		}

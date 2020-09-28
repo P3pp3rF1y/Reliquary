@@ -23,7 +23,7 @@ public class ContainerMobCharmBelt extends Container {
 		this.belt = belt;
 
 		for (int i = 0; i < Reference.MOB_CHARM.COUNT_TYPES + 1; i++) {
-			addSlot(new SlotMobCharm(belt, i, -999, 0));
+			addSlot(new SlotMobCharm(belt, i));
 		}
 
 		for (int i = 0; i < 3; ++i) {
@@ -37,7 +37,7 @@ public class ContainerMobCharmBelt extends Container {
 		}
 	}
 
-	private ItemStack belt;
+	private final ItemStack belt;
 
 	private static final int PLAYER_INV_INDEX = Reference.MOB_CHARM.COUNT_TYPES + 1;
 

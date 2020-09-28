@@ -10,7 +10,7 @@ import xreliquary.reference.Settings;
 import java.util.List;
 
 public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
-	private boolean powered;
+	private final boolean powered;
 
 	public static class AlwaysOn extends PedestalRedstoneWrapper {
 		public AlwaysOn() {

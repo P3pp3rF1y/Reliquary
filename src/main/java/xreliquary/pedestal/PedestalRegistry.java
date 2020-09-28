@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -23,8 +25,8 @@ public class PedestalRegistry {
 	private static final PedestalRegistry INSTANCE = new PedestalRegistry();
 	private static final Map<LocationKey, BlockPos> positions = new HashMap<>();
 
-	private Map<Class<? extends Item>, Supplier<? extends IPedestalItemWrapper>> itemWrappers = new HashMap<>();
-	private Map<Class<? extends Block>, Supplier<? extends IPedestalItemWrapper>> blockWrappers = new HashMap<>();
+	private final Map<Class<? extends Item>, Supplier<? extends IPedestalItemWrapper>> itemWrappers = new HashMap<>();
+	private final Map<Class<? extends Block>, Supplier<? extends IPedestalItemWrapper>> blockWrappers = new HashMap<>();
 
 	public static void registerItemWrapper(Class<? extends Item> itemClass, Supplier<? extends IPedestalItemWrapper> wrapperClass) {
 		INSTANCE.itemWrappers.put(itemClass, wrapperClass);
@@ -50,29 +52,29 @@ public class PedestalRegistry {
 		return Optional.empty();
 	}
 
-	public static void registerPosition(int dimensionId, BlockPos pos) {
-		LocationKey key = new LocationKey(dimensionId, pos.toLong());
+	public static void registerPosition(ResourceLocation dimension, BlockPos pos) {
+		LocationKey key = new LocationKey(dimension, pos.toLong());
 		if (!positions.containsKey(key)) {
 			positions.put(key, pos);
 		}
 	}
 
-	public static void unregisterPosition(int dimensionId, BlockPos pos) {
-		positions.remove(new LocationKey(dimensionId, pos.toLong()));
+	public static void unregisterPosition(ResourceLocation dimension, BlockPos pos) {
+		positions.remove(new LocationKey(dimension, pos.toLong()));
 	}
 
 	private static void clearPositions() {
 		positions.clear();
 	}
 
-	public static List<BlockPos> getPositionsInRange(int dimensionId, BlockPos startPos, int range) {
-		return getPositionsInRange(dimensionId, startPos, range, range, range);
+	public static List<BlockPos> getPositionsInRange(ResourceLocation dimension, BlockPos startPos, int range) {
+		return getPositionsInRange(dimension, startPos, range, range, range);
 	}
 
-	private static List<BlockPos> getPositionsInRange(int dimensionId, BlockPos startPos, int xRange, int yRange, int zRange) {
+	private static List<BlockPos> getPositionsInRange(ResourceLocation dimension, BlockPos startPos, int xRange, int yRange, int zRange) {
 		List<BlockPos> positionsInRange = new ArrayList<>();
 		for (Map.Entry<LocationKey, BlockPos> position : positions.entrySet()) {
-			if (position.getKey().getDimensionId() != dimensionId) {
+			if (!position.getKey().getDimension().equals(dimension)) {
 				continue;
 			}
 			BlockPos pos = position.getValue();
@@ -93,18 +95,17 @@ public class PedestalRegistry {
 	}
 
 	private static class LocationKey {
-		private int dimensionId;
-		private long location;
+		private final ResourceLocation dimension;
+		private final long location;
 
-		LocationKey(int dimensionId, long location) {
-			this.dimensionId = dimensionId;
+		LocationKey(ResourceLocation dimension, long location) {
+			this.dimension = dimension;
 			this.location = location;
 		}
 
 		@Override
 		public int hashCode() {
-			//won't produce unique hash at all times, but it's very unlikely that there will be two keys with same hash and absolutely unlikely that will cause issues
-			return Long.hashCode(location + dimensionId);
+			return Objects.hash(dimension, location);
 		}
 
 		@Override
@@ -115,11 +116,11 @@ public class PedestalRegistry {
 
 			LocationKey key2 = (LocationKey) o;
 
-			return getDimensionId() == key2.getDimensionId() && getLocation() == key2.getLocation();
+			return getDimension().equals(key2.getDimension()) && getLocation() == key2.getLocation();
 		}
 
-		int getDimensionId() {
-			return dimensionId;
+		ResourceLocation getDimension() {
+			return dimension;
 		}
 
 		public long getLocation() {

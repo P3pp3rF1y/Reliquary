@@ -4,8 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import top.theillusivec4.curios.api.CuriosAPI;
-import top.theillusivec4.curios.api.inventory.CurioStackHandler;
+import top.theillusivec4.curios.api.CuriosApi;
 import xreliquary.init.ModItems;
 import xreliquary.items.FortuneCoinToggler;
 import xreliquary.items.util.IBaubleItem;
@@ -19,20 +18,19 @@ class CuriosFortuneCoinToggler extends FortuneCoinToggler {
 		if (super.findAndToggle()) {
 			return true;
 		}
-		return CuriosAPI.getCuriosHandler(Minecraft.getInstance().player).map(handler -> {
-			CurioStackHandler stackHandler = handler.getStackHandler(IBaubleItem.Type.NECKLACE.getIdentifier());
+		return CuriosApi.getCuriosHelper().getCuriosHandler(Minecraft.getInstance().player).map(handler -> handler.getStacksHandler(IBaubleItem.Type.NECKLACE.getIdentifier()).map(stackHandler -> {
 			for (int slot = 0; slot < stackHandler.getSlots(); slot++) {
-				ItemStack baubleStack = stackHandler.getStackInSlot(slot);
+				ItemStack baubleStack = stackHandler.getStacks().getStackInSlot(slot);
 
 				if (baubleStack.getItem() == ModItems.FORTUNE_COIN) {
 					ModItems.FORTUNE_COIN.toggle(baubleStack);
-					stackHandler.setStackInSlot(slot, baubleStack);
+					stackHandler.getStacks().setStackInSlot(slot, baubleStack);
 					PacketHandler.sendToServer(new PacketFortuneCoinTogglePressed(PacketFortuneCoinTogglePressed.InventoryType.CURIOS, slot));
 					return true;
 				}
 			}
 			return false;
-		}).orElse(false);
+		}).orElse(false)).orElse(false);
 	}
 
 	public void registerSelf() {

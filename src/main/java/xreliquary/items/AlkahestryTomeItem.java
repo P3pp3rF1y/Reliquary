@@ -39,6 +39,11 @@ public class AlkahestryTomeItem extends ToggleableItem {
 	}
 
 	@Override
+	public boolean isDamageable() {
+		return true;
+	}
+
+	@Override
 	public int getMaxDamage(ItemStack stack) {
 		return getChargeLimit() + 1;
 	}
@@ -57,7 +62,7 @@ public class AlkahestryTomeItem extends ToggleableItem {
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		ItemStack newStack = super.onItemRightClick(world, player, hand).getResult();
-		if (player.isShiftKeyDown()) {
+		if (player.isSneaking()) {
 			return new ActionResult<>(ActionResultType.SUCCESS, newStack);
 		}
 

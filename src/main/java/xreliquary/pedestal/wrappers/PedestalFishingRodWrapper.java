@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -76,7 +76,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			//when hook doesn't land in water retract it after some time
 			FishingBobberEntity fishingBobber = fakePlayer.fishingBobber;
 			//noinspection ConstantConditions
-			if (fishingBobber.onGround || (!fishingBobber.isInWater() && getTicksInAir(fishingBobber) > 20)) {
+			if (fishingBobber.isOnGround() || (!fishingBobber.isInWater() && getTicksInAir(fishingBobber) > 20)) {
 				retractHook(pedestal, stack);
 			} else {
 				badThrowChecked = true;
@@ -85,7 +85,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			//sometimes hook can get stuck in a bad state so take care of that
 			retractHook(pedestal, stack);
 		} else //noinspection ConstantConditions
-			if (getTicksCatchable(fakePlayer.fishingBobber) > 0 || fakePlayer.fishingBobber.caughtEntity != null) {
+			if (getTicksCatchable(fakePlayer.fishingBobber) > 0 || fakePlayer.fishingBobber.func_234607_k_() != null) {
 				if (pedestal.getTheWorld().rand.nextInt(100) <= Settings.COMMON.blocks.pedestal.fishingWrapperSuccessRate.get()) {
 					retractHook(pedestal, stack);
 				} else {
@@ -216,7 +216,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 
 			//make sure that the fakePlayer can see the block
 			BlockRayTraceResult raytraceresult = pedestal.getTheWorld().rayTraceBlocks(
-					new RayTraceContext(new Vec3d(startX, startY, startZ), new Vec3d(((double) x) + 0.5D, ((double) y) + 0.8D, ((double) z) + 0.5D), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.SOURCE_ONLY, fakePlayer));
+					new RayTraceContext(new Vector3d(startX, startY, startZ), new Vector3d(((double) x) + 0.5D, ((double) y) + 0.8D, ((double) z) + 0.5D), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.SOURCE_ONLY, fakePlayer));
 			if (raytraceresult.getType() != RayTraceResult.Type.MISS && raytraceresult.getPos().equals(blockPos)) {
 				group.add(blockPos);
 				for (Direction direction : Direction.Plane.HORIZONTAL) {
@@ -248,9 +248,9 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		BlockPos pedestalPos = pedestal.getBlockPos();
 
 		if (hook == null) {
-			PacketHandler.sendToAllAround(new PacketPedestalFishHook(pedestal.getBlockPos(), -1, -1, -1), new PacketDistributor.TargetPoint(pedestalPos.getX(), pedestalPos.getY(), pedestalPos.getZ(), PACKET_RANGE, pedestal.getTheWorld().getDimension().getType()));
+			PacketHandler.sendToAllAround(new PacketPedestalFishHook(pedestal.getBlockPos(), -1, -1, -1), new PacketDistributor.TargetPoint(pedestalPos.getX(), pedestalPos.getY(), pedestalPos.getZ(), PACKET_RANGE, pedestal.getTheWorld().getDimensionKey()));
 		} else {
-			PacketHandler.sendToAllAround(new PacketPedestalFishHook(pedestal.getBlockPos(), hook.getPosX(), hook.getPosY(), hook.getPosZ()), new PacketDistributor.TargetPoint(pedestalPos.getX(), pedestalPos.getY(), pedestalPos.getZ(), PACKET_RANGE, pedestal.getTheWorld().getDimension().getType()));
+			PacketHandler.sendToAllAround(new PacketPedestalFishHook(pedestal.getBlockPos(), hook.getPosX(), hook.getPosY(), hook.getPosZ()), new PacketDistributor.TargetPoint(pedestalPos.getX(), pedestalPos.getY(), pedestalPos.getZ(), PACKET_RANGE, pedestal.getTheWorld().getDimensionKey()));
 		}
 	}
 

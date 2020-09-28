@@ -11,8 +11,8 @@ import xreliquary.client.gui.hud.CharmPane;
 import java.util.function.Supplier;
 
 public class PacketMobCharmDamage {
-	private ItemStack mobCharm;
-	private int slot;
+	private final ItemStack mobCharm;
+	private final int slot;
 
 	public PacketMobCharmDamage(ItemStack mobCharm, int slot) {
 		this.mobCharm = mobCharm;

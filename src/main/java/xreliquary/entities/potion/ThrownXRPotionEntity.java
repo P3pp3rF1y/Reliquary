@@ -1,6 +1,7 @@
 package xreliquary.entities.potion;
 
 import net.minecraft.entity.AreaEffectCloudEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.LivingEntity;
@@ -107,15 +108,19 @@ public class ThrownXRPotionEntity extends ThrowableEntity implements IEntityAddi
 						d1 = 1.0D;
 					}
 
-					XRPotionHelper.applyEffectsToEntity(effects, this, getThrower(), entity, d1);
+					XRPotionHelper.applyEffectsToEntity(effects, this, func_234616_v_(), entity, d1);
 				}
 			}
 		}
 	}
 
 	private void spawnAreaEffectCloud(List<EffectInstance> effects, int color) {
+		Entity thrower = func_234616_v_();
+		if (! (thrower instanceof LivingEntity)) {
+			return;
+		}
 		AreaEffectCloudEntity areaEffectCloud = new AreaEffectCloudEntity(world, getPosX(), getPosY(), getPosZ());
-		areaEffectCloud.setOwner(getThrower());
+		areaEffectCloud.setOwner((LivingEntity) thrower);
 		areaEffectCloud.setRadius(3.0F);
 		areaEffectCloud.setRadiusOnUse(-0.5F);
 		areaEffectCloud.setWaitTime(10);
@@ -140,7 +145,7 @@ public class ThrownXRPotionEntity extends ThrowableEntity implements IEntityAddi
 		}
 
 		world.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(color, getPosX(), getPosY(), getPosZ()), new PacketDistributor.TargetPoint(getPosX(), getPosY(), getPosZ(), 32.0D, world.getDimension().getType()));
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(color, getPosX(), getPosY(), getPosZ()), new PacketDistributor.TargetPoint(getPosX(), getPosY(), getPosZ(), 32.0D, world.getDimensionKey()));
 	}
 
 	@Override

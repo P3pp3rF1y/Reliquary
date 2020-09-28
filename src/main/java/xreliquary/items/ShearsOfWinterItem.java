@@ -24,12 +24,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.IShearable;
+import net.minecraftforge.common.IForgeShearable;
 import xreliquary.Reliquary;
 import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
@@ -70,7 +70,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 
 		PlayerEntity player = (PlayerEntity) entity;
 
-		Vec3d lookVector = player.getLookVec();
+		Vector3d lookVector = player.getLookVec();
 		spawnBlizzardParticles(lookVector, player);
 
 		if (entity.world.isRemote) {
@@ -81,7 +81,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 		shearBlocks(player, lookVector);
 	}
 
-	private void shearBlocks(PlayerEntity player, Vec3d lookVector) {
+	private void shearBlocks(PlayerEntity player, Vector3d lookVector) {
 		BlockPos firstPos = new BlockPos(player.getEyePosition(1));
 		BlockPos secondPos = new BlockPos(player.getEyePosition(1).add(lookVector.mul(10, 10, 10)));
 		if (firstPos.getX() == secondPos.getX()) {
@@ -116,13 +116,12 @@ public class ShearsOfWinterItem extends ShearsItem {
 		}
 	}
 
-	@SuppressWarnings({"squid:CallToDeprecatedMethod", "deprecation"})
 	private void shearBlockAt(BlockPos pos, PlayerEntity player) {
 		World world = player.world;
 		BlockState blockState = world.getBlockState(pos);
 		Block block = blockState.getBlock();
-		if (block instanceof IShearable) {
-			IShearable target = (IShearable) block;
+		if (block instanceof IForgeShearable) {
+			IForgeShearable target = (IForgeShearable) block;
 			ItemStack dummyShears = new ItemStack(Items.SHEARS);
 			if (target.isShearable(dummyShears, world, pos) && removeBlock(player, pos, blockState.canHarvestBlock(world, pos, player))) {
 				player.addStat(Stats.BLOCK_MINED.get(block));
@@ -149,8 +148,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 		return removed;
 	}
 
-	@SuppressWarnings({"squid:CallToDeprecatedMethod", "deprecation", "squid:S1764"})
-	private void doEntityShearableCheck(ItemStack stack, PlayerEntity player, Vec3d lookVector) {
+	private void doEntityShearableCheck(ItemStack stack, PlayerEntity player, Vector3d lookVector) {
 		if (player.world.isRemote) {
 			return;
 		}
@@ -171,18 +169,17 @@ public class ShearsOfWinterItem extends ShearsItem {
 			if (!e.isEntityEqual(player)) {
 				e.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 120, 1));
 			}
-			if (e instanceof IShearable) {
+			if (e instanceof IForgeShearable) {
 				shearEntity(stack, player, rand, e);
 			}
 		}
 	}
 
-	@SuppressWarnings({"squid:CallToDeprecatedMethod", "deprecation", "squid:S1764"})
 	private void shearEntity(ItemStack stack, PlayerEntity player, Random rand, MobEntity e) {
-		IShearable target = (IShearable) e;
+		IForgeShearable target = (IForgeShearable) e;
 		BlockPos pos = new BlockPos((int) e.getPosX(), (int) e.getPosY(), (int) e.getPosZ());
 		if (target.isShearable(new ItemStack(Items.SHEARS), e.world, pos)) {
-			List<ItemStack> drops = target.onSheared(stack, e.world, pos,
+			List<ItemStack> drops = target.onSheared(player, stack, e.world, pos,
 					EnchantmentHelper.getEnchantmentLevel(net.minecraft.enchantment.Enchantments.FORTUNE, stack));
 			drops.forEach(d -> {
 				ItemEntity ent = e.entityDropItem(d, 1.0F);
@@ -195,7 +192,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 		}
 	}
 
-	private void spawnBlizzardParticles(Vec3d lookVector, PlayerEntity player) {
+	private void spawnBlizzardParticles(Vector3d lookVector, PlayerEntity player) {
 		BlockParticleData blockParticleData = new BlockParticleData(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.getDefaultState());
 
 		for (int i = 0; i < 16; ++i) {

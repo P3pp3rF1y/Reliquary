@@ -12,7 +12,7 @@ import java.util.Optional;
 public class PedestalClientRegistry {
 	private static final PedestalClientRegistry INSTANCE = new PedestalClientRegistry();
 
-	private Map<Class<? extends Item>, Class<? extends IPedestalItemRenderer>> itemRenderers = new HashMap<>();
+	private final Map<Class<? extends Item>, Class<? extends IPedestalItemRenderer>> itemRenderers = new HashMap<>();
 
 	private PedestalClientRegistry() {
 	}

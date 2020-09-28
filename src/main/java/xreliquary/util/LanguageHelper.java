@@ -22,8 +22,8 @@ import java.util.Objects;
 public class LanguageHelper {
 	private LanguageHelper() {}
 
-	private static Map<TranslationKey, String> preprocessed = new HashMap<>();
-	private static Map<String, String> globals = new HashMap<>();
+	private static final Map<TranslationKey, String> preprocessed = new HashMap<>();
+	private static final Map<String, String> globals = new HashMap<>();
 
 	static {
 		globals.put("colors.black", "\u00A70");
@@ -52,7 +52,7 @@ public class LanguageHelper {
 	 * @return A preprocessed localized string. If your current language doesn't have a localized string, it defaults to en_US.
 	 */
 	public static String getLocalization(String key, Object... parameters) {
-		String localization = String.format(LanguageMap.getInstance().translateKey(key), parameters);
+		String localization = String.format(LanguageMap.getInstance().func_230503_a_(key), parameters);
 
 		TranslationKey translationKey = new TranslationKey(key, parameters);
 		if (preprocessed.containsKey(translationKey)) {
@@ -100,7 +100,7 @@ public class LanguageHelper {
 	}
 
 	public static boolean localizationExists(String langName) {
-		return LanguageMap.getInstance().exists(langName);
+		return LanguageMap.getInstance().func_230506_b_(langName);
 	}
 
 	private static class TranslationKey {

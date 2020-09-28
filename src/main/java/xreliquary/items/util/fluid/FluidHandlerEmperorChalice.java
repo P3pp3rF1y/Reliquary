@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 public class FluidHandlerEmperorChalice implements IFluidHandlerItem, ICapabilityProvider {
 
 	public static final FluidStack BUCKET_OF_WATER = new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
-	private ItemStack chalice;
+	private final ItemStack chalice;
 
 	public FluidHandlerEmperorChalice(ItemStack chalice) {
 		this.chalice = chalice;
@@ -57,8 +57,9 @@ public class FluidHandlerEmperorChalice implements IFluidHandlerItem, ICapabilit
 
 	@Override
 	public int fill(FluidStack resource, FluidAction action) {
-		if (!ModItems.EMPEROR_CHALICE.isEnabled(chalice) || resource.isEmpty() || resource.getFluid() != Fluids.WATER)
+		if (!ModItems.EMPEROR_CHALICE.isEnabled(chalice) || resource.isEmpty() || resource.getFluid() != Fluids.WATER) {
 			return 0;
+		}
 		return resource.getAmount();
 	}
 

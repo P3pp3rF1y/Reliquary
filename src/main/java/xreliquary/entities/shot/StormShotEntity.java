@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import xreliquary.init.ModEntities;
@@ -40,11 +40,15 @@ public class StormShotEntity extends ShotEntityBase {
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		if(result.getType() == RayTraceResult.Type.BLOCK) {
+		if (result.getType() == RayTraceResult.Type.BLOCK) {
 			BlockRayTraceResult blockResult = (BlockRayTraceResult) result;
 			BlockPos pos = blockResult.getPos().offset(blockResult.getFace());
-			if(world instanceof ServerWorld && world.isRainingAt(pos) && world.getWorldInfo().isRaining() && world.getWorldInfo().isThundering()) {
-				((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, pos.getX(), pos.getY(), pos.getZ(), false));
+			if (world instanceof ServerWorld && world.isRainingAt(pos) && world.getWorldInfo().isRaining() && world.getWorldInfo().isThundering()) {
+				LightningBoltEntity bolt = EntityType.LIGHTNING_BOLT.create(world);
+				if (bolt != null) {
+					bolt.moveForced(pos.getX(), pos.getY(), pos.getZ());
+					world.addEntity(bolt);
+				}
 			}
 		}
 		super.onImpact(result);
@@ -57,8 +61,8 @@ public class StormShotEntity extends ShotEntityBase {
 
 	@Override
 	void spawnHitParticles(int i) {
-		Vec3d motion = getMotion();
-		for(int particles = 0; particles < i; particles++) {
+		Vector3d motion = getMotion();
+		for (int particles = 0; particles < i; particles++) {
 			world.addParticle(ParticleTypes.BUBBLE, getPosX(), getPosY(), getPosZ(), gaussian(motion.getX()), rand.nextFloat() + motion.getY(), gaussian(motion.getZ()));
 		}
 	}
@@ -69,13 +73,22 @@ public class StormShotEntity extends ShotEntityBase {
 	}
 
 	@Override
+	void doDamage(LivingEntity entity) {
+		if (world instanceof ServerWorld && world.isRainingAt(entity.getPosition()) && world.getWorldInfo().isRaining() && world.getWorldInfo().isThundering()) {
+			LightningBoltEntity bolt = EntityType.LIGHTNING_BOLT.create(world);
+			if (bolt != null) {
+				bolt.moveForced(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+				world.addEntity(bolt);
+				if (entity instanceof CreeperEntity) {
+					entity.func_241841_a(((ServerWorld) world), bolt);
+				}
+			}
+		}
+		super.doDamage(entity);
+	}
+
+	@Override
 	int getDamageOfShot(LivingEntity entity) {
-		if(entity instanceof CreeperEntity) {
-			entity.onStruckByLightning(new LightningBoltEntity(world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), false));
-		}
-		if(world instanceof ServerWorld && world.isRainingAt(new BlockPos((int) (entity.getPosX() + 0.5F), (int) (entity.getPosY() + 0.5F), (int) (entity.getPosZ() + 0.5F))) && world.getWorldInfo().isRaining() && world.getWorldInfo().isThundering()) {
-			((ServerWorld) world).addLightningBolt(new LightningBoltEntity(world, (int) (entity.getPosX() + 0.5F), (int) (entity.getPosY() + 0.5F), (int) (entity.getPosZ() + 0.5F), false));
-		}
 		float f = 1F + (world.isRaining() ? 0.5F : 0F) + (world.isThundering() ? 0.5F : 0F);
 		return Math.round(9F * f) + d6();
 	}

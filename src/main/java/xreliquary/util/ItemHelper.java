@@ -6,12 +6,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class ItemHelper {
 	private ItemHelper() {}
 
 	public static ItemUseContext getItemUseContext(BlockPos pos, PlayerEntity player) {
-		return new ItemUseContext(player, Hand.MAIN_HAND, new BlockRayTraceResult(new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), Direction.UP, pos, true));
+		return new ItemUseContext(player, Hand.MAIN_HAND, new BlockRayTraceResult(new Vector3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), Direction.UP, pos, true));
 	}
 }

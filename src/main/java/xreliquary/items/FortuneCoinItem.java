@@ -161,7 +161,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 
 	private List<BlockPos> getDisablePositions(World world, BlockPos coinPos) {
 		List<BlockPos> disablePositions = new ArrayList<>();
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(world.getDimension().getType().getId(), coinPos, 10);
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(world.getDimensionKey().getRegistryName(), coinPos, 10);
 
 		for (BlockPos pos : pedestalPositions) {
 			TileEntity te = world.getTileEntity(pos);
@@ -245,7 +245,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 
-		if (player.isShiftKeyDown()) {
+		if (player.isSneaking()) {
 			if (enabledAudio()) {
 				NBTHelper.putShort(SOUND_TIMER_TAG, stack, (short) 6);
 			}
@@ -295,7 +295,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 			List<ExperienceOrbEntity> xpOrbs = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
 			for (ExperienceOrbEntity xpOrb : xpOrbs) {
 				int amountToTransfer = XpHelper.experienceToLiquid(xpOrb.xpValue);
-				int amountAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.xpJuiceStill.get(), amountToTransfer));
+				int amountAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.XP_JUICE_STILL.get(), amountToTransfer));
 
 				if (amountAdded > 0) {
 					xpOrb.remove();

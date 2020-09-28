@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import xreliquary.init.ModEntities;
 import xreliquary.reference.ClientReference;
@@ -32,8 +32,8 @@ public class BlazeShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFlightEffects() {
-		if(ticksInAir % 3 == 0 && ticksInAir < 9) {
-			Vec3d motion = getMotion();
+		if (ticksInAir % 3 == 0 && ticksInAir < 9) {
+			Vector3d motion = getMotion();
 			world.addParticle(ParticleTypes.FLAME, getPosX(), getPosY(), getPosZ(), lowGauss(motion.getX()), lowGauss(motion.getY()), lowGauss(motion.getZ()));
 		}
 	}
@@ -51,14 +51,14 @@ public class BlazeShotEntity extends ShotEntityBase {
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		if(result.getType() == RayTraceResult.Type.ENTITY) {
+		if (result.getType() == RayTraceResult.Type.ENTITY) {
 			Entity entityHit = ((EntityRayTraceResult) result).getEntity();
 			if (entityHit == shootingEntity || !(entityHit instanceof LivingEntity)) {
 				return;
 			}
 			onImpact((LivingEntity) entityHit);
-		} else if(result.getType() == RayTraceResult.Type.BLOCK) {
-			if(shootingEntity == null) {
+		} else if (result.getType() == RayTraceResult.Type.BLOCK) {
+			if (shootingEntity == null) {
 				return;
 			}
 
@@ -81,7 +81,7 @@ public class BlazeShotEntity extends ShotEntityBase {
 
 	@Override
 	void spawnHitParticles(int i) {
-		for(int particles = 0; particles < i; particles++) {
+		for (int particles = 0; particles < i; particles++) {
 			spawnMotionBasedParticle(ParticleTypes.FLAME);
 		}
 	}
@@ -106,12 +106,12 @@ public class BlazeShotEntity extends ShotEntityBase {
 
 	@Override
 	void doBurstEffect(Direction sideHit) {
-		Vec3d motion = getMotion();
+		Vector3d motion = getMotion();
 		double motionX = motion.getX();
 		double motionY = motion.getY();
 		double motionZ = motion.getZ();
-		for(int particles = 0; particles < 40; particles++) {
-			switch(sideHit) {
+		for (int particles = 0; particles < 40; particles++) {
+			switch (sideHit) {
 				case DOWN:
 					world.addParticle(ParticleTypes.FLAME, getPosX(), getPosY(), getPosZ(), smallGauss(0.1D) + motionX / 4, -posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
 					break;

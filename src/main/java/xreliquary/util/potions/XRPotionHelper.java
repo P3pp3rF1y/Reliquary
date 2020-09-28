@@ -5,8 +5,8 @@ import com.google.common.collect.Lists;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -73,7 +73,7 @@ public class XRPotionHelper {
 		return Optional.empty();
 	}
 
-	private static Effect[] nonAugmentableEffects = new Effect[] {Effects.BLINDNESS,
+	private static final Effect[] nonAugmentableEffects = new Effect[] {Effects.BLINDNESS,
 			Effects.NAUSEA,
 			Effects.INVISIBILITY,
 			Effects.NIGHT_VISION,
@@ -96,13 +96,13 @@ public class XRPotionHelper {
 			for (EffectInstance potioneffect : effects) {
 				String s1 = I18n.format(potioneffect.getEffectName()).trim();
 				Effect potion = potioneffect.getPotion();
-				Map<IAttribute, AttributeModifier> map = potion.getAttributeModifierMap();
+				Map<Attribute, AttributeModifier> map = potion.getAttributeModifierMap();
 
 				if (!map.isEmpty()) {
-					for (Map.Entry<IAttribute, AttributeModifier> entry : map.entrySet()) {
+					for (Map.Entry<Attribute, AttributeModifier> entry : map.entrySet()) {
 						AttributeModifier attributemodifier = entry.getValue();
 						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.getAttributeModifierAmount(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
-						list1.add(new Tuple<>(entry.getKey().getName(), attributemodifier1));
+						list1.add(new Tuple<>(entry.getKey().getAttributeName(), attributemodifier1));
 					}
 				}
 
@@ -137,10 +137,10 @@ public class XRPotionHelper {
 					}
 
 					if (d0 > 0.0D) {
-						list.add((new TranslationTextComponent("attribute.modifier.plus." + attributemodifier2.getOperation().getId(), ItemStack.DECIMALFORMAT.format(d1), new TranslationTextComponent("attribute.name." + tuple.getA()))).applyTextStyle(TextFormatting.BLUE));
+						list.add((new TranslationTextComponent("attribute.modifier.plus." + attributemodifier2.getOperation().getId(), ItemStack.DECIMALFORMAT.format(d1), new TranslationTextComponent("attribute.name." + tuple.getA()))).mergeStyle(TextFormatting.BLUE));
 					} else if (d0 < 0.0D) {
 						d1 = d1 * -1.0D;
-						list.add((new TranslationTextComponent("attribute.modifier.take." + attributemodifier2.getOperation().getId(), ItemStack.DECIMALFORMAT.format(d1), new TranslationTextComponent("attribute.name." + tuple.getA()))).applyTextStyle(TextFormatting.RED));
+						list.add((new TranslationTextComponent("attribute.modifier.take." + attributemodifier2.getOperation().getId(), ItemStack.DECIMALFORMAT.format(d1), new TranslationTextComponent("attribute.name." + tuple.getA()))).mergeStyle(TextFormatting.RED));
 					}
 				}
 			}

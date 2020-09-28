@@ -15,10 +15,10 @@ import java.util.function.Supplier;
 
 public class PacketPedestalFishHook {
 
-	private BlockPos pedestalPos;
-	private double hookX;
-	private double hookY;
-	private double hookZ;
+	private final BlockPos pedestalPos;
+	private final double hookX;
+	private final double hookY;
+	private final double hookZ;
 
 	public PacketPedestalFishHook(BlockPos pedestalPos, double hookX, double hookY, double hookZ) {
 

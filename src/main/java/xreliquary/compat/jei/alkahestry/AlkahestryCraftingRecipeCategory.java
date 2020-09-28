@@ -1,5 +1,6 @@
 package xreliquary.compat.jei.alkahestry;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -80,10 +81,10 @@ public class AlkahestryCraftingRecipeCategory extends AlkahestryRecipeCategory<A
 	}
 
 	@Override
-	public void draw(AlkahestryCraftingRecipe recipe, double mouseX, double mouseY) {
+	public void draw(AlkahestryCraftingRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
 		String chargeString = "-" + recipe.getChargeNeeded();
 		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 		int stringWidth = fontRenderer.getStringWidth(chargeString);
-		fontRenderer.drawString(chargeString, (float) (((double) background.getWidth() - stringWidth) / 2), 40.0F, -8355712);
+		fontRenderer.drawString(matrixStack, chargeString, (float) (((double) background.getWidth() - stringWidth) / 2), 40.0F, -8355712);
 	}
 }

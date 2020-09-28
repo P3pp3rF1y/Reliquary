@@ -11,6 +11,7 @@ import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InjectionHelper;
+import xreliquary.util.WorldHelper;
 
 public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickableTileEntity {
 	@SuppressWarnings("WeakerAccess") // need public here for ObjectHolder to work
@@ -54,8 +55,8 @@ public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickab
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
+	public void read(BlockState state, CompoundNBT compound) {
+		super.read(state, compound);
 		cycleTime = compound.getShort("cycleTime");
 		redstoneCount = compound.getShort("redstoneCount");
 		isActive = compound.getBoolean("isActive");
@@ -77,10 +78,7 @@ public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickab
 		if(redstoneCount >= getRedstoneCost()) {
 			AlkahestryAltarBlock.updateAltarBlockState(true, world, getPos());
 		}
-
-		BlockState blockState = world.getBlockState(getPos());
-
-		world.notifyBlockUpdate(pos, blockState, blockState, 3);
+		WorldHelper.notifyBlockUpdate(this);
 	}
 
 	private static int getRedstoneCost() {
@@ -93,9 +91,5 @@ public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickab
 
 	private boolean isActive() {
 		return isActive;
-	}
-
-	public int getCycleTime() {
-		return cycleTime;
 	}
 }

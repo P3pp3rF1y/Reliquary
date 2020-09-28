@@ -31,7 +31,6 @@ import xreliquary.util.RandHelper;
 
 @SuppressWarnings({"squid:S2160", "squid:MaximumInheritanceDepth"})
 public class SpecialSnowballEntity extends ProjectileItemEntity {
-	private int ticksInAir;
 	private boolean fromGlacialStaff;
 
 	public SpecialSnowballEntity(EntityType<SpecialSnowballEntity> entityType, World world) {
@@ -74,7 +73,7 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 				if (entityHit instanceof BlazeEntity) {
 					damage += getSnowballDamageBlazeBonus();
 				}
-				entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, getThrower()), damage);
+				entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, func_234616_v_()), damage);
 			} else if (result.getType() == RayTraceResult.Type.BLOCK) {
 				BlockPos pos = ((BlockRayTraceResult) result).getPos();
 				if (world.getBlockState(pos.up()).getBlock() == Blocks.FIRE) {
@@ -91,13 +90,8 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 	 */
 	@Override
 	public void tick() {
-		if (inGround) {
-			ticksInAir = 0;
-		} else {
-			++ticksInAir;
-		}
 		super.tick();
-		if (ticksInAir % 4 == world.rand.nextInt(5)) {
+		if (ticksExisted % 4 == world.rand.nextInt(5)) {
 			world.addParticle(RedstoneParticleData.REDSTONE_DUST, getPosX(), getPosY(), getPosZ(), 5.0D, 5.0D, 1.0D);
 		}
 	}

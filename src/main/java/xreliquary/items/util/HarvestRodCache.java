@@ -9,7 +9,7 @@ import java.util.Queue;
 public class HarvestRodCache implements IHarvestRodCache {
 
 	private BlockPos startBlockPos;
-	private Queue<BlockPos> blockQueue;
+	private final Queue<BlockPos> blockQueue;
 
 	public HarvestRodCache() {
 		blockQueue = new ArrayDeque<>();

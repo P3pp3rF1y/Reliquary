@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 public class JEIDescriptionRegistry {
 	private JEIDescriptionRegistry() {}
 
-	private static Set<DescriptionEntry> descriptionEntries = new HashSet<>();
+	private static final Set<DescriptionEntry> descriptionEntries = new HashSet<>();
 
 	public static Set<DescriptionEntry> getEntries() {
 		return descriptionEntries;

@@ -1,5 +1,6 @@
 package xreliquary.client.gui.hud;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import xreliquary.client.gui.components.Box;
@@ -13,9 +14,9 @@ import xreliquary.util.InventoryHelper;
 import xreliquary.util.XpHelper;
 
 public class HeroMedallionPane extends Component {
-	private XPBarPane xpBar;
-	private TextPane levelPane;
-	private Box mainPane;
+	private final XPBarPane xpBar;
+	private final TextPane levelPane;
+	private final Box mainPane;
 
 	public HeroMedallionPane() {
 		xpBar = new XPBarPane();
@@ -44,7 +45,7 @@ public class HeroMedallionPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(int x, int y) {
+	public void renderInternal(MatrixStack matrixStack, int x, int y) {
 		ItemStack item = InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, ModItems.HERO_MEDALLION);
 
 		if (item.isEmpty()) {
@@ -61,6 +62,6 @@ public class HeroMedallionPane extends Component {
 		float xpRatio = ((float) remainingExperience) / ((float) maxBarExperience);
 		xpBar.setXpRatio(xpRatio);
 
-		mainPane.render(x, y);
+		mainPane.render(matrixStack, x, y);
 	}
 }

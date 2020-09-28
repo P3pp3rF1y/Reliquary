@@ -35,7 +35,7 @@ public class ModCapabilities {
 	public static void onItemStackConstruct(AttachCapabilitiesEvent<ItemStack> evt) {
 		if (evt.getObject().getItem() == ModItems.HARVEST_ROD) {
 			evt.addCapability(new ResourceLocation(Reference.MOD_ID, "harvest_rod_cache"), new ICapabilityProvider() {
-				IHarvestRodCache instance = HARVEST_ROD_CACHE.getDefaultInstance();
+				final IHarvestRodCache instance = HARVEST_ROD_CACHE.getDefaultInstance();
 
 				@Override
 				public <T> LazyOptional<T> getCapability( Capability<T> capability, @Nullable Direction side) {

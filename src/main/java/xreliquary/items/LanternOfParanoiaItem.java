@@ -17,9 +17,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
@@ -28,6 +29,7 @@ import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,8 +81,8 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			for (float yOff = -0.2F; yOff <= 0.2F; yOff += 0.4F) {
 				for (float zOff = -0.2F; zOff <= 0.2F; zOff += 0.4F) {
 
-					Vec3d playerVec = new Vec3d(player.getPosX() + xOff, playerEyeHeight + yOff, player.getPosZ() + zOff);
-					Vec3d rayTraceVector = new Vec3d(pos).add(0.5D + xOff, 0.5D + yOff, 0.5D + zOff);
+					Vector3d playerVec = new Vector3d(player.getPosX() + xOff, playerEyeHeight + yOff, player.getPosZ() + zOff);
+					Vector3d rayTraceVector = new Vector3d(pos.getX(), pos.getY(), pos.getZ()).add(0.5D + xOff, 0.5D + yOff, 0.5D + zOff);
 
 					RayTraceResult rayTraceResult = world.rayTraceBlocks(new RayTraceContext(playerVec, rayTraceVector, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
 
@@ -112,8 +114,8 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			List<Direction> trySides = Lists.newArrayList(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST);
 			ItemStack torchStack = new ItemStack(torch);
 			for (Direction side : trySides) {
-				BlockState torchBlockState = getTorchSideAttempt(world, torch, pos, side);
-				if (!world.func_226663_a_(torchBlockState, pos, ISelectionContext.dummy()) || !(InventoryHelper.consumeItem(torchStack, player, 0, 1) || findAndDrainSojournersStaff(player, torch))) {
+				BlockState torchBlockState = getTorchSideAttempt(player, torch, pos, side);
+				if (torchBlockState == null || !torchBlockState.isValidPosition(world, pos) || !world.placedBlockCollides(torchBlockState, pos, ISelectionContext.dummy()) || !(InventoryHelper.consumeItem(torchStack, player, 0, 1) || findAndDrainSojournersStaff(player, torch))) {
 					continue;
 				}
 
@@ -152,9 +154,9 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 		return TORCH_BLOCKS.get(registryName);
 	}
 
-	private BlockState getTorchSideAttempt(World world, Block torch, BlockPos pos, Direction side) {
-		BlockPos facingPos = pos.offset(side);
-		return torch.getStateForPlacement(torch.getDefaultState(), side, world.getBlockState(facingPos), world, pos, facingPos, Hand.MAIN_HAND);
+	@Nullable
+	private BlockState getTorchSideAttempt(PlayerEntity player, Block torch, BlockPos pos, Direction side) {
+		return torch.getStateForPlacement(new BlockItemUseContext(player, Hand.MAIN_HAND, ItemStack.EMPTY, new BlockRayTraceResult(Vector3d.copyCenteredHorizontally(pos), side, pos, false)));
 	}
 
 	private boolean placeBlockAt(ItemStack stack, PlayerEntity player, World world, BlockPos pos, BlockState torchBlockState) {

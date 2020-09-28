@@ -92,11 +92,11 @@ public class EmperorChaliceItem extends ToggleableItem {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (player.isShiftKeyDown()) {
+		if (player.isSneaking()) {
 			return super.onItemRightClick(world, player, hand);
 		}
 		boolean isInDrainMode = isEnabled(stack);
-		RayTraceResult result = rayTrace(world, player, isInDrainMode ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
+		BlockRayTraceResult result = rayTrace(world, player, isInDrainMode ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
 
 		//noinspection ConstantConditions
 		if (result == null) {
@@ -105,16 +105,14 @@ public class EmperorChaliceItem extends ToggleableItem {
 			}
 			return new ActionResult<>(ActionResultType.SUCCESS, stack);
 		} else if (result.getType() == RayTraceResult.Type.BLOCK) {
-			BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) result;
-
-			if (!world.isBlockModifiable(player, blockRayTraceResult.getPos()) || !player.canPlayerEdit(blockRayTraceResult.getPos(), blockRayTraceResult.getFace(), stack)) {
+			if (!world.isBlockModifiable(player, result.getPos()) || !player.canPlayerEdit(result.getPos(), result.getFace(), stack)) {
 				return new ActionResult<>(ActionResultType.FAIL, stack);
 			}
 
 			if (!isEnabled(stack)) {
-				BlockPos waterPlacementPos = blockRayTraceResult.getPos().offset(blockRayTraceResult.getFace());
+				BlockPos waterPlacementPos = result.getPos().offset(result.getFace());
 
-				if (!player.canPlayerEdit(waterPlacementPos, blockRayTraceResult.getFace(), stack)) {
+				if (!player.canPlayerEdit(waterPlacementPos, result.getFace(), stack)) {
 					return new ActionResult<>(ActionResultType.FAIL, stack);
 				}
 
@@ -123,8 +121,8 @@ public class EmperorChaliceItem extends ToggleableItem {
 				}
 
 			} else {
-				if ((world.getBlockState(blockRayTraceResult.getPos()).getBlock() == Blocks.WATER) && world.getBlockState(blockRayTraceResult.getPos()).get(FlowingFluidBlock.LEVEL) == 0) {
-					world.setBlockState(blockRayTraceResult.getPos(), Blocks.AIR.getDefaultState());
+				if ((world.getBlockState(result.getPos()).getBlock() == Blocks.WATER) && world.getBlockState(result.getPos()).get(FlowingFluidBlock.LEVEL) == 0) {
+					world.setBlockState(result.getPos(), Blocks.AIR.getDefaultState());
 
 					return new ActionResult<>(ActionResultType.SUCCESS, stack);
 				}
@@ -174,7 +172,7 @@ public class EmperorChaliceItem extends ToggleableItem {
 		if (!world.isAirBlock(pos) && material.isSolid()) {
 			return false;
 		} else {
-			if (world.getDimension().doesWaterVaporize()) {
+			if (world.getDimensionType().isUltrawarm()) {
 				world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(world.rand) * 0.8F);
 
 				for (int var11 = 0; var11 < 8; ++var11) {

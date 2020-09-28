@@ -1,5 +1,6 @@
 package xreliquary.data;
 
+import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
@@ -7,13 +8,13 @@ import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 
 public class ItemTagProvider extends ItemTagsProvider {
-	ItemTagProvider(DataGenerator generator) {
-		super(generator);
+	ItemTagProvider(DataGenerator generator, BlockTagsProvider blockTagsProvider) {
+		super(generator, blockTagsProvider);
 	}
 
 	@Override
 	protected void registerTags() {
-		getBuilder(ItemTags.ARROWS).add(ModItems.TIPPED_ARROW);
+		getOrCreateBuilder(ItemTags.ARROWS).add(ModItems.TIPPED_ARROW);
 	}
 
 	@Override

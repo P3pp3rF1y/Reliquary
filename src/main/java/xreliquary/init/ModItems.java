@@ -6,8 +6,8 @@ import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Food;
 import net.minecraft.item.Item;
@@ -138,6 +138,7 @@ public class ModItems {
 	public static final IceMagusRodItem ICE_MAGUS_ROD = InjectionHelper.nullValue();
 	public static final InfernalChaliceItem INFERNAL_CHALICE = InjectionHelper.nullValue();
 	public static final InfernalClawsItem INFERNAL_CLAWS = InjectionHelper.nullValue();
+	public static final InfernalTearItem INFERNAL_TEAR = InjectionHelper.nullValue();
 	public static final KrakenShellItem KRAKEN_SHELL = InjectionHelper.nullValue();
 	public static final MidasTouchstoneItem MIDAS_TOUCHSTONE = InjectionHelper.nullValue();
 	public static final PhoenixDownItem PHOENIX_DOWN = InjectionHelper.nullValue();
@@ -364,7 +365,7 @@ public class ModItems {
 			DispenserBlock.registerDispenseBehavior(ModItems.TIPPED_ARROW, new ProjectileDispenseBehavior() {
 
 				@Override
-				protected IProjectile getProjectileEntity(World world, IPosition position, ItemStack stack) {
+				protected ProjectileEntity getProjectileEntity(World world, IPosition position, ItemStack stack) {
 					XRTippedArrowEntity entitytippedarrow = new XRTippedArrowEntity(world, position.getX(), position.getY(), position.getZ());
 					entitytippedarrow.setPotionEffect(stack);
 					entitytippedarrow.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
@@ -437,17 +438,17 @@ public class ModItems {
 		}, regName, "ammo_potion");
 
 		registerItemsJEIDescription(item, () -> {
-					NonNullList<ItemStack> subItems = NonNullList.create();
-					NonNullList<ItemStack> nonPotionItems = NonNullList.create();
-					item.fillItemGroup(Reliquary.ITEM_GROUP, subItems);
-					for (ItemStack subItem : subItems) {
-						if (XRPotionHelper.getPotionEffectsFromStack(subItem).isEmpty()) {
-							nonPotionItems.add(subItem);
-						}
-					}
+			NonNullList<ItemStack> subItems = NonNullList.create();
+			NonNullList<ItemStack> nonPotionItems = NonNullList.create();
+			item.fillItemGroup(Reliquary.ITEM_GROUP, subItems);
+			for (ItemStack subItem : subItems) {
+				if (XRPotionHelper.getPotionEffectsFromStack(subItem).isEmpty()) {
+					nonPotionItems.add(subItem);
+				}
+			}
 
-					return nonPotionItems;
-				});
+			return nonPotionItems;
+		});
 	}
 
 	@SubscribeEvent
@@ -491,7 +492,7 @@ public class ModItems {
 			return (new ProjectileDispenseBehavior() {
 
 				@Override
-				protected IProjectile getProjectileEntity(World world, IPosition position, ItemStack stack) {
+				protected ProjectileEntity getProjectileEntity(World world, IPosition position, ItemStack stack) {
 					return getProjectileEntityFactory().createProjectileEntity(world, position, stack);
 				}
 
@@ -509,7 +510,7 @@ public class ModItems {
 	}
 
 	private interface ProjectileEntityFactory {
-		IProjectile createProjectileEntity(World world, IPosition position, ItemStack stack);
+		ProjectileEntity createProjectileEntity(World world, IPosition position, ItemStack stack);
 	}
 
 }

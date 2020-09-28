@@ -5,7 +5,7 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.world.World;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 public class CauldronBubbleParticle extends SpriteTexturedParticle {
 	private final IAnimatedSprite spriteSet;
 
-	private CauldronBubbleParticle(World world, ColorParticleData particleData, double x, double y, double z, IAnimatedSprite spriteSet) {
+	private CauldronBubbleParticle(ClientWorld world, ColorParticleData particleData, double x, double y, double z, IAnimatedSprite spriteSet) {
 		super(world, x, y, z, 0D, 0D, 0D);
 		this.spriteSet = spriteSet;
 		setSize(0.02F, 0.02F);
@@ -65,7 +65,7 @@ public class CauldronBubbleParticle extends SpriteTexturedParticle {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static class Factory implements IParticleFactory<ColorParticleData> {
+	public static class Factory implements IParticleFactory<BubbleColorParticleData> {
 		private final IAnimatedSprite spriteSet;
 
 		public Factory(IAnimatedSprite spriteSet) {
@@ -74,7 +74,7 @@ public class CauldronBubbleParticle extends SpriteTexturedParticle {
 
 		@Nullable
 		@Override
-		public Particle makeParticle(ColorParticleData particleData, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		public Particle makeParticle(BubbleColorParticleData particleData, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			CauldronBubbleParticle particle = new CauldronBubbleParticle(world, particleData, x, y, z, spriteSet);
 			particle.setSprite(spriteSet.get(particle.age, particle.maxAge));
 			return particle;

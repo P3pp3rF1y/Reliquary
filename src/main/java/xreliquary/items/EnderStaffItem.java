@@ -16,10 +16,12 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.Dimension;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -42,7 +44,7 @@ import java.util.List;
 
 public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem {
 
-	private static final String DIMENSION_ID_TAG = "dimensionID";
+	private static final String DIMENSION_TAG = "dimensionID";
 	private static final String NODE_X_TAG = "nodeX";
 	private static final String NODE_Y_TAG = "nodeY";
 	private static final String NODE_Z_TAG = "nodeZ";
@@ -95,7 +97,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 
 	@Override
 	public ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entity) {
-		if (!entity.isShiftKeyDown()) {
+		if (!entity.isSneaking()) {
 			return ActionResultType.CONSUME;
 		}
 		if (entity.world.isRemote) {
@@ -205,7 +207,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (!player.isShiftKeyDown()) {
+		if (!player.isSneaking()) {
 			if (getMode(stack).equals("cast") || getMode(stack).equals(LONG_CAST_TAG)) {
 				if (player.isSwingInProgress || (getPearlCount(stack) < getEnderStaffPearlCost() && !player.isCreative())) {
 					return new ActionResult<>(ActionResultType.FAIL, stack);
@@ -214,7 +216,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ENDER_PEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 				if (!player.world.isRemote) {
 					EnderStaffProjectileEntity enderStaffProjectile = new EnderStaffProjectileEntity(player.world, player, !getMode(stack).equals(LONG_CAST_TAG));
-					enderStaffProjectile.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
+					enderStaffProjectile.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
 					player.world.addEntity(enderStaffProjectile);
 					if (!player.isCreative()) {
 						setPearlCount(stack, getPearlCount(stack) - getEnderStaffPearlCost());
@@ -232,9 +234,9 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 			return;
 		}
 
-		if (stack.getTag() != null && stack.getTag().getInt(DIMENSION_ID_TAG) != getDimension(world)) {
+		if (stack.getTag() != null && !stack.getTag().getString(DIMENSION_TAG).equals(getDimension(world))) {
 			if (!world.isRemote) {
-				player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Out of range!"));
+				player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Out of range!"), Util.DUMMY_UUID);
 			}
 		} else if (stack.getTag() != null && world.getBlockState(new BlockPos(stack.getTag().getInt(NODE_X_TAG + getDimension(world)), stack.getTag().getInt(NODE_Y_TAG + getDimension(world)), stack.getTag().getInt(NODE_Z_TAG + getDimension(world)))).getBlock() == ModBlocks.WRAITH_NODE) {
 			if (canTeleport(world, stack.getTag().getInt(NODE_X_TAG + getDimension(world)), stack.getTag().getInt(NODE_Y_TAG + getDimension(world)), stack.getTag().getInt(NODE_Z_TAG + getDimension(world)))) {
@@ -243,14 +245,14 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 					setPearlCount(stack, getPearlCount(stack) - getEnderStaffNodeWarpCost());
 				}
 			}
-		} else if (stack.getTag() != null && stack.getTag().contains(DIMENSION_ID_TAG)) {
-			stack.getTag().remove(DIMENSION_ID_TAG);
+		} else if (stack.getTag() != null && stack.getTag().contains(DIMENSION_TAG)) {
+			stack.getTag().remove(DIMENSION_TAG);
 			stack.getTag().remove(NODE_X_TAG);
 			stack.getTag().remove(NODE_Y_TAG);
 			stack.getTag().remove(NODE_Z_TAG);
 			stack.getTag().remove("cooldown");
 			if (!world.isRemote) {
-				player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Node dosen't exist!"));
+				player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Node dosen't exist!"), Util.DUMMY_UUID);
 			} else {
 				player.playSound(SoundEvents.ENTITY_ENDERMAN_DEATH, 1.0f, 1.0f);
 			}
@@ -276,7 +278,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		String charge = Integer.toString(getPearlCount(staff, true));
 		String phrase = "Currently bound to ";
 		String position = "";
-		if (staff.getTag() != null && staff.getTag().getInt(DIMENSION_ID_TAG) != getDimension(world)) {
+		if (staff.getTag() != null && !staff.getTag().getString(DIMENSION_TAG).equals(getDimension(world))) {
 			phrase = "Out of range!";
 		} else if (staff.getTag() != null && staff.getTag().contains(NODE_X_TAG + getDimension(world)) && staff.getTag().contains(NODE_Y_TAG + getDimension(world)) && staff.getTag().contains(NODE_Z_TAG + getDimension(world))) {
 			position = "X: " + staff.getTag().getInt(NODE_X_TAG + getDimension(world)) + " Y: " + staff.getTag().getInt(NODE_Y_TAG + getDimension(world)) + " Z: " + staff.getTag().getInt(NODE_Z_TAG + getDimension(world));
@@ -302,7 +304,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		BlockPos pos = itemUseContext.getPos();
 
 		// if right clicking on a wraith node, bind the eye to that wraith node.
-		if ((stack.getTag() == null || !(stack.getTag().contains(DIMENSION_ID_TAG))) && world.getBlockState(pos).getBlock() == ModBlocks.WRAITH_NODE) {
+		if ((stack.getTag() == null || !(stack.getTag().contains(DIMENSION_TAG))) && world.getBlockState(pos).getBlock() == ModBlocks.WRAITH_NODE) {
 			setWraithNode(stack, pos, getDimension(world));
 
 			PlayerEntity player = itemUseContext.getPlayer();
@@ -318,15 +320,15 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		}
 	}
 
-	private int getDimension(@Nullable World world) {
-		return world != null ? world.getDimension().getType().getId() : 0;
+	private String getDimension(@Nullable World world) {
+		return world != null ? world.getDimensionKey().getRegistryName().toString() : Dimension.OVERWORLD.getRegistryName().toString();
 	}
 
-	private void setWraithNode(ItemStack eye, BlockPos pos, int dimensionID) {
-		NBTHelper.putInt(NODE_X_TAG + dimensionID, eye, pos.getX());
-		NBTHelper.putInt(NODE_Y_TAG + dimensionID, eye, pos.getY());
-		NBTHelper.putInt(NODE_Z_TAG + dimensionID, eye, pos.getZ());
-		NBTHelper.putInt(DIMENSION_ID_TAG, eye, dimensionID);
+	private void setWraithNode(ItemStack eye, BlockPos pos, String dimension) {
+		NBTHelper.putInt(NODE_X_TAG + dimension, eye, pos.getX());
+		NBTHelper.putInt(NODE_Y_TAG + dimension, eye, pos.getY());
+		NBTHelper.putInt(NODE_Z_TAG + dimension, eye, pos.getZ());
+		NBTHelper.putString(DIMENSION_TAG, eye, dimension);
 	}
 
 	@Nullable

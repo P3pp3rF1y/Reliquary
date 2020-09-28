@@ -89,22 +89,21 @@ public class InfernalChaliceItem extends ToggleableItem {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (player.isShiftKeyDown()) {
+		if (player.isSneaking()) {
 			return super.onItemRightClick(world, player, hand);
 		}
 
-		RayTraceResult result = rayTrace(world, player, isEnabled(stack) ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
+		BlockRayTraceResult result = rayTrace(world, player, isEnabled(stack) ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
 
 		if (result.getType() != RayTraceResult.Type.BLOCK) {
 			return new ActionResult<>(ActionResultType.PASS, stack);
 		} else {
-			BlockRayTraceResult blockResult = (BlockRayTraceResult) result;
-			BlockPos pos = blockResult.getPos();
+			BlockPos pos = result.getPos();
 			if (!world.isBlockModifiable(player, pos)) {
 				return new ActionResult<>(ActionResultType.PASS, stack);
 			}
 
-			Direction face = blockResult.getFace();
+			Direction face = result.getFace();
 			if (!player.canPlayerEdit(pos, face, stack)) {
 				return new ActionResult<>(ActionResultType.PASS, stack);
 			}

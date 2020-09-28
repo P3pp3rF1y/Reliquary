@@ -57,6 +57,11 @@ public class WitchHatItem extends ArmorItem {
 		public float getToughness() {
 			return 0;
 		}
+
+		@Override
+		public float getKnockbackResistance() {
+			return 0;
+		}
 	};
 
 	public WitchHatItem() {

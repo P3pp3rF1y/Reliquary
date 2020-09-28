@@ -1,8 +1,6 @@
 package xreliquary.entities;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
-import net.minecraft.entity.ai.attributes.AttributeMap;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
@@ -14,7 +12,6 @@ import java.util.UUID;
 
 @SuppressWarnings({"squid:S2160", "squid:MaximumInheritanceDepth"})
 public class EntityXRFakePlayer extends FakePlayer {
-	private AbstractAttributeMap fakePlayerAttributeMap;
 	private final NonNullList<ItemStack> fakePlayerHandInventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	private static final String FAKE_PLAYER_USERNAME = "reliquary_pedestal_fake_player";
 
@@ -25,14 +22,6 @@ public class EntityXRFakePlayer extends FakePlayer {
 	private EntityXRFakePlayer(ServerWorld world, GameProfile name) {
 		super(world, name);
 		connection = new FakeNetHandlerPlayServer(this);
-	}
-
-	@Override
-	public AbstractAttributeMap getAttributes() {
-		if (fakePlayerAttributeMap == null) {
-			fakePlayerAttributeMap = new AttributeMap();
-		}
-		return fakePlayerAttributeMap;
 	}
 
 	@Override
@@ -49,11 +38,11 @@ public class EntityXRFakePlayer extends FakePlayer {
 
 			if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
 				if (!itemstack.isEmpty()) {
-					getAttributes().removeAttributeModifiers(itemstack.getAttributeModifiers(entityEquipmentSlot));
+					getAttributeManager().removeModifiers(itemstack.getAttributeModifiers(entityEquipmentSlot));
 				}
 
 				if (!itemstack1.isEmpty()) {
-					getAttributes().applyAttributeModifiers(itemstack1.getAttributeModifiers(entityEquipmentSlot));
+					getAttributeManager().reapplyModifiers(itemstack1.getAttributeModifiers(entityEquipmentSlot));
 				}
 
 				setItemStackToSlot(entityEquipmentSlot, itemstack1.isEmpty() ? ItemStack.EMPTY : itemstack1);

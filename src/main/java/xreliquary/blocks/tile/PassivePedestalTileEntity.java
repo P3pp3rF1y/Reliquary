@@ -26,7 +26,7 @@ public class PassivePedestalTileEntity extends TileEntityBase implements IInvent
 	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.PASSIVE_PEDESTAL)
 	public static final TileEntityType<PassivePedestalTileEntity> TYPE = InjectionHelper.nullValue();
 	protected ItemStack item;
-	private IItemHandler inventoryWrapper = new InvWrapper(this);
+	private final IItemHandler inventoryWrapper = new InvWrapper(this);
 
 	public ItemStack getItem() {
 		return item;
@@ -108,9 +108,9 @@ public class PassivePedestalTileEntity extends TileEntityBase implements IInvent
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
-		item = compound.contains("item") ? ItemStack.read(compound.getCompound("item")) : ItemStack.EMPTY;
+	public void read(BlockState state, CompoundNBT nbt) {
+		super.read(state, nbt);
+		item = nbt.contains("item") ? ItemStack.read(nbt.getCompound("item")) : ItemStack.EMPTY;
 	}
 
 	@Override

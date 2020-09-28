@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class FilteredItemHandlerProvider implements ICapabilitySerializable<CompoundNBT> {
-	private FilteredItemStackHandler itemHandler;
+	private final FilteredItemStackHandler itemHandler;
 
 	public FilteredItemHandlerProvider(List<FilteredItemStackHandler.RemovableStack> filteredBigItemStacks) {
 		itemHandler = new FilteredItemStackHandler(filteredBigItemStacks);

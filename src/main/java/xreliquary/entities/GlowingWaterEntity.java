@@ -1,6 +1,7 @@
 package xreliquary.entities;
 
 import net.minecraft.entity.CreatureAttribute;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.LivingEntity;
@@ -15,7 +16,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -70,14 +70,15 @@ public class GlowingWaterEntity extends ThrowableEntity implements IRendersAsIte
 			List<MobEntity> eList = world.getEntitiesWithinAABB(MobEntity.class, bb);
 			eList.stream().filter(this::isUndead).forEach(e -> {
 				float amount = 18f + rand.nextInt(17);
-				if (getThrower() instanceof PlayerEntity) {
-					e.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) getThrower()), amount);
+				Entity thrower = func_234616_v_();
+				if (thrower instanceof PlayerEntity) {
+					e.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) thrower), amount);
 				} else {
 					e.attackEntityFrom(DamageSource.MAGIC, amount);
 				}
 			});
 
-			world.playEvent(2002, new BlockPos(this), 0);
+			world.playEvent(2002, getPosition(), 0);
 			remove();
 		}
 	}
@@ -93,7 +94,7 @@ public class GlowingWaterEntity extends ThrowableEntity implements IRendersAsIte
 		}
 
 		world.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), getPosX(), getPosY(), getPosZ()), new PacketDistributor.TargetPoint(getPosX(), getPosY(), getPosZ(), 32.0D, world.getDimension().getType()));
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), getPosX(), getPosY(), getPosZ()), new PacketDistributor.TargetPoint(getPosX(), getPosY(), getPosZ(), 32.0D, world.getDimensionKey()));
 
 	}
 

@@ -1,9 +1,11 @@
 package xreliquary.client.gui.components;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 public class Box extends Component {
-	private Layout layout;
-	private Alignment alignment;
-	private Component[] components;
+	private final Layout layout;
+	private final Alignment alignment;
+	private final Component[] components;
 	private int height;
 	private int width;
 
@@ -63,7 +65,7 @@ public class Box extends Component {
 	}
 
 	@Override
-	public void renderInternal(int x, int y) {
+	public void renderInternal(MatrixStack matrixStack, int x, int y) {
 		updateDimensions();
 
 		for (Component component : components) {
@@ -86,7 +88,7 @@ public class Box extends Component {
 					componentY += layout == Layout.HORIZONTAL && component.getHeight() < height ? height - component.getHeight() : 0;
 			}
 
-			component.render(componentX, componentY);
+			component.render(matrixStack, componentX, componentY);
 
 			if (layout == Layout.HORIZONTAL) {
 				x += component.getWidth();

@@ -1,5 +1,6 @@
 package xreliquary.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
@@ -23,7 +24,7 @@ public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
 	private static final int WIDTH = 175;
 	private static final int HEIGHT = 221;
 
-	private ItemStack belt;
+	private final ItemStack belt;
 
 	public MobCharmBeltGui(ContainerMobCharmBelt container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
@@ -31,25 +32,25 @@ public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		int i = guiLeft;
 		int j = guiTop;
 
 		bindTexture(BELT_TEX);
-		GuiUtils.drawTexturedModalRect(i, j - 27, 0, 0, WIDTH, HEIGHT, 0);
+		GuiUtils.drawTexturedModalRect(matrixStack, i, j - 27, 0, 0, WIDTH, HEIGHT, 0);
 
 		int centerX = i + 88;
 		int centerY = j + 40;
 
-		updateMobCharmSlots(centerX, centerY);
+		updateMobCharmSlots(matrixStack, centerX, centerY);
 
 		bindTexture(BELT_ITEM_TEX);
 		GlStateManager.enableBlend();
-		blit(centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
+		blit(matrixStack, centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
 		GlStateManager.disableBlend();
 	}
 
-	private void updateMobCharmSlots(int centerX, int centerY) {
+	private void updateMobCharmSlots(MatrixStack matrixStack, int centerX, int centerY) {
 		int slots = ModItems.MOB_CHARM_BELT.getCharmCount(belt);
 		slots = Math.min(slots, Reference.MOB_CHARM.COUNT_TYPES);
 
@@ -70,7 +71,7 @@ public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
 			RenderSystem.enableAlphaTest();
 			RenderSystem.enableBlend();
 
-			blit(x, y, 176, 0, 16, 16);
+			blit(matrixStack, x, y, 176, 0, 16, 16);
 
 			RenderSystem.disableAlphaTest();
 			RenderSystem.disableBlend();
@@ -87,6 +88,7 @@ public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
 	}
 
 	private static final Field SLOT_X_POS = ObfuscationReflectionHelper.findField(Slot.class, "field_75223_e");
+	@SuppressWarnings("java:S3011") //the use of reflection to bypass field invisiblity is intentional and necessary here
 	private static void setSlotXPos(Slot slot, int xPos) {
 		try {
 			SLOT_X_POS.set(slot, xPos);
@@ -97,6 +99,7 @@ public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
 	}
 
 	private static final Field SLOT_Y_POS = ObfuscationReflectionHelper.findField(Slot.class, "field_75221_f");
+	@SuppressWarnings("java:S3011") //the use of reflection to bypass field invisiblity is intentional and necessary here
 	private static void setSlotYPos(Slot slot, int yPos) {
 		try {
 			SLOT_Y_POS.set(slot, yPos);
@@ -106,8 +109,8 @@ public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
 		}
 	}
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
-		super.render(mouseX, mouseY, partialTicks);
-		renderHoveredToolTip(mouseX, mouseY);
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		renderHoveredTooltip(matrixStack, mouseX, mouseY);
 	}
 }

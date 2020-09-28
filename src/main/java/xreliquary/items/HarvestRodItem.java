@@ -129,7 +129,7 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
 		return new ICapabilitySerializable<CompoundNBT>() {
-			HarvestRodItemStackHandler itemHandler = new HarvestRodItemStackHandler();
+			final HarvestRodItemStackHandler itemHandler = new HarvestRodItemStackHandler();
 
 			@Override
 			public CompoundNBT serializeNBT() {
@@ -335,7 +335,7 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (player.isShiftKeyDown()) {
+		if (player.isSneaking()) {
 			return super.onItemRightClick(world, player, hand);
 		}
 
@@ -363,11 +363,11 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 
 		PlayerEntity player = (PlayerEntity) entity;
 
-		RayTraceResult result = rayTrace(player.world, player, RayTraceContext.FluidMode.ANY);
+		BlockRayTraceResult result = rayTrace(player.world, player, RayTraceContext.FluidMode.ANY);
 
 		if (result.getType() == RayTraceResult.Type.BLOCK) {
 			harvestRod.getCapability(ModCapabilities.HARVEST_ROD_CACHE, null).ifPresent(IHarvestRodCache::reset);
-			BlockPos pos = ((BlockRayTraceResult) result).getPos();
+			BlockPos pos = result.getPos();
 
 			String mode = getMode(harvestRod);
 			switch (mode) {
@@ -479,12 +479,11 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 		PlayerEntity player = (PlayerEntity) entity;
 
 		if (isCoolDownOver(harvestRod, count)) {
-			RayTraceResult result = rayTrace(player.world, player, RayTraceContext.FluidMode.ANY);
+			BlockRayTraceResult result = rayTrace(player.world, player, RayTraceContext.FluidMode.ANY);
 			if (result.getType() == RayTraceResult.Type.BLOCK) {
-				BlockRayTraceResult blockResult = (BlockRayTraceResult) result;
 				World world = player.world;
 				harvestRod.getCapability(ModCapabilities.HARVEST_ROD_CACHE, null)
-						.ifPresent(cache -> doAction(harvestRod, player, world, cache, blockResult.getPos()));
+						.ifPresent(cache -> doAction(harvestRod, player, world, cache, result.getPos()));
 			}
 		}
 	}
@@ -547,7 +546,7 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 		boolean checkerboard = false;
 		boolean bothOddOrEven = false;
 
-		if (plantable == Items.PUMPKIN_SEEDS || plantable == Items.MELON_SEEDS) {
+		if (plantable == Blocks.PUMPKIN_STEM || plantable == Blocks.MELON_STEM) {
 			checkerboard = true;
 			boolean xEven = pos.getX() % 2 == 0;
 			boolean zEven = pos.getZ() % 2 == 0;
@@ -564,7 +563,7 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 
 	@Override
 	public ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
-		if (!entityLiving.isShiftKeyDown()) {
+		if (!entityLiving.isSneaking()) {
 			return ActionResultType.CONSUME;
 		}
 		if (entityLiving.world.isRemote) {

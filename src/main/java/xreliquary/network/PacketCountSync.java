@@ -14,10 +14,10 @@ import xreliquary.util.NBTHelper;
 import java.util.function.Supplier;
 
 public class PacketCountSync {
-	private Hand hand;
-	private short slot;
-	private ItemStack stack;
-	private int count;
+	private final Hand hand;
+	private final short slot;
+	private final ItemStack stack;
+	private final int count;
 
 	public PacketCountSync(Hand hand, short slot, ItemStack stack, int count) {
 		this.hand = hand;

@@ -18,7 +18,7 @@ import xreliquary.reference.Settings;
 import java.util.List;
 
 public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
-	private int cooldownAfterSwing;
+	private final int cooldownAfterSwing;
 
 	public PedestalMeleeWeaponWrapper() {
 		cooldownAfterSwing = Settings.COMMON.blocks.pedestal.meleeWrapperCooldown.get();

@@ -16,10 +16,10 @@ public class PotionEssence {
 		this.glowstoneCount = glowstoneCount;
 	}
 
-	private List<PotionIngredient> ingredients = new ArrayList<>();
-	private int redstoneCount = 0;
-	private int glowstoneCount = 0;
-	private List<EffectInstance> effects = Lists.newArrayList();
+	private final List<PotionIngredient> ingredients;
+	private int redstoneCount;
+	private int glowstoneCount;
+	private List<EffectInstance> effects;
 
 	public int getRedstoneCount() {
 		return redstoneCount;
@@ -42,7 +42,7 @@ public class PotionEssence {
 	}
 
 	public PotionEssence copy() {
-		return new Builder().setIngredients(ingredients).setEffects(this.effects).build();
+		return new Builder().setIngredients(ingredients).setEffects(effects).build();
 	}
 
 	public List<PotionIngredient> getIngredients() {

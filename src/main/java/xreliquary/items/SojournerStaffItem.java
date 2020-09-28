@@ -22,7 +22,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -73,7 +73,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 
 	@Override
 	public ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
-		if (!entityLiving.isShiftKeyDown()) {
+		if (!entityLiving.isSneaking()) {
 			return ActionResultType.CONSUME;
 		}
 		if (entityLiving.world.isRemote) {
@@ -318,7 +318,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 
 	private boolean removeTorches(PlayerEntity player, ItemStack stack, Block blockToPlace, BlockPos placeBlockAt) {
 		if (!player.isCreative()) {
-			int distance = (int) player.getEyePosition(1).distanceTo(new Vec3d(placeBlockAt));
+			int distance = (int) player.getEyePosition(1).distanceTo(new Vector3d(placeBlockAt.getX(), placeBlockAt.getY(), placeBlockAt.getZ()));
 			int cost = 1 + distance / Settings.COMMON.items.sojournerStaff.tilePerCostMultiplier.get();
 
 			//noinspection ConstantConditions
@@ -329,7 +329,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		if (!player.isShiftKeyDown()) {
+		if (!player.isSneaking()) {
 			RayTraceResult rayTraceResult = longRayTrace(world, player);
 			if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK) {
 				placeTorch(new ItemUseContext(player, hand, (BlockRayTraceResult) rayTraceResult));
@@ -341,7 +341,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 	private RayTraceResult longRayTrace(World worldIn, PlayerEntity player) {
 		float f = player.rotationPitch;
 		float f1 = player.rotationYaw;
-		Vec3d vec3d = player.getEyePosition(1.0F);
+		Vector3d vec3d = player.getEyePosition(1.0F);
 		float f2 = MathHelper.cos(-f1 * ((float)Math.PI / 180F) - (float)Math.PI);
 		float f3 = MathHelper.sin(-f1 * ((float)Math.PI / 180F) - (float)Math.PI);
 		float f4 = -MathHelper.cos(-f * ((float)Math.PI / 180F));
@@ -349,7 +349,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 		float f6 = f3 * f4;
 		float f7 = f2 * f4;
 		double d0 = Settings.COMMON.items.sojournerStaff.maxRange.get();
-		Vec3d vec3d1 = vec3d.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
+		Vector3d vec3d1 = vec3d.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
 		return worldIn.rayTraceBlocks(new RayTraceContext(vec3d, vec3d1, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.ANY, player));
 	}
 }

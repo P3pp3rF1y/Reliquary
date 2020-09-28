@@ -1,5 +1,6 @@
 package xreliquary.blocks.tile;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -38,7 +39,7 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 	private boolean dataChanged;
 	private long finishCoolDown;
 
-	private ItemStackHandler items = new ItemStackHandler(3) {
+	private final ItemStackHandler items = new ItemStackHandler(3) {
 		@Override
 		public int getSlotLimit(int slot) {
 			return 1;
@@ -79,8 +80,8 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 	}
 
 	@Override
-	public void read(CompoundNBT tag) {
-		super.read(tag);
+	public void read(BlockState state, CompoundNBT tag) {
+		super.read(state, tag);
 		items.deserializeNBT(tag.getCompound("items"));
 		pestleUsedCounter = tag.getShort("pestleUsed");
 	}

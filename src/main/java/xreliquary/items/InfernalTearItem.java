@@ -34,7 +34,6 @@ public class InfernalTearItem extends ToggleableItem {
 
 	public InfernalTearItem() {
 		super("infernal_tear", new Properties().maxStackSize(1).setNoRepair());
-		addPropertyOverride(new ResourceLocation("empty"), (stack, world, entity) -> getStackFromTear(stack).isEmpty() ? 1.0F : 0.0F);
 	}
 
 	@Override
@@ -92,7 +91,7 @@ public class InfernalTearItem extends ToggleableItem {
 			LanguageHelper.formatTooltip("tooltip.tear", ImmutableMap.of("item", itemName), tooltip);
 
 			if (isEnabled(stack)) {
-				LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + itemName), tooltip);
+				LanguageHelper.formatTooltip("tooltip.xreliquary.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + itemName), tooltip);
 			}
 			tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".absorb")));
 			tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".infernal_tear.absorb_unset")));
@@ -104,7 +103,7 @@ public class InfernalTearItem extends ToggleableItem {
 		return !getStackFromTear(stack).isEmpty();
 	}
 
-	private ItemStack getStackFromTear(ItemStack tear) {
+	public static ItemStack getStackFromTear(ItemStack tear) {
 		CompoundNBT itemNBT = NBTHelper.getTagCompound("item", tear);
 		if (itemNBT.isEmpty()) {
 			return ItemStack.EMPTY;
@@ -122,7 +121,7 @@ public class InfernalTearItem extends ToggleableItem {
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		ActionResult<ItemStack> actionResult = super.onItemRightClick(world, player, hand);
-		if (player.isShiftKeyDown() && !isEnabled(stack)) {
+		if (player.isSneaking() && !isEnabled(stack)) {
 			return actionResult;
 		}
 
@@ -130,7 +129,7 @@ public class InfernalTearItem extends ToggleableItem {
 
 		//empty the tear if player is not sneaking and the tear is not empty
 		CompoundNBT nbt = itemStack.getTag();
-		if (!player.isShiftKeyDown() && !getStackFromTear(itemStack).isEmpty()) {
+		if (!player.isSneaking() && !getStackFromTear(itemStack).isEmpty()) {
 			NBTHelper.remove(nbt, "item");
 			NBTHelper.remove(nbt, ENABLED_TAG);
 
@@ -143,7 +142,7 @@ public class InfernalTearItem extends ToggleableItem {
 		}
 
 		//if user is sneaking or just enabled the tear, let's fill it
-		if (player.isShiftKeyDown() || !isEnabled(itemStack)) {
+		if (player.isSneaking() || !isEnabled(itemStack)) {
 			ItemStack returnStack = InventoryHelper.getItemHandlerFrom(player).map(handler -> buildTear(itemStack, handler)).orElse(ItemStack.EMPTY);
 			if (!returnStack.isEmpty()) {
 				return new ActionResult<>(ActionResultType.SUCCESS, returnStack);

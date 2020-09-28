@@ -39,7 +39,7 @@ public class FertilePotionItem extends ItemBase {
 		world.playSound(null, player.getPosition(), SoundEvents.ENTITY_SPLASH_POTION_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 
 		FertilePotionEntity fertilePotion = new FertilePotionEntity(world, player);
-		fertilePotion.shoot(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
+		fertilePotion.func_234612_a_(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
 		world.addEntity(fertilePotion);
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);
 	}

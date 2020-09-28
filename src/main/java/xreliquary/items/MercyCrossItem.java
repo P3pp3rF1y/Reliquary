@@ -1,14 +1,17 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -55,15 +58,16 @@ public class MercyCrossItem extends SwordItem {
 	}
 
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
 		if (slot == EquipmentSlotType.MAINHAND) {
-			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, WEAPON_MODIFIER_NAME, 6, AttributeModifier.Operation.ADDITION));
-			multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, WEAPON_MODIFIER_NAME, -2.4000000953674316D, AttributeModifier.Operation.ADDITION));
+			return ImmutableMultimap.<Attribute, AttributeModifier>builder()
+					.putAll(super.getAttributeModifiers(slot, stack))
+					.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, WEAPON_MODIFIER_NAME, 6, AttributeModifier.Operation.ADDITION))
+					.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, WEAPON_MODIFIER_NAME, -2.4000000953674316D, AttributeModifier.Operation.ADDITION))
+					.build();
+		} else {
+			return super.getAttributeModifiers(slot, stack);
 		}
-
-		return multimap;
 	}
 
 	private void handleDamage(AttackEntityEvent event) {
@@ -82,13 +86,13 @@ public class MercyCrossItem extends SwordItem {
 
 	private void updateAttackDamageModifier(LivingEntity target, PlayerEntity player) {
 		double dmg = isUndead(target) ? 12 : 6;
-		IAttributeInstance attackAttribute = player.getAttributes().getAttributeInstanceByName(SharedMonsterAttributes.ATTACK_DAMAGE.getName());
+		ModifiableAttributeInstance attackAttribute = player.getAttribute(Attributes.ATTACK_DAMAGE);
 
 		//noinspection ConstantConditions
 		if (attackAttribute != null &&
 				(attackAttribute.getModifier(ATTACK_DAMAGE_MODIFIER) == null || attackAttribute.getModifier(ATTACK_DAMAGE_MODIFIER).getAmount() != dmg)) {
 			attackAttribute.removeModifier(ATTACK_DAMAGE_MODIFIER);
-			attackAttribute.applyModifier(new AttributeModifier(ATTACK_DAMAGE_MODIFIER, WEAPON_MODIFIER_NAME, dmg, AttributeModifier.Operation.ADDITION));
+			attackAttribute.applyNonPersistentModifier(new AttributeModifier(ATTACK_DAMAGE_MODIFIER, WEAPON_MODIFIER_NAME, dmg, AttributeModifier.Operation.ADDITION));
 		}
 	}
 

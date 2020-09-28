@@ -5,7 +5,7 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.world.World;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 public class CauldronSteamParticle extends SpriteTexturedParticle {
 	private final IAnimatedSprite spriteSet;
 
-	private CauldronSteamParticle(World world, ColorParticleData particleData, double x, double y, double z, double ySpeed, IAnimatedSprite spriteSet) {
+	private CauldronSteamParticle(ClientWorld world, ColorParticleData particleData, double x, double y, double z, double ySpeed, IAnimatedSprite spriteSet) {
 		super(world, x, y, z, 0, 0, 0);
 		particleRed = particleData.getRed();
 		particleGreen = particleData.getGreen();
@@ -60,7 +60,7 @@ public class CauldronSteamParticle extends SpriteTexturedParticle {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static class Factory implements IParticleFactory<ColorParticleData> {
+	public static class Factory implements IParticleFactory<SteamColorParticleData> {
 		private final IAnimatedSprite spriteSet;
 
 		public Factory(IAnimatedSprite spriteSet) {
@@ -69,7 +69,7 @@ public class CauldronSteamParticle extends SpriteTexturedParticle {
 
 		@Nullable
 		@Override
-		public Particle makeParticle(ColorParticleData particleData, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		public Particle makeParticle(SteamColorParticleData particleData, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			CauldronSteamParticle particle = new CauldronSteamParticle(world, particleData, x, y, z, ySpeed, spriteSet);
 			particle.setSprite(spriteSet.get(particle.age, particle.maxAge));
 			return particle;

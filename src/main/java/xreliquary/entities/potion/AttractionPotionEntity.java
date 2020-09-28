@@ -1,5 +1,6 @@
 package xreliquary.entities.potion;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -43,8 +44,9 @@ public class AttractionPotionEntity extends ThrownPotionEntity {
 		if (e.getGrowingAge() != 0) {
 			return;
 		}
-		if (getThrower() instanceof PlayerEntity) {
-			e.setInLove((PlayerEntity) getThrower());
+		Entity thrower = func_234616_v_();
+		if (thrower instanceof PlayerEntity) {
+			e.setInLove((PlayerEntity) thrower);
 		}
 
 		for (int var3 = 0; var3 < 7; ++var3) {

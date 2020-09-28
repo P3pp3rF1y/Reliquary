@@ -12,10 +12,10 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 public class PacketFXThrownPotionImpact {
-	private int color;
-	private double posX;
-	private double posY;
-	private double posZ;
+	private final int color;
+	private final double posX;
+	private final double posY;
+	private final double posZ;
 
 	public PacketFXThrownPotionImpact(int color, double x, double y, double z) {
 		this.color = color;

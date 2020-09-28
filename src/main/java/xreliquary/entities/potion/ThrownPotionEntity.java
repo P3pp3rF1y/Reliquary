@@ -95,7 +95,7 @@ public abstract class ThrownPotionEntity extends ThrowableEntity implements IRen
 
 		world.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
 
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), getPosX(), getPosY(), getPosZ()), new PacketDistributor.TargetPoint(getPosX(), getPosY(), getPosZ(), 32D, world.getDimension().getType()));
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), getPosX(), getPosY(), getPosZ()), new PacketDistributor.TargetPoint(getPosX(), getPosY(), getPosZ(), 32D, world.getDimensionKey()));
 	}
 
 	// this gets called inside the on-impact method on EVERY living entity

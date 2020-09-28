@@ -16,14 +16,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 class SortedNbtSubtypeInterpreter implements ISubtypeInterpreter {
-	private Set<String> keysToConsider;
+	private final Set<String> keysToConsider;
 	SortedNbtSubtypeInterpreter(String... keysToConsider) {
 		this.keysToConsider = new HashSet<>(Arrays.asList(keysToConsider));
 	}
 	@Override
 	public String apply(ItemStack itemStack) {
 		CompoundNBT nbtTagCompound = itemStack.getTag();
-		return nbtTagCompound != null && !nbtTagCompound.isEmpty() ? getSortedCompoundString(nbtTagCompound, k -> keysToConsider.contains(k)) : "";
+		return nbtTagCompound != null && !nbtTagCompound.isEmpty() ? getSortedCompoundString(nbtTagCompound, keysToConsider::contains) : "";
 	}
 
 	private static final Pattern SIMPLE_VALUE = Pattern.compile("[A-Za-z0-9._+-]+");

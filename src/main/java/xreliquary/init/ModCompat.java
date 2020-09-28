@@ -20,14 +20,14 @@ import java.util.function.Supplier;
 public class ModCompat {
 	private ModCompat() {}
 
-	private static Map<String, Supplier<Callable<ICompat>>> compatFactories = new HashMap<>();
+	private static final Map<String, Supplier<Callable<ICompat>>> compatFactories = new HashMap<>();
 	static {
 		compatFactories.put(Compatibility.MOD_ID.WAILA, () -> WailaCompat::new);
 		compatFactories.put(Compatibility.MOD_ID.HWYLA, () -> WailaCompat::new);
 		compatFactories.put(Compatibility.MOD_ID.CURIOS, () -> CuriosCompat::new);
 	}
 
-	private static Set<ICompat> loadedCompats = new HashSet<>();
+	private static final Set<ICompat> loadedCompats = new HashSet<>();
 
 	public static void initCompats() {
 		for(Map.Entry<String, Supplier<Callable<ICompat>>> entry : compatFactories.entrySet()) {

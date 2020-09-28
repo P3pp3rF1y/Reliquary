@@ -4,26 +4,18 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
 
 import java.util.Locale;
 
-public class ColorParticleData implements IParticleData {
-	private ParticleType<ColorParticleData> particleType;
+public abstract class ColorParticleData implements IParticleData {
 	private final float red;
 	private final float green;
 	private final float blue;
 
-	public ColorParticleData(ParticleType<ColorParticleData> particleType, float red, float green, float blue) {
-		this.particleType = particleType;
+	public ColorParticleData(float red, float green, float blue) {
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
-	}
-
-	@Override
-	public ParticleType<?> getType() {
-		return particleType;
 	}
 
 	@Override
@@ -38,9 +30,15 @@ public class ColorParticleData implements IParticleData {
 		return String.format(Locale.ROOT, "%s %.2f %.2f %.2f", getType().getRegistryName(), red, green, blue);
 	}
 
-	public static final IDeserializer<ColorParticleData> DESERIALIZER = new IDeserializer<ColorParticleData>() {
-		@Override
-		public ColorParticleData deserialize(ParticleType<ColorParticleData> particleType, StringReader stringReader) throws CommandSyntaxException {
+	public interface IColorParticleDataInitializer<T extends ColorParticleData> {
+		T initialize(float red, float green, float blue);
+	}
+
+	public static class DeserializationHelper {
+		private DeserializationHelper() {}
+
+		public static <T extends ColorParticleData> T deserialize(IColorParticleDataInitializer<T> initializer, StringReader stringReader)
+				throws CommandSyntaxException {
 			stringReader.expect(' ');
 			float r = stringReader.readFloat();
 			stringReader.expect(' ');
@@ -48,14 +46,13 @@ public class ColorParticleData implements IParticleData {
 			stringReader.expect(' ');
 			float b = stringReader.readFloat();
 			stringReader.expect(' ');
-			return new ColorParticleData(particleType, r, g, b);
+			return initializer.initialize(r, g, b);
 		}
 
-		@Override
-		public ColorParticleData read(ParticleType<ColorParticleData> particleType, PacketBuffer packetBuffer) {
-			return new ColorParticleData(particleType, packetBuffer.readFloat(), packetBuffer.readFloat(), packetBuffer.readFloat());
+		public static <T extends ColorParticleData> T read(IColorParticleDataInitializer<T> initializer, PacketBuffer packetBuffer) {
+			return initializer.initialize(packetBuffer.readFloat(), packetBuffer.readFloat(), packetBuffer.readFloat());
 		}
-	};
+	}
 
 	public float getRed() {
 		return red;

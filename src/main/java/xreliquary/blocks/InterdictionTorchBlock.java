@@ -5,13 +5,13 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.TorchBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,7 +28,7 @@ public class InterdictionTorchBlock extends TorchBlock {
 	protected static final int TICK_RATE = 1;
 
 	InterdictionTorchBlock(String registryName) {
-		super(Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0).lightValue(1).tickRandomly().sound(SoundType.WOOD).doesNotBlockMovement());
+		super(Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0).setLightLevel(value -> 15).tickRandomly().sound(SoundType.WOOD).doesNotBlockMovement(), ParticleTypes.FLAME);
 		setRegistryName(Reference.MOD_ID, registryName);
 	}
 
@@ -51,7 +51,7 @@ public class InterdictionTorchBlock extends TorchBlock {
 		}
 		int radius = Settings.COMMON.blocks.interdictionTorch.pushRadius.get();
 
-		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos).grow(radius), e -> (e instanceof MobEntity || e instanceof IProjectile));
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos).grow(radius), e -> (e instanceof MobEntity || e instanceof ProjectileEntity));
 		for (Entity entity : entities) {
 			if (entity instanceof PlayerEntity) {
 				continue;
@@ -80,7 +80,7 @@ public class InterdictionTorchBlock extends TorchBlock {
 				// note that we do not add 0.5 to the y coord, if we wanted to be
 				// SUPER accurate, we would be using
 				// the entity height offset to find its "center of mass"
-				Vec3d angleOfAttack = entity.getPositionVec().add(-(pos.getX() + 0.5D), -pos.getY(), -(pos.getZ() + 0.5D));
+				Vector3d angleOfAttack = entity.getPositionVec().add(-(pos.getX() + 0.5D), -pos.getY(), -(pos.getZ() + 0.5D));
 
 				// we use the resultant vector to determine the force to apply.
 				double xForce = angleOfAttack.x * knockbackMultiplier * reductionCoefficient;
@@ -102,7 +102,7 @@ public class InterdictionTorchBlock extends TorchBlock {
 	}
 
 	private boolean isBlacklistedProjectile(Entity entity, String entityName) {
-		return entity instanceof IProjectile && Settings.COMMON.blocks.interdictionTorch.pushableProjectilesBlacklist.get().contains(entityName);
+		return entity instanceof ProjectileEntity && Settings.COMMON.blocks.interdictionTorch.pushableProjectilesBlacklist.get().contains(entityName);
 	}
 
 	private boolean isBlacklistedLivingEntity(Entity entity, String entityName) {

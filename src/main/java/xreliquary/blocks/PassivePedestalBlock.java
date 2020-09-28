@@ -41,7 +41,7 @@ public class PassivePedestalBlock extends BaseBlock {
 	public static final Set<Block> ALL_PEDESTAL_BLOCKS = new HashSet<>();
 
 	public PassivePedestalBlock(DyeColor dyeColor) {
-		this("pedestals/passive/" + dyeColor.getName() + "_" + Names.Blocks.PASSIVE_PEDESTAL);
+		this("pedestals/passive/" + dyeColor.getTranslationKey() + "_" + Names.Blocks.PASSIVE_PEDESTAL);
 		ALL_PEDESTAL_BLOCKS.add(this);
 	}
 

@@ -7,11 +7,11 @@ import net.minecraft.item.ItemStack;
 import xreliquary.init.ModItems;
 
 class SlotMobCharm extends Slot {
-	private static IInventory emptyInventory = new Inventory();
-	private ItemStack belt;
+	private static final IInventory emptyInventory = new Inventory();
+	private final ItemStack belt;
 
-	SlotMobCharm(ItemStack belt, int index, int xPosition, int yPosition) {
-		super(emptyInventory, index, xPosition, yPosition);
+	SlotMobCharm(ItemStack belt, int index) {
+		super(emptyInventory, index, -999, 0);
 
 		this.belt = belt;
 	}

@@ -3,8 +3,8 @@ package xreliquary.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix3f;
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.vector.Matrix3f;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class ShotRenderer<T extends ShotEntityBase> extends EntityRenderer<T> {
-	private Map<EntityType<?>, RenderType> entityCutOuts = new HashMap<>();
+	private final Map<EntityType<?>, RenderType> entityCutOuts = new HashMap<>();
 
 	public ShotRenderer(EntityRendererManager renderManager) {
 		super(renderManager);

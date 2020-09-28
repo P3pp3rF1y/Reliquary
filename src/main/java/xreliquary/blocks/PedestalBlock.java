@@ -15,7 +15,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,7 +36,7 @@ public class PedestalBlock extends PassivePedestalBlock {
 	public static final Set<Block> ALL_PEDESTAL_BLOCKS = new HashSet<>();
 
 	public PedestalBlock(DyeColor dyeColor) {
-		super("pedestals/" + dyeColor.getName() + "_" + Names.Blocks.PEDESTAL);
+		super("pedestals/" + dyeColor.getTranslationKey() + "_" + Names.Blocks.PEDESTAL);
 		setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ENABLED, false));
 		ALL_PEDESTAL_BLOCKS.add(this);
 	}
@@ -48,13 +48,13 @@ public class PedestalBlock extends PassivePedestalBlock {
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+	public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+		super.onBlockPlacedBy(world, pos, state, placer, stack);
 
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(worldIn.getDimension().getType().getId(), pos, 160);
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(world.getDimensionKey().getRegistryName(), pos, 160);
 
 		for (BlockPos pedestalPosition : pedestalPositions) {
-			WorldHelper.getTile(worldIn, pedestalPosition, PedestalTileEntity.class).ifPresent(PedestalTileEntity::updateRedstone);
+			WorldHelper.getTile(world, pedestalPosition, PedestalTileEntity.class).ifPresent(PedestalTileEntity::updateRedstone);
 		}
 	}
 
@@ -118,7 +118,7 @@ public class PedestalBlock extends PassivePedestalBlock {
 		).orElse(ActionResultType.FAIL);
 	}
 
-	private boolean switchClicked(Direction side, Vec3d hitVec) {
+	private boolean switchClicked(Direction side, Vector3d hitVec) {
 		double xOff = hitVec.getX();
 		double yOff = hitVec.getY();
 		double zOff = hitVec.getZ();
@@ -135,7 +135,7 @@ public class PedestalBlock extends PassivePedestalBlock {
 		if (newState.getBlock() == this) {
 			return;
 		}
-		PedestalRegistry.unregisterPosition(world.getDimension().getType().getId(), pos);
+		PedestalRegistry.unregisterPosition(world.getDimensionKey().getRegistryName(), pos);
 		WorldHelper.getTile(world, pos, PedestalTileEntity.class).ifPresent(PedestalTileEntity::removeAndSpawnItem);
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}

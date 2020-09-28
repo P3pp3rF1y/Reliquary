@@ -35,7 +35,7 @@ public class CommonEventHandler {
 	private static final Set<IPlayerHurtHandler> playerHurtHandlers = Sets.newTreeSet(new HandlerPriorityComparator());
 	private static final Set<IPlayerDeathHandler> playerDeathHandlers = Sets.newTreeSet(new HandlerPriorityComparator());
 
-	private static Map<UUID, Boolean> playersFlightStatus = new HashMap<>();
+	private static final Map<UUID, Boolean> playersFlightStatus = new HashMap<>();
 
 	public static void registerPlayerHurtHandler(IPlayerHurtHandler handler) {
 		playerHurtHandlers.add(handler);
@@ -45,6 +45,7 @@ public class CommonEventHandler {
 		playerDeathHandlers.add(handler);
 	}
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void preventMendingAndUnbreaking(AnvilUpdateEvent event) {
 		if (event.getLeft().isEmpty() || event.getRight().isEmpty()) {
@@ -60,6 +61,7 @@ public class CommonEventHandler {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
 		// Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
@@ -70,6 +72,7 @@ public class CommonEventHandler {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void beforePlayerHurt(LivingAttackEvent event) {
 		Entity entity = event.getEntity();
@@ -92,6 +95,7 @@ public class CommonEventHandler {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void beforePlayerDeath(LivingDeathEvent event) {
 		Entity entity = event.getEntity();
@@ -114,6 +118,7 @@ public class CommonEventHandler {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void onDimensionUnload(WorldEvent.Unload event) {
 		if (event.getWorld() instanceof ServerWorld) {
@@ -121,6 +126,7 @@ public class CommonEventHandler {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		if (event.side == LogicalSide.CLIENT) {

@@ -2,7 +2,7 @@ package xreliquary.network;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -11,10 +11,10 @@ import xreliquary.entities.ConcussiveExplosion;
 import java.util.function.Supplier;
 
 public class PacketFXConcussiveExplosion {
-	private float size;
-	private Vec3d pos;
+	private final float size;
+	private final Vector3d pos;
 
-	public PacketFXConcussiveExplosion(float size, Vec3d pos) {
+	public PacketFXConcussiveExplosion(float size, Vector3d pos) {
 		this.size = size;
 		this.pos = pos;
 	}
@@ -27,7 +27,7 @@ public class PacketFXConcussiveExplosion {
 	}
 
 	static PacketFXConcussiveExplosion decode(PacketBuffer packetBuffer) {
-		return new PacketFXConcussiveExplosion(packetBuffer.readFloat(), new Vec3d(packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readDouble()));
+		return new PacketFXConcussiveExplosion(packetBuffer.readFloat(), new Vector3d(packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readDouble()));
 	}
 
 	static void onMessage(PacketFXConcussiveExplosion msg, Supplier<NetworkEvent.Context> contextSupplier) {

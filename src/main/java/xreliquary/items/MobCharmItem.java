@@ -115,7 +115,7 @@ public class MobCharmItem extends ItemBase {
 		PlayerEntity finalPlayer = player;
 		StandardMobCharmRegistry.getCharmDefinitionFor(entity).filter(MobCharmDefinition::resetTargetInLivingUpdateEvent).ifPresent(charmDefinition -> {
 			if (isMobCharmPresent(finalPlayer, charmDefinition)) {
-				MobHelper.resetTarget(entity, true, true);
+				MobHelper.resetTarget(entity, true);
 			}
 		});
 	}
@@ -135,7 +135,7 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private void damageMobCharmInPedestal(PlayerEntity player, String entityRegistryName) {
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.dimension.getId(), player.getPosition(), Settings.COMMON.items.mobCharm.pedestalRange.get());
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.world.getDimensionKey().getRegistryName(), player.getPosition(), Settings.COMMON.items.mobCharm.pedestalRange.get());
 		World world = player.getEntityWorld();
 
 		for (BlockPos pos : pedestalPositions) {
@@ -171,7 +171,7 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private boolean pedestalWithCharmInRange(PlayerEntity player, MobCharmDefinition charmDefinition) {
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.dimension.getId(), player.getPosition(), Settings.COMMON.items.mobCharm.pedestalRange.get());
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.world.getDimensionKey().getRegistryName(), player.getPosition(), Settings.COMMON.items.mobCharm.pedestalRange.get());
 
 		World world = player.getEntityWorld();
 

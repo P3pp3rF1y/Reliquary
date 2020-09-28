@@ -38,7 +38,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 import xreliquary.blocks.ApothecaryCauldronBlock;
 import xreliquary.client.init.ModParticles;
+import xreliquary.client.particle.BubbleColorParticleData;
 import xreliquary.client.particle.ColorParticleData;
+import xreliquary.client.particle.SteamColorParticleData;
 import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
@@ -121,12 +123,10 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 		float green = (((color >> 8) & 255) / 256F);
 		float blue = ((color & 255) / 256F);
 
-		ColorParticleData particleData = new ColorParticleData(ModParticles.CAULDRON_BUBBLE, red, green, blue);
-		world.addParticle(particleData, getPos().getX() + 0.5D + xOffset, getPos().getY() + 0.01D + getRenderLiquidLevel(), getPos().getZ() + 0.5D + zOffset, 0D, 0D, 0D);
+		world.addParticle(new BubbleColorParticleData(red, green, blue), getPos().getX() + 0.5D + xOffset, getPos().getY() + 0.01D + getRenderLiquidLevel(), getPos().getZ() + 0.5D + zOffset, 0D, 0D, 0D);
 
-		particleData = new ColorParticleData(ModParticles.CAULDRON_STEAM, red, green, blue);
 		if (world.rand.nextInt(6) == 0) {
-			world.addParticle(particleData, getPos().getX() + 0.5D + xOffset, getPos().getY() + 0.01D + getRenderLiquidLevel(), getPos().getZ() + 0.5D + zOffset, 0D, 0.05D + 0.02F * getRenderLiquidLevel(), 0D);
+			world.addParticle(new SteamColorParticleData(red, green, blue), getPos().getX() + 0.5D + xOffset, getPos().getY() + 0.01D + getRenderLiquidLevel(), getPos().getZ() + 0.5D + zOffset, 0D, 0.05D + 0.02F * getRenderLiquidLevel(), 0D);
 		}
 	}
 
@@ -198,8 +198,8 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 	}
 
 	@Override
-	public void read(CompoundNBT tag) {
-		super.read(tag);
+	public void read(BlockState state, CompoundNBT tag) {
+		super.read(state, tag);
 		setLiquidLevel(tag.getShort("liquidLevel"));
 		glowstoneCount = tag.getInt("glowstoneCount");
 		hasNetherwart = tag.getBoolean("hasNetherwart");
@@ -393,45 +393,60 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 		}
 
 		if (getLiquidLevel() < 3 && !finishedCooking()) {
-			if (itemStack.getItem() == Items.WATER_BUCKET) {
-				if (!player.isCreative()) {
-					player.setHeldItem(hand, new ItemStack(Items.BUCKET));
-				}
-			} else if (Boolean.FALSE.equals(itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null).map(fh -> drainWater(player, fh)).orElse(false))) {
-				return ActionResultType.CONSUME;
-			}
-
-			setLiquidLevel(3);
-			cookTime = 0;
-
-			return ActionResultType.SUCCESS;
+			return fillWithWater(player, hand, itemStack);
 		} else if (itemStack.getItem() == ModItems.EMPTY_POTION_VIAL && finishedCooking() && getLiquidLevel() > 0) {
-			if (finishedCooking() && hasNetherwart && !effects.isEmpty() && getLiquidLevel() > 0) {
-				ItemStack potion = removeContainedPotion();
-
-				itemStack.shrink(1);
-
-				if (itemStack.getCount() <= 0) {
-					player.setHeldItem(hand, potion);
-				} else if (!player.inventory.addItemStackToInventory(potion)) {
-					world.addEntity(new ItemEntity(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
-				}
-
+			if (fillVial(world, player, hand, itemStack)) {
 				return ActionResultType.SUCCESS;
 			}
 		} else if (getLiquidLevel() == 3 && isItemValidForInput(itemStack)) {
-			addItem(itemStack);
+			return addIngredient(world, player, itemStack);
+		}
+		return ActionResultType.CONSUME;
+	}
 
-			if (itemStack.getItem() == Items.DRAGON_BREATH
-					&& InventoryHelper.getItemHandlerFrom(player).map(handler -> InventoryHelper.tryToAddToInventory(new ItemStack(Items.GLASS_BOTTLE), handler, 1)).orElse(0) != 1) {
-				net.minecraft.inventory.InventoryHelper.spawnItemStack(world, pos.getX() + 0.5f, pos.getY() + 1.5f, pos.getZ() + 0.5f, new ItemStack(Items.GLASS_BOTTLE));
-			}
+	private ActionResultType addIngredient(World world, PlayerEntity player, ItemStack itemStack) {
+		addItem(itemStack);
+
+		if (itemStack.getItem() == Items.DRAGON_BREATH
+				&& InventoryHelper.getItemHandlerFrom(player).map(handler -> InventoryHelper.tryToAddToInventory(new ItemStack(Items.GLASS_BOTTLE), handler, 1)).orElse(0) != 1) {
+			net.minecraft.inventory.InventoryHelper.spawnItemStack(world, pos.getX() + 0.5f, pos.getY() + 1.5f, pos.getZ() + 0.5f, new ItemStack(Items.GLASS_BOTTLE));
+		}
+
+		itemStack.shrink(1);
+
+		return ActionResultType.SUCCESS;
+	}
+
+	private boolean fillVial(World world, PlayerEntity player, Hand hand, ItemStack itemStack) {
+		if (finishedCooking() && hasNetherwart && !effects.isEmpty() && getLiquidLevel() > 0) {
+			ItemStack potion = removeContainedPotion();
 
 			itemStack.shrink(1);
 
-			return ActionResultType.SUCCESS;
+			if (itemStack.getCount() <= 0) {
+				player.setHeldItem(hand, potion);
+			} else if (!player.inventory.addItemStackToInventory(potion)) {
+				world.addEntity(new ItemEntity(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.5D, (double) pos.getZ() + 0.5D, potion));
+			}
+
+			return true;
 		}
-		return ActionResultType.CONSUME;
+		return false;
+	}
+
+	private ActionResultType fillWithWater(PlayerEntity player, Hand hand, ItemStack itemStack) {
+		if (itemStack.getItem() == Items.WATER_BUCKET) {
+			if (!player.isCreative()) {
+				player.setHeldItem(hand, new ItemStack(Items.BUCKET));
+			}
+		} else if (Boolean.FALSE.equals(itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null).map(fh -> drainWater(player, fh)).orElse(false))) {
+			return ActionResultType.CONSUME;
+		}
+
+		setLiquidLevel(3);
+		cookTime = 0;
+
+		return ActionResultType.SUCCESS;
 	}
 
 	private Boolean drainWater(PlayerEntity player, IFluidHandlerItem fh) {

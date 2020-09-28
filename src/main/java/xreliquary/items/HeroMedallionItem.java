@@ -145,11 +145,11 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		if (world.isRemote) {
 			return new ActionResult<>(ActionResultType.SUCCESS, stack);
 		}
-		if (player.isShiftKeyDown()) {
+		if (player.isSneaking()) {
 			return super.onItemRightClick(world, player, hand);
 		}
 
-		RayTraceResult rayTraceResult = rayTrace(world, player, RayTraceContext.FluidMode.ANY);
+		BlockRayTraceResult rayTraceResult = rayTrace(world, player, RayTraceContext.FluidMode.ANY);
 
 		if (rayTraceResult.getType() != RayTraceResult.Type.BLOCK) {
 			int playerLevel = player.experienceLevel;
@@ -160,8 +160,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 				}
 			}
 		} else {
-			BlockRayTraceResult blockResult = (BlockRayTraceResult) rayTraceResult;
-			BlockPos hitPos = blockResult.getPos().add(blockResult.getFace().getDirectionVec());
+			BlockPos hitPos = rayTraceResult.getPos().add(rayTraceResult.getFace().getDirectionVec());
 			spawnXpOnGround(stack, world, hitPos);
 		}
 

@@ -1,10 +1,10 @@
 package xreliquary.init;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.loot.LootEntry;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.TableLootEntry;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootEntry;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.TableLootEntry;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,6 +21,7 @@ public class ModLoot {
 
 	private static final List<String> ENTITY_TABLES = ImmutableList.of("bat", "blaze", "cave_spider", "creeper", "enderman", "ghast", "guardian", "husk", "magma_cube", "skeleton", "slime", "snow_golem", "spider", "stray", "squid", "witch", "wither_skeleton", "zombie", "zombie_pigman", "zombie_villager");
 
+	@SuppressWarnings("unused") //used in event
 	@SubscribeEvent
 	public static void lootLoad(LootTableLoadEvent evt) {
 		String chestsPrefix = "minecraft:chests/";
@@ -38,7 +39,7 @@ public class ModLoot {
 		return LootPool.builder().addEntry(getInjectEntry(entryName)).bonusRolls(0, 1).name("xreliquary_inject_pool").build();
 	}
 
-	private static LootEntry.Builder getInjectEntry(String name) {
+	private static LootEntry.Builder<?> getInjectEntry(String name) {
 		return TableLootEntry.builder(new ResourceLocation(Reference.MOD_ID, "inject/" + name)).weight(1);
 	}
 }

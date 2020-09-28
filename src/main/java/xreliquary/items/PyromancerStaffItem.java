@@ -30,7 +30,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -146,7 +146,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 
 	@Override
 	public ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
-		if (!entityLiving.isShiftKeyDown()) {
+		if (!entityLiving.isSneaking()) {
 			return ActionResultType.CONSUME;
 		}
 		if (entityLiving.world.isRemote) {
@@ -159,7 +159,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (player.isShiftKeyDown()) {
+		if (player.isSneaking()) {
 			super.onItemRightClick(world, player, hand);
 		} else {
 			if (getMode(stack).equals(BLAZE_MODE)) {
@@ -173,7 +173,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 					return new ActionResult<>(ActionResultType.PASS, stack);
 				}
 				player.swingArm(hand);
-				Vec3d lookVec = player.getLookVec();
+				Vector3d lookVec = player.getLookVec();
 				shootGhastFireball(player, stack, lookVec);
 			} else {
 				player.setActiveHand(hand);
@@ -182,7 +182,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);
 	}
 
-	private void shootGhastFireball(PlayerEntity player, ItemStack stack, Vec3d lookVec) {
+	private void shootGhastFireball(PlayerEntity player, ItemStack stack, Vector3d lookVec) {
 		if (removeItemFromInternalStorage(stack, Items.FIRE_CHARGE, getFireChargeCost(), player.world.isRemote, player)) {
 			player.world.playEvent(player, 1016, new BlockPos((int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ()), 0);
 			FireballEntity fireball = new FireballEntity(player.world, player, lookVec.x, lookVec.y, lookVec.z);
@@ -196,7 +196,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 	}
 
 	private void shootBlazeFireball(PlayerEntity player, ItemStack stack) {
-		Vec3d lookVec = player.getLookVec();
+		Vector3d lookVec = player.getLookVec();
 		//blaze fireball!
 		if (removeItemFromInternalStorage(stack, Items.BLAZE_POWDER, getBlazePowderCost(), player.world.isRemote, player)) {
 			player.world.playEvent(player, 1018, new BlockPos((int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ()), 0);
@@ -493,7 +493,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 	private void absorbBlazeFireballs(ItemStack stack, PlayerEntity player) {
 		List<SmallFireballEntity> blazeFireballs = player.world.getEntitiesWithinAABB(SmallFireballEntity.class, new AxisAlignedBB(player.getPosX() - 3, player.getPosY() - 3, player.getPosZ() - 3, player.getPosX() + 3, player.getPosY() + 3, player.getPosZ() + 3));
 		for (SmallFireballEntity fireball : blazeFireballs) {
-			if (fireball.shootingEntity == player) {
+			if (fireball.func_234616_v_() == player) {
 				continue;
 			}
 			for (int particles = 0; particles < 4; particles++) {
@@ -511,7 +511,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 	private void absorbGhastFireballs(ItemStack stack, PlayerEntity player) {
 		List<FireballEntity> ghastFireballs = player.world.getEntitiesWithinAABB(FireballEntity.class, new AxisAlignedBB(player.getPosX() - 5, player.getPosY() - 5, player.getPosZ() - 5, player.getPosX() + 5, player.getPosY() + 5, player.getPosZ() + 5));
 		for (FireballEntity fireball : ghastFireballs) {
-			if (fireball.shootingEntity != player && player.getDistance(fireball) < 4) {
+			if (fireball.func_234616_v_() != player && player.getDistance(fireball) < 4) {
 				if (!isInternalStorageFullOfItem(stack, Items.FIRE_CHARGE) && InventoryHelper.consumeItem(new ItemStack(Items.FIRE_CHARGE), player)) {
 					addItemToInternalStorage(stack, Items.FIRE_CHARGE, true);
 					player.world.playSound(fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
