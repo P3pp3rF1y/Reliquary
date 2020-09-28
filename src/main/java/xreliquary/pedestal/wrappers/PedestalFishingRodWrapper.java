@@ -2,6 +2,8 @@ package xreliquary.pedestal.wrappers;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -23,13 +25,13 @@ import xreliquary.entities.EntityXRFakePlayer;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketPedestalFishHook;
 import xreliquary.reference.Settings;
-import xreliquary.util.LogHelper;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.Vector;
 
 public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	private static final int PACKET_RANGE = 50;
@@ -39,6 +41,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	private static final int ABSOLUTE_TIMEOUT = 1200;
 
 	private EntityXRFakePlayer fakePlayer;
+	private Vector3d playerPos;
 	private boolean badThrowChecked;
 	private int ticksSinceLastThrow;
 	private boolean retractFail = false;
@@ -76,7 +79,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			//when hook doesn't land in water retract it after some time
 			FishingBobberEntity fishingBobber = fakePlayer.fishingBobber;
 			//noinspection ConstantConditions
-			if (fishingBobber.isOnGround() || (!fishingBobber.isInWater() && getTicksInAir(fishingBobber) > 20)) {
+			if (!fishingBobber.isInWater()) {
 				retractHook(pedestal, stack);
 			} else {
 				badThrowChecked = true;
@@ -94,18 +97,6 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			}
 	}
 
-	private static final Field TICKS_IN_AIR = ObfuscationReflectionHelper.findField(FishingBobberEntity.class, "field_146047_aw");
-	private static int getTicksInAir(FishingBobberEntity fishingBobber) {
-		try {
-			return (int) TICKS_IN_AIR.get(fishingBobber);
-		}
-		catch (IllegalAccessException e) {
-			LogHelper.error("Error getting ticksInAir from fishingBobber ", e);
-		}
-		return 0;
-	}
-
-
 	private void updateHeldItem(ItemStack fishingRod) {
 		ItemStack heldItem = fakePlayer.getHeldItemMainhand();
 		if (heldItem.isEmpty()) {
@@ -120,6 +111,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	private void retractHook(IPedestal pedestal, ItemStack stack) {
 		//noinspection ConstantConditions
 		int i = fakePlayer.fishingBobber.handleHookRetraction(stack);
+		fakePlayer.fishingBobber = null;
 		stack.damageItem(i, fakePlayer, p -> {});
 		//destroy the item when it gets used up
 		if (stack.getCount() == 0) {
@@ -240,7 +232,13 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		World world = pedestal.getTheWorld();
 		world.playSound(null, pedestal.getBlockPos(), SoundEvents.ENTITY_FISHING_BOBBER_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (world.rand.nextFloat() * 0.4F + 0.8F));
 
-		world.addEntity(new FishingBobberEntity(fakePlayer, world, 0, 0));
+		world.addEntity(new FishingBobberEntity(fakePlayer, world, 0, 0) {
+			@Nullable
+			@Override
+			public Entity func_234616_v_() {
+				return fakePlayer;
+			}
+		});
 	}
 
 	private void syncHookData(IPedestal pedestal) {

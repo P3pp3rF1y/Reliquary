@@ -12,6 +12,7 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import xreliquary.common.gui.ContainerMobCharmBelt;
 import xreliquary.init.ModItems;
+import xreliquary.items.StandardMobCharmRegistry;
 import xreliquary.reference.Reference;
 import xreliquary.util.LogHelper;
 
@@ -52,7 +53,7 @@ public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
 
 	private void updateMobCharmSlots(MatrixStack matrixStack, int centerX, int centerY) {
 		int slots = ModItems.MOB_CHARM_BELT.getCharmCount(belt);
-		slots = Math.min(slots, Reference.MOB_CHARM.COUNT_TYPES);
+		slots = Math.min(slots, StandardMobCharmRegistry.getRegisteredNames().size());
 
 		double radius = 44.0;
 
@@ -82,7 +83,7 @@ public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
 		setSlotXPos(container.inventorySlots.get(slots), 80);
 		setSlotYPos(container.inventorySlots.get(slots), -12);
 
-		for (int i = slots + 1; i < Reference.MOB_CHARM.COUNT_TYPES + 1; i++) {
+		for (int i = slots + 1; i < StandardMobCharmRegistry.getRegisteredNames().size() + 1; i++) {
 			setSlotXPos(container.inventorySlots.get(i), -999);
 		}
 	}

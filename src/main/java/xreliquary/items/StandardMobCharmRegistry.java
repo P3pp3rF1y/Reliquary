@@ -30,7 +30,7 @@ public class StandardMobCharmRegistry {
 		registerMobCharmDefinition(WITHER_SKELETON);
 		registerMobCharmDefinition(CREEPER);
 		registerMobCharmDefinition(WITCH);
-		registerMobCharmDefinition(ZOMBIE_PIGMAN);
+		registerMobCharmDefinition(ZOMBIFIED_PIGLIN);
 		registerMobCharmDefinition(CAVE_SPIDER);
 		registerMobCharmDefinition(SPIDER);
 		registerMobCharmDefinition(ENDERMAN);

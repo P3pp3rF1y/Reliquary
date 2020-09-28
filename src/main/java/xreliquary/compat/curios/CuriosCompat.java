@@ -52,7 +52,7 @@ public class CuriosCompat implements ICompat {
 	public CuriosCompat() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::sendImc);
-		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(this::registerModels));
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(this::registerModels));
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
@@ -79,7 +79,7 @@ public class CuriosCompat implements ICompat {
 
 	@Override
 	public void setup() {
-		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> new CuriosFortuneCoinToggler().registerSelf());
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> new CuriosFortuneCoinToggler().registerSelf());
 		ModItems.MOB_CHARM.setCharmInventoryHandler(new CuriosCharmInventoryHandler());
 		InventoryHelper.addBaublesItemHandlerFactory((player, type) -> (CuriosApi.getCuriosHelper().getCuriosHandler(player)
 				.map(handler -> handler.getStacksHandler(type.getIdentifier()).map(ICurioStacksHandler::getStacks).orElse(EMPTY_HANDLER)).orElse(EMPTY_HANDLER)));

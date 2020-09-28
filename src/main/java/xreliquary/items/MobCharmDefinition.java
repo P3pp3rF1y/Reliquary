@@ -16,7 +16,7 @@ public class MobCharmDefinition {
 	static final MobCharmDefinition WITHER_SKELETON = new MobCharmDefinition("minecraft:wither_skeleton", s -> s.getItem() == ModItems.WITHERED_RIB, "minecraft:wither_skeleton");
 	static final MobCharmDefinition CREEPER = new MobCharmDefinition("minecraft:creeper", s -> s.getItem() == ModItems.CATALYZING_GLAND, "minecraft:creeper");
 	static final MobCharmDefinition WITCH = new MobCharmDefinition("minecraft:witch", s -> s.getItem() == ModItems.WITCH_HAT, "minecraft:witch");
-	static final MobCharmDefinition ZOMBIE_PIGMAN = new MobCharmDefinition("minecraft:zombie_pigman", s -> s.getItem() == ModItems.ZOMBIE_HEART, "minecraft:zombie_pigman").setResetTargetInLivingUpdateEvent(true);
+	static final MobCharmDefinition ZOMBIFIED_PIGLIN = new MobCharmDefinition("minecraft:zombified_piglin", s -> s.getItem() == ModItems.ZOMBIE_HEART, "minecraft:zombified_piglin").setResetTargetInLivingUpdateEvent(true);
 	static final MobCharmDefinition CAVE_SPIDER = new MobCharmDefinition("minecraft:cave_spider", s -> s.getItem() == ModItems.CHELICERAE, "minecraft:cave_spider");
 	static final MobCharmDefinition SPIDER = new MobCharmDefinition("minecraft:spider", s -> s.getItem() == ModItems.CHELICERAE, "minecraft:spider");
 	static final MobCharmDefinition ENDERMAN = new MobCharmDefinition("minecraft:enderman", s -> s.getItem() == ModItems.NEBULOUS_HEART, "minecraft:enderman").setResetTargetInLivingUpdateEvent(true);

@@ -5,6 +5,8 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 
@@ -60,12 +62,22 @@ public class EntityXRFakePlayer extends FakePlayer {
 	}
 
 	@Override
-	protected void onChangedPotionEffect(EffectInstance id, boolean p_70695_2_) {
+	protected void onChangedPotionEffect(EffectInstance id, boolean reapply) {
 		//noop
 	}
 
 	@Override
 	protected void onFinishedPotionEffect(EffectInstance effect) {
 		//noop
+	}
+
+	@Override
+	public Vector3d getPositionVec() {
+		return positionVec;
+	}
+
+	@Override
+	public BlockPos getPosition() {
+		return position;
 	}
 }
