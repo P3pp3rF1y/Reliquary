@@ -35,7 +35,7 @@ import java.util.List;
 
 public class AlkahestryTomeItem extends ToggleableItem {
 	public AlkahestryTomeItem() {
-		super(Names.Items.ALKAHESTRY_TOME, new Properties().setNoRepair().rarity(Rarity.EPIC));
+		super(Names.Items.ALKAHESTRY_TOME, new Properties().setNoRepair().rarity(Rarity.EPIC).maxStackSize(1));
 	}
 
 	@Override
