@@ -8,8 +8,8 @@ import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Direction;
@@ -17,6 +17,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -64,7 +65,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 
 						BlockState state = world.getBlockState(pos);
 						Block block = state.getBlock();
-						BlockItemUseContext context = new DirectionalPlaceContext(world, pos, Direction.DOWN, ItemStack.EMPTY, Direction.UP);
+						BlockItemUseContext context = new BlockItemUseContext(new ItemUseContext(player, Hand.MAIN_HAND, new BlockRayTraceResult(new Vec3d((double) pos.getX() + 0.5D, pos.getY(), (double) pos.getZ() + 0.5D), Direction.UP, pos, false)));
 						if (block instanceof FlowingFluidBlock || (!block.isAir(state, world, pos) && !state.isReplaceable(BlockItemUseContext.func_221536_a(context, pos, Direction.DOWN)))) {
 							return false;
 						}
