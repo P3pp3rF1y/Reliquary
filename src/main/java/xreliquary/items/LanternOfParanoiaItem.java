@@ -66,7 +66,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 
 						BlockState state = world.getBlockState(pos);
 						Block block = state.getBlock();
-						BlockItemUseContext context = new DirectionalPlaceContext(world, pos, Direction.DOWN, ItemStack.EMPTY, Direction.UP);
+						BlockItemUseContext context = new BlockItemUseContext(player, Hand.MAIN_HAND, ItemStack.EMPTY, new BlockRayTraceResult(Vector3d.copyCenteredHorizontally(pos), Direction.UP, pos, false));
 						if (block instanceof FlowingFluidBlock || (!block.isAir(state, world, pos) && !state.isReplaceable(BlockItemUseContext.func_221536_a(context, pos, Direction.DOWN)))) {
 							return false;
 						}
