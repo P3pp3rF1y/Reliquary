@@ -50,9 +50,7 @@ public class PotionItem extends PotionItemBase {
 			stack.shrink(1);
 		}
 
-		for (EffectInstance effect : XRPotionHelper.getPotionEffectsFromStack(stack)) {
-			player.addPotionEffect(new EffectInstance(effect.getPotion(), effect.getDuration(), effect.getAmplifier(), false, false));
-		}
+		XRPotionHelper.applyEffectsToEntity(XRPotionHelper.getPotionEffectsFromStack(stack), player, null, player);
 
 		if (!player.isCreative()) {
 			ItemStack emptyVial = new ItemStack(ModItems.EMPTY_POTION_VIAL);

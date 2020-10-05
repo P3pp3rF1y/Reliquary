@@ -367,7 +367,7 @@ public class XRPotionHelper {
 		return Math.min(duration, XRPotionHelper.MAX_DURATION);
 	}
 
-	public static void applyEffectsToEntity(Collection<EffectInstance> effects, Entity source, Entity indirectSource, LivingEntity entitylivingbase) {
+	public static void applyEffectsToEntity(Collection<EffectInstance> effects, Entity source, @Nullable Entity indirectSource, LivingEntity entitylivingbase) {
 		applyEffectsToEntity(effects, source, indirectSource, entitylivingbase, 1.0);
 	}
 
