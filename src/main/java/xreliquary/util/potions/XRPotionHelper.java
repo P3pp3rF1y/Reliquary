@@ -137,10 +137,10 @@ public class XRPotionHelper {
 					}
 
 					if (d0 > 0.0D) {
-						list.add((new TranslationTextComponent("attribute.modifier.plus." + attributemodifier2.getOperation().getId(), ItemStack.DECIMALFORMAT.format(d1), new TranslationTextComponent("attribute.name." + tuple.getA()))).mergeStyle(TextFormatting.BLUE));
+						list.add((new TranslationTextComponent("attribute.modifier.plus." + attributemodifier2.getOperation().getId(), ItemStack.DECIMALFORMAT.format(d1), new TranslationTextComponent(tuple.getA()))).mergeStyle(TextFormatting.BLUE));
 					} else if (d0 < 0.0D) {
 						d1 = d1 * -1.0D;
-						list.add((new TranslationTextComponent("attribute.modifier.take." + attributemodifier2.getOperation().getId(), ItemStack.DECIMALFORMAT.format(d1), new TranslationTextComponent("attribute.name." + tuple.getA()))).mergeStyle(TextFormatting.RED));
+						list.add((new TranslationTextComponent("attribute.modifier.take." + attributemodifier2.getOperation().getId(), ItemStack.DECIMALFORMAT.format(d1), new TranslationTextComponent(tuple.getA()))).mergeStyle(TextFormatting.RED));
 					}
 				}
 			}
