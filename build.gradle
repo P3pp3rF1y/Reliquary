@@ -155,7 +155,7 @@ static def getStable() {
 publishing {
     repositories {
         maven {
-            name = "GitHubPackages"
+            name = "ReliquaryMaven"
             url = uri("https://maven.pkg.github.com/P3pp3rF1y/Reliquary")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
