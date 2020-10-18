@@ -36,7 +36,7 @@ repositories {
 
 group = 'xreliquary'
 version = "${project.minecraft_version}-${project.mod_version}.${getBuildNumber()}${getStable()}"
-archivesBaseName = 'Reliquary'
+archivesBaseName = 'reliquary'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
@@ -155,7 +155,7 @@ static def getStable() {
 publishing {
     repositories {
         maven {
-            name = "GitHubPackages"
+            name = "ReliquaryMaven"
             url = uri("https://maven.pkg.github.com/P3pp3rF1y/Reliquary")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
@@ -165,6 +165,7 @@ publishing {
     }
     publications {
         gpr(MavenPublication) {
+            artifactId='reliquary'
             from(components.java)
         }
     }
