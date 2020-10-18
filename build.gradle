@@ -165,6 +165,7 @@ publishing {
     }
     publications {
         gpr(MavenPublication) {
+            artifactId='reliquary'
             from(components.java)
         }
     }
