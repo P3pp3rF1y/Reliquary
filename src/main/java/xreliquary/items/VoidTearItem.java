@@ -15,7 +15,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -103,7 +102,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack voidTear, @Nullable World world, List<ITextComponent> tooltip) {
-		ItemStack contents = getContainerItem(voidTear, true);
+		ItemStack contents = getTearContents(voidTear, true);
 
 		if (isEmpty(voidTear, true)) {
 			return;
@@ -158,7 +157,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	private boolean hasPlaceableBlock(ItemStack voidTear) {
-		return !isEmpty(voidTear) && getContainerItem(voidTear, false).getItem() instanceof BlockItem;
+		return !isEmpty(voidTear) && getTearContents(voidTear, false).getItem() instanceof BlockItem;
 	}
 
 	private ActionResult<ItemStack> rightClickEmpty(ItemStack emptyVoidTear, PlayerEntity player) {
@@ -221,7 +220,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 					return;
 				}
 
-				ItemStack contents = getContainerItem(voidTear);
+				ItemStack contents = getTearContents(voidTear);
 
 				if (!contents.isEmpty()) {
 					fillTear(voidTear, player, contents);
@@ -251,7 +250,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 		int slot;
 		while (getItemQuantity(voidTear) > 1 && (slot = player.inventory.getFirstEmptyStack()) != -1) {
-			ItemStack newStack = getContainerItem(voidTear).copy();
+			ItemStack newStack = getTearContents(voidTear).copy();
 			int quantityToDecrease = Math.min(newStack.getMaxStackSize(), getItemQuantity(voidTear) - 1);
 			newStack.setCount(quantityToDecrease);
 			player.inventory.setInventorySlotContents(slot, newStack);
@@ -266,7 +265,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		for (int slot = 0; slot < h.getSlots(); slot++) {
 			ItemStack stackFound = h.getStackInSlot(slot);
 
-			if (StackHelper.isItemAndNbtEqual(stackFound, getContainerItem(voidTear))) {
+			if (StackHelper.isItemAndNbtEqual(stackFound, getTearContents(voidTear))) {
 				int quantityToDecrease = Math.min(stackFound.getMaxStackSize() - stackFound.getCount(), getItemQuantity(voidTear) - 1);
 				stackFound.grow(quantityToDecrease);
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
@@ -296,7 +295,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		if (handler.isPresent()) {
 			return handler.map(h -> processItemHandlerInteraction(player, hand, world, voidTear, h)).orElse(ActionResultType.FAIL);
 		} else if (!world.isRemote && hasPlaceableBlock(voidTear) && getItemQuantity(voidTear) > 0) {
-			ItemStack containerItem = getContainerItem(voidTear);
+			ItemStack containerItem = getTearContents(voidTear);
 			BlockItem itemBlock = (BlockItem) containerItem.getItem();
 
 			Direction face = context.getFace();
@@ -358,7 +357,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	private boolean attemptToEmptyIntoInventory(ItemStack stack, PlayerEntity player, IItemHandler inventory) {
-		ItemStack contents = getContainerItem(stack).copy();
+		ItemStack contents = getTearContents(stack).copy();
 		contents.setCount(1);
 
 		int quantity = getItemQuantity(stack);
@@ -377,7 +376,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	private void drainInventory(ItemStack stack, PlayerEntity player, IItemHandler inventory) {
-		ItemStack contents = getContainerItem(stack);
+		ItemStack contents = getTearContents(stack);
 		int quantity = getItemQuantity(stack);
 
 		int quantityDrained = InventoryHelper.tryToRemoveFromInventory(contents, inventory, Settings.COMMON.items.voidTear.itemLimit.get() - quantity);
@@ -404,17 +403,16 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 			nbt = new CompoundNBT();
 		}
 		nbt.putInt("count", getItemQuantity(voidTear));
-		nbt.put(CONTENTS_TAG, getContainerItem(voidTear).write(new CompoundNBT()));
+		nbt.put(CONTENTS_TAG, getTearContents(voidTear).write(new CompoundNBT()));
 
 		return nbt;
 	}
 
-	@Override
-	public ItemStack getContainerItem(ItemStack voidTear) {
-		return getContainerItem(voidTear, false);
+	public ItemStack getTearContents(ItemStack voidTear) {
+		return getTearContents(voidTear, false);
 	}
 
-	public static ItemStack getContainerItem(ItemStack voidTear, boolean isClient) {
+	public static ItemStack getTearContents(ItemStack voidTear, boolean isClient) {
 		if (isClient) {
 			CompoundNBT nbt = voidTear.getTag();
 			if (nbt == null || !nbt.contains(CONTENTS_TAG)) {
@@ -507,7 +505,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 			return 0;
 		}
 		if (mode == Mode.ONE_STACK) {
-			return getContainerItem(voidTear).getMaxStackSize();
+			return getTearContents(voidTear).getMaxStackSize();
 		}
 
 		return Integer.MAX_VALUE;
@@ -546,7 +544,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	boolean canAbsorbStack(ItemStack pickedUpStack, ItemStack tearStack) {
-		return StackHelper.isItemAndNbtEqual(getContainerItem(tearStack), pickedUpStack) && getItemQuantity(tearStack) + pickedUpStack.getCount() <= Settings.COMMON.items.voidTear.itemLimit.get();
+		return StackHelper.isItemAndNbtEqual(getTearContents(tearStack), pickedUpStack) && getItemQuantity(tearStack) + pickedUpStack.getCount() <= Settings.COMMON.items.voidTear.itemLimit.get();
 	}
 
 	public boolean isEmpty(ItemStack voidTear) {
@@ -555,7 +553,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 	public static boolean isEmpty(ItemStack voidTear, boolean isClient) {
 		if (isClient) {
-			return getContainerItem(voidTear, true).isEmpty();
+			return getTearContents(voidTear, true).isEmpty();
 		}
 
 		return getFromHandler(voidTear, h -> h.getBigStackSlots() <= 0 || h.getContainedAmount() <= 0).orElse(true);

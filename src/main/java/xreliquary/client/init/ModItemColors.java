@@ -44,7 +44,7 @@ public class ModItemColors {
 	private static void registerVoidTearItemColors(ItemColors itemColors) {
 		registerItemColor((stack, tintIndex) -> {
 			if (Screen.hasShiftDown()) {
-				ItemStack containedStack = VOID_TEAR.getContainerItem(stack, true);
+				ItemStack containedStack = VOID_TEAR.getTearContents(stack, true);
 				if (!containedStack.isEmpty()) {
 					return itemColors.getColor(containedStack, tintIndex);
 				}
