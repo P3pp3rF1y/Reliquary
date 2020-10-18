@@ -36,7 +36,7 @@ repositories {
 
 group = 'xreliquary'
 version = "${project.minecraft_version}-${project.mod_version}.${getBuildNumber()}${getStable()}"
-archivesBaseName = 'Reliquary'
+archivesBaseName = 'reliquary'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
