@@ -6,7 +6,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -202,7 +201,7 @@ public class ClientEventHandler {
 				)), Settings.CLIENT.hudPositions.rendingGale.get()));
 
 		Component contentsPane = new DynamicChargePane(ModItems.VOID_TEAR,
-				is -> VoidTearItem.getContainerItem(is, true), is -> VoidTearItem.getContainerItem(is, true).getCount());
+				is -> VoidTearItem.getTearContents(is, true), is -> VoidTearItem.getTearContents(is, true).getCount());
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.VOID_TEAR, Settings.CLIENT.hudPositions.voidTear.get(), is -> ModItems.VOID_TEAR.getMode(is).getString(),
 				ImmutableMap.of(
 						VoidTearItem.Mode.FULL_INVENTORY.getString(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization(VOID_TEAR_MODE_TRANSLATION + VoidTearItem.Mode.FULL_INVENTORY.getString().toLowerCase())), contentsPane),
