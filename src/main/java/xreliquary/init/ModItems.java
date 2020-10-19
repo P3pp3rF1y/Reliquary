@@ -35,6 +35,8 @@ import xreliquary.common.gui.ContainerMobCharmBelt;
 import xreliquary.crafting.AlkahestryChargingRecipe;
 import xreliquary.crafting.AlkahestryCraftingRecipe;
 import xreliquary.crafting.AlkahestryDrainRecipe;
+import xreliquary.crafting.FragmentToSpawnEggRecipe;
+import xreliquary.crafting.MobCharmRecipe;
 import xreliquary.crafting.MobCharmRepairRecipe;
 import xreliquary.crafting.MobDropsCraftableCondition;
 import xreliquary.crafting.PotionEffectsRecipe;
@@ -456,6 +458,8 @@ public class ModItems {
 		CraftingHelper.register(MobDropsCraftableCondition.Serializer.INSTANCE);
 
 		IForgeRegistry<IRecipeSerializer<?>> reg = evt.getRegistry();
+		reg.register(MobCharmRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "mob_charm")));
+		reg.register(FragmentToSpawnEggRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "fragment_to_spawn_egg")));
 		reg.register(MobCharmRepairRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "mob_charm_repair")));
 		reg.register(AlkahestryChargingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_charging")));
 		reg.register(AlkahestryCraftingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_crafting")));

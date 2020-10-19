@@ -11,7 +11,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraftforge.registries.ObjectHolder;
 import xreliquary.init.ModItems;
-import xreliquary.items.StandardMobCharmRegistry;
+import xreliquary.items.MobCharmRegistry;
 import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 
@@ -23,7 +23,7 @@ public class ContainerMobCharmBelt extends Container {
 		super(TYPE, windowId);
 		this.belt = belt;
 
-		for (int i = 0; i < StandardMobCharmRegistry.getRegisteredNames().size() + 1; i++) {
+		for (int i = 0; i < MobCharmRegistry.getRegisteredNames().size() + 1; i++) {
 			addSlot(new SlotMobCharm(belt, i));
 		}
 
@@ -40,7 +40,7 @@ public class ContainerMobCharmBelt extends Container {
 
 	private final ItemStack belt;
 
-	private static final int PLAYER_INV_INDEX = StandardMobCharmRegistry.getRegisteredNames().size() + 1;
+	private static final int PLAYER_INV_INDEX = MobCharmRegistry.getRegisteredNames().size() + 1;
 
 	@Override
 

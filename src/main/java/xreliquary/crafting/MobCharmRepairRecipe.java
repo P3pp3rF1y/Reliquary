@@ -9,11 +9,16 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import xreliquary.init.ModItems;
-import xreliquary.items.StandardMobCharmRegistry;
+import xreliquary.items.MobCharmDefinition;
+import xreliquary.items.MobCharmRegistry;
 import xreliquary.reference.Settings;
+
+import java.util.Optional;
 
 public class MobCharmRepairRecipe extends SpecialRecipe {
 	public static final IRecipeSerializer<MobCharmRepairRecipe> SERIALIZER = new SpecialRecipeSerializer<>(MobCharmRepairRecipe::new);
+	private static final int PER_FRAGMENT_MULTIPLIER = 6;
+
 	public MobCharmRepairRecipe(ResourceLocation registryName) {
 		super(registryName);
 	}
@@ -46,9 +51,20 @@ public class MobCharmRepairRecipe extends SpecialRecipe {
 			}
 		}
 
+		if (mobCharm.isEmpty()) {
+			return false;
+		}
+
 		ItemStack finalIngredient = ingredient;
-		return !mobCharm.isEmpty() && mobCharm.getDamage() >= Settings.COMMON.items.mobCharm.dropDurabilityRepair.get() * (numberIngredients - 1)
-				&& StandardMobCharmRegistry.getCharmDefinitionFor(mobCharm).map(def -> def.isRepairItem(finalIngredient)).orElse(false);
+		Optional<MobCharmDefinition> cd = MobCharmRegistry.getCharmDefinitionFor(mobCharm);
+		if (!cd.isPresent()) {
+			return false;
+		}
+		MobCharmDefinition charmDefinition = cd.get();
+
+		int repairMultiplier = charmDefinition.isDynamicallyCreated() ? PER_FRAGMENT_MULTIPLIER : 1;
+		int durabilityRepaired = Settings.COMMON.items.mobCharm.dropDurabilityRepair.get() * repairMultiplier;
+		return mobCharm.getDamage() >= durabilityRepaired * (numberIngredients - 1) && charmDefinition.isRepairItem(finalIngredient);
 	}
 
 	@Override

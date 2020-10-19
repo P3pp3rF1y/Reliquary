@@ -2,6 +2,8 @@ package xreliquary;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.particles.ParticleType;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -16,6 +18,7 @@ import xreliquary.init.ModCapabilities;
 import xreliquary.init.ModCompat;
 import xreliquary.init.ModItems;
 import xreliquary.init.PedestalItems;
+import xreliquary.items.MobCharmRegistry;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -36,6 +39,8 @@ public class Reliquary {
 		modBus.addGenericListener(ParticleType.class, ModParticles::registerParticles);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Settings.CLIENT_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Settings.COMMON_SPEC);
+		MinecraftForge.EVENT_BUS.addListener(Reliquary::worldStart);
+		MinecraftForge.EVENT_BUS.addListener(MobCharmRegistry::handleAddingFragmentDrops);
 	}
 
 	public static void setup(FMLCommonSetupEvent event) {
@@ -47,5 +52,9 @@ public class Reliquary {
 		ModCompat.setupCompats();
 		ModItems.registerHandgunMagazines();
 		PedestalItems.init();
+	}
+
+	public static void worldStart(WorldEvent.Load event) {
+		MobCharmRegistry.registerDynamicCharmDefinitions(event);
 	}
 }

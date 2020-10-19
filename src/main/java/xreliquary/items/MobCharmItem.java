@@ -71,7 +71,7 @@ public class MobCharmItem extends ItemBase {
 			return;
 		}
 
-		for (String entityRegistryName : StandardMobCharmRegistry.getRegisteredNames()) {
+		for (String entityRegistryName : MobCharmRegistry.getRegisteredNames()) {
 			items.add(getStackFor(entityRegistryName));
 		}
 	}
@@ -89,7 +89,7 @@ public class MobCharmItem extends ItemBase {
 
 		MobEntity entity = (MobEntity) event.getEntity();
 
-		StandardMobCharmRegistry.getCharmDefinitionFor(entity).ifPresent(charmDefinition -> {
+		MobCharmRegistry.getCharmDefinitionFor(entity).ifPresent(charmDefinition -> {
 			if (isMobCharmPresent((PlayerEntity) event.getTarget(), charmDefinition)) {
 				MobHelper.resetTarget(entity);
 			}
@@ -113,7 +113,7 @@ public class MobCharmItem extends ItemBase {
 		}
 
 		PlayerEntity finalPlayer = player;
-		StandardMobCharmRegistry.getCharmDefinitionFor(entity).filter(MobCharmDefinition::resetTargetInLivingUpdateEvent).ifPresent(charmDefinition -> {
+		MobCharmRegistry.getCharmDefinitionFor(entity).filter(MobCharmDefinition::resetTargetInLivingUpdateEvent).ifPresent(charmDefinition -> {
 			if (isMobCharmPresent(finalPlayer, charmDefinition)) {
 				MobHelper.resetTarget(entity, true);
 			}
@@ -127,7 +127,7 @@ public class MobCharmItem extends ItemBase {
 
 		PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
 
-		StandardMobCharmRegistry.getCharmDefinitionFor(event.getEntity()).ifPresent(charmDefinition -> {
+		MobCharmRegistry.getCharmDefinitionFor(event.getEntity()).ifPresent(charmDefinition -> {
 			if (!charmInventoryHandler.damagePlayersMobCharm(player, charmDefinition.getRegistryName())) {
 				damageMobCharmInPedestal(player, charmDefinition.getRegistryName());
 			}
@@ -196,9 +196,13 @@ public class MobCharmItem extends ItemBase {
 		return NBTHelper.getString("entity", charm);
 	}
 
-	private ItemStack getStackFor(String entityRegistryName) {
-		ItemStack ret = new ItemStack(this);
-		NBTHelper.putString("entity", ret, entityRegistryName);
+	public static void setEntityRegistryName(ItemStack charm, String regName) {
+		NBTHelper.putString("entity", charm, regName);
+	}
+
+	public static ItemStack getStackFor(String entityRegistryName) {
+		ItemStack ret = new ItemStack(ModItems.MOB_CHARM);
+		setEntityRegistryName(ret, entityRegistryName);
 		return ret;
 	}
 
