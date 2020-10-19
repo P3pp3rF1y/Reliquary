@@ -82,6 +82,7 @@ public class ReliquaryPlugin implements IModPlugin {
 		registration.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.TIPPED_ARROW), new ItemStack(Items.ARROW), 0.125F, "arrow"), VanillaRecipeCategoryUid.CRAFTING);
 		registration.addRecipes(MagazineRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
 		registration.addRecipes(MobCharmRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
+		registration.addRecipes(SpawnEggRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
 		registerMobCharmBeltRecipe(registration);
 
 		for (DescriptionEntry entry : JEIDescriptionRegistry.getEntries()) {

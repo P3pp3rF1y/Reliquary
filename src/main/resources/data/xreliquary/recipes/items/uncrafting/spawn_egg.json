@@ -1,19 +1,17 @@
 {
-    "type": "xreliquary:spawn_egg_uncrafting",
-    "pattern": [
-        " F ",
-        "FSF",
-        " F "
-    ],
-    "key": {
-        "F": {
+    "type": "xreliquary:fragment_to_spawn_egg",
+    "ingredients": [
+        {
             "item": "xreliquary:mob_charm_fragment"
         },
-        "S": {
-            "item": "minecraft:string"
+        {
+            "item": "xreliquary:mob_charm_fragment"
+        },
+        {
+            "item": "minecraft:egg"
         }
-    },
+    ],
     "result": {
-        "item": "xreliquary:mob_charm"
+        "item": "minecraft:chicken_spawn_egg"
     }
 }
