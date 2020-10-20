@@ -30,8 +30,8 @@ public class MobCharmFragmentItem extends ItemBase {
 		}
 	}
 
-	public static ItemStack getStackFor(String entityRegistryName) {
-		ItemStack ret = new ItemStack(ModItems.MOB_CHARM_FRAGMENT);
+	public ItemStack getStackFor(String entityRegistryName) {
+		ItemStack ret = new ItemStack(this);
 		NBTHelper.putString("entity", ret, entityRegistryName);
 		return ret;
 	}

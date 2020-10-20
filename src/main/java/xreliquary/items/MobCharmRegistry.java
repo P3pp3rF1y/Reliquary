@@ -103,7 +103,7 @@ public class MobCharmRegistry {
 		double dynamicDropChance = skeletonDropChance / 6d;
 
 		if (entity.world.rand.nextFloat() < dynamicDropChance) {
-			ItemEntity fragmentItemEntity = new ItemEntity(entity.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), MobCharmFragmentItem.getStackFor(regName.toString()));
+			ItemEntity fragmentItemEntity = new ItemEntity(entity.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), ModItems.MOB_CHARM_FRAGMENT.getStackFor(regName.toString()));
 			fragmentItemEntity.setDefaultPickupDelay();
 
 			evt.getDrops().add(fragmentItemEntity);

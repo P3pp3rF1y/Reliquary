@@ -200,8 +200,8 @@ public class MobCharmItem extends ItemBase {
 		NBTHelper.putString("entity", charm, regName);
 	}
 
-	public static ItemStack getStackFor(String entityRegistryName) {
-		ItemStack ret = new ItemStack(ModItems.MOB_CHARM);
+	public ItemStack getStackFor(String entityRegistryName) {
+		ItemStack ret = new ItemStack(this);
 		setEntityRegistryName(ret, entityRegistryName);
 		return ret;
 	}

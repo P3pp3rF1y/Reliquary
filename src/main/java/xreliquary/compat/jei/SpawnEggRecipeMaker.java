@@ -7,7 +7,7 @@ import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import xreliquary.crafting.FragmentRecipeHelper;
-import xreliquary.items.MobCharmFragmentItem;
+import xreliquary.init.ModItems;
 import xreliquary.items.MobCharmRegistry;
 import xreliquary.reference.Reference;
 
@@ -21,7 +21,7 @@ public class SpawnEggRecipeMaker {
 		List<ShapelessRecipe> recipes = new ArrayList<>();
 
 		for (String regName : MobCharmRegistry.getRegisteredNames()) {
-			Ingredient fragmentIngredient = Ingredient.fromStacks(MobCharmFragmentItem.getStackFor(regName));
+			Ingredient fragmentIngredient = Ingredient.fromStacks(ModItems.MOB_CHARM_FRAGMENT.getStackFor(regName));
 			Ingredient eggIngredient = Ingredient.fromItems(Items.EGG);
 
 			NonNullList<Ingredient> inputs = NonNullList.create();

@@ -6,8 +6,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import xreliquary.items.MobCharmFragmentItem;
-import xreliquary.items.MobCharmItem;
+import xreliquary.init.ModItems;
 import xreliquary.items.MobCharmRegistry;
 import xreliquary.reference.Reference;
 
@@ -21,7 +20,7 @@ public class MobCharmRecipeMaker {
 		List<ShapedRecipe> recipes = new ArrayList<>();
 
 		for (String regName : MobCharmRegistry.getRegisteredNames()) {
-			Ingredient fragmentIngredient = Ingredient.fromStacks(MobCharmFragmentItem.getStackFor(regName));
+			Ingredient fragmentIngredient = Ingredient.fromStacks(ModItems.MOB_CHARM_FRAGMENT.getStackFor(regName));
 			Ingredient leatherIngredient = Ingredient.fromItems(Items.LEATHER);
 			Ingredient stringIngredient = Ingredient.fromItems(Items.STRING);
 
@@ -36,7 +35,7 @@ public class MobCharmRecipeMaker {
 			inputs.add(Ingredient.EMPTY);
 			inputs.add(fragmentIngredient);
 
-			ItemStack output = MobCharmItem.getStackFor(regName);
+			ItemStack output = ModItems.MOB_CHARM.getStackFor(regName);
 
 			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, "xreliquary.mob_charm." + output.getTranslationKey());
 			recipes.add(new ShapedRecipe(id, "xreliquary.mob_charm", 3, 3, inputs, output));
