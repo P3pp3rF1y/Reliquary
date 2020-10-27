@@ -12,6 +12,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.EntityExplosionContext;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -31,7 +32,7 @@ public class ConcussiveExplosion extends Explosion {
 	private final PlayerEntity shootingEntity;
 
 	public ConcussiveExplosion(World world, Entity entity, PlayerEntity par3Entity, Vector3d pos, float size, boolean isFlaming) {
-		super(world, entity, pos.getX(), pos.getY(), pos.getZ(), size, isFlaming, Mode.BREAK);
+		super(world, entity, null, null, pos.getX(), pos.getY(), pos.getZ(), size, isFlaming, Mode.BREAK);
 		this.world = world;
 		exploder = entity;
 		shootingEntity = par3Entity;
