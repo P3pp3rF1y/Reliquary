@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -76,16 +77,16 @@ public class MobCharmRegistry {
 			//noinspection ConstantConditions
 			String registryName = entityType.getRegistryName().toString();
 			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getClassification() == EntityClassification.MONSTER
-					&& world instanceof World && isNonBoss(entityType, (World) world)) {
+					&& world instanceof World && isNonBossMob(entityType, (World) world)) {
 				registerMobCharmDefinition(new MobCharmDefinition(registryName));
 				DYNAMICALLY_REGISTERED.add(registryName);
 			}
 		}
 	}
 
-	private static boolean isNonBoss(EntityType<?> entityType, World world) {
+	private static boolean isNonBossMob(EntityType<?> entityType, World world) {
 		Entity e = entityType.create(world);
-		return e != null && e.isNonBoss();
+		return e != null && e.isNonBoss() && (e instanceof MobEntity);
 	}
 
 	public static void handleAddingFragmentDrops(LivingDropsEvent evt) {

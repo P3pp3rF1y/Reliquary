@@ -16,6 +16,7 @@ import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import xreliquary.items.util.IBaubleItem;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
+import xreliquary.util.MobHelper;
 
 public class TwilightCloakItem extends ToggleableItem implements IBaubleItem {
 	public TwilightCloakItem() {
@@ -84,9 +85,7 @@ public class TwilightCloakItem extends ToggleableItem implements IBaubleItem {
 				return;
 			}
 
-			if (event.getEntity() instanceof MobEntity) {
-				((MobEntity) event.getEntity()).setAttackTarget(null);
-			}
+			MobHelper.resetTarget(entityLiving);
 		}
 	}
 }
