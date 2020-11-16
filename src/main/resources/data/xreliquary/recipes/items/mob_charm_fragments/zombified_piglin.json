@@ -19,6 +19,6 @@
     "result": {
         "type": "forge:nbt",
         "item": "xreliquary:mob_charm_fragment",
-        "nbt": "{entity:\"minecraft:zombie_pigman\"}"
+        "nbt": "{entity:\"minecraft:zombified_piglin\"}"
     }
 }
