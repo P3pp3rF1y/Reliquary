@@ -51,6 +51,11 @@ public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
 		GlStateManager.disableBlend();
 	}
 
+	@Override
+	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
+		//noop - to prevent name of inventory being rendered
+	}
+
 	private void updateMobCharmSlots(MatrixStack matrixStack, int centerX, int centerY) {
 		int slots = ModItems.MOB_CHARM_BELT.getCharmCount(belt);
 		slots = Math.min(slots, MobCharmRegistry.getRegisteredNames().size());

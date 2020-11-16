@@ -23,7 +23,7 @@ public class ContainerMobCharmBelt extends Container {
 		super(TYPE, windowId);
 		this.belt = belt;
 
-		for (int i = 0; i < MobCharmRegistry.getRegisteredNames().size() + 1; i++) {
+		for (int i = 0; i < getFirstPlayerInventoryIndex(); i++) {
 			addSlot(new SlotMobCharm(belt, i));
 		}
 
@@ -40,7 +40,9 @@ public class ContainerMobCharmBelt extends Container {
 
 	private final ItemStack belt;
 
-	private static final int PLAYER_INV_INDEX = MobCharmRegistry.getRegisteredNames().size() + 1;
+	private static int getFirstPlayerInventoryIndex() {
+		return MobCharmRegistry.getRegisteredNames().size() + 1;
+	}
 
 	@Override
 
@@ -57,7 +59,7 @@ public class ContainerMobCharmBelt extends Container {
 		}
 
 		//overriden here so that on shift click it doesn't retry and thus move more charms out of belt
-		if (slotId >= 0 && slotId < PLAYER_INV_INDEX && clickTypeIn == ClickType.QUICK_MOVE && (dragType == 0 || dragType == 1)) {
+		if (slotId >= 0 && slotId < getFirstPlayerInventoryIndex() && clickTypeIn == ClickType.QUICK_MOVE && (dragType == 0 || dragType == 1)) {
 			ItemStack itemstack = ItemStack.EMPTY;
 
 			if (slot != null && slot.canTakeStack(player)) {
@@ -86,22 +88,24 @@ public class ContainerMobCharmBelt extends Container {
 			ItemStack originalStack = slot.getStack();
 			copiedStack = originalStack.copy();
 
-			if (index < PLAYER_INV_INDEX) {
-				if (!mergeItemStack(originalStack, PLAYER_INV_INDEX, PLAYER_INV_INDEX + 36, true)) {
+			int playerInvIndex = getFirstPlayerInventoryIndex();
+
+			if (index < playerInvIndex) {
+				if (!mergeItemStack(originalStack, playerInvIndex, playerInvIndex + 36, true)) {
 					return ItemStack.EMPTY;
 				}
 
 				slot.onSlotChange(originalStack, copiedStack);
-			} else if (index < PLAYER_INV_INDEX + 36) {
+			} else if (index < playerInvIndex + 36) {
 				if (originalStack.getItem() == ModItems.MOB_CHARM) {
-					if (!mergeItemStack(originalStack, 0, PLAYER_INV_INDEX, false)) {
+					if (!mergeItemStack(originalStack, 0, playerInvIndex, false)) {
 						return ItemStack.EMPTY;
 					}
-				} else if (index < PLAYER_INV_INDEX + 27) {
-					if (!mergeItemStack(originalStack, PLAYER_INV_INDEX + 27, PLAYER_INV_INDEX + 36, false)) {
+				} else if (index < playerInvIndex + 27) {
+					if (!mergeItemStack(originalStack, playerInvIndex + 27, playerInvIndex + 36, false)) {
 						return ItemStack.EMPTY;
 					}
-				} else if (!mergeItemStack(originalStack, PLAYER_INV_INDEX, PLAYER_INV_INDEX + 27, false)) {
+				} else if (!mergeItemStack(originalStack, playerInvIndex, playerInvIndex + 27, false)) {
 					return ItemStack.EMPTY;
 				}
 			}
