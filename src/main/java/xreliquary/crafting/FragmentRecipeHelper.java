@@ -1,15 +1,18 @@
 package xreliquary.crafting;
 
+import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.init.ModItems;
 import xreliquary.items.MobCharmFragmentItem;
 
+import java.util.Map;
 import java.util.Optional;
 
 public class FragmentRecipeHelper {
@@ -48,7 +51,13 @@ public class FragmentRecipeHelper {
 	}
 
 	public static ItemStack getSpawnEggStack(String regName) {
-		SpawnEggItem spawnEggItem = SpawnEggItem.getEgg(ForgeRegistries.ENTITIES.getValue(new ResourceLocation(regName)));
+		Map<EntityType<?>, SpawnEggItem> spawnEggs = ObfuscationReflectionHelper.getPrivateValue(SpawnEggItem.class, null, "field_195987_b");
+
+		if (spawnEggs == null) {
+			return new ItemStack(FALL_BACK_SPAWN_EGG);
+		}
+
+		SpawnEggItem spawnEggItem = spawnEggs.get(ForgeRegistries.ENTITIES.getValue(new ResourceLocation(regName)));
 		return new ItemStack(spawnEggItem == null ? FALL_BACK_SPAWN_EGG : spawnEggItem);
 	}
 }
