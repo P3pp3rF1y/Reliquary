@@ -140,7 +140,7 @@ processResources {
 
 static def getBuildNumber() {
     if (System.getenv("GITHUB_RUN_NUMBER") != null) {
-        return System.getenv("GITHUB_RUN_NUMBER").toString()
+        return Integer.valueOf(Integer.parseInt(System.getenv("GITHUB_RUN_NUMBER")) + 950).toString()
     }
     return ""
 }
