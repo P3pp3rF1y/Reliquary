@@ -3,8 +3,8 @@
     "mirrored": false,
     "pattern": [
         "W  ",
-        "W  ",
-        "W  "
+        " W ",
+        "  W"
     ],
     "key": {
         "W": {

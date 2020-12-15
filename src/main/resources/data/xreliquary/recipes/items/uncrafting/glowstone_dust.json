@@ -2,9 +2,9 @@
     "type": "minecraft:crafting_shaped",
     "mirrored": false,
     "pattern": [
-        "  W",
-        "  W",
-        "  W"
+        "W  ",
+        "W  ",
+        " W "
     ],
     "key": {
         "W": {
