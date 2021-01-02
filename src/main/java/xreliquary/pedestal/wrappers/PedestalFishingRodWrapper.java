@@ -19,14 +19,17 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.network.PacketDistributor;
+import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
 import xreliquary.entities.EntityXRFakePlayer;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketPedestalFishHook;
 import xreliquary.reference.Settings;
+import xreliquary.util.LogHelper;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -79,7 +82,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			//when hook doesn't land in water retract it after some time
 			FishingBobberEntity fishingBobber = fakePlayer.fishingBobber;
 			//noinspection ConstantConditions
-			if (!fishingBobber.isInWater()) {
+			if (getCurrentState(fishingBobber) != FishingBobberEntity.State.BOBBING) {
 				retractHook(pedestal, stack);
 			} else {
 				badThrowChecked = true;
@@ -220,6 +223,18 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 				}
 			}
 		}
+	}
+
+	private static final Field BOBBER_CURRENT_STATE = ObfuscationReflectionHelper.findField(FishingBobberEntity.class, "field_190627_av");
+
+	private FishingBobberEntity.State getCurrentState(FishingBobberEntity fishingBobberEntity) {
+		try {
+			return (FishingBobberEntity.State) BOBBER_CURRENT_STATE.get(fishingBobberEntity);
+		}
+		catch (IllegalAccessException e) {
+			LogHelper.error("Error getting fishing bobber state", e);
+		}
+		return FishingBobberEntity.State.FLYING;
 	}
 
 	private void addNeighboringWater(IPedestal pedestal, List<BlockPos> visitedBlocks, List<BlockPos> group, BlockPos pedestalPos, BlockPos blockPos) {
