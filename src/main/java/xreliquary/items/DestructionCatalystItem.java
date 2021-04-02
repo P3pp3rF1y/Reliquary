@@ -31,7 +31,7 @@ public class DestructionCatalystItem extends ToggleableItem {
 	private static final String GUNPOWDER_TAG = "gunpowder";
 
 	public DestructionCatalystItem() {
-		super("destruction_catalyst", new Properties().maxStackSize(1).setNoRepair());
+		super(new Properties().maxStackSize(1).setNoRepair());
 	}
 
 	@Override

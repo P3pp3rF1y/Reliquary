@@ -60,7 +60,7 @@ public class MobCharmRegistry {
 	}
 
 	public static Optional<MobCharmDefinition> getCharmDefinitionFor(ItemStack stack) {
-		if (stack.getItem() != ModItems.MOB_CHARM) {
+		if (stack.getItem() != ModItems.MOB_CHARM.get()) {
 			return Optional.empty();
 		}
 
@@ -104,7 +104,7 @@ public class MobCharmRegistry {
 		double dynamicDropChance = skeletonDropChance / 6d;
 
 		if (entity.world.rand.nextFloat() < dynamicDropChance) {
-			ItemEntity fragmentItemEntity = new ItemEntity(entity.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), ModItems.MOB_CHARM_FRAGMENT.getStackFor(regName.toString()));
+			ItemEntity fragmentItemEntity = new ItemEntity(entity.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName.toString()));
 			fragmentItemEntity.setDefaultPickupDelay();
 
 			evt.getDrops().add(fragmentItemEntity);

@@ -21,13 +21,13 @@ import java.util.Random;
 
 public class WitherlessRoseItem extends ItemBase {
 	public WitherlessRoseItem() {
-		super("witherless_rose", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(PlayerEntity player, LivingAttackEvent event) {
 				return event.getSource() == DamageSource.WITHER
-						&& InventoryHelper.playerHasItem(player, ModItems.WITHERLESS_ROSE);
+						&& InventoryHelper.playerHasItem(player, ModItems.WITHERLESS_ROSE.get());
 			}
 
 			@Override

@@ -38,7 +38,6 @@ import net.minecraftforge.items.IItemHandler;
 import xreliquary.blocks.PedestalBlock;
 import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.items.util.VoidTearItemStackHandler;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -62,7 +61,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	private static final String TOOLTIP_PREFIX = "tooltip.";
 
 	public VoidTearItem() {
-		super(Names.Items.VOID_TEAR, new Properties());
+		super(new Properties());
 		MinecraftForge.EVENT_BUS.addListener(this::onItemPickup);
 	}
 

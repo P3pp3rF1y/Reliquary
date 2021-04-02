@@ -43,7 +43,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 	private static final String SOUND_TIMER_TAG = "soundTimer";
 
 	public FortuneCoinItem() {
-		super("fortune_coin", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override
@@ -204,7 +204,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 				} else {
 					remaining -= (inventoryStack.getMaxStackSize() - inventoryStack.getCount());
 				}
-			} else if (inventoryStack.getItem() == ModItems.VOID_TEAR && ModItems.VOID_TEAR.isEnabled(inventoryStack) && ModItems.VOID_TEAR.canAbsorbStack(stackToPickup, inventoryStack)) {
+			} else if (inventoryStack.getItem() == ModItems.VOID_TEAR.get() && ModItems.VOID_TEAR.get().isEnabled(inventoryStack) && ModItems.VOID_TEAR.get().canAbsorbStack(stackToPickup, inventoryStack)) {
 				return true;
 			}
 		}

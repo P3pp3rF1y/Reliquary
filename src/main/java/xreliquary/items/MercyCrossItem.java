@@ -1,7 +1,6 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.CreatureAttribute;
@@ -26,7 +25,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import xreliquary.Reliquary;
-import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nullable;
@@ -37,7 +35,6 @@ public class MercyCrossItem extends SwordItem {
 
 	public MercyCrossItem() {
 		super(ItemTier.GOLD, 3, -2.4F, new Properties().maxStackSize(1).maxDamage(64).group(Reliquary.ITEM_GROUP));
-		setRegistryName(Reference.MOD_ID, "mercy_cross");
 		MinecraftForge.EVENT_BUS.addListener(this::handleDamage);
 	}
 

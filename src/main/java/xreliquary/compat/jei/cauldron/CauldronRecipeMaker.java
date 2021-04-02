@@ -20,7 +20,7 @@ public class CauldronRecipeMaker {
 
 			List<ItemStack> inputs = new ArrayList<>();
 
-			ItemStack potionEssence = new ItemStack(ModItems.POTION_ESSENCE, 1);
+			ItemStack potionEssence = new ItemStack(ModItems.POTION_ESSENCE.get(), 1);
 			XRPotionHelper.addPotionEffectsToStack(potionEssence, essence.getEffects());
 
 			inputs.add(potionEssence);
@@ -45,17 +45,17 @@ public class CauldronRecipeMaker {
 			splashInputs.add(new ItemStack(Items.NETHER_WART));
 			lingeringInputs.add(new ItemStack(Items.NETHER_WART));
 
-			inputs.add(new ItemStack(ModItems.EMPTY_POTION_VIAL, 3));
-			splashInputs.add(new ItemStack(ModItems.EMPTY_POTION_VIAL, 3));
-			lingeringInputs.add(new ItemStack(ModItems.EMPTY_POTION_VIAL, 3));
+			inputs.add(new ItemStack(ModItems.EMPTY_POTION_VIAL.get(), 3));
+			splashInputs.add(new ItemStack(ModItems.EMPTY_POTION_VIAL.get(), 3));
+			lingeringInputs.add(new ItemStack(ModItems.EMPTY_POTION_VIAL.get(), 3));
 
-			ItemStack output = new ItemStack(ModItems.POTION, 3);
+			ItemStack output = new ItemStack(ModItems.POTION.get(), 3);
 			XRPotionHelper.addPotionEffectsToStack(output, essence.getEffects());
 
-			ItemStack outputSplash = new ItemStack(ModItems.SPLASH_POTION, 3);
+			ItemStack outputSplash = new ItemStack(ModItems.SPLASH_POTION.get(), 3);
 			XRPotionHelper.addPotionEffectsToStack(outputSplash, essence.getEffects());
 
-			ItemStack outputLingering = new ItemStack(ModItems.LINGERING_POTION, 3);
+			ItemStack outputLingering = new ItemStack(ModItems.LINGERING_POTION.get(), 3);
 			XRPotionHelper.addPotionEffectsToStack(outputLingering, essence.getEffects());
 
 			recipes.add(new CauldronRecipeJEI(inputs, output));

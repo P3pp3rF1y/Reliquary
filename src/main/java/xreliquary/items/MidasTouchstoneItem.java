@@ -35,7 +35,7 @@ public class MidasTouchstoneItem extends ToggleableItem {
 	private static final String GLOWSTONE_TAG = "glowstone";
 
 	public MidasTouchstoneItem() {
-		super("midas_touchstone", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override

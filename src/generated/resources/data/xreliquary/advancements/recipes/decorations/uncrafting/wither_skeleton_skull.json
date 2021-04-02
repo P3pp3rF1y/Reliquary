@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:uncrafting/wither_skeleton_skull"
+    ]
+  },
+  "criteria": {
+    "has_withered_rib": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:withered_rib"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:uncrafting/wither_skeleton_skull"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_withered_rib",
+      "has_the_recipe"
+    ]
+  ]
+}

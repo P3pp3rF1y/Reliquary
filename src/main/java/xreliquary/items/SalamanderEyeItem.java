@@ -24,7 +24,7 @@ import java.util.List;
 public class SalamanderEyeItem extends ItemBase {
 
 	public SalamanderEyeItem() {
-		super("salamander_eye", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override

@@ -40,21 +40,21 @@ public class PacketFortuneCoinTogglePressed {
 		switch (message.inventoryType) {
 			case MAIN:
 				ItemStack stack2 = player.inventory.mainInventory.get(message.slot);
-				if (stack2.getItem() == ModItems.FORTUNE_COIN) {
-					ModItems.FORTUNE_COIN.toggle(stack2);
+				if (stack2.getItem() == ModItems.FORTUNE_COIN.get()) {
+					ModItems.FORTUNE_COIN.get().toggle(stack2);
 				}
 				break;
 			case OFF_HAND:
 				ItemStack stack1 = player.inventory.offHandInventory.get(0);
-				if (stack1.getItem() == ModItems.FORTUNE_COIN) {
-					ModItems.FORTUNE_COIN.toggle(stack1);
+				if (stack1.getItem() == ModItems.FORTUNE_COIN.get()) {
+					ModItems.FORTUNE_COIN.get().toggle(stack1);
 				}
 				break;
 			case CURIOS:
 				run(() -> () -> CuriosCompat.getStackInSlot(player, IBaubleItem.Type.NECKLACE.getIdentifier(), message.slot)
 						.ifPresent(stack -> {
-							if (stack.getItem() == ModItems.FORTUNE_COIN) {
-								ModItems.FORTUNE_COIN.toggle(stack);
+							if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
+								ModItems.FORTUNE_COIN.get().toggle(stack);
 								CuriosCompat.setStackInSlot(player, IBaubleItem.Type.NECKLACE.getIdentifier(), message.slot, stack);
 							}
 						}));

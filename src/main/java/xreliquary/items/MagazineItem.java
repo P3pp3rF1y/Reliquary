@@ -1,7 +1,7 @@
 package xreliquary.items;
 
 public class MagazineItem extends BulletItem {
-	public MagazineItem(String name, boolean addPotionBulletsInItemGroup, int color) {
-		super(name, false, addPotionBulletsInItemGroup, color);
+	public MagazineItem(boolean addPotionBulletsInItemGroup, int color) {
+		super(false, addPotionBulletsInItemGroup, color);
 	}
 }

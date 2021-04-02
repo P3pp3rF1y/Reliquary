@@ -20,7 +20,7 @@ import xreliquary.util.MobHelper;
 
 public class TwilightCloakItem extends ToggleableItem implements IBaubleItem {
 	public TwilightCloakItem() {
-		super("twilight_cloak", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 		MinecraftForge.EVENT_BUS.addListener(this::onEntityTargetedEvent);
 		MinecraftForge.EVENT_BUS.addListener(this::onLivingUpdate);
 	}

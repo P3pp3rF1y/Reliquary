@@ -20,7 +20,6 @@ import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
@@ -35,20 +34,14 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ObjectHolder;
 import xreliquary.blocks.ApothecaryCauldronBlock;
-import xreliquary.client.init.ModParticles;
 import xreliquary.client.particle.BubbleColorParticleData;
-import xreliquary.client.particle.ColorParticleData;
 import xreliquary.client.particle.SteamColorParticleData;
 import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.PotionEssenceItem;
-import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
-import xreliquary.util.InjectionHelper;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.potions.XRPotionHelper;
 
@@ -57,9 +50,6 @@ import java.util.List;
 import java.util.Set;
 
 public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWailaDataChangeIndicator, ITickableTileEntity {
-	@SuppressWarnings("WeakerAccess") // need to keep this public so that forge can inject into ObjectHolder
-	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.APOTHECARY_CAULDRON)
-	public static final TileEntityType<ApothecaryCauldronTileEntity> TYPE = InjectionHelper.nullValue();
 	private int redstoneCount = 0;
 	private List<EffectInstance> effects = Lists.newArrayList();
 	private int glowstoneCount = 0;
@@ -71,7 +61,7 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 	private boolean dataChanged;
 
 	public ApothecaryCauldronTileEntity() {
-		super(TYPE);
+		super(ModBlocks.APOTHECARY_CAULDRON_TILE_TYPE.get());
 		dataChanged = true;
 	}
 
@@ -232,11 +222,11 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 	private ItemStack removeContainedPotion() {
 		ItemStack potion;
 		if (hasDragonBreath) {
-			potion = new ItemStack(ModItems.LINGERING_POTION);
+			potion = new ItemStack(ModItems.LINGERING_POTION.get());
 		} else if (hasGunpowder) {
-			potion = new ItemStack(ModItems.SPLASH_POTION);
+			potion = new ItemStack(ModItems.SPLASH_POTION.get());
 		} else {
-			potion = new ItemStack(ModItems.POTION);
+			potion = new ItemStack(ModItems.POTION.get());
 		}
 		XRPotionHelper.addPotionEffectsToStack(potion, XRPotionHelper.augmentPotionEffects(effects, redstoneCount, glowstoneCount));
 
@@ -394,7 +384,7 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 
 		if (getLiquidLevel() < 3 && !finishedCooking()) {
 			return fillWithWater(player, hand, itemStack);
-		} else if (itemStack.getItem() == ModItems.EMPTY_POTION_VIAL && finishedCooking() && getLiquidLevel() > 0) {
+		} else if (itemStack.getItem() == ModItems.EMPTY_POTION_VIAL.get() && finishedCooking() && getLiquidLevel() > 0) {
 			if (fillVial(world, player, hand, itemStack)) {
 				return ActionResultType.SUCCESS;
 			}
@@ -467,7 +457,7 @@ public class ApothecaryCauldronTileEntity extends TileEntityBase implements IWai
 			BlockState blockState = world.getBlockState(getPos());
 			blockState = blockState.with(ApothecaryCauldronBlock.LEVEL, liquidLevel);
 			world.setBlockState(getPos(), blockState);
-			world.updateComparatorOutputLevel(pos, ModBlocks.APOTHECARY_CAULDRON);
+			world.updateComparatorOutputLevel(pos, ModBlocks.APOTHECARY_CAULDRON.get());
 		}
 	}
 

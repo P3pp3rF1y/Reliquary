@@ -20,9 +20,11 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemBase extends Item {
-	public ItemBase(String registryName, Properties properties) {
+	public ItemBase() {
+		this(new Properties());
+	}
+	public ItemBase(Properties properties) {
 		super(properties.group(Reliquary.ITEM_GROUP));
-		setRegistryName(Reference.MOD_ID, registryName);
 	}
 
 	@Override

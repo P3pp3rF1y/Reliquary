@@ -58,7 +58,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 	private static final String ERUPTION_MODE = "eruption";
 
 	public PyromancerStaffItem() {
-		super("pyromancer_staff", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override

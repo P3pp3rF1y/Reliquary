@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "W  ",
+    "W  ",
+    " W "
+  ],
+  "key": {
+    "W": {
+      "item": "xreliquary:witch_hat"
+    }
+  },
+  "result": {
+    "item": "minecraft:glowstone_dust",
+    "count": 6
+  }
+}

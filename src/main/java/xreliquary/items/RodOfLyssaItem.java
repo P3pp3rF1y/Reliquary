@@ -18,7 +18,7 @@ import xreliquary.util.NBTHelper;
 
 public class RodOfLyssaItem extends ItemBase {
 	public RodOfLyssaItem() {
-		super("rod_of_lyssa", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	public static int getHookEntityId(ItemStack stack) {

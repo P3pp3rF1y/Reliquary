@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:holy_hand_grenade"
+    ]
+  },
+  "criteria": {
+    "has_glowing_water": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:glowing_water"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:holy_hand_grenade"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_glowing_water",
+      "has_the_recipe"
+    ]
+  ]
+}

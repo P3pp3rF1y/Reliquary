@@ -56,7 +56,7 @@ public class AlkahestryCraftingRecipeCategory extends AlkahestryRecipeCategory<A
 		ingredients.setInputIngredients(recipe.getIngredients());
 		NonNullList<ItemStack> outputs = NonNullList.create();
 		outputs.add(recipe.getRecipeOutput());
-		outputs.add(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME),
+		outputs.add(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()),
 				Settings.COMMON.items.alkahestryTome.chargeLimit.get() - recipe.getChargeNeeded()));
 		ingredients.setOutputs(VanillaTypes.ITEM, outputs);
 	}

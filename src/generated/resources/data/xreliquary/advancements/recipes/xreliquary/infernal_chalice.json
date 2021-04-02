@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:infernal_chalice"
+    ]
+  },
+  "criteria": {
+    "has_emperor_chalice": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:emperor_chalice"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:infernal_chalice"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_emperor_chalice",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -33,7 +33,7 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 		this.id = id;
 		this.craftingIngredient = craftingIngredient;
 		this.chargeNeeded = chargeNeeded;
-		tomeIngredient = Ingredient.fromStacks(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME), Settings.COMMON.items.alkahestryTome.chargeLimit.get()));
+		tomeIngredient = Ingredient.fromStacks(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), Settings.COMMON.items.alkahestryTome.chargeLimit.get()));
 		this.resultCount = resultCount;
 		result = craftingIngredient.getMatchingStacks()[0].copy();
 		result.setCount(resultCount);
@@ -53,7 +53,7 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 				if (craftingIngredient.test(slotStack)) {
 					inRecipe = true;
 					hasIngredient = true;
-				} else if (!hasTome && slotStack.getItem() == ModItems.ALKAHESTRY_TOME && AlkahestryTomeItem.getCharge(slotStack) >= chargeNeeded) {
+				} else if (!hasTome && slotStack.getItem() == ModItems.ALKAHESTRY_TOME.get() && AlkahestryTomeItem.getCharge(slotStack) >= chargeNeeded) {
 					inRecipe = true;
 					hasTome = true;
 				}
@@ -78,7 +78,7 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 		for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
 			ItemStack stack = inv.getStackInSlot(slot);
 
-			if (!stack.isEmpty() && stack.getItem() != ModItems.ALKAHESTRY_TOME) {
+			if (!stack.isEmpty() && stack.getItem() != ModItems.ALKAHESTRY_TOME.get()) {
 				ItemStack craftingResult = stack.copy();
 				craftingResult.setCount(resultCount);
 				return craftingResult;
@@ -125,9 +125,9 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 		for (int slot = 0; slot < remainingItems.size(); slot++) {
 			ItemStack stack = inv.getStackInSlot(slot);
 
-			if (stack.getItem() == ModItems.ALKAHESTRY_TOME) {
+			if (stack.getItem() == ModItems.ALKAHESTRY_TOME.get()) {
 				ItemStack tome = stack.copy();
-				ModItems.ALKAHESTRY_TOME.useCharge(tome, chargeNeeded);
+				ModItems.ALKAHESTRY_TOME.get().useCharge(tome, chargeNeeded);
 				remainingItems.set(slot, tome);
 
 				break;
@@ -147,11 +147,6 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<AlkahestryCraftingRecipe> {
 		@Override
 		public AlkahestryCraftingRecipe read(ResourceLocation recipeId, JsonObject json) {
-			if (Boolean.TRUE.equals(Settings.COMMON.disable.disableAlkahestry.get())) {
-				//noinspection ConstantConditions - this is the easiest way to disable recipes without having to code special condition and adding to every recipe
-				return null;
-			}
-
 			if (!json.has("ingredient")) {
 				throw new JsonParseException("No ingredient for alkahestry crafting recipe");
 			}

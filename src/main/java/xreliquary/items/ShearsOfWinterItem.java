@@ -42,7 +42,6 @@ import java.util.Random;
 public class ShearsOfWinterItem extends ShearsItem {
 	public ShearsOfWinterItem() {
 		super(new Properties().group(Reliquary.ITEM_GROUP).maxDamage(0));
-		setRegistryName(new ResourceLocation(Reference.MOD_ID, "shears_of_winter"));
 	}
 
 	@Override

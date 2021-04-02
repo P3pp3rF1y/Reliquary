@@ -73,7 +73,7 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 	private static final int AOE_START_COOLDOWN = 10;
 
 	public HarvestRodItem() {
-		super("harvest_rod", new Properties().maxStackSize(1).setNoRepair());
+		super(new Properties().maxStackSize(1).setNoRepair());
 	}
 
 	@Override

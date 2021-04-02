@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:twilight_cloak"
+    ]
+  },
+  "criteria": {
+    "has_crimson_cloth": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:crimson_cloth"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:twilight_cloak"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_crimson_cloth",
+      "has_the_recipe"
+    ]
+  ]
+}

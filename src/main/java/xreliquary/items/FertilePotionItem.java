@@ -13,7 +13,7 @@ import xreliquary.init.ModItems;
 
 public class FertilePotionItem extends ItemBase {
 	public FertilePotionItem() {
-		super("fertile_potion", new Properties());
+		super(new Properties());
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class FertilePotionItem extends ItemBase {
 
 	@Override
 	public ItemStack getContainerItem(ItemStack stack) {
-		return new ItemStack(ModItems.EMPTY_POTION_VIAL);
+		return new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 	}
 
 	@Override

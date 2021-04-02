@@ -17,8 +17,8 @@ public class ToggleableItem extends ItemBase {
 
 	private static final String ENABLED_TAG = "enabled";
 
-	public ToggleableItem(String langName, Properties properties) {
-		super(langName, properties);
+	public ToggleableItem(Properties properties) {
+		super(properties);
 	}
 
 	@Override

@@ -6,19 +6,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.registries.ObjectHolder;
 import xreliquary.compat.waila.provider.IWailaDataChangeIndicator;
+import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
-import xreliquary.util.InjectionHelper;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.WorldHelper;
 import xreliquary.util.potions.PotionIngredient;
@@ -29,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApothecaryMortarTileEntity extends TileEntityBase implements IWailaDataChangeIndicator {
-	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.APOTHECARY_MORTAR)
-	public static final TileEntityType<ApothecaryMortarTileEntity> TYPE = InjectionHelper.nullValue();
 	private static final int PESTLE_USAGE_MAX = 5; // the number of times you have to use the pestle
 	// counts the number of times the player has right clicked the block
 	// arbitrarily setting the number of times the player needs to grind the
@@ -74,7 +68,7 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 	};
 
 	public ApothecaryMortarTileEntity() {
-		super(TYPE);
+		super(ModBlocks.APOTHECARY_MORTAR_TILE_TYPE.get());
 		pestleUsedCounter = 0;
 		dataChanged = true;
 	}
@@ -141,7 +135,7 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 			if (world.isRemote) {
 				return true;
 			}
-			ItemStack resultItem = new ItemStack(ModItems.POTION_ESSENCE);
+			ItemStack resultItem = new ItemStack(ModItems.POTION_ESSENCE.get());
 			XRPotionHelper.addPotionEffectsToStack(resultItem, resultEffects);
 
 			ItemEntity itemEntity = new ItemEntity(world, getPos().getX() + 0.5D, getPos().getY() + 0.5D, getPos().getZ() + 0.5D, resultItem);

@@ -53,20 +53,20 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 
 	private void pushEntities(ItemStack stack, World world, BlockPos pos, RendingGaleItem rendingGale, boolean b) {
 		rendingGale.doRadialPush(world, pos.getX(), pos.getY(), pos.getZ(), null, b);
-		ModItems.RENDING_GALE.setFeatherCount(stack, ModItems.RENDING_GALE.getFeatherCount(stack) - (int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Settings.COMMON.items.rendingGale.pedestalCostPerSecond.get()), true);
+		ModItems.RENDING_GALE.get().setFeatherCount(stack, ModItems.RENDING_GALE.get().getFeatherCount(stack) - (int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Settings.COMMON.items.rendingGale.pedestalCostPerSecond.get()), true);
 	}
 
 	private void buffPlayersWithFlight(ItemStack stack, World world, BlockPos pos) {
 		int flightRange = Settings.COMMON.items.rendingGale.pedestalFlightRange.get();
 
-		if(ModItems.RENDING_GALE.getFeatherCount(stack) >= (RendingGaleItem.getChargeCost() * SECONDS_BETWEEN_BUFF_CHECKS)) {
+		if(ModItems.RENDING_GALE.get().getFeatherCount(stack) >= (RendingGaleItem.getChargeCost() * SECONDS_BETWEEN_BUFF_CHECKS)) {
 			List<PlayerEntity> players = world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB((double) pos.getX() - flightRange, (double) pos.getY() - flightRange, (double) pos.getZ() - flightRange, (double) pos.getX() + flightRange, (double) pos.getY() + flightRange, (double) pos.getZ() + flightRange));
 
 			if(!players.isEmpty()) {
 				for(PlayerEntity player : players) {
 					player.addPotionEffect(new EffectInstance(ModPotions.potionFlight, 20 * 20));
 				}
-				ModItems.RENDING_GALE.setFeatherCount(stack, ModItems.RENDING_GALE.getFeatherCount(stack) - (SECONDS_BETWEEN_BUFF_CHECKS * Settings.COMMON.items.rendingGale.pedestalCostPerSecond.get()), true);
+				ModItems.RENDING_GALE.get().setFeatherCount(stack, ModItems.RENDING_GALE.get().getFeatherCount(stack) - (SECONDS_BETWEEN_BUFF_CHECKS * Settings.COMMON.items.rendingGale.pedestalCostPerSecond.get()), true);
 			}
 		}
 	}

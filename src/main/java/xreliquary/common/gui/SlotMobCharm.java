@@ -19,12 +19,12 @@ class SlotMobCharm extends Slot {
 
 	@Override
 	public ItemStack getStack() {
-		return ModItems.MOB_CHARM_BELT.getMobCharmInSlot(belt, getSlotIndex());
+		return ModItems.MOB_CHARM_BELT.get().getMobCharmInSlot(belt, getSlotIndex());
 	}
 
 	@Override
 	public void putStack( ItemStack stack) {
-		ModItems.MOB_CHARM_BELT.putMobCharmInSlot(belt, getSlotIndex(), stack);
+		ModItems.MOB_CHARM_BELT.get().putMobCharmInSlot(belt, getSlotIndex(), stack);
 	}
 
 	@Override
@@ -44,16 +44,16 @@ class SlotMobCharm extends Slot {
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack mobCharm = ModItems.MOB_CHARM_BELT.getMobCharmInSlot(belt, getSlotIndex());
+		ItemStack mobCharm = ModItems.MOB_CHARM_BELT.get().getMobCharmInSlot(belt, getSlotIndex());
 
-		ModItems.MOB_CHARM_BELT.removeMobCharmInSlot(belt, getSlotIndex());
+		ModItems.MOB_CHARM_BELT.get().removeMobCharmInSlot(belt, getSlotIndex());
 
 		return mobCharm;
 	}
 
 	@Override
 	public boolean isItemValid(ItemStack stack) {
-		return stack.getItem() == ModItems.MOB_CHARM;
+		return stack.getItem() == ModItems.MOB_CHARM.get();
 	}
 
 	@Override

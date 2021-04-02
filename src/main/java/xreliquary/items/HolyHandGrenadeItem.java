@@ -16,7 +16,7 @@ import xreliquary.entities.HolyHandGrenadeEntity;
 public class HolyHandGrenadeItem extends ItemBase {
 
 	public HolyHandGrenadeItem() {
-		super("holy_hand_grenade", new Properties());
+		super(new Properties());
 	}
 
 	@Override

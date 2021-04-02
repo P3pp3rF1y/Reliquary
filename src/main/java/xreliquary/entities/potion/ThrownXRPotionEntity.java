@@ -82,7 +82,7 @@ public class ThrownXRPotionEntity extends ThrowableEntity implements IEntityAddi
 			List<EffectInstance> effects = ((IPotionItem) potion.getItem()).getEffects(potion);
 
 			int color = PotionUtils.getPotionColorFromEffectList(effects);
-			if (potion.getItem() == ModItems.LINGERING_POTION) {
+			if (potion.getItem() == ModItems.LINGERING_POTION.get()) {
 				spawnAreaEffectCloud(effects, color);
 			} else {
 				splashPotion(result, effects);

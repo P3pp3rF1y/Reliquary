@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:rod_of_lyssa"
+    ]
+  },
+  "criteria": {
+    "has_infernal_claw": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:infernal_claw"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:rod_of_lyssa"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_infernal_claw",
+      "has_the_recipe"
+    ]
+  ]
+}

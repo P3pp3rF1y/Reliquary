@@ -21,7 +21,7 @@ public class SpawnEggRecipeMaker {
 		List<ShapelessRecipe> recipes = new ArrayList<>();
 
 		for (String regName : MobCharmRegistry.getRegisteredNames()) {
-			Ingredient fragmentIngredient = Ingredient.fromStacks(ModItems.MOB_CHARM_FRAGMENT.getStackFor(regName));
+			Ingredient fragmentIngredient = Ingredient.fromStacks(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName));
 			Ingredient eggIngredient = Ingredient.fromItems(Items.EGG);
 
 			NonNullList<Ingredient> inputs = NonNullList.create();

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "STS",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "xreliquary:guardian_spike"
+    },
+    "S": {
+      "tag": "forge:dusts/prismarine"
+    },
+    "T": {
+      "item": "minecraft:cod"
+    }
+  },
+  "result": {
+    "item": "xreliquary:mob_charm_fragment",
+    "nbt": "{entity:\"minecraft:guardian\"}"
+  }
+}

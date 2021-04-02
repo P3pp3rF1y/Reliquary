@@ -57,7 +57,7 @@ public class MobCharmBeltGui extends GuiBase<ContainerMobCharmBelt> {
 	}
 
 	private void updateMobCharmSlots(MatrixStack matrixStack, int centerX, int centerY) {
-		int slots = ModItems.MOB_CHARM_BELT.getCharmCount(belt);
+		int slots = ModItems.MOB_CHARM_BELT.get().getCharmCount(belt);
 		slots = Math.min(slots, MobCharmRegistry.getRegisteredNames().size());
 
 		double radius = 44.0;

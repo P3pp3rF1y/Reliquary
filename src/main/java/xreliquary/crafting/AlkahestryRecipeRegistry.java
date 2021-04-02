@@ -2,12 +2,15 @@ package xreliquary.crafting;
 
 import com.google.common.collect.Lists;
 
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class AlkahestryRecipeRegistry {
 	private AlkahestryRecipeRegistry() {}
 
-	private static AlkahestryDrainRecipe drainRecipe;
+	@Nullable
+	private static AlkahestryDrainRecipe drainRecipe = null;
 	private static final List<AlkahestryCraftingRecipe> craftingRecipes = Lists.newArrayList();
 	private static final List<AlkahestryChargingRecipe> chargingRecipes = Lists.newArrayList();
 
@@ -15,8 +18,8 @@ public class AlkahestryRecipeRegistry {
 		AlkahestryRecipeRegistry.drainRecipe = drainRecipe;
 	}
 
-	public static AlkahestryDrainRecipe getDrainRecipe() {
-		return drainRecipe;
+	public static Optional<AlkahestryDrainRecipe> getDrainRecipe() {
+		return Optional.ofNullable(drainRecipe);
 	}
 
 	public static List<AlkahestryCraftingRecipe> getCraftingRecipes() {

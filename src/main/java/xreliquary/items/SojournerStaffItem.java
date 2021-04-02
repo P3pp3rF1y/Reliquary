@@ -44,7 +44,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 	private static final String CURRENT_INDEX_TAG = "Current";
 
 	public SojournerStaffItem() {
-		super("sojourner_staff", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override

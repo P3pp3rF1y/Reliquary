@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:mob_charm_belt"
+    ]
+  },
+  "criteria": {
+    "has_mob_charm_fragment": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:mob_charm_fragment"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:mob_charm_belt"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_mob_charm_fragment",
+      "has_the_recipe"
+    ]
+  ]
+}

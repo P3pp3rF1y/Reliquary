@@ -34,7 +34,7 @@ public class GlacialStaffItem extends IceMagusRodItem {
 	private static final String BLOCK_LOCATIONS_TAG = "blockLocations";
 
 	public GlacialStaffItem() {
-		super("glacial_staff");
+		super();
 	}
 
 	@Override

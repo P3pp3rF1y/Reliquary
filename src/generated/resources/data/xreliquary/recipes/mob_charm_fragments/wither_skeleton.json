@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "STS",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "xreliquary:withered_rib"
+    },
+    "S": {
+      "item": "minecraft:bone"
+    },
+    "T": {
+      "item": "minecraft:wither_skeleton_skull"
+    }
+  },
+  "result": {
+    "item": "xreliquary:mob_charm_fragment",
+    "nbt": "{entity:\"minecraft:wither_skeleton\"}"
+  }
+}

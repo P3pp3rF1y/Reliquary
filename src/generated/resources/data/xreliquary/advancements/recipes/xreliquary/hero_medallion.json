@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:hero_medallion"
+    ]
+  },
+  "criteria": {
+    "has_infernal_tear": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:infernal_tear"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:hero_medallion"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_infernal_tear",
+      "has_the_recipe"
+    ]
+  ]
+}

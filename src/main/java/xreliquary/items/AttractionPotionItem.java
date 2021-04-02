@@ -14,7 +14,7 @@ import xreliquary.init.ModItems;
 public class AttractionPotionItem extends ItemBase {
 
 	public AttractionPotionItem() {
-		super("attraction_potion", new Properties());
+		super(new Properties());
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class AttractionPotionItem extends ItemBase {
 
 	@Override
 	public ItemStack getContainerItem( ItemStack stack) {
-		return new ItemStack(ModItems.EMPTY_POTION_VIAL);
+		return new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 	}
 
 

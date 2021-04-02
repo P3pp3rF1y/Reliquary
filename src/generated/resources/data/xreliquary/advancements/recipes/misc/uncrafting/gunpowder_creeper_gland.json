@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:uncrafting/gunpowder_creeper_gland"
+    ]
+  },
+  "criteria": {
+    "has_catalyzing_gland": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:catalyzing_gland"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:uncrafting/gunpowder_creeper_gland"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_catalyzing_gland",
+      "has_the_recipe"
+    ]
+  ]
+}

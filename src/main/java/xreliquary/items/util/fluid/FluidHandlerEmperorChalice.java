@@ -57,7 +57,7 @@ public class FluidHandlerEmperorChalice implements IFluidHandlerItem, ICapabilit
 
 	@Override
 	public int fill(FluidStack resource, FluidAction action) {
-		if (!ModItems.EMPEROR_CHALICE.isEnabled(chalice) || resource.isEmpty() || resource.getFluid() != Fluids.WATER) {
+		if (!ModItems.EMPEROR_CHALICE.get().isEnabled(chalice) || resource.isEmpty() || resource.getFluid() != Fluids.WATER) {
 			return 0;
 		}
 		return resource.getAmount();
@@ -66,7 +66,7 @@ public class FluidHandlerEmperorChalice implements IFluidHandlerItem, ICapabilit
 
 	@Override
 	public FluidStack drain(FluidStack resource, FluidAction action) {
-		if (ModItems.EMPEROR_CHALICE.isEnabled(chalice) || resource.isEmpty() || resource.getFluid() != Fluids.WATER) {
+		if (ModItems.EMPEROR_CHALICE.get().isEnabled(chalice) || resource.isEmpty() || resource.getFluid() != Fluids.WATER) {
 			return FluidStack.EMPTY;
 		}
 		return new FluidStack(Fluids.WATER, Math.min(FluidAttributes.BUCKET_VOLUME, resource.getAmount()));
@@ -75,7 +75,7 @@ public class FluidHandlerEmperorChalice implements IFluidHandlerItem, ICapabilit
 
 	@Override
 	public FluidStack drain(int maxDrain, FluidAction action) {
-		if (ModItems.EMPEROR_CHALICE.isEnabled(chalice)) {
+		if (ModItems.EMPEROR_CHALICE.get().isEnabled(chalice)) {
 			return FluidStack.EMPTY;
 		}
 		return new FluidStack(Fluids.WATER, Math.min(FluidAttributes.BUCKET_VOLUME, maxDrain));

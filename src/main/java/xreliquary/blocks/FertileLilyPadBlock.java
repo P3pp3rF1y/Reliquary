@@ -18,8 +18,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
-import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
 import java.util.Random;
@@ -34,7 +32,6 @@ public class FertileLilyPadBlock extends BushBlock {
 
 	public FertileLilyPadBlock() {
 		super(Properties.create(Material.PLANTS).tickRandomly());
-		setRegistryName(Reference.MOD_ID, Names.Blocks.FERTILE_LILY_PAD);
 	}
 
 	@Override

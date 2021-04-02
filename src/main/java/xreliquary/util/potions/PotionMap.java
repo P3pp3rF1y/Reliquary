@@ -257,8 +257,8 @@ public class PotionMap {
 		addPotionIngredient(potionMap, Items.BAKED_POTATO, satur(0), regen(1, 0));
 		addPotionIngredient(potionMap, Items.POISONOUS_POTATO, poison(2), wither(1, 0));
 		addPotionIngredient(potionMap, Items.QUARTZ, harm(0), dboost(4, 0));
-		addPotionIngredient(potionMap, ModItems.ZOMBIE_HEART, nausea(2), hunger(2), wither(1, 0));
-		addPotionIngredient(potionMap, ModItems.SQUID_BEAK, hunger(2), breath(2));
+		addPotionIngredient(potionMap, ModItems.ZOMBIE_HEART.get(), nausea(2), hunger(2), wither(1, 0));
+		addPotionIngredient(potionMap, ModItems.SQUID_BEAK.get(), hunger(2), breath(2));
 
 		//TIER THREE INGREDIENTS, these are closer to vanilla durations, carry many effects or a slightly increased duration. Some/most are combos.
 		addPotionIngredient(potionMap, Items.PUMPKIN_PIE, invis(1), fireres(1), speed(3, 0), haste(3, 0), absorb(3, 0), regen(0, 0)); //combination of ingredients, strong.
@@ -268,30 +268,30 @@ public class PotionMap {
 		addPotionIngredient(potionMap, Items.FERMENTED_SPIDER_EYE, vision(4), poison(2), speed(3, 0), haste(3, 0)); //combo
 		addPotionIngredient(potionMap, Items.GOLDEN_CARROT, dboost(3, 0), haste(3, 0), hboost(3, 0), vision(3)); //combo
 		addPotionIngredient(potionMap, Items.GOLD_INGOT, dboost(4, 0), haste(4, 0), cure(0)); //combo
-		addPotionIngredient(potionMap, ModItems.RIB_BONE, weak(3, 0), fatigue(3, 0), cure(0));
+		addPotionIngredient(potionMap, ModItems.RIB_BONE.get(), weak(3, 0), fatigue(3, 0), cure(0));
 		addPotionIngredient(potionMap, Items.ENDER_PEARL, invis(5), speed(5, 0));
 		addPotionIngredient(potionMap, Items.BLAZE_ROD, dboost(8, 0), harm(0));
 		addPotionIngredient(potionMap, Items.FIRE_CHARGE, dboost(4, 0), harm(0), blind(1), absorb(3, 0)); //combo
-		addPotionIngredient(potionMap, ModItems.CATALYZING_GLAND, regen(3, 0), hboost(5, 0));
-		addPotionIngredient(potionMap, ModItems.CHELICERAE, poison(3), weak(3, 0));
-		addPotionIngredient(potionMap, ModItems.SLIME_PEARL, resist(5, 0), absorb(5, 0));
-		addPotionIngredient(potionMap, ModItems.KRAKEN_SHELL_FRAGMENT, absorb(5, 0), breath(5));
-		addPotionIngredient(potionMap, ModItems.BAT_WING, jump(5, 0), weak(3, 0));
+		addPotionIngredient(potionMap, ModItems.CATALYZING_GLAND.get(), regen(3, 0), hboost(5, 0));
+		addPotionIngredient(potionMap, ModItems.CHELICERAE.get(), poison(3), weak(3, 0));
+		addPotionIngredient(potionMap, ModItems.SLIME_PEARL.get(), resist(5, 0), absorb(5, 0));
+		addPotionIngredient(potionMap, ModItems.KRAKEN_SHELL_FRAGMENT.get(), absorb(5, 0), breath(5));
+		addPotionIngredient(potionMap, ModItems.BAT_WING.get(), jump(5, 0), weak(3, 0));
 		addPotionIngredient(potionMap, Items.GOLDEN_APPLE, cure(1));
 		addPotionIngredient(potionMap, Items.GOLDEN_APPLE, cure(2));
 
 		//TIER FOUR INGREDIENTS, these carry multiple one-potency effects and have the most duration for any given effect.
 		addPotionIngredient(potionMap, Items.DIAMOND, resist(6, 1), absorb(6, 1), fireres(6), cure(0));
-		addPotionIngredient(potionMap, ModItems.WITHERED_RIB, wither(2, 1), weak(3, 1), slow(3, 1), fatigue(3, 1), cure(0));
+		addPotionIngredient(potionMap, ModItems.WITHERED_RIB.get(), wither(2, 1), weak(3, 1), slow(3, 1), fatigue(3, 1), cure(0));
 		addPotionIngredient(potionMap, Items.ENDER_EYE, dboost(6, 1), invis(6), speed(6, 1), harm(1));
 		addPotionIngredient(potionMap, Items.EMERALD, haste(6, 1), speed(6, 1), hboost(6, 1), cure(1));
 		addPotionIngredient(potionMap, Items.NETHER_STAR, hboost(24, 1), regen(24, 1), absorb(24, 1), cure(2)); //nether star is holy stonk
-		addPotionIngredient(potionMap, ModItems.MOLTEN_CORE, dboost(6, 1), fireres(6), harm(1));
-		addPotionIngredient(potionMap, ModItems.EYE_OF_THE_STORM, haste(24, 1), speed(24, 1), jump(24, 1), harm(1), cure(1));
-		addPotionIngredient(potionMap, ModItems.FERTILE_ESSENCE, hboost(8, 1), regen(3, 1), heal(1), satur(1), weak(9, 1), fatigue(9, 1), cure(0));
-		addPotionIngredient(potionMap, ModItems.FROZEN_CORE, absorb(6, 1), slow(3, 1), fatigue(3, 1), harm(1), fireres(6));
-		addPotionIngredient(potionMap, ModItems.NEBULOUS_HEART, vision(6), invis(6), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
-		addPotionIngredient(potionMap, ModItems.INFERNAL_CLAW, harm(1), resist(6, 1), fireres(6), dboost(6, 1), satur(1), heal(1));
+		addPotionIngredient(potionMap, ModItems.MOLTEN_CORE.get(), dboost(6, 1), fireres(6), harm(1));
+		addPotionIngredient(potionMap, ModItems.EYE_OF_THE_STORM.get(), haste(24, 1), speed(24, 1), jump(24, 1), harm(1), cure(1));
+		addPotionIngredient(potionMap, ModItems.FERTILE_ESSENCE.get(), hboost(8, 1), regen(3, 1), heal(1), satur(1), weak(9, 1), fatigue(9, 1), cure(0));
+		addPotionIngredient(potionMap, ModItems.FROZEN_CORE.get(), absorb(6, 1), slow(3, 1), fatigue(3, 1), harm(1), fireres(6));
+		addPotionIngredient(potionMap, ModItems.NEBULOUS_HEART.get(), vision(6), invis(6), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
+		addPotionIngredient(potionMap, ModItems.INFERNAL_CLAW.get(), harm(1), resist(6, 1), fireres(6), dboost(6, 1), satur(1), heal(1));
 
 		return potionMap;
 	}

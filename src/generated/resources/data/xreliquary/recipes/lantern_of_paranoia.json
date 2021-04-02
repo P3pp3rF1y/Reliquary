@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ISI",
+    "GMG",
+    " I "
+  ],
+  "key": {
+    "S": {
+      "item": "xreliquary:slime_pearl"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "M": {
+      "item": "xreliquary:molten_core"
+    }
+  },
+  "result": {
+    "item": "xreliquary:lantern_of_paranoia"
+  }
+}

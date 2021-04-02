@@ -38,8 +38,10 @@ import java.util.List;
 
 public class HeroMedallionItem extends ToggleableItem implements IPedestalActionItem {
 
+	private static final String EXPERIENCE_TAG = "experience";
+
 	public HeroMedallionItem() {
-		super("hero_medallion", new Properties().maxDamage(0).setNoRepair());
+		super(new Properties().maxDamage(0).setNoRepair());
 	}
 
 	@Override
@@ -56,7 +58,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack medallion, @Nullable World world, List<ITextComponent> tooltip) {
-		int experience = NBTHelper.getInt("experience", medallion);
+		int experience = NBTHelper.getInt(EXPERIENCE_TAG, medallion);
 		int levels = XpHelper.getLevelForExperience(experience);
 		int remainingExperience = experience - XpHelper.getExperienceForLevel(levels);
 
@@ -132,11 +134,11 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	}
 
 	public int getExperience(ItemStack stack) {
-		return NBTHelper.getInt("experience", stack);
+		return NBTHelper.getInt(EXPERIENCE_TAG, stack);
 	}
 
 	public void setExperience(ItemStack stack, int i) {
-		NBTHelper.putInt("experience", stack, i);
+		NBTHelper.putInt(EXPERIENCE_TAG, stack, i);
 	}
 
 	@Override

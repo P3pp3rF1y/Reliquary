@@ -22,8 +22,8 @@ class CuriosFortuneCoinToggler extends FortuneCoinToggler {
 			for (int slot = 0; slot < stackHandler.getSlots(); slot++) {
 				ItemStack baubleStack = stackHandler.getStacks().getStackInSlot(slot);
 
-				if (baubleStack.getItem() == ModItems.FORTUNE_COIN) {
-					ModItems.FORTUNE_COIN.toggle(baubleStack);
+				if (baubleStack.getItem() == ModItems.FORTUNE_COIN.get()) {
+					ModItems.FORTUNE_COIN.get().toggle(baubleStack);
 					stackHandler.getStacks().setStackInSlot(slot, baubleStack);
 					PacketHandler.sendToServer(new PacketFortuneCoinTogglePressed(PacketFortuneCoinTogglePressed.InventoryType.CURIOS, slot));
 					return true;

@@ -2,14 +2,10 @@ package xreliquary.crafting;
 
 import com.google.gson.JsonObject;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -18,11 +14,7 @@ import javax.annotation.Nullable;
 
 public class FragmentToSpawnEggRecipe extends ShapelessRecipe {
 	public static final Serializer SERIALIZER = new Serializer();
-	private ShapelessRecipe recipeDelegate;
-
-	public FragmentToSpawnEggRecipe(ResourceLocation idIn, String groupIn, ItemStack recipeOutputIn, NonNullList<Ingredient> recipeItemsIn) {
-		super(idIn, groupIn, recipeOutputIn, recipeItemsIn);
-	}
+	private final ShapelessRecipe recipeDelegate;
 
 	public FragmentToSpawnEggRecipe(ShapelessRecipe recipeDelegate) {
 		super(recipeDelegate.getId(), recipeDelegate.getGroup(), recipeDelegate.getRecipeOutput(), recipeDelegate.getIngredients());

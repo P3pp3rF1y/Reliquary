@@ -32,7 +32,7 @@ public class MobCharmRepairRecipe extends SpecialRecipe {
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack currentStack = inv.getStackInSlot(i);
 			if (!currentStack.isEmpty()) {
-				if (currentStack.getItem() == ModItems.MOB_CHARM) {
+				if (currentStack.getItem() == ModItems.MOB_CHARM.get()) {
 					if (!mobCharm.isEmpty()) {
 						return false;
 					}
@@ -76,7 +76,7 @@ public class MobCharmRepairRecipe extends SpecialRecipe {
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack currentStack = inv.getStackInSlot(i);
 			if (!currentStack.isEmpty()) {
-				if (currentStack.getItem() == ModItems.MOB_CHARM) {
+				if (currentStack.getItem() == ModItems.MOB_CHARM.get()) {
 					mobCharm = currentStack;
 					continue;
 				}

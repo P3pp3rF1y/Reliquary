@@ -29,7 +29,7 @@ public class IceMagusRodItem extends ToggleableItem {
 	private static final String SNOWBALLS_TAG = "snowballs";
 
 	public IceMagusRodItem() {
-		this("ice_magus_rod");
+		super(new Properties().maxStackSize(1).setNoRepair());
 	}
 
 	@Override
@@ -45,10 +45,6 @@ public class IceMagusRodItem extends ToggleableItem {
 	@Override
 	protected boolean hasMoreInformation(ItemStack stack) {
 		return true;
-	}
-
-	IceMagusRodItem(String langName) {
-		super(langName, new Properties().maxStackSize(1).setNoRepair());
 	}
 
 	private int getSnowballCap() {

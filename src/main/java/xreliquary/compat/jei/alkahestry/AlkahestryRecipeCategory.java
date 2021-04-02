@@ -12,7 +12,7 @@ public abstract class AlkahestryRecipeCategory<T> extends ReliquaryRecipeCategor
 
 	AlkahestryRecipeCategory(IGuiHelper guiHelper, ResourceLocation uid) {
 		super(uid);
-		icon = guiHelper.createDrawableIngredient(new ItemStack(ModItems.ALKAHESTRY_TOME));
+		icon = guiHelper.createDrawableIngredient(new ItemStack(ModItems.ALKAHESTRY_TOME.get()));
 	}
 
 	@Override

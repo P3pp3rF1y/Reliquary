@@ -9,12 +9,12 @@ import xreliquary.reference.Reference;
 
 public class ItemTagProvider extends ItemTagsProvider {
 	ItemTagProvider(DataGenerator generator, BlockTagsProvider blockTagsProvider) {
-		super(generator, blockTagsProvider);
+		super(generator, blockTagsProvider, Reference.MOD_ID, null);
 	}
 
 	@Override
 	protected void registerTags() {
-		getOrCreateBuilder(ItemTags.ARROWS).add(ModItems.TIPPED_ARROW);
+		getOrCreateBuilder(ItemTags.ARROWS).add(ModItems.TIPPED_ARROW.get());
 	}
 
 	@Override

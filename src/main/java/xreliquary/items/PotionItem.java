@@ -13,10 +13,6 @@ import xreliquary.init.ModItems;
 import xreliquary.util.potions.XRPotionHelper;
 
 public class PotionItem extends PotionItemBase {
-	public PotionItem() {
-		super("potion");
-	}
-
 	@Override
 	public UseAction getUseAction(ItemStack stack) {
 		return UseAction.DRINK;
@@ -53,7 +49,7 @@ public class PotionItem extends PotionItemBase {
 		XRPotionHelper.applyEffectsToEntity(XRPotionHelper.getPotionEffectsFromStack(stack), player, null, player);
 
 		if (!player.isCreative()) {
-			ItemStack emptyVial = new ItemStack(ModItems.EMPTY_POTION_VIAL);
+			ItemStack emptyVial = new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 			if (stack.getCount() <= 0) {
 				return emptyVial;
 			} else {

@@ -18,14 +18,13 @@ import xreliquary.util.InventoryHelper;
 
 public class AngelicFeatherItem extends ItemBase {
 	public AngelicFeatherItem() {
-		this("angelic_feather");
-
+		super(new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(PlayerEntity player, LivingAttackEvent event) {
 				return event.getSource() == DamageSource.FALL
 						&& player.getFoodStats().getFoodLevel() > 0
-						&& InventoryHelper.playerHasItem(player, ModItems.ANGELIC_FEATHER)
+						&& InventoryHelper.playerHasItem(player, ModItems.ANGELIC_FEATHER.get())
 						&& player.fallDistance > 0.0F;
 			}
 
@@ -41,11 +40,6 @@ public class AngelicFeatherItem extends ItemBase {
 				return HandlerPriority.HIGH;
 			}
 		});
-	}
-
-	// so it can be extended by phoenix down
-	AngelicFeatherItem(String name) {
-		super(name, new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
 	}
 
 	// minor jump buff

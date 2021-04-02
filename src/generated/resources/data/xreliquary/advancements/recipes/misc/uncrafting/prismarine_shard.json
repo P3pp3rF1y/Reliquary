@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:uncrafting/prismarine_shard"
+    ]
+  },
+  "criteria": {
+    "has_guardian_spike": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:guardian_spike"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:uncrafting/prismarine_shard"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_guardian_spike",
+      "has_the_recipe"
+    ]
+  ]
+}

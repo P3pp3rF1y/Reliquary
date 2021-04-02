@@ -41,7 +41,7 @@ import java.util.List;
 public class EmperorChaliceItem extends ToggleableItem {
 
 	public EmperorChaliceItem() {
-		super("emperor_chalice", new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
+		super(new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
 		MinecraftForge.EVENT_BUS.addListener(this::onBlockRightClick);
 	}
 

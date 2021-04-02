@@ -51,7 +51,7 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 	private static final String COUNT_TAG = "count";
 
 	public RendingGaleItem() {
-		super("rending_gale", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override

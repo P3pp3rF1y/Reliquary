@@ -61,8 +61,8 @@ public class ClientEventHandler {
 		if (event.getEntity() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) event.getEntity();
 
-			boolean handgunInOff = player.getHeldItem(Hand.OFF_HAND).getItem() == ModItems.HANDGUN;
-			boolean handgunInMain = player.getHeldItem(Hand.MAIN_HAND).getItem() == ModItems.HANDGUN;
+			boolean handgunInOff = player.getHeldItem(Hand.OFF_HAND).getItem() == ModItems.HANDGUN.get();
+			boolean handgunInMain = player.getHeldItem(Hand.MAIN_HAND).getItem() == ModItems.HANDGUN.get();
 
 			if (handgunInOff || handgunInMain) {
 				setHandgunArmPoses(event, player, handgunInOff, handgunInMain);
@@ -104,7 +104,7 @@ public class ClientEventHandler {
 			return mainValid ? Hand.MAIN_HAND : Hand.OFF_HAND;
 		}
 
-		return ModItems.HANDGUN.getCooldown(player.getHeldItemMainhand()) < ModItems.HANDGUN.getCooldown(player.getHeldItemOffhand()) ? Hand.MAIN_HAND : Hand.OFF_HAND;
+		return ModItems.HANDGUN.get().getCooldown(player.getHeldItemMainhand()) < ModItems.HANDGUN.get().getCooldown(player.getHeldItemOffhand()) ? Hand.MAIN_HAND : Hand.OFF_HAND;
 	}
 
 	private static boolean isHandgunActive(PlayerEntity player, boolean handgunInMain, boolean handgunInOff) {
@@ -113,9 +113,9 @@ public class ClientEventHandler {
 	}
 
 	private static boolean isValidTimeFrame(World world, ItemStack handgun) {
-		long cooldownTime = ModItems.HANDGUN.getCooldown(handgun) + 5;
+		long cooldownTime = ModItems.HANDGUN.get().getCooldown(handgun) + 5;
 
-		return cooldownTime - world.getGameTime() <= ModItems.HANDGUN.getUseDuration(handgun) && cooldownTime >= world.getGameTime();
+		return cooldownTime - world.getGameTime() <= ModItems.HANDGUN.get().getUseDuration(handgun) && cooldownTime >= world.getGameTime();
 	}
 
 	private static final List<Tuple<Component, HUDPosition>> hudComponents = Lists.newArrayList();
@@ -158,41 +158,41 @@ public class ClientEventHandler {
 	}
 
 	private static void initHUDComponents() {
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.ALKAHESTRY_TOME, Settings.CLIENT.hudPositions.alkahestryTome.get(), new ItemStack(Items.REDSTONE), is -> NBTHelper.getInt("charge", is)),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.ALKAHESTRY_TOME.get(), Settings.CLIENT.hudPositions.alkahestryTome.get(), new ItemStack(Items.REDSTONE), is -> NBTHelper.getInt("charge", is)),
 				Settings.CLIENT.hudPositions.alkahestryTome.get()));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.DESTRUCTION_CATALYST, Settings.CLIENT.hudPositions.destructionCatalyst.get(), new ItemStack(Items.GUNPOWDER), is -> NBTHelper.getInt("gunpowder", is)),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.DESTRUCTION_CATALYST.get(), Settings.CLIENT.hudPositions.destructionCatalyst.get(), new ItemStack(Items.GUNPOWDER), is -> NBTHelper.getInt("gunpowder", is)),
 				Settings.CLIENT.hudPositions.destructionCatalyst.get()));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.MIDAS_TOUCHSTONE, Settings.CLIENT.hudPositions.midasTouchstone.get(), new ItemStack(Items.GLOWSTONE_DUST), is -> NBTHelper.getInt("glowstone", is)),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.MIDAS_TOUCHSTONE.get(), Settings.CLIENT.hudPositions.midasTouchstone.get(), new ItemStack(Items.GLOWSTONE_DUST), is -> NBTHelper.getInt("glowstone", is)),
 				Settings.CLIENT.hudPositions.midasTouchstone.get()));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.INFERNAL_CHALICE, Settings.CLIENT.hudPositions.infernalChalice.get(), new ItemStack(Items.LAVA_BUCKET), is -> NBTHelper.getInt("fluidStacks", is) / 1000, Colors.get(Colors.RED)),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.INFERNAL_CHALICE.get(), Settings.CLIENT.hudPositions.infernalChalice.get(), new ItemStack(Items.LAVA_BUCKET), is -> NBTHelper.getInt("fluidStacks", is) / 1000, Colors.get(Colors.RED)),
 				Settings.CLIENT.hudPositions.infernalChalice.get()));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.ICE_MAGUS_ROD, Settings.CLIENT.hudPositions.iceMagusRod.get(), new ItemStack(Items.SNOWBALL), is -> NBTHelper.getInt("snowballs", is)),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.ICE_MAGUS_ROD.get(), Settings.CLIENT.hudPositions.iceMagusRod.get(), new ItemStack(Items.SNOWBALL), is -> NBTHelper.getInt("snowballs", is)),
 				Settings.CLIENT.hudPositions.iceMagusRod.get()));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.GLACIAL_STAFF, Settings.CLIENT.hudPositions.glacialStaff.get(), new ItemStack(Items.SNOWBALL), is -> NBTHelper.getInt("snowballs", is)),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.GLACIAL_STAFF.get(), Settings.CLIENT.hudPositions.glacialStaff.get(), new ItemStack(Items.SNOWBALL), is -> NBTHelper.getInt("snowballs", is)),
 				Settings.CLIENT.hudPositions.glacialStaff.get()));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.ENDER_STAFF, Settings.CLIENT.hudPositions.enderStaff.get(), ModItems.ENDER_STAFF::getMode,
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.ENDER_STAFF.get(), Settings.CLIENT.hudPositions.enderStaff.get(), ModItems.ENDER_STAFF.get()::getMode,
 				ImmutableMap.of(
-						"cast", new ChargePane(ModItems.ENDER_STAFF, new ItemStack(Items.ENDER_PEARL), is -> ModItems.ENDER_STAFF.getPearlCount(is, true)),
-						"node_warp", new ChargePane(ModItems.ENDER_STAFF, new ItemStack(ModBlocks.WRAITH_NODE), is -> ModItems.ENDER_STAFF.getPearlCount(is, true)),
-						"long_cast", new ChargePane(ModItems.ENDER_STAFF, new ItemStack(Items.ENDER_EYE), is -> ModItems.ENDER_STAFF.getPearlCount(is, true))
+						"cast", new ChargePane(ModItems.ENDER_STAFF.get(), new ItemStack(Items.ENDER_PEARL), is -> ModItems.ENDER_STAFF.get().getPearlCount(is, true)),
+						"node_warp", new ChargePane(ModItems.ENDER_STAFF.get(), new ItemStack(ModBlocks.WRAITH_NODE.get()), is -> ModItems.ENDER_STAFF.get().getPearlCount(is, true)),
+						"long_cast", new ChargePane(ModItems.ENDER_STAFF.get(), new ItemStack(Items.ENDER_EYE), is -> ModItems.ENDER_STAFF.get().getPearlCount(is, true))
 				)), Settings.CLIENT.hudPositions.enderStaff.get()));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.PYROMANCER_STAFF, Settings.CLIENT.hudPositions.pyromancerStaff.get(), ModItems.PYROMANCER_STAFF::getMode,
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.PYROMANCER_STAFF.get(), Settings.CLIENT.hudPositions.pyromancerStaff.get(), ModItems.PYROMANCER_STAFF.get()::getMode,
 				ImmutableMap.of(
-						"blaze", new ChargePane(ModItems.PYROMANCER_STAFF, new ItemStack(Items.BLAZE_POWDER), is -> ModItems.PYROMANCER_STAFF.getInternalStorageItemCount(is, Items.BLAZE_POWDER)),
-						"charge", new ChargePane(ModItems.PYROMANCER_STAFF, new ItemStack(Items.FIRE_CHARGE), is -> ModItems.PYROMANCER_STAFF.getInternalStorageItemCount(is, Items.FIRE_CHARGE)),
-						"eruption", Box.createVertical(Box.Alignment.RIGHT, new TextPane("ERUPT"), new ChargePane(ModItems.PYROMANCER_STAFF, new ItemStack(Items.BLAZE_POWDER), is -> ModItems.PYROMANCER_STAFF.getInternalStorageItemCount(is, Items.BLAZE_POWDER))),
+						"blaze", new ChargePane(ModItems.PYROMANCER_STAFF.get(), new ItemStack(Items.BLAZE_POWDER), is -> ModItems.PYROMANCER_STAFF.get().getInternalStorageItemCount(is, Items.BLAZE_POWDER)),
+						"charge", new ChargePane(ModItems.PYROMANCER_STAFF.get(), new ItemStack(Items.FIRE_CHARGE), is -> ModItems.PYROMANCER_STAFF.get().getInternalStorageItemCount(is, Items.FIRE_CHARGE)),
+						"eruption", Box.createVertical(Box.Alignment.RIGHT, new TextPane("ERUPT"), new ChargePane(ModItems.PYROMANCER_STAFF.get(), new ItemStack(Items.BLAZE_POWDER), is -> ModItems.PYROMANCER_STAFF.get().getInternalStorageItemCount(is, Items.BLAZE_POWDER))),
 						"flint_and_steel", new ItemStackPane(Items.FLINT_AND_STEEL)
 				)), Settings.CLIENT.hudPositions.pyromancerStaff.get()));
 
-		ChargePane rendingGaleFeatherPane = new ChargePane(ModItems.RENDING_GALE, new ItemStack(Items.FEATHER), is -> ModItems.RENDING_GALE.getFeatherCountClient(is, Minecraft.getInstance().player) / 100);
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.RENDING_GALE, Settings.CLIENT.hudPositions.rendingGale.get(), ModItems.RENDING_GALE::getMode,
+		ChargePane rendingGaleFeatherPane = new ChargePane(ModItems.RENDING_GALE.get(), new ItemStack(Items.FEATHER), is -> ModItems.RENDING_GALE.get().getFeatherCountClient(is, Minecraft.getInstance().player) / 100);
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.RENDING_GALE.get(), Settings.CLIENT.hudPositions.rendingGale.get(), ModItems.RENDING_GALE.get()::getMode,
 				ImmutableMap.of(
 						"push", Box.createVertical(Box.Alignment.RIGHT, new TextPane("PUSH"), rendingGaleFeatherPane),
 						"pull", Box.createVertical(Box.Alignment.RIGHT, new TextPane("PULL"), rendingGaleFeatherPane),
@@ -200,9 +200,9 @@ public class ClientEventHandler {
 						"flight", Box.createVertical(Box.Alignment.RIGHT, new TextPane("FLIGHT"), rendingGaleFeatherPane)
 				)), Settings.CLIENT.hudPositions.rendingGale.get()));
 
-		Component contentsPane = new DynamicChargePane(ModItems.VOID_TEAR,
+		Component contentsPane = new DynamicChargePane(ModItems.VOID_TEAR.get(),
 				is -> VoidTearItem.getTearContents(is, true), is -> VoidTearItem.getTearContents(is, true).getCount());
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.VOID_TEAR, Settings.CLIENT.hudPositions.voidTear.get(), is -> ModItems.VOID_TEAR.getMode(is).getString(),
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.VOID_TEAR.get(), Settings.CLIENT.hudPositions.voidTear.get(), is -> ModItems.VOID_TEAR.get().getMode(is).getString(),
 				ImmutableMap.of(
 						VoidTearItem.Mode.FULL_INVENTORY.getString(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization(VOID_TEAR_MODE_TRANSLATION + VoidTearItem.Mode.FULL_INVENTORY.getString().toLowerCase())), contentsPane),
 						VoidTearItem.Mode.NO_REFILL.getString(), Box.createVertical(Box.Alignment.RIGHT, new TextPane(LanguageHelper.getLocalization(VOID_TEAR_MODE_TRANSLATION + VoidTearItem.Mode.NO_REFILL.getString().toLowerCase())), contentsPane),
@@ -210,20 +210,20 @@ public class ClientEventHandler {
 				)) {
 			@Override
 			public boolean shouldRender() {
-				return !VoidTearItem.isEmpty(InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, ModItems.VOID_TEAR), true);
+				return !VoidTearItem.isEmpty(InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, ModItems.VOID_TEAR.get()), true);
 			}
 		}, Settings.CLIENT.hudPositions.voidTear.get()));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.HARVEST_ROD, Settings.CLIENT.hudPositions.harvestRod.get(), ModItems.HARVEST_ROD::getMode,
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.HARVEST_ROD.get(), Settings.CLIENT.hudPositions.harvestRod.get(), ModItems.HARVEST_ROD.get()::getMode,
 				ImmutableMap.of(
-						HarvestRodItem.BONE_MEAL_MODE, new ChargePane(ModItems.HARVEST_ROD, new ItemStack(Items.BONE_MEAL), is -> ModItems.HARVEST_ROD.getBoneMealCount(is, true)),
+						HarvestRodItem.BONE_MEAL_MODE, new ChargePane(ModItems.HARVEST_ROD.get(), new ItemStack(Items.BONE_MEAL), is -> ModItems.HARVEST_ROD.get().getBoneMealCount(is, true)),
 						HarvestRodItem.HOE_MODE, new ItemStackPane(Items.WOODEN_HOE),
-						ChargeableItemInfoPane.DYNAMIC_PANE, new DynamicChargePane(ModItems.HARVEST_ROD, is -> ModItems.HARVEST_ROD.getCurrentPlantable(is, true), is -> ModItems.HARVEST_ROD.getPlantableQuantity(is, ModItems.HARVEST_ROD.getCurrentPlantableSlot(is), true))
+						ChargeableItemInfoPane.DYNAMIC_PANE, new DynamicChargePane(ModItems.HARVEST_ROD.get(), is -> ModItems.HARVEST_ROD.get().getCurrentPlantable(is, true), is -> ModItems.HARVEST_ROD.get().getPlantableQuantity(is, ModItems.HARVEST_ROD.get().getCurrentPlantableSlot(is), true))
 				)), Settings.CLIENT.hudPositions.harvestRod.get()));
 
-		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.SOJOURNER_STAFF, Settings.CLIENT.hudPositions.sojournerStaff.get(), is -> ChargeableItemInfoPane.DYNAMIC_PANE,
+		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.SOJOURNER_STAFF.get(), Settings.CLIENT.hudPositions.sojournerStaff.get(), is -> ChargeableItemInfoPane.DYNAMIC_PANE,
 				ImmutableMap.of(
-						ChargeableItemInfoPane.DYNAMIC_PANE, new DynamicChargePane(ModItems.SOJOURNER_STAFF, ModItems.SOJOURNER_STAFF::getCurrentTorch, ModItems.SOJOURNER_STAFF::getTorchCount)
+						ChargeableItemInfoPane.DYNAMIC_PANE, new DynamicChargePane(ModItems.SOJOURNER_STAFF.get(), ModItems.SOJOURNER_STAFF.get()::getCurrentTorch, ModItems.SOJOURNER_STAFF.get()::getTorchCount)
 				)), Settings.CLIENT.hudPositions.sojournerStaff.get()));
 
 		hudComponents.add(new Tuple<>(new HeroMedallionPane(), Settings.CLIENT.hudPositions.heroMedallion.get()));

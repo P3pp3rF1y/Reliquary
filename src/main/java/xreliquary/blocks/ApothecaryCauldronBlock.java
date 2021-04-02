@@ -20,18 +20,17 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import xreliquary.blocks.tile.ApothecaryCauldronTileEntity;
-import xreliquary.reference.Names;
 
 import javax.annotation.Nullable;
 
-public class ApothecaryCauldronBlock extends BaseBlock {
+public class ApothecaryCauldronBlock extends Block {
 
 	public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 3);
 	private static final VoxelShape INSIDE = makeCuboidShape(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
 	private static final VoxelShape SHAPE = VoxelShapes.combineAndSimplify(VoxelShapes.fullCube(), VoxelShapes.or(makeCuboidShape(0.0D, 0.0D, 4.0D, 16.0D, 3.0D, 12.0D), makeCuboidShape(4.0D, 0.0D, 0.0D, 12.0D, 3.0D, 16.0D), makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 3.0D, 14.0D), INSIDE), IBooleanFunction.ONLY_FIRST);
 
 	public ApothecaryCauldronBlock() {
-		super(Names.Blocks.APOTHECARY_CAULDRON, Properties.create(Material.IRON).hardnessAndResistance(1.5F, 5.0F).notSolid());
+		super(Properties.create(Material.IRON).hardnessAndResistance(1.5F, 5.0F).notSolid());
 		setDefaultState(stateContainer.getBaseState().with(LEVEL, 0));
 	}
 

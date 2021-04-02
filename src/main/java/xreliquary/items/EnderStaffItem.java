@@ -51,7 +51,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 	private static final String LONG_CAST_TAG = "long_cast";
 
 	public EnderStaffItem() {
-		super("ender_staff", new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
+		super(new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
 	}
 
 	private int getEnderStaffPearlCost() {
@@ -238,7 +238,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 			if (!world.isRemote) {
 				player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Out of range!"), Util.DUMMY_UUID);
 			}
-		} else if (stack.getTag() != null && world.getBlockState(new BlockPos(stack.getTag().getInt(NODE_X_TAG + getDimension(world)), stack.getTag().getInt(NODE_Y_TAG + getDimension(world)), stack.getTag().getInt(NODE_Z_TAG + getDimension(world)))).getBlock() == ModBlocks.WRAITH_NODE) {
+		} else if (stack.getTag() != null && world.getBlockState(new BlockPos(stack.getTag().getInt(NODE_X_TAG + getDimension(world)), stack.getTag().getInt(NODE_Y_TAG + getDimension(world)), stack.getTag().getInt(NODE_Z_TAG + getDimension(world)))).getBlock() == ModBlocks.WRAITH_NODE.get()) {
 			if (canTeleport(world, stack.getTag().getInt(NODE_X_TAG + getDimension(world)), stack.getTag().getInt(NODE_Y_TAG + getDimension(world)), stack.getTag().getInt(NODE_Z_TAG + getDimension(world)))) {
 				teleportPlayer(world, stack.getTag().getInt(NODE_X_TAG + getDimension(world)), stack.getTag().getInt(NODE_Y_TAG + getDimension(world)), stack.getTag().getInt(NODE_Z_TAG + getDimension(world)), player);
 				if (!player.isCreative() && !player.world.isRemote) {
@@ -304,7 +304,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		BlockPos pos = itemUseContext.getPos();
 
 		// if right clicking on a wraith node, bind the eye to that wraith node.
-		if ((stack.getTag() == null || !(stack.getTag().contains(DIMENSION_TAG))) && world.getBlockState(pos).getBlock() == ModBlocks.WRAITH_NODE) {
+		if ((stack.getTag() == null || !(stack.getTag().contains(DIMENSION_TAG))) && world.getBlockState(pos).getBlock() == ModBlocks.WRAITH_NODE.get()) {
 			setWraithNode(stack, pos, getDimension(world));
 
 			PlayerEntity player = itemUseContext.getPlayer();

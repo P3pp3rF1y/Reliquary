@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:mob_charm_fragments/ghast"
+    ]
+  },
+  "criteria": {
+    "has_catalyzing_gland": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:catalyzing_gland"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:mob_charm_fragments/ghast"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_catalyzing_gland",
+      "has_the_recipe"
+    ]
+  ]
+}

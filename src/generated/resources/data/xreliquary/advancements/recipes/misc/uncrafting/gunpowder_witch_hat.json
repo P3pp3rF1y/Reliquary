@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:uncrafting/gunpowder_witch_hat"
+    ]
+  },
+  "criteria": {
+    "has_witch_hat": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:witch_hat"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:uncrafting/gunpowder_witch_hat"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_witch_hat",
+      "has_the_recipe"
+    ]
+  ]
+}

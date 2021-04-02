@@ -1,0 +1,19 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "xreliquary:alkahestry_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "xreliquary:alkahestry_charging",
+        "charge": 1,
+        "ingredient": {
+          "item": "minecraft:glowstone_dust"
+        }
+      }
+    }
+  ]
+}

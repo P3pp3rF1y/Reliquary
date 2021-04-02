@@ -8,7 +8,6 @@ import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
@@ -20,8 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -38,7 +37,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 	private static final Map<String, Block> TORCH_BLOCKS = new HashMap<>();
 
 	public LanternOfParanoiaItem() {
-		super("lantern_of_paranoia", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override
@@ -136,7 +135,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			return true;
 		}
 		for (int slot = 0; slot < player.inventory.getSizeInventory(); slot++) {
-			if (player.inventory.getStackInSlot(slot).getItem() != ModItems.SOJOURNER_STAFF) {
+			if (player.inventory.getStackInSlot(slot).getItem() != ModItems.SOJOURNER_STAFF.get()) {
 				continue;
 			}
 			//noinspection ConstantConditions

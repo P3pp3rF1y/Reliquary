@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "xreliquary:angelheart_vial"
+    },
+    {
+      "item": "xreliquary:angelheart_vial"
+    },
+    {
+      "item": "xreliquary:angelheart_vial"
+    },
+    {
+      "item": "xreliquary:angelic_feather"
+    }
+  ],
+  "result": {
+    "item": "xreliquary:phoenix_down"
+  }
+}

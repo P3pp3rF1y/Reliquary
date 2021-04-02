@@ -133,7 +133,7 @@ public class Settings {
 						.push("disable");
 
 				disableAlkahestry = builder
-						.comment("Disable Alkahestry tome and its and recipes")
+						.comment("Disable Alkahestry tome and its recipes")
 						.worldRestart()
 						.define("alkahestryTome", false);
 

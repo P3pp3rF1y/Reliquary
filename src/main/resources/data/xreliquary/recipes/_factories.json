@@ -1,9 +1,0 @@
-{
-    "conditions": {
-        "mob_drops_craftable": "xreliquary.crafting.factories.MobDropsCraftableConditionFactory",
-        "ore_exists": "xreliquary.crafting.factories.OreExistsConditionFactory"
-    },
-    "ingredients": {
-        "lingering_potion": "xreliquary.crafting.factories.LingeringPotionIngredientFactory"
-    }
-}

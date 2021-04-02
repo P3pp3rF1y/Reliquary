@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:leather"
+    },
+    {
+      "item": "xreliquary:molten_core"
+    },
+    {
+      "item": "xreliquary:rib_bone"
+    },
+    {
+      "item": "xreliquary:slime_pearl"
+    }
+  ],
+  "result": {
+    "item": "xreliquary:infernal_claw"
+  }
+}

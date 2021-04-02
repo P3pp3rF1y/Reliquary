@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:pyromancer_staff"
+    ]
+  },
+  "criteria": {
+    "has_infernal_claws": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:infernal_claws"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:pyromancer_staff"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_infernal_claws",
+      "has_the_recipe"
+    ]
+  ]
+}

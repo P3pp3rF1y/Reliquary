@@ -1,0 +1,17 @@
+{
+  "type": "xreliquary:fragment_to_spawn_egg",
+  "ingredients": [
+    {
+      "item": "xreliquary:mob_charm_fragment"
+    },
+    {
+      "item": "xreliquary:mob_charm_fragment"
+    },
+    {
+      "item": "minecraft:egg"
+    }
+  ],
+  "result": {
+    "item": "minecraft:chicken_spawn_egg"
+  }
+}

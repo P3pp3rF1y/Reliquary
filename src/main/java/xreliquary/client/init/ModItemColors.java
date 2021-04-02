@@ -14,6 +14,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.items.BulletItem;
+import xreliquary.items.VoidTearItem;
 import xreliquary.items.util.IPotionItem;
 import xreliquary.items.MobCharmFragmentItem;
 import xreliquary.items.MobCharmItem;
@@ -44,17 +45,17 @@ public class ModItemColors {
 	private static void registerVoidTearItemColors(ItemColors itemColors) {
 		registerItemColor((stack, tintIndex) -> {
 			if (Screen.hasShiftDown()) {
-				ItemStack containedStack = VOID_TEAR.getTearContents(stack, true);
+				ItemStack containedStack = VoidTearItem.getTearContents(stack, true);
 				if (!containedStack.isEmpty()) {
 					return itemColors.getColor(containedStack, tintIndex);
 				}
 			}
 			return -1;
-		}, VOID_TEAR);
+		}, VOID_TEAR.get());
 	}
 
 	private static void registerPotionItemColors() {
-		registerItemColor((stack, tintIndex) -> getColor(stack), POTION_ESSENCE);
+		registerItemColor((stack, tintIndex) -> getColor(stack), POTION_ESSENCE.get());
 
 		registerItemColor((stack, tintIndex) -> {
 			if (tintIndex == 1) {
@@ -73,9 +74,9 @@ public class ModItemColors {
 			} else {
 				return Integer.parseInt(Colors.PURE, 16);
 			}
-		}, POTION, SPLASH_POTION, LINGERING_POTION);
+		}, POTION.get(), SPLASH_POTION.get(), LINGERING_POTION.get());
 
-		registerItemColor((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getPotionColorFromEffectList(((IPotionItem) stack.getItem()).getEffects(stack)) : -1, TIPPED_ARROW);
+		registerItemColor((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getPotionColorFromEffectList(((IPotionItem) stack.getItem()).getEffects(stack)) : -1, TIPPED_ARROW.get());
 	}
 
 	private static void registerBulletItemColors() {
@@ -88,8 +89,9 @@ public class ModItemColors {
 						return PotionUtils.getPotionColorFromEffectList(((IPotionItem) stack.getItem()).getEffects(stack));
 					}
 					return Integer.parseInt(Colors.DARKER, 16);
-				}, EMPTY_MAGAZINE, NEUTRAL_MAGAZINE, EXORCISM_MAGAZINE, BLAZE_MAGAZINE, ENDER_MAGAZINE, CONCUSSIVE_MAGAZINE, BUSTER_MAGAZINE, SEEKER_MAGAZINE, SAND_MAGAZINE, STORM_MAGAZINE,
-				EMPTY_BULLET, NEUTRAL_BULLET, EXORCISM_BULLET, BLAZE_BULLET, ENDER_BULLET, CONCUSSIVE_BULLET, BUSTER_BULLET, SEEKER_BULLET, SAND_BULLET, STORM_BULLET);
+				}, EMPTY_MAGAZINE.get(), NEUTRAL_MAGAZINE.get(), EXORCISM_MAGAZINE.get(), BLAZE_MAGAZINE.get(), ENDER_MAGAZINE.get(), CONCUSSIVE_MAGAZINE.get(),
+				BUSTER_MAGAZINE.get(), SEEKER_MAGAZINE.get(), SAND_MAGAZINE.get(), STORM_MAGAZINE.get(), EMPTY_BULLET.get(), NEUTRAL_BULLET.get(), EXORCISM_BULLET.get(),
+				BLAZE_BULLET.get(), ENDER_BULLET.get(), CONCUSSIVE_BULLET.get(), BUSTER_BULLET.get(), SEEKER_BULLET.get(), SAND_BULLET.get(), STORM_BULLET.get());
 	}
 
 	private static void registerMobCharmItemColors() {
@@ -100,7 +102,7 @@ public class ModItemColors {
 
 			ResourceLocation entityName = MobCharmItem.getEntityEggRegistryName(stack);
 			return getEgg(entityName).map(egg -> tintIndex == 1 ? egg.getColor(0) : egg.getColor(1)).orElse(-1);
-		}, MOB_CHARM);
+		}, MOB_CHARM.get());
 
 		registerItemColor((stack, tintIndex) -> {
 			if (tintIndex < 0 || tintIndex > 1) {
@@ -109,7 +111,7 @@ public class ModItemColors {
 
 			ResourceLocation entityName = MobCharmFragmentItem.getEntityEggRegistryName(stack);
 			return getEgg(entityName).map(egg -> tintIndex == 0 ? egg.getColor(0) : egg.getColor(1)).orElse(-1);
-		}, MOB_CHARM_FRAGMENT);
+		}, MOB_CHARM_FRAGMENT.get());
 	}
 
 	private static void registerItemColor(IItemColor itemColor, Item... items) {

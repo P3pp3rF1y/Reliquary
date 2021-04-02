@@ -585,8 +585,8 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 	private boolean shouldStopFishing(PlayerEntity fishingPlayer) {
 		ItemStack itemstack = fishingPlayer.getHeldItemMainhand();
 		ItemStack itemstack1 = fishingPlayer.getHeldItemOffhand();
-		boolean flag = itemstack.getItem() == ModItems.ROD_OF_LYSSA;
-		boolean flag1 = itemstack1.getItem() == ModItems.ROD_OF_LYSSA;
+		boolean flag = itemstack.getItem() == ModItems.ROD_OF_LYSSA.get();
+		boolean flag1 = itemstack1.getItem() == ModItems.ROD_OF_LYSSA.get();
 		if (fishingPlayer.isAlive() && (flag || flag1) && getDistanceSq(fishingPlayer) <= 10240.0D) {
 			return false;
 		} else {

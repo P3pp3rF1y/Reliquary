@@ -10,20 +10,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class MobCharmDefinition {
-	static final MobCharmDefinition ZOMBIE = new MobCharmDefinition("minecraft:zombie", ModItems.ZOMBIE_HEART, "minecraft:zombie", "minecraft:husk", "minecraft:drowned");
-	static final MobCharmDefinition SKELETON = new MobCharmDefinition("minecraft:skeleton", ModItems.RIB_BONE, "minecraft:skeleton", "minecraft:stray");
-	static final MobCharmDefinition WITHER_SKELETON = new MobCharmDefinition("minecraft:wither_skeleton", ModItems.WITHERED_RIB, "minecraft:wither_skeleton");
-	static final MobCharmDefinition CREEPER = new MobCharmDefinition("minecraft:creeper", ModItems.CATALYZING_GLAND, "minecraft:creeper");
-	static final MobCharmDefinition WITCH = new MobCharmDefinition("minecraft:witch", ModItems.WITCH_HAT, "minecraft:witch");
-	static final MobCharmDefinition ZOMBIFIED_PIGLIN = new MobCharmDefinition("minecraft:zombified_piglin", ModItems.ZOMBIE_HEART, "minecraft:zombified_piglin").setResetTargetInLivingUpdateEvent(true);
-	static final MobCharmDefinition CAVE_SPIDER = new MobCharmDefinition("minecraft:cave_spider", ModItems.CHELICERAE, "minecraft:cave_spider");
-	static final MobCharmDefinition SPIDER = new MobCharmDefinition("minecraft:spider", ModItems.CHELICERAE, "minecraft:spider");
-	static final MobCharmDefinition ENDERMAN = new MobCharmDefinition("minecraft:enderman", ModItems.NEBULOUS_HEART, "minecraft:enderman").setResetTargetInLivingUpdateEvent(true);
-	static final MobCharmDefinition GHAST = new MobCharmDefinition("minecraft:ghast", ModItems.CATALYZING_GLAND, "minecraft:ghast").setResetTargetInLivingUpdateEvent(true);
-	static final MobCharmDefinition SLIME = new MobCharmDefinition("minecraft:slime", ModItems.SLIME_PEARL, "minecraft:slime").setResetTargetInLivingUpdateEvent(true);
-	static final MobCharmDefinition MAGMA_CUBE = new MobCharmDefinition("minecraft:magma_cube", ModItems.MOLTEN_CORE, "minecraft:magma_cube").setResetTargetInLivingUpdateEvent(true);
-	static final MobCharmDefinition BLAZE = new MobCharmDefinition("minecraft:blaze", ModItems.MOLTEN_CORE, "minecraft:blaze");
-	static final MobCharmDefinition GUARDIAN = new MobCharmDefinition("minecraft:guardian", ModItems.GUARDIAN_SPIKE, "minecraft:guardian");
+	static final MobCharmDefinition ZOMBIE = new MobCharmDefinition("minecraft:zombie", ModItems.ZOMBIE_HEART.get(), "minecraft:zombie", "minecraft:husk", "minecraft:drowned");
+	static final MobCharmDefinition SKELETON = new MobCharmDefinition("minecraft:skeleton", ModItems.RIB_BONE.get(), "minecraft:skeleton", "minecraft:stray");
+	static final MobCharmDefinition WITHER_SKELETON = new MobCharmDefinition("minecraft:wither_skeleton", ModItems.WITHERED_RIB.get(), "minecraft:wither_skeleton");
+	static final MobCharmDefinition CREEPER = new MobCharmDefinition("minecraft:creeper", ModItems.CATALYZING_GLAND.get(), "minecraft:creeper");
+	static final MobCharmDefinition WITCH = new MobCharmDefinition("minecraft:witch", ModItems.WITCH_HAT.get(), "minecraft:witch");
+	static final MobCharmDefinition ZOMBIFIED_PIGLIN = new MobCharmDefinition("minecraft:zombified_piglin", ModItems.ZOMBIE_HEART.get(), "minecraft:zombified_piglin").setResetTargetInLivingUpdateEvent(true);
+	static final MobCharmDefinition CAVE_SPIDER = new MobCharmDefinition("minecraft:cave_spider", ModItems.CHELICERAE.get(), "minecraft:cave_spider");
+	static final MobCharmDefinition SPIDER = new MobCharmDefinition("minecraft:spider", ModItems.CHELICERAE.get(), "minecraft:spider");
+	static final MobCharmDefinition ENDERMAN = new MobCharmDefinition("minecraft:enderman", ModItems.NEBULOUS_HEART.get(), "minecraft:enderman").setResetTargetInLivingUpdateEvent(true);
+	static final MobCharmDefinition GHAST = new MobCharmDefinition("minecraft:ghast", ModItems.CATALYZING_GLAND.get(), "minecraft:ghast").setResetTargetInLivingUpdateEvent(true);
+	static final MobCharmDefinition SLIME = new MobCharmDefinition("minecraft:slime", ModItems.SLIME_PEARL.get(), "minecraft:slime").setResetTargetInLivingUpdateEvent(true);
+	static final MobCharmDefinition MAGMA_CUBE = new MobCharmDefinition("minecraft:magma_cube", ModItems.MOLTEN_CORE.get(), "minecraft:magma_cube").setResetTargetInLivingUpdateEvent(true);
+	static final MobCharmDefinition BLAZE = new MobCharmDefinition("minecraft:blaze", ModItems.MOLTEN_CORE.get(), "minecraft:blaze");
+	static final MobCharmDefinition GUARDIAN = new MobCharmDefinition("minecraft:guardian", ModItems.GUARDIAN_SPIKE.get(), "minecraft:guardian");
 
 	private final Set<String> applicableToEntities = new HashSet<>();
 	private boolean resetTargetInLivingUpdateEvent = false;
@@ -62,7 +62,7 @@ public class MobCharmDefinition {
 
 	public boolean isRepairItem(ItemStack item) {
 		return repairItem != null ? item.getItem() == repairItem :
-				item.getItem() == ModItems.MOB_CHARM_FRAGMENT && applicableToEntities.contains(MobCharmFragmentItem.getEntityRegistryName(item));
+				item.getItem() == ModItems.MOB_CHARM_FRAGMENT.get() && applicableToEntities.contains(MobCharmFragmentItem.getEntityRegistryName(item));
 	}
 
 	public boolean isDynamicallyCreated() {

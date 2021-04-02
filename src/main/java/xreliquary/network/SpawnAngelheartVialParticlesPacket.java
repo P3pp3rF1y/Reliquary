@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,12 +14,13 @@ import xreliquary.init.ModItems;
 import java.util.Random;
 import java.util.function.Supplier;
 
+@SuppressWarnings({"java:S1118", "InstantiationOfUtilityClass"}) // need to instantiate this for its type to be used as identifier for this message
 public class SpawnAngelheartVialParticlesPacket {
-	static void encode(SpawnAngelheartVialParticlesPacket msg, PacketBuffer packetBuffer) {
+	static void encode() {
 		//noop
 	}
 
-	static SpawnAngelheartVialParticlesPacket decode(PacketBuffer packetBuffer) {
+	static SpawnAngelheartVialParticlesPacket decode() {
 		return new SpawnAngelheartVialParticlesPacket();
 	}
 
@@ -37,7 +37,7 @@ public class SpawnAngelheartVialParticlesPacket {
 		double var10 = player.getPosY();
 		double var12 = player.getPosZ();
 		Random var7 = player.world.rand;
-		ItemParticleData itemParticleData = new ItemParticleData(ParticleTypes.ITEM, new ItemStack(ModItems.ANGELHEART_VIAL));
+		ItemParticleData itemParticleData = new ItemParticleData(ParticleTypes.ITEM, new ItemStack(ModItems.ANGELHEART_VIAL.get()));
 		for (int var15 = 0; var15 < 8; ++var15) {
 			player.world.addParticle(itemParticleData, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
 		}

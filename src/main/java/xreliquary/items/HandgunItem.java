@@ -52,7 +52,7 @@ public class HandgunItem extends ItemBase {
 	}
 
 	public HandgunItem() {
-		super("handgun", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	private short getBulletCount(ItemStack handgun) {
@@ -62,7 +62,7 @@ public class HandgunItem extends ItemBase {
 	public ItemStack getBulletStack(ItemStack handgun) {
 		String magazineType = getMagazineType(handgun);
 		if (!magazineBulletItems.containsKey(magazineType)) {
-			return new ItemStack(ModItems.EMPTY_BULLET, 1);
+			return new ItemStack(ModItems.EMPTY_BULLET.get(), 1);
 		}
 
 		BulletItem bulletItem = magazineBulletItems.get(magazineType).get();
@@ -316,14 +316,14 @@ public class HandgunItem extends ItemBase {
 	}
 
 	private void spawnEmptyMagazine(PlayerEntity player) {
-		ItemStack emptyMagazine = new ItemStack(ModItems.EMPTY_MAGAZINE);
+		ItemStack emptyMagazine = new ItemStack(ModItems.EMPTY_MAGAZINE.get());
 		if(!player.inventory.addItemStackToInventory(emptyMagazine)) {
 			player.entityDropItem(emptyMagazine, 0.1F);
 		}
 	}
 
 	private void spawnCasing(PlayerEntity player) {
-		ItemStack emptyCasing = new ItemStack(ModItems.EMPTY_BULLET);
+		ItemStack emptyCasing = new ItemStack(ModItems.EMPTY_BULLET.get());
 		if(!player.inventory.addItemStackToInventory(emptyCasing)) {
 			player.entityDropItem(emptyCasing, 0.1F);
 		}
@@ -334,7 +334,7 @@ public class HandgunItem extends ItemBase {
 			if(stack == null) {
 				continue;
 			}
-			if(stack.getItem() instanceof MagazineItem && stack.getItem() != ModItems.EMPTY_MAGAZINE) {
+			if(stack.getItem() instanceof MagazineItem && stack.getItem() != ModItems.EMPTY_MAGAZINE.get()) {
 				return true;
 			}
 		}
@@ -344,7 +344,7 @@ public class HandgunItem extends ItemBase {
 	private Optional<Integer> getMagazineSlot(PlayerEntity player) {
 		for(int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
 			Item item = player.inventory.mainInventory.get(slot).getItem();
-			if(item instanceof MagazineItem && item != ModItems.EMPTY_MAGAZINE) {
+			if(item instanceof MagazineItem && item != ModItems.EMPTY_MAGAZINE.get()) {
 				return Optional.of(slot);
 			}
 		}

@@ -33,7 +33,7 @@ public class ModCapabilities {
 	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void onItemStackConstruct(AttachCapabilitiesEvent<ItemStack> evt) {
-		if (evt.getObject().getItem() == ModItems.HARVEST_ROD) {
+		if (evt.getObject().getItem() == ModItems.HARVEST_ROD.get()) {
 			evt.addCapability(new ResourceLocation(Reference.MOD_ID, "harvest_rod_cache"), new ICapabilityProvider() {
 				final IHarvestRodCache instance = HARVEST_ROD_CACHE.getDefaultInstance();
 

@@ -1,0 +1,34 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "xreliquary:handgun_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "III",
+          "EME",
+          "III"
+        ],
+        "key": {
+          "I": {
+            "tag": "forge:ingots/iron"
+          },
+          "E": {
+            "item": "xreliquary:nebulous_heart"
+          },
+          "M": {
+            "item": "minecraft:magma_cream"
+          }
+        },
+        "result": {
+          "item": "xreliquary:barrel_assembly"
+        }
+      }
+    }
+  ]
+}

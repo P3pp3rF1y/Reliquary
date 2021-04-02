@@ -24,7 +24,6 @@ import xreliquary.common.gui.ContainerAlkahestTome;
 import xreliquary.crafting.AlkahestryChargingRecipe;
 import xreliquary.crafting.AlkahestryRecipeRegistry;
 import xreliquary.init.ModSounds;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -35,7 +34,7 @@ import java.util.List;
 
 public class AlkahestryTomeItem extends ToggleableItem {
 	public AlkahestryTomeItem() {
-		super(Names.Items.ALKAHESTRY_TOME, new Properties().setNoRepair().rarity(Rarity.EPIC).maxStackSize(1));
+		super(new Properties().setNoRepair().rarity(Rarity.EPIC).maxStackSize(1));
 	}
 
 	@Override
@@ -104,7 +103,8 @@ public class AlkahestryTomeItem extends ToggleableItem {
 				ImmutableMap.of("chargeAmount", String.valueOf(getCharge(tome)), "chargeLimit", String.valueOf(getChargeLimit())), tooltip);
 
 		if (isEnabled(tome)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + AlkahestryRecipeRegistry.getDrainRecipe().getRecipeOutput().getDisplayName().getString()), tooltip);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + AlkahestryRecipeRegistry.getDrainRecipe()
+					.map(r -> r.getRecipeOutput().getDisplayName().getString()).orElse("")), tooltip);
 		} else {
 			LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
 		}

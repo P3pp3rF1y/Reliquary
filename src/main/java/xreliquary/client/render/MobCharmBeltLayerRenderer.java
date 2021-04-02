@@ -34,7 +34,7 @@ public abstract class MobCharmBeltLayerRenderer extends LayerRenderer<AbstractCl
 
 		for (int i = 0; i < baubles.getSlots(); i++) {
 			ItemStack bauble = baubles.getStackInSlot(i);
-			if (bauble.isEmpty() || bauble.getItem() != ModItems.MOB_CHARM_BELT) {
+			if (bauble.isEmpty() || bauble.getItem() != ModItems.MOB_CHARM_BELT.get()) {
 				continue;
 			}
 

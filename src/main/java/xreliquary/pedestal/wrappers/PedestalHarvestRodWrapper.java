@@ -24,10 +24,8 @@ import xreliquary.api.IPedestalActionItemWrapper;
 import xreliquary.blocks.FertileLilyPadBlock;
 import xreliquary.init.ModItems;
 import xreliquary.items.HarvestRodItem;
-import xreliquary.items.util.HarvestRodItemStackHandler;
 import xreliquary.reference.Settings;
 import xreliquary.util.ItemHelper;
-import xreliquary.util.NBTHelper;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -37,7 +35,7 @@ import java.util.Queue;
 public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 	private static final int NO_JOB_COOL_DOWN_CYCLES = 10;
-	private static final HarvestRodItem harvestRod = ModItems.HARVEST_ROD;
+	private static final HarvestRodItem harvestRod = ModItems.HARVEST_ROD.get();
 
 	private int hoeCoolDown = 0;
 	private int plantCoolDown = 0;

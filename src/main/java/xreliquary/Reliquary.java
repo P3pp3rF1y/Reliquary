@@ -14,6 +14,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import xreliquary.client.ClientProxy;
 import xreliquary.client.init.ModParticles;
 import xreliquary.common.CommonProxy;
+import xreliquary.init.ModBlocks;
 import xreliquary.init.ModCapabilities;
 import xreliquary.init.ModCompat;
 import xreliquary.init.ModItems;
@@ -37,6 +38,8 @@ public class Reliquary {
 		FLUIDS.register(modBus);
 		modBus.addListener(Reliquary::setup);
 		modBus.addGenericListener(ParticleType.class, ModParticles::registerParticles);
+		ModItems.registerListeners(modBus);
+		ModBlocks.registerListeners(modBus);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Settings.CLIENT_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Settings.COMMON_SPEC);
 		MinecraftForge.EVENT_BUS.addListener(Reliquary::worldStart);

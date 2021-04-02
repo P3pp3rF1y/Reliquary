@@ -18,7 +18,7 @@ import xreliquary.entities.KrakenSlimeEntity;
 
 public class SerpentStaffItem extends ItemBase {
 	public SerpentStaffItem() {
-		super("serpent_staff", new Properties().maxDamage(200).setNoRepair());
+		super(new Properties().maxDamage(200).setNoRepair());
 	}
 
 	@Override

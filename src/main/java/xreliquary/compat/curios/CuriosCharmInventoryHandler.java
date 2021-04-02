@@ -18,7 +18,7 @@ public class CuriosCharmInventoryHandler extends MobCharmItem.CharmInventoryHand
 		return CuriosApi.getCuriosHelper().getCuriosHandler(player).map(handler -> handler.getStacksHandler(IBaubleItem.Type.BELT.getIdentifier()).map(stackHandler -> {
 			for (int slot = 0; slot < stackHandler.getSlots(); slot++) {
 				ItemStack baubleStack = stackHandler.getStacks().getStackInSlot(slot);
-				if (!baubleStack.isEmpty() && baubleStack.getItem() == ModItems.MOB_CHARM_BELT && ModItems.MOB_CHARM_BELT.hasCharm(baubleStack, charmDefinition.getRegistryName())) {
+				if (!baubleStack.isEmpty() && baubleStack.getItem() == ModItems.MOB_CHARM_BELT.get() && ModItems.MOB_CHARM_BELT.get().hasCharm(baubleStack, charmDefinition.getRegistryName())) {
 					return true;
 				}
 			}
