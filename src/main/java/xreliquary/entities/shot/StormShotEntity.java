@@ -80,7 +80,7 @@ public class StormShotEntity extends ShotEntityBase {
 				bolt.moveForced(entity.getPosX(), entity.getPosY(), entity.getPosZ());
 				world.addEntity(bolt);
 				if (entity instanceof CreeperEntity) {
-					entity.func_241841_a(((ServerWorld) world), bolt);
+					entity.causeLightningStrike(((ServerWorld) world), bolt);
 				}
 			}
 		}

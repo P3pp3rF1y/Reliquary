@@ -111,7 +111,7 @@ public class XRTippedArrowEntity extends AbstractArrowEntity {
 	@Override
 	protected void arrowHit(LivingEntity living) {
 		super.arrowHit(living);
-		Entity shooter = func_234616_v_();
+		Entity shooter = getShooter();
 		if (shooter != null) {
 			XRPotionHelper.applyEffectsToEntity(effects, this, shooter, living);
 		}

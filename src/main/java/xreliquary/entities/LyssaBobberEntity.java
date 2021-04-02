@@ -233,7 +233,7 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 			}
 
 			move(MoverType.SELF, getMotion());
-			func_234617_x_();
+			updatePitchAndYaw();
 			if (currentState == State.FLYING && (onGround || collidedHorizontally)) {
 				setMotion(Vector3d.ZERO);
 			}
@@ -245,7 +245,7 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 
 	@Nullable
 	public PlayerEntity getFishingPlayer() {
-		Entity entity = func_234616_v_();
+		Entity entity = getShooter();
 		return entity instanceof PlayerEntity ? (PlayerEntity) entity : null;
 	}
 
@@ -282,38 +282,12 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 
 	private WaterType func_234604_c_(BlockPos p_234604_1_) {
 		BlockState blockstate = world.getBlockState(p_234604_1_);
-		if (!blockstate.isAir() && !blockstate.isIn(Blocks.LILY_PAD)) {
+		if (!blockstate.isAir() && !blockstate.matchesBlock(Blocks.LILY_PAD)) {
 			FluidState fluidstate = blockstate.getFluidState();
 			return fluidstate.isTagged(FluidTags.WATER) && fluidstate.isSource() && blockstate.getCollisionShape(world, p_234604_1_).isEmpty() ? WaterType.INSIDE_WATER : WaterType.INVALID;
 		} else {
 			return WaterType.ABOVE_WATER;
 		}
-	}
-
-	private void updateRotation() {
-		Vector3d vec3d = getMotion();
-		float f = MathHelper.sqrt(getDistanceSq(vec3d));
-		rotationYaw = (float) (MathHelper.atan2(vec3d.x, vec3d.z) * (double) (180F / (float) Math.PI));
-
-		rotationPitch = (float) (MathHelper.atan2(vec3d.y, f) * (double) (180F / (float) Math.PI));
-		while (rotationPitch - prevRotationPitch < -180.0F) {
-			prevRotationPitch -= 360.0F;
-		}
-
-		while (rotationPitch - prevRotationPitch >= 180.0F) {
-			prevRotationPitch += 360.0F;
-		}
-
-		while (rotationYaw - prevRotationYaw < -180.0F) {
-			prevRotationYaw -= 360.0F;
-		}
-
-		while (rotationYaw - prevRotationYaw >= 180.0F) {
-			prevRotationYaw += 360.0F;
-		}
-
-		rotationPitch = MathHelper.lerp(0.2F, prevRotationPitch, rotationPitch);
-		rotationYaw = MathHelper.lerp(0.2F, prevRotationYaw, rotationYaw);
 	}
 
 	private void checkCollision() {
@@ -451,8 +425,8 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 				world.setEntityState(this, (byte) 31);
 				i = caughtEntity instanceof ItemEntity ? 3 : 5;
 			} else if (ticksCatchable > 0) {
-				LootContext.Builder lootcontext$builder = (new LootContext.Builder((ServerWorld) world)).withParameter(LootParameters.field_237457_g_, getPositionVec()).withParameter(LootParameters.TOOL, stack).withParameter(LootParameters.THIS_ENTITY, this).withRandom(rand).withLuck((float) luck + playerentity.getLuck());
-				lootcontext$builder.withParameter(LootParameters.KILLER_ENTITY, func_234616_v_()).withParameter(LootParameters.THIS_ENTITY, this);
+				LootContext.Builder lootcontext$builder = (new LootContext.Builder((ServerWorld) world)).withParameter(LootParameters.ORIGIN, getPositionVec()).withParameter(LootParameters.TOOL, stack).withParameter(LootParameters.THIS_ENTITY, this).withRandom(rand).withLuck((float) luck + playerentity.getLuck());
+				lootcontext$builder.withParameter(LootParameters.KILLER_ENTITY, getShooter()).withParameter(LootParameters.THIS_ENTITY, this);
 				LootTable loottable = world.getServer().getLootTableManager().getLootTableFromLocation(LootTables.GAMEPLAY_FISHING);
 				List<ItemStack> list = loottable.generate(lootcontext$builder.build(LootParameterSets.FISHING));
 
@@ -495,7 +469,7 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 	}
 
 	private void bringInHookedEntityOriginal() {
-		Entity entity = func_234616_v_();
+		Entity entity = getShooter();
 		if (entity != null) {
 			Vector3d vector3d = (new Vector3d(entity.getPosX() - getPosX(), entity.getPosY() - getPosY(), entity.getPosZ() - getPosZ())).scale(0.1D);
 			caughtEntity.setMotion(caughtEntity.getMotion().add(vector3d));
@@ -524,7 +498,7 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 	}
 
 	@Override
-	public boolean isNonBoss() {
+	public boolean canChangeDimension() {
 		return false;
 	}
 

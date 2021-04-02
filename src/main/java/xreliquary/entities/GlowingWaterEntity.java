@@ -70,7 +70,7 @@ public class GlowingWaterEntity extends ThrowableEntity implements IRendersAsIte
 			List<MobEntity> eList = world.getEntitiesWithinAABB(MobEntity.class, bb);
 			eList.stream().filter(this::isUndead).forEach(e -> {
 				float amount = 18f + rand.nextInt(17);
-				Entity thrower = func_234616_v_();
+				Entity thrower = getShooter();
 				if (thrower instanceof PlayerEntity) {
 					e.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) thrower), amount);
 				} else {

@@ -70,7 +70,7 @@ public class IceMagusRodItem extends ToggleableItem {
 		if (!player.isSneaking() && (NBTHelper.getInt(SNOWBALLS_TAG, stack) >= getSnowballCost() || player.isCreative())) {
 			world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 			SpecialSnowballEntity snowball = new SpecialSnowballEntity(world, player, this instanceof GlacialStaffItem);
-			snowball.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0.0F, 2.4F, 1.0F);
+			snowball.setDirectionAndMovement(player, player.rotationPitch, player.rotationYaw, 0.0F, 2.4F, 1.0F);
 			world.addEntity(snowball);
 			if (!player.isCreative()) {
 				NBTHelper.putInt(SNOWBALLS_TAG, stack, NBTHelper.getInt(SNOWBALLS_TAG, stack) - getSnowballCost());

@@ -2,6 +2,7 @@ package xreliquary.data;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.BlockItem;
@@ -46,7 +47,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class ModRecipeProvider extends net.minecraft.data.RecipeProvider {
+public class ModRecipeProvider extends RecipeProvider {
 	private static final Tags.IOptionalNamedTag<Item> INGOTS_COPPER = ForgeTagHandler.createOptionalTag(ForgeRegistries.ITEMS, new ResourceLocation("forge:ingots/copper"));
 	private static final Tags.IOptionalNamedTag<Item> INGOTS_STEEL = ForgeTagHandler.createOptionalTag(ForgeRegistries.ITEMS, new ResourceLocation("forge:ingots/steel"));
 	private static final Tags.IOptionalNamedTag<Item> INGOTS_SILVER = ForgeTagHandler.createOptionalTag(ForgeRegistries.ITEMS, new ResourceLocation("forge:ingots/silver"));

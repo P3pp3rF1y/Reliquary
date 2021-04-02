@@ -760,12 +760,15 @@ public class Settings {
 			public final MobCharmSettings mobCharm;
 
 			public static class MobCharmSettings {
+				private static final String REGISTRY_NAME_MATCHER = "([a-z1-9_.-]+:[a-z1-9_/.-]+)";
+
 				public final IntValue durability;
 				public final IntValue damagePerKill;
 				public final IntValue dropDurabilityRepair;
 				public final IntValue maxCharmsToDisplay;
 				public final IntValue pedestalRange;
 				public final BooleanValue keepAlmostDestroyedDisplayed;
+				public final ConfigValue<List<? extends String>> entityBlockList;
 
 				MobCharmSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Mob Charm settings").push("mobCharm");
@@ -793,8 +796,16 @@ public class Settings {
 					keepAlmostDestroyedDisplayed = builder
 							.comment("Determines if almost destroyed charms stay displayed in the hud")
 							.define("keepAlmostDestroyedDisplayed", true);
-
+					entityBlockList = builder
+							.comment("List of hostile entities that are not supposed to have mob charms registered for them")
+							.defineList("entityBlockList", this::getDefaultEntityBlockList, entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
 					builder.pop();
+				}
+				private List<String> getDefaultEntityBlockList() {
+					List<String> ret = new ArrayList<>();
+					ret.add("minecraft:ender_dragon");
+					ret.add("minecraft:wither");
+					return ret;
 				}
 			}
 

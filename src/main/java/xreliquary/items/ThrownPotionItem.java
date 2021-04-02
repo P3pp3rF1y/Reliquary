@@ -18,7 +18,7 @@ public class ThrownPotionItem extends PotionItemBase {
 			return new ActionResult<>(ActionResultType.PASS, stack);
 		}
 		ThrownXRPotionEntity e = new ThrownXRPotionEntity(world, player, stack);
-		e.func_234612_a_(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.5F, 1.0F);
+		e.setDirectionAndMovement(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.5F, 1.0F);
 
 		if (!player.isCreative()) {
 			stack.shrink(1);

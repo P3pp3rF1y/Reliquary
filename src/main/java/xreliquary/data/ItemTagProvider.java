@@ -4,12 +4,15 @@ import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 
+import javax.annotation.Nullable;
+
 public class ItemTagProvider extends ItemTagsProvider {
-	ItemTagProvider(DataGenerator generator, BlockTagsProvider blockTagsProvider) {
-		super(generator, blockTagsProvider, Reference.MOD_ID, null);
+	ItemTagProvider(DataGenerator generator, BlockTagsProvider blockTagsProvider, @Nullable ExistingFileHelper existingFileHelper) {
+		super(generator, blockTagsProvider, Reference.MOD_ID, existingFileHelper);
 	}
 
 	@Override

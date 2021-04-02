@@ -73,7 +73,7 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 				if (entityHit instanceof BlazeEntity) {
 					damage += getSnowballDamageBlazeBonus();
 				}
-				entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, func_234616_v_()), damage);
+				entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, getShooter()), damage);
 			} else if (result.getType() == RayTraceResult.Type.BLOCK) {
 				BlockPos pos = ((BlockRayTraceResult) result).getPos();
 				if (world.getBlockState(pos.up()).getBlock() == Blocks.FIRE) {

@@ -108,14 +108,14 @@ public class ThrownXRPotionEntity extends ThrowableEntity implements IEntityAddi
 						d1 = 1.0D;
 					}
 
-					XRPotionHelper.applyEffectsToEntity(effects, this, func_234616_v_(), entity, d1);
+					XRPotionHelper.applyEffectsToEntity(effects, this, getShooter(), entity, d1);
 				}
 			}
 		}
 	}
 
 	private void spawnAreaEffectCloud(List<EffectInstance> effects, int color) {
-		Entity thrower = func_234616_v_();
+		Entity thrower = getShooter();
 		if (! (thrower instanceof LivingEntity)) {
 			return;
 		}

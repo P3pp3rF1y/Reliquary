@@ -4,16 +4,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.init.ModItems;
+import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,8 +53,7 @@ public class MobCharmRegistry {
 	}
 
 	static Optional<MobCharmDefinition> getCharmDefinitionFor(Entity entity) {
-		//noinspection ConstantConditions
-		return Optional.ofNullable(ENTITY_NAME_CHARM_DEFINITIONS.get(entity.getType().getRegistryName().toString()));
+		return Optional.ofNullable(ENTITY_NAME_CHARM_DEFINITIONS.get(RegistryHelper.getRegistryName(entity.getType()).toString()));
 	}
 
 	public static Optional<MobCharmDefinition> getCharmDefinitionFor(ItemStack stack) {
@@ -71,22 +68,15 @@ public class MobCharmRegistry {
 		return REGISTERED_CHARM_DEFINITIONS.keySet();
 	}
 
-	public static void registerDynamicCharmDefinitions(WorldEvent.Load event) {
+	public static void registerDynamicCharmDefinitions() {
 		for (EntityType<?> entityType : ForgeRegistries.ENTITIES) {
-			IWorld world = event.getWorld();
-			//noinspection ConstantConditions
-			String registryName = entityType.getRegistryName().toString();
-			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getClassification() == EntityClassification.MONSTER
-					&& world instanceof World && isNonBossMob(entityType, (World) world)) {
+			String registryName = RegistryHelper.getRegistryName(entityType).toString();
+			Set<String> blockedEntities = new HashSet<>(Settings.COMMON.items.mobCharm.entityBlockList.get());
+			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getClassification() == EntityClassification.MONSTER && !blockedEntities.contains(registryName)) {
 				registerMobCharmDefinition(new MobCharmDefinition(registryName));
 				DYNAMICALLY_REGISTERED.add(registryName);
 			}
 		}
-	}
-
-	private static boolean isNonBossMob(EntityType<?> entityType, World world) {
-		Entity e = entityType.create(world);
-		return e != null && e.isNonBoss() && (e instanceof MobEntity);
 	}
 
 	public static void handleAddingFragmentDrops(LivingDropsEvent evt) {

@@ -97,7 +97,6 @@ dependencies {
     //deobfCompile name: 'Botania', version: botania_version, ext: 'jar'
     //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
-    //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.minecraft_version}-${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.minecraft_version}-${curios_version}")
     testCompile 'org.testng:testng:6.9.10'

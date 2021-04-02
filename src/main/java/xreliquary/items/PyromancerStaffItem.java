@@ -493,7 +493,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 	private void absorbBlazeFireballs(ItemStack stack, PlayerEntity player) {
 		List<SmallFireballEntity> blazeFireballs = player.world.getEntitiesWithinAABB(SmallFireballEntity.class, new AxisAlignedBB(player.getPosX() - 3, player.getPosY() - 3, player.getPosZ() - 3, player.getPosX() + 3, player.getPosY() + 3, player.getPosZ() + 3));
 		for (SmallFireballEntity fireball : blazeFireballs) {
-			if (fireball.func_234616_v_() == player) {
+			if (fireball.getShooter() == player) {
 				continue;
 			}
 			for (int particles = 0; particles < 4; particles++) {
@@ -511,7 +511,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 	private void absorbGhastFireballs(ItemStack stack, PlayerEntity player) {
 		List<FireballEntity> ghastFireballs = player.world.getEntitiesWithinAABB(FireballEntity.class, new AxisAlignedBB(player.getPosX() - 5, player.getPosY() - 5, player.getPosZ() - 5, player.getPosX() + 5, player.getPosY() + 5, player.getPosZ() + 5));
 		for (FireballEntity fireball : ghastFireballs) {
-			if (fireball.func_234616_v_() != player && player.getDistance(fireball) < 4) {
+			if (fireball.getShooter() != player && player.getDistance(fireball) < 4) {
 				if (!isInternalStorageFullOfItem(stack, Items.FIRE_CHARGE) && InventoryHelper.consumeItem(new ItemStack(Items.FIRE_CHARGE), player)) {
 					addItemToInternalStorage(stack, Items.FIRE_CHARGE, true);
 					player.world.playSound(fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);

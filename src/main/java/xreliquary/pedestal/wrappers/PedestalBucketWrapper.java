@@ -14,6 +14,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -21,7 +22,6 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
-import xreliquary.init.ModFluids;
 import xreliquary.reference.Settings;
 
 import java.util.ArrayList;
@@ -61,29 +61,29 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 	private boolean drainLiquid(IPedestal pedestal, BlockPos pos, int bucketRange) {
 		World world = pedestal.getTheWorld();
-		if(queueToDrain.isEmpty()) {
+		if (queueToDrain.isEmpty()) {
 			updateQueueToDrain(world, pos, bucketRange);
 		}
 
-		if(queueToDrain.isEmpty()) {
+		if (queueToDrain.isEmpty()) {
 			return false;
 		}
 
 		Iterator<BlockPos> iterator = queueToDrain.iterator();
 
 		//iterate through all the fluid blocks in queue - needed in case there are multiple fluids and next fluid in queue can't go in any tank
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			BlockPos blockToDrain = iterator.next();
 			BlockState blockState = world.getBlockState(blockToDrain);
 			Fluid fluid = blockState.getFluidState().getFluid();
 
 			//make sure that the block is still fluid as we're working with cached queue
-			if(fluid != Fluids.EMPTY) {
+			if (fluid != Fluids.EMPTY) {
 				Optional<FluidStack> fs = drainBlock(world, blockToDrain, blockState.getBlock(), blockState, fluid, IFluidHandler.FluidAction.SIMULATE);
-				if(fs.isPresent()) {
+				if (fs.isPresent()) {
 					FluidStack fluidStack = fs.get();
 					//check if we were able to fill the fluid in some tank, otherwise try the next fluid block in queue
-					if((pedestal.fillConnectedTank(fluidStack, IFluidHandler.FluidAction.SIMULATE) != fluidStack.getAmount())) {
+					if ((pedestal.fillConnectedTank(fluidStack, IFluidHandler.FluidAction.SIMULATE) != fluidStack.getAmount())) {
 						continue;
 					}
 
@@ -101,7 +101,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		unsuccessfulTries++;
 
-		if(unsuccessfulTries >= UNSUCCESSFUL_TRIES_TO_CLEAN_QUEUE) {
+		if (unsuccessfulTries >= UNSUCCESSFUL_TRIES_TO_CLEAN_QUEUE) {
 			queueToDrain.clear();
 			unsuccessfulTries = 0;
 		}
@@ -110,14 +110,14 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void updateQueueToDrain(World world, BlockPos pos, int bucketRange) {
-		for(int y = pos.getY() + bucketRange; y >= pos.getY() - bucketRange; y--) {
-			for(int x = pos.getX() - bucketRange; x <= pos.getX() + bucketRange; x++) {
-				for(int z = pos.getZ() - bucketRange; z <= pos.getZ() + bucketRange; z++) {
+		for (int y = pos.getY() + bucketRange; y >= pos.getY() - bucketRange; y--) {
+			for (int x = pos.getX() - bucketRange; x <= pos.getX() + bucketRange; x++) {
+				for (int z = pos.getZ() - bucketRange; z <= pos.getZ() + bucketRange; z++) {
 					BlockPos currentBlockPos = new BlockPos(x, y, z);
 					BlockState blockState = world.getBlockState(currentBlockPos);
 					Fluid fluid = blockState.getFluidState().getFluid();
 
-					if(fluid != Fluids.EMPTY && canDrainBlock(world, currentBlockPos, blockState.getBlock(), blockState, fluid)) {
+					if (fluid != Fluids.EMPTY && canDrainBlock(world, currentBlockPos, blockState.getBlock(), blockState, fluid)) {
 						queueToDrain.add(currentBlockPos);
 					}
 				}
@@ -130,19 +130,19 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private Optional<FluidStack> drainBlock(World world, BlockPos pos, Block block, BlockState blockState, Fluid fluid, IFluidHandler.FluidAction action) {
-		if(block instanceof IFluidBlock) {
+		if (block instanceof IFluidBlock) {
 			IFluidBlock fluidBlock = (IFluidBlock) block;
-			if(!fluidBlock.canDrain(world, pos)) {
+			if (!fluidBlock.canDrain(world, pos)) {
 				return Optional.empty();
 			}
 			return Optional.of(fluidBlock.drain(world, pos, action));
-		} else if(block instanceof FlowingFluidBlock) {
+		} else if (block instanceof FlowingFluidBlock) {
 			int level = blockState.get(FlowingFluidBlock.LEVEL);
-			if(level != 0) {
+			if (level != 0) {
 				return Optional.empty();
 			}
 
-			if(action == IFluidHandler.FluidAction.EXECUTE) {
+			if (action == IFluidHandler.FluidAction.EXECUTE) {
 				world.setBlockState(pos, Blocks.AIR.getDefaultState());
 			}
 
@@ -158,7 +158,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 				new AxisAlignedBB((double) pos.getX() - bucketRange, (double) pos.getY() - bucketRange, (double) pos.getZ() - bucketRange,
 						(double) pos.getX() + bucketRange, (double) pos.getY() + bucketRange, (double) pos.getZ() + bucketRange));
 
-		if(entities.isEmpty()) {
+		if (entities.isEmpty()) {
 			return false;
 		}
 
@@ -174,17 +174,17 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		fakePlayer.setHeldItem(Hand.MAIN_HAND, bucketStack);
 
 		//right click cow with bucket
-		cow.func_230254_b_(fakePlayer, Hand.MAIN_HAND);
+		cow.getEntityInteractionResult(fakePlayer, Hand.MAIN_HAND);
 
 		//put milk in the adjacent tanks
-		if(fakePlayer.getHeldItem(Hand.MAIN_HAND).getItem() == Items.MILK_BUCKET) {
-			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.MILK_STILL.get(), FluidAttributes.BUCKET_VOLUME));
+		if (fakePlayer.getHeldItem(Hand.MAIN_HAND).getItem() == Items.MILK_BUCKET) {
+			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ForgeMod.MILK.get(), FluidAttributes.BUCKET_VOLUME));
 			//replace bucket in the pedestals with milk one if the tanks can't hold it
-			if(fluidAdded == 0) {
-				if(stack.getCount() == 1) {
+			if (fluidAdded == 0) {
+				if (stack.getCount() == 1) {
 					pedestal.setItem(new ItemStack(Items.MILK_BUCKET));
 					return true;
-				} else if(stack.getCount() > 1) {
+				} else if (stack.getCount() > 1) {
 					stack.shrink(1);
 					ItemEntity entity = new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, new ItemStack(Items.MILK_BUCKET));
 					world.addEntity(entity);

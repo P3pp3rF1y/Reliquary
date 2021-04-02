@@ -71,7 +71,7 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private boolean canAttackEntity(MobEntity entityToAttack) {
-		return entityToAttack.isNonBoss() && !(entityToAttack instanceof VillagerEntity)
+		return !(entityToAttack instanceof VillagerEntity)
 				&& (!(entityToAttack instanceof AnimalEntity) || !entityToAttack.isChild())
 				&& (!(entityToAttack instanceof HorseEntity) || !((HorseEntity) entityToAttack).isTame())
 				&& (!(entityToAttack instanceof TameableEntity) || !((TameableEntity) entityToAttack).isTamed());

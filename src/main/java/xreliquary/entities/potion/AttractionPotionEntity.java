@@ -44,7 +44,7 @@ public class AttractionPotionEntity extends ThrownPotionEntity {
 		if (e.getGrowingAge() != 0) {
 			return;
 		}
-		Entity thrower = func_234616_v_();
+		Entity thrower = getShooter();
 		if (thrower instanceof PlayerEntity) {
 			e.setInLove((PlayerEntity) thrower);
 		}

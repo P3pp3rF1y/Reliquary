@@ -36,18 +36,20 @@ import java.util.Collections;
 @SuppressWarnings("unused") //plugin class is used by JEI's reflection
 @JeiPlugin
 public class ReliquaryPlugin implements IModPlugin {
+	private static final String EFFECTS_TAG = "effects";
+
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registration) {
 		registerNbtSubtypeInterpreter(registration, ModItems.MOB_CHARM_FRAGMENT.get(), "entity");
 		registerNbtSubtypeInterpreter(registration, ModItems.MOB_CHARM.get(), "entity");
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
-			registerNbtSubtypeInterpreter(registration, ModItems.POTION_ESSENCE.get(), "effects");
-			registerNbtSubtypeInterpreter(registration, ModItems.POTION.get(), "effects");
-			registerNbtSubtypeInterpreter(registration, ModItems.SPLASH_POTION.get(), "effects");
-			registerNbtSubtypeInterpreter(registration, ModItems.LINGERING_POTION.get(), "effects");
-			registerNbtSubtypeInterpreter(registration, ModItems.TIPPED_ARROW.get(), "effects");
-			registerNbtSubtypeInterpreter(registration, ModItems.NEUTRAL_BULLET.get(), "effects");
-			registerNbtSubtypeInterpreter(registration, ModItems.NEUTRAL_MAGAZINE.get(), "effects");
+			registerNbtSubtypeInterpreter(registration, ModItems.POTION_ESSENCE.get(), EFFECTS_TAG);
+			registerNbtSubtypeInterpreter(registration, ModItems.POTION.get(), EFFECTS_TAG);
+			registerNbtSubtypeInterpreter(registration, ModItems.SPLASH_POTION.get(), EFFECTS_TAG);
+			registerNbtSubtypeInterpreter(registration, ModItems.LINGERING_POTION.get(), EFFECTS_TAG);
+			registerNbtSubtypeInterpreter(registration, ModItems.TIPPED_ARROW.get(), EFFECTS_TAG);
+			registerNbtSubtypeInterpreter(registration, ModItems.NEUTRAL_BULLET.get(), EFFECTS_TAG);
+			registerNbtSubtypeInterpreter(registration, ModItems.NEUTRAL_MAGAZINE.get(), EFFECTS_TAG);
 		}
 	}
 

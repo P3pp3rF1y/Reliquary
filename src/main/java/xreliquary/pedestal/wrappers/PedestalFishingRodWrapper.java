@@ -250,7 +250,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		world.addEntity(new FishingBobberEntity(fakePlayer, world, 0, 0) {
 			@Nullable
 			@Override
-			public Entity func_234616_v_() {
+			public Entity getShooter() {
 				return fakePlayer;
 			}
 		});

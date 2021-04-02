@@ -216,7 +216,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ENDER_PEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 				if (!player.world.isRemote) {
 					EnderStaffProjectileEntity enderStaffProjectile = new EnderStaffProjectileEntity(player.world, player, !getMode(stack).equals(LONG_CAST_TAG));
-					enderStaffProjectile.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
+					enderStaffProjectile.setDirectionAndMovement(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
 					player.world.addEntity(enderStaffProjectile);
 					if (!player.isCreative()) {
 						setPearlCount(stack, getPearlCount(stack) - getEnderStaffPearlCost());

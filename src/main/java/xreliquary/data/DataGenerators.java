@@ -17,7 +17,8 @@ public class DataGenerators {
 		DataGenerator generator = evt.getGenerator();
 
 		generator.addProvider(new BlockLootProvider(generator));
-		generator.addProvider(new ItemTagProvider(generator, new BlockTagsProvider(generator, Reference.MOD_ID, null)));
+		generator.addProvider(new ItemTagProvider(generator, new BlockTagsProvider(generator, Reference.MOD_ID, evt.getExistingFileHelper()), evt.getExistingFileHelper()));
 		generator.addProvider(new ModRecipeProvider(generator));
+		generator.addProvider(new ModFluidTagsProvider(generator, evt.getExistingFileHelper()));
 	}
 }
