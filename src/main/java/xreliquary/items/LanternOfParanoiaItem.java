@@ -27,13 +27,18 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
+import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class LanternOfParanoiaItem extends ToggleableItem {
+	private static final int SUCCESS_COOLDOWN = 4;
+	private static final int NOTHING_FOUND_COOLDOWN = 10;
+
 	private static final Map<String, Block> TORCH_BLOCKS = new HashMap<>();
 
 	public LanternOfParanoiaItem() {
@@ -51,27 +56,44 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (!isEnabled(stack) || world.isRemote) {
+		if (world.isRemote || !isEnabled(stack) || isInCooldown(stack, world)) {
 			return;
 		}
 		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
-			BlockPos.getAllInBox(player.getPosition().add(-getRange(), -getRange() / 2, -getRange()), player.getPosition().add(getRange(), getRange() / 2, getRange()))
-					.anyMatch(pos -> {
-						int lightLevel = player.world.getLightFor(LightType.BLOCK, pos);
-						if (lightLevel > Settings.COMMON.items.lanternOfParanoia.minLightLevel.get()) {
-							return false;
-						}
-
-						BlockState state = world.getBlockState(pos);
-						Block block = state.getBlock();
-						BlockItemUseContext context = new BlockItemUseContext(player, Hand.MAIN_HAND, ItemStack.EMPTY, new BlockRayTraceResult(Vector3d.copyCenteredHorizontally(pos), Direction.UP, pos, false));
-						if (block instanceof FlowingFluidBlock || (!block.isAir(state, world, pos) && !state.isReplaceable(BlockItemUseContext.func_221536_a(context, pos, Direction.DOWN)))) {
-							return false;
-						}
-						return tryToPlaceTorchAround(stack, pos, player, world);
-					});
+			if (getPositionsInRange(player).anyMatch(pos -> tryToPlaceAtPos(stack, world, player, pos))) {
+				setCooldown(stack, world, SUCCESS_COOLDOWN);
+			} else {
+				setCooldown(stack, world, NOTHING_FOUND_COOLDOWN);
+			}
 		}
+	}
+
+	private Stream<BlockPos> getPositionsInRange(PlayerEntity player) {
+		return BlockPos.getAllInBox(player.getPosition().add(-getRange(), -getRange() / 2, -getRange()), player.getPosition().add(getRange(), getRange() / 2, getRange()));
+	}
+
+	private boolean tryToPlaceAtPos(ItemStack stack, World world, PlayerEntity player, BlockPos pos) {
+		int lightLevel = player.world.getLightFor(LightType.BLOCK, pos);
+		if (lightLevel > Settings.COMMON.items.lanternOfParanoia.minLightLevel.get()) {
+			return false;
+		}
+
+		BlockState state = world.getBlockState(pos);
+		Block block = state.getBlock();
+		BlockItemUseContext context = new BlockItemUseContext(player, Hand.MAIN_HAND, ItemStack.EMPTY, new BlockRayTraceResult(Vector3d.copyCenteredHorizontally(pos), Direction.UP, pos, false));
+		if (block instanceof FlowingFluidBlock || (!block.isAir(state, world, pos) && !state.isReplaceable(BlockItemUseContext.func_221536_a(context, pos, Direction.DOWN)))) {
+			return false;
+		}
+		return tryToPlaceTorchAround(stack, pos, player, world);
+	}
+
+	private void setCooldown(ItemStack stack, World world, int cooldown) {
+		NBTHelper.putLong("cooldown", stack, world.getGameTime() + cooldown);
+	}
+
+	private boolean isInCooldown(ItemStack stack, World world) {
+		return NBTHelper.getLong("cooldown", stack) > world.getGameTime();
 	}
 
 	private boolean isBlockBlockingView(World world, PlayerEntity player, BlockPos pos) {
