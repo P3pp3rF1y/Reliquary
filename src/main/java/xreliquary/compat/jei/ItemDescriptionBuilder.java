@@ -2,19 +2,25 @@ package xreliquary.compat.jei;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.Reliquary;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
+import xreliquary.items.MobCharmFragmentItem;
+import xreliquary.items.MobCharmItem;
 import xreliquary.reference.Reference;
-import xreliquary.util.NBTHelper;
+import xreliquary.util.LanguageHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.XRPotionHelper;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ItemDescriptionBuilder {
@@ -86,8 +92,8 @@ public class ItemDescriptionBuilder {
 		registerItemDescription(registration, ModItems.TWILIGHT_CLOAK.get());
 		registerItemDescription(registration, ModItems.GLOWING_BREAD.get());
 
-		registerCharmItemsDescription(registration, ModItems.MOB_CHARM_FRAGMENT.get());
-		registerCharmItemsDescription(registration, ModItems.MOB_CHARM.get());
+		registerCharmFragmentItemsDescription(registration);
+		registerCharmItemsDescription(registration);
 
 		registerItemDescription(registration, ModItems.EMPTY_MAGAZINE.get());
 		registerItemDescription(registration, ModItems.EMPTY_BULLET.get());
@@ -146,10 +152,6 @@ public class ItemDescriptionBuilder {
 		registration.addIngredientInfo(items, VanillaTypes.ITEM, getTranslationKeys(langKeys));
 	}
 
-	private static void addStackIngredientInfo(IRecipeRegistration registration, ItemStack stack, String... langKeys) {
-		addStacksIngredientInfo(registration, Collections.singletonList(stack), langKeys);
-	}
-
 	private static String[] getTranslationKeys(String... langKeys) {
 		String[] keys = new String[langKeys.length];
 		for (int i = 0; i < langKeys.length; i++) {
@@ -159,12 +161,30 @@ public class ItemDescriptionBuilder {
 		return keys;
 	}
 
-	private static void registerCharmItemsDescription(IRecipeRegistration registration, Item item) {
+	private static void registerCharmFragmentItemsDescription(IRecipeRegistration registration) {
+		MobCharmFragmentItem item = ModItems.MOB_CHARM_FRAGMENT.get();
+		BinaryOperator<String> getLocalization = (itemDescriptionKey, entityName) -> LanguageHelper.getLocalization(itemDescriptionKey, entityName, entityName);
+		registerCharmBasedItems(registration, item, getLocalization, MobCharmFragmentItem::getEntityEggRegistryName);
+	}
+
+	private static void registerCharmItemsDescription(IRecipeRegistration registration) {
+		MobCharmItem item = ModItems.MOB_CHARM.get();
+		BinaryOperator<String> getLocalization = LanguageHelper::getLocalization;
+		registerCharmBasedItems(registration, item, getLocalization, MobCharmItem::getEntityEggRegistryName);
+	}
+
+	private static void registerCharmBasedItems(IRecipeRegistration registration, Item item, BinaryOperator<String> getLocalization, Function<ItemStack, ResourceLocation> getEntityRegistryName) {
 		NonNullList<ItemStack> subItems = NonNullList.create();
 		item.fillItemGroup(Reliquary.ITEM_GROUP, subItems);
 		for (ItemStack subItem : subItems) {
-			//noinspection ConstantConditions
-			addStackIngredientInfo(registration, subItem, NBTHelper.getString("entity", subItem).split(":")[1] + "_" + item.getRegistryName().getPath());
+			EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(getEntityRegistryName.apply(subItem));
+			if (entityType == null) {
+				continue;
+			}
+			String path = RegistryHelper.getRegistryName(item).getPath();
+			String itemDescriptionKey = String.format("jei.%s.description.%s", Reference.MOD_ID, path.replace('/', '.'));
+			String entityName = entityType.getName().getString();
+			registration.addIngredientInfo(subItem, VanillaTypes.ITEM, getLocalization.apply(itemDescriptionKey, entityName));
 		}
 	}
 
