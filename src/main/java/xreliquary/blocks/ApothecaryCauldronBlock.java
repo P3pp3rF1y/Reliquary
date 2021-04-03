@@ -5,12 +5,14 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -20,6 +22,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import xreliquary.blocks.tile.ApothecaryCauldronTileEntity;
+import xreliquary.reference.Settings;
 
 import javax.annotation.Nullable;
 
@@ -32,6 +35,14 @@ public class ApothecaryCauldronBlock extends Block {
 	public ApothecaryCauldronBlock() {
 		super(Properties.create(Material.IRON).hardnessAndResistance(1.5F, 5.0F).notSolid());
 		setDefaultState(stateContainer.getBaseState().with(LEVEL, 0));
+	}
+
+	@Override
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+		if (Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
+			return;
+		}
+		super.fillItemGroup(group, items);
 	}
 
 	@Override

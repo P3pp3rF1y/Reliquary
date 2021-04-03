@@ -10,10 +10,11 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import xreliquary.entities.potion.FertilePotionEntity;
 import xreliquary.init.ModItems;
+import xreliquary.reference.Settings;
 
 public class FertilePotionItem extends ItemBase {
 	public FertilePotionItem() {
-		super(new Properties());
+		super(new Properties(), Settings.COMMON.disable.disablePotions::get);
 	}
 
 	@Override

@@ -13,9 +13,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RandHelper;
 
+import java.util.function.Supplier;
+
 public class ToggleableItem extends ItemBase {
 
 	private static final String ENABLED_TAG = "enabled";
+
+	public ToggleableItem(Properties properties, Supplier<Boolean> isDisabled) {
+		super(properties, isDisabled);
+	}
 
 	public ToggleableItem(Properties properties) {
 		super(properties);

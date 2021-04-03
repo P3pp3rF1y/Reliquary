@@ -10,11 +10,12 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import xreliquary.entities.potion.AttractionPotionEntity;
 import xreliquary.init.ModItems;
+import xreliquary.reference.Settings;
 
 public class AttractionPotionItem extends ItemBase {
 
 	public AttractionPotionItem() {
-		super(new Properties());
+		super(new Properties(), Settings.COMMON.disable.disablePotions::get);
 	}
 
 	@Override
@@ -22,20 +23,18 @@ public class AttractionPotionItem extends ItemBase {
 		return true;
 	}
 
-
 	@Override
-	public ItemStack getContainerItem( ItemStack stack) {
+	public ItemStack getContainerItem(ItemStack stack) {
 		return new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 	}
 
-
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player,  Hand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if(world.isRemote) {
+		if (world.isRemote) {
 			return new ActionResult<>(ActionResultType.PASS, stack);
 		}
-		if(!player.isCreative()) {
+		if (!player.isCreative()) {
 			stack.shrink(1);
 		}
 		world.playSound(null, player.getPosition(), SoundEvents.BLOCK_DISPENSER_LAUNCH, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));

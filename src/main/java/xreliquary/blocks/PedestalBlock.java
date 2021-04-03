@@ -21,6 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.blocks.tile.PedestalTileEntity;
 import xreliquary.pedestal.PedestalRegistry;
+import xreliquary.reference.Settings;
 import xreliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
@@ -39,6 +40,11 @@ public class PedestalBlock extends PassivePedestalBlock {
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		super.fillStateContainer(builder);
 		builder.add(ENABLED);
+	}
+
+	@Override
+	protected boolean isDisabled() {
+		return Boolean.TRUE.equals(Settings.COMMON.disable.disablePedestal.get());
 	}
 
 	@Override

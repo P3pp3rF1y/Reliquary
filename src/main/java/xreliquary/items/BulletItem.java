@@ -42,7 +42,7 @@ public class BulletItem extends ItemBase implements IPotionItem {
 
 	@Override
 	public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> items) {
-		if (!isInGroup(itemGroup)) {
+		if (!isInGroup(itemGroup) || Boolean.TRUE.equals(Settings.COMMON.disable.disableHandgun.get())) {
 			return;
 		}
 

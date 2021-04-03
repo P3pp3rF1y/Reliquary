@@ -7,13 +7,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -34,7 +32,7 @@ import java.util.List;
 
 public class AlkahestryTomeItem extends ToggleableItem {
 	public AlkahestryTomeItem() {
-		super(new Properties().setNoRepair().rarity(Rarity.EPIC).maxStackSize(1));
+		super(new Properties().setNoRepair().rarity(Rarity.EPIC).maxStackSize(1), Settings.COMMON.disable.disableAlkahestry::get);
 	}
 
 	@Override
@@ -113,16 +111,6 @@ public class AlkahestryTomeItem extends ToggleableItem {
 	@Override
 	protected boolean hasMoreInformation(ItemStack stack) {
 		return true;
-	}
-
-	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (!isInGroup(group)) {
-			return;
-		}
-
-		ItemStack stack = new ItemStack(this);
-		items.add(stack);
 	}
 
 	public static int getChargeLimit() {

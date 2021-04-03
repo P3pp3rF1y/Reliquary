@@ -5,12 +5,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -21,6 +23,7 @@ import xreliquary.entities.shot.ShotEntityBase;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModSounds;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.potions.XRPotionHelper;
@@ -52,7 +55,7 @@ public class HandgunItem extends ItemBase {
 	}
 
 	public HandgunItem() {
-		super(new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1), Settings.COMMON.disable.disableHandgun::get);
 	}
 
 	private short getBulletCount(ItemStack handgun) {
