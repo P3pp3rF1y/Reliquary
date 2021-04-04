@@ -663,7 +663,7 @@ public class Settings {
 				public final IntValue hungerCostPercent;
 
 				InfernalClawsSettings(ForgeConfigSpec.Builder builder) {
-					builder.comment("Infernal Chalice settings").push("infernalClaws");
+					builder.comment("Infernal Claws settings").push("infernalClaws");
 
 					hungerCostPercent = builder
 							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
