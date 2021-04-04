@@ -19,6 +19,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
 import xreliquary.api.IPedestalRedstoneItem;
@@ -28,7 +29,6 @@ import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.util.InventoryHelper;
-import xreliquary.util.StackHelper;
 import xreliquary.util.WorldHelper;
 import xreliquary.util.XRFakePlayerFactory;
 
@@ -490,7 +490,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 		int adjustedSlot = getInternalItemHandlerSlot(slot);
 		ItemStack stackInSlot = ih.getStackInSlot(adjustedSlot);
 
-		if (!stackInSlot.isEmpty() && !stack.isEmpty() && !StackHelper.isItemAndNbtEqual(stack, stackInSlot)) {
+		if (!stackInSlot.isEmpty() && !stack.isEmpty() && !ItemHandlerHelper.canItemStacksStack(stack, stackInSlot)) {
 			return;
 		}
 

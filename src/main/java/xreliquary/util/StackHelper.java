@@ -17,8 +17,4 @@ public class StackHelper {
 		}
 		return Optional.of(new ItemStack(item));
 	}
-
-	public static boolean isItemAndNbtEqual(ItemStack ist1, ItemStack ist2) {
-		return (ist1.isEmpty() && ist2.isEmpty()) || (ist1.isItemEqual(ist2) && (ist1.getTag() == null || ist1.getTag().equals(ist2.getTag())));
-	}
 }

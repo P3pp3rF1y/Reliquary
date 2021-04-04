@@ -35,6 +35,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import xreliquary.blocks.PedestalBlock;
 import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.items.util.VoidTearItemStackHandler;
@@ -45,7 +46,6 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.NoPlayerBlockItemUseContext;
 import xreliquary.util.RandHelper;
-import xreliquary.util.StackHelper;
 import xreliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
@@ -184,7 +184,6 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	private void buildTear(ItemStack voidTear, ItemStack target, PlayerEntity player, IItemHandler inventory, boolean isPlayerInventory) {
-
 		int quantity = InventoryHelper.getItemQuantity(target, inventory);
 		if (isPlayerInventory) {
 			if ((quantity - target.getMaxStackSize()) > 0) {
@@ -264,7 +263,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		for (int slot = 0; slot < h.getSlots(); slot++) {
 			ItemStack stackFound = h.getStackInSlot(slot);
 
-			if (StackHelper.isItemAndNbtEqual(stackFound, getTearContents(voidTear))) {
+			if (ItemHandlerHelper.canItemStacksStack(stackFound, getTearContents(voidTear))) {
 				int quantityToDecrease = Math.min(stackFound.getMaxStackSize() - stackFound.getCount(), getItemQuantity(voidTear) - 1);
 				stackFound.grow(quantityToDecrease);
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
@@ -543,7 +542,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	boolean canAbsorbStack(ItemStack pickedUpStack, ItemStack tearStack) {
-		return StackHelper.isItemAndNbtEqual(getTearContents(tearStack), pickedUpStack) && getItemQuantity(tearStack) + pickedUpStack.getCount() <= Settings.COMMON.items.voidTear.itemLimit.get();
+		return ItemHandlerHelper.canItemStacksStack(getTearContents(tearStack), pickedUpStack) && getItemQuantity(tearStack) + pickedUpStack.getCount() <= Settings.COMMON.items.voidTear.itemLimit.get();
 	}
 
 	public boolean isEmpty(ItemStack voidTear) {

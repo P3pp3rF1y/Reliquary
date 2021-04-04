@@ -52,7 +52,7 @@ public class InventoryHelper {
 		int itemQuantity = 0;
 		for (int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack stack = inventory.getStackInSlot(slot);
-			if (StackHelper.isItemAndNbtEqual(self, stack) || stack.getMaxStackSize() == 1) {
+			if (ItemHandlerHelper.canItemStacksStack(self, stack) || stack.getMaxStackSize() == 1) {
 				continue;
 			}
 			if (getItemQuantity(stack, inventory) > itemQuantity) {
@@ -71,7 +71,7 @@ public class InventoryHelper {
 		int itemQuantity = 0;
 		for (int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack newStack = inventory.getStackInSlot(slot);
-			if (StackHelper.isItemAndNbtEqual(stack, newStack)) {
+			if (ItemHandlerHelper.canItemStacksStack(stack, newStack)) {
 				itemQuantity += newStack.getCount();
 			}
 		}
@@ -126,7 +126,7 @@ public class InventoryHelper {
 		List<Map.Entry<Integer, Integer>> slotCounts = new ArrayList<>();
 		for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
 			ItemStack slotStack = player.inventory.mainInventory.get(slot);
-			if (StackHelper.isItemAndNbtEqual(slotStack, itemStack)) {
+			if (ItemHandlerHelper.canItemStacksStack(slotStack, itemStack)) {
 				int stackSize = slotStack.getCount();
 				itemCount += stackSize;
 				slotCounts.add(new AbstractMap.SimpleEntry<>(slot, stackSize));
@@ -176,7 +176,7 @@ public class InventoryHelper {
 			}
 
 			//storage drawers compatibility loop
-			while (inventory.getStackInSlot(slot).getCount() > 0 && StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents) && remaining > 0) {
+			while (inventory.getStackInSlot(slot).getCount() > 0 && ItemHandlerHelper.canItemStacksStack(inventory.getStackInSlot(slot), contents) && remaining > 0) {
 				ItemStack extractedStack = inventory.extractItem(slot, Math.min(maxToRemove, inventory.getStackInSlot(slot).getCount()), false);
 				if (extractedStack.getCount() == 0) {
 					break; //just in case some item handler shows stacks that can't be extracted
