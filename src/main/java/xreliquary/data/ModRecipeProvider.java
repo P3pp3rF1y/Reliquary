@@ -34,6 +34,7 @@ import xreliquary.crafting.conditions.MobDropsCraftableCondition;
 import xreliquary.crafting.conditions.PassivePedestalEnabledCondition;
 import xreliquary.crafting.conditions.PedestalEnabledCondition;
 import xreliquary.crafting.conditions.PotionsEnabledCondition;
+import xreliquary.crafting.conditions.SpawnEggEnabledCondition;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModItems;
 import xreliquary.items.BulletItem;
@@ -601,12 +602,17 @@ public class ModRecipeProvider extends RecipeProvider {
 				.addCriterion(HAS_WITHERED_RIB_CRITERION, hasItem(ModItems.WITHERED_RIB.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "wither_skeleton_skull"));
 
-		SpawnEggRecipeBuilder.spawnEggRecipe()
-				.addIngredient(ModItems.MOB_CHARM_FRAGMENT.get())
-				.addIngredient(ModItems.MOB_CHARM_FRAGMENT.get())
-				.addIngredient(Items.EGG)
-				.addCriterion(HAS_MOB_CHARM_FRAGMENT_CRITERION, hasItem(ModItems.MOB_CHARM_FRAGMENT.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "spawn_egg"));
+		ResourceLocation spawnEggId = new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "spawn_egg");
+		ConditionalRecipe.builder()
+				.addCondition(new SpawnEggEnabledCondition())
+				.addRecipe(conditionalConsumer ->
+						SpawnEggRecipeBuilder.spawnEggRecipe()
+								.addIngredient(ModItems.MOB_CHARM_FRAGMENT.get())
+								.addIngredient(ModItems.MOB_CHARM_FRAGMENT.get())
+								.addIngredient(Items.EGG)
+								.addCriterion(HAS_MOB_CHARM_FRAGMENT_CRITERION, hasItem(ModItems.MOB_CHARM_FRAGMENT.get()))
+								.build(conditionalConsumer, spawnEggId))
+				.build(consumer, spawnEggId);
 	}
 
 	private void registerHandgunRecipes(Consumer<IFinishedRecipe> consumer) {

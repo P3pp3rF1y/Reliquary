@@ -1,17 +1,29 @@
 {
-  "type": "xreliquary:fragment_to_spawn_egg",
-  "ingredients": [
+  "type": "forge:conditional",
+  "recipes": [
     {
-      "item": "xreliquary:mob_charm_fragment"
-    },
-    {
-      "item": "xreliquary:mob_charm_fragment"
-    },
-    {
-      "item": "minecraft:egg"
+      "conditions": [
+        {
+          "type": "xreliquary:spawn_egg_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "xreliquary:fragment_to_spawn_egg",
+        "ingredients": [
+          {
+            "item": "xreliquary:mob_charm_fragment"
+          },
+          {
+            "item": "xreliquary:mob_charm_fragment"
+          },
+          {
+            "item": "minecraft:egg"
+          }
+        ],
+        "result": {
+          "item": "minecraft:chicken_spawn_egg"
+        }
+      }
     }
-  ],
-  "result": {
-    "item": "minecraft:chicken_spawn_egg"
-  }
+  ]
 }

@@ -43,6 +43,7 @@ import xreliquary.crafting.conditions.MobDropsCraftableCondition;
 import xreliquary.crafting.conditions.PassivePedestalEnabledCondition;
 import xreliquary.crafting.conditions.PedestalEnabledCondition;
 import xreliquary.crafting.conditions.PotionsEnabledCondition;
+import xreliquary.crafting.conditions.SpawnEggEnabledCondition;
 import xreliquary.entities.GlowingWaterEntity;
 import xreliquary.entities.HolyHandGrenadeEntity;
 import xreliquary.entities.XRTippedArrowEntity;
@@ -300,6 +301,7 @@ public class ModItems {
 		CraftingHelper.register(PotionsEnabledCondition.SERIALIZER);
 		CraftingHelper.register(PassivePedestalEnabledCondition.SERIALIZER);
 		CraftingHelper.register(PedestalEnabledCondition.SERIALIZER);
+		CraftingHelper.register(SpawnEggEnabledCondition.SERIALIZER);
 
 		IForgeRegistry<IRecipeSerializer<?>> reg = evt.getRegistry();
 		reg.register(MobCharmRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "mob_charm")));
