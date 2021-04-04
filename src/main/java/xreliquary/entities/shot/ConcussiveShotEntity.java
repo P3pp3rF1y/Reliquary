@@ -55,7 +55,7 @@ public class ConcussiveShotEntity extends ShotEntityBase {
 			return;
 		}
 
-		ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, getPositionVec(), 1.5F, true);
+		getShooterPlayer().ifPresent(player -> ConcussiveExplosion.customConcussiveExplosion(this, player, getPositionVec(), 1.5F, true));
 		super.onImpact(entityLiving);
 	}
 
@@ -64,7 +64,7 @@ public class ConcussiveShotEntity extends ShotEntityBase {
 		if (world.isRemote) {
 			return;
 		}
-		ConcussiveExplosion.customConcussiveExplosion(this, shootingEntity, getPositionVec(), 1.5F, true);
+		getShooterPlayer().ifPresent(player -> ConcussiveExplosion.customConcussiveExplosion(this, player, getPositionVec(), 1.5F, true));
 		remove();
 	}
 

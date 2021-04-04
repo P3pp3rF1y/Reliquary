@@ -21,6 +21,7 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -56,30 +57,28 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	/**
 	 * The owner of this arrow.
 	 */
-	PlayerEntity shootingEntity;
 	protected int ticksInAir = 0;
 
 	private int ricochetCounter = 0;
 	private boolean scheduledForDeath = false;
 
-	public <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world) {
+	protected <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world) {
 		super(entityType, world);
 	}
 
-	public <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world, double x, double y, double z) {
+	protected <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world, PlayerEntity player, Hand hand) {
 		this(entityType, world);
-		setPosition(x, y, z);
-	}
-
-	public <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world, PlayerEntity player, Hand hand) {
-		this(entityType, world);
-		shootingEntity = player;
+		setShooter(player);
 		setLocationAndAngles(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), player.rotationYaw, player.rotationPitch);
 		setPosition(
 				getPosX() - MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * (hand == Hand.MAIN_HAND ? 1 : -1) * 0.16F,
 				getPosY() - 0.2D,
 				getPosZ() - MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * (hand == Hand.MAIN_HAND ? 1 : -1) * 0.16F
 		);
+	}
+
+	protected Optional<PlayerEntity> getShooterPlayer() {
+		return Optional.ofNullable((PlayerEntity) getShooter());
 	}
 
 	@Override
@@ -201,7 +200,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 
 			while (struckEntityIterator.hasNext()) {
 				Entity struckEntity = struckEntityIterator.next();
-				if (struckEntity.canBeCollidedWith() && (struckEntity != shootingEntity || ticksInAir >= 5)) {
+				if (struckEntity.canBeCollidedWith() && (struckEntity != getShooter() || ticksInAir >= 5)) {
 					var11 = 0.5F;
 					AxisAlignedBB var12 = struckEntity.getBoundingBox().grow(var11, var11, var11);
 					Optional<Vector3d> hitResult = var12.rayTrace(posVector, approachVector);
@@ -259,7 +258,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 			EntityRayTraceResult entityStruckResult = ((EntityRayTraceResult) objectStruckByVector);
 			if (entityStruckResult.getEntity() instanceof LivingEntity && potionEffects != null && !potionEffects.isEmpty()) {
 				LivingEntity living = (LivingEntity) entityStruckResult.getEntity();
-				XRPotionHelper.applyEffectsToEntity(potionEffects, this, shootingEntity, living);
+				XRPotionHelper.applyEffectsToEntity(potionEffects, this, getShooter(), living);
 			}
 		}
 	}
@@ -336,7 +335,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	}
 
 	protected DamageSource getDamageSource() {
-		return DamageSource.causePlayerDamage(shootingEntity);
+		return new IndirectEntityDamageSource("bullet", this, getShooter());
 	}
 
 	protected void groundImpact(Direction sideHit) {
@@ -443,7 +442,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 
 			//noinspection ConstantConditions
 			String entityName = currentTarget.getType().getRegistryName().toString();
-			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == shootingEntity) || (!currentTarget.isAlive()
+			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == getShooter()) || (!currentTarget.isAlive()
 					|| (currentTarget instanceof LivingEntity && ((LivingEntity) currentTarget).getHealth() <= 0))) {
 				continue;
 			}
@@ -454,7 +453,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 			}
 		}
 		// these are extremely touchy, tune them lightly.
-		if (closestTarget != null && shootingEntity != null) {
+		if (closestTarget != null && getShooter() != null) {
 			double x = closestTarget.getBoundingBox().minX + closestTarget.getBoundingBox().maxX;
 			x /= 2D;
 			double y = closestTarget.getBoundingBox().minY + Math.max(closestTarget.getYOffset(), closestTarget.getHeight());
@@ -500,7 +499,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	 */
 	protected void onImpact(LivingEntity entityLiving) {
 		if (!world.isRemote) {
-			if (entityLiving != shootingEntity || ticksInAir > 3) {
+			if (entityLiving != getShooter() || ticksInAir > 3) {
 				doDamage(entityLiving);
 			}
 			spawnHitParticles(8);
@@ -512,7 +511,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	protected void onImpact(RayTraceResult result) {
 		if (result.getType() == RayTraceResult.Type.ENTITY) {
 			Entity entity = ((EntityRayTraceResult) result).getEntity();
-			if (entity == shootingEntity || !(entity instanceof LivingEntity)) {
+			if (entity == getShooter() || !(entity instanceof LivingEntity)) {
 				return;
 			}
 			onImpact((LivingEntity) entity);

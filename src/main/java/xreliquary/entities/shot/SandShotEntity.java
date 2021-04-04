@@ -57,7 +57,7 @@ public class SandShotEntity extends ShotEntityBase {
 		// creepers turn sand shots into straight explosions.
 		if (e instanceof CreeperEntity) {
 			ConcussiveExplosion.customBusterExplosion(this, getPosX(), getPosY(), getPosZ(), 2.0F);
-			e.attackEntityFrom(DamageSource.causePlayerDamage(shootingEntity), 20);
+			getShooterPlayer().ifPresent(player -> e.attackEntityFrom(DamageSource.causePlayerDamage(player), 20));
 			return 0;
 		}
 		// it also causes blinding
