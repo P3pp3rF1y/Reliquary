@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -16,13 +17,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
-import xreliquary.crafting.AlkahestryCraftingRecipe;
-import xreliquary.crafting.AlkahestryRecipeRegistry;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -47,27 +47,15 @@ public class InfernalTearItem extends ToggleableItem {
 			return;
 		}
 
-		Optional<AlkahestryCraftingRecipe> recipe = matchAlkahestryRecipe(getStackFromTear(stack));
-		if (!recipe.isPresent()) {
+		Optional<Integer> experience = Settings.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(getStackFromTear(stack).getItem()));
+		if (!experience.isPresent()) {
 			resetTear(stack);
 			return;
 		}
 
-		AlkahestryCraftingRecipe matchedRecipe = recipe.get();
-
-		// You need above Cobblestone level to get XP.
-		if (!(matchedRecipe.getRecipeOutput().getCount() == 33 && matchedRecipe.getChargeNeeded() == 4) && InventoryHelper.consumeItem(getStackFromTear(stack), player)) {
-			player.giveExperiencePoints((int) (Math.ceil((((double) matchedRecipe.getChargeNeeded()) / (double) (matchedRecipe.getRecipeOutput().getCount() - 1)) / 256d * 500d)));
+		if (InventoryHelper.consumeItem(getStackFromTear(stack), player)) {
+			player.giveExperiencePoints(experience.get());
 		}
-	}
-
-	private Optional<AlkahestryCraftingRecipe> matchAlkahestryRecipe(ItemStack stack) {
-		for (AlkahestryCraftingRecipe recipe : AlkahestryRecipeRegistry.getCraftingRecipes()) {
-			if (recipe.getCraftingIngredient().test(stack)) {
-				return Optional.of(recipe);
-			}
-		}
-		return Optional.empty();
 	}
 
 	private void resetTear(ItemStack stack) {
@@ -79,22 +67,26 @@ public class InfernalTearItem extends ToggleableItem {
 	}
 
 	@Override
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+		super.addInformation(stack, world, tooltip, flag);
+		if (getStackFromTear(stack).isEmpty()) {
+			LanguageHelper.formatTooltip("tooltip.xreliquary.tear_empty", null, tooltip);
+		}
+	}
+
+	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip) {
-		if (getStackFromTear(stack).isEmpty()) {
-			LanguageHelper.formatTooltip("tooltip.infernal_tear.tear_empty", null, tooltip);
-		} else {
-			ItemStack contents = getStackFromTear(stack);
-			String itemName = contents.getDisplayName().getString();
+		ItemStack contents = getStackFromTear(stack);
+		String itemName = contents.getDisplayName().getString();
 
-			LanguageHelper.formatTooltip("tooltip.tear", ImmutableMap.of("item", itemName), tooltip);
+		LanguageHelper.formatTooltip("tooltip.xreliquary.tear", ImmutableMap.of("item", itemName), tooltip);
 
-			if (isEnabled(stack)) {
-				LanguageHelper.formatTooltip("tooltip.xreliquary.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + itemName), tooltip);
-			}
-			tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".absorb")));
-			tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".infernal_tear.absorb_unset")));
+		if (isEnabled(stack)) {
+			LanguageHelper.formatTooltip("tooltip.xreliquary.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + itemName), tooltip);
 		}
+		tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".absorb")));
+		tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".infernal_tear.absorb_unset")));
 	}
 
 	@Override
@@ -179,7 +171,7 @@ public class InfernalTearItem extends ToggleableItem {
 		for (int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack stack = inventory.getStackInSlot(slot);
 			if (stack.isEmpty() || self.isItemEqual(stack) || stack.getMaxStackSize() == 1 || stack.getTag() != null
-					|| !matchAlkahestryRecipe(stack).filter(recipe -> recipe.getRecipeOutput().getCount() != 33 || recipe.getChargeNeeded() != 4).isPresent()) {
+					|| !Settings.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(stack.getItem())).isPresent()) {
 				continue;
 			}
 			if (InventoryHelper.getItemQuantity(stack, inventory) > itemQuantity) {

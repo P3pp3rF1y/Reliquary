@@ -4,7 +4,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.particles.ParticleType;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -43,6 +42,7 @@ public class Reliquary {
 		modBus.addListener(Reliquary::setup);
 		modBus.addGenericListener(ParticleType.class, ModParticles::registerParticles);
 		modBus.addListener(Reliquary::loadComplete);
+		modBus.addListener(Settings::onFileChange);
 		ModItems.registerListeners(modBus);
 		ModBlocks.registerListeners(modBus);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Settings.CLIENT_SPEC);

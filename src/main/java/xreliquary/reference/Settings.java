@@ -7,17 +7,27 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 import xreliquary.client.gui.hud.HUDPosition;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @SuppressWarnings("squid:S1192") //no issue repeating the same string literal as they are independent
 public class Settings {
 	private Settings() {}
 
 	private static final int ITEM_CAP = 9999;
+
+	@SuppressWarnings("unused") // parameter needs to stay for addListener logic to recognize what this method is listening to
+	public static void onFileChange(ModConfig.Reloading configEvent) {
+		COMMON.items.infernalTear.resetCache();
+	}
 
 	public static class Client {
 		public final HudPos hudPositions;
@@ -272,6 +282,7 @@ public class Settings {
 					builder.pop();
 				}
 			}
+
 			public final MobCharmFragmentSettings mobCharmFragment;
 
 			public static class MobCharmFragmentSettings {
@@ -700,7 +711,11 @@ public class Settings {
 			public final InfernalTearSettings infernalTear;
 
 			public static class InfernalTearSettings {
+				private static final String ITEM_EXPERIENCE_MATCHER = "([a-z1-9_.-]+:[a-z1-9_/.-]+)\\|\\d+";
 				public final BooleanValue absorbWhenCreated;
+				public final ForgeConfigSpec.ConfigValue<List<? extends String>> itemExperienceList;
+				@Nullable
+				private Map<String, Integer> itemExperience = null;
 
 				InfernalTearSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Infernal Tear settings").push("infernalTear");
@@ -708,8 +723,49 @@ public class Settings {
 					absorbWhenCreated = builder
 							.comment("Whether the infernal tear starts absorbing immediately after it is set to item type")
 							.define("absorbWhenCreated", false);
-
+					itemExperienceList = builder.comment("List of items that can be consumed by infernal tear with their experience point value")
+							.defineList("entityLootTableList", this::getDefaultInfernalTearMappings, mapping -> ((String) mapping).matches(ITEM_EXPERIENCE_MATCHER));
 					builder.pop();
+				}
+
+				private List<String> getDefaultInfernalTearMappings() {
+					List<String> ret = new ArrayList<>();
+					ret.add("minecraft:emerald|63");
+					ret.add("minecraft:sandstone|1");
+					ret.add("minecraft:gravel|1");
+					ret.add("minecraft:diamond|125");
+					ret.add("minecraft:gunpowder|8");
+					ret.add("minecraft:nether_star|500");
+					ret.add("minecraft:iron_ingot|63");
+					ret.add("minecraft:charcoal|2");
+					ret.add("minecraft:soul_sand|2");
+					ret.add("minecraft:lapis_lazuli|8");
+					ret.add("minecraft:obsidian|4");
+					ret.add("minecraft:end_stone|1");
+					ret.add("minecraft:gold_ingot|63");
+					ret.add("minecraft:netherrack|1");
+					ret.add("minecraft:flint|2");
+					ret.add("minecraft:clay|4");
+					ret.add("minecraft:chorus_fruit|2");
+					ret.add("minecraft:quartz|16");
+					ret.add("minecraft:honeycomb|4");
+					ret.add("minecraft:netherite_scrap|250");
+					return ret;
+				}
+
+				public Optional<Integer> getItemExperience(String itemRegistryName) {
+					if (itemExperience == null) {
+						itemExperience = new HashMap<>();
+						for (String itemAndExperience : itemExperienceList.get()) {
+							String[] split = itemAndExperience.split("\\|");
+							itemExperience.put(split[0], Integer.valueOf(split[1]));
+						}
+					}
+					return Optional.ofNullable(itemExperience.get(itemRegistryName));
+				}
+
+				public void resetCache() {
+					itemExperience = null;
 				}
 			}
 
@@ -825,6 +881,7 @@ public class Settings {
 							.defineList("entityBlockList", this::getDefaultEntityBlockList, entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
 					builder.pop();
 				}
+
 				private List<String> getDefaultEntityBlockList() {
 					List<String> ret = new ArrayList<>();
 					ret.add("minecraft:ender_dragon");
