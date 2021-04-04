@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import org.apache.commons.lang3.tuple.Pair;
@@ -244,6 +245,7 @@ public class Settings {
 				lanternOfParanoia = new LanternOfParanoiaSettings(builder);
 				midasTouchstone = new MidasTouchstoneSettings(builder);
 				mobCharm = new MobCharmSettings(builder);
+				mobCharmFragment = new MobCharmFragmentSettings(builder);
 				phoenixDown = new PhoenixDownSettings(builder);
 				pyromancerStaff = new PyromancerStaffSettings(builder);
 				rendingGale = new RendingGaleSettings(builder);
@@ -266,6 +268,22 @@ public class Settings {
 							.push("alkahestryTome");
 
 					chargeLimit = builder.comment("Charge limit of the tome").defineInRange("chargeLimit", 1000, 0, ITEM_CAP);
+
+					builder.pop();
+				}
+			}
+			public final MobCharmFragmentSettings mobCharmFragment;
+
+			public static class MobCharmFragmentSettings {
+				public final DoubleValue dropChance;
+				public final DoubleValue lootingMultiplier;
+
+				MobCharmFragmentSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Mob Charm Fragment Settings")
+							.push("mobCharmFragment");
+
+					dropChance = builder.comment("Chance of fragment droping from mobs that don't have fragment that can be crafted").defineInRange("dropChance", 0.1f / 6, 0, 1);
+					lootingMultiplier = builder.comment("Additional chance per level of looting").defineInRange("lootingMultiplier", 0.05f / 6, 0, 1);
 
 					builder.pop();
 				}

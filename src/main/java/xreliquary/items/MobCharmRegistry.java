@@ -90,8 +90,7 @@ public class MobCharmRegistry {
 			return;
 		}
 
-		double skeletonDropChance = 0.1 * evt.getLootingLevel() * 0.05;
-		double dynamicDropChance = skeletonDropChance / 6d;
+		double dynamicDropChance = Settings.COMMON.items.mobCharmFragment.dropChance.get() + evt.getLootingLevel() * Settings.COMMON.items.mobCharmFragment.lootingMultiplier.get();
 
 		if (entity.world.rand.nextFloat() < dynamicDropChance) {
 			ItemEntity fragmentItemEntity = new ItemEntity(entity.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName.toString()));
