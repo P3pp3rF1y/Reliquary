@@ -82,10 +82,17 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
 		BlockItemUseContext context = new BlockItemUseContext(player, Hand.MAIN_HAND, ItemStack.EMPTY, new BlockRayTraceResult(Vector3d.copyCenteredHorizontally(pos), Direction.UP, pos, false));
-		if (block instanceof FlowingFluidBlock || (!block.isAir(state, world, pos) && !state.isReplaceable(BlockItemUseContext.func_221536_a(context, pos, Direction.DOWN)))) {
+		if (isBadPlacementToTry(world, pos, state, block, context)) {
 			return false;
 		}
 		return tryToPlaceTorchAround(stack, pos, player, world);
+	}
+
+	private boolean isBadPlacementToTry(World world, BlockPos pos, BlockState state, Block block, BlockItemUseContext context) {
+		return block instanceof FlowingFluidBlock
+				|| world.getBlockState(pos.down()).getBlock().isVariableOpacity()
+				|| !state.getFluidState().isEmpty()
+				|| (!block.isAir(state, world, pos) && !state.isReplaceable(BlockItemUseContext.func_221536_a(context, pos, Direction.DOWN)));
 	}
 
 	private void setCooldown(ItemStack stack, World world, int cooldown) {
