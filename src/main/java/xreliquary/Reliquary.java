@@ -15,6 +15,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import xreliquary.client.ClientProxy;
 import xreliquary.client.init.ModParticles;
 import xreliquary.common.CommonProxy;
+import xreliquary.crafting.AlkahestryRecipeRegistry;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModCapabilities;
 import xreliquary.init.ModCompat;
@@ -48,6 +49,7 @@ public class Reliquary {
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Settings.CLIENT_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Settings.COMMON_SPEC);
 		MinecraftForge.EVENT_BUS.addListener(MobCharmRegistry::handleAddingFragmentDrops);
+		MinecraftForge.EVENT_BUS.addListener(AlkahestryRecipeRegistry::onResourceReload);
 	}
 
 	public static void setup(FMLCommonSetupEvent event) {
