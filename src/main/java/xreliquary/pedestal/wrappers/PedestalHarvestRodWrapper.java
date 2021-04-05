@@ -153,12 +153,11 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void plantSeeds(World world, PlayerEntity player, BlockPos pos, ItemStack stack, int range) {
-
 		if (plantCoolDown > 0) {
 			plantCoolDown--;
 		} else {
 			byte plantableSlot = 1;
-
+			harvestRod.clearPlantableIfNoLongerValid(stack, plantableSlot);
 			if (harvestRod.getCountPlantable(stack) > 0) {
 				int quantity = harvestRod.getPlantableQuantity(stack, plantableSlot);
 
