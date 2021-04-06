@@ -245,6 +245,7 @@ public class Settings {
 				enderStaff = new EnderStaffSettings(builder);
 				fortuneCoin = new FortuneCoinSettings(builder);
 				glacialStaff = new GlacialStaffSettings(builder);
+				handgun = new HandgunSettings(builder);
 				harvestRod = new HarvestRodSettings(builder);
 				heroMedallion = new HeroMedallionSettings(builder);
 				iceMagusRod = new IceMagusRodSettings(builder);
@@ -522,6 +523,23 @@ public class Settings {
 					builder.pop();
 				}
 			}
+
+			public final HandgunSettings handgun;
+
+			public static class HandgunSettings {
+				public final IntValue maxSkillLevel;
+
+				public HandgunSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Handgun settings").push("handgun");
+
+					maxSkillLevel = builder
+							.comment("Experience level at which handgun has the fastest reload time and shortes cooldown between shots")
+							.defineInRange("maxSkillLevel", 20, 0, 100);
+
+					builder.pop();
+				}
+			}
+
 
 			public final HarvestRodSettings harvestRod;
 
