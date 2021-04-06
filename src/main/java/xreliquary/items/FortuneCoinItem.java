@@ -85,7 +85,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 		return isEnabled(stack);
 	}
 
-	private boolean isEnabled(ItemStack stack) {
+	public boolean isEnabled(ItemStack stack) {
 		return NBTHelper.getBoolean("enabled", stack);
 	}
 

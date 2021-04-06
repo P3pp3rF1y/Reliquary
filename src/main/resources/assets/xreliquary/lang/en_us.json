@@ -333,6 +333,9 @@
 
     "keybind.xreliquary.category": "Reliquary",
     "keybind.xreliquary.fortune_coin": "Enable/Disable Fortune Coin",
+    "chat.xreliquary.fortune_coin.toggle": "Fortune Coin switched %s",
+    "chat.xreliquary.fortune_coin.on": "ON",
+    "chat.xreliquary.fortune_coin.off": "OFF",
 
     "tooltip.xreliquary.absorb": "{{!colors.light_purple}}Shift + Right click to toggle auto-absorb.",
     "tooltip.xreliquary.drain": "{{!colors.light_purple}}Shift + Right click to enable drain mode.",

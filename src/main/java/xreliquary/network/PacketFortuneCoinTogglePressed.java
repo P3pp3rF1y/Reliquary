@@ -3,11 +3,14 @@ package xreliquary.network;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xreliquary.compat.curios.CuriosCompat;
 import xreliquary.init.ModItems;
 import xreliquary.items.util.IBaubleItem;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class PacketFortuneCoinTogglePressed {
@@ -36,18 +39,23 @@ public class PacketFortuneCoinTogglePressed {
 		context.setPacketHandled(true);
 	}
 
-	private static void handleMessage(PacketFortuneCoinTogglePressed message, ServerPlayerEntity player) {
+	private static void handleMessage(PacketFortuneCoinTogglePressed message, @Nullable ServerPlayerEntity player) {
+		if (player == null) {
+			return;
+		}
 		switch (message.inventoryType) {
 			case MAIN:
 				ItemStack stack2 = player.inventory.mainInventory.get(message.slot);
 				if (stack2.getItem() == ModItems.FORTUNE_COIN.get()) {
 					ModItems.FORTUNE_COIN.get().toggle(stack2);
+					showMessage(player, stack2);
 				}
 				break;
 			case OFF_HAND:
 				ItemStack stack1 = player.inventory.offHandInventory.get(0);
 				if (stack1.getItem() == ModItems.FORTUNE_COIN.get()) {
 					ModItems.FORTUNE_COIN.get().toggle(stack1);
+					showMessage(player, stack1);
 				}
 				break;
 			case CURIOS:
@@ -55,11 +63,20 @@ public class PacketFortuneCoinTogglePressed {
 						.ifPresent(stack -> {
 							if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
 								ModItems.FORTUNE_COIN.get().toggle(stack);
+								showMessage(player, stack);
 								CuriosCompat.setStackInSlot(player, IBaubleItem.Type.NECKLACE.getIdentifier(), message.slot, stack);
 							}
 						}));
 				break;
 		}
+	}
+
+	private static void showMessage(ServerPlayerEntity player, ItemStack fortuneCoin) {
+		player.sendStatusMessage(new TranslationTextComponent("chat.xreliquary.fortune_coin.toggle",
+						ModItems.FORTUNE_COIN.get().isEnabled(fortuneCoin) ?
+								new TranslationTextComponent("chat.xreliquary.fortune_coin.on").mergeStyle(TextFormatting.GREEN)
+								: new TranslationTextComponent("chat.xreliquary.fortune_coin.off").mergeStyle(TextFormatting.RED))
+				, true);
 	}
 
 	private static void run(Supplier<Runnable> toRun) {
