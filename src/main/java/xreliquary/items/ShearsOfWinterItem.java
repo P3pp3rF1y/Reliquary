@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -10,6 +11,7 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.item.UseAction;
@@ -20,20 +22,23 @@ import net.minecraft.potion.Effects;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IForgeShearable;
 import xreliquary.Reliquary;
-import xreliquary.reference.Reference;
+import xreliquary.entities.EntityXRFakePlayer;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.RandHelper;
+import xreliquary.util.XRFakePlayerFactory;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -42,6 +47,29 @@ import java.util.Random;
 public class ShearsOfWinterItem extends ShearsItem {
 	public ShearsOfWinterItem() {
 		super(new Properties().group(Reliquary.ITEM_GROUP).maxDamage(0));
+	}
+
+	@Override
+	public ActionResultType onItemUse(ItemUseContext context) {
+		World world = context.getWorld();
+		BlockPos pos = context.getPos();
+		BlockState state = world.getBlockState(pos);
+		Block block = state.getBlock();
+		if (block instanceof BeehiveBlock) {
+			shearBeehive(world, pos, state, context.getHitVec(), context.getFace());
+		}
+		return super.onItemUse(context);
+	}
+
+	private void shearBeehive(World world, BlockPos pos, BlockState state, Vector3d hitVec, Direction face) {
+		if (!(world instanceof ServerWorld)) {
+			return;
+		}
+
+		ItemStack fakeShears = new ItemStack(Items.SHEARS);
+		EntityXRFakePlayer fakePlayer = XRFakePlayerFactory.get((ServerWorld) world);
+		fakePlayer.setHeldItem(Hand.MAIN_HAND, fakeShears);
+		state.onBlockActivated(world, fakePlayer, Hand.MAIN_HAND, new BlockRayTraceResult(hitVec, face, pos, false));
 	}
 
 	@Override
@@ -97,7 +125,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 		}
 
 		BlockPos.getAllInBox(firstPos, secondPos)
-				.forEach(pos -> checkAndBreakBlockAt(player, pos));
+				.forEach(pos -> checkAndShearBlockAt(player, pos));
 	}
 
 	@Override
@@ -106,7 +134,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", null, tooltip);
 	}
 
-	private void checkAndBreakBlockAt(PlayerEntity player, BlockPos pos) {
+	private void checkAndShearBlockAt(PlayerEntity player, BlockPos pos) {
 		int distance = (int) Math.sqrt(pos.distanceSq(player.getPosX(), player.getPosY(), player.getPosZ(), false));
 		int probabilityFactor = 5 + distance;
 		//chance of block break diminishes over distance
@@ -127,6 +155,8 @@ public class ShearsOfWinterItem extends ShearsItem {
 				player.addExhaustion(0.01F);
 				Block.spawnDrops(blockState, world, pos, null, player, dummyShears);
 			}
+		} else if (block instanceof BeehiveBlock) {
+			shearBeehive(world, pos, blockState, Vector3d.ZERO, Direction.UP);
 		}
 	}
 

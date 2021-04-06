@@ -1,11 +1,15 @@
 package xreliquary.pedestal.wrappers;
 
+import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.tileentity.BeehiveTileEntity;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -66,7 +70,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 
 			blockPosBeingSheared = blockQueue.remove();
 			BlockState blockState = world.getBlockState(blockPosBeingSheared);
-			if (blockState.getBlock() instanceof IForgeShearable && ((IForgeShearable) blockState.getBlock()).isShearable(stack, world, blockPosBeingSheared)) {
+			if (isShearableBlock(stack, world, blockState)) {
 				float hardness = blockState.getBlockHardness(world, blockPosBeingSheared);
 				float digSpeed = stack.getItem().getDestroySpeed(stack, blockState);
 
@@ -76,13 +80,35 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 		} else {
 			stack.getItem().onBlockStartBreak(stack, blockPosBeingSheared, fakePlayer);
 			BlockState blockState = world.getBlockState(blockPosBeingSheared);
-			world.removeBlock(blockPosBeingSheared, false);
-			Block.spawnDrops(blockState, world, pos, null, fakePlayer, new ItemStack(Items.SHEARS));
-			world.playEvent(2001, blockPosBeingSheared, Block.getStateId(blockState));
+			if (blockState.getBlock() instanceof BeehiveBlock) {
+				shearBeehive(world, blockPosBeingSheared, blockState, stack);
+			} else {
+				if (world.removeBlock(blockPosBeingSheared, false)) {
+					Block.spawnDrops(blockState, world, pos, null, fakePlayer, new ItemStack(Items.SHEARS));
+					world.playEvent(2001, blockPosBeingSheared, Block.getStateId(blockState));
+					stack.attemptDamageItem(1, world.getRandom(), null);
+				}
+			}
 
 			isShearingBlock = false;
 		}
 		return true;
+	}
+
+	private boolean isShearableBlock(ItemStack stack, World world, BlockState blockState) {
+		Block block = blockState.getBlock();
+		return (block instanceof IForgeShearable && ((IForgeShearable) block).isShearable(stack, world, blockPosBeingSheared))
+				|| (block instanceof BeehiveBlock && blockState.get(BeehiveBlock.HONEY_LEVEL) >= 5);
+	}
+
+	private void shearBeehive(World world, BlockPos pos, BlockState blockState, ItemStack stack) {
+		int honeyLevel = blockState.get(BeehiveBlock.HONEY_LEVEL);
+		if (honeyLevel >= 5) {
+			world.playSound(null, pos, SoundEvents.BLOCK_BEEHIVE_SHEAR, SoundCategory.BLOCKS, 1.0F, 1.0F);
+			BeehiveBlock.dropHoneyComb(world, pos);
+			((BeehiveBlock) blockState.getBlock()).takeHoney(world, blockState, pos, null, BeehiveTileEntity.State.BEE_RELEASED);
+			stack.attemptDamageItem(1, world.getRandom(), null);
+		}
 	}
 
 	private void updateQueue(ItemStack stack, World world, BlockPos pos, int shearsRange) {
@@ -91,7 +117,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 				for (int z = pos.getZ() - shearsRange; z <= pos.getZ() + shearsRange; z++) {
 					BlockPos currentBlockPos = new BlockPos(x, y, z);
 					BlockState blockState = world.getBlockState(currentBlockPos);
-					if (blockState.getBlock() instanceof IForgeShearable && ((IForgeShearable) blockState.getBlock()).isShearable(stack, world, currentBlockPos)) {
+					if (isShearableBlock(stack, world, blockState)) {
 						blockQueue.add(currentBlockPos);
 					}
 				}
