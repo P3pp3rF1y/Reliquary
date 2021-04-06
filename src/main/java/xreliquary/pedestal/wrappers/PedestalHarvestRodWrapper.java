@@ -6,6 +6,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.CropsBlock;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.NetherWartBlock;
+import net.minecraft.block.SweetBerryBushBlock;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -119,7 +120,6 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void boneMealCrops(World world, BlockPos pos, ItemStack stack, int range) {
-
 		if (boneMealCoolDown > 0) {
 			boneMealCoolDown--;
 		} else {
@@ -157,8 +157,8 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 			plantCoolDown--;
 		} else {
 			byte plantableSlot = 1;
-			harvestRod.clearPlantableIfNoLongerValid(stack, plantableSlot);
 			if (harvestRod.getCountPlantable(stack) > 0) {
+				harvestRod.clearPlantableIfNoLongerValid(stack, plantableSlot);
 				int quantity = harvestRod.getPlantableQuantity(stack, plantableSlot);
 
 				if (quantity > 0 && plantNext(world, player, pos, stack, range, plantableSlot)) {
@@ -222,7 +222,8 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 					if (block instanceof IPlantable || block == Blocks.MELON || block == Blocks.PUMPKIN) {
 						if (block instanceof FertileLilyPadBlock || block == Blocks.PUMPKIN_STEM || block == Blocks.MELON_STEM
 								|| block instanceof CropsBlock && ((CropsBlock) block).canGrow(world, currentPos, state, false)
-								|| block instanceof NetherWartBlock && state.get(NetherWartBlock.AGE) < 3) {
+								|| block instanceof NetherWartBlock && state.get(NetherWartBlock.AGE) < 3
+								|| block instanceof SweetBerryBushBlock && state.get(SweetBerryBushBlock.AGE) < 3) {
 							return;
 						}
 

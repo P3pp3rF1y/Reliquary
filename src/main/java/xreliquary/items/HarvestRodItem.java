@@ -497,7 +497,9 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 				}
 				break;
 			case PLANTABLE_MODE:
-				clearPlantableIfNoLongerValid(harvestRod, getCurrentPlantableSlot(harvestRod));
+				if (getCountPlantable(harvestRod) > 0) {
+					clearPlantableIfNoLongerValid(harvestRod, getCurrentPlantableSlot(harvestRod));
+				}
 				if (getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) >= 1 || player.isCreative()) {
 					getNextBlockToPlantOn(world, cache, pos, Settings.COMMON.items.harvestRod.aoeRadius.get(), (IPlantable) ((BlockItem) getCurrentPlantable(harvestRod).getItem()).getBlock())
 							.ifPresent(blockToPlantOn -> plantItem(harvestRod, player, blockToPlantOn, player.getActiveHand(), false));
