@@ -3,22 +3,17 @@ package xreliquary.items;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
@@ -30,10 +25,14 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import xreliquary.items.util.fluid.FluidHandlerEmperorChalice;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
-import xreliquary.util.RandHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -91,45 +90,43 @@ public class EmperorChaliceItem extends ToggleableItem {
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
+		ItemStack emperorChalice = player.getHeldItem(hand);
 		if (player.isSneaking()) {
 			return super.onItemRightClick(world, player, hand);
 		}
-		boolean isInDrainMode = isEnabled(stack);
+		boolean isInDrainMode = isEnabled(emperorChalice);
 		BlockRayTraceResult result = rayTrace(world, player, isInDrainMode ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
 
 		//noinspection ConstantConditions
 		if (result == null) {
-			if (!isEnabled(stack)) {
+			if (!isEnabled(emperorChalice)) {
 				player.setActiveHand(hand);
 			}
-			return new ActionResult<>(ActionResultType.SUCCESS, stack);
+			return new ActionResult<>(ActionResultType.SUCCESS, emperorChalice);
 		} else if (result.getType() == RayTraceResult.Type.BLOCK) {
-			if (!world.isBlockModifiable(player, result.getPos()) || !player.canPlayerEdit(result.getPos(), result.getFace(), stack)) {
-				return new ActionResult<>(ActionResultType.FAIL, stack);
+			if (!world.isBlockModifiable(player, result.getPos()) || !player.canPlayerEdit(result.getPos(), result.getFace(), emperorChalice)) {
+				return new ActionResult<>(ActionResultType.FAIL, emperorChalice);
 			}
 
-			if (!isEnabled(stack)) {
-				BlockPos waterPlacementPos = result.getPos().offset(result.getFace());
-
-				if (!player.canPlayerEdit(waterPlacementPos, result.getFace(), stack)) {
-					return new ActionResult<>(ActionResultType.FAIL, stack);
+			if (emperorChalice.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).map(fluidHandler -> {
+				if (!isEnabled(emperorChalice)) {
+					return placeWater(world, player, hand, fluidHandler, result);
+				} else {
+					return FluidUtil.tryPickUpFluid(emperorChalice, player, world, result.getPos(), result.getFace()).isSuccess();
 				}
-
-				if (tryPlaceContainedLiquid(world, stack, waterPlacementPos)) {
-					return new ActionResult<>(ActionResultType.SUCCESS, stack);
-				}
-
-			} else {
-				if ((world.getBlockState(result.getPos()).getBlock() == Blocks.WATER) && world.getBlockState(result.getPos()).get(FlowingFluidBlock.LEVEL) == 0) {
-					world.setBlockState(result.getPos(), Blocks.AIR.getDefaultState());
-
-					return new ActionResult<>(ActionResultType.SUCCESS, stack);
-				}
+			}).orElse(false)) {
+				return new ActionResult<>(ActionResultType.SUCCESS, emperorChalice);
 			}
 		}
 
-		return new ActionResult<>(ActionResultType.PASS, stack);
+		return new ActionResult<>(ActionResultType.PASS, emperorChalice);
+	}
+
+	private boolean placeWater(World world, PlayerEntity player, Hand hand, IFluidHandlerItem fluidHandler, BlockRayTraceResult result) {
+		if (FluidUtil.tryPlaceFluid(player, world, hand, result.getPos(), fluidHandler, new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME))) {
+			return true;
+		}
+		return FluidUtil.tryPlaceFluid(player, world, hand, result.getPos().offset(result.getFace()), fluidHandler, new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME));
 	}
 
 	private void onBlockRightClick(PlayerInteractEvent.RightClickBlock evt) {
@@ -160,29 +157,5 @@ public class EmperorChaliceItem extends ToggleableItem {
 		evt.setUseItem(Event.Result.DENY);
 		evt.setCanceled(true);
 		evt.setCancellationResult(ActionResultType.SUCCESS);
-	}
-
-	private boolean tryPlaceContainedLiquid(World world, ItemStack stack, BlockPos pos) {
-		BlockState blockState = world.getBlockState(pos);
-		Material material = blockState.getMaterial();
-
-		if (isEnabled(stack)) {
-			return false;
-		}
-		if (!world.isAirBlock(pos) && material.isSolid()) {
-			return false;
-		} else {
-			if (world.getDimensionType().isUltrawarm()) {
-				world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(world.rand) * 0.8F);
-
-				for (int var11 = 0; var11 < 8; ++var11) {
-					world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + random.nextDouble(), pos.getY() + random.nextDouble(), pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
-				}
-			} else {
-				world.setBlockState(pos, Blocks.WATER.getDefaultState(), 3);
-			}
-
-			return true;
-		}
 	}
 }
