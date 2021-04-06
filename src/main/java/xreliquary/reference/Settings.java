@@ -772,6 +772,10 @@ public class Settings {
 				}
 
 				public Optional<Integer> getItemExperience(String itemRegistryName) {
+					return Optional.ofNullable(getItemExperiences().get(itemRegistryName));
+				}
+
+				public Map<String, Integer> getItemExperiences() {
 					if (itemExperience == null) {
 						itemExperience = new HashMap<>();
 						for (String itemAndExperience : itemExperienceList.get()) {
@@ -779,7 +783,7 @@ public class Settings {
 							itemExperience.put(split[0], Integer.valueOf(split[1]));
 						}
 					}
-					return Optional.ofNullable(itemExperience.get(itemRegistryName));
+					return itemExperience;
 				}
 
 				public void resetCache() {

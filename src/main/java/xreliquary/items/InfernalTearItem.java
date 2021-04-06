@@ -156,13 +156,17 @@ public class InfernalTearItem extends ToggleableItem {
 			return ItemStack.EMPTY;
 		}
 
-		NBTHelper.putTagCompound("item", tear, target.write(new CompoundNBT()));
+		setTearTarget(tear, target);
 
 		if (Boolean.TRUE.equals(Settings.COMMON.items.infernalTear.absorbWhenCreated.get())) {
 			NBTHelper.putBoolean(ENABLED_TAG, stack, true);
 		}
 
 		return tear;
+	}
+
+	public static void setTearTarget(ItemStack tear, ItemStack target) {
+		NBTHelper.putTagCompound("item", tear, target.write(new CompoundNBT()));
 	}
 
 	private ItemStack getTargetAlkahestItem(ItemStack self, IItemHandler inventory) {

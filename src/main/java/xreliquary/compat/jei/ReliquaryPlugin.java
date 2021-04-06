@@ -21,6 +21,8 @@ import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeCategory;
 import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeCategory;
 import xreliquary.compat.jei.cauldron.CauldronRecipeCategory;
 import xreliquary.compat.jei.cauldron.CauldronRecipeMaker;
+import xreliquary.compat.jei.infernaltear.InfernalTearRecipeCategory;
+import xreliquary.compat.jei.infernaltear.InfernalTearRecipeMaker;
 import xreliquary.compat.jei.lingering.ArrowShotRecipeMaker;
 import xreliquary.compat.jei.magazines.MagazineRecipeMaker;
 import xreliquary.compat.jei.mortar.MortarRecipeCategory;
@@ -66,6 +68,7 @@ public class ReliquaryPlugin implements IModPlugin {
 			registration.addRecipeCategories(new MortarRecipeCategory(guiHelper));
 			registration.addRecipeCategories(new CauldronRecipeCategory(guiHelper));
 		}
+		registration.addRecipeCategories(new InfernalTearRecipeCategory(guiHelper));
 	}
 
 	@Override
@@ -74,6 +77,7 @@ public class ReliquaryPlugin implements IModPlugin {
 
 		registration.addRecipeCatalyst(new ItemStack(ModBlocks.APOTHECARY_MORTAR.get()), MortarRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(ModBlocks.APOTHECARY_CAULDRON.get()), CauldronRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(ModItems.INFERNAL_TEAR.get()), InfernalTearRecipeCategory.UID);
 	}
 
 	@Override
@@ -93,6 +97,7 @@ public class ReliquaryPlugin implements IModPlugin {
 		}
 		registration.addRecipes(MobCharmRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
 		registration.addRecipes(SpawnEggRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
+		registration.addRecipes(InfernalTearRecipeMaker.getRecipes(), InfernalTearRecipeCategory.UID);
 		registerMobCharmBeltRecipe(registration);
 
 		ItemDescriptionBuilder.addIngredientInfo(registration);

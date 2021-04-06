@@ -238,6 +238,8 @@
 
     "jei.xreliquary.recipe.alkahest_crafting": "Alkahestry Tome Crafting",
     "jei.xreliquary.recipe.alkahest_charging": "Alkahestry Tome Charging",
+    "jei.xreliquary.recipe.infernal_tear": "Infernal Tear",
+    "jei.xreliquary.recipe.infernal_tear.xp": "xp",
     "jei.xreliquary.recipe.mortar": "Apothecary Mortar",
     "jei.xreliquary.recipe.cauldron": "Apothecary Cauldron",
     "jei.xreliquary.description.alkahestry_tome": "Shift + Right-Click to activate. While active, it will absorb any redstone and glowstone in player's inventory. Place it in a crafting grid with certain items to duplicate them for a cost.",
