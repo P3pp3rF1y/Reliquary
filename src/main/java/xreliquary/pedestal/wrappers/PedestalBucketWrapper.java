@@ -174,7 +174,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		fakePlayer.setHeldItem(Hand.MAIN_HAND, bucketStack);
 
 		//right click cow with bucket
-		cow.getEntityInteractionResult(fakePlayer, Hand.MAIN_HAND);
+		cow.func_230254_b_(fakePlayer, Hand.MAIN_HAND);
 
 		//put milk in the adjacent tanks
 		if (fakePlayer.getHeldItem(Hand.MAIN_HAND).getItem() == Items.MILK_BUCKET) {

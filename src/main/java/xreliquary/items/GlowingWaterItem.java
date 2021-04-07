@@ -47,7 +47,7 @@ public class GlowingWaterItem extends ItemBase {
 		world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 
 		GlowingWaterEntity glowingWater = new GlowingWaterEntity(world, player);
-		glowingWater.setDirectionAndMovement(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
+		glowingWater.func_234612_a_(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
 		world.addEntity(glowingWater);
 
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);

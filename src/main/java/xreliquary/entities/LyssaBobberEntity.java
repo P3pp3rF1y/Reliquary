@@ -233,7 +233,7 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 			}
 
 			move(MoverType.SELF, getMotion());
-			updatePitchAndYaw();
+			func_234617_x_();
 			if (currentState == State.FLYING && (onGround || collidedHorizontally)) {
 				setMotion(Vector3d.ZERO);
 			}
@@ -245,7 +245,7 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 
 	@Nullable
 	public PlayerEntity getFishingPlayer() {
-		Entity entity = getShooter();
+		Entity entity = func_234616_v_();
 		return entity instanceof PlayerEntity ? (PlayerEntity) entity : null;
 	}
 
@@ -282,7 +282,7 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 
 	private WaterType func_234604_c_(BlockPos p_234604_1_) {
 		BlockState blockstate = world.getBlockState(p_234604_1_);
-		if (!blockstate.isAir() && !blockstate.matchesBlock(Blocks.LILY_PAD)) {
+		if (!blockstate.isAir() && !blockstate.isIn(Blocks.LILY_PAD)) {
 			FluidState fluidstate = blockstate.getFluidState();
 			return fluidstate.isTagged(FluidTags.WATER) && fluidstate.isSource() && blockstate.getCollisionShape(world, p_234604_1_).isEmpty() ? WaterType.INSIDE_WATER : WaterType.INVALID;
 		} else {
@@ -425,8 +425,8 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 				world.setEntityState(this, (byte) 31);
 				i = caughtEntity instanceof ItemEntity ? 3 : 5;
 			} else if (ticksCatchable > 0) {
-				LootContext.Builder lootcontext$builder = (new LootContext.Builder((ServerWorld) world)).withParameter(LootParameters.ORIGIN, getPositionVec()).withParameter(LootParameters.TOOL, stack).withParameter(LootParameters.THIS_ENTITY, this).withRandom(rand).withLuck((float) luck + playerentity.getLuck());
-				lootcontext$builder.withParameter(LootParameters.KILLER_ENTITY, getShooter()).withParameter(LootParameters.THIS_ENTITY, this);
+				LootContext.Builder lootcontext$builder = (new LootContext.Builder((ServerWorld) world)).withParameter(LootParameters.field_237457_g_, getPositionVec()).withParameter(LootParameters.TOOL, stack).withParameter(LootParameters.THIS_ENTITY, this).withRandom(rand).withLuck((float) luck + playerentity.getLuck());
+				lootcontext$builder.withParameter(LootParameters.KILLER_ENTITY, func_234616_v_()).withParameter(LootParameters.THIS_ENTITY, this);
 				LootTable loottable = world.getServer().getLootTableManager().getLootTableFromLocation(LootTables.GAMEPLAY_FISHING);
 				List<ItemStack> list = loottable.generate(lootcontext$builder.build(LootParameterSets.FISHING));
 
@@ -469,7 +469,7 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 	}
 
 	private void bringInHookedEntityOriginal() {
-		Entity entity = getShooter();
+		Entity entity = func_234616_v_();
 		if (entity != null) {
 			Vector3d vector3d = (new Vector3d(entity.getPosX() - getPosX(), entity.getPosY() - getPosY(), entity.getPosZ() - getPosZ())).scale(0.1D);
 			caughtEntity.setMotion(caughtEntity.getMotion().add(vector3d));
@@ -498,7 +498,7 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 	}
 
 	@Override
-	public boolean canChangeDimension() {
+	public boolean isNonBoss() {
 		return false;
 	}
 

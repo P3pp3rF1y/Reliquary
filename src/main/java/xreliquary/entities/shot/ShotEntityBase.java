@@ -78,7 +78,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	}
 
 	protected Optional<PlayerEntity> getShooterPlayer() {
-		return Optional.ofNullable((PlayerEntity) getShooter());
+		return Optional.ofNullable((PlayerEntity) func_234616_v_());
 	}
 
 	@Override
@@ -200,7 +200,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 
 			while (struckEntityIterator.hasNext()) {
 				Entity struckEntity = struckEntityIterator.next();
-				if (struckEntity.canBeCollidedWith() && (struckEntity != getShooter() || ticksInAir >= 5)) {
+				if (struckEntity.canBeCollidedWith() && (struckEntity != func_234616_v_() || ticksInAir >= 5)) {
 					var11 = 0.5F;
 					AxisAlignedBB var12 = struckEntity.getBoundingBox().grow(var11, var11, var11);
 					Optional<Vector3d> hitResult = var12.rayTrace(posVector, approachVector);
@@ -258,7 +258,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 			EntityRayTraceResult entityStruckResult = ((EntityRayTraceResult) objectStruckByVector);
 			if (entityStruckResult.getEntity() instanceof LivingEntity && potionEffects != null && !potionEffects.isEmpty()) {
 				LivingEntity living = (LivingEntity) entityStruckResult.getEntity();
-				XRPotionHelper.applyEffectsToEntity(potionEffects, this, getShooter(), living);
+				XRPotionHelper.applyEffectsToEntity(potionEffects, this, func_234616_v_(), living);
 			}
 		}
 	}
@@ -335,7 +335,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	}
 
 	protected DamageSource getDamageSource() {
-		return new IndirectEntityDamageSource("bullet", this, getShooter());
+		return new IndirectEntityDamageSource("bullet", this, func_234616_v_());
 	}
 
 	protected void groundImpact(Direction sideHit) {
@@ -442,7 +442,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 
 			//noinspection ConstantConditions
 			String entityName = currentTarget.getType().getRegistryName().toString();
-			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == getShooter()) || (!currentTarget.isAlive()
+			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == func_234616_v_()) || (!currentTarget.isAlive()
 					|| (currentTarget instanceof LivingEntity && ((LivingEntity) currentTarget).getHealth() <= 0))) {
 				continue;
 			}
@@ -453,7 +453,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 			}
 		}
 		// these are extremely touchy, tune them lightly.
-		if (closestTarget != null && getShooter() != null) {
+		if (closestTarget != null && func_234616_v_() != null) {
 			double x = closestTarget.getBoundingBox().minX + closestTarget.getBoundingBox().maxX;
 			x /= 2D;
 			double y = closestTarget.getBoundingBox().minY + Math.max(closestTarget.getYOffset(), closestTarget.getHeight());
@@ -499,7 +499,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	 */
 	protected void onImpact(LivingEntity entityLiving) {
 		if (!world.isRemote) {
-			if (entityLiving != getShooter() || ticksInAir > 3) {
+			if (entityLiving != func_234616_v_() || ticksInAir > 3) {
 				doDamage(entityLiving);
 			}
 			spawnHitParticles(8);
@@ -511,7 +511,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	protected void onImpact(RayTraceResult result) {
 		if (result.getType() == RayTraceResult.Type.ENTITY) {
 			Entity entity = ((EntityRayTraceResult) result).getEntity();
-			if (entity == getShooter() || !(entity instanceof LivingEntity)) {
+			if (entity == func_234616_v_() || !(entity instanceof LivingEntity)) {
 				return;
 			}
 			onImpact((LivingEntity) entity);

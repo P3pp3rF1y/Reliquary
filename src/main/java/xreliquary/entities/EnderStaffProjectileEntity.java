@@ -80,7 +80,7 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 	}
 
 	private void onThrowableCollision(RayTraceResult result) {
-		Entity thrower = getShooter();
+		Entity thrower = func_234616_v_();
 		if (!(thrower instanceof PlayerEntity) || ((int) getPosY()) <= 0) {
 			remove();
 			return;

@@ -3,7 +3,6 @@ package xreliquary.pedestal.wrappers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -19,7 +18,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.network.PacketDistributor;
-import xreliquary.Reliquary;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
 import xreliquary.entities.EntityXRFakePlayer;
@@ -33,8 +31,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.Vector;
 
 public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	private static final int PACKET_RANGE = 50;
@@ -44,7 +40,6 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	private static final int ABSOLUTE_TIMEOUT = 1200;
 
 	private EntityXRFakePlayer fakePlayer;
-	private Vector3d playerPos;
 	private boolean badThrowChecked;
 	private int ticksSinceLastThrow;
 	private boolean retractFail = false;
@@ -250,7 +245,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		world.addEntity(new FishingBobberEntity(fakePlayer, world, 0, 0) {
 			@Nullable
 			@Override
-			public Entity getShooter() {
+			public Entity func_234616_v_() {
 				return fakePlayer;
 			}
 		});

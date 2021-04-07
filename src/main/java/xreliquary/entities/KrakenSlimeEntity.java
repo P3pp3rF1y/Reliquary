@@ -32,7 +32,7 @@ public class KrakenSlimeEntity extends ProjectileItemEntity {
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		Entity thrower = getShooter();
+		Entity thrower = func_234616_v_();
 		if (world.isRemote || result.getType() == RayTraceResult.Type.ENTITY && ((EntityRayTraceResult) result).getEntity() == thrower) {
 			return;
 		}

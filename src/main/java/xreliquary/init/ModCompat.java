@@ -3,6 +3,7 @@ package xreliquary.init;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import xreliquary.compat.ICompat;
+import xreliquary.compat.botania.BotaniaCompat;
 import xreliquary.compat.curios.CuriosCompat;
 import xreliquary.compat.waila.WailaCompat;
 import xreliquary.reference.Compatibility;
@@ -25,6 +26,7 @@ public class ModCompat {
 		compatFactories.put(Compatibility.MOD_ID.WAILA, () -> WailaCompat::new);
 		compatFactories.put(Compatibility.MOD_ID.HWYLA, () -> WailaCompat::new);
 		compatFactories.put(Compatibility.MOD_ID.CURIOS, () -> CuriosCompat::new);
+		compatFactories.put(Compatibility.MOD_ID.BOTANIA, () -> BotaniaCompat::new);
 	}
 
 	private static final Set<ICompat> loadedCompats = new HashSet<>();

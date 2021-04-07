@@ -39,7 +39,7 @@ public class AttractionPotionItem extends ItemBase {
 		}
 		world.playSound(null, player.getPosition(), SoundEvents.BLOCK_DISPENSER_LAUNCH, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 		AttractionPotionEntity attractionPotion = new AttractionPotionEntity(world, player);
-		attractionPotion.setDirectionAndMovement(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
+		attractionPotion.func_234612_a_(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.7F, 1.0F);
 		world.addEntity(attractionPotion);
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);
 	}

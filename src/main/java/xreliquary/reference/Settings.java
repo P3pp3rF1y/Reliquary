@@ -460,16 +460,11 @@ public class Settings {
 			public final FortuneCoinSettings fortuneCoin;
 
 			public static class FortuneCoinSettings {
-				public final BooleanValue enabledAudio;
 				public final IntValue standardPullDistance;
 				public final IntValue longRangePullDistance;
 
 				FortuneCoinSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Fortune Coin settings").push("fortuneCoin");
-
-					enabledAudio = builder
-							.comment("Allows to disable the sound of fortune coin teleporting stuff")
-							.define("enabledAudio", true);
 
 					standardPullDistance = builder
 							.comment("The distance that it pulls from when activated")

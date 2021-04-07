@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.UseAction;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
@@ -37,10 +38,23 @@ import xreliquary.util.XpHelper;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IBaubleItem {
-	private static final String SOUND_TIMER_TAG = "soundTimer";
+	private static final String PREVENT_REMOTE_MOVEMENT = "PreventRemoteMovement";
+	private static final String ALLOW_MACHINE_MOVEMENT = "AllowMachineRemoteMovement";
+
+	private static final Set<IFortuneCoinPickupChecker> pickupCheckers = new HashSet<>();
+
+	public static void addFortuneCoinPickupChecker(IFortuneCoinPickupChecker checker) {
+		pickupCheckers.add(checker);
+	}
+
+	public interface IFortuneCoinPickupChecker {
+		boolean canPickup(ItemEntity itemEntity);
+	}
 
 	public FortuneCoinItem() {
 		super(new Properties().maxStackSize(1));
@@ -85,7 +99,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 		return isEnabled(stack);
 	}
 
-	public boolean isEnabled(ItemStack stack) {
+	public static boolean isEnabled(ItemStack stack) {
 		return NBTHelper.getBoolean("enabled", stack);
 	}
 
@@ -93,13 +107,6 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
 		if (world.isRemote) {
 			return;
-		}
-		if (enabledAudio() && NBTHelper.getShort(SOUND_TIMER_TAG, stack) > 0) {
-			if (NBTHelper.getShort(SOUND_TIMER_TAG, stack) % 2 == 0) {
-				world.playSound(null, entity.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F,
-						0.5F * RandHelper.getRandomMinusOneToOne(world.rand) * 0.7F + 1.8F);
-			}
-			NBTHelper.putShort(SOUND_TIMER_TAG, stack, (short) (NBTHelper.getShort(SOUND_TIMER_TAG, stack) - 1));
 		}
 		if (!isEnabled(stack)) {
 			return;
@@ -116,9 +123,9 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 
 	private void scanForEntitiesInRange(World world, PlayerEntity player, double d) {
 		List<BlockPos> disablePositions = getDisablePositions(world, player.getPosition());
-		List<ItemEntity> iList = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(player.getPosX() - d, player.getPosY() - d, player.getPosZ() - d, player.getPosX() + d, player.getPosY() + d, player.getPosZ() + d));
-		for (ItemEntity item : iList) {
-			if (canPickupItem(item, disablePositions) && checkForRoom(item.getItem(), player)) {
+		List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(player.getPosX() - d, player.getPosY() - d, player.getPosZ() - d, player.getPosX() + d, player.getPosY() + d, player.getPosZ() + d));
+		for (ItemEntity item : items) {
+			if (canPickupItem(item, disablePositions, false) && checkForRoom(item.getItem(), player)) {
 				item.setPickupDelay(0);
 				if (player.getDistance(item) >= 1.5D) {
 					teleportEntityToPlayer(item, player);
@@ -126,26 +133,32 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 				}
 			}
 		}
-		List<ExperienceOrbEntity> iList2 = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, new AxisAlignedBB(player.getPosX() - d, player.getPosY() - d, player.getPosZ() - d, player.getPosX() + d, player.getPosY() + d, player.getPosZ() + d));
-		for (ExperienceOrbEntity item : iList2) {
+		List<ExperienceOrbEntity> xpOrbs = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, new AxisAlignedBB(player.getPosX() - d, player.getPosY() - d, player.getPosZ() - d, player.getPosX() + d, player.getPosY() + d, player.getPosZ() + d));
+		for (ExperienceOrbEntity xpOrb : xpOrbs) {
 			if (player.xpCooldown > 0) {
 				player.xpCooldown = 0;
 			}
-			if (player.getDistance(item) >= 1.5D) {
-				teleportEntityToPlayer(item, player);
+			if (player.getDistance(xpOrb) >= 1.5D) {
+				teleportEntityToPlayer(xpOrb, player);
 				break;
 			}
 		}
 	}
 
-	private boolean canPickupItem(ItemEntity item, List<BlockPos> disablePositions) {
-		return !item.getPersistentData().getBoolean("PreventRemoteMovement") && !isInDisabledRange(item, disablePositions);
-		/* TODO readd when botania is in 1.14?
-		if (Compatibility.isLoaded(Compatibility.MOD_ID.BOTANIA)) {
-			if (SubTileSolegnolia.hasSolegnoliaAround(item))
-				return false;
+	private boolean canPickupItem(ItemEntity item, List<BlockPos> disablePositions, boolean isInPedestal) {
+		CompoundNBT data = item.getPersistentData();
+		if (data.getBoolean(PREVENT_REMOTE_MOVEMENT) && (!isInPedestal || !data.getBoolean(ALLOW_MACHINE_MOVEMENT))) {
+			return false;
 		}
-*/
+		if (isInDisabledRange(item, disablePositions)) {
+			return false;
+		}
+		for(IFortuneCoinPickupChecker pickupChecker : pickupCheckers) {
+			if (!pickupChecker.canPickup(item)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private boolean isInDisabledRange(ItemEntity item, List<BlockPos> disablePositions) {
@@ -186,9 +199,6 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 		double y = player.getPosY();
 		double z = player.getPosZ() + player.getLookVec().z * 0.2D;
 		item.setPosition(x, y, z);
-		if (enabledAudio()) {
-			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.8F));
-		}
 	}
 
 	private boolean checkForRoom(ItemStack stackToPickup, PlayerEntity player) {
@@ -246,18 +256,12 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 		ItemStack stack = player.getHeldItem(hand);
 
 		if (player.isSneaking()) {
-			if (enabledAudio()) {
-				NBTHelper.putShort(SOUND_TIMER_TAG, stack, (short) 6);
-			}
 			toggle(stack);
+			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.8F));
 		} else {
 			player.setActiveHand(hand);
 		}
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);
-	}
-
-	private boolean enabledAudio() {
-		return Settings.COMMON.items.fortuneCoin.enabledAudio.get();
 	}
 
 	@Override
@@ -269,43 +273,48 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 
 		if (isEnabled(stack)) {
 			BlockPos pos = pedestal.getBlockPos();
-			double d = getStandardPullDistance();
+			pickupItems(pedestal, world, pos);
+			pickupXp(pedestal, world, pos);
+		}
+	}
 
-			List<BlockPos> disablePositions = getDisablePositions(world, pos);
-			List<ItemEntity> entities = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
-			for (ItemEntity entityItem : entities) {
+	private void pickupItems(IPedestal pedestal, World world, BlockPos pos) {
+		List<BlockPos> disablePositions = getDisablePositions(world, pos);
+		List<ItemEntity> entities = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(pos).grow(getStandardPullDistance()));
+		for (ItemEntity entityItem : entities) {
 
-				//if entity is marked not to be picked up by magnets leave it alone - IE thing but may be more than that
-				if (!canPickupItem(entityItem, disablePositions)) {
-					continue;
-				}
-
-				int numberAdded = pedestal.addToConnectedInventory(entityItem.getItem().copy());
-				if (numberAdded > 0) {
-					entityItem.getItem().setCount(entityItem.getItem().getCount() - numberAdded);
-
-					if (entityItem.getItem().getCount() <= 0) {
-						entityItem.remove();
-					}
-				} else {
-					pedestal.setActionCoolDown(20);
-				}
+			//if entity is marked not to be picked up by magnets leave it alone - IE thing but may be more than that
+			if (!canPickupItem(entityItem, disablePositions, true)) {
+				continue;
 			}
 
-			List<ExperienceOrbEntity> xpOrbs = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, new AxisAlignedBB(pos.getX() - d, pos.getY() - d, pos.getZ() - d, pos.getX() + d, pos.getY() + d, pos.getZ() + d));
-			for (ExperienceOrbEntity xpOrb : xpOrbs) {
-				int amountToTransfer = XpHelper.experienceToLiquid(xpOrb.xpValue);
-				int amountAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.XP_JUICE_STILL.get(), amountToTransfer));
+			int numberAdded = pedestal.addToConnectedInventory(entityItem.getItem().copy());
+			if (numberAdded > 0) {
+				entityItem.getItem().setCount(entityItem.getItem().getCount() - numberAdded);
 
-				if (amountAdded > 0) {
-					xpOrb.remove();
-
-					if (amountToTransfer > amountAdded) {
-						world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), XpHelper.liquidToExperience(amountToTransfer - amountAdded)));
-					}
-				} else {
-					pedestal.setActionCoolDown(20);
+				if (entityItem.getItem().getCount() <= 0) {
+					entityItem.remove();
 				}
+			} else {
+				pedestal.setActionCoolDown(20);
+			}
+		}
+	}
+
+	private void pickupXp(IPedestal pedestal, World world, BlockPos pos) {
+		List<ExperienceOrbEntity> xpOrbs = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, new AxisAlignedBB(pos).grow(getStandardPullDistance()));
+		for (ExperienceOrbEntity xpOrb : xpOrbs) {
+			int amountToTransfer = XpHelper.experienceToLiquid(xpOrb.xpValue);
+			int amountAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.XP_JUICE_STILL.get(), amountToTransfer));
+
+			if (amountAdded > 0) {
+				xpOrb.remove();
+
+				if (amountToTransfer > amountAdded) {
+					world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), XpHelper.liquidToExperience(amountToTransfer - amountAdded)));
+				}
+			} else {
+				pedestal.setActionCoolDown(20);
 			}
 		}
 	}

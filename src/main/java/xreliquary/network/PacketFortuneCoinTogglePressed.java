@@ -8,6 +8,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xreliquary.compat.curios.CuriosCompat;
 import xreliquary.init.ModItems;
+import xreliquary.items.FortuneCoinItem;
 import xreliquary.items.util.IBaubleItem;
 
 import javax.annotation.Nullable;
@@ -73,7 +74,7 @@ public class PacketFortuneCoinTogglePressed {
 
 	private static void showMessage(ServerPlayerEntity player, ItemStack fortuneCoin) {
 		player.sendStatusMessage(new TranslationTextComponent("chat.xreliquary.fortune_coin.toggle",
-						ModItems.FORTUNE_COIN.get().isEnabled(fortuneCoin) ?
+						FortuneCoinItem.isEnabled(fortuneCoin) ?
 								new TranslationTextComponent("chat.xreliquary.fortune_coin.on").mergeStyle(TextFormatting.GREEN)
 								: new TranslationTextComponent("chat.xreliquary.fortune_coin.off").mergeStyle(TextFormatting.RED))
 				, true);
