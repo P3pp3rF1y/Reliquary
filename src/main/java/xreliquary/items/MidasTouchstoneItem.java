@@ -60,28 +60,21 @@ public class MidasTouchstoneItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity e, int i, boolean f) {
-		if (world.isRemote) {
+		if (world.isRemote || world.getGameTime() % 10 != 0 || !(e instanceof PlayerEntity)) {
 			return;
 		}
-		PlayerEntity player;
-		if (e instanceof PlayerEntity) {
-			player = (PlayerEntity) e;
-		} else {
-			return;
+		PlayerEntity player = (PlayerEntity) e;
+
+		if (isEnabled(stack)) {
+			int glowstoneCharge = NBTHelper.getInt(GLOWSTONE_TAG, stack);
+			consumeAndCharge(player, getGlowstoneLimit() - glowstoneCharge, getGlowStoneWorth(), Items.GLOWSTONE_DUST, 16,
+					chargeToAdd -> NBTHelper.putInt(GLOWSTONE_TAG, stack, glowstoneCharge + chargeToAdd));
 		}
 
-		//don't drain glowstone if it isn't activated.
-		if (isEnabled(stack) && NBTHelper.getInt(GLOWSTONE_TAG, stack) + getGlowStoneWorth() <= getGlowstoneLimit() && InventoryHelper.consumeItem(new ItemStack(Items.GLOWSTONE_DUST), player)) {
-			NBTHelper.putInt(GLOWSTONE_TAG, stack, NBTHelper.getInt(GLOWSTONE_TAG, stack) + getGlowStoneWorth());
-		}
-
-		if (world.getGameTime() % 4 == 0) {
-			doRepairAndDamageTouchstone(stack, player);
-		}
+		doRepairAndDamageTouchstone(stack, player);
 	}
 
 	private void doRepairAndDamageTouchstone(ItemStack touchstone, PlayerEntity player) {
-		//list of customizable items added through configs that can be repaired by the touchstone.
 		List<String> goldItems = Settings.COMMON.items.midasTouchstone.goldItems.get();
 
 		InventoryHelper.getItemHandlerFrom(player, null).ifPresent(itemHandler -> {
@@ -112,7 +105,8 @@ public class MidasTouchstoneItem extends ToggleableItem {
 
 	private void repairItem(ItemStack stack, ItemStack touchstone, PlayerEntity player) {
 		if (reduceTouchStoneCharge(touchstone, player)) {
-			stack.setDamage(stack.getDamage() - 1);
+			int damage = stack.getDamage();
+			stack.setDamage(damage - Math.min(damage, 10));
 		}
 	}
 

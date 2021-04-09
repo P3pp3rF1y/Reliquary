@@ -1,7 +1,6 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -24,6 +23,7 @@ import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nullable;
@@ -81,20 +81,11 @@ public class HandgunItem extends ItemBase {
 	}
 
 	private void setMagazineType(ItemStack handgun, ItemStack magazine) {
-		//noinspection ConstantConditions
-		NBTHelper.putString(MAGAZINE_TYPE_TAG, handgun, magazine.getItem().getRegistryName().toString());
+		NBTHelper.putString(MAGAZINE_TYPE_TAG, handgun, RegistryHelper.getItemRegistryName(magazine.getItem()));
 	}
 
 	private boolean hasAmmo(ItemStack handgun) {
 		return getBulletCount(handgun) > 0;
-	}
-
-	private boolean isInCooldown(ItemStack handgun) {
-		return NBTHelper.getBoolean("inCoolDown", handgun);
-	}
-
-	private void setInCooldown(ItemStack handgun, boolean inCooldown) {
-		NBTHelper.putBoolean("inCoolDown", handgun, inCooldown);
 	}
 
 	public long getCooldown(ItemStack handgun) {
@@ -144,69 +135,36 @@ public class HandgunItem extends ItemBase {
 
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-		return oldStack.getItem() != newStack.getItem();
-
-	}
-
-	@Override
-	public void inventoryTick(ItemStack handgun, World world, Entity entity, int slotNumber, boolean isSelected) {
-		if (world.isRemote) {
-			return;
-		}
-
-		if (isInCooldown(handgun) && (isCooldownOver(world, handgun) || !isValidCooldownTime(world, handgun))) {
-			setInCooldown(handgun, false);
-		}
+		return oldStack.getItem() != newStack.getItem() || getBulletCount(oldStack) < getBulletCount(newStack);
 	}
 
 	private boolean isCooldownOver(World world, ItemStack handgun) {
-		return getCooldown(handgun) < world.getGameTime() && world.getGameTime() - getCooldown(handgun) < 12000;
-	}
-
-	private boolean isValidCooldownTime(World world, ItemStack handgun) {
-		return Math.min(Math.abs(world.getGameTime() - getCooldown(handgun)), Math.abs(world.getGameTime() - 23999 - getCooldown(handgun))) <= getUseDuration(handgun);
+		return getCooldown(handgun) < world.getGameTime();
 	}
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack handgun = player.getHeldItem(hand);
 
-		if ((hasFilledMagazine(player) && getBulletCount(handgun) == 0) || (getBulletCount(handgun) > 0 && (hasHandgunInHand(player, hand) || cooledMoreThanSecondHandgun(handgun, player, hand)))) {
+		if (getBulletCount(handgun) > 0 && !isCooldownOver(world, handgun) && otherHandgunCooledDownMore(player, hand, handgun)) {
+			return new ActionResult<>(ActionResultType.PASS, handgun);
+		}
+
+		if (getBulletCount(handgun) > 0 || hasFilledMagazine(player)) {
 			player.setActiveHand(hand);
 			return new ActionResult<>(ActionResultType.SUCCESS, handgun);
 		}
 		return new ActionResult<>(ActionResultType.PASS, handgun);
 	}
 
-	private boolean cooledMoreThanSecondHandgun(ItemStack handgun, PlayerEntity player, Hand hand) {
-		if (!isInCooldown(handgun)) {
-			return true;
+	private boolean otherHandgunCooledDownMore(PlayerEntity player, Hand currentHand, ItemStack currentHandgun) {
+		if (currentHand == Hand.MAIN_HAND) {
+			ItemStack offHandItem = player.getHeldItemOffhand();
+			return offHandItem.getItem() == this && getCooldown(offHandItem) < getCooldown(currentHandgun);
 		}
 
-		if (hand == Hand.MAIN_HAND) {
-			return !isInCooldown(player.getHeldItemOffhand()) && getCooldown(handgun) < getCooldown(player.getHeldItemOffhand());
-		} else {
-			return !isInCooldown(player.getHeldItemMainhand()) && getCooldown(handgun) < getCooldown(player.getHeldItemMainhand());
-		}
-	}
-
-	private boolean secondHandgunCooledEnough(World world, PlayerEntity player, Hand hand) {
-		ItemStack secondHandgun;
-
-		if (hand == Hand.MAIN_HAND) {
-			secondHandgun = player.getHeldItemOffhand();
-		} else {
-			secondHandgun = player.getHeldItemMainhand();
-		}
-		return !isInCooldown(secondHandgun) || (getCooldown(secondHandgun) - world.getGameTime()) < (getPlayerReloadDelay(player) / 2);
-	}
-
-	private boolean hasHandgunInHand(PlayerEntity player, Hand hand) {
-		if (hand == Hand.MAIN_HAND) {
-			return player.getHeldItemMainhand().getItem() == this;
-		}
-
-		return player.getHeldItemOffhand().getItem() == this;
+		ItemStack mainHandItem = player.getHeldItemMainhand();
+		return mainHandItem.getItem() == this && getCooldown(mainHandItem) < getCooldown(currentHandgun);
 	}
 
 	@Override
@@ -221,14 +179,7 @@ public class HandgunItem extends ItemBase {
 		int actualCount = unadjustedCount - maxUseOffset;
 		actualCount -= 1;
 
-		//you can't reload if you don't have any full mags left, so the rest of the method doesn't fire at all.
-		if (!hasFilledMagazine(player) || actualCount == 0) {
-			player.stopActiveHand();
-			return;
-		}
-
-		//loaded and ready to fire
-		if (!isInCooldown(handgun) && getBulletCount(handgun) > 0 && (hasHandgunInHand(player, player.getActiveHand()) || secondHandgunCooledEnough(player.world, player, player.getActiveHand()))) {
+		if (actualCount == 0 || (isCooldownOver(entity.world, handgun) && getBulletCount(handgun) > 0) || !hasFilledMagazine(player)) {
 			player.stopActiveHand();
 		}
 	}
@@ -248,12 +199,8 @@ public class HandgunItem extends ItemBase {
 
 		// fire bullet
 		if (hasAmmo(handgun)) {
-			if (!isInCooldown(handgun)) {
-				setCooldown(handgun, worldIn.getGameTime() + Settings.COMMON.items.handgun.maxSkillLevel.get() + HANDGUN_COOLDOWN_SKILL_OFFSET
-						- Math.min(player.experienceLevel, Settings.COMMON.items.handgun.maxSkillLevel.get())
-				);
-				setInCooldown(handgun, true);
-
+			if (isCooldownOver(player.world, handgun)) {
+				setFiringCooldown(handgun, worldIn, player);
 				fireBullet(handgun, worldIn, player, handgun == player.getHeldItemMainhand() ? Hand.MAIN_HAND : Hand.OFF_HAND);
 			}
 			return;
@@ -261,7 +208,6 @@ public class HandgunItem extends ItemBase {
 
 		//arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
 		setCooldown(handgun, player.world.getGameTime() + 12);
-		setInCooldown(handgun, true);
 
 		getMagazineSlot(player).ifPresent(slot -> {
 			ItemStack magazine = player.inventory.mainInventory.get(slot);
@@ -275,11 +221,36 @@ public class HandgunItem extends ItemBase {
 			spawnEmptyMagazine(player);
 			setBulletCount(handgun, (short) 8);
 			player.world.playSound(null, player.getPosition(), ModSounds.xload, SoundCategory.PLAYERS, 0.25F, 1.0F);
+			setFiringCooldown(handgun, worldIn, player);
 		});
 
 		if (getBulletCount(handgun) == 0) {
 			setPotionEffects(handgun, Collections.emptyList());
 		}
+	}
+
+	private void setSecondHandgunFiringCooldown(PlayerEntity player, ItemStack currentHandgun) {
+		if (player.getHeldItemMainhand() == currentHandgun) {
+			setHalfFiringCooldown(player, player.getHeldItemOffhand());
+		} else if(player.getHeldItemOffhand() == currentHandgun) {
+			setHalfFiringCooldown(player, player.getHeldItemMainhand());
+		}
+	}
+
+	private void setHalfFiringCooldown(PlayerEntity player, ItemStack potentialHandgun) {
+		if (potentialHandgun.getItem() == this && isCooldownOver(player.world, potentialHandgun)) {
+			setCooldown(potentialHandgun, player.world.getGameTime() + (getPlayerFiringCooldown(player) / 2));
+		}
+	}
+
+	private void setFiringCooldown(ItemStack handgun, World worldIn, PlayerEntity player) {
+		setCooldown(handgun, worldIn.getGameTime() + getPlayerFiringCooldown(player));
+		setSecondHandgunFiringCooldown(player, handgun);
+	}
+
+	private int getPlayerFiringCooldown(PlayerEntity player) {
+		return Settings.COMMON.items.handgun.maxSkillLevel.get() + HANDGUN_COOLDOWN_SKILL_OFFSET
+				- Math.min(player.experienceLevel, Settings.COMMON.items.handgun.maxSkillLevel.get());
 	}
 
 	private int getItemUseDuration() {

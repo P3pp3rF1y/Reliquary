@@ -57,7 +57,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
-
 	private static final String CONTENTS_TAG = "contents";
 	private static final String TOOLTIP_PREFIX = "tooltip.";
 
@@ -212,7 +211,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 	@Override
 	public void inventoryTick(ItemStack voidTear, World world, Entity entity, int slotNumber, boolean isSelected) {
-		if (!world.isRemote) {
+		if (!world.isRemote && world.getGameTime() % 5 != 0) {
 			if (!(entity instanceof PlayerEntity)) {
 				return;
 			}

@@ -13,7 +13,6 @@ import net.minecraft.network.IPacket;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -28,6 +27,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 import xreliquary.reference.Settings;
 import xreliquary.util.RandHelper;
+
+import static xreliquary.items.IceMagusRodItem.ICE_PARTICLE;
 
 @SuppressWarnings({"squid:S2160", "squid:MaximumInheritanceDepth"})
 public class SpecialSnowballEntity extends ProjectileItemEntity {
@@ -92,7 +93,7 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 	public void tick() {
 		super.tick();
 		if (ticksExisted % 4 == world.rand.nextInt(5)) {
-			world.addParticle(RedstoneParticleData.REDSTONE_DUST, getPosX(), getPosY(), getPosZ(), 5.0D, 5.0D, 1.0D);
+			world.addParticle(ICE_PARTICLE, getPosX(), getPosY(), getPosZ(), 5.0D, 5.0D, 1.0D);
 		}
 	}
 
@@ -117,7 +118,7 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 			ItemStack stack = func_213882_k();
 			IParticleData particleData = stack.isEmpty() ? ParticleTypes.ITEM_SNOWBALL : new ItemParticleData(ParticleTypes.ITEM, stack);
 
-			for(int i = 0; i < 8; ++i) {
+			for (int i = 0; i < 8; ++i) {
 				world.addParticle(particleData, getPosX(), getPosY(), getPosZ(), 0.0D, 0.0D, 0.0D);
 			}
 		}

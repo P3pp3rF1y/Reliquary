@@ -18,7 +18,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.reference.Settings;
-import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RandHelper;
@@ -67,7 +66,7 @@ public class DestructionCatalystItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack catalyst, World world, Entity e, int itemSlot, boolean isSelected) {
-		if (world.isRemote) {
+		if (world.isRemote || world.getGameTime() % 10 != 0) {
 			return;
 		}
 		PlayerEntity player = null;
@@ -78,8 +77,10 @@ public class DestructionCatalystItem extends ToggleableItem {
 			return;
 		}
 
-		if (isEnabled(catalyst) && NBTHelper.getInt(GUNPOWDER_TAG, catalyst) + gunpowderWorth() < gunpowderLimit() && InventoryHelper.consumeItem(new ItemStack(Items.GUNPOWDER), player)) {
-			NBTHelper.putInt(GUNPOWDER_TAG, catalyst, NBTHelper.getInt(GUNPOWDER_TAG, catalyst) + gunpowderWorth());
+		if (isEnabled(catalyst)) {
+			int gunpowderCharge = NBTHelper.getInt(GUNPOWDER_TAG, catalyst);
+			consumeAndCharge(player, gunpowderLimit() - gunpowderCharge, gunpowderWorth(), Items.GUNPOWDER, 16,
+					chargeToAdd -> NBTHelper.putInt(GUNPOWDER_TAG, catalyst, gunpowderCharge + chargeToAdd));
 		}
 	}
 

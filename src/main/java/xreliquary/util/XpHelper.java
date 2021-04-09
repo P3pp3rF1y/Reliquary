@@ -4,6 +4,7 @@ package xreliquary.util;
  * Code originally from EnderIO @see {https://github.com/SleepyTrousers/EnderIO/blob/master/src/main/java/crazypants/enderio/xp/XpUtil.java}
  */
 public class XpHelper {
+	private XpHelper() {}
 
 	private static final int RATIO = 20;
 
@@ -47,5 +48,4 @@ public class XpHelper {
 	public static int xpToDurability(int xp) {
 		return xp * 2;
 	}
-
 }

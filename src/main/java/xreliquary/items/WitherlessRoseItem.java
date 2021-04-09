@@ -1,6 +1,6 @@
 package xreliquary.items;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -10,11 +10,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import xreliquary.handler.CommonEventHandler;
-import xreliquary.handler.HandlerPriority;
-import xreliquary.handler.IPlayerHurtHandler;
-import xreliquary.init.ModItems;
+import net.minecraftforge.event.entity.living.PotionEvent;
+import net.minecraftforge.eventbus.api.Event;
 import xreliquary.util.InventoryHelper;
 
 import java.util.Random;
@@ -22,24 +21,8 @@ import java.util.Random;
 public class WitherlessRoseItem extends ItemBase {
 	public WitherlessRoseItem() {
 		super(new Properties().maxStackSize(1));
-
-		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
-			@Override
-			public boolean canApply(PlayerEntity player, LivingAttackEvent event) {
-				return event.getSource() == DamageSource.WITHER
-						&& InventoryHelper.playerHasItem(player, ModItems.WITHERLESS_ROSE.get());
-			}
-
-			@Override
-			public boolean apply(PlayerEntity player, LivingAttackEvent event) {
-				return true;
-			}
-
-			@Override
-			public HandlerPriority getPriority() {
-				return HandlerPriority.HIGHEST;
-			}
-		});
+		MinecraftForge.EVENT_BUS.addListener(this::preventWither);
+		MinecraftForge.EVENT_BUS.addListener(this::preventWitherAttack);
 	}
 
 	@Override
@@ -53,19 +36,29 @@ public class WitherlessRoseItem extends ItemBase {
 		return true;
 	}
 
-	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (!(entity instanceof PlayerEntity)) {
-			return;
+	private void preventWither(PotionEvent.PotionApplicableEvent event) {
+		LivingEntity entityLiving = event.getEntityLiving();
+		if (entityLiving instanceof PlayerEntity && event.getPotionEffect().getPotion() == Effects.WITHER && InventoryHelper.playerHasItem((PlayerEntity) entityLiving, this)) {
+			event.setResult(Event.Result.DENY);
+			addPreventParticles((PlayerEntity) entityLiving);
 		}
-		PlayerEntity player = (PlayerEntity) entity;
-		if (player.isPotionActive(Effects.WITHER)) {
-			player.removePotionEffect(Effects.WITHER);
-			for (int particles = 0; particles < 10; particles++) {
-				double gauss1 = gaussian(world.rand);
-				double gauss2 = gaussian(world.rand);
-				world.addParticle(ParticleTypes.ENTITY_EFFECT, player.getPosX() + gauss1, player.getPosY() + player.getHeight() / 2, player.getPosZ() + gauss2, 0.0, 0.0, 1.0);
-			}
+	}
+
+	private void preventWitherAttack(LivingAttackEvent event) {
+		LivingEntity entityLiving = event.getEntityLiving();
+		if (entityLiving instanceof PlayerEntity && event.getSource() == DamageSource.WITHER && InventoryHelper.playerHasItem((PlayerEntity) entityLiving, this)) {
+			entityLiving.removePotionEffect(Effects.WITHER);
+			event.setCanceled(true);
+			addPreventParticles((PlayerEntity) entityLiving);
+		}
+	}
+
+	private void addPreventParticles(PlayerEntity entityLiving) {
+		World world = entityLiving.world;
+		for (int particles = 0; particles < 10; particles++) {
+			double gauss1 = gaussian(world.rand);
+			double gauss2 = gaussian(world.rand);
+			world.addParticle(ParticleTypes.ENTITY_EFFECT, entityLiving.getPosX() + gauss1, entityLiving.getPosY() + entityLiving.getHeight() / 2, entityLiving.getPosZ() + gauss2, 0.0, 0.0, 1.0);
 		}
 	}
 

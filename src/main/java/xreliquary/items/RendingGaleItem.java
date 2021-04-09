@@ -39,7 +39,6 @@ import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.reference.Settings;
-import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.LogHelper;
 import xreliquary.util.NBTHelper;
@@ -139,14 +138,16 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 
 	@Override
 	public void inventoryTick(ItemStack rendingGale, World world, Entity entity, int slotNumber, boolean isSelected) {
-		if (world.isRemote || !(entity instanceof PlayerEntity)) {
+		if (world.isRemote || !(entity instanceof PlayerEntity) || world.getGameTime() % 10 != 0) {
 			return;
 		}
 
 		PlayerEntity player = (PlayerEntity) entity;
 
-		if (isEnabled(rendingGale) && getFeatherCount(rendingGale) + getFeathersWorth() <= getChargeLimit() && InventoryHelper.consumeItem(new ItemStack(Items.FEATHER), player)) {
-			setFeatherCount(rendingGale, getFeatherCount(rendingGale) + getFeathersWorth(), !player.isHandActive());
+		if (isEnabled(rendingGale)) {
+			int currentFeatherCharge = getFeatherCount(rendingGale);
+			consumeAndCharge(player, getChargeLimit() - currentFeatherCharge, getFeathersWorth(), Items.FEATHER, 16,
+					chargeToAdd -> setFeatherCount(rendingGale, currentFeatherCharge + chargeToAdd, !player.isHandActive()));
 		}
 	}
 

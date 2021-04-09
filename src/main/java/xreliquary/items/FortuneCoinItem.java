@@ -105,7 +105,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote) {
+		if (world.isRemote || world.getGameTime() % 2 != 0) {
 			return;
 		}
 		if (!isEnabled(stack)) {

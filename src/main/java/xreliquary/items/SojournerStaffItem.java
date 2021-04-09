@@ -17,6 +17,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
@@ -28,17 +29,21 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.reference.Settings;
-import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.NoPlayerBlockItemUseContext;
+import xreliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class SojournerStaffItem extends ToggleableItem implements ILeftClickableItem {
+	private static final int COOLDOWN = 10;
+
 	private static final String ITEMS_TAG = "Items";
 	private static final String QUANTITY_TAG = "Quantity";
 	private static final String CURRENT_INDEX_TAG = "Current";
@@ -54,7 +59,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote) {
+		if (world.isRemote || world.getGameTime() % COOLDOWN != 0) {
 			return;
 		}
 
@@ -85,77 +90,9 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 
 	private void scanForMatchingTorchesToFillInternalStorage(ItemStack stack, PlayerEntity player) {
 		for (String torch : Settings.COMMON.items.sojournerStaff.torches.get()) {
-			if (!isInternalStorageFullOfItem(stack, torch)) {
-				ItemStack consumedStack = InventoryHelper.consumeItemStack(is -> is.getItem().getRegistryName() != null && is.getItem().getRegistryName().toString().equals(torch), player);
-				if (!consumedStack.isEmpty()) {
-					addItemToInternalStorage(stack, consumedStack);
-				}
-			}
+			consumeAndCharge(player, Settings.COMMON.items.sojournerStaff.maxCapacityPerItemType.get() - getInternalStorageItemCount(stack, torch), 1, ist -> RegistryHelper.getItemRegistryName(ist.getItem()).equals(torch), 16,
+					chargeToAdd -> addItemToInternalStorage(stack, torch, chargeToAdd));
 		}
-	}
-
-	private void addItemToInternalStorage(ItemStack stack, ItemStack torchItem) {
-		CompoundNBT tagCompound = NBTHelper.getTag(stack);
-
-		ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
-
-		boolean added = false;
-		for (int i = 0; i < tagList.size(); ++i) {
-			CompoundNBT tagItemData = tagList.getCompound(i);
-			ItemStack item = getItem(tagItemData);
-			if (item.getItem() == torchItem.getItem()) {
-				int quantity = tagItemData.getInt(QUANTITY_TAG);
-				tagItemData.putInt(QUANTITY_TAG, quantity + 1);
-				added = true;
-			}
-		}
-		if (!added) {
-			CompoundNBT newTagData = new CompoundNBT();
-			newTagData.put("Item", torchItem.write(new CompoundNBT()));
-			newTagData.putInt(QUANTITY_TAG, 1);
-			tagList.add(newTagData);
-		}
-
-		tagCompound.put(ITEMS_TAG, tagList);
-
-		stack.setTag(tagCompound);
-	}
-
-	private static boolean hasItemInInternalStorage(ItemStack stack, String itemRegistryName, int cost) {
-		CompoundNBT tagCompound = NBTHelper.getTag(stack);
-		if (tagCompound.isEmpty()) {
-			tagCompound.put(ITEMS_TAG, new ListNBT());
-			return false;
-		}
-
-		ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
-		for (int i = 0; i < tagList.size(); ++i) {
-			CompoundNBT tagItemData = tagList.getCompound(i);
-			//noinspection ConstantConditions
-			if (getItem(tagItemData).getItem().getRegistryName().toString().equals(itemRegistryName)) {
-				int quantity = tagItemData.getInt(QUANTITY_TAG);
-				return quantity >= cost;
-			}
-		}
-
-		return false;
-	}
-
-	private boolean isInternalStorageFullOfItem(ItemStack stack, String itemRegistryName) {
-		if (hasItemInInternalStorage(stack, itemRegistryName, 1)) {
-			CompoundNBT tagCompound = NBTHelper.getTag(stack);
-			ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
-
-			for (int i = 0; i < tagList.size(); ++i) {
-				CompoundNBT tagItemData = tagList.getCompound(i);
-				//noinspection ConstantConditions
-				if (getItem(tagItemData).getItem().getRegistryName().toString().equals(itemRegistryName)) {
-					int quantity = tagItemData.getInt(QUANTITY_TAG);
-					return quantity >= getTorchItemMaxCapacity();
-				}
-			}
-		}
-		return false;
 	}
 
 	public ItemStack getCurrentTorch(ItemStack stack) {
@@ -169,10 +106,14 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 	private CompoundNBT getCurrentTorchTag(ItemStack stack) {
 		CompoundNBT tagCompound = NBTHelper.getTag(stack);
 
-		ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
+		ListNBT tagList = getItemListTag(tagCompound);
 		int current = getCurrentIndex(tagCompound, tagList);
 
 		return tagList.getCompound(current);
+	}
+
+	private ListNBT getItemListTag(CompoundNBT tagCompound) {
+		return tagCompound.getList(ITEMS_TAG, 10);
 	}
 
 	private void cycleTorchMode(ItemStack stack) {
@@ -181,7 +122,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 			return;
 		}
 		CompoundNBT tagCompound = NBTHelper.getTag(stack);
-		ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
+		ListNBT tagList = getItemListTag(tagCompound);
 		if (tagList.size() == 1) {
 			return;
 		}
@@ -214,54 +155,17 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 		return current;
 	}
 
-	private int getTorchItemMaxCapacity() {
-		return Settings.COMMON.items.sojournerStaff.maxCapacityPerItemType.get();
-	}
-
-	static boolean removeItemFromInternalStorage(ItemStack stack, String itemRegistryName, int cost, PlayerEntity player) {
-		if (player.isCreative()) {
-			return true;
-		}
-		if (hasItemInInternalStorage(stack, itemRegistryName, cost)) {
-			CompoundNBT tagCompound = NBTHelper.getTag(stack);
-
-			ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
-
-			ListNBT replacementTagList = new ListNBT();
-
-			for (int i = 0; i < tagList.size(); ++i) {
-				CompoundNBT tagItemData = tagList.getCompound(i);
-				//noinspection ConstantConditions
-				String itemName = getItem(tagItemData).getItem().getRegistryName().toString();
-				if (itemName.equals(itemRegistryName)) {
-					int quantity = tagItemData.getInt(QUANTITY_TAG);
-					tagItemData.putInt(QUANTITY_TAG, quantity - cost);
-				}
-				replacementTagList.add(tagItemData);
-			}
-			tagCompound.put(ITEMS_TAG, replacementTagList);
-			stack.setTag(tagCompound);
-			return true;
-		}
-		return false;
-
-	}
-
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack staff, @Nullable World world, List<ITextComponent> tooltip) {
-		//maps the contents of the Sojourner's staff to a tooltip, so the player can review the torches stored within.
-		String phrase = "Nothing.";
-		CompoundNBT tagCompound = NBTHelper.getTag(staff);
-		ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
-		for (int i = 0; i < tagList.size(); ++i) {
-			CompoundNBT tagItemData = tagList.getCompound(i);
-			ItemStack containedItem = getItem(tagItemData);
-			int quantity = tagItemData.getInt(QUANTITY_TAG);
-			phrase = String.format("%s%s", phrase.equals("Nothing.") ? "" : String.format("%s;", phrase), containedItem.getDisplayName().getString() + ": " + quantity);
-		}
+		StringJoiner joiner = new StringJoiner(";");
+		iterateItems(staff, tag -> {
+			ItemStack containedItem = getItem(tag);
+			int quantity = tag.getInt(QUANTITY_TAG);
+			joiner.add(containedItem.getDisplayName().getString() + ": " + quantity);
+		}, () -> false);
 
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("phrase", phrase, "placing", getCurrentTorch(staff).getDisplayName().getString()), tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("phrase", joiner.toString(), "placing", getCurrentTorch(staff).getDisplayName().getString()), tooltip);
 
 		if (isEnabled(staff)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + (new ItemStack(Blocks.TORCH).getDisplayName().getString())), tooltip);
@@ -275,7 +179,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 	}
 
 	private static ItemStack getItem(CompoundNBT tagItemData) {
-		return ItemStack.read(tagItemData.getCompound("Item"));
+		return new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(tagItemData.getString("Name"))));
 	}
 
 	@Override
@@ -321,8 +225,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 			int distance = (int) player.getEyePosition(1).distanceTo(new Vector3d(placeBlockAt.getX(), placeBlockAt.getY(), placeBlockAt.getZ()));
 			int cost = 1 + distance / Settings.COMMON.items.sojournerStaff.tilePerCostMultiplier.get();
 
-			//noinspection ConstantConditions
-			return removeItemFromInternalStorage(stack, blockToPlace.getRegistryName().toString(), cost, player);
+			return removeItemFromInternalStorage(stack, blockToPlace, cost, false, player);
 		}
 		return true;
 	}
@@ -342,14 +245,14 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 		float f = player.rotationPitch;
 		float f1 = player.rotationYaw;
 		Vector3d vec3d = player.getEyePosition(1.0F);
-		float f2 = MathHelper.cos(-f1 * ((float)Math.PI / 180F) - (float)Math.PI);
-		float f3 = MathHelper.sin(-f1 * ((float)Math.PI / 180F) - (float)Math.PI);
-		float f4 = -MathHelper.cos(-f * ((float)Math.PI / 180F));
-		float f5 = MathHelper.sin(-f * ((float)Math.PI / 180F));
+		float f2 = MathHelper.cos(-f1 * ((float) Math.PI / 180F) - (float) Math.PI);
+		float f3 = MathHelper.sin(-f1 * ((float) Math.PI / 180F) - (float) Math.PI);
+		float f4 = -MathHelper.cos(-f * ((float) Math.PI / 180F));
+		float f5 = MathHelper.sin(-f * ((float) Math.PI / 180F));
 		float f6 = f3 * f4;
 		float f7 = f2 * f4;
 		double d0 = Settings.COMMON.items.sojournerStaff.maxRange.get();
-		Vector3d vec3d1 = vec3d.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
+		Vector3d vec3d1 = vec3d.add((double) f6 * d0, (double) f5 * d0, (double) f7 * d0);
 		return worldIn.rayTraceBlocks(new RayTraceContext(vec3d, vec3d1, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.ANY, player));
 	}
 }

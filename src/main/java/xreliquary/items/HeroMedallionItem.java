@@ -37,7 +37,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class HeroMedallionItem extends ToggleableItem implements IPedestalActionItem {
-
 	private static final String EXPERIENCE_TAG = "experience";
 
 	public HeroMedallionItem() {
@@ -84,31 +83,26 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (!isEnabled(stack)) {
+		if (!isEnabled(stack) || world.getGameTime() % 10 == 0) {
 			return;
 		}
 		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
-			// in order to make this stop at a specific level, we will need to do
-			// a preemptive check for a specific level.
-			for (int levelLoop = 0; levelLoop <= Math.sqrt(!player.isCreative() ? player.experienceLevel : 30); ++levelLoop) {
-				if ((player.experienceLevel > getExperienceMinimum() || player.experience >= (1F / player.xpBarCap()) || player.isCreative()) && getExperience(stack) < Settings.COMMON.items.heroMedallion.experienceLimit.get()) {
-					if (!player.isCreative()) {
-						decreasePlayerExperience(player);
-					}
-					increaseMedallionExperience(stack);
+			int pointsToCharge = player.isCreative() ? 20 : Math.min(20, player.experienceTotal - XpHelper.getExperienceForLevel(getExperienceMinimum()));
+			if (pointsToCharge > 0) {
+				if (!player.isCreative()) {
+					decreasePlayerExperience(player, pointsToCharge);
 				}
+				increaseMedallionExperience(stack, pointsToCharge);
 			}
 		}
 	}
 
-	private void decreasePlayerExperience(PlayerEntity player) {
-		player.experience -= 1F / (float) player.xpBarCap();
-		player.experienceTotal -= Math.min(1, player.experienceTotal);
-
-		if (player.experience < 0F) {
-			decreasePlayerLevel(player);
-		}
+	private void decreasePlayerExperience(PlayerEntity player, int pointsToRemove) {
+		player.experienceTotal -= pointsToRemove;
+		int newLevel = XpHelper.getLevelForExperience(player.experienceTotal);
+		player.experienceLevel = newLevel;
+		player.experience = (float) (player.experienceTotal - XpHelper.getExperienceForLevel(newLevel)) / player.xpBarCap();
 	}
 
 	private void decreaseMedallionExperience(ItemStack stack) {
@@ -119,18 +113,12 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		setExperience(stack, getExperience(stack) - experience);
 	}
 
-	private void decreasePlayerLevel(PlayerEntity player) {
-		float experienceToRemove = -player.experience * player.xpBarCap();
-		player.experienceLevel -= 1;
-		player.experience = 1F - (experienceToRemove / player.xpBarCap());
-	}
-
 	private void increasePlayerExperience(PlayerEntity player) {
 		player.giveExperiencePoints(1);
 	}
 
-	private void increaseMedallionExperience(ItemStack stack) {
-		setExperience(stack, getExperience(stack) + 1);
+	private void increaseMedallionExperience(ItemStack stack, int xpPoints) {
+		setExperience(stack, getExperience(stack) + xpPoints);
 	}
 
 	public int getExperience(ItemStack stack) {
@@ -173,7 +161,6 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		int xp = Math.min(Settings.COMMON.items.heroMedallion.experienceDrop.get(), getExperience(stack));
 
 		if (getExperience(stack) >= xp) {
-
 			decreaseMedallionExperience(stack, xp);
 
 			while (xp > 0) {

@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -30,6 +31,8 @@ import java.util.Optional;
 
 public class InfernalTearItem extends ToggleableItem {
 	private static final String ENABLED_TAG = "enabled";
+	private static final int COOLDOWN = 4;
+	private static final int NOTHING_FOUND_COOLDOWN = COOLDOWN * 5;
 
 	public InfernalTearItem() {
 		super(new Properties().maxStackSize(1).setNoRepair());
@@ -37,24 +40,28 @@ public class InfernalTearItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote || !isEnabled(stack) || !(entity instanceof PlayerEntity)) {
+		if (world.isRemote || world.getGameTime() % COOLDOWN != 0 || !isEnabled(stack) || isInCooldown(stack, world) || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-		PlayerEntity player = (PlayerEntity) entity;
 
-		if (getStackFromTear(stack).isEmpty()) {
+		PlayerEntity player = (PlayerEntity) entity;
+		ItemStack tearStack = getStackFromTear(stack);
+		if (tearStack.isEmpty()) {
 			resetTear(stack);
 			return;
 		}
 
-		Optional<Integer> experience = Settings.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(getStackFromTear(stack).getItem()));
+		Optional<Integer> experience = Settings.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(tearStack.getItem()));
 		if (!experience.isPresent()) {
 			resetTear(stack);
 			return;
 		}
 
-		if (InventoryHelper.consumeItem(getStackFromTear(stack), player)) {
-			player.giveExperiencePoints(experience.get());
+		int countConsumed = InventoryHelper.consumeItemStack(ist -> ItemHandlerHelper.canItemStacksStack(tearStack, ist), player, 4).getCount();
+		if (countConsumed > 0) {
+			player.giveExperiencePoints(experience.get() * countConsumed);
+		} else {
+			setCooldown(stack, world, NOTHING_FOUND_COOLDOWN);
 		}
 	}
 

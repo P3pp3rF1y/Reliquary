@@ -27,7 +27,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
-import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -95,14 +94,6 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 				|| (!block.isAir(state, world, pos) && !state.isReplaceable(BlockItemUseContext.func_221536_a(context, pos, Direction.DOWN)));
 	}
 
-	private void setCooldown(ItemStack stack, World world, int cooldown) {
-		NBTHelper.putLong("cooldown", stack, world.getGameTime() + cooldown);
-	}
-
-	private boolean isInCooldown(ItemStack stack, World world) {
-		return NBTHelper.getLong("cooldown", stack) > world.getGameTime();
-	}
-
 	private boolean isBlockBlockingView(World world, PlayerEntity player, BlockPos pos) {
 		double playerEyeHeight = player.getPosY() + player.getEyeHeight();
 		for (float xOff = -0.2F; xOff <= 0.2F; xOff += 0.4F) {
@@ -167,8 +158,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			if (player.inventory.getStackInSlot(slot).getItem() != ModItems.SOJOURNER_STAFF.get()) {
 				continue;
 			}
-			//noinspection ConstantConditions
-			if (SojournerStaffItem.removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch.getRegistryName().toString(), 1, player)) {
+			if (ModItems.SOJOURNER_STAFF.get().removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch, 1, false, player)) {
 				return true;
 			}
 		}

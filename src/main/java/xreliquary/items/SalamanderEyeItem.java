@@ -22,7 +22,6 @@ import xreliquary.util.RandHelper;
 import java.util.List;
 
 public class SalamanderEyeItem extends ItemBase {
-
 	public SalamanderEyeItem() {
 		super(new Properties().maxStackSize(1));
 	}
@@ -40,48 +39,42 @@ public class SalamanderEyeItem extends ItemBase {
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if(world.isRemote || !(entity instanceof PlayerEntity)) {
+		if (world.isRemote || !(entity instanceof PlayerEntity) || world.getGameTime() % 2 != 0) {
 			return;
 		}
 		PlayerEntity player = (PlayerEntity) entity;
 
-		if(player.getHeldItem(Hand.MAIN_HAND).getItem() == this || player.getHeldItem(Hand.OFF_HAND).getItem() == this) {
+		if (player.getHeldItem(Hand.MAIN_HAND).getItem() == this || player.getHeldItem(Hand.OFF_HAND).getItem() == this) {
 			doFireballEffect(player);
 			doExtinguishEffect(player);
 		}
 	}
 
 	private void doExtinguishEffect(PlayerEntity player) {
-		if(player.isBurning()) {
+		if (player.isBurning()) {
 			player.extinguish();
 		}
-		int x = (int) Math.floor(player.getPosX());
-		int y = (int) Math.floor(player.getPosY());
-		int z = (int) Math.floor(player.getPosZ());
-		for(int xOff = -3; xOff <= 3; xOff++) {
-			for(int yOff = -3; yOff <= 3; yOff++) {
-				for(int zOff = -3; zOff <= 3; zOff++) {
-					if(player.world.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock() == Blocks.FIRE) {
-						player.world.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.AIR.getDefaultState());
-						player.world.playSound(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
+		BlockPos.getAllInBoxMutable(player.getPosition().add(-3,-3,-3), player.getPosition().add(3,3,3))
+				.forEach(pos -> {
+					if (player.world.getBlockState(pos).getBlock() == Blocks.FIRE) {
+						player.world.setBlockState(pos, Blocks.AIR.getDefaultState());
+						player.world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F);
 					}
-				}
-			}
-		}
+				});
 	}
 
 	private void doFireballEffect(PlayerEntity player) {
 		List<FireballEntity> ghastFireballs = player.world.getEntitiesWithinAABB(FireballEntity.class, new AxisAlignedBB(player.getPosX() - 5, player.getPosY() - 5, player.getPosZ() - 5, player.getPosX() + 5, player.getPosY() + 5, player.getPosZ() + 5));
-		for(FireballEntity fireball : ghastFireballs) {
-			if(player.getDistance(fireball) < 4) {
+		for (FireballEntity fireball : ghastFireballs) {
+			if (player.getDistance(fireball) < 4) {
 				fireball.remove();
 			}
 			fireball.attackEntityFrom(DamageSource.causePlayerDamage(player), 1);
 			player.world.playSound(fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
 		}
 		List<SmallFireballEntity> blazeFireballs = player.world.getEntitiesWithinAABB(SmallFireballEntity.class, new AxisAlignedBB(player.getPosX() - 3, player.getPosY() - 3, player.getPosZ() - 3, player.getPosX() + 3, player.getPosY() + 3, player.getPosZ() + 3));
-		for(SmallFireballEntity fireball : blazeFireballs) {
-			for(int particles = 0; particles < 4; particles++) {
+		for (SmallFireballEntity fireball : blazeFireballs) {
+			for (int particles = 0; particles < 4; particles++) {
 				player.world.addParticle(RedstoneParticleData.REDSTONE_DUST, fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), 0.0D, 1.0D, 1.0D);
 			}
 			player.world.playSound(fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);

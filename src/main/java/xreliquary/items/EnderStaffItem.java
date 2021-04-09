@@ -34,7 +34,6 @@ import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.reference.Settings;
-import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
@@ -117,7 +116,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 
 	@Override
 	public void inventoryTick(ItemStack staff, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote) {
+		if (world.isRemote || world.getGameTime() % 10 != 0) {
 			return;
 		}
 
@@ -132,9 +131,10 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		if (!isEnabled(staff)) {
 			return;
 		}
-		if (getPearlCount(staff) + getEnderPearlWorth() <= getEnderPearlLimit() && InventoryHelper.consumeItem(new ItemStack(Items.ENDER_PEARL), player)) {
-			setPearlCount(staff, getPearlCount(staff) + getEnderPearlWorth());
-		}
+
+		int pearlCharge = getPearlCount(staff);
+		consumeAndCharge(player, getEnderPearlLimit() - pearlCharge, getEnderPearlWorth(), Items.ENDER_PEARL, 16,
+				chargeToAdd -> setPearlCount(staff, pearlCharge + chargeToAdd));
 	}
 
 	private void setPearlCount(ItemStack stack, int count) {

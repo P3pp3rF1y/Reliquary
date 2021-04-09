@@ -53,6 +53,10 @@ public class KrakenShellItem extends ItemBase {
 	// buffs.
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+		if (world.getGameTime() % 3 != 0) {
+			return;
+		}
+
 		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
 			if (player.isInWater()) {

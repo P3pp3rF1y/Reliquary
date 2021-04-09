@@ -602,7 +602,6 @@ public class Settings {
 			public static class HeroMedallionSettings {
 				public final IntValue experienceLevelMaximum;
 				public final IntValue experienceLevelMinimum;
-				public final IntValue experienceLimit;
 				public final IntValue experienceDrop;
 				public final IntValue pedestalCoolDown;
 				public final IntValue pedestalRange;
@@ -618,10 +617,6 @@ public class Settings {
 					experienceLevelMinimum = builder
 							.comment("A player's experience level at which the medallion will stop pulling from the player")
 							.defineInRange("experienceLevelMinimum", 0, 0, 30);
-
-					experienceLimit = builder
-							.comment("Experience level that the medallion can hold")
-							.defineInRange("experienceLimit", Integer.MAX_VALUE, 0, Integer.MAX_VALUE);
 
 					experienceDrop = builder
 							.comment("How much experience gets dropped on ground when hero's medallion is right clicked on it (9 is the first level of player xp)")

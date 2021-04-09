@@ -23,7 +23,6 @@ import xreliquary.crafting.AlkahestryChargingRecipe;
 import xreliquary.crafting.AlkahestryRecipeRegistry;
 import xreliquary.init.ModSounds;
 import xreliquary.reference.Settings;
-import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
@@ -72,7 +71,7 @@ public class AlkahestryTomeItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack tome, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote || !isEnabled(tome)) {
+		if (world.isRemote || world.getGameTime() % 10 != 0 || !isEnabled(tome) || getCharge(tome) == getChargeLimit()) {
 			return;
 		}
 
@@ -84,14 +83,9 @@ public class AlkahestryTomeItem extends ToggleableItem {
 		}
 
 		for (AlkahestryChargingRecipe recipe : AlkahestryRecipeRegistry.getChargingRecipes()) {
-			if (getCharge(tome) + recipe.getChargeToAdd() <= getChargeLimit() && consumeItem(recipe, player)) {
-				addCharge(tome, recipe.getChargeToAdd());
-			}
+			consumeAndCharge(player, getChargeLimit() - getCharge(tome), recipe.getChargeToAdd(),
+					ist -> recipe.getChargingIngredient().test(ist), 16, chargeToAdd -> addCharge(tome, chargeToAdd));
 		}
-	}
-
-	private boolean consumeItem(AlkahestryChargingRecipe recipe, PlayerEntity player) {
-		return InventoryHelper.consumeItem(is -> recipe.getChargingIngredient().test(is), player);
 	}
 
 	@Override
