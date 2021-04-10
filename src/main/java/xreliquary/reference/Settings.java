@@ -803,12 +803,16 @@ public class Settings {
 			public final LanternOfParanoiaSettings lanternOfParanoia;
 
 			public static class LanternOfParanoiaSettings {
+				public final ConfigValue<List<String>> torches;
 				public final IntValue minLightLevel;
 				public final IntValue placementScanRadius;
 
 				LanternOfParanoiaSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Lantern of Paranoia settings").push("lanternOfParanoia");
 
+					torches = builder
+							.comment("List of torches that are supported by the lantern")
+							.define("torches", Lists.newArrayList(getItemRegistryName(Items.TORCH)));
 					minLightLevel = builder
 							.comment("Minimum light level below which the lantern will place torches")
 							.defineInRange("minLightLevel", 8, 0, 15);
@@ -1147,7 +1151,7 @@ public class Settings {
 					builder.comment("Sojourner Staff settings").push("sojournerStaff");
 
 					torches = builder
-							.comment("List of torches that are supported by the staff in addition to the default minecraft torch")
+							.comment("List of torches that are supported by the staff")
 							.define("torches", getDefaultTorches());
 
 					maxCapacityPerItemType = builder

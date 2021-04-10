@@ -152,6 +152,10 @@ public abstract class ToggleableItem extends ItemBase {
 			String itemName = tag.getString(ITEM_NAME_TAG);
 			if (itemName.equals(RegistryHelper.getRegistryName(registryEntry).toString())) {
 				int originalQuantity = tag.getInt(QUANTITY_TAG);
+				if (originalQuantity - quantityToRemove < 0) {
+					updated.set(false);
+					return;
+				}
 				if (!simulate) {
 					tag.putInt(QUANTITY_TAG, originalQuantity - quantityToRemove);
 				}

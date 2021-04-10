@@ -119,7 +119,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			return false;
 		}
 
-		for (String torchRegistryName : Settings.COMMON.items.sojournerStaff.torches.get()) {
+		for (String torchRegistryName : Settings.COMMON.items.lanternOfParanoia.torches.get()) {
 			Block torch = getTorchBlock(torchRegistryName);
 			if (tryToPlaceTorchBlock(stack, pos, player, world, torch)) {
 				return true;
