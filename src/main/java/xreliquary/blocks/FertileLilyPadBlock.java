@@ -57,47 +57,34 @@ public class FertileLilyPadBlock extends BushBlock {
 	}
 
 	private void growCropsNearby(ServerWorld world, BlockPos pos, BlockState state) {
-		int xO = pos.getX();
-		int yO = pos.getY();
-		int zO = pos.getZ();
+		BlockPos.getAllInBoxMutable(pos.add(-tileRange(), -1, -tileRange()), pos.add(tileRange(), tileRange(), tileRange())).forEach(cropPos -> {
+			BlockState cropState = world.getBlockState(cropPos);
+			Block cropBlock = cropState.getBlock();
 
-		for (int xD = -tileRange(); xD <= tileRange(); xD++) {
-			for (int yD = -1; yD <= tileRange(); yD++) {
-				for (int zD = -tileRange(); zD <= tileRange(); zD++) {
-					int x = xO + xD;
-					int y = yO + yD;
-					int z = zO + zD;
-
-					BlockState cropState = world.getBlockState(new BlockPos(x, y, z));
-					Block cropBlock = cropState.getBlock();
-
-					if ((cropBlock instanceof IPlantable || cropBlock instanceof IGrowable) && !(cropBlock instanceof FertileLilyPadBlock)) {
-						double distance = Math.sqrt(Math.pow((double) x - xO, 2) + Math.pow((double) y - yO, 2) + Math.pow((double) z - zO, 2));
-						tickCropBlock(world, x, y, z, cropState, cropBlock, distance);
-					}
-				}
+			if ((cropBlock instanceof IPlantable || cropBlock instanceof IGrowable) && !(cropBlock instanceof FertileLilyPadBlock)) {
+				double distance = Math.sqrt(cropPos.distanceSq(pos));
+				tickCropBlock(world, cropPos, cropState, cropBlock, distance);
 			}
-		}
+		});
 		world.getPendingBlockTicks().scheduleTick(pos, state.getBlock(), secondsBetweenGrowthTicks() * 20);
 	}
 
-	private void tickCropBlock(ServerWorld world, int x, int y, int z, BlockState cropState, Block cropBlock, double distance) {
+	private void tickCropBlock(ServerWorld world, BlockPos cropPos, BlockState cropState, Block cropBlock, double distance) {
 		distance -= fullPotencyRange();
 		distance = Math.max(1D, distance);
 		double distanceCoefficient = 1D - (distance / tileRange());
 
 		//it schedules the next tick.
-		BlockPos pos = new BlockPos(x, y, z);
-		world.getPendingBlockTicks().scheduleTick(pos, cropBlock, (int) (distanceCoefficient * (float) secondsBetweenGrowthTicks() * 20F));
-		cropBlock.randomTick(cropState, world, pos, world.rand);
-		world.playEvent(2005, pos, Math.max((int) (tileRange() - distance), 1));
+		world.getPendingBlockTicks().scheduleTick(cropPos, cropBlock, (int) (distanceCoefficient * (float) secondsBetweenGrowthTicks() * 20F));
+		cropBlock.randomTick(cropState, world, cropPos, world.rand);
+		world.playEvent(2005, cropPos, Math.max((int) (tileRange() - distance), 1));
 	}
 
 	@Override
 	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
 		super.onEntityCollision(state, worldIn, pos, entityIn);
 		if (entityIn instanceof BoatEntity) {
-			worldIn.destroyBlock(new BlockPos(pos), true);
+			worldIn.destroyBlock(pos, true);
 		}
 	}
 

@@ -347,7 +347,6 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 				double d0 = getPosX() + (double) (f1 * (float) ticksCatchableDelay * 0.1F);
 				double d1 = (float) MathHelper.floor(getPosY()) + 1.0F;
 				double d2 = getPosZ() + (double) (f2 * (float) ticksCatchableDelay * 0.1F);
-				BlockState blockstate = serverworld.getBlockState(new BlockPos(d0, d1 - 1.0D, d2));
 				if (serverworld.getBlockState(new BlockPos((int) d0, (int) d1 - 1, (int) d2)).getMaterial() == net.minecraft.block.material.Material.WATER) {
 					if (rand.nextFloat() < 0.15F) {
 						serverworld.spawnParticle(ParticleTypes.BUBBLE, d0, d1 - (double) 0.1F, d2, 1, f1, 0.1D, f2, 0.0D);
@@ -383,7 +382,6 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 				double d4 = getPosX() + (double) (MathHelper.sin(f6) * f7 * 0.1F);
 				double d5 = (float) MathHelper.floor(getPosY()) + 1.0F;
 				double d6 = getPosZ() + (double) (MathHelper.cos(f6) * f7 * 0.1F);
-				BlockState blockstate1 = serverworld.getBlockState(new BlockPos(d4, d5 - 1.0D, d6));
 				if (serverworld.getBlockState(new BlockPos(d4, d5 - 1.0D, d6)).getMaterial() == net.minecraft.block.material.Material.WATER) {
 					serverworld.spawnParticle(ParticleTypes.SPLASH, d4, d5, d6, 2 + rand.nextInt(2), 0.1F, 0.0D, 0.1F, 0.0D);
 				}

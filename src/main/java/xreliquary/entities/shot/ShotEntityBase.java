@@ -1,8 +1,5 @@
 package xreliquary.entities.shot;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -24,13 +21,11 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -48,10 +43,6 @@ import java.util.Optional;
 public abstract class ShotEntityBase extends ProjectileEntity {
 	private static final DataParameter<Byte> CRITICAL = EntityDataManager.createKey(ShotEntityBase.class, DataSerializers.BYTE);
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(ShotEntityBase.class, DataSerializers.VARINT);
-	private int xTile = -1;
-	private int yTile = -1;
-	private int zTile = -1;
-	private boolean inGround = false;
 	private List<EffectInstance> potionEffects = Collections.emptyList();
 
 	/**
@@ -159,80 +150,62 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 			prevRotationPitch = rotationPitch = (float) (Math.atan2(motionVec.getY(), pythingy) * 180.0D / Math.PI);
 		}
 
-		BlockState blockState = world.getBlockState(new BlockPos(xTile, yTile, zTile));
-		Block block = blockState.getBlock();
+		++ticksInAir;
+		if (ticksInAir == 2) {
+			world.addParticle(ParticleTypes.FLAME, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0D, 0D, 0D);
+			for (int particles = 0; particles < 3; particles++) {
+				doFiringEffects();
+			}
 
-		if (block != Blocks.AIR) {
-			BlockPos pos = new BlockPos(xTile, yTile, zTile);
-			VoxelShape voxelshape = blockState.getCollisionShape(world, pos);
-			if (!voxelshape.isEmpty()) {
-				for (AxisAlignedBB axisalignedbb : voxelshape.toBoundingBoxList()) {
-					if (axisalignedbb.offset(pos).contains(new Vector3d(getPosX(), getPosY(), getPosZ()))) {
-						inGround = true;
-						break;
+		} else {
+			doFlightEffects();
+		}
+
+		Vector3d posVector = new Vector3d(getPosX(), getPosY(), getPosZ());
+		Vector3d approachVector = new Vector3d(getPosX() + motionVec.getX(), getPosY() + motionVec.getY(), getPosZ() + motionVec.getZ());
+
+		RayTraceResult objectStruckByVector = world.rayTraceBlocks(new RayTraceContext(posVector, approachVector, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+
+		Entity hitEntity = null;
+		List<Entity> struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().expand(motionVec).grow(1.0D, 1.0D, 1.0D));
+		double var7 = 0.0D;
+		Iterator<Entity> struckEntityIterator = struckEntitiesInAABB.iterator();
+		float var11;
+
+		while (struckEntityIterator.hasNext()) {
+			Entity struckEntity = struckEntityIterator.next();
+			if (struckEntity.canBeCollidedWith() && (struckEntity != func_234616_v_() || ticksInAir >= 5)) {
+				var11 = 0.5F;
+				AxisAlignedBB var12 = struckEntity.getBoundingBox().grow(var11, var11, var11);
+				Optional<Vector3d> hitResult = var12.rayTrace(posVector, approachVector);
+
+				if (hitResult.isPresent()) {
+					double var14 = posVector.distanceTo(hitResult.get());
+
+					if (var14 < var7 || var7 == 0.0D) {
+						hitEntity = struckEntity;
+						var7 = var14;
 					}
 				}
 			}
 		}
 
-		if (!inGround) {
-			++ticksInAir;
-			if (ticksInAir == 2) {
-				world.addParticle(ParticleTypes.FLAME, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0D, 0D, 0D);
-				for (int particles = 0; particles < 3; particles++) {
-					doFiringEffects();
-				}
-
-			} else {
-				doFlightEffects();
-			}
-
-			Vector3d posVector = new Vector3d(getPosX(), getPosY(), getPosZ());
-			Vector3d approachVector = new Vector3d(getPosX() + motionVec.getX(), getPosY() + motionVec.getY(), getPosZ() + motionVec.getZ());
-
-			RayTraceResult objectStruckByVector = world.rayTraceBlocks(new RayTraceContext(posVector, approachVector, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
-
-			Entity hitEntity = null;
-			List<Entity> struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().expand(motionVec).grow(1.0D, 1.0D, 1.0D));
-			double var7 = 0.0D;
-			Iterator<Entity> struckEntityIterator = struckEntitiesInAABB.iterator();
-			float var11;
-
-			while (struckEntityIterator.hasNext()) {
-				Entity struckEntity = struckEntityIterator.next();
-				if (struckEntity.canBeCollidedWith() && (struckEntity != func_234616_v_() || ticksInAir >= 5)) {
-					var11 = 0.5F;
-					AxisAlignedBB var12 = struckEntity.getBoundingBox().grow(var11, var11, var11);
-					Optional<Vector3d> hitResult = var12.rayTrace(posVector, approachVector);
-
-					if (hitResult.isPresent()) {
-						double var14 = posVector.distanceTo(hitResult.get());
-
-						if (var14 < var7 || var7 == 0.0D) {
-							hitEntity = struckEntity;
-							var7 = var14;
-						}
-					}
-				}
-			}
-
-			if (hitEntity != null) {
-				objectStruckByVector = new EntityRayTraceResult(hitEntity);
-			}
-
-			//noinspection ConstantConditions - world.rayTraceBlocks can still produce null under certain conditions
-			if (objectStruckByVector != null) {
-				applyPotionEffects(objectStruckByVector);
-				onImpact(objectStruckByVector);
-			}
-
-			if (scheduledForDeath) {
-				remove();
-			}
-
-			Vector3d newPos = getPositionVec().add(getMotion());
-			setPosition(newPos.x, newPos.y, newPos.z);
+		if (hitEntity != null) {
+			objectStruckByVector = new EntityRayTraceResult(hitEntity);
 		}
+
+		//noinspection ConstantConditions - world.rayTraceBlocks can still produce null under certain conditions
+		if (objectStruckByVector != null) {
+			applyPotionEffects(objectStruckByVector);
+			onImpact(objectStruckByVector);
+		}
+
+		if (scheduledForDeath) {
+			remove();
+		}
+
+		Vector3d newPos = getPositionVec().add(getMotion());
+		setPosition(newPos.x, newPos.y, newPos.z);
 	}
 
 	private void spawnPotionParticles() {
@@ -265,19 +238,11 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 
 	@Override
 	protected void readAdditional(CompoundNBT compound) {
-		xTile = compound.getShort("xTile");
-		yTile = compound.getShort("yTile");
-		zTile = compound.getShort("zTile");
-		inGround = compound.getByte("inGround") == 1;
 		potionEffects = XRPotionHelper.getPotionEffectsFromCompoundTag(compound);
 	}
 
 	@Override
 	protected void writeAdditional(CompoundNBT compound) {
-		compound.putShort("xTile", (short) xTile);
-		compound.putShort("yTile", (short) yTile);
-		compound.putShort("zTile", (short) zTile);
-		compound.putByte("inGround", (byte) (inGround ? 1 : 0));
 		XRPotionHelper.addPotionEffectsToCompoundTag(compound, potionEffects);
 	}
 

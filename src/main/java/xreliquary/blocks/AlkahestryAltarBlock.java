@@ -69,7 +69,7 @@ public class AlkahestryAltarBlock extends Block {
 
 	@Override
 	public void animateTick(BlockState state, World world, BlockPos pos, Random rand) {
-		if (Boolean.FALSE.equals(state.get(ACTIVE)) || world.getDayTime() >= 12000 || !world.canBlockSeeSky(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ())) || rand.nextInt(3) != 0) {
+		if (Boolean.FALSE.equals(state.get(ACTIVE)) || world.getDayTime() >= 12000 || !world.canBlockSeeSky(pos.up()) || rand.nextInt(3) != 0) {
 			return;
 		}
 		world.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + 0.5D + rand.nextGaussian() / 8, pos.getY() + 1.1D, pos.getZ() + 0.5D + rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);

@@ -76,10 +76,10 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 				}
 				entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, func_234616_v_()), damage);
 			} else if (result.getType() == RayTraceResult.Type.BLOCK) {
-				BlockPos pos = ((BlockRayTraceResult) result).getPos();
-				if (world.getBlockState(pos.up()).getBlock() == Blocks.FIRE) {
-					world.playSound(null, pos.up(), SoundEvents.ENTITY_GENERIC_BURN, SoundCategory.NEUTRAL, 0.5F, RandHelper.getRandomMinusOneToOne(world.rand) * 0.8F);
-					world.setBlockState(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ()), Blocks.AIR.getDefaultState());
+				BlockPos posUp = ((BlockRayTraceResult) result).getPos().up();
+				if (world.getBlockState(posUp).getBlock() == Blocks.FIRE) {
+					world.playSound(null, posUp, SoundEvents.ENTITY_GENERIC_BURN, SoundCategory.NEUTRAL, 0.5F, RandHelper.getRandomMinusOneToOne(world.rand) * 0.8F);
+					world.setBlockState(posUp, Blocks.AIR.getDefaultState());
 				}
 			}
 			remove();
