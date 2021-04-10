@@ -30,7 +30,9 @@ import java.util.Optional;
 public class MidasTouchstoneItem extends ToggleableItem {
 	private static final Map<Class<? extends Item>, IRepairableItem> REPAIRABLE_ITEMS = new ImmutableMap.Builder<Class<? extends Item>, IRepairableItem>()
 			.put(TieredItem.class, item -> ((TieredItem) item).getTier().equals(ItemTier.GOLD))
+			.put(TieredItem.class, item -> ((TieredItem) item).getTier().equals(ItemTier.NETHERITE))
 			.put(ArmorItem.class, item -> ((ArmorItem) item).getArmorMaterial().equals(ArmorMaterial.GOLD))
+			.put(ArmorItem.class, item -> ((ArmorItem) item).getArmorMaterial().equals(ArmorMaterial.NETHERITE))
 			.build();
 	private static final String GLOWSTONE_TAG = "glowstone";
 
