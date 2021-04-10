@@ -1,6 +1,7 @@
 package xreliquary.reference;
 
 import com.google.common.collect.Lists;
+import net.minecraft.item.Items;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
@@ -17,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static xreliquary.util.RegistryHelper.getItemRegistryName;
 
 @SuppressWarnings("squid:S1192") //no issue repeating the same string literal as they are independent
 public class Settings {
@@ -1145,7 +1148,7 @@ public class Settings {
 
 					torches = builder
 							.comment("List of torches that are supported by the staff in addition to the default minecraft torch")
-							.define("torches", Lists.newArrayList("minecraft:torch"));
+							.define("torches", getDefaultTorches());
 
 					maxCapacityPerItemType = builder
 							.comment("Number of items the staff can store per item type")
@@ -1161,6 +1164,20 @@ public class Settings {
 
 					builder.pop();
 
+				}
+
+				private ArrayList<String> getDefaultTorches() {
+					return Lists.newArrayList(
+							getItemRegistryName(Items.TORCH),
+							getItemRegistryName(Items.SOUL_TORCH),
+							getItemRegistryName(Items.LANTERN),
+							getItemRegistryName(Items.JACK_O_LANTERN),
+							getItemRegistryName(Items.SEA_LANTERN),
+							getItemRegistryName(Items.SOUL_LANTERN),
+							getItemRegistryName(Items.SHROOMLIGHT),
+							getItemRegistryName(Items.GLOWSTONE),
+							getItemRegistryName(Items.END_ROD)
+					);
 				}
 			}
 

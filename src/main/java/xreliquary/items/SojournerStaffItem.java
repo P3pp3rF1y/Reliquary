@@ -29,9 +29,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.reference.Settings;
+import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.NoPlayerBlockItemUseContext;
@@ -179,7 +181,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 	}
 
 	private static ItemStack getItem(CompoundNBT tagItemData) {
-		return new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(tagItemData.getString("Name"))));
+		return new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(tagItemData.getString(ITEM_NAME_TAG))));
 	}
 
 	@Override
@@ -236,6 +238,16 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 			RayTraceResult rayTraceResult = longRayTrace(world, player);
 			if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK) {
 				placeTorch(new ItemUseContext(player, hand, (BlockRayTraceResult) rayTraceResult));
+			} else {
+				ItemStack staff = player.getHeldItem(hand);
+				CompoundNBT torchTag = getCurrentTorchTag(staff);
+				ItemStack torch = getItem(torchTag);
+				int count = torchTag.getInt(QUANTITY_TAG);
+				torch.setCount(Math.min(count, torch.getMaxStackSize()));
+				player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(playerInventory -> {
+					int inserted = InventoryHelper.insertIntoInventory(torch, playerInventory);
+					removeItemFromInternalStorage(staff, torch.getItem(), inserted, false, player);
+				});
 			}
 		}
 		return super.onItemRightClick(world, player, hand);
