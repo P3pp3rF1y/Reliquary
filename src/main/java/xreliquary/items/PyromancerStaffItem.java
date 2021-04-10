@@ -175,7 +175,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 
 	private void shootGhastFireball(PlayerEntity player, ItemStack stack, Vector3d lookVec) {
 		if (removeItemFromInternalStorage(stack, Items.FIRE_CHARGE, getFireChargeCost(), player.world.isRemote, player)) {
-			player.world.playEvent(player, 1016, new BlockPos((int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ()), 0);
+			player.world.playEvent(player, 1016, player.getPosition(), 0);
 			FireballEntity fireball = new FireballEntity(player.world, player, lookVec.x, lookVec.y, lookVec.z);
 			fireball.accelerationX = lookVec.x / 3;
 			fireball.accelerationY = lookVec.y / 3;
@@ -190,7 +190,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 		Vector3d lookVec = player.getLookVec();
 		//blaze fireball!
 		if (removeItemFromInternalStorage(stack, Items.BLAZE_POWDER, getBlazePowderCost(), player.world.isRemote, player)) {
-			player.world.playEvent(player, 1018, new BlockPos((int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ()), 0);
+			player.world.playEvent(player, 1018, player.getPosition(), 0);
 			SmallFireballEntity fireball = new SmallFireballEntity(player.world, player, lookVec.x, lookVec.y, lookVec.z);
 			fireball.accelerationX = lookVec.x / 3;
 			fireball.accelerationY = lookVec.y / 3;
@@ -347,20 +347,13 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 		if (player.isBurning()) {
 			player.extinguish();
 		}
-		int x = (int) Math.floor(player.getPosX());
-		int y = (int) Math.floor(player.getPosY());
-		int z = (int) Math.floor(player.getPosZ());
-		for (int xOff = -3; xOff <= 3; xOff++) {
-			for (int yOff = -3; yOff <= 3; yOff++) {
-				for (int zOff = -3; zOff <= 3; zOff++) {
-					Block block = player.world.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock();
-					if (block == Blocks.FIRE) {
-						player.world.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.AIR.getDefaultState());
-						player.world.playSound(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
-					}
-				}
+		BlockPos.getAllInBoxMutable(player.getPosition().add(-3, -3, -3), player.getPosition().add(3, 3, 3)).forEach(pos -> {
+			Block block = player.world.getBlockState(pos).getBlock();
+			if (block == Blocks.FIRE) {
+				player.world.setBlockState(pos, Blocks.AIR.getDefaultState());
+				player.world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F);
 			}
-		}
+		});
 	}
 
 	private void doFireballAbsorbEffect(ItemStack stack, PlayerEntity player) {

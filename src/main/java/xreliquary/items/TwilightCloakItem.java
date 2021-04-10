@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -46,7 +45,7 @@ public class TwilightCloakItem extends ToggleableItem implements IBaubleItem {
 
 		//toggled effect, makes player invisible based on light level (configurable)
 
-		if (player.world.getLight(new BlockPos(player.getPosition())) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
+		if (player.world.getLight(player.getPosition()) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
 			return;
 		}
 

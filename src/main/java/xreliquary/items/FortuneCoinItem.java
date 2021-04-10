@@ -123,7 +123,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 
 	private void scanForEntitiesInRange(World world, PlayerEntity player, double d) {
 		List<BlockPos> disablePositions = getDisablePositions(world, player.getPosition());
-		List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(player.getPosX() - d, player.getPosY() - d, player.getPosZ() - d, player.getPosX() + d, player.getPosY() + d, player.getPosZ() + d));
+		List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(d));
 		for (ItemEntity item : items) {
 			if (canPickupItem(item, disablePositions, false) && checkForRoom(item.getItem(), player)) {
 				item.setPickupDelay(0);
@@ -133,7 +133,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IB
 				}
 			}
 		}
-		List<ExperienceOrbEntity> xpOrbs = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, new AxisAlignedBB(player.getPosX() - d, player.getPosY() - d, player.getPosZ() - d, player.getPosX() + d, player.getPosY() + d, player.getPosZ() + d));
+		List<ExperienceOrbEntity> xpOrbs = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, player.getBoundingBox().grow(d));
 		for (ExperienceOrbEntity xpOrb : xpOrbs) {
 			if (player.xpCooldown > 0) {
 				player.xpCooldown = 0;

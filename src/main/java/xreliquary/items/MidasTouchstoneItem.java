@@ -5,6 +5,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
@@ -29,10 +31,14 @@ import java.util.Optional;
 
 public class MidasTouchstoneItem extends ToggleableItem {
 	private static final Map<Class<? extends Item>, IRepairableItem> REPAIRABLE_ITEMS = new ImmutableMap.Builder<Class<? extends Item>, IRepairableItem>()
-			.put(TieredItem.class, item -> ((TieredItem) item).getTier().equals(ItemTier.GOLD))
-			.put(TieredItem.class, item -> ((TieredItem) item).getTier().equals(ItemTier.NETHERITE))
-			.put(ArmorItem.class, item -> ((ArmorItem) item).getArmorMaterial().equals(ArmorMaterial.GOLD))
-			.put(ArmorItem.class, item -> ((ArmorItem) item).getArmorMaterial().equals(ArmorMaterial.NETHERITE))
+			.put(TieredItem.class, item -> {
+				IItemTier tier = ((TieredItem) item).getTier();
+				return tier.equals(ItemTier.GOLD) || tier.equals(ItemTier.NETHERITE);
+			})
+			.put(ArmorItem.class, item -> {
+				IArmorMaterial material = ((ArmorItem) item).getArmorMaterial();
+				return material.equals(ArmorMaterial.GOLD) || material.equals(ArmorMaterial.NETHERITE);
+			})
 			.build();
 	private static final String GLOWSTONE_TAG = "glowstone";
 

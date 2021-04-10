@@ -12,7 +12,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -64,7 +63,7 @@ public class SalamanderEyeItem extends ItemBase {
 	}
 
 	private void doFireballEffect(PlayerEntity player) {
-		List<FireballEntity> ghastFireballs = player.world.getEntitiesWithinAABB(FireballEntity.class, new AxisAlignedBB(player.getPosX() - 5, player.getPosY() - 5, player.getPosZ() - 5, player.getPosX() + 5, player.getPosY() + 5, player.getPosZ() + 5));
+		List<FireballEntity> ghastFireballs = player.world.getEntitiesWithinAABB(FireballEntity.class, player.getBoundingBox().grow(5));
 		for (FireballEntity fireball : ghastFireballs) {
 			if (player.getDistance(fireball) < 4) {
 				fireball.remove();
@@ -72,7 +71,7 @@ public class SalamanderEyeItem extends ItemBase {
 			fireball.attackEntityFrom(DamageSource.causePlayerDamage(player), 1);
 			player.world.playSound(fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
 		}
-		List<SmallFireballEntity> blazeFireballs = player.world.getEntitiesWithinAABB(SmallFireballEntity.class, new AxisAlignedBB(player.getPosX() - 3, player.getPosY() - 3, player.getPosZ() - 3, player.getPosX() + 3, player.getPosY() + 3, player.getPosZ() + 3));
+		List<SmallFireballEntity> blazeFireballs = player.world.getEntitiesWithinAABB(SmallFireballEntity.class, player.getBoundingBox().grow(3));
 		for (SmallFireballEntity fireball : blazeFireballs) {
 			for (int particles = 0; particles < 4; particles++) {
 				player.world.addParticle(RedstoneParticleData.REDSTONE_DUST, fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), 0.0D, 1.0D, 1.0D);

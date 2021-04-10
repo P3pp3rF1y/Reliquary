@@ -206,7 +206,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 
 	private void shearEntity(ItemStack stack, PlayerEntity player, Random rand, MobEntity e) {
 		IForgeShearable target = (IForgeShearable) e;
-		BlockPos pos = new BlockPos((int) e.getPosX(), (int) e.getPosY(), (int) e.getPosZ());
+		BlockPos pos = e.getPosition();
 		if (target.isShearable(new ItemStack(Items.SHEARS), e.world, pos)) {
 			List<ItemStack> drops = target.onSheared(player, stack, e.world, pos,
 					EnchantmentHelper.getEnchantmentLevel(net.minecraft.enchantment.Enchantments.FORTUNE, stack));
