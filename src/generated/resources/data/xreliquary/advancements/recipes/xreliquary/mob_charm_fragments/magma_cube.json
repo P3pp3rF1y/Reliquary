@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:mob_charm_fragments/magma_cube"
+    ]
+  },
+  "criteria": {
+    "has_molten_core": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:molten_core"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:mob_charm_fragments/magma_cube"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_molten_core",
+      "has_the_recipe"
+    ]
+  ]
+}

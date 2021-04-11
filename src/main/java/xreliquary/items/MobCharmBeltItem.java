@@ -17,14 +17,13 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.common.gui.ContainerMobCharmBelt;
 import xreliquary.items.util.IBaubleItem;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 
 public class MobCharmBeltItem extends ItemBase implements IBaubleItem {
 	private static final String SLOTS_TAG = "Slots";
 
 	public MobCharmBeltItem() {
-		super(Names.Items.MOB_CHARM_BELT, new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "xreliquary:infernal_claws"
+    },
+    {
+      "item": "xreliquary:emperor_chalice"
+    },
+    {
+      "item": "xreliquary:infernal_tear"
+    },
+    {
+      "item": "xreliquary:molten_core"
+    }
+  ],
+  "result": {
+    "item": "xreliquary:infernal_chalice"
+  }
+}

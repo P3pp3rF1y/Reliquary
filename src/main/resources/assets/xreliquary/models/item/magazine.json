@@ -7,7 +7,7 @@
     "overrides": [
         {
             "predicate": {
-                "potion": 1
+                "xreliquary:potion": 1
             },
             "model": "xreliquary:item/magazine_potion"
         }

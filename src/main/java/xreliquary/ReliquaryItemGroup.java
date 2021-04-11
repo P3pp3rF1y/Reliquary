@@ -15,7 +15,7 @@ class ReliquaryItemGroup extends ItemGroup {
 	@Override
 	public ItemStack createIcon() {
 		if (tabIcon == null) {
-			tabIcon = new ItemStack(ModItems.MERCY_CROSS);
+			tabIcon = new ItemStack(ModItems.MERCY_CROSS.get());
 		}
 		return tabIcon;
 	}

@@ -14,7 +14,7 @@ import xreliquary.init.ModBlocks;
 
 public class FertileLilyPadItem extends BlockItemBase {
 	public FertileLilyPadItem() {
-		super(ModBlocks.FERTILE_LILY_PAD, new Properties().rarity(Rarity.EPIC));
+		super(ModBlocks.FERTILE_LILY_PAD.get(), new Properties().rarity(Rarity.EPIC));
 	}
 
 	@Override

@@ -14,15 +14,15 @@ import xreliquary.reference.Colors;
 
 public class AttractionPotionEntity extends ThrownPotionEntity {
 	public AttractionPotionEntity(EntityType<AttractionPotionEntity> entityType, World world) {
-		super(entityType, world, new ItemStack(ModItems.ATTRACTION_POTION));
+		super(entityType, world, new ItemStack(ModItems.ATTRACTION_POTION.get()));
 	}
 
 	public AttractionPotionEntity(World world, PlayerEntity player) {
-		super(ModEntities.APHRODITE_POTION, world, player, new ItemStack(ModItems.ATTRACTION_POTION));
+		super(ModEntities.APHRODITE_POTION, world, player, new ItemStack(ModItems.ATTRACTION_POTION.get()));
 	}
 
 	public AttractionPotionEntity(World world, double x, double y, double z) {
-		super(ModEntities.APHRODITE_POTION, world, x, y, z, new ItemStack(ModItems.ATTRACTION_POTION));
+		super(ModEntities.APHRODITE_POTION, world, x, y, z, new ItemStack(ModItems.ATTRACTION_POTION.get()));
 	}
 
 	@Override
@@ -64,6 +64,6 @@ public class AttractionPotionEntity extends ThrownPotionEntity {
 
 	@Override
 	public ItemStack getItem() {
-		return new ItemStack(ModItems.ATTRACTION_POTION);
+		return new ItemStack(ModItems.ATTRACTION_POTION.get());
 	}
 }

@@ -30,7 +30,7 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 
 	public AlkahestryChargingRecipeCategory(IGuiHelper guiHelper) {
 		super(guiHelper, UID);
-		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/alkahest_charging.png"), 0, 0, 95, 36);
+		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/backgrounds.png"), 0, 0, 95, 36);
 		localizedName = LanguageHelper.getLocalization("jei." + Reference.MOD_ID + ".recipe.alkahest_charging");
 	}
 
@@ -54,7 +54,7 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 		ingredients.setInputIngredients(recipe.getIngredients());
 		NonNullList<ItemStack> outputs = NonNullList.create();
 		outputs.add(recipe.getRecipeOutput());
-		outputs.add(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME), recipe.getChargeToAdd()));
+		outputs.add(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), recipe.getChargeToAdd()));
 		ingredients.setOutputs(VanillaTypes.ITEM, outputs);
 	}
 

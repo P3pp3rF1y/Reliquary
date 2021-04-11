@@ -22,19 +22,18 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import xreliquary.blocks.tile.AlkahestryAltarTileEntity;
 import xreliquary.items.AlkahestryTomeItem;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
 import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class AlkahestryAltarBlock extends BaseBlock {
+public class AlkahestryAltarBlock extends Block {
 	private static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 	private static final String REDSTONE_TAG = "redstone";
 
 	public AlkahestryAltarBlock() {
-		super(Names.Blocks.ALKAHESTRY_ALTAR, Properties.create(Material.ROCK).hardnessAndResistance(1.5F, 5.0F));
+		super(Properties.create(Material.ROCK).hardnessAndResistance(1.5F, 5.0F));
 		setDefaultState(stateContainer.getBaseState().with(ACTIVE, false));
 	}
 
@@ -70,7 +69,7 @@ public class AlkahestryAltarBlock extends BaseBlock {
 
 	@Override
 	public void animateTick(BlockState state, World world, BlockPos pos, Random rand) {
-		if (Boolean.FALSE.equals(state.get(ACTIVE)) || world.getDayTime() >= 12000 || !world.canBlockSeeSky(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ())) || rand.nextInt(3) != 0) {
+		if (Boolean.FALSE.equals(state.get(ACTIVE)) || world.getDayTime() >= 12000 || !world.canBlockSeeSky(pos.up()) || rand.nextInt(3) != 0) {
 			return;
 		}
 		world.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + 0.5D + rand.nextGaussian() / 8, pos.getY() + 1.1D, pos.getZ() + 0.5D + rand.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);

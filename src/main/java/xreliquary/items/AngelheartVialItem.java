@@ -20,14 +20,15 @@ import xreliquary.util.InventoryHelper;
 
 public class AngelheartVialItem extends ItemBase {
 	public AngelheartVialItem() {
-		super("angelheart_vial", new Properties());
+		super(new Properties());
 
 		CommonEventHandler.registerPlayerDeathHandler(new IPlayerDeathHandler() {
 			@Override
 			public boolean canApply(PlayerEntity player, LivingDeathEvent event) {
-				return InventoryHelper.playerHasItem(player, ModItems.ANGELHEART_VIAL);
+				return InventoryHelper.playerHasItem(player, ModItems.ANGELHEART_VIAL.get());
 			}
 
+			@SuppressWarnings({"java:S2440", "InstantiationOfUtilityClass"}) //instantiating the packet for its type to be used as identifier for the packet
 			@Override
 			public boolean apply(PlayerEntity player, LivingDeathEvent event) {
 				decreaseAngelHeartByOne(player);
@@ -66,7 +67,7 @@ public class AngelheartVialItem extends ItemBase {
 
 	@Override
 	public ItemStack getContainerItem(ItemStack stack) {
-		return new ItemStack(ModItems.EMPTY_POTION_VIAL);
+		return new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 	}
 
 	// returns an empty vial when used in crafting recipes.
@@ -80,7 +81,7 @@ public class AngelheartVialItem extends ItemBase {
 			if (player.inventory.mainInventory.get(slot).isEmpty()) {
 				continue;
 			}
-			if (player.inventory.mainInventory.get(slot).getItem() == ModItems.ANGELHEART_VIAL) {
+			if (player.inventory.mainInventory.get(slot).getItem() == ModItems.ANGELHEART_VIAL.get()) {
 				player.inventory.decrStackSize(slot, 1);
 				return;
 			}

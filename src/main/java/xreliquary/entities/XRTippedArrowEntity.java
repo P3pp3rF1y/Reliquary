@@ -122,7 +122,7 @@ public class XRTippedArrowEntity extends AbstractArrowEntity {
 		if (effects.isEmpty()) {
 			return new ItemStack(Items.ARROW);
 		} else {
-			ItemStack itemstack = new ItemStack(ModItems.TIPPED_ARROW);
+			ItemStack itemstack = new ItemStack(ModItems.TIPPED_ARROW.get());
 			XRPotionHelper.addPotionEffectsToStack(itemstack, effects);
 			return itemstack;
 		}

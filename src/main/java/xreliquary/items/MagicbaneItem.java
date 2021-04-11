@@ -14,13 +14,11 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.Reliquary;
-import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nullable;
@@ -29,7 +27,6 @@ import java.util.List;
 public class MagicbaneItem extends SwordItem {
 	public MagicbaneItem() {
 		super(ItemTier.GOLD, 3, -2.4f, new Properties().maxDamage(16).setNoRepair().group(Reliquary.ITEM_GROUP).rarity(Rarity.EPIC));
-		setRegistryName(new ResourceLocation(Reference.MOD_ID, "magicbane"));
 	}
 
 	@Override

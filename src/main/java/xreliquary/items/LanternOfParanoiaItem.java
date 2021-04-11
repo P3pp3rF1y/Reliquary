@@ -8,7 +8,6 @@ import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.particles.ParticleTypes;
@@ -20,8 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -33,12 +32,16 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class LanternOfParanoiaItem extends ToggleableItem {
+	private static final int SUCCESS_COOLDOWN = 4;
+	private static final int NOTHING_FOUND_COOLDOWN = 10;
+
 	private static final Map<String, Block> TORCH_BLOCKS = new HashMap<>();
 
 	public LanternOfParanoiaItem() {
-		super("lantern_of_paranoia", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override
@@ -52,27 +55,43 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (!isEnabled(stack) || world.isRemote) {
+		if (world.isRemote || !isEnabled(stack) || isInCooldown(stack, world)) {
 			return;
 		}
 		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
-			BlockPos.getAllInBox(player.getPosition().add(-getRange(), -getRange() / 2, -getRange()), player.getPosition().add(getRange(), getRange() / 2, getRange()))
-					.anyMatch(pos -> {
-						int lightLevel = player.world.getLightFor(LightType.BLOCK, pos);
-						if (lightLevel > Settings.COMMON.items.lanternOfParanoia.minLightLevel.get()) {
-							return false;
-						}
-
-						BlockState state = world.getBlockState(pos);
-						Block block = state.getBlock();
-						BlockItemUseContext context = new BlockItemUseContext(player, Hand.MAIN_HAND, ItemStack.EMPTY, new BlockRayTraceResult(Vector3d.copyCenteredHorizontally(pos), Direction.UP, pos, false));
-						if (block instanceof FlowingFluidBlock || (!block.isAir(state, world, pos) && !state.isReplaceable(BlockItemUseContext.func_221536_a(context, pos, Direction.DOWN)))) {
-							return false;
-						}
-						return tryToPlaceTorchAround(stack, pos, player, world);
-					});
+			if (getPositionsInRange(player).anyMatch(pos -> tryToPlaceAtPos(stack, world, player, pos))) {
+				setCooldown(stack, world, SUCCESS_COOLDOWN);
+			} else {
+				setCooldown(stack, world, NOTHING_FOUND_COOLDOWN);
+			}
 		}
+	}
+
+	private Stream<BlockPos> getPositionsInRange(PlayerEntity player) {
+		return BlockPos.getAllInBox(player.getPosition().add(-getRange(), -getRange() / 2, -getRange()), player.getPosition().add(getRange(), getRange() / 2, getRange()));
+	}
+
+	private boolean tryToPlaceAtPos(ItemStack stack, World world, PlayerEntity player, BlockPos pos) {
+		int lightLevel = player.world.getLightFor(LightType.BLOCK, pos);
+		if (lightLevel > Settings.COMMON.items.lanternOfParanoia.minLightLevel.get()) {
+			return false;
+		}
+
+		BlockState state = world.getBlockState(pos);
+		Block block = state.getBlock();
+		BlockItemUseContext context = new BlockItemUseContext(player, Hand.MAIN_HAND, ItemStack.EMPTY, new BlockRayTraceResult(Vector3d.copyCenteredHorizontally(pos), Direction.UP, pos, false));
+		if (isBadPlacementToTry(world, pos, state, block, context)) {
+			return false;
+		}
+		return tryToPlaceTorchAround(stack, pos, player, world);
+	}
+
+	private boolean isBadPlacementToTry(World world, BlockPos pos, BlockState state, Block block, BlockItemUseContext context) {
+		return block instanceof FlowingFluidBlock
+				|| world.getBlockState(pos.down()).getBlock().isVariableOpacity()
+				|| !state.getFluidState().isEmpty()
+				|| (!block.isAir(state, world, pos) && !state.isReplaceable(BlockItemUseContext.func_221536_a(context, pos, Direction.DOWN)));
 	}
 
 	private boolean isBlockBlockingView(World world, PlayerEntity player, BlockPos pos) {
@@ -100,7 +119,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			return false;
 		}
 
-		for (String torchRegistryName : Settings.COMMON.items.sojournerStaff.torches.get()) {
+		for (String torchRegistryName : Settings.COMMON.items.lanternOfParanoia.torches.get()) {
 			Block torch = getTorchBlock(torchRegistryName);
 			if (tryToPlaceTorchBlock(stack, pos, player, world, torch)) {
 				return true;
@@ -136,11 +155,10 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			return true;
 		}
 		for (int slot = 0; slot < player.inventory.getSizeInventory(); slot++) {
-			if (player.inventory.getStackInSlot(slot).getItem() != ModItems.SOJOURNER_STAFF) {
+			if (player.inventory.getStackInSlot(slot).getItem() != ModItems.SOJOURNER_STAFF.get()) {
 				continue;
 			}
-			//noinspection ConstantConditions
-			if (SojournerStaffItem.removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch.getRegistryName().toString(), 1, player)) {
+			if (ModItems.SOJOURNER_STAFF.get().removeItemFromInternalStorage(player.inventory.getStackInSlot(slot), torch, 1, false, player)) {
 				return true;
 			}
 		}

@@ -7,13 +7,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -24,9 +22,7 @@ import xreliquary.common.gui.ContainerAlkahestTome;
 import xreliquary.crafting.AlkahestryChargingRecipe;
 import xreliquary.crafting.AlkahestryRecipeRegistry;
 import xreliquary.init.ModSounds;
-import xreliquary.reference.Names;
 import xreliquary.reference.Settings;
-import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
@@ -35,7 +31,7 @@ import java.util.List;
 
 public class AlkahestryTomeItem extends ToggleableItem {
 	public AlkahestryTomeItem() {
-		super(Names.Items.ALKAHESTRY_TOME, new Properties().setNoRepair().rarity(Rarity.EPIC).maxStackSize(1));
+		super(new Properties().setNoRepair().rarity(Rarity.EPIC).maxStackSize(1), Settings.COMMON.disable.disableAlkahestry::get);
 	}
 
 	@Override
@@ -75,7 +71,7 @@ public class AlkahestryTomeItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack tome, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote || !isEnabled(tome)) {
+		if (world.isRemote || world.getGameTime() % 10 != 0 || !isEnabled(tome) || getCharge(tome) == getChargeLimit()) {
 			return;
 		}
 
@@ -87,14 +83,9 @@ public class AlkahestryTomeItem extends ToggleableItem {
 		}
 
 		for (AlkahestryChargingRecipe recipe : AlkahestryRecipeRegistry.getChargingRecipes()) {
-			if (getCharge(tome) + recipe.getChargeToAdd() <= getChargeLimit() && consumeItem(recipe, player)) {
-				addCharge(tome, recipe.getChargeToAdd());
-			}
+			consumeAndCharge(player, getChargeLimit() - getCharge(tome), recipe.getChargeToAdd(),
+					ist -> recipe.getChargingIngredient().test(ist), 16, chargeToAdd -> addCharge(tome, chargeToAdd));
 		}
-	}
-
-	private boolean consumeItem(AlkahestryChargingRecipe recipe, PlayerEntity player) {
-		return InventoryHelper.consumeItem(is -> recipe.getChargingIngredient().test(is), player);
 	}
 
 	@Override
@@ -104,7 +95,8 @@ public class AlkahestryTomeItem extends ToggleableItem {
 				ImmutableMap.of("chargeAmount", String.valueOf(getCharge(tome)), "chargeLimit", String.valueOf(getChargeLimit())), tooltip);
 
 		if (isEnabled(tome)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + AlkahestryRecipeRegistry.getDrainRecipe().getRecipeOutput().getDisplayName().getString()), tooltip);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + AlkahestryRecipeRegistry.getDrainRecipe()
+					.map(r -> r.getRecipeOutput().getDisplayName().getString()).orElse("")), tooltip);
 		} else {
 			LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
 		}
@@ -113,16 +105,6 @@ public class AlkahestryTomeItem extends ToggleableItem {
 	@Override
 	protected boolean hasMoreInformation(ItemStack stack) {
 		return true;
-	}
-
-	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (!isInGroup(group)) {
-			return;
-		}
-
-		ItemStack stack = new ItemStack(this);
-		items.add(stack);
 	}
 
 	public static int getChargeLimit() {

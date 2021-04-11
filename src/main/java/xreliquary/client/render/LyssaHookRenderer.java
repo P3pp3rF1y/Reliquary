@@ -51,7 +51,7 @@ public class LyssaHookRenderer extends EntityRenderer<LyssaBobberEntity> {
 
 			int i = playerentity.getPrimaryHand() == HandSide.RIGHT ? 1 : -1;
 			ItemStack itemstack = playerentity.getHeldItemMainhand();
-			if (itemstack.getItem() != ModItems.ROD_OF_LYSSA) {
+			if (itemstack.getItem() != ModItems.ROD_OF_LYSSA.get()) {
 				i = -i;
 			}
 

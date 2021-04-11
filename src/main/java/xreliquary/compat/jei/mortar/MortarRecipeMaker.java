@@ -21,7 +21,7 @@ public class MortarRecipeMaker {
 
 			List<ItemStack> inputs = essence.getIngredients().stream().map(PotionIngredient::getItem).collect(Collectors.toList());
 
-			ItemStack output = new ItemStack(ModItems.POTION_ESSENCE, 1);
+			ItemStack output = new ItemStack(ModItems.POTION_ESSENCE.get(), 1);
 			XRPotionHelper.addPotionEffectsToStack(output, essence.getEffects());
 
 			recipes.add(new MortarRecipeJEI(inputs, output));

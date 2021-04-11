@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.items.util.IPotionItem;
+import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
@@ -20,12 +21,12 @@ import java.util.List;
 public class PotionEssenceItem extends ItemBase implements IPotionItem {
 
 	public PotionEssenceItem() {
-		super("potion_essence", new Properties());
+		super(new Properties());
 	}
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (!isInGroup(group)) {
+		if (!isInGroup(group) || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			return;
 		}
 

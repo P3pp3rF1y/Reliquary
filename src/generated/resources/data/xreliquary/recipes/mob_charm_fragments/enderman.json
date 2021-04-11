@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "SPS",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "xreliquary:nebulous_heart"
+    },
+    "S": {
+      "tag": "forge:ender_pearls"
+    }
+  },
+  "result": {
+    "item": "xreliquary:mob_charm_fragment",
+    "nbt": "{entity:\"minecraft:enderman\"}"
+  }
+}

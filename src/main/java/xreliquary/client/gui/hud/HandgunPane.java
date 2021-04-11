@@ -19,7 +19,7 @@ public class HandgunPane extends Component {
 	public HandgunPane(Hand hand) {
 		this.hand = hand;
 
-		magazinePane = new ItemStackPane(ModItems.EMPTY_MAGAZINE);
+		magazinePane = new ItemStackPane(ModItems.EMPTY_MAGAZINE.get());
 
 		for (int i = 0; i < 8; i++) {
 			bulletPanes[i] = new ItemStackPane(ItemStack.EMPTY) {
@@ -37,9 +37,9 @@ public class HandgunPane extends Component {
 		};
 
 		if (hand == Hand.OFF_HAND) {
-			mainPane = Box.createHorizontal(Box.Alignment.MIDDLE, new ItemStackPane(ModItems.HANDGUN), magazinePane, bulletsPane);
+			mainPane = Box.createHorizontal(Box.Alignment.MIDDLE, new ItemStackPane(ModItems.HANDGUN.get()), magazinePane, bulletsPane);
 		} else {
-			mainPane = Box.createHorizontal(Box.Alignment.MIDDLE, bulletsPane, magazinePane, new ItemStackPane(ModItems.HANDGUN));
+			mainPane = Box.createHorizontal(Box.Alignment.MIDDLE, bulletsPane, magazinePane, new ItemStackPane(ModItems.HANDGUN.get()));
 		}
 	}
 
@@ -64,7 +64,7 @@ public class HandgunPane extends Component {
 	}
 
 	private boolean holdsHandgun() {
-		return Minecraft.getInstance().player.getHeldItem(hand).getItem() == ModItems.HANDGUN;
+		return Minecraft.getInstance().player.getHeldItem(hand).getItem() == ModItems.HANDGUN.get();
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class HandgunPane extends Component {
 			return;
 		}
 
-		ItemStack bullets = ModItems.HANDGUN.getBulletStack(handgun);
+		ItemStack bullets = ModItems.HANDGUN.get().getBulletStack(handgun);
 
 		for (int i = 0; i < 8; i++) {
 			if (i < bullets.getCount()) {
@@ -85,7 +85,7 @@ public class HandgunPane extends Component {
 			}
 		}
 		if (bullets.isEmpty() && getTime() % 32 > 16) {
-			magazinePane.setItem(ModItems.EMPTY_MAGAZINE);
+			magazinePane.setItem(ModItems.EMPTY_MAGAZINE.get());
 		} else {
 			magazinePane.setItemStack(ItemStack.EMPTY);
 		}

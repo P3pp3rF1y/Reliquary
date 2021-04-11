@@ -4,23 +4,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
-import net.minecraftforge.registries.ObjectHolder;
 import xreliquary.init.ModItems;
 import xreliquary.items.MobCharmRegistry;
-import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
+
+import static xreliquary.init.ModItems.MOB_CHAR_BELT_CONTAINER_TYPE;
 
 public class ContainerMobCharmBelt extends Container {
-	@ObjectHolder(Reference.MOD_ID + ":" + Names.Items.MOB_CHARM_BELT)
-	public static ContainerType<ContainerMobCharmBelt> TYPE;
-
 	public ContainerMobCharmBelt(int windowId, PlayerInventory playerInventory, ItemStack belt) {
-		super(TYPE, windowId);
+		super(MOB_CHAR_BELT_CONTAINER_TYPE.get(), windowId);
 		this.belt = belt;
 
 		for (int i = 0; i < getFirstPlayerInventoryIndex(); i++) {
@@ -54,7 +49,7 @@ public class ContainerMobCharmBelt extends Container {
 		ItemStack slotStack = slot == null ? ItemStack.EMPTY : slot.getStack();
 
 		//prevent moving belt out of its slot
-		if (slot != null && !slotStack.isEmpty() && slotStack.getItem() == ModItems.MOB_CHARM_BELT && slotStack == player.getHeldItemMainhand()) {
+		if (slot != null && !slotStack.isEmpty() && slotStack.getItem() == ModItems.MOB_CHARM_BELT.get() && slotStack == player.getHeldItemMainhand()) {
 			return ItemStack.EMPTY;
 		}
 
@@ -97,7 +92,7 @@ public class ContainerMobCharmBelt extends Container {
 
 				slot.onSlotChange(originalStack, copiedStack);
 			} else if (index < playerInvIndex + 36) {
-				if (originalStack.getItem() == ModItems.MOB_CHARM) {
+				if (originalStack.getItem() == ModItems.MOB_CHARM.get()) {
 					if (!mergeItemStack(originalStack, 0, playerInvIndex, false)) {
 						return ItemStack.EMPTY;
 					}

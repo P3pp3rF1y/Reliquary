@@ -58,13 +58,32 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 		setTotalAmount(BONEMEAL_SLOT, boneMealCount);
 	}
 
-	public Optional<Integer> insertPlantable(ItemStack stack) {
+	public Optional<PlantableSlotInserted> insertPlantable(ItemStack stack) {
 		for (int slot = 1; slot < getSlots(); slot++) {
-			if (insertItem(slot, stack, false).isEmpty()) {
-				return Optional.of(getBigStackSlot(slot));
+			ItemStack result = insertItem(slot, stack, false);
+			if (result.getCount() < stack.getCount()) {
+				return Optional.of(new PlantableSlotInserted(getBigStackSlot(slot), stack.getCount() - result.getCount()));
 			}
 		}
 		return Optional.empty();
+	}
+
+	public static class PlantableSlotInserted {
+		private final int slot;
+		private final int countInserted;
+
+		public PlantableSlotInserted(int slot, int countInserted) {
+			this.slot = slot;
+			this.countInserted = countInserted;
+		}
+
+		public int getSlot() {
+			return slot;
+		}
+
+		public int getCountInserted() {
+			return countInserted;
+		}
 	}
 
 	public int getCountPlantable() {

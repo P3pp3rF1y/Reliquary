@@ -10,6 +10,7 @@ import xreliquary.client.gui.components.ItemStackCountPane;
 import xreliquary.util.InventoryHelper;
 
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public class DynamicChargePane extends Component {
 	private final Item mainItem;
@@ -17,7 +18,7 @@ public class DynamicChargePane extends Component {
 	private final Function<ItemStack, ItemStack> getChargeItem;
 	private final Function<ItemStack, Integer> getCount;
 
-	public DynamicChargePane(Item mainItem, Function<ItemStack, ItemStack> getChargeItem, Function<ItemStack, Integer> getCount) {
+	public DynamicChargePane(Item mainItem, UnaryOperator<ItemStack> getChargeItem, Function<ItemStack, Integer> getCount) {
 		this.mainItem = mainItem;
 		this.getChargeItem = getChargeItem;
 		this.getCount = getCount;
@@ -43,6 +44,7 @@ public class DynamicChargePane extends Component {
 	@Override
 	public void renderInternal(MatrixStack matrixStack, int x, int y) {
 		PlayerEntity player = Minecraft.getInstance().player;
+		//noinspection ConstantConditions - player is non null at this point
 		ItemStack itemStack = InventoryHelper.getCorrectItemFromEitherHand(player, mainItem);
 
 		if (itemStack.isEmpty()) {

@@ -1,37 +1,50 @@
 package xreliquary.crafting;
 
-import com.google.common.collect.Lists;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.AddReloadListenerEvent;
 
-import java.util.List;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class AlkahestryRecipeRegistry {
 	private AlkahestryRecipeRegistry() {}
 
-	private static AlkahestryDrainRecipe drainRecipe;
-	private static final List<AlkahestryCraftingRecipe> craftingRecipes = Lists.newArrayList();
-	private static final List<AlkahestryChargingRecipe> chargingRecipes = Lists.newArrayList();
+	@Nullable
+	private static AlkahestryDrainRecipe drainRecipe = null;
+	private static final Map<ResourceLocation, AlkahestryCraftingRecipe> craftingRecipes = new LinkedHashMap<>();
+	private static final Map<ResourceLocation, AlkahestryChargingRecipe> chargingRecipes = new LinkedHashMap<>();
 
 	static void setDrainRecipe(AlkahestryDrainRecipe drainRecipe) {
 		AlkahestryRecipeRegistry.drainRecipe = drainRecipe;
 	}
 
-	public static AlkahestryDrainRecipe getDrainRecipe() {
-		return drainRecipe;
+	public static Optional<AlkahestryDrainRecipe> getDrainRecipe() {
+		return Optional.ofNullable(drainRecipe);
 	}
 
-	public static List<AlkahestryCraftingRecipe> getCraftingRecipes() {
-		return craftingRecipes;
+	public static Collection<AlkahestryCraftingRecipe> getCraftingRecipes() {
+		return craftingRecipes.values();
 	}
 
 	static void registerCraftingRecipe(AlkahestryCraftingRecipe alkahestryCraftingRecipe) {
-		craftingRecipes.add(alkahestryCraftingRecipe);
+		craftingRecipes.put(alkahestryCraftingRecipe.getId(), alkahestryCraftingRecipe);
 	}
 
 	static void registerChargingRecipe(AlkahestryChargingRecipe alkahestryChargingRecipe) {
-		chargingRecipes.add(alkahestryChargingRecipe);
+		chargingRecipes.put(alkahestryChargingRecipe.getId(), alkahestryChargingRecipe);
 	}
 
-	public static List<AlkahestryChargingRecipe> getChargingRecipes() {
-		return chargingRecipes;
+	public static Collection<AlkahestryChargingRecipe> getChargingRecipes() {
+		return chargingRecipes.values();
+	}
+
+	@SuppressWarnings("unused") //parameter needed for addListener to recognize which event to subscribe this to
+	public static void onResourceReload(AddReloadListenerEvent event) {
+		drainRecipe = null;
+		craftingRecipes.clear();
+		chargingRecipes.clear();
 	}
 }

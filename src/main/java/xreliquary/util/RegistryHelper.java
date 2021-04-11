@@ -2,6 +2,9 @@ package xreliquary.util;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistryEntry;
+
+import java.util.Objects;
 
 public class RegistryHelper {
 	private RegistryHelper() {}
@@ -13,5 +16,11 @@ public class RegistryHelper {
 		}
 
 		return "";
+	}
+
+	public static ResourceLocation getRegistryName(ForgeRegistryEntry<?> registryEntry) {
+		ResourceLocation registryName = registryEntry.getRegistryName();
+		Objects.requireNonNull(registryName);
+		return registryName;
 	}
 }

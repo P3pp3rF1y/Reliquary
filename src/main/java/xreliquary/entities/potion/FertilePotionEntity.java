@@ -14,15 +14,15 @@ import xreliquary.reference.Colors;
 
 public class FertilePotionEntity extends ThrownPotionEntity {
 	public FertilePotionEntity(EntityType<FertilePotionEntity> entityType, World world) {
-		super(entityType, world, new ItemStack(ModItems.FERTILE_POTION));
+		super(entityType, world, new ItemStack(ModItems.FERTILE_POTION.get()));
 	}
 
 	public FertilePotionEntity(World world, PlayerEntity player) {
-		super(ModEntities.FERTILE_POTION, world, player, new ItemStack(ModItems.FERTILE_POTION));
+		super(ModEntities.FERTILE_POTION, world, player, new ItemStack(ModItems.FERTILE_POTION.get()));
 	}
 
 	public FertilePotionEntity(World world, double x, double y, double z) {
-		super(ModEntities.FERTILE_POTION, world, x, y, z, new ItemStack(ModItems.FERTILE_POTION));
+		super(ModEntities.FERTILE_POTION, world, x, y, z, new ItemStack(ModItems.FERTILE_POTION.get()));
 	}
 
 	@Override
@@ -52,6 +52,6 @@ public class FertilePotionEntity extends ThrownPotionEntity {
 
 	@Override
 	public ItemStack getItem() {
-		return new ItemStack(ModItems.FERTILE_POTION);
+		return new ItemStack(ModItems.FERTILE_POTION.get());
 	}
 }

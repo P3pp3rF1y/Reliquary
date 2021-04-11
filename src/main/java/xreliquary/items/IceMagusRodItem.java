@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.Rarity;
+import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -18,7 +19,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.entities.SpecialSnowballEntity;
 import xreliquary.reference.Settings;
-import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
@@ -26,10 +26,11 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class IceMagusRodItem extends ToggleableItem {
+	public static final RedstoneParticleData ICE_PARTICLE = new RedstoneParticleData(99 / 255F, 196 / 255F, 253 / 255F, 1);
 	private static final String SNOWBALLS_TAG = "snowballs";
 
 	public IceMagusRodItem() {
-		this("ice_magus_rod");
+		super(new Properties().maxStackSize(1).setNoRepair());
 	}
 
 	@Override
@@ -45,10 +46,6 @@ public class IceMagusRodItem extends ToggleableItem {
 	@Override
 	protected boolean hasMoreInformation(ItemStack stack) {
 		return true;
-	}
-
-	IceMagusRodItem(String langName) {
-		super(langName, new Properties().maxStackSize(1).setNoRepair());
 	}
 
 	private int getSnowballCap() {
@@ -90,16 +87,13 @@ public class IceMagusRodItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack rod, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote) {
+		if (world.isRemote || world.getGameTime() % 10 != 0 || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-		if (!(entity instanceof PlayerEntity)) {
-			return;
-		}
-
-		if (isEnabled(rod) && NBTHelper.getInt(SNOWBALLS_TAG, rod) + getSnowballWorth() <= getSnowballCap()
-				&& InventoryHelper.consumeItem(new ItemStack(Items.SNOWBALL), (PlayerEntity) entity)) {
-			NBTHelper.putInt(SNOWBALLS_TAG, rod, NBTHelper.getInt(SNOWBALLS_TAG, rod) + getSnowballWorth());
+		if (isEnabled(rod)) {
+			int snowCharge = NBTHelper.getInt(SNOWBALLS_TAG, rod);
+			consumeAndCharge((PlayerEntity) entity, getSnowballCap() - snowCharge, getSnowballWorth(), Items.SNOWBALL, 16,
+					chargeToAdd-> NBTHelper.putInt(SNOWBALLS_TAG, rod, snowCharge + chargeToAdd));
 		}
 	}
 }

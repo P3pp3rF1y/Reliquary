@@ -5,6 +5,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
@@ -29,13 +31,19 @@ import java.util.Optional;
 
 public class MidasTouchstoneItem extends ToggleableItem {
 	private static final Map<Class<? extends Item>, IRepairableItem> REPAIRABLE_ITEMS = new ImmutableMap.Builder<Class<? extends Item>, IRepairableItem>()
-			.put(TieredItem.class, item -> ((TieredItem) item).getTier().equals(ItemTier.GOLD))
-			.put(ArmorItem.class, item -> ((ArmorItem) item).getArmorMaterial().equals(ArmorMaterial.GOLD))
+			.put(TieredItem.class, item -> {
+				IItemTier tier = ((TieredItem) item).getTier();
+				return tier.equals(ItemTier.GOLD) || tier.equals(ItemTier.NETHERITE);
+			})
+			.put(ArmorItem.class, item -> {
+				IArmorMaterial material = ((ArmorItem) item).getArmorMaterial();
+				return material.equals(ArmorMaterial.GOLD) || material.equals(ArmorMaterial.NETHERITE);
+			})
 			.build();
 	private static final String GLOWSTONE_TAG = "glowstone";
 
 	public MidasTouchstoneItem() {
-		super("midas_touchstone", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override
@@ -60,28 +68,21 @@ public class MidasTouchstoneItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity e, int i, boolean f) {
-		if (world.isRemote) {
+		if (world.isRemote || world.getGameTime() % 10 != 0 || !(e instanceof PlayerEntity)) {
 			return;
 		}
-		PlayerEntity player;
-		if (e instanceof PlayerEntity) {
-			player = (PlayerEntity) e;
-		} else {
-			return;
+		PlayerEntity player = (PlayerEntity) e;
+
+		if (isEnabled(stack)) {
+			int glowstoneCharge = NBTHelper.getInt(GLOWSTONE_TAG, stack);
+			consumeAndCharge(player, getGlowstoneLimit() - glowstoneCharge, getGlowStoneWorth(), Items.GLOWSTONE_DUST, 16,
+					chargeToAdd -> NBTHelper.putInt(GLOWSTONE_TAG, stack, glowstoneCharge + chargeToAdd));
 		}
 
-		//don't drain glowstone if it isn't activated.
-		if (isEnabled(stack) && NBTHelper.getInt(GLOWSTONE_TAG, stack) + getGlowStoneWorth() <= getGlowstoneLimit() && InventoryHelper.consumeItem(new ItemStack(Items.GLOWSTONE_DUST), player)) {
-			NBTHelper.putInt(GLOWSTONE_TAG, stack, NBTHelper.getInt(GLOWSTONE_TAG, stack) + getGlowStoneWorth());
-		}
-
-		if (world.getGameTime() % 4 == 0) {
-			doRepairAndDamageTouchstone(stack, player);
-		}
+		doRepairAndDamageTouchstone(stack, player);
 	}
 
 	private void doRepairAndDamageTouchstone(ItemStack touchstone, PlayerEntity player) {
-		//list of customizable items added through configs that can be repaired by the touchstone.
 		List<String> goldItems = Settings.COMMON.items.midasTouchstone.goldItems.get();
 
 		InventoryHelper.getItemHandlerFrom(player, null).ifPresent(itemHandler -> {
@@ -112,7 +113,8 @@ public class MidasTouchstoneItem extends ToggleableItem {
 
 	private void repairItem(ItemStack stack, ItemStack touchstone, PlayerEntity player) {
 		if (reduceTouchStoneCharge(touchstone, player)) {
-			stack.setDamage(stack.getDamage() - 1);
+			int damage = stack.getDamage();
+			stack.setDamage(damage - Math.min(damage, 10));
 		}
 	}
 

@@ -53,12 +53,12 @@ public class BlazeShotEntity extends ShotEntityBase {
 	protected void onImpact(RayTraceResult result) {
 		if (result.getType() == RayTraceResult.Type.ENTITY) {
 			Entity entityHit = ((EntityRayTraceResult) result).getEntity();
-			if (entityHit == shootingEntity || !(entityHit instanceof LivingEntity)) {
+			if (entityHit == func_234616_v_() || !(entityHit instanceof LivingEntity)) {
 				return;
 			}
 			onImpact((LivingEntity) entityHit);
 		} else if (result.getType() == RayTraceResult.Type.BLOCK) {
-			if (shootingEntity == null) {
+			if (!(func_234616_v_() instanceof PlayerEntity)) {
 				return;
 			}
 
@@ -67,7 +67,7 @@ public class BlazeShotEntity extends ShotEntityBase {
 
 			BlockPos fireSpawnPos = blockResult.getPos().offset(blockResult.getFace());
 
-			if (shootingEntity.canPlayerEdit(fireSpawnPos, blockResult.getFace(), new ItemStack(Items.FLINT_AND_STEEL)) && world.isAirBlock(fireSpawnPos)) {
+			if (((PlayerEntity) func_234616_v_()).canPlayerEdit(fireSpawnPos, blockResult.getFace(), new ItemStack(Items.FLINT_AND_STEEL)) && world.isAirBlock(fireSpawnPos)) {
 				world.setBlockState(fireSpawnPos, Blocks.FIRE.getDefaultState());
 			}
 		}

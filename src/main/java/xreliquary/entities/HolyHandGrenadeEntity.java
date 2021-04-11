@@ -85,7 +85,7 @@ public class HolyHandGrenadeEntity extends ThrowableEntity implements IRendersAs
 
 	@Override
 	public ItemStack getItem() {
-		return new ItemStack(ModItems.HOLY_HAND_GRENADE);
+		return new ItemStack(ModItems.HOLY_HAND_GRENADE.get());
 	}
 
 

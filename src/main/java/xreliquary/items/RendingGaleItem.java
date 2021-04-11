@@ -32,26 +32,29 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import xreliquary.items.util.FilteredBigItemStack;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.reference.Settings;
-import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
+import xreliquary.util.LogHelper;
 import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 
 public class RendingGaleItem extends ToggleableItem implements ILeftClickableItem {
 	private static final String FLIGHT_TAG = "flight";
 	private static final String COUNT_TAG = "count";
+	private static final int NO_DAMAGE_ELYTRA_TICKS = 3;
 
 	public RendingGaleItem() {
-		super("rending_gale", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override
@@ -105,7 +108,7 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 
 		BlockRayTraceResult rayTrace = rayTrace(player.world, player, RayTraceContext.FluidMode.NONE);
 
-		Vector3d motion = player.getLookVec();
+		Vector3d motion = player.getLookVec().mul(2, 2, 2);
 		if (rayTrace.getType() == RayTraceResult.Type.BLOCK) {
 			double distance = player.getPosition().distanceSq(rayTrace.getPos());
 			if (distance < 40) {
@@ -113,23 +116,38 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 				motion = player.getLookVec().mul(slowDownFactor, slowDownFactor, slowDownFactor);
 			}
 		}
-
 		player.setMotion(motion);
-		player.move(MoverType.SELF, player.getMotion());
-
 		player.fallDistance = 0.0F;
+
+		if (player.isElytraFlying()) {
+			preventElytraDamage(player);
+		}
+	}
+
+	private static final Field TICKS_ELYTRA_FLYING = ObfuscationReflectionHelper.findField(LivingEntity.class, "field_184629_bo");
+
+	@SuppressWarnings("java:S3011") //the reflection accessibility bypass here is the only way one can set the value
+	private static void preventElytraDamage(PlayerEntity player) {
+		try {
+			TICKS_ELYTRA_FLYING.set(player, NO_DAMAGE_ELYTRA_TICKS);
+		}
+		catch (IllegalAccessException e) {
+			LogHelper.error("Error setting ticksElytraFlying on player ", e);
+		}
 	}
 
 	@Override
 	public void inventoryTick(ItemStack rendingGale, World world, Entity entity, int slotNumber, boolean isSelected) {
-		if (world.isRemote || !(entity instanceof PlayerEntity)) {
+		if (world.isRemote || !(entity instanceof PlayerEntity) || world.getGameTime() % 10 != 0) {
 			return;
 		}
 
 		PlayerEntity player = (PlayerEntity) entity;
 
-		if (isEnabled(rendingGale) && getFeatherCount(rendingGale) + getFeathersWorth() <= getChargeLimit() && InventoryHelper.consumeItem(new ItemStack(Items.FEATHER), player)) {
-			setFeatherCount(rendingGale, getFeatherCount(rendingGale) + getFeathersWorth(), !player.isHandActive());
+		if (isEnabled(rendingGale)) {
+			int currentFeatherCharge = getFeatherCount(rendingGale);
+			consumeAndCharge(player, getChargeLimit() - currentFeatherCharge, getFeathersWorth(), Items.FEATHER, 16,
+					chargeToAdd -> setFeatherCount(rendingGale, currentFeatherCharge + chargeToAdd, !player.isHandActive()));
 		}
 	}
 
@@ -192,13 +210,13 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
+		ItemStack rendingGale = player.getHeldItem(hand);
 		if (player.isSneaking()) {
 			super.onItemRightClick(world, player, hand);
 		} else {
 			player.setActiveHand(hand);
 		}
-		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+		return new ActionResult<>(ActionResultType.SUCCESS, rendingGale);
 	}
 
 	@Override
@@ -258,7 +276,6 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 		if (world.isRemote) {
 			return;
 		}
-
 		NBTHelper.putInt(COUNT_TAG, rendingGale, getFeatherCount(rendingGale));
 	}
 

@@ -69,14 +69,14 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 		int toFill = Math.min(MAX_CAPACITY - XpHelper.experienceToLiquid(currentXp), resource.getAmount());
 
 		if (action == FluidAction.EXECUTE) {
-			ModItems.HERO_MEDALLION.setExperience(heroMedallion, currentXp + XpHelper.liquidToExperience(toFill));
+			ModItems.HERO_MEDALLION.get().setExperience(heroMedallion, currentXp + XpHelper.liquidToExperience(toFill));
 		}
 
 		return toFill;
 	}
 
 	private int getMedallionXp() {
-		return ModItems.HERO_MEDALLION.getExperience(heroMedallion);
+		return ModItems.HERO_MEDALLION.get().getExperience(heroMedallion);
 	}
 
 
@@ -91,7 +91,7 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 		int toDrain = Math.min(currentLiquidXp, resource.getAmount());
 
 		if (action == FluidAction.EXECUTE) {
-			ModItems.HERO_MEDALLION.setExperience(heroMedallion, currentXp - XpHelper.liquidToExperience(toDrain));
+			ModItems.HERO_MEDALLION.get().setExperience(heroMedallion, currentXp - XpHelper.liquidToExperience(toDrain));
 		}
 
 		return new FluidStack(resource.getFluid(), toDrain);

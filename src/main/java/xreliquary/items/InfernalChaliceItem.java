@@ -45,14 +45,14 @@ import java.util.List;
 
 public class InfernalChaliceItem extends ToggleableItem {
 	public InfernalChaliceItem() {
-		super("infernal_chalice", new Properties().maxStackSize(1).setNoRepair());
+		super(new Properties().maxStackSize(1).setNoRepair());
 
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(PlayerEntity player, LivingAttackEvent event) {
 				return (event.getSource() == DamageSource.LAVA || event.getSource() == DamageSource.ON_FIRE || event.getSource() == DamageSource.IN_FIRE)
 						&& player.getFoodStats().getFoodLevel() > 0
-						&& InventoryHelper.playerHasItem(player, ModItems.INFERNAL_CHALICE);
+						&& InventoryHelper.playerHasItem(player, ModItems.INFERNAL_CHALICE.get());
 			}
 
 			@Override

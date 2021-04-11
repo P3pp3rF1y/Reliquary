@@ -5,7 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -24,30 +25,35 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import xreliquary.blocks.tile.PassivePedestalTileEntity;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
-public class PassivePedestalBlock extends BaseBlock {
+public class PassivePedestalBlock extends Block {
 	static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
 	private static final VoxelShape SHAPE = makeCuboidShape(2, 0, 2, 14, 11, 14);
-	public static final Set<Block> ALL_PEDESTAL_BLOCKS = new HashSet<>();
 
-	public PassivePedestalBlock(DyeColor dyeColor) {
-		this("pedestals/passive/" + dyeColor.getTranslationKey() + "_" + Names.Blocks.PASSIVE_PEDESTAL);
-		ALL_PEDESTAL_BLOCKS.add(this);
+	public PassivePedestalBlock() {
+		super(Properties.create(Material.ROCK).harvestTool(ToolType.PICKAXE).hardnessAndResistance(1.5F, 2.0F));
+		setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH));
 	}
 
-	public PassivePedestalBlock(String name) {
-		super(name, Properties.create(Material.ROCK).harvestTool(ToolType.PICKAXE).hardnessAndResistance(1.5F, 2.0F));
-		setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH));
+	@Override
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+		if (isDisabled()) {
+			return;
+		}
+
+		super.fillItemGroup(group, items);
+	}
+
+	protected boolean isDisabled() {
+		return Boolean.TRUE.equals(Settings.COMMON.disable.disablePassivePedestal.get());
 	}
 
 	@Override

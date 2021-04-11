@@ -3,7 +3,6 @@ package xreliquary.pedestal.wrappers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -25,13 +24,13 @@ import xreliquary.entities.EntityXRFakePlayer;
 import xreliquary.network.PacketHandler;
 import xreliquary.network.PacketPedestalFishHook;
 import xreliquary.reference.Settings;
+import xreliquary.util.LogHelper;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.Vector;
 
 public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	private static final int PACKET_RANGE = 50;
@@ -41,7 +40,6 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	private static final int ABSOLUTE_TIMEOUT = 1200;
 
 	private EntityXRFakePlayer fakePlayer;
-	private Vector3d playerPos;
 	private boolean badThrowChecked;
 	private int ticksSinceLastThrow;
 	private boolean retractFail = false;
@@ -79,7 +77,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			//when hook doesn't land in water retract it after some time
 			FishingBobberEntity fishingBobber = fakePlayer.fishingBobber;
 			//noinspection ConstantConditions
-			if (!fishingBobber.isInWater()) {
+			if (getCurrentState(fishingBobber) != FishingBobberEntity.State.BOBBING) {
 				retractHook(pedestal, stack);
 			} else {
 				badThrowChecked = true;
@@ -220,6 +218,18 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 				}
 			}
 		}
+	}
+
+	private static final Field BOBBER_CURRENT_STATE = ObfuscationReflectionHelper.findField(FishingBobberEntity.class, "field_190627_av");
+
+	private FishingBobberEntity.State getCurrentState(FishingBobberEntity fishingBobberEntity) {
+		try {
+			return (FishingBobberEntity.State) BOBBER_CURRENT_STATE.get(fishingBobberEntity);
+		}
+		catch (IllegalAccessException e) {
+			LogHelper.error("Error getting fishing bobber state", e);
+		}
+		return FishingBobberEntity.State.FLYING;
 	}
 
 	private void addNeighboringWater(IPedestal pedestal, List<BlockPos> visitedBlocks, List<BlockPos> group, BlockPos pedestalPos, BlockPos blockPos) {

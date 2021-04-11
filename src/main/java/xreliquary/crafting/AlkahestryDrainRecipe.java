@@ -30,7 +30,7 @@ public class AlkahestryDrainRecipe implements ICraftingRecipe {
 		this.chargeToDrain = chargeToDrain;
 		this.result = result;
 		this.id = id;
-		tomeIngredient = Ingredient.fromStacks(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME), Settings.COMMON.items.alkahestryTome.chargeLimit.get()));
+		tomeIngredient = Ingredient.fromStacks(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), Settings.COMMON.items.alkahestryTome.chargeLimit.get()));
 		AlkahestryRecipeRegistry.setDrainRecipe(this);
 	}
 
@@ -48,7 +48,7 @@ public class AlkahestryDrainRecipe implements ICraftingRecipe {
 			if (stack.isEmpty()) {
 				continue;
 			}
-			if (!hasTome && stack.getItem() == ModItems.ALKAHESTRY_TOME) {
+			if (!hasTome && stack.getItem() == ModItems.ALKAHESTRY_TOME.get()) {
 				hasTome = true;
 				tome = stack;
 			} else {
@@ -78,7 +78,7 @@ public class AlkahestryDrainRecipe implements ICraftingRecipe {
 	private ItemStack getTome(CraftingInventory inv) {
 		for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
 			ItemStack stack = inv.getStackInSlot(slot);
-			if (stack.getItem() == ModItems.ALKAHESTRY_TOME) {
+			if (stack.getItem() == ModItems.ALKAHESTRY_TOME.get()) {
 				return stack;
 			}
 		}
@@ -106,11 +106,11 @@ public class AlkahestryDrainRecipe implements ICraftingRecipe {
 		NonNullList<ItemStack> ret = ICraftingRecipe.super.getRemainingItems(inv);
 		for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
 			ItemStack stack = inv.getStackInSlot(slot);
-			if (stack.getItem() == ModItems.ALKAHESTRY_TOME) {
+			if (stack.getItem() == ModItems.ALKAHESTRY_TOME.get()) {
 				ItemStack tome = stack.copy();
 				int charge = AlkahestryTomeItem.getCharge(tome);
 				int itemCount = Math.min(result.getMaxStackSize(), charge / chargeToDrain);
-				ModItems.ALKAHESTRY_TOME.useCharge(tome, itemCount * chargeToDrain);
+				ModItems.ALKAHESTRY_TOME.get().useCharge(tome, itemCount * chargeToDrain);
 				ret.set(slot, tome);
 			}
 		}
@@ -126,11 +126,6 @@ public class AlkahestryDrainRecipe implements ICraftingRecipe {
 	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<AlkahestryDrainRecipe> {
 		@Override
 		public AlkahestryDrainRecipe read(ResourceLocation recipeId, JsonObject json) {
-			if (Boolean.TRUE.equals(Settings.COMMON.disable.disableAlkahestry.get())) {
-				//noinspection ConstantConditions - this is the easiest way to disable recipes without having to code special condition and adding to every recipe
-				return null;
-			}
-
 			int chargeToDrain = JSONUtils.getInt(json, "charge");
 			ItemStack result = CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, "result"), true);
 

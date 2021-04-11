@@ -4,10 +4,12 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -37,9 +39,10 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class HeroMedallionItem extends ToggleableItem implements IPedestalActionItem {
+	private static final String EXPERIENCE_TAG = "experience";
 
 	public HeroMedallionItem() {
-		super("hero_medallion", new Properties().maxDamage(0).setNoRepair());
+		super(new Properties().maxDamage(0).setNoRepair());
 	}
 
 	@Override
@@ -54,13 +57,23 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	}
 
 	@Override
+	public int getUseDuration(ItemStack stack) {
+		return 500;
+	}
+
+	@Override
+	public UseAction getUseAction(ItemStack stack) {
+		return UseAction.BLOCK;
+	}
+
+	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack medallion, @Nullable World world, List<ITextComponent> tooltip) {
-		int experience = NBTHelper.getInt("experience", medallion);
+		int experience = NBTHelper.getInt(EXPERIENCE_TAG, medallion);
 		int levels = XpHelper.getLevelForExperience(experience);
 		int remainingExperience = experience - XpHelper.getExperienceForLevel(levels);
 
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("levels", String.valueOf(levels), "experience", String.valueOf(remainingExperience)), tooltip);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("levels", String.valueOf(levels), EXPERIENCE_TAG, String.valueOf(remainingExperience)), tooltip);
 		if (isEnabled(medallion)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + "XP"), tooltip);
 		}
@@ -82,61 +95,52 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (!isEnabled(stack)) {
+		if (world.isRemote || !isEnabled(stack) || world.getGameTime() % 10 != 0) {
 			return;
 		}
 		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
-			// in order to make this stop at a specific level, we will need to do
-			// a preemptive check for a specific level.
-			for (int levelLoop = 0; levelLoop <= Math.sqrt(!player.isCreative() ? player.experienceLevel : 30); ++levelLoop) {
-				if ((player.experienceLevel > getExperienceMinimum() || player.experience >= (1F / player.xpBarCap()) || player.isCreative()) && getExperience(stack) < Settings.COMMON.items.heroMedallion.experienceLimit.get()) {
-					if (!player.isCreative()) {
-						decreasePlayerExperience(player);
-					}
-					increaseMedallionExperience(stack);
-				}
+			if (!player.isHandActive() || player.getActiveItemStack() != stack) {
+				drainExperienceLevels(stack, player, 1);
 			}
 		}
 	}
 
-	private void decreasePlayerExperience(PlayerEntity player) {
-		player.experience -= 1F / (float) player.xpBarCap();
-		player.experienceTotal -= Math.min(1, player.experienceTotal);
-
-		if (player.experience < 0F) {
-			decreasePlayerLevel(player);
+	private void drainExperienceLevels(ItemStack stack, PlayerEntity player, int levelsToDrain) {
+		int experiencePoints = player.isCreative() ? 100 : player.experienceTotal - XpHelper.getExperienceForLevel(Math.max(getExperienceMinimum(), player.experienceLevel - levelsToDrain));
+		if (experiencePoints > 0) {
+			if (!player.isCreative()) {
+				decreasePlayerExperience(player, experiencePoints);
+			}
+			increaseMedallionExperience(stack, experiencePoints);
 		}
 	}
 
-	private void decreaseMedallionExperience(ItemStack stack) {
-		decreaseMedallionExperience(stack, 1);
+	private void decreasePlayerExperience(PlayerEntity player, int pointsToRemove) {
+		player.experienceTotal -= pointsToRemove;
+		int newLevel = XpHelper.getLevelForExperience(player.experienceTotal);
+		player.experienceLevel = newLevel;
+		player.experience = (float) (player.experienceTotal - XpHelper.getExperienceForLevel(newLevel)) / player.xpBarCap();
 	}
 
 	private void decreaseMedallionExperience(ItemStack stack, int experience) {
 		setExperience(stack, getExperience(stack) - experience);
 	}
 
-	private void decreasePlayerLevel(PlayerEntity player) {
-		float experienceToRemove = -player.experience * player.xpBarCap();
-		player.experienceLevel -= 1;
-		player.experience = 1F - (experienceToRemove / player.xpBarCap());
+	private void increasePlayerExperience(PlayerEntity player, int xpPoints) {
+		player.giveExperiencePoints(xpPoints);
 	}
 
-	private void increasePlayerExperience(PlayerEntity player) {
-		player.giveExperiencePoints(1);
-	}
-
-	private void increaseMedallionExperience(ItemStack stack) {
-		setExperience(stack, getExperience(stack) + 1);
+	private void increaseMedallionExperience(ItemStack stack, int xpPoints) {
+		setExperience(stack, getExperience(stack) + xpPoints);
 	}
 
 	public int getExperience(ItemStack stack) {
-		return NBTHelper.getInt("experience", stack);
+		return NBTHelper.getInt(EXPERIENCE_TAG, stack);
 	}
 
 	public void setExperience(ItemStack stack, int i) {
-		NBTHelper.putInt("experience", stack, i);
+		NBTHelper.putInt(EXPERIENCE_TAG, stack, i);
 	}
 
 	@Override
@@ -149,29 +153,58 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 			return super.onItemRightClick(world, player, hand);
 		}
 
-		BlockRayTraceResult rayTraceResult = rayTrace(world, player, RayTraceContext.FluidMode.ANY);
-
-		if (rayTraceResult.getType() != RayTraceResult.Type.BLOCK) {
-			int playerLevel = player.experienceLevel;
-			while (player.experienceLevel < getExperienceMaximum() && playerLevel == player.experienceLevel && (getExperience(stack) > 0 || player.isCreative())) {
-				increasePlayerExperience(player);
-				if (!player.isCreative()) {
-					decreaseMedallionExperience(stack);
-				}
-			}
-		} else {
-			BlockPos hitPos = rayTraceResult.getPos().add(rayTraceResult.getFace().getDirectionVec());
-			spawnXpOnGround(stack, world, hitPos);
-		}
+		player.setActiveHand(hand);
 
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+	}
+
+	@Override
+	public void onUsingTick(ItemStack stack, LivingEntity entity, int count) {
+		int cooldown = count > 20 ? 10 : 20;
+		if (entity.world.isRemote || !(entity instanceof PlayerEntity) || entity.world.getGameTime() % cooldown != 0) {
+			return;
+		}
+
+		PlayerEntity player = (PlayerEntity) entity;
+
+		World world = player.world;
+		if (isEnabled(stack)) {
+			drainExperienceLevels(stack, player, 10);
+			return;
+		}
+		increaseExperience(stack, player, world, 10);
+	}
+
+	private void increaseExperience(ItemStack stack, PlayerEntity player, World world, int levels) {
+		BlockRayTraceResult rayTraceResult = rayTrace(world, player, RayTraceContext.FluidMode.ANY);
+
+		if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK) {
+			BlockPos hitPos = rayTraceResult.getPos().add(rayTraceResult.getFace().getDirectionVec());
+			spawnXpOnGround(stack, world, hitPos);
+		} else if (player.experienceLevel < getExperienceMaximum()) {
+			levels += Math.round(player.experience);
+			int maxPoints = XpHelper.getExperienceForLevel(player.experienceLevel + levels) - player.experienceTotal;
+			int pointsToAdd = player.isCreative() ? maxPoints : Math.min(maxPoints, getExperience(stack));
+			increasePlayerExperience(player, pointsToAdd);
+			if (!player.isCreative()) {
+				decreaseMedallionExperience(stack, pointsToAdd);
+			}
+		}
+	}
+
+	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
+		if (entityLiving.world.isRemote || isEnabled(stack) || !(entityLiving instanceof PlayerEntity) || getUseDuration(stack) - timeLeft > 10) {
+			return;
+		}
+
+		increaseExperience(stack, (PlayerEntity) entityLiving, entityLiving.world, 1);
 	}
 
 	private void spawnXpOnGround(ItemStack stack, World world, BlockPos hitPos) {
 		int xp = Math.min(Settings.COMMON.items.heroMedallion.experienceDrop.get(), getExperience(stack));
 
 		if (getExperience(stack) >= xp) {
-
 			decreaseMedallionExperience(stack, xp);
 
 			while (xp > 0) {

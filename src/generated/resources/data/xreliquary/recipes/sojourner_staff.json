@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "xreliquary:molten_core"
+    },
+    {
+      "tag": "forge:ingots/gold"
+    },
+    {
+      "tag": "forge:rods/blaze"
+    },
+    {
+      "type": "forge:nbt",
+      "item": "xreliquary:void_tear",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "xreliquary:sojourner_staff"
+  }
+}

@@ -33,16 +33,16 @@ public class FortuneCoinToggler {
 		PlayerEntity player = Minecraft.getInstance().player;
 		for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
 			ItemStack stack = player.inventory.mainInventory.get(slot);
-			if (stack.getItem() == ModItems.FORTUNE_COIN) {
+			if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
 				PacketHandler.sendToServer(new PacketFortuneCoinTogglePressed(PacketFortuneCoinTogglePressed.InventoryType.MAIN, slot));
 
-				ModItems.FORTUNE_COIN.toggle(stack);
+				ModItems.FORTUNE_COIN.get().toggle(stack);
 				return true;
 			}
 		}
-		if (player.inventory.offHandInventory.get(0).getItem() == ModItems.FORTUNE_COIN) {
+		if (player.inventory.offHandInventory.get(0).getItem() == ModItems.FORTUNE_COIN.get()) {
 			PacketHandler.sendToServer(new PacketFortuneCoinTogglePressed(PacketFortuneCoinTogglePressed.InventoryType.OFF_HAND, 0));
-			ModItems.FORTUNE_COIN.toggle(player.inventory.offHandInventory.get(0));
+			ModItems.FORTUNE_COIN.get().toggle(player.inventory.offHandInventory.get(0));
 			return true;
 		}
 		return false;

@@ -7,7 +7,6 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.LongNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -20,19 +19,16 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.items.ItemHandlerHelper;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
 import xreliquary.api.IPedestalRedstoneItem;
 import xreliquary.api.IPedestalRedstoneItemWrapper;
 import xreliquary.blocks.PedestalBlock;
+import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.pedestal.PedestalRegistry;
-import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
-import xreliquary.util.InjectionHelper;
 import xreliquary.util.InventoryHelper;
-import xreliquary.util.StackHelper;
 import xreliquary.util.WorldHelper;
 import xreliquary.util.XRFakePlayerFactory;
 
@@ -44,9 +40,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class PedestalTileEntity extends PassivePedestalTileEntity implements IPedestal, ITickableTileEntity {
-	@SuppressWarnings("WeakerAccess") // needs to stay public so that ObjectHolder can update the value
-	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.PEDESTAL)
-	public static final TileEntityType<PedestalTileEntity> TYPE = InjectionHelper.nullValue();
 	private boolean tickable = false;
 	private int actionCooldown = 0;
 	@Nullable
@@ -64,7 +57,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	private Object itemData = null;
 
 	public PedestalTileEntity() {
-		super(TYPE);
+		super(ModBlocks.PEDESTAL_TILE_TYPE.get());
 	}
 
 	@Override
@@ -130,7 +123,6 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 
 		super.onLoad();
 	}
-
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
@@ -422,7 +414,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 			return item;
 		}
 
-		return applyToItemHandler(ih-> ih.getStackInSlot(getInternalItemHandlerSlot(slot))).orElse(ItemStack.EMPTY);
+		return applyToItemHandler(ih -> ih.getStackInSlot(getInternalItemHandlerSlot(slot))).orElse(ItemStack.EMPTY);
 	}
 
 	private int getInternalItemHandlerSlot(int slot) {
@@ -498,7 +490,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 		int adjustedSlot = getInternalItemHandlerSlot(slot);
 		ItemStack stackInSlot = ih.getStackInSlot(adjustedSlot);
 
-		if (!stackInSlot.isEmpty() && !stack.isEmpty() && !StackHelper.isItemAndNbtEqual(stack, stackInSlot)) {
+		if (!stackInSlot.isEmpty() && !stack.isEmpty() && !ItemHandlerHelper.canItemStacksStack(stack, stackInSlot)) {
 			return;
 		}
 

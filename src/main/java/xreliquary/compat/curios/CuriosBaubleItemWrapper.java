@@ -1,6 +1,8 @@
 package xreliquary.compat.curios;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
+import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import xreliquary.items.util.IBaubleItem;
 
@@ -12,8 +14,8 @@ class CuriosBaubleItemWrapper implements ICurio {
 	}
 
 	@Override
-	public void onEquip(String identifier, int index, LivingEntity livingEntity) {
-		baubleItem.onEquipped(identifier, livingEntity);
+	public void onEquip(SlotContext slotContext, ItemStack prevStack) {
+		baubleItem.onEquipped(slotContext.getIdentifier(), slotContext.getWearer());
 	}
 
 	@Override

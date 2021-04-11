@@ -18,7 +18,7 @@ public class FluidHandlerInfernalChalice extends FluidHandlerItemStack {
 
 	@Override
 	public boolean canDrainFluidType(FluidStack fluid) {
-		return !ModItems.INFERNAL_CHALICE.isEnabled(container) && FluidTags.LAVA.contains(fluid.getFluid()) && getFluid().getAmount() >= fluid.getAmount();
+		return !ModItems.INFERNAL_CHALICE.get().isEnabled(container) && FluidTags.LAVA.contains(fluid.getFluid()) && getFluid().getAmount() >= fluid.getAmount();
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class FluidHandlerInfernalChalice extends FluidHandlerItemStack {
 
 	@Override
 	public boolean canFillFluidType(FluidStack fluid) {
-		return ModItems.INFERNAL_CHALICE.isEnabled(container) && fluid.getFluid() == Fluids.LAVA;
+		return ModItems.INFERNAL_CHALICE.get().isEnabled(container) && fluid.getFluid() == Fluids.LAVA;
 	}
 
 	@Override

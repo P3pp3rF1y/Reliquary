@@ -27,9 +27,9 @@ public class CauldronRecipeCategory extends ReliquaryRecipeCategory<CauldronReci
 
 	public CauldronRecipeCategory(IGuiHelper guiHelper) {
 		super(UID);
-		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/cauldron.png"), 0, 0, 107, 51);
+		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/backgrounds.png"), 96, 0, 107, 51);
 		localizedName = LanguageHelper.getLocalization("jei." + Reference.MOD_ID + ".recipe.cauldron");
-		icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.APOTHECARY_CAULDRON));
+		icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.APOTHECARY_CAULDRON.get()));
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class CauldronRecipeCategory extends ReliquaryRecipeCategory<CauldronReci
 		initAdditionalSlots(recipeLayout, ingredientsInputs.size());
 		recipeLayout.getItemStacks().set(INPUT_SLOT, ingredientsInputs.get(0));
 		recipeLayout.getItemStacks().set(OUTPUT_SLOT, output);
-		recipeLayout.getItemStacks().set(CAULDRON_SLOT, new ItemStack(ModBlocks.APOTHECARY_CAULDRON, 1));
+		recipeLayout.getItemStacks().set(CAULDRON_SLOT, new ItemStack(ModBlocks.APOTHECARY_CAULDRON.get(), 1));
 		setAdditionalSlotContents(recipeLayout, ingredientsInputs);
 	}
 

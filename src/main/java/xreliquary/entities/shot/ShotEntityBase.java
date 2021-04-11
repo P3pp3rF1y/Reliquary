@@ -1,8 +1,5 @@
 package xreliquary.entities.shot;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -21,15 +18,14 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -47,39 +43,33 @@ import java.util.Optional;
 public abstract class ShotEntityBase extends ProjectileEntity {
 	private static final DataParameter<Byte> CRITICAL = EntityDataManager.createKey(ShotEntityBase.class, DataSerializers.BYTE);
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(ShotEntityBase.class, DataSerializers.VARINT);
-	private int xTile = -1;
-	private int yTile = -1;
-	private int zTile = -1;
-	private boolean inGround = false;
 	private List<EffectInstance> potionEffects = Collections.emptyList();
 
 	/**
 	 * The owner of this arrow.
 	 */
-	PlayerEntity shootingEntity;
 	protected int ticksInAir = 0;
 
 	private int ricochetCounter = 0;
 	private boolean scheduledForDeath = false;
 
-	public <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world) {
+	protected <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world) {
 		super(entityType, world);
 	}
 
-	public <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world, double x, double y, double z) {
+	protected <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world, PlayerEntity player, Hand hand) {
 		this(entityType, world);
-		setPosition(x, y, z);
-	}
-
-	public <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world, PlayerEntity player, Hand hand) {
-		this(entityType, world);
-		shootingEntity = player;
+		setShooter(player);
 		setLocationAndAngles(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), player.rotationYaw, player.rotationPitch);
 		setPosition(
 				getPosX() - MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * (hand == Hand.MAIN_HAND ? 1 : -1) * 0.16F,
 				getPosY() - 0.2D,
 				getPosZ() - MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * (hand == Hand.MAIN_HAND ? 1 : -1) * 0.16F
 		);
+	}
+
+	protected Optional<PlayerEntity> getShooterPlayer() {
+		return Optional.ofNullable((PlayerEntity) func_234616_v_());
 	}
 
 	@Override
@@ -160,80 +150,62 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 			prevRotationPitch = rotationPitch = (float) (Math.atan2(motionVec.getY(), pythingy) * 180.0D / Math.PI);
 		}
 
-		BlockState blockState = world.getBlockState(new BlockPos(xTile, yTile, zTile));
-		Block block = blockState.getBlock();
+		++ticksInAir;
+		if (ticksInAir == 2) {
+			world.addParticle(ParticleTypes.FLAME, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0D, 0D, 0D);
+			for (int particles = 0; particles < 3; particles++) {
+				doFiringEffects();
+			}
 
-		if (block != Blocks.AIR) {
-			BlockPos pos = new BlockPos(xTile, yTile, zTile);
-			VoxelShape voxelshape = blockState.getCollisionShape(world, pos);
-			if (!voxelshape.isEmpty()) {
-				for (AxisAlignedBB axisalignedbb : voxelshape.toBoundingBoxList()) {
-					if (axisalignedbb.offset(pos).contains(new Vector3d(getPosX(), getPosY(), getPosZ()))) {
-						inGround = true;
-						break;
+		} else {
+			doFlightEffects();
+		}
+
+		Vector3d posVector = new Vector3d(getPosX(), getPosY(), getPosZ());
+		Vector3d approachVector = new Vector3d(getPosX() + motionVec.getX(), getPosY() + motionVec.getY(), getPosZ() + motionVec.getZ());
+
+		RayTraceResult objectStruckByVector = world.rayTraceBlocks(new RayTraceContext(posVector, approachVector, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+
+		Entity hitEntity = null;
+		List<Entity> struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().expand(motionVec).grow(1.0D, 1.0D, 1.0D));
+		double var7 = 0.0D;
+		Iterator<Entity> struckEntityIterator = struckEntitiesInAABB.iterator();
+		float var11;
+
+		while (struckEntityIterator.hasNext()) {
+			Entity struckEntity = struckEntityIterator.next();
+			if (struckEntity.canBeCollidedWith() && (struckEntity != func_234616_v_() || ticksInAir >= 5)) {
+				var11 = 0.5F;
+				AxisAlignedBB var12 = struckEntity.getBoundingBox().grow(var11, var11, var11);
+				Optional<Vector3d> hitResult = var12.rayTrace(posVector, approachVector);
+
+				if (hitResult.isPresent()) {
+					double var14 = posVector.distanceTo(hitResult.get());
+
+					if (var14 < var7 || var7 == 0.0D) {
+						hitEntity = struckEntity;
+						var7 = var14;
 					}
 				}
 			}
 		}
 
-		if (!inGround) {
-			++ticksInAir;
-			if (ticksInAir == 2) {
-				world.addParticle(ParticleTypes.FLAME, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0D, 0D, 0D);
-				for (int particles = 0; particles < 3; particles++) {
-					doFiringEffects();
-				}
-
-			} else {
-				doFlightEffects();
-			}
-
-			Vector3d posVector = new Vector3d(getPosX(), getPosY(), getPosZ());
-			Vector3d approachVector = new Vector3d(getPosX() + motionVec.getX(), getPosY() + motionVec.getY(), getPosZ() + motionVec.getZ());
-
-			RayTraceResult objectStruckByVector = world.rayTraceBlocks(new RayTraceContext(posVector, approachVector, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
-
-			Entity hitEntity = null;
-			List<Entity> struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().expand(motionVec).grow(1.0D, 1.0D, 1.0D));
-			double var7 = 0.0D;
-			Iterator<Entity> struckEntityIterator = struckEntitiesInAABB.iterator();
-			float var11;
-
-			while (struckEntityIterator.hasNext()) {
-				Entity struckEntity = struckEntityIterator.next();
-				if (struckEntity.canBeCollidedWith() && (struckEntity != shootingEntity || ticksInAir >= 5)) {
-					var11 = 0.5F;
-					AxisAlignedBB var12 = struckEntity.getBoundingBox().grow(var11, var11, var11);
-					Optional<Vector3d> hitResult = var12.rayTrace(posVector, approachVector);
-
-					if (hitResult.isPresent()) {
-						double var14 = posVector.distanceTo(hitResult.get());
-
-						if (var14 < var7 || var7 == 0.0D) {
-							hitEntity = struckEntity;
-							var7 = var14;
-						}
-					}
-				}
-			}
-
-			if (hitEntity != null) {
-				objectStruckByVector = new EntityRayTraceResult(hitEntity);
-			}
-
-			//noinspection ConstantConditions - world.rayTraceBlocks can still produce null under certain conditions
-			if (objectStruckByVector != null) {
-				applyPotionEffects(objectStruckByVector);
-				onImpact(objectStruckByVector);
-			}
-
-			if (scheduledForDeath) {
-				remove();
-			}
-
-			Vector3d newPos = getPositionVec().add(getMotion());
-			setPosition(newPos.x, newPos.y, newPos.z);
+		if (hitEntity != null) {
+			objectStruckByVector = new EntityRayTraceResult(hitEntity);
 		}
+
+		//noinspection ConstantConditions - world.rayTraceBlocks can still produce null under certain conditions
+		if (objectStruckByVector != null) {
+			applyPotionEffects(objectStruckByVector);
+			onImpact(objectStruckByVector);
+		}
+
+		if (scheduledForDeath) {
+			remove();
+		}
+
+		Vector3d newPos = getPositionVec().add(getMotion());
+		setPosition(newPos.x, newPos.y, newPos.z);
 	}
 
 	private void spawnPotionParticles() {
@@ -259,26 +231,18 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 			EntityRayTraceResult entityStruckResult = ((EntityRayTraceResult) objectStruckByVector);
 			if (entityStruckResult.getEntity() instanceof LivingEntity && potionEffects != null && !potionEffects.isEmpty()) {
 				LivingEntity living = (LivingEntity) entityStruckResult.getEntity();
-				XRPotionHelper.applyEffectsToEntity(potionEffects, this, shootingEntity, living);
+				XRPotionHelper.applyEffectsToEntity(potionEffects, this, func_234616_v_(), living);
 			}
 		}
 	}
 
 	@Override
 	protected void readAdditional(CompoundNBT compound) {
-		xTile = compound.getShort("xTile");
-		yTile = compound.getShort("yTile");
-		zTile = compound.getShort("zTile");
-		inGround = compound.getByte("inGround") == 1;
 		potionEffects = XRPotionHelper.getPotionEffectsFromCompoundTag(compound);
 	}
 
 	@Override
 	protected void writeAdditional(CompoundNBT compound) {
-		compound.putShort("xTile", (short) xTile);
-		compound.putShort("yTile", (short) yTile);
-		compound.putShort("zTile", (short) zTile);
-		compound.putByte("inGround", (byte) (inGround ? 1 : 0));
 		XRPotionHelper.addPotionEffectsToCompoundTag(compound, potionEffects);
 	}
 
@@ -336,7 +300,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	}
 
 	protected DamageSource getDamageSource() {
-		return DamageSource.causePlayerDamage(shootingEntity);
+		return new IndirectEntityDamageSource("bullet", this, func_234616_v_());
 	}
 
 	protected void groundImpact(Direction sideHit) {
@@ -443,7 +407,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 
 			//noinspection ConstantConditions
 			String entityName = currentTarget.getType().getRegistryName().toString();
-			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == shootingEntity) || (!currentTarget.isAlive()
+			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == func_234616_v_()) || (!currentTarget.isAlive()
 					|| (currentTarget instanceof LivingEntity && ((LivingEntity) currentTarget).getHealth() <= 0))) {
 				continue;
 			}
@@ -454,7 +418,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 			}
 		}
 		// these are extremely touchy, tune them lightly.
-		if (closestTarget != null && shootingEntity != null) {
+		if (closestTarget != null && func_234616_v_() != null) {
 			double x = closestTarget.getBoundingBox().minX + closestTarget.getBoundingBox().maxX;
 			x /= 2D;
 			double y = closestTarget.getBoundingBox().minY + Math.max(closestTarget.getYOffset(), closestTarget.getHeight());
@@ -500,7 +464,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	 */
 	protected void onImpact(LivingEntity entityLiving) {
 		if (!world.isRemote) {
-			if (entityLiving != shootingEntity || ticksInAir > 3) {
+			if (entityLiving != func_234616_v_() || ticksInAir > 3) {
 				doDamage(entityLiving);
 			}
 			spawnHitParticles(8);
@@ -512,7 +476,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	protected void onImpact(RayTraceResult result) {
 		if (result.getType() == RayTraceResult.Type.ENTITY) {
 			Entity entity = ((EntityRayTraceResult) result).getEntity();
-			if (entity == shootingEntity || !(entity instanceof LivingEntity)) {
+			if (entity == func_234616_v_() || !(entity instanceof LivingEntity)) {
 				return;
 			}
 			onImpact((LivingEntity) entity);

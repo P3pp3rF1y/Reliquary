@@ -17,8 +17,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
-import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 
 import java.util.List;
@@ -27,13 +25,8 @@ import java.util.Random;
 public class InterdictionTorchBlock extends TorchBlock {
 	protected static final int TICK_RATE = 1;
 
-	InterdictionTorchBlock(String registryName) {
-		super(Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0).setLightLevel(value -> 15).tickRandomly().sound(SoundType.WOOD).doesNotBlockMovement(), ParticleTypes.FLAME);
-		setRegistryName(Reference.MOD_ID, registryName);
-	}
-
 	public InterdictionTorchBlock() {
-		this(Names.Blocks.INTERDICTION_TORCH);
+		super(Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0).setLightLevel(value -> 15).tickRandomly().sound(SoundType.WOOD).doesNotBlockMovement(), ParticleTypes.FLAME);
 	}
 
 	@Override

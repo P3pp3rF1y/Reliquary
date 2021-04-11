@@ -52,7 +52,7 @@ public class CommonEventHandler {
 			return;
 		}
 
-		if (event.getLeft().getItem() != ModItems.MOB_CHARM && event.getLeft().getItem() != ModItems.ALKAHESTRY_TOME) {
+		if (event.getLeft().getItem() != ModItems.MOB_CHARM.get() && event.getLeft().getItem() != ModItems.ALKAHESTRY_TOME.get()) {
 			return;
 		}
 
@@ -67,7 +67,7 @@ public class CommonEventHandler {
 		// Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
 		if (event.getPlayer().getGameProfile().getName().equals("Drullkus")
 				&& !event.getPlayer().getPersistentData().contains("gift")
-				&& event.getPlayer().inventory.addItemStackToInventory(new ItemStack(ModItems.WITCH_HAT))) {
+				&& event.getPlayer().inventory.addItemStackToInventory(new ItemStack(ModItems.WITCH_HAT.get()))) {
 			event.getPlayer().getPersistentData().putBoolean("gift", true);
 		}
 	}
@@ -135,7 +135,7 @@ public class CommonEventHandler {
 
 		PlayerEntity player = event.player;
 
-		if (player.isHandActive() && player.getActiveItemStack().getItem() == ModItems.RENDING_GALE && ModItems.RENDING_GALE.isFlightMode(player.getActiveItemStack()) && ModItems.RENDING_GALE.hasFlightCharge(player.getActiveItemStack())) {
+		if (player.isHandActive() && player.getActiveItemStack().getItem() == ModItems.RENDING_GALE.get() && ModItems.RENDING_GALE.get().isFlightMode(player.getActiveItemStack()) && ModItems.RENDING_GALE.get().hasFlightCharge(player.getActiveItemStack())) {
 			playersFlightStatus.put(player.getGameProfile().getId(), true);
 			player.abilities.allowFlying = true;
 			((ServerPlayerEntity) player).connection.sendPacket(new SPlayerAbilitiesPacket(player.abilities));

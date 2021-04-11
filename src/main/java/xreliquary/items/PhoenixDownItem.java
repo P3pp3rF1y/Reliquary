@@ -3,7 +3,6 @@ package xreliquary.items;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
@@ -23,7 +22,7 @@ import xreliquary.util.InventoryHelper;
 public class PhoenixDownItem extends AngelicFeatherItem {
 
 	public PhoenixDownItem() {
-		super("phoenix_down");
+		super();
 
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
@@ -31,7 +30,7 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 				return event.getSource() == DamageSource.FALL
 						&& player.getHealth() > Math.round(event.getAmount())
 						&& player.getFoodStats().getFoodLevel() > 0
-						&& InventoryHelper.playerHasItem(player, ModItems.PHOENIX_DOWN);
+						&& InventoryHelper.playerHasItem(player, ModItems.PHOENIX_DOWN.get());
 			}
 
 			@Override
@@ -50,7 +49,7 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 		CommonEventHandler.registerPlayerDeathHandler(new IPlayerDeathHandler() {
 			@Override
 			public boolean canApply(PlayerEntity player, LivingDeathEvent event) {
-				return InventoryHelper.playerHasItem(player, ModItems.PHOENIX_DOWN);
+				return InventoryHelper.playerHasItem(player, ModItems.PHOENIX_DOWN.get());
 			}
 
 			@Override
@@ -104,8 +103,8 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 			if (player.inventory.mainInventory.get(slot).isEmpty()) {
 				continue;
 			}
-			if (player.inventory.mainInventory.get(slot).getItem() == ModItems.PHOENIX_DOWN) {
-				player.inventory.mainInventory.set(slot, new ItemStack(ModItems.ANGELIC_FEATHER));
+			if (player.inventory.mainInventory.get(slot).getItem() == ModItems.PHOENIX_DOWN.get()) {
+				player.inventory.mainInventory.set(slot, new ItemStack(ModItems.ANGELIC_FEATHER.get()));
 				return;
 			}
 		}

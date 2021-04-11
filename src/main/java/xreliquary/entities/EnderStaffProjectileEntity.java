@@ -3,7 +3,9 @@ package xreliquary.entities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IRendersAsItem;
+import net.minecraft.entity.item.EnderPearlEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -20,6 +22,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xreliquary.init.ModEntities;
@@ -109,9 +112,16 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 				x = pos.getX();
 				z = pos.getZ();
 			}
+			float targetX = x + 0.5F;
+			float targetY = y + 0.5F;
+			float targetZ = z + 0.5F;
+			if (thrower instanceof ServerPlayerEntity) {
+				ServerPlayerEntity player = (ServerPlayerEntity) thrower;
+				ForgeEventFactory.onEnderPearlLand(player, targetX, targetY, targetZ, new EnderPearlEntity(world, player), 0);
+			}
 
 			thrower.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
-			thrower.setPositionAndUpdate(x + 0.5F, y + 0.5F, z + 0.5F);
+			thrower.setPositionAndUpdate(targetX, targetY, targetZ);
 		}
 		remove();
 	}

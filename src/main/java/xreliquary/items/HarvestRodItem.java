@@ -73,7 +73,7 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 	private static final int AOE_START_COOLDOWN = 10;
 
 	public HarvestRodItem() {
-		super("harvest_rod", new Properties().maxStackSize(1).setNoRepair());
+		super(new Properties().maxStackSize(1).setNoRepair());
 	}
 
 	@Override
@@ -150,32 +150,32 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote) {
+		if (world.isRemote || world.getGameTime() % 10 != 0 || !(entity instanceof PlayerEntity)) {
 			return;
 		}
-		PlayerEntity player = null;
-		if (entity instanceof PlayerEntity) {
-			player = (PlayerEntity) entity;
-		}
-		if (player == null) {
-			return;
-		}
+		PlayerEntity player = (PlayerEntity) entity;
 
 		if (isEnabled(stack)) {
-			if (getBoneMealCount(stack) + getBonemealWorth() <= getBonemealLimit() && InventoryHelper.consumeItem(new ItemStack(Items.BONE_MEAL), player)) {
-				setBoneMealCount(stack, getBoneMealCount(stack) + getBonemealWorth(), player);
-			}
-
+			int currentCharge = getBoneMealCount(stack);
+			consumeAndCharge(player, getBonemealLimit() - currentCharge, getBonemealWorth(), Items.BONE_MEAL, 16,
+					chargeToAdd -> setBoneMealCount(stack, currentCharge + chargeToAdd, player));
 			consumePlantables(stack, player);
 		}
 	}
 
 	private void consumePlantables(ItemStack harvestRod, PlayerEntity player) {
+		int leftToInsert = 16;
+
 		for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
 			ItemStack currentStack = player.inventory.mainInventory.get(slot);
-			if (isPlantable(currentStack) && incrementPlantable(harvestRod, currentStack, player)) {
-				InventoryHelper.consumeItem(currentStack, player, 0, 1);
-				break;
+			if (isPlantable(currentStack)) {
+				int countInserted = incrementPlantable(harvestRod, currentStack, player, leftToInsert);
+				leftToInsert -= countInserted;
+				currentStack.shrink(countInserted);
+				player.inventory.mainInventory.set(slot, currentStack.isEmpty() ? ItemStack.EMPTY : currentStack);
+				if (leftToInsert == 0) {
+					break;
+				}
 			}
 		}
 	}
@@ -303,15 +303,15 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 		});
 	}
 
-	private boolean incrementPlantable(ItemStack harvestRod, ItemStack plantable, PlayerEntity player) {
+	private int incrementPlantable(ItemStack harvestRod, ItemStack plantable, PlayerEntity player, int maxCount) {
 		return getFromHandler(harvestRod, h -> {
 			ItemStack plantableCopy = plantable.copy();
-			plantableCopy.setCount(1);
-			return h.insertPlantable(plantableCopy).map(bigStackSlot -> {
-				updateContainedItemNBT(harvestRod, player, bigStackSlot.shortValue(), plantableCopy, getPlantableQuantity(harvestRod, bigStackSlot));
-				return true;
-			}).orElse(false);
-		}).orElse(false);
+			plantableCopy.setCount(Math.min(maxCount, plantableCopy.getCount()));
+			return h.insertPlantable(plantableCopy).map(plantableSlotInserted -> {
+				updateContainedItemNBT(harvestRod, player, (short) plantableSlotInserted.getSlot(), plantableCopy, getPlantableQuantity(harvestRod, plantableSlotInserted.getSlot()));
+				return plantableSlotInserted.getCountInserted();
+			}).orElse(0);
+		}).orElse(0);
 	}
 
 	private void updateContainedItemNBT(ItemStack harvestRod, PlayerEntity player, short slot, ItemStack stack, int count) {
@@ -319,7 +319,7 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 	}
 
 	private void updateContainedItemNBT(ItemStack harvestRod, @Nullable PlayerEntity player, short slot, ItemStack stack, int count, boolean udpateNbt) {
-		if (udpateNbt && player !=null && player.isHandActive() && (player.getHeldItemMainhand() == harvestRod || player.getHeldItemOffhand() == harvestRod)) {
+		if (udpateNbt && player != null && player.isHandActive() && (player.getHeldItemMainhand() == harvestRod || player.getHeldItemOffhand() == harvestRod)) {
 			Hand hand = player.getHeldItemMainhand() == harvestRod ? Hand.MAIN_HAND : Hand.OFF_HAND;
 			PacketHandler.sendToClient((ServerPlayerEntity) player, new PacketCountSync(hand, slot, stack, count));
 		} else {
@@ -497,6 +497,9 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 				}
 				break;
 			case PLANTABLE_MODE:
+				if (getCountPlantable(harvestRod) > 0) {
+					clearPlantableIfNoLongerValid(harvestRod, getCurrentPlantableSlot(harvestRod));
+				}
 				if (getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) >= 1 || player.isCreative()) {
 					getNextBlockToPlantOn(world, cache, pos, Settings.COMMON.items.harvestRod.aoeRadius.get(), (IPlantable) ((BlockItem) getCurrentPlantable(harvestRod).getItem()).getBlock())
 							.ifPresent(blockToPlantOn -> plantItem(harvestRod, player, blockToPlantOn, player.getActiveHand(), false));
@@ -507,6 +510,12 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 				break;
 			default:
 				break;
+		}
+	}
+
+	public void clearPlantableIfNoLongerValid(ItemStack harvestRod, byte slot) {
+		if (getPlantableInSlot(harvestRod, slot).isEmpty()) {
+			setPlantableQuantity(harvestRod, slot, 0);
 		}
 	}
 
@@ -648,7 +657,7 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 	public void updateContainedStacks(ItemStack stack) {
 		NBTHelper.removeContainedStacks(stack);
 		NBTHelper.updateContainedStack(stack, (short) HarvestRodItemStackHandler.BONEMEAL_SLOT, ItemStack.EMPTY, getBoneMealCount(stack));
-		for(short slot=1; slot < getCountPlantable(stack) + 1; slot++) {
+		for (short slot = 1; slot < getCountPlantable(stack) + 1; slot++) {
 			NBTHelper.updateContainedStack(stack, slot, getPlantableInSlot(stack, slot), getPlantableQuantity(stack, slot));
 		}
 	}
@@ -667,7 +676,7 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 			return NBTHelper.getContainedStackCount(harvestRod, slot);
 		}
 
-		return getFromHandler(harvestRod, h->h.getTotalAmount(slot)).orElse(0);
+		return getFromHandler(harvestRod, h -> h.getTotalAmount(slot)).orElse(0);
 	}
 
 	public Optional<FilteredBigItemStack> setPlantableQuantity(ItemStack harvestRod, byte plantableSlot, int quantity) {

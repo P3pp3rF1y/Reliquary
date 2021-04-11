@@ -6,10 +6,10 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import xreliquary.items.BulletItem;
 import xreliquary.items.MagazineItem;
-import xreliquary.reference.Reference;
+import xreliquary.reference.Settings;
+import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
@@ -29,34 +29,35 @@ public class MagazineRecipeMaker {
 		ArrayList<ShapedRecipe> recipes = new ArrayList<>();
 
 		addRegularMagazines(recipes);
-		addPotionMagazines(recipes);
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
+			addPotionMagazines(recipes);
+		}
 
 		return recipes;
 	}
 
 	private static void addRegularMagazines(ArrayList<ShapedRecipe> recipes) {
 		Map<BulletItem, MagazineItem> bulletMagazines = new ImmutableMap.Builder<BulletItem, MagazineItem>()
-				.put(NEUTRAL_BULLET, NEUTRAL_MAGAZINE)
-				.put(EXORCISM_BULLET, EXORCISM_MAGAZINE)
-				.put(BLAZE_BULLET, BLAZE_MAGAZINE)
-				.put(ENDER_BULLET, ENDER_MAGAZINE)
-				.put(CONCUSSIVE_BULLET, CONCUSSIVE_MAGAZINE)
-				.put(BUSTER_BULLET, BUSTER_MAGAZINE)
-				.put(SEEKER_BULLET, SEEKER_MAGAZINE)
-				.put(SAND_BULLET, SAND_MAGAZINE)
-				.put(STORM_BULLET, STORM_MAGAZINE)
+				.put(NEUTRAL_BULLET.get(), NEUTRAL_MAGAZINE.get())
+				.put(EXORCISM_BULLET.get(), EXORCISM_MAGAZINE.get())
+				.put(BLAZE_BULLET.get(), BLAZE_MAGAZINE.get())
+				.put(ENDER_BULLET.get(), ENDER_MAGAZINE.get())
+				.put(CONCUSSIVE_BULLET.get(), CONCUSSIVE_MAGAZINE.get())
+				.put(BUSTER_BULLET.get(), BUSTER_MAGAZINE.get())
+				.put(SEEKER_BULLET.get(), SEEKER_MAGAZINE.get())
+				.put(SAND_BULLET.get(), SAND_MAGAZINE.get())
+				.put(STORM_BULLET.get(), STORM_MAGAZINE.get())
 				.build();
 
 		for(Map.Entry<BulletItem, MagazineItem> bulletMagazine : bulletMagazines.entrySet()) {
 			NonNullList<Ingredient> inputs = NonNullList.create();
 			addShots(inputs, bulletMagazine.getKey());
-			inputs.add(Ingredient.fromStacks(new ItemStack(EMPTY_MAGAZINE)));
+			inputs.add(Ingredient.fromStacks(new ItemStack(EMPTY_MAGAZINE.get())));
 			addShots(inputs, bulletMagazine.getKey());
 
 			ItemStack output = new ItemStack(bulletMagazine.getValue());
 
-			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, "xreliquary.magazine." + output.getTranslationKey());
-			recipes.add(new ShapedRecipe(id, "xreliquary.magazine", 3, 3, inputs, output));
+			recipes.add(new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), "xreliquary.magazine", 3, 3, inputs, output));
 		}
 	}
 
@@ -66,19 +67,18 @@ public class MagazineRecipeMaker {
 
 			NonNullList<Ingredient> inputs = NonNullList.create();
 			addShots(inputs, effects);
-			inputs.add(Ingredient.fromStacks(new ItemStack(EMPTY_MAGAZINE)));
+			inputs.add(Ingredient.fromStacks(new ItemStack(EMPTY_MAGAZINE.get())));
 			addShots(inputs, effects);
 
-			ItemStack output = new ItemStack(NEUTRAL_MAGAZINE);
+			ItemStack output = new ItemStack(NEUTRAL_MAGAZINE.get());
 			XRPotionHelper.addPotionEffectsToStack(output, effects);
 
-			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, output.getTranslationKey());
-			recipes.add(new ShapedRecipe(id, "xreliquary.potion.magazine", 3, 3, inputs, output));
+			recipes.add(new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), "xreliquary.potion.magazine", 3, 3, inputs, output));
 		}
 	}
 
 	private static void addShots(List<Ingredient> inputs, List<EffectInstance> effects) {
-		addShots(inputs, effects, NEUTRAL_BULLET);
+		addShots(inputs, effects, NEUTRAL_BULLET.get());
 	}
 
 	private static void addShots(List<Ingredient> inputs, BulletItem shotType) {

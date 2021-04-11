@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.items.util.IPotionItem;
+import xreliquary.reference.Settings;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
@@ -18,8 +19,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class PotionItemBase extends ItemBase implements IPotionItem {
-	public PotionItemBase(String registryName) {
-		super(registryName, new Properties());
+	public PotionItemBase() {
+		super(new Properties());
 	}
 
 	// returns an empty vial when used in crafting recipes, unless it's one of
@@ -37,7 +38,7 @@ public class PotionItemBase extends ItemBase implements IPotionItem {
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (!isInGroup(group)) {
+		if (!isInGroup(group) || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			return;
 		}
 		for (PotionEssence essence : PotionMap.uniquePotions) {

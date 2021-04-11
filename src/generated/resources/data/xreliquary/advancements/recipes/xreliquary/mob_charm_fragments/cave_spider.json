@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:mob_charm_fragments/cave_spider"
+    ]
+  },
+  "criteria": {
+    "has_chelicerae": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:chelicerae"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:mob_charm_fragments/cave_spider"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chelicerae",
+      "has_the_recipe"
+    ]
+  ]
+}

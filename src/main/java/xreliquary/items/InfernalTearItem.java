@@ -1,6 +1,7 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -9,7 +10,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -17,13 +17,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
-import xreliquary.crafting.AlkahestryCraftingRecipe;
-import xreliquary.crafting.AlkahestryRecipeRegistry;
+import net.minecraftforge.items.ItemHandlerHelper;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
+import xreliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -31,44 +31,38 @@ import java.util.Optional;
 
 public class InfernalTearItem extends ToggleableItem {
 	private static final String ENABLED_TAG = "enabled";
+	private static final int COOLDOWN = 4;
+	private static final int NOTHING_FOUND_COOLDOWN = COOLDOWN * 5;
 
 	public InfernalTearItem() {
-		super("infernal_tear", new Properties().maxStackSize(1).setNoRepair());
+		super(new Properties().maxStackSize(1).setNoRepair());
 	}
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote || !isEnabled(stack) || !(entity instanceof PlayerEntity)) {
+		if (world.isRemote || world.getGameTime() % COOLDOWN != 0 || !isEnabled(stack) || isInCooldown(stack, world) || !(entity instanceof PlayerEntity)) {
 			return;
 		}
+
 		PlayerEntity player = (PlayerEntity) entity;
-
-		if (getStackFromTear(stack).isEmpty()) {
+		ItemStack tearStack = getStackFromTear(stack);
+		if (tearStack.isEmpty()) {
 			resetTear(stack);
 			return;
 		}
 
-		Optional<AlkahestryCraftingRecipe> recipe = matchAlkahestryRecipe(getStackFromTear(stack));
-		if (!recipe.isPresent()) {
+		Optional<Integer> experience = Settings.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(tearStack.getItem()));
+		if (!experience.isPresent()) {
 			resetTear(stack);
 			return;
 		}
 
-		AlkahestryCraftingRecipe matchedRecipe = recipe.get();
-
-		// You need above Cobblestone level to get XP.
-		if (!(matchedRecipe.getRecipeOutput().getCount() == 33 && matchedRecipe.getChargeNeeded() == 4) && InventoryHelper.consumeItem(getStackFromTear(stack), player)) {
-			player.giveExperiencePoints((int) (Math.ceil((((double) matchedRecipe.getChargeNeeded()) / (double) (matchedRecipe.getRecipeOutput().getCount() - 1)) / 256d * 500d)));
+		int countConsumed = InventoryHelper.consumeItemStack(ist -> ItemHandlerHelper.canItemStacksStack(tearStack, ist), player, 4).getCount();
+		if (countConsumed > 0) {
+			player.giveExperiencePoints(experience.get() * countConsumed);
+		} else {
+			setCooldown(stack, world, NOTHING_FOUND_COOLDOWN);
 		}
-	}
-
-	private Optional<AlkahestryCraftingRecipe> matchAlkahestryRecipe(ItemStack stack) {
-		for (AlkahestryCraftingRecipe recipe : AlkahestryRecipeRegistry.getCraftingRecipes()) {
-			if (recipe.getCraftingIngredient().test(stack)) {
-				return Optional.of(recipe);
-			}
-		}
-		return Optional.empty();
 	}
 
 	private void resetTear(ItemStack stack) {
@@ -80,22 +74,26 @@ public class InfernalTearItem extends ToggleableItem {
 	}
 
 	@Override
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+		super.addInformation(stack, world, tooltip, flag);
+		if (getStackFromTear(stack).isEmpty()) {
+			LanguageHelper.formatTooltip("tooltip.xreliquary.tear_empty", null, tooltip);
+		}
+	}
+
+	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip) {
-		if (getStackFromTear(stack).isEmpty()) {
-			LanguageHelper.formatTooltip("tooltip.infernal_tear.tear_empty", null, tooltip);
-		} else {
-			ItemStack contents = getStackFromTear(stack);
-			String itemName = contents.getDisplayName().getString();
+		ItemStack contents = getStackFromTear(stack);
+		String itemName = contents.getDisplayName().getString();
 
-			LanguageHelper.formatTooltip("tooltip.tear", ImmutableMap.of("item", itemName), tooltip);
+		LanguageHelper.formatTooltip("tooltip.xreliquary.tear", ImmutableMap.of("item", itemName), tooltip);
 
-			if (isEnabled(stack)) {
-				LanguageHelper.formatTooltip("tooltip.xreliquary.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + itemName), tooltip);
-			}
-			tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".absorb")));
-			tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".infernal_tear.absorb_unset")));
+		if (isEnabled(stack)) {
+			LanguageHelper.formatTooltip("tooltip.xreliquary.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + itemName), tooltip);
 		}
+		tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".absorb")));
+		tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".infernal_tear.absorb_unset")));
 	}
 
 	@Override
@@ -165,7 +163,7 @@ public class InfernalTearItem extends ToggleableItem {
 			return ItemStack.EMPTY;
 		}
 
-		NBTHelper.putTagCompound("item", tear, target.write(new CompoundNBT()));
+		setTearTarget(tear, target);
 
 		if (Boolean.TRUE.equals(Settings.COMMON.items.infernalTear.absorbWhenCreated.get())) {
 			NBTHelper.putBoolean(ENABLED_TAG, stack, true);
@@ -174,13 +172,17 @@ public class InfernalTearItem extends ToggleableItem {
 		return tear;
 	}
 
+	public static void setTearTarget(ItemStack tear, ItemStack target) {
+		NBTHelper.putTagCompound("item", tear, target.write(new CompoundNBT()));
+	}
+
 	private ItemStack getTargetAlkahestItem(ItemStack self, IItemHandler inventory) {
 		ItemStack targetItem = ItemStack.EMPTY;
 		int itemQuantity = 0;
 		for (int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack stack = inventory.getStackInSlot(slot);
 			if (stack.isEmpty() || self.isItemEqual(stack) || stack.getMaxStackSize() == 1 || stack.getTag() != null
-					|| !matchAlkahestryRecipe(stack).filter(recipe -> recipe.getRecipeOutput().getCount() != 33 || recipe.getChargeNeeded() != 4).isPresent()) {
+					|| !Settings.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(stack.getItem())).isPresent()) {
 				continue;
 			}
 			if (InventoryHelper.getItemQuantity(stack, inventory) > itemQuantity) {

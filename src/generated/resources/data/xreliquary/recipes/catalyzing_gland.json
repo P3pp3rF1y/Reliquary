@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "xreliquary:mob_drops_craftable"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "GGG",
+          "GPG",
+          "GGG"
+        ],
+        "key": {
+          "P": {
+            "tag": "forge:gunpowder"
+          },
+          "G": {
+            "tag": "forge:ingots/gold"
+          }
+        },
+        "result": {
+          "item": "xreliquary:catalyzing_gland"
+        }
+      }
+    }
+  ]
+}

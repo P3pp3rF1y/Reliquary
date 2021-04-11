@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "minecraft:gold_nugget"
+    ]
+  },
+  "criteria": {
+    "has_empty_bullet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:bullets/empty_bullet"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "minecraft:gold_nugget"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_empty_bullet",
+      "has_the_recipe"
+    ]
+  ]
+}

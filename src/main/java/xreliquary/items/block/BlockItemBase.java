@@ -24,6 +24,9 @@ import java.util.List;
  */
 public class BlockItemBase extends BlockItem {
 
+	public BlockItemBase(Block block) {
+		this(block, new Properties());
+	}
 	public BlockItemBase(Block block, Properties builder) {
 		super(block, builder.group(Reliquary.ITEM_GROUP));
 	}

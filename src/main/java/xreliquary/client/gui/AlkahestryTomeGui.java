@@ -36,9 +36,11 @@ public class AlkahestryTomeGui extends GuiBase<ContainerAlkahestTome> {
 		blit(matrixStack, ((width - 16) / 2) + 19, ((height - 179) / 2) + 148, 0, 180, 10, 10);
 		blit(matrixStack, ((width - 16) / 2) - 14, ((height - 179) / 2) + 148, 10, 180, 10, 10);
 
-		drawItemStack(new ItemStack(ModItems.ALKAHESTRY_TOME), (width - 16) / 2, ((height - 179) / 2) + 145);
-		drawItemStack(AlkahestryRecipeRegistry.getDrainRecipe().getRecipeOutput(), ((width - 16) / 2) - 32, ((height - 179) / 2) + 145);
-		drawItemStack(AlkahestryRecipeRegistry.getDrainRecipe().getRecipeOutput(), ((width - 16) / 2) + 32, ((height - 179) / 2) + 145);
+		drawItemStack(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), (width - 16) / 2, ((height - 179) / 2) + 145);
+		AlkahestryRecipeRegistry.getDrainRecipe().ifPresent(drainRecipe -> {
+			drawItemStack(drainRecipe.getRecipeOutput(), ((width - 16) / 2) - 32, ((height - 179) / 2) + 145);
+			drawItemStack(drainRecipe.getRecipeOutput(), ((width - 16) / 2) + 32, ((height - 179) / 2) + 145);
+		});
 	}
 
 	private void drawTomeText(MatrixStack matrixStack, FontRenderer renderer) {

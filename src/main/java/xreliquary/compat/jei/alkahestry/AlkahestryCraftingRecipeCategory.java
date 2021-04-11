@@ -32,7 +32,7 @@ public class AlkahestryCraftingRecipeCategory extends AlkahestryRecipeCategory<A
 
 	public AlkahestryCraftingRecipeCategory(IGuiHelper guiHelper) {
 		super(guiHelper, UID);
-		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/alkahest_crafting.png"), 0, 0, 95, 76);
+		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/backgrounds.png"), 0, 0, 95, 76);
 		localizedName = LanguageHelper.getLocalization("jei." + Reference.MOD_ID + ".recipe.alkahest_crafting");
 	}
 
@@ -56,7 +56,7 @@ public class AlkahestryCraftingRecipeCategory extends AlkahestryRecipeCategory<A
 		ingredients.setInputIngredients(recipe.getIngredients());
 		NonNullList<ItemStack> outputs = NonNullList.create();
 		outputs.add(recipe.getRecipeOutput());
-		outputs.add(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME),
+		outputs.add(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()),
 				Settings.COMMON.items.alkahestryTome.chargeLimit.get() - recipe.getChargeNeeded()));
 		ingredients.setOutputs(VanillaTypes.ITEM, outputs);
 	}

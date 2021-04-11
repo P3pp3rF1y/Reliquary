@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:obsidian"
+    },
+    {
+      "item": "minecraft:redstone_lamp"
+    },
+    {
+      "item": "xreliquary:nebulous_heart"
+    },
+    {
+      "item": "xreliquary:catalyzing_gland"
+    }
+  ],
+  "result": {
+    "item": "xreliquary:alkahestry_altar"
+  }
+}

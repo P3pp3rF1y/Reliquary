@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:ghast_tear"
+    },
+    {
+      "item": "xreliquary:nebulous_heart"
+    },
+    {
+      "item": "xreliquary:slime_pearl"
+    },
+    {
+      "tag": "forge:gems/lapis"
+    }
+  ],
+  "result": {
+    "item": "xreliquary:void_tear"
+  }
+}

@@ -39,7 +39,7 @@ import java.util.List;
 
 public class MobCharmItem extends ItemBase {
 	public MobCharmItem() {
-		super("mob_charm", new Properties().maxStackSize(1).maxDamage(Settings.COMMON.items.mobCharm.durability.get()).setNoRepair());
+		super(new Properties().maxStackSize(1).maxDamage(Settings.COMMON.items.mobCharm.durability.get()).setNoRepair());
 		MinecraftForge.EVENT_BUS.addListener(this::onEntityTargetedEvent);
 		MinecraftForge.EVENT_BUS.addListener(this::onLivingUpdate);
 		MinecraftForge.EVENT_BUS.addListener(this::onLivingDeath);
@@ -152,8 +152,8 @@ public class MobCharmItem extends ItemBase {
 				} else {
 					pedestalItem.setDamage(pedestalItem.getDamage() + Settings.COMMON.items.mobCharm.damagePerKill.get());
 				}
-			} else if (pedestalItem.getItem() == ModItems.MOB_CHARM_BELT) {
-				ModItems.MOB_CHARM_BELT.damageCharm(player, pedestalItem, entityRegistryName);
+			} else if (pedestalItem.getItem() == ModItems.MOB_CHARM_BELT.get()) {
+				ModItems.MOB_CHARM_BELT.get().damageCharm(player, pedestalItem, entityRegistryName);
 			}
 		}
 	}
@@ -163,11 +163,11 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private boolean isCharmOrBeltFor(ItemStack slotStack, String registryName) {
-		return isCharmFor(slotStack, registryName) || (slotStack.getItem() == ModItems.MOB_CHARM_BELT && ModItems.MOB_CHARM_BELT.hasCharm(slotStack, registryName));
+		return isCharmFor(slotStack, registryName) || (slotStack.getItem() == ModItems.MOB_CHARM_BELT.get() && ModItems.MOB_CHARM_BELT.get().hasCharm(slotStack, registryName));
 	}
 
 	static boolean isCharmFor(ItemStack slotStack, String registryName) {
-		return slotStack.getItem() == ModItems.MOB_CHARM && getEntityRegistryName(slotStack).equals(registryName);
+		return slotStack.getItem() == ModItems.MOB_CHARM.get() && getEntityRegistryName(slotStack).equals(registryName);
 	}
 
 	private boolean pedestalWithCharmInRange(PlayerEntity player, MobCharmDefinition charmDefinition) {
@@ -224,14 +224,13 @@ public class MobCharmItem extends ItemBase {
 				if (slotStack.isEmpty()) {
 					continue;
 				}
-				if (ModItems.MOB_CHARM.isCharmOrBeltFor(slotStack, registryName)) {
+				if (ModItems.MOB_CHARM.get().isCharmOrBeltFor(slotStack, registryName)) {
 					return true;
 				}
 			}
 			return false;
 		}
 
-		@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 		public boolean damagePlayersMobCharm(PlayerEntity player, String entityRegistryName) {
 			if (player.isCreative()) {
 				return true;
@@ -265,8 +264,8 @@ public class MobCharmItem extends ItemBase {
 		}
 
 		protected boolean damageMobCharmInBelt(ServerPlayerEntity player, String entityRegistryName, ItemStack belt) {
-			if (belt.getItem() == ModItems.MOB_CHARM_BELT) {
-				ItemStack charmStack = ModItems.MOB_CHARM_BELT.damageCharm(player, belt, entityRegistryName);
+			if (belt.getItem() == ModItems.MOB_CHARM_BELT.get()) {
+				ItemStack charmStack = ModItems.MOB_CHARM_BELT.get().damageCharm(player, belt, entityRegistryName);
 
 				if (!charmStack.isEmpty()) {
 					PacketHandler.sendToClient(player, new PacketMobCharmDamage(charmStack, -1));

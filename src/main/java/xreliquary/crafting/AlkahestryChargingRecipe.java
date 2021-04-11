@@ -16,7 +16,6 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xreliquary.init.ModItems;
 import xreliquary.items.AlkahestryTomeItem;
-import xreliquary.reference.Settings;
 
 import javax.annotation.Nullable;
 
@@ -32,9 +31,9 @@ public class AlkahestryChargingRecipe implements ICraftingRecipe {
 		this.id = id;
 		this.chargingIngredient = chargingIngredient;
 		this.chargeToAdd = chargeToAdd;
-		tomeIngredient = Ingredient.fromStacks(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME), 0));
+		tomeIngredient = Ingredient.fromStacks(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), 0));
 
-		recipeOutput = new ItemStack(ModItems.ALKAHESTRY_TOME);
+		recipeOutput = new ItemStack(ModItems.ALKAHESTRY_TOME.get());
 		AlkahestryTomeItem.addCharge(recipeOutput, chargeToAdd);
 
 		AlkahestryRecipeRegistry.registerChargingRecipe(this);
@@ -53,7 +52,7 @@ public class AlkahestryChargingRecipe implements ICraftingRecipe {
 				if (chargingIngredient.test(slotStack)) {
 					inRecipe = true;
 					hasIngredient = true;
-				} else if (!hasTome && slotStack.getItem() == ModItems.ALKAHESTRY_TOME && AlkahestryTomeItem.getCharge(slotStack) + chargeToAdd <= AlkahestryTomeItem.getChargeLimit()) {
+				} else if (!hasTome && slotStack.getItem() == ModItems.ALKAHESTRY_TOME.get() && AlkahestryTomeItem.getCharge(slotStack) + chargeToAdd <= AlkahestryTomeItem.getChargeLimit()) {
 					inRecipe = true;
 					hasTome = true;
 				}
@@ -80,7 +79,7 @@ public class AlkahestryChargingRecipe implements ICraftingRecipe {
 			ItemStack stack = inv.getStackInSlot(slot);
 			if (chargingIngredient.test(stack)) {
 				numberOfIngredients++;
-			} else if (stack.getItem() == ModItems.ALKAHESTRY_TOME) {
+			} else if (stack.getItem() == ModItems.ALKAHESTRY_TOME.get()) {
 				tome = stack.copy();
 			}
 		}
@@ -126,11 +125,6 @@ public class AlkahestryChargingRecipe implements ICraftingRecipe {
 	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<AlkahestryChargingRecipe> {
 		@Override
 		public AlkahestryChargingRecipe read(ResourceLocation recipeId, JsonObject json) {
-			if (Boolean.TRUE.equals(Settings.COMMON.disable.disableAlkahestry.get())) {
-				//noinspection ConstantConditions - this is the easiest way to disable recipes without having to code special condition and adding to every recipe
-				return null;
-			}
-
 			if (!json.has("ingredient")) {
 				throw new JsonParseException("No ingredient for alkahestry charging recipe");
 			}

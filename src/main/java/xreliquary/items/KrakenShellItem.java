@@ -19,14 +19,14 @@ import xreliquary.util.InventoryHelper;
 
 public class KrakenShellItem extends ItemBase {
 	public KrakenShellItem() {
-		super("kraken_shell", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(PlayerEntity player, LivingAttackEvent event) {
 				return event.getSource() == DamageSource.DROWN
 						&& player.getFoodStats().getFoodLevel() > 0
-						&& InventoryHelper.playerHasItem(player, ModItems.KRAKEN_SHELL);
+						&& InventoryHelper.playerHasItem(player, ModItems.KRAKEN_SHELL.get());
 			}
 
 			@Override
@@ -53,6 +53,10 @@ public class KrakenShellItem extends ItemBase {
 	// buffs.
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+		if (world.getGameTime() % 3 != 0) {
+			return;
+		}
+
 		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
 			if (player.isInWater()) {

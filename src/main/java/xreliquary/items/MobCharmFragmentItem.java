@@ -1,23 +1,19 @@
 package xreliquary.items;
 
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-import xreliquary.init.ModItems;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
 public class MobCharmFragmentItem extends ItemBase {
 	public MobCharmFragmentItem() {
-		super("mob_charm_fragment", new Properties());
+		super(new Properties());
 	}
 
 	@Override

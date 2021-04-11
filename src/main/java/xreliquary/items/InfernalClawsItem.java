@@ -15,14 +15,14 @@ import xreliquary.util.InventoryHelper;
 
 public class InfernalClawsItem extends ItemBase {
 	public InfernalClawsItem() {
-		super("infernal_claws", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(PlayerEntity player, LivingAttackEvent event) {
 				return (event.getSource() == DamageSource.IN_FIRE || event.getSource() == DamageSource.ON_FIRE)
 						&& player.getFoodStats().getFoodLevel() > 0
-						&& InventoryHelper.playerHasItem(player, ModItems.INFERNAL_CLAWS);
+						&& InventoryHelper.playerHasItem(player, ModItems.INFERNAL_CLAWS.get());
 
 			}
 

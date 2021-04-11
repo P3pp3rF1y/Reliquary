@@ -1,0 +1,20 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "xreliquary:alkahestry_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "xreliquary:alkahestry_crafting",
+        "charge": 4,
+        "ingredient": {
+          "item": "minecraft:dirt"
+        },
+        "result_count": 33
+      }
+    }
+  ]
+}

@@ -290,32 +290,6 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 		}
 	}
 
-	private void updateRotation() {
-		Vector3d vec3d = getMotion();
-		float f = MathHelper.sqrt(getDistanceSq(vec3d));
-		rotationYaw = (float) (MathHelper.atan2(vec3d.x, vec3d.z) * (double) (180F / (float) Math.PI));
-
-		rotationPitch = (float) (MathHelper.atan2(vec3d.y, f) * (double) (180F / (float) Math.PI));
-		while (rotationPitch - prevRotationPitch < -180.0F) {
-			prevRotationPitch -= 360.0F;
-		}
-
-		while (rotationPitch - prevRotationPitch >= 180.0F) {
-			prevRotationPitch += 360.0F;
-		}
-
-		while (rotationYaw - prevRotationYaw < -180.0F) {
-			prevRotationYaw -= 360.0F;
-		}
-
-		while (rotationYaw - prevRotationYaw >= 180.0F) {
-			prevRotationYaw += 360.0F;
-		}
-
-		rotationPitch = MathHelper.lerp(0.2F, prevRotationPitch, rotationPitch);
-		rotationYaw = MathHelper.lerp(0.2F, prevRotationYaw, rotationYaw);
-	}
-
 	private void checkCollision() {
 		RayTraceResult raytraceresult = ProjectileHelper.func_234618_a_(this, this::func_230298_a_);
 		onImpact(raytraceresult);
@@ -373,7 +347,6 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 				double d0 = getPosX() + (double) (f1 * (float) ticksCatchableDelay * 0.1F);
 				double d1 = (float) MathHelper.floor(getPosY()) + 1.0F;
 				double d2 = getPosZ() + (double) (f2 * (float) ticksCatchableDelay * 0.1F);
-				BlockState blockstate = serverworld.getBlockState(new BlockPos(d0, d1 - 1.0D, d2));
 				if (serverworld.getBlockState(new BlockPos((int) d0, (int) d1 - 1, (int) d2)).getMaterial() == net.minecraft.block.material.Material.WATER) {
 					if (rand.nextFloat() < 0.15F) {
 						serverworld.spawnParticle(ParticleTypes.BUBBLE, d0, d1 - (double) 0.1F, d2, 1, f1, 0.1D, f2, 0.0D);
@@ -409,7 +382,6 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 				double d4 = getPosX() + (double) (MathHelper.sin(f6) * f7 * 0.1F);
 				double d5 = (float) MathHelper.floor(getPosY()) + 1.0F;
 				double d6 = getPosZ() + (double) (MathHelper.cos(f6) * f7 * 0.1F);
-				BlockState blockstate1 = serverworld.getBlockState(new BlockPos(d4, d5 - 1.0D, d6));
 				if (serverworld.getBlockState(new BlockPos(d4, d5 - 1.0D, d6)).getMaterial() == net.minecraft.block.material.Material.WATER) {
 					serverworld.spawnParticle(ParticleTypes.SPLASH, d4, d5, d6, 2 + rand.nextInt(2), 0.1F, 0.0D, 0.1F, 0.0D);
 				}
@@ -585,8 +557,8 @@ public class LyssaBobberEntity extends ProjectileEntity implements IEntityAdditi
 	private boolean shouldStopFishing(PlayerEntity fishingPlayer) {
 		ItemStack itemstack = fishingPlayer.getHeldItemMainhand();
 		ItemStack itemstack1 = fishingPlayer.getHeldItemOffhand();
-		boolean flag = itemstack.getItem() == ModItems.ROD_OF_LYSSA;
-		boolean flag1 = itemstack1.getItem() == ModItems.ROD_OF_LYSSA;
+		boolean flag = itemstack.getItem() == ModItems.ROD_OF_LYSSA.get();
+		boolean flag1 = itemstack1.getItem() == ModItems.ROD_OF_LYSSA.get();
 		if (fishingPlayer.isAlive() && (flag || flag1) && getDistanceSq(fishingPlayer) <= 10240.0D) {
 			return false;
 		} else {

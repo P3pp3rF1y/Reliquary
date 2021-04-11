@@ -66,7 +66,6 @@ public class WitchHatItem extends ArmorItem {
 
 	public WitchHatItem() {
 		super(hatMaterial, EquipmentSlotType.HEAD, new Properties().group(Reliquary.ITEM_GROUP));
-		setRegistryName(new ResourceLocation(Reference.MOD_ID, "witch_hat"));
 	}
 
 	@Override

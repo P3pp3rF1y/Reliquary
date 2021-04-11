@@ -5,12 +5,12 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.items.util.IPotionItem;
+import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
@@ -24,8 +24,8 @@ public class BulletItem extends ItemBase implements IPotionItem {
 	private final boolean addPotionBulletsInItemGroup;
 	private final int color;
 
-	public BulletItem(String name, boolean hasTooltip, boolean addPotionBulletsInItemGroup, int color) {
-		super(name, new Properties().setNoRepair());
+	public BulletItem(boolean hasTooltip, boolean addPotionBulletsInItemGroup, int color) {
+		super(new Properties().setNoRepair());
 		this.hasTooltip = hasTooltip;
 		this.addPotionBulletsInItemGroup = addPotionBulletsInItemGroup;
 		this.color = color;
@@ -42,13 +42,13 @@ public class BulletItem extends ItemBase implements IPotionItem {
 
 	@Override
 	public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> items) {
-		if (!isInGroup(itemGroup)) {
+		if (!isInGroup(itemGroup) || Boolean.TRUE.equals(Settings.COMMON.disable.disableHandgun.get())) {
 			return;
 		}
 
 		items.add(new ItemStack(this));
 
-		if (!addPotionBulletsInItemGroup) {
+		if (!addPotionBulletsInItemGroup || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			return;
 		}
 

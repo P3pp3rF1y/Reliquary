@@ -34,7 +34,6 @@ import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
 import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.reference.Settings;
-import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 
@@ -51,7 +50,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 	private static final String LONG_CAST_TAG = "long_cast";
 
 	public EnderStaffItem() {
-		super("ender_staff", new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
+		super(new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
 	}
 
 	private int getEnderStaffPearlCost() {
@@ -117,7 +116,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 
 	@Override
 	public void inventoryTick(ItemStack staff, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote) {
+		if (world.isRemote || world.getGameTime() % 10 != 0) {
 			return;
 		}
 
@@ -132,9 +131,10 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		if (!isEnabled(staff)) {
 			return;
 		}
-		if (getPearlCount(staff) + getEnderPearlWorth() <= getEnderPearlLimit() && InventoryHelper.consumeItem(new ItemStack(Items.ENDER_PEARL), player)) {
-			setPearlCount(staff, getPearlCount(staff) + getEnderPearlWorth());
-		}
+
+		int pearlCharge = getPearlCount(staff);
+		consumeAndCharge(player, getEnderPearlLimit() - pearlCharge, getEnderPearlWorth(), Items.ENDER_PEARL, 16,
+				chargeToAdd -> setPearlCount(staff, pearlCharge + chargeToAdd));
 	}
 
 	private void setPearlCount(ItemStack stack, int count) {
@@ -230,41 +230,47 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 	}
 
 	private void doWraithNodeWarpCheck(ItemStack stack, World world, PlayerEntity player) {
-		if (getPearlCount(stack) < getEnderStaffNodeWarpCost() && !player.isCreative()) {
+		CompoundNBT tag = stack.getTag();
+		if (tag == null || (getPearlCount(stack) < getEnderStaffNodeWarpCost() && !player.isCreative())) {
 			return;
 		}
 
-		if (stack.getTag() != null && !stack.getTag().getString(DIMENSION_TAG).equals(getDimension(world))) {
+		if (!tag.getString(DIMENSION_TAG).equals(getDimension(world))) {
 			if (!world.isRemote) {
 				player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Out of range!"), Util.DUMMY_UUID);
 			}
-		} else if (stack.getTag() != null && world.getBlockState(new BlockPos(stack.getTag().getInt(NODE_X_TAG + getDimension(world)), stack.getTag().getInt(NODE_Y_TAG + getDimension(world)), stack.getTag().getInt(NODE_Z_TAG + getDimension(world)))).getBlock() == ModBlocks.WRAITH_NODE) {
-			if (canTeleport(world, stack.getTag().getInt(NODE_X_TAG + getDimension(world)), stack.getTag().getInt(NODE_Y_TAG + getDimension(world)), stack.getTag().getInt(NODE_Z_TAG + getDimension(world)))) {
-				teleportPlayer(world, stack.getTag().getInt(NODE_X_TAG + getDimension(world)), stack.getTag().getInt(NODE_Y_TAG + getDimension(world)), stack.getTag().getInt(NODE_Z_TAG + getDimension(world)), player);
-				if (!player.isCreative() && !player.world.isRemote) {
-					setPearlCount(stack, getPearlCount(stack) - getEnderStaffNodeWarpCost());
-				}
+			return;
+		}
+
+		BlockPos wraithNodePos = new BlockPos(tag.getInt(NODE_X_TAG + getDimension(world)), tag.getInt(NODE_Y_TAG + getDimension(world)), tag.getInt(NODE_Z_TAG + getDimension(world)));
+		if (world.getBlockState(wraithNodePos).getBlock() == ModBlocks.WRAITH_NODE.get() && canTeleport(world, wraithNodePos)) {
+			teleportPlayer(world, wraithNodePos, player);
+			if (!player.isCreative() && !player.world.isRemote) {
+				setPearlCount(stack, getPearlCount(stack) - getEnderStaffNodeWarpCost());
 			}
-		} else if (stack.getTag() != null && stack.getTag().contains(DIMENSION_TAG)) {
-			stack.getTag().remove(DIMENSION_TAG);
-			stack.getTag().remove(NODE_X_TAG);
-			stack.getTag().remove(NODE_Y_TAG);
-			stack.getTag().remove(NODE_Z_TAG);
-			stack.getTag().remove("cooldown");
+			return;
+		}
+
+		if (tag.contains(DIMENSION_TAG)) {
+			tag.remove(DIMENSION_TAG);
+			tag.remove(NODE_X_TAG);
+			tag.remove(NODE_Y_TAG);
+			tag.remove(NODE_Z_TAG);
 			if (!world.isRemote) {
-				player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Node dosen't exist!"), Util.DUMMY_UUID);
+				player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Node doesn't exist!"), Util.DUMMY_UUID);
 			} else {
 				player.playSound(SoundEvents.ENTITY_ENDERMAN_DEATH, 1.0f, 1.0f);
 			}
 		}
 	}
 
-	private boolean canTeleport(World world, int x, int y, int z) {
-		return !(!world.isAirBlock(new BlockPos(x, y + 1, z)) || !world.isAirBlock(new BlockPos(x, y + 2, z)));
+	private boolean canTeleport(World world, BlockPos pos) {
+		BlockPos up = pos.up();
+		return world.isAirBlock(up) && world.isAirBlock(up.up());
 	}
 
-	private void teleportPlayer(World world, int x, int y, int z, PlayerEntity player) {
-		player.setPositionAndUpdate(x + 0.5, y + 0.875, z + 0.5);
+	private void teleportPlayer(World world, BlockPos pos, PlayerEntity player) {
+		player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 0.875, pos.getZ() + 0.5);
 		player.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
 		for (int particles = 0; particles < 2; particles++) {
 			world.addParticle(ParticleTypes.PORTAL, player.getPosX(), player.getPosY(), player.getPosZ(), world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
@@ -304,7 +310,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		BlockPos pos = itemUseContext.getPos();
 
 		// if right clicking on a wraith node, bind the eye to that wraith node.
-		if ((stack.getTag() == null || !(stack.getTag().contains(DIMENSION_TAG))) && world.getBlockState(pos).getBlock() == ModBlocks.WRAITH_NODE) {
+		if ((stack.getTag() == null || !(stack.getTag().contains(DIMENSION_TAG))) && world.getBlockState(pos).getBlock() == ModBlocks.WRAITH_NODE.get()) {
 			setWraithNode(stack, pos, getDimension(world));
 
 			PlayerEntity player = itemUseContext.getPlayer();

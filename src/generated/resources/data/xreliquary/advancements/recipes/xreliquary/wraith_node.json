@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:wraith_node"
+    ]
+  },
+  "criteria": {
+    "has_nebulous_heart": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:nebulous_heart"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:wraith_node"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_nebulous_heart",
+      "has_the_recipe"
+    ]
+  ]
+}

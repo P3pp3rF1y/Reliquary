@@ -24,7 +24,7 @@ public class FragmentRecipeHelper {
 		String regName = null;
 		for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
 			ItemStack slotStack = inv.getStackInSlot(slot);
-			if (slotStack.getItem() != ModItems.MOB_CHARM_FRAGMENT) {
+			if (slotStack.getItem() != ModItems.MOB_CHARM_FRAGMENT.get()) {
 				continue;
 			}
 			if (regName == null) {
@@ -42,7 +42,7 @@ public class FragmentRecipeHelper {
 	public static Optional<String> getRegistryName(CraftingInventory inv) {
 		for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
 			ItemStack slotStack = inv.getStackInSlot(slot);
-			if (slotStack.getItem() != ModItems.MOB_CHARM_FRAGMENT) {
+			if (slotStack.getItem() != ModItems.MOB_CHARM_FRAGMENT.get()) {
 				continue;
 			}
 			return Optional.of(MobCharmFragmentItem.getEntityRegistryName(slotStack));

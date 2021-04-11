@@ -5,12 +5,14 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -20,19 +22,27 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import xreliquary.blocks.tile.ApothecaryCauldronTileEntity;
-import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 
 import javax.annotation.Nullable;
 
-public class ApothecaryCauldronBlock extends BaseBlock {
+public class ApothecaryCauldronBlock extends Block {
 
 	public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 3);
 	private static final VoxelShape INSIDE = makeCuboidShape(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
 	private static final VoxelShape SHAPE = VoxelShapes.combineAndSimplify(VoxelShapes.fullCube(), VoxelShapes.or(makeCuboidShape(0.0D, 0.0D, 4.0D, 16.0D, 3.0D, 12.0D), makeCuboidShape(4.0D, 0.0D, 0.0D, 12.0D, 3.0D, 16.0D), makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 3.0D, 14.0D), INSIDE), IBooleanFunction.ONLY_FIRST);
 
 	public ApothecaryCauldronBlock() {
-		super(Names.Blocks.APOTHECARY_CAULDRON, Properties.create(Material.IRON).hardnessAndResistance(1.5F, 5.0F).notSolid());
+		super(Properties.create(Material.IRON).hardnessAndResistance(1.5F, 5.0F).notSolid());
 		setDefaultState(stateContainer.getBaseState().with(LEVEL, 0));
+	}
+
+	@Override
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+		if (Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
+			return;
+		}
+		super.fillItemGroup(group, items);
 	}
 
 	@Override

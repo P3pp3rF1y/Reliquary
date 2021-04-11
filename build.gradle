@@ -27,11 +27,7 @@ repositories {
     maven { url "https://maven.latmod.com/" }
     maven { url "http://maven.thiakil.com" }
     maven { url "https://maven.theillusivec4.top/" }
-/*    ivy {
-        name "Botania"
-        ivyPattern 'http://www.google.com/FAKE_URL/ugly_workaround_because_curseforge_403.txt'
-        artifactPattern "http://media.forgecdn.net/files/${project.botania_cf}/[module] r[revision].[ext]"
-    }*/
+    maven { url "http://maven.blamejared.com/" }
 }
 
 group = 'xreliquary'
@@ -47,6 +43,7 @@ minecraft {
         client {
             properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
             properties 'forge.logging.console.level': 'debug'
+            property 'mixin.env.disableRefMap', 'true'
             workingDirectory project.file('run')
             mods {
                 xreliquary {
@@ -57,6 +54,7 @@ minecraft {
         server {
             properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
             properties 'forge.logging.console.level': 'debug'
+            property 'mixin.env.disableRefMap', 'true'
             workingDirectory project.file('run')
             mods {
                 xreliquary {
@@ -88,16 +86,14 @@ dependencies {
 
     compileOnly fg.deobf("mezz.jei:jei-${project.minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${project.minecraft_version}:${jei_version}")
-    //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
+    compileOnly fg.deobf("vazkii.botania:Botania:${botania_version}:api")
+    runtimeOnly fg.deobf("vazkii.botania:Botania:${botania_version}")
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")    //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
-    //deobfCompile "info.amerifrance.guideapi:Guide-API:${guideapi_version}"
-    //deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
     //deobfCompile "jeresources:JustEnoughResources-${minecraft_version}:${jer_version}"
-    //deobfCompile "com.azanor.baubles:Baubles:${baubles_version}"
-    //deobfCompile name: 'Botania', version: botania_version, ext: 'jar'
     //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
-    //compile name:'Thaumcraft', version: thaumcraft_version, ext: 'jar'
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.minecraft_version}-${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.minecraft_version}-${curios_version}")
     testCompile 'org.testng:testng:6.9.10'

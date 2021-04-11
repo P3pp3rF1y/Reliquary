@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "xreliquary:zombie_heart"
+    },
+    {
+      "item": "xreliquary:zombie_heart"
+    }
+  ],
+  "result": {
+    "item": "minecraft:gold_nugget",
+    "count": 6
+  }
+}

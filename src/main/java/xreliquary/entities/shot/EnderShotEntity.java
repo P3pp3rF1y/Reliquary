@@ -47,7 +47,7 @@ public class EnderShotEntity extends ShotEntityBase {
 	protected void onImpact(RayTraceResult result) {
 		if (result.getType() == RayTraceResult.Type.ENTITY) {
 			Entity entityHit = ((EntityRayTraceResult) result).getEntity();
-			if (entityHit == shootingEntity || !(entityHit instanceof LivingEntity)) {
+			if (entityHit == func_234616_v_() || !(entityHit instanceof LivingEntity)) {
 				return;
 			}
 			onImpact((LivingEntity) entityHit);
@@ -57,7 +57,7 @@ public class EnderShotEntity extends ShotEntityBase {
 
 	@Override
 	protected void onImpact(LivingEntity mop) {
-		if (mop != shootingEntity || ticksInAir > 3) {
+		if (mop != func_234616_v_() || ticksInAir > 3) {
 			doDamage(mop);
 		}
 		spawnHitParticles(8);

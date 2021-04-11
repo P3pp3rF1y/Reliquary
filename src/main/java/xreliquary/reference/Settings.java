@@ -1,22 +1,36 @@
 package xreliquary.reference;
 
 import com.google.common.collect.Lists;
+import net.minecraft.item.Items;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 import xreliquary.client.gui.hud.HUDPosition;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static xreliquary.util.RegistryHelper.getItemRegistryName;
 
 @SuppressWarnings("squid:S1192") //no issue repeating the same string literal as they are independent
 public class Settings {
 	private Settings() {}
 
 	private static final int ITEM_CAP = 9999;
+
+	@SuppressWarnings("unused") // parameter needs to stay for addListener logic to recognize what this method is listening to
+	public static void onFileChange(ModConfig.Reloading configEvent) {
+		COMMON.items.infernalTear.resetCache();
+	}
 
 	public static class Client {
 		public final HudPos hudPositions;
@@ -127,13 +141,14 @@ public class Settings {
 			public final BooleanValue disablePotions;
 			public final BooleanValue disablePedestal;
 			public final BooleanValue disablePassivePedestal;
+			public final BooleanValue disableSpawnEggRecipes;
 
 			DisableSettings(ForgeConfigSpec.Builder builder) {
 				builder.comment("Disable sections of the mod")
 						.push("disable");
 
 				disableAlkahestry = builder
-						.comment("Disable Alkahestry tome and its and recipes")
+						.comment("Disable Alkahestry tome and its recipes")
 						.worldRestart()
 						.define("alkahestryTome", false);
 
@@ -156,6 +171,11 @@ public class Settings {
 						.comment("Disable all display-only pedestals")
 						.worldRestart()
 						.define("passivePedestal", false);
+
+				disableSpawnEggRecipes = builder
+						.comment("Disable recipes to craft spawn eggs from fragments")
+						.worldRestart()
+						.define("disableSpawnEggRecipes", false);
 
 				builder.pop();
 			}
@@ -228,6 +248,7 @@ public class Settings {
 				enderStaff = new EnderStaffSettings(builder);
 				fortuneCoin = new FortuneCoinSettings(builder);
 				glacialStaff = new GlacialStaffSettings(builder);
+				handgun = new HandgunSettings(builder);
 				harvestRod = new HarvestRodSettings(builder);
 				heroMedallion = new HeroMedallionSettings(builder);
 				iceMagusRod = new IceMagusRodSettings(builder);
@@ -238,6 +259,7 @@ public class Settings {
 				lanternOfParanoia = new LanternOfParanoiaSettings(builder);
 				midasTouchstone = new MidasTouchstoneSettings(builder);
 				mobCharm = new MobCharmSettings(builder);
+				mobCharmFragment = new MobCharmFragmentSettings(builder);
 				phoenixDown = new PhoenixDownSettings(builder);
 				pyromancerStaff = new PyromancerStaffSettings(builder);
 				rendingGale = new RendingGaleSettings(builder);
@@ -260,6 +282,23 @@ public class Settings {
 							.push("alkahestryTome");
 
 					chargeLimit = builder.comment("Charge limit of the tome").defineInRange("chargeLimit", 1000, 0, ITEM_CAP);
+
+					builder.pop();
+				}
+			}
+
+			public final MobCharmFragmentSettings mobCharmFragment;
+
+			public static class MobCharmFragmentSettings {
+				public final DoubleValue dropChance;
+				public final DoubleValue lootingMultiplier;
+
+				MobCharmFragmentSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Mob Charm Fragment Settings")
+							.push("mobCharmFragment");
+
+					dropChance = builder.comment("Chance of fragment droping from mobs that don't have fragment that can be crafted").defineInRange("dropChance", 0.1f / 6, 0, 1);
+					lootingMultiplier = builder.comment("Additional chance per level of looting").defineInRange("lootingMultiplier", 0.05f / 6, 0, 1);
 
 					builder.pop();
 				}
@@ -424,16 +463,11 @@ public class Settings {
 			public final FortuneCoinSettings fortuneCoin;
 
 			public static class FortuneCoinSettings {
-				public final BooleanValue enabledAudio;
 				public final IntValue standardPullDistance;
 				public final IntValue longRangePullDistance;
 
 				FortuneCoinSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Fortune Coin settings").push("fortuneCoin");
-
-					enabledAudio = builder
-							.comment("Allows to disable the sound of fortune coin teleporting stuff")
-							.define("enabledAudio", true);
 
 					standardPullDistance = builder
 							.comment("The distance that it pulls from when activated")
@@ -487,6 +521,23 @@ public class Settings {
 					builder.pop();
 				}
 			}
+
+			public final HandgunSettings handgun;
+
+			public static class HandgunSettings {
+				public final IntValue maxSkillLevel;
+
+				public HandgunSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Handgun settings").push("handgun");
+
+					maxSkillLevel = builder
+							.comment("Experience level at which handgun has the fastest reload time and shortes cooldown between shots")
+							.defineInRange("maxSkillLevel", 20, 0, 100);
+
+					builder.pop();
+				}
+			}
+
 
 			public final HarvestRodSettings harvestRod;
 
@@ -554,7 +605,6 @@ public class Settings {
 			public static class HeroMedallionSettings {
 				public final IntValue experienceLevelMaximum;
 				public final IntValue experienceLevelMinimum;
-				public final IntValue experienceLimit;
 				public final IntValue experienceDrop;
 				public final IntValue pedestalCoolDown;
 				public final IntValue pedestalRange;
@@ -570,10 +620,6 @@ public class Settings {
 					experienceLevelMinimum = builder
 							.comment("A player's experience level at which the medallion will stop pulling from the player")
 							.defineInRange("experienceLevelMinimum", 0, 0, 30);
-
-					experienceLimit = builder
-							.comment("Experience level that the medallion can hold")
-							.defineInRange("experienceLimit", Integer.MAX_VALUE, 0, Integer.MAX_VALUE);
 
 					experienceDrop = builder
 							.comment("How much experience gets dropped on ground when hero's medallion is right clicked on it (9 is the first level of player xp)")
@@ -663,7 +709,7 @@ public class Settings {
 				public final IntValue hungerCostPercent;
 
 				InfernalClawsSettings(ForgeConfigSpec.Builder builder) {
-					builder.comment("Infernal Chalice settings").push("infernalClaws");
+					builder.comment("Infernal Claws settings").push("infernalClaws");
 
 					hungerCostPercent = builder
 							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
@@ -676,7 +722,11 @@ public class Settings {
 			public final InfernalTearSettings infernalTear;
 
 			public static class InfernalTearSettings {
+				private static final String ITEM_EXPERIENCE_MATCHER = "([a-z1-9_.-]+:[a-z1-9_/.-]+)\\|\\d+";
 				public final BooleanValue absorbWhenCreated;
+				public final ForgeConfigSpec.ConfigValue<List<? extends String>> itemExperienceList;
+				@Nullable
+				private Map<String, Integer> itemExperience = null;
 
 				InfernalTearSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Infernal Tear settings").push("infernalTear");
@@ -684,8 +734,53 @@ public class Settings {
 					absorbWhenCreated = builder
 							.comment("Whether the infernal tear starts absorbing immediately after it is set to item type")
 							.define("absorbWhenCreated", false);
-
+					itemExperienceList = builder.comment("List of items that can be consumed by infernal tear with their experience point value")
+							.defineList("entityLootTableList", this::getDefaultInfernalTearMappings, mapping -> ((String) mapping).matches(ITEM_EXPERIENCE_MATCHER));
 					builder.pop();
+				}
+
+				private List<String> getDefaultInfernalTearMappings() {
+					List<String> ret = new ArrayList<>();
+					ret.add("minecraft:emerald|63");
+					ret.add("minecraft:sandstone|1");
+					ret.add("minecraft:gravel|1");
+					ret.add("minecraft:diamond|125");
+					ret.add("minecraft:gunpowder|8");
+					ret.add("minecraft:nether_star|500");
+					ret.add("minecraft:iron_ingot|63");
+					ret.add("minecraft:charcoal|2");
+					ret.add("minecraft:soul_sand|2");
+					ret.add("minecraft:lapis_lazuli|8");
+					ret.add("minecraft:obsidian|4");
+					ret.add("minecraft:end_stone|1");
+					ret.add("minecraft:gold_ingot|63");
+					ret.add("minecraft:netherrack|1");
+					ret.add("minecraft:flint|2");
+					ret.add("minecraft:clay|4");
+					ret.add("minecraft:chorus_fruit|2");
+					ret.add("minecraft:quartz|16");
+					ret.add("minecraft:honeycomb|4");
+					ret.add("minecraft:netherite_scrap|250");
+					return ret;
+				}
+
+				public Optional<Integer> getItemExperience(String itemRegistryName) {
+					return Optional.ofNullable(getItemExperiences().get(itemRegistryName));
+				}
+
+				public Map<String, Integer> getItemExperiences() {
+					if (itemExperience == null) {
+						itemExperience = new HashMap<>();
+						for (String itemAndExperience : itemExperienceList.get()) {
+							String[] split = itemAndExperience.split("\\|");
+							itemExperience.put(split[0], Integer.valueOf(split[1]));
+						}
+					}
+					return itemExperience;
+				}
+
+				public void resetCache() {
+					itemExperience = null;
 				}
 			}
 
@@ -708,12 +803,16 @@ public class Settings {
 			public final LanternOfParanoiaSettings lanternOfParanoia;
 
 			public static class LanternOfParanoiaSettings {
+				public final ConfigValue<List<String>> torches;
 				public final IntValue minLightLevel;
 				public final IntValue placementScanRadius;
 
 				LanternOfParanoiaSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Lantern of Paranoia settings").push("lanternOfParanoia");
 
+					torches = builder
+							.comment("List of torches that are supported by the lantern")
+							.define("torches", Lists.newArrayList(getItemRegistryName(Items.TORCH)));
 					minLightLevel = builder
 							.comment("Minimum light level below which the lantern will place torches")
 							.defineInRange("minLightLevel", 8, 0, 15);
@@ -760,12 +859,15 @@ public class Settings {
 			public final MobCharmSettings mobCharm;
 
 			public static class MobCharmSettings {
+				private static final String REGISTRY_NAME_MATCHER = "([a-z1-9_.-]+:[a-z1-9_/.-]+)";
+
 				public final IntValue durability;
 				public final IntValue damagePerKill;
 				public final IntValue dropDurabilityRepair;
 				public final IntValue maxCharmsToDisplay;
 				public final IntValue pedestalRange;
 				public final BooleanValue keepAlmostDestroyedDisplayed;
+				public final ConfigValue<List<? extends String>> entityBlockList;
 
 				MobCharmSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Mob Charm settings").push("mobCharm");
@@ -793,8 +895,17 @@ public class Settings {
 					keepAlmostDestroyedDisplayed = builder
 							.comment("Determines if almost destroyed charms stay displayed in the hud")
 							.define("keepAlmostDestroyedDisplayed", true);
-
+					entityBlockList = builder
+							.comment("List of hostile entities that are not supposed to have mob charms registered for them")
+							.defineList("entityBlockList", this::getDefaultEntityBlockList, entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
 					builder.pop();
+				}
+
+				private List<String> getDefaultEntityBlockList() {
+					List<String> ret = new ArrayList<>();
+					ret.add("minecraft:ender_dragon");
+					ret.add("minecraft:wither");
+					return ret;
 				}
 			}
 
@@ -1040,8 +1151,8 @@ public class Settings {
 					builder.comment("Sojourner Staff settings").push("sojournerStaff");
 
 					torches = builder
-							.comment("List of torches that are supported by the staff in addition to the default minecraft torch")
-							.define("torches", Lists.newArrayList("minecraft:torch"));
+							.comment("List of torches that are supported by the staff")
+							.define("torches", getDefaultTorches());
 
 					maxCapacityPerItemType = builder
 							.comment("Number of items the staff can store per item type")
@@ -1057,6 +1168,20 @@ public class Settings {
 
 					builder.pop();
 
+				}
+
+				private ArrayList<String> getDefaultTorches() {
+					return Lists.newArrayList(
+							getItemRegistryName(Items.TORCH),
+							getItemRegistryName(Items.SOUL_TORCH),
+							getItemRegistryName(Items.LANTERN),
+							getItemRegistryName(Items.JACK_O_LANTERN),
+							getItemRegistryName(Items.SEA_LANTERN),
+							getItemRegistryName(Items.SOUL_LANTERN),
+							getItemRegistryName(Items.SHROOMLIGHT),
+							getItemRegistryName(Items.GLOWSTONE),
+							getItemRegistryName(Items.END_ROD)
+					);
 				}
 			}
 

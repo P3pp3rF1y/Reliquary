@@ -14,8 +14,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import xreliquary.items.util.IBaubleItem;
 import xreliquary.items.ToggleableItem;
+import xreliquary.items.util.IBaubleItem;
 
 import javax.annotation.Nullable;
 import java.util.AbstractMap;
@@ -52,7 +52,7 @@ public class InventoryHelper {
 		int itemQuantity = 0;
 		for (int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack stack = inventory.getStackInSlot(slot);
-			if (StackHelper.isItemAndNbtEqual(self, stack) || stack.getMaxStackSize() == 1) {
+			if (ItemHandlerHelper.canItemStacksStack(self, stack) || stack.getMaxStackSize() == 1) {
 				continue;
 			}
 			if (getItemQuantity(stack, inventory) > itemQuantity) {
@@ -71,46 +71,35 @@ public class InventoryHelper {
 		int itemQuantity = 0;
 		for (int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack newStack = inventory.getStackInSlot(slot);
-			if (StackHelper.isItemAndNbtEqual(stack, newStack)) {
+			if (ItemHandlerHelper.canItemStacksStack(stack, newStack)) {
 				itemQuantity += newStack.getCount();
 			}
 		}
 		return itemQuantity;
 	}
 
-	public static boolean consumeItem(Predicate<ItemStack> itemMatches, PlayerEntity player) {
-		return !consumeItemStack(itemMatches, player).isEmpty();
+	public static ItemStack consumeItemStack(Predicate<ItemStack> itemMatches, PlayerEntity player, int count) {
+		return player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP)
+				.map(inventory -> extractFromInventory(itemMatches, count, inventory, false))
+				.orElse(ItemStack.EMPTY);
 	}
 
-	public static ItemStack consumeItemStack(Predicate<ItemStack> itemMatches, PlayerEntity player) {
+	public static ItemStack extractFromInventory(Predicate<ItemStack> itemMatches, int count, IItemHandler inventory, boolean simulate) {
 		ItemStack ret = ItemStack.EMPTY;
-		for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
-			if (player.inventory.mainInventory.get(slot).isEmpty()) {
-				continue;
-			}
-
-			ItemStack slotStack = player.inventory.mainInventory.get(slot);
-			if (itemMatches.test(slotStack)) {
-				int stackSize = slotStack.getCount();
-				if (stackSize > 0) {
-					ret = ItemHandlerHelper.copyStackWithSize(slotStack, 1);
-					slotStack.shrink(1);
-					if (slotStack.getCount() <= 0) {
-						player.inventory.mainInventory.set(slot, ItemStack.EMPTY);
-					}
-					return ret;
+		int slots = inventory.getSlots();
+		for (int slot = 0; slot < slots && ret.getCount() < count; slot++) {
+			ItemStack slotStack = inventory.getStackInSlot(slot);
+			if (itemMatches.test(slotStack) && (ret.isEmpty() || ItemHandlerHelper.canItemStacksStack(ret, slotStack))) {
+				int toExtract = Math.min(slotStack.getCount(), count - ret.getCount());
+				ItemStack extractedStack = inventory.extractItem(slot, toExtract, simulate);
+				if (ret.isEmpty()) {
+					ret = extractedStack;
+				} else {
+					ret.setCount(ret.getCount() + extractedStack.getCount());
 				}
 			}
 		}
 		return ret;
-	}
-
-	public static boolean consumeItem(ItemStack item, PlayerEntity player) {
-		return consumeItem(item, player, 0, 1);
-	}
-
-	public static boolean consumeItem(ItemStack item, PlayerEntity player, int minCount) {
-		return consumeItem(item, player, minCount, 1);
 	}
 
 	public static boolean consumeItem(ItemStack itemStack, PlayerEntity player, int minCount, int countToConsume) {
@@ -126,7 +115,7 @@ public class InventoryHelper {
 		List<Map.Entry<Integer, Integer>> slotCounts = new ArrayList<>();
 		for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
 			ItemStack slotStack = player.inventory.mainInventory.get(slot);
-			if (StackHelper.isItemAndNbtEqual(slotStack, itemStack)) {
+			if (ItemHandlerHelper.canItemStacksStack(slotStack, itemStack)) {
 				int stackSize = slotStack.getCount();
 				itemCount += stackSize;
 				slotCounts.add(new AbstractMap.SimpleEntry<>(slot, stackSize));
@@ -176,7 +165,7 @@ public class InventoryHelper {
 			}
 
 			//storage drawers compatibility loop
-			while (inventory.getStackInSlot(slot).getCount() > 0 && StackHelper.isItemAndNbtEqual(inventory.getStackInSlot(slot), contents) && remaining > 0) {
+			while (inventory.getStackInSlot(slot).getCount() > 0 && ItemHandlerHelper.canItemStacksStack(inventory.getStackInSlot(slot), contents) && remaining > 0) {
 				ItemStack extractedStack = inventory.extractItem(slot, Math.min(maxToRemove, inventory.getStackInSlot(slot).getCount()), false);
 				if (extractedStack.getCount() == 0) {
 					break; //just in case some item handler shows stacks that can't be extracted

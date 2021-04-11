@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -12,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -21,24 +23,32 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import xreliquary.blocks.tile.ApothecaryMortarTileEntity;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
 
-public class ApothecaryMortarBlock extends BaseBlock {
+public class ApothecaryMortarBlock extends Block {
 	public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
 	private static final VoxelShape MORTAR_SHAPE = makeCuboidShape(4D, 0D, 4D, 12D, 7D, 12D);
 
 	public ApothecaryMortarBlock() {
-		super(Names.Blocks.APOTHECARY_MORTAR, Properties.create(Material.ROCK).hardnessAndResistance(1.5F, 2.0F));
+		super(Properties.create(Material.ROCK).hardnessAndResistance(1.5F, 2.0F));
 		setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH));
 	}
 
 	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(FACING);
+	}
+
+	@Override
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+		if (Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
+			return;
+		}
+		super.fillItemGroup(group, items);
 	}
 
 	@Override
@@ -78,7 +88,7 @@ public class ApothecaryMortarBlock extends BaseBlock {
 		}
 
 		//if we're in cooldown prevent player from insta inserting essence that they just got from mortar
-		if (mortar.isInCooldown() && heldItem.getItem() == ModItems.POTION_ESSENCE) {
+		if (mortar.isInCooldown() && heldItem.getItem() == ModItems.POTION_ESSENCE.get()) {
 			return ActionResultType.CONSUME;
 		}
 

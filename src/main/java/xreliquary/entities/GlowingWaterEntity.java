@@ -88,7 +88,7 @@ public class GlowingWaterEntity extends ThrowableEntity implements IRendersAsIte
 		double y = getPosY();
 		double z = getPosZ();
 
-		ItemParticleData itemParticleData = new ItemParticleData(ParticleTypes.ITEM, new ItemStack(ModItems.GLOWING_WATER));
+		ItemParticleData itemParticleData = new ItemParticleData(ParticleTypes.ITEM, new ItemStack(ModItems.GLOWING_WATER.get()));
 		for (int particleNum = 0; particleNum < 8; ++particleNum) {
 			world.addParticle(itemParticleData, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D);
 		}
@@ -105,7 +105,7 @@ public class GlowingWaterEntity extends ThrowableEntity implements IRendersAsIte
 
 	@Override
 	public ItemStack getItem() {
-		return new ItemStack(ModItems.GLOWING_WATER);
+		return new ItemStack(ModItems.GLOWING_WATER.get());
 	}
 
 	@Override

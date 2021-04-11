@@ -28,7 +28,7 @@ public class PacketHandler {
 		networkWrapper.registerMessage(idx++, PacketMobCharmDamage.class, PacketMobCharmDamage::encode, PacketMobCharmDamage::decode, PacketMobCharmDamage::onMessage);
 		networkWrapper.registerMessage(idx++, PacketPedestalFishHook.class, PacketPedestalFishHook::encode, PacketPedestalFishHook::decode, PacketPedestalFishHook::onMessage);
 		networkWrapper.registerMessage(idx++, PacketFortuneCoinTogglePressed.class, PacketFortuneCoinTogglePressed::encode, PacketFortuneCoinTogglePressed::decode, PacketFortuneCoinTogglePressed::onMessage);
-		networkWrapper.registerMessage(idx++, SpawnAngelheartVialParticlesPacket.class, SpawnAngelheartVialParticlesPacket::encode, SpawnAngelheartVialParticlesPacket::decode, SpawnAngelheartVialParticlesPacket::onMessage);
+		networkWrapper.registerMessage(idx++, SpawnAngelheartVialParticlesPacket.class, (msg, packetBuffer) -> SpawnAngelheartVialParticlesPacket.encode(), packetBuffer1 -> SpawnAngelheartVialParticlesPacket.decode(), SpawnAngelheartVialParticlesPacket::onMessage);
 		networkWrapper.registerMessage(idx++, SpawnPhoenixDownParticlesPacket.class, SpawnPhoenixDownParticlesPacket::encode, SpawnPhoenixDownParticlesPacket::decode, SpawnPhoenixDownParticlesPacket::onMessage);
 		networkWrapper.registerMessage(idx, LeftClickedItemPacket.class, LeftClickedItemPacket::encode, LeftClickedItemPacket::decode, LeftClickedItemPacket::onMessage);
 	}

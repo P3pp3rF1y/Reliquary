@@ -15,12 +15,12 @@ import xreliquary.init.ModItems;
 
 public class GlowingWaterItem extends ItemBase {
 	public GlowingWaterItem() {
-		super("glowing_water", new Properties());
+		super(new Properties());
 	}
 
 	@Override
 	public ItemStack getContainerItem(ItemStack stack) {
-		return new ItemStack(ModItems.EMPTY_POTION_VIAL);
+		return new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 	}
 
 	@Override

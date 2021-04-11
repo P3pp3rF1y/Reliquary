@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.BooleanProperty;
@@ -22,29 +21,30 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.blocks.tile.PedestalTileEntity;
 import xreliquary.pedestal.PedestalRegistry;
-import xreliquary.reference.Names;
+import xreliquary.reference.Settings;
 import xreliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 public class PedestalBlock extends PassivePedestalBlock {
 	public static final BooleanProperty ENABLED = BooleanProperty.create("enabled");
-	public static final Set<Block> ALL_PEDESTAL_BLOCKS = new HashSet<>();
 
-	public PedestalBlock(DyeColor dyeColor) {
-		super("pedestals/" + dyeColor.getTranslationKey() + "_" + Names.Blocks.PEDESTAL);
+	public PedestalBlock() {
+		super();
 		setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ENABLED, false));
-		ALL_PEDESTAL_BLOCKS.add(this);
 	}
 
 	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		super.fillStateContainer(builder);
 		builder.add(ENABLED);
+	}
+
+	@Override
+	protected boolean isDisabled() {
+		return Boolean.TRUE.equals(Settings.COMMON.disable.disablePedestal.get());
 	}
 
 	@Override

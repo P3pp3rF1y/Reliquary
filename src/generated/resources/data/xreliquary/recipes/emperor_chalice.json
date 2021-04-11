@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:gems/emerald"
+    },
+    {
+      "tag": "forge:ingots/gold"
+    },
+    {
+      "item": "minecraft:bucket"
+    },
+    {
+      "type": "forge:nbt",
+      "item": "xreliquary:void_tear",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "xreliquary:emperor_chalice"
+  }
+}

@@ -4,25 +4,18 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.registries.ObjectHolder;
 import xreliquary.blocks.AlkahestryAltarBlock;
-import xreliquary.reference.Names;
-import xreliquary.reference.Reference;
+import xreliquary.init.ModBlocks;
 import xreliquary.reference.Settings;
-import xreliquary.util.InjectionHelper;
 import xreliquary.util.WorldHelper;
 
 public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickableTileEntity {
-	@SuppressWarnings("WeakerAccess") // need public here for ObjectHolder to work
-	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.ALKAHESTRY_ALTAR)
-	public static final TileEntityType<AlkahestryAltarTileEntity> TYPE = InjectionHelper.nullValue();
 	private int cycleTime;
 	private boolean isActive;
 	private int redstoneCount;
 
 	public AlkahestryAltarTileEntity() {
-		super(TYPE);
+		super(ModBlocks.ALKAHESTRY_ALTAR_TILE_TYPE.get());
 		cycleTime = 0;
 		redstoneCount = 0;
 	}
@@ -32,7 +25,7 @@ public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickab
 		if (world.isRemote || !isActive || world.isNightTime() || !world.canSeeSky(getPos().up())) {
 			return;
 		}
-		if(cycleTime > 0) {
+		if (cycleTime > 0) {
 			cycleTime--;
 		} else {
 			isActive = false;
@@ -62,7 +55,6 @@ public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickab
 		isActive = compound.getBoolean("isActive");
 	}
 
-
 	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
@@ -75,7 +67,7 @@ public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickab
 
 	public void addRedstone() {
 		redstoneCount++;
-		if(redstoneCount >= getRedstoneCost()) {
+		if (redstoneCount >= getRedstoneCost()) {
 			AlkahestryAltarBlock.updateAltarBlockState(true, world, getPos());
 		}
 		WorldHelper.notifyBlockUpdate(this);

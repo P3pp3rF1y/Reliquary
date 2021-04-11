@@ -4,7 +4,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
-import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -13,10 +12,6 @@ import xreliquary.init.ModItems;
 import xreliquary.util.potions.XRPotionHelper;
 
 public class PotionItem extends PotionItemBase {
-	public PotionItem() {
-		super("potion");
-	}
-
 	@Override
 	public UseAction getUseAction(ItemStack stack) {
 		return UseAction.DRINK;
@@ -53,7 +48,7 @@ public class PotionItem extends PotionItemBase {
 		XRPotionHelper.applyEffectsToEntity(XRPotionHelper.getPotionEffectsFromStack(stack), player, null, player);
 
 		if (!player.isCreative()) {
-			ItemStack emptyVial = new ItemStack(ModItems.EMPTY_POTION_VIAL);
+			ItemStack emptyVial = new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 			if (stack.getCount() <= 0) {
 				return emptyVial;
 			} else {

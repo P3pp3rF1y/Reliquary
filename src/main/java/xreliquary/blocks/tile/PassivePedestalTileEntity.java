@@ -14,7 +14,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.registries.ObjectHolder;
-import xreliquary.reference.Names;
+import xreliquary.init.ModBlocks;
 import xreliquary.reference.Reference;
 import xreliquary.util.InjectionHelper;
 import xreliquary.util.InventoryHelper;
@@ -22,9 +22,6 @@ import xreliquary.util.InventoryHelper;
 import javax.annotation.Nullable;
 
 public class PassivePedestalTileEntity extends TileEntityBase implements IInventory {
-	@SuppressWarnings("WeakerAccess")
-	@ObjectHolder(Reference.MOD_ID + ":" + Names.Blocks.PASSIVE_PEDESTAL)
-	public static final TileEntityType<PassivePedestalTileEntity> TYPE = InjectionHelper.nullValue();
 	protected ItemStack item;
 	private final IItemHandler inventoryWrapper = new InvWrapper(this);
 
@@ -33,7 +30,7 @@ public class PassivePedestalTileEntity extends TileEntityBase implements IInvent
 	}
 
 	public PassivePedestalTileEntity() {
-		this(TYPE);
+		this(ModBlocks.PASSIVE_PEDESTAL_TILE_TYPE.get());
 	}
 
 	PassivePedestalTileEntity(TileEntityType<?> tileEntityType) {

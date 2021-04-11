@@ -9,13 +9,10 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.entity.projectile.SmallFireballEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
 import net.minecraft.item.UseAction;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.ActionResult;
@@ -23,7 +20,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -36,38 +32,36 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.reference.Settings;
-import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.RandHelper;
 import xreliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PyromancerStaffItem extends ToggleableItem implements ILeftClickableItem {
-	private static final String QUANTITY_TAG = "Quantity";
 	private static final String BLAZE_MODE = "blaze";
 	private static final String BLAZE_CHARGES_TAG = BLAZE_MODE;
-	private static final String ITEMS_TAG = "Items";
 	private static final String CHARGE_MODE = "charge";
 	private static final String ERUPTION_MODE = "eruption";
+	private static final int EFFECT_COOLDOWN = 2;
+	private static final int INVENTORY_SEARCH_COOLDOWN = EFFECT_COOLDOWN * 5;
 
 	public PyromancerStaffItem() {
-		super("pyromancer_staff", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity e, int i, boolean f) {
-		if (!(e instanceof PlayerEntity)) {
+		if (!(e instanceof PlayerEntity) || world.getGameTime() % EFFECT_COOLDOWN != 0) {
 			return;
 		}
-		PlayerEntity player = (PlayerEntity) e;
 
+		PlayerEntity player = (PlayerEntity) e;
 		doFireballAbsorbEffect(stack, player);
 
 		if (!isEnabled(stack)) {
@@ -80,23 +74,20 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack staff, @Nullable World world, List<ITextComponent> tooltip) {
-		String charges = "0";
-		String blaze = "0";
-		CompoundNBT tagCompound = NBTHelper.getTag(staff);
-		ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
-		for (int i = 0; i < tagList.size(); ++i) {
-			CompoundNBT tagItemData = tagList.getCompound(i);
-			String itemName = tagItemData.getString("Name");
-			Item containedItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
-			int quantity = tagItemData.getInt(QUANTITY_TAG);
+		AtomicInteger charges = new AtomicInteger(0);
+		AtomicInteger blaze = new AtomicInteger(0);
+		iterateItems(staff, tag -> {
+			String itemName = tag.getString(ITEM_NAME_TAG);
+			int quantity = tag.getInt(QUANTITY_TAG);
 
-			if (containedItem == Items.BLAZE_POWDER) {
-				blaze = Integer.toString(quantity);
-			} else if (containedItem == Items.FIRE_CHARGE) {
-				charges = Integer.toString(quantity);
+			if (itemName.equals(RegistryHelper.getItemRegistryName(Items.BLAZE_POWDER))) {
+				blaze.set(quantity);
+			} else if (itemName.equals(RegistryHelper.getItemRegistryName(Items.FIRE_CHARGE))) {
+				charges.set(quantity);
 			}
-		}
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("charges", charges, BLAZE_CHARGES_TAG, blaze), tooltip);
+		}, () -> false);
+		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("charges",
+				Integer.toString(charges.get()), BLAZE_CHARGES_TAG, Integer.toString(blaze.get())), tooltip);
 		if (isEnabled(staff)) {
 			LanguageHelper.formatTooltip("tooltip.absorb_active",
 					ImmutableMap.of("item", TextFormatting.RED + Items.BLAZE_POWDER.getDisplayName(new ItemStack(Items.BLAZE_POWDER)).getString()
@@ -184,7 +175,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 
 	private void shootGhastFireball(PlayerEntity player, ItemStack stack, Vector3d lookVec) {
 		if (removeItemFromInternalStorage(stack, Items.FIRE_CHARGE, getFireChargeCost(), player.world.isRemote, player)) {
-			player.world.playEvent(player, 1016, new BlockPos((int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ()), 0);
+			player.world.playEvent(player, 1016, player.getPosition(), 0);
 			FireballEntity fireball = new FireballEntity(player.world, player, lookVec.x, lookVec.y, lookVec.z);
 			fireball.accelerationX = lookVec.x / 3;
 			fireball.accelerationY = lookVec.y / 3;
@@ -199,7 +190,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 		Vector3d lookVec = player.getLookVec();
 		//blaze fireball!
 		if (removeItemFromInternalStorage(stack, Items.BLAZE_POWDER, getBlazePowderCost(), player.world.isRemote, player)) {
-			player.world.playEvent(player, 1018, new BlockPos((int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ()), 0);
+			player.world.playEvent(player, 1018, player.getPosition(), 0);
 			SmallFireballEntity fireball = new SmallFireballEntity(player.world, player, lookVec.x, lookVec.y, lookVec.z);
 			fireball.accelerationX = lookVec.x / 3;
 			fireball.accelerationY = lookVec.y / 3;
@@ -307,127 +298,17 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 	}
 
 	private void scanForFireChargeAndBlazePowder(ItemStack staff, PlayerEntity player) {
-		List<ItemStack> absorbItems = new ArrayList<>();
-		absorbItems.add(new ItemStack(Items.FIRE_CHARGE));
-		absorbItems.add(new ItemStack(Items.BLAZE_POWDER));
-		absorbItems.stream().filter(absorbItem -> !isInternalStorageFullOfItem(staff, absorbItem.getItem()) && InventoryHelper.consumeItem(absorbItem, player))
-				.forEach(absorbItem -> addItemToInternalStorage(staff, absorbItem.getItem(), false));
-	}
-
-	private void addItemToInternalStorage(ItemStack stack, Item item, boolean isAbsorb) {
-		int quantityIncrease;
-		if (item == Items.FIRE_CHARGE) {
-			quantityIncrease = isAbsorb ? getGhastAbsorbWorth() : getFireChargeWorth();
-		} else {
-			quantityIncrease = isAbsorb ? getBlazeAbsorbWorth() : getBlazePowderWorth();
-		}
-		CompoundNBT tagCompound = NBTHelper.getTag(stack);
-
-		ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
-
-		boolean added = false;
-		for (int i = 0; i < tagList.size(); ++i) {
-			CompoundNBT tagItemData = tagList.getCompound(i);
-			String itemName = tagItemData.getString("Name");
-			if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
-				int quantity = tagItemData.getInt(QUANTITY_TAG);
-				tagItemData.putInt(QUANTITY_TAG, quantity + quantityIncrease);
-				added = true;
-			}
-		}
-		if (!added) {
-			CompoundNBT newTagData = new CompoundNBT();
-			newTagData.putString("Name", RegistryHelper.getItemRegistryName(item));
-			newTagData.putInt(QUANTITY_TAG, quantityIncrease);
-			tagList.add(newTagData);
+		if (player.world.getGameTime() % INVENTORY_SEARCH_COOLDOWN != 0) {
+			return;
 		}
 
-		tagCompound.put(ITEMS_TAG, tagList);
+		int currentFireChargeCount = getInternalStorageItemCount(staff, Items.FIRE_CHARGE);
+		consumeAndCharge(player, getFireChargeLimit() - currentFireChargeCount, getFireChargeWorth(), Items.FIRE_CHARGE, 16,
+				chargeToAdd -> addItemToInternalStorage(staff, Items.FIRE_CHARGE, chargeToAdd));
 
-		stack.setTag(tagCompound);
-	}
-
-	private boolean removeItemFromInternalStorage(ItemStack stack, Item item, int cost, boolean simulate, PlayerEntity player) {
-		if (player.isCreative()) {
-			return true;
-		}
-		if (hasItemInInternalStorage(stack, item, cost)) {
-			CompoundNBT tagCompound = NBTHelper.getTag(stack);
-
-			ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
-
-			ListNBT replacementTagList = new ListNBT();
-
-			for (int i = 0; i < tagList.size(); ++i) {
-				CompoundNBT tagItemData = tagList.getCompound(i);
-				String itemName = tagItemData.getString("Name");
-				if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
-					int quantity = tagItemData.getInt(QUANTITY_TAG);
-					if (!simulate) {
-						tagItemData.putInt(QUANTITY_TAG, quantity - cost);
-					}
-				}
-				replacementTagList.add(tagItemData);
-			}
-			tagCompound.put(ITEMS_TAG, replacementTagList);
-			stack.setTag(tagCompound);
-			return true;
-		}
-		return false;
-
-	}
-
-	private boolean hasItemInInternalStorage(ItemStack stack, Item item, int cost) {
-		CompoundNBT tagCompound = NBTHelper.getTag(stack);
-		if (tagCompound.isEmpty()) {
-			tagCompound.put(ITEMS_TAG, new ListNBT());
-			return false;
-		}
-
-		ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
-		for (int i = 0; i < tagList.size(); ++i) {
-			CompoundNBT tagItemData = tagList.getCompound(i);
-			String itemName = tagItemData.getString("Name");
-			if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
-				int quantity = tagItemData.getInt(QUANTITY_TAG);
-				return quantity >= cost;
-			}
-		}
-
-		return false;
-	}
-
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	private boolean isInternalStorageFullOfItem(ItemStack stack, Item item) {
-		int quantityLimit = item == Items.FIRE_CHARGE ? getFireChargeLimit() : getBlazePowderLimit();
-		if (hasItemInInternalStorage(stack, item, 1)) {
-			CompoundNBT tagCompound = NBTHelper.getTag(stack);
-			ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
-
-			for (int i = 0; i < tagList.size(); ++i) {
-				CompoundNBT tagItemData = tagList.getCompound(i);
-				String itemName = tagItemData.getString("Name");
-				if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
-					int quantity = tagItemData.getInt(QUANTITY_TAG);
-					return quantity >= quantityLimit;
-				}
-			}
-		}
-		return false;
-	}
-
-	public int getInternalStorageItemCount(ItemStack staff, Item item) {
-		CompoundNBT tagCompound = NBTHelper.getTag(staff);
-		ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
-
-		for (int i = 0; i < tagList.size(); ++i) {
-			CompoundNBT tagItemData = tagList.getCompound(i);
-			String itemName = tagItemData.getString("Name");
-			if (itemName.equals(RegistryHelper.getItemRegistryName(item))) {
-				return tagItemData.getInt(QUANTITY_TAG);
-			}
-		}
-		return 0;
+		int currentBlazePowderCount = getInternalStorageItemCount(staff, Items.BLAZE_POWDER);
+		consumeAndCharge(player, getBlazePowderLimit() - currentBlazePowderCount, getBlazePowderWorth(), Items.BLAZE_POWDER, 16,
+				chargeToAdd -> addItemToInternalStorage(staff, Items.BLAZE_POWDER, chargeToAdd));
 	}
 
 	private int getFireChargeWorth() {
@@ -466,20 +347,13 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 		if (player.isBurning()) {
 			player.extinguish();
 		}
-		int x = (int) Math.floor(player.getPosX());
-		int y = (int) Math.floor(player.getPosY());
-		int z = (int) Math.floor(player.getPosZ());
-		for (int xOff = -3; xOff <= 3; xOff++) {
-			for (int yOff = -3; yOff <= 3; yOff++) {
-				for (int zOff = -3; zOff <= 3; zOff++) {
-					Block block = player.world.getBlockState(new BlockPos(x + xOff, y + yOff, z + zOff)).getBlock();
-					if (block == Blocks.FIRE) {
-						player.world.setBlockState(new BlockPos(x + xOff, y + yOff, z + zOff), Blocks.AIR.getDefaultState());
-						player.world.playSound(x + xOff + 0.5D, y + yOff + 0.5D, z + zOff + 0.5D, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
-					}
-				}
+		BlockPos.getAllInBoxMutable(player.getPosition().add(-3, -3, -3), player.getPosition().add(3, 3, 3)).forEach(pos -> {
+			Block block = player.world.getBlockState(pos).getBlock();
+			if (block == Blocks.FIRE) {
+				player.world.setBlockState(pos, Blocks.AIR.getDefaultState());
+				player.world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F);
 			}
-		}
+		});
 	}
 
 	private void doFireballAbsorbEffect(ItemStack stack, PlayerEntity player) {
@@ -491,29 +365,29 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 	}
 
 	private void absorbBlazeFireballs(ItemStack stack, PlayerEntity player) {
-		List<SmallFireballEntity> blazeFireballs = player.world.getEntitiesWithinAABB(SmallFireballEntity.class, new AxisAlignedBB(player.getPosX() - 3, player.getPosY() - 3, player.getPosZ() - 3, player.getPosX() + 3, player.getPosY() + 3, player.getPosZ() + 3));
+		List<SmallFireballEntity> blazeFireballs = player.world.getEntitiesWithinAABB(SmallFireballEntity.class, player.getBoundingBox().grow(3));
 		for (SmallFireballEntity fireball : blazeFireballs) {
 			if (fireball.func_234616_v_() == player) {
 				continue;
 			}
-			for (int particles = 0; particles < 4; particles++) {
-				player.world.addParticle(RedstoneParticleData.REDSTONE_DUST, fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), 0.0D, 1.0D, 1.0D);
-			}
-			player.world.playSound(fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
+			if (hasSpaceForItem(stack, Items.BLAZE_POWDER, getBlazePowderLimit())) {
+				for (int particles = 0; particles < 4; particles++) {
+					player.world.addParticle(RedstoneParticleData.REDSTONE_DUST, fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), 0.0D, 1.0D, 1.0D);
+				}
+				player.world.playSound(fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
 
-			if (!isInternalStorageFullOfItem(stack, Items.BLAZE_POWDER) && InventoryHelper.consumeItem(new ItemStack(Items.BLAZE_POWDER), player)) {
-				addItemToInternalStorage(stack, Items.BLAZE_POWDER, true);
+				addItemToInternalStorage(stack, Items.BLAZE_POWDER, getBlazeAbsorbWorth());
 			}
 			fireball.remove();
 		}
 	}
 
 	private void absorbGhastFireballs(ItemStack stack, PlayerEntity player) {
-		List<FireballEntity> ghastFireballs = player.world.getEntitiesWithinAABB(FireballEntity.class, new AxisAlignedBB(player.getPosX() - 5, player.getPosY() - 5, player.getPosZ() - 5, player.getPosX() + 5, player.getPosY() + 5, player.getPosZ() + 5));
+		List<FireballEntity> ghastFireballs = player.world.getEntitiesWithinAABB(FireballEntity.class, player.getBoundingBox().grow(4));
 		for (FireballEntity fireball : ghastFireballs) {
-			if (fireball.func_234616_v_() != player && player.getDistance(fireball) < 4) {
-				if (!isInternalStorageFullOfItem(stack, Items.FIRE_CHARGE) && InventoryHelper.consumeItem(new ItemStack(Items.FIRE_CHARGE), player)) {
-					addItemToInternalStorage(stack, Items.FIRE_CHARGE, true);
+			if (fireball.func_234616_v_() != player) {
+				if (hasSpaceForItem(stack, Items.FIRE_CHARGE, getFireChargeLimit())) {
+					addItemToInternalStorage(stack, Items.FIRE_CHARGE, getGhastAbsorbWorth());
 					player.world.playSound(fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
 				}
 				fireball.remove();

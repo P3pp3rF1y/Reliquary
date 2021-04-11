@@ -20,7 +20,7 @@ public class MobCharmRecipeMaker {
 		List<ShapedRecipe> recipes = new ArrayList<>();
 
 		for (String regName : MobCharmRegistry.getRegisteredNames()) {
-			Ingredient fragmentIngredient = Ingredient.fromStacks(ModItems.MOB_CHARM_FRAGMENT.getStackFor(regName));
+			Ingredient fragmentIngredient = Ingredient.fromStacks(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName));
 			Ingredient leatherIngredient = Ingredient.fromItems(Items.LEATHER);
 			Ingredient stringIngredient = Ingredient.fromItems(Items.STRING);
 
@@ -35,9 +35,9 @@ public class MobCharmRecipeMaker {
 			inputs.add(Ingredient.EMPTY);
 			inputs.add(fragmentIngredient);
 
-			ItemStack output = ModItems.MOB_CHARM.getStackFor(regName);
+			ItemStack output = ModItems.MOB_CHARM.get().getStackFor(regName);
 
-			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, "xreliquary.mob_charm." + output.getTranslationKey());
+			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, "mob_charm_" + regName.replace(':', '_'));
 			recipes.add(new ShapedRecipe(id, "xreliquary.mob_charm", 3, 3, inputs, output));
 		}
 

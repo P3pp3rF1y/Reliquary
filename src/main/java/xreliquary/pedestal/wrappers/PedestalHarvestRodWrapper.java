@@ -6,6 +6,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.CropsBlock;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.NetherWartBlock;
+import net.minecraft.block.SweetBerryBushBlock;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -24,10 +25,8 @@ import xreliquary.api.IPedestalActionItemWrapper;
 import xreliquary.blocks.FertileLilyPadBlock;
 import xreliquary.init.ModItems;
 import xreliquary.items.HarvestRodItem;
-import xreliquary.items.util.HarvestRodItemStackHandler;
 import xreliquary.reference.Settings;
 import xreliquary.util.ItemHelper;
-import xreliquary.util.NBTHelper;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -37,7 +36,7 @@ import java.util.Queue;
 public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 	private static final int NO_JOB_COOL_DOWN_CYCLES = 10;
-	private static final HarvestRodItem harvestRod = ModItems.HARVEST_ROD;
+	private static final HarvestRodItem harvestRod = ModItems.HARVEST_ROD.get();
 
 	private int hoeCoolDown = 0;
 	private int plantCoolDown = 0;
@@ -121,7 +120,6 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void boneMealCrops(World world, BlockPos pos, ItemStack stack, int range) {
-
 		if (boneMealCoolDown > 0) {
 			boneMealCoolDown--;
 		} else {
@@ -155,13 +153,12 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void plantSeeds(World world, PlayerEntity player, BlockPos pos, ItemStack stack, int range) {
-
 		if (plantCoolDown > 0) {
 			plantCoolDown--;
 		} else {
 			byte plantableSlot = 1;
-
 			if (harvestRod.getCountPlantable(stack) > 0) {
+				harvestRod.clearPlantableIfNoLongerValid(stack, plantableSlot);
 				int quantity = harvestRod.getPlantableQuantity(stack, plantableSlot);
 
 				if (quantity > 0 && plantNext(world, player, pos, stack, range, plantableSlot)) {
@@ -225,7 +222,8 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 					if (block instanceof IPlantable || block == Blocks.MELON || block == Blocks.PUMPKIN) {
 						if (block instanceof FertileLilyPadBlock || block == Blocks.PUMPKIN_STEM || block == Blocks.MELON_STEM
 								|| block instanceof CropsBlock && ((CropsBlock) block).canGrow(world, currentPos, state, false)
-								|| block instanceof NetherWartBlock && state.get(NetherWartBlock.AGE) < 3) {
+								|| block instanceof NetherWartBlock && state.get(NetherWartBlock.AGE) < 3
+								|| block instanceof SweetBerryBushBlock && state.get(SweetBerryBushBlock.AGE) < 3) {
 							return;
 						}
 

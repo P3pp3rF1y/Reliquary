@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xreliquary:serpent_staff"
+    ]
+  },
+  "criteria": {
+    "has_kraken_shell_fragment": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "xreliquary:kraken_shell_fragment"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xreliquary:serpent_staff"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_kraken_shell_fragment",
+      "has_the_recipe"
+    ]
+  ]
+}

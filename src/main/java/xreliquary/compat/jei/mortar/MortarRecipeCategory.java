@@ -28,9 +28,11 @@ public class MortarRecipeCategory extends ReliquaryRecipeCategory<MortarRecipeJE
 
 	public MortarRecipeCategory(IGuiHelper guiHelper) {
 		super(UID);
-		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/mortar.png"), 0, 0, 79, 51);
+		background = guiHelper.drawableBuilder(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/backgrounds.png"), 137, 0, 66, 51)
+				.addPadding(0, 0, 13, 0)
+				.build();
 		localizedName = LanguageHelper.getLocalization("jei." + Reference.MOD_ID + ".recipe.mortar");
-		icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.APOTHECARY_MORTAR));
+		icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.APOTHECARY_MORTAR.get()));
 	}
 
 	@Override
@@ -75,6 +77,6 @@ public class MortarRecipeCategory extends ReliquaryRecipeCategory<MortarRecipeJE
 			recipeLayout.getItemStacks().set(INPUT_SLOT_3, ingredientsInputs.get(2));
 		}
 		recipeLayout.getItemStacks().set(OUTPUT_SLOT, output);
-		recipeLayout.getItemStacks().set(MORTAR_SLOT, new ItemStack(ModBlocks.APOTHECARY_MORTAR, 1));
+		recipeLayout.getItemStacks().set(MORTAR_SLOT, new ItemStack(ModBlocks.APOTHECARY_MORTAR.get(), 1));
 	}
 }

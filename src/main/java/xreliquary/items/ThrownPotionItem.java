@@ -11,10 +11,6 @@ import net.minecraft.world.World;
 import xreliquary.entities.potion.ThrownXRPotionEntity;
 
 public class ThrownPotionItem extends PotionItemBase {
-	public ThrownPotionItem(String registryName) {
-		super(registryName);
-	}
-
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);

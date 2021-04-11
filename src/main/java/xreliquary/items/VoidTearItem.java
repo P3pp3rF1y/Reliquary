@@ -22,8 +22,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,10 +35,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import xreliquary.blocks.PedestalBlock;
 import xreliquary.items.util.ILeftClickableItem;
 import xreliquary.items.util.VoidTearItemStackHandler;
-import xreliquary.reference.Names;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
@@ -46,7 +46,7 @@ import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
 import xreliquary.util.NoPlayerBlockItemUseContext;
 import xreliquary.util.RandHelper;
-import xreliquary.util.StackHelper;
+import xreliquary.util.TranslationHelper;
 import xreliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
@@ -57,12 +57,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
-
 	private static final String CONTENTS_TAG = "contents";
 	private static final String TOOLTIP_PREFIX = "tooltip.";
 
 	public VoidTearItem() {
-		super(Names.Items.VOID_TEAR, new Properties());
+		super(new Properties());
 		MinecraftForge.EVENT_BUS.addListener(this::onItemPickup);
 	}
 
@@ -110,7 +109,13 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 		if (isEnabled(voidTear)) {
 			LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName().getString()), tooltip);
-			tooltip.add(new StringTextComponent(LanguageHelper.getLocalization(TOOLTIP_PREFIX + Reference.MOD_ID + ".absorb_tear")));
+			tooltip.add(
+					new TranslationTextComponent(TranslationHelper.translTooltip(this) + ".mode",
+							new TranslationTextComponent(TranslationHelper.transl(this) + ".mode." + getMode(voidTear).getString().toLowerCase()).mergeStyle(TextFormatting.YELLOW),
+							new TranslationTextComponent(TranslationHelper.translTooltip(this) + ".mode." + getMode(voidTear).getString().toLowerCase()),
+							new TranslationTextComponent(TranslationHelper.translTooltip(this) + ".mode_change").mergeStyle(TextFormatting.ITALIC).mergeStyle(TextFormatting.AQUA)
+					)
+			);
 		}
 		LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".tear_quantity", ImmutableMap.of("item", contents.getDisplayName().getString(), "amount", Integer.toString(contents.getCount())), tooltip);
 	}
@@ -185,7 +190,6 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	private void buildTear(ItemStack voidTear, ItemStack target, PlayerEntity player, IItemHandler inventory, boolean isPlayerInventory) {
-
 		int quantity = InventoryHelper.getItemQuantity(target, inventory);
 		if (isPlayerInventory) {
 			if ((quantity - target.getMaxStackSize()) > 0) {
@@ -207,7 +211,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 	@Override
 	public void inventoryTick(ItemStack voidTear, World world, Entity entity, int slotNumber, boolean isSelected) {
-		if (!world.isRemote) {
+		if (!world.isRemote && world.getGameTime() % 5 != 0) {
 			if (!(entity instanceof PlayerEntity)) {
 				return;
 			}
@@ -265,7 +269,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		for (int slot = 0; slot < h.getSlots(); slot++) {
 			ItemStack stackFound = h.getStackInSlot(slot);
 
-			if (StackHelper.isItemAndNbtEqual(stackFound, getTearContents(voidTear))) {
+			if (ItemHandlerHelper.canItemStacksStack(stackFound, getTearContents(voidTear))) {
 				int quantityToDecrease = Math.min(stackFound.getMaxStackSize() - stackFound.getCount(), getItemQuantity(voidTear) - 1);
 				stackFound.grow(quantityToDecrease);
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
@@ -544,7 +548,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	boolean canAbsorbStack(ItemStack pickedUpStack, ItemStack tearStack) {
-		return StackHelper.isItemAndNbtEqual(getTearContents(tearStack), pickedUpStack) && getItemQuantity(tearStack) + pickedUpStack.getCount() <= Settings.COMMON.items.voidTear.itemLimit.get();
+		return ItemHandlerHelper.canItemStacksStack(getTearContents(tearStack), pickedUpStack) && getItemQuantity(tearStack) + pickedUpStack.getCount() <= Settings.COMMON.items.voidTear.itemLimit.get();
 	}
 
 	public boolean isEmpty(ItemStack voidTear) {
