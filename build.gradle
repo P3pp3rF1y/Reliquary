@@ -65,6 +65,7 @@ minecraft {
         data {
             properties 'forge.logging.markers': 'REGISTRIES,REGISTRYDUMP'
             properties 'forge.logging.console.level': 'debug'
+            property 'mixin.env.disableRefMap', 'true'
             properties 'fml.earlyprogresswindow': 'false'
             workingDirectory project.file('run')
             mods {

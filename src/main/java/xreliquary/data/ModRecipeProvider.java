@@ -209,7 +209,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.addIngredient(ModItems.EMPTY_BULLET.get())
 				.addIngredient(ModItems.EMPTY_BULLET.get())
 				.addCriterion("has_empty_bullet", hasItem(ModItems.EMPTY_BULLET.get()))
-				.build(consumer);
+				.build(consumer, new ResourceLocation(Reference.MOD_ID, "gold_nugget"));
 
 		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
 				ShapedRecipeBuilder.shapedRecipe(ModItems.HARVEST_ROD.get())

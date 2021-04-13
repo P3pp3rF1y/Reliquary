@@ -58,6 +58,9 @@ public class FertileLilyPadBlock extends BushBlock {
 
 	private void growCropsNearby(ServerWorld world, BlockPos pos, BlockState state) {
 		BlockPos.getAllInBoxMutable(pos.add(-tileRange(), -1, -tileRange()), pos.add(tileRange(), tileRange(), tileRange())).forEach(cropPos -> {
+			if (!world.isBlockLoaded(cropPos)) {
+				return;
+			}
 			BlockState cropState = world.getBlockState(cropPos);
 			Block cropBlock = cropState.getBlock();
 
