@@ -56,7 +56,7 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 	}
 
 	private boolean isXpJuiceFluid(FluidStack stack) {
-		return FluidTags.getCollection().getTagByID(ModFluids.XP_JUICE_TAG).contains(stack.getFluid());
+		return FluidTags.getCollection().getTagByID(ModFluids.EXPERIENCE_TAG).contains(stack.getFluid());
 	}
 
 	@Override

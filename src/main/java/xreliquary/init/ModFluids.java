@@ -15,7 +15,7 @@ import xreliquary.reference.Reference;
 public class ModFluids {
 	private ModFluids() {}
 
-	public static final ResourceLocation XP_JUICE_TAG = new ResourceLocation("forge:xp_juice");
+	public static final ResourceLocation EXPERIENCE_TAG = new ResourceLocation("forge:experience");
 
 	private static final ResourceLocation XP_JUICE_STILL_TEXTURE = new ResourceLocation(Reference.MOD_ID, "fluids/xp_juice_still");
 	private static final ResourceLocation XP_JUICE_FLOWING_TEXTURE = new ResourceLocation(Reference.MOD_ID, "fluids/xp_juice_flowing");
