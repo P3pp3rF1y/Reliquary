@@ -100,8 +100,8 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 
 	private boolean checkMatch(CraftingInventory inv, int startX, int startY, boolean mirror) {
 		List<EffectInstance> targetEffects = new ArrayList<>();
-		for (int x = 0; x < compose.getRecipeWidth(); x++) {
-			for (int y = 0; y < compose.getRecipeHeight(); y++) {
+		for (int x = 0; x < inv.getWidth(); x++) {
+			for (int y = 0; y < inv.getHeight(); y++) {
 				int subX = x - startX;
 				int subY = y - startY;
 

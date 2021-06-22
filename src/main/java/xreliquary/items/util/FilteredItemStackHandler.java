@@ -209,7 +209,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		} else {
 			validateSlotIndex(slot);
 
-			if (slot >= getSlots() - 1) {
+			if (slot >= getSlots()) {
 				return ItemStack.EMPTY;
 			}
 

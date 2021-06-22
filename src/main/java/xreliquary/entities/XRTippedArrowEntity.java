@@ -5,7 +5,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -28,7 +27,7 @@ import java.util.List;
 
 @SuppressWarnings("squid:S2160")
 public class XRTippedArrowEntity extends AbstractArrowEntity {
-	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(ArrowEntity.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(XRTippedArrowEntity.class, DataSerializers.VARINT);
 	private List<EffectInstance> effects = Lists.newArrayList();
 
 	public XRTippedArrowEntity(EntityType<XRTippedArrowEntity> entityType, World world) {
