@@ -13,6 +13,8 @@ import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
 public class CauldronBubbleParticle extends SpriteTexturedParticle {
+	private static final int FRAMES_OF_EACH_POP_STAGE = 2;
+	private static final int POP_STAGES = 3;
 	private final IAnimatedSprite spriteSet;
 
 	private CauldronBubbleParticle(ClientWorld world, ColorParticleData particleData, double x, double y, double z, IAnimatedSprite spriteSet) {
@@ -52,10 +54,10 @@ public class CauldronBubbleParticle extends SpriteTexturedParticle {
 	@Override
 	public void selectSpriteWithAge(IAnimatedSprite animatedSprite) {
 		int ageFromDeath = maxAge - age;
-		if (ageFromDeath <= 6) {
-			animatedSprite.get(4 - Math.max(ageFromDeath / 2, 1), maxAge);
+		if (ageFromDeath <= FRAMES_OF_EACH_POP_STAGE * POP_STAGES) {
+			setSprite(animatedSprite.get(4 - Math.max(ageFromDeath / FRAMES_OF_EACH_POP_STAGE, 1), POP_STAGES));
 		} else {
-			animatedSprite.get(0, maxAge);
+			setSprite(animatedSprite.get(0, maxAge));
 		}
 	}
 
