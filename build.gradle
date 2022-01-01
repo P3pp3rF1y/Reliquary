@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        jcenter()
         maven {
             name = "forge"
             url = "https://maven.minecraftforge.net"
@@ -23,11 +22,16 @@ apply plugin: 'idea'
 repositories {
     mavenCentral()
     maven { url "http://dvs1.progwml6.com/files/maven" }
-    maven { url "https://dl.bintray.com/way2muchnoise/dev" }
     maven { url "https://maven.latmod.com/" }
     maven { url "http://maven.thiakil.com" }
     maven { url "https://maven.theillusivec4.top/" }
     maven { url "http://maven.blamejared.com/" }
+    maven {
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 group = 'xreliquary'
@@ -100,6 +104,11 @@ dependencies {
     testCompile 'org.testng:testng:6.9.10'
     testCompile "org.mockito:mockito-core:1.+"
     testCompile "org.powermock:powermock-mockito-release-full:1.6.2"
+
+    compileOnly fg.deobf("curse.maven:tinkers-74072:3576393")
+    runtimeOnly fg.deobf("curse.maven:tinkers-74072:3576393")
+    compileOnly fg.deobf("curse.maven:mantle-74924:3576386")
+    runtimeOnly fg.deobf("curse.maven:mantle-74924:3576386")
 }
 
 test {

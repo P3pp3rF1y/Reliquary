@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.Mod;
 import xreliquary.compat.ICompat;
 import xreliquary.compat.botania.BotaniaCompat;
 import xreliquary.compat.curios.CuriosCompat;
+import xreliquary.compat.tconstruct.TConstructCompat;
 import xreliquary.compat.waila.WailaCompat;
 import xreliquary.reference.Compatibility;
 import xreliquary.reference.Reference;
@@ -27,6 +28,7 @@ public class ModCompat {
 		compatFactories.put(Compatibility.MOD_ID.HWYLA, () -> WailaCompat::new);
 		compatFactories.put(Compatibility.MOD_ID.CURIOS, () -> CuriosCompat::new);
 		compatFactories.put(Compatibility.MOD_ID.BOTANIA, () -> BotaniaCompat::new);
+		compatFactories.put(Compatibility.MOD_ID.TINKERS_CONSTRUCT, () -> TConstructCompat::new);
 	}
 
 	private static final Set<ICompat> loadedCompats = new HashSet<>();
