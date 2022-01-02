@@ -96,7 +96,9 @@ public class ReliquaryPlugin implements IModPlugin {
 			registration.addRecipes(MagazineRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
 		}
 		registration.addRecipes(MobCharmRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
-		registration.addRecipes(SpawnEggRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disableSpawnEggRecipes.get())) {
+			registration.addRecipes(SpawnEggRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
+		}
 		registration.addRecipes(InfernalTearRecipeMaker.getRecipes(), InfernalTearRecipeCategory.UID);
 		registerMobCharmBeltRecipe(registration);
 
