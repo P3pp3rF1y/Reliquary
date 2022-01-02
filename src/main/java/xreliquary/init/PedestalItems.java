@@ -29,13 +29,5 @@ public class PedestalItems {
 		PedestalRegistry.registerItemBlockWrapper(RedstoneWireBlock.class, PedestalRedstoneWrapper.Toggleable::new);
 		PedestalRegistry.registerItemBlockWrapper(RedstoneBlock.class, PedestalRedstoneWrapper.AlwaysOn::new);
 		PedestalRegistry.registerItemWrapper(FishingRodItem.class, PedestalFishingRodWrapper::new);
-
-/* TODO readd TiCon compatibility
-		if(ModList.get().isLoaded(Compatibility.MOD_ID.TINKERS_CONSTRUCT)) {
-			PedestalRegistry.registerItemWrapper(SwordCore.class, PedestalMeleeWeaponWrapper.class);
-			PedestalRegistry.registerItemWrapper(Scythe.class, PedestalMeleeWeaponWrapper.class);
-			//PedestalRegistry.registerItemWrapper(BattleAxe.class, PedestalMeleeWeaponWrapper.class); not implemented yet in TiCon
-		}
-*/
 	}
 }
