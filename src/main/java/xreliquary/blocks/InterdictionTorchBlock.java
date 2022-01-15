@@ -7,6 +7,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -17,6 +18,8 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
+import xreliquary.entities.LyssaBobberEntity;
+import xreliquary.entities.shot.ShotEntityBase;
 import xreliquary.reference.Settings;
 
 import java.util.List;
@@ -46,7 +49,7 @@ public class InterdictionTorchBlock extends TorchBlock {
 
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos).grow(radius), e -> (e instanceof MobEntity || e instanceof ProjectileEntity));
 		for (Entity entity : entities) {
-			if (entity instanceof PlayerEntity) {
+			if (entity instanceof PlayerEntity || entity instanceof ShotEntityBase || entity instanceof FishingBobberEntity || entity instanceof LyssaBobberEntity) {
 				continue;
 			}
 			double distance = Math.sqrt(entity.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()));
